@@ -1215,6 +1215,84 @@ class FirestoreService {
     } catch (_) {}
   }
 
+  // ── AI-RECONSTRUCTION-R18.6X-R1-R1: source-aware deletion ─────────────
+  static Future<bool> deleteLegacyAiSession(
+    String uid,
+    String sessionId,
+  ) async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+
+    if (!_isFirebaseReady ||
+        firebaseUser == null ||
+        firebaseUser.uid != uid) {
+      debugPrint(
+        '[AI_HISTORY_DELETE][LEGACY] allowed=false '
+        'reason=auth_guard uid=$uid',
+      );
+      return false;
+    }
+
+    try {
+      await _userAiHistory(uid).doc(sessionId).delete();
+
+      debugPrint(
+        '[AI_HISTORY_DELETE][LEGACY] result=deleted '
+        'sessionIdHash=${sessionId.hashCode}',
+      );
+
+      return true;
+    } catch (error) {
+      debugPrint(
+        '[AI_HISTORY_DELETE][LEGACY] result=failed '
+        'sessionIdHash=${sessionId.hashCode} '
+        'errorType=${error.runtimeType}',
+      );
+
+      return false;
+    }
+  }
+
+  static Future<bool> softDeleteCanonicalAiSession(
+    String uid,
+    String sessionId,
+  ) async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+
+    if (!_isFirebaseReady ||
+        firebaseUser == null ||
+        firebaseUser.uid != uid) {
+      debugPrint(
+        '[AI_HISTORY_DELETE][CANONICAL] allowed=false '
+        'reason=auth_guard uid=$uid',
+      );
+      return false;
+    }
+
+    try {
+      // Atualiza apenas o parent. A subcoleção exchanges permanece intacta.
+      await _userAiSessions(uid).doc(sessionId).update({
+        'isDeleted': true,
+        'deletedAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      debugPrint(
+        '[AI_HISTORY_DELETE][CANONICAL] result=tombstoned '
+        'sessionIdHash=${sessionId.hashCode}',
+      );
+
+      return true;
+    } catch (error) {
+      debugPrint(
+        '[AI_HISTORY_DELETE][CANONICAL] result=failed '
+        'sessionIdHash=${sessionId.hashCode} '
+        'errorType=${error.runtimeType}',
+      );
+
+      return false;
+    }
+  }
+
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 1]: Atomic batch session write ─
   //
   // Writes exactly two Firestore documents in a single WriteBatch:
@@ -1248,6 +1326,7 @@ class FirestoreService {
     required String assistantPreview,
     required String userInputFull,
     required String assistantOutputFull,
+    String userDisplayTextFull = '',
   }) async {
     try {
       final batch = _db.batch();
@@ -1305,17 +1384,22 @@ class FirestoreService {
       batch.set(sessionRef, parentData, SetOptions(merge: true));
 
       // ── Operation B: Immutable exchange document (idempotent by requestId) ─
-      batch.set(exchangeRef, {
-        'requestId':        requestId,
-        'sessionId':        sessionId,
-        'uid':              uid,
-        'userInput':        userInputFull,
-        'assistantOutput':  assistantOutputFull,
-        'mode':             mode,
-        'locale':           locale,
-        'createdAt':        FieldValue.serverTimestamp(),
-        'schemaVersion':    2,
-      });
+      final exchangeData = <String, Object>{
+        'requestId': requestId,
+        'sessionId': sessionId,
+        'uid': uid,
+        'userInput': userInputFull,
+        'assistantOutput': assistantOutputFull,
+        'mode': mode,
+        'locale': locale,
+        'createdAt': FieldValue.serverTimestamp(),
+        'schemaVersion': 2,
+      };
+      final normalizedUserDisplayText = userDisplayTextFull.trim();
+      if (normalizedUserDisplayText.isNotEmpty) {
+        exchangeData['userDisplayText'] = normalizedUserDisplayText;
+      }
+      batch.set(exchangeRef, exchangeData);
 
       await batch.commit();
       return (ok: true, permissionDenied: false, error: null);
@@ -2485,7 +2569,7 @@ class FirestoreService {
     final query = _userAiSessions(uid)
         .where('isDeleted', isEqualTo: false)
         .orderBy('updatedAt', descending: true)
-        .limit(10);
+        .limit(20);
     try {
       QuerySnapshot<Map<String, dynamic>> snap;
       try {

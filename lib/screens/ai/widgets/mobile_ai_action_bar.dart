@@ -1,4 +1,7 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MobileAiActionBar extends StatelessWidget {
   final bool dark;
@@ -12,6 +15,11 @@ class MobileAiActionBar extends StatelessWidget {
   final bool isConnected; // SUPER ORDEM ESTRUTURAL 11: M+ vivo
   final bool isPartner; // BUILD 310: Ambassador golden button
   final String partnerTitle; // BUILD 310: partner badge label
+
+  // AI-VIS-B.2.6-R1 — projeção visual do modo confirmado.
+  final bool modeConfirmed;
+  final bool studyMode;
+  final VoidCallback? onModeTap;
   final VoidCallback onHistory;
   final VoidCallback onClear;
   final VoidCallback onSettings;
@@ -33,6 +41,9 @@ class MobileAiActionBar extends StatelessWidget {
     this.isConnected = false,
     this.isPartner = false,
     this.partnerTitle = '',
+    this.modeConfirmed = false,
+    this.studyMode = true,
+    this.onModeTap,
     this.onNewChat,
     this.onAmbassador,
   });
@@ -40,72 +51,46 @@ class MobileAiActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ═══════════════════════════════════════════════════════════════════
-    // BUILD 331 IA — TOPBAR CORRIGIDA: Stack com ordem Z explícita
+    // AI-VIS-B.2.4-R2 — topbar da IA espelha o vidro da Home.
     //
-    // Fundo: SEMPRE #111622 dark sólido — sem adaptação ao tema do sistema.
-    //
-    // ORDEM DOS FILHOS DA STACK (Z-order, último = acima):
-    //   1. IgnorePointer → RichText bicolor no centro geométrico
-    //      Envolvido em IgnorePointer para que toques NÃO sejam absorvidos
-    //      pelo texto — passam para widgets abaixo (área vazia do centro).
-    //   2. Align(centerLeft) → GestureDetector → botão de conexão IA
-    //      Renderizado por último → Z-order acima do título → recebe
-    //      todos os eventos de toque na zona esquerda sem interferência.
-    //   3. Align(centerRight) → SizedBox(40×40) completamente vazia
-    //      Simetria visual: balanceia o peso horizontal da barra.
-    //
-    // MOTIVO DO DESCARTE DO NavigationToolbar:
-    //   NavigationToolbar mede seu 'leading' antes de posicionar o 'middle'.
-    //   O Container da pílula "Conectar IA" tem largura intrínseca ~95px;
-    //   o toolbar tratou isso como ocupação do terço esquerdo e o title ficou
-    //   deslocado / invisível. Stack com IgnorePointer resolve sem ambiguidade.
-    // ═══════════════════════════════════════════════════════════════════
-    // ═══════════════════════════════════════════════════════════════════
-    // TOPBAR GEOMETRY — View.of(context) bypass
-    //
-    // PROBLEMA RAIZ: MainShell usa MediaQuery.removePadding(removeTop:true)
-    // antes do IndexedStack. Qualquer SafeArea(top:true) ou
-    // MediaQuery.of(ctx).padding.top dentro das telas recebe 0 — o inset
-    // já foi consumido. O bypass correto é ler o padding FÍSICO diretamente
-    // da FlutterView, que é imune ao removePadding do MediaQuery.
-    //
-    // View.of(context).padding.top → padding em logical pixels físicos
-    // (já normalizado pelo devicePixelRatio internamente pelo Flutter).
-    //
-    // ESTRUTURA RESULTANTE:
-    //   Container (fundo #111622, altura = topPad + 56)
-    //     └── Padding(top: topPad)          ← empurra conteúdo abaixo do notch
-    //           └── SizedBox(height: 56)    ← área interativa fixa
-    //                 └── Stack (botão esq + título + espaço dir)
-    // ═══════════════════════════════════════════════════════════════════
+    // O inset físico continua sendo lido diretamente da FlutterView.
+    // M+, callbacks, conexão e embaixador permanecem proprietários.
     final double topPad =
         View.of(context).padding.top / View.of(context).devicePixelRatio;
 
-    return Container(
+    final glassColor = dark
+        ? const Color(0xFF252930).withOpacity(0.70)
+        : Colors.white.withOpacity(0.70);
+
+    final borderColor =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+    final titlePrimaryColor =
+        dark ? Colors.white : const Color(0xFF05070A);
+
+    return SizedBox(
       width: double.infinity,
-      height: topPad + 56,
-      decoration: BoxDecoration(
-        color:
-            const Color(0xFF111622), // dark sólido — sangra até o topo físico
-        border: const Border(
-          bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.35),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Padding(
-        // Empurra o conteúdo interativo para baixo da Dynamic Island / Notch.
-        // Não usa SafeArea aqui — o padding físico real já foi capturado acima.
-        padding: EdgeInsets.only(top: topPad),
-        child: SizedBox(
-          height: 56,
-          child: Stack(
-            children: [
+      height: topPad + 48,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: Container(
+            decoration: BoxDecoration(
+              color: glassColor,
+              border: Border(
+                bottom: BorderSide(
+                  color: borderColor,
+                  width: 0.7,
+                ),
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(top: topPad),
+              child: SizedBox(
+                height: 48,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
               // ── 1. BOTÃO DA ESQUERDA — POSIÇÃO ABSOLUTA, NUNCA SOBREPÕE O TÍTULO ──
               Positioned(
                 left:
@@ -117,43 +102,19 @@ class MobileAiActionBar extends StatelessWidget {
                   child: GestureDetector(
                     onTap: onSettings,
                     behavior: HitTestBehavior.opaque,
-                    child: isConnected
-                        // Conectado: avatar M+ verde pulsante
-                        ? const MplusPulse()
-                        // Desconectado: pílula ciana com borda e texto branco
-                        : Container(
-                            height: 30,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7),
-                              color: const Color(0xFF00E5FF)
-                                  .withValues(alpha: 0.10),
-                              border: Border.all(
-                                color: const Color(0xFF00E5FF)
-                                    .withValues(alpha: 0.60),
-                                width: 1.2,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'Conectar IA',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: 0.1,
-                              ),
-                            ),
-                          ),
+                    child: AiConnectionIdentity(
+                      isConnected: isConnected,
+                    ),
                   ),
                 ),
               ),
 
-              // ── 2. TÍTULO — CENTRO GEOMÉTRICO ABSOLUTO ──────────────────
+              // ── 2. TÍTULO — CONTRATO TIPOGRÁFICO DA HOME ─────────────
               Align(
                 alignment: Alignment.center,
                 child: RichText(
-                  text: const TextSpan(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
                     children: [
                       TextSpan(
                         text: 'MEDCASES ',
@@ -161,7 +122,7 @@ class MobileAiActionBar extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.2,
-                          color: Colors.white,
+                          color: titlePrimaryColor,
                         ),
                       ),
                       TextSpan(
@@ -170,13 +131,18 @@ class MobileAiActionBar extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.2,
-                          color: Color(0xFFD4AF37), // DOURADO PREMIUM
+                          color: dark
+                              ? const Color(0xFF00C781)
+                              : const Color(0xFF059669),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
+
+              // O modo confirmado permanece funcional, mas não é
+              // projetado visualmente na topbar.
 
               // ── BUILD 310: AMBASSADOR GOLDEN BUTTON (RIGHT) ─────────────
               // Invisible to non-partners — Apple Safe.
@@ -226,64 +192,148 @@ class MobileAiActionBar extends StatelessWidget {
                     ),
                   ),
                 ),
-            ],
+
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
+    );
+}
+}
+// MEDCASES_AI_CONNECTION_IDENTITY_SUPERBUILD_V1_B_R3
+class AiConnectionIdentity extends StatelessWidget {
+  final bool isConnected;
+
+  const AiConnectionIdentity({
+    super.key,
+    required this.isConnected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 280),
+      reverseDuration: const Duration(milliseconds: 220),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: (child, animation) {
+        final slide = Tween<Offset>(
+          begin: const Offset(0, 0.18),
+          end: Offset.zero,
+        ).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+        );
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(position: slide, child: child),
+        );
+      },
+      child: isConnected
+          ? const SizedBox(
+              key: ValueKey<String>('ai-connected'),
+              width: 34,
+              height: 36,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: MplusPulse(),
+              ),
+            )
+          : Transform.translate(
+              key: const ValueKey<String>('ai-disconnected'),
+              offset: const Offset(0, 3),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/home_v2/ic_ia_disconnected.svg',
+                    width: 28,
+                    height: 28,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(width: 6),
+                  const Text(
+                    'Conectar IA',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFFEF4444),
+                      letterSpacing: -0.1,
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
 
 class MplusPulse extends StatefulWidget {
-  final double
-      opacity; // ignorado internamente — mantido para compatibilidade de chamada
-  const MplusPulse({super.key, this.opacity = 1.0});
+  final double opacity;
+
+  const MplusPulse({
+    super.key,
+    this.opacity = 1.0,
+  });
+
   @override
   State<MplusPulse> createState() => MplusPulseState();
 }
 
 class MplusPulseState extends State<MplusPulse>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _anim;
+  late final AnimationController _controller;
+  late final Animation<double> _lift;
+  late final Animation<double> _tilt;
 
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(
+
+    _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..addStatusListener((status) {
-        if (!mounted) return;
-        if (status == AnimationStatus.completed) _ctrl.reverse();
-        if (status == AnimationStatus.dismissed) _ctrl.forward();
-      });
-    _anim = Tween<double>(begin: 0.35, end: 1.0).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+      duration: const Duration(milliseconds: 1900),
+    )..repeat(reverse: true);
+
+    _lift = Tween<double>(
+      begin: 0,
+      end: -4,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-    _ctrl.forward();
+
+    _tilt = Tween<double>(
+      begin: -0.5235987755982988,
+      end: 0.5235987755982988,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
   }
 
   @override
   void dispose() {
-    _ctrl.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _anim,
-      builder: (_, __) => Opacity(
-        opacity: _anim.value,
-        child: const Text(
-          'M+',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF10B981), // Verde Clínico — IA conectada
-            letterSpacing: -0.5,
-          ),
+      animation: _controller,
+      child: SvgPicture.asset(
+        'assets/icons/home_v2/ic_ia.svg',
+        width: 28,
+        height: 28,
+        fit: BoxFit.contain,
+      ),
+      builder: (context, child) => Transform.translate(
+        offset: Offset(0, 2 + _lift.value),
+        child: Transform.rotate(
+          angle: _tilt.value,
+          alignment: Alignment.bottomCenter,
+          child: child,
         ),
       ),
     );

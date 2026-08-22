@@ -2454,7 +2454,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         final width = constraints.maxWidth;
 
         // Desktop/tablet largo: sidebar lateral + conteúdo (com ou sem split)
-        if (width >= 768) {
+        if (!kIsWeb && width >= 768) {
           return _buildDesktopShell(context, dark, p, width);
         }
         // Mobile / tablet estreito / browser redimensionado — layout nativo

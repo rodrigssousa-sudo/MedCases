@@ -7,6 +7,12 @@ class WaHeader extends StatelessWidget {
   final VoidCallback onHistory;
   final VoidCallback onNewChat;
   final int historyCount;
+
+  // AI-VIS-B.2.6-R1 — mesmo estado visual da topbar mobile.
+  final String lang;
+  final bool modeConfirmed;
+  final bool studyMode;
+  final VoidCallback? onModeTap;
   final bool isConnected; // SUPER ORDEM ESTRUTURAL 11: M+ vivo
   final bool isPartner; // BUILD 310: Ambassador golden button
   final String partnerTitle; // BUILD 310
@@ -17,6 +23,10 @@ class WaHeader extends StatelessWidget {
     required this.onHistory,
     required this.onNewChat,
     required this.historyCount,
+    this.lang = 'es',
+    this.modeConfirmed = false,
+    this.studyMode = true,
+    this.onModeTap,
     this.isConnected = false,
     this.isPartner = false,
     this.partnerTitle = '',
@@ -78,7 +88,7 @@ class WaHeader extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFFD4AF37),
+                                color: Color(0xFF00C781),
                                 letterSpacing: -0.2,
                               ),
                             ),
@@ -128,6 +138,9 @@ class WaHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                 ],
+
+                // O modo confirmado permanece funcional, mas não é
+                // projetado visualmente na topbar desktop.
 
                 // ── M+ VIVO — status da IA — SUPER ORDEM ESTRUTURAL 11 ────
                 GestureDetector(

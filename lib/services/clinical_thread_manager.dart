@@ -122,6 +122,111 @@ class ClinicalThreadManager {
     'interacción',
   };
 
+  // ── Follow-ups clínicos contextuais com dados novos ───────────────────────
+  //
+  // Reconhece mensagens que acrescentam dados ao caso ativo sem repetir a
+  // patologia: peso/ajuste renal, história dirigida, sinais vitais,
+  // laboratório e imagem. Uma introdução explícita de novo paciente/caso não
+  // é convertida em continuação.
+  static bool isContextualClinicalFollowUp(String text) {
+    var q = text.trim().toLowerCase();
+    if (q.isEmpty) return false;
+    q = q.replaceFirst(RegExp(r'^[¿¡\s]+'), '');
+
+    // PT/ES: dobra acentos apenas para classificação lexical. O texto original
+    // continua intacto no histórico e no payload enviado ao provider.
+    final qFolded = q
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c');
+    final lexicalTokens = RegExp(r'[a-z0-9]+')
+        .allMatches(qFolded)
+        .map((match) => match.group(0)!)
+        .toList(growable: false);
+
+    final explicitNewCase = <String>[
+      'novo caso', 'nova paciente', 'novo paciente', 'outro paciente',
+      'outra paciente', 'mudar de caso', 'trocar de caso',
+      'nuevo caso', 'nuevo paciente', 'nueva paciente', 'otro paciente',
+      'otra paciente', 'cambiar de caso',
+    ].any(qFolded.contains);
+    if (explicitNewCase) return false;
+
+    final hasWeight = RegExp(
+      r'(^|[^a-z0-9])\d+(?:[.,]\d+)?\s*kg([^a-z0-9]|$)',
+    ).hasMatch(qFolded);
+    final hasCalculationVerb = lexicalTokens.any(
+      (token) =>
+          token.startsWith('calcul') &&
+          token != 'calculadora' &&
+          token != 'calculadoras',
+    );
+    final hasCalculationCue = hasCalculationVerb ||
+        <String>[
+          'dose', 'doses', 'dosis', 'dosagem', 'dosificacion',
+        ].any(qFolded.contains);
+    final isWeightCarryForward = hasWeight &&
+        (hasCalculationCue ||
+            qFolded.startsWith('e para ') ||
+            qFolded.startsWith('y para ') ||
+            qFolded.startsWith('para '));
+
+    final hasRenalMarker = <String>[
+      'creatinina', 'clcr', 'clearance',
+      'funcao renal', 'funcion renal',
+      'depuracao', 'depuracion',
+    ].any(qFolded.contains);
+    final hasAdjustmentCue = lexicalTokens.any(
+      (token) =>
+          token.startsWith('ajust') ||
+          token.startsWith('adapt') ||
+          token.startsWith('corrig') ||
+          token.startsWith('correg'),
+    );
+
+    final hasVitalOrExamMarker = <String>[
+      'pressao arterial', 'presion arterial', 'spo2', 'saturacao', 'saturacion',
+      'temperatura', 'leucoc', 'neutrofil', 'plaquet', 'hemoglob', 'hematoc',
+      'pcr elevada', 'crp ', 'tropon', 'lactato', 'gasometr',
+      'ureia', 'urea', 'sodio', 'potassio', 'potasio',
+      'ecg', 'eletrocard', 'electrocard', 'usg', 'ultrass', 'ecograf',
+      'tomografia', 'ressonancia', 'resonancia', 'raio x', 'rayos x',
+      'imagem', 'imagen', 'inconclus',
+    ].any(qFolded.contains);
+
+    final hasObjectiveNumber = RegExp(
+      r'\b\d+(?:[.,]\d+)?\s*(?:c|mmhg|bpm|x10|mil|mg/dl|mmol|meq|%)\b',
+    ).hasMatch(qFolded);
+
+    return isWeightCarryForward ||
+        (hasRenalMarker && hasAdjustmentCue) ||
+        _isRichClinicalNarrativeFollowUp(qFolded) ||
+        hasVitalOrExamMarker ||
+        hasObjectiveNumber;
+  }
+
+  static bool _isRichClinicalNarrativeFollowUp(String foldedText) {
+    final markers = <RegExp>[
+      RegExp(r'\b(?:comecou|iniciou|inicio|desde)\b'),
+      RegExp(r'\bha\s+\d+(?:[.,]\d+)?\s*(?:h|hora|horas|dia|dias)\b'),
+      RegExp(r'\b(?:migrou|irradiou|piorou|melhorou|evoluiu)\b'),
+      RegExp(r'\b(?:refere|relata|nega|presenta)\b'),
+      RegExp(r'\b(?:sem|sin)\s+sintomas?\b'),
+      RegExp(r'\b(?:febre|fiebre|nausea|nauseas|vomito|vomitos)\b'),
+    ];
+
+    var hits = 0;
+    for (final marker in markers) {
+      if (marker.hasMatch(foldedText)) hits++;
+      if (hits >= 2) return true;
+    }
+    return false;
+  }
+
   // ── Keywords de novo caso — qualquer uma dessas em query longa → new thread ─
   // Sintomas sistêmicos sem relação farmacológica = novo caso clínico.
   //
@@ -216,6 +321,16 @@ class ClinicalThreadManager {
     // Obstétrico
     'eclampsia', 'preeclampsia',
     'hellp',
+  };
+
+  // Sinais demográficos são úteis para detectar um caso novo em perguntas
+  // completas, mas não devem apagar o thread quando aparecem dentro de um pedido
+  // contextual como "calcule para um paciente de 18 kg".
+  static const _kDemographicNewCaseSignals = <String>{
+    'paciente com', 'paciente de', 'paciente apresenta',
+    'paciente con', 'paciente presenta',
+    'homem de', 'mulher de', 'hombre de', 'mujer de',
+    'anos com', 'años con', 'anos de', 'años de',
   };
 
   // ── Fármacos de alta especificidade (detectar mudança de fármaco-alvo) ─────
@@ -341,6 +456,84 @@ class ClinicalThreadManager {
     // ── Query muito curta / follow-up phrase → continuation ───────────────
     final isFollowUpPhrase = _kFollowUpPhrases.any((p) => q == p || q.startsWith('$p ') || q.endsWith(' $p'));
     final isTooShort = wordCount <= 3;
+    final shortContextualFollowUp =
+        isContextualClinicalFollowUp(currentUserText);
+    final shortFolded = q
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c');
+    final shortTokens = RegExp(r'[a-z0-9]+')
+        .allMatches(shortFolded)
+        .map((match) => match.group(0)!)
+        .toSet();
+    final shortStrongCardiacAlias = const <String>{
+      'iamcsst',
+      'iamcest',
+      'iamssst',
+      'iamsest',
+      'stemi',
+      'nstemi',
+    }.any(shortTokens.contains);
+    final shortThreadStartFolded = _threadStartQuery
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c');
+    final shortCardiacCompatible = shortStrongCardiacAlias &&
+        <String>[
+          'torac',
+          'peito',
+          'precord',
+          'angin',
+          'coronar',
+          'cardiac',
+          'iam',
+          'sca',
+        ].any(shortThreadStartFolded.contains);
+    final shortQueryClinicalSwitch = isPlantaoMode &&
+        isTooShort &&
+        !isFollowUpPhrase &&
+        !shortContextualFollowUp &&
+        (shortStrongCardiacAlias ||
+            _kNewCaseSignals.any((signal) {
+              final foldedSignal = signal
+                  .replaceAll('á', 'a')
+                  .replaceAll('é', 'e')
+                  .replaceAll('í', 'i')
+                  .replaceAll('ó', 'o')
+                  .replaceAll('ú', 'u')
+                  .replaceAll('ü', 'u')
+                  .replaceAll('ç', 'c');
+              if (foldedSignal.contains(' ')) {
+                return shortFolded.contains(foldedSignal);
+              }
+              return shortTokens.contains(foldedSignal);
+            })) &&
+        !_topicsOverlap(_activeTopic, q) &&
+        !shortCardiacCompatible;
+
+    if (shortQueryClinicalSwitch) {
+      final oldTopic = _activeTopic;
+      _startNewThread(q, now);
+      if (kDebugMode) {
+        debugPrint('[THREAD_MANAGER] mode=plantao '
+            'action=new_thread reason=short_clinical_switch '
+            'oldTopic=$oldTopic newTopic=$_activeTopic');
+      }
+      return ClinicalThreadStatus(
+        action: ThreadAction.newThread,
+        reason: 'short_clinical_switch',
+        topic: _activeTopic,
+      );
+    }
 
     if (isTooShort || isFollowUpPhrase) {
       _turnCount++;
@@ -385,11 +578,24 @@ class ClinicalThreadManager {
     // evitar falso positivo: 'iam' em "vitamina", 'avc' em "travca", etc.
     // Tokens > 4 chars: contains é seguro (colisão léxica negligenciável).
     final qNormSig = ' $q '; // padding para word-boundary simplificado
-    final hasNewCaseSignal = _kNewCaseSignals.any((s) {
-      if (s.contains(' ')) return q.contains(s);           // multi-palavra: safe
-      if (s.length <= 4)  return qNormSig.contains(' $s '); // curto: word-boundary
-      return q.contains(s);                                 // longo: safe por tamanho
-    });
+    bool matchesNewCaseSignal(String signal) {
+      if (signal == 'iam' &&
+          RegExp(
+            r'(^|[^a-z0-9])(?:iamcsst|iamcest|iamssst|iamsest|stemi|nstemi)([^a-z0-9]|$)',
+          ).hasMatch(q)) {
+        return true;
+      }
+      if (signal.contains(' ')) return q.contains(signal);
+      if (signal.length <= 4) return qNormSig.contains(' $signal ');
+      return q.contains(signal);
+    }
+
+    final hasNewCaseSignal = _kNewCaseSignals.any(matchesNewCaseSignal);
+    final hasStrongNewCaseSignal = _kNewCaseSignals.any(
+      (signal) =>
+          !_kDemographicNewCaseSignals.contains(signal) &&
+          matchesNewCaseSignal(signal),
+    );
 
     // Detecta fármaco novo diferente do thread ativo
     final currentDrug = _detectPrimaryDrug(q);
@@ -400,10 +606,84 @@ class ClinicalThreadManager {
 
     // Verifica overlap temático com o thread ativo
     final topicOverlap = _topicsOverlap(_activeTopic, q);
+    final isContextualFollowUp = isContextualClinicalFollowUp(currentUserText);
+    final foldedCurrent = q
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c');
+    final richNarrativeFollowUp = _isRichClinicalNarrativeFollowUp(foldedCurrent);
+    final hasAcuteCoronaryAlias = RegExp(
+      r'(^|[^a-z0-9])(?:iamcsst|iamcest|iamssst|iamsest|stemi|nstemi)([^a-z0-9]|$)',
+    ).hasMatch(foldedCurrent);
+    final threadStartFolded = _threadStartQuery
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c');
+    final compatibleAcuteCoronaryProgression = hasAcuteCoronaryAlias &&
+        <String>[
+          'torac',
+          'peito',
+          'precord',
+          'angin',
+          'coronar',
+          'cardiac',
+          'iam',
+          'sca',
+        ].any(threadStartFolded.contains);
+
+    // Uma confirmação de IAM/STEMI pode ser a progressão natural de uma queixa
+    // torácica já ativa. Nesse caso preservamos o contexto; em qualquer tópico
+    // incompatível (por exemplo, fossa ilíaca) o alias forte continua abaixo
+    // para a regra canônica de newThread.
+    if (isPlantaoMode &&
+        compatibleAcuteCoronaryProgression &&
+        !hasDrugSwitch) {
+      _turnCount++;
+      _lastActivityMs = now;
+      if (kDebugMode) {
+        debugPrint('[THREAD_MANAGER] mode=plantao '
+            'action=continue_thread reason=compatible_diagnostic_progression '
+            'topic=$_activeTopic turnCount=$_turnCount');
+      }
+      return ClinicalThreadStatus(
+        action: ThreadAction.continueThread,
+        reason: 'compatible_diagnostic_progression',
+        topic: _activeTopic,
+      );
+    }
+
+    // Resultados objetivos não precisam repetir o tópico. Narrativa clínica só
+    // vence um sinal sintomático de novo caso quando contém múltiplos marcadores
+    // de evolução/associação; isso evita transformar uma nova queixa isolada em
+    // continuação por acidente.
+    if (isContextualFollowUp &&
+        !hasDrugSwitch &&
+        (!hasStrongNewCaseSignal || topicOverlap || richNarrativeFollowUp)) {
+      _turnCount++;
+      _lastActivityMs = now;
+      if (kDebugMode) {
+        debugPrint('[THREAD_MANAGER] mode=plantao '
+            'action=continue_thread reason=contextual_clinical_followup '
+            'topic=$_activeTopic turnCount=$_turnCount');
+      }
+      return ClinicalThreadStatus(
+        action: ThreadAction.continueThread,
+        reason: 'contextual_clinical_followup',
+        topic: _activeTopic,
+      );
+    }
 
     if (hasNewCaseSignal || hasDrugSwitch || !topicOverlap) {
       final oldTopic = _activeTopic;
-      final newTopicSignature = _extractTopicSignature(currentUserText);
       _startNewThread(q, now);
 
       if (kDebugMode) {

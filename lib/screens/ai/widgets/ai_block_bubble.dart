@@ -3,6 +3,9 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../calculadora_screen.dart';
 import 'collapsible_content_blocks.dart';
+import 'clinical_markdown_presentation.dart';
+
+import '../../../home_v2/theme/home_v2_palette.dart';
 
 class AiBlockBubble extends StatelessWidget {
   final String block;
@@ -104,11 +107,9 @@ class AiBlockBubble extends StatelessWidget {
     // Identidade visual: cor dos emojis nativos do modelo — 100% flat, sem
     // sub-containers, sem Row/Padding segregados por tipo de linha.
 
-    const kGreen = Color(0xFF008CA4);
-    // B140: Vermelho Ferrari — títulos H2 e **strong** no light mode
-    const kFerrariRed = Color(0xFFFF2400);
-
-    final textColor = dark ? const Color(0xFFE8F2F5) : const Color(0xFF1A1D23);
+    final palette = HomeV2Palette.resolve(dark);
+    final kGreen = palette.accent;
+    final textColor = palette.textPrimary;
 
     // ── M2: Normalização de soft-line-breaks ─────────────────────────────────
     // Converte cada \n isolado em \n\n para que o MarkdownBody quebre a linha
@@ -123,7 +124,11 @@ class AiBlockBubble extends StatelessWidget {
           (_) => '\n\n', // → duplo para MD paragraph break
         );
 
-    final lines = normalizedText.split('\n');
+    // R18.6AC-R1B-H4B-R3 — transformação somente visual.
+    final presentationText =
+        ClinicalMarkdownPresentation.format(normalizedText);
+
+    final lines = presentationText.split('\n');
     final (bodyLines, refLines) = _splitRefLines(lines);
     final bool hasRefBlock = refLines.isNotEmpty;
 
@@ -132,80 +137,108 @@ class AiBlockBubble extends StatelessWidget {
 
     // ── MarkdownStyleSheet premium — tipografia clínica flat ─────────────────
     final sheet = MarkdownStyleSheet(
-      // p: height 1.55 — respiro clínico máximo para checklists de Plantão
-      p: TextStyle(fontSize: 13.5, color: textColor, height: 1.55),
-      // strong (**...**) = ÚNICO receptor de cor vibrante
-      // Dark: cyan médico 0xFF00E5FF (contraste 12:1 sobre fundo escuro)
-      // Light: Vermelho Ferrari 0xFFFF2400 (contraste 5.2:1 sobre branco)
-      strong: TextStyle(
+      p: TextStyle(
+        color: textColor,
         fontSize: 13.5,
+        height: 1.55,
+        fontWeight: FontWeight.w400,
+      ),
+      strong: TextStyle(
+        color: palette.textPrimary,
+        fontSize: 13.5,
+        height: 1.55,
         fontWeight: FontWeight.w700,
-        color: dark ? const Color(0xFF00E5FF) : kFerrariRed,
       ),
       em: TextStyle(
-          fontSize: 13.5, color: textColor, fontStyle: FontStyle.italic),
-      listBullet: TextStyle(fontSize: 13.5, color: textColor),
-      // H2: título principal — Vermelho Ferrari bold (B140)
-      h2: const TextStyle(
-        fontSize: 17,
+        color: palette.textPrimary,
+        fontSize: 13.5,
+        height: 1.55,
+        fontStyle: FontStyle.italic,
+      ),
+      listBullet: TextStyle(
+        color: palette.textPrimary,
+        fontSize: 13.5,
+        height: 1.55,
+      ),
+      h1: TextStyle(
+        color: palette.textPrimary,
+        fontSize: 14.2,
+        height: 1.3,
         fontWeight: FontWeight.w800,
-        color: kFerrariRed,
-        letterSpacing: 0.1,
-        height: 1.3,
       ),
-      // H3: sub-seção clínica — cyan no dark, verde médico no light
+      h2: TextStyle(
+        color: palette.textPrimary,
+        fontSize: 13.9,
+        height: 1.35,
+        fontWeight: FontWeight.w800,
+      ),
       h3: TextStyle(
-        fontSize: 14,
+        color: palette.textPrimary,
+        fontSize: 13.6,
+        height: 1.4,
         fontWeight: FontWeight.w700,
-        color: dark ? const Color(0xFF00E5FF) : kGreen,
-        height: 1.3,
       ),
-      blockquote: TextStyle(fontSize: 13, color: textColor.withOpacity(0.8)),
-      // Força fundos transparentes — evita herança de ThemeData.cardColor
+      blockquote: TextStyle(
+        color: palette.textPrimary.withValues(
+          alpha: 0.82,
+        ),
+        fontSize: 13,
+        height: 1.5,
+      ),
+      blockquotePadding: const EdgeInsets.only(
+        left: 10,
+      ),
       blockquoteDecoration: BoxDecoration(
         color: Colors.transparent,
         border: Border(
           left: BorderSide(
-            color: dark ? Colors.white24 : Colors.black26,
-            width: 3,
+            color: palette.accent,
+            width: 2,
           ),
         ),
       ),
-      codeblockDecoration: const BoxDecoration(color: Colors.transparent),
+      code: TextStyle(
+        color: palette.textPrimary,
+        fontSize: 12.3,
+        height: 1.45,
+        fontWeight: FontWeight.w600,
+      ),
+      codeblockDecoration: BoxDecoration(
+        color: palette.surfaceStrong,
+        borderRadius: BorderRadius.circular(5),
+      ),
       horizontalRuleDecoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: dark ? Colors.white12 : Colors.black12,
-            width: 1,
+            color: palette.divider,
+            width: 0.8,
           ),
         ),
       ),
-      blockSpacing: 6,
-      listIndent: 18,
-
-      // ── Tabelas Comparativas GFM — Modo Estudo (Build TableMD) ───────────
-      // Ativadas por _modeAnchorEstudo (ai_gateway_service.dart) para síntese
-      // de classes farmacológicas, diferenciais e dados correlacionados.
-      // Dark: fundo naval translúcido + borda ciano sutil
-      // Light: fundo gelo + borda cinza elegante
+      blockSpacing: 12,
+      listIndent: 20,
       tableHead: TextStyle(
-        fontSize: 12,
+        color: palette.textPrimary,
+        fontSize: 12.3,
+        height: 1.4,
         fontWeight: FontWeight.w700,
-        color: dark ? const Color(0xFF00E5FF) : const Color(0xFF1A1D23),
-        letterSpacing: 0.2,
       ),
       tableBody: TextStyle(
+        color: palette.textPrimary,
         fontSize: 12,
-        color: textColor,
         height: 1.4,
       ),
-      tablePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      tableCellsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      tablePadding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 6,
+      ),
+      tableCellsPadding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 5,
+      ),
       tableColumnWidth: const FlexColumnWidth(),
       tableBorder: TableBorder.all(
-        color: dark
-            ? const Color(0xFF00E5FF).withOpacity(0.18)
-            : const Color(0xFF1A1D23).withOpacity(0.12),
+        color: palette.border,
         width: 0.5,
         borderRadius: BorderRadius.circular(6),
       ),
@@ -213,7 +246,7 @@ class AiBlockBubble extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0).copyWith(
+      padding: const EdgeInsets.symmetric(horizontal: 17.0).copyWith(
         bottom: isLast ? 8 : 4,
       ),
       child: Align(
@@ -260,7 +293,7 @@ class AiBlockBubble extends StatelessWidget {
                   _fakeTime(),
                   style: TextStyle(
                     fontSize: 10,
-                    color: dark ? Colors.white24 : Colors.black26,
+                    color: palette.textMuted.withValues(alpha: 0.42),
                   ),
                 ),
                 const Spacer(),
@@ -274,7 +307,7 @@ class AiBlockBubble extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: ttsPlaying
-                            ? kGreen.withOpacity(0.15)
+                            ? palette.accentSoft
                             : Colors.transparent,
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -285,7 +318,7 @@ class AiBlockBubble extends StatelessWidget {
                           size: 13,
                           color: ttsPlaying
                               ? kGreen
-                              : (dark ? Colors.white38 : Colors.black38),
+                              : (palette.textSecondary.withValues(alpha: 0.58)),
                         ),
                         const SizedBox(width: 3),
                         Text(
@@ -297,7 +330,8 @@ class AiBlockBubble extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             color: ttsPlaying
                                 ? kGreen
-                                : (dark ? Colors.white38 : Colors.black38),
+                                : (palette.textSecondary
+                                    .withValues(alpha: 0.58)),
                           ),
                         ),
                       ]),
@@ -311,12 +345,13 @@ class AiBlockBubble extends StatelessWidget {
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       Icon(Icons.copy_rounded,
                           size: 12,
-                          color: dark ? Colors.white24 : Colors.black26),
+                          color: palette.textMuted.withValues(alpha: 0.42)),
                       const SizedBox(width: 3),
                       Text(lang == 'es' ? 'Copiar' : 'Copiar',
                           style: TextStyle(
                               fontSize: 10,
-                              color: dark ? Colors.white24 : Colors.black26)),
+                              color:
+                                  palette.textMuted.withValues(alpha: 0.42))),
                     ]),
                   ),
               ]),

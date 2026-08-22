@@ -846,6 +846,7 @@ class ProviderRouterService {
     String lang = 'pt',
     String requestId = '',
     int maxOutputTokens = 800,
+    void Function(GptSseClient client)? onClientCreated,
   }) async* {
     // ── KILL SWITCH: kUseGptProxySse = false → legado ──────────────────────
     if (!kUseGptProxySse) {
@@ -938,6 +939,8 @@ class ProviderRouterService {
       endpointUrl: _gptSseUrl,
       idToken: resolvedToken,
     );
+
+    onClientCreated?.call(client);
 
     yield* client.stream(payload);
   }

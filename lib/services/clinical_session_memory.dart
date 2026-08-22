@@ -1,3 +1,5 @@
+import 'clinical_thread_manager.dart';
+
 /// ClinicalSessionMemory — Memória clínica estruturada da sessão atual
 ///
 /// Design principles:
@@ -181,6 +183,13 @@ class ClinicalSessionMemory {
       // Primeira query — estabelece tema
       _dominantTopic = newTopic;
       _topicTurnCount = 1;
+      return false;
+    }
+
+    // Reutiliza o classificador canônico do thread. Cálculo por peso e ajuste
+    // renal são continuações que carregam novos dados, não novos temas clínicos.
+    if (ClinicalThreadManager.isContextualClinicalFollowUp(newQuery)) {
+      _topicTurnCount++;
       return false;
     }
 

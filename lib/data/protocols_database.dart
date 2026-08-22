@@ -6586,16 +6586,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     classification: {
       'pt': [
-        '🔴 Sangramento ativo com instabilidade: PA sistólica <90 + taquicardia + Hb <7 → ressuscitação + EDA emergente <6h',
-        '🟠 Alto risco estável (Glasgow-Blatchford ≥12 ou Rockall ≥5): EDA em <12h + IBP IV + internação',
-        '🟡 Risco intermediário (GBS 1–11): EDA em <24h + IBP IV',
-        '🟢 Baixo risco (GBS 0, Rockall 0–2): EDA eletiva + IBP oral + alta precoce',
+        'Muito baixo risco: Glasgow-Blatchford 0–1 pode permitir manejo ambulatorial com seguimento adequado',
+        'Internado estável: EDA em até 24 h após ressuscitação/estabilização',
+        'Instabilidade/hemorragia em curso: ressuscitar e individualizar urgência endoscópica; não impor <6 h a todos',
+        'Lesão de alto risco endoscópico: hemostasia + PPI em alta dose pós-hemostasia',
       ],
       'es': [
-        '🔴 Sangrado activo con inestabilidad: EDA emergente <6 h + resucitación',
-        '🟠 Alto riesgo estable (GBS ≥12 o Rockall ≥5): EDA <12 h + IBP IV',
-        '🟡 Riesgo intermedio: EDA <24 h + IBP IV',
-        '🟢 Bajo riesgo (GBS 0): EDA electiva + IBP oral',
+        'Muy bajo riesgo: Glasgow-Blatchford 0–1 puede permitir manejo ambulatorio con seguimiento adecuado',
+        'Hospitalizado estable: EDA dentro de 24 h tras resucitación/estabilización',
+        'Inestabilidad/hemorragia activa: reanimar e individualizar urgencia endoscópica; no imponer <6 h a todos',
+        'Lesión endoscópica de alto riesgo: hemostasia + PPI de alta dosis post-hemostasia',
       ],
     },
     severityCriteria: {
@@ -6615,16 +6615,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     redFlags: {
       'pt': [
-        '🔴 Anticoagulação em curso: reverter antes da EDA (vitamina K + PFC se INR >2,5)',
-        '🔴 Forrest Ia (hemorragia arterial em jato): tratar imediatamente; ressangramento 80% sem hemostasia',
-        '🟠 Falha da 1ª EDA: 2ª endoscopia + arteriografia/embolização OU cirurgia',
-        '🟠 AAS/AINE como causa: suspender, mas reintroduzir precocemente em risco cardiovascular alto',
-        '🟡 H. pylori: erradicar para reduzir recorrência em 80%',
+        'Choque, hematêmese maciça ou rebaixamento: proteger via aérea e ressuscitar antes/durante estratégia endoscópica',
+        'Ressangramento após hemostasia: repetir EDA; falha pode exigir embolização transcateter',
+        'Anticoagulação/antiagregação: reversão e reinício individualizados conforme agente, sangramento e risco trombótico',
+        'Úlcera péptica: pesquisar H. pylori e confirmar erradicação',
       ],
       'es': [
-        '🔴 Anticoagulación en curso: revertir antes de la EDA',
-        '🔴 Forrest Ia (hemorragia arterial): tratar inmediatamente',
-        '🟠 Falla 1ª EDA: 2ª endoscopia + arteriografía/embolización o cirugía',
+        'Shock, hematemesis masiva o deterioro de conciencia: proteger vía aérea y reanimar',
+        'Resangrado tras hemostasia: repetir EDA; fracaso puede requerir embolización transcatéter',
+        'Anticoagulación/antiagregación: reversión y reinicio individualizados según agente, sangrado y riesgo trombótico',
+        'Úlcera péptica: investigar H. pylori y confirmar erradicación',
       ],
     },
     differentialDiagnosis: {
@@ -6675,47 +6675,44 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     actions: {
       'pt': [
-        '1. 2 acessos venosos calibrosos (14–16G); SF 0,9% 500 mL se instabilidade hemodinâmica',
-        '2. Transfusão restritiva: meta Hb 7–8 g/dL (não transfundir para >9 g/dL — piora mortalidade)',
-        '3. IBP: Pantoprazol/Omeprazol 80 mg IV bolus + 8 mg/h infusão contínua (↓ressangramento em Forrest I–IIb)',
-        '4. EDA em <12–24h conforme risco; instável: EDA em <6h após ressuscitação inicial',
-        '5. Hemostasia endoscópica em Forrest Ia (jato) e Ib (babação): injeção de adrenalina 1:10.000 + clipagem ou termocoagulação',
-        '6. Forrest IIa e IIb (coto visível ou coágulo): tratar endoscopicamente (clipagem/APC)',
-        '7. Falha endoscópica (2ª EDA): arteriografia + embolização OU cirurgia (hemostasia definitiva)',
-        '8. Erradicação H. pylori: confirmar presença (CLO-teste/biópsia durante EDA) → tripla terapia 14 dias',
+        '1. Acessos venosos, hemograma/coagulação/tipagem e ressuscitação guiada pela perfusão',
+        '2. Transfusão restritiva em estável: limiar em torno de Hb 7 g/dL; individualizar isquemia/cardiopatia/hemorragia exsanguinante',
+        '3. Glasgow-Blatchford 0–1 = risco muito baixo potencialmente ambulatorial',
+        '4. EDA em até 24 h após estabilização; não impor <6–12 h rotineiramente a todo paciente estável',
+        '5. Hemostasia endoscópica para sangramento ativo/vaso visível conforme lesão',
+        '6. Após hemostasia de alto risco: PPI em alta dose contínuo ou intermitente por 72 h',
+        '7. Ressangramento: repetir EDA; falha → embolização transcateter quando factível antes de cirurgia',
+        '8. Testar/tratar H. pylori e confirmar erradicação',
       ],
       'es': [
-        '1. 2 accesos venosos calibrosos; SF 0,9% 500 mL si inestabilidad',
-        '2. Transfusión restrictiva: meta Hb 7–8 g/dL',
-        '3. IBP: Pantoprazol 80 mg IV bolo + 8 mg/h infusión continua',
-        '4. EDA en <12–24 h; inestable: EDA <6 h tras resucitación inicial',
-        '5. Hemostasia endoscópica en Forrest Ia–IIb',
-        '6. Fallo endoscópico: arteriografía + embolización o cirugía',
-        '7. Erradicación H. pylori: triple terapia 14 días',
+        '1. Accesos venosos, hemograma/coagulación/tipaje y resucitación guiada por perfusión',
+        '2. Transfusión restrictiva en estable: umbral alrededor de Hb 7 g/dL; individualizar isquemia/cardiopatía/hemorragia exanguinante',
+        '3. Glasgow-Blatchford 0–1 = riesgo muy bajo potencialmente ambulatorio',
+        '4. EDA dentro de 24 h tras estabilización; no imponer <6–12 h rutinariamente a todo estable',
+        '5. Hemostasia endoscópica para sangrado activo/vaso visible según lesión',
+        '6. Tras hemostasia de alto riesgo: PPI de alta dosis continuo o intermitente por 72 h',
+        '7. Resangrado: repetir EDA; fracaso → embolización transcatéter cuando sea factible antes de cirugía',
+        '8. Testar/tratar H. pylori y confirmar erradicación',
       ],
     },
     drugsFirstLine: {
       'pt': [
-        'Pantoprazol/Omeprazol — 80 mg IV bolus + 8 mg/h infusão contínua × 72h (reduz Forrest Ia para IIa); manutenção VO após EDA',
-        'Concentrado de hemácias — meta Hb 7–8 g/dL (restritiva); não transfundir desnecessariamente',
-        'IBP oral — após alta: omeprazol 40 mg/dia ou pantoprazol 40 mg/dia × 4–8 semanas (cicatrização ulcerosa)',
+        'PPI — após hemostasia endoscópica de lesão de alto risco, usar estratégia de alta dose contínua ou intermitente por 72 h conforme protocolo',
+        'Concentrado de hemácias — estratégia restritiva em paciente estável, individualizada por contexto cardiovascular/hemorragia',
       ],
       'es': [
-        'Pantoprazol/Omeprazol — 80 mg IV bolo + 8 mg/h × 72 h; mantenimiento VO tras EDA',
-        'Concentrado de eritrocitos — meta Hb 7–8 g/dL (restrictiva)',
+        'PPI — tras hemostasia endoscópica de lesión de alto riesgo, usar alta dosis continua o intermitente por 72 h según protocolo',
+        'Concentrado de hematíes — estrategia restrictiva en estable, individualizada por contexto cardiovascular/hemorragia',
       ],
     },
     drugsSecondLine: {
       'pt': [
-        'Adrenalina 1:10.000 — injeção submucosa perilacional (4 pontos × 1–2 mL); reduz sangramento imediato; sempre combinada com método mecânico ou térmico',
-        'Plasma fresco congelado — 15 mL/kg se INR >2,5 ou sangramento ativo com coagulopatia',
-        'Vitamina K — 10 mg IV lento se deficiência (cirrótico, mal-absorção, anticoagulado com varfarina)',
-        'Terlipressina — 2 mg IV a cada 4h (se causa varicosa confirmada)',
+        'Reversores de anticoagulação — usar estratégia específica para o agente apenas quando clinicamente indicada',
+        'Terapia endoscópica mecânica/térmica — conforme estigma de alto risco; adrenalina não deve ser monoterapia definitiva',
       ],
       'es': [
-        'Adrenalina 1:10.000 — inyección submucosa perilesional',
-        'Plasma fresco congelado — 15 mL/kg si INR >2,5',
-        'Vitamina K — 10 mg IV lento si deficiencia',
+        'Reversores de anticoagulación — usar estrategia específica del agente solo cuando esté clínicamente indicada',
+        'Terapia endoscópica mecánica/térmica — según estigma de alto riesgo; adrenalina no debe ser monoterapia definitiva',
       ],
     },
     drugsContraindicated: {
@@ -6760,17 +6757,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     doNotDo: {
       'pt': [
-        'NÃO transfundir para Hb >9 g/dL em não cardiopatas (piora mortalidade — Villanueva NEJM 2013)',
-        'NÃO realizar EDA sem estabilização mínima em choque profundo (ressuscitar primeiro)',
-        'NÃO usar sonda nasogástrica de rotina (não prediz sangramento; causa desconforto)',
-        'NÃO tratar Forrest IIc ou III endoscopicamente (risco desnecessário)',
-        'NÃO erradicar H. pylori sem confirmação endoscópica ou sorológica',
+        'Não usar ácido tranexâmico rotineiramente para hemorragia GI',
+        'Não impor EDA <6–12 h a todo paciente estável; realizar em até 24 h após estabilização',
+        'Não fazer reversão indiscriminada de anticoagulante sem considerar agente e risco trombótico',
+        'Não usar terapia tripla empírica com claritromicina para H. pylori sem sensibilidade conhecida',
       ],
       'es': [
-        'NO transfundir Hb >9 g/dL en no cardiopatas',
-        'NO realizar EDA sin estabilización mínima',
-        'NO sonda nasogástrica rutinaria',
-        'NO erradicar H. pylori sin confirmación',
+        'No usar ácido tranexámico de rutina para hemorragia GI',
+        'No imponer EDA <6–12 h a todo estable; realizar dentro de 24 h tras estabilización',
+        'No revertir anticoagulación indiscriminadamente sin considerar agente y riesgo trombótico',
+        'No usar triple terapia empírica con claritromicina para H. pylori sin sensibilidad conocida',
       ],
     },
     pearls: {
@@ -6790,22 +6786,21 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     references: {
       'pt': [
-        'Villanueva C et al. Transfusion strategies for acute upper GI bleeding (restrictive vs. liberal). NEJM. 2013;368(1):11–21.',
-        'Gralnek IM et al. Management of acute nonvariceal upper gastrointestinal bleeding. Endoscopy. 2015;47(10):a1–46.',
-        'National Institute for Health and Care Excellence (NICE). Acute upper gastrointestinal bleeding. Guideline. 2012 (updated 2016).',
-        'UpToDate: Management of acute upper gastrointestinal bleeding related to a peptic ulcer. 2024.',
+        'ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding. Am J Gastroenterol. 2021.',
+        'ACG Clinical Guideline: Treatment of Helicobacter pylori Infection. Am J Gastroenterol. 2024.',
+        'ESGE Guideline Update: Nonvariceal upper gastrointestinal hemorrhage. Endoscopy. 2021.',
       ],
       'es': [
-        'Villanueva C et al. NEJM. 2013;368(1):11–21.',
-        'Gralnek IM et al. Endoscopy. 2015;47(10):a1–46.',
-        'UpToDate: Management of acute upper GI bleeding. 2024.',
+        'ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding. Am J Gastroenterol. 2021.',
+        'ACG Clinical Guideline: Treatment of Helicobacter pylori Infection. Am J Gastroenterol. 2024.',
+        'ESGE Guideline Update: Nonvariceal upper gastrointestinal hemorrhage. Endoscopy. 2021.',
       ],
     },
     avoid: {
-      'pt': 'EVITAR ressuscitação volêmica excessiva (↑ pressão portal → ressangramento varicoso). Não transfundir com Hb >9 g/dL em não cardiopatas (piora mortalidade). Evitar IBP VO no sangramento ativo grave (usar IV). Não realizar endoscopia sem estabilização mínima. Evitar sonda nasogástrica de rotina (não muda conduta, causa desconforto).',
-      'es': 'EVITAR resucitación volémica excesiva. No transfundir con Hb >9 g/dL en no cardiopatas. Evitar IBP VO en sangrado activo grave. No realizar endoscopia sin estabilización mínima.',
+      'pt': 'Evitar transfusão liberal sem indicação, EDA antes de ressuscitação mínima, TXA de rotina, reversão inespecífica de anticoagulantes e terapia tripla empírica com claritromicina sem sensibilidade.',
+      'es': 'Evitar transfusión liberal sin indicación, EDA antes de resucitación mínima, TXA rutinario, reversión inespecífica de anticoagulantes y triple terapia empírica con claritromicina sin sensibilidad.',
     },
-    drugs: ['omeprazol', 'noradrenalina', 'ceftriaxona'],
+    drugs: ['omeprazol', 'pantoprazol'],
   ),
 
   // ─────────────────────────────────────────────
@@ -8449,18 +8444,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     severityCriteria: {
       'pt': [
-        'ESCORE DE ALVARADO ≥7: alta probabilidade — cirurgia sem aguardar imagem em casos típicos',
-        'PERFURAÇÃO: sinal de Blumberg generalizado, defesa muscular difusa, febre alta (>38,5°C), leucocitose >15.000',
-        'ABSCESSO PERIAPENDICULAR: massa palpável em FID, febre persistente, TC com coleção',
-        'SEPSE/CHOQUE SÉPTICO: peritonite difusa + hipotensão — cirurgia emergencial + UTI',
-        'GESTANTE: qualquer suspeita = urgência (risco de parto prematuro e morte fetal em perfuração)',
+        'Scores como Alvarado/AIR ajudam a estimar probabilidade, mas não confirmam nem excluem apendicite isoladamente',
+        'Complicada: abscesso, perfuração, peritonite, sepse ou flegmão',
+        'Apendicolito aumenta risco de falha/recorrência quando se considera manejo não operatório',
+        'Instabilidade, peritonite difusa ou deterioração exigem controle de foco urgente',
       ],
       'es': [
-        'ESCORE DE ALVARADO ≥7: alta probabilidad — cirugía sin esperar imagen en casos típicos',
-        'PERFORACIÓN: Blumberg generalizado, defensa muscular difusa, fiebre >38,5°C, leucocitosis >15.000',
-        'ABSCESO PERIAPENDICULAR: masa palpable en FID, fiebre persistente, TC con colección',
-        'SEPSIS/SHOCK SÉPTICO: peritonitis difusa + hipotensión — cirugía emergencial + UCI',
-        'EMBARAZADA: cualquier sospecha = urgencia',
+        'Scores como Alvarado/AIR ayudan a estimar probabilidad, pero no confirman ni excluyen apendicitis aisladamente',
+        'Complicada: absceso, perforación, peritonitis, sepsis o flemón',
+        'Apendicolito aumenta riesgo de fallo/recurrencia cuando se considera manejo no operatorio',
+        'Inestabilidad, peritonitis difusa o deterioro requieren control de foco urgente',
       ],
     },
     redFlags: {
@@ -8509,24 +8502,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     exams: {
       'pt': [
-        'ESCORE DE ALVARADO: dor migratória (1), anorexia (1), náusea/vômito (1), dor em FID (2), sinal de Blumberg (1), febre >37,3°C (1), leucocitose (2), desvio esq. (1). ≥7 = cirurgia',
-        'Hemograma: leucocitose com desvio à esquerda — sensível mas inespecífico (70–90%)',
-        'PCR: elevada — marcador de inflamação, útil para acompanhamento',
-        'β-hCG sérico: toda mulher em idade fértil — excluir gravidez ectópica',
-        'Urina tipo I: hematúria/piúria leve pode ocorrer em apendicite pela proximidade com ureter',
-        'ULTRASSONOGRAFIA DE ABDOME: 1ª escolha em crianças/gestantes (sem radiação). Sensibilidade 75–90%',
-        'TC DE ABDOME COM CONTRASTE: padrão-ouro diagnóstico (sensibilidade 94–98%) — em adultos com diagnóstico duvidoso',
-        'RNM: gestantes quando US inconclusivo — sem radiação, alta acurácia',
+        'História/exame, hemograma/PCR e β-hCG quando aplicável; scores clínicos apenas para estratificação',
+        'Ultrassom é opção inicial sem radiação; TC e RM são modalidades mais definitivas conforme população/contexto',
+        'Escolher imagem conforme idade, gravidez, probabilidade pré-teste, disponibilidade e risco de radiação',
+        'Não usar um ponto de corte isolado de Alvarado como ordem automática de cirurgia',
       ],
       'es': [
-        'ESCORE DE ALVARADO: dolor migratorio (1), anorexia (1), náuseas/vómitos (1), dolor en FID (2), Blumberg (1), fiebre (1), leucocitosis (2), desviación izq. (1). ≥7 = cirugía',
-        'Hemograma: leucocitosis con desviación izquierda (70–90%)',
-        'PCR: elevada — marcador de inflamación',
-        'β-hCG sérico: toda mujer en edad fértil',
-        'Orina: hematuria/piuria leve puede ocurrir en apendicitis',
-        'ECOGRAFÍA ABDOMINAL: 1ª elección en niños/embarazadas (sin radiación). Sensibilidad 75–90%',
-        'TC ABDOMEN CON CONTRASTE: estándar de oro (sensibilidad 94–98%)',
-        'RNM: embarazadas con eco no concluyente — sin radiación',
+        'Historia/examen, hemograma/PCR y β-hCG cuando aplique; scores clínicos solo para estratificación',
+        'Ecografía es opción inicial sin radiación; TC y RM son modalidades más definitivas según población/contexto',
+        'Elegir imagen según edad, embarazo, probabilidad pretest, disponibilidad y riesgo de radiación',
+        'No usar un punto de corte aislado de Alvarado como orden automática de cirugía',
       ],
     },
     objectives: {
@@ -8547,32 +8532,26 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     drugsFirstLine: {
       'pt': [
-        'ATB PERIOPERATÓRIO (SIMPLES/NÃO PERFURADA): Metronidazol 500 mg IV + Ceftriaxona 1–2 g IV (dose única pré-op)',
-        'ATB TERAPÊUTICO (PERFURADA/PERITONITE): Metronidazol 500 mg IV 8/8h + Ceftriaxona 1–2 g IV 24/24h × 3–7 dias',
-        'ANALGESIA: Dipirona 1 g IV 6/6h + Morfina 2–4 mg IV se dor intensa (NÃO adia diagnóstico)',
-        'ANTIEMÉTICOS: Ondansetrona 4–8 mg IV 8/8h se náusea/vômito',
-        'HIDRATAÇÃO: SF 0,9% ou RL 1–2 L IV (repor volume e manter paciente em jejum pré-op)',
+        'Apendicectomia: antibiótico pré-operatório com cobertura para flora entérica/anaeróbia conforme protocolo local',
+        'Não complicada com controle de foco adequado: não prolongar antibiótico pós-operatório rotineiramente',
+        'Analgesia, antiemético e fluidos conforme necessidade clínica; não negar analgesia por medo de mascarar diagnóstico',
       ],
       'es': [
-        'ATB PERIOPERATORIO (SIMPLE): Metronidazol 500 mg IV + Ceftriaxona 1–2 g IV (dosis única preop)',
-        'ATB TERAPÉUTICO (PERFORADA/PERITONITIS): Metronidazol 500 mg IV c/8 h + Ceftriaxona 1–2 g IV × 3–7 días',
-        'ANALGESIA: Dipirona 1 g IV c/6 h + Morfina 2–4 mg IV si dolor intenso',
-        'ANTIEMÉTICOS: Ondansetrona 4–8 mg IV c/8 h',
-        'HIDRATACIÓN: SF 0,9% o RL 1–2 L IV',
+        'Apendicectomía: antibiótico preoperatorio con cobertura para flora entérica/anaerobia según protocolo local',
+        'No complicada con control de foco adecuado: no prolongar antibiótico postoperatorio rutinariamente',
+        'Analgesia, antiemético y fluidos según necesidad clínica; no negar analgesia por miedo a enmascarar diagnóstico',
       ],
     },
     drugsSecondLine: {
       'pt': [
-        'SEPSE/CHOQUE SÉPTICO por peritonite: Piperacilina-Tazobactam 4,5 g IV 6/6h OU Ertapenem 1 g IV 24/24h',
-        'ALÉRGICO A BETA-LACTÂMICO: Clindamicina 600 mg IV 8/8h + Gentamicina 5 mg/kg IV 24/24h',
-        'ABSCESSO PERIAPENDICULAR (sem cirurgia imediata): drenagem percutânea TC-guiada + ATB 4–6 semanas → apendicectomia eletiva após 6–8 semanas',
-        'TRATAMENTO NÃO OPERATÓRIO (casos selecionados, não perfurados): Amoxicilina-Clavulanato 1 g IV 8/8h × 3 dias IV → 7 dias VO (sucesso em ~70% a curto prazo)',
+        'Complicada após apendicectomia: SAGES favorece curso pós-operatório curto, ajustado ao controle de foco e evolução; não impor 3–7 dias universalmente',
+        'Manejo não operatório de não complicada pode ser discutido em selecionados, com decisão compartilhada e risco de recorrência; apendicolito reduz atratividade dessa estratégia',
+        'Abscesso/flegmão exige estratégia individualizada entre antibiótico, drenagem e cirurgia; não impor 4–6 semanas de antibiótico como rotina',
       ],
       'es': [
-        'SEPSIS/SHOCK SÉPTICO: Piperacilina-Tazobactam 4,5 g IV c/6 h O Ertapenem 1 g IV',
-        'ALÉRGICO A BETA-LACTÁMICO: Clindamicina + Gentamicina',
-        'ABSCESO PERIAPENDICULAR: drenaje percutáneo guiado por TC + ATB → apendicectomía electiva',
-        'TRATAMIENTO NO OPERATORIO (casos seleccionados): Amoxicilina-Clavulanato IV → VO (éxito ~70%)',
+        'Complicada tras apendicectomía: SAGES favorece curso postoperatorio corto, ajustado a control de foco y evolución; no imponer 3–7 días universalmente',
+        'Manejo no operatorio de no complicada puede discutirse en seleccionados, con decisión compartida y riesgo de recurrencia; apendicolito reduce atractivo de esa estrategia',
+        'Absceso/flemón requiere estrategia individualizada entre antibiótico, drenaje y cirugía; no imponer 4–6 semanas de antibiótico como rutina',
       ],
     },
     drugsContraindicated: {
@@ -8591,20 +8570,14 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     monitoring: {
       'pt': [
-        'PRÉ-OPERATÓRIO: PA, FC, temperatura, diurese, leucócitos seriados',
-        'PÓS-OPERATÓRIO (apendicite simples): alta em 24–48h; ATB profilático suspender em 24h',
-        'PÓS-OPERATÓRIO (perfurada): ATB 3–7 dias; alta após tolerância oral e afebril >24h',
-        'MONITORAR COMPLICAÇÕES: febre persistente pós-op = abscesso (TC)',
-        'ABSCESSO PERIAPENDICULAR não operado: reavaliação clínica e laboratorial diária; TC para evolução',
-        'TRATAMENTO NÃO OPERATÓRIO: reavaliação em 24–48h; falha = cirurgia',
+        'Reavaliar dor, febre, sinais peritoneais, tolerância oral e evolução pós-operatória',
+        'Complicada: duração antibiótica guiada por controle de foco e resposta, preferindo curso curto quando adequado',
+        'Manejo não operatório: explicar risco de falha/recorrência e fornecer reavaliação/retorno claro',
       ],
       'es': [
-        'PREOPERATORIO: PA, FC, temperatura, diuresis, leucocitos seriados',
-        'POSTOPERATORIO (simple): alta 24–48 h; ATB profiláctico suspender en 24 h',
-        'POSTOPERATORIO (perforada): ATB 3–7 días; alta tras tolerancia oral y afebril >24 h',
-        'COMPLICACIONES: fiebre persistente = absceso (TC)',
-        'ABSCESO no operado: reevaluación clínica y laboratorial diaria',
-        'TRATAMIENTO NO OPERATORIO: reevaluación 24–48 h; fracaso = cirugía',
+        'Reevaluar dolor, fiebre, signos peritoneales, tolerancia oral y evolución postoperatoria',
+        'Complicada: duración antibiótica guiada por control de foco y respuesta, prefiriendo curso corto cuando sea adecuado',
+        'Manejo no operatorio: explicar riesgo de fallo/recurrencia y dar reevaluación/retorno claro',
       ],
     },
     complications: {
@@ -8631,59 +8604,42 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     doNotDo: {
       'pt': [
-        'NÃO negar analgesia por medo de mascarar diagnóstico — é um MITO; analgesia é obrigatória',
-        'NÃO atrasar cirurgia em apendicite clara por "esperar mais exames" (risco de perfuração aumenta)',
-        'NÃO excluir apendicite por TC normal se clínica é muito sugestiva (TC tem 2–6% de falso-negativo)',
-        'NÃO ignorar β-hCG negativo em mulher com dor em FID (exclui ectópica — focar em outros diferenciais)',
-        'NÃO operar abscesso periapendicular maduro sem avaliação cirúrgica especializada (drenagem percutânea pode ser melhor opção)',
-        'NÃO usar antibióticos sem cobertura para anaeróbios em apendicite',
-        'NÃO dar alta com diagnóstico duvidoso sem reavaliação em 6–8h',
+        'Não negar analgesia por medo de mascarar diagnóstico',
+        'Não usar Alvarado/AIR isoladamente para confirmar/excluir ou ordenar cirurgia',
+        'Não prolongar antibiótico pós-operatório sem necessidade após controle de foco',
+        'Não impor dreno de rotina em toda apendicite complicada',
+        'Não atrasar controle de foco em perfuração/peritonite/sepse',
       ],
       'es': [
-        'NO negar analgesia (MITO que enmascara diagnóstico)',
-        'NO demorar cirugía en apendicitis clara',
-        'NO excluir apendicitis por TC normal si clínica muy sugestiva',
-        'NO ignorar β-hCG negativo (excluye ectópico — buscar otros diagnósticos)',
-        'NO operar absceso maduro sin evaluación especializada',
-        'NO usar ATB sin cobertura para anaerobios',
-        'NO dar alta con diagnóstico dudoso sin reevaluación en 6–8 h',
+        'No negar analgesia por miedo a enmascarar diagnóstico',
+        'No usar Alvarado/AIR aisladamente para confirmar/excluir u ordenar cirugía',
+        'No prolongar antibiótico postoperatorio sin necesidad tras control de foco',
+        'No imponer drenaje de rutina en toda apendicitis complicada',
+        'No retrasar control de foco en perforación/peritonitis/sepsis',
       ],
     },
     pearls: {
       'pt': [
-        'ANALGESIA NÃO ATRASA DIAGNÓSTICO: morfina/dipirona em apendicite suspeita é segura e ética — não mascarar diagnóstico é um mito',
-        'ESCORE DE ALVARADO ≥7 = CIRURGIA: em caso típico, não é necessário TC para indicar cirurgia',
-        'TC É O PADRÃO-OURO EM ADULTOS: sensibilidade 94–98%; reservar para diagnóstico duvidoso',
-        'BETA-HCG EM TODA MULHER: gravidez ectópica pode simular apendicite; β-hCG negativo praticamente exclui',
-        'APENDICITE NO IDOSO É TRAIÇOEIRA: 70–90% já perfurada no diagnóstico — sempre desconfiar em idoso com dor abdominal inespecífica',
-        'PLASTRON: não operar de imediato; drenagem percutânea + ATB → apendicectomia eletiva em 6–8 semanas',
-        'GESTANTE: US primeiro (sem radiação), RNM se inconclusivo; apendicite complica 1:1000 gestações',
-        'TRATAMENTO NÃO OPERATÓRIO: opção em selecionados; falha em 25–30% no primeiro ano (recidiva)',
+        'SAGES: ultrassom é primeira linha razoável; TC/RM são mais definitivos conforme contexto',
+        'SAGES favorece tratamento operatório tanto na não complicada quanto na complicada, com recomendação condicional',
+        'Antibiótico isolado continua alternativa discutível em selecionados não complicados, com risco de recorrência',
+        'Complicada após cirurgia: preferir antibiótico pós-operatório de curta duração quando controle de foco é adequado',
       ],
       'es': [
-        'ANALGESIA NO DEMORA DIAGNÓSTICO: morfina/dipirona segura y ética en sospecha de apendicitis',
-        'ALVARADO ≥7 = CIRUGÍA: en caso típico, no necesita TC',
-        'TC ES ESTÁNDAR DE ORO EN ADULTOS: sensibilidad 94–98%; reservar para diagnóstico dudoso',
-        'β-HCG EN TODA MUJER: ectópico simula apendicitis; negativo prácticamente lo excluye',
-        'APENDICITIS EN ANCIANO: 70–90% ya perforada al diagnóstico — siempre sospechar',
-        'PLASTRÓN: no operar de inmediato; drenaje + ATB → apendicectomía electiva',
-        'EMBARAZADA: eco primero, RNM si inconcluso',
-        'TRATAMIENTO NO OPERATORIO: falla en 25–30% el primer año',
+        'SAGES: ecografía es primera línea razonable; TC/RM son más definitivas según contexto',
+        'SAGES favorece manejo operatorio tanto en no complicada como complicada, con recomendación condicional',
+        'Antibiótico aislado sigue siendo alternativa discutible en seleccionados no complicados, con riesgo de recurrencia',
+        'Complicada tras cirugía: preferir antibiótico postoperatorio de corta duración cuando control de foco es adecuado',
       ],
     },
     references: {
       'pt': [
-        'Sartelli M et al. WSES Jerusalem Guidelines for Diagnosis and Treatment of Acute Appendicitis — World J Emerg Surg 2016',
-        'Associação Brasileira de Cirurgiões Digestivos (ABCD) — Consenso sobre Apendicite Aguda (2022)',
-        'Di Saverio S et al. Diagnosis and Treatment of Acute Appendicitis — Update of the WSES Jerusalem Guidelines 2020',
-        'Flum DR. Clinical practice — Acute Appendicitis. NEJM 2015',
-        'UpToDate: Management of acute appendicitis in adults / Diagnosis of appendicitis in adults (2024)',
+        'Kumar SS et al. SAGES Guideline for the Diagnosis and Treatment of Appendicitis. SAGES.',
+        'Di Saverio S et al. WSES Jerusalem Guidelines Update. World J Emerg Surg. 2020.',
       ],
       'es': [
-        'Sartelli M et al. WSES Jerusalem Guidelines for Diagnosis and Treatment of Acute Appendicitis (2016)',
-        'Di Saverio S et al. WSES Jerusalem Guidelines Update 2020',
-        'Flum DR. Acute Appendicitis. NEJM 2015',
-        'UpToDate: Manejo de apendicitis aguda en adultos (2024)',
+        'Kumar SS et al. SAGES Guideline for the Diagnosis and Treatment of Appendicitis. SAGES.',
+        'Di Saverio S et al. WSES Jerusalem Guidelines Update. World J Emerg Surg. 2020.',
       ],
     },
     recognize: {
@@ -8692,356 +8648,353 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     actions: {
       'pt': [
-        '1. Analgesia: Dipirona 1 g IV + Morfina 2–4 mg IV se necessário (NÃO posterga diagnóstico)',
-        '2. Exames: hemograma, PCR, β-hCG (mulheres), US ou TC',
-        '3. Escore de Alvarado: ≥7 → cirurgia; 4–6 → TC confirmatório; <4 → observar 6–8h',
-        '4. CIRURGIA: apendicectomia laparoscópica (preferencial) — ATB profilático pré-op',
-        '5. PERFURADA: ATB terapêutico + ressuscitação volêmica + cirurgia urgente',
-        '6. PLASTRON: ATB IV + drenagem se abscesso → cirurgia eletiva em 6–8 semanas',
+        '1. Estratificar probabilidade com clínica/laboratório; score auxilia, não decide sozinho',
+        '2. Escolher US/TC/RM conforme idade, gravidez, probabilidade e recursos',
+        '3. Apendicectomia é tratamento definitivo e é favorecida pela guideline SAGES',
+        '4. Não complicada selecionada: antibiótico não operatório pode ser discutido com decisão compartilhada e risco de recorrência',
+        '5. Complicada/peritonite/sepse: controle de foco + antibiótico; abscesso/flegmão exige estratégia individualizada',
       ],
       'es': [
-        '1. Analgesia: Dipirona 1 g IV + Morfina si necesario',
-        '2. Exámenes: hemograma, PCR, β-hCG (mujeres), eco o TC',
-        '3. Score Alvarado: ≥7 → cirugía; 4–6 → TC; <4 → observar',
-        '4. CIRUGÍA: apendicectomía laparoscópica + ATB profiláctico',
-        '5. PERFORADA: ATB + reposición + cirugía urgente',
-        '6. PLASTRÓN: ATB IV + drenaje → cirugía electiva 6–8 semanas',
+        '1. Estratificar probabilidad con clínica/laboratorio; score ayuda, no decide solo',
+        '2. Elegir US/TC/RM según edad, embarazo, probabilidad y recursos',
+        '3. Apendicectomía es tratamiento definitivo y es favorecida por guideline SAGES',
+        '4. No complicada seleccionada: antibiótico no operatorio puede discutirse con decisión compartida y riesgo de recurrencia',
+        '5. Complicada/peritonitis/sepsis: control de foco + antibiótico; absceso/flemón requiere estrategia individualizada',
       ],
     },
     avoid: {
-      'pt': 'NÃO negar analgesia. Não atrasar cirurgia em diagnóstico certo. Não operar plastron maduro sem avaliação. ATB sempre com cobertura para anaeróbios.',
-      'es': 'NO negar analgesia. No demorar cirugía en diagnóstico seguro. No operar plastrón maduro sin evaluación. ATB siempre con cobertura anaeróbica.',
+      'pt': 'Evitar score como diagnóstico absoluto, demora de controle de foco, antibiótico pós-operatório prolongado por rotina e esquema/dose universal sem contexto.',
+      'es': 'Evitar score como diagnóstico absoluto, demora de control de foco, antibiótico postoperatorio prolongado por rutina y esquema/dosis universal sin contexto.',
     },
-    drugs: ['ceftriaxona', 'metronidazol', 'piperacilina_tazobactam', 'dipirona', 'morfina'],
+    drugs: [],
+  ),
+
+  // ────────────────────────────────────────────────────────────────────────
+  // GI 3/3 — obstruction / volvulus / hernia / peritonitis protocols
+  // Anchors: WSES Bologna ASBO 2018; ASCRS volvulus/ACPO 2021;
+  // WSES complicated hernia 2017; WSES IAI 2024; WSES AMI 2022.
+  // ────────────────────────────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'obstrucao_adesiva_delgado_asbo',
+    title: {'pt': 'Obstrução Adesiva do Intestino Delgado (ASBO)', 'es': 'Obstrucción Adherencial del Intestino Delgado (ASBO)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Obstrução de delgado em paciente com cirurgia abdominal prévia/aderências, sem outra causa evidente; excluir alça fechada, isquemia, perfuração e hérnia.',
+      'es': 'Obstrucción de delgado en paciente con cirugía abdominal previa/adherencias, sin otra causa evidente; excluir asa cerrada, isquemia, perforación y hernia.',
+    },
+    actions: {
+      'pt': [
+        'Sem peritonite, estrangulamento ou isquemia: manejo não operatório com jejum, correção volêmica/eletrolítica e descompressão quando necessária',
+        'TC quando etiologia for incerta ou houver possível contraindicação ao manejo conservador',
+        'Contraste hidrossolúvel pode ajudar a prever resolução/necessidade de cirurgia; não tratá-lo como terapêutica garantida',
+        'Tentativa conservadora até aproximadamente 72 h pode ser razoável no estável, com reavaliação antes se surgirem sinais de falha',
+      ],
+      'es': [
+        'Sin peritonitis, estrangulación o isquemia: manejo no operatorio con ayuno, corrección de volumen/electrolitos y descompresión cuando sea necesaria',
+        'TC cuando etiología sea incierta o exista posible contraindicación al manejo conservador',
+        'Contraste hidrosoluble puede ayudar a predecir resolución/necesidad de cirugía; no tratarlo como terapia garantizada',
+        'Prueba conservadora hasta aproximadamente 72 h puede ser razonable en estable, reevaluando antes si aparecen signos de fracaso',
+      ],
+    },
+    avoid: {
+      'pt': 'Não prolongar manejo conservador em peritonite, isquemia, alça fechada, perfuração ou deterioração. Não extrapolar ASBO a hérnia/vólvulo/tumor.',
+      'es': 'No prolongar manejo conservador con peritonitis, isquemia, asa cerrada, perforación o deterioro. No extrapolar ASBO a hernia/vólvulo/tumor.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'obstrucao_mecanica_alca_fechada_estrangulamento',
+    title: {'pt': 'Obstrução Mecânica — Alça Fechada / Estrangulamento', 'es': 'Obstrucción Mecánica — Asa Cerrada / Estrangulación'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'SBO com alça fechada, sinais de comprometimento vascular, dor contínua/peritonismo, isquemia, perfuração ou deterioração.',
+      'es': 'SBO con asa cerrada, signos de compromiso vascular, dolor continuo/peritonismo, isquemia, perforación o deterioro.',
+    },
+    actions: {
+      'pt': [
+        'Cirurgia urgente quando houver estrangulamento/isquemia, peritonite, perfuração, alça fechada comprometida ou instabilidade',
+        'TC com contraste IV no estável para nível, causa, alça fechada e perfusão',
+        'Jejum, acessos, ressuscitação guiada e correção eletrolítica; SNG se vômitos/distensão importante',
+        'Antibiótico quando houver isquemia/necrose/perfuração/peritonite/sepse, conforme protocolo local',
+      ],
+      'es': [
+        'Cirugía urgente con estrangulación/isquemia, peritonitis, perforación, asa cerrada comprometida o inestabilidad',
+        'TC con contraste IV en estable para nivel, causa, asa cerrada y perfusión',
+        'Ayuno, accesos, reanimación guiada y corrección electrolítica; SNG si vómitos/distensión importante',
+        'Antibiótico con isquemia/necrosis/perforación/peritonitis/sepsis, según protocolo local',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar laxantes/procinéticos nem prolongar prova conservadora em suspeita de comprometimento vascular.',
+      'es': 'No usar laxantes/procinéticos ni prolongar prueba conservadora ante sospecha de compromiso vascular.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'ileo_paralitico',
+    title: {'pt': 'Íleo Paralítico', 'es': 'Íleo Paralítico'},
+    severity: {'pt': 'Moderado', 'es': 'Moderado'},
+    recognize: {
+      'pt': 'Hipomotilidade intestinal difusa sem ponto mecânico de transição; frequentemente pós-operatória, metabólica, inflamatória, séptica ou medicamentosa.',
+      'es': 'Hipomotilidad intestinal difusa sin punto mecánico de transición; frecuentemente posoperatoria, metabólica, inflamatoria, séptica o medicamentosa.',
+    },
+    actions: {
+      'pt': [
+        'Excluir obstrução mecânica, isquemia, perfuração e abscesso antes de assumir íleo',
+        'Corrigir K/Mg e outras causas, tratar sepse/inflamação, reduzir opioides/anticolinérgicos e mobilizar precocemente',
+        'SNG apenas se vômitos importantes, distensão sintomática ou risco de aspiração',
+        'Suporte nutricional e reavaliação conforme duração e causa',
+      ],
+      'es': [
+        'Excluir obstrucción mecánica, isquemia, perforación y absceso antes de asumir íleo',
+        'Corregir K/Mg y otras causas, tratar sepsis/inflamación, reducir opioides/anticolinérgicos y movilizar precozmente',
+        'SNG solo si vómitos importantes, distensión sintomática o riesgo de aspiración',
+        'Soporte nutricional y reevaluación según duración y causa',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar neostigmina ou procinético como solução universal. Ogilvie possui rota própria.',
+      'es': 'No usar neostigmina o procinético como solución universal. Ogilvie tiene ruta propia.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'pseudo_obstrucao_colonica_aguda_ogilvie',
+    title: {'pt': 'Pseudo-obstrução Colônica Aguda (Ogilvie)', 'es': 'Pseudo-obstrucción Colónica Aguda (Ogilvie)'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Dilatação colônica aguda sem obstrução mecânica; excluir vólvulo, tumor/estenose, megacólon tóxico, isquemia e perfuração.',
+      'es': 'Dilatación colónica aguda sin obstrucción mecánica; excluir vólvulo, tumor/estenosis, megacolon tóxico, isquemia y perforación.',
+    },
+    actions: {
+      'pt': [
+        'Estável sem isquemia/perfuração: suporte, eletrólitos, mobilização, retirar opioides/anticolinérgicos e observar seriado',
+        'Falha do suporte/progressão: considerar neostigmina sob monitorização cardíaca e após revisar contraindicações',
+        'Neostigmina contraindicada ou ineficaz: considerar descompressão colonoscópica experiente',
+        'Isquemia, perfuração, peritonite ou deterioração: cirurgia urgente',
+      ],
+      'es': [
+        'Estable sin isquemia/perforación: soporte, electrolitos, movilización, retirar opioides/anticolinérgicos y observación seriada',
+        'Fallo de soporte/progresión: considerar neostigmina bajo monitorización cardíaca tras revisar contraindicaciones',
+        'Neostigmina contraindicada o ineficaz: considerar descompresión colonoscópica experta',
+        'Isquemia, perforación, peritonitis o deterioro: cirugía urgente',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar dose fixa universal de neostigmina sem contexto/monitorização. Não fazer cirurgia apenas por um único limiar de diâmetro sem integrar clínica e evolução.',
+      'es': 'No usar dosis fija universal de neostigmina sin contexto/monitorización. No operar solo por un único umbral de diámetro sin integrar clínica y evolución.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'volvulo_sigmoide',
+    title: {'pt': 'Vólvulo de Sigmoide', 'es': 'Vólvulo de Sigmoide'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Torção do sigmoide causando obstrução colônica; avaliar viabilidade, perfuração e peritonite.',
+      'es': 'Torsión del sigmoide causando obstrucción colónica; evaluar viabilidad, perforación y peritonitis.',
+    },
+    actions: {
+      'pt': [
+        'Sem isquemia/perfuração/peritonite: destorção e descompressão endoscópica urgente por equipe experiente',
+        'Após sucesso endoscópico: planejar sigmoidectomia definitiva durante a mesma internação ou assim que seguro',
+        'Falha endoscópica, colon inviável, perfuração ou peritonite: ressecção cirúrgica urgente',
+      ],
+      'es': [
+        'Sin isquemia/perforación/peritonitis: detorsión y descompresión endoscópica urgente por equipo experto',
+        'Tras éxito endoscópico: planificar sigmoidectomía definitiva durante la misma hospitalización o tan pronto como sea seguro',
+        'Fallo endoscópico, colon no viable, perforación o peritonitis: resección quirúrgica urgente',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar enema baritado como requisito confirmatório. Não tratar descompressão endoscópica como terapia definitiva sem prevenção de recorrência.',
+      'es': 'No usar enema de bario como requisito confirmatorio. No tratar descompresión endoscópica como terapia definitiva sin prevención de recurrencia.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'volvulo_cecal',
+    title: {'pt': 'Vólvulo Cecal', 'es': 'Vólvulo Cecal'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Torção do ceco/cecal bascule com obstrução, risco de isquemia e perfuração; TC define anatomia no estável.',
+      'es': 'Torsión del ciego/cecal bascule con obstrucción, riesgo de isquemia y perforación; TC define anatomía en estable.',
+    },
+    actions: {
+      'pt': [
+        'Tratamento predominantemente cirúrgico',
+        'Colon não viável/perfurado: ressecção urgente',
+        'Colon viável: estratégia operatória individualizada, habitualmente ressecção; cecopexia em selecionados',
+      ],
+      'es': [
+        'Tratamiento predominantemente quirúrgico',
+        'Colon no viable/perforado: resección urgente',
+        'Colon viable: estrategia operatoria individualizada, habitualmente resección; cecopexia en seleccionados',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar redução endoscópica como primeira linha rotineira no vólvulo cecal.',
+      'es': 'No usar reducción endoscópica como primera línea rutinaria en vólvulo cecal.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'hernia_inguinal_femoral_complicada',
+    title: {'pt': 'Hérnia Inguinal/Femoral Encarcerada ou Estrangulada', 'es': 'Hernia Inguinal/Femoral Incarcerada o Estrangulada'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Hérnia inguinal/femoral irredutível com dor/obstrução; estrangulamento implica comprometimento vascular e cirurgia urgente.',
+      'es': 'Hernia inguinal/femoral irreductible con dolor/obstrucción; estrangulación implica compromiso vascular y cirugía urgente.',
+    },
+    actions: {
+      'pt': [
+        'Estrangulamento/isquemia/peritonite/perfuração/deterioração: cirurgia urgente',
+        'Redução manual apenas em encarceramento selecionado sem sinais de estrangulamento, com técnica suave e observação',
+        'Avaliar viabilidade intestinal e necessidade de ressecção',
+        'Escolha de tela/técnica depende de contaminação e ressecção; não impor estratégia universal',
+      ],
+      'es': [
+        'Estrangulación/isquemia/peritonitis/perforación/deterioro: cirugía urgente',
+        'Reducción manual solo en incarceración seleccionada sin signos de estrangulación, con técnica suave y observación',
+        'Evaluar viabilidad intestinal y necesidad de resección',
+        'Elección de malla/técnica depende de contaminación y resección; no imponer estrategia universal',
+      ],
+    },
+    avoid: {
+      'pt': 'Não realizar taxis agressiva ou repetida se suspeita de estrangulamento.',
+      'es': 'No realizar taxis agresiva o repetida si se sospecha estrangulación.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'hernia_ventral_umbilical_incisional_complicada',
+    title: {'pt': 'Hérnia Ventral/Umbilical/Incisional Complicada', 'es': 'Hernia Ventral/Umbilical/Incisional Complicada'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Hérnia ventral, umbilical ou incisional encarcerada/estrangulada com risco de obstrução, isquemia e perfuração.',
+      'es': 'Hernia ventral, umbilical o incisional incarcerada/estrangulada con riesgo de obstrucción, isquemia y perforación.',
+    },
+    actions: {
+      'pt': [
+        'Suspeita de estrangulamento/comprometimento intestinal: reparo cirúrgico urgente',
+        'Redução manual apenas em selecionados sem sinais de estrangulamento, seguida de observação',
+        'Dor persistente após aparente redução: excluir redução em massa/isquemia',
+        'Tela e técnica conforme campo limpo versus contaminado e necessidade de ressecção',
+      ],
+      'es': [
+        'Sospecha de estrangulación/compromiso intestinal: reparación quirúrgica urgente',
+        'Reducción manual solo en seleccionados sin signos de estrangulación, seguida de observación',
+        'Dolor persistente tras aparente reducción: excluir reducción en masa/isquemia',
+        'Malla y técnica según campo limpio versus contaminado y necesidad de resección',
+      ],
+    },
+    avoid: {
+      'pt': 'Não prolongar observação conservadora diante de isquemia, obstrução progressiva, perfuração ou sepse.',
+      'es': 'No prolongar observación conservadora ante isquemia, obstrucción progresiva, perforación o sepsis.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'perfuracao_viscera_oca_peritonite_secundaria',
+    title: {'pt': 'Perfuração de Víscera Oca / Peritonite Secundária', 'es': 'Perforación de Víscera Hueca / Peritonitis Secundaria'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Perda de integridade gastrointestinal com contaminação peritoneal; peritonite secundária é infecção além do órgão de origem.',
+      'es': 'Pérdida de integridad gastrointestinal con contaminación peritoneal; peritonitis secundaria es infección más allá del órgano de origen.',
+    },
+    actions: {
+      'pt': [
+        'ABC, ressuscitação guiada, jejum, analgesia, antibiótico IV apropriado e cirurgia/controle de foco desde o início',
+        'TC contrastada no estável; instabilidade/peritonite difusa não deve aguardar exames repetidos',
+        'Controle de foco pode exigir sutura/ressecção da víscera, drenagem/desbridamento e manejo de tecido isquêmico conforme anatomia',
+        'Após controle adequado, evitar antibioticoterapia desnecessariamente prolongada; duração depende do foco, adequação do controle e evolução',
+      ],
+      'es': [
+        'ABC, reanimación guiada, ayuno, analgesia, antibiótico IV apropiado y cirugía/control de foco desde el inicio',
+        'TC contrastada en estable; inestabilidad/peritonitis difusa no debe esperar estudios repetidos',
+        'Control de foco puede requerir sutura/resección de víscera, drenaje/desbridamiento y manejo de tejido isquémico según anatomía',
+        'Tras control adecuado, evitar antibióticos innecesariamente prolongados; duración depende del foco, control y evolución',
+      ],
+    },
+    avoid: {
+      'pt': 'Não tratar peritonite secundária apenas com antibiótico quando existe foco que requer controle. Não inventar esquema/dose sem epidemiologia e contexto.',
+      'es': 'No tratar peritonitis secundaria solo con antibiótico cuando existe foco que requiere control. No inventar esquema/dosis sin epidemiología y contexto.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'isquemia_mesenterica_aguda_2022',
+    title: {'pt': 'Isquemia Mesentérica Aguda', 'es': 'Isquemia Mesentérica Aguda'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dor desproporcional, embolia/FA, aterotrombose, baixo fluxo ou trombose venosa; lactato normal não exclui fase precoce.',
+      'es': 'Dolor desproporcionado, embolia/FA, aterotrombosis, bajo flujo o trombosis venosa; lactato normal no excluye fase precoz.',
+    },
+    actions: {
+      'pt': [
+        'Angio-TC arterial/venosa sem demora diante de suspeita; não esperar lactato confirmar',
+        'Ressuscitação, eletrólitos/acidose, analgesia e antibiótico amplo pelo risco de perda de barreira intestinal',
+        'Peritonite/perfuração/necrose: laparotomia urgente, preservar intestino viável e considerar second-look',
+        'Oclusão arterial: revascularização endovascular ou aberta conforme anatomia/recursos',
+        'Trombose venosa sem peritonite: anticoagulação sistêmica se não houver contraindicação',
+      ],
+      'es': [
+        'Angio-TC arterial/venosa sin demora ante sospecha; no esperar lactato confirmatorio',
+        'Reanimación, electrolitos/acidosis, analgesia y antibiótico amplio por riesgo de pérdida de barrera intestinal',
+        'Peritonitis/perforación/necrosis: laparotomía urgente, preservar intestino viable y considerar second-look',
+        'Oclusión arterial: revascularización endovascular o abierta según anatomía/recursos',
+        'Trombosis venosa sin peritonitis: anticoagulación sistémica si no hay contraindicación',
+      ],
+    },
+    avoid: {
+      'pt': 'Não excluir isquemia por lactato normal e não atrasar angio-TC/revascularização.',
+      'es': 'No excluir isquemia por lactato normal ni retrasar angio-TC/revascularización.',
+    },
+    drugs: [],
   ),
 
   ProtocolModel(
     id: 'obstrucao_intestinal',
     title: {
-      'pt': 'Obstrução Intestinal Aguda',
-      'es': 'Obstrucción Intestinal Aguda'
+      'pt': 'Obstrução Intestinal Aguda — Umbrella',
+      'es': 'Obstrucción Intestinal Aguda — Umbrella'
     },
     severity: {'pt': 'Alto', 'es': 'Alto'},
-    // ── 18 SEÇÕES OBRIGATÓRIAS v2.0 ──────────────────────────────
-    definition: {
-      'pt': 'Interrupção parcial ou total do trânsito intestinal por causa mecânica (obstrução verdadeira) ou funcional (íleo paralítico). Na obstrução mecânica, o bloqueio pode ser intraluminal (fecaloma, cálculo biliar), intramural (estenose, tumor) ou extrínseco (aderência, hérnia encarcerada). A distensão proximal leva a edema da parede, isquemia e risco de perfuração. Emergência cirúrgica quando há estrangulamento (comprometimento vascular) — mortalidade pode chegar a 25% com perfuração.',
-      'es': 'Interrupción parcial o total del tránsito intestinal por causa mecánica (obstrucción verdadera) o funcional (íleo paralítico). En la obstrucción mecánica, el bloqueo puede ser intraluminal (fecaloma), intramural (estenosis, tumor) o extrínseco (adherencia, hernia encarcelada). La distensión proximal lleva a edema, isquemia y riesgo de perforación. Emergencia quirúrgica cuando hay estrangulamiento — mortalidad hasta 25% con perforación.',
-    },
-    classification: {
-      'pt': [
-        'DELGADO (70–80% das obstruções mecânicas): aderências pós-op (60%), hérnia (20%), neoplasia (5%)',
-        'GROSSO (20–30%): neoplasia colorretal (60%), doença diverticular, vólvulo de sigmoide',
-        'SIMPLES: obstrução sem comprometimento vascular',
-        'ESTRANGULADA: comprometimento vascular → isquemia, necrose, perfuração — emergência cirúrgica',
-        'PARCIAL: passagem de gás e/ou fezes distal — pode ser manejada conservadoramente',
-        'COMPLETA: sem passagem de gás/fezes distal — geralmente cirúrgica',
-        'ÍLEO PARALÍTICO (FUNCIONAL): sem causa mecânica — pós-operatório, peritonite, hipocalemia, opioides',
-        'PSEUDO-OBSTRUÇÃO DE CÓLON (Síndrome de Ogilvie): dilatação colônica sem obstrução mecânica',
-      ],
-      'es': [
-        'DELGADO (70–80%): adherencias postop (60%), hernia (20%), neoplasia (5%)',
-        'GRUESO (20–30%): neoplasia colorrectal (60%), diverticulosis, vólvulo de sigma',
-        'SIMPLE: sin compromiso vascular',
-        'ESTRANGULADA: compromiso vascular → isquemia, necrosis, perforación — emergencia quirúrgica',
-        'PARCIAL: pasa gas y/o heces distal — puede manejarse conservadoramente',
-        'COMPLETA: sin paso de gas/heces — generalmente quirúrgica',
-        'ÍLEO PARALÍTICO: sin causa mecánica — postoperatorio, peritonitis, hipopotasemia',
-        'PSEUDO-OBSTRUCCIÓN (Síndrome de Ogilvie): dilatación sin obstrucción mecánica',
-      ],
-    },
-    severityCriteria: {
-      'pt': [
-        'ESTRANGULAMENTO (emergência absoluta): febre alta, leucocitose >15.000, dor contínua + peritonismo, hipotensão',
-        'OBSTRUÇÃO COMPLETA DE DELGADO: sem passagem de gás/fezes há >24h, distensão maciça',
-        'VÓLVULO: torção do mesentério — isquemia rapidamente progressiva',
-        'DILATAÇÃO CECAL >12 cm: risco de perfuração cecal espontânea',
-        'HÉRNIA ENCARCERADA / ESTRANGULADA: redução impossível + sinais de isquemia',
-        'CHOQUE SÉPTICO: perfuração + peritonite — UTI + cirurgia emergencial',
-      ],
-      'es': [
-        'ESTRANGULAMIENTO (emergencia absoluta): fiebre alta, leucocitosis >15.000, dolor continuo + peritonismo',
-        'OBSTRUCCIÓN COMPLETA DE DELGADO: sin paso de gas/heces >24 h',
-        'VÓLVULO: torsión mesentérica — isquemia rápidamente progresiva',
-        'DILATACIÓN CECAL >12 cm: riesgo de perforación',
-        'HERNIA ENCARCELADA/ESTRANGULADA: reducción imposible + isquemia',
-        'SHOCK SÉPTICO: perforación + peritonitis',
-      ],
-    },
-    redFlags: {
-      'pt': [
-        'Febre alta (>38,5°C) em obstrução intestinal = estrangulamento ou perfuração',
-        'Dor contínua (não cólica) = isquemia intestinal',
-        'Peritonismo = perfuração ou estrangulamento',
-        'Hipotensão + taquicardia = choque séptico por peritonite',
-        'Ausência de ruídos hidroaéreos (silêncio abdominal) = íleo paralítico ou peritonite',
-        'Distensão cecal >12 cm no RX = risco de perfuração iminente',
-        'Hérnia irredutível com edema e eritema de pele = estrangulamento',
-        'Sangue nas fezes/vômito = isquemia intestinal ou neoplasia',
-      ],
-      'es': [
-        'Fiebre alta (>38,5°C) en obstrucción = estrangulamiento o perforación',
-        'Dolor continuo (no cólico) = isquemia intestinal',
-        'Peritonismo = perforación o estrangulamiento',
-        'Hipotensión + taquicardia = shock séptico',
-        'Silencio abdominal = íleo paralítico o peritonitis',
-        'Dilatación cecal >12 cm en RX = perforación inminente',
-        'Hernia irreductible con edema y eritema = estrangulamiento',
-        'Sangre en heces/vómito = isquemia o neoplasia',
-      ],
-    },
-    differentialDiagnosis: {
-      'pt': [
-        'ÍLEO PARALÍTICO: ausência de causa mecânica, RX com distensão difusa, pós-operatório, corrigir eletrólitos',
-        'PSEUDO-OBSTRUÇÃO (Ogilvie): cólon dilatado maciçamente sem obstrução mecânica — colonoscopia/neostigmina',
-        'ISQUEMIA MESENTÉRICA: dor desproporcional ao exame, sem obstrução mecânica, arteriografia/angioTC',
-        'PERITONITE PRIMÁRIA/SECUNDÁRIA: defesa abdominal difusa, sem distensão intestinal predominante',
-        'GASTROENTERITE AGUDA: diarreia profusa, vômitos, sem distensão, melhora espontânea',
-        'PANCREATITE AGUDA: lipase/amilase muito elevadas, quadro sistêmico, TC confirma',
-        'DIVERTICULITE AGUDA: dor em FIE, febre, leucocitose, TC com espessamento sigmoide',
-        'APENDICITE AGUDA: dor em FID, sem distensão maciça, escore de Alvarado',
-      ],
-      'es': [
-        'ÍLEO PARALÍTICO: sin causa mecánica, distensión difusa en RX — corregir electrólitos',
-        'PSEUDO-OBSTRUCCIÓN (Ogilvie): colon dilatado sin obstrucción — colonoscopia/neostigmina',
-        'ISQUEMIA MESENTÉRICA: dolor desproporcionado al examen, angioTC',
-        'PERITONITIS: defensa difusa, sin distensión predominante',
-        'GASTROENTERITIS: diarrea profusa, sin distensión, mejoría espontánea',
-        'PANCREATITIS: lipasa/amilasa elevadas, TC confirma',
-        'DIVERTICULITIS: dolor en FII, fiebre, TC',
-        'APENDICITIS: dolor FID, sin distensión masiva',
-      ],
-    },
-    exams: {
-      'pt': [
-        'RX DE ABDOME (decúbito + ortostase ou lateral com raios horizontais): distensão de alças, nível hidroaéreo, ausência de gás retal (obstrução completa)',
-        'TC DE ABDOME COM CONTRASTE (padrão-ouro): localiza nível de obstrução, identifica causa, avalia estrangulamento (edema de parede, ausência de realce, líquido livre)',
-        'Hemograma: leucocitose indica estrangulamento ou perfuração',
-        'PCR / Procalcitonina: elevação sugere complicação',
-        'Lactato sérico: elevado = isquemia mesentérica ou choque',
-        'Eletrólitos (Na, K, Cl): hipocalemia prolonga íleo; distúrbios eletrolíticos por vômitos',
-        'Gasometria: acidose metabólica = isquemia intestinal, sepse',
-        'Função renal: insuficiência pré-renal por hipovolemia',
-        'US abdominal: útil em crianças e gestantes; menos preciso que TC em adultos',
-      ],
-      'es': [
-        'RX ABDOMEN (decúbito + bipedestación): distensión de asas, niveles hidroaéreos, ausencia de gas rectal',
-        'TC ABDOMEN CON CONTRASTE (estándar de oro): localiza nivel, identifica causa, evalúa estrangulamiento',
-        'Hemograma: leucocitosis indica estrangulamiento o perforación',
-        'PCR/Procalcitonina: elevación sugiere complicación',
-        'Lactato sérico: elevado = isquemia o shock',
-        'Electrólitos: hipopotasemia prolonga íleo',
-        'Gasometría: acidosis metabólica = isquemia, sepsis',
-        'Función renal: insuficiencia prerrenal por hipovolemia',
-        'Eco abdominal: niños y embarazadas; menos preciso que TC',
-      ],
-    },
-    objectives: {
-      'pt': [
-        'Distinguir obstrução mecânica de íleo paralítico (manejo completamente diferente)',
-        'Identificar estrangulamento — cirurgia emergencial',
-        'Ressuscitação volêmica e correção eletrolítica (vômitos causam depleção maciça)',
-        'Descompressão nasogástrica para alívio de distensão e prevenção de aspiração',
-        'Antibioticoterapia em suspeita de estrangulamento/perfuração',
-        'Cirurgia definitiva no momento correto — não tardar em estrangulamento',
-        'Identificar e tratar causa subjacente (hérnia, aderência, neoplasia)',
-      ],
-      'es': [
-        'Distinguir obstrucción mecánica de íleo paralítico',
-        'Identificar estrangulamiento — cirugía emergencial',
-        'Reposición volémica y corrección electrolítica',
-        'Descompresión nasogástrica',
-        'Antibioticoterapia si sospecha estrangulamiento/perforación',
-        'Cirugía definitiva en el momento correcto',
-        'Identificar y tratar causa subyacente',
-      ],
-    },
-    drugsFirstLine: {
-      'pt': [
-        'SONDA NASOGÁSTRICA: aspiração gástrica contínua — descomprime, previne aspiração, alivia dor',
-        'SF 0,9% ou RINGER LACTATO: 1–2 L IV rápido para ressuscitação volêmica (vômitos → depleção grave)',
-        'REPOSIÇÃO DE KCL: 10–20 mEq/h IV se hipocalemia (K <3,5) — não repor em bolo',
-        'ANALGESIA: Dipirona 1 g IV 6/6h + Morfina 2–4 mg IV para dor intensa',
-        'JEJUM ABSOLUTO: obrigatório em obstrução mecânica',
-        'CATETERISMO VESICAL: monitorar diurese (alvo ≥0,5 mL/kg/h)',
-      ],
-      'es': [
-        'SONDA NASOGÁSTRICA: aspiración continua — descomprime, previene aspiración',
-        'SF 0,9% o RINGER LACTATO: 1–2 L IV rápido',
-        'REPOSICIÓN KCL: 10–20 mEq/h IV si hipopotasemia',
-        'ANALGESIA: Dipirona 1 g IV + Morfina 2–4 mg IV',
-        'AYUNO ABSOLUTO',
-        'SONDA VESICAL: monitorizar diuresis (objetivo ≥0,5 mL/kg/h)',
-      ],
-    },
-    drugsSecondLine: {
-      'pt': [
-        'ATB (ESTRANGULAMENTO / PERFURAÇÃO): Metronidazol 500 mg IV 8/8h + Ceftriaxona 1–2 g IV 24/24h',
-        'ATB (SEPSE/CHOQUE SÉPTICO): Piperacilina-Tazobactam 4,5 g IV 6/6h OU Ertapenem 1 g IV 24/24h',
-        'GASTROGRAFINA VO (contraste hidrossolúvel): obstrução por aderência — diagnóstico + terapêutico (reduz taxa de cirurgia)',
-        'NEOSTIGMINA 2 mg IV (Síndrome de Ogilvie): estimula motilidade colônica (monitorar bradicardia)',
-        'COLONOSCOPIA DESCOMPRESSIVA: vólvulo sigmoide sem sinais de isquemia (redução endoscópica)',
-        'NORADRENALINA: choque séptico refratário a volume',
-      ],
-      'es': [
-        'ATB (ESTRANGULAMIENTO): Metronidazol 500 mg IV c/8 h + Ceftriaxona 1–2 g IV',
-        'ATB (SEPSIS): Piperacilina-Tazobactam o Ertapenem IV',
-        'GASTROGRAFIN VO: obstrucción por adherencia — diagnóstico + terapéutico',
-        'NEOSTIGMINA 2 mg IV (Ogilvie): estimula motilidad colónica',
-        'COLONOSCOPIA DESCOMPRESIVA: vólvulo sigmoide sin isquemia',
-        'NORADRENALINA: shock séptico refractario',
-      ],
-    },
-    drugsContraindicated: {
-      'pt': [
-        'ENEMA / LAXATIVOS EM OBSTRUÇÃO MECÂNICA COMPLETA: podem aumentar pressão intraluminal e precipitar perfuração',
-        'PRÓ-CINÉTICOS (metoclopramida, domperidona) EM OBSTRUÇÃO MECÂNICA: contraindicados — aumentam peristaltismo contra obstrução',
-        'OPIOIDES EM EXCESSO: agravam íleo paralítico; usar com critério em obstrução mecânica',
-        'NEOSTIGMINA SEM MONITORAÇÃO CARDÍACA: pode causar bradicardia grave',
-        'ATB EM ÍLEO PARALÍTICO SEM INFECÇÃO: não há indicação',
-      ],
-      'es': [
-        'ENEMA / LAXANTES EN OBSTRUCCIÓN MECÁNICA COMPLETA: pueden precipitar perforación',
-        'PROCINÉTICOS (metoclopramida) EN OBSTRUCCIÓN MECÁNICA: contraindicados',
-        'OPIOIDES EN EXCESO: agravan íleo paralítico',
-        'NEOSTIGMINA SIN MONITOREO CARDÍACO: puede causar bradicardia grave',
-        'ATB EN ÍLEO PARALÍTICO SIN INFECCIÓN: sin indicación',
-      ],
-    },
-    monitoring: {
-      'pt': [
-        'DÉBITO DA SONDA NASOGÁSTRICA: monitorar volume e aspecto (borra de café = sangramento)',
-        'DIURESE: alvo ≥0,5 mL/kg/h — parâmetro de ressuscitação volêmica',
-        'ELETRÓLITOS SERIADOS: Na, K, Cl — repor conforme perdas',
-        'HEMOGRAMA + PCR: repetir em 6–12h se suspeita de complicação',
-        'RX DE ABDOME SERIADO: avaliar resolução de distensão (obstrução parcial tratada conservadoramente)',
-        'AUSCULTA ABDOMINAL: retorno de ruídos hidroaéreos = evolução favorável',
-        'CRITÉRIOS DE CIRURGIA: piora clínica, sem melhora em 48–72h (obstrução parcial), estrangulamento',
-      ],
-      'es': [
-        'DÉBITO SONDA NASOGÁSTRICA: monitorizar volumen y aspecto',
-        'DIURESIS: objetivo ≥0,5 mL/kg/h',
-        'ELECTRÓLITOS SERIADOS: reponer según pérdidas',
-        'HEMOGRAMA + PCR: repetir c/6–12 h si sospecha complicación',        'RX ABDOMEN SERIADO: evaluar resolución de distensión',
-        'AUSCULTACIÓN: retorno de ruidos = evolución favorable',
-        'CRITERIOS CIRUGÍA: empeoramiento, sin mejoría en 48–72 h, estrangulamiento',
-      ],
-    },
-    complications: {
-      'pt': [
-        'ESTRANGULAMENTO E NECROSE INTESTINAL: isquemia por compressão vascular — ressecção intestinal obrigatória',
-        'PERFURAÇÃO INTESTINAL: contaminação fecal da cavidade → peritonite grave',
-        'SEPSE / CHOQUE SÉPTICO: translocação bacteriana + perfuração',
-        'SÍNDROME DE INTESTINO CURTO: após ressecção extensa (>70%) — má absorção permanente',
-        'DISTÚRBIOS HIDROELETROLÍTICOS GRAVES: hipocalemia, hiponatremia, alcalose metabólica por vômitos',
-        'PNEUMONIA DE ASPIRAÇÃO: vômitos em paciente com rebaixamento de consciência',
-        'INSUFICIÊNCIA RENAL AGUDA: hipovolemia + sepse',
-        'RECIDIVA DE ADERÊNCIAS: 20–30% dos pacientes operados por aderência recidivam em 10 anos',
-      ],
-      'es': [
-        'ESTRANGULAMIENTO Y NECROSIS: isquemia — resección intestinal obligatoria',
-        'PERFORACIÓN: peritonitis grave',
-        'SEPSIS/SHOCK SÉPTICO: translocación bacteriana + perforación',
-        'SÍNDROME DE INTESTINO CORTO: resección extensa >70%',
-        'TRASTORNOS ELECTROLÍTICOS: hipopotasemia, alcalosis por vómitos',
-        'NEUMONÍA ASPIRATIVA: vómitos en paciente con deterioro',
-        'INSUFICIENCIA RENAL: hipovolemia + sepsis',
-        'RECIDIVA ADHERENCIAS: 20–30% en 10 años',
-      ],
-    },
-    doNotDo: {
-      'pt': [
-        'NÃO dar laxativo ou enema em obstrução mecânica completa (perfuração)',
-        'NÃO usar pró-cinéticos em obstrução mecânica (piora a pressão intraluminal)',
-        'NÃO atrasar cirurgia em sinais de estrangulamento (febre, peritonismo, leucocitose)',
-        'NÃO confundir íleo paralítico com obstrução mecânica (manejo oposto)',
-        'NÃO negligenciar reposição de potássio (hipocalemia perpetua íleo paralítico)',
-        'NÃO dar alta sem diagnóstico de causa (aderência? neoplasia? hérnia?)',
-        'NÃO omitir sonda nasogástrica em obstrução mecânica completa',
-        'NÃO fazer TC sem contraste quando suspeita de obstrução (perde acurácia para causa)',
-      ],
-      'es': [
-        'NO dar laxante/enema en obstrucción mecánica completa',
-        'NO procinéticos en obstrucción mecánica',
-        'NO demorar cirugía con signos de estrangulamiento',
-        'NO confundir íleo paralítico con obstrucción mecánica',
-        'NO negligenciar reposición de potasio',
-        'NO dar alta sin diagnóstico de causa',
-        'NO omitir sonda nasogástrica en obstrucción completa',
-        'NO TC sin contraste en sospecha de obstrucción',
-      ],
-    },
-    pearls: {
-      'pt': [
-        'ADERÊNCIAS = 1ª CAUSA: >60% das obstruções de delgado são por aderências pós-operatórias — perguntar sobre cirurgias prévias',
-        'SINAL DE ESTRANGULAMENTO: febre + dor contínua (não cólica) + peritonismo = cirurgia emergencial SEM perder tempo com exames complementares',
-        'GASTROGRAFINA: contraste hidrossolúvel oral pode ser diagnóstico E terapêutico em obstrução por aderência — reduz taxa de cirurgia em 20–30%',
-        'HIPOCALEMIA PERPETUA ÍLEO: K <3,0 bloqueia motilidade intestinal — sempre corrigir eletrólitos antes de concluir diagnóstico de obstrução',
-        'VÓLVULO DE SIGMOIDE: enema baritado em "bico de pássaro" confirma + colonoscopia descompressiva como 1ª linha (se sem isquemia)',
-        'NEOPLASIA DE CÓLON: causa mais comum de obstrução mecânica de intestino grosso em adultos >50 anos — TC + colonoscopia',
-        'TC É OBRIGATÓRIO: localiza o nível de obstrução, identifica a causa e avalia estrangulamento — não tomar decisão cirúrgica sem TC',
-        'SÍNDROME DE OGILVIE: cólon massivamente dilatado sem obstrução mecânica — colonoscopia ou neostigmina; não fazer cirurgia de imediato',
-      ],
-      'es': [
-        'ADHERENCIAS = 1ª CAUSA: >60% de las obstrucciones de delgado — preguntar sobre cirugías previas',
-        'SEÑAL DE ESTRANGULAMIENTO: fiebre + dolor continuo + peritonismo = cirugía emergencial SIN perder tiempo',
-        'GASTROGRAFIN: diagnóstico Y terapéutico en obstrucción por adherencia — reduce cirugía 20–30%',
-        'HIPOPOTASEMIA PERPETÚA ÍLEO: K <3,0 bloquea motilidad — siempre corregir antes de diagnosticar',
-        'VÓLVULO DE SIGMA: enema baritado "pico de pájaro" confirma + colonoscopia descompresiva 1ª línea',
-        'NEOPLASIA DE COLON: causa más común obstrucción grueso en adultos >50 — TC + colonoscopia',
-        'TC OBLIGATORIA: localiza nivel, identifica causa, evalúa estrangulamiento',
-        'SÍNDROME DE OGILVIE: colon dilatado sin obstrucción — neostigmina; no cirugía inmediata',
-      ],
-    },
-    references: {
-      'pt': [
-        'Ten Broek RPG et al. Bologna Guidelines for Diagnosis and Management of Adhesive Small Bowel Obstruction — World J Emerg Surg 2018',
-        'Associação Brasileira de Cirurgiões Digestivos (ABCD) — Obstrução Intestinal (2022)',
-        'Maung AA et al. Evaluation and Management of SBO — J Trauma Acute Care Surg 2012',
-        'Vanek VW et al. ASGE Guideline for Acute Colonic Pseudo-Obstruction (Ogilvie) — Gastrointest Endosc 2010',
-        'UpToDate: Management of small bowel obstruction in adults / Large bowel obstruction (2024)',
-      ],
-      'es': [
-        'Ten Broek RPG et al. Bologna Guidelines for Small Bowel Obstruction (2018)',
-        'Maung AA et al. Evaluation and Management of SBO (2012)',
-        'UpToDate: Manejo de obstrucción intestinal delgada y gruesa en adultos (2024)',
-      ],
-    },
     recognize: {
-      'pt': 'Dor abdominal em cólica, vômitos (biliosos → fecaloides), distensão abdominal, parada de gases/fezes. RX: nível hidroaéreo. TC confirma causa. Sinais de estrangulamento: febre, peritonismo, dor contínua.',
-      'es': 'Dolor abdominal en cólico, vómitos (biliosos → fecaloideos), distensión, ausencia de gases/heces. RX: niveles hidroaéreos. TC confirma. Estrangulamiento: fiebre, peritonismo, dolor continuo.',
+      'pt': 'Síndrome obstrutiva intestinal. Primeiro separar causa mecânica de íleo funcional e depois identificar ASBO, alça fechada/estrangulamento, hérnia, vólvulo, tumor ou outra etiologia.',
+      'es': 'Síndrome obstructivo intestinal. Primero separar causa mecánica de íleo funcional y luego identificar ASBO, asa cerrada/estrangulación, hernia, vólvulo, tumor u otra etiología.',
     },
     actions: {
       'pt': [
-        '1. Sonda nasogástrica + aspiração contínua',
-        '2. SF 0,9% ou RL 1–2 L IV; corrigir eletrólitos (K)',
-        '3. TC de abdome com contraste — localizar causa e nível',
-        '4. Analgesia: Dipirona 1 g IV + Morfina se necessário',
-        '5. ESTRANGULAMENTO / PERFURAÇÃO: ATB + cirurgia emergencial',
-        '6. OBSTRUÇÃO PARCIAL POR ADERÊNCIA: tentar conservador 48–72h + gastrografina VO',
-        '7. VÓLVULO DE SIGMOIDE: colonoscopia descompressiva (sem isquemia)',
-        '8. Monitorar: diurese, débito SNG, eletrólitos, leucócitos',
+        'Avaliar peritonite, estrangulamento/isquemia, alça fechada, perfuração, hérnia complicada e deterioração sistêmica',
+        'TC com contraste IV no estável quando necessária para nível, causa e complicações',
+        'Jejum, ressuscitação/correção eletrolítica; SNG se vômitos ou distensão importante',
+        'Cirurgia urgente diante de isquemia/estrangulamento, perfuração, peritonite, alça fechada comprometida ou instabilidade',
+        'Usar a rota etiológica específica para ASBO, íleo, Ogilvie, vólvulo, hérnia e obstrução colorretal',
       ],
       'es': [
-        '1. Sonda nasogástrica + aspiración continua',
-        '2. SF 0,9% o RL 1–2 L IV; corregir electrólitos',
-        '3. TC abdomen con contraste',
-        '4. Analgesia: Dipirona IV + Morfina',
-        '5. ESTRANGULAMIENTO: ATB + cirugía emergencial',
-        '6. PARCIAL POR ADHERENCIA: conservador 48–72 h + Gastrografin VO',
-        '7. VÓLVULO DE SIGMA: colonoscopia descompresiva',
-        '8. Monitorizar: diuresis, débito SNG, electrólitos',
+        'Evaluar peritonitis, estrangulación/isquemia, asa cerrada, perforación, hernia complicada y deterioro sistémico',
+        'TC con contraste IV en estable cuando sea necesaria para nivel, causa y complicaciones',
+        'Ayuno, reanimación/corrección electrolítica; SNG si vómitos o distensión importante',
+        'Cirugía urgente ante isquemia/estrangulación, perforación, peritonitis, asa cerrada comprometida o inestabilidad',
+        'Usar la ruta etiológica específica para ASBO, íleo, Ogilvie, vólvulo, hernia y obstrucción colorrectal',
       ],
     },
     avoid: {
-      'pt': 'NÃO usar laxativo/enema (perfuração). Não usar pró-cinéticos em obstrução mecânica. Não atrasar cirurgia em estrangulamento. Não confundir com íleo paralítico.',
-      'es': 'NO laxante/enema. No procinéticos en mecánica. No demorar cirugía en estrangulamiento. No confundir con íleo paralítico.',
+      'pt': 'Não usar laxantes/procinéticos em obstrução mecânica. Não tornar SNG obrigatória em todo caso. Não impor antibiótico, fluidos ou analgesia em doses fixas sem contexto.',
+      'es': 'No usar laxantes/procinéticos en obstrucción mecánica. No hacer SNG obligatoria en todos. No imponer antibiótico, fluidos o analgesia en dosis fijas sin contexto.',
     },
-    drugs: ['metronidazol', 'ceftriaxona', 'piperacilina_tazobactam', 'dipirona', 'morfina', 'neostigmina'],
+    drugs: [],
   ),
-
-  // ─────────────────────────────────────────────
-  //  INFECTOLOGIA
-  // ─────────────────────────────────────────────
   ProtocolModel(
     id: 'pbe_cirrose',
     title: {
@@ -12129,6 +12082,247 @@ const List<ProtocolModel> protocolsDatabase = [
     drugs: ['morfina', 'omeprazol', 'meropenem'],
   ),
 
+  // ────────────────────────────────────────────────────────────────────────
+  // GI 1/3 — reconciled evidence-oriented protocols (Aug/2026)
+  // ────────────────────────────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'doenca_ulcerosa_peptica_h_pylori_2024',
+    title: {'pt': 'Doença Ulcerosa Péptica / H. pylori', 'es': 'Enfermedad Ulcerosa Péptica / H. pylori'},
+    severity: {'pt': 'Variável', 'es': 'Variable'},
+    recognize: {
+      'pt': 'Dispepsia/dor epigástrica ou úlcera gástrica/duodenal. Sangramento, perfuração ou obstrução são complicações e saem da rota ambulatorial simples.',
+      'es': 'Dispepsia/dolor epigástrico o úlcera gástrica/duodenal. Sangrado, perforación u obstrucción son complicaciones y salen de la ruta ambulatoria simple.',
+    },
+    actions: {
+      'pt': [
+        'Confirmar H. pylori com teste apropriado e revisar AINE/aspirina/tabagismo e outros ulcerogênicos',
+        'Sem sensibilidade conhecida: preferir terapia quádrupla otimizada com bismuto por 14 dias conforme ACG 2024',
+        'Evitar claritromicina/levofloxacino empíricos salvo sensibilidade demonstrada; individualizar alternativas',
+        'Confirmar erradicação ≥4 semanas após antibióticos e, quando possível, suspender PPI ~2 semanas antes do teste',
+        'Úlcera gástrica: endoscopia/biopsia e seguimento conforme aspecto e risco de malignidade',
+      ],
+      'es': [
+        'Confirmar H. pylori con prueba apropiada y revisar AINE/aspirina/tabaco y otros ulcerogénicos',
+        'Sin sensibilidad conocida: preferir terapia cuádruple optimizada con bismuto 14 días según ACG 2024',
+        'Evitar claritromicina/levofloxacino empíricos salvo sensibilidad demostrada; individualizar alternativas',
+        'Confirmar erradicación ≥4 semanas tras antibióticos y, si es posible, suspender PPI ~2 semanas antes de la prueba',
+        'Úlcera gástrica: endoscopia/biopsia y seguimiento según aspecto y riesgo de malignidad',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar terapia tripla empírica com claritromicina sem sensibilidade conhecida. Não deixar de confirmar erradicação.',
+      'es': 'No usar terapia triple empírica con claritromicina sin sensibilidad conocida. No omitir prueba de erradicación.',
+    },
+    drugs: ['omeprazol', 'metronidazol'],
+  ),
+
+  ProtocolModel(
+    id: 'ulcera_peptica_perfurada_2020',
+    title: {'pt': 'Úlcera Péptica Perfurada', 'es': 'Úlcera Péptica Perforada'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dor epigástrica súbita com peritonismo/pneumoperitônio ou TC compatível; pode evoluir rapidamente com sepse.',
+      'es': 'Dolor epigástrico súbito con peritonismo/neumoperitoneo o TC compatible; puede evolucionar rápidamente a sepsis.',
+    },
+    actions: {
+      'pt': [
+        'ABC, acessos, ressuscitação guiada, jejum, analgesia e cirurgia desde o início',
+        'TC abdomen/pelve no estável; radiografia negativa não exclui perfuração',
+        'Antibiótico IV de amplo espectro + supressão ácida conforme protocolo local',
+        'Peritonite, sepse, vazamento livre ou instabilidade: controle de foco cirúrgico urgente',
+        'Manejo não operatório apenas em casos excepcionalmente selecionados com perfuração selada e vigilância imediata',
+      ],
+      'es': [
+        'ABC, accesos, reanimación guiada, ayuno, analgesia y cirugía desde el inicio',
+        'TC abdomen/pelvis en estable; radiografía negativa no excluye perforación',
+        'Antibiótico IV de amplio espectro + supresión ácida según protocolo local',
+        'Peritonitis, sepsis, fuga libre o inestabilidad: control de foco quirúrgico urgente',
+        'Manejo no operatorio solo en casos excepcionalmente seleccionados con perforación sellada y vigilancia inmediata',
+      ],
+    },
+    avoid: {
+      'pt': 'Não atrasar controle de foco por exames repetidos. Não inventar esquema/dose sem contexto.',
+      'es': 'No retrasar control de foco por estudios repetidos. No inventar esquema/dosis sin contexto.',
+    },
+    drugs: ['omeprazol'],
+  ),
+
+  ProtocolModel(
+    id: 'impactacao_alimentar_esofagica',
+    title: {'pt': 'Impactação Alimentar / Corpo Estranho Esofágico', 'es': 'Impactación Alimentaria / Cuerpo Extraño Esofágico'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Disfagia aguda após alimento/corpo estranho, sialorreia ou incapacidade de engolir secreções.',
+      'es': 'Disfagia aguda tras alimento/cuerpo extraño, sialorrea o incapacidad de deglutir secreciones.',
+    },
+    actions: {
+      'pt': [
+        'Avaliar via aérea, aspiração, secreções e sinais de perfuração',
+        'Obstrução completa/incapacidade de engolir saliva: endoscopia emergente, preferencialmente em poucas horas e até 6 h',
+        'Outros corpos estranhos esofágicos persistentes: endoscopia urgente em até 24 h',
+        'TC se suspeita de perfuração/complicação; não atrasar endoscopia por contraste oral',
+        'Após resolução, investigar estenose, anel de Schatzki, EoE, acalasia ou tumor',
+      ],
+      'es': [
+        'Evaluar vía aérea, aspiración, secreciones y signos de perforación',
+        'Obstrucción completa/incapacidad de tragar saliva: endoscopia emergente, preferiblemente en pocas horas y hasta 6 h',
+        'Otros cuerpos extraños esofágicos persistentes: endoscopia urgente dentro de 24 h',
+        'TC si sospecha de perforación/complicación; no retrasar endoscopia por contraste oral',
+        'Tras resolver, investigar estenosis, anillo de Schatzki, EoE, acalasia o tumor',
+      ],
+    },
+    avoid: {
+      'pt': 'Não realizar manobras cegas nem depender de glucagon em obstrução completa.',
+      'es': 'No realizar maniobras ciegas ni depender de glucagón en obstrucción completa.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'perfuracao_esofagica_boerhaave',
+    title: {'pt': 'Perfuração Esofágica / Boerhaave', 'es': 'Perforación Esofágica / Boerhaave'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dor torácica/epigástrica após vômitos intensos, enfisema, pneumomediastino, derrame ou sepse.',
+      'es': 'Dolor torácico/epigástrico tras vómitos intensos, enfisema, neumomediastino, derrame o sepsis.',
+    },
+    actions: {
+      'pt': [
+        'Jejum, suporte, analgesia, antibiótico IV amplo e equipe esofagogástrica/torácica precoce',
+        'TC contrastada para definir perfuração e contaminação; endoscopia em casos selecionados/equívocos',
+        'Fuga não contida, contaminação extensa, sepse ou instabilidade: controle de foco urgente',
+        'Manejo não operatório/endoscópico apenas em paciente estável, perfuração contida e centro experiente',
+      ],
+      'es': [
+        'Ayuno, soporte, analgesia, antibiótico IV amplio y equipo esofagogástrico/torácico precoz',
+        'TC contrastada para definir perforación y contaminación; endoscopia en casos seleccionados/equívocos',
+        'Fuga no contenida, contaminación extensa, sepsis o inestabilidad: control de foco urgente',
+        'Manejo no operatorio/endoscópico solo en estable, perforación contenida y centro experto',
+      ],
+    },
+    avoid: {
+      'pt': 'Não atrasar controle de foco por exames seriados não essenciais.',
+      'es': 'No retrasar control de foco por estudios seriados no esenciales.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'obstrucao_saida_gastrica',
+    title: {'pt': 'Obstrução da Saída Gástrica', 'es': 'Obstrucción de Salida Gástrica'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Vômitos persistentes, saciedade precoce, distensão e perda de peso; causas benignas e malignas devem ser diferenciadas.',
+      'es': 'Vómitos persistentes, saciedad precoz, distensión y pérdida de peso; diferenciar causas benignas y malignas.',
+    },
+    actions: {
+      'pt': [
+        'Hidratar e corrigir cloro/potássio/alcalose; SNG se vômitos/distensão importante ou risco de aspiração',
+        'TC e endoscopia com biopsia conforme suspeita para definir causa benigna versus maligna',
+        'Tratar H. pylori/úlcera e retirar AINE se etiologia péptica',
+        'Estenose benigna: considerar dilatação endoscópica; maligna: individualizar stent, cirurgia ou EUS-gastroenterostomia',
+      ],
+      'es': [
+        'Hidratar y corregir cloro/potasio/alcalosis; SNG si vómitos/distensión importante o riesgo de aspiración',
+        'TC y endoscopia con biopsia según sospecha para definir causa benigna versus maligna',
+        'Tratar H. pylori/úlcera y retirar AINE si etiología péptica',
+        'Estenosis benigna: considerar dilatación endoscópica; maligna: individualizar stent, cirugía o EUS-gastroenterostomía',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar procinético como solução de obstrução mecânica fixa.',
+      'es': 'No usar procinético como solución de una obstrucción mecánica fija.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'sangramento_diverticular_agudo',
+    title: {'pt': 'Sangramento Diverticular Agudo', 'es': 'Sangrado Diverticular Agudo'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Hematoquezia geralmente indolor em paciente com doença diverticular; pode ser volumosa.',
+      'es': 'Hematoquecia generalmente indolora en paciente con enfermedad diverticular; puede ser abundante.',
+    },
+    actions: {
+      'pt': [
+        'Estabilizar, hemograma/coagulação/tipagem e revisar antitrombóticos',
+        'Hematoquezia hemodinamicamente significativa com sangramento ativo: angio-TC',
+        'Extravasamento na angio-TC: radiologia intervencionista/embolização',
+        'Estável internado: colonoscopia não emergente após preparo adequado',
+      ],
+      'es': [
+        'Estabilizar, hemograma/coagulación/tipaje y revisar antitrombóticos',
+        'Hematoquecia hemodinámicamente significativa con sangrado activo: angio-TC',
+        'Extravasación en angio-TC: radiología intervencionista/embolización',
+        'Estable hospitalizado: colonoscopia no emergente tras preparación adecuada',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar TXA de rotina. Dor/febre/peritonismo exigem outra etiologia além de sangramento diverticular simples.',
+      'es': 'No usar TXA de rutina. Dolor/fiebre/peritonismo exigen otra etiología además de sangrado diverticular simple.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'colite_isquemica',
+    title: {'pt': 'Colite Isquêmica', 'es': 'Colitis Isquémica'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Dor abdominal aguda seguida de hematoquezia/diarreia sanguinolenta, sobretudo em idosos ou contexto de hipoperfusão/vasculopatia.',
+      'es': 'Dolor abdominal agudo seguido de hematoquecia/diarrea sanguinolenta, sobre todo en mayores o contexto de hipoperfusión/vasculopatía.',
+    },
+    actions: {
+      'pt': [
+        'TC contrastada para distribuição/complicações e excluir diagnósticos alternativos',
+        'Estável sem peritonite: colonoscopia precoce para confirmação quando apropriado',
+        'Leve: suporte e correção da hipoperfusão; antibiótico apenas em moderada/grave ou comprometimento sistêmico',
+        'Peritonismo, gangrena, pneumatoses/gás portal, sepse ou deterioração: cirurgia urgente',
+      ],
+      'es': [
+        'TC contrastada para distribución/complicaciones y excluir diagnósticos alternativos',
+        'Estable sin peritonitis: colonoscopia precoz para confirmar cuando corresponda',
+        'Leve: soporte y corrección de hipoperfusión; antibiótico solo en moderada/grave o compromiso sistémico',
+        'Peritonismo, gangrena, neumatosis/gas portal, sepsis o deterioro: cirugía urgente',
+      ],
+    },
+    avoid: {
+      'pt': 'Não colonoscopar diante de gangrena/perfuração/peritonite. Não confundir com isquemia mesentérica aguda.',
+      'es': 'No colonoscopiar ante gangrena/perforación/peritonitis. No confundir con isquemia mesentérica aguda.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'colite_estercoral_impactacao_fecal',
+    title: {'pt': 'Impactação Fecal / Colite Estercoral', 'es': 'Impactación Fecal / Colitis Estercoral'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Constipação prolongada, fecaloma, dor/distensão; TC se dor importante, inflamação ou suspeita de complicação.',
+      'es': 'Estreñimiento prolongado, fecaloma, dolor/distensión; TC si dolor importante, inflamación o sospecha de complicación.',
+    },
+    actions: {
+      'pt': [
+        'Sem perfuração/peritonite/sepse: desimpactação manual/endoscópica ou regime evacuatorio conforme caso',
+        'Hidratar, corrigir fatores precipitantes e evitar opioides quando possível',
+        'Peritonite, ar extraluminal, necrose, sepse ou falha conservadora: cirurgia urgente',
+        'Antibiótico IV amplo apenas se perfuração/sepse ou indicação infecciosa clara',
+      ],
+      'es': [
+        'Sin perforación/peritonitis/sepsis: desimpactación manual/endoscópica o régimen evacuatorio según caso',
+        'Hidratar, corregir factores precipitantes y evitar opioides cuando sea posible',
+        'Peritonitis, aire extraluminal, necrosis, sepsis o fracaso conservador: cirugía urgente',
+        'Antibiótico IV amplio solo si perforación/sepsis o indicación infecciosa clara',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar enemas/laxantes agressivos às cegas se suspeita de perfuração, obstrução completa, megacólon ou isquemia.',
+      'es': 'No usar enemas/laxantes agresivos a ciegas si sospecha de perforación, obstrucción completa, megacolon o isquemia.',
+    },
+    drugs: [],
+  ),
+
   ProtocolModel(
     id: 'hemorragia_digestiva_baixa',
     title: {'pt': 'Hemorragia Digestiva Baixa (HDB)', 'es': 'Hemorragia Digestiva Baja (HDB)'},
@@ -12139,30 +12333,29 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     actions: {
       'pt': [
-        '1. 2 acessos venosos calibrosos (14–16G); Cristaloide IV se instabilidade',
-        '2. Tipagem + crossmatch; hemograma, coagulação, função renal',
-        '3. Excluir HDA: se instabilidade grave ou aspirado NG com sangue → EDA primeiro',
-        '4. Ressuscitação: transfusão se Hb <7 g/dL (ou <9 g/dL em cardiopatas)',
-        '5. Colonoscopia: gold standard diagnóstico e terapêutico — em 24–48h após preparo adequado (colonoscopia precoce <24h em instabilidade hemodinâmica controlada pode ser preferível)',
-        '6. Se sangramento maciço persistente + colonoscopia inconclusa: Arteriografia com embolização ou TC-angiografia',
-        '7. Cirurgia (última opção): hemicolectomia se sangramento não localizado e intratável',
-        '8. Suspender AINE, AAS (reavaliação risco/benefício), anticoagulantes temporariamente',
+        '1. Estabilizar, acessos, hemograma/coagulação/tipagem e ressuscitação guiada',
+        '2. Considerar fonte alta se hematoquezia maciça com instabilidade',
+        '3. Hematoquezia hemodinamicamente significativa com sangramento ativo: angio-TC',
+        '4. Extravasamento positivo: radiologia intervencionista/embolização',
+        '5. Na maioria dos estáveis internados: colonoscopia não emergente após preparo adequado',
+        '6. Transfusão restritiva em estável com limiar em torno de Hb 7 g/dL; individualizar contexto',
+        '7. Revisar antitrombóticos e reversão/reinício conforme agente, gravidade e risco trombótico',
       ],
       'es': [
-        '1. 2 accesos venosos gruesos; Cristaloide IV si inestabilidad',
-        '2. Tipificación, hemograma, coagulación, función renal',
-        '3. Excluir HDA: si inestabilidad → EDA primero',
-        '4. Transfusión si Hb <7 g/dL (o <9 en cardiopatas)',
-        '5. Colonoscopia: gold standard — en 24–48 h tras preparación adecuada',
-        '6. Sangrado masivo persistente: Arteriografía con embolización o TC-angiografía',
-        '7. Cirugía: hemicolectomía si sangrado no localizado',
+        '1. Estabilizar, accesos, hemograma/coagulación/tipaje y resucitación guiada',
+        '2. Considerar fuente alta si hematoquecia masiva con inestabilidad',
+        '3. Hematoquecia hemodinámicamente significativa con sangrado activo: angio-TC',
+        '4. Extravasación positiva: radiología intervencionista/embolización',
+        '5. En la mayoría de estables hospitalizados: colonoscopia no emergente tras preparación adecuada',
+        '6. Transfusión restrictiva en estable con umbral alrededor de Hb 7 g/dL; individualizar contexto',
+        '7. Revisar antitrombóticos y reversión/reinicio según agente, gravedad y riesgo trombótico',
       ],
     },
     avoid: {
-      'pt': 'EVITAR colonoscopia sem preparo adequado de cólon (campo visual ruim, perfuração). Não usar colonoscopia de urgência sem estabilização mínima. Evitar hiperidratação (↑ pressão portal nas varizes — se causa varicosa suspeita: ver protocolo HDA varicosa). Não assumir que HDB para espontaneamente — 75–90% param, mas ressangramento precoce em 20–25%.',
-      'es': 'EVITAR colonoscopia sin preparación adecuada. No realizar colonoscopia de urgencia sin estabilización mínima. No asumir que HDB para espontáneamente (ressangrado precoz en 20–25%).',
+      'pt': 'Não usar TXA de rotina. Não impor colonoscopia <24 h como benefício universal. Não usar vitamina K/PFC de forma inespecífica sem considerar o anticoagulante e a gravidade.',
+      'es': 'No usar TXA de rutina. No imponer colonoscopia <24 h como beneficio universal. No usar vitamina K/PFC de forma inespecífica sin considerar anticoagulante y gravedad.',
     },
-    drugs: ['omeprazol', 'noradrenalina', 'ceftriaxona'],
+    drugs: [],
   ),
 
   // ─────────────────────────────────────────────
@@ -17082,16 +17275,14 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     references: {
       'pt': [
-        'Lau JYW et al. Management of acute upper gastrointestinal bleeding. Lancet. 2024.',
-        'ESGE Guidelines: Nonvariceal upper GI bleeding. Endoscopy. 2021.',
-        'Barkun AN et al. International consensus on management of NVUGIB. Ann Intern Med. 2019.',
-        'Stanley AJ et al. Glasgow-Blatchford score. Lancet. 2009.',
+        'ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding. Am J Gastroenterol. 2021.',
+        'ACG Clinical Guideline: Treatment of Helicobacter pylori Infection. Am J Gastroenterol. 2024.',
+        'ESGE Guideline Update: Nonvariceal upper gastrointestinal hemorrhage. Endoscopy. 2021.',
       ],
       'es': [
-        'Lau JYW et al. Management of acute upper gastrointestinal bleeding. Lancet. 2024.',
-        'ESGE Guidelines: Nonvariceal upper GI bleeding. Endoscopy. 2021.',
-        'Barkun AN et al. International consensus on management of NVUGIB. Ann Intern Med. 2019.',
-        'Stanley AJ et al. Glasgow-Blatchford score. Lancet. 2009.',
+        'ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding. Am J Gastroenterol. 2021.',
+        'ACG Clinical Guideline: Treatment of Helicobacter pylori Infection. Am J Gastroenterol. 2024.',
+        'ESGE Guideline Update: Nonvariceal upper gastrointestinal hemorrhage. Endoscopy. 2021.',
       ],
     },
     recognize: {
@@ -17100,23 +17291,31 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     actions: {
       'pt': [
-        'Acesso IV calibroso (14–16G) × 2, ressuscitação volêmica',
-        'IBP IV bolus imediato (omeprazol 80 mg)',
-        'Tipagem + reserva de hemácias',
-        'EDA urgente após estabilização (< 24h, < 12h se alto risco)',
+        '1. Acessos venosos, hemograma/coagulação/tipagem e ressuscitação guiada pela perfusão',
+        '2. Transfusão restritiva em estável: limiar em torno de Hb 7 g/dL; individualizar isquemia/cardiopatia/hemorragia exsanguinante',
+        '3. Glasgow-Blatchford 0–1 = risco muito baixo potencialmente ambulatorial',
+        '4. EDA em até 24 h após estabilização; não impor <6–12 h rotineiramente a todo paciente estável',
+        '5. Hemostasia endoscópica para sangramento ativo/vaso visível conforme lesão',
+        '6. Após hemostasia de alto risco: PPI em alta dose contínuo ou intermitente por 72 h',
+        '7. Ressangramento: repetir EDA; falha → embolização transcateter quando factível antes de cirurgia',
+        '8. Testar/tratar H. pylori e confirmar erradicação',
       ],
       'es': [
-        'Acceso IV de calibre (14–16G) × 2, resucitación volémica',
-        'IBP IV bolo inmediato (omeprazol 80 mg)',
-        'Tipaje + reserva de hematíes',
-        'EDA urgente tras estabilización (< 24h, < 12h si alto riesgo)',
+        '1. Accesos venosos, hemograma/coagulación/tipaje y resucitación guiada por perfusión',
+        '2. Transfusión restrictiva en estable: umbral alrededor de Hb 7 g/dL; individualizar isquemia/cardiopatía/hemorragia exanguinante',
+        '3. Glasgow-Blatchford 0–1 = riesgo muy bajo potencialmente ambulatorio',
+        '4. EDA dentro de 24 h tras estabilización; no imponer <6–12 h rutinariamente a todo estable',
+        '5. Hemostasia endoscópica para sangrado activo/vaso visible según lesión',
+        '6. Tras hemostasia de alto riesgo: PPI de alta dosis continuo o intermitente por 72 h',
+        '7. Resangrado: repetir EDA; fracaso → embolización transcatéter cuando sea factible antes de cirugía',
+        '8. Testar/tratar H. pylori y confirmar erradicación',
       ],
     },
     avoid: {
-      'pt': 'Retardar EDA sem motivo clínico. AINEs / aspirina sem reavaliação. Transfusão liberal.',
-      'es': 'Retrasar EDA sin motivo clínico. AINEs / aspirina sin reevaluación. Transfusión liberal.',
+      'pt': 'Evitar transfusão liberal sem indicação, EDA antes de ressuscitação mínima, TXA de rotina, reversão inespecífica de anticoagulantes e terapia tripla empírica com claritromicina sem sensibilidade.',
+      'es': 'Evitar transfusión liberal sin indicación, EDA antes de resucitación mínima, TXA rutinario, reversión inespecífica de anticoagulantes y triple terapia empírica con claritromicina sin sensibilidad.',
     },
-    drugs: ['omeprazol', 'pantoprazol', 'acido_tranexamico'],
+    drugs: ['omeprazol', 'pantoprazol'],
   ),
 
   // ── HDB — Hematoquézia ──────────────────────────────────────────────────
@@ -17205,20 +17404,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     exams: {
       'pt': [
-        'Hemograma, coagulograma (TP, TTPA, INR), plaquetas',
-        'Ureia e creatinina (ureia alta: possível fonte alta)',
-        'Tipagem sanguínea + reserva de concentrado de hemácias',
-        'Colonoscopia urgente (< 24h após preparo colônico adequado)',
-        'Angiotomografia de abdome (se sangramento ativo, instável)',
-        'EDA de exclusão se ureia/Cr > 25 ou instabilidade',
+        'Hemograma, coagulograma, plaquetas, função renal, tipagem e reserva conforme gravidade',
+        'Angio-TC se hematoquezia hemodinamicamente significativa com sangramento ativo',
+        'Colonoscopia após preparo adequado; na maioria dos estáveis não precisa ser emergente <24 h',
+        'EDA se alta suspeita de fonte alta, especialmente hematoquezia maciça com instabilidade',
       ],
       'es': [
-        'Hemograma, coagulación (TP, TTPA, INR), plaquetas',
-        'Urea y creatinina (urea alta: posible fuente alta)',
-        'Tipaje + reserva de concentrado de hematíes',
-        'Colonoscopia urgente (< 24h tras preparación adecuada)',
-        'AngioTC de abdomen (si sangrado activo, inestable)',
-        'EDA de exclusión si urea/Cr > 25 o inestabilidad',
+        'Hemograma, coagulación, plaquetas, función renal, tipaje y reserva según gravedad',
+        'Angio-TC si hematoquecia hemodinámicamente significativa con sangrado activo',
+        'Colonoscopia tras preparación adecuada; en la mayoría de estables no necesita ser emergente <24 h',
+        'EDA si alta sospecha de fuente alta, especialmente hematoquecia masiva con inestabilidad',
       ],
     },
     objectives: {
@@ -17239,54 +17434,38 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     drugsFirstLine: {
       'pt': [
-        'SF 0,9% 500–1000 mL IV rápido (ressuscitação volêmica)',
-        'Concentrado de hemácias: manter Hb ≥ 7 g/dL (≥ 8 g/dL em cardiopatas)',
-        'Vitamina K 10 mg IV se INR > 1,5',
-        'Suspensão imediata de anticoagulantes orais + reversão se disponível',
+        'Concentrado de hemácias — estratégia transfusional restritiva em estável; individualizar hemorragia exsanguinante/isquemia/cardiopatia',
       ],
       'es': [
-        'SF 0,9% 500–1000 mL IV rápido (resucitación volémica)',
-        'Concentrado de hematíes: mantener Hb ≥ 7 g/dL (≥ 8 g/dL en cardiopatías)',
-        'Vitamina K 10 mg IV si INR > 1,5',
-        'Suspensión inmediata de anticoagulantes orales + reversión si disponible',
+        'Concentrado de hematíes — estrategia transfusional restrictiva en estable; individualizar hemorragia exanguinante/isquemia/cardiopatía',
       ],
     },
     drugsSecondLine: {
       'pt': [
-        'Plasma fresco congelado 10–15 mL/kg se coagulopatia grave + sangramento ativo',
-        'Concentrado de plaquetas: se < 50.000/μL com sangramento ativo',
-        'Norepinefrina 0,1–0,5 mcg/kg/min se choque refratário a volume',
+        'Reversão de anticoagulação — específica para o agente e reservada ao sangramento grave/clinicamente indicado',
       ],
       'es': [
-        'Plasma fresco congelado 10–15 mL/kg si coagulopatía grave + sangrado activo',
-        'Concentrado de plaquetas: si < 50.000/μL con sangrado activo',
-        'Norepinefrina 0,1–0,5 mcg/kg/min si choque refractario a volumen',
+        'Reversión de anticoagulación — específica para el agente y reservada al sangrado grave/clínicamente indicado',
       ],
     },
     drugsContraindicated: {
       'pt': [
-        'AINEs e aspirina: pioram sangramento e comprometem mucosa',
-        'Anticoagulantes: suspender temporariamente',
-        'Ferro oral durante sangramento ativo',
+        'Ácido tranexâmico de rotina em hemorragia GI',
+        'Reversão inespecífica com vitamina K/PFC sem considerar agente e indicação',
       ],
       'es': [
-        'AINEs y aspirina: empeoran el sangrado y comprometen la mucosa',
-        'Anticoagulantes: suspender temporalmente',
-        'Hierro oral durante sangrado activo',
+        'Ácido tranexámico de rutina en hemorragia GI',
+        'Reversión inespecífica con vitamina K/PFC sin considerar agente e indicación',
       ],
     },
     monitoring: {
       'pt': [
-        'Monitorização contínua: PA, FC, SpO₂, débito urinário horário',
-        'Hemograma a cada 6h nas primeiras 24h',
-        'Observar cessar de hematoquezia: 75–85% param espontaneamente',
-        'Controle colonoscópico em 24h pós-preparo adequado',
+        'PA, FC, perfusão, diurese e hemoglobina conforme gravidade/atividade do sangramento',
+        'Reavaliar recorrência e necessidade de angio-TC/IR se sangramento ativo significativo',
       ],
       'es': [
-        'Monitorización continua: PA, FC, SpO₂, diuresis horaria',
-        'Hemograma cada 6h en las primeras 24h',
-        'Vigilar cese de hematoquecia: 75–85% paran espontáneamente',
-        'Control colonoscópico en 24h post-preparación adecuada',
+        'PA, FC, perfusión, diuresis y hemoglobina según gravedad/actividad del sangrado',
+        'Reevaluar recurrencia y necesidad de angio-TC/IR si sangrado activo significativo',
       ],
     },
     complications: {
@@ -17305,18 +17484,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     doNotDo: {
       'pt': [
-        'Não realizar colonoscopia sem preparo adequado',
-        'Não assumir hemorroidas sem colonoscopia completa em > 40 anos',
-        'Não retardar angioTC se instabilidade hemodinâmica persistente',
-        'Não ignorar possibilidade de HDA',
-        'Não transfundir liberalmente (meta Hb 7–8 g/dL)',
+        'Não usar TXA de rotina',
+        'Não impor colonoscopia urgente <24 h a todo paciente estável',
+        'Não atrasar angio-TC em hematoquezia hemodinamicamente significativa com sangramento ativo',
+        'Não assumir hemorroida/divertículo sem avaliar outras causas conforme fenótipo',
       ],
       'es': [
-        'No realizar colonoscopia sin preparación adecuada',
-        'No asumir hemorroides sin colonoscopia completa en > 40 años',
-        'No retrasar angioTC si inestabilidad hemodinámica persistente',
-        'No ignorar posibilidad de HDA',
-        'No transfundir libremente (meta Hb 7–8 g/dL)',
+        'No usar TXA de rutina',
+        'No imponer colonoscopia urgente <24 h a todo paciente estable',
+        'No retrasar angio-TC en hematoquecia hemodinámicamente significativa con sangrado activo',
+        'No asumir hemorroides/divertículo sin evaluar otras causas según fenotipo',
       ],
     },
     pearls: {
@@ -17335,14 +17512,10 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     references: {
       'pt': [
-        'Strate LL, Gralnek IM. ACG Clinical Guideline: Management of acute lower GI bleeding. Am J Gastroenterol. 2023.',
-        'Oakland K et al. Diagnosis and management of acute lower GI bleeding. Gut. 2019.',
-        'ESGE Guidelines. Lower GI bleeding. Endoscopy. 2023.',
+        'ACG Updated Guideline: Management of Patients with Acute Lower Gastrointestinal Bleeding. Am J Gastroenterol. 2023.',
       ],
       'es': [
-        'Strate LL, Gralnek IM. ACG Clinical Guideline: Management of acute lower GI bleeding. Am J Gastroenterol. 2023.',
-        'Oakland K et al. Diagnosis and management of acute lower GI bleeding. Gut. 2019.',
-        'ESGE Guidelines. Lower GI bleeding. Endoscopy. 2023.',
+        'ACG Updated Guideline: Management of Patients with Acute Lower Gastrointestinal Bleeding. Am J Gastroenterol. 2023.',
       ],
     },
     recognize: {
@@ -17351,23 +17524,272 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     actions: {
       'pt': [
-        'Dois acessos venosos calibrosos, ressuscitação volêmica',
-        'Tipagem + reserva de hemácias',
-        'Preparo colônico urgente + colonoscopia em 24h',
-        'AngioTC se instável ou sangramento ativo sem fonte identificada',
+        '1. Estabilizar, acessos, hemograma/coagulação/tipagem e ressuscitação guiada',
+        '2. Considerar fonte alta se hematoquezia maciça com instabilidade',
+        '3. Hematoquezia hemodinamicamente significativa com sangramento ativo: angio-TC',
+        '4. Extravasamento positivo: radiologia intervencionista/embolização',
+        '5. Na maioria dos estáveis internados: colonoscopia não emergente após preparo adequado',
+        '6. Transfusão restritiva em estável com limiar em torno de Hb 7 g/dL; individualizar contexto',
+        '7. Revisar antitrombóticos e reversão/reinício conforme agente, gravidade e risco trombótico',
       ],
       'es': [
-        'Dos accesos venosos de calibre, resucitación volémica',
-        'Tipaje + reserva de hematíes',
-        'Preparación colónica urgente + colonoscopia en 24h',
-        'AngioTC si inestable o sangrado activo sin fuente identificada',
+        '1. Estabilizar, accesos, hemograma/coagulación/tipaje y resucitación guiada',
+        '2. Considerar fuente alta si hematoquecia masiva con inestabilidad',
+        '3. Hematoquecia hemodinámicamente significativa con sangrado activo: angio-TC',
+        '4. Extravasación positiva: radiología intervencionista/embolización',
+        '5. En la mayoría de estables hospitalizados: colonoscopia no emergente tras preparación adecuada',
+        '6. Transfusión restrictiva en estable con umbral alrededor de Hb 7 g/dL; individualizar contexto',
+        '7. Revisar antitrombóticos y reversión/reinicio según agente, gravedad y riesgo trombótico',
       ],
     },
     avoid: {
-      'pt': 'Colonoscopia sem preparo. Assumir hemorroidas sem investigação completa. Retardar embolização em sangramento ativo.',
-      'es': 'Colonoscopia sin preparación. Asumir hemorroides sin investigación completa. Retrasar embolización en sangrado activo.',
+      'pt': 'Não usar TXA de rotina. Não impor colonoscopia <24 h como benefício universal. Não usar vitamina K/PFC de forma inespecífica sem considerar o anticoagulante e a gravidade.',
+      'es': 'No usar TXA de rutina. No imponer colonoscopia <24 h como beneficio universal. No usar vitamina K/PFC de forma inespecífica sin considerar anticoagulante y gravedad.',
     },
-    drugs: ['vitamina_k', 'acido_tranexamico'],
+    drugs: [],
+  ),
+
+  // ────────────────────────────────────────────────────────────────────────
+  // GI 2/3 — diverticular / IBD / colorectal emergency protocols (Aug/2026)
+  // ────────────────────────────────────────────────────────────────────────
+  ProtocolModel(
+    id: 'diverticulose_2026',
+    title: {'pt': 'Diverticulose', 'es': 'Diverticulosis'},
+    severity: {'pt': 'Baixo', 'es': 'Bajo'},
+    recognize: {
+      'pt': 'Divertículos colônicos sem inflamação aguda. Assintomática não equivale a diverticulite e não exige antibiótico ou TC apenas pelo achado.',
+      'es': 'Divertículos colónicos sin inflamación aguda. Asintomática no equivale a diverticulitis y no requiere antibiótico o TC solo por el hallazgo.',
+    },
+    actions: {
+      'pt': [
+        'Padrão alimentar rico em fibras/plant-forward, atividade física, peso saudável e cessação do tabagismo',
+        'Não evitar rotineiramente nozes, sementes, milho ou pipoca',
+        'Dor persistente, febre, sangramento importante ou sinais obstrutivos: sair desta rota e avaliar complicação',
+      ],
+      'es': [
+        'Patrón alimentario rico en fibra/plant-forward, actividad física, peso saludable y cese tabáquico',
+        'No evitar de rutina nueces, semillas, maíz o palomitas',
+        'Dolor persistente, fiebre, sangrado importante o signos obstructivos: salir de esta ruta y evaluar complicación',
+      ],
+    },
+    avoid: {
+      'pt': 'Não recomendar dieta crônica pobre em fibras. Não usar antibiótico ou TC de rotina para diverticulose assintomática.',
+      'es': 'No recomendar dieta crónica baja en fibra. No usar antibiótico o TC de rutina para diverticulosis asintomática.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'diverticulitis_complicada_2026',
+    title: {'pt': 'Diverticulite Complicada', 'es': 'Diverticulitis Complicada'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Diverticulite com abscesso/flegmão importante, perfuração/peritonite, fístula, estenose ou obstrução.',
+      'es': 'Diverticulitis con absceso/flemón importante, perforación/peritonitis, fístula, estenosis u obstrucción.',
+    },
+    actions: {
+      'pt': [
+        'TC contrastada para anatomia, gravidade e planejamento de controle de foco',
+        'Antibiótico conforme gravidade/foco e protocolo local; não usar esquema ou duração universal',
+        'Abscesso localizado: considerar drenagem percutânea conforme tamanho, acesso e resposta',
+        'Peritonite/perfuração livre/obstrução completa/sepse com deterioração: cirurgia urgente',
+        'Após recuperação, colonoscopia para excluir neoplasia oculta conforme ACG 2026',
+      ],
+      'es': [
+        'TC contrastada para anatomía, gravedad y planificación de control de foco',
+        'Antibiótico según gravedad/foco y protocolo local; no usar esquema o duración universal',
+        'Absceso localizado: considerar drenaje percutáneo según tamaño, acceso y respuesta',
+        'Peritonitis/perforación libre/obstrucción completa/sepsis con deterioro: cirugía urgente',
+        'Tras recuperación, colonoscopia para excluir neoplasia oculta según ACG 2026',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar colonoscopia na fase aguda complicada. Não atrasar controle de foco. Não transformar um limiar único de abscesso em regra universal.',
+      'es': 'No usar colonoscopia en fase aguda complicada. No retrasar control de foco. No convertir un único umbral de absceso en regla universal.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'crohn_flare_luminal_2025',
+    title: {'pt': 'Doença de Crohn — Surto Luminal', 'es': 'Enfermedad de Crohn — Brote Luminal'},
+    severity: {'pt': 'Variável', 'es': 'Variable'},
+    recognize: {
+      'pt': 'Sintomas compatíveis com atividade de Crohn sem abscesso, perfuração ou obstrução mecânica definida; confirmar inflamação e excluir infecção/complicação.',
+      'es': 'Síntomas compatibles con actividad de Crohn sin absceso, perforación u obstrucción mecánica definida; confirmar inflamación y excluir infección/complicación.',
+    },
+    actions: {
+      'pt': [
+        'Estratificar atividade/localização/fenótipo com biomarcadores, endoscopia e imagem/IUS conforme contexto',
+        'Mesalazina não é recomendada para indução/manutenção de Crohn luminal',
+        'Budesonida pode ser usada na doença ileocecal leve-moderada selecionada; não para manutenção',
+        'Corticoide sistêmico apenas para indução, com desmame e transição rápida para terapia poupadora',
+        'Moderada-grave/alto risco: considerar terapia avançada sem exigir falha prévia de tiopurina/metotrexato',
+      ],
+      'es': [
+        'Estratificar actividad/localización/fenotipo con biomarcadores, endoscopia e imagen/IUS según contexto',
+        'Mesalazina no está recomendada para inducción/mantenimiento de Crohn luminal',
+        'Budesonida puede usarse en enfermedad ileocecal leve-moderada seleccionada; no para mantenimiento',
+        'Corticoide sistémico solo para inducción, con descenso y transición rápida a terapia ahorradora',
+        'Moderada-grave/alto riesgo: considerar terapia avanzada sin exigir fallo previo de tiopurina/metotrexato',
+      ],
+    },
+    avoid: {
+      'pt': 'Não escalar imunossupressão sem excluir infecção, abscesso ou obstrução. Não manter corticoide sistêmico cronicamente.',
+      'es': 'No escalar inmunosupresión sin excluir infección, absceso u obstrucción. No mantener corticoide sistémico crónicamente.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'crohn_complicado_2025',
+    title: {'pt': 'Doença de Crohn Complicada', 'es': 'Enfermedad de Crohn Complicada'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Crohn com abscesso, fístula, estenose/obstrução, perfuração ou doença perianal complexa.',
+      'es': 'Crohn con absceso, fístula, estenosis/obstrucción, perforación o enfermedad perianal compleja.',
+    },
+    actions: {
+      'pt': [
+        'Imagem seccional para mapear abscesso, fístula e estenose',
+        'Abscesso/sepsis: antibiótico e controle de foco; drenagem quando factível',
+        'Não iniciar/escalar imunossupressão às cegas diante de sepse não controlada',
+        'Obstrução: diferenciar inflamação de fibrose; perfuração/peritonite/isquemia/obstrução completa → cirurgia',
+        'Fistulizante: estratégia IBD multidisciplinar; infliximabe permanece opção central, com outras terapias avançadas conforme ACG 2025',
+      ],
+      'es': [
+        'Imagen seccional para mapear absceso, fístula y estenosis',
+        'Absceso/sepsis: antibiótico y control de foco; drenaje cuando sea factible',
+        'No iniciar/escalar inmunosupresión a ciegas ante sepsis no controlada',
+        'Obstrucción: diferenciar inflamación de fibrosis; perforación/peritonitis/isquemia/obstrucción completa → cirugía',
+        'Fistulizante: estrategia IBD multidisciplinaria; infliximab sigue siendo opción central, con otras terapias avanzadas según ACG 2025',
+      ],
+    },
+    avoid: {
+      'pt': 'Não tratar abscesso apenas com escalada imunossupressora. Não fazer ressecções intestinais extensas desnecessárias.',
+      'es': 'No tratar absceso solo con escalada inmunosupresora. No realizar resecciones intestinales extensas innecesarias.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'colite_ulcerativa_flare_2025',
+    title: {'pt': 'Retocolite Ulcerativa — Surto', 'es': 'Colitis Ulcerosa — Brote'},
+    severity: {'pt': 'Variável', 'es': 'Variable'},
+    recognize: {
+      'pt': 'Aumento de evacuações, sangue/urgência e biomarcadores compatíveis com atividade de RCU; excluir infecção, especialmente C. difficile.',
+      'es': 'Aumento de deposiciones, sangre/urgencia y biomarcadores compatibles con actividad de CU; excluir infección, especialmente C. difficile.',
+    },
+    actions: {
+      'pt': [
+        'Estratificar extensão e gravidade clínica, endoscópica e bioquímica',
+        'Leve-moderada: 5-ASA oral/retal conforme extensão',
+        'Moderada-grave: considerar terapias avançadas apropriadas e meta de remissão sem corticoide',
+        'Toxicidade sistêmica ou critérios de doença grave: internar e seguir rota ASUC',
+      ],
+      'es': [
+        'Estratificar extensión y gravedad clínica, endoscópica y bioquímica',
+        'Leve-moderada: 5-ASA oral/rectal según extensión',
+        'Moderada-grave: considerar terapias avanzadas apropiadas y objetivo de remisión sin corticoide',
+        'Toxicidad sistémica o criterios de enfermedad grave: hospitalizar y seguir ruta ASUC',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar corticoide sistêmico como manutenção. Não atribuir toda diarreia/sangramento à RCU sem excluir infecção.',
+      'es': 'No usar corticoide sistémico como mantenimiento. No atribuir toda diarrea/sangrado a CU sin excluir infección.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'colite_ulcerativa_aguda_grave_2025',
+    title: {'pt': 'Colite Ulcerativa Aguda Grave', 'es': 'Colitis Ulcerosa Aguda Grave'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'RCU grave com alta carga de evacuações/sangramento e toxicidade sistêmica; requer internação e avaliação diária.',
+      'es': 'CU grave con alta carga de deposiciones/sangrado y toxicidad sistémica; requiere hospitalización y evaluación diaria.',
+    },
+    actions: {
+      'pt': [
+        'Internar; testar C. difficile; usar profilaxia farmacológica para TEV',
+        'Corticoide IV para indução conforme ACG 2025 e protocolo local',
+        'Monitorar evacuações, sangramento, sinais vitais, exame e PCR diariamente',
+        'Resposta inadequada ao dia 3: infliximabe ou ciclosporina + decisão cirúrgica',
+        'Megacólon, perfuração, peritonite, hemorragia incontrolável, choque/deterioração: colectomia urgente',
+      ],
+      'es': [
+        'Hospitalizar; testar C. difficile; usar profilaxis farmacológica de TEV',
+        'Corticoide IV para inducción según ACG 2025 y protocolo local',
+        'Monitorizar deposiciones, sangrado, signos vitales, examen y CRP diariamente',
+        'Respuesta inadecuada al día 3: infliximab o ciclosporina + decisión quirúrgica',
+        'Megacolon, perforación, peritonitis, hemorragia incontrolable, shock/deterioro: colectomía urgente',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar antibiótico amplo de rotina sem infecção/sepse. Não usar NPT apenas para repouso intestinal. Não prolongar corticoide IV ineficaz.',
+      'es': 'No usar antibiótico amplio de rutina sin infección/sepsis. No usar NPT solo para reposo intestinal. No prolongar corticoide IV ineficaz.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'megacolon_toxico',
+    title: {'pt': 'Megacólon Tóxico', 'es': 'Megacolon Tóxico'},
+    severity: {'pt': 'Crítico', 'es': 'Crítico'},
+    recognize: {
+      'pt': 'Dilatação colônica aguda associada a toxicidade sistêmica em RCU, Crohn colônico, C. difficile ou outra colite.',
+      'es': 'Dilatación colónica aguda asociada a toxicidad sistémica en CU, Crohn colónico, C. difficile u otra colitis.',
+    },
+    actions: {
+      'pt': [
+        'Internação, monitorização intensiva, correção de volume/eletrolitos e cirurgia precoce',
+        'Suspender opioides, anticolinérgicos e antidiarreicos; investigar precipitante infeccioso',
+        'Evitar colonoscopia completa e preparo intestinal agressivo',
+        'Tratar a etiologia específica; sepse/perfuração exigem antimicrobiano e controle de foco',
+        'Perfuracao/peritonite/choque/hemorragia incontrolável/falha intensiva: colectomia urgente',
+      ],
+      'es': [
+        'Hospitalización, monitorización intensiva, corrección de volumen/electrolitos y cirugía precoz',
+        'Suspender opioides, anticolinérgicos y antidiarreicos; investigar precipitante infeccioso',
+        'Evitar colonoscopia completa y preparación intestinal agresiva',
+        'Tratar etiología específica; sepsis/perforación requieren antimicrobiano y control de foco',
+        'Perforación/peritonitis/shock/hemorragia no controlable/fallo intensivo: colectomía urgente',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar loperamida/opioides para “controlar” diarreia. Não atrasar cirurgia em perfuração, peritonite ou deterioração.',
+      'es': 'No usar loperamida/opioides para “controlar” diarrea. No retrasar cirugía en perforación, peritonitis o deterioro.',
+    },
+    drugs: [],
+  ),
+
+  ProtocolModel(
+    id: 'obstrucao_colorretal_aguda',
+    title: {'pt': 'Obstrução Colorretal Aguda', 'es': 'Obstrucción Colorrectal Aguda'},
+    severity: {'pt': 'Alto', 'es': 'Alto'},
+    recognize: {
+      'pt': 'Distensão, dor, obstipação/ausência de gases, vômitos e TC mostrando obstrução de intestino grosso; definir causa e sinais de isquemia/perfuração.',
+      'es': 'Distensión, dolor, obstipación/ausencia de gases, vómitos y TC mostrando obstrucción de intestino grueso; definir causa y signos de isquemia/perforación.',
+    },
+    actions: {
+      'pt': [
+        'Jejum, acessos, correção hidroeletrolítica, analgesia e TC contrastada',
+        'SNG se vômitos importantes/distensão proximal; cirurgia/coloproctologia precocemente',
+        'Peritonite, perfuração, isquemia, sepse/choque ou deterioração: controle de foco urgente',
+        'Maligna estável sem complicação: individualizar ressecção, derivação ou stent conforme localização, intenção e expertise',
+      ],
+      'es': [
+        'Ayuno, accesos, corrección hidroelectrolítica, analgesia y TC contrastada',
+        'SNG si vómitos importantes/distensión proximal; cirugía/coloproctología precozmente',
+        'Peritonitis, perforación, isquemia, sepsis/shock o deterioro: control de foco urgente',
+        'Maligna estable sin complicación: individualizar resección, derivación o stent según localización, intención y experiencia',
+      ],
+    },
+    avoid: {
+      'pt': 'Não usar laxantes/procinéticos em obstrução mecânica completa. Não impor stent como estratégia universal.',
+      'es': 'No usar laxantes/procinéticos en obstrucción mecánica completa. No imponer stent como estrategia universal.',
+    },
+    drugs: [],
   ),
 
   // ── Diverticulite Aguda ──────────────────────────────────────────────────
@@ -17384,20 +17806,14 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     classification: {
       'pt': [
-        'Hinchey 0: diverticulite não complicada (inflamação pericolônica leve)',
-        'Hinchey Ia: abscesso pericolônico ou mesentérico < 4 cm',
-        'Hinchey Ib: abscesso pericolônico ou mesentérico ≥ 4 cm',
-        'Hinchey II: abscesso pélvico',
-        'Hinchey III: peritonite purulenta generalizada',
-        'Hinchey IV: peritonite fecal generalizada (perfuração livre)',
+        'Não complicada: inflamação localizada sem abscesso, perfuração, estenose ou fístula',
+        'Complicada: flegmão/abscesso/perfuração; estenose e fístula podem surgir como complicações tardias',
+        'Crônica/smoldering: inflamação persistente por semanas-meses com sintomas recorrentes',
       ],
       'es': [
-        'Hinchey 0: diverticulitis no complicada (inflamación pericolónica leve)',
-        'Hinchey Ia: absceso pericolónico o mesentérico < 4 cm',
-        'Hinchey Ib: absceso pericolónico o mesentérico ≥ 4 cm',
-        'Hinchey II: absceso pélvico',
-        'Hinchey III: peritonitis purulenta generalizada',
-        'Hinchey IV: peritonitis fecal generalizada (perforación libre)',
+        'No complicada: inflamación localizada sin absceso, perforación, estenosis o fístula',
+        'Complicada: flemón/absceso/perforación; estenosis y fístula pueden surgir como complicaciones tardías',
+        'Crónica/smoldering: inflamación persistente por semanas-meses con síntomas recurrentes',
       ],
     },
     severityCriteria: {
@@ -17452,66 +17868,50 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     exams: {
       'pt': [
-        'Hemograma completo (leucocitose com desvio à esquerda)',
-        'PCR e VHS (marcadores de inflamação)',
-        'Ureia, creatinina, eletrólitos',
-        'Urina 1 (diagnóstico diferencial com ITU/litíase)',
-        'TC de abdome e pelve com contraste IV (padrão-ouro)',
-        'Radiografia de abdome simples (pneumoperitônio?)',
-        'Colonoscopia: CONTRAINDICADA na fase aguda; indicada 6–8 semanas pós-resolução',
+        'TC abdome/pelve na primeira apresentação para confirmar, excluir diagnósticos alternativos, localizar e avaliar gravidade',
+        'Em recorrência típica já documentada, individualizar TC se houver dúvida, piora ou suspeita de complicação',
+        'Após diverticulite complicada: colonoscopia após recuperação para excluir neoplasia oculta',
+        'Após não complicada: colonoscopia apenas se sintomas de alarme ou rastreio colorretal não atualizado',
       ],
       'es': [
-        'Hemograma completo (leucocitosis con desviación a la izquierda)',
-        'PCR y VSG (marcadores de inflamación)',
-        'Urea, creatinina, electrolitos',
-        'Orina (diagnóstico diferencial con ITU/litiasis)',
-        'TC de abdomen y pelvis con contraste IV (gold standard)',
-        'Radiografía de abdomen simple (¿neumoperitoneo?)',
-        'Colonoscopia: CONTRAINDICADA en fase aguda; indicada 6–8 semanas post-resolución',
+        'TC abdomen/pelvis en primera presentación para confirmar, excluir diagnósticos alternativos, localizar y valorar gravedad',
+        'En recurrencia típica ya documentada, individualizar TC si hay duda, empeoramiento o sospecha de complicación',
+        'Tras diverticulitis complicada: colonoscopia tras recuperación para excluir neoplasia oculta',
+        'Tras no complicada: colonoscopia solo si síntomas de alarma o cribado colorrectal no actualizado',
       ],
     },
     objectives: {
       'pt': [
-        'Controle da infecção (antibioticoterapia)',
-        'Tratamento das complicações (drenagem de abscesso, cirurgia se necessário)',
-        'Alívio da dor',
-        'Prevenção de recidiva a longo prazo',
-        'Investigação de neoplasia colônica pós-episódio agudo',
+        'Distinguir doença não complicada de complicada',
+        'Evitar antibiótico desnecessário em pacientes selecionados de baixo risco',
+        'Reconhecer precocemente quem precisa de antibiótico, internação ou controle de foco',
+        'Individualizar avaliação colonoscópica pós-episódio conforme ACG 2026',
       ],
       'es': [
-        'Control de la infección (antibioticoterapia)',
-        'Tratamiento de complicaciones (drenaje de absceso, cirugía si es necesario)',
-        'Alivio del dolor',
-        'Prevención de recidiva a largo plazo',
-        'Investigación de neoplasia colónica post-episodio agudo',
+        'Distinguir enfermedad no complicada de complicada',
+        'Evitar antibiótico innecesario en pacientes seleccionados de bajo riesgo',
+        'Reconocer precozmente quién necesita antibiótico, hospitalización o control de foco',
+        'Individualizar evaluación colonoscópica post-episodio según ACG 2026',
       ],
     },
     drugsFirstLine: {
       'pt': [
-        'Ambulatorial: ciprofloxacino 500 mg VO 12/12h + metronidazol 500 mg VO 8/8h por 7–10 dias',
-        'Internação: ciprofloxacino 400 mg IV 12/12h + metronidazol 500 mg IV 8/8h',
-        'Alternativa IV: amoxicilina-clavulanato 2,2 g IV 8/8h',
-        'Dipirona 1–2 g IV 6/6h (analgesia)',
-        'Hidratação venosa: SF 0,9% ou RL 1000–2000 mL/dia',
+        'Sem antibiótico em selecionados: imunocompetente, estável, ambulatorial, tolerando VO, sem SIRS/complicação, não frágil e com follow-up confiável',
+        'Se antibiótico indicado: escolher cobertura e duração conforme risco, alergias, função renal, resistência e protocolo local; não impor esquema universal',
+        'Analgesia e hidratação conforme necessidade e tolerância; evitar AINE regular quando possível',
       ],
       'es': [
-        'Ambulatorio: ciprofloxacino 500 mg VO 12/12h + metronidazol 500 mg VO 8/8h por 7–10 días',
-        'Hospitalizado: ciprofloxacino 400 mg IV 12/12h + metronidazol 500 mg IV 8/8h',
-        'Alternativa IV: amoxicilina-clavulanato 2,2 g IV 8/8h',
-        'Metamizol 1–2 g IV 6/6h (analgesia)',
-        'Hidratación venosa: SF 0,9% o RL 1000–2000 mL/día',
+        'Sin antibiótico en seleccionados: inmunocompetente, estable, ambulatorio, tolerando VO, sin SIRS/complicación, no frágil y con seguimiento fiable',
+        'Si antibiótico indicado: elegir cobertura y duración según riesgo, alergias, función renal, resistencia y protocolo local; no imponer esquema universal',
+        'Analgesia e hidratación según necesidad y tolerancia; evitar AINE regular cuando sea posible',
       ],
     },
     drugsSecondLine: {
       'pt': [
-        'Piperacilina-tazobactam 4,5 g IV 6/6h (Hinchey III/IV ou sépsis grave)',
-        'Imipeném 500 mg IV 6/6h (falha terapêutica ou resistência)',
-        'Morfina 2–4 mg IV/SC 4/4h (dor intensa)',
+        'Doença complicada, imunossupressão, fragilidade/complexidade, intolerância VO, piora, marcadores muito elevados ou imagem de alto risco: antibiótico conforme protocolo e reavaliar necessidade de internação/controle de foco',
       ],
       'es': [
-        'Piperacilina-tazobactam 4,5 g IV 6/6h (Hinchey III/IV o sepsis grave)',
-        'Imipenem 500 mg IV 6/6h (fallo terapéutico o resistencia)',
-        'Morfina 2–4 mg IV/SC 4/4h (dolor intenso)',
+        'Enfermedad complicada, inmunosupresión, fragilidad/complejidad, intolerancia VO, empeoramiento, marcadores muy elevados o imagen de alto riesgo: antibiótico según protocolo y reevaluar hospitalización/control de foco',
       ],
     },
     drugsContraindicated: {
@@ -17526,18 +17926,16 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     monitoring: {
       'pt': [
-        'Temperatura, FC, PA e dor a cada 4–6h nas primeiras 24h',
-        'PCR e hemograma em 48–72h (resposta ao tratamento)',
-        'TC de controle em 48–72h se piora clínica',
-        'Dieta: jejum nas primeiras 24–48h; progredir com melhora',
-        'Colonoscopia em 6–8 semanas (excluir neoplasia)',
+        'Reavaliar dor, febre, perfusão, tolerância oral e sinais peritoneais',
+        'Piora ou ausência de resposta: repetir avaliação e considerar imagem/complicação',
+        'Dieta conforme tolerância; não impor jejum 24–48h a todo caso leve',
+        'Planejar colonoscopia conforme fenótipo: complicada, alarmes ou rastreio atrasado',
       ],
       'es': [
-        'Temperatura, FC, PA y dolor cada 4–6h en las primeras 24h',
-        'PCR y hemograma en 48–72h (respuesta al tratamiento)',
-        'TC de control en 48–72h si empeoramiento clínico',
-        'Dieta: ayuno primeras 24–48h; progresar con mejoría',
-        'Colonoscopia en 6–8 semanas (excluir neoplasia)',
+        'Reevaluar dolor, fiebre, perfusión, tolerancia oral y signos peritoneales',
+        'Empeoramiento o falta de respuesta: repetir evaluación y considerar imagen/complicación',
+        'Dieta según tolerancia; no imponer ayuno 24–48 h a todo caso leve',
+        'Planificar colonoscopia según fenotipo: complicada, alarmas o cribado atrasado',
       ],
     },
     complications: {
@@ -17558,69 +17956,65 @@ const List<ProtocolModel> protocolsDatabase = [
     },
     doNotDo: {
       'pt': [
-        'Não realizar colonoscopia na fase aguda (risco de perfuração)',
-        'Não prescrever AINEs',
-        'Não tratar ambulatorialmente paciente imunossuprimido ou instável',
-        'Não ignorar neoplasia: colonoscopia pós-resolução é obrigatória',
-        'Não retardar cirurgia em Hinchey III/IV',
+        'Não prescrever antibiótico automaticamente para todo caso não complicado',
+        'Não transformar TC em requisito automático de toda recorrência típica previamente documentada',
+        'Não declarar colonoscopia obrigatória após todo episódio não complicado sem alarmes e com rastreio atualizado',
+        'Não realizar colonoscopia durante fase aguda complicada',
+        'Não atrasar controle de foco em perfuração/peritonite/sepse',
       ],
       'es': [
-        'No realizar colonoscopia en fase aguda (riesgo de perforación)',
-        'No prescribir AINEs',
-        'No tratar ambulatoriamente paciente inmunosuprimido o inestable',
-        'No ignorar neoplasia: colonoscopia post-resolución es obligatoria',
-        'No retrasar cirugía en Hinchey III/IV',
+        'No prescribir antibiótico automáticamente para todo caso no complicado',
+        'No convertir TC en requisito automático de toda recurrencia típica previamente documentada',
+        'No declarar colonoscopia obligatoria tras todo episodio no complicado sin alarmas y con cribado actualizado',
+        'No realizar colonoscopia durante fase aguda complicada',
+        'No retrasar control de foco en perforación/peritonitis/sepsis',
       ],
     },
     pearls: {
       'pt': [
-        'TC é padrão-ouro: sensibilidade > 95% e permite estadiamento Hinchey',
-        'Hinchey Ia (< 4 cm): ATB IV; Ib/II (≥ 4 cm): drenagem percutânea + ATB',
-        'Colonoscopia 6–8 semanas pós-resolução: obrigatória para excluir neoplasia',
-        'Em < 40 anos: maior taxa de complicações e recidiva',
+        'ACG 2026: TC é especialmente importante na primeira apresentação para confirmação, alternativa diagnóstica e gravidade',
+        'ACG 2026: não complicada pode ser manejada sem antibiótico em pacientes selecionados de baixo risco',
+        'ACG 2026: colonoscopia após não complicada é seletiva, não automática',
+        'Dieta rica em fibras/plant-forward, exercício, peso saudável, cessar tabagismo e evitar AINE regular ajudam prevenção',
       ],
       'es': [
-        'TC es gold standard: sensibilidad > 95% y permite estadiaje Hinchey',
-        'Hinchey Ia (< 4 cm): ATB IV; Ib/II (≥ 4 cm): drenaje percutáneo + ATB',
-        'Colonoscopia 6–8 semanas post-resolución: obligatoria para excluir neoplasia',
-        'En < 40 años: mayor tasa de complicaciones y recidiva',
+        'ACG 2026: TC es especialmente importante en primera presentación para confirmación, alternativa diagnóstica y gravedad',
+        'ACG 2026: no complicada puede manejarse sin antibiótico en pacientes seleccionados de bajo riesgo',
+        'ACG 2026: colonoscopia tras no complicada es selectiva, no automática',
+        'Dieta rica en fibra/plant-forward, ejercicio, peso saludable, cese tabáquico y evitar AINE regular ayudan prevención',
       ],
     },
     references: {
       'pt': [
-        'Sartelli M et al. WSES Guidelines for diverticulitis. World J Emerg Surg. 2020.',
-        'Peery AF et al. Diverticular disease. Gastroenterology. 2021.',
-        'Feingold D et al. Practice parameters for sigmoid diverticulitis. Dis Colon Rectum. 2014.',
+        'Peery AF et al. ACG Clinical Guideline: Colonic Diverticulitis. Am J Gastroenterol. 2026.',
       ],
       'es': [
-        'Sartelli M et al. WSES Guidelines for diverticulitis. World J Emerg Surg. 2020.',
-        'Peery AF et al. Diverticular disease. Gastroenterology. 2021.',
-        'Feingold D et al. Practice parameters for sigmoid diverticulitis. Dis Colon Rectum. 2014.',
+        'Peery AF et al. ACG Clinical Guideline: Colonic Diverticulitis. Am J Gastroenterol. 2026.',
       ],
     },
     recognize: {
-      'pt': 'Dor em FIE + febre + leucocitose em adulto. Antecedente de diverticulose. TC confirma inflamação pericolônica.',
-      'es': 'Dolor en FII + fiebre + leucocitosis en adulto. Antecedente de diverticulosis. TC confirma inflamación pericolónica.',
+      'pt': 'Dor em FIE/abdome inferior com sintomas inflamatórios compatíveis. Diferenciar não complicada de abscesso, perfuração/peritonite, fístula, estenose ou obstrução.',
+      'es': 'Dolor en FII/abdomen inferior con síntomas inflamatorios compatibles. Diferenciar no complicada de absceso, perforación/peritonitis, fístula, estenosis u obstrucción.',
     },
     actions: {
       'pt': [
-        'TC abdome e pelve com contraste (estadiamento Hinchey)',
-        'Iniciar ATB IV (ciprofloxacino + metronidazol)',
-        'Jejum + hidratação venosa + analgesia',
-        'Avaliar necessidade de drenagem ou cirurgia conforme Hinchey',
+        'Primeira apresentação: TC abdome/pelve para confirmar/localizar/avaliar gravidade quando factível',
+        'Não complicada de baixo risco: manejo ambulatorial e sem antibiótico pode ser apropriado conforme ACG 2026',
+        'Antibiótico se imunocomprometido, frágil/complexo, intolerância VO, piora, alto risco por exames/imagem ou seguimento inseguro',
+        'Complicada: internação conforme gravidade, antibiótico e controle de foco; drenagem/cirurgia conforme anatomia e evolução',
       ],
       'es': [
-        'TC abdomen y pelvis con contraste (estadiaje Hinchey)',
-        'Iniciar ATB IV (ciprofloxacino + metronidazol)',
-        'Ayuno + hidratación venosa + analgesia',
-        'Evaluar necesidad de drenaje o cirugía según Hinchey',
+        'Primera presentación: TC abdomen/pelvis para confirmar/localizar/valorar gravedad cuando sea factible',
+        'No complicada de bajo riesgo: manejo ambulatorio y sin antibiótico puede ser apropiado según ACG 2026',
+        'Antibiótico si inmunocomprometido, frágil/complejo, intolerancia VO, empeoramiento, alto riesgo por estudios/imagen o seguimiento inseguro',
+        'Complicada: hospitalización según gravedad, antibiótico y control de foco; drenaje/cirugía según anatomía y evolución',
       ],
     },
     avoid: {
-      'pt': 'Colonoscopia na fase aguda. AINEs. Alta sem colonoscopia programada.',
-      'es': 'Colonoscopia en fase aguda. AINEs. Alta sin colonoscopia programada.',
+      'pt': 'Evitar antibiótico automático em todo caso não complicado, jejum fixo, colonoscopia aguda complicada e colonoscopia pós-episódio não complicado tratada como obrigatória sem alarmes/rastreio atrasado.',
+      'es': 'Evitar antibiótico automático en todo caso no complicado, ayuno fijo, colonoscopia aguda complicada y colonoscopia post-episodio no complicado tratada como obligatoria sin alarmas/cribado atrasado.',
     },
-    drugs: ['ciprofloxacino', 'metronidazol', 'amoxicilina_clavulanato', 'piperacilina_tazobactam'],
+    drugs: [],
   ),
 
   // ── Síndrome Ascítico — Início ───────────────────────────────────────────

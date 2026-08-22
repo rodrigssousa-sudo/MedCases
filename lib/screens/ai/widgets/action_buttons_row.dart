@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../calculadora_screen.dart';
 import '../../../services/ai_next_action_engine.dart';
+import '../../../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart';
+import '../../../services/ai_pipeline/plantao/contracts/plantao_section.dart';
 import '../../../services/external_tool_link_engine.dart';
 import '../../../services/offline_calculator_cache_service.dart';
 import 'action_button_policy.dart';
@@ -23,7 +25,13 @@ class ActionButtonsRow extends StatelessWidget {
   final String lang;
   final bool dark;
   final List<String> chatHistory;
-  final void Function(String prompt, {bool isStudyNext}) onActionTap;
+  final void Function(
+    String prompt, {
+    required String visibleLabel,
+    required bool isStudyNext,
+    required PlantaoContinuationType continuationType,
+    required List<PlantaoSection> requestedSections,
+  }) onActionTap;
   // BUILD 232: link pre-resolvido pelo pai com cache de deduplicacao.
   final ExternalToolLink? cachedLink;
   // BUILD 300: Modo Estudo — prompt e label dinâmico via tag [NEXT_ACTION_PROMPT:...]
@@ -36,9 +44,14 @@ class ActionButtonsRow extends StatelessWidget {
   // o botão é redirecionado para prompt de avanço linear.
   final String lastSentStudyPrompt;
 
+  /// Oculta somente a ação de IA desta linha.
+  ///
+  /// Ferramentas externas permanecem visíveis quando a continuação pedagógica
+  /// já foi migrada para StudyContinuationButton.
+  final bool suppressAiAction;
+
   // Cores institucionais -- imutaveis por design
   // Azul institucional IA (mesmo do AppBar/primary)
-  static const _kBlueAI = Color(0xFF1E88E5);
   // Verde Esmeralda — identidade "Base de Dados Local/Segura"
   // ORDEM VISUAL 02: substituição do roxo 0xFF7e22ce pelo verde 0xFF10B981
   static const _kToolBtn = Color(0xFF10B981);
@@ -56,18 +69,24 @@ class ActionButtonsRow extends StatelessWidget {
     this.studyNextPrompt = '',
     this.studyNextLabel = '',
     this.lastSentStudyPrompt = '',
+    this.suppressAiAction = false,
   });
 
   @override
   Widget build(BuildContext context) {
     // ── Motor IA: Smart Next Action (local, zero rede) ────────────────────────
-    final action = NextActionEngine.build(
-      lastUserMessage: lastUserMessage,
-      lastAiResponse: lastAiResponse,
-      isPlantaoMode: isPlantaoMode,
-      currentLanguage: lang,
-      chatHistory: chatHistory,
-    );
+    final action = suppressAiAction
+        ? const SmartNextAction(
+            label: '',
+            promptToSend: '',
+          )
+        : NextActionEngine.build(
+            lastUserMessage: lastUserMessage,
+            lastAiResponse: lastAiResponse,
+            isPlantaoMode: isPlantaoMode,
+            currentLanguage: lang,
+            chatHistory: chatHistory,
+          );
 
     // BUILD 232: ExternalToolLink vem pre-resolvido do cache do pai.
     // Nao chama ExternalToolLinkEngine.build() aqui -- elimina duplicacao em rebuilds.
@@ -82,9 +101,12 @@ class ActionButtonsRow extends StatelessWidget {
     );
     final hasStudyNext = studyAction.hasStudyNext;
 
+    final bool showAiBtn =
+        !suppressAiAction && (hasStudyNext || action.label.isNotEmpty);
+
     // Nenhum botão disponível → sem widget
     // Modo Estudo: sempre mostra o botão se hasStudyNext=true, mesmo sem action
-    if (action.label.isEmpty && link == null && !hasStudyNext) {
+    if (!showAiBtn && link == null) {
       return const SizedBox.shrink();
     }
 
@@ -126,17 +148,24 @@ class ActionButtonsRow extends StatelessWidget {
           // BUILD 300: botão azul dinâmico no Modo Estudo.
           // hasStudyNext=true → usa effectiveStudyPrompt (com dedup guard BUILD 308).
           // hasStudyNext=false → comportamento clássico via NextActionEngine.
-          final bool showAiBtn = hasStudyNext || action.label.isNotEmpty;
+          // showAiBtn foi resolvido acima, respeitando suppressAiAction.
           final aiBtn = showAiBtn
               ? ActionCardButton(
                   title: aiLabel,
                   icon: Icons.auto_awesome_rounded,
-                  accentColor: _kBlueAI,
+                  accentColor: _kToolBtn,
                   dark: dark,
                   onTap: () => onActionTap(
                     hasStudyNext ? effectiveStudyPrompt : action.promptToSend,
+                    visibleLabel: aiLabel,
                     isStudyNext:
                         hasStudyNext, // BUILD 308: sinaliza botão de Estudo
+                    continuationType: hasStudyNext
+                        ? PlantaoContinuationType.freeFollowUp
+                        : action.continuationType,
+                    requestedSections: hasStudyNext
+                        ? const <PlantaoSection>[]
+                        : action.requestedSections,
                   ),
                 )
               : null;

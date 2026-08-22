@@ -56,6 +56,7 @@ import 'gemini_service_v2.dart';
 import 'gemini_cache_service.dart'; // BUILD 278: Context Caching nativo
 import 'ai_smart_router.dart';    // Build 190: Smart Context Router
 import 'plantao_pipeline.dart';   // Build 224: PlantaoIntentClassifier
+import 'ai_pipeline/plantao/contracts/plantao_canonical_route_decision.dart';
 
 // ── Import condicional — mantido apenas para compilação sem erros ─────────────
 // Os arquivos _io e _web (implementações SSE para o gateway Node) não são
@@ -295,6 +296,11 @@ const String _modeAnchorPlantao =
     // ── MATRIZ 14 ─────────────────────────────────────────────────────────────
     '14. PARADA CARDIORRESPIRATÓRIA (PCR/ACLS):\n'
     '🟥 PCR — [RITMO: FV/TVSP/AESP/ASSISTOLIA]\n'
+    // M14_NONSHOCKABLE_SAFETY_V2025
+    '⚠️ REGRA DE RITMO: ASSISTOLIA/AESP = NÃO CHOCÁVEL; FV/TVSP = CHOCÁVEL.\n'
+    '- Se o ritmo for ASSISTOLIA/AESP: NÃO indicar desfibrilação/choque e NÃO escrever que adrenalina depende de choque.\n'
+    '- Em ASSISTOLIA/AESP: **Adrenalina 1 mg IV/IO o mais cedo possível**, repetir a cada 3–5 min, com RCP de alta qualidade e causas reversíveis.\n'
+    '- Choque/desfibrilação e amiodarona pertencem SOMENTE ao ramo FV/TVSP.\n'
     '⚡ Conduta ACLS:\n'
     '- RCP de alta qualidade 30:2 ininterrupta\n'
     '- [Choque 200J bifásico se FV/TVSP]\n'
@@ -739,22 +745,46 @@ class AiGatewayService {
       final queryAnalysis = PlantaoIntentEngine.analyze(userMessage);
 
       if (isFollowUpTurn) {
-        // ORDEM 54 M1: turno de follow-up — libera a IA das amarras da Matriz.
-        // A IA JÁ conhece o contexto clínico pelo histórico; exigir re-enunciação
-        // da Matriz inteira gera resposta engessada e verbosa.
-        intentMandate = resolvedLang == 'es'
-            ? 'TURNO DE SEGUIMIENTO:\n'
-                'El médico está continuando la misma consulta clínica.\n'
-                'ESTÁS COMPLETAMENTE LIBERADO de las estructuras fijas de las 22 Matrices de Emojis.\n'
-                'Responde la duda puntual del médico de forma directa, breve y precisa.\n'
-                'Usa texto clínico limpio, sin 🟥/💊/⛔/📌 salvo que el contexto los exija naturalmente.\n'
-                'Prioridad: velocidad, precisión, concisión. Sin repetir diagnóstico anterior.'
-            : 'TURNO DE ACOMPANHAMENTO:\n'
-                'O médico está continuando a mesma consulta clínica.\n'
-                'VOCÊ ESTÁ COMPLETAMENTE LIBERADO das amarras e estruturas fixas das 22 Matrizes de Emojis.\n'
-                'Responda a dúvida pontual do médico de forma direta, curta e precisa.\n'
-                'Use texto clínico limpo, sem 🟥/💊/⛔/📌 salvo se o contexto exigir naturalmente.\n'
-                'Prioridade: velocidade, precisão, concisão. Sem re-enunciar diagnóstico anterior.';
+        // PLANTAO_QUESTIONS_FOLLOWUP_SEMANTIC_GUARD_V1
+        // Follow-up asking what questions to ask is a QUESTIONS task even when
+        // the wording says "orientar a conduta/conducta".
+        final normalizedFollowUpRequest = userMessage.toLowerCase();
+        final isQuestionsFollowUp =
+          normalizedFollowUpRequest.contains('perguntas') ||
+          normalizedFollowUpRequest.contains('preguntas');
+
+        if (isQuestionsFollowUp) {
+          intentMandate = resolvedLang == 'es'
+              ? 'TURNO DE SEGUIMIENTO — PREGUNTAS CLAVE:\n'
+                  'La solicitud actual pide PREGUNTAS al paciente, no conducta terapéutica.\n'
+                  'La palabra "conducta" describe solamente el objetivo de las preguntas.\n'
+                  'Responde EXACTAMENTE 10 preguntas clínicas, en español, una por línea.\n'
+                  'Usa como único encabezado de sección: "Preguntas clave:".\n'
+                  'NO uses "Conduta inmediata", "Conducta inmediata", tratamiento farmacológico, dosis ni recomendaciones terapéuticas.\n'
+                  'No inventes respuestas del paciente.'
+              : 'TURNO DE ACOMPANHAMENTO — PERGUNTAS-CHAVE:\n'
+                  'A solicitação atual pede PERGUNTAS ao paciente, não conduta terapêutica.\n'
+                  'A palavra "conduta" descreve somente o objetivo das perguntas.\n'
+                  'Responda EXATAMENTE 10 perguntas clínicas, em português, uma por linha.\n'
+                  'Use como único cabeçalho de seção: "Perguntas-chave:".\n'
+                  'NÃO use "Conduta imediata", "Conducta inmediata", tratamento farmacológico, doses nem recomendações terapêuticas.\n'
+                  'Não invente respostas do paciente.';
+        } else {
+          // ORDEM 54 M1: follow-up geral permanece livre das matrizes fixas.
+          intentMandate = resolvedLang == 'es'
+              ? 'TURNO DE SEGUIMIENTO:\n'
+                  'El médico está continuando la misma consulta clínica.\n'
+                  'ESTÁS COMPLETAMENTE LIBERADO de las estructuras fijas de las 22 Matrices de Emojis.\n'
+                  'Responde la duda puntual del médico de forma directa, breve y precisa.\n'
+                  'Usa texto clínico limpio, sin 🟥/💊/⛔/📌 salvo que el contexto los exija naturalmente.\n'
+                  'Prioridad: velocidad, precisión, concisión. Sin repetir diagnóstico anterior.'
+              : 'TURNO DE ACOMPANHAMENTO:\n'
+                  'O médico está continuando a mesma consulta clínica.\n'
+                  'VOCÊ ESTÁ COMPLETAMENTE LIBERADO das amarras e estruturas fixas das 22 Matrizes de Emojis.\n'
+                  'Responda a dúvida pontual do médico de forma direta, curta e precisa.\n'
+                  'Use texto clínico limpo, sem 🟥/💊/⛔/📌 salvo se o contexto exigir naturalmente.\n'
+                  'Prioridade: velocidade, precisão, concisão. Sem re-enunciar diagnóstico anterior.';
+        }
 
         if (kDebugMode) {
           debugPrint('[AI_ROUTER][O54_M1] follow-up turn → liberty mandate injected '
@@ -762,7 +792,36 @@ class AiGatewayService {
         }
       } else {
         // 1º turno (history vazio) — injeta mandato de matriz com supremacia
-        intentMandate = PlantaoIntentEngine.buildIntentMandateV2(queryAnalysis, resolvedLang);
+        final canonicalDecision =
+          PlantaoCanonicalRouteResolver.resolveAnalysis(
+          queryAnalysis,
+          languageCode: resolvedLang,
+          observeLegacy: false,
+        );
+        final canonicalMatrixNumber =
+          canonicalDecision.contract?.legacyMatrixNumber;
+
+        intentMandate = canonicalDecision.hasCanonicalDecision &&
+          canonicalMatrixNumber != null
+          ? PlantaoIntentEngine.buildIntentMandateV2(
+            queryAnalysis,
+            resolvedLang,
+            forcedMatrixNumber: canonicalMatrixNumber,
+          )
+          : PlantaoIntentEngine.buildIntentMandateV2(
+            queryAnalysis,
+            resolvedLang,
+          );
+
+        if (kDebugMode) {
+          debugPrint(
+            '[PLANTAO_CANONICAL_CUTOVER] '
+            'source=${canonicalDecision.decisionSource.name} '
+            'model=${canonicalDecision.responseModelId?.name ?? "NONE"} '
+            'matrix=${canonicalMatrixNumber ?? "LEGACY_FALLBACK"} '
+            'legacyFallback=${!canonicalDecision.hasCanonicalDecision}',
+          );
+        }
 
         if (kDebugMode) {
           debugPrint('[AI_ROUTER][Build225] '

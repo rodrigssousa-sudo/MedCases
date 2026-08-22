@@ -9,11 +9,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/common_widgets.dart' show MedBreakpoints;
 import '../models/chat_message.dart';
 import '../widgets/clinical/structured_clinical_output_view.dart';
+import 'ai/widgets/guardia_clinical_response_view.dart';
+import '../services/ai_pipeline/structured_output_text_equivalence.dart';
+import '../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart';
+import '../services/ai_pipeline/plantao/contracts/plantao_section.dart';
 import 'ai/widgets/prompt_composer.dart';
 import 'ai/widgets/message_render_policy.dart';
 import 'ai/widgets/clinical_reference_resolver.dart';
 import 'ai/widgets/action_buttons_row.dart';
+import 'ai/widgets/study_continuation_button.dart';
 import 'ai/widgets/user_bubble.dart';
+import 'ai/widgets/user_message_display_policy.dart';
 import 'ai/widgets/mobile_ai_action_bar.dart';
 import 'ai/widgets/collapsible_content_blocks.dart';
 import 'ai/widgets/ambassador_panel.dart';
@@ -25,12 +31,10 @@ import 'ai/widgets/ai_status_sheet.dart';
 import 'ai/widgets/disconnected_input_lock.dart';
 import 'ai/widgets/google_auth_barrier_card.dart';
 import 'ai/widgets/wa_header.dart';
-import 'ai/widgets/suggestion_carousel.dart';
 import 'ai/widgets/empty_chat.dart';
 import 'ai/widgets/ai_error_banner.dart';
-import '../widgets/error_state_widget.dart'
-    show InlineConnectionBanner;
-import 'package:flutter_tts/flutter_tts.dart';
+import '../widgets/error_state_widget.dart' show InlineConnectionBanner;
+import '../services/clinical_tts_service.dart';
 import 'dart:convert';
 import '../providers/app_provider.dart';
 
@@ -39,12 +43,13 @@ import '../services/firestore_service.dart';
 import '../services/ai/ai_finalization_transaction.dart'
     show AiSessionSummary, AiSessionSource;
 import '../services/activity_service.dart';
+import '../home_v2/theme/home_v2_palette.dart';
 import '../services/external_tool_link_engine.dart'; // Build 185: Deep Link Router
 import '../services/plantao_pipeline.dart'; // Build 193: PlantaoResponse + pipeline
-import '../services/ai_smart_router.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
+import '../services/ai_smart_router.dart';
+import '../services/study_continuation_resolver.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
 import '../services/app_resume_coordinator.dart'; // ORDEM 53 M2/M3: backgroundSaveSignal + contextTimeoutSignal
 import '../services/auth_service.dart'; // BUILD 338: contingency UID when currentUser==null
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 /// Alias privado temporário para preservar os call sites do monólito durante a extração.
@@ -54,9 +59,9 @@ typedef _ChatMsg = ChatMessage;
 // Modelo de sessão de chat salva no histórico
 // ─────────────────────────────────────────────────────────────────────────────
 class _ChatSession {
-  final String id;           // timestamp ISO como ID único
-  final DateTime savedAt;    // quando foi salva
-  final String summary;      // primeira mensagem do usuário (resumo)
+  final String id; // timestamp ISO como ID único
+  final DateTime savedAt; // quando foi salva
+  final String summary; // primeira mensagem do usuário (resumo)
   final List<_ChatMsg> messages; // até 20 mensagens da sessão
 
   const _ChatSession({
@@ -75,7 +80,17 @@ class _ChatSession {
     // savedAt como ISO8601 — fallback para leitura offline (SharedPreferences)
     'savedAt': savedAt.toIso8601String(),
     'summary': summary,
-    'messages': messages.map((m) => {'id': m.id, 'role': m.role, 'text': m.text}).toList(),
+    'messages': messages
+        .map(
+          (m) => {
+            'id': m.id,
+            'role': m.role,
+            'text': m.text,
+            if (m.userDisplayText?.trim().isNotEmpty == true)
+              'userDisplayText': m.userDisplayText!.trim(),
+          },
+        )
+        .toList(),
   };
 
   /// Desserializa de JSON (SharedPreferences) ou de documento Firestore
@@ -112,16 +127,32 @@ class _ChatSession {
     final List<_ChatMsg> parsedMessages = [];
     for (final m in rawMessages) {
       try {
-        final map = m is Map ? Map<String, dynamic>.from(m) : <String, dynamic>{};
-        final msgId = map['id']?.toString()
-            ?? '${map['role'] ?? 'unknown'}_${DateTime.now().microsecondsSinceEpoch}';
+        final map = m is Map
+            ? Map<String, dynamic>.from(m)
+            : <String, dynamic>{};
+        final msgId =
+            map['id']?.toString() ??
+            '${map['role'] ?? 'unknown'}_${DateTime.now().microsecondsSinceEpoch}';
         final role = map['role']?.toString() ?? 'user';
         final text = map['text']?.toString() ?? '';
-        parsedMessages.add(_ChatMsg.withId(id: msgId, role: role, text: text));
+        final displayCandidate =
+            (map['userDisplayText'] as String?)?.trim() ?? '';
+        parsedMessages.add(
+          _ChatMsg.withId(
+            id: msgId,
+            role: role,
+            text: text,
+            userDisplayText: displayCandidate.isNotEmpty
+                ? displayCandidate
+                : null,
+          ),
+        );
       } catch (e) {
         // Mensagem individual corrompida — descarta silenciosamente sem crashar.
         if (kDebugMode) {
-          debugPrint('[MIGRATION] Skipped corrupt message entry in session $id: $e');
+          debugPrint(
+            '[MIGRATION] Skipped corrupt message entry in session $id: $e',
+          );
         }
       }
     }
@@ -196,14 +227,19 @@ class AiScreen extends StatefulWidget {
   // a aba da IA está ativa, sem prop drilling nem InheritedWidget extra.
   /// true quando há mensagens no chat (além da saudação automática)
   static final hasMessagesNotifier = ValueNotifier<bool>(false);
+
   /// quantidade de sessões no histórico de chat
   static final historyCountNotifier = ValueNotifier<int>(0);
+
   /// callback para limpar o chat (null quando o widget não está montado)
   static final clearChatCallback = ValueNotifier<VoidCallback?>(null);
+
   /// callback para abrir o histórico (null quando o widget não está montado)
   static final openHistoryCallback = ValueNotifier<VoidCallback?>(null);
+
   /// true quando IA está conectada (Gemini ou chave OpenAI configurada)
   static final aiConnectedNotifier = ValueNotifier<bool>(false);
+
   /// callback para abrir as configurações de IA (null quando não montado)
   static final openSettingsCallback = ValueNotifier<VoidCallback?>(null);
 
@@ -238,31 +274,38 @@ class AiScreen extends StatefulWidget {
   ///   3. Limpa o notifier para não re-disparar
   ///
   /// Formato: [{'role': 'user', 'text': '...'}, {'role': 'ai', 'text': '...'}]
-  static final pendingHistory =
-      ValueNotifier<List<Map<String, String>>>([]);
-
+  static final pendingHistory = ValueNotifier<List<Map<String, String>>>([]);
 }
 
 class _AiScreenState extends State<AiScreen> {
-  final _queryCtrl  = TextEditingController();
+  final _queryCtrl = TextEditingController();
   final _scrollCtrl = ScrollController();
-  final _focusNode  = FocusNode();
+  final _focusNode = FocusNode();
 
   // Referência obtida enquanto o BuildContext está ativo.
   // Usada no dispose() sem consultar ancestrais de um elemento desativado.
   AppProvider? _appProviderRef;
   final List<_ChatMsg> _messages = [];
-  bool _thinking      = false;
-  bool _hasFocus      = false;
-  bool _aiError       = false;
+  bool _thinking = false;
+  bool _hasFocus = false;
+  bool _aiError = false;
   // Task 11 — network error banner: true quando a última chamada da IA falhou
   // por problema de conexão (timeout, socket, etc.) vs. erro de chave API.
-  bool _networkError  = false;
+  bool _networkError = false;
   // Motor de Partida (Build 149): false=Plantão (≤12 linhas) | true=Estudos (22-24)
   // SUPER ORDEM MASTER 14 M5: Estudos é o modo PADRÃO — evita custo Plantão automático
-  bool _longResponse  = true;
-  bool _greetingDone  = false; // garante saudação só uma vez por sessão
-  int  _lastAiIndex  = -1;   // índice da última resposta da IA (para animar só ela)
+  bool _longResponse = true;
+
+  // AI-VIS-B.2.6-R1 — confirmação visual do modo.
+  //
+  // _longResponse continua sendo o único estado funcional real:
+  // true = Estudo | false = Guardia/Plantão.
+  //
+  // Estes dois flags controlam somente onde o seletor é exibido.
+  bool _modeConfirmed = false;
+  bool _modeReselectionPending = false;
+  bool _greetingDone = false; // garante saudação só uma vez por sessão
+  int _lastAiIndex = -1; // índice da última resposta da IA (para animar só ela)
   // Auto-scroll: só desce automaticamente se usuário estiver perto do fundo
   bool _userScrolledUp = false; // true quando usuário scrollou para cima
   // BUILD 308 [FISIOP_DEDUP]: Último studyNextPrompt enviado via botão azul.
@@ -323,6 +366,19 @@ class _AiScreenState extends State<AiScreen> {
   /// Indica se o usuário enviou ao menos 1 mensagem nova após restaurar uma sessão.
   bool _hasNewMessageAfterRestore = false;
 
+  /// Geração da restauração histórica atualmente válida.
+  int _historyRestoreGeneration = 0;
+
+  /// Última sessão explicitamente selecionada no histórico.
+  String? _selectedHistorySessionId;
+
+  /// Última resposta cuja pintura visual foi concluída.
+  /// Formato: <scrollGeneration>:<messageId>.
+  String? _studyContinuationVisualReadyIdentity;
+
+  /// Permite adotar o modo de uma sessão histórica sem reiniciá-la.
+  bool _restoredModeSelectionPending = false;
+
   // ── BUILD 232: ExtTool deduplication cache ───────────────────────────────
   // Key: messageId + ':' + textHash
   // Garante que ExternalToolLinkEngine.build() execute no máximo 1 vez por
@@ -332,24 +388,24 @@ class _AiScreenState extends State<AiScreen> {
   // são disparados no ListView item builder, que reconstrói muitas vezes.
   // _loggedPlantaoIds removido junto com _PlantaoRenderer (ORDEM 56).
   // BUILD 246: _loggedEvidenceIds — dedup EVIDENCE_GUARD por messageId+textHash.
-  final Set<String> _loggedSafeCardIds  = {};
-  final Set<String> _loggedEvidenceIds  = {};
+  final Set<String> _loggedSafeCardIds = {};
+  final Set<String> _loggedEvidenceIds = {};
   // BUILD 308 [EXT_TOOL_DEDUP]: log-dedup set para EXT_TOOL_DEDUP.
   // Evita spam de 18+ debugPrints/s no console durante rebuilds de streaming.
   // Registra apenas a 1ª ocorrência de cada extKey por sessão.
-  final Set<String> _loggedExtToolKeys  = {};
+  final Set<String> _loggedExtToolKeys = {};
   // ──────────────────────────────────────────────────────────────────────────
 
   // ── TTS (Text-to-Speech) ─────────────────────────────────────────────────
-  late final FlutterTts _tts;
-  bool _ttsReady        = false;
-  int  _ttsPlayingIndex = -1; // índice da mensagem sendo reproduzida (-1 = nenhuma)
+  final ClinicalTtsService _clinicalTts = ClinicalTtsService();
+  bool _ttsReady = false;
+  int _ttsPlayingIndex =
+      -1; // índice da mensagem sendo reproduzida (-1 = nenhuma)
 
   // ── STT (Speech-to-Text via Web Speech API) ──────────────────────────────
-  bool   _sttListening    = false; // microfone ativo
-  double _sttSoundLevel   = 0.0;   // nível de som normalizado 0.0–1.0 (onda de áudio)
-  // Sugestões ficam visíveis apenas no estado vazio + sem foco
-  bool get _showSuggestions => _messages.isEmpty && !_hasFocus;
+  bool _sttListening = false; // microfone ativo
+  double _sttSoundLevel =
+      0.0; // nível de som normalizado 0.0–1.0 (onda de áudio)
 
   /// Sincroniza os ValueNotifiers estáticos com o estado atual.
   /// Chamado automaticamente a cada setState via [_setState].
@@ -390,22 +446,30 @@ class _AiScreenState extends State<AiScreen> {
   // PT  00–06: "Boa madrugada"    |  06–12: "Bom dia"
   //     12–18: "Boa tarde"        |  18–24: "Boa noite"
   String _buildGreeting(String userName, String lang) {
-    final bool es   = lang != 'pt';
-    final int  hour = DateTime.now().hour;
+    final bool es = lang != 'pt';
+    final int hour = DateTime.now().hour;
     final String period;
     if (es) {
-      if (hour < 6)       period = 'Buena madrugada';
-      else if (hour < 12) period = 'Buenos días';
-      else if (hour < 18) period = 'Buenas tardes';
-      else                period = 'Buenas noches';
+      if (hour < 6)
+        period = 'Buena madrugada';
+      else if (hour < 12)
+        period = 'Buenos días';
+      else if (hour < 18)
+        period = 'Buenas tardes';
+      else
+        period = 'Buenas noches';
     } else {
-      if (hour < 6)       period = 'Boa madrugada';
-      else if (hour < 12) period = 'Bom dia';
-      else if (hour < 18) period = 'Boa tarde';
-      else                period = 'Boa noite';
+      if (hour < 6)
+        period = 'Boa madrugada';
+      else if (hour < 12)
+        period = 'Bom dia';
+      else if (hour < 18)
+        period = 'Boa tarde';
+      else
+        period = 'Boa noite';
     }
     final firstName = userName.trim().split(' ').first;
-    final nameStr   = firstName.isNotEmpty ? ', $firstName' : '';
+    final nameStr = firstName.isNotEmpty ? ', $firstName' : '';
     return es
         ? '$period$nameStr.\n\nSoy MedCases IA. ¿Cómo puedo ayudarte hoy?'
         : '$period$nameStr.\n\nSou o MedCases IA. Como posso te ajudar hoje?';
@@ -450,8 +514,10 @@ class _AiScreenState extends State<AiScreen> {
     // Incrementar este número em cada release força service-workers e CDNs
     // a invalidar o cache da versão anterior.
     if (kDebugMode) {
-      debugPrint('[AI_SCREEN][BUILD_285] ORDEM_56 init — '
-          'unifiedMarkdownRender=true plasticPipelineExterminated=true');
+      debugPrint(
+        '[AI_SCREEN][BUILD_285] ORDEM_56 init — '
+        'unifiedMarkdownRender=true plasticPipelineExterminated=true',
+      );
     }
     _focusNode.addListener(_onFocusChange);
     _queryCtrl.addListener(_onQueryChange);
@@ -464,9 +530,13 @@ class _AiScreenState extends State<AiScreen> {
     // Disparado quando o usuário clica "Ver respuesta completa" / "Ver mais".
     AiScreen.pendingHistory.addListener(_onPendingHistory);
     // ORDEM 53 M2: escuta sinal de background → auto-salva sessão silenciosamente.
-    AppResumeCoordinator.instance.backgroundSaveSignal.addListener(_onBackgroundSave);
+    AppResumeCoordinator.instance.backgroundSaveSignal.addListener(
+      _onBackgroundSave,
+    );
     // ORDEM 53 M3: escuta sinal de context timeout → hard reset de UI + sessão.
-    AppResumeCoordinator.instance.contextTimeoutSignal.addListener(_onContextTimeout);
+    AppResumeCoordinator.instance.contextTimeoutSignal.addListener(
+      _onContextTimeout,
+    );
     // Injeta saudação após o primeiro frame (AppProvider já disponível)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _injectGreeting();
@@ -495,7 +565,7 @@ class _AiScreenState extends State<AiScreen> {
     _initTts();
     // Registra callbacks no shell AppBar via notifiers estáticos.
     // O shell lê estes valores para exibir botões contextuais na aba da IA.
-    AiScreen.clearChatCallback.value   = _clearChat;
+    AiScreen.clearChatCallback.value = _clearChat;
     AiScreen.openHistoryCallback.value = () {
       if (!mounted) return;
       final p = _appProviderRef;
@@ -537,7 +607,9 @@ class _AiScreenState extends State<AiScreen> {
         final bool connected = p.geminiConnected || p.hasAnyAi;
         if (!connected) {
           _openAiSettings(); // abre modal de conexão automaticamente
-          debugPrint('[PROACTIVE_GATE] Tela de IA sem conexão — modal disparado.');
+          debugPrint(
+            '[PROACTIVE_GATE] Tela de IA sem conexão — modal disparado.',
+          );
         }
       });
     });
@@ -563,25 +635,34 @@ class _AiScreenState extends State<AiScreen> {
 
       // Expirado: reset silencioso — descarta thread visual (sem salvar)
       if (kDebugMode) {
-        debugPrint('[BUILD452_TTL] elapsed=${elapsed ~/ 60000}min > 30min '
-            '— limpando thread visual e reiniciando sessão limpa.');
+        debugPrint(
+          '[BUILD452_TTL] elapsed=${elapsed ~/ 60000}min > 30min '
+          '— limpando thread visual e reiniciando sessão limpa.',
+        );
       }
       // Limpa mensagens em memória; _greetingDone=false força nova saudação
       if (mounted) {
         setState(() {
           _messages.clear();
-          _greetingDone        = false;
-          _chatEpoch++;           // invalida cache gráfico do ListView
-          _activeSessionId     = null;
-          _restoredSessionId   = null;
+          _greetingDone = false;
+          _chatEpoch++; // invalida cache gráfico do ListView
+          _activeSessionId = null;
+          _restoredSessionId = null;
           _hasNewMessageAfterRestore = false;
-          _aiError             = false;
-          _networkError        = false;
-          _userScrolledUp      = false;
+          _aiError = false;
+          _networkError = false;
+          _userScrolledUp = false;
         });
         // Limpa histórico de transporte da IA (context do Gemini)
         final p = context.read<AppProvider>();
         p.clearAiHistory();
+
+        // AI-VIS-B.5-R5: o reset por TTL deve terminar no mesmo
+        // estado vazio canônico das demais entradas da IA.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          _injectGreeting();
+        });
       }
     } catch (e) {
       // Falha silenciosa — TTL nunca quebra o fluxo principal
@@ -594,68 +675,63 @@ class _AiScreenState extends State<AiScreen> {
   Future<void> _updateLastActive() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_kLastActiveKey, DateTime.now().millisecondsSinceEpoch);
+      await prefs.setInt(
+        _kLastActiveKey,
+        DateTime.now().millisecondsSinceEpoch,
+      );
     } catch (_) {}
   }
 
-  // ── Inicialização TTS ───────────────────────────────────────────────────
+  // ── Leitura clínica TTS ─────────────────────────────────────────────────
   Future<void> _initTts() async {
-    _tts = FlutterTts();
     try {
-      await _tts.setVolume(1.0);
-      await _tts.setSpeechRate(0.95);
-      await _tts.setPitch(1.0);
-      _tts.setCompletionHandler(() {
-        if (mounted) setState(() => _ttsPlayingIndex = -1);
-      });
-      _tts.setCancelHandler(() {
-        if (mounted) setState(() => _ttsPlayingIndex = -1);
-      });
-      _tts.setErrorHandler((_) {
-        if (mounted) setState(() => _ttsPlayingIndex = -1);
-      });
-      if (mounted) setState(() => _ttsReady = true);
-    } catch (_) {}
+      await _clinicalTts.initialize();
+      if (!mounted) {
+        await _clinicalTts.dispose();
+        return;
+      }
+      setState(() => _ttsReady = true);
+    } catch (e, st) {
+      debugPrint('[AiScreen][_initTts] Clinical TTS exception: $e\n$st');
+      if (mounted) {
+        setState(() {
+          _ttsReady = false;
+          _ttsPlayingIndex = -1;
+        });
+      }
+    }
   }
 
-  /// Reproduz ou para o áudio de uma mensagem da IA.
+  /// Reproduz ou interrompe a leitura clínica de uma mensagem da IA.
+  ///
+  /// A AiScreen preserva apenas o estado visual do botão. Voz, locale,
+  /// velocidade, normalização, segmentação e fila pertencem ao serviço.
   Future<void> _toggleTts(int msgIndex, String text, String lang) async {
     if (!_ttsReady) return;
-    // TTS-GUARD: flutter_tts pode lançar PlatformException em dispositivos
-    // onde o TTS engine está ausente ou corrompido. Captura para evitar crash.
+
     try {
       if (_ttsPlayingIndex == msgIndex) {
-        // Já tocando esta mensagem → para
-        await _tts.stop();
+        await _clinicalTts.stop();
         if (!mounted) return;
         setState(() => _ttsPlayingIndex = -1);
         return;
       }
-      // Para qualquer reprodução anterior
-      await _tts.stop();
-      if (!mounted) return;
-      setState(() => _ttsPlayingIndex = msgIndex);
-      // Configura idioma
-      final locale = lang == 'es' ? 'es-ES' : 'pt-BR';
-      await _tts.setLanguage(locale);
-      // Remove caracteres especiais de markdown antes de falar
-      final cleaned = _cleanForSpeech(text);
-      await _tts.speak(cleaned);
-    } catch (e, st) {
-      debugPrint('[AiScreen][_toggleTts] TTS exception: $e\n$st');
-      if (mounted) setState(() => _ttsPlayingIndex = -1);
-    }
-  }
 
-  /// Limpa texto para reprodução de voz (remove asteriscos, hifens de lista, etc.)
-  String _cleanForSpeech(String text) {
-    return text
-        .replaceAll(RegExp(r'\*+'), '')
-        .replaceAll(RegExp(r'^-\s+', multiLine: true), '')
-        .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '')
-        .replaceAll('---', '. ')
-        .replaceAll('--', '. ')
-        .trim();
+      await _clinicalTts.stop();
+      if (!mounted) return;
+
+      setState(() => _ttsPlayingIndex = msgIndex);
+
+      await _clinicalTts.speak(text, languageCode: lang);
+
+      if (!mounted || _ttsPlayingIndex != msgIndex) return;
+      setState(() => _ttsPlayingIndex = -1);
+    } catch (e, st) {
+      debugPrint('[AiScreen][_toggleTts] Clinical TTS exception: $e\n$st');
+      if (mounted && _ttsPlayingIndex == msgIndex) {
+        setState(() => _ttsPlayingIndex = -1);
+      }
+    }
   }
 
   // ── Voice-to-Text — Web + iOS + Android ─────────────────────────────────
@@ -673,8 +749,8 @@ class _AiScreenState extends State<AiScreen> {
 
   void _sttStart() {
     setState(() {
-      _sttListening     = true;
-      _sttSoundLevel    = 0.0;
+      _sttListening = true;
+      _sttSoundLevel = 0.0;
     });
     final lang = context.read<AppProvider>().lang;
     // STT-GUARD: proteção extra no call-site — stt_helper_mobile já captura
@@ -682,77 +758,79 @@ class _AiScreenState extends State<AiScreen> {
     // exceções síncronas antes de chegar ao plugin (ex: permissão negada via
     // PlatformException antes do init, ou ambiente não suportado).
     try {
-    SttHelper.start(
-      locale: lang == 'es' ? 'es-ES' : 'pt-BR',
+      SttHelper.start(
+        locale: lang == 'es' ? 'es-ES' : 'pt-BR',
 
-      // ── onResult: só chamado com texto FINAL (isFinal=true em ambas plataformas)
-      // Limpa o buffer parcial e compromete o texto final no controller.
-      // NÃO usa '$current $text' acumulativo — substitui apenas o buffer parcial
-      // para evitar o eco "eu eu eu" de chunks parciais duplicados.
-      onResult: (text) {
-        if (!mounted) return;
-        setState(() {
-          _sttListening     = false;
-          _sttSoundLevel    = 0.0;
-          // Preserva qualquer texto que o usuário tenha digitado manualmente
-          // antes de iniciar o ditado, anexando o resultado ao final.
-          final existing = _queryCtrl.text.trim();
-          final combined = existing.isEmpty ? text : '$existing $text';
-          _queryCtrl.text = combined;
-          _queryCtrl.selection = TextSelection.fromPosition(
-            TextPosition(offset: _queryCtrl.text.length),
-          );
-        });
-        _focusNode.requestFocus();
-      },
+        // ── onResult: só chamado com texto FINAL (isFinal=true em ambas plataformas)
+        // Limpa o buffer parcial e compromete o texto final no controller.
+        // NÃO usa '$current $text' acumulativo — substitui apenas o buffer parcial
+        // para evitar o eco "eu eu eu" de chunks parciais duplicados.
+        onResult: (text) {
+          if (!mounted) return;
+          setState(() {
+            _sttListening = false;
+            _sttSoundLevel = 0.0;
+            // Preserva qualquer texto que o usuário tenha digitado manualmente
+            // antes de iniciar o ditado, anexando o resultado ao final.
+            final existing = _queryCtrl.text.trim();
+            final combined = existing.isEmpty ? text : '$existing $text';
+            _queryCtrl.text = combined;
+            _queryCtrl.selection = TextSelection.fromPosition(
+              TextPosition(offset: _queryCtrl.text.length),
+            );
+          });
+          _focusNode.requestFocus();
+        },
 
-      // ── onError: garante limpeza total do estado antes do snackbar
-      onError: (code) {
-        if (!mounted) return;
-        // Fecha o canal de áudio antes de limpar o estado — evita que o
-        // microfone permaneça aberto em caso de erro no_speech/audio_session
-        SttHelper.stop();
-        setState(() {
-          _sttListening     = false;
-          _sttSoundLevel    = 0.0;
-        });
-        _showSttErrorSnack(code);
-      },
+        // ── onError: garante limpeza total do estado antes do snackbar
+        onError: (code) {
+          if (!mounted) return;
+          // Fecha o canal de áudio antes de limpar o estado — evita que o
+          // microfone permaneça aberto em caso de erro no_speech/audio_session
+          SttHelper.stop();
+          setState(() {
+            _sttListening = false;
+            _sttSoundLevel = 0.0;
+          });
+          _showSttErrorSnack(code);
+        },
 
-      // ── onEnd: limpa estado ao encerrar normalmente
-      onEnd: () {
-        if (!mounted) return;
-        setState(() {
-          _sttListening  = false;
-          _sttSoundLevel = 0.0;
-        });
-      },
+        // ── onEnd: limpa estado ao encerrar normalmente
+        onEnd: () {
+          if (!mounted) return;
+          setState(() {
+            _sttListening = false;
+            _sttSoundLevel = 0.0;
+          });
+        },
 
-      // ── onSoundLevelChange: atualiza nível para a onda de áudio animada
-      onSoundLevelChange: (level) {
-        if (!mounted || !_sttListening) return;
-        // Usa setState apenas se a mudança for perceptível (evita rebuilds desnecessários)
-        if ((level - _sttSoundLevel).abs() > 0.02) {
-          setState(() => _sttSoundLevel = level);
-        }
-      },
-    );
+        // ── onSoundLevelChange: atualiza nível para a onda de áudio animada
+        onSoundLevelChange: (level) {
+          if (!mounted || !_sttListening) return;
+          // Usa setState apenas se a mudança for perceptível (evita rebuilds desnecessários)
+          if ((level - _sttSoundLevel).abs() > 0.02) {
+            setState(() => _sttSoundLevel = level);
+          }
+        },
+      );
     } catch (e, st) {
       // STT-GUARD: erro síncrono inesperado — reseta estado sem crashar o app.
       debugPrint('[AiScreen][_sttStart] SttHelper.start exception: $e\n$st');
-      if (mounted) setState(() {
-        _sttListening  = false;
-        _sttSoundLevel = 0.0;
-      });
+      if (mounted)
+        setState(() {
+          _sttListening = false;
+          _sttSoundLevel = 0.0;
+        });
     }
   }
 
   Future<void> _sttStop() async {
     await SttHelper.stop();
-    if (mounted) setState(() {
-      _sttListening     = false;
-      _sttSoundLevel    = 0.0;
-    });
+    if (mounted)
+      setState(() {
+        _sttListening = false;
+        _sttSoundLevel = 0.0;
+      });
   }
 
   /// Exibe feedback de erro do STT ao usuario (nao bloqueia — e opcional).
@@ -782,13 +860,15 @@ class _AiScreenState extends State<AiScreen> {
       default:
         return; // outros erros tecnicos — silencioso
     }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      duration: const Duration(seconds: 3),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+      ),
+    );
   }
 
   /// Home V2 — Consome a query pendente setada pelo _HomeIaCard antes de
@@ -814,7 +894,16 @@ class _AiScreenState extends State<AiScreen> {
       _loggedSafeCardIds.clear();
       _loggedEvidenceIds.clear();
       _loggedExtToolKeys.clear(); // BUILD 308
+      final p = context.read<AppProvider>();
+
       setState(() {
+        // Home → IA é uma continuação pedagógica e entra diretamente em Estudo.
+        // O modo já nasce confirmado: sem seletor, sem reset e sem limpar o chat.
+        _longResponse = true;
+        _modeConfirmed = true;
+        _modeReselectionPending = false;
+        _restoredModeSelectionPending = false;
+
         // Build 236: marca saudação como feita para evitar dupla injeção
         // se _injectGreeting() for chamado após a restauração do histórico.
         _greetingDone = true;
@@ -836,6 +925,23 @@ class _AiScreenState extends State<AiScreen> {
           }
         }
       });
+      // A UI e o provider precisam possuir o MESMO histórico. O mini-chat usa
+      // role='ai'; o provider canônico exige role='assistant'.
+      p.rebuildAiHistoryFromMessages(
+        pairs
+            .where(
+              (message) => message['role'] == 'user' || message['role'] == 'ai',
+            )
+            .map(
+              (message) => <String, String>{
+                'role': message['role'] == 'ai' ? 'assistant' : 'user',
+                'content': message['text'] ?? '',
+              },
+            )
+            .where((message) => message['content']!.trim().isNotEmpty)
+            .toList(growable: false),
+      );
+
       // Scroll para o fim após injetar as mensagens
       Future.delayed(const Duration(milliseconds: 120), () {
         if (!mounted || !_scrollCtrl.hasClients) return;
@@ -858,8 +964,10 @@ class _AiScreenState extends State<AiScreen> {
     final hasRealMsgs = _messages.any((m) => m.role == 'user');
     if (!hasRealMsgs) return; // nada a salvar — chat vazio ou só saudação
     if (kDebugMode) {
-      debugPrint('[ORDEM53_M2] Auto-save silencioso — app foi para background '
-          'msgs=${_messages.length}');
+      debugPrint(
+        '[ORDEM53_M2] Auto-save silencioso — app foi para background '
+        'msgs=${_messages.length}',
+      );
     }
     // Usa post-frame para garantir que o context ainda é válido
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -888,10 +996,12 @@ class _AiScreenState extends State<AiScreen> {
     // ── BUILD 432: Modo Estudo → bloqueio do hard reset destrutivo ────────────────
     if (_longResponse) {
       if (kDebugMode) {
-        debugPrint('[ORDEM53_M3][BUILD432] Context Timeout detectado mas '
-            'Modo Estudo ativo → hard reset SUPRIMIDO. '
-            'UI preservada; contexto será re-alimentado via '
-            'rebuildAiHistoryFromMessages() na próxima interação.');
+        debugPrint(
+          '[ORDEM53_M3][BUILD432] Context Timeout detectado mas '
+          'Modo Estudo ativo → hard reset SUPRIMIDO. '
+          'UI preservada; contexto será re-alimentado via '
+          'rebuildAiHistoryFromMessages() na próxima interação.',
+        );
       }
       // Reconstrói _aiHistory no Provider a partir das mensagens visíveis na UI
       // para resgatar a âncora cognitiva antes do próximo envio.
@@ -901,17 +1011,21 @@ class _AiScreenState extends State<AiScreen> {
           .toList();
       if (historyPayload.isNotEmpty) {
         p.rebuildAiHistoryFromMessages(historyPayload);
-        debugPrint('[ORDEM53_M3][BUILD432] rebuildAiHistoryFromMessages '
-            'executado silenciosamente — ${historyPayload.length} entradas '
-            'restauradas no contexto da API (Modo Estudo)');
+        debugPrint(
+          '[ORDEM53_M3][BUILD432] rebuildAiHistoryFromMessages '
+          'executado silenciosamente — ${historyPayload.length} entradas '
+          'restauradas no contexto da API (Modo Estudo)',
+        );
       }
       return; // ← SUPRIME o hard reset abaixo
     }
 
     // ── Modo Plantão: hard reset completo (comportamento original) ───────────
     if (kDebugMode) {
-      debugPrint('[ORDEM53_M3] Context Timeout ativado — ≥30 min de background '
-          '→ hard reset de sessão clínica (Modo Plantão)');
+      debugPrint(
+        '[ORDEM53_M3] Context Timeout ativado — ≥30 min de background '
+        '→ hard reset de sessão clínica (Modo Plantão)',
+      );
     }
 
     // 1. Salva sessão anterior antes de destruir
@@ -925,14 +1039,14 @@ class _AiScreenState extends State<AiScreen> {
     // forçando o Flutter a descartar a árvore gráfica antiga e redesenhar
     // do zero — elimina o Stale UI no Flutter Web após context timeout.
     setState(() {
-      _chatEpoch++;          // força rebuild completo da árvore de chat
+      _chatEpoch++; // força rebuild completo da árvore de chat
       _messages.clear();
       _greetingDone = false;
       _restoredSessionId = null;
-      _activeSessionId   = null;
+      _activeSessionId = null;
       _hasNewMessageAfterRestore = false;
-      _thinking  = false;
-      _aiError   = false;
+      _thinking = false;
+      _aiError = false;
       _networkError = false;
       _userScrolledUp = false;
       _loggedSafeCardIds.clear();
@@ -949,8 +1063,11 @@ class _AiScreenState extends State<AiScreen> {
       _injectGreeting();
     });
 
-    debugPrint('[ORDEM53_M3] Hard reset concluído — nova sessão clínica pronta');
+    debugPrint(
+      '[ORDEM53_M3] Hard reset concluído — nova sessão clínica pronta',
+    );
   }
+
   void _consumePendingQuery() {
     final q = AiScreen.pendingQuery.value;
     if (q.isEmpty || !mounted) return;
@@ -959,11 +1076,89 @@ class _AiScreenState extends State<AiScreen> {
     // O callback atrasado não pode consultar ancestrais após a tela ser desativada.
     final p = context.read<AppProvider>();
 
-    AiScreen.pendingQuery.value = '';  // limpa imediatamente para não re-disparar
+    AiScreen.pendingQuery.value =
+        ''; // limpa imediatamente para não re-disparar
     Future.delayed(const Duration(milliseconds: 150), () {
       if (!mounted) return;
       _send(q, p);
     });
+  }
+
+  bool _isOpeningHomeGreeting(int index, _ChatMsg msg) {
+    if (index != 0 || msg.role != 'ai') {
+      return false;
+    }
+
+    final normalized = msg.text.trim();
+
+    return normalized.contains(
+          'Sou o MedCases IA. Como posso te ajudar hoje?',
+        ) ||
+        normalized.contains('Soy MedCases IA. ¿Cómo puedo ayudarte hoy?');
+  }
+
+  void _openResponseModeSelector() {
+    if (!mounted || !_modeConfirmed) {
+      return;
+    }
+
+    setState(() {
+      _modeConfirmed = false;
+      _modeReselectionPending = true;
+    });
+  }
+
+  void _commitResponseMode(bool newValue) {
+    if (!mounted) {
+      return;
+    }
+
+    final p = context.read<AppProvider>();
+
+    final adoptingRestoredMode =
+        _restoredModeSelectionPending && _restoredSessionId != null;
+
+    final shouldRestart =
+        !adoptingRestoredMode &&
+        (_modeReselectionPending ||
+            _messages.any((message) => message.role == 'user'));
+
+    setState(() {
+      _longResponse = newValue;
+      _modeConfirmed = true;
+      _modeReselectionPending = false;
+      _restoredModeSelectionPending = false;
+
+      _loggedSafeCardIds.clear();
+      _loggedEvidenceIds.clear();
+      _loggedExtToolKeys.clear();
+    });
+
+    if (shouldRestart) {
+      // Troca manual de modo em conversa ativa.
+      _startNewChat(preserveConfirmedMode: true);
+    } else if (!adoptingRestoredMode) {
+      // Primeira escolha em um chat realmente vazio.
+      p.clearAiHistory();
+    } else {
+      // Sessão histórica sem modo reconhecido:
+      // adota a escolha sem apagar mensagens ou gerar outro ID.
+      debugPrint(
+        '[AI_MODE_SELECTOR][RESTORED_ADOPTION] '
+        'sessionIdHash=${_restoredSessionId.hashCode} '
+        'mode=${newValue ? "ESTUDO" : "PLANTÃO"}',
+      );
+    }
+
+    if (kDebugMode) {
+      debugPrint(
+        '[AI_MODE_SELECTOR] '
+        'mode=${newValue ? "ESTUDO" : "PLANTÃO"} '
+        'restart=$shouldRestart '
+        'restoredAdoption=$adoptingRestoredMode '
+        'confirmed=true',
+      );
+    }
   }
 
   void _injectGreeting() {
@@ -971,11 +1166,14 @@ class _AiScreenState extends State<AiScreen> {
     _greetingDone = true;
     final p = context.read<AppProvider>();
     setState(() {
-      _messages.add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
+      _messages.add(
+        _ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)),
+      );
     });
   }
 
-  double _lastScrollOffset = 0.0; // Build 158: rastreia offset anterior para detectar direção
+  double _lastScrollOffset =
+      0.0; // Build 158: rastreia offset anterior para detectar direção
 
   void _onScroll() {
     if (!_scrollCtrl.hasClients) return;
@@ -987,21 +1185,19 @@ class _AiScreenState extends State<AiScreen> {
     // ainda disparava enquanto o usuário tentava subir. Com 100px a zona de
     // congelamento é confortável para tablets/iPad sem falsos positivos no fundo.
     final nearBottom = pos.pixels >= pos.maxScrollExtent - 100;
-    // ⚡ Sem setState aqui — usa variável simples para evitar rebuild no scroll
-    final wasUp = _userScrolledUp;
-    _userScrolledUp = !nearBottom;
-    // Só reconstrói se o estado mudou (botão scroll-to-bottom aparece/desaparece)
-    if (wasUp != _userScrolledUp && mounted) {
-      setState(() {});
-    }
+    // AI-RECONSTRUCTION-R18.6Y-R2-R2:
+    // nearBottom permanece exclusivamente como leitura geométrica para
+    // a barra inferior. Crescimento do Markdown ou mudança de maxScrollExtent
+    // não pode criar, remover ou simular intenção manual do usuário.
 
     // Build 158 — Hide-on-scroll: detecta direção do scroll para hide/show bottom nav.
     // Scroll para BAIXO (ler histórico, aumentando pixels) → oculta barra
     // Scroll para CIMA (voltar ao presente) → mostra barra
     // Atualiza apenas quando há mudança real (evita churn de notifier).
     final currentOffset = pos.pixels;
-    final isScrollingDown = currentOffset > _lastScrollOffset + 4; // threshold anti-bounce
-    final isScrollingUp   = currentOffset < _lastScrollOffset - 4;
+    final isScrollingDown =
+        currentOffset > _lastScrollOffset + 4; // threshold anti-bounce
+    final isScrollingUp = currentOffset < _lastScrollOffset - 4;
     if (isScrollingDown && !AiScreen.scrollingDown.value) {
       AiScreen.scrollingDown.value = true;
     } else if ((isScrollingUp || nearBottom) && AiScreen.scrollingDown.value) {
@@ -1025,9 +1221,13 @@ class _AiScreenState extends State<AiScreen> {
       final provider = _appProviderRef;
       if (provider != null) {
         _saveCurrentSessionToHistory(provider);
-        debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save dispatched successfully.');
+        debugPrint(
+          '[BUILD300][AI_SCREEN] Safe dispose session save dispatched successfully.',
+        );
       } else {
-        debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save skipped: provider cache empty.');
+        debugPrint(
+          '[BUILD300][AI_SCREEN] Safe dispose session save skipped: provider cache empty.',
+        );
       }
     } catch (e) {
       debugPrint('[BUILD300][AI_SCREEN] Safe dispose session save skipped: $e');
@@ -1057,20 +1257,17 @@ class _AiScreenState extends State<AiScreen> {
     _scrollCtrl.removeListener(_onScroll);
     AiScreen.pendingQuery.removeListener(_onPendingQuery);
     AiScreen.pendingHistory.removeListener(_onPendingHistory);
-    AppResumeCoordinator.instance.backgroundSaveSignal.removeListener(_onBackgroundSave);  // ORDEM 53 M2
-    AppResumeCoordinator.instance.contextTimeoutSignal.removeListener(_onContextTimeout);  // ORDEM 53 M3
+    AppResumeCoordinator.instance.backgroundSaveSignal.removeListener(
+      _onBackgroundSave,
+    ); // ORDEM 53 M2
+    AppResumeCoordinator.instance.contextTimeoutSignal.removeListener(
+      _onContextTimeout,
+    ); // ORDEM 53 M3
 
-    // ── 3. TTS: para reprodução e limpa handlers antes de liberar ──────────
-    // Guard: _tts é late final — inicializado de forma async em _initTts().
-    // Se dispose() disparar antes de _initTts() completar (ex: navigação rápida),
-    // acessar _tts causaria LateInitializationError. Usamos _ttsReady como sentinela.
-    if (_ttsReady) {
-      _tts.stop();
-      // Build 133: limpa handlers com no-ops (flutter_tts não aceita null em 3.32+)
-      _tts.setCompletionHandler(() {});
-      _tts.setCancelHandler(() {});
-      _tts.setErrorHandler((_) {});
-    }
+    // ── 3. TTS: invalida toda a fila clínica anterior ───────────────────────
+    // dispose() não pode aguardar Futures. O serviço invalida a geração
+    // imediatamente e solicita stop ao adaptador nativo em fire-and-forget.
+    _clinicalTts.dispose();
 
     // ── 4. Dispose de controllers e FocusNode ─────────────────────────────
     // Build 135: cancela timer de debounce pendente — evita callback após dispose
@@ -1115,7 +1312,9 @@ class _AiScreenState extends State<AiScreen> {
           } else {
             disposeSessionId = now.toIso8601String();
           }
-          final existingIdx = _chatHistory.indexWhere((s) => s.id == disposeSessionId);
+          final existingIdx = _chatHistory.indexWhere(
+            (s) => s.id == disposeSessionId,
+          );
           final session = _ChatSession(
             id: disposeSessionId,
             savedAt: now,
@@ -1123,35 +1322,39 @@ class _AiScreenState extends State<AiScreen> {
             messages: msgsToSave,
           );
           // Persiste localmente (SharedPreferences) — Firestore requer context
-          SharedPreferences.getInstance().then((prefs) {
-            try {
-              // Insere no snapshot do histórico atual
-              final histSnapshot = List<_ChatSession>.from(_chatHistory);
-              if (existingIdx >= 0) histSnapshot.removeAt(existingIdx);
-              histSnapshot.insert(0, session);
-              if (histSnapshot.length > 10) {
-                histSnapshot.removeRange(10, histSnapshot.length);
-              }
-              final key = '\$_kHistKey';
-              final json = jsonEncode(histSnapshot.map((s) => s.toJson()).toList());
-              prefs.setString(key, json);
-            } catch (_) {}
-          }).catchError((_) {});
+          SharedPreferences.getInstance()
+              .then((prefs) {
+                try {
+                  // Insere no snapshot do histórico atual
+                  final histSnapshot = List<_ChatSession>.from(_chatHistory);
+                  if (existingIdx >= 0) histSnapshot.removeAt(existingIdx);
+                  histSnapshot.insert(0, session);
+                  if (histSnapshot.length > 20) {
+                    histSnapshot.removeRange(20, histSnapshot.length);
+                  }
+                  final key = '\$_kHistKey';
+                  final json = jsonEncode(
+                    histSnapshot.map((s) => s.toJson()).toList(),
+                  );
+                  prefs.setString(key, json);
+                } catch (_) {}
+              })
+              .catchError((_) {});
         }
       }
     } catch (_) {}
 
     // ── 5. Limpa ValueNotifiers estáticos do shell AppBar ──────────────────
     // Callbacks do widget desmontado — evita referências mortas no shell.
-    AiScreen.clearChatCallback.value       = null;
-    AiScreen.openHistoryCallback.value     = null;
-    AiScreen.openSettingsCallback.value    = null;
+    AiScreen.clearChatCallback.value = null;
+    AiScreen.openHistoryCallback.value = null;
+    AiScreen.openSettingsCallback.value = null;
     AiScreen.ambassadorPanelCallback.value = null; // BUILD 310
-    AiScreen.hasMessagesNotifier.value  = false;
+    AiScreen.hasMessagesNotifier.value = false;
     AiScreen.historyCountNotifier.value = 0;
-    AiScreen.aiConnectedNotifier.value  = false;
-    AiScreen.chatKeyboardOpen.value     = false;
-    AiScreen.scrollingDown.value        = false; // Build 158: reset hide-on-scroll
+    AiScreen.aiConnectedNotifier.value = false;
+    AiScreen.chatKeyboardOpen.value = false;
+    AiScreen.scrollingDown.value = false; // Build 158: reset hide-on-scroll
 
     super.dispose();
   }
@@ -1178,7 +1381,9 @@ class _AiScreenState extends State<AiScreen> {
     if (uid == null || uid.isEmpty) return;
     // Só recarrega se o histórico foi carregado com UID nulo/anon ou com UID diferente
     if (_historyLoadedForUid == uid) return;
-    debugPrint('[BUILD430] post-OAuth uid=$uid — recarregando histórico de chat.');
+    debugPrint(
+      '[BUILD430] post-OAuth uid=$uid — recarregando histórico de chat.',
+    );
     _loadChatHistory();
   }
 
@@ -1187,7 +1392,8 @@ class _AiScreenState extends State<AiScreen> {
     if (sdkUid != null && sdkUid.isNotEmpty) return sdkUid;
     // Contingência: token REST presente mas SDK ainda não propagou o usuário
     final contingencyUid = AuthService.webUser.value?.uid;
-    if (contingencyUid != null && contingencyUid.isNotEmpty) return contingencyUid;
+    if (contingencyUid != null && contingencyUid.isNotEmpty)
+      return contingencyUid;
     return null;
   }
 
@@ -1226,13 +1432,18 @@ class _AiScreenState extends State<AiScreen> {
         _sessionsLoadGeneration++;
         final int myGeneration = _sessionsLoadGeneration;
 
-        final outcome = await p.loadAiSessionsTypedForUi(uid, caller: '_loadChatHistory');
+        final outcome = await p.loadAiSessionsTypedForUi(
+          uid,
+          caller: '_loadChatHistory',
+        );
 
         // UI-side stale-epoch guard: if this widget was rebuilt and a new
         // _loadChatHistory() started while we awaited, discard silently.
         if (!mounted || _sessionsLoadGeneration != myGeneration) {
-          debugPrint('[AI_SESSIONS_LOAD] uid=$uid STALE_EPOCH discarded '
-              'myGen=$myGeneration currentGen=$_sessionsLoadGeneration');
+          debugPrint(
+            '[AI_SESSIONS_LOAD] uid=$uid STALE_EPOCH discarded '
+            'myGen=$myGeneration currentGen=$_sessionsLoadGeneration',
+          );
           return;
         }
 
@@ -1240,13 +1451,16 @@ class _AiScreenState extends State<AiScreen> {
         if (outcome is UiLoadDiscarded<List<Map<String, dynamic>>>) {
           // Provider-side stale generation: a newer UID took ownership while
           // we were awaiting.  No state-tree mutation of any kind.
-          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=discarded '
-              'reason=${outcome.reason}');
+          debugPrint(
+            '[AI_SESSIONS_LOAD] uid=$uid result=discarded '
+            'reason=${outcome.reason}',
+          );
           return;
         }
 
         // outcome is UiLoadApplied — extract the inner FirestoreLoadResult.
-        final typedResult = (outcome as UiLoadApplied<List<Map<String, dynamic>>>).result;
+        final typedResult =
+            (outcome as UiLoadApplied<List<Map<String, dynamic>>>).result;
 
         // ── Inner: FirestoreLoadResult algebraic routing ─────────────────────
         if (typedResult.isSuccess) {
@@ -1260,8 +1474,10 @@ class _AiScreenState extends State<AiScreen> {
               .where((s) => seen.add(s.id))
               .toList();
 
-          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=success '
-              'action=hydrate count=${sessions.length} writeBack=false');
+          debugPrint(
+            '[AI_SESSIONS_LOAD] uid=$uid result=success '
+            'action=hydrate count=${sessions.length} writeBack=false',
+          );
 
           // ORDEM 27 — TELEMETRIA DE MIGRAÇÃO (Firestore path):
           if (kDebugMode) {
@@ -1269,35 +1485,44 @@ class _AiScreenState extends State<AiScreen> {
               final fmt = _detectSessionFormat(s.messages);
               switch (fmt) {
                 case 'pharma_card':
-                  debugPrint('[MIGRATION] Loaded pharma_card chat session format. id=${s.id}');
+                  debugPrint(
+                    '[MIGRATION] Loaded pharma_card chat session format. id=${s.id}',
+                  );
                 case 'plantao_structured':
-                  debugPrint('[MIGRATION] Loaded plantao_structured chat session format. id=${s.id}');
+                  debugPrint(
+                    '[MIGRATION] Loaded plantao_structured chat session format. id=${s.id}',
+                  );
                 default:
-                  debugPrint('[MIGRATION] Loaded legacy chat session format. id=${s.id}');
+                  debugPrint(
+                    '[MIGRATION] Loaded legacy chat session format. id=${s.id}',
+                  );
               }
             }
           }
 
-          if (mounted) setState(() {
-            _chatHistory.clear();
-            _chatHistory.addAll(sessions);
-          });
+          if (mounted)
+            setState(() {
+              _chatHistory.clear();
+              _chatHistory.addAll(sessions);
+            });
           _persistHistoryLocal(p);
           return;
-
         } else if (typedResult.isEmpty) {
           // EMPTY: Server-authoritative — user has no sessions. This is the
           // ONLY path that may physically clear _chatHistory.
-          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=empty '
-              'action=authoritative_clear writeBack=false');
+          debugPrint(
+            '[AI_SESSIONS_LOAD] uid=$uid result=empty '
+            'action=authoritative_clear writeBack=false',
+          );
           if (mounted) setState(() => _chatHistory.clear());
           return;
-
         } else if (typedResult.isAuthDenied) {
           // AUTH_DENIED: Firebase returned permission-denied (real auth breach).
           // Freeze local state — _chatHistory is NOT touched.
-          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=authDenied '
-              'action=freeze writeBack=false');
+          debugPrint(
+            '[AI_SESSIONS_LOAD] uid=$uid result=authDenied '
+            'action=freeze writeBack=false',
+          );
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -1308,12 +1533,13 @@ class _AiScreenState extends State<AiScreen> {
             );
           }
           return;
-
         } else if (typedResult.isOffline) {
           // OFFLINE: No connectivity. Retain currently loaded sessions.
           // _chatHistory is NOT touched — existing data remains in-memory.
-          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=offline '
-              'action=freeze writeBack=false');
+          debugPrint(
+            '[AI_SESSIONS_LOAD] uid=$uid result=offline '
+            'action=freeze writeBack=false',
+          );
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -1324,12 +1550,13 @@ class _AiScreenState extends State<AiScreen> {
             );
           }
           return;
-
         } else {
           // FAILURE: Unexpected error. Freeze local state; log for diagnostics.
-          debugPrint('[AI_SESSIONS_LOAD] uid=$uid result=failure '
-              'action=freeze writeBack=false '
-              'error=${typedResult.runtimeType}');
+          debugPrint(
+            '[AI_SESSIONS_LOAD] uid=$uid result=failure '
+            'action=freeze writeBack=false '
+            'error=${typedResult.runtimeType}',
+          );
           return;
         }
       }
@@ -1353,19 +1580,26 @@ class _AiScreenState extends State<AiScreen> {
           final fmt = _detectSessionFormat(s.messages);
           switch (fmt) {
             case 'pharma_card':
-              debugPrint('[MIGRATION] Loaded pharma_card chat session format. id=${s.id}');
+              debugPrint(
+                '[MIGRATION] Loaded pharma_card chat session format. id=${s.id}',
+              );
             case 'plantao_structured':
-              debugPrint('[MIGRATION] Loaded plantao_structured chat session format. id=${s.id}');
+              debugPrint(
+                '[MIGRATION] Loaded plantao_structured chat session format. id=${s.id}',
+              );
             default:
-              debugPrint('[MIGRATION] Loaded legacy chat session format. id=${s.id}');
+              debugPrint(
+                '[MIGRATION] Loaded legacy chat session format. id=${s.id}',
+              );
           }
         }
       }
 
-      if (mounted) setState(() {
-        _chatHistory.clear();
-        _chatHistory.addAll(sessions);
-      });
+      if (mounted)
+        setState(() {
+          _chatHistory.clear();
+          _chatHistory.addAll(sessions);
+        });
 
       // Migra para Firestore se ainda não sincronizou
       if (uid != null && uid.isNotEmpty) {
@@ -1375,7 +1609,6 @@ class _AiScreenState extends State<AiScreen> {
       }
     } catch (_) {}
   }
-
 
   /// Cache local auxiliar (SharedPreferences) — fallback offline.
   Future<void> _persistHistoryLocal(AppProvider p) async {
@@ -1410,8 +1643,10 @@ class _AiScreenState extends State<AiScreen> {
     final String? currentSession = _restoredSessionId ?? _activeSessionId;
     final String? currentUid = _resolveUid(p);
     if (currentSession == null || currentUid == null || _messages.isEmpty) {
-      debugPrint('[AI_SCREEN][DISPOSE_SAVE] skipped reason=missing_context_or_empty '
-          'session=$currentSession uid=$currentUid msgCount=${_messages.length}');
+      debugPrint(
+        '[AI_SCREEN][DISPOSE_SAVE] skipped reason=missing_context_or_empty '
+        'session=$currentSession uid=$currentUid msgCount=${_messages.length}',
+      );
       return;
     }
 
@@ -1424,9 +1659,11 @@ class _AiScreenState extends State<AiScreen> {
     final String providerSessionId = p.currentConversationSessionId;
     if (providerSessionId.isNotEmpty) {
       // This screen's current conversation is owned by the canonical v2 pipeline.
-      debugPrint('[LEGACY_WRITE][SKIPPED] '
-          'reason=canonical_session_owned '
-          'requestId=${p.currentRequestId}');
+      debugPrint(
+        '[LEGACY_WRITE][SKIPPED] '
+        'reason=canonical_session_owned '
+        'requestId=${p.currentRequestId}',
+      );
       return;
     }
 
@@ -1463,7 +1700,9 @@ class _AiScreenState extends State<AiScreen> {
       // logamos o contexto para rastreamento.
       sessionId = now.toIso8601String();
       _activeSessionId = sessionId;
-      debugPrint('[BUILD274][SessionDedup] Nova sessão iniciada id=$sessionId historyLen=${_chatHistory.length}');
+      debugPrint(
+        '[BUILD274][SessionDedup] Nova sessão iniciada id=$sessionId historyLen=${_chatHistory.length}',
+      );
     }
 
     // Se é uma sessão restaurada com novas mensagens, encontra a entrada existente
@@ -1486,20 +1725,22 @@ class _AiScreenState extends State<AiScreen> {
       setState(() {
         if (existingIdx >= 0) _chatHistory.removeAt(existingIdx);
         _chatHistory.insert(0, session);
-        if (_chatHistory.length > 10) {
-          _chatHistory.removeRange(10, _chatHistory.length);
+        if (_chatHistory.length > 20) {
+          _chatHistory.removeRange(20, _chatHistory.length);
         }
       });
     } else {
       // Dispose path: atualiza lista diretamente sem setState (widget já morto)
       if (existingIdx >= 0) _chatHistory.removeAt(existingIdx);
       _chatHistory.insert(0, session);
-      if (_chatHistory.length > 10) {
-        _chatHistory.removeRange(10, _chatHistory.length);
+      if (_chatHistory.length > 20) {
+        _chatHistory.removeRange(20, _chatHistory.length);
       }
     }
 
-    debugPrint('[BUILD274][SessionDedup] save sessionId=$sessionId msgs=${session.messages.length} existingIdx=$existingIdx');
+    debugPrint(
+      '[BUILD274][SessionDedup] save sessionId=$sessionId msgs=${session.messages.length} existingIdx=$existingIdx',
+    );
 
     // Persiste em dual-write: Firestore (primário) + SharedPreferences (offline)
     // saveAiSession usa .doc(id).set(data) — upsert seguro, sem duplicação Firestore
@@ -1520,6 +1761,14 @@ class _AiScreenState extends State<AiScreen> {
   // No longer passes 'sessions' as a constructor parameter — the sheet binds
   // reactively to p.visibleAiSessionSummaries via Selector inside its builder.
   void _openHistory(AppProvider p) {
+    // ── AI-RECONSTRUCTION-R18.6W: history_summary_hydration ─────────────
+    // O modal abre imediatamente e permanece reativo ao mesmo Selector.
+    // A leitura, o merge e a deduplicação pertencem ao AppProvider.
+    final historyUid = _resolveUid(p);
+    if (historyUid != null && historyUid.isNotEmpty) {
+      unawaited(p.loadAndMergeAiSessionSummaries(historyUid));
+    }
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1528,11 +1777,13 @@ class _AiScreenState extends State<AiScreen> {
         selector: (_, prov) => prov.visibleAiSessionSummaries,
         builder: (_, sessions, __) {
           // Emit reactive render trace (safe — no user content in metrics).
-          debugPrint('[HISTORY_MODAL][RENDER] '
-              'visibleCount=${sessions.length} '
-              'topSource=${sessions.isEmpty ? "none" : sessions.first.source.name} '
-              'topSessionIdHash=${sessions.isEmpty ? "none" : sessions.first.sessionId.hashCode} '
-              'topTitleLen=${sessions.isEmpty ? 0 : sessions.first.title.length}');
+          debugPrint(
+            '[HISTORY_MODAL][RENDER] '
+            'visibleCount=${sessions.length} '
+            'topSource=${sessions.isEmpty ? "none" : sessions.first.source.name} '
+            'topSessionIdHash=${sessions.isEmpty ? "none" : sessions.first.sessionId.hashCode} '
+            'topTitleLen=${sessions.isEmpty ? 0 : sessions.first.title.length}',
+          );
           return ChatHistorySheet(
             dark: p.darkMode,
             lang: p.lang,
@@ -1540,20 +1791,112 @@ class _AiScreenState extends State<AiScreen> {
               Navigator.pop(modalCtx);
               _restoreFromSummary(summary, p);
             },
-            onDelete: (sessionId) async {
-              // Remove from legacy chat history if present.
-              setState(() => _chatHistory.removeWhere((s) => s.id == sessionId));
-              // Remove do Firestore (legacy path)
+            onDelete: (summary) async {
               final uid = _resolveUid(p);
-              if (uid != null && uid.isNotEmpty) {
-                FirestoreService.deleteAiSession(uid, sessionId).catchError((_) {});
+              var deleted = false;
+
+              switch (summary.source) {
+                case AiSessionSource.legacyInline:
+                  if (uid != null && uid.isNotEmpty) {
+                    deleted = await FirestoreService.deleteLegacyAiSession(
+                      uid,
+                      summary.sessionId,
+                    );
+                  }
+                  break;
+
+                case AiSessionSource.canonicalV2:
+                  if (uid != null && uid.isNotEmpty) {
+                    deleted =
+                        await FirestoreService.softDeleteCanonicalAiSession(
+                          uid,
+                          summary.sessionId,
+                        );
+                  }
+                  break;
+
+                case AiSessionSource.localMemory:
+                  deleted = true;
+                  break;
               }
-              _persistHistoryLocal(p);
+
+              if (!deleted) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        p.lang == 'es'
+                            ? 'No fue posible eliminar la consulta.'
+                            : 'Não foi possível excluir a consulta.',
+                      ),
+                    ),
+                  );
+                }
+
+                return false;
+              }
+
+              if (mounted) {
+                setState(
+                  () => _chatHistory.removeWhere(
+                    (session) => session.id == summary.sessionId,
+                  ),
+                );
+              } else {
+                _chatHistory.removeWhere(
+                  (session) => session.id == summary.sessionId,
+                );
+              }
+
+              await _persistHistoryLocal(p);
+
+              p.removeVisibleAiSessionSummary(summary.sessionId);
+
+              return true;
             },
             sessions: sessions,
           );
         },
       ),
+    );
+  }
+
+  bool? _decodeStoredHistoryMode(String rawMode) {
+    final normalized = rawMode.trim().toLowerCase();
+
+    switch (normalized) {
+      case 'study':
+      case 'estudo':
+      case 'estudio':
+      case 'estudos':
+        return true;
+
+      case 'guardia':
+      case 'plantao':
+      case 'plantão':
+      case 'on_call':
+      case 'oncall':
+      case 'on-call':
+        return false;
+    }
+
+    return null;
+  }
+
+  void _adoptRestoredSessionIdentity(
+    AiSessionSummary summary,
+    AppProvider provider,
+  ) {
+    provider.adoptRestoredAiConversation(
+      sessionId: summary.sessionId,
+      title: summary.title,
+    );
+
+    debugPrint(
+      '[SESSION_RESTORE][IDENTITY_ADOPTED] '
+      'source=${summary.source.name} '
+      'sessionIdHash=${summary.sessionId.hashCode} '
+      'mode=${summary.mode}',
     );
   }
 
@@ -1564,9 +1907,20 @@ class _AiScreenState extends State<AiScreen> {
   //   canonicalV2   → fire async exchange loader, expand to chat bubbles.
   //   localMemory   → treat as canonicalV2 if sessionId matches; fallback to empty.
   void _restoreFromSummary(AiSessionSummary summary, AppProvider p) {
-    debugPrint('[SESSION_RESTORE][START] '
-        'source=${summary.source.name} '
-        'sessionIdHash=${summary.sessionId.hashCode}');
+    final restoreGeneration = ++_historyRestoreGeneration;
+
+    _selectedHistorySessionId = summary.sessionId;
+
+    final restoredMode = _decodeStoredHistoryMode(summary.mode);
+
+    debugPrint(
+      '[SESSION_RESTORE][START] '
+      'source=${summary.source.name} '
+      'sessionIdHash=${summary.sessionId.hashCode} '
+      'storedMode=${summary.mode} '
+      'modeRecognized=${restoredMode != null} '
+      'generation=$restoreGeneration',
+    );
 
     p.cancelAiStream();
     _streamingTextNotifier?.dispose();
@@ -1577,138 +1931,268 @@ class _AiScreenState extends State<AiScreen> {
 
     switch (summary.source) {
       case AiSessionSource.legacyInline:
-        // ── Legacy inline path: messages embedded in the summary ─────────────
         final inlineMsgs = summary.legacyMessages ?? [];
-        final chatMsgs = inlineMsgs.map((m) {
-          final role = (m['role'] as String?) ?? 'user';
-          final text = (m['text'] as String?) ?? (m['content'] as String?) ?? '';
-          return _ChatMsg(role: role, text: text);
+
+        final chatMsgs = inlineMsgs.map((message) {
+          final role = (message['role'] as String?) ?? 'user';
+
+          final text =
+              (message['text'] as String?) ??
+              (message['content'] as String?) ??
+              '';
+          final userDisplayText = (message['userDisplayText'] as String?)
+              ?.trim();
+
+          return _ChatMsg(
+            role: role,
+            text: text,
+            userDisplayText: userDisplayText?.isNotEmpty == true
+                ? userDisplayText
+                : null,
+          );
         }).toList();
 
         setState(() {
           _messages.clear();
-          _messages.addAll(chatMsgs.isNotEmpty ? chatMsgs : []);
-          _lastAiIndex   = -1;
-          _greetingDone  = true;
+          _messages.addAll(chatMsgs);
+          _lastAiIndex = -1;
+          _greetingDone = true;
           _userScrolledUp = false;
           _restoredSessionId = summary.sessionId;
-          _activeSessionId   = null;
+          _activeSessionId = null;
           _hasNewMessageAfterRestore = false;
-          _thinking   = false;
+
+          if (restoredMode != null) {
+            _longResponse = restoredMode;
+          }
+
+          _modeConfirmed = restoredMode != null;
+          _modeReselectionPending = false;
+          _restoredModeSelectionPending = restoredMode == null;
+
+          _thinking = false;
           _isStreaming = false;
-          _sendGuard  = false;
+          _sendGuard = false;
         });
 
-        p.rebuildAiHistoryFromMessages(chatMsgs
-            .where((m) => m.role == 'user' || m.role == 'ai')
-            .map((m) => {'role': m.role == 'ai' ? 'assistant' : 'user',
-                          'content': m.text})
-            .toList());
+        _adoptRestoredSessionIdentity(summary, p);
 
-        debugPrint('[SESSION_RESTORE][COMPLETED] '
-            'source=legacyInline '
-            'messageCount=${chatMsgs.length}');
+        p.rebuildAiHistoryFromMessages(
+          chatMsgs
+              .where(
+                (message) => message.role == 'user' || message.role == 'ai',
+              )
+              .map(
+                (message) => {
+                  'role': message.role == 'ai' ? 'assistant' : 'user',
+                  'content': message.text,
+                },
+              )
+              .toList(),
+        );
+
+        debugPrint(
+          '[SESSION_RESTORE][COMPLETED] '
+          'source=legacyInline '
+          'messageCount=${chatMsgs.length} '
+          'mode=${restoredMode == true
+              ? "estudo"
+              : restoredMode == false
+              ? "plantao"
+              : "unknown"}',
+        );
+
         _scrollDown(force: true);
 
       case AiSessionSource.canonicalV2:
       case AiSessionSource.localMemory:
-        // ── Canonical v2 path: load exchanges from Firestore sub-collection ───
         setState(() {
           _messages.clear();
-          _lastAiIndex   = -1;
-          _greetingDone  = true;
+          _lastAiIndex = -1;
+          _greetingDone = true;
           _userScrolledUp = false;
           _restoredSessionId = summary.sessionId;
-          _activeSessionId   = null;
+          _activeSessionId = null;
           _hasNewMessageAfterRestore = false;
-          _thinking   = true;   // show loading indicator during fetch
+
+          if (restoredMode != null) {
+            _longResponse = restoredMode;
+          }
+
+          _modeConfirmed = restoredMode != null;
+          _modeReselectionPending = false;
+          _restoredModeSelectionPending = restoredMode == null;
+
+          _thinking = true;
           _isStreaming = false;
-          _sendGuard  = false;
+          _sendGuard = false;
         });
 
         final uid = _resolveUid(p) ?? '';
+
         if (uid.isEmpty) {
-          // No UID — abort restore, retain empty state.
-          if (mounted) setState(() { _thinking = false; });
+          if (mounted) {
+            setState(() {
+              _thinking = false;
+            });
+          }
+
           return;
         }
 
-        // Fire background async exchange loader — NEVER await in a lifecycle cb.
         () async {
           try {
             final result = await FirestoreService.loadAiSessionExchangesTyped(
-                uid, summary.sessionId);
+              uid,
+              summary.sessionId,
+            );
+
+            if (!mounted ||
+                restoreGeneration != _historyRestoreGeneration ||
+                _selectedHistorySessionId != summary.sessionId) {
+              debugPrint(
+                '[SESSION_RESTORE][STALE_DROP] '
+                'sessionIdHash=${summary.sessionId.hashCode} '
+                'restoreGeneration=$restoreGeneration '
+                'currentGeneration=$_historyRestoreGeneration',
+              );
+
+              return;
+            }
 
             if (result.isSuccess) {
               final exchanges = result.dataOrElse([]);
-              debugPrint('[SESSION_EXCHANGES_LOAD][SUCCESS] '
-                  'sessionIdHash=${summary.sessionId.hashCode} '
-                  'exchangeCount=${exchanges.length} '
-                  'messageCount=${exchanges.length * 2}');
 
-              // Expand each exchange into two chat bubbles (user + assistant).
+              debugPrint(
+                '[SESSION_EXCHANGES_LOAD][SUCCESS] '
+                'sessionIdHash=${summary.sessionId.hashCode} '
+                'exchangeCount=${exchanges.length} '
+                'messageCount=${exchanges.length * 2}',
+              );
+
               final chatMsgs = <_ChatMsg>[];
-              for (final ex in exchanges) {
-                final userInput = (ex['userInput'] as String?) ?? '';
-                final aiOutput  = (ex['assistantOutput'] as String?) ?? '';
+
+              for (final exchange in exchanges) {
+                final userInput = (exchange['userInput'] as String?) ?? '';
+                final userDisplayText = (exchange['userDisplayText'] as String?)
+                    ?.trim();
+
+                final aiOutput = (exchange['assistantOutput'] as String?) ?? '';
+
                 if (userInput.isNotEmpty) {
-                  chatMsgs.add(_ChatMsg(role: 'user', text: userInput));
+                  chatMsgs.add(
+                    _ChatMsg(
+                      role: 'user',
+                      text: userInput,
+                      userDisplayText: userDisplayText?.isNotEmpty == true
+                          ? userDisplayText
+                          : null,
+                    ),
+                  );
                 }
+
                 if (aiOutput.isNotEmpty) {
                   chatMsgs.add(_ChatMsg(role: 'ai', text: aiOutput));
                 }
               }
 
-              if (!mounted) return;
+              _adoptRestoredSessionIdentity(summary, p);
+
               setState(() {
                 _messages.clear();
                 _messages.addAll(chatMsgs);
                 _thinking = false;
               });
 
-              p.rebuildAiHistoryFromMessages(chatMsgs
-                  .where((m) => m.role == 'user' || m.role == 'ai')
-                  .map((m) => {'role': m.role == 'ai' ? 'assistant' : 'user',
-                                'content': m.text})
-                  .toList());
+              p.rebuildAiHistoryFromMessages(
+                chatMsgs
+                    .where(
+                      (message) =>
+                          message.role == 'user' || message.role == 'ai',
+                    )
+                    .map(
+                      (message) => {
+                        'role': message.role == 'ai' ? 'assistant' : 'user',
+                        'content': message.text,
+                      },
+                    )
+                    .toList(),
+              );
 
-              debugPrint('[SESSION_RESTORE][COMPLETED] '
-                  'source=${summary.source.name} '
-                  'messageCount=${chatMsgs.length}');
+              debugPrint(
+                '[SESSION_RESTORE][COMPLETED] '
+                'source=${summary.source.name} '
+                'messageCount=${chatMsgs.length} '
+                'mode=${restoredMode == true
+                    ? "estudo"
+                    : restoredMode == false
+                    ? "plantao"
+                    : "unknown"}',
+              );
+
               _scrollDown(force: true);
             } else if (result.isEmpty) {
-              // Session exists but no exchanges yet — safe empty state.
-              if (!mounted) return;
-              setState(() { _thinking = false; });
-              debugPrint('[SESSION_RESTORE][COMPLETED] '
-                  'source=${summary.source.name} messageCount=0');
-            } else if (result.isAuthDenied) {
-              // Permission denied — freeze current layout, abort restore.
-              if (!mounted) return;
+              _adoptRestoredSessionIdentity(summary, p);
+
               setState(() {
                 _thinking = false;
-                _restoredSessionId = null;  // clear the restore anchor
               });
-              debugPrint('[SESSION_RESTORE][ABORTED] reason=auth_denied '
-                  'sessionIdHash=${summary.sessionId.hashCode}');
+
+              debugPrint(
+                '[SESSION_RESTORE][COMPLETED] '
+                'source=${summary.source.name} '
+                'messageCount=0',
+              );
+            } else if (result.isAuthDenied) {
+              setState(() {
+                _thinking = false;
+                _restoredSessionId = null;
+                _restoredModeSelectionPending = false;
+              });
+
+              debugPrint(
+                '[SESSION_RESTORE][ABORTED] '
+                'reason=auth_denied '
+                'sessionIdHash=${summary.sessionId.hashCode}',
+              );
             } else if (result.isOffline) {
-              // Network error — freeze current layout, do not render empty.
-              if (!mounted) return;
-              setState(() { _thinking = false; });
-              debugPrint('[SESSION_RESTORE][ABORTED] reason=offline '
-                  'sessionIdHash=${summary.sessionId.hashCode}');
+              setState(() {
+                _thinking = false;
+              });
+
+              debugPrint(
+                '[SESSION_RESTORE][ABORTED] '
+                'reason=offline '
+                'sessionIdHash=${summary.sessionId.hashCode}',
+              );
             } else {
-              // Unrecoverable error — freeze current layout, never empty.
-              if (!mounted) return;
-              setState(() { _thinking = false; });
-              debugPrint('[SESSION_RESTORE][ABORTED] reason=failure '
-                  'sessionIdHash=${summary.sessionId.hashCode}');
+              setState(() {
+                _thinking = false;
+              });
+
+              debugPrint(
+                '[SESSION_RESTORE][ABORTED] '
+                'reason=failure '
+                'sessionIdHash=${summary.sessionId.hashCode}',
+              );
             }
-          } catch (err) {
-            if (!mounted) return;
-            setState(() { _thinking = false; });
-            debugPrint('[SESSION_RESTORE][ABORTED] reason=exception '
-                'sessionIdHash=${summary.sessionId.hashCode} err=$err');
+          } catch (error) {
+            if (!mounted ||
+                restoreGeneration != _historyRestoreGeneration ||
+                _selectedHistorySessionId != summary.sessionId) {
+              return;
+            }
+
+            setState(() {
+              _thinking = false;
+            });
+
+            debugPrint(
+              '[SESSION_RESTORE][ABORTED] '
+              'reason=exception '
+              'sessionIdHash=${summary.sessionId.hashCode} '
+              'err=$error',
+            );
           }
         }();
     }
@@ -1736,7 +2220,7 @@ class _AiScreenState extends State<AiScreen> {
       if (_userScrolledUp && !force) return;
       if (!_scrollCtrl.hasClients) return;
 
-      final pos    = _scrollCtrl.position;
+      final pos = _scrollCtrl.position;
       final target = pos.maxScrollExtent;
 
       // Sem movimento necessário
@@ -1812,6 +2296,32 @@ class _AiScreenState extends State<AiScreen> {
     });
   }
 
+  void _onStudyContinuationVisualComplete(String messageId, int generation) {
+    if (!mounted ||
+        _isStreaming ||
+        generation != _scrollGeneration ||
+        _lastAiIndex < 0 ||
+        _lastAiIndex >= _messages.length) {
+      return;
+    }
+
+    final lastAiMessage = _messages[_lastAiIndex];
+
+    if (lastAiMessage.role != 'ai' || lastAiMessage.id != messageId) {
+      return;
+    }
+
+    final identity = '$generation:$messageId';
+
+    if (_studyContinuationVisualReadyIdentity == identity) {
+      return;
+    }
+
+    setState(() {
+      _studyContinuationVisualReadyIdentity = identity;
+    });
+  }
+
   // Guard local de envio: complementa o guard no provider.
   // Evita que ENTER + click simultâneo no botão dispare 2 envios.
   bool _sendGuard = false;
@@ -1851,14 +2361,75 @@ class _AiScreenState extends State<AiScreen> {
 
   // Wrapper de debounce: agenda _send com 300ms de delay.
   // Chamadas repetidas dentro da janela reiniciam o timer (último vence).
-  void _sendDebounced(String text, AppProvider p, {bool fromButton = false}) {
+  void _sendDebounced(
+    String text,
+    AppProvider p, {
+    bool fromButton = false,
+    String? userDisplayText,
+    PlantaoContinuationType continuationType =
+        PlantaoContinuationType.freeFollowUp,
+    List<PlantaoSection> requestedSections = const <PlantaoSection>[],
+  }) {
     _submitDebounceTimer?.cancel();
     _submitDebounceTimer = Timer(const Duration(milliseconds: 300), () {
-      _send(text, p, fromButton: fromButton);
+      _send(
+        text,
+        p,
+        fromButton: fromButton,
+        userDisplayText: userDisplayText,
+        continuationType: continuationType,
+        requestedSections: requestedSections,
+      );
     });
   }
 
-  Future<void> _send(String text, AppProvider p, {bool fromButton = false}) async {
+  // PHASE3I-J2D1: bind canonical user case anchor to Plantão button actions.
+  //
+  // The visible action stays short in the chat. Only the productive provider
+  // input receives the original clinical case, derived exclusively from a
+  // prior user message. AI-generated text is never used as factual case evidence.
+  String _bindPlantaoCaseAnchorForButton(String actionText) {
+    final normalizedAction = actionText.trim();
+    if (normalizedAction.isEmpty || _longResponse) return actionText;
+
+    String? canonicalUserCase;
+    for (final message in _messages) {
+      if (message.role != 'user') continue;
+      final candidate = message.text.trim();
+      if (candidate.isEmpty || candidate == normalizedAction) continue;
+      canonicalUserCase = candidate;
+      break;
+    }
+
+    if (canonicalUserCase == null || canonicalUserCase.isEmpty) {
+      return actionText;
+    }
+
+    if (kDebugMode) {
+      debugPrint(
+        '[PHASE3I_J2D1][CASE_ANCHOR_BOUND] '
+        'caseChars=${canonicalUserCase.length} '
+        'actionChars=${normalizedAction.length}',
+      );
+    }
+
+    return '$normalizedAction\n\n'
+        'CONTEXTO CLÍNICO OBRIGATÓRIO DESTE MESMO CASO, '
+        'FORNECIDO PELO USUÁRIO:\n'
+        '$canonicalUserCase\n\n'
+        'Responda à ação solicitada preservando explicitamente os dados '
+        'clínicos acima. Não substitua o caso por uma orientação genérica.';
+  }
+
+  Future<void> _send(
+    String text,
+    AppProvider p, {
+    bool fromButton = false,
+    String? userDisplayText,
+    PlantaoContinuationType continuationType =
+        PlantaoContinuationType.freeFollowUp,
+    List<PlantaoSection> requestedSections = const <PlantaoSection>[],
+  }) async {
     // ── BUILD 303 SECURITY PATCH: PRÉ-GUARDA ABSOLUTA (LAYER 0) ──────────────
     // Interceptação SÍNCRONA antes de qualquer outra lógica — cobre TODAS as
     // rotas de entrada: botão, Enter (KeyboardListener), onSubmitted, chip tap,
@@ -1869,14 +2440,17 @@ class _AiScreenState extends State<AiScreen> {
     if (p.currentUser == null || (!p.geminiConnected && p.openAiKey.isEmpty)) {
       FocusScope.of(context).unfocus();
       _openAiSettings();
-      debugPrint('[BUILD303_LAYER0] Bloqueio pré-guarda: '
-          'currentUser=${p.currentUser?.uid ?? "NULL"} '
-          'geminiConnected=${p.geminiConnected} '
-          'openAiKey=${p.openAiKey.isNotEmpty} → return imediato, zero bytes ao backend.');
+      debugPrint(
+        '[BUILD303_LAYER0] Bloqueio pré-guarda: '
+        'currentUser=${p.currentUser?.uid ?? "NULL"} '
+        'geminiConnected=${p.geminiConnected} '
+        'openAiKey=${p.openAiKey.isNotEmpty} → return imediato, zero bytes ao backend.',
+      );
       return;
     }
 
     final trimmed = text.trim();
+    final normalizedUserDisplayText = userDisplayText?.trim() ?? '';
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
     if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
 
@@ -1923,8 +2497,10 @@ class _AiScreenState extends State<AiScreen> {
       }
       // 4. Modal de conexão — oportunidade clara de autenticação
       _openAiSettings();
-      debugPrint('[HARD_BLOCKER_V2] Factor2 acionado — geminiConnected=${p.geminiConnected} '
-          'openAiKey=${p.openAiKey.isNotEmpty} → bloqueio total, modal levantado.');
+      debugPrint(
+        '[HARD_BLOCKER_V2] Factor2 acionado — geminiConnected=${p.geminiConnected} '
+        'openAiKey=${p.openAiKey.isNotEmpty} → bloqueio total, modal levantado.',
+      );
       return; // ← BARREIRA ABSOLUTA: nenhum código abaixo executa
     }
 
@@ -1947,11 +2523,20 @@ class _AiScreenState extends State<AiScreen> {
       subtitle: 'IA Clínica',
     );
     setState(() {
-      _messages.add(_ChatMsg(role: 'user', text: trimmed));
+      _messages.add(
+        _ChatMsg(
+          role: 'user',
+          text: trimmed,
+          userDisplayText: normalizedUserDisplayText.isNotEmpty
+              ? normalizedUserDisplayText
+              : null,
+        ),
+      );
       _thinking = true;
-      _aiError  = false;
+      _aiError = false;
       _networkError = false; // limpa banner de rede ao enviar nova mensagem
-      _userScrolledUp = false; // reset ao enviar — desce para mostrar "pensando"
+      _userScrolledUp =
+          false; // reset ao enviar — desce para mostrar "pensando"
       // Marca que o usuário enviou nova mensagem (relevante ao restaurar sessão)
       _hasNewMessageAfterRestore = true;
     });
@@ -1998,17 +2583,106 @@ class _AiScreenState extends State<AiScreen> {
     // prompt-leak pode aparecer (primeiras linhas da resposta, ~600 chars).
     // Após 12 chunks sem leak, _metaHeadersConfirmedClean=true: fast path.
     bool metaHeadersConfirmedClean = false;
-    int  chunksSinceStart = 0;
+    int chunksSinceStart = 0;
+    int guardiaTraceUiChunkIndex = 0;
+    String? guardiaFrozenVisibleText;
+
+    // PHASE3K-C5A-R12-V5: mantém feedback animado quando os deltas
+    // terminam, mas o commit terminal ainda está validando/persistindo.
+    // O indicador não altera texto, histórico, DTO ou persistência.
+    Timer? terminalGapIndicatorTimer;
+    var terminalGapIndicatorVisible = false;
+
+    void clearTerminalGapIndicator({
+      required String reason,
+      bool rebuild = true,
+    }) {
+      terminalGapIndicatorTimer?.cancel();
+      terminalGapIndicatorTimer = null;
+      if (!terminalGapIndicatorVisible) return;
+
+      terminalGapIndicatorVisible = false;
+      if (rebuild && mounted && uiRequestGeneration == _aiUiRequestGeneration) {
+        setState(() {
+          _thinking = false;
+        });
+      }
+
+      assert(() {
+        debugPrint(
+          '[GUARDIA_TERMINAL_GAP] stage=indicator_off '
+          'reason=$reason '
+          'tsUs=${DateTime.now().microsecondsSinceEpoch}',
+        );
+        return true;
+      }());
+    }
+
+    void armTerminalGapIndicator() {
+      terminalGapIndicatorTimer?.cancel();
+      terminalGapIndicatorTimer = Timer(const Duration(milliseconds: 450), () {
+        if (!mounted ||
+            uiRequestGeneration != _aiUiRequestGeneration ||
+            !_isStreaming ||
+            terminalGapIndicatorVisible) {
+          return;
+        }
+
+        terminalGapIndicatorVisible = true;
+        setState(() {
+          _thinking = true;
+        });
+
+        assert(() {
+          debugPrint(
+            '[GUARDIA_TERMINAL_GAP] stage=indicator_on '
+            'tsUs=${DateTime.now().microsecondsSinceEpoch}',
+          );
+          return true;
+        }());
+      });
+    }
 
     try {
       // ── Streaming V2 via sendAiMessage ────────────────────────────────────
       // Retorna true se usou streaming (Gemini conectado), false se usou fallback.
+      final providerInput = fromButton && !_longResponse
+          ? _bindPlantaoCaseAnchorForButton(trimmed)
+          : trimmed;
+
       await p.sendAiMessage(
-        trimmed,
-        longResponse:  _longResponse,  // Motor de Partida (Build 149)
-        fromButton:    fromButton,      // BUILD 262: preserves thread on action buttons
+        providerInput,
+        visibleUserInput: trimmed,
+        userDisplayText: normalizedUserDisplayText.isNotEmpty
+            ? normalizedUserDisplayText
+            : null,
+        longResponse: _longResponse, // Motor de Partida (Build 149)
+        fromButton: fromButton, // BUILD 262: preserves thread on action buttons
+        shadowContinuationType: continuationType,
+        shadowRequestedSections: requestedSections,
         onChunk: (accumulated) {
           if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
+
+          clearTerminalGapIndicator(reason: 'next_chunk');
+          armTerminalGapIndicator();
+
+          guardiaTraceUiChunkIndex++;
+          final guardiaTraceNotifierBefore =
+              _streamingTextNotifier?.value.length ?? 0;
+          assert(() {
+            if (!_longResponse &&
+                (guardiaTraceUiChunkIndex <= 3 ||
+                    guardiaTraceUiChunkIndex % 25 == 0)) {
+              debugPrint(
+                '[GUARDIA_TRACE] stage=I2_ui_chunk_in '
+                'uiGeneration=$uiRequestGeneration '
+                'chunkIndex=$guardiaTraceUiChunkIndex '
+                'incomingLen=${accumulated.length} '
+                'notifierBefore=$guardiaTraceNotifierBefore',
+              );
+            }
+            return true;
+          }());
 
           // ── BUILD 276: SUPPRESSED CHUNK RENDERING ─────────────────────────
           // Arquitectura: mantém _thinking=true e AiShimmerDots visível
@@ -2033,8 +2707,7 @@ class _AiScreenState extends State<AiScreen> {
           // EXCEPÇÃO: primeiro chunk (streamingMsgIdx == -1) passa sempre
           // para criar o slot sem atraso perceptível.
           final nowMs = DateTime.now().millisecondsSinceEpoch;
-          if (streamingMsgIdx != -1 &&
-              nowMs - _lastChunkRenderMs < 25) return;
+          if (streamingMsgIdx != -1 && nowMs - _lastChunkRenderMs < 25) return;
           _lastChunkRenderMs = nowMs;
 
           try {
@@ -2071,6 +2744,49 @@ class _AiScreenState extends State<AiScreen> {
               if (chunksSinceStart >= 12) metaHeadersConfirmedClean = true;
             }
 
+            final String visibleStreamingChunk;
+            if (_longResponse) {
+              visibleStreamingChunk = cleanedChunk;
+            } else if (guardiaFrozenVisibleText != null) {
+              visibleStreamingChunk = guardiaFrozenVisibleText!;
+            } else {
+              final stableGuardiaText =
+                  GuardiaStreamingPresentation.stableBeforeHardStop(
+                    rawText: cleanedChunk,
+                    isStreaming: true,
+                  );
+              final previousVisibleText = _streamingTextNotifier?.value ?? '';
+              final hardStopBoundaryDetected =
+                  stableGuardiaText.length < cleanedChunk.length;
+
+              if (hardStopBoundaryDetected) {
+                final canPreservePreviousVisible =
+                    previousVisibleText.isNotEmpty &&
+                    previousVisibleText.length >= stableGuardiaText.length &&
+                    cleanedChunk.startsWith(previousVisibleText);
+                final monotonicFrozenText = canPreservePreviousVisible
+                    ? previousVisibleText
+                    : stableGuardiaText;
+
+                guardiaFrozenVisibleText = monotonicFrozenText;
+                visibleStreamingChunk = monotonicFrozenText;
+
+                assert(() {
+                  debugPrint(
+                    '[GUARDIA_STREAM_FREEZE] hardStopTailHidden=true '
+                    'monotonic=true '
+                    'previousVisibleLen=${previousVisibleText.length} '
+                    'stableLen=${stableGuardiaText.length} '
+                    'visibleLen=${monotonicFrozenText.length} '
+                    'bufferLen=${cleanedChunk.length}',
+                  );
+                  return true;
+                }());
+              } else {
+                visibleStreamingChunk = stableGuardiaText;
+              }
+            }
+
             // ── Atualização do buffer interno ─────────────────────────────
             // Invariante: buffer só cresce ou permanece igual entre chunks.
             // (cleanedChunk = texto acumulado completo do provider, nunca truncado)
@@ -2091,7 +2807,24 @@ class _AiScreenState extends State<AiScreen> {
                   _isStreaming = true;
                   _lastAiIndex = streamingMsgIdx;
                 });
-                _streamingTextNotifier?.value = cleanedChunk;
+                if (_streamingTextNotifier?.value != visibleStreamingChunk) {
+                  _streamingTextNotifier?.value = visibleStreamingChunk;
+                }
+                assert(() {
+                  if (!_longResponse) {
+                    debugPrint(
+                      '[GUARDIA_TRACE] stage=I2_ui_notifier_out '
+                      'uiGeneration=$uiRequestGeneration '
+                      'chunkIndex=$guardiaTraceUiChunkIndex '
+                      'incomingLen=${accumulated.length} '
+                      'cleanedLen=${cleanedChunk.length} '
+                      'notifierBefore=$guardiaTraceNotifierBefore '
+                      'notifierAfter='
+                      '${_streamingTextNotifier?.value.length ?? 0}',
+                    );
+                  }
+                  return true;
+                }());
               }
             } else {
               // Chunks subsequentes: atualiza buffer E notifier para render em tempo real.
@@ -2106,7 +2839,24 @@ class _AiScreenState extends State<AiScreen> {
                   );
                   // BUILD 332 Fix 2: notifier → repaint localizado na bolha de streaming
                   // sem rebuild de toda a árvore (economia de UI thread).
-                  _streamingTextNotifier?.value = cleanedChunk;
+                  if (_streamingTextNotifier?.value != visibleStreamingChunk) {
+                    _streamingTextNotifier?.value = visibleStreamingChunk;
+                  }
+                  assert(() {
+                    if (!_longResponse) {
+                      debugPrint(
+                        '[GUARDIA_TRACE] stage=I2_ui_notifier_out '
+                        'uiGeneration=$uiRequestGeneration '
+                        'chunkIndex=$guardiaTraceUiChunkIndex '
+                        'incomingLen=${accumulated.length} '
+                        'cleanedLen=${cleanedChunk.length} '
+                        'notifierBefore=$guardiaTraceNotifierBefore '
+                        'notifierAfter='
+                        '${_streamingTextNotifier?.value.length ?? 0}',
+                      );
+                    }
+                    return true;
+                  }());
                 }
               }
             }
@@ -2115,14 +2865,50 @@ class _AiScreenState extends State<AiScreen> {
           }
         },
         onDone: (finalText) {
+          clearTerminalGapIndicator(reason: 'done', rebuild: false);
           if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
+
+          // PHASE3I-J2B1: terminal ownership reached the active UI request.
+          // Release the synchronous double-submit latch on terminal delivery.
+          _sendGuard = false;
+          final guardiaTraceCurrentMessageLen =
+              streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length
+              ? _messages[streamingMsgIdx].text.length
+              : -1;
+
+          // MEDCASES_IA_PLANTAO_FINAL_TEXT_CONTINUITY_V1_B_R0_R1
+          // Snapshot terminal do texto acumulado que o usuário já viu durante
+          // o streaming. É somente um fallback de continuidade: nunca substitui
+          // uma resposta final normal/mais rica.
+          final guardiaProvisionalText =
+              !_longResponse &&
+                  streamingMsgIdx >= 0 &&
+                  streamingMsgIdx < _messages.length
+              ? _messages[streamingMsgIdx].text.trim()
+              : '';
+          assert(() {
+            if (!_longResponse) {
+              debugPrint(
+                '[GUARDIA_TRACE] stage=I4_ui_final '
+                'tsUs=${DateTime.now().microsecondsSinceEpoch} '
+                'uiGeneration=$uiRequestGeneration '
+                'chunkIndex=$guardiaTraceUiChunkIndex '
+                'finalTextLen=${finalText.length} '
+                'notifierLen=${_streamingTextNotifier?.value.length ?? 0} '
+                'messageLen=$guardiaTraceCurrentMessageLen',
+              );
+            }
+            return true;
+          }());
           // ── Detecta tipo de resultado ─────────────────────────────────────
-          final isKeyError = finalText.startsWith('ERRO') && finalText.contains('API');
+          final isKeyError =
+              finalText.startsWith('ERRO') && finalText.contains('API');
           // Detecta erro de rede — NÃO usa finalText.contains('🚨') como critério
           // pois 🚨 é também marcador de seção clínica válida (ex: "🚨 INFARTO AGUDO DO MIOCÁRDIO").
           // Usamos apenas keywords textuais específicas de mensagens de erro de rede.
           final normalizedFinalText = finalText.toLowerCase();
-          final isNetErr = normalizedFinalText.contains('sem conex') ||
+          final isNetErr =
+              normalizedFinalText.contains('sem conex') ||
               normalizedFinalText.contains('sin conex') ||
               normalizedFinalText.contains('timeout') ||
               normalizedFinalText.contains('falha na conex') ||
@@ -2145,14 +2931,17 @@ class _AiScreenState extends State<AiScreen> {
               finalText.startsWith(AppProvider.kSafeCardMarkerEs);
 
           if (isSafeCardDone) {
-            if (kDebugMode) debugPrint('[SAFE_CARD_GUARD] onDone safeCard=true removing partial streamingMsgIdx=$streamingMsgIdx');
+            if (kDebugMode)
+              debugPrint(
+                '[SAFE_CARD_GUARD] onDone safeCard=true removing partial streamingMsgIdx=$streamingMsgIdx',
+              );
             _streamingTextNotifier?.dispose();
             _streamingTextNotifier = null;
             setState(() {
-              _thinking     = false;
-              _isStreaming   = false;
-              _aiError       = false;
-              _networkError  = false;
+              _thinking = false;
+              _isStreaming = false;
+              _aiError = false;
+              _networkError = false;
               // Remove bolha parcial do mesmo request (se já havia chunks)
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
                 _messages.removeAt(streamingMsgIdx);
@@ -2199,16 +2988,17 @@ class _AiScreenState extends State<AiScreen> {
             _streamingTextNotifier?.dispose();
             _streamingTextNotifier = null;
             setState(() {
-              _thinking    = false;
-              _isStreaming  = false;
-              _aiError      = isKeyError;
+              _thinking = false;
+              _isStreaming = false;
+              _aiError = isKeyError;
               _networkError = isNetErr;
               // ── NETWORK SAFETY: erro de rede no onDone ───────────────────
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
                 _messages.removeAt(streamingMsgIdx);
                 streamingMsgIdx = -1;
               }
-              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+              if (_messages.isNotEmpty &&
+                  _messages.last.role == 'user' &&
                   _messages.last.text == trimmed) {
                 _messages.removeLast();
               }
@@ -2225,11 +3015,8 @@ class _AiScreenState extends State<AiScreen> {
             // No Modo Estudo, o texto começa com ## e não com 🟥 — injetar
             // o cabeçalho 🟥 CONDUTA quebraria a hierarquia didática.
             String safeFinalText = _longResponse
-                ? finalText  // Modo Estudo: texto sem modificação
-                : _enforceMedicalFormat(
-                    finalText,
-                    p.lang,
-                  );
+                ? finalText // Modo Estudo: texto sem modificação
+                : _enforceMedicalFormat(finalText, p.lang);
 
             // ── Build 226: Plantão Truncation Guard ──────────────────────────
             // Detecta resposta truncada no Modo Plantão (ex: 503 mid-stream)
@@ -2239,7 +3026,8 @@ class _AiScreenState extends State<AiScreen> {
               safeFinalText = _plantaoTruncationGuard(
                 safeFinalText,
                 p.lang,
-                userQuery: trimmed, // BUILD 248B: passa query para detecção de intent
+                userQuery:
+                    trimmed, // BUILD 248B: passa query para detecção de intent
               );
             }
 
@@ -2251,9 +3039,13 @@ class _AiScreenState extends State<AiScreen> {
             // Runs once on the definitive final text (not on chunks) — zero cost.
             safeFinalText = safeFinalText
                 .split('\n')
-                .map((line) => line.trimLeft().isEmpty ? line : (
-                  line.trimLeft().startsWith('*') ? line.trimLeft() : line
-                ))
+                .map(
+                  (line) => line.trimLeft().isEmpty
+                      ? line
+                      : (line.trimLeft().startsWith('*')
+                            ? line.trimLeft()
+                            : line),
+                )
                 .join('\n');
 
             // ── SUPER ORDEM 41 M3: AESTHETIC GUARD ───────────────────────────
@@ -2264,6 +3056,69 @@ class _AiScreenState extends State<AiScreen> {
             // o texto esteticamente finalizado.
             if (!_longResponse) {
               safeFinalText = _applyPlantaoAestheticGuard(safeFinalText);
+
+              // V1-B-R0-R1 — terminal continuity hardening.
+              //
+              // Problema físico reproduzido no iPhone:
+              //   conteúdo clínico rico aparece durante streaming;
+              //   onDone recebe/processa um payload terminal degenerado;
+              //   o mesmo slot é sobrescrito e sobra apenas um cabeçalho.
+              //
+              // Fail-safe extremamente estreito:
+              // - só no Modo Plantão;
+              // - exige uma fonte rica (provider final OU snapshot do stream);
+              // - exige >=160 chars e >=3 linhas nessa fonte;
+              // - o candidato terminal deve estar vazio ou <=120 chars,
+              //   <=2 linhas e ter menos de 1/3 do conteúdo rico.
+              //
+              // Assim respostas finais normais, mesmo concisas, continuam
+              // soberanas. Apenas um colapso terminal evidente é bloqueado.
+              final providerFinalText = finalText.trim();
+              final continuityFallbackText =
+                  providerFinalText.length >= guardiaProvisionalText.length
+                  ? providerFinalText
+                  : guardiaProvisionalText;
+
+              final candidate = safeFinalText.trim();
+              final fallbackLineCount = continuityFallbackText
+                  .split('\n')
+                  .where((line) => line.trim().isNotEmpty)
+                  .length;
+              final candidateLineCount = candidate
+                  .split('\n')
+                  .where((line) => line.trim().isNotEmpty)
+                  .length;
+
+              final bool finalPayloadCollapsed =
+                  continuityFallbackText.length >= 160 &&
+                  fallbackLineCount >= 3 &&
+                  (candidate.isEmpty ||
+                      (candidate.length <= 120 &&
+                          candidateLineCount <= 2 &&
+                          candidate.length * 3 <
+                              continuityFallbackText.length));
+
+              if (finalPayloadCollapsed) {
+                safeFinalText = continuityFallbackText
+                    .split('\n')
+                    .map(
+                      (line) => line.trimLeft().startsWith('*')
+                          ? line.trimLeft()
+                          : line,
+                    )
+                    .join('\n');
+
+                assert(() {
+                  debugPrint(
+                    '[GUARDIA_FINAL_CONTINUITY] preserved=true '
+                    'candidateLen=${candidate.length} '
+                    'fallbackLen=${continuityFallbackText.length} '
+                    'candidateLines=$candidateLineCount '
+                    'fallbackLines=$fallbackLineCount',
+                  );
+                  return true;
+                }());
+              }
             }
 
             // ── BUILD 254: SINCRONIZAÇÃO IMEDIATA DO TÉRMINO DO STREAM ────────
@@ -2298,9 +3153,10 @@ class _AiScreenState extends State<AiScreen> {
 
             // ÚNICO setState de fechamento: texto final + fim de stream em um frame.
             setState(() {
-              _thinking     = false;
-              _isStreaming   = false;   // BUILD 254: síncrono — sem postFrameCallback
-              _aiError      = isKeyError;
+              _thinking = false;
+              _isStreaming =
+                  false; // BUILD 254: síncrono — sem postFrameCallback
+              _aiError = isKeyError;
               _networkError = false;
               if (streamingMsgIdx >= 0) {
                 // Caminho normal: atualiza bolha com texto definitivo
@@ -2329,15 +3185,18 @@ class _AiScreenState extends State<AiScreen> {
                 committedAiMessageId = newMsg.id;
                 committedAiMessageText = safeFinalText;
               }
-              // BUILD 276: register fade-in target
-              _fadingInMsgId = newBubbleMsgId;
+              // AI-STREAM-VISUAL-I.1-R4: uma bolha já visível durante
+              // o streaming não recebe uma segunda animação ao concluir.
+              _fadingInMsgId = streamingMsgIdx >= 0 ? null : newBubbleMsgId;
             });
 
             // BUILD 276: auto-clear _fadingInMsgId after animation completes (400ms)
             // so the AnimatedOpacity wrapper is removed on the next rebuild.
             Future.delayed(const Duration(milliseconds: 450), () {
               if (!mounted) return;
-              setState(() { _fadingInMsgId = null; });
+              setState(() {
+                _fadingInMsgId = null;
+              });
             });
 
             // ── Fix 1: Persistência Imediata por Turno (pós-resposta da IA) ──
@@ -2384,6 +3243,28 @@ class _AiScreenState extends State<AiScreen> {
           }
         },
         onStructuredDone: (finalText, clinicalOutput) {
+          if (mounted && uiRequestGeneration == _aiUiRequestGeneration) {
+            _sendGuard = false;
+          }
+          assert(() {
+            if (!_longResponse) {
+              debugPrint(
+                '[GUARDIA_TRACE] stage=I4_ui_structured '
+                'tsUs=${DateTime.now().microsecondsSinceEpoch} '
+                'uiGeneration=$uiRequestGeneration '
+                'finalTextLen=${finalText.length} '
+                'notifierLen=${_streamingTextNotifier?.value.length ?? 0} '
+                'dto=${clinicalOutput != null} '
+                'rx=${clinicalOutput?.prescricao.length ?? 0} '
+                'first=${clinicalOutput?.primeiraLinha.length ?? 0} '
+                'second=${clinicalOutput?.segundaLinha.length ?? 0} '
+                'keys=${clinicalOutput?.pontosChave.length ?? 0} '
+                'hard=${clinicalOutput?.hardStops.length ?? 0}',
+              );
+            }
+            return true;
+          }());
+
           if (!mounted ||
               uiRequestGeneration != _aiUiRequestGeneration ||
               clinicalOutput == null) {
@@ -2393,16 +3274,22 @@ class _AiScreenState extends State<AiScreen> {
           final messageId = committedAiMessageId;
           final committedText = committedAiMessageText;
 
-          // O Structured Output descreve literalmente o displayText validado
-          // pelo backend. Qualquer transformação posterior da UI invalida a
-          // associação e exige descarte fail-closed.
-          if (messageId == null ||
-              committedText == null ||
-              committedText != finalText) {
+          // O backend entrega o texto clínico validado; a UI pode remover
+          // somente apresentação Markdown antes de commitar a bolha final.
+          // A associação continua fail-closed para qualquer diferença clínica.
+          final bool isEquivalentFinalText =
+              messageId != null &&
+              committedText != null &&
+              StructuredOutputTextEquivalence.matches(
+                backendText: finalText,
+                uiText: committedText,
+              );
+
+          if (!isEquivalentFinalText) {
             if (kDebugMode) {
               debugPrint(
                 '[STRUCTURED_UI][DISCARDED] '
-                'reason=final_text_changed '
+                'reason=final_text_not_equivalent '
                 'backendLen=${finalText.length} '
                 'uiLen=${committedText?.length ?? 0}',
               );
@@ -2410,8 +3297,9 @@ class _AiScreenState extends State<AiScreen> {
             return;
           }
 
-          final messageIndex =
-              _messages.indexWhere((message) => message.id == messageId);
+          final messageIndex = _messages.indexWhere(
+            (message) => message.id == messageId,
+          );
           if (messageIndex < 0) {
             if (kDebugMode) {
               debugPrint(
@@ -2423,11 +3311,13 @@ class _AiScreenState extends State<AiScreen> {
           }
 
           final currentMessage = _messages[messageIndex];
-          if (currentMessage.text != finalText) {
+          if (currentMessage.text != committedText) {
             if (kDebugMode) {
               debugPrint(
                 '[STRUCTURED_UI][DISCARDED] '
-                'reason=bubble_text_mismatch',
+                'reason=bubble_text_mismatch '
+                'bubbleLen=${currentMessage.text.length} '
+                'committedLen=${committedText.length}',
               );
             }
             return;
@@ -2451,7 +3341,10 @@ class _AiScreenState extends State<AiScreen> {
           }
         },
         onError: (errorMsg) {
+          clearTerminalGapIndicator(reason: 'error', rebuild: false);
           if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
+
+          _sendGuard = false;
           // Build 188: descarta notifier de streaming no onError
           _streamingTextNotifier?.dispose();
           _streamingTextNotifier = null;
@@ -2460,37 +3353,43 @@ class _AiScreenState extends State<AiScreen> {
           // Suprimimos a bolha vermelha e abrimos o modal de conexão.
           if (errorMsg == 'AUTH_REQUIRED') {
             setState(() {
-              _thinking    = false;
-              _isStreaming  = false;
+              _thinking = false;
+              _isStreaming = false;
               // Remove a pergunta do usuário sem resposta
-              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+              if (_messages.isNotEmpty &&
+                  _messages.last.role == 'user' &&
                   _messages.last.text == trimmed) {
                 _messages.removeLast();
               }
             });
             // Abre modal de autenticação — convida o médico a conectar
-            Future.microtask(() { if (mounted) _openAiSettings(); });
+            Future.microtask(() {
+              if (mounted) _openAiSettings();
+            });
             return;
           }
           // Guard do provider retornou '' — ignora (não adiciona bubble vazia)
           if (errorMsg.isEmpty) {
             setState(() {
-              _thinking    = false;
-              _isStreaming  = false;
+              _thinking = false;
+              _isStreaming = false;
               // Remove mensagem do usuário sem resposta
-              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+              if (_messages.isNotEmpty &&
+                  _messages.last.role == 'user' &&
                   _messages.last.text == trimmed) {
                 _messages.removeLast();
               }
             });
             return;
           }
-          final isKeyError = errorMsg.startsWith('ERRO') && errorMsg.contains('API');
+          final isKeyError =
+              errorMsg.startsWith('ERRO') && errorMsg.contains('API');
           // Detecta erro de rede — NÃO usa errorMsg.contains('🚨') como critério
           // pois 🚨 é também marcador de seção clínica válida.
           // Usamos apenas keywords textuais específicas de mensagens de erro de rede.
           final normalizedErrorMessage = errorMsg.toLowerCase();
-          final isNetErr = normalizedErrorMessage.contains('sem conex') ||
+          final isNetErr =
+              normalizedErrorMessage.contains('sem conex') ||
               normalizedErrorMessage.contains('sin conex') ||
               normalizedErrorMessage.contains('timeout') ||
               normalizedErrorMessage.contains('falha na conex') ||
@@ -2502,9 +3401,9 @@ class _AiScreenState extends State<AiScreen> {
               normalizedErrorMessage.contains('ia indisponível') ||
               normalizedErrorMessage.contains('ia indisponible');
           setState(() {
-            _thinking    = false;
-            _isStreaming  = false;
-            _aiError      = isKeyError;
+            _thinking = false;
+            _isStreaming = false;
+            _aiError = isKeyError;
             _networkError = isNetErr;
             _scrollGeneration++;
 
@@ -2516,7 +3415,8 @@ class _AiScreenState extends State<AiScreen> {
                 streamingMsgIdx = -1;
               }
               // Remove mensagem do usuário — não deixar pergunta sem resposta
-              if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+              if (_messages.isNotEmpty &&
+                  _messages.last.role == 'user' &&
                   _messages.last.text == trimmed) {
                 _messages.removeLast();
               }
@@ -2543,23 +3443,26 @@ class _AiScreenState extends State<AiScreen> {
     } on Exception catch (e) {
       // Captura exceções não tratadas (ex: TimeoutException, SocketException)
       if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
+      _sendGuard = false;
       // Build 188: descarta notifier de streaming em exceção não tratada
       _streamingTextNotifier?.dispose();
       _streamingTextNotifier = null;
       final errStr = e.toString().toLowerCase();
-      final isNetworkException = errStr.contains('socket') ||
+      final isNetworkException =
+          errStr.contains('socket') ||
           errStr.contains('timeout') ||
           errStr.contains('connection') ||
           errStr.contains('network') ||
           errStr.contains('unreachable');
       setState(() {
-        _thinking     = false;
-        _isStreaming   = false;
+        _thinking = false;
+        _isStreaming = false;
         _networkError = isNetworkException;
-        _aiError      = !isNetworkException;
+        _aiError = !isNetworkException;
         if (isNetworkException) {
           // Remove mensagem do usuário se não houve resposta
-          if (_messages.isNotEmpty && _messages.last.role == 'user' &&
+          if (_messages.isNotEmpty &&
+              _messages.last.role == 'user' &&
               _messages.last.text == trimmed) {
             _messages.removeLast();
           }
@@ -2612,10 +3515,12 @@ class _AiScreenState extends State<AiScreen> {
     // entradas (5 pares) — gateway nunca receberá turnos podados.
     final historyPayload = survivingMsgs
         .where((m) => m.role == 'user' || m.role == 'ai')
-        .map((m) => {
-              'role': m.role == 'ai' ? 'assistant' : 'user',
-              'content': m.text,
-            })
+        .map(
+          (m) => {
+            'role': m.role == 'ai' ? 'assistant' : 'user',
+            'content': m.text,
+          },
+        )
         .toList();
     p.rebuildAiHistoryFromMessages(historyPayload);
 
@@ -2625,9 +3530,9 @@ class _AiScreenState extends State<AiScreen> {
         _messages.removeRange(msgIndex, _messages.length);
       }
       // Reseta estados de streaming
-      _thinking    = false;
-      _isStreaming  = false;
-      _aiError     = false;
+      _thinking = false;
+      _isStreaming = false;
+      _aiError = false;
       _networkError = false;
     });
     // Re-dispara o envio com o texto editado
@@ -2635,6 +3540,8 @@ class _AiScreenState extends State<AiScreen> {
   }
 
   void _clearChat() {
+    _historyRestoreGeneration++;
+    _restoredModeSelectionPending = false;
     final p = context.read<AppProvider>();
     // Salva sessão atual no histórico antes de limpar
     // (não-op se foi sessão restaurada sem novas mensagens)
@@ -2651,16 +3558,22 @@ class _AiScreenState extends State<AiScreen> {
       _messages
         ..clear()
         ..add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
-      _aiError      = false;
+      _aiError = false;
       _networkError = false;
       _userScrolledUp = false;
       _restoredSessionId = null;
-      _activeSessionId = null;   // BUILD 274: reset para próxima sessão gerar novo ID
+      _activeSessionId =
+          null; // BUILD 274: reset para próxima sessão gerar novo ID
       _hasNewMessageAfterRestore = false;
+      _selectedHistorySessionId = null;
+      _longResponse = true;
+      _modeConfirmed = false;
+      _modeReselectionPending = false;
+      _restoredModeSelectionPending = false;
       // Build 107 FIX: reseta guards para desbloquear _send() após limpar
-      _thinking   = false;
+      _thinking = false;
       _isStreaming = false;
-      _sendGuard  = false;
+      _sendGuard = false;
     });
     _queryCtrl.clear();
     _focusNode.unfocus();
@@ -2673,7 +3586,7 @@ class _AiScreenState extends State<AiScreen> {
   // reseta todos os flags de loading e devolve o foco ao campo de texto.
   void _cancelActiveStream() {
     final p = context.read<AppProvider>();
-    p.cancelAiStream();  // cancela _aiStreamSub no AppProvider
+    p.cancelAiStream(); // cancela _aiStreamSub no AppProvider
     _aiUiRequestGeneration++;
 
     // PHASE 4 — fechamento local soberano:
@@ -2683,9 +3596,9 @@ class _AiScreenState extends State<AiScreen> {
     _streamingTextNotifier = null;
 
     setState(() {
-      _thinking    = false;
-      _isStreaming  = false;
-      _sendGuard    = false;
+      _thinking = false;
+      _isStreaming = false;
+      _sendGuard = false;
     });
     // Devolve foco ao campo de texto — médico pode editar imediatamente
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -2696,7 +3609,9 @@ class _AiScreenState extends State<AiScreen> {
   // ── Nuevo Chat — salva sessão atual e abre nova sessão limpa ─────────────
   // Diferente de _clearChat: NÃO deleta histórico. Salva em background e
   // cria nova sessão com ID diferente (timestamp) para consulta fresca.
-  void _startNewChat() {
+  void _startNewChat({bool preserveConfirmedMode = false}) {
+    _historyRestoreGeneration++;
+    _restoredModeSelectionPending = false;
     final p = context.read<AppProvider>();
     // 1. Persiste sessão atual em background (dual-write Firestore + prefs)
     _saveCurrentSessionToHistory(p);
@@ -2713,17 +3628,29 @@ class _AiScreenState extends State<AiScreen> {
       _messages
         ..clear()
         ..add(_ChatMsg(role: 'ai', text: _buildGreeting(p.userName, p.lang)));
-      _aiError      = false;
+      _aiError = false;
       _networkError = false;
       _userScrolledUp = false;
       _restoredSessionId = null;
-      _activeSessionId = null;   // BUILD 274: reset para nova sessão gerar novo ID
+      _activeSessionId =
+          null; // BUILD 274: reset para nova sessão gerar novo ID
       _hasNewMessageAfterRestore = false;
+      _selectedHistorySessionId = null;
+
+      if (preserveConfirmedMode) {
+        _modeConfirmed = true;
+      } else {
+        _longResponse = true;
+        _modeConfirmed = false;
+      }
+
+      _modeReselectionPending = false;
+      _restoredModeSelectionPending = false;
       _greetingDone = true;
       // Build 107 FIX: garante que _send() não fique bloqueado após novo chat
-      _thinking   = false;
+      _thinking = false;
       _isStreaming = false;
-      _sendGuard  = false;
+      _sendGuard = false;
     });
     _queryCtrl.clear();
     _focusNode.unfocus();
@@ -2740,15 +3667,15 @@ class _AiScreenState extends State<AiScreen> {
       builder: (_) => ChangeNotifierProvider.value(
         value: p,
         child: AiStatusSheet(
-          userEmail:        p.userEmail,
-          userName:         p.userName,
-          lang:             p.lang,
-          dark:             p.darkMode,
-          hasAi:            p.hasAnyAi,
-          geminiConnected:  p.geminiConnected,
-          geminiEmail:      p.geminiEmail,
-          geminiLoading:    p.geminiLoading,
-          keyLoading:       p.aiKeyLoading,
+          userEmail: p.userEmail,
+          userName: p.userName,
+          lang: p.lang,
+          dark: p.darkMode,
+          hasAi: p.hasAnyAi,
+          geminiConnected: p.geminiConnected,
+          geminiEmail: p.geminiEmail,
+          geminiLoading: p.geminiLoading,
+          keyLoading: p.aiKeyLoading,
         ),
       ),
     );
@@ -2764,15 +3691,15 @@ class _AiScreenState extends State<AiScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => AmbassadorPanel(
-        user:     user,
-        lang:     p.lang,
+        user: user,
+        lang: p.lang,
         messages: List.of(_messages),
         onSecondOpinion: (prompt) async {
           // Delegated via callback — streaming happens inside modal
           return p.sendAiMessage(
             prompt,
             onChunk: (_) {},
-            onDone:  (_) {},
+            onDone: (_) {},
             onError: (_) {},
           );
         },
@@ -2781,25 +3708,16 @@ class _AiScreenState extends State<AiScreen> {
     );
   }
 
-  // Insere sugestão no campo sem enviar — usuário pode editar
-  void _insertSuggestion(String prompt) {
-    _queryCtrl.text = prompt;
-    _queryCtrl.selection = TextSelection.fromPosition(
-      TextPosition(offset: prompt.length),
-    );
-    _focusNode.requestFocus();
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bp   = MedBreakpoints.of(context);
+    final bp = MedBreakpoints.of(context);
     // ORDEM VISUAL 04 M1: canvas premium absoluto
     // Dark: grafite noturno ultra-profundo 0xFF121418
     // Light: branco gelo ultra-limpo 0xFFFCFDFD
-    final chatBg = dark ? const Color(0xFF121418) : const Color(0xFFFCFDFD);
+    final palette = dark ? HomeV2Palette.dark : HomeV2Palette.light;
+    final chatBg = palette.background;
 
     // Fix #5: detecta teclado via viewInsets (cobre Web Mobile onde focus events
     // podem não ser confiáveis). Propaga ao ValueNotifier para o FAB em main.dart.
@@ -2826,7 +3744,8 @@ class _AiScreenState extends State<AiScreen> {
       // Schedula fora do build para evitar setState-during-build.
       // NUNCA executa enquanto streamingActive=true → padding congelado.
       WidgetsBinding.instance.addPostFrameCallback(
-          (_) => AiScreen.chatKeyboardOpen.value = kbOpen);
+        (_) => AiScreen.chatKeyboardOpen.value = kbOpen,
+      );
     }
 
     // No desktop: centraliza o chat com largura máxima elegante
@@ -2844,8 +3763,12 @@ class _AiScreenState extends State<AiScreen> {
     final bool isMplusConnected = p.geminiConnected || p.openAiKey.isNotEmpty;
     // Mostra card de desconexão quando IA não está conectada E usuário
     // ainda não enviou nenhuma mensagem (só greeting automática existe)
-    final bool showDisconnectCard = !isConnected &&
-        _messages.where((m) => m.role == 'user').isEmpty;
+    final bool showDisconnectCard =
+        !isConnected && _messages.where((m) => m.role == 'user').isEmpty;
+
+    // AI-VIS-B.2.5-R1 — a presença de pergunta real controla
+    // apenas a projeção visual da saudação.
+    final bool hasConversation = _messages.any((m) => m.role == 'user');
 
     // BUILD 275: para usuários não-admin/não-master sem conexão, forçar badge
     // 'Desconectado' (vermelho) em vez de 'Conectar IA' — sinaliza que chat está bloqueado.
@@ -2854,340 +3777,552 @@ class _AiScreenState extends State<AiScreen> {
     final bool forceDisconnectedLabel = !p.geminiConnected;
 
     Widget chatList = ListView.builder(
-            // ORDEM 54 M2: ValueKey(_chatEpoch) — quando _chatEpoch é incrementado
-            // pelo context timeout, o Flutter descarta a árvore de widgets antiga
-            // e reconstrói do zero (zero Stale UI no Flutter Web).
-            key: ValueKey(_chatEpoch),
-            controller: _scrollCtrl,
-            // BUILD 283 ORDEM 10.5: mobile padding 12→16 para respiração lateral
-            padding: EdgeInsets.fromLTRB(
-              bp.isDesktop ? 24 : 6,
-              12,
-              bp.isDesktop ? 24 : 6,
-              8,
+      // ORDEM 54 M2: ValueKey(_chatEpoch) — quando _chatEpoch é incrementado
+      // pelo context timeout, o Flutter descarta a árvore de widgets antiga
+      // e reconstrói do zero (zero Stale UI no Flutter Web).
+      key: ValueKey(_chatEpoch),
+      controller: _scrollCtrl,
+      // BUILD 283 ORDEM 10.5: mobile padding 12→16 para respiração lateral
+      padding: EdgeInsets.fromLTRB(
+        bp.isDesktop ? 24 : 6,
+        12,
+        bp.isDesktop ? 24 : 6,
+        8,
+      ),
+      // Build 145 — cacheExtent aumentado 2000 → 2500:
+      // Mantém ~3 telas extras de cards pré-renderizados acima e abaixo
+      // da viewport. Elimina o re-layout de MarkdownBody que causava o
+      // "scroll stutter" ao subir no histórico durante o streaming.
+      // Impacto de memória negligenciável: ~5 bolhas fora da viewport.
+      scrollCacheExtent: const ScrollCacheExtent.pixels(2500),
+      physics: const ClampingScrollPhysics(),
+      // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      // Build 188: isolamento de repaint e keep-alive explícitos
+      addRepaintBoundaries: true,
+      addAutomaticKeepAlives: true,
+      itemCount: _messages.length + (_thinking ? 1 : 0) + 1, // +1 sentinela
+      itemBuilder: (context, i) {
+        // Sentinela invisível — âncora para Scrollable.ensureVisible
+        if (i == _messages.length + (_thinking ? 1 : 0)) {
+          return SizedBox(key: _bottomKey, height: 1);
+        }
+        if (_thinking && i == _messages.length) {
+          // Indicador premium desacoplado enquanto a IA prepara a resposta.
+          // RepaintBoundary isolates the animated CustomPainter so it does NOT
+          // trigger full-list repaints on every animation frame.
+          return RepaintBoundary(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 52, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _AiResponseIdentityHeader(
+                    dark: dark,
+                    isEs: p.lang.trim().toLowerCase().startsWith('es'),
+                    isStreaming: true,
+                  ),
+                  const SizedBox(height: 8),
+                  AiShimmerDots(dark: dark),
+                ],
+              ),
             ),
-            // Build 145 — cacheExtent aumentado 2000 → 2500:
-            // Mantém ~3 telas extras de cards pré-renderizados acima e abaixo
-            // da viewport. Elimina o re-layout de MarkdownBody que causava o
-            // "scroll stutter" ao subir no histórico durante o streaming.
-            // Impacto de memória negligenciável: ~5 bolhas fora da viewport.
-            cacheExtent: 2500.0,
-            physics: const ClampingScrollPhysics(),
-            // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            // Build 188: isolamento de repaint e keep-alive explícitos
-            addRepaintBoundaries: true,
-            addAutomaticKeepAlives: true,
-            itemCount: _messages.length + (_thinking ? 1 : 0) + 1, // +1 sentinela
-            itemBuilder: (context, i) {
-              // Sentinela invisível — âncora para Scrollable.ensureVisible
-              if (i == _messages.length + (_thinking ? 1 : 0)) {
-                return SizedBox(key: _bottomKey, height: 1);
-              }
-              if (_thinking && i == _messages.length) {
-                // Indicador premium desacoplado enquanto a IA prepara a resposta.
-                // RepaintBoundary isolates the animated CustomPainter so it does NOT
-                // trigger full-list repaints on every animation frame.
-                return RepaintBoundary(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 8, 52, 8),
-                    child: AiShimmerDots(dark: dark),
-                  ),
-                );
-              }
-              final msg = _messages[i];
-              if (msg.role == 'user') {
-                // Build 170: passa callbacks de cópia e edição para o balão
-                final msgIndex = i; // captura o índice para edição
-                return RepaintBoundary(
-                  child: KeyedSubtree(
-                    key: ValueKey('msg_${msg.id}'),
-                    child: UserBubble(
-                      text: msg.text,
-                      dark: dark,
-                      onCopy: () => _copyMsg(msg.text),
-                      onEdit: (newText) => _editUserMessage(msgIndex, newText, p),
-                      // Fix 5: ícone de edição desabilitado durante streaming
-                      isAiStreaming: _isStreaming || _thinking,
-                    ),
-                  ),
-                );
-              }
-              // ── AI message — detectar fármaco en texto ──────────────────
-              final isActiveStreamingBubble = _isStreaming && i == _lastAiIndex;
+          );
+        }
+        final msg = _messages[i];
+        if (msg.role == 'user') {
+          // MEDCASES_IA_PLANTAO_BUTTON_USER_BUBBLE_COMPACT_V1_B_R0
+          // Somente a projeção visual pode ser compactada. msg.text continua
+          // canônico para histórico, thread, dedup, case-anchor e provider.
+          final displayCandidate = msg.userDisplayText?.trim() ?? '';
+          final policyVisibleText = UserMessageDisplayPolicy.visibleText(
+            msg.text,
+          );
+          final userVisibleText = displayCandidate.isNotEmpty
+              ? displayCandidate
+              : policyVisibleText;
+          final hasAutomaticVisibleProjection =
+              displayCandidate.isNotEmpty ||
+              policyVisibleText.trim() != msg.text.trim();
 
-              // ── BUILD 244B SAFE_CARD_GUARD: detectar safe-card por prefixo canônico ──
-              // BUILD 244: usa AppProvider.kSafeCardMarker* (prefixo estável) em vez
-              // de text-matching frágil em .toLowerCase(). Mantém legado para mensagens
-              // salvas no histórico com texto antigo.
-              // Safe-cards NÃO renderizam: EvidenceBox, ActionButtons, ExternalToolLink,
-              // PlantaoRenderer. Log limitado a 1x por messageId — sem spam em rebuilds.
-              final bool isSafeCard =
-                  MessageRenderPolicy.isSafeCard(msg.text);
-              if (kDebugMode && isSafeCard && !_loggedSafeCardIds.contains(msg.id)) {
-                _loggedSafeCardIds.add(msg.id);
-                debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=true');
-              }
+          // Questions button is a continuation trigger, not clinical content.
+          // Keep canonical prompt/history/provenance, but do not render a user
+          // bubble before the generated questions.
+          final normalizedDisplayCandidate =
+              displayCandidate.toLowerCase().replaceAll('-', ' ');
+          final isQuestionsButtonProjection =
+              normalizedDisplayCandidate == 'preguntas clave' ||
+                  normalizedDisplayCandidate == 'preguntas importantes' ||
+                  normalizedDisplayCandidate == 'perguntas chave' ||
+                  normalizedDisplayCandidate == 'perguntas importantes';
+          if (!_longResponse && isQuestionsButtonProjection) {
+            return SizedBox.shrink(
+              key: ValueKey(
+                'msg_${msg.id}_plantao_questions_button_hidden',
+              ),
+            );
+          }
 
-              // Referências clínicas: associa a resposta à pergunta anterior.
-              // Safe-cards e bolha ainda em streaming não recebem o bloco.
-              String precedingUserText = '';
-              for (var previous = i - 1; previous >= 0; previous--) {
-                if (_messages[previous].role == 'user') {
-                  precedingUserText = _messages[previous].text;
-                  break;
-                }
-              }
-              final clinicalReference =
-                  isSafeCard || isActiveStreamingBubble
-                      ? null
-                      : ClinicalReferenceResolver.resolve(
-                          userText: precedingUserText,
-                          aiText: msg.text,
-                          lang: p.lang,
-                        );
+          // Plantão final presentation: user turns remain canonical in the
+          // message model/history/provider pipeline but are not repeated above
+          // the answer. This includes automatic continuation triggers such as
+          // "Conductas y dosis"; Estudo keeps normal user-message rendering.
+          if (!_longResponse && hasAutomaticVisibleProjection) {
+            return SizedBox.shrink(
+              key: ValueKey(
+                'msg_${msg.id}_plantao_automatic_user_hidden',
+              ),
+            );
+          }
 
-              // ── BUILD 301: tag dupla — extrai LABEL + PROMPT, limpa bolha ────
-              // A IA gera ao final de cada resposta de Modo Estudo:
-              //   [NEXT_ACTION_LABEL: Rótulo Curto]    → texto exato do botão azul
-              //   [NEXT_ACTION_PROMPT: Query Avançada] → query disparada no clique
-              // Ambas são extraídas e removidas do texto visível na bolha.
-              // msg.text original é preservado intacto (hash estável para cache).
-              final studyAction = MessageRenderPolicy.parseStudyAction(
+          if (!_longResponse && !hasAutomaticVisibleProjection) {
+            return SizedBox.shrink(
+              key: ValueKey('msg_${msg.id}_plantao_direct_user_hidden'),
+            );
+          }
+
+          // Build 170: passa callbacks de cópia e edição para o balão
+          final msgIndex = i; // captura o índice para edição
+          return RepaintBoundary(
+            child: KeyedSubtree(
+              key: ValueKey('msg_${msg.id}'),
+              child: UserBubble(
+                text: userVisibleText,
+                editText: msg.text,
+                dark: dark,
+                onCopy: () => _copyMsg(userVisibleText),
+                onEdit: (newText) => _editUserMessage(msgIndex, newText, p),
+                // Fix 5: ícone de edição desabilitado durante streaming
+                isAiStreaming: _isStreaming || _thinking,
+                cleanPlantaoPresentation: !_longResponse,
+              ),
+            ),
+          );
+        }
+        if (_isOpeningHomeGreeting(i, msg)) {
+          // Greeting belongs only to the empty IA state.
+          // Once a real conversation exists, keep the canonical greeting
+          // message but remove only its visual projection from the timeline.
+          if (hasConversation) {
+            return SizedBox.shrink(
+              key: ValueKey('msg_${msg.id}_greeting_hidden_after_start'),
+            );
+          }
+
+          return RepaintBoundary(
+            child: KeyedSubtree(
+              key: ValueKey('msg_${msg.id}'),
+              child: _AiHomeGreeting(
+                dark: dark,
+                lang: p.lang,
                 text: msg.text,
-                isStudyMode: _longResponse,
+                compact: false,
+                animate: false,
+              ),
+            ),
+          );
+        }
+
+        // ── AI message — detectar fármaco en texto ──────────────────
+        final isActiveStreamingBubble = _isStreaming && i == _lastAiIndex;
+
+        // ── BUILD 244B SAFE_CARD_GUARD: detectar safe-card por prefixo canônico ──
+        // BUILD 244: usa AppProvider.kSafeCardMarker* (prefixo estável) em vez
+        // de text-matching frágil em .toLowerCase(). Mantém legado para mensagens
+        // salvas no histórico com texto antigo.
+        // Safe-cards NÃO renderizam: EvidenceBox, ActionButtons, ExternalToolLink,
+        // PlantaoRenderer. Log limitado a 1x por messageId — sem spam em rebuilds.
+        final bool isSafeCard = MessageRenderPolicy.isSafeCard(msg.text);
+        if (kDebugMode && isSafeCard && !_loggedSafeCardIds.contains(msg.id)) {
+          _loggedSafeCardIds.add(msg.id);
+          debugPrint('[SAFE_CARD_GUARD] messageId=${msg.id} isSafeCard=true');
+        }
+
+        // Referências clínicas: associa a resposta à pergunta anterior.
+        // Safe-cards e bolha ainda em streaming não recebem o bloco.
+        String precedingUserText = '';
+        bool precedingUserWasAction = false;
+        for (var previous = i - 1; previous >= 0; previous--) {
+          if (_messages[previous].role == 'user') {
+            precedingUserText = _messages[previous].text;
+            precedingUserWasAction =
+                (_messages[previous].userDisplayText?.trim().isNotEmpty ??
+                false);
+            break;
+          }
+        }
+        final clinicalReference = isSafeCard || isActiveStreamingBubble
+            ? null
+            : ClinicalReferenceResolver.resolve(
+                userText: precedingUserText,
+                aiText: msg.text,
+                lang: p.lang,
               );
-              final String nextActionPrompt = studyAction.prompt;
-              final String nextActionLabel = studyAction.label;
-              final bool hasStudyTags = studyAction.hasAction;
-              final String cleanDisplayText = studyAction.displayText;
 
-              // ── ORDEM 56 M1: RENDER UNIFICADO ────────────────────────────────
-              // SUPER ORDEM 56: PlantatoPipeline, _PlantaoRenderer e _PlantaoFallbackCard
-              // foram descontinuados. 100% das bolhas AI — 1º turno, follow-ups e
-              // histórico restaurado — fluem diretamente para AiBubble (MarkdownBody).
-              // Ultra-Plantão Build 260: o design (🟥/💊/⛔/📌 + bullets) é gerado
-              // nativamente pelos prompts. Não há parsing nem slicing necessário.
-              // Elimina duplicação de cards pós-refresh e alivia o rebuild do histórico.
-              if (kDebugMode) {
-                debugPrint('[RENDER_56] msgId=${msg.id} → AiBubble unificado'
-                    '${hasStudyTags ? " [BUILD301] label=\"$nextActionLabel\"" : ""}');
-              }
+        // AI-RECONSTRUCTION-R18.6AA-R1F-R3:
+        // Um único proprietário resolve texto e continuação pedagógica.
+        // Gemini Free, GPT e Gemini pago convergem nesta fronteira.
+        final studyContinuation = StudyContinuationResolver.resolve(
+          rawText: msg.text,
+          isStudyMode: _longResponse,
+          isSafeCard: isSafeCard,
+          isStreaming: isActiveStreamingBubble,
+          lastUserMessage: precedingUserText,
+          languageCode: p.lang,
+          chatHistory: _messages
+              .map((message) => message.text)
+              .toList(growable: false),
+          lastSentPrompt: _lastSentStudyPrompt,
+        );
 
-              // BUILD 276: Fade-in wrapper — applied only to the freshly committed
-              // AI bubble (msg.id == _fadingInMsgId). Starts at opacity 0 and
-              // animates to 1 over 380ms. After 450ms _fadingInMsgId is cleared
-              // via a delayed setState, removing the AnimatedOpacity overhead.
-              final bool isFadingIn = _fadingInMsgId != null && msg.id == _fadingInMsgId;
-              Widget bubbleContent = RepaintBoundary(
-                child: KeyedSubtree(
-                key: ValueKey('msg_${msg.id}'),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── Bubble unificada: AiBubble (MarkdownBody agnostico) ────
-                    // BUILD 300: usa cleanDisplayText — tag [NEXT_ACTION_PROMPT]
-                    // removida do texto visível. msg.text permanece intacto no modelo.
-                    AiBubble(
-                      key: ValueKey('ai_${msg.id}'),
-                      text: cleanDisplayText,
-                      dark: dark,
-                      animate: i == _lastAiIndex,
-                      lang: p.lang,
-                      onCopy: () => _copyMsg(cleanDisplayText),
-                      ttsPlaying: _ttsPlayingIndex == i,
-                      ttsReady: _ttsReady,
-                      onTts: _ttsReady
-                          ? () => _toggleTts(i, cleanDisplayText, p.lang)
-                          : null,
-                      scrollGeneration: _scrollGeneration,
-                      onBlockRevealed: _onBlockRevealed,
-                      // Mostra cursor ▌ apenas na bolha que está sendo preenchida
-                      isStreaming: isActiveStreamingBubble,
-                      // Build 188: passa o notifier APENAS para a bolha ativa —
-                      // chunks chegam diretamente nela sem reconstruir a tela.
-                      streamingTextNotifier: isActiveStreamingBubble
-                          ? _streamingTextNotifier
-                          : null,
-                      // Build 184 — Auto-Submit: chip tap → direto para _send().
-                      // Remove o pre-fill; o médico toca o chip e a resposta é enviada
-                      // imediatamente sem precisar clicar no botão de envio.
-                      onChipTap: _isStreaming ? null : (chipText) {
-                        // Build 187: Detallar... uses sentinel '__DETAIL__:<question>'
-                        // → focus TextField + prefill context prefix (no auto-send)
-                        if (chipText.startsWith('__DETAIL__:')) {
-                          final rawQ = chipText.substring('__DETAIL__:'.length).trim();
-                          // Build context prefix from the question text
-                          final prefix = rawQ.isNotEmpty
-                              ? '$rawQ: '
-                              : '';
-                          _queryCtrl.text = prefix;
-                          // Move cursor to end of pre-filled text
-                          _queryCtrl.selection = TextSelection.fromPosition(
-                            TextPosition(offset: _queryCtrl.text.length),
-                          );
-                          _focusNode.requestFocus();
-                          return;
-                        }
-                        // Clean up the text for auto-sending
-                        String sendText = chipText.trim();
-                        if (sendText.startsWith('📌')) {
-                          sendText = sendText.substring('📌'.length).trim();
-                        }
-                        if (sendText.isEmpty) return;
-                        // AUTO-SUBMIT: scroll + send immediately — no prefill
-                        _userScrolledUp = false;
-                        _scrollDown(force: true);
-                        _sendDebounced(sendText, context.read<AppProvider>());
-                      },
-                    ),
+        final String nextActionPrompt = studyContinuation.question;
 
-                    // ── PHASE 4: Structured Clinical Output tipado ─────────────
-                    // Renderizado somente após associação fail-closed ao texto
-                    // definitivo. Nunca aparece durante streaming, em safe-cards
-                    // ou em respostas legadas sem structuredOutput.
-                    if (msg.clinicalOutput != null &&
-                        !isActiveStreamingBubble &&
-                        !isSafeCard) ...[
-                      const SizedBox(height: 12),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: StructuredClinicalOutputView(
-                          key: ValueKey('clinical_output_${msg.id}'),
-                          output: msg.clinicalOutput!,
-                          isPlantaoMode: !_longResponse,
-                          languageCode: p.lang,
-                        ),
-                      ),
-                    ],
+        final String cleanDisplayText = studyContinuation.displayText;
 
-                    // ── Build 192 / BUILD 232: ActionButtonsRow + EXT_TOOL cache ───
-                    // Aparece apenas na última bolha AI sem streaming.
-                    // BUILD 238 SAFE_CARD_GUARD: safe-cards NÃO mostram ActionButtons
-                    // nem ExternalToolLink — evita botões inválidos em respostas de fallback.
-                    // BUILD 232: ExternalToolLink é resolvido aqui (no pai) com cache.
-                    // Assim _ActionButtonsRow.build() nunca chama ExternalToolLinkEngine
-                    // mais de 1 vez por (messageId, textHash) independente de rebuilds.
-                    // ORDEM 29 V2 — SUBORDINAÇÃO TEMPORAL (MÉTODO BRUNO):
-                    // !_isStreaming é o sinal soberano. Enquanto stream ativo, este bloco
-                    // NUNCA executa → sem injeção de botões durante produção de texto.
-                    // Só após onDone fechar o stream E _lastAiIndex ser sincronizado
-                    // (ORDEM 29 fix) é que ExternalToolLinkEngine.build() é chamado
-                    // com metadados completos do response final. Sem race condition.
-                    if (i == _lastAiIndex && !_isStreaming && _messages.length >= 2 && !isSafeCard)
-                      Builder(builder: (_) {
-                        final lastUser = _messages
-                            .lastWhere((m) => m.role == 'user',
-                                orElse: () => _ChatMsg(role: 'user', text: ''))
-                            .text;
-                        // ── MICRO-BUILD 462E-A.5.3.7.3.2: Pure renderer — zero engine calls ──
-                        // ExternalToolLinkEngine.build() is STRICTLY FORBIDDEN here.
-                        // The tool resolution was computed exactly once inside the canonical
-                        // finalizer (sendAiMessage → chunk_isDone → EXT_TOOL_GATE) and stored
-                        // in AppProvider._lastCompletedToolLink.
-                        //
-                        // Re-rendering this widget 100 times produces:
-                        //   • ZERO ExternalToolLinkEngine invocations
-                        //   • ZERO [EXT_TOOL_GATE] log emissions
-                        //   • ZERO state changes
-                        //
-                        // The _extToolCache is kept for reading historical sessions loaded from
-                        // Firestore (which do not go through sendAiMessage). It is never written
-                        // during the current live request lifecycle.
-                        final extKey = '${msg.id}:${msg.text.hashCode}';
-                        // ── MICRO-BUILD 462E-A.5.3.7.3.2.1: Request-correlated read ──
-                        // Read the pre-computed resolution from the provider map.
-                        // The UI asserts that the payload's requestId matches the
-                        // active request before rendering a tool calculator.
-                        // Mismatch (stale async write from prior request) → null → no card.
-                        final completedResolution = p.activeCompletedResolution;
-                        final ExternalToolLink? resolvedLink =
-                            _extToolCache.containsKey(extKey)
-                                ? _extToolCache[extKey]
-                                : (completedResolution != null && completedResolution.isAllowed
-                                    ? completedResolution.link
-                                    : null);
-                        // BUILD 301: label 100% dinâmico — vem direto da tag [NEXT_ACTION_LABEL]
-                        // gerada pela IA. Sem inferência local, sem fallbacks engessados.
-                        if (kDebugMode && hasStudyTags) {
-                          debugPrint('[BUILD301][NEXT_ACTION] msgId=${msg.id} '
-                              'label="$nextActionLabel" '
-                              'promptChars=${nextActionPrompt.length}');
-                        }
-                        return ActionButtonsRow(
-                          lastUserMessage: lastUser,
-                          lastAiResponse: cleanDisplayText,
-                          isPlantaoMode: !_longResponse,
-                          lang: p.lang,
-                          dark: dark,
-                          chatHistory: _messages.map((m) => m.text).toList(),
-                          cachedLink: resolvedLink,
-                          studyNextPrompt: nextActionPrompt,
-                          studyNextLabel: nextActionLabel,
-                          lastSentStudyPrompt: _lastSentStudyPrompt,
-                          onActionTap: (prompt, {bool isStudyNext = false}) {
-                            if (_isStreaming) return;
+        final bool useGuardiaPresentation = !_longResponse && !isSafeCard;
+
+        final bool hasStudyContinuation = studyContinuation.hasContinuation;
+
+        final studyContinuationVisualIdentity = '$_scrollGeneration:${msg.id}';
+
+        final bool showStudyContinuation =
+            hasStudyContinuation &&
+            !isActiveStreamingBubble &&
+            i == _lastAiIndex &&
+            _studyContinuationVisualReadyIdentity ==
+                studyContinuationVisualIdentity;
+
+        // ── ORDEM 56 M1: RENDER UNIFICADO ────────────────────────────────
+        // SUPER ORDEM 56: PlantatoPipeline, _PlantaoRenderer e _PlantaoFallbackCard
+        // foram descontinuados. 100% das bolhas AI — 1º turno, follow-ups e
+        // histórico restaurado — fluem diretamente para AiBubble (MarkdownBody).
+        // Ultra-Plantão Build 260: o design (🟥/💊/⛔/📌 + bullets) é gerado
+        // nativamente pelos prompts. Não há parsing nem slicing necessário.
+        // Elimina duplicação de cards pós-refresh e alivia o rebuild do histórico.
+        if (kDebugMode) {
+          debugPrint(
+            '[RENDER_56] msgId=${msg.id} → AiBubble unificado '
+            'continuation=${studyContinuation.source.name}',
+          );
+        }
+
+        // BUILD 276: Fade-in wrapper — applied only to the freshly committed
+        // AI bubble (msg.id == _fadingInMsgId). Starts at opacity 0 and
+        // animates to 1 over 380ms. After 450ms _fadingInMsgId is cleared
+        // via a delayed setState, removing the AnimatedOpacity overhead.
+        final bool isFadingIn =
+            (_longResponse || isSafeCard) &&
+            _fadingInMsgId != null &&
+            msg.id == _fadingInMsgId;
+        Widget bubbleContent = RepaintBoundary(
+          child: KeyedSubtree(
+            key: ValueKey('msg_${msg.id}'),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_longResponse || isActiveStreamingBubble) ...[
+                  _AiResponseIdentityHeader(
+                    dark: dark,
+                    isEs: p.lang.trim().toLowerCase().startsWith('es'),
+                    isStreaming: isActiveStreamingBubble,
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                // ── Superfície estável: Guardia próprio; Estudo/safe-card em AiBubble ──
+                // BUILD 300: usa cleanDisplayText — tag [NEXT_ACTION_PROMPT]
+                // removida do texto visível. msg.text permanece intacto no modelo.
+                if (useGuardiaPresentation)
+                  GuardiaClinicalResponseView(
+                    key: ValueKey('guardia_${msg.id}'),
+                    rawText: cleanDisplayText,
+                    output: msg.clinicalOutput,
+                    dark: dark,
+                    languageCode: p.lang,
+                    userText: precedingUserText,
+                    userInitiatedByAction: precedingUserWasAction,
+                    onCopy: () => _copyMsg(cleanDisplayText),
+                    ttsPlaying: _ttsPlayingIndex == i,
+                    ttsReady: _ttsReady,
+                    onTts: _ttsReady
+                        ? () => _toggleTts(i, cleanDisplayText, p.lang)
+                        : null,
+                    isStreaming: isActiveStreamingBubble,
+                    streamingTextNotifier: isActiveStreamingBubble
+                        ? _streamingTextNotifier
+                        : null,
+                    scrollGeneration: _scrollGeneration,
+                    onTextRevealed: _onBlockRevealed,
+                  )
+                else
+                  AiBubble(
+                    key: ValueKey('ai_${msg.id}'),
+                    text: cleanDisplayText,
+                    dark: dark,
+                    animate: i == _lastAiIndex,
+                    lang: p.lang,
+                    onCopy: () => _copyMsg(cleanDisplayText),
+                    ttsPlaying: _ttsPlayingIndex == i,
+                    ttsReady: _ttsReady,
+                    onTts: _ttsReady
+                        ? () => _toggleTts(i, cleanDisplayText, p.lang)
+                        : null,
+                    scrollGeneration: _scrollGeneration,
+                    onBlockRevealed: _onBlockRevealed,
+                    onVisualComplete: i == _lastAiIndex
+                        ? (generation) => _onStudyContinuationVisualComplete(
+                            msg.id,
+                            generation,
+                          )
+                        : null,
+                    // Mostra cursor ▌ apenas na bolha que está sendo preenchida
+                    isStreaming: isActiveStreamingBubble,
+                    // Build 188: passa o notifier APENAS para a bolha ativa —
+                    // chunks chegam diretamente nela sem reconstruir a tela.
+                    streamingTextNotifier: isActiveStreamingBubble
+                        ? _streamingTextNotifier
+                        : null,
+                    // Build 184 — Auto-Submit: chip tap → direto para _send().
+                    // Remove o pre-fill; o médico toca o chip e a resposta é enviada
+                    // imediatamente sem precisar clicar no botão de envio.
+                    onChipTap: _isStreaming
+                        ? null
+                        : (chipText) {
+                            // Build 187: Detallar... uses sentinel '__DETAIL__:<question>'
+                            // → focus TextField + prefill context prefix (no auto-send)
+                            if (chipText.startsWith('__DETAIL__:')) {
+                              final rawQ = chipText
+                                  .substring('__DETAIL__:'.length)
+                                  .trim();
+                              // Build context prefix from the question text
+                              final prefix = rawQ.isNotEmpty ? '$rawQ: ' : '';
+                              _queryCtrl.text = prefix;
+                              // Move cursor to end of pre-filled text
+                              _queryCtrl.selection = TextSelection.fromPosition(
+                                TextPosition(offset: _queryCtrl.text.length),
+                              );
+                              _focusNode.requestFocus();
+                              return;
+                            }
+                            // Clean up the text for auto-sending
+                            String sendText = chipText.trim();
+                            if (sendText.startsWith('📌')) {
+                              sendText = sendText.substring('📌'.length).trim();
+                            }
+                            if (sendText.isEmpty) return;
+                            // AUTO-SUBMIT: scroll + send immediately — no prefill
                             _userScrolledUp = false;
                             _scrollDown(force: true);
-                            // BUILD 308 [FISIOP_DEDUP]: Registra o prompt do botão azul
-                            // de Estudo para detecção de loop de Fisiopatologia no turno seguinte.
-                            if (isStudyNext) _lastSentStudyPrompt = prompt;
-                            // BUILD 262: fromButton=true — preserves thread history,
-                            // prevents HARD RESET on clinical follow-up actions.
-                            _sendDebounced(prompt, context.read<AppProvider>(), fromButton: true);
-                          },
-                        );
-                      }),
-                    // ── Referência clínica textual e colapsável ───────────────
-                    // Um fármaco usa sua ficha específica; polifarmácia usa
-                    // referências do protocolo temático; sem match usa livros-base.
-                    if (clinicalReference != null)
-                      Builder(builder: (_) {
-                        if (kDebugMode) {
-                          final evKey = '${msg.id}_${msg.text.hashCode}';
-                          if (!_loggedEvidenceIds.contains(evKey)) {
-                            _loggedEvidenceIds.add(evKey);
-                            debugPrint(
-                              '[REFERENCE_RESOLVER] messageId=${msg.id} '
-                              'source=${clinicalReference.sourceType} '
-                              'protocol=${clinicalReference.protocolId ?? "none"} '
-                              'drugs=${clinicalReference.drugKeys.length}',
+                            _sendDebounced(
+                              sendText,
+                              context.read<AppProvider>(),
                             );
-                          }
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
-                          child: CollapsibleClinicalReferenceBlock(
-                            lines: clinicalReference.lines,
-                            dark: dark,
-                            lang: p.lang,
-                          ),
-                        );
-                      }),
+                          },
+                  ),
 
-                  ],
-                ),
-                ),
-              );
-              // BUILD 276: wrap new bubble in TweenAnimationBuilder for smooth
-              // fade-in from 0→1 (380ms easeOut). AnimatedOpacity cannot tween
-              // from 0→1 on first build (it starts at whatever opacity it had
-              // before). TweenAnimationBuilder always animates from `begin` to
-              // `end` the first time it renders, guaranteeing the fade effect.
-              if (isFadingIn) {
-                return TweenAnimationBuilder<double>(
-                  key: ValueKey('fadein_${msg.id}'),
-                  tween: Tween<double>(begin: 0.0, end: 1.0),
-                  duration: const Duration(milliseconds: 380),
-                  curve: Curves.easeOut,
-                  builder: (_, opacity, child) =>
-                      Opacity(opacity: opacity, child: child),
-                  child: bubbleContent,
-                );
-              }
-              return bubbleContent;
-            },
+                // ── PHASE 4: Structured Clinical Output tipado ─────────────
+                // Renderizado somente após associação fail-closed ao texto
+                // definitivo. Nunca aparece durante streaming, em safe-cards
+                // ou em respostas legadas sem structuredOutput.
+                if (_longResponse &&
+                    msg.clinicalOutput != null &&
+                    !isActiveStreamingBubble &&
+                    !isSafeCard) ...[
+                  SizedBox(height: _longResponse ? 12 : 6),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: _longResponse ? 12 : 8,
+                    ),
+                    child: StructuredClinicalOutputView(
+                      key: ValueKey('clinical_output_${msg.id}'),
+                      output: msg.clinicalOutput!,
+                      isPlantaoMode: !_longResponse,
+                      languageCode: p.lang,
+                    ),
+                  ),
+                ],
+
+                // ── Build 192 / BUILD 232: ActionButtonsRow + EXT_TOOL cache ───
+                // Aparece apenas na última bolha AI sem streaming.
+                // BUILD 238 SAFE_CARD_GUARD: safe-cards NÃO mostram ActionButtons
+                // nem ExternalToolLink — evita botões inválidos em respostas de fallback.
+                // BUILD 232: ExternalToolLink é resolvido aqui (no pai) com cache.
+                // Assim _ActionButtonsRow.build() nunca chama ExternalToolLinkEngine
+                // mais de 1 vez por (messageId, textHash) independente de rebuilds.
+                // ORDEM 29 V2 — SUBORDINAÇÃO TEMPORAL (MÉTODO BRUNO):
+                // !_isStreaming é o sinal soberano. Enquanto stream ativo, este bloco
+                // NUNCA executa → sem injeção de botões durante produção de texto.
+                // Só após onDone fechar o stream E _lastAiIndex ser sincronizado
+                // (ORDEM 29 fix) é que ExternalToolLinkEngine.build() é chamado
+                // com metadados completos do response final. Sem race condition.
+                if (i == _lastAiIndex &&
+                    !_isStreaming &&
+                    _messages.length >= 2 &&
+                    !isSafeCard)
+                  Builder(
+                    builder: (_) {
+                      final lastUser = _messages
+                          .lastWhere(
+                            (m) => m.role == 'user',
+                            orElse: () => _ChatMsg(role: 'user', text: ''),
+                          )
+                          .text;
+                      // ── MICRO-BUILD 462E-A.5.3.7.3.2: Pure renderer — zero engine calls ──
+                      // ExternalToolLinkEngine.build() is STRICTLY FORBIDDEN here.
+                      // The tool resolution was computed exactly once inside the canonical
+                      // finalizer (sendAiMessage → chunk_isDone → EXT_TOOL_GATE) and stored
+                      // in AppProvider._lastCompletedToolLink.
+                      //
+                      // Re-rendering this widget 100 times produces:
+                      //   • ZERO ExternalToolLinkEngine invocations
+                      //   • ZERO [EXT_TOOL_GATE] log emissions
+                      //   • ZERO state changes
+                      //
+                      // The _extToolCache is kept for reading historical sessions loaded from
+                      // Firestore (which do not go through sendAiMessage). It is never written
+                      // during the current live request lifecycle.
+                      final extKey = '${msg.id}:${msg.text.hashCode}';
+                      // ── MICRO-BUILD 462E-A.5.3.7.3.2.1: Request-correlated read ──
+                      // Read the pre-computed resolution from the provider map.
+                      // The UI asserts that the payload's requestId matches the
+                      // active request before rendering a tool calculator.
+                      // Mismatch (stale async write from prior request) → null → no card.
+                      final completedResolution = p.activeCompletedResolution;
+                      final ExternalToolLink? resolvedLink =
+                          _extToolCache.containsKey(extKey)
+                          ? _extToolCache[extKey]
+                          : (completedResolution != null &&
+                                    completedResolution.isAllowed
+                                ? completedResolution.link
+                                : null);
+                      if (kDebugMode && showStudyContinuation) {
+                        debugPrint(
+                          '[STUDY_CONTINUATION][RESOLVED] '
+                          'msgId=${msg.id} '
+                          'source=${studyContinuation.source.name} '
+                          'promptChars=${nextActionPrompt.length}',
+                        );
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (showStudyContinuation)
+                            StudyContinuationButton(
+                              question: nextActionPrompt.trim(),
+                              dark: dark,
+                              onTap: () {
+                                if (_isStreaming) return;
+
+                                final prompt = nextActionPrompt.trim();
+
+                                if (prompt.isEmpty) return;
+
+                                _lastSentStudyPrompt = prompt;
+                                _userScrolledUp = false;
+                                _scrollDown(force: true);
+                                _sendDebounced(
+                                  prompt,
+                                  context.read<AppProvider>(),
+                                  fromButton: true,
+                                );
+                              },
+                            ),
+                          ActionButtonsRow(
+                            lastUserMessage: lastUser,
+                            lastAiResponse: cleanDisplayText,
+                            isPlantaoMode: !_longResponse,
+                            lang: p.lang,
+                            dark: dark,
+                            chatHistory: _messages.map((m) => m.text).toList(),
+                            cachedLink: resolvedLink,
+                            suppressAiAction: _longResponse,
+                            studyNextPrompt: '',
+                            studyNextLabel: '',
+                            lastSentStudyPrompt: _lastSentStudyPrompt,
+                            onActionTap:
+                                (
+                                  prompt, {
+                                  required String visibleLabel,
+                                  required bool isStudyNext,
+                                  required PlantaoContinuationType
+                                  continuationType,
+                                  required List<PlantaoSection>
+                                  requestedSections,
+                                }) {
+                                  if (_isStreaming) return;
+                                  _userScrolledUp = false;
+                                  _scrollDown(force: true);
+                                  // BUILD 308 [FISIOP_DEDUP]: Registra o prompt do botão azul
+                                  // de Estudo para detecção de loop de Fisiopatologia no turno seguinte.
+                                  if (isStudyNext)
+                                    _lastSentStudyPrompt = prompt;
+                                  // PHASE 3C: preserve typed continuation metadata before
+                                  // the text reaches AppProvider. The productive response
+                                  // still uses the legacy path unchanged.
+                                  _sendDebounced(
+                                    prompt,
+                                    context.read<AppProvider>(),
+                                    fromButton: true,
+                                    userDisplayText: visibleLabel,
+                                    continuationType: continuationType,
+                                    requestedSections: requestedSections,
+                                  );
+                                },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                // ── Referência clínica textual e colapsável ───────────────
+                // Um fármaco usa sua ficha específica; polifarmácia usa
+                // referências do protocolo temático; sem match usa livros-base.
+                if (clinicalReference != null)
+                  Builder(
+                    builder: (_) {
+                      if (kDebugMode) {
+                        final evKey = '${msg.id}_${msg.text.hashCode}';
+                        if (!_loggedEvidenceIds.contains(evKey)) {
+                          _loggedEvidenceIds.add(evKey);
+                          debugPrint(
+                            '[REFERENCE_RESOLVER] messageId=${msg.id} '
+                            'source=${clinicalReference.sourceType} '
+                            'protocol=${clinicalReference.protocolId ?? "none"} '
+                            'drugs=${clinicalReference.drugKeys.length}',
+                          );
+                        }
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 20, 12, 18),
+                        child: CollapsibleClinicalReferenceBlock(
+                          lines: clinicalReference.lines,
+                          dark: dark,
+                          lang: p.lang,
+                        ),
+                      );
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+        // BUILD 276: wrap new bubble in TweenAnimationBuilder for smooth
+        // fade-in from 0→1 (380ms easeOut). AnimatedOpacity cannot tween
+        // from 0→1 on first build (it starts at whatever opacity it had
+        // before). TweenAnimationBuilder always animates from `begin` to
+        // `end` the first time it renders, guaranteeing the fade effect.
+        if (isFadingIn) {
+          return TweenAnimationBuilder<double>(
+            key: ValueKey('fadein_${msg.id}'),
+            tween: Tween<double>(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 380),
+            curve: Curves.easeOut,
+            builder: (_, opacity, child) =>
+                Opacity(opacity: opacity, child: child),
+            child: bubbleContent,
           );
+        }
+        return bubbleContent;
+      },
+    );
 
     // Build 145 — NotificationListener de scroll-up com prioridade imediata:
     //
@@ -3215,23 +4350,33 @@ class _AiScreenState extends State<AiScreen> {
     chatList = NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         // Só processa notificações do ScrollController principal do chat
-        if (notification.metrics.axisDirection != AxisDirection.down) return false;
+        if (notification.metrics.axisDirection != AxisDirection.down)
+          return false;
 
         if (notification is ScrollStartNotification) {
           // Gesto manual do usuário (dragDetails != null) → bloqueia auto-scroll
           if (notification.dragDetails != null && !_userScrolledUp) {
             _userScrolledUp = true;
-            // Sem setState: a flag é lida pelo _scrollDown() que roda no próximo frame.
-            // O rebuild pelo scroll-to-bottom indicator acontece via _onScroll listener.
+            // O gesto físico é o único evento que suspende o auto-follow.
+            // Atualiza o indicador fora do dispatch de scroll.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) setState(() {});
+            });
           }
         } else if (notification is ScrollEndNotification) {
           // Usuário soltou o dedo → verifica posição para re-ativar auto-scroll
           if (_scrollCtrl.hasClients) {
             final pos = _scrollCtrl.position;
-            final nearBottom = pos.pixels >= pos.maxScrollExtent - 100; // BUILD 308: 80→100px
+            final nearBottom =
+                pos.pixels >= pos.maxScrollExtent - 100; // BUILD 308: 80→100px
             if (nearBottom && _userScrolledUp) {
               _userScrolledUp = false;
-              if (mounted) setState(() {}); // atualiza botão scroll-to-bottom
+              // PHASE3K-C5A-R9A: ScrollEndNotification pode ser emitida
+              // durante performLayout. A atualização visual deve ocorrer
+              // somente depois do frame atual.
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) setState(() {});
+              });
             }
           }
         }
@@ -3256,9 +4401,7 @@ class _AiScreenState extends State<AiScreen> {
     // ConstrainedBox e NotificationListener já estejam em ordem.
     // MarkdownBody permanece com selectable: false (SelectionArea é a âncora única
     // de seleção — evitar conflito de dois sistemas de seleção sobrepostos).
-    chatList = SelectionArea(
-      child: chatList,
-    );
+    chatList = SelectionArea(child: chatList);
 
     // Desktop: sem shell AppBar → mostra WaHeader próprio.
     // Mobile/tablet: mostra mini barra de ações inline (histórico + limpar)
@@ -3326,7 +4469,9 @@ class _AiScreenState extends State<AiScreen> {
                       duration: const Duration(milliseconds: 200),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 7),
+                          horizontal: 14,
+                          vertical: 7,
+                        ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: dark
@@ -3340,7 +4485,9 @@ class _AiScreenState extends State<AiScreen> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(dark ? 0.35 : 0.10),
+                              color: Colors.black.withOpacity(
+                                dark ? 0.35 : 0.10,
+                              ),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -3381,211 +4528,211 @@ class _AiScreenState extends State<AiScreen> {
       ),
     );
 
-    return Column(children: [
-      // ── Header fino estilo WhatsApp (desktop only) ───────────────────────
-      if (showWaHeader)
-      WaHeader(
-        onSettings: _openAiSettings,
-        onHistory: () => _openHistory(p),
-        onNewChat: _startNewChat,
-        historyCount: _chatHistory.length,
-        isConnected: isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
-        // BUILD 310: Ambassador golden button — Apple Safe
-        isPartner:    p.currentUser?.isPartner ?? false,
-        partnerTitle: p.currentUser?.partnerTitle ?? '',
-        onAmbassador: (p.currentUser?.isPartner ?? false) ? _openAmbassadorPanel : null,
-      ),
+    return Column(
+      children: [
+        // ── Header fino estilo WhatsApp (desktop only) ───────────────────────
+        if (showWaHeader)
+          WaHeader(
+            onSettings: _openAiSettings,
+            onHistory: () => _openHistory(p),
+            onNewChat: () => _startNewChat(),
+            historyCount: _chatHistory.length,
+            lang: p.lang,
+            modeConfirmed: _modeConfirmed,
+            studyMode: _longResponse,
+            onModeTap: _openResponseModeSelector,
+            isConnected:
+                isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
+            // BUILD 310: Ambassador golden button — Apple Safe
+            isPartner: p.currentUser?.isPartner ?? false,
+            partnerTitle: p.currentUser?.partnerTitle ?? '',
+            onAmbassador: (p.currentUser?.isPartner ?? false)
+                ? _openAmbassadorPanel
+                : null,
+          ),
 
-      // ── Mini barra de ações mobile — SEMPRE visível mesmo com teclado aberto
-      // Histórico + Limpar ficam acessíveis sem depender do scroll-reveal AppBar.
-      if (showMobileActions)
-        MobileAiActionBar(
-          dark: dark,
-          lang: p.lang,
-          historyCount: _chatHistory.length,
-          hasMessages: _messages.where((m) => m.role == 'user').isNotEmpty,
-          hasRealAi: p.hasAnyAi || p.geminiConnected,
-          keyLoading: p.aiKeyLoading || p.geminiLoading,
-          onHistory: () => _openHistory(p),
-          onClear: _clearChat,
-          onSettings: _openAiSettings,
-          onNewChat: _startNewChat,
-          forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
-          isConnected: isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
-          // BUILD 310: Ambassador golden button — invisible to non-partners
-          isPartner:    p.currentUser?.isPartner ?? false,
-          partnerTitle: p.currentUser?.partnerTitle ?? '',
-          onAmbassador: (p.currentUser?.isPartner ?? false) ? _openAmbassadorPanel : null,
-        ),
+        // ── Mini barra de ações mobile — SEMPRE visível mesmo com teclado aberto
+        // Histórico + Limpar ficam acessíveis sem depender do scroll-reveal AppBar.
+        if (showMobileActions)
+          MobileAiActionBar(
+            dark: dark,
+            lang: p.lang,
+            historyCount: _chatHistory.length,
+            hasMessages: _messages.where((m) => m.role == 'user').isNotEmpty,
+            hasRealAi: p.hasAnyAi || p.geminiConnected,
+            keyLoading: p.aiKeyLoading || p.geminiLoading,
+            modeConfirmed: _modeConfirmed,
+            studyMode: _longResponse,
+            onModeTap: _openResponseModeSelector,
+            onHistory: () => _openHistory(p),
+            onClear: _clearChat,
+            onSettings: _openAiSettings,
+            onNewChat: () => _startNewChat(),
+            forceDisconnectedLabel: forceDisconnectedLabel, // BUILD 275
+            isConnected:
+                isMplusConnected, // SUPER ORDEM MASTER 15 M2: M+ verde estrito — apenas sessão de IA real
+            // BUILD 310: Ambassador golden button — invisible to non-partners
+            isPartner: p.currentUser?.isPartner ?? false,
+            partnerTitle: p.currentUser?.partnerTitle ?? '',
+            onAmbassador: (p.currentUser?.isPartner ?? false)
+                ? _openAmbassadorPanel
+                : null,
+          ),
 
-      // ── Banner de erro de chave ───────────────────────────────────────────
-      if (_aiError)
-        AiErrorBanner(
-          lang: p.lang,
-          isGeminiError: p.geminiConnected,
-          onFix: _openAiSettings,
-        ),
+        // ── Banner de erro de chave ───────────────────────────────────────────
+        if (_aiError)
+          AiErrorBanner(
+            lang: p.lang,
+            isGeminiError: p.geminiConnected,
+            onFix: _openAiSettings,
+          ),
 
-      // ── Banner de erro de rede/conexão ───────────────────────────────────
-      if (_networkError)
-        InlineConnectionBanner(
-          lang: p.lang,
-          isAiError: true,
-          onRetry: () {
-            final last = _messages.lastWhere(
-              (m) => m.role == 'user',
-              orElse: () => _ChatMsg(role: '', text: ''),
-            );
-            if (last.text.isNotEmpty) {
-              _send(last.text, p);
-            } else {
-              setState(() => _networkError = false);
-            }
-          },
-        ),
+        // ── Banner de erro de rede/conexão ───────────────────────────────────
+        if (_networkError)
+          InlineConnectionBanner(
+            lang: p.lang,
+            isAiError: true,
+            onRetry: () {
+              final last = _messages.lastWhere(
+                (m) => m.role == 'user',
+                orElse: () => _ChatMsg(role: '', text: ''),
+              );
+              if (last.text.isNotEmpty) {
+                _send(last.text, p);
+              } else {
+                setState(() => _networkError = false);
+              }
+            },
+          ),
 
-      // ── Área de chat ─────────────────────────────────────────────────────
-      Expanded(child: chatArea),
+        // ── Área de chat ─────────────────────────────────────────────────────
+        Expanded(child: chatArea),
 
-      // ── SUPER ORDEM MASTER 15 M1: CANVAS PLANO — painel inferior MESMO chatBg ──
-      // ColoredBox garante que mode-toggle + sugestões + InputBar compartilhem
-      // o MESMO fundo que o chatArea acima. Elimina a divisão de dois tons de preto
-      // (grafite do chat vs preto do shell IndexedStack herdado pelo painel inferior).
-      ColoredBox(
-        color: chatBg,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── ORDEM 36: Seletor de modo flutuante — fixo acima do InputBar ────
-            // ORDEM 44 M1: visível enquanto NÃO há mensagens do médico na sessão.
-            if (!forceDisconnectedLabel &&
-                !_messages.any((m) => m.role == 'user'))
-              Padding(
-                padding: const EdgeInsets.only(top: 4, bottom: 0),
-                child: ResponseModeToggle(
-                  value: _longResponse,
+        // ── SUPER ORDEM MASTER 15 M1: CANVAS PLANO — painel inferior MESMO chatBg ──
+        // ColoredBox garante que mode-toggle + sugestões + InputBar compartilhem
+        // o MESMO fundo que o chatArea acima. Elimina a divisão de dois tons de preto
+        // (grafite do chat vs preto do shell IndexedStack herdado pelo painel inferior).
+        ColoredBox(
+          color: chatBg,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // AI-VIS-B.2.6-R1 — escolha inicial simples.
+              //
+              // Depois da confirmação, o seletor deixa a área do chat e o modo
+              // passa a ser exibido na topbar. Tocar na topbar reabre este bloco.
+              if (!forceDisconnectedLabel && !_modeConfirmed)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4, bottom: 0),
+                  child: ResponseModeToggle(
+                    value: _longResponse,
+                    dark: dark,
+                    lang: p.lang,
+                    onChanged: _commitResponseMode,
+                  ),
+                ),
+              const SizedBox(height: 25), // 25px gap antes do TextField
+              // ── BUILD 277: INPUT LOCKOUT for disconnected non-privileged users
+              if (forceDisconnectedLabel)
+                DisconnectedInputLock(
                   dark: dark,
                   lang: p.lang,
-                  onChanged: (newValue) {
-                    if (newValue == _longResponse) return;
-                    // ORDEM 49 M1 / ORDEM 56: Atomic mode-sync ao alternar toggle.
-                    setState(() {
-                      _longResponse = newValue;
-                      _loggedSafeCardIds.clear();
-                      _loggedEvidenceIds.clear();
-      _loggedExtToolKeys.clear(); // BUILD 308
-                    });
-                    p.clearAiHistory();
-                    if (kDebugMode) {
-                      debugPrint('[ORDEM49_TOGGLE] mode=${newValue ? "ESTUDO" : "PLANTÃO"} '
-                          'logSets=cleared history=clearing');
-                    }
-                  },
+                  onConnect: _openAiSettings,
                 ),
-              ),
-            const SizedBox(height: 25), // 25px gap antes do TextField
 
-            // ── Carrossel de sugestões — some quando foca ─────────────────
-            AnimatedSize(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeInOut,
-              child: _showSuggestions
-                  ? SuggestionCarousel(
-                      lang: p.lang,
-                      dark: dark,
-                      onTap: _insertSuggestion,
-                    )
-                  : const SizedBox.shrink(),
-            ),
-
-            // ── BUILD 277: INPUT LOCKOUT for disconnected non-privileged users
-            if (forceDisconnectedLabel)
-              DisconnectedInputLock(dark: dark, lang: p.lang, onConnect: _openAiSettings),
-
-            // ── Barra de input — centralizada no desktop ───────────────────
-            // Build 158.3: Padding inferior DINÂMICO sincronizado com scrollingDown.
-            if (!forceDisconnectedLabel)
-              chatMaxWidth != null
-                  ? Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: chatMaxWidth),
-                        child: PromptComposer(
-                          ctrl: _queryCtrl,
-                          focusNode: _focusNode,
-                          dark: dark,
-                          hasFocus: _hasFocus,
-                          // BUILD 327+: thinking=true enquanto IA processa (thinking OU streaming)
-                          // garante que o botão de abort esteja visível em ambas as fases.
-                          thinking: _thinking || _isStreaming,
-                          onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
-                          onCancel: _cancelActiveStream,  // BUILD 327+: abort stream
-                          hint: p.t('ai_placeholder'),
-                          onVoice: _toggleStt,
-                          sttListening: _sttListening,
-                          sttSoundLevel: _sttSoundLevel,
-                          lang: p.lang,
-                          // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
-                          isConnected: isMplusConnected,
-                          // UX INTERCEPT: toque no campo bloqueado abre modal de conexão
-                          onConnectTap: _openAiSettings,
+              // ── Barra de input — centralizada no desktop ───────────────────
+              // Build 158.3: Padding inferior DINÂMICO sincronizado com scrollingDown.
+              if (!forceDisconnectedLabel)
+                chatMaxWidth != null
+                    ? Center(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: chatMaxWidth),
+                          child: PromptComposer(
+                            ctrl: _queryCtrl,
+                            focusNode: _focusNode,
+                            dark: dark,
+                            hasFocus: _hasFocus,
+                            // BUILD 327+: thinking=true enquanto IA processa (thinking OU streaming)
+                            // garante que o botão de abort esteja visível em ambas as fases.
+                            thinking: _thinking || _isStreaming,
+                            onSend: () => _sendDebounced(
+                              _queryCtrl.text,
+                              context.read<AppProvider>(),
+                            ),
+                            onCancel:
+                                _cancelActiveStream, // BUILD 327+: abort stream
+                            hint: p.t('ai_placeholder'),
+                            onVoice: _toggleStt,
+                            sttListening: _sttListening,
+                            sttSoundLevel: _sttSoundLevel,
+                            lang: p.lang,
+                            // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
+                            isConnected: isMplusConnected,
+                            // UX INTERCEPT: toque no campo bloqueado abre modal de conexão
+                            onConnectTap: _openAiSettings,
+                          ),
+                        ),
+                      )
+                    // Fix #1: padding inferior dinâmico sincronizado com teclado + Dock.
+                    // Teclado aberto → gruda na borda superior do teclado (0px extra).
+                    // Teclado fechado → eleva acima do Dock flutuante com bottomPadding nativo.
+                    // Bloqueio de streaming: AnimatedPadding congelado durante _isStreaming.
+                    : ValueListenableBuilder<bool>(
+                        valueListenable: AiScreen.chatKeyboardOpen,
+                        builder: (_, kbOpenVal, __) => ValueListenableBuilder<bool>(
+                          valueListenable: AiScreen.scrollingDown,
+                          builder: (_, scrollingDown, child) {
+                            final mq = MediaQuery.of(context);
+                            final nativeBottom = mq.padding.bottom;
+                            final keyboardH = mq.viewInsets.bottom;
+                            // Com teclado → sem gap extra (o sistema já reposiciona o layout).
+                            // Sem teclado, sem scroll → eleva 95px acima do Dock + safe area.
+                            // BUILD 332 Fix 4: Remove scrollingDown from dynamicBottom.
+                            // A barra de input permanece fixa — não se oculta com scroll.
+                            final dynamicBottom = kbOpenVal
+                                ? 0.0
+                                : (nativeBottom + 95.0).clamp(95.0, 160.0);
+                            // Congelamento durante streaming: evita AnimatedPadding
+                            // rebuildando a cada chunk e sobrecarregando o UI Thread.
+                            final _ =
+                                keyboardH; // referenciado para suprimir warning
+                            return AnimatedPadding(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeInOut,
+                              padding: EdgeInsets.only(bottom: dynamicBottom),
+                              child: child,
+                            );
+                          },
+                          child: PromptComposer(
+                            ctrl: _queryCtrl,
+                            focusNode: _focusNode,
+                            dark: dark,
+                            hasFocus: _hasFocus,
+                            // BUILD 327+: thinking=true enquanto IA processa (thinking OU streaming)
+                            thinking: _thinking || _isStreaming,
+                            onSend: () => _sendDebounced(
+                              _queryCtrl.text,
+                              context.read<AppProvider>(),
+                            ),
+                            onCancel:
+                                _cancelActiveStream, // BUILD 327+: abort stream
+                            hint: p.t('ai_placeholder'),
+                            onVoice: _toggleStt,
+                            sttListening: _sttListening,
+                            sttSoundLevel: _sttSoundLevel,
+                            lang: p.lang,
+                            // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
+                            isConnected: isMplusConnected,
+                            // UX INTERCEPT: toque no campo bloqueado abre modal de conexão
+                            onConnectTap: _openAiSettings,
+                          ),
                         ),
                       ),
-                    )
-                  // Fix #1: padding inferior dinâmico sincronizado com teclado + Dock.
-                  // Teclado aberto → gruda na borda superior do teclado (0px extra).
-                  // Teclado fechado → eleva acima do Dock flutuante com bottomPadding nativo.
-                  // Bloqueio de streaming: AnimatedPadding congelado durante _isStreaming.
-                  : ValueListenableBuilder<bool>(
-                      valueListenable: AiScreen.chatKeyboardOpen,
-                      builder: (_, kbOpenVal, __) =>
-                          ValueListenableBuilder<bool>(
-                        valueListenable: AiScreen.scrollingDown,
-                        builder: (_, scrollingDown, child) {
-                          final mq = MediaQuery.of(context);
-                          final nativeBottom = mq.padding.bottom;
-                          final keyboardH    = mq.viewInsets.bottom;
-                          // Com teclado → sem gap extra (o sistema já reposiciona o layout).
-                          // Sem teclado, sem scroll → eleva 95px acima do Dock + safe area.
-                          // BUILD 332 Fix 4: Remove scrollingDown from dynamicBottom.
-                          // A barra de input permanece fixa — não se oculta com scroll.
-                          final dynamicBottom = kbOpenVal
-                              ? 0.0
-                              : (nativeBottom + 95.0).clamp(95.0, 160.0);
-                          // Congelamento durante streaming: evita AnimatedPadding
-                          // rebuildando a cada chunk e sobrecarregando o UI Thread.
-                          final _ = keyboardH; // referenciado para suprimir warning
-                          return AnimatedPadding(
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.easeInOut,
-                            padding: EdgeInsets.only(bottom: dynamicBottom),
-                            child: child,
-                          );
-                        },
-                        child: PromptComposer(
-                          ctrl: _queryCtrl,
-                          focusNode: _focusNode,
-                          dark: dark,
-                          hasFocus: _hasFocus,
-                          // BUILD 327+: thinking=true enquanto IA processa (thinking OU streaming)
-                          thinking: _thinking || _isStreaming,
-                          onSend: () => _sendDebounced(_queryCtrl.text, context.read<AppProvider>()),
-                          onCancel: _cancelActiveStream,  // BUILD 327+: abort stream
-                          hint: p.t('ai_placeholder'),
-                          onVoice: _toggleStt,
-                          sttListening: _sttListening,
-                          sttSoundLevel: _sttSoundLevel,
-                          lang: p.lang,
-                          // ADENDO SEGURANÇA: Factor 1 — trava interface quando desconectado
-                          isConnected: isMplusConnected,
-                          // UX INTERCEPT: toque no campo bloqueado abre modal de conexão
-                          onConnectTap: _openAiSettings,
-                        ),
-                      ),
-                    ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
@@ -3600,9 +4747,6 @@ class _AiScreenState extends State<AiScreen> {
 // Usado nas barras mobile e desktop quando IA está conectada.
 // Dispose automático pelo ciclo de vida StatefulWidget — sem memory leak.
 // ─────────────────────────────────────────────────────────────────────────────
-
-
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Header fino — estilo WhatsApp
@@ -3636,29 +4780,54 @@ String _applyPlantaoAestheticGuard(String text) {
   // Safe: only strips the ** wrappers, never the content.
   var lines = text
       .split('\n')
-      .map((line) => line.replaceAllMapped(
-            RegExp(r'\*\*([^*]+)\*\*'),
-            (m) => m.group(1) ?? '',
-          ))
+      .map(
+        (line) => line.replaceAllMapped(
+          RegExp(r'\*\*([^*]+)\*\*'),
+          (m) => m.group(1) ?? '',
+        ),
+      )
       .toList();
 
   // ── 2. ALLCAPS label → Title Case ────────────────────────────────────────
   // Only matches standalone label tokens (WORD:) in all-caps.
   // Preserves clinical acronyms (IAM, PCR, mg/kg…) that are mid-sentence.
   const labels = [
-    'DOSE', 'DOSAGEM', 'ALERTA', 'ALERTAS', 'ALTERNATIVA',
-    'CONDUTA', 'EVITAR', 'MONITORAR', 'MONITORAMENTO',
-    'CONTRAINDICACAO', 'CONTRAINDICAÇÕES', 'CONTRAINDICACION',
-    'DILUICAO', 'DILUIÇÃO', 'PREPARO', 'INFUSAO', 'INFUSÃO',
-    'TITULACAO', 'TITULAÇÃO', 'VELOCIDADE', 'CALCULO', 'CÁLCULO',
-    'INTERPRETACAO', 'INTERPRETAÇÃO', 'PROXIMO', 'PRÓXIMO',
-    'OBSERVAR', 'OBSERVACAO', 'OBSERVAÇÃO', 'VIGILAR',
+    'DOSE',
+    'DOSAGEM',
+    'ALERTA',
+    'ALERTAS',
+    'ALTERNATIVA',
+    'CONDUTA',
+    'EVITAR',
+    'MONITORAR',
+    'MONITORAMENTO',
+    'CONTRAINDICACAO',
+    'CONTRAINDICAÇÕES',
+    'CONTRAINDICACION',
+    'DILUICAO',
+    'DILUIÇÃO',
+    'PREPARO',
+    'INFUSAO',
+    'INFUSÃO',
+    'TITULACAO',
+    'TITULAÇÃO',
+    'VELOCIDADE',
+    'CALCULO',
+    'CÁLCULO',
+    'INTERPRETACAO',
+    'INTERPRETAÇÃO',
+    'PROXIMO',
+    'PRÓXIMO',
+    'OBSERVAR',
+    'OBSERVACAO',
+    'OBSERVAÇÃO',
+    'VIGILAR',
   ];
   lines = lines.map((line) {
     for (final label in labels) {
       if (line.contains('$label:')) {
-        final titled = label[0].toUpperCase() +
-            label.substring(1).toLowerCase();
+        final titled =
+            label[0].toUpperCase() + label.substring(1).toLowerCase();
         line = line.replaceAll('$label:', '$titled:');
       }
     }
@@ -3725,8 +4894,10 @@ String _stripCodeFencesAndExtractJson(String text) {
     // (Estratégias B/C só são necessárias se ainda for JSON puro)
     final looksLikeJson = stripped.trimLeft().startsWith('{');
     if (!looksLikeJson) {
-      debugPrint('[BUILD315_JSON_STRIP] action=fence_stripped '
-          'originalLen=${trimmed.length} strippedLen=${stripped.length}');
+      debugPrint(
+        '[BUILD315_JSON_STRIP] action=fence_stripped '
+        'originalLen=${trimmed.length} strippedLen=${stripped.length}',
+      );
       return stripped;
     }
     // Continua com o JSON limpo para Estratégias B/C
@@ -3740,11 +4911,11 @@ String _stripCodeFencesAndExtractJson(String text) {
   // ── Encontra primeiro '{' e último '}' para extrair JSON válido ───────────
   // Resiliente a cabeçalhos antes do JSON (ex: "🟥 CONDUCTA CLÍNICA\n{...")
   final firstBrace = text.indexOf('{');
-  final lastBrace  = text.lastIndexOf('}');
+  final lastBrace = text.lastIndexOf('}');
   if (firstBrace < 0 || lastBrace <= firstBrace) return text;
 
   // Preserva texto antes do '{' como possível cabeçalho/prefixo
-  final prefix    = text.substring(0, firstBrace).trim();
+  final prefix = text.substring(0, firstBrace).trim();
   final jsonSlice = text.substring(firstBrace, lastBrace + 1);
 
   Map<String, dynamic>? jsonMap;
@@ -3752,23 +4923,50 @@ String _stripCodeFencesAndExtractJson(String text) {
     jsonMap = jsonDecode(jsonSlice) as Map<String, dynamic>?;
   } catch (_) {
     // JSON inválido → pass-through com fence já removido
-    debugPrint('[BUILD315_JSON_STRIP] action=json_parse_failed '
-        'slice_len=${jsonSlice.length}');
+    debugPrint(
+      '[BUILD315_JSON_STRIP] action=json_parse_failed '
+      'slice_len=${jsonSlice.length}',
+    );
     return text;
   }
   if (jsonMap == null || jsonMap.isEmpty) return text;
 
-  debugPrint('[BUILD315_JSON_STRIP] action=json_decoded '
-      'keys=${jsonMap.keys.toList()} prefix="${prefix.length > 30 ? prefix.substring(0, 30) : prefix}"');
+  debugPrint(
+    '[BUILD315_JSON_STRIP] action=json_decoded '
+    'keys=${jsonMap.keys.toList()} prefix="${prefix.length > 30 ? prefix.substring(0, 30) : prefix}"',
+  );
 
   // ── Estratégia B: JSON com chaves-emoji (🟥, 💊, etc.) ─────────────────
   // Verifica se alguma chave é um emoji-âncora canônico
   const anchors = [
-    '🟥', '💊', '🔄', '⛔', '📌', '⚠️',
-    '📈', '✅', '❌', '🔎', '🧪', '🧮', '📖',
+    '🟥',
+    '💊',
+    '🔄',
+    '⛔',
+    '📌',
+    '⚠️',
+    '📈',
+    '✅',
+    '❌',
+    '🔎',
+    '🧪',
+    '🧮',
+    '📖',
   ];
   const anchorOrder = [
-    '🟥', '💊', '🔄', '⛔', '🔎', '🧪', '🧮', '📖', '📈', '❌', '📌', '✅', '⚠️',
+    '🟥',
+    '💊',
+    '🔄',
+    '⛔',
+    '🔎',
+    '🧪',
+    '🧮',
+    '📖',
+    '📈',
+    '❌',
+    '📌',
+    '✅',
+    '⚠️',
   ];
 
   final hasEmojiKeys = jsonMap.keys.any(
@@ -3794,8 +4992,10 @@ String _stripCodeFencesAndExtractJson(String text) {
     }
     final result = sb.toString().trim();
     if (result.isNotEmpty) {
-      debugPrint('[BUILD315_JSON_STRIP] action=emoji_keys_converted '
-          'outputLen=${result.length}');
+      debugPrint(
+        '[BUILD315_JSON_STRIP] action=emoji_keys_converted '
+        'outputLen=${result.length}',
+      );
       return result;
     }
   }
@@ -3804,41 +5004,41 @@ String _stripCodeFencesAndExtractJson(String text) {
   // Mapeia campos conhecidos para âncoras canônicas
   final fieldToAnchor = <String, String>{
     // 🟥 conduta / título
-    'conduta':        '🟥',
-    'conducta':       '🟥',
-    'titulo':         '🟥',
-    'título':         '🟥',
-    'title':          '🟥',
+    'conduta': '🟥',
+    'conducta': '🟥',
+    'titulo': '🟥',
+    'título': '🟥',
+    'title': '🟥',
     'conduta_titulo': '🟥',
     'conduta_título': '🟥',
     // 💊 dose / primeira linha
-    'dose':           '💊',
-    'dosis':          '💊',
+    'dose': '💊',
+    'dosis': '💊',
     'primeira_linha': '💊',
-    'primera_linea':  '💊',
-    'medicacao':      '💊',
-    'medicación':     '💊',
-    'tratamento':     '💊',
-    'tratamiento':    '💊',
+    'primera_linea': '💊',
+    'medicacao': '💊',
+    'medicación': '💊',
+    'tratamento': '💊',
+    'tratamiento': '💊',
     // 🔄 alternativa
-    'alternativa':    '🔄',
-    'segunda_linha':  '🔄',
-    'segunda_linea':  '🔄',
+    'alternativa': '🔄',
+    'segunda_linha': '🔄',
+    'segunda_linea': '🔄',
     // ⛔ evitar
-    'evitar':         '⛔',
+    'evitar': '⛔',
     'contraindicado': '⛔',
-    'contraindicação':'⛔',
-    'contraindicacion':'⛔',
+    'contraindicação': '⛔',
+    'contraindicacion': '⛔',
     // 📌 monitorar
-    'monitorar':      '📌',
-    'monitorizar':    '📌',
-    'monitoramento':  '📌',
-    'observar':       '📌',
+    'monitorar': '📌',
+    'monitorizar': '📌',
+    'monitoramento': '📌',
+    'observar': '📌',
     // ⚠️ alerta
-    'alerta':         '⚠️',
-    'atencao':        '⚠️',
-    'atencion':       '⚠️',
-    'aviso':          '⚠️',
+    'alerta': '⚠️',
+    'atencao': '⚠️',
+    'atencion': '⚠️',
+    'aviso': '⚠️',
   };
 
   // Constrói saída na ordem canônica mapeando campos
@@ -3865,15 +5065,19 @@ String _stripCodeFencesAndExtractJson(String text) {
     }
     final result = sb.toString().trim();
     if (result.isNotEmpty) {
-      debugPrint('[BUILD315_JSON_STRIP] action=semantic_fields_converted '
-          'anchorsFound=${anchorLines.keys.toList()} outputLen=${result.length}');
+      debugPrint(
+        '[BUILD315_JSON_STRIP] action=semantic_fields_converted '
+        'anchorsFound=${anchorLines.keys.toList()} outputLen=${result.length}',
+      );
       return result;
     }
   }
 
   // Nenhuma estratégia funcionou — retorna o texto com fences removidas
-  debugPrint('[BUILD315_JSON_STRIP] action=pass_through_no_mapping '
-      'jsonKeys=${jsonMap.keys.toList()}');
+  debugPrint(
+    '[BUILD315_JSON_STRIP] action=pass_through_no_mapping '
+    'jsonKeys=${jsonMap.keys.toList()}',
+  );
   return text;
 }
 
@@ -3917,13 +5121,17 @@ String _stripCodeFencesAndExtractJson(String text) {
 //      [RESPONSE_VALIDATOR] fallback=false/true reason=...
 //      [SAFETY_FALLBACK] fallback=true reason=... (somente quando bloqueia)
 // ─────────────────────────────────────────────────────────────────────────────
-String _plantaoTruncationGuard(String text, String lang,
-    {String userQuery = ''}) {
+String _plantaoTruncationGuard(
+  String text,
+  String lang, {
+  String userQuery = '',
+}) {
   if (text.trim().isEmpty) return text;
 
   // Pass-through se for mensagem de erro de rede (já tratada pelo bloco isNetErr)
   final lower = text.toLowerCase();
-  final isErrorMsg = lower.startsWith('erro') ||
+  final isErrorMsg =
+      lower.startsWith('erro') ||
       lower.startsWith('error') ||
       lower.contains('sem conex') ||
       lower.contains('sin conex') ||
@@ -3944,46 +5152,52 @@ String _plantaoTruncationGuard(String text, String lang,
   // ignore: avoid_print
   print(text);
   // ignore: avoid_print
-  print('================================================= '
-      'len=${text.length} chars');
+  print(
+    '================================================= '
+    'len=${text.length} chars',
+  );
   if (text.trim().length < 100) {
     // Resposta suspeita (< 100 chars) — loga alerta explícito sem mascarar
     // ignore: avoid_print
-    print('[RAW_AI_OUTPUT] ⚠️  ALERTA: resposta abaixo de 100 caracteres '
-        '(len=${text.trim().length}). Possível recusa, erro ou truncamento grave do modelo.');
+    print(
+      '[RAW_AI_OUTPUT] ⚠️  ALERTA: resposta abaixo de 100 caracteres '
+      '(len=${text.trim().length}). Possível recusa, erro ou truncamento grave do modelo.',
+    );
   }
 
   // ── Camada 1: PlantaoOrganizer via PlantatoPipeline ──────────────────────
   // Organiza, repara, detecta sinais clínicos. Não bloqueia.
   final pipelineResult = PlantatoPipeline.run(text);
-  final parserValid    = pipelineResult.response != null;
-  final hasClinical    = pipelineResult.hasClinicalContent;
-  final isTruncated    = pipelineResult.isTruncated;
-  final hasMetaLeak    = pipelineResult.hasMetaLeak;
+  final parserValid = pipelineResult.response != null;
+  final hasClinical = pipelineResult.hasClinicalContent;
+  final isTruncated = pipelineResult.isTruncated;
+  final hasMetaLeak = pipelineResult.hasMetaLeak;
 
   // ── Camada 2: ResponseValidator.shouldFallback() ─────────────────────────
   // ÚNICA fonte de decisão de bloqueio/fallback (BUILD 247).
   final (:fallback, :reason) = AiSmartRouter.shouldFallback(
-    parserValid:       parserValid,
+    parserValid: parserValid,
     hasClinicalContent: hasClinical,
-    isTruncated:       isTruncated,
-    hasMetaLeak:       hasMetaLeak,
-    repaired:          pipelineResult.repaired,
-    orderFixed:        pipelineResult.orderFixed,
-    hiddenFields:      pipelineResult.hiddenFields,
-    removedLines:      pipelineResult.removedLines,
+    isTruncated: isTruncated,
+    hasMetaLeak: hasMetaLeak,
+    repaired: pipelineResult.repaired,
+    orderFixed: pipelineResult.orderFixed,
+    hiddenFields: pipelineResult.hiddenFields,
+    removedLines: pipelineResult.removedLines,
   );
 
   // ── Log [RESPONSE_VALIDATOR] ─────────────────────────────────────────────
-  debugPrint('[RESPONSE_VALIDATOR] '
-      'fallback=$fallback '
-      'reason=$reason '
-      'parserValid=$parserValid '
-      'hasClinical=$hasClinical '
-      'isTruncated=$isTruncated '
-      'hasMetaLeak=$hasMetaLeak '
-      'repaired=${pipelineResult.repaired} '
-      'orderFixed=${pipelineResult.orderFixed}');
+  debugPrint(
+    '[RESPONSE_VALIDATOR] '
+    'fallback=$fallback '
+    'reason=$reason '
+    'parserValid=$parserValid '
+    'hasClinical=$hasClinical '
+    'isTruncated=$isTruncated '
+    'hasMetaLeak=$hasMetaLeak '
+    'repaired=${pipelineResult.repaired} '
+    'orderFixed=${pipelineResult.orderFixed}',
+  );
 
   // ── Caminho PRESERVE: ResponseValidator decidiu manter resposta ───────────
   if (!fallback) {
@@ -4002,9 +5216,11 @@ String _plantaoTruncationGuard(String text, String lang,
       // Só reformatar quando o texto é prosa pura sem nenhum ** bold marker.
       final hasInlineBold = text.contains('**');
       if (hasInlineBold) {
-        debugPrint('[PLANTAO_ORGANIZER] action=preserve '
-            'reason=has_inline_bold_bypass '
-            'hiddenFields=${pipelineResult.hiddenFields}');
+        debugPrint(
+          '[PLANTAO_ORGANIZER] action=preserve '
+          'reason=has_inline_bold_bypass '
+          'hiddenFields=${pipelineResult.hiddenFields}',
+        );
         return text;
       }
 
@@ -4013,45 +5229,59 @@ String _plantaoTruncationGuard(String text, String lang,
       final intent = analysis.primaryIntent;
 
       // Aplica template preservando conteúdo clínico
-      final reformatted =
-          ResponseReformatter.applyTemplate(text, lang, intent, userQuery);
+      final reformatted = ResponseReformatter.applyTemplate(
+        text,
+        lang,
+        intent,
+        userQuery,
+      );
 
       // Verifica se o reformatter produziu estrutura válida (sanidade)
-      final isReformattedStructured =
-          ResponseReformatter.isAlreadyStructured(reformatted);
+      final isReformattedStructured = ResponseReformatter.isAlreadyStructured(
+        reformatted,
+      );
 
       if (isReformattedStructured && reformatted.length >= text.length * 0.6) {
-        debugPrint('[PLANTAO_ORGANIZER] intent=${intent.name} '
-            'action=template_applied '
-            'preserved=true '
-            'reason=$reason '
-            'hiddenFields=${pipelineResult.hiddenFields}');
+        debugPrint(
+          '[PLANTAO_ORGANIZER] intent=${intent.name} '
+          'action=template_applied '
+          'preserved=true '
+          'reason=$reason '
+          'hiddenFields=${pipelineResult.hiddenFields}',
+        );
         return reformatted;
       }
       // Se reformatter falhou na sanidade → preserva original com log
-      debugPrint('[PLANTAO_ORGANIZER] intent=${intent.name} '
-          'action=preserve '
-          'reason=reformatter_sanity_failed '
-          'hiddenFields=${pipelineResult.hiddenFields}');
+      debugPrint(
+        '[PLANTAO_ORGANIZER] intent=${intent.name} '
+        'action=preserve '
+        'reason=reformatter_sanity_failed '
+        'hiddenFields=${pipelineResult.hiddenFields}',
+      );
       return text;
     }
 
-    final organizeAction = (pipelineResult.repaired || pipelineResult.orderFixed)
+    final organizeAction =
+        (pipelineResult.repaired || pipelineResult.orderFixed)
         ? 'organize'
         : 'preserve';
-    debugPrint('[PLANTAO_ORGANIZER] action=$organizeAction '
-        'reason=$reason '
-        'hiddenFields=${pipelineResult.hiddenFields}');
+    debugPrint(
+      '[PLANTAO_ORGANIZER] action=$organizeAction '
+      'reason=$reason '
+      'hiddenFields=${pipelineResult.hiddenFields}',
+    );
     return text; // pass-through — renderer estruturado ou texto plano
   }
 
   // ── Caminho FALLBACK: ResponseValidator decidiu bloquear ─────────────────
   // Só chega aqui para: meta-leak, truncado sem clínico, sem valor clínico.
-  debugPrint('[SAFETY_FALLBACK] fallback=true '
-      'reason=$reason '
-      'hasClinical=$hasClinical '
-      'isTruncated=$isTruncated '
-      'hasMetaLeak=$hasMetaLeak');
+  debugPrint(
+    '[SAFETY_FALLBACK] fallback=true '
+    'reason=$reason '
+    'hasClinical=$hasClinical '
+    'isTruncated=$isTruncated '
+    'hasMetaLeak=$hasMetaLeak',
+  );
 
   // Mantém o 🟥 do título se disponível para contexto
   final titleLine = text.split('\n').first.trim();
@@ -4059,11 +5289,11 @@ String _plantaoTruncationGuard(String text, String lang,
 
   final fallbackBody = lang == 'es'
       ? 'No pude completar la respuesta clínica ahora.\n'
-        'Esto puede ocurrir por sobrecarga momentánea del servidor.\n'
-        'Intente nuevamente en algunos segundos.'
+            'Esto puede ocurrir por sobrecarga momentánea del servidor.\n'
+            'Intente nuevamente en algunos segundos.'
       : 'Não consegui completar a resposta clínica agora.\n'
-        'Isso pode ocorrer por sobrecarga momentânea do servidor.\n'
-        'Tente novamente em alguns segundos.';
+            'Isso pode ocorrer por sobrecarga momentânea do servidor.\n'
+            'Tente novamente em alguns segundos.';
 
   if (hasTitleLine) {
     return '$titleLine\n📌 $fallbackBody';
@@ -4102,7 +5332,8 @@ String _enforceMedicalFormat(String text, String lang) {
   // Identificadas pelo prefixo 'ERRO', pela ausência de 🟥/🚨, e pela presença
   // de keywords de suporte. Qualquer modificação aqui produziria UX confusa.
   final lower = text.toLowerCase();
-  final isErrorMsg = lower.contains('sem conex') ||
+  final isErrorMsg =
+      lower.contains('sem conex') ||
       lower.contains('sin conex') ||
       lower.contains('timeout') ||
       lower.contains('falha na conex') ||
@@ -4194,9 +5425,13 @@ String _stripMetadataHeaders(String accumulated) {
   // ── CAMADA 0 — Build 117: filtro <think>...</think> e tags órfãs ─────────
   // Bloco delimitado inequívoco — seguro remover com dotAll.
   accumulated = accumulated.replaceAll(
-    RegExp(r'<think>.*?</think>', caseSensitive: false, dotAll: true), '');
+    RegExp(r'<think>.*?</think>', caseSensitive: false, dotAll: true),
+    '',
+  );
   accumulated = accumulated.replaceAll(
-    RegExp(r'</?think[^>]*>', caseSensitive: false), '');
+    RegExp(r'</?think[^>]*>', caseSensitive: false),
+    '',
+  );
 
   // ── CAMADA 1a v7.0 (Build 126) — PREFIX-ANCHORED, SEM GREEDY ────────────
   //
@@ -4227,10 +5462,10 @@ String _stripMetadataHeaders(String accumulated) {
   //   "Motivo del modo: ..." / "Motivo del activación: ..."
   String result = accumulated.replaceAll(
     RegExp(
-      r'^[|\s*]*(?:'                                                          // prefixo: pipe, espaço, asterisco
-      r'Confian[zç]a\s*(?:Cl[íi]nica)?\s*(?:[:–—]|Alta|M[eé]dia|Baixa)'    // "Confianza Clínica: Alta"
-      r'|Confianza\s+Clinica\s*[:\s]'                                        // sem acento
-      r'|Confianca\s+Clinica\s*[:\s]'                                        // PT sem acento
+      r'^[|\s*]*(?:' // prefixo: pipe, espaço, asterisco
+      r'Confian[zç]a\s*(?:Cl[íi]nica)?\s*(?:[:–—]|Alta|M[eé]dia|Baixa)' // "Confianza Clínica: Alta"
+      r'|Confianza\s+Clinica\s*[:\s]' // sem acento
+      r'|Confianca\s+Clinica\s*[:\s]' // PT sem acento
       r'|Clinical\s+Confidence\s*:'
       r'|Nivel\s+de\s+Confianza\s*:'
       r'|N[íi]vel\s+de\s+Confian[çc]a\s*:'
@@ -4398,7 +5633,6 @@ String _stripMetadataHeaders(String accumulated) {
 // • Usa AnimatedContainer para transições fluidas sem AnimationController externo.
 // ─────────────────────────────────────────────────────────────────────────────
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Motor de Partida — toggle de modo de resposta (Build 149, atualizado B156)
 //
@@ -4420,7 +5654,7 @@ String _stripMetadataHeaders(String accumulated) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─────────────────────────────────────────────────────────────────────────────
-// HISTÓRICO DE CHATS — bottom sheet com até 10 sessões salvas
+// HISTÓRICO DE CHATS — bottom sheet com até 20 sessões salvas
 // ─────────────────────────────────────────────────────────────────────────────
 // MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 3]:
 // ChatHistorySheet no longer holds sessions as a constructor parameter.
@@ -4431,3 +5665,186 @@ String _stripMetadataHeaders(String accumulated) {
 // BUILD 310 — AmbassadorPanel: VIP ModalBottomSheet for partners
 // Apple Safe: rendered only when isPartner==true. Zero exposure to App Review.
 // ─────────────────────────────────────────────────────────────────────────────
+
+class _AiResponseIdentityHeader extends StatelessWidget {
+  const _AiResponseIdentityHeader({
+    required this.dark,
+    required this.isEs,
+    required this.isStreaming,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final bool isStreaming;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = HomeV2Palette.resolve(dark);
+    final accent = dark ? const Color(0xFF00E59B) : palette.accent;
+    final title = isStreaming
+        ? (isEs ? 'GENERANDO RESPUESTA' : 'GERANDO RESPOSTA')
+        : (isEs ? 'RESPUESTA COMPLETADA' : 'RESPOSTA CONCLUÍDA');
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.psychology_alt_rounded, color: accent, size: 16),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: TextStyle(
+            color: palette.textPrimary,
+            fontSize: 10.2,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AiHomeGreeting extends StatelessWidget {
+  const _AiHomeGreeting({
+    required this.dark,
+    required this.lang,
+    required this.text,
+    required this.compact,
+    required this.animate,
+  });
+
+  final bool dark;
+  final String lang;
+  final String text;
+
+  /// false: estado vazio centralizado, equivalente ao _InlineEmptyGreeting.
+  /// true: conversa ativa à esquerda, equivalente ao
+  /// _InlineConversationGreeting da Home.
+  final bool compact;
+
+  /// A animação ocorre somente quando o usuário envia uma mensagem nova.
+  /// Histórico restaurado recebe o estado final sem repetir a animação.
+  final bool animate;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = HomeV2Palette.resolve(dark);
+    final greeting = text.split('\n\n').first.trim();
+    final commaIndex = greeting.indexOf(',');
+
+    final greetingLead = commaIndex < 0
+        ? greeting
+        : greeting.substring(0, commaIndex + 1);
+
+    final greetingName = commaIndex < 0
+        ? ''
+        : greeting.substring(commaIndex + 1);
+
+    final subtitle = lang == 'es'
+        ? 'Describe el caso o la duda clínica.'
+        : 'Descreva o caso ou a dúvida clínica.';
+
+    final motionDuration = animate
+        ? const Duration(milliseconds: 320)
+        : Duration.zero;
+
+    Widget greetingLine({
+      required double fontSize,
+      required FontWeight fontWeight,
+      required TextAlign textAlign,
+    }) {
+      return Text.rich(
+        TextSpan(
+          style: TextStyle(
+            color: palette.textPrimary,
+            fontSize: fontSize,
+            height: 1.2,
+            fontWeight: fontWeight,
+            letterSpacing: compact ? -0.1 : -0.3,
+          ),
+          children: [
+            TextSpan(
+              text: greetingLead,
+              style: TextStyle(color: palette.accent),
+            ),
+            TextSpan(
+              text: greetingName,
+              style: TextStyle(color: palette.textPrimary),
+            ),
+          ],
+        ),
+        textAlign: textAlign,
+      );
+    }
+
+    Widget openingGreeting() {
+      return Padding(
+        key: const ValueKey<String>('ai-greeting-opening'),
+        padding: const EdgeInsets.fromLTRB(16, 34, 16, 22),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 560),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                greetingLine(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: palette.textSecondary,
+                    fontSize: 12.5,
+                    height: 1.4,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget conversationGreeting() {
+      return Padding(
+        key: const ValueKey<String>('ai-greeting-compact'),
+        padding: const EdgeInsets.fromLTRB(12, 8, 16, 18),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              greetingLine(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return AnimatedAlign(
+      duration: motionDuration,
+      curve: Curves.easeOutCubic,
+      alignment: compact ? Alignment.topLeft : Alignment.center,
+      child: AnimatedSwitcher(
+        duration: motionDuration,
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        transitionBuilder: (child, animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        child: compact ? conversationGreeting() : openingGreeting(),
+      ),
+    );
+  }
+}

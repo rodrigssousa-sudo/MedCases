@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ResponseModeToggle extends StatelessWidget {
-  final bool
-      value; // Build 152: renamed from longResponse → value (state-binding fix)
+  final bool value;
   final bool dark;
   final String lang;
   final ValueChanged<bool> onChanged;
@@ -17,48 +16,73 @@ class ResponseModeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isEs = lang == 'es';
+    final isEs = lang == 'es';
 
-    // Build 158.2 — Labels texto puro, sem emojis/ícones (visual sóbrio e profissional)
-    final labelGuardia = isEs ? 'Guardia' : 'Plantão';
-    final labelEstudio = isEs ? 'Estudio' : 'Estudos';
+    final labelStudy =
+        isEs ? 'ESTUDIO' : 'ESTUDOS';
 
-    // Build 158.2 — Pills minimalistas:
-    // Ativo: fundo transparente + borda ciano fina e nítida (SEM glow/sombra)
-    // Inativo: fundo cinza sólido discreto, sem borda especial
-    const neonCyan = Color(0xFF00E5FF);
-    final inactiveText =
-        dark ? Colors.white.withOpacity(0.55) : Colors.black.withOpacity(0.45);
-    final inactiveBg = dark ? const Color(0xFF374151) : const Color(0xFFE0E0E0);
+    final labelGuard =
+        isEs ? 'GUARDIA' : 'PLANTÃO';
 
-    Widget pill({
+    final textColor = dark
+        ? Colors.white
+        : const Color(0xFF4B5563);
+
+    final dividerColor =
+        textColor.withValues(alpha: 0.38);
+
+    Widget option({
       required String label,
-      required bool isActive,
-      required VoidCallback onTap,
+      required bool optionValue,
     }) {
-      return GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
-          decoration: BoxDecoration(
-            // Ativo: transparente + borda ciano sólida e nítida (sem glow)
-            // Inativo: cinza sólido sem borda especial
-            color: isActive ? Colors.transparent : inactiveBg,
-            borderRadius: BorderRadius.circular(24),
-            border: isActive
-                ? Border.all(color: neonCyan, width: 1.5)
-                : Border.all(color: Colors.transparent, width: 1.5),
-            // Build 158.2: sem boxShadow — eliminado glow neon por completo
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-              color: isActive ? neonCyan : inactiveText,
-              letterSpacing: 0.2,
+      final isCurrent = value == optionValue;
+
+      return Semantics(
+        button: true,
+        selected: isCurrent,
+        label: label,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => onChanged(optionValue),
+          child: SizedBox(
+            width: 78,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 7,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: 12.2,
+                      height: 1.0,
+                      fontWeight: isCurrent
+                          ? FontWeight.w800
+                          : FontWeight.w600,
+                      letterSpacing: 0.7,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  AnimatedContainer(
+                    duration: const Duration(
+                      milliseconds: 180,
+                    ),
+                    curve: Curves.easeOutCubic,
+                    width: isCurrent ? 44 : 0,
+                    height: 2,
+                    decoration: BoxDecoration(
+                      color: textColor,
+                      borderRadius:
+                          BorderRadius.circular(999),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -66,23 +90,28 @@ class ResponseModeToggle extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6, left: 16, right: 16),
+      padding: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: 6,
+      ),
       child: Align(
         alignment: Alignment.center,
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          // BUILD 283 ORDEM 10.4: Estudos ESQUERDA (gratuito/padrão) | Plantão DIREITA
           children: [
-            pill(
-              label: labelEstudio,
-              isActive: value,
-              onTap: () => onChanged(true),
+            option(
+              label: labelStudy,
+              optionValue: true,
             ),
-            const SizedBox(width: 8),
-            pill(
-              label: labelGuardia,
-              isActive: !value,
-              onTap: () => onChanged(false),
+            Container(
+              width: 1,
+              height: 18,
+              color: dividerColor,
+            ),
+            option(
+              label: labelGuard,
+              optionValue: false,
             ),
           ],
         ),

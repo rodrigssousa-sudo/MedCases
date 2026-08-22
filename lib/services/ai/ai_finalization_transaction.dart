@@ -663,21 +663,88 @@ final class AiSessionSummary {
     this.legacyMessages,
   });
 
-  /// Normalise a Firestore updatedAt field (int epoch ms or Timestamp) → int ms.
-  static int _toMs(dynamic raw) {
-    if (raw is int) return raw;
-    if (raw == null) return 0;
-    try {
-      final secs = (raw as dynamic).seconds as int? ?? 0;
-      return secs * 1000;
-    } catch (_) {
-      return 0;
+  /// Normalizes supported timestamp representations into epoch milliseconds.
+  ///
+  /// Firestore documents pass through sdkDocToSafeMap before reaching this
+  /// model, so Timestamp values normally arrive as ISO-8601 strings.
+  static int? _toMs(dynamic raw) {
+    if (raw == null) return null;
+
+    if (raw is DateTime) {
+      return raw.millisecondsSinceEpoch;
     }
+
+    if (raw is num) {
+      final value = raw.toInt();
+      if (value <= 0) return null;
+
+      // Current epoch seconds are approximately 1e9, while epoch
+      // milliseconds are approximately 1e12.
+      return value < 100000000000 ? value * 1000 : value;
+    }
+
+    if (raw is String) {
+      final value = raw.trim();
+      if (value.isEmpty) return null;
+
+      final numeric = num.tryParse(value);
+      if (numeric != null) {
+        return _toMs(numeric);
+      }
+
+      final parsed = DateTime.tryParse(value);
+      if (parsed != null) {
+        return parsed.millisecondsSinceEpoch;
+      }
+
+      // Defensive support for Timestamp(seconds=..., nanoseconds=...).
+      final secondsMatch =
+          RegExp(r'seconds\s*[=:]\s*(-?\d+)').firstMatch(value);
+      if (secondsMatch != null) {
+        return _toMs(int.tryParse(secondsMatch.group(1)!));
+      }
+
+      return null;
+    }
+
+    try {
+      final dynamic date = (raw as dynamic).toDate();
+      if (date is DateTime) {
+        return date.millisecondsSinceEpoch;
+      }
+    } catch (_) {}
+
+    try {
+      final dynamic seconds = (raw as dynamic).seconds;
+      if (seconds is num) {
+        return _toMs(seconds);
+      }
+    } catch (_) {}
+
+    return null;
+  }
+
+  static int _firstValidMs(
+    Map<String, dynamic> json,
+    List<String> keys,
+  ) {
+    for (final key in keys) {
+      final normalized = _toMs(json[key]);
+      if (normalized != null) {
+        return normalized;
+      }
+    }
+
+    // A malformed document must never surface as the Unix epoch in the UI.
+    return DateTime.now().millisecondsSinceEpoch;
   }
 
   /// Constructs from a schema-v2 canonical 'ai_sessions' document.
   factory AiSessionSummary.fromCanonicalJson(Map<String, dynamic> json) {
-    final int updatedMs = AiSessionSummary._toMs(json['updatedAt']);
+    final int updatedMs = AiSessionSummary._firstValidMs(
+      json,
+      const ['updatedAt', 'createdAt'],
+    );
     return AiSessionSummary(
       sessionId:      (json['sessionId'] as String?) ?? '',
       uid:            (json['uid']       as String?) ?? '',
@@ -694,9 +761,10 @@ final class AiSessionSummary {
   /// [legacyMessages] preserves the inline message array for restore.
   factory AiSessionSummary.fromLegacyJson(Map<String, dynamic> json) {
     // Prefer updatedAt; fall back to savedAt for legacy docs without updatedAt.
-    final int updatedMs = json['updatedAt'] != null
-        ? AiSessionSummary._toMs(json['updatedAt'])
-        : (json['savedAt'] is int ? json['savedAt'] as int : 0);
+    final int updatedMs = AiSessionSummary._firstValidMs(
+      json,
+      const ['updatedAt', 'savedAt', 'createdAt'],
+    );
 
     // Extract inline messages list from legacy document if present.
     final msgs = json['messages'];
@@ -728,13 +796,18 @@ final class AiSessionSummary {
 
   /// Constructs from the local in-memory session index map.
   factory AiSessionSummary.fromLocalMap(Map<String, dynamic> map) {
+    final int updatedMs = AiSessionSummary._firstValidMs(
+      map,
+      const ['updatedAt', 'createdAt'],
+    );
+
     return AiSessionSummary(
       sessionId:      (map['sessionId'] as String?) ?? '',
       uid:            (map['uid']       as String?) ?? '',
       title:          (map['title']     as String?) ?? '',
       mode:           (map['mode']      as String?) ?? 'plantao',
       locale:         (map['locale']    as String?) ?? 'pt',
-      updatedAt:      (map['updatedAt'] as int?)    ?? 0,
+      updatedAt:      updatedMs,
       source:         AiSessionSource.localMemory,
       legacyMessages: null,
     );

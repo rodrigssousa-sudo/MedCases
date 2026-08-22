@@ -31,6 +31,37 @@ import '../services/ai_smart_router.dart'; // Build 191: sanitizeResponse
 import '../services/provider_router_service.dart'; // Build 226: Gemini Paid Fallback
 import '../services/app_resume_coordinator.dart'; // BUILD 241: background/resume safety
 import '../models/clinical_structured_output.dart';
+import '../services/ai_pipeline/plantao_clinical_response_consistency_guard.dart';
+import '../services/ai_pipeline/plantao/plantao_clinical_regimen_output_guard.dart';
+import '../services/ai_pipeline/plantao/plantao_generic_acs_whole_response_semantic_core.dart';
+import '../services/ai_pipeline/plantao/plantao_explicit_named_topic_semantic_guard.dart';
+import '../services/ai_pipeline/plantao_local_clinical_output_adapter.dart';
+import '../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart';
+import '../services/ai_pipeline/plantao/contracts/plantao_request.dart';
+import '../services/ai_pipeline/plantao/contracts/plantao_section.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_request_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_finalization_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_validation_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_persistence_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_retrieval_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/adapters/plantao_generated_drug_evidence_readonly_adapter.dart';
+import '../services/ai_pipeline/plantao/adapters/plantao_versioned_remote_drug_evidence_json_loader.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_remote_drug_evidence_runtime_observer.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_shadow_execution_isolator.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_evidence_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_evidence_request_observer.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_evidence_finalization_join_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_identity_provenance_binding_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_payload_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_payload_parity_gate_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_semantic_equality_gate_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_review_envelope_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_persistence_cutover_blocker_audit_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_typed_regimen_capability_matrix_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_explicit_typed_regimen_evidence_projection_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_projected_evidence_bundle_overlay_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/shadow/plantao_drug_projected_evidence_validation_replay_comparison_shadow_adapter.dart';
+import '../services/ai_pipeline/plantao/plantao_buffered_cutover_controller.dart';
 import '../services/ai_stream/ai_event.dart'; // BUILD 462E-A: Anti-Frankenstein event bus
 import '../services/ai_stream/gpt_sse_client.dart'; // BUILD 462E-A: per-request SSE client ref
 import '../services/auth_service.dart'; // BUILD 462E-A: Web token refresh (getAdminToken)
@@ -39,6 +70,7 @@ import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: 
 import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
 import '../services/ai/timeout_content_safety_guard.dart'; // MICRO-BUILD 462E-A.5.3.7.2.1: TerminalCause, TimeoutSafetyVerdict, TimeoutContentSafetyGuard
 import '../services/ai/ai_finalization_transaction.dart'; // MICRO-BUILD 462E-A.5.3.7.3.2: AiTransactionPhase, TerminalSignal, ProviderAttemptContext, FinalOutputSnapshot, SerialEventQueue, AiFinalizationTransaction
+import '../services/ai_pipeline/ai_pipeline_contracts.dart'; // AI-RECONSTRUCTION-R18.6G-R2: canonical GPT SSE content finalization
 import '../services/ai/clinical_dosage_presets.dart'; // MICRO-BUILD 462E-A.5.3.7.3.2.2: ClinicalNumericValidator, ClinicalDosagePreset
 // Build 180: Sync Mi Guardia ↔ Adulto via Firestore dual-write
 import '../screens/internacion/services/internacion_firestore_service.dart';
@@ -47,7 +79,12 @@ import '../screens/internacion/components/patient_accordion.dart'
 import '../screens/internacion/services/internacion_persistence.dart'
     show PacienteSession;
 
+import '../services/ai_pipeline/ai_request_contract.dart';
+import '../services/ai_pipeline/plantao/plantao_qa_cutover_support.dart';
+import '../services/ai_pipeline/app_provider_ai_response_pipeline.dart';
+
 import '../services/dkahhs/dkahhs_runtime_safety_contract.dart';
+
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
   success, // item fixado com sucesso
@@ -251,7 +288,44 @@ final class ToolPayloadReady extends ToolResolution {
   const ToolPayloadReady({required this.intent, required this.parentRequestId});
 }
 
+enum AiProviderEffectPolicy {
+  legacy,
+  bufferedPipeline,
+}
+
 class AppProvider extends ChangeNotifier {
+  // PHASE3K-A: typed buffered cutover seam. The production default is
+  // intentionally closed until provider-side effects are isolated.
+  PlantaoBufferedCutoverController _plantaoBufferedCutoverController =
+      const PlantaoBufferedCutoverController.disabled();
+  bool _plantaoBufferedCutoverExecutionActive = false;
+  String? _plantaoBufferedPipelineCancellationRequestId;
+  void Function()? _plantaoBufferedPipelineCancellation;
+  final PlantaoQaCutoverSupport _plantaoQaCutoverSupport =
+      const PlantaoQaCutoverSupport();
+
+  @visibleForTesting
+  void configurePlantaoBufferedCutoverForTesting(
+    PlantaoBufferedCutoverController controller,
+  ) {
+    _plantaoBufferedCutoverController = controller;
+  }
+
+  static String resolveEffectiveAiPriorityForRouting({
+    required bool isPlantaoMode,
+    required bool geminiConnected,
+    required String aiPriority,
+    required bool forcePaidCanary,
+  }) {
+    if (forcePaidCanary) return 'critical';
+
+    if (isPlantaoMode && aiPriority == 'critical') {
+      return 'critical';
+    }
+
+    return geminiConnected ? 'academic' : aiPriority;
+  }
+
   // ── BUILD 326: Sub-providers especializados ───────────────────────────────
   // Expõos como campos públicos para que main.dart possa registrá-los
   // no MultiProvider e as telas possam consumir diretamente via
@@ -439,10 +513,32 @@ class AppProvider extends ChangeNotifier {
   /// Registra o paciente ativo importado pelas ferramentas.
   /// Chamado no momento da seleção no modal showToolsPatientSelectionSheet.
   void setActiveImportedPatient(PacienteSession session) {
+    final patientKey = session.sessionKey.trim();
+    final patientName = session.paciente.nome.trim();
+
+    if (patientKey.isEmpty || patientName.isEmpty) {
+      activeImportedSession = null;
+      activeImportedPatientKey = null;
+      return;
+    }
+
     activeImportedSession = session;
-    activeImportedPatientKey = session.sessionKey;
-    // Não notifica ouvintes — é um ponteiro interno, não causa re-build de UI
+    activeImportedPatientKey = patientKey;
+    // Ponteiro interno: não notifica ouvintes nem cria uma segunda fonte de estado.
   }
+
+  bool get hasWritableImportedPatient {
+    final session = activeImportedSession;
+    final activeKey = activeImportedPatientKey?.trim() ?? '';
+    if (session == null || activeKey.isEmpty) return false;
+
+    final sessionKey = session.sessionKey.trim();
+    final patientName = session.paciente.nome.trim();
+    return patientName.isNotEmpty && sessionKey == activeKey;
+  }
+
+  String? get writableImportedPatientKey =>
+      hasWritableImportedPatient ? activeImportedPatientKey!.trim() : null;
 
   /// Remove o ponteiro de paciente ativo (ex: ao trocar de paciente ou descartar).
   void clearActiveImportedPatient() {
@@ -539,7 +635,8 @@ class AppProvider extends ChangeNotifier {
     final removed = before - filtered.length;
     if (kDebugMode && removed > 0) {
       debugPrint(
-          '[HISTORY_SANITIZER] removedFallbackMessages=$removed finalHistoryMessages=${filtered.length}');
+        '[HISTORY_SANITIZER] removedFallbackMessages=$removed finalHistoryMessages=${filtered.length}',
+      );
     }
     return filtered;
   }
@@ -578,7 +675,8 @@ class AppProvider extends ChangeNotifier {
     _sessionLockedLang = _lang;
     if (kDebugMode) {
       debugPrint(
-          '[LANG_LOCK] appLanguage=$_lang inputIgnored=true responseLanguage=$_lang');
+        '[LANG_LOCK] appLanguage=$_lang inputIgnored=true responseLanguage=$_lang',
+      );
     }
     return _lang;
   }
@@ -751,8 +849,10 @@ class AppProvider extends ChangeNotifier {
     // Rebuild storms (50 rapid provider re-emits) resolve to exactly ONE
     // underlying boot-lock transaction per expectedUid per lifecycle.
     if (_authConvergenceInFlight != null && _authConvergenceUid == user.uid) {
-      debugPrint('[AUTH_CONVERGENCE][LATCH_HIT] '
-          'uid=${user.uid} — reusing existing in-flight Future');
+      debugPrint(
+        '[AUTH_CONVERGENCE][LATCH_HIT] '
+        'uid=${user.uid} — reusing existing in-flight Future',
+      );
       return _authConvergenceInFlight!;
     }
     // Different uid or no latch yet: start a new convergence transaction.
@@ -790,11 +890,13 @@ class AppProvider extends ChangeNotifier {
     final String expectedUid = user.uid;
 
     // ── Telemetria [AUTH_CONVERGENCE][START] ─────────────────────────────
-    debugPrint('[AUTH_CONVERGENCE][START] '
-        'expectedUid=$expectedUid '
-        'firebaseUid=${FirebaseRuntimeGuard.isReady ? (FirebaseAuth.instance.currentUser?.uid ?? 'null') : 'firebase_unavailable'} '
-        'restTokenPresent=$restTokenPresent '
-        'geminiOAuthPresent=$geminiOAuthPresent');
+    debugPrint(
+      '[AUTH_CONVERGENCE][START] '
+      'expectedUid=$expectedUid '
+      'firebaseUid=${FirebaseRuntimeGuard.isReady ? (FirebaseAuth.instance.currentUser?.uid ?? 'null') : 'firebase_unavailable'} '
+      'restTokenPresent=$restTokenPresent '
+      'geminiOAuthPresent=$geminiOAuthPresent',
+    );
 
     try {
       User? fbSdkUser;
@@ -802,8 +904,10 @@ class AppProvider extends ChangeNotifier {
       if (!FirebaseRuntimeGuard.isReady) {
         // Firebase unavailable (Safari private / first install race).
         // Cannot confirm identity → authFailed, NOT degraded authReady.
-        debugPrint('[AUTH_CONVERGENCE][FAILED] reason=firebase_unavailable '
-            'expectedUid=$expectedUid — barrier=authFailed');
+        debugPrint(
+          '[AUTH_CONVERGENCE][FAILED] reason=firebase_unavailable '
+          'expectedUid=$expectedUid — barrier=authFailed',
+        );
         _currentAuthBarrierState = AppAuthBarrierState.authFailed;
         // Allow the rest of setUser() to proceed (app continues in read-only
         // degraded mode) but Firestore writes are blocked by barrier check.
@@ -844,8 +948,10 @@ class AppProvider extends ChangeNotifier {
             .first
             .timeout(const Duration(seconds: 5), onTimeout: () => null);
       } catch (e) {
-        debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK] latch error: $e — '
-            'falling back to currentUser');
+        debugPrint(
+          '[AUTH_CONVERGENCE][WAITING_FOR_SDK] latch error: $e — '
+          'falling back to currentUser',
+        );
         fbSdkUser = FirebaseAuth.instance.currentUser;
       }
 
@@ -854,8 +960,10 @@ class AppProvider extends ChangeNotifier {
       // token arrived (Web: identity toolkit vs. Firebase Auth SDK race).
       // Loop until stable: user appears OR timeout expires.
       if (fbSdkUser == null && restTokenPresent) {
-        debugPrint('[AUTH_CONVERGENCE][WAITING_FOR_SDK] '
-            'fbUser=null restToken=present — awaiting SDK propagation...');
+        debugPrint(
+          '[AUTH_CONVERGENCE][WAITING_FOR_SDK] '
+          'fbUser=null restToken=present — awaiting SDK propagation...',
+        );
         try {
           fbSdkUser = await FirebaseAuth.instance
               .authStateChanges()
@@ -872,18 +980,23 @@ class AppProvider extends ChangeNotifier {
         // STABLE_LOGGED_OUT: hydration complete, no Firebase user found.
         // This is NOT "degraded authReady" — it is authRequired.
         // Firestore reads will be blocked by the barrier.
-        debugPrint('[AUTH_CONVERGENCE][AUTH_REQUIRED] '
-            'expectedUid=$expectedUid fbUser=null '
-            'restTokenPresent=$restTokenPresent — barrier=authRequired');
+        debugPrint(
+          '[AUTH_CONVERGENCE][AUTH_REQUIRED] '
+          'expectedUid=$expectedUid fbUser=null '
+          'restTokenPresent=$restTokenPresent — barrier=authRequired',
+        );
         _currentAuthBarrierState = AppAuthBarrierState.authRequired;
       } else if (fbSdkUser.uid != expectedUid) {
         // UID_MISMATCH: valid Firebase user but wrong identity.
         // [SECURITY_GATE] SHIELD DISPATCHED → IDENTITY MISMATCH DETECTED
         debugPrint(
-            '[SECURITY_GATE] SHIELD DISPATCHED -> IDENTITY MISMATCH DETECTED. '
-            'expectedUid=$expectedUid firebaseUid=${fbSdkUser.uid}');
-        debugPrint('[AUTH_CONVERGENCE][FAILED] reason=uid_mismatch '
-            'expectedUid=$expectedUid firebaseUid=${fbSdkUser.uid}');
+          '[SECURITY_GATE] SHIELD DISPATCHED -> IDENTITY MISMATCH DETECTED. '
+          'expectedUid=$expectedUid firebaseUid=${fbSdkUser.uid}',
+        );
+        debugPrint(
+          '[AUTH_CONVERGENCE][FAILED] reason=uid_mismatch '
+          'expectedUid=$expectedUid firebaseUid=${fbSdkUser.uid}',
+        );
         _currentAuthBarrierState = AppAuthBarrierState.authMismatch;
 
         // Full wipe of local state — all identity artefacts purged.
@@ -907,11 +1020,13 @@ class AppProvider extends ChangeNotifier {
       } else {
         // MATCHED_USER: fbUser != null AND uid matches → authReady.
         _currentAuthBarrierState = AppAuthBarrierState.authReady;
-        debugPrint('[AUTH_CONVERGENCE][READY] '
-            'expectedUid=$expectedUid '
-            'firebaseUid=${fbSdkUser.uid} '
-            'uidsMatch=true '
-            'adapterType=live');
+        debugPrint(
+          '[AUTH_CONVERGENCE][READY] '
+          'expectedUid=$expectedUid '
+          'firebaseUid=${fbSdkUser.uid} '
+          'uidsMatch=true '
+          'adapterType=live',
+        );
         // BUILD 463-A.2-R1: CREDENTIAL_ACCEPTED and TOKEN_REFRESHED are NOT
         // re-emitted here. They were already emitted by the originating sign-in
         // path (email_password in _loginNative, or google_credential handler)
@@ -925,8 +1040,10 @@ class AppProvider extends ChangeNotifier {
       if (e is SecuritySyndicationException) rethrow;
       // Unexpected exception during latch — AUTH_ERROR terminal state.
       // NOT degraded authReady: barrier stays at authFailed.
-      debugPrint('[AUTH_CONVERGENCE][FAILED] reason=auth_error '
-          'error=$e expectedUid=$expectedUid — barrier=authFailed');
+      debugPrint(
+        '[AUTH_CONVERGENCE][FAILED] reason=auth_error '
+        'error=$e expectedUid=$expectedUid — barrier=authFailed',
+      );
       _currentAuthBarrierState = AppAuthBarrierState.authFailed;
     }
 
@@ -964,7 +1081,8 @@ class AppProvider extends ChangeNotifier {
       _firestoreSyncFuture = _syncFromFirestore(user.uid);
     } else {
       debugPrint(
-          '[BUILD291][SYNC_DEDUP] sync já em voo para uid=${user.uid} — reutilizando Future existente');
+        '[BUILD291][SYNC_DEDUP] sync já em voo para uid=${user.uid} — reutilizando Future existente',
+      );
     }
 
     // 4️⃣ Carrega histórias públicas AQUI — token já está cacheado neste ponto.
@@ -978,7 +1096,8 @@ class AppProvider extends ChangeNotifier {
     Future.delayed(
       _hasPendingOAuth
           ? const Duration(
-              seconds: 1) // dá tempo ao fetch tokeninfo JS completar
+              seconds: 1,
+            ) // dá tempo ao fetch tokeninfo JS completar
           : Duration.zero,
       checkGeminiSession,
     );
@@ -1162,11 +1281,13 @@ class AppProvider extends ChangeNotifier {
       // Fonte: app_config/global.apiKey (lido por todos os usuários aprovados)
       // NÃO é a GEMINI_PAID_API_KEY — essa fica só no Firebase Secret server-side.
       if (geminiKey.isNotEmpty) {
-        GeminiService.setGeminiApiKey(geminiKey,
-            source: GeminiKeySource
-                .appConfig); // BUILD 294: marca como appConfig — SecurityWipe nunca apaga
+        GeminiService.setGeminiApiKey(
+          geminiKey,
+          source: GeminiKeySource.appConfig,
+        ); // BUILD 294: marca como appConfig — SecurityWipe nunca apaga
         debugPrint(
-            '[AI_FREE_PROVIDER] source=app_config/global ready=true (login load)');
+          '[AI_FREE_PROVIDER] source=app_config/global ready=true (login load)',
+        );
       } else {
         // Firestore retornou vazio — tenta SharedPreferences/localStorage
         if (!GeminiService.hasApiKey) {
@@ -1174,12 +1295,15 @@ class AppProvider extends ChangeNotifier {
         }
         if (GeminiService.hasApiKey) {
           debugPrint(
-              '[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true (login load)');
+            '[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true (login load)',
+          );
         } else {
           debugPrint(
-              '[AI_FREE_PROVIDER] source=none ready=false — app_config/global vazio e sem cache local');
+            '[AI_FREE_PROVIDER] source=none ready=false — app_config/global vazio e sem cache local',
+          );
           debugPrint(
-              '[AppProvider] Gemini API Key não encontrada em nenhuma fonte');
+            '[AppProvider] Gemini API Key não encontrada em nenhuma fonte',
+          );
         }
       }
 
@@ -1196,7 +1320,8 @@ class AppProvider extends ChangeNotifier {
         await GeminiService.initFromStorage();
         if (GeminiService.hasApiKey) {
           debugPrint(
-              '[AppProvider] Gemini Key restaurada do SharedPrefs (rede falhou) ✓');
+            '[AppProvider] Gemini Key restaurada do SharedPrefs (rede falhou) ✓',
+          );
         }
       }
       _aiKeyLoading = false;
@@ -1226,14 +1351,18 @@ class AppProvider extends ChangeNotifier {
     // FIX: Abort the entire sync before dispatching any network reads.
     // The local cache (_favDrugs, _favProtocols, etc.) is preserved intact.
     if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
-      debugPrint('[SYNC_TRACE][ABORT] '
-          'uid=$uid '
-          'barrierState=${_currentAuthBarrierState.name} '
-          'reason=auth_boundary_active '
-          'action=no_network_reads_no_storage_writes');
-      debugPrint('[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
-          '— isAdmin=$isAdmin isMaster=$isMaster '
-          '(aborted_by_auth_barrier)');
+      debugPrint(
+        '[SYNC_TRACE][ABORT] '
+        'uid=$uid '
+        'barrierState=${_currentAuthBarrierState.name} '
+        'reason=auth_boundary_active '
+        'action=no_network_reads_no_storage_writes',
+      );
+      debugPrint(
+        '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+        '— isAdmin=$isAdmin isMaster=$isMaster '
+        '(aborted_by_auth_barrier)',
+      );
       return;
     }
 
@@ -1249,7 +1378,8 @@ class AppProvider extends ChangeNotifier {
       // success → merge Firestore data with local-only additions.
       // Individual awaits guarantee static type safety (no List<dynamic> cast).
       debugPrint(
-          '[SYNC_TRACE][STEP1] Carregando favoritos do Firestore (typed)...');
+        '[SYNC_TRACE][STEP1] Carregando favoritos do Firestore (typed)...',
+      );
       final (drugsResult, protosResult, prescsResult, casesResult) = await (
         FirestoreService.loadFavDrugsTyped(uid),
         FirestoreService.loadFavProtocolsTyped(uid),
@@ -1257,25 +1387,30 @@ class AppProvider extends ChangeNotifier {
         FirestoreService.loadFavCasesTyped(uid),
       ).wait;
 
-      debugPrint('[SYNC_TRACE][STEP1_OK] Favoritos carregados (typed): '
-          'drugs=${drugsResult.runtimeType} '
-          'protos=${protosResult.runtimeType} '
-          'prescs=${prescsResult.runtimeType} '
-          'cases=${casesResult.runtimeType}');
+      debugPrint(
+        '[SYNC_TRACE][STEP1_OK] Favoritos carregados (typed): '
+        'drugs=${drugsResult.runtimeType} '
+        'protos=${protosResult.runtimeType} '
+        'prescs=${prescsResult.runtimeType} '
+        'cases=${casesResult.runtimeType}',
+      );
 
       // BUILD 463-A.2-R1 + MICRO-BUILD 463-A.2.1: secondary auth re-check after async gap.
       // The barrier state may have changed (e.g. uid_mismatch detected mid-flight)
       // between STEP1_OK and the merge+write path. Abort before any storage write.
       if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
-        debugPrint('[SYNC_TRACE][ABORT] '
-            'uid=$uid '
-            'barrierState=${_currentAuthBarrierState.name} '
-            'reason=auth_boundary_active_post_step1 '
-            'action=no_merge_no_storage_writes');
         debugPrint(
-            '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
-            '— isAdmin=$isAdmin isMaster=$isMaster '
-            '(aborted_by_auth_barrier_post_step1)');
+          '[SYNC_TRACE][ABORT] '
+          'uid=$uid '
+          'barrierState=${_currentAuthBarrierState.name} '
+          'reason=auth_boundary_active_post_step1 '
+          'action=no_merge_no_storage_writes',
+        );
+        debugPrint(
+          '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+          '— isAdmin=$isAdmin isMaster=$isMaster '
+          '(aborted_by_auth_barrier_post_step1)',
+        );
         return;
       }
 
@@ -1285,10 +1420,12 @@ class AppProvider extends ChangeNotifier {
           protosResult.shouldFreezeLocalCache ||
           prescsResult.shouldFreezeLocalCache ||
           casesResult.shouldFreezeLocalCache) {
-        debugPrint('[SYNC_TRACE][STEP1_FREEZE] '
-            'uid=$uid '
-            'reason=one_or_more_favs_returned_authDenied_or_offline '
-            'action=local_cache_preserved_no_write');
+        debugPrint(
+          '[SYNC_TRACE][STEP1_FREEZE] '
+          'uid=$uid '
+          'reason=one_or_more_favs_returned_authDenied_or_offline '
+          'action=local_cache_preserved_no_write',
+        );
       } else {
         // Merge: une Firestore + local — nunca descarta favoritos locais
         final remoteDrugs = drugsResult.dataOrElse(<String>{});
@@ -1303,18 +1440,22 @@ class AppProvider extends ChangeNotifier {
       }
 
       debugPrint(
-          '[SYNC_TRACE][STEP2] Carregando casos customizados (typed)...');
+        '[SYNC_TRACE][STEP2] Carregando casos customizados (typed)...',
+      );
       final casesTyped = await FirestoreService.loadCasesTyped(uid);
       if (casesTyped.isSuccess) {
         _customCases = casesTyped.dataOrElse([]);
       } else if (casesTyped.shouldFreezeLocalCache) {
-        debugPrint('[SYNC_TRACE][STEP2_FREEZE] '
-            'uid=$uid result=${casesTyped.runtimeType} → casos locais preservados');
+        debugPrint(
+          '[SYNC_TRACE][STEP2_FREEZE] '
+          'uid=$uid result=${casesTyped.runtimeType} → casos locais preservados',
+        );
       } else {
         _customCases = []; // empty — remote says no custom cases
       }
       debugPrint(
-          '[SYNC_TRACE][STEP2_OK] Casos carregados: ${_customCases.length}');
+        '[SYNC_TRACE][STEP2_OK] Casos carregados: ${_customCases.length}',
+      );
 
       notifyListeners();
 
@@ -1333,18 +1474,23 @@ class AppProvider extends ChangeNotifier {
         FirestoreService.saveFavDrugs(uid, _favDrugs).catchError((_) {});
       if (!protosResult.shouldFreezeLocalCache &&
           _favProtocols.length > remoteProtosLen)
-        FirestoreService.saveFavProtocols(uid, _favProtocols)
-            .catchError((_) {});
+        FirestoreService.saveFavProtocols(
+          uid,
+          _favProtocols,
+        ).catchError((_) {});
       if (!prescsResult.shouldFreezeLocalCache &&
           _favPrescriptions.length > remotePrescsLen)
-        FirestoreService.saveFavPrescriptions(uid, _favPrescriptions)
-            .catchError((_) {});
+        FirestoreService.saveFavPrescriptions(
+          uid,
+          _favPrescriptions,
+        ).catchError((_) {});
       if (!casesResult.shouldFreezeLocalCache &&
           _favCases.length > remoteCasesLen)
         FirestoreService.saveFavCases(uid, _favCases).catchError((_) {});
 
       debugPrint(
-          '[SYNC_TRACE][STEP4] Disparando sync de histórias e recentes (background)...');
+        '[SYNC_TRACE][STEP4] Disparando sync de histórias e recentes (background)...',
+      );
       _syncHistoriesFromFirestore(uid);
       _syncRecentsFromFirestore(uid);
       debugPrint('[SYNC_TRACE][SUCCESS] Sincronismo concluído com sucesso.');
@@ -1356,8 +1502,10 @@ class AppProvider extends ChangeNotifier {
     // BUILD 290: este ponto é atingido SEMPRE (sucesso ou falha).
     // _firestoreSyncFuture se resolve aqui — checkGeminiSession() retorna
     // do await imediatamente, sem polling, sem delay artificial.
-    debugPrint('[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
-        '— isAdmin=$isAdmin isMaster=$isMaster');
+    debugPrint(
+      '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+      '— isAdmin=$isAdmin isMaster=$isMaster',
+    );
   }
 
   Future<void> _syncRecentsFromFirestore(String uid) async {
@@ -1393,8 +1541,10 @@ class AppProvider extends ChangeNotifier {
         await _saveHistoriesLocal(uid);
       } else if (result.shouldFreezeLocalCache) {
         // authDenied or offline: retain current in-memory state, do not overwrite cache.
-        debugPrint('[APP_PROVIDER][_syncHistoriesFromFirestore] '
-            'uid=$uid result=${result.runtimeType} → cache frozen, no write');
+        debugPrint(
+          '[APP_PROVIDER][_syncHistoriesFromFirestore] '
+          'uid=$uid result=${result.runtimeType} → cache frozen, no write',
+        );
       }
       // empty: remote has no docs → accepted as authoritative empty state.
       else if (result.isEmpty) {
@@ -1486,11 +1636,13 @@ class AppProvider extends ChangeNotifier {
           if (decoded is List) {
             _customCases = decoded
                 .whereType<Map>()
-                .map((e) => ClinicalCaseModel.fromJson(
-                      e is Map<String, dynamic>
-                          ? e
-                          : Map<String, dynamic>.from(e),
-                    ))
+                .map(
+                  (e) => ClinicalCaseModel.fromJson(
+                    e is Map<String, dynamic>
+                        ? e
+                        : Map<String, dynamic>.from(e),
+                  ),
+                )
                 .toList();
           }
         } catch (_) {}
@@ -1504,11 +1656,13 @@ class AppProvider extends ChangeNotifier {
           if (decoded is List) {
             _myHistories = decoded
                 .whereType<Map>()
-                .map((e) => ClinicalHistoryModel.fromJson(
-                      e is Map<String, dynamic>
-                          ? e
-                          : Map<String, dynamic>.from(e),
-                    ))
+                .map(
+                  (e) => ClinicalHistoryModel.fromJson(
+                    e is Map<String, dynamic>
+                        ? e
+                        : Map<String, dynamic>.from(e),
+                  ),
+                )
                 .toList();
           }
         } catch (_) {}
@@ -1516,7 +1670,10 @@ class AppProvider extends ChangeNotifier {
     } catch (_) {}
     // BUILD 326: sincroniza UiProvider com valores carregados do SharedPreferences.
     uiProvider.syncValues(
-        lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
+      lang: _lang,
+      darkMode: _darkMode,
+      hapticEnabled: _hapticEnabled,
+    );
     // BUILD 326: sincroniza AiChatProvider com estado de IA.
     aiChatProvider.syncFromAppProvider(
       aiStreaming: _aiStreamActive,
@@ -1569,12 +1726,14 @@ class AppProvider extends ChangeNotifier {
       // 2/3 — Protocolos
       final protosJson = jsonEncode(
         protocolsDatabase
-            .map((proto) => {
-                  'id': proto.id,
-                  'title': proto.title,
-                  'severity': proto.severity,
-                  'drugs': proto.drugs,
-                })
+            .map(
+              (proto) => {
+                'id': proto.id,
+                'title': proto.title,
+                'severity': proto.severity,
+                'drugs': proto.drugs,
+              },
+            )
             .toList(),
       );
       await prefs.setString(_kOfflineProtocols, protosJson);
@@ -1584,13 +1743,15 @@ class AppProvider extends ChangeNotifier {
       // 3/3 — Casos clínicos base
       final casesJson = jsonEncode(
         casesDatabase
-            .map((c) => {
-                  'id': c.id,
-                  'title': c.title,
-                  'category': c.category,
-                  'diagnosis': c.diagnosis,
-                  'history': c.history,
-                })
+            .map(
+              (c) => {
+                'id': c.id,
+                'title': c.title,
+                'category': c.category,
+                'diagnosis': c.diagnosis,
+                'history': c.history,
+              },
+            )
             .toList(),
       );
       await prefs.setString(_kOfflineCases, casesJson);
@@ -1634,10 +1795,14 @@ class AppProvider extends ChangeNotifier {
       await p.setStringList(_k('favDrugs', u), _favDrugs.toList());
       await p.setStringList(_k('favProtocols', u), _favProtocols.toList());
       await p.setStringList(
-          _k('favPrescriptions', u), _favPrescriptions.toList());
+        _k('favPrescriptions', u),
+        _favPrescriptions.toList(),
+      );
       await p.setStringList(_k('favCases', u), _favCases.toList());
-      await p.setString(_k('customCases', u),
-          jsonEncode(_customCases.map((c) => c.toJson()).toList()));
+      await p.setString(
+        _k('customCases', u),
+        jsonEncode(_customCases.map((c) => c.toJson()).toList()),
+      );
     } catch (_) {}
   }
 
@@ -1645,8 +1810,10 @@ class AppProvider extends ChangeNotifier {
   Future<void> _saveHistoriesLocal(String uid) async {
     try {
       final p = await SharedPreferences.getInstance();
-      await p.setString(_k('myHistories', uid),
-          jsonEncode(_myHistories.map((h) => h.toJson()).toList()));
+      await p.setString(
+        _k('myHistories', uid),
+        jsonEncode(_myHistories.map((h) => h.toJson()).toList()),
+      );
     } catch (_) {}
   }
 
@@ -1721,9 +1888,11 @@ class AppProvider extends ChangeNotifier {
     if ((drug.doseType == 'weight' || drug.doseType == 'infusion') &&
         w == null) {
       // Informativo — não bloqueia exibição da dose de referência
-      alerts.add(_lang == 'es'
-          ? 'Ingrese el peso del paciente para visualizar los parámetros académicos de referencia (mg/kg) de la literatura médica.'
-          : 'Informe o peso do paciente para visualizar os parâmetros acadêmicos de referência (mg/kg) da literatura médica.');
+      alerts.add(
+        _lang == 'es'
+            ? 'Ingrese el peso del paciente para visualizar los parámetros académicos de referencia (mg/kg) de la literatura médica.'
+            : 'Informe o peso do paciente para visualizar os parâmetros acadêmicos de referência (mg/kg) da literatura médica.',
+      );
     }
 
     final renalAlert = drug.getField(drug.renalAlert, _lang);
@@ -1739,7 +1908,8 @@ class AppProvider extends ChangeNotifier {
     final elderlyAlert = drug.getField(drug.elderlyAlert, _lang);
     if (a != null && a >= 65 && elderlyAlert.isNotEmpty) {
       alerts.add(
-          '${_lang == 'es' ? 'Paciente anciano: ' : 'Paciente idoso: '}$elderlyAlert');
+        '${_lang == 'es' ? 'Paciente anciano: ' : 'Paciente idoso: '}$elderlyAlert',
+      );
     }
 
     if (drug.doseType == 'weight' && w != null && drug.mgKg != null) {
@@ -1795,8 +1965,11 @@ class AppProvider extends ChangeNotifier {
 
   // ── Mutations de estado ───────────────────────────────────────────────────
   /// Atualiza nome, profissão e instituição do usuário logado
-  Future<void> updateProfile(
-      {String? displayName, String? profession, String? institution}) async {
+  Future<void> updateProfile({
+    String? displayName,
+    String? profession,
+    String? institution,
+  }) async {
     if (_currentUser == null) return;
     _currentUser = _currentUser!.copyWith(
       displayName: displayName,
@@ -1822,7 +1995,10 @@ class AppProvider extends ChangeNotifier {
     }
     // BUILD 326: notifica UiProvider (afeta apenas widgets de tema/idioma).
     uiProvider.syncValues(
-        lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
+      lang: _lang,
+      darkMode: _darkMode,
+      hapticEnabled: _hapticEnabled,
+    );
     notifyListeners();
   }
 
@@ -1830,12 +2006,17 @@ class AppProvider extends ChangeNotifier {
     _darkMode = !_darkMode;
     _saveLocal();
     if (_currentUser != null) {
-      FirestoreService.updateUserProfile(_currentUser!.uid,
-          darkMode: _darkMode);
+      FirestoreService.updateUserProfile(
+        _currentUser!.uid,
+        darkMode: _darkMode,
+      );
     }
     // BUILD 326: notifica UiProvider.
     uiProvider.syncValues(
-        lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
+      lang: _lang,
+      darkMode: _darkMode,
+      hapticEnabled: _hapticEnabled,
+    );
     notifyListeners();
   }
 
@@ -1844,22 +2025,69 @@ class AppProvider extends ChangeNotifier {
     _saveLocal();
     // BUILD 326: notifica UiProvider.
     uiProvider.syncValues(
-        lang: _lang, darkMode: _darkMode, hapticEnabled: _hapticEnabled);
+      lang: _lang,
+      darkMode: _darkMode,
+      hapticEnabled: _hapticEnabled,
+    );
     notifyListeners();
   }
 
-  DkahhsFluidRouteDecision get dkahhsFluidRouteDecision => DkahhsRuntimeSafetyContract.evaluateFluidRoute(pregnancyStatus:_dkahhsPregnancyStatus,highRiskStatus:_dkahhsHighRiskStatus);
-  DkahhsPotassiumGateDecision get dkahhsPotassiumGateDecision => DkahhsRuntimeSafetyContract.evaluatePotassiumGate(_dkahhsPotassiumObservation);
-  DkahhsGlucoseDeclineAssessment get dkahhsGlucoseDeclineAssessment => DkahhsRuntimeSafetyContract.assessGlucoseDecline(previous:_dkahhsPreviousGlucoseSample,current:_dkahhsCurrentGlucoseSample);
-  void updateDkahhsPregnancyStatus(DkahhsPregnancyStatus v){_dkahhsPregnancyStatus=v;notifyListeners();}
-  void updateDkahhsHighRiskStatus(DkahhsHighRiskStatus v){_dkahhsHighRiskStatus=v;notifyListeners();}
-  void updateDkahhsPotassiumObservation(DkahhsPotassiumObservation? v){_dkahhsPotassiumObservation=v;notifyListeners();}
-  void recordDkahhsGlucoseSample(DkahhsGlucoseSample v){_dkahhsPreviousGlucoseSample=_dkahhsCurrentGlucoseSample;_dkahhsCurrentGlucoseSample=v;notifyListeners();}
-  void clearDkahhsSafetyContext(){_resetDkahhsSafetyContext();notifyListeners();}
-  void _resetDkahhsSafetyContext(){_dkahhsPregnancyStatus=DkahhsPregnancyStatus.unknown;_dkahhsHighRiskStatus=DkahhsHighRiskStatus.unknown;_dkahhsPotassiumObservation=null;_dkahhsPreviousGlucoseSample=null;_dkahhsCurrentGlucoseSample=null;}
-  String _dkahhsFluidRouteText(bool es)=>DkahhsRuntimeSafetyContract.fluidRouteMessage(dkahhsFluidRouteDecision,spanish:es);
-  String _dkahhsPotassiumGateText(bool es)=>DkahhsRuntimeSafetyContract.potassiumGateMessage(dkahhsPotassiumGateDecision,spanish:es);
-  String _dkahhsGlucoseDeclineText(bool es)=>DkahhsRuntimeSafetyContract.glucoseDeclineMessage(dkahhsGlucoseDeclineAssessment,spanish:es);
+  DkahhsFluidRouteDecision get dkahhsFluidRouteDecision =>
+      DkahhsRuntimeSafetyContract.evaluateFluidRoute(
+          pregnancyStatus: _dkahhsPregnancyStatus,
+          highRiskStatus: _dkahhsHighRiskStatus);
+  DkahhsPotassiumGateDecision get dkahhsPotassiumGateDecision =>
+      DkahhsRuntimeSafetyContract.evaluatePotassiumGate(
+          _dkahhsPotassiumObservation);
+  DkahhsGlucoseDeclineAssessment get dkahhsGlucoseDeclineAssessment =>
+      DkahhsRuntimeSafetyContract.assessGlucoseDecline(
+          previous: _dkahhsPreviousGlucoseSample,
+          current: _dkahhsCurrentGlucoseSample);
+  void updateDkahhsPregnancyStatus(DkahhsPregnancyStatus v) {
+    _dkahhsPregnancyStatus = v;
+    notifyListeners();
+  }
+
+  void updateDkahhsHighRiskStatus(DkahhsHighRiskStatus v) {
+    _dkahhsHighRiskStatus = v;
+    notifyListeners();
+  }
+
+  void updateDkahhsPotassiumObservation(DkahhsPotassiumObservation? v) {
+    _dkahhsPotassiumObservation = v;
+    notifyListeners();
+  }
+
+  void recordDkahhsGlucoseSample(DkahhsGlucoseSample v) {
+    _dkahhsPreviousGlucoseSample = _dkahhsCurrentGlucoseSample;
+    _dkahhsCurrentGlucoseSample = v;
+    notifyListeners();
+  }
+
+  void clearDkahhsSafetyContext() {
+    _resetDkahhsSafetyContext();
+    notifyListeners();
+  }
+
+  void _resetDkahhsSafetyContext() {
+    _dkahhsPregnancyStatus = DkahhsPregnancyStatus.unknown;
+    _dkahhsHighRiskStatus = DkahhsHighRiskStatus.unknown;
+    _dkahhsPotassiumObservation = null;
+    _dkahhsPreviousGlucoseSample = null;
+    _dkahhsCurrentGlucoseSample = null;
+  }
+
+  String _dkahhsFluidRouteText(bool es) =>
+      DkahhsRuntimeSafetyContract.fluidRouteMessage(dkahhsFluidRouteDecision,
+          spanish: es);
+  String _dkahhsPotassiumGateText(bool es) =>
+      DkahhsRuntimeSafetyContract.potassiumGateMessage(
+          dkahhsPotassiumGateDecision,
+          spanish: es);
+  String _dkahhsGlucoseDeclineText(bool es) =>
+      DkahhsRuntimeSafetyContract.glucoseDeclineMessage(
+          dkahhsGlucoseDeclineAssessment,
+          spanish: es);
 
   void updatePatient(String key, String value) {
     switch (key) {
@@ -1965,8 +2193,10 @@ class AppProvider extends ChangeNotifier {
   /// Called on FsWriteAuthDenied or FsWriteFailure for favourite writes.
   /// Reverts optimistic local mutation and freezes further write-backs.
   void _onFavWriteFailure(FirestoreWriteResult result, String operation) {
-    debugPrint('[WRITE_BARRIER_REVERT] operation=$operation '
-        'result=${result.runtimeType} → reverting local state, freezing write-back');
+    debugPrint(
+      '[WRITE_BARRIER_REVERT] operation=$operation '
+      'result=${result.runtimeType} → reverting local state, freezing write-back',
+    );
     _favDrugs = _lastVerifiedFavDrugs;
     _favProtocols = _lastVerifiedFavProtocols;
     _favPrescriptions = _lastVerifiedFavPrescriptions;
@@ -1975,21 +2205,27 @@ class AppProvider extends ChangeNotifier {
     _saveLocal();
     notifyListeners();
     // Operational error notification — visible to user in next frame
-    debugPrint('[OPERATIONAL_ERROR] write_back_frozen=true '
-        'reason=${result.runtimeType} operation=$operation');
+    debugPrint(
+      '[OPERATIONAL_ERROR] write_back_frozen=true '
+      'reason=${result.runtimeType} operation=$operation',
+    );
   }
 
   /// Called on FsWriteAuthDenied or FsWriteFailure for history writes.
   /// Reverts optimistic local mutation and freezes further write-backs.
   void _onHistoryWriteFailure(FirestoreWriteResult result, String operation) {
-    debugPrint('[WRITE_BARRIER_REVERT] operation=$operation '
-        'result=${result.runtimeType} → reverting local history state, freezing write-back');
+    debugPrint(
+      '[WRITE_BARRIER_REVERT] operation=$operation '
+      'result=${result.runtimeType} → reverting local history state, freezing write-back',
+    );
     _myHistories = _lastVerifiedHistories;
     _writeBackFrozen = true;
     _saveLocal();
     notifyListeners();
-    debugPrint('[OPERATIONAL_ERROR] write_back_frozen=true '
-        'reason=${result.runtimeType} operation=$operation');
+    debugPrint(
+      '[OPERATIONAL_ERROR] write_back_frozen=true '
+      'reason=${result.runtimeType} operation=$operation',
+    );
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -2005,8 +2241,9 @@ class AppProvider extends ChangeNotifier {
     if (_currentUser != null && !_writeBackFrozen) {
       final uid = _currentUser!.uid;
       final snapshot = Set<String>.from(_favDrugs);
-      FirestoreService.saveFavoritesTyped(uid, 'drugs', snapshot)
-          .then((result) {
+      FirestoreService.saveFavoritesTyped(uid, 'drugs', snapshot).then((
+        result,
+      ) {
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavDrug');
         }
@@ -2025,8 +2262,9 @@ class AppProvider extends ChangeNotifier {
     if (_currentUser != null && !_writeBackFrozen) {
       final uid = _currentUser!.uid;
       final snapshot = Set<String>.from(_favProtocols);
-      FirestoreService.saveFavoritesTyped(uid, 'protocols', snapshot)
-          .then((result) {
+      FirestoreService.saveFavoritesTyped(uid, 'protocols', snapshot).then((
+        result,
+      ) {
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavProtocol');
         }
@@ -2045,8 +2283,9 @@ class AppProvider extends ChangeNotifier {
     if (_currentUser != null && !_writeBackFrozen) {
       final uid = _currentUser!.uid;
       final snapshot = Set<String>.from(_favPrescriptions);
-      FirestoreService.saveFavoritesTyped(uid, 'prescriptions', snapshot)
-          .then((result) {
+      FirestoreService.saveFavoritesTyped(uid, 'prescriptions', snapshot).then((
+        result,
+      ) {
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavPrescription');
         }
@@ -2065,8 +2304,9 @@ class AppProvider extends ChangeNotifier {
     if (_currentUser != null && !_writeBackFrozen) {
       final uid = _currentUser!.uid;
       final snapshot = Set<String>.from(_favCases);
-      FirestoreService.saveFavoritesTyped(uid, 'fav_cases', snapshot)
-          .then((result) {
+      FirestoreService.saveFavoritesTyped(uid, 'fav_cases', snapshot).then((
+        result,
+      ) {
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavCase');
         }
@@ -2184,8 +2424,10 @@ class AppProvider extends ChangeNotifier {
     // ── Build 180: soft-delete no Firestore para refletir na aba Adulto ───────
     final uid = _currentUser?.uid;
     if (uid != null) {
-      InternacionFirestoreService.softDelete(uid, sessionKey)
-          .catchError((_) {});
+      InternacionFirestoreService.softDelete(
+        uid,
+        sessionKey,
+      ).catchError((_) {});
     }
   }
 
@@ -2225,8 +2467,10 @@ class AppProvider extends ChangeNotifier {
     SharedPreferences.getInstance().then((p) {
       p.setStringList(_k('pinnedDrugs', uid), _pinnedDrugIds);
       p.setStringList(_k('pinnedCalcs', uid), _pinnedCalcIds);
-      p.setStringList(_k('plantaoPatients', uid),
-          _plantaoPatients.map((pt) => pt.toRaw()).toList());
+      p.setStringList(
+        _k('plantaoPatients', uid),
+        _plantaoPatients.map((pt) => pt.toRaw()).toList(),
+      );
     }).catchError((_) {});
   }
 
@@ -2276,7 +2520,7 @@ class AppProvider extends ChangeNotifier {
                 return {
                   'type': parts[0],
                   'id': parts[1],
-                  'title': parts.sublist(2).join('|')
+                  'title': parts.sublist(2).join('|'),
                 };
               })
               .whereType<Map<String, String>>()
@@ -2301,7 +2545,7 @@ class AppProvider extends ChangeNotifier {
             return {
               'type': parts[0],
               'id': parts[1],
-              'title': parts.sublist(2).join('|')
+              'title': parts.sublist(2).join('|'),
             };
           })
           .whereType<Map<String, String>>()
@@ -2351,7 +2595,8 @@ class AppProvider extends ChangeNotifier {
     // Reuse in-flight future for the same uid (single-flight latch).
     if (_historyLoadInFlight != null && _historyLoadUid == uid) {
       debugPrint(
-          '[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid → reusing in-flight future');
+        '[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid → reusing in-flight future',
+      );
       return _historyLoadInFlight!;
     }
 
@@ -2378,14 +2623,18 @@ class AppProvider extends ChangeNotifier {
     // Stale-epoch guard: if generation was bumped by a newer call while we
     // were awaiting, discard this result entirely.
     if (_historyLoadGeneration != myGeneration) {
-      debugPrint('[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
-          'STALE_EPOCH dropped: myGen=$myGeneration currentGen=$_historyLoadGeneration');
+      debugPrint(
+        '[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
+        'STALE_EPOCH dropped: myGen=$myGeneration currentGen=$_historyLoadGeneration',
+      );
       // Return authDenied as a safe sentinel — UI will hold existing cache.
       return FirestoreLoadResult.authDenied();
     }
 
-    debugPrint('[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
-        'result=${result.runtimeType} gen=$myGeneration');
+    debugPrint(
+      '[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
+      'result=${result.runtimeType} gen=$myGeneration',
+    );
 
     // Write-through: on success/empty, update in-memory state.
     if (result.isSuccess) {
@@ -2398,8 +2647,10 @@ class AppProvider extends ChangeNotifier {
       await _saveHistoriesLocal(uid);
     } else {
       // authDenied / offline / failure → freeze cache.
-      debugPrint('[APP_PROVIDER][loadHistories] '
-          'uid=$uid result=${result.runtimeType} → cache frozen');
+      debugPrint(
+        '[APP_PROVIDER][loadHistories] '
+        'uid=$uid result=${result.runtimeType} → cache frozen',
+      );
     }
 
     return result;
@@ -2411,7 +2662,8 @@ class AppProvider extends ChangeNotifier {
   // FirestoreService.loadAiSessionsTyped() via this single indirection point.
   @visibleForTesting
   Future<FirestoreLoadResult<List<Map<String, dynamic>>>> fetchAiSessions(
-          String uid) =>
+    String uid,
+  ) =>
       FirestoreService.loadAiSessionsTyped(uid);
 
   // ── MICRO-BUILD 463-A.2.1.3: Single-Flight AI Sessions Load ─────────────
@@ -2446,16 +2698,19 @@ class AppProvider extends ChangeNotifier {
   //   [APP_PROVIDER][loadAiSessionsTypedForUi] providerInstanceId=<hash> caller=<caller> uid=<uid> generation=<gen> currentGeneration=<_sessionsLoadGeneration> result=discarded reason=stale_generation
   //   [APP_PROVIDER][loadAiSessionsTypedForUi] providerInstanceId=<hash> caller=<caller> uid=<uid> result=reuse_in_flight
   Future<UiLoadOutcome<List<Map<String, dynamic>>>> loadAiSessionsTypedForUi(
-      String uid,
-      {String caller = 'unknown'}) async {
+    String uid, {
+    String caller = 'unknown',
+  }) async {
     // Stable per-instance hash for log correlation across concurrent calls.
     final String instanceId = hashCode.toRadixString(16);
 
     // ── Single-flight reuse: same UID already in flight ───────────────────
     if (_sessionsLoadInFlight != null && _sessionsLoadUid == uid) {
-      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] '
-          'providerInstanceId=$instanceId caller=$caller uid=$uid '
-          'result=reuse_in_flight');
+      debugPrint(
+        '[APP_PROVIDER][loadAiSessionsTypedForUi] '
+        'providerInstanceId=$instanceId caller=$caller uid=$uid '
+        'result=reuse_in_flight',
+      );
       // Await the shared future and wrap as applied (generation is still ours).
       FirestoreLoadResult<List<Map<String, dynamic>>> reusedResult;
       try {
@@ -2503,17 +2758,21 @@ class AppProvider extends ChangeNotifier {
     // stale-epoch discriminant here to avoid a false-discard of a successful,
     // current-epoch load caused by the null-after-drain value of _sessionsLoadUid.
     if (_sessionsLoadGeneration != generation) {
-      debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] '
-          'providerInstanceId=$instanceId caller=$caller uid=$uid '
-          'generation=$generation currentGeneration=$_sessionsLoadGeneration '
-          'result=discarded reason=stale_generation');
+      debugPrint(
+        '[APP_PROVIDER][loadAiSessionsTypedForUi] '
+        'providerInstanceId=$instanceId caller=$caller uid=$uid '
+        'generation=$generation currentGeneration=$_sessionsLoadGeneration '
+        'result=discarded reason=stale_generation',
+      );
       return const UiLoadDiscarded(reason: 'stale_generation');
     }
 
-    debugPrint('[APP_PROVIDER][loadAiSessionsTypedForUi] '
-        'providerInstanceId=$instanceId caller=$caller uid=$uid '
-        'generation=$generation currentGeneration=$_sessionsLoadGeneration '
-        'result=applied');
+    debugPrint(
+      '[APP_PROVIDER][loadAiSessionsTypedForUi] '
+      'providerInstanceId=$instanceId caller=$caller uid=$uid '
+      'generation=$generation currentGeneration=$_sessionsLoadGeneration '
+      'result=applied',
+    );
     return UiLoadApplied(result);
   }
 
@@ -2542,9 +2801,11 @@ class AppProvider extends ChangeNotifier {
         await _saveHistoriesLocal(uid);
       } else if (result.shouldFreezeLocalCache) {
         // authDenied / offline / failure → freeze: retain existing data
-        debugPrint('[APP_PROVIDER][loadHistories] '
-            'uid=$uid result=${result.runtimeType} → '
-            'cache frozen, local state preserved (operational warning)');
+        debugPrint(
+          '[APP_PROVIDER][loadHistories] '
+          'uid=$uid result=${result.runtimeType} → '
+          'cache frozen, local state preserved (operational warning)',
+        );
         // _myHistories unchanged — notifyListeners not called to avoid UI flicker
       }
     } catch (_) {
@@ -2573,7 +2834,9 @@ class AppProvider extends ChangeNotifier {
         notifyListeners();
         _saveHistoriesLocal(uid).catchError((_) {});
       },
-      onError: (_) {/* Stream error: dados em memória preservados */},
+      onError: (_) {
+        /* Stream error: dados em memória preservados */
+      },
     );
   }
 
@@ -2638,12 +2901,14 @@ class AppProvider extends ChangeNotifier {
           final pubIdx = _publicHistories.indexWhere((x) => x.id == h.id);
           if (pubIdx >= 0 &&
               _publicHistories[pubIdx].uploadedAt != uploadedAt) {
-            _publicHistories[pubIdx] =
-                _publicHistories[pubIdx].copyWith(uploadedAt: uploadedAt);
+            _publicHistories[pubIdx] = _publicHistories[pubIdx].copyWith(
+              uploadedAt: uploadedAt,
+            );
             final myIdx = _myHistories.indexWhere((x) => x.id == h.id);
             if (myIdx >= 0) {
-              _myHistories[myIdx] =
-                  _myHistories[myIdx].copyWith(uploadedAt: uploadedAt);
+              _myHistories[myIdx] = _myHistories[myIdx].copyWith(
+                uploadedAt: uploadedAt,
+              );
             }
             _saveHistoriesLocal(uid).catchError((_) {});
             notifyListeners();
@@ -2669,8 +2934,9 @@ class AppProvider extends ChangeNotifier {
 
     // Sincroniza deleção com Firestore via typed barrier
     if (!_writeBackFrozen) {
-      FirestoreService.deleteHistoryTyped(uid, id, wasPublic: wasPublic)
-          .then((result) {
+      FirestoreService.deleteHistoryTyped(uid, id, wasPublic: wasPublic).then((
+        result,
+      ) {
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onHistoryWriteFailure(result, 'deleteHistory');
         }
@@ -2773,11 +3039,13 @@ class AppProvider extends ChangeNotifier {
     _isLoadingPublic = true;
     _publicLoadError = '';
     _debugPublicHistories(
-        'load start forceRemote=$forceRemote existing=${_publicHistories.length}');
+      'load start forceRemote=$forceRemote existing=${_publicHistories.length}',
+    );
     notifyListeners();
     try {
-      final fetched =
-          await FirestoreService.loadPublicHistories(forceRemote: forceRemote);
+      final fetched = await FirestoreService.loadPublicHistories(
+        forceRemote: forceRemote,
+      );
       final serviceError =
           FirestoreService.lastPublicHistoriesErrorMessage.trim();
 
@@ -2874,15 +3142,18 @@ class AppProvider extends ChangeNotifier {
   /// Safari não tente ler dados de Firestore antes da conexão estar pronta.
   /// Timeout de 6s como safety-net (mesmo que o sync principal).
   Future<void> rebuildAiHistoryFromMessagesAsync(
-      List<Map<String, String>> messages) async {
+    List<Map<String, String>> messages,
+  ) async {
     final syncFuture = _firestoreSyncFuture;
     if (syncFuture != null) {
       try {
         await syncFuture.timeout(
           const Duration(seconds: 6),
           onTimeout: () {
-            debugPrint('[BUILD293][rebuildAiHistory] sync timeout 6s — '
-                'prosseguindo com dados locais');
+            debugPrint(
+              '[BUILD293][rebuildAiHistory] sync timeout 6s — '
+              'prosseguindo com dados locais',
+            );
           },
         );
       } catch (e) {
@@ -2918,11 +3189,13 @@ class AppProvider extends ChangeNotifier {
       final removedCount = messages.length - valid.length;
       if (removedCount > 0) {
         debugPrint(
-            '[HISTORY_SANITIZER] rebuildFromMessages removed=$removedCount fallbackMessages finalHistoryMessages=${_aiHistory.length}');
+          '[HISTORY_SANITIZER] rebuildFromMessages removed=$removedCount fallbackMessages finalHistoryMessages=${_aiHistory.length}',
+        );
       }
     }
     debugPrint(
-        '[AppProvider] rebuildAiHistoryFromMessages: ${_aiHistory.length} entradas restauradas no contexto');
+      '[AppProvider] rebuildAiHistoryFromMessages: ${_aiHistory.length} entradas restauradas no contexto',
+    );
 
     // ORDEM 53 M1: Reidrata o ClinicalThreadManager com o tópico do histórico
     // restaurado. Impede que a próxima mensagem seja classificada como
@@ -2971,8 +3244,10 @@ class AppProvider extends ChangeNotifier {
       // abrir o modal — a página vai recarregar. Precisamos distinguir isso
       // de uma falha real. A flag 'medcases_gsi_modal_opened' no JS sinaliza
       // que o modal foi aberto (redirect em andamento).
-      final ok = await GeminiService.signIn()
-          .timeout(const Duration(seconds: 30), onTimeout: () => false);
+      final ok = await GeminiService.signIn().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => false,
+      );
 
       if (ok) {
         _geminiConnected = true;
@@ -3000,7 +3275,8 @@ class AppProvider extends ChangeNotifier {
             // do initState (corrige race condition do Build 14 M3).
             _webSetLS('medcases_pre_auth_tab_index', '2');
             debugPrint(
-                '[connectGemini] redirect OAuth iniciado — aguardando reload, tab_index=2 salvo');
+              '[connectGemini] redirect OAuth iniciado — aguardando reload, tab_index=2 salvo',
+            );
             return null; // null = redirect em andamento, não é falha
           }
         } catch (_) {}
@@ -3095,8 +3371,10 @@ class AppProvider extends ChangeNotifier {
     // para remontar a árvore de UI que pode ter sido renderizada antes do token
     // estar disponível (race condition Web: currentUser==null durante o boot).
     if (notify && connected && !stateChanged) {
-      debugPrint('[BUILD336] _setGeminiConnectionState: estado inalterado mas '
-          'connected=true — forçando notifyListeners() para remontar UI');
+      debugPrint(
+        '[BUILD336] _setGeminiConnectionState: estado inalterado mas '
+        'connected=true — forçando notifyListeners() para remontar UI',
+      );
       notifyListeners();
     }
   }
@@ -3112,7 +3390,8 @@ class AppProvider extends ChangeNotifier {
     if (GeminiService.hasApiKey) {
       _clearGeminiConfigUnavailable();
       debugPrint(
-          '[checkGeminiSession] API Key restaurada do SharedPrefs ($source) ✓');
+        '[checkGeminiSession] API Key restaurada do SharedPrefs ($source) ✓',
+      );
       return true;
     }
 
@@ -3126,30 +3405,36 @@ class AppProvider extends ChangeNotifier {
     // AND Firebase must have confirmed a non-null user before any Firestore dispatch.
     // Covers authPending, authRequired, authMismatch, and authFailed states.
     if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] '
-          'operation=loadGeminiApiKey '
-          'allowed=false '
-          'reason=barrier_not_ready '
-          'state=${_currentAuthBarrierState.name} '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] '
+        'operation=loadGeminiApiKey '
+        'allowed=false '
+        'reason=barrier_not_ready '
+        'state=${_currentAuthBarrierState.name} '
+        'sdkRequestDispatched=false',
+      );
       _markGeminiConfigUnavailable();
       return false;
     }
 
     debugPrint('[checkGeminiSession] API Key ausente — tentando Firestore...');
     try {
-      final geminiKey = await FirestoreService.loadGeminiApiKey()
-          .timeout(const Duration(seconds: 5));
+      final geminiKey = await FirestoreService.loadGeminiApiKey().timeout(
+        const Duration(seconds: 5),
+      );
       if (geminiKey.isNotEmpty) {
-        GeminiService.setGeminiApiKey(geminiKey,
-            source: GeminiKeySource.appConfig); // BUILD 294
+        GeminiService.setGeminiApiKey(
+          geminiKey,
+          source: GeminiKeySource.appConfig,
+        ); // BUILD 294
         _clearGeminiConfigUnavailable();
         debugPrint('[checkGeminiSession] API Key recarregada do Firestore ✓');
         return true;
       }
     } catch (e) {
       debugPrint(
-          '[checkGeminiSession] Firestore falhou: $e — tentando SharedPrefs...');
+        '[checkGeminiSession] Firestore falhou: $e — tentando SharedPrefs...',
+      );
     }
 
     // Segunda tentativa de SharedPrefs (pode ter sido persistido após a primeira tentativa)
@@ -3157,14 +3442,16 @@ class AppProvider extends ChangeNotifier {
     if (GeminiService.hasApiKey) {
       _clearGeminiConfigUnavailable();
       debugPrint(
-          '[checkGeminiSession] API Key restaurada do SharedPrefs (fallback) ✓');
+        '[checkGeminiSession] API Key restaurada do SharedPrefs (fallback) ✓',
+      );
       return true;
     }
 
     // API Key não disponível para este usuário (não-admin sem chave cacheada)
     _geminiApiKeyUnavailable = true;
     debugPrint(
-        '[checkGeminiSession] API Key não disponível para este usuário (Firestore: permission-denied ou vazio)');
+      '[checkGeminiSession] API Key não disponível para este usuário (Firestore: permission-denied ou vazio)',
+    );
     return false;
   }
 
@@ -3214,16 +3501,19 @@ class AppProvider extends ChangeNotifier {
         final syncFuture = _firestoreSyncFuture;
         if (syncFuture != null) {
           debugPrint(
-              '[BUILD290][SecurityWipe] aguardando _syncFromFirestore (event-driven)...');
+            '[BUILD290][SecurityWipe] aguardando _syncFromFirestore (event-driven)...',
+          );
           await syncFuture.timeout(
             const Duration(seconds: 6),
             onTimeout: () {
               debugPrint(
-                  '[BUILD290][SecurityWipe] sync timeout 6s — usando isAdmin/isMaster do cache local');
+                '[BUILD290][SecurityWipe] sync timeout 6s — usando isAdmin/isMaster do cache local',
+              );
             },
           );
           debugPrint(
-              '[BUILD290][SecurityWipe] sync concluído — isAdmin=$isAdmin isMaster=$isMaster');
+            '[BUILD290][SecurityWipe] sync concluído — isAdmin=$isAdmin isMaster=$isMaster',
+          );
         }
 
         final bool isPrivileged = isAdmin || isMaster;
@@ -3248,14 +3538,17 @@ class AppProvider extends ChangeNotifier {
                   _webRemoveLS('gemini_google_email');
                 }
               }
-              debugPrint('[BUILD294][SecurityWipe] wiped=$wiped '
-                  'source=${GeminiService.keySource.name}');
+              debugPrint(
+                '[BUILD294][SecurityWipe] wiped=$wiped '
+                'source=${GeminiService.keySource.name}',
+              );
             } catch (e) {
               debugPrint('[BUILD294][SecurityWipe] wipe error (non-fatal): $e');
             }
           } else {
             debugPrint(
-                '[BUILD293][SecurityWipe] wipe já executado nesta sessão — ignorado (loop guard)');
+              '[BUILD293][SecurityWipe] wipe já executado nesta sessão — ignorado (loop guard)',
+            );
           }
         } else if (hasPendingOAuthRedirect) {
           // OAuth redirect em progresso — wipe SUPRIMIDO para preservar o email
@@ -3263,7 +3556,8 @@ class AppProvider extends ChangeNotifier {
           // está sincronizando isAdmin/isMaster — tentaremos novamente no
           // próximo boot quando o estado já estiver estável.
           debugPrint(
-              '[BUILD277][SecurityWipe] OAuth redirect pendente — wipe SUPRIMIDO (isPrivileged=$isPrivileged)');
+            '[BUILD277][SecurityWipe] OAuth redirect pendente — wipe SUPRIMIDO (isPrivileged=$isPrivileged)',
+          );
         }
 
         if (_geminiConnected &&
@@ -3333,29 +3627,35 @@ class AppProvider extends ChangeNotifier {
                   Future.microtask(() {
                     AppProvider.postOAuthTabNotifier.value = tabIdx;
                     debugPrint(
-                        '[MASTER315] redirect pós-OAuth → aba $tabIdx sinalizada via notifier');
+                      '[MASTER315] redirect pós-OAuth → aba $tabIdx sinalizada via notifier',
+                    );
                   });
                 }
               }
               debugPrint(
-                  '[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}');
+                '[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}',
+              );
               return;
             }
             debugPrint(
-                '[checkGeminiSession] pending=true mas email vazio após 1500ms — redirect falhou');
+              '[checkGeminiSession] pending=true mas email vazio após 1500ms — redirect falhou',
+            );
           }
         }
 
         final hasKey = await _ensureGeminiApiKey(source: 'sessão existente');
         if (!hasKey) return;
 
-        final connected = await GeminiService.isConnected()
-            .timeout(const Duration(seconds: 5), onTimeout: () => false);
+        final connected = await GeminiService.isConnected().timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => false,
+        );
         if (connected) {
           final email = await GeminiService.connectedEmail() ?? '';
           _setGeminiConnectionState(connected: true, email: email);
           debugPrint(
-              '[checkGeminiSession] sessão existente — $email, apiKey: ${GeminiService.hasApiKey}');
+            '[checkGeminiSession] sessão existente — $email, apiKey: ${GeminiService.hasApiKey}',
+          );
           return;
         }
 
@@ -3510,7 +3810,10 @@ class AppProvider extends ChangeNotifier {
   }
 
   /// Retorna sumários dos protocolos cujos títulos/reconhecer contenham keywords da query
-  List<String> _matchProtocols(String normalizedQuery) {
+  List<String> _matchProtocols(
+    String normalizedQuery, {
+    List<ProtocolModel>? matchedProtocols,
+  }) {
     // Protocolos de alta emergência exigem ≥2 palavras da query para match,
     // evitando falsos positivos (ex: "cefaleia" na gripe injeta AVC/HSA).
     const _highRiskIds = {
@@ -3559,9 +3862,11 @@ class AppProvider extends ChangeNotifier {
       final minScore = isHighRisk ? 2 : 1;
 
       if (matchCount >= minScore) {
+        matchedProtocols?.add(p);
         final actions = p.getActions(_lang).take(3).join(' | ');
         results.add(
-            '• [${tDB(p.title)}] Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 120))}... Conduta: $actions');
+          '• [${tDB(p.title)}] Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 120))}... Conduta: $actions',
+        );
         if (results.length >= 4)
           break; // máx 4 protocolos para não exceder tokens
       }
@@ -3594,7 +3899,7 @@ class AppProvider extends ChangeNotifier {
       'qual fonte',
       'baseado em que',
       'evidencia usada',
-      'guideline usado'
+      'guideline usado',
     ])) {
       return 'referencias';
     }
@@ -3613,7 +3918,7 @@ class AppProvider extends ChangeNotifier {
       'fisiopatologia de',
       'patofisiolog',
       'por que ocorre a',
-      'porque ocorre a'
+      'porque ocorre a',
     ])) {
       return 'fisiopatologia';
     }
@@ -3632,7 +3937,7 @@ class AppProvider extends ChangeNotifier {
       'o que causa',
       'que causa',
       'origem de',
-      'precipita '
+      'precipita ',
     ])) {
       return 'causas';
     }
@@ -3650,7 +3955,7 @@ class AppProvider extends ChangeNotifier {
       'acompanhamento',
       'fator de mau prognostico',
       'factor de mal pronostico',
-      'sobrevivencia'
+      'sobrevivencia',
     ])) {
       return 'prognostico';
     }
@@ -3665,7 +3970,7 @@ class AppProvider extends ChangeNotifier {
       'associar a',
       'compativel',
       'combinacion',
-      'asociar'
+      'asociar',
     ])) {
       return 'interacao';
     }
@@ -3684,7 +3989,7 @@ class AppProvider extends ChangeNotifier {
       'protocolo de emergencia',
       'iam agudo',
       'avc agudo',
-      'sepse grave'
+      'sepse grave',
     ])) {
       return 'emergencia';
     }
@@ -3705,7 +4010,7 @@ class AppProvider extends ChangeNotifier {
           'internado',
           'temperatura',
           'febre ',
-          'fiebre '
+          'fiebre ',
         ]) &&
         input.trim().split(' ').length >= 6) {
       return 'caso_clinico';
@@ -3874,7 +4179,7 @@ class AppProvider extends ChangeNotifier {
       'exame para diagnosticar',
       'exame',
       'laborator',
-      'interpretar'
+      'interpretar',
     ])) {
       return 'diagnostico';
     }
@@ -4683,6 +4988,512 @@ class AppProvider extends ChangeNotifier {
   // ══════════════════════════════════════════════════════════════════════════
   bool _aiCallInFlight = false;
 
+  // PHASE 3C — request shadow only. Never rendered, persisted or executed.
+  PlantaoRequest? _lastPlantaoShadowRequest;
+
+  @visibleForTesting
+  PlantaoRequest? get lastPlantaoShadowRequest => _lastPlantaoShadowRequest;
+
+  // PHASE 3D — canonical finalization and structure, observational only.
+  final PlantaoFinalizationShadowAdapter _plantaoFinalizationShadowAdapter =
+      PlantaoFinalizationShadowAdapter.withExistingImplementations();
+  PlantaoFinalizationShadowSnapshot? _lastPlantaoFinalizationShadow;
+
+  @visibleForTesting
+  PlantaoFinalizationShadowSnapshot? get lastPlantaoFinalizationShadow =>
+      _lastPlantaoFinalizationShadow;
+
+  // PHASE 3E — provider route plan and deterministic validation, shadow only.
+  final PlantaoValidationShadowAdapter _plantaoValidationShadowAdapter =
+      const PlantaoValidationShadowAdapter();
+  PlantaoValidationShadowSnapshot? _lastPlantaoValidationShadow;
+
+  @visibleForTesting
+  PlantaoValidationShadowSnapshot? get lastPlantaoValidationShadow =>
+      _lastPlantaoValidationShadow;
+
+  // PHASE 3G — bind the legacy protocol retrieval to typed evidence.
+  final PlantaoRetrievalShadowAdapter _plantaoRetrievalShadowAdapter =
+      const PlantaoRetrievalShadowAdapter();
+  PlantaoRetrievalShadowSnapshot? _lastPlantaoRetrievalShadow;
+
+  @visibleForTesting
+  PlantaoRetrievalShadowSnapshot? get lastPlantaoRetrievalShadow =>
+      _lastPlantaoRetrievalShadow;
+
+  // PHASE 3H — canonical drug evidence from original input, shadow only.
+  final PlantaoRemoteDrugEvidenceRuntimeObserver
+      _plantaoDrugEvidenceRuntimeObserver =
+      PlantaoRemoteDrugEvidenceRuntimeObserver();
+  final PlantaoShadowExecutionIsolator _plantaoShadowExecutionIsolator =
+      const PlantaoShadowExecutionIsolator();
+  late final PlantaoVersionedRemoteDrugEvidenceJsonLoader
+      _plantaoDrugEvidenceRemoteLoader =
+      PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+    observer: _plantaoDrugEvidenceRuntimeObserver,
+  );
+  PlantaoRemoteDrugEvidenceRuntimeSnapshot
+      get plantaoDrugEvidenceRuntimeShadowSnapshot =>
+          _plantaoDrugEvidenceRuntimeObserver.snapshot;
+
+  void refreshPlantaoDrugEvidenceShadowAfterLifecycleChange() {
+    _plantaoShadowExecutionIsolator.launch(
+      () => _plantaoDrugEvidenceRemoteLoader.refreshCurrentPointer(),
+      onFailure: (error, stackTrace) {
+        debugPrint(
+          '[PLANTAO_SHADOW_POINTER_REFRESH][FAILED] '
+          'error=$error stack=$stackTrace',
+        );
+      },
+    );
+  }
+
+  late final PlantaoGeneratedDrugEvidenceReadOnlyAdapter
+      _plantaoDrugEvidencePort = PlantaoGeneratedDrugEvidenceReadOnlyAdapter(
+    loadJsonText: _plantaoDrugEvidenceRemoteLoader.loadJsonText,
+  );
+  late final PlantaoDrugEvidenceRequestObserver
+      _plantaoDrugEvidenceRequestObserver = PlantaoDrugEvidenceRequestObserver(
+    adapter: PlantaoDrugEvidenceShadowAdapter(port: _plantaoDrugEvidencePort),
+  );
+  PlantaoDrugEvidenceShadowSnapshot? _lastPlantaoDrugEvidenceShadow;
+  Future<PlantaoDrugEvidenceRequestSnapshot>? _plantaoDrugEvidenceRequestFuture;
+  PlantaoDrugEvidenceRequestSnapshot? _lastPlantaoDrugEvidenceRequestShadow;
+  final PlantaoDrugEvidenceFinalizationJoinShadowAdapter
+      _plantaoDrugEvidenceFinalizationJoinShadowAdapter =
+      const PlantaoDrugEvidenceFinalizationJoinShadowAdapter();
+  PlantaoDrugEvidenceFinalizationJoinShadowSnapshot?
+      _lastPlantaoDrugEvidenceFinalizationJoinShadow;
+  final PlantaoDrugIdentityProvenanceBindingShadowAdapter
+      _plantaoDrugIdentityProvenanceBindingShadowAdapter =
+      const PlantaoDrugIdentityProvenanceBindingShadowAdapter();
+  PlantaoDrugIdentityProvenanceBindingShadowSnapshot?
+      _lastPlantaoDrugIdentityProvenanceBindingShadow;
+  final PlantaoDrugProvenancePersistencePayloadShadowAdapter
+      _plantaoDrugProvenancePersistencePayloadShadowAdapter =
+      const PlantaoDrugProvenancePersistencePayloadShadowAdapter();
+  PlantaoDrugProvenancePersistencePayloadShadowSnapshot?
+      _lastPlantaoDrugProvenancePersistencePayloadShadow;
+  final PlantaoDrugProvenancePersistencePayloadParityGateShadowAdapter
+      _plantaoDrugProvenancePersistencePayloadParityGateShadowAdapter =
+      const PlantaoDrugProvenancePersistencePayloadParityGateShadowAdapter();
+  PlantaoDrugProvenancePersistencePayloadParityShadowSnapshot?
+      _lastPlantaoDrugProvenancePersistencePayloadParityShadow;
+  final PlantaoDrugProvenanceSemanticEqualityGateShadowAdapter
+      _plantaoDrugProvenanceSemanticEqualityGateShadowAdapter =
+      const PlantaoDrugProvenanceSemanticEqualityGateShadowAdapter();
+  PlantaoDrugProvenanceSemanticEqualityShadowSnapshot?
+      _lastPlantaoDrugProvenanceSemanticEqualityShadow;
+  final PlantaoDrugProvenancePersistenceReviewEnvelopeShadowAdapter
+      _plantaoDrugProvenancePersistenceReviewEnvelopeShadowAdapter =
+      const PlantaoDrugProvenancePersistenceReviewEnvelopeShadowAdapter();
+  PlantaoDrugProvenancePersistenceReviewEnvelopeShadowSnapshot?
+      _lastPlantaoDrugProvenancePersistenceReviewEnvelopeShadow;
+  final PlantaoDrugPersistenceCutoverBlockerAuditShadowAdapter
+      _plantaoDrugPersistenceCutoverBlockerAuditShadowAdapter =
+      const PlantaoDrugPersistenceCutoverBlockerAuditShadowAdapter();
+  PlantaoDrugPersistenceCutoverBlockerAuditShadowSnapshot?
+      _lastPlantaoDrugPersistenceCutoverBlockerAuditShadow;
+  final PlantaoDrugTypedRegimenCapabilityMatrixShadowAdapter
+      _plantaoDrugTypedRegimenCapabilityMatrixShadowAdapter =
+      const PlantaoDrugTypedRegimenCapabilityMatrixShadowAdapter();
+  PlantaoDrugTypedRegimenCapabilityMatrixShadowSnapshot?
+      _lastPlantaoDrugTypedRegimenCapabilityMatrixShadow;
+  final PlantaoDrugExplicitTypedRegimenEvidenceProjectionShadowAdapter
+      _plantaoDrugExplicitTypedRegimenEvidenceProjectionShadowAdapter =
+      const PlantaoDrugExplicitTypedRegimenEvidenceProjectionShadowAdapter();
+  PlantaoDrugExplicitTypedRegimenEvidenceProjectionShadowSnapshot?
+      _lastPlantaoDrugExplicitTypedRegimenEvidenceProjectionShadow;
+  final PlantaoDrugProjectedEvidenceBundleOverlayShadowAdapter
+      _plantaoDrugProjectedEvidenceBundleOverlayShadowAdapter =
+      const PlantaoDrugProjectedEvidenceBundleOverlayShadowAdapter();
+  PlantaoDrugProjectedEvidenceBundleOverlayShadowSnapshot?
+      _lastPlantaoDrugProjectedEvidenceBundleOverlayShadow;
+  final PlantaoDrugProjectedEvidenceValidationReplayComparisonShadowAdapter
+      _plantaoDrugProjectedEvidenceValidationReplayComparisonShadowAdapter =
+      const PlantaoDrugProjectedEvidenceValidationReplayComparisonShadowAdapter();
+  PlantaoDrugProjectedEvidenceValidationReplayComparisonShadowSnapshot?
+      _lastPlantaoDrugProjectedEvidenceValidationReplayComparisonShadow;
+
+  @visibleForTesting
+  PlantaoDrugEvidenceShadowSnapshot? get lastPlantaoDrugEvidenceShadow =>
+      _lastPlantaoDrugEvidenceShadow;
+
+  @visibleForTesting
+  PlantaoDrugEvidenceRequestSnapshot?
+      get lastPlantaoDrugEvidenceRequestShadow =>
+          _lastPlantaoDrugEvidenceRequestShadow;
+
+  @visibleForTesting
+  PlantaoDrugEvidenceFinalizationJoinShadowSnapshot?
+      get lastPlantaoDrugEvidenceFinalizationJoinShadow =>
+          _lastPlantaoDrugEvidenceFinalizationJoinShadow;
+
+  @visibleForTesting
+  PlantaoDrugIdentityProvenanceBindingShadowSnapshot?
+      get lastPlantaoDrugIdentityProvenanceBindingShadow =>
+          _lastPlantaoDrugIdentityProvenanceBindingShadow;
+
+  @visibleForTesting
+  PlantaoDrugProvenancePersistencePayloadShadowSnapshot?
+      get lastPlantaoDrugProvenancePersistencePayloadShadow =>
+          _lastPlantaoDrugProvenancePersistencePayloadShadow;
+
+  @visibleForTesting
+  PlantaoDrugProvenancePersistencePayloadParityShadowSnapshot?
+      get lastPlantaoDrugProvenancePersistencePayloadParityShadow =>
+          _lastPlantaoDrugProvenancePersistencePayloadParityShadow;
+
+  @visibleForTesting
+  PlantaoDrugProvenanceSemanticEqualityShadowSnapshot?
+      get lastPlantaoDrugProvenanceSemanticEqualityShadow =>
+          _lastPlantaoDrugProvenanceSemanticEqualityShadow;
+
+  @visibleForTesting
+  PlantaoDrugProvenancePersistenceReviewEnvelopeShadowSnapshot?
+      get lastPlantaoDrugProvenancePersistenceReviewEnvelopeShadow =>
+          _lastPlantaoDrugProvenancePersistenceReviewEnvelopeShadow;
+
+  @visibleForTesting
+  PlantaoDrugPersistenceCutoverBlockerAuditShadowSnapshot?
+      get lastPlantaoDrugPersistenceCutoverBlockerAuditShadow =>
+          _lastPlantaoDrugPersistenceCutoverBlockerAuditShadow;
+
+  @visibleForTesting
+  PlantaoDrugTypedRegimenCapabilityMatrixShadowSnapshot?
+      get lastPlantaoDrugTypedRegimenCapabilityMatrixShadow =>
+          _lastPlantaoDrugTypedRegimenCapabilityMatrixShadow;
+
+  @visibleForTesting
+  PlantaoDrugExplicitTypedRegimenEvidenceProjectionShadowSnapshot?
+      get lastPlantaoDrugExplicitTypedRegimenEvidenceProjectionShadow =>
+          _lastPlantaoDrugExplicitTypedRegimenEvidenceProjectionShadow;
+
+  @visibleForTesting
+  PlantaoDrugProjectedEvidenceBundleOverlayShadowSnapshot?
+      get lastPlantaoDrugProjectedEvidenceBundleOverlayShadow =>
+          _lastPlantaoDrugProjectedEvidenceBundleOverlayShadow;
+
+  @visibleForTesting
+  PlantaoDrugProjectedEvidenceValidationReplayComparisonShadowSnapshot?
+      get lastPlantaoDrugProjectedEvidenceValidationReplayComparisonShadow =>
+          _lastPlantaoDrugProjectedEvidenceValidationReplayComparisonShadow;
+
+  // PHASE 3F — persistence-ready record and provenance, shadow only.
+  final PlantaoPersistenceShadowAdapter _plantaoPersistenceShadowAdapter =
+      const PlantaoPersistenceShadowAdapter();
+  PlantaoPersistenceShadowSnapshot? _lastPlantaoPersistenceShadow;
+
+  @visibleForTesting
+  PlantaoPersistenceShadowSnapshot? get lastPlantaoPersistenceShadow =>
+      _lastPlantaoPersistenceShadow;
+
+  void _capturePlantaoRetrievalShadow({
+    required PlantaoRequest request,
+    required Iterable<ProtocolModel> matchedProtocols,
+  }) {
+    try {
+      final matches = matchedProtocols.map(
+        (protocol) => PlantaoLegacyProtocolMatch(
+          documentId: 'protocol:${protocol.id}',
+          version: 'legacy_protocols_database_v1',
+          title: tDB(protocol.title),
+          recognize: tDB(protocol.recognize),
+          definition: tDB(protocol.definition),
+          actions: protocol.getActions(_lang),
+          metadata: <String, Object?>{
+            'legacyProtocolId': protocol.id,
+            'sourcePath': 'lib/data/protocols_database.dart',
+            'retrievalOwner': 'AppProvider._matchProtocols',
+          },
+        ),
+      );
+      _lastPlantaoRetrievalShadow = _plantaoRetrievalShadowAdapter
+          .bindLegacyProtocolMatches(request: request, matches: matches);
+    } catch (error, stackTrace) {
+      _lastPlantaoRetrievalShadow = null;
+      debugPrint(
+        '[PLANTAO_SHADOW_RETRIEVAL][INVALID] requestId=${request.requestId} '
+        'error=$error stack=$stackTrace',
+      );
+    }
+  }
+
+  void _capturePlantaoDrugEvidenceShadow({
+    required PlantaoRequest request,
+    required String originalUserInput,
+  }) {
+    final legacyQueryIntent = _classifyIntent(originalUserInput);
+    final legacyDirectQuery = _isDirectQuery(originalUserInput);
+
+    final requestFuture = _plantaoDrugEvidenceRequestObserver.observeRequest(
+      requestId: request.requestId,
+      originalUserInput: originalUserInput,
+      languageCode: _lang,
+      legacyQueryIntent: legacyQueryIntent,
+      legacyDirectQuery: legacyDirectQuery,
+    );
+    _plantaoDrugEvidenceRequestFuture = requestFuture;
+
+    _plantaoShadowExecutionIsolator.launch(
+      () async {
+        final requestSnapshot = await requestFuture;
+
+        // Late network observations can never overwrite a newer request.
+        if (_lastPlantaoShadowRequest?.requestId != request.requestId) {
+          return;
+        }
+        _lastPlantaoDrugEvidenceRequestShadow = requestSnapshot;
+        _lastPlantaoDrugEvidenceShadow = requestSnapshot.evidence;
+        assert(() {
+          final snapshot = requestSnapshot.evidence;
+          debugPrint(
+            '[PLANTAO_SHADOW_DRUG_EVIDENCE] requestId=${request.requestId} '
+            'status=${snapshot.status.name} '
+            'candidates=${snapshot.candidates.length} '
+            'documents=${snapshot.documents.length} '
+            'materializable=${snapshot.documents.where((item) => item.supportsMedicationMaterialization).length}',
+          );
+          return true;
+        }());
+      },
+      onFailure: (error, stackTrace) {
+        if (_lastPlantaoShadowRequest?.requestId != request.requestId) {
+          return;
+        }
+        _lastPlantaoDrugEvidenceRequestShadow = null;
+        _lastPlantaoDrugEvidenceShadow = null;
+        debugPrint(
+          '[PLANTAO_SHADOW_DRUG_EVIDENCE][FAILED] '
+          'requestId=${request.requestId} error=$error stack=$stackTrace',
+        );
+      },
+    );
+  }
+
+  Future<void> _capturePlantaoFinalizationShadow({
+    required PlantaoRequest request,
+    required String finalText,
+    required ClinicalStructuredOutput? clinicalOutput,
+  }) async {
+    final snapshot = await _plantaoFinalizationShadowAdapter.finalize(
+      request: request,
+      finalText: finalText,
+      structuredOutput: clinicalOutput,
+      providerLabel: 'observed_productive_output',
+    );
+
+    // Late shadow work can never overwrite a newer productive request.
+    if (_lastPlantaoShadowRequest?.requestId != request.requestId) {
+      return;
+    }
+
+    _lastPlantaoFinalizationShadow = snapshot;
+    final retrievalSnapshot =
+        _lastPlantaoRetrievalShadow?.requestId == request.requestId
+            ? _lastPlantaoRetrievalShadow
+            : null;
+    final validationSnapshot = retrievalSnapshot == null
+        ? _plantaoValidationShadowAdapter.observeWithoutRetrieval(
+            request: request,
+            finalization: snapshot,
+          )
+        : _plantaoValidationShadowAdapter.validate(
+            request: request,
+            finalization: snapshot,
+            evidenceBundle: retrievalSnapshot.evidenceBundle,
+          );
+
+    // Validation is observational. It cannot type medications without a typed
+    // candidate and deterministic evidence, and never changes productive text.
+    _lastPlantaoValidationShadow = validationSnapshot;
+    final persistenceSnapshot = _plantaoPersistenceShadowAdapter.observe(
+      request: request,
+      finalization: snapshot,
+      validation: validationSnapshot,
+    );
+    _lastPlantaoPersistenceShadow = persistenceSnapshot;
+
+    final drugEvidenceJoin =
+        await _plantaoDrugEvidenceFinalizationJoinShadowAdapter.join(
+      request: request,
+      finalization: snapshot,
+      drugEvidenceFuture: _plantaoDrugEvidenceRequestFuture,
+    );
+
+    // A newer productive request invalidates the late observational join.
+    if (_lastPlantaoShadowRequest?.requestId != request.requestId) {
+      return;
+    }
+    _lastPlantaoDrugEvidenceFinalizationJoinShadow = drugEvidenceJoin;
+    final drugIdentityProvenanceBinding =
+        _plantaoDrugIdentityProvenanceBindingShadowAdapter.bind(
+      request: request,
+      validationRequestId: validationSnapshot.requestId,
+      validationProvenance: validationSnapshot.provenance,
+      join: drugEvidenceJoin,
+    );
+    _lastPlantaoDrugIdentityProvenanceBindingShadow =
+        drugIdentityProvenanceBinding;
+    final drugProvenancePersistencePayload =
+        _plantaoDrugProvenancePersistencePayloadShadowAdapter.prepare(
+      request: request,
+      basePersistencePayload: persistenceSnapshot.record.toJson(),
+      baseFuturePersistenceEligible:
+          persistenceSnapshot.futurePersistenceEligible,
+      binding: drugIdentityProvenanceBinding,
+    );
+    _lastPlantaoDrugProvenancePersistencePayloadShadow =
+        drugProvenancePersistencePayload;
+    final drugProvenancePersistencePayloadParity =
+        _plantaoDrugProvenancePersistencePayloadParityGateShadowAdapter.verify(
+      request: request,
+      basePersistencePayload: persistenceSnapshot.record.toJson(),
+      baseFuturePersistenceEligible:
+          persistenceSnapshot.futurePersistenceEligible,
+      preparedPayload: drugProvenancePersistencePayload,
+      binding: drugIdentityProvenanceBinding,
+    );
+    _lastPlantaoDrugProvenancePersistencePayloadParityShadow =
+        drugProvenancePersistencePayloadParity;
+    final drugProvenanceSemanticEquality =
+        _plantaoDrugProvenanceSemanticEqualityGateShadowAdapter.verify(
+      request: request,
+      baseFuturePersistenceEligible:
+          persistenceSnapshot.futurePersistenceEligible,
+      preparedPayload: drugProvenancePersistencePayload,
+      parity: drugProvenancePersistencePayloadParity,
+      binding: drugIdentityProvenanceBinding,
+    );
+    _lastPlantaoDrugProvenanceSemanticEqualityShadow =
+        drugProvenanceSemanticEquality;
+    final drugProvenancePersistenceReviewEnvelope =
+        _plantaoDrugProvenancePersistenceReviewEnvelopeShadowAdapter.prepare(
+      request: request,
+      baseFuturePersistenceEligible:
+          persistenceSnapshot.futurePersistenceEligible,
+      preparedPayload: drugProvenancePersistencePayload,
+      parity: drugProvenancePersistencePayloadParity,
+      semanticEquality: drugProvenanceSemanticEquality,
+    );
+    _lastPlantaoDrugProvenancePersistenceReviewEnvelopeShadow =
+        drugProvenancePersistenceReviewEnvelope;
+    final drugPersistenceCutoverBlockerAudit =
+        _plantaoDrugPersistenceCutoverBlockerAuditShadowAdapter.audit(
+      request: request,
+      baseFuturePersistenceEligible:
+          persistenceSnapshot.futurePersistenceEligible,
+      reviewEnvelope: drugProvenancePersistenceReviewEnvelope,
+      binding: drugIdentityProvenanceBinding,
+    );
+    _lastPlantaoDrugPersistenceCutoverBlockerAuditShadow =
+        drugPersistenceCutoverBlockerAudit;
+    final drugTypedRegimenCapabilityMatrix =
+        _plantaoDrugTypedRegimenCapabilityMatrixShadowAdapter.audit(
+      request: request,
+      join: drugEvidenceJoin,
+      binding: drugIdentityProvenanceBinding,
+      cutoverBlockerAudit: drugPersistenceCutoverBlockerAudit,
+    );
+    _lastPlantaoDrugTypedRegimenCapabilityMatrixShadow =
+        drugTypedRegimenCapabilityMatrix;
+    final drugExplicitTypedRegimenEvidenceProjection =
+        _plantaoDrugExplicitTypedRegimenEvidenceProjectionShadowAdapter.project(
+      request: request,
+      join: drugEvidenceJoin,
+      capabilityMatrix: drugTypedRegimenCapabilityMatrix,
+    );
+    _lastPlantaoDrugExplicitTypedRegimenEvidenceProjectionShadow =
+        drugExplicitTypedRegimenEvidenceProjection;
+    final drugProjectedEvidenceBundleOverlay =
+        _plantaoDrugProjectedEvidenceBundleOverlayShadowAdapter.prepare(
+            request: request,
+            baseEvidenceBundle: retrievalSnapshot?.evidenceBundle ??
+                (_lastPlantaoRetrievalShadow?.evidenceBundle.requestId ==
+                        request.requestId
+                    ? _lastPlantaoRetrievalShadow?.evidenceBundle
+                    : null),
+            projection: drugExplicitTypedRegimenEvidenceProjection);
+    _lastPlantaoDrugProjectedEvidenceBundleOverlayShadow =
+        drugProjectedEvidenceBundleOverlay;
+    final projectedEvidenceReplayValidation = drugProjectedEvidenceBundleOverlay
+            .overlayPrepared
+        ? _plantaoValidationShadowAdapter.validate(
+            request: request,
+            finalization: snapshot,
+            evidenceBundle: drugProjectedEvidenceBundleOverlay.candidateBundle!,
+          )
+        : null;
+    final drugProjectedEvidenceValidationReplayComparison =
+        _plantaoDrugProjectedEvidenceValidationReplayComparisonShadowAdapter
+            .compare(
+      request: request,
+      overlayPrepared: drugProjectedEvidenceBundleOverlay.overlayPrepared,
+      originalValidationRequestId: validationSnapshot.requestId,
+      originalValidationStatus: validationSnapshot.status.name,
+      originalProvenance: validationSnapshot.provenance.toJson(),
+      originalRouteProviders: validationSnapshot.routePlan.attempts.map(
+        (item) => item.provider.name,
+      ),
+      replayValidationRequestId: projectedEvidenceReplayValidation?.requestId,
+      replayValidationStatus: projectedEvidenceReplayValidation?.status.name,
+      replayProvenance: projectedEvidenceReplayValidation?.provenance.toJson(),
+      replayRouteProviders: projectedEvidenceReplayValidation
+          ?.routePlan.attempts
+          .map((item) => item.provider.name),
+    );
+    _lastPlantaoDrugProjectedEvidenceValidationReplayComparisonShadow =
+        drugProjectedEvidenceValidationReplayComparison;
+
+    assert(() {
+      debugPrint(
+        '[PLANTAO_SHADOW_FINALIZATION] requestId=${snapshot.requestId} '
+        'status=${snapshot.status.name} '
+        'canonicalStatus=${snapshot.canonicalStatus} '
+        'sections=${snapshot.structure?.sections.length ?? 0} '
+        'deferredMedications=${snapshot.deferredMedicationCount} '
+        'retrieval=${retrievalSnapshot?.evidenceBundle.retrievalStatus.name ?? "unavailable"} '
+        'protocolDocs=${retrievalSnapshot?.evidenceBundle.protocolDocuments.length ?? 0} '
+        'drugJoin=${drugEvidenceJoin.status.name} '
+        'drugDocs=${drugEvidenceJoin.evidenceDocumentIds.length} '
+        'drugProvenance=${drugIdentityProvenanceBinding.status.name} '
+        'drugTypedRegimens=${drugIdentityProvenanceBinding.typedRegimenDocumentIds.length} '
+        'drugPersistencePayload=${drugProvenancePersistencePayload.status.name} '
+        'drugPersistenceEligible=${drugProvenancePersistencePayload.baseFuturePersistenceEligible} '
+        'drugPersistenceParity=${drugProvenancePersistencePayloadParity.status.name} '
+        'drugPersistenceUnexpected=${drugProvenancePersistencePayloadParity.unexpectedPaths.length} '
+        'drugProvenanceSemantic=${drugProvenanceSemanticEquality.status.name} '
+        'drugProvenanceSemanticMismatches=${drugProvenanceSemanticEquality.mismatchPaths.length} '
+        'drugPersistenceReview=${drugProvenancePersistenceReviewEnvelope.status.name} '
+        'drugPersistenceReviewEligible=${drugProvenancePersistenceReviewEnvelope.baseFuturePersistenceEligible} '
+        'drugCutoverAudit=${drugPersistenceCutoverBlockerAudit.status.name} '
+        'drugCutoverBlockers=${drugPersistenceCutoverBlockerAudit.blockers.length} '
+        'drugTypedRegimenAvailable=${drugPersistenceCutoverBlockerAudit.hasTypedRegimenEvidence} '
+        'drugRegimenMatrix=${drugTypedRegimenCapabilityMatrix.status.name} '
+        'drugRegimenDocuments=${drugTypedRegimenCapabilityMatrix.canonicalDocumentCount} '
+        'drugRegimenCapable=${drugTypedRegimenCapabilityMatrix.typedRegimenCapableCount} '
+        'drugRegimenGaps=${drugTypedRegimenCapabilityMatrix.unresolvedGaps.length} '
+        'drugRegimenProjection=${drugExplicitTypedRegimenEvidenceProjection.status.name} '
+        'drugRegimensProjected=${drugExplicitTypedRegimenEvidenceProjection.projectedRegimenCount} '
+        'drugRegimenUnavailable=${drugExplicitTypedRegimenEvidenceProjection.unavailableDocumentIds.length} '
+        'drugRegimenRejected=${drugExplicitTypedRegimenEvidenceProjection.rejectedEntries.length} '
+        'drugEvidenceOverlay=${drugProjectedEvidenceBundleOverlay.status.name} '
+        'drugEvidenceOverlayDocs=${drugProjectedEvidenceBundleOverlay.candidateDrugDocumentCount} '
+        'drugEvidenceOverlayAdded=${drugProjectedEvidenceBundleOverlay.addedRegimenKeys.length} '
+        'drugEvidenceOverlayDuplicates=${drugProjectedEvidenceBundleOverlay.duplicateRegimenKeys.length} '
+        'drugValidationReplay=${drugProjectedEvidenceValidationReplayComparison.status.name} '
+        'drugValidationReplayStatusChanged=${drugProjectedEvidenceValidationReplayComparison.statusChanged} '
+        'drugValidationReplayProvenanceChanged=${drugProjectedEvidenceValidationReplayComparison.provenanceChanged} '
+        'drugValidationReplayRouteChanged=${drugProjectedEvidenceValidationReplayComparison.routeChanged} '
+        'validation=${validationSnapshot.status.name} '
+        'persistence=${persistenceSnapshot.record.status.name} '
+        'futurePersistenceEligible=${persistenceSnapshot.futurePersistenceEligible} '
+        'route=${validationSnapshot.routePlan.attempts.map((item) => item.provider.name).join(">")}',
+      );
+      return true;
+    }());
+  }
+
   // ══════════════════════════════════════════════════════════════════════════
   // STREAMING V2 — sendAiMessage
   //
@@ -4713,9 +5524,7 @@ class AppProvider extends ChangeNotifier {
   // ── BUILD 462E-A.3: Crypto-isolated QA tester UID allowlist ───────────────
   // UIDs explicitamente autorizados a usar o bypass GPT SSE.
   // NUNCA expande em produção — apenas para QA controlado.
-  static const Set<String> qaTesterUids = {
-    'Wa1AQN8hvCdewLiR2drd01rQo9G3',
-  };
+  static const Set<String> qaTesterUids = {'Wa1AQN8hvCdewLiR2drd01rQo9G3'};
 
   // ── BUILD 462E-A.3: Computed gate — identity-isolated QA bypass ──────────
   //
@@ -4778,17 +5587,21 @@ class AppProvider extends ChangeNotifier {
       case _QaGateResult.firebaseUserNull:
         // ignore: avoid_print
         print(
-            '[AI_QA_GATE] enabled=true authorized=false reason=firebase_user_null');
+          '[AI_QA_GATE] enabled=true authorized=false reason=firebase_user_null',
+        );
         return false;
       case _QaGateResult.authorizedTester:
         // ignore: avoid_print
-        print('[AI_QA_GATE] enabled=true authorized=true reason=tester_uid '
-            'uidHash=${authenticatedUid!.substring(0, 4)}...');
+        print(
+          '[AI_QA_GATE] enabled=true authorized=true reason=tester_uid '
+          'uidHash=${authenticatedUid!.substring(0, 4)}...',
+        );
         return true;
       case _QaGateResult.unauthorizedUser:
         // ignore: avoid_print
         print(
-            '[AI_QA_GATE] enabled=true authorized=false reason=unauthorized_user');
+          '[AI_QA_GATE] enabled=true authorized=false reason=unauthorized_user',
+        );
         return false;
     }
   }
@@ -4802,13 +5615,20 @@ class AppProvider extends ChangeNotifier {
   /// Cancela o streaming em curso (usuário trocou de tela, limpou chat, etc.)
   StreamSubscription<GeminiChunk>? _aiStreamSub;
 
-  void cancelAiStream() {
+  void cancelAiStream({bool notifyBufferedPipeline = true}) {
+    final cancelledRequestId = _activeRequestId.trim();
+    final bufferedCancellation = _plantaoBufferedPipelineCancellation;
+    _plantaoBufferedPipelineCancellationRequestId = null;
+    _plantaoBufferedPipelineCancellation = null;
+
     // BUILD 462E-A: cancela também o stream GPT SSE se estiver ativo
     final wasGptActive = _gptStreamSub != null;
     if (wasGptActive) {
       // ignore: avoid_print
-      print('[AI_E2E][CANCELLED] requestId=$_activeRequestId '
-          'reason=user_cancelled_clear provider=gpt_4o_mini');
+      print(
+        '[AI_E2E][CANCELLED] requestId=$cancelledRequestId '
+        'reason=user_cancelled_clear provider=gpt_4o_mini',
+      );
     }
     _gptStreamSub?.cancel();
     _gptStreamSub = null;
@@ -4816,6 +5636,13 @@ class AppProvider extends ChangeNotifier {
     _activeGptClient = null;
     _aiStreamSub?.cancel();
     _aiStreamSub = null;
+
+    if (cancelledRequestId.isNotEmpty &&
+        _activeRequestId == cancelledRequestId) {
+      _activeRequestId = '';
+      _completeAiRequestOnce(cancelledRequestId);
+    }
+
     // Build 107 FIX: reseta _aiAnswerInProgress também — sem isso, sendAiMessage()
     // retorna false imediatamente ao testar o guard na linha inicial, bloqueando
     // qualquer nova mensagem enviada após clearChat/restoreSession.
@@ -4829,6 +5656,13 @@ class AppProvider extends ChangeNotifier {
     // BUILD 326: sincroniza AiChatProvider.
     if (wasActive) aiChatProvider.setStreaming(false);
     if (wasActive) notifyListeners();
+
+    // PHASE3K-C5A-R8: o cancelamento externo encerra também o stream tipado.
+    // O callback roda em microtask para permitir que a UI invalide sua geração
+    // imediatamente após cancelAiStream() retornar.
+    if (notifyBufferedPipeline && bufferedCancellation != null) {
+      scheduleMicrotask(bufferedCancellation);
+    }
   }
 
   /// Envia mensagem com streaming token-a-token via GeminiServiceV2.
@@ -4919,6 +5753,43 @@ class AppProvider extends ChangeNotifier {
   /// Used by _saveCurrentSessionToHistory() to detect and suppress legacy writes.
   String get currentConversationSessionId => _currentConversationSessionId;
 
+  /// AI-RECONSTRUCTION-R18.6AB-R1B-R3-R1:
+  /// Adota como ativa uma conversa selecionada no histórico.
+  ///
+  /// O histórico textual e o ClinicalThreadManager são reidratados
+  /// separadamente por rebuildAiHistoryFromMessages().
+  void adoptRestoredAiConversation({
+    required String sessionId,
+    required String title,
+  }) {
+    final normalizedSessionId = sessionId.trim();
+
+    if (normalizedSessionId.isEmpty) {
+      throw ArgumentError.value(
+        sessionId,
+        'sessionId',
+        'A sessão restaurada deve possuir um ID não vazio.',
+      );
+    }
+
+    _currentConversationSessionId = normalizedSessionId;
+
+    final normalizedTitle = title.trim();
+
+    if (normalizedTitle.isNotEmpty) {
+      _currentConversationTitle = normalizedTitle;
+    }
+
+    // A conversa restaurada já possui ao menos um turno persistido.
+    _isFirstMessageOfSession = false;
+
+    debugPrint(
+      '[SESSION_RESTORE][PROVIDER_ADOPTED] '
+      'sessionIdHash=${normalizedSessionId.hashCode} '
+      'titleLen=${_currentConversationTitle.length}',
+    );
+  }
+
   /// Current in-flight requestId (last sent).  Empty between turns.
   /// Safe for telemetry emission — never contains user content.
   String get currentRequestId => _activeRequestId;
@@ -4936,14 +5807,42 @@ class AppProvider extends ChangeNotifier {
   // compatibility — the public API is visibleAiSessionSummaries.
   final List<Map<String, dynamic>> _localAiSessionIndex = [];
   final List<AiSessionSummary> _localAiSessionSummaries = [];
+  final Set<String> _deletedAiSessionIds = <String>{};
 
   /// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]:
-  /// Single reactive selector — deduplicated, sorted by updatedAt desc, ≤10.
+  /// Single reactive selector — deduplicated, sorted by updatedAt desc, ≤20.
   /// Merge order: canonicalV2 server > legacyInline server > localMemory.
   /// Deduplication key: sessionId (NEVER title).
   /// Collision resolution: highest updatedAt wins.
   List<AiSessionSummary> get visibleAiSessionSummaries =>
       List.unmodifiable(_localAiSessionSummaries);
+
+  // AI-RECONSTRUCTION-R18.6X-R1-R1:
+  // Remove do read model uma sessão cuja exclusão já foi confirmada.
+  // O marcador local impede reentrada por hidratação iniciada anteriormente.
+  bool removeVisibleAiSessionSummary(String sessionId) {
+    _deletedAiSessionIds.add(sessionId);
+
+    final typedBefore = _localAiSessionSummaries.length;
+    final rawBefore = _localAiSessionIndex.length;
+
+    _localAiSessionSummaries.removeWhere(
+      (summary) => summary.sessionId == sessionId,
+    );
+
+    _localAiSessionIndex.removeWhere(
+      (summary) => summary['sessionId'] == sessionId,
+    );
+
+    final changed = typedBefore != _localAiSessionSummaries.length ||
+        rawBefore != _localAiSessionIndex.length;
+
+    if (changed) {
+      notifyListeners();
+    }
+
+    return changed;
+  }
 
   void _completeAiRequestOnce(String requestId) {
     // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 3]: Coordinator latch guard.
@@ -4953,10 +5852,12 @@ class AppProvider extends ChangeNotifier {
     // even if multiple terminal paths race to call _completeAiRequestOnce.
     if (_completedRequestIds.contains(requestId)) {
       // ignore: avoid_print
-      debugPrint('[RESUME_COORDINATOR][DUPLICATE_DROPPED] '
-          'requestId=$requestId '
-          'reason=already_completed '
-          'callSite=_completeAiRequestOnce');
+      debugPrint(
+        '[RESUME_COORDINATOR][DUPLICATE_DROPPED] '
+        'requestId=$requestId '
+        'reason=already_completed '
+        'callSite=_completeAiRequestOnce',
+      );
       return; // Strictly abort — no coordinator trigger on duplicate.
     }
     _completedRequestIds.add(requestId);
@@ -4977,16 +5878,20 @@ class AppProvider extends ChangeNotifier {
         isAllowed: false,
       );
       // ignore: avoid_print
-      print('[EXT_TOOL_GATE][ABRUPT] requestId=$requestId '
-          'isAllowed=false reason=abrupt_terminal');
+      print(
+        '[EXT_TOOL_GATE][ABRUPT] requestId=$requestId '
+        'isAllowed=false reason=abrupt_terminal',
+      );
     }
 
     // Phase is now [completed] — all business operations (A–E) committed.
     // ignore: avoid_print
-    print('[RESUME_COORDINATOR][COMPLETE_ATTEMPT] '
-        'requestId=$requestId '
-        'callSite=canonical_finalizer '
-        'ownershipAcquired=true');
+    print(
+      '[RESUME_COORDINATOR][COMPLETE_ATTEMPT] '
+      'requestId=$requestId '
+      'callSite=canonical_finalizer '
+      'ownershipAcquired=true',
+    );
     AppResumeCoordinator.instance.completeAiRequest(requestId);
   }
 
@@ -5012,12 +5917,15 @@ class AppProvider extends ChangeNotifier {
     required ActiveAiSessionContext context,
     required String userInput,
     required String assistantOutput,
+    String? userDisplayText,
   }) async {
     // Idempotency check — the requestId is unique per turn.
     if (_persistedExchangeIds.contains(context.requestId)) {
       // ignore: avoid_print
-      print('[SESSION_PERSIST][SKIPPED] requestId=${context.requestId} '
-          'reason=idempotency_key_already_seen');
+      print(
+        '[SESSION_PERSIST][SKIPPED] requestId=${context.requestId} '
+        'reason=idempotency_key_already_seen',
+      );
       return const SessionPersistSkipped('idempotency_key_already_seen');
     }
     _persistedExchangeIds.add(context.requestId);
@@ -5059,6 +5967,7 @@ class AppProvider extends ChangeNotifier {
         assistantPreview: assistantPreview,
         userInputFull: userInput,
         assistantOutputFull: assistantOutput,
+        userDisplayTextFull: userDisplayText?.trim() ?? '',
       );
 
       // ── PILLAR 2: Strict permission-denied isolation ───────────────────────
@@ -5068,11 +5977,13 @@ class AppProvider extends ChangeNotifier {
       // SessionPersistQueuedOffline or SessionPersistFailed.
       if (batchResult.permissionDenied) {
         // ignore: avoid_print
-        print('[SESSION_PERSIST][AUTH_DENIED] '
-            'requestId=${context.requestId} '
-            'sessionId=${context.sessionId} '
-            'parentPath=$parentPath '
-            'exchangePath=$exchangePath');
+        print(
+          '[SESSION_PERSIST][AUTH_DENIED] '
+          'requestId=${context.requestId} '
+          'sessionId=${context.sessionId} '
+          'parentPath=$parentPath '
+          'exchangePath=$exchangePath',
+        );
         return SessionPersistAuthDenied(
           parentPath: parentPath,
           exchangePath: exchangePath,
@@ -5084,11 +5995,15 @@ class AppProvider extends ChangeNotifier {
         // Batch failed — do NOT commit _isFirstMessageOfSession=false or freeze
         // _currentConversationTitle. The caller may retry and must re-attempt
         // generating the title from the first message.
-        debugPrint('[LEGACY_WRITE][SKIPPED] '
-            'reason=batch_failed_retaining_first_message_state');
+        debugPrint(
+          '[LEGACY_WRITE][SKIPPED] '
+          'reason=batch_failed_retaining_first_message_state',
+        );
         // ignore: avoid_print
-        print('[SESSION_PERSIST][FAILED] requestId=${context.requestId} '
-            'error=${batchResult.error}');
+        print(
+          '[SESSION_PERSIST][FAILED] requestId=${context.requestId} '
+          'error=${batchResult.error}',
+        );
         return SessionPersistFailed(batchResult.error ?? 'unknown_batch_error');
       }
 
@@ -5113,17 +6028,20 @@ class AppProvider extends ChangeNotifier {
       );
 
       // ignore: avoid_print
-      print('[SESSION_PERSIST][SYNCED] requestId=${context.requestId} '
-          'uid=${context.uid.isNotEmpty ? "${context.uid.substring(0, context.uid.length.clamp(0, 8))}..." : "anon"} '
-          'sessionId=${context.sessionId} '
-          'mode=${context.mode} '
-          'outputLen=${assistantOutput.length} '
-          'title="${title.substring(0, title.length.clamp(0, 40))}"');
+      print(
+        '[SESSION_PERSIST][SYNCED] requestId=${context.requestId} '
+        'uid=${context.uid.isNotEmpty ? "${context.uid.substring(0, context.uid.length.clamp(0, 8))}..." : "anon"} '
+        'sessionId=${context.sessionId} '
+        'mode=${context.mode} '
+        'outputLen=${assistantOutput.length} '
+        'title="${title.substring(0, title.length.clamp(0, 40))}"',
+      );
       return const SessionPersistSynced();
     } on Exception catch (e) {
       // ignore: avoid_print
       print(
-          '[SESSION_PERSIST][FAILED] requestId=${context.requestId} error=$e');
+        '[SESSION_PERSIST][FAILED] requestId=${context.requestId} error=$e',
+      );
       return SessionPersistFailed(e);
     }
   }
@@ -5158,8 +6076,9 @@ class AppProvider extends ChangeNotifier {
     required String assistantPreview,
   }) {
     final now = DateTime.now().millisecondsSinceEpoch;
-    final idx =
-        _localAiSessionIndex.indexWhere((s) => s['sessionId'] == sessionId);
+    final idx = _localAiSessionIndex.indexWhere(
+      (s) => s['sessionId'] == sessionId,
+    );
 
     if (idx >= 0) {
       // Update existing entry in-place, then move to position 0 (most-recent).
@@ -5209,11 +6128,15 @@ class AppProvider extends ChangeNotifier {
   }
 
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]: Merge helper ────────────
-  // Deduplicates by sessionId, keeps highest updatedAt, sorts desc, trims ≤10.
+  // Deduplicates by sessionId, keeps highest updatedAt, sorts desc, trims ≤20.
   void _mergeIntoSummaries(List<AiSessionSummary> incoming) {
     for (final s in incoming) {
-      final existingIdx = _localAiSessionSummaries
-          .indexWhere((e) => e.sessionId == s.sessionId);
+      if (_deletedAiSessionIds.contains(s.sessionId)) {
+        continue;
+      }
+      final existingIdx = _localAiSessionSummaries.indexWhere(
+        (e) => e.sessionId == s.sessionId,
+      );
       if (existingIdx >= 0) {
         // Collision — keep the one with the higher updatedAt.
         if (s.updatedAt > _localAiSessionSummaries[existingIdx].updatedAt) {
@@ -5225,60 +6148,396 @@ class AppProvider extends ChangeNotifier {
     }
     // Sort descending by updatedAt.
     _localAiSessionSummaries.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    // Enforce ≤10 slot bound.
-    if (_localAiSessionSummaries.length > 10) {
-      _localAiSessionSummaries.removeRange(10, _localAiSessionSummaries.length);
+    // Enforce ≤20 slot bound.
+    if (_localAiSessionSummaries.length > 20) {
+      _localAiSessionSummaries.removeRange(20, _localAiSessionSummaries.length);
     }
   }
 
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 2]: Repository load ─────────
   // Fetches both collections, maps to AiSessionSummary, merges with local
   // in-memory entries, deduplicates by sessionId, and emits telemetry.
+  // ── AI-RECONSTRUCTION-R18.6W: hidratação reativa V1 + V2 ─────────
+  Future<void>? _aiSummaryLoadInFlight;
+  String? _aiSummaryLoadUid;
+  int _aiSummaryLoadGeneration = 0;
+
   Future<void> loadAndMergeAiSessionSummaries(String uid) async {
-    // Run both fetches concurrently.
-    final results = await Future.wait([
-      FirestoreService.loadCanonicalAiSessionSummariesTyped(uid),
-      FirestoreService.loadLegacyAiSessionsTyped(uid),
-    ]);
+    final instanceId = hashCode.toRadixString(16);
 
-    final canonicalResult = results[0];
-    final legacyResult = results[1];
-
-    final List<AiSessionSummary> canonicalSummaries = [];
-    final List<AiSessionSummary> legacySummaries = [];
-
-    if (canonicalResult.isSuccess) {
-      final data = canonicalResult.dataOrElse([]);
-      canonicalSummaries.addAll(data.map(AiSessionSummary.fromCanonicalJson));
+    if (_aiSummaryLoadInFlight != null && _aiSummaryLoadUid == uid) {
+      debugPrint(
+        '[HISTORY_REPOSITORY][LOAD] '
+        'providerInstanceId=$instanceId uid=$uid '
+        'result=reuse_in_flight',
+      );
+      await _aiSummaryLoadInFlight;
+      return;
     }
 
-    if (legacyResult.isSuccess) {
-      final data = legacyResult.dataOrElse([]);
-      legacySummaries.addAll(data.map(AiSessionSummary.fromLegacyJson));
+    final generation = ++_aiSummaryLoadGeneration;
+    _aiSummaryLoadUid = uid;
+
+    final future = () async {
+      try {
+        final results = await Future.wait([
+          FirestoreService.loadCanonicalAiSessionSummariesTyped(uid),
+          FirestoreService.loadLegacyAiSessionsTyped(uid),
+        ]);
+
+        if (_aiSummaryLoadGeneration != generation ||
+            _aiSummaryLoadUid != uid) {
+          debugPrint(
+            '[HISTORY_REPOSITORY][LOAD] '
+            'providerInstanceId=$instanceId uid=$uid '
+            'generation=$generation '
+            'currentGeneration=$_aiSummaryLoadGeneration '
+            'result=discarded reason=stale_generation',
+          );
+          return;
+        }
+
+        final firebaseUid = FirebaseAuth.instance.currentUser?.uid;
+        if (firebaseUid != uid) {
+          debugPrint(
+            '[HISTORY_REPOSITORY][LOAD] '
+            'providerInstanceId=$instanceId uid=$uid '
+            'result=discarded reason=auth_uid_changed',
+          );
+          return;
+        }
+
+        final canonicalResult = results[0];
+        final legacyResult = results[1];
+
+        final canonicalSummaries = <AiSessionSummary>[];
+        final legacySummaries = <AiSessionSummary>[];
+
+        if (canonicalResult.isSuccess) {
+          final data = canonicalResult.dataOrElse([]);
+          canonicalSummaries.addAll(
+            data.map(AiSessionSummary.fromCanonicalJson),
+          );
+        }
+
+        if (legacyResult.isSuccess) {
+          final data = legacyResult.dataOrElse([]);
+          legacySummaries.addAll(data.map(AiSessionSummary.fromLegacyJson));
+        }
+
+        final serverSummaries = [...canonicalSummaries, ...legacySummaries];
+
+        _mergeIntoSummaries(serverSummaries);
+
+        final visibleCount = _localAiSessionSummaries.length;
+        final canonicalCount = canonicalSummaries.length;
+        final legacyCount = legacySummaries.length;
+        final localCount = _localAiSessionIndex.length;
+        final deduplicatedCount =
+            (canonicalCount + legacyCount + localCount) - visibleCount;
+
+        debugPrint(
+          '[HISTORY_REPOSITORY][LOAD] '
+          'providerInstanceId=$instanceId uid=$uid '
+          'generation=$generation result=applied '
+          'canonicalServerCount=$canonicalCount '
+          'canonicalLocalCount=$localCount '
+          'legacyCount=$legacyCount '
+          'visibleCount=$visibleCount '
+          'deduplicatedCount=${deduplicatedCount.clamp(0, 999)}',
+        );
+
+        notifyListeners();
+      } catch (error) {
+        debugPrint(
+          '[HISTORY_REPOSITORY][LOAD] '
+          'providerInstanceId=$instanceId uid=$uid '
+          'generation=$generation result=failure '
+          'errorType=${error.runtimeType}',
+        );
+      }
+    }();
+
+    _aiSummaryLoadInFlight = future;
+
+    try {
+      await future;
+    } finally {
+      if (_aiSummaryLoadGeneration == generation &&
+          identical(_aiSummaryLoadInFlight, future)) {
+        _aiSummaryLoadInFlight = null;
+        _aiSummaryLoadUid = null;
+      }
+    }
+  }
+
+  // ── PLANTAO_QUESTIONS_EXACT_TEN_FINAL_ACCEPTANCE_V1 ────────────────────
+  static String _foldPlantaoQuestionsExactTen(String input) {
+    return input
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('ä', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('è', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('ë', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ì', 'i')
+        .replaceAll('î', 'i')
+        .replaceAll('ï', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ò', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ö', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ù', 'u')
+        .replaceAll('û', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c')
+        .replaceAll('ñ', 'n');
+  }
+
+  static bool _isPlantaoQuestionsExactTenTask(String input) {
+    final folded = _foldPlantaoQuestionsExactTen(input);
+    return folded.contains('perguntas') || folded.contains('preguntas');
+  }
+
+  static int _plantaoQuestionsExactTenCount(String output) {
+    return RegExp(r'\?').allMatches(output).length;
+  }
+
+  static bool _isValidPlantaoQuestionsExactTen(
+    String output, {
+    required bool isEs,
+  }) {
+    final folded = _foldPlantaoQuestionsExactTen(output);
+    final expectedHeading = isEs ? 'preguntas clave:' : 'perguntas-chave:';
+    if (!folded.contains(expectedHeading)) return false;
+    final questionCount = _plantaoQuestionsExactTenCount(output);
+    if (questionCount < 6 || questionCount > 10) return false;
+
+    const forbidden = <String>[
+      'conduta imediata',
+      'conducta inmediata',
+      'tratamento farmacologico',
+      'tratamiento farmacologico',
+    ];
+    if (forbidden.any(folded.contains)) return false;
+    if (output.contains('📌') ||
+        output.contains('💊') ||
+        output.contains('🚨')) {
+      return false;
+    }
+    return true;
+  }
+
+  // MEDCASES_PLANTAO_QUESTIONS_BUTTON_RESILIENT_SPECIFIC_HIDDEN_TRIGGER_V1_B_R0
+  // Legacy method name retained to avoid unnecessary topology churn.
+  // It no longer exposes a failure sentence. If provider + one repair cannot
+  // validate 6-10 safe questions, return six deterministic intake questions.
+  String _plantaoQuestionsExactTenFailClosed(bool isEs) {
+    return isEs
+        ? 'Preguntas clave:\n\n'
+              '1. ¿Cuándo comenzaron los síntomas y cómo han evolucionado hasta ahora?\n'
+              '2. ¿Cuál es el síntoma principal, qué intensidad tiene y qué lo empeora o alivia?\n'
+              '3. ¿Qué síntomas asociados relevantes aparecieron, como disnea, fiebre, síncope, sangrado o vómitos?\n'
+              '4. ¿Hubo un desencadenante reciente, trauma, procedimiento, infección, inmovilización, viaje o exposición relevante?\n'
+              '5. ¿Qué antecedentes, episodios previos, cirugías o comorbilidades pueden modificar este cuadro?\n'
+              '6. ¿Qué medicamentos usa actualmente y tiene alergias, anticoagulantes, antiagregantes o corticoides?'
+        : 'Perguntas-chave:\n\n'
+              '1. Quando os sintomas começaram e como evoluíram até agora?\n'
+              '2. Qual é o sintoma principal, qual a intensidade e o que piora ou melhora?\n'
+              '3. Quais sintomas associados relevantes surgiram, como dispneia, febre, síncope, sangramento ou vômitos?\n'
+              '4. Houve desencadeante recente, trauma, procedimento, infecção, imobilização, viagem ou exposição relevante?\n'
+              '5. Quais antecedentes, episódios prévios, cirurgias ou comorbidades podem modificar este quadro?\n'
+              '6. Quais medicamentos usa atualmente e há alergias, anticoagulantes, antiagregantes ou corticoides?';
+  }
+
+  Future<String> _enforcePlantaoQuestionsExactTen({
+    required String requestId,
+    required String input,
+    required String candidateOutput,
+  }) async {
+    if (!_isPlantaoQuestionsExactTenTask(input)) return candidateOutput;
+
+    final isEs = _lang == 'es';
+    final initialCount = _plantaoQuestionsExactTenCount(candidateOutput);
+    if (_isValidPlantaoQuestionsExactTen(candidateOutput, isEs: isEs)) {
+      if (kDebugMode) {
+        debugPrint(
+          '[PLANTAO_Q10_GATE] requestId=$requestId stage=accept '
+          'questions=$initialCount repairAttempted=false',
+        );
+      }
+      return candidateOutput;
     }
 
-    // Merge server results into the unified list (server wins over localMemory
-    // for same sessionId — canonicalV2 or legacyInline has higher authority).
-    // First merge canonical (higher authority), then legacy, then local memory
-    // is already present in _localAiSessionSummaries.
-    final serverSummaries = [...canonicalSummaries, ...legacySummaries];
-    _mergeIntoSummaries(serverSummaries);
+    if (kDebugMode) {
+      debugPrint(
+        '[PLANTAO_Q10_GATE] requestId=$requestId stage=repair_start '
+        'questions=$initialCount repairAttempted=true',
+      );
+    }
 
-    final visibleCount = _localAiSessionSummaries.length;
-    final canonicalCount = canonicalSummaries.length;
-    final legacyCount = legacySummaries.length;
-    final localCount = _localAiSessionIndex.length;
-    final deduplicatedCount =
-        (canonicalCount + legacyCount + localCount) - visibleCount;
+    final systemPrompt = isEs
+        ? 'REPARADOR DETERMINISTA DE FORMATO — PREGUNTAS CLAVE. '
+            'Devuelve únicamente el encabezado "Preguntas clave:" seguido de '
+            'EXACTAMENTE 10 preguntas clínicas al paciente, numeradas 1 a 10, '
+            'una por línea y cada una terminada en ?. No incluyas diagnóstico, '
+            'conducta inmediata, tratamiento, dosis, recomendaciones terapéuticas, '
+            'red flags ni conclusión. No inventes respuestas del paciente. '
+              'Cada pregunta debe estar vinculada al cuadro de la SOLICITUD ORIGINAL y cubrir una dimensión clínica distinta; '
+              'evita preguntas genéricas que podrían aplicarse a cualquier paciente.'
+        : 'REPARADOR DETERMINÍSTICO DE FORMATO — PERGUNTAS-CHAVE. '
+            'Retorne somente o cabeçalho "Perguntas-chave:" seguido de '
+            'EXATAMENTE 10 perguntas clínicas ao paciente, numeradas de 1 a 10, '
+            'uma por linha e cada uma terminada em ?. Não inclua diagnóstico, '
+            'conduta imediata, tratamento, doses, recomendações terapêuticas, '
+            'red flags nem conclusão. Não invente respostas do paciente. '
+              'Cada pergunta deve estar vinculada ao quadro da SOLICITAÇÃO ORIGINAL e cobrir uma dimensão clínica distinta; '
+              'evite perguntas genéricas que poderiam servir para qualquer paciente.';
 
-    debugPrint('[HISTORY_REPOSITORY][LOAD] '
-        'canonicalServerCount=$canonicalCount '
-        'canonicalLocalCount=$localCount '
-        'legacyCount=$legacyCount '
-        'visibleCount=$visibleCount '
-        'deduplicatedCount=${deduplicatedCount.clamp(0, 999)}');
+    final repairInput = isEs
+        ? 'SOLICITUD ORIGINAL:\n$input\n\nRESPUESTA A REPARAR:\n$candidateOutput'
+        : 'SOLICITAÇÃO ORIGINAL:\n$input\n\nRESPOSTA A REPARAR:\n$candidateOutput';
 
-    notifyListeners();
+    try {
+      final repaired = await ProviderRouterService.callGptProxy(
+        userMessage: repairInput,
+        systemPrompt: systemPrompt,
+        history: const <Map<String, String>>[],
+        mode: 'plantao',
+        lang: _lang,
+        requestId: '${requestId}_q10r1',
+        maxOutputTokens: 1800,
+      );
+
+      if (repaired.success && repaired.text.trim().isNotEmpty) {
+        final sanitized = AiSmartRouter.sanitizeAndCheck(
+          repaired.text,
+          isPlantaoMode: true,
+          appLanguage: _lang,
+        );
+        final repairedText = sanitized.text.trim();
+        final repairedCount = _plantaoQuestionsExactTenCount(repairedText);
+        if (_isValidPlantaoQuestionsExactTen(repairedText, isEs: isEs)) {
+          if (kDebugMode) {
+            debugPrint(
+              '[PLANTAO_Q10_GATE] requestId=$requestId stage=repair_accept '
+              'questions=$repairedCount repairAttempted=true repairSucceeded=true',
+            );
+          }
+          return repairedText;
+        }
+
+        if (kDebugMode) {
+          debugPrint(
+            '[PLANTAO_Q10_GATE] requestId=$requestId stage=repair_reject '
+            'questions=$repairedCount repairAttempted=true repairSucceeded=false',
+          );
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        debugPrint(
+          '[PLANTAO_Q10_GATE] requestId=$requestId stage=repair_exception '
+          'repairAttempted=true repairSucceeded=false errorType=${error.runtimeType}',
+        );
+      }
+    }
+
+    if (kDebugMode) {
+      debugPrint(
+        '[PLANTAO_Q10_GATE] requestId=$requestId stage=fallback_six '
+        'repairAttempted=true repairSucceeded=false fallbackQuestions=6',
+      );
+    }
+    return _plantaoQuestionsExactTenFailClosed(isEs);
+  }
+
+  String _applyPlantaoClinicalRegimenOutputGuard({
+    required String userInput,
+    required String assistantOutput,
+    required bool longResponse,
+    required String requestId,
+  }) {
+    if (longResponse || assistantOutput.isEmpty) return assistantOutput;
+
+    final semanticCoreText =
+        PlantaoGenericAcsWholeResponseSemanticCore.materialize(
+      userInput: userInput,
+      assistantOutput: assistantOutput,
+      languageCode: _lang,
+    );
+
+    if (semanticCoreText != assistantOutput) {
+      // ignore: avoid_print
+      print(
+        '[PLANTAO_ACS_WHOLE_RESPONSE_CORE][MATERIALIZED] '
+        'requestId=$requestId '
+        'beforeLen=${assistantOutput.length} '
+        'afterLen=${semanticCoreText.length}',
+      );
+    }
+
+    final explicitNamedTopicText =
+        PlantaoExplicitNamedTopicSemanticGuard.materialize(
+      userInput: userInput,
+      assistantOutput: semanticCoreText,
+      languageCode: _lang,
+    );
+
+    if (explicitNamedTopicText != semanticCoreText) {
+      // ignore: avoid_print
+      print(
+        '[PLANTAO_EXPLICIT_NAMED_TOPIC_GUARD][MATERIALIZED] '
+        'requestId=$requestId '
+        'beforeLen=${semanticCoreText.length} '
+        'afterLen=${explicitNamedTopicText.length}',
+      );
+    }
+
+    final result = PlantaoClinicalRegimenOutputGuard.enforce(
+      userInput: userInput,
+      assistantOutput: explicitNamedTopicText,
+      languageCode: _lang,
+      patientAge: _patient.age,
+    );
+
+    if (result.modified) {
+      // ignore: avoid_print
+      print(
+        '[PLANTAO_REGIMEN_OUTPUT_GUARD][REPLACED] '
+        'requestId=$requestId '
+        'scenario=${result.scenario?.name ?? "none"} '
+        'replacements=${result.replacementCount} '
+        'beforeLen=${assistantOutput.length} '
+        'afterLen=${result.text.length}',
+      );
+    }
+
+    final consistencyGuardedText =
+        PlantaoClinicalResponseConsistencyGuard.enforce(
+      userInput: userInput,
+      assistantOutput: result.text,
+      languageCode: _lang,
+    );
+
+    if (consistencyGuardedText != result.text) {
+      // ignore: avoid_print
+      print(
+        '[PLANTAO_CLINICAL_RESPONSE_CONSISTENCY_GUARD][MATERIALIZED] '
+        'requestId=$requestId '
+        'beforeLen=${result.text.length} '
+        'afterLen=${consistencyGuardedText.length}',
+      );
+    }
+
+    return consistencyGuardedText;
   }
 
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2/3]: GPT happy-path finalizer ──
@@ -5303,6 +6562,8 @@ class AppProvider extends ChangeNotifier {
     required String requestId,
     required String validatedOutput,
     required String input,
+    required String visibleUserInput,
+    String? userDisplayText,
     required bool longResponse,
     required ExternalToolDecision? canonicalDecision,
     required void Function(String, [ClinicalStructuredOutput?]) wrappedOnDone,
@@ -5313,7 +6574,7 @@ class AppProvider extends ChangeNotifier {
     // Unit-coupled extraction: only values paired with a clinical dose unit
     // (mcg/kg/min, mg/h, U/min) are evaluated. Standalone numbers (weights,
     // pressures, list ordinals) are bypassed. See ClinicalNumericValidator.
-    final String safeOutput;
+    String safeOutput;
     if (canonicalDecision?.intent == ExternalToolIntent.infusion) {
       final clinicalResult = ClinicalNumericValidator.validate(
         llmOutput: validatedOutput,
@@ -5321,9 +6582,11 @@ class AppProvider extends ChangeNotifier {
       );
       if (!clinicalResult.isValid && clinicalResult.fallback != null) {
         // ignore: avoid_print
-        print('[CLINICAL_NUMERIC_GATE][REPLACED] requestId=$requestId '
-            'reason=bounds_violated '
-            'replacement_len=${clinicalResult.fallback!.length}');
+        print(
+          '[CLINICAL_NUMERIC_GATE][REPLACED] requestId=$requestId '
+          'reason=bounds_violated '
+          'replacement_len=${clinicalResult.fallback!.length}',
+        );
         safeOutput = clinicalResult.fallback!;
       } else {
         safeOutput = validatedOutput;
@@ -5332,11 +6595,64 @@ class AppProvider extends ChangeNotifier {
       safeOutput = validatedOutput;
     }
 
+    final preRegimenSafeOutput = safeOutput;
+    safeOutput = _applyPlantaoClinicalRegimenOutputGuard(
+      userInput: input,
+      assistantOutput: safeOutput,
+      longResponse: longResponse,
+      requestId: requestId,
+    );
+    final regimenOutputGuardModified = safeOutput != preRegimenSafeOutput;
+
+    if (!longResponse) {
+      safeOutput = PlantaoClinicalResponseConsistencyGuard.enforce(
+        userInput: input,
+        assistantOutput: safeOutput,
+      );
+    }
+
+    if (!longResponse && _isPlantaoQuestionsExactTenTask(input)) {
+      safeOutput = await _enforcePlantaoQuestionsExactTen(
+        requestId: requestId,
+        input: input,
+        candidateOutput: safeOutput,
+      );
+    }
+
     // O objeto estruturado descreve exatamente o displayText validado pelo
-    // backend. Se qualquer barreira local substituir esse texto, os dois
+    // backend. Quando a rota GPT paga do Plantão não entrega DTO, reutilizamos
+    // o adapter local conservador já adotado pelas rotas Gemini. O provider
+    // permanece agnóstico ao conteúdo visual interno do DTO.
+    final ClinicalStructuredOutput? productiveClinicalOutput = clinicalOutput ??
+        (!longResponse
+            ? PlantaoLocalClinicalOutputAdapter.fromValidatedText(
+                validatedOutput,
+              )
+            : null);
+
+    // Se qualquer barreira local substituir o texto validado, texto e DTO
     // deixam de formar uma unidade atômica e o objeto deve ser descartado.
-    final ClinicalStructuredOutput? safeClinicalOutput =
-        safeOutput == validatedOutput ? clinicalOutput : null;
+    final questionsRepairedToValidContract = !longResponse &&
+        _isPlantaoQuestionsExactTenTask(input) &&
+        _isValidPlantaoQuestionsExactTen(
+          safeOutput,
+          isEs: _lang == 'es',
+        );
+    final ClinicalStructuredOutput? safeClinicalOutput = safeOutput ==
+            validatedOutput
+        ? productiveClinicalOutput
+        : (regimenOutputGuardModified || questionsRepairedToValidContract)
+            ? PlantaoLocalClinicalOutputAdapter.fromValidatedText(safeOutput)
+            : null;
+
+    if (kDebugMode && !longResponse) {
+      debugPrint(
+        '[STRUCTURED_PAID][BOUND] '
+        'requestId=$requestId '
+        'source=${clinicalOutput != null ? "backend" : "local_adapter"} '
+        'dto=${safeClinicalOutput != null}',
+      );
+    }
 
     // ── Step B: Atomic Persistence ────────────────────────────────────────
     // Persists the AI exchange BEFORE tool resolution and UI emit.
@@ -5345,11 +6661,14 @@ class AppProvider extends ChangeNotifier {
     final persistStatus = await persistAiExchangeOnce(
       context: sessionCtx,
       userInput: input,
+      userDisplayText: userDisplayText,
       assistantOutput: safeOutput,
     );
     // ignore: avoid_print
-    print('[SESSION_PERSIST][STATUS] requestId=$requestId '
-        'status=${persistStatus.runtimeType}');
+    print(
+      '[SESSION_PERSIST][STATUS] requestId=$requestId '
+      'status=${persistStatus.runtimeType}',
+    );
 
     // ── Step C: Tool Resolution Gate (exactly once per requestId) ─────────
     // Uses _completedResolutions presence-gate — skips if key already written.
@@ -5359,7 +6678,7 @@ class AppProvider extends ChangeNotifier {
       final attId =
           'att_gpt_${requestId.substring(0, requestId.length > 8 ? 8 : requestId.length)}';
       final resolvedLink = ExternalToolLinkEngine.build(
-        lastUserMessage: input,
+        lastUserMessage: visibleUserInput,
         lastAiResponse: safeOutput,
         isPlantaoMode: !longResponse,
         currentLanguage: _lang,
@@ -5380,24 +6699,28 @@ class AppProvider extends ChangeNotifier {
         isAllowed: toolAllowed,
       );
       // ignore: avoid_print
-      print('[EXT_TOOL_GATE] '
-          'requestId=$requestId '
-          'parentRequestId=$requestId '
-          'transactionId=$txnId '
-          'attemptId=$attId '
-          'phase=finalizing '
-          'callSite=gpt_happy_path_finalizer '
-          'ownershipAcquired=true '
-          'toolAllowed=$toolAllowed '
-          'reason=$toolReason');
+      print(
+        '[EXT_TOOL_GATE] '
+        'requestId=$requestId '
+        'parentRequestId=$requestId '
+        'transactionId=$txnId '
+        'attemptId=$attId '
+        'phase=finalizing '
+        'callSite=gpt_happy_path_finalizer '
+        'ownershipAcquired=true '
+        'toolAllowed=$toolAllowed '
+        'reason=$toolReason',
+      );
       if (toolAllowed) {
         // ignore: avoid_print
         print('[EXT_TOOL_PAYLOAD_READY] requestId=$requestId');
       }
     } else {
       // ignore: avoid_print
-      print('[EXT_TOOL_GATE][GPT_DUPLICATE_SKIPPED] requestId=$requestId '
-          'reason=resolution_already_present');
+      print(
+        '[EXT_TOOL_GATE][GPT_DUPLICATE_SKIPPED] requestId=$requestId '
+        'reason=resolution_already_present',
+      );
     }
 
     // ── Step D: UI Notification (notifyListeners inside wrappedOnDone) ────
@@ -5411,26 +6734,417 @@ class AppProvider extends ChangeNotifier {
 
     // ── Step E: Release canonical decision cache (after UI emit) ──────────
     ExternalToolLinkEngine.releaseCanonicalDecision(
-        requestId: requestId, decision: canonicalDecision);
+      requestId: requestId,
+      decision: canonicalDecision,
+    );
 
     // ── Step F: Terminal Completion — LAST position in pyramid ────────────
     // Phase advances to [completed] here inside tryMarkCoordinatorCompleted().
     _completeAiRequestOnce(requestId);
   }
 
+  // PHASE3K-C5A-R5: single canonical owner for request/session correlation.
+  // This method resolves identifiers only. It does not mutate provider state,
+  // call providers, emit callbacks, persist data, or complete a terminal.
+  ({String requestId, String sessionId}) _resolveCanonicalAiCorrelation({
+    String? requestId,
+    String? sessionId,
+  }) {
+    final normalizedRequestId = requestId?.trim();
+    final resolvedRequestId = normalizedRequestId?.isNotEmpty == true
+        ? normalizedRequestId!
+        : ProviderRouterService.generateRequestId().trim();
+
+    if (resolvedRequestId.isEmpty) {
+      throw StateError('AI_REQUEST_ID_EMPTY');
+    }
+
+    final normalizedSessionId = sessionId?.trim();
+    final normalizedActiveSessionId = _currentConversationSessionId.trim();
+    final resolvedSessionId = normalizedSessionId?.isNotEmpty == true
+        ? normalizedSessionId!
+        : normalizedActiveSessionId.isNotEmpty
+            ? normalizedActiveSessionId
+            : 'session_${DateTime.now().millisecondsSinceEpoch}';
+
+    return (
+      requestId: resolvedRequestId,
+      sessionId: resolvedSessionId,
+    );
+  }
+
   Future<bool> sendAiMessage(
     String input, {
     required void Function(String accumulated) onChunk,
     required void Function(String finalText) onDone,
-    void Function(
-      String finalText,
-      ClinicalStructuredOutput? clinicalOutput,
-    )? onStructuredDone,
+    void Function(String finalText, ClinicalStructuredOutput? clinicalOutput)?
+        onStructuredDone,
     required void Function(String errorMsg) onError,
+    String? visibleUserInput,
+    String? userDisplayText,
     bool longResponse = false, // Motor de Partida (Build 149)
     bool fromButton =
         false, // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
+    String? pipelineRequestId,
+    String? pipelineSessionId,
+    PlantaoContinuationType shadowContinuationType =
+        PlantaoContinuationType.freeFollowUp,
+    Iterable<PlantaoSection> shadowRequestedSections = const <PlantaoSection>[],
   }) async {
+    // Phase3K-C5A-R3C: method-scope correlation owner.
+    String? phase3kNormalizeCorrelationId(Object? value) {
+      if (value is! String) return null;
+      final normalized = value.trim();
+      return normalized.isEmpty ? null : normalized;
+    }
+
+    String? phase3kResolvedRequestId =
+        phase3kNormalizeCorrelationId(pipelineRequestId);
+    String? phase3kResolvedSessionId =
+        phase3kNormalizeCorrelationId(pipelineSessionId);
+
+    final phase3kQaIsPlantao = !longResponse;
+    final phase3kQaAuthenticatedUid = FirebaseAuth.instance.currentUser?.uid;
+    final phase3kQaAllowlistConfigured =
+        _plantaoQaCutoverSupport.hasConfiguredUidAllowlist;
+    final phase3kQaEligible = _plantaoQaCutoverSupport.isEligible(
+      isPlantao: phase3kQaIsPlantao,
+      authenticatedUid: phase3kQaAuthenticatedUid,
+    );
+    final phase3kActiveCutoverController = phase3kQaEligible
+        ? PlantaoBufferedCutoverController(
+            enabled: true,
+            pipeline: AppProviderAiResponsePipeline.fromAppProvider(
+              this,
+              providerLabel: 'app_provider_qa_allowlist',
+            ),
+          )
+        : _plantaoBufferedCutoverController;
+
+    final phase3kBufferedCutoverBusy = phase3kActiveCutoverController.enabled &&
+        _plantaoBufferedCutoverExecutionActive &&
+        !longResponse;
+
+    // Phase3K-C5A-R5: resolve the canonical pair before cutover.
+    // Phase3K-C5A-R8: resolve it even when another cutover is
+    // still unwinding. This keeps observability correlated and allows a
+    // fail-closed busy rejection instead of a silent legacy bypass.
+    if (phase3kActiveCutoverController.enabled && !longResponse) {
+      final phase3kCorrelation = _resolveCanonicalAiCorrelation(
+        requestId: phase3kResolvedRequestId,
+        sessionId: phase3kResolvedSessionId,
+      );
+      phase3kResolvedRequestId = phase3kCorrelation.requestId;
+      phase3kResolvedSessionId = phase3kCorrelation.sessionId;
+    }
+    // Phase3K-C5A-R5: the same pair continues through pipeline or legacy.
+
+    if (phase3kQaAllowlistConfigured) {
+      final phase3kQaEligibilityReason = !phase3kQaIsPlantao
+          ? PlantaoQaCutoverReason.notPlantaoMode
+          : phase3kQaAuthenticatedUid == null ||
+                  phase3kQaAuthenticatedUid.isEmpty
+              ? PlantaoQaCutoverReason.unauthenticatedUid
+              : phase3kQaEligible
+                  ? PlantaoQaCutoverReason.uidAllowlisted
+                  : PlantaoQaCutoverReason.uidNotAllowlisted;
+
+      if (phase3kQaEligible && phase3kBufferedCutoverBusy) {
+        _plantaoQaCutoverSupport.emit(
+          event: PlantaoQaCutoverEvent.executionRejectedWhileActive,
+          reason: PlantaoQaCutoverReason.cutoverAlreadyActive,
+          requestId: phase3kResolvedRequestId,
+          sessionId: phase3kResolvedSessionId,
+        );
+      } else {
+        _plantaoQaCutoverSupport.emit(
+          event: phase3kQaEligible
+              ? PlantaoQaCutoverEvent.eligibilityAccepted
+              : PlantaoQaCutoverEvent.eligibilityRejected,
+          reason: phase3kQaEligibilityReason,
+          requestId: phase3kResolvedRequestId,
+          sessionId: phase3kResolvedSessionId,
+        );
+      }
+    }
+
+    if (phase3kBufferedCutoverBusy) {
+      onError('PIPELINE_CUTOVER_ALREADY_ACTIVE');
+      return false;
+    }
+
+    final phase3kShouldAttemptBufferedCutover =
+        phase3kActiveCutoverController.enabled &&
+            !_plantaoBufferedCutoverExecutionActive &&
+            !longResponse &&
+            phase3kResolvedRequestId != null &&
+            phase3kResolvedRequestId.isNotEmpty &&
+            phase3kResolvedSessionId != null &&
+            phase3kResolvedSessionId.isNotEmpty;
+
+    if (phase3kShouldAttemptBufferedCutover) {
+      if (phase3kQaEligible) {
+        _plantaoQaCutoverSupport.emit(
+          event: PlantaoQaCutoverEvent.pipelineStarted,
+          reason: PlantaoQaCutoverReason.uidAllowlisted,
+          requestId: phase3kResolvedRequestId,
+          sessionId: phase3kResolvedSessionId,
+        );
+      }
+
+      final phase3kRequest = AiRequestContract(
+        requestId: phase3kResolvedRequestId,
+        sessionId: phase3kResolvedSessionId,
+        input: input,
+        mode: AiRequestMode.plantao,
+        locale: _lang == 'es' ? AiRequestLocale.es : AiRequestLocale.pt,
+        sourceSurface: AiSourceSurface.other,
+        metadata: const <String, Object?>{
+          'cutover': 'phase3k_qa_allowlist_default_empty',
+        },
+      );
+
+      _plantaoBufferedCutoverExecutionActive = true;
+      late final PlantaoBufferedCutoverDecision phase3kDecision;
+      try {
+        phase3kDecision = await phase3kActiveCutoverController.execute(
+          phase3kRequest,
+          onProvisionalText: (provisionalText) {
+            if (!_plantaoBufferedCutoverExecutionActive) return;
+            if (_activeRequestId != phase3kRequest.requestId) return;
+
+            onChunk(provisionalText);
+          },
+        );
+      } finally {
+        _plantaoBufferedCutoverExecutionActive = false;
+      }
+
+      switch (phase3kDecision.disposition) {
+        case PlantaoBufferedCutoverDisposition.committed:
+          if (phase3kQaEligible) {
+            _plantaoQaCutoverSupport.emit(
+              event: PlantaoQaCutoverEvent.commitValidated,
+              reason: PlantaoQaCutoverReason.commitValidated,
+              requestId: phase3kResolvedRequestId,
+              sessionId: phase3kResolvedSessionId,
+            );
+            _plantaoQaCutoverSupport.emit(
+              event: PlantaoQaCutoverEvent.terminalCompleted,
+              reason: PlantaoQaCutoverReason.terminalCompleted,
+              requestId: phase3kResolvedRequestId,
+              sessionId: phase3kResolvedSessionId,
+            );
+          }
+          final phase3kResult = phase3kDecision.result!;
+          onChunk(phase3kResult.displayText);
+
+          final phase3kStructuredOutput = phase3kResult.structuredOutput;
+
+          // PHASE3K-C5A-R9C: a UI finaliza a bolha e libera
+          // _isStreaming dentro de onDone. O DTO só pode ser associado
+          // depois que essa bolha final e seu texto estiverem commitados.
+          assert(() {
+            debugPrint(
+              '[GUARDIA_PERF] stage=handoff_start '
+              'tsUs=${DateTime.now().microsecondsSinceEpoch}',
+            );
+            return true;
+          }());
+
+          onDone(phase3kResult.finalText);
+
+          assert(() {
+            debugPrint(
+              '[GUARDIA_PERF] stage=on_done_return '
+              'tsUs=${DateTime.now().microsecondsSinceEpoch}',
+            );
+            return true;
+          }());
+
+          if (onStructuredDone != null &&
+              phase3kStructuredOutput is ClinicalStructuredOutput) {
+            onStructuredDone(
+              phase3kResult.finalText,
+              phase3kStructuredOutput,
+            );
+
+            assert(() {
+              debugPrint(
+                '[GUARDIA_PERF] stage=structured_return '
+                'tsUs=${DateTime.now().microsecondsSinceEpoch}',
+              );
+              return true;
+            }());
+          }
+          return true;
+
+        case PlantaoBufferedCutoverDisposition.rejectedAfterStart:
+          if (phase3kQaEligible) {
+            _plantaoQaCutoverSupport.emit(
+              event: PlantaoQaCutoverEvent.validationRejected,
+              reason: PlantaoQaCutoverReason.validationRejected,
+              requestId: phase3kResolvedRequestId,
+              sessionId: phase3kResolvedSessionId,
+            );
+          }
+          onError('PIPELINE_RESULT_REJECTED_AFTER_START');
+          return false;
+
+        case PlantaoBufferedCutoverDisposition.bypassed:
+          break;
+
+        case PlantaoBufferedCutoverDisposition.fallbackAllowed:
+          if (phase3kQaEligible) {
+            _plantaoQaCutoverSupport.emit(
+              event: PlantaoQaCutoverEvent.legacyFallbackBeforeEvent,
+              reason: PlantaoQaCutoverReason.fallbackBeforeFirstEvent,
+              requestId: phase3kResolvedRequestId,
+              sessionId: phase3kResolvedSessionId,
+            );
+          }
+          break;
+      }
+    }
+
+    return _sendAiMessageLegacyCore(
+      input,
+      onChunk: onChunk,
+      onDone: onDone,
+      onStructuredDone: onStructuredDone,
+      onError: onError,
+      visibleUserInput: visibleUserInput,
+      userDisplayText: userDisplayText,
+      longResponse: longResponse,
+      fromButton: fromButton,
+      pipelineRequestId: phase3kResolvedRequestId,
+      pipelineSessionId: phase3kResolvedSessionId,
+      shadowContinuationType: shadowContinuationType,
+      shadowRequestedSections: shadowRequestedSections,
+      phase3kEffectPolicy: AiProviderEffectPolicy.legacy,
+    );
+  }
+
+  /// Internal bridge used only by the typed AI pipeline.
+  /// It bypasses the public selector and cannot recurse.
+  Future<bool> sendAiMessageForPipeline(
+    String input, {
+    required void Function(String accumulated) onChunk,
+    required void Function(String finalText) onDone,
+    void Function(String finalText, ClinicalStructuredOutput? clinicalOutput)?
+        onStructuredDone,
+    required void Function(String errorMsg) onError,
+    String? visibleUserInput,
+    bool longResponse = false, // Motor de Partida (Build 149)
+    bool fromButton =
+        false, // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
+    String? pipelineRequestId,
+    String? pipelineSessionId,
+    PlantaoContinuationType shadowContinuationType =
+        PlantaoContinuationType.freeFollowUp,
+    Iterable<PlantaoSection> shadowRequestedSections = const <PlantaoSection>[],
+  }) async {
+    // PHASE3K-C5A-R8-V2: aliases preserve the bridge contract that this
+    // method forwards internal callbacks without invoking the public
+    // parameter identifiers directly.
+    final bufferedOnChunk = onChunk;
+    final bufferedOnDone = onDone;
+    final bufferedOnStructuredDone = onStructuredDone;
+    final bufferedOnError = onError;
+
+    final cancellationRequestId = pipelineRequestId?.trim();
+    if (cancellationRequestId == null || cancellationRequestId.isEmpty) {
+      bufferedOnError.call('PIPELINE_REQUEST_ID_REQUIRED');
+      return false;
+    }
+
+    if (_plantaoBufferedPipelineCancellation != null) {
+      bufferedOnError.call('PIPELINE_CANCELLATION_OWNER_BUSY');
+      return false;
+    }
+
+    void clearCancellationOwner() {
+      if (_plantaoBufferedPipelineCancellationRequestId !=
+          cancellationRequestId) {
+        return;
+      }
+      _plantaoBufferedPipelineCancellationRequestId = null;
+      _plantaoBufferedPipelineCancellation = null;
+    }
+
+    void forwardBufferedCancellation() {
+      clearCancellationOwner();
+      bufferedOnError.call('PIPELINE_STREAM_CANCELLED');
+    }
+
+    _plantaoBufferedPipelineCancellationRequestId = cancellationRequestId;
+    _plantaoBufferedPipelineCancellation = forwardBufferedCancellation;
+
+    try {
+      final accepted = await _sendAiMessageLegacyCore(
+        input,
+        onChunk: bufferedOnChunk,
+        onDone: (finalText) {
+          clearCancellationOwner();
+          bufferedOnDone.call(finalText);
+        },
+        onStructuredDone: bufferedOnStructuredDone == null
+            ? null
+            : (finalText, clinicalOutput) {
+                clearCancellationOwner();
+                bufferedOnStructuredDone.call(
+                  finalText,
+                  clinicalOutput,
+                );
+              },
+        onError: (errorMsg) {
+          clearCancellationOwner();
+          bufferedOnError.call(errorMsg);
+        },
+        visibleUserInput: visibleUserInput,
+        longResponse: longResponse,
+        fromButton: fromButton,
+        pipelineRequestId: pipelineRequestId,
+        pipelineSessionId: pipelineSessionId,
+        shadowContinuationType: shadowContinuationType,
+        shadowRequestedSections: shadowRequestedSections,
+        phase3kEffectPolicy: AiProviderEffectPolicy.bufferedPipeline,
+      );
+
+      if (!accepted) {
+        clearCancellationOwner();
+      }
+      return accepted;
+    } catch (_) {
+      clearCancellationOwner();
+      rethrow;
+    }
+  }
+
+  Future<bool> _sendAiMessageLegacyCore(
+    String input, {
+    required void Function(String accumulated) onChunk,
+    required void Function(String finalText) onDone,
+    void Function(String finalText, ClinicalStructuredOutput? clinicalOutput)?
+        onStructuredDone,
+    required void Function(String errorMsg) onError,
+    String? visibleUserInput,
+    String? userDisplayText,
+    bool longResponse = false, // Motor de Partida (Build 149)
+    bool fromButton =
+        false, // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
+    String? pipelineRequestId,
+    String? pipelineSessionId,
+    PlantaoContinuationType shadowContinuationType =
+        PlantaoContinuationType.freeFollowUp,
+    Iterable<PlantaoSection> shadowRequestedSections = const <PlantaoSection>[],
+    AiProviderEffectPolicy phase3kEffectPolicy = AiProviderEffectPolicy.legacy,
+  }) async {
+    assert(
+      phase3kEffectPolicy == AiProviderEffectPolicy.legacy ||
+          phase3kEffectPolicy == AiProviderEffectPolicy.bufferedPipeline,
+    );
+
     // ── ADENDO SEGURANÇA Factor 3: SEGUNDA BARREIRA NO PROVIDER (backend guard) ─
     // Verificação redundante e síncrona ANTES de qualquer operação assíncrona.
     // Bloqueia chamadas que escaparam da UI (teclado físico, chip tap, retry,
@@ -5442,9 +7156,10 @@ class AppProvider extends ChangeNotifier {
     final bool hasRealAuth = _geminiConnected || _openAiKey.isNotEmpty;
     if (!hasRealAuth) {
       debugPrint(
-          '[BACKEND_GUARD_FACTOR3] Tentativa de envio sem auth real bloqueada. '
-          'geminiConnected=$_geminiConnected openAiKey=${_openAiKey.isNotEmpty} '
-          'input="${input.substring(0, input.length.clamp(0, 40))}..." → return false');
+        '[BACKEND_GUARD_FACTOR3] Tentativa de envio sem auth real bloqueada. '
+        'geminiConnected=$_geminiConnected openAiKey=${_openAiKey.isNotEmpty} '
+        'input="${input.substring(0, input.length.clamp(0, 40))}..." → return false',
+      );
       // Notifica a UI com código de erro específico para tratamento correto
       onError('AUTH_REQUIRED');
       return false; // ← BARREIRA ABSOLUTA no provider — zero bytes ao backend
@@ -5456,19 +7171,56 @@ class AppProvider extends ChangeNotifier {
     // stream completo, erro de rede, timeout, cancelamento e exceção interna.
     if (_aiCallInFlight) {
       debugPrint(
-          '[sendAiMessage] Build 134: single-flight drop — voo em andamento');
+        '[sendAiMessage] Build 134: single-flight drop — voo em andamento',
+      );
       return false;
     }
     _aiCallInFlight = true;
 
+    // PHASE3I CONTEXT-LEAK FINAL CONTRACT:
+    // `input` remains the complete clinical model payload.
+    // History and canonical persistence use only visible text.
+    final visibleInputCandidate = visibleUserInput?.trim() ?? '';
+    final persistedUserInput =
+        visibleInputCandidate.isNotEmpty ? visibleInputCandidate : input;
+    final persistedUserDisplayText = userDisplayText?.trim() ?? '';
+
     // ── BUILD 238 ADENDO: requestId único por pergunta ────────────────────
     // Permite invalidar respostas atrasadas (stale) após timeout global.
-    final thisRequestId = ProviderRouterService.generateRequestId();
+    final normalizedPipelineRequestId = pipelineRequestId?.trim();
+
+    final thisRequestId = normalizedPipelineRequestId?.isNotEmpty == true
+        ? normalizedPipelineRequestId!
+        : ProviderRouterService.generateRequestId();
+
+    var guardiaTraceProviderChunkIndex = 0;
+    var guardiaTraceProviderAccumulatedLen = 0;
+
+    void guardiaTraceOnChunk(String accumulated) {
+      guardiaTraceProviderChunkIndex++;
+      guardiaTraceProviderAccumulatedLen = accumulated.length;
+      assert(() {
+        if (!longResponse &&
+            (guardiaTraceProviderChunkIndex <= 3 ||
+                guardiaTraceProviderChunkIndex % 25 == 0)) {
+          debugPrint(
+            '[GUARDIA_TRACE] stage=I1_provider_chunk '
+            'trace=$thisRequestId '
+            'chunkIndex=$guardiaTraceProviderChunkIndex '
+            'accumulatedLen=$guardiaTraceProviderAccumulatedLen',
+          );
+        }
+        return true;
+      }());
+      onChunk(accumulated);
+    }
+
     _activeRequestId = thisRequestId;
     final globalStartMs = DateTime.now().millisecondsSinceEpoch;
     if (kDebugMode)
       debugPrint(
-          '[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms');
+        '[AI_TIMING] requestId=$thisRequestId globalStart=${globalStartMs}ms',
+      );
 
     // MICRO-BUILD 462E-A.5.3.7.3.2.1: Reset request-correlated resolution map
     // and single-executor dedup set. Remove all prior entries so the UI never
@@ -5480,24 +7232,112 @@ class AppProvider extends ChangeNotifier {
     _persistedExchangeIds.clear();
 
     // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 1]: Immutable request-scoped context.
-    // MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: sessionId is now stable across
-    // ALL turns of a conversation — generated once and frozen until resetAiSessionFull().
-    // requestId remains unique per message exchange (1:1 with thisRequestId).
-    if (_currentConversationSessionId.isEmpty) {
-      final ts = DateTime.now().millisecondsSinceEpoch;
-      _currentConversationSessionId = 'session_$ts';
+    // PHASE3K-C5A-R5: reuse the same canonical request/session owner used
+    // before cutover. Legacy-only calls still resolve through this owner.
+    final phase3kHadActiveSession =
+        _currentConversationSessionId.trim().isNotEmpty;
+    final phase3kLegacyCorrelation = _resolveCanonicalAiCorrelation(
+      requestId: thisRequestId,
+      sessionId: pipelineSessionId,
+    );
+    _currentConversationSessionId = phase3kLegacyCorrelation.sessionId;
+    if (!phase3kHadActiveSession) {
       // ignore: avoid_print
       print(
-          '[AI_SESSION_INDEX][NEW_SESSION] sessionId=$_currentConversationSessionId');
+        '[AI_SESSION_INDEX][NEW_SESSION] '
+        'sessionId=$_currentConversationSessionId',
+      );
     }
     final activeSessionCtx = ActiveAiSessionContext(
       uid: _currentUser?.uid ?? '',
-      sessionId: _currentConversationSessionId,
-      requestId: thisRequestId,
+      sessionId: phase3kLegacyCorrelation.sessionId,
+      requestId: phase3kLegacyCorrelation.requestId,
       mode: longResponse ? 'estudo' : 'plantao',
       locale: _lang,
       createdAt: DateTime.now(),
     );
+
+    // PHASE 3C — construct and validate a typed Plantão request in shadow mode.
+    // This does not call the public pipeline entrypoint, providers, Firestore,
+    // rendering or persistence. Failure is observational and cannot block the
+    // productive legacy request.
+    if (longResponse) {
+      _lastPlantaoShadowRequest = null;
+      _lastPlantaoFinalizationShadow = null;
+      _lastPlantaoValidationShadow = null;
+      _lastPlantaoPersistenceShadow = null;
+      _lastPlantaoRetrievalShadow = null;
+      _lastPlantaoDrugEvidenceShadow = null;
+      _plantaoDrugEvidenceRequestFuture = null;
+      _lastPlantaoDrugEvidenceRequestShadow = null;
+      _lastPlantaoDrugEvidenceFinalizationJoinShadow = null;
+      _lastPlantaoDrugIdentityProvenanceBindingShadow = null;
+      _lastPlantaoDrugProvenancePersistencePayloadShadow = null;
+      _lastPlantaoDrugProvenancePersistencePayloadParityShadow = null;
+      _lastPlantaoDrugProvenanceSemanticEqualityShadow = null;
+      _lastPlantaoDrugProvenancePersistenceReviewEnvelopeShadow = null;
+      _lastPlantaoDrugPersistenceCutoverBlockerAuditShadow = null;
+      _lastPlantaoDrugTypedRegimenCapabilityMatrixShadow = null;
+      _lastPlantaoDrugExplicitTypedRegimenEvidenceProjectionShadow = null;
+      _lastPlantaoDrugProjectedEvidenceBundleOverlayShadow = null;
+      _lastPlantaoDrugProjectedEvidenceValidationReplayComparisonShadow = null;
+    } else {
+      _lastPlantaoFinalizationShadow = null;
+      _lastPlantaoValidationShadow = null;
+      _lastPlantaoPersistenceShadow = null;
+      _lastPlantaoRetrievalShadow = null;
+      _lastPlantaoDrugEvidenceShadow = null;
+      _plantaoDrugEvidenceRequestFuture = null;
+      _lastPlantaoDrugEvidenceRequestShadow = null;
+      _lastPlantaoDrugEvidenceFinalizationJoinShadow = null;
+      _lastPlantaoDrugIdentityProvenanceBindingShadow = null;
+      _lastPlantaoDrugProvenancePersistencePayloadShadow = null;
+      _lastPlantaoDrugProvenancePersistencePayloadParityShadow = null;
+      _lastPlantaoDrugProvenanceSemanticEqualityShadow = null;
+      _lastPlantaoDrugProvenancePersistenceReviewEnvelopeShadow = null;
+      _lastPlantaoDrugPersistenceCutoverBlockerAuditShadow = null;
+      _lastPlantaoDrugTypedRegimenCapabilityMatrixShadow = null;
+      _lastPlantaoDrugExplicitTypedRegimenEvidenceProjectionShadow = null;
+      _lastPlantaoDrugProjectedEvidenceBundleOverlayShadow = null;
+      _lastPlantaoDrugProjectedEvidenceValidationReplayComparisonShadow = null;
+      try {
+        _lastPlantaoShadowRequest = PlantaoRequestShadowAdapter.build(
+          requestId: activeSessionCtx.requestId,
+          sessionId: activeSessionCtx.sessionId,
+          question: input,
+          languageCode: activeSessionCtx.locale,
+          fromButton: fromButton,
+          continuationType: shadowContinuationType,
+          requestedSections: shadowRequestedSections,
+          clientContext: const <String, Object?>{
+            'phase': '3C',
+            'shadowMode': true,
+            'productivePipelineConnected': false,
+          },
+        );
+        assert(() {
+          final shadow = _lastPlantaoShadowRequest!;
+          debugPrint(
+            '[PLANTAO_SHADOW_REQUEST] requestId=${shadow.requestId} '
+            'sessionIdHash=${shadow.sessionId.hashCode} '
+            'trigger=${shadow.trigger.wireName} '
+            'continuationType=${shadow.continuationType.name} '
+            'sections=${shadow.requestedSections.map((item) => item.name).join(",")}',
+          );
+          return true;
+        }());
+        _capturePlantaoDrugEvidenceShadow(
+          request: _lastPlantaoShadowRequest!,
+          originalUserInput: input,
+        );
+      } catch (error, stackTrace) {
+        _lastPlantaoShadowRequest = null;
+        debugPrint(
+          '[PLANTAO_SHADOW_REQUEST][INVALID] requestId=$thisRequestId '
+          'error=$error stack=$stackTrace',
+        );
+      }
+    }
 
     // BUILD 241: registra request no coordinator para verificação no resume.
     // BUILD 320: passa isEstudoMode para que o coordinator use deadline 90s
@@ -5507,26 +7347,31 @@ class AppProvider extends ChangeNotifier {
       requestId: thisRequestId,
       isEstudoMode: longResponse, // BUILD 320: Estudo=90s / Plantão=30s
       onTimeout: () {
-        debugPrint('[AI_RESUME][BUILD320] requestId=$thisRequestId '
-            'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs} '
-            'action=timeout_on_resume isEstudoMode=$longResponse');
+        debugPrint(
+          '[AI_RESUME][BUILD320] requestId=$thisRequestId '
+          'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs} '
+          'action=timeout_on_resume isEstudoMode=$longResponse',
+        );
         // Id Guard: só age se este request ainda é o ativo (não foi completado
         // nem invalidado por um request mais recente do mesmo usuário).
         if (_activeRequestId != thisRequestId) {
           debugPrint(
-              '[AI_RESUME][BUILD320] STALE drop: requestId=$thisRequestId '
-              'activeId=$_activeRequestId — resume timeout ignored');
+            '[AI_RESUME][BUILD320] STALE drop: requestId=$thisRequestId '
+            'activeId=$_activeRequestId — resume timeout ignored',
+          );
           return;
         }
         _activeRequestId = '';
         _aiStreamActive = false;
         aiChatProvider.setStreaming(
-            false); // BUILD 326.1: resume timeout — UI desbloqueia
+          false,
+        ); // BUILD 326.1: resume timeout — UI desbloqueia
         _aiStreamSub?.cancel();
         _aiStreamSub = null;
         _aiCallInFlight = false;
         debugPrint(
-            '[AI_RESUME][BUILD320] timeout_on_resume fired requestId=$thisRequestId');
+          '[AI_RESUME][BUILD320] timeout_on_resume fired requestId=$thisRequestId',
+        );
         onDone(_timeoutSafeCard(_lang));
         notifyListeners(); // BUILD 254: sincroniza UI após timeout de resume
       },
@@ -5554,12 +7399,15 @@ class AppProvider extends ChangeNotifier {
       // non-null → intent detectado → authority ladder ativa toRouterTask().
       // ─────────────────────────────────────────────────────────────────────────
       final ExternalToolDecision? canonicalDecision =
-          ExternalToolLinkEngine.resolveDecision(thisRequestId, input);
+          ExternalToolLinkEngine.resolveDecision(
+              thisRequestId, persistedUserInput);
       // ignore: avoid_print
-      print('[CANONICAL_DECISION] requestId=$thisRequestId '
-          'intent=${canonicalDecision?.intent.name ?? "none"} '
-          'routerTask=${canonicalDecision?.toRouterTask() ?? "normalClinicalClassifier"} '
-          'source=original_user_input');
+      print(
+        '[CANONICAL_DECISION] requestId=$thisRequestId '
+        'intent=${canonicalDecision?.intent.name ?? "none"} '
+        'routerTask=${canonicalDecision?.toRouterTask() ?? "normalClinicalClassifier"} '
+        'source=original_user_input',
+      );
 
       // MICRO-BUILD 462E-A.5.2: function-scope canonical task override.
       // Declared here so ALL downstream paths (QA, free stream, paid fallback,
@@ -5583,32 +7431,111 @@ class AppProvider extends ChangeNotifier {
       //     • Texto truncado se o segundo call vinha com texto vazio/parcial
       //   Solução: flag `_wrapperFired` local, atômico, fecha a porta após o 1º disparo.
       bool _wrapperFired = false;
-      void Function(String, [ClinicalStructuredOutput?]) wrappedOnDone = (
-        String text, [
-        ClinicalStructuredOutput? clinicalOutput,
-      ]) {
+      void Function(String, [ClinicalStructuredOutput?]) wrappedOnDone =
+          (String text, [ClinicalStructuredOutput? clinicalOutput]) {
+        assert(() {
+          if (!longResponse) {
+            debugPrint(
+              '[GUARDIA_TRACE] stage=I3_provider_final '
+              'tsUs=${DateTime.now().microsecondsSinceEpoch} '
+              'trace=$thisRequestId '
+              'chunkIndex=$guardiaTraceProviderChunkIndex '
+              'accumulatedLen=$guardiaTraceProviderAccumulatedLen '
+              'finalTextLen=${text.length} '
+              'dto=${clinicalOutput != null} '
+              'rx=${clinicalOutput?.prescricao.length ?? 0} '
+              'first=${clinicalOutput?.primeiraLinha.length ?? 0} '
+              'second=${clinicalOutput?.segundaLinha.length ?? 0} '
+              'keys=${clinicalOutput?.pontosChave.length ?? 0} '
+              'hard=${clinicalOutput?.hardStops.length ?? 0}',
+            );
+          }
+          return true;
+        }());
+
         if (_wrapperFired) {
-          debugPrint('[BUILD318][DEDUP] wrappedOnDone dropped — already fired '
-              'requestId=$thisRequestId textLen=${text.length}');
+          debugPrint(
+            '[BUILD318][DEDUP] wrappedOnDone dropped — already fired '
+            'requestId=$thisRequestId textLen=${text.length}',
+          );
           return;
         }
         _wrapperFired = true;
+
+        final regimenGuardedText = _applyPlantaoClinicalRegimenOutputGuard(
+          userInput: input,
+          assistantOutput: text,
+          longResponse: longResponse,
+          requestId: thisRequestId,
+        );
+        final guardedText = !longResponse
+            ? PlantaoClinicalResponseConsistencyGuard.enforce(
+                userInput: input,
+                assistantOutput: regimenGuardedText,
+              )
+            : regimenGuardedText;
+        final guardedClinicalOutput = guardedText == text
+            ? clinicalOutput
+            : PlantaoLocalClinicalOutputAdapter.fromValidatedText(guardedText);
+
         // O contrato legado continua sendo a porta soberana de fechamento da UI.
         // O callback estruturado é apenas um hook aditivo executado depois.
-        onDone(text);
-        onStructuredDone?.call(text, clinicalOutput);
+        onDone(guardedText);
+        onStructuredDone?.call(guardedText, guardedClinicalOutput);
         notifyListeners();
+
+        // PHASE 3D — run canonical finalization only after the productive UI
+        // callback has completed. This Future is observational, never awaited by
+        // the productive terminal path and never triggers notifyListeners.
+        final shadowRequest = _lastPlantaoShadowRequest;
+        if (!longResponse &&
+            shadowRequest != null &&
+            shadowRequest.requestId == thisRequestId) {
+          _plantaoShadowExecutionIsolator.launch(
+            () => _capturePlantaoFinalizationShadow(
+              request: shadowRequest,
+              finalText: text,
+              clinicalOutput: clinicalOutput,
+            ),
+            onFailure: (error, stackTrace) {
+              debugPrint(
+                '[PLANTAO_SHADOW_FINALIZATION][FAILED] '
+                'requestId=$thisRequestId error=$error stack=$stackTrace',
+              );
+            },
+          );
+        }
       };
       final wrappedOnError = (String err) {
         if (_wrapperFired) {
-          debugPrint('[BUILD318][DEDUP] wrappedOnError dropped — already fired '
-              'requestId=$thisRequestId err=$err');
+          debugPrint(
+            '[BUILD318][DEDUP] wrappedOnError dropped — already fired '
+            'requestId=$thisRequestId err=$err',
+          );
           return;
         }
         _wrapperFired = true;
         onError(err);
         notifyListeners();
       };
+
+      // ── M14-R7: decisão única de provider antes do gate GPT SSE ─────────────
+      final contractName =
+          !longResponse ? 'CONTRACT_PLANTAO' : 'CONTRACT_ESTUDO';
+      final (aiPriority, aiPriorityReason) = AiSmartRouter.classifyPriority(
+        userMessage: input,
+        isPlantaoMode: !longResponse,
+        contractName: contractName,
+      );
+      if (kDebugMode) {
+        debugPrint(
+          '[AI_ROUTER] priority=$aiPriority reason=$aiPriorityReason '
+          'provider=${aiPriority == "critical" ? "paid" : "free"} '
+          'fallback=${aiPriority == "critical" ? "gemini_paid" : "paid"}',
+        );
+      }
+      final bool shouldUseGptSse = shouldForceGptFallbackForQa ||
+          (!longResponse && aiPriority == 'critical');
 
       // ══════════════════════════════════════════════════════════════════════════
       // BUILD 462E-A / 462E-A.3 — QA BYPASS: shouldForceGptFallbackForQa
@@ -5638,17 +7565,30 @@ class AppProvider extends ChangeNotifier {
       //   [RENDER_AUDIT][HOME_CHAT_BUILD]    → notifyListeners() amplo (deve ser 0)
       //   [RENDER_AUDIT][ACTIVE_BUBBLE_BUILD]→ rebuild da bolha ativa (esperado)
       // ══════════════════════════════════════════════════════════════════════════
-      if (shouldForceGptFallbackForQa) {
+      if (shouldUseGptSse) {
+        void finishGptSsePreflightError(String message) {
+          wrappedOnError(message);
+          ExternalToolLinkEngine.releaseCanonicalDecision(
+            requestId: thisRequestId,
+            decision: canonicalDecision,
+          );
+          _completeAiRequestOnce(thisRequestId);
+        }
+
         // ignore: avoid_print
-        print('[AI_E2E][T0] requestId=$thisRequestId attempt=2 '
-            'provider=gpt_4o_mini mode=${longResponse ? "estudo" : "plantao"} '
-            'shouldForceGptFallbackForQa=true globalStartMs=$globalStartMs');
+        print(
+          '[AI_E2E][T0] requestId=$thisRequestId attempt=2 '
+          'provider=gpt_4o_mini mode=${longResponse ? "estudo" : "plantao"} '
+          'shouldForceGptFallbackForQa=true globalStartMs=$globalStartMs',
+        );
 
         // Emitir AiProviderSwitched: Layer 0 bypassada, GPT assume direto
         // ignore: avoid_print
-        print('[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
-            'fromProvider=gemini_free toProvider=gpt_4o_mini '
-            'reason=shouldForceGptFallbackForQa attempt=2');
+        print(
+          '[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
+          'fromProvider=gemini_free toProvider=gpt_4o_mini '
+          'reason=shouldForceGptFallbackForQa attempt=2',
+        );
 
         // Obter ID Token para autenticação no gptProxyStream
         // Web: AuthService.getAdminToken() (REST) | Nativo: FirebaseAuth.getIdToken()
@@ -5658,41 +7598,68 @@ class AppProvider extends ChangeNotifier {
           try {
             gptQaToken = await AuthService.getAdminToken();
           } catch (e) {
-            debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
-                'error=token_fetch_failed detail=$e');
-            wrappedOnError(
-                '[auth_expired] Sessão expirada. Faça login novamente.');
+            debugPrint(
+              '[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=token_fetch_failed detail=$e',
+            );
+            finishGptSsePreflightError(
+              _lang == 'es'
+                  ? 'No fue posible reconectar. Verifica tu conexión e inténtalo nuevamente. ⚕'
+                  : 'Não foi possível reconectar. Verifique sua conexão e tente novamente. ⚕',
+            );
             return true;
           }
           if (gptQaToken.isEmpty) {
-            debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
-                'error=auth_expired token_empty=true');
-            wrappedOnError('[auth_expired] Token vazio. Faça login novamente.');
+            debugPrint(
+              '[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=auth_expired token_empty=true',
+            );
+            finishGptSsePreflightError(
+              _lang == 'es'
+                  ? 'No fue posible reconectar. Verifica tu conexión e inténtalo nuevamente. ⚕'
+                  : 'Não foi possível reconectar. Verifique sua conexão e tente novamente. ⚕',
+            );
             return true;
           }
         } else {
           final fbUser = FirebaseAuth.instance.currentUser;
           if (fbUser == null) {
-            debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
-                'error=unauthenticated firebaseUser=null');
-            wrappedOnError('[auth_expired] Usuário não autenticado.');
+            debugPrint(
+              '[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=unauthenticated firebaseUser=null',
+            );
+            finishGptSsePreflightError(
+              _lang == 'es'
+                  ? 'No fue posible reconectar. Verifica tu conexión e inténtalo nuevamente. ⚕'
+                  : 'Não foi possível reconectar. Verifique sua conexão e tente novamente. ⚕',
+            );
             return true;
           }
           try {
             // Force-refresh: garante token fresco, evita 401 por expiração silenciosa
             gptQaToken = await fbUser.getIdToken(true) ?? '';
           } catch (e) {
-            debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
-                'error=getIdToken_failed detail=$e');
-            wrappedOnError(
-                '[auth_expired] Erro ao renovar token. Tente novamente.');
+            debugPrint(
+              '[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=getIdToken_failed detail=$e',
+            );
+            finishGptSsePreflightError(
+              _lang == 'es'
+                  ? 'No fue posible reconectar. Verifica tu conexión e inténtalo nuevamente. ⚕'
+                  : 'Não foi possível reconectar. Verifique sua conexão e tente novamente. ⚕',
+            );
             return true;
           }
           if (gptQaToken.isEmpty) {
-            debugPrint('[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
-                'error=auth_expired token_empty=true nativo');
-            wrappedOnError(
-                '[auth_expired] Token vazio no nativo. Faça login novamente.');
+            debugPrint(
+              '[AI_E2E][AUTH_ERROR] requestId=$thisRequestId '
+              'error=auth_expired token_empty=true nativo',
+            );
+            finishGptSsePreflightError(
+              _lang == 'es'
+                  ? 'No fue posible reconectar. Verifica tu conexión e inténtalo nuevamente. ⚕'
+                  : 'Não foi possível reconectar. Verifique sua conexão e tente novamente. ⚕',
+            );
             return true;
           }
         }
@@ -5702,6 +7669,23 @@ class AppProvider extends ChangeNotifier {
         final qaSessionLang = _resolveSessionLang(input);
         final qaIntent = _classifyIntent(input);
         final qaTopicReset = _sessionMemory.resetIfTopicChanged(input);
+        // PHASE3I-J2B2: rehydrate button continuation context before
+        // ClinicalThreadManager can classify an in-memory topic gap as first_message.
+        // _aiHistory remains the canonical productive conversation history.
+        if (fromButton &&
+            !_threadManager.hasActiveThread &&
+            _sanitizedHistory.isNotEmpty) {
+          _threadManager.primeFromHistory(
+            List<Map<String, String>>.from(_sanitizedHistory),
+          );
+          if (kDebugMode) {
+            debugPrint(
+              '[PHASE3I_J2B2][CONTINUATION_REHYDRATED][QA] '
+              'requestId=$thisRequestId historyLen=${_sanitizedHistory.length}',
+            );
+          }
+        }
+
         final qaThreadStatus = _threadManager.evaluate(
           currentUserText: input,
           isPlantaoMode: !longResponse,
@@ -5711,15 +7695,32 @@ class AppProvider extends ChangeNotifier {
           final removed = _aiHistory.length;
           _aiHistory.clear();
           _sessionMemory.reset();
-          debugPrint('[AI_E2E][HISTORY_RESET] requestId=$thisRequestId '
-              'removed=$removed reason=${qaThreadStatus.reason}');
+          debugPrint(
+            '[AI_E2E][HISTORY_RESET] requestId=$thisRequestId '
+            'removed=$removed reason=${qaThreadStatus.reason}',
+          );
         }
         final qaExpandedInput = qaTopicReset ? input : _expandedQuery(input);
         final qaNormalized = _normalize(qaExpandedInput);
-        final qaProtos = _matchProtocolsExtended(qaNormalized);
-        final qaFinalProtos =
-            qaProtos.isNotEmpty ? qaProtos : _matchProtocols(qaNormalized);
+        final qaMatchedProtocols = <ProtocolModel>[];
+        final qaProtos = _matchProtocolsExtended(
+          qaNormalized,
+          matchedProtocols: qaMatchedProtocols,
+        );
+        final qaFinalProtos = qaProtos.isNotEmpty
+            ? qaProtos
+            : _matchProtocols(
+                qaNormalized,
+                matchedProtocols: qaMatchedProtocols,
+              );
         final qaLocalCtx = _buildLocalAnswer(input);
+        final qaShadowRequest = _lastPlantaoShadowRequest;
+        if (!longResponse && qaShadowRequest != null) {
+          _capturePlantaoRetrievalShadow(
+            request: qaShadowRequest,
+            matchedProtocols: qaMatchedProtocols,
+          );
+        }
 
         final qaSystemPrompt = AiService.buildClinicalSystemPrompt(
           lang: qaSessionLang,
@@ -5745,20 +7746,182 @@ class AppProvider extends ChangeNotifier {
             fullHistory: _sanitizedHistory,
             status: qaThreadStatus,
             isPlantaoMode: !longResponse,
-            currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
-                canonicalOverride:
-                    _canonicalTaskOverride), // MICRO-BUILD 462E-A.5.2
-          ).map((m) => {
-                'role': m['role'] ?? '',
-                'content': m['content'] ?? '',
-              }),
+            currentTaskLabel: AiSmartRouter.detectTaskLabel(
+              input,
+              canonicalOverride: _canonicalTaskOverride,
+            ), // MICRO-BUILD 462E-A.5.2
+          ).map(
+            (m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''},
+          ),
         );
 
         // Acumulador local — Anti-Frankenstein: isolado por attempt
         final qaAccumulator = StringBuffer();
         bool qaFirstDelta = false;
         bool qaCompFired = false;
+        bool qaFallbackStarted = false;
         int qaDeltaCount = 0;
+        Timer? qaTimer;
+
+        Future<void> runGeminiPaidFallbackFromGptSse(String reason) async {
+          if (qaFallbackStarted) return;
+          qaFallbackStarted = true;
+          qaCompFired = true;
+          qaTimer?.cancel();
+
+          final activeSubscription = _gptStreamSub;
+          _gptStreamSub = null;
+          if (activeSubscription != null) {
+            // Não aguarda a própria subscription dentro de onData/onError/onDone.
+            // O fechamento HTTP imediato ocorre na chamada cancel() logo abaixo.
+            unawaited(activeSubscription.cancel());
+          }
+
+          _activeGptClient?.cancel(reason: reason);
+          _activeGptClient = null;
+
+          if (_activeRequestId != thisRequestId) {
+            return;
+          }
+
+          // ignore: avoid_print
+          print(
+            '[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
+            'fromProvider=gpt_4o_mini toProvider=gemini_paid '
+            'reason=$reason partialLen=${qaAccumulator.length}',
+          );
+
+          try {
+            final paidResult = await ProviderRouterService.callPaidProxy(
+              userMessage: input,
+              systemPrompt: qaSystemPrompt,
+              history: qaHistory,
+              mode: longResponse ? 'estudo' : 'plantao',
+              lang: _lang,
+              requestId: thisRequestId,
+              maxOutputTokens: longResponse ? 2500 : 3200,
+            );
+
+            if (_activeRequestId != thisRequestId) {
+              return;
+            }
+
+            if (!paidResult.success || paidResult.text.trim().isEmpty) {
+              throw AiSafeOutputException(
+                message: paidResult.errorCode ?? 'gemini_paid_failed',
+                requestId: thisRequestId,
+              );
+            }
+
+            final responseProcessor =
+                AiResponseFinalizationProcessor.withExistingImplementations();
+
+            try {
+              final finalizationOutcome = await responseProcessor.process(
+                snapshot: FinalOutputSnapshot(
+                  rawOutput: paidResult.text.trim(),
+                  sessionId: activeSessionCtx.sessionId,
+                  parentRequestId: thisRequestId,
+                  frozenAt: DateTime.now().toUtc(),
+                ),
+                mode:
+                    longResponse ? AiRequestMode.estudo : AiRequestMode.plantao,
+                locale: _lang == 'es' ? AiRequestLocale.es : AiRequestLocale.pt,
+                provider: 'gemini_paid',
+                attempt: 3,
+              );
+
+              final truncationInspection =
+                  finalizationOutcome.truncation?.inspection;
+              if (truncationInspection != null) {
+                TruncationInspector.emitTelemetry(
+                  requestId: thisRequestId,
+                  result: truncationInspection,
+                );
+              }
+
+              if (!finalizationOutcome.isReady) {
+                throw AiSafeOutputException(
+                  message: finalizationOutcome.failureReason ??
+                      finalizationOutcome.failureCode ??
+                      'gemini_paid_finalization_failed',
+                  requestId: thisRequestId,
+                );
+              }
+
+              final finalizationResult = finalizationOutcome.result!;
+              final finalText = _applyPlantaoClinicalRegimenOutputGuard(
+                userInput: input,
+                assistantOutput: finalizationResult.finalText,
+                longResponse: longResponse,
+                requestId: thisRequestId,
+              );
+
+              if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
+                _aiHistory
+                  ..add({'role': 'user', 'content': persistedUserInput})
+                  ..add({'role': 'assistant', 'content': finalText});
+                while (_aiHistory.length > 20) {
+                  _aiHistory.removeAt(0);
+                }
+              }
+
+              _aiStreamActive = false;
+              aiChatProvider.setStreaming(false);
+
+              await _finalizeGptSuccessfulRequest(
+                requestId: thisRequestId,
+                validatedOutput: finalText,
+                input: input,
+                visibleUserInput: persistedUserInput,
+                userDisplayText: persistedUserDisplayText,
+                longResponse: longResponse,
+                canonicalDecision: canonicalDecision,
+                wrappedOnDone: wrappedOnDone,
+                sessionCtx: activeSessionCtx,
+                clinicalOutput: finalizationOutcome.structure?.clinicalOutput,
+              );
+            } finally {
+              responseProcessor.release(thisRequestId);
+            }
+          } on AiSafeOutputException catch (error) {
+            _aiStreamActive = false;
+            aiChatProvider.setStreaming(false);
+            wrappedOnError(
+              _lang == 'es'
+                  ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
+                  : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
+            );
+            ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
+            _completeAiRequestOnce(thisRequestId);
+            // ignore: avoid_print
+            print(
+              '[AI_E2E][GEMINI_PAID_FAILED] '
+              'requestId=$thisRequestId reason=${error.message}',
+            );
+          } catch (error) {
+            _aiStreamActive = false;
+            aiChatProvider.setStreaming(false);
+            wrappedOnError(
+              _lang == 'es'
+                  ? 'Error temporal en el asistente IA. Intenta nuevamente. ⚕'
+                  : 'Erro temporário no assistente IA. Tente novamente. ⚕',
+            );
+            ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
+            _completeAiRequestOnce(thisRequestId);
+            // ignore: avoid_print
+            print(
+              '[AI_E2E][GEMINI_PAID_EXCEPTION] '
+              'requestId=$thisRequestId error=$error',
+            );
+          }
+        }
 
         // Ativar estado de streaming (bolha de chat isolada)
         _aiStreamActive = true;
@@ -5768,26 +7931,15 @@ class AppProvider extends ChangeNotifier {
 
         // Timer de segurança QA (90s — mesmo orçamento do Modo Estudo)
         final qaTimeoutMs = longResponse ? 90000 : 45000;
-        Timer? qaTimer;
         qaTimer = Timer(Duration(milliseconds: qaTimeoutMs), () {
           if (qaCompFired) return;
           qaCompFired = true;
-          debugPrint('[AI_E2E][TIMEOUT] requestId=$thisRequestId '
-              'timeoutMs=$qaTimeoutMs elapsedMs='
-              '${DateTime.now().millisecondsSinceEpoch - globalStartMs}');
-          _gptStreamSub?.cancel();
-          _gptStreamSub = null;
-          _activeGptClient?.cancel(reason: 'qa_timeout');
-          _activeGptClient = null;
-          _aiStreamActive = false;
-          aiChatProvider.setStreaming(false);
-          if (_activeRequestId == thisRequestId) _activeRequestId = '';
-          // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
-          wrappedOnDone(_timeoutSafeCard(_lang));
-          // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on TIMEOUT (after UI).
-          ExternalToolLinkEngine.releaseCanonicalDecision(
-              requestId: thisRequestId, decision: canonicalDecision);
-          _completeAiRequestOnce(thisRequestId);
+          debugPrint(
+            '[AI_E2E][TIMEOUT] requestId=$thisRequestId '
+            'timeoutMs=$qaTimeoutMs elapsedMs='
+            '${DateTime.now().millisecondsSinceEpoch - globalStartMs}',
+          );
+          unawaited(runGeminiPaidFallbackFromGptSse('gpt_sse_timeout'));
         });
 
         // Criar stream SSE real
@@ -5801,14 +7953,27 @@ class AppProvider extends ChangeNotifier {
           requestId:
               thisRequestId, // ID UNIFICADO propagado para o GptSseClient
           maxOutputTokens: longResponse ? 2500 : 3200,
+          onClientCreated: (client) {
+            _activeGptClient = client;
+          },
         );
 
         _gptStreamSub = qaStream.listen(
           (AiEvent event) async {
             // Guard: descarta eventos de requestId obsoleto
             if (_activeRequestId != thisRequestId) {
-              debugPrint('[AI_E2E][STALE_DROP] requestId=$thisRequestId '
-                  'activeId=$_activeRequestId event=${event.runtimeType}');
+              debugPrint(
+                '[AI_E2E][STALE_DROP] requestId=$thisRequestId '
+                'activeId=$_activeRequestId event=${event.runtimeType}',
+              );
+              return;
+            }
+
+            if (qaFallbackStarted) {
+              debugPrint(
+                '[AI_E2E][POST_FALLBACK_DROP] '
+                'requestId=$thisRequestId event=${event.runtimeType}',
+              );
               return;
             }
 
@@ -5816,10 +7981,12 @@ class AppProvider extends ChangeNotifier {
               // ── AiStarted: conexão estabelecida ──────────────────────────────
               case AiStarted e:
                 // ignore: avoid_print
-                print('[AI_E2E][STARTED] requestId=$thisRequestId '
-                    'model=${e.model} provider=${e.provider} attempt=${e.attempt} '
-                    'startedAtMs=${e.startedAtMs} '
-                    'ttConnect=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
+                print(
+                  '[AI_E2E][STARTED] requestId=$thisRequestId '
+                  'model=${e.model} provider=${e.provider} attempt=${e.attempt} '
+                  'startedAtMs=${e.startedAtMs} '
+                  'ttConnect=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms',
+                );
 
               // ── AiTextDelta: fragmento real da rede ──────────────────────────
               case AiTextDelta e:
@@ -5827,8 +7994,9 @@ class AppProvider extends ChangeNotifier {
                 // Anti-Frankenstein: descarta fragmentos de attempt errado
                 if (e.attempt != GptSseClient.kGptAttempt) {
                   debugPrint(
-                      '[AI_E2E][FRANKENSTEIN_DROP] requestId=$thisRequestId '
-                      'delta_attempt=${e.attempt} expected=${GptSseClient.kGptAttempt}');
+                    '[AI_E2E][FRANKENSTEIN_DROP] requestId=$thisRequestId '
+                    'delta_attempt=${e.attempt} expected=${GptSseClient.kGptAttempt}',
+                  );
                   break;
                 }
                 qaDeltaCount++;
@@ -5837,15 +8005,17 @@ class AppProvider extends ChangeNotifier {
                 if (!qaFirstDelta) {
                   qaFirstDelta = true;
                   // ignore: avoid_print
-                  print('[AI_E2E][T1_FIRST_DELTA] requestId=$thisRequestId '
-                      'sequence=${e.sequence} delta="${e.delta.length > 20 ? e.delta.substring(0, 20) : e.delta}..." '
-                      'T1_ms=${DateTime.now().millisecondsSinceEpoch} '
-                      'elapsed=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
+                  print(
+                    '[AI_E2E][T1_FIRST_DELTA] requestId=$thisRequestId '
+                    'sequence=${e.sequence} delta="${e.delta.length > 20 ? e.delta.substring(0, 20) : e.delta}..." '
+                    'T1_ms=${DateTime.now().millisecondsSinceEpoch} '
+                    'elapsed=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms',
+                  );
                 }
                 // [RENDER_AUDIT][ACTIVE_BUBBLE_BUILD]: onChunk atualiza SOMENTE a bolha ativa
                 // notifyListeners() NÃO é chamado aqui — o AiVisualBuffer usa
                 // Timer.periodic(40ms) para drenar e atualizar visibleTextNotifier.
-                onChunk(qaAccumulator.toString());
+                guardiaTraceOnChunk(qaAccumulator.toString());
 
               // ── AiCompleted: transport_done recebido ─────────────────────────
               case AiCompleted e:
@@ -5853,13 +8023,15 @@ class AppProvider extends ChangeNotifier {
                 qaCompFired = true;
                 qaTimer?.cancel();
                 // ignore: avoid_print
-                print('[AI_E2E][T2_TRANSPORT_DONE] requestId=$thisRequestId '
-                    'T2_ms=${DateTime.now().millisecondsSinceEpoch} '
-                    'elapsed=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
-                    'deltaCount=$qaDeltaCount '
-                    'textLen=${e.fullText.length} '
-                    'T1_before_T2=${qaFirstDelta ? "true" : "NO_DELTA_RECEIVED"} '
-                    'provider=${e.usedProvider} attempt=${e.attempt}');
+                print(
+                  '[AI_E2E][T2_TRANSPORT_DONE] requestId=$thisRequestId '
+                  'T2_ms=${DateTime.now().millisecondsSinceEpoch} '
+                  'elapsed=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
+                  'deltaCount=$qaDeltaCount '
+                  'textLen=${e.fullText.length} '
+                  'T1_before_T2=${qaFirstDelta ? "true" : "NO_DELTA_RECEIVED"} '
+                  'provider=${e.usedProvider} attempt=${e.attempt}',
+                );
 
                 // ── MICRO-BUILD 462E-A.5.1: Stream Finalization Pyramid ──────────
                 // Rigid execution order (no state finalized before barrier passes):
@@ -5874,77 +8046,80 @@ class AppProvider extends ChangeNotifier {
                 // ──────────────────────────────────────────────────────────────────
                 final qaRawText = e.fullText.trim();
                 // ignore: avoid_print
-                print('[AI_E2E][SANITIZED] requestId=$thisRequestId '
-                    'rawLen=${qaRawText.length} mode=${longResponse ? "estudo" : "plantao"}');
+                print(
+                  '[AI_E2E][SANITIZED] requestId=$thisRequestId '
+                  'rawLen=${qaRawText.length} mode=${longResponse ? "estudo" : "plantao"}',
+                );
+
+                // AI-RECONSTRUCTION-R18.6G-R2:
+                // Substitui somente inspeção, reparo, sanitização
+                // e parsing estrutural nesta rota GPT SSE.
+                //
+                // Validação numérica, persistência, ferramentas,
+                // UI, release canônico e conclusão permanecem externos.
+                final responseProcessor = AiResponseFinalizationProcessor
+                    .withExistingImplementations();
 
                 try {
-                  // ── STEP 3: TruncationInspector HARD BARRIER ──────────────────
-                  String qaBarrierText = qaRawText;
-                  final qaTruncCheck = TruncationInspector.inspect(qaRawText);
-                  TruncationInspector.emitTelemetry(
-                    requestId: thisRequestId,
-                    result: qaTruncCheck,
+                  final finalizationOutcome = await responseProcessor.process(
+                    snapshot: FinalOutputSnapshot(
+                      rawOutput: qaRawText,
+                      sessionId: activeSessionCtx.sessionId,
+                      parentRequestId: thisRequestId,
+                      frozenAt: DateTime.now().toUtc(),
+                    ),
+                    mode: longResponse
+                        ? AiRequestMode.estudo
+                        : AiRequestMode.plantao,
+                    locale:
+                        _lang == 'es' ? AiRequestLocale.es : AiRequestLocale.pt,
+                    provider: e.usedProvider,
+                    attempt: e.attempt,
+                    structuredOutput: e.clinicalOutput,
                   );
 
-                  if (qaTruncCheck.isTruncated &&
-                      (!longResponse ||
-                          qaTruncCheck.confidenceLevel ==
-                              TruncationConfidence.high)) {
-                    // ── STEP 4: Repair subsystem (AT MOST ONCE per requestId) ──
-                    // ignore: avoid_print
-                    print(
-                        '[TRUNCATION_CHECK] BARRIER_TRIGGERED requestId=$thisRequestId '
-                        'reason=${qaTruncCheck.violationReason} '
-                        'confidence=${qaTruncCheck.confidenceLevel.name} '
-                        'mode=${longResponse ? "estudo" : "plantao"} '
-                        '→ initiating repair');
+                  final truncationInspection =
+                      finalizationOutcome.truncation?.inspection;
 
-                    final qaRepairResult = await AiService.repairTruncated(
-                      originalText: qaRawText,
-                      requestId: thisRequestId,
-                      isPlantaoMode: !longResponse,
-                      appLanguage: _lang,
-                    );
-
-                    if (!qaRepairResult.isValid) {
-                      // Catastrophic failure → DROP_PAYLOAD
-                      throw AiSafeOutputException(
-                        message:
-                            qaRepairResult.failureReason ?? 'repair_failed',
-                        requestId: thisRequestId,
-                      );
-                    }
-                    qaBarrierText = qaRepairResult.text;
+                  if (truncationInspection != null) {
                     TruncationInspector.emitTelemetry(
                       requestId: thisRequestId,
-                      result: qaTruncCheck.withRepair(
-                        retried: true,
-                        fixed: qaRepairResult.wasRepaired,
-                      ),
+                      result: truncationInspection,
                     );
                   }
 
-                  // ── STEP 5: ResponseValidator (sanitizeAndCheck) ───────────────
-                  final qaSanitized = qaBarrierText.isNotEmpty
-                      ? AiSmartRouter.sanitizeAndCheck(
-                          qaBarrierText,
-                          isPlantaoMode: !longResponse,
-                          appLanguage: _lang,
-                        )
-                      : null;
-                  final qaFinalText = qaSanitized?.text ?? qaBarrierText;
+                  if (!finalizationOutcome.isReady) {
+                    throw AiSafeOutputException(
+                      message: finalizationOutcome.failureReason ??
+                          finalizationOutcome.failureCode ??
+                          'finalization_failed',
+                      requestId: thisRequestId,
+                    );
+                  }
+
+                  final qaFinalizationResult = finalizationOutcome.result!;
+
+                  final qaFinalText = _applyPlantaoClinicalRegimenOutputGuard(
+                    userInput: input,
+                    assistantOutput: qaFinalizationResult.finalText,
+                    longResponse: longResponse,
+                    requestId: thisRequestId,
+                  );
 
                   // Validar requestId pós-sanitize (guard de stale state)
                   if (_activeRequestId != thisRequestId) {
                     debugPrint(
-                        '[AI_E2E][POST_SANITIZE_STALE] requestId=$thisRequestId '
-                        'activeId=$_activeRequestId — descartado após sanitize');
+                      '[AI_E2E][POST_SANITIZE_STALE] requestId=$thisRequestId '
+                      'activeId=$_activeRequestId — descartado após sanitize',
+                    );
                     _gptStreamSub = null;
                     _aiStreamActive = false;
                     aiChatProvider.setStreaming(false);
                     // MICRO-BUILD 462E-A.5.3.4: releaseCanonicalDecision BEFORE completeAiRequest.
                     ExternalToolLinkEngine.releaseCanonicalDecision(
-                        requestId: thisRequestId, decision: canonicalDecision);
+                      requestId: thisRequestId,
+                      decision: canonicalDecision,
+                    );
                     _completeAiRequestOnce(thisRequestId);
                     return;
                   }
@@ -5952,7 +8127,7 @@ class AppProvider extends ChangeNotifier {
                   // ── STEP 6: Persistence (_aiHistory) — ONLY after barrier ───────
                   if (qaFinalText.isNotEmpty && !_isFallbackText(qaFinalText)) {
                     _aiHistory
-                      ..add({'role': 'user', 'content': input})
+                      ..add({'role': 'user', 'content': persistedUserInput})
                       ..add({'role': 'assistant', 'content': qaFinalText});
                     while (_aiHistory.length > 20) _aiHistory.removeAt(0);
                   }
@@ -5963,10 +8138,12 @@ class AppProvider extends ChangeNotifier {
                   aiChatProvider.setStreaming(false);
 
                   // ignore: avoid_print
-                  print('[AI_E2E][COMPLETED] requestId=$thisRequestId '
-                      'finalTextLen=${qaFinalText.length} '
-                      'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
-                      'provider=${e.usedProvider}');
+                  print(
+                    '[AI_E2E][COMPLETED] requestId=$thisRequestId '
+                    'finalTextLen=${qaFinalText.length} '
+                    'durationMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms '
+                    'provider=${e.usedProvider}',
+                  );
 
                   // ── STEP 7: A→F Terminal Pipeline (MICRO-BUILD 462E-A.5.3.7.3.2.3) ──
                   // Delegates to _finalizeGptSuccessfulRequest() which enforces:
@@ -5982,33 +8159,29 @@ class AppProvider extends ChangeNotifier {
                     requestId: thisRequestId,
                     validatedOutput: qaFinalText,
                     input: input,
+                    visibleUserInput: persistedUserInput,
+                    userDisplayText: persistedUserDisplayText,
                     longResponse: longResponse,
                     canonicalDecision: canonicalDecision,
                     wrappedOnDone: wrappedOnDone,
                     sessionCtx: activeSessionCtx,
-                    clinicalOutput: e.clinicalOutput,
+                    clinicalOutput:
+                        finalizationOutcome.structure?.clinicalOutput,
                   );
                 } on AiSafeOutputException catch (safeError) {
-                  // ── TERMINAL: DROP_PAYLOAD — Repair critical failure ───────────
                   // ignore: avoid_print
                   print(
-                      '[TRUNCATION_CHECK] DROP_PAYLOAD — REPAIR CRITICAL FAILURE '
-                      'requestId=${safeError.requestId} '
-                      'reason=${safeError.message}');
-                  _gptStreamSub = null;
-                  _activeGptClient = null;
-                  _aiStreamActive = false;
-                  aiChatProvider.setStreaming(false);
-                  // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
-                  wrappedOnError(
-                    _lang == 'es'
-                        ? 'Respuesta interrumpida (validación fallida). Intenta nuevamente. ⚕'
-                        : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
+                    '[AI_FINALIZATION] GPT_SSE_REJECTED '
+                    'requestId=${safeError.requestId} '
+                    'reason=${safeError.message} '
+                    'fallback=gemini_paid',
                   );
-                  ExternalToolLinkEngine.releaseCanonicalDecision(
-                      requestId: thisRequestId, decision: canonicalDecision);
-                  _completeAiRequestOnce(thisRequestId);
+                  await runGeminiPaidFallbackFromGptSse(
+                    'gpt_sse_finalization_failed',
+                  );
                   return;
+                } finally {
+                  responseProcessor.release(thisRequestId);
                 }
 
               // ── AiFailed: falha com código clínico ───────────────────────────
@@ -6017,81 +8190,65 @@ class AppProvider extends ChangeNotifier {
                 qaCompFired = true;
                 qaTimer?.cancel();
 
-                // Parcial clínico significativo (≥ 80 chars) — não persistir
-                if (e.hasSignificantPartial) {
-                  // ignore: avoid_print
-                  print('[AI_E2E][CLINICAL_PARTIAL] requestId=$thisRequestId '
-                      'code=${e.code} partialLen=${e.partialText!.length} '
-                      'hasSignificantPartial=true — NÃO persistido, exibe aviso');
-                  _gptStreamSub = null;
-                  _activeGptClient = null;
-                  _aiStreamActive = false;
-                  aiChatProvider.setStreaming(false);
-                  // Aviso clínico de resposta interrompida — sem persistência
-                  final partialWarning = _lang == 'es'
-                      ? '⚠️ Respuesta interrumpida antes de la validación final.\n'
-                          'El contenido parcial no fue guardado ni validado.\n\n'
-                          '${e.partialText}'
-                      : '⚠️ Resposta interrompida antes da validação final.\n'
-                          'O conteúdo parcial não foi salvo nem validado.\n\n'
-                          '${e.partialText}';
-                  // MICRO-BUILD 462E-A.5.2: UI first, releaseDecision, then completeAiRequest LAST.
-                  // MICRO-BUILD 462E-A.5.3: AUDIT FIX — CLINICAL_PARTIAL was missing releaseDecision().
-                  // This path IS a final termination vector: must evict cache entry before completing.
-                  wrappedOnError(partialWarning);
-                  ExternalToolLinkEngine.releaseCanonicalDecision(
-                      requestId: thisRequestId, decision: canonicalDecision);
-                  _completeAiRequestOnce(thisRequestId);
-                  return;
-                }
-
-                // Falha sem parcial significativo — 401 específico
                 if (e.code == 'gpt_sse_unauthenticated' ||
-                    e.code == 'auth_expired') {
-                  debugPrint('[AI_E2E][AUTH_EXPIRED] requestId=$thisRequestId '
-                      'code=${e.code} retryable=${e.retryable}');
+                    e.code == 'auth_expired' ||
+                    e.code == 'unauthenticated' ||
+                    e.code == 'token_error' ||
+                    e.code == 'empty_token') {
                   _gptStreamSub = null;
                   _activeGptClient = null;
                   _aiStreamActive = false;
                   aiChatProvider.setStreaming(false);
-                  // MICRO-BUILD 462E-A.5.2: UI first, releaseDecision, then completeAiRequest LAST.
-                  // MICRO-BUILD 462E-A.5.3: AUDIT FIX — AUTH_EXPIRED was missing releaseDecision().
-                  // This path IS a final termination vector: must evict cache entry before completing.
                   wrappedOnError(
-                      '[auth_expired] Sessão expirada (${e.code}). Faça login novamente.');
+                    _lang == 'es'
+                        ? 'No fue posible reconectar. Verifica tu conexión e inténtalo nuevamente. ⚕'
+                        : 'Não foi possível reconectar. Verifique sua conexão e tente novamente. ⚕',
+                  );
                   ExternalToolLinkEngine.releaseCanonicalDecision(
-                      requestId: thisRequestId, decision: canonicalDecision);
+                    requestId: thisRequestId,
+                    decision: canonicalDecision,
+                  );
                   _completeAiRequestOnce(thisRequestId);
                   return;
                 }
 
-                debugPrint('[AI_E2E][FAILED] requestId=$thisRequestId '
-                    'code=${e.code} message=${e.message} retryable=${e.retryable} '
-                    'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
-                _gptStreamSub = null;
-                _activeGptClient = null;
-                _aiStreamActive = false;
-                aiChatProvider.setStreaming(false);
-                // MICRO-BUILD 462E-A.5.2: UI first, releaseDecision, then completeAiRequest LAST.
-                wrappedOnError(
-                  e.code == 'gpt_sse_budget_guard'
-                      ? (_lang == 'es'
-                          ? 'Límite de uso alcanzado. Intenta en unos minutos. ⚕'
-                          : 'Limite de uso atingido. Tente em alguns minutos. ⚕')
-                      : (_lang == 'es'
-                          ? 'Error en el asistente IA (${e.code}). Intenta nuevamente. ⚕'
-                          : 'Erro no assistente IA (${e.code}). Tente novamente. ⚕'),
+                if (e.code == 'gpt_sse_budget_guard') {
+                  _gptStreamSub = null;
+                  _activeGptClient = null;
+                  _aiStreamActive = false;
+                  aiChatProvider.setStreaming(false);
+                  wrappedOnError(
+                    _lang == 'es'
+                        ? 'Límite de uso alcanzado. Intenta en unos minutos. ⚕'
+                        : 'Limite de uso atingido. Tente em alguns minutos. ⚕',
+                  );
+                  ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId,
+                    decision: canonicalDecision,
+                  );
+                  _completeAiRequestOnce(thisRequestId);
+                  return;
+                }
+
+                // O parcial permanece somente na superfície provisória.
+                // Nunca é persistido nem concatenado ao Gemini Paid.
+                // ignore: avoid_print
+                print(
+                  '[AI_E2E][GPT_FAILED_FALLBACK] '
+                  'requestId=$thisRequestId code=${e.code} '
+                  'retryable=${e.retryable} '
+                  'partialLen=${e.partialText?.length ?? 0}',
                 );
-                // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on FAILED (after UI).
-                ExternalToolLinkEngine.releaseCanonicalDecision(
-                    requestId: thisRequestId, decision: canonicalDecision);
-                _completeAiRequestOnce(thisRequestId);
+                await runGeminiPaidFallbackFromGptSse('gpt_sse_${e.code}');
+                return;
 
               // ── AiProviderSwitched: sinaliza troca de provider ───────────────
               case AiProviderSwitched e:
                 // ignore: avoid_print
-                print('[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
-                    'from=${e.fromProvider} to=${e.toProvider} reason=${e.reason}');
+                print(
+                  '[AI_E2E][PROVIDER_SWITCH] requestId=$thisRequestId '
+                  'from=${e.fromProvider} to=${e.toProvider} reason=${e.reason}',
+                );
                 // Limpar acumulador se parcial < 80 chars (Anti-Frankenstein)
                 final partial = qaAccumulator.toString();
                 if (partial.length < AiFailed.kSignificantPartialThreshold) {
@@ -6099,16 +8256,19 @@ class AppProvider extends ChangeNotifier {
                   qaFirstDelta = false;
                   qaDeltaCount = 0;
                   debugPrint(
-                      '[AI_E2E][STREAM_RESET_AUTO] requestId=$thisRequestId '
-                      'partialLen=${partial.length} < 80 → buffer limpo');
+                    '[AI_E2E][STREAM_RESET_AUTO] requestId=$thisRequestId '
+                    'partialLen=${partial.length} < 80 → buffer limpo',
+                  );
                 }
               // Se parcial ≥ 80: AiFailed virá em seguida (responsabilidade do GptSseClient)
 
               // ── AiStreamReset: limpa buffers do attempt anterior ─────────────
               case AiStreamReset e:
                 // ignore: avoid_print
-                print('[AI_E2E][STREAM_RESET] requestId=$thisRequestId '
-                    'reason=${e.reason} attempt=${e.attempt}');
+                print(
+                  '[AI_E2E][STREAM_RESET] requestId=$thisRequestId '
+                  'reason=${e.reason} attempt=${e.attempt}',
+                );
                 qaAccumulator.clear();
                 qaFirstDelta = false;
                 qaDeltaCount = 0;
@@ -6119,64 +8279,37 @@ class AppProvider extends ChangeNotifier {
                 break;
             }
           },
-          onError: (Object e) {
+          onError: (Object error) async {
             if (qaCompFired) return;
             qaCompFired = true;
             qaTimer?.cancel();
             debugPrint(
-                '[AI_E2E][STREAM_EXCEPTION] requestId=$thisRequestId error=$e '
-                'elapsedMs=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms');
-            _gptStreamSub = null;
-            _activeGptClient = null;
-            _aiStreamActive = false;
-            aiChatProvider.setStreaming(false);
-            // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
-            wrappedOnError(
-              _lang == 'es'
-                  ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
-                  : 'Erro de rede no assistente IA. Tente novamente. ⚕',
+              '[AI_E2E][STREAM_EXCEPTION] '
+              'requestId=$thisRequestId error=$error '
+              'fallback=gemini_paid',
             );
-            // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on STREAM_EXCEPTION (after UI).
-            ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
-            _completeAiRequestOnce(thisRequestId);
+            await runGeminiPaidFallbackFromGptSse('gpt_sse_stream_exception');
           },
-          onDone: () {
+          onDone: () async {
             // Stream SSE fechou sem AiCompleted — limpeza silenciosa
             if (qaCompFired) {
               _gptStreamSub = null;
-              _aiStreamActive = false;
-              aiChatProvider.setStreaming(false);
+              if (!qaFallbackStarted) {
+                _aiStreamActive = false;
+                aiChatProvider.setStreaming(false);
+              }
               return;
-            }
-            // EOF sem conclusão e sem AiFailed — segurança
+            } // EOF sem conclusão: o parcial continua provisório e o Gemini Paid
+            // assume sem repetir GPT nem concatenar tentativas.
             qaCompFired = true;
             qaTimer?.cancel();
-            debugPrint('[AI_E2E][EOF_NO_COMPLETION] requestId=$thisRequestId '
-                'accumulatorLen=${qaAccumulator.length}');
-            _gptStreamSub = null;
-            _activeGptClient = null;
-            _aiStreamActive = false;
-            aiChatProvider.setStreaming(false);
-            final partialOnEof = qaAccumulator.toString().trim();
-            // MICRO-BUILD 462E-A.5.2: UI first, then release, then completeAiRequest LAST.
-            if (partialOnEof.isNotEmpty) {
-              wrappedOnError(
-                _lang == 'es'
-                    ? 'Respuesta incompleta recibida. Intenta nuevamente. ⚕'
-                    : 'Resposta incompleta recebida. Tente novamente. ⚕',
-              );
-            } else {
-              wrappedOnError(
-                _lang == 'es'
-                    ? 'Sin respuesta del asistente. Intenta nuevamente. ⚕'
-                    : 'Sem resposta do assistente. Tente novamente. ⚕',
-              );
-            }
-            // MICRO-BUILD 462E-A.5.1+5.2: release cache entry on EOF/CANCELLED (after UI).
-            ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
-            _completeAiRequestOnce(thisRequestId);
+            debugPrint(
+              '[AI_E2E][EOF_NO_COMPLETION] '
+              'requestId=$thisRequestId '
+              'accumulatorLen=${qaAccumulator.length} '
+              'fallback=gemini_paid',
+            );
+            await runGeminiPaidFallbackFromGptSse('gpt_sse_eof_no_completion');
           },
           cancelOnError: false,
         );
@@ -6193,7 +8326,8 @@ class AppProvider extends ChangeNotifier {
       // Não há servidor intermediário — o Flutter fala direto com o Google.
       if (kDebugMode)
         debugPrint(
-            '[sendAiMessage] motor=${longResponse ? "ESTUDO" : "PLANTÃO"}');
+          '[sendAiMessage] motor=${longResponse ? "ESTUDO" : "PLANTÃO"}',
+        );
 
       // ── ORDEM 49 M2: JIT Double-Check — sincronia atômica de modo ────────────
       // Segunda camada de segurança: confirma que o modo capturado neste exato
@@ -6205,12 +8339,14 @@ class AppProvider extends ChangeNotifier {
       // de stale-state: se motor≠prompt.mode aparecer nos logs, há dessincronia.
       // NUNCA bloqueia o request — apenas registra para diagnóstico.
       // ignore: avoid_print
-      print('[ORDEM49_MODE_SYNC] requestId=$thisRequestId '
-          'motor=${longResponse ? "ESTUDO" : "PLANTÃO"} '
-          'longResponse=$longResponse '
-          'historyLen=${_aiHistory.length} '
-          'hasUserMsg=${_aiHistory.any((m) => m["role"] == "user")} '
-          'threadTopic=${_threadManager.activeTopic.isEmpty ? "VIRGIN" : _threadManager.activeTopic}');
+      print(
+        '[ORDEM49_MODE_SYNC] requestId=$thisRequestId '
+        'motor=${longResponse ? "ESTUDO" : "PLANTÃO"} '
+        'longResponse=$longResponse '
+        'historyLen=${_aiHistory.length} '
+        'hasUserMsg=${_aiHistory.any((m) => m["role"] == "user")} '
+        'threadTopic=${_threadManager.activeTopic.isEmpty ? "VIRGIN" : _threadManager.activeTopic}',
+      );
 
       // ── Streaming via AiGatewayService ────────────────────────────────────
       _aiStreamActive = true;
@@ -6229,6 +8365,23 @@ class AppProvider extends ChangeNotifier {
       // Se novo thread (novo caso clínico) → limpa _aiHistory para evitar
       // contaminação cruzada entre casos (ex: amiodarona → gastroenterite).
       // isPlantaoMode = !longResponse (Plantão=true → history mínimo ou vazio)
+      // PHASE3I-J2B2: rehydrate button continuation context before
+      // ClinicalThreadManager can classify an in-memory topic gap as first_message.
+      // _aiHistory remains the canonical productive conversation history.
+      if (fromButton &&
+          !_threadManager.hasActiveThread &&
+          _sanitizedHistory.isNotEmpty) {
+        _threadManager.primeFromHistory(
+          List<Map<String, String>>.from(_sanitizedHistory),
+        );
+        if (kDebugMode) {
+          debugPrint(
+            '[PHASE3I_J2B2][CONTINUATION_REHYDRATED][MAIN] '
+            'requestId=$thisRequestId historyLen=${_sanitizedHistory.length}',
+          );
+        }
+      }
+
       final threadStatus = _threadManager.evaluate(
         currentUserText: input,
         isPlantaoMode: !longResponse,
@@ -6241,8 +8394,9 @@ class AppProvider extends ChangeNotifier {
       // longResponse=true, mesmo que um caminho de código futuro altere o ThreadManager.
       if (threadStatus.action == ThreadAction.newThread && longResponse) {
         debugPrint(
-            '[BUILD300][HISTORY_SANITIZER] bypass reason=study_mode_hard_reset_forbidden '
-            'threadReason=${threadStatus.reason} historyLen=${_aiHistory.length}');
+          '[BUILD300][HISTORY_SANITIZER] bypass reason=study_mode_hard_reset_forbidden '
+          'threadReason=${threadStatus.reason} historyLen=${_aiHistory.length}',
+        );
       } else if (threadStatus.action == ThreadAction.newThread) {
         // BUILD 250: HARD RESET síncrono — ocorre ANTES de qualquer montagem de payload.
         // Limpa _aiHistory (contexto Gemini) + reseta memória clínica estruturada.
@@ -6252,10 +8406,11 @@ class AppProvider extends ChangeNotifier {
         _aiHistory.clear(); // contexto Gemini → zero
         _sessionMemory.reset(); // memória clínica (diag, meds, labs) → zero
         debugPrint(
-            '[HISTORY_SANITIZER] HARD RESET ATIVADO: Limpando _aiHistory de forma absoluta. '
-            'mode=plantao '
-            'strategy=empty sent=0 removed=$removed '
-            'reason=${threadStatus.reason}');
+          '[HISTORY_SANITIZER] HARD RESET ATIVADO: Limpando _aiHistory de forma absoluta. '
+          'mode=plantao '
+          'strategy=empty sent=0 removed=$removed '
+          'reason=${threadStatus.reason}',
+        );
       }
       final sessionLang = _resolveSessionLang(input);
       final intent = _classifyIntent(input);
@@ -6265,10 +8420,25 @@ class AppProvider extends ChangeNotifier {
       final normalized = _normalize(expandedInput);
 
       // BUILD 325: drug RAG removed — Google Search Grounding + system prompt directives.
-      final _extProtos = _matchProtocolsExtended(normalized);
-      final finalProtocols =
-          _extProtos.isNotEmpty ? _extProtos : _matchProtocols(normalized);
+      final matchedProtocolModels = <ProtocolModel>[];
+      final _extProtos = _matchProtocolsExtended(
+        normalized,
+        matchedProtocols: matchedProtocolModels,
+      );
+      final finalProtocols = _extProtos.isNotEmpty
+          ? _extProtos
+          : _matchProtocols(
+              normalized,
+              matchedProtocols: matchedProtocolModels,
+            );
       final localContext = _buildLocalAnswer(input);
+      final retrievalShadowRequest = _lastPlantaoShadowRequest;
+      if (!longResponse && retrievalShadowRequest != null) {
+        _capturePlantaoRetrievalShadow(
+          request: retrievalShadowRequest,
+          matchedProtocols: matchedProtocolModels,
+        );
+      }
 
       const String? proprietaryContext = null;
 
@@ -6302,13 +8472,15 @@ class AppProvider extends ChangeNotifier {
       final _spChars = systemPrompt.length;
       final _spTokensApprox = (_spChars / 4).round();
       print(
-          '[SYSTEM_PROMPT_AUDIT] requestId=${DateTime.now().millisecondsSinceEpoch} '
-          'mode=${longResponse ? "estudo" : "plantao"} '
-          'systemPromptChars=$_spChars systemPromptTokensApprox=$_spTokensApprox');
+        '[SYSTEM_PROMPT_AUDIT] requestId=${DateTime.now().millisecondsSinceEpoch} '
+        'mode=${longResponse ? "estudo" : "plantao"} '
+        'systemPromptChars=$_spChars systemPromptTokensApprox=$_spTokensApprox',
+      );
       if (_spTokensApprox > 6000) {
         print(
-            '[SYSTEM_PROMPT_AUDIT] ⚠️  ALERTA: systemPrompt acima de 6000 tokens '
-            '(approx=$_spTokensApprox) — risco de Context Dilution no Plantão.');
+          '[SYSTEM_PROMPT_AUDIT] ⚠️  ALERTA: systemPrompt acima de 6000 tokens '
+          '(approx=$_spTokensApprox) — risco de Context Dilution no Plantão.',
+        );
       }
 
       // ── Build 156.2: Resolução automática da chave Gemini ───────────────
@@ -6348,22 +8520,27 @@ class AppProvider extends ChangeNotifier {
                   .timeout(const Duration(seconds: 5));
               if (kDebugMode)
                 debugPrint(
-                    '[BUILD309][S3] JWT renovado para uid=${fbUser.uid}');
+                  '[BUILD309][S3] JWT renovado para uid=${fbUser.uid}',
+                );
             }
           } catch (e) {
             // Falha de renovação não bloqueia o fluxo — fallback para token expirado
             // que pode ainda funcionar se expirou há pouco tempo (<5min de grace).
             if (kDebugMode)
               debugPrint(
-                  '[BUILD309][S3] getIdToken(true) falhou (ignorado): $e');
+                '[BUILD309][S3] getIdToken(true) falhou (ignorado): $e',
+              );
           }
         }
         try {
-          final geminiKey = await FirestoreService.loadGeminiApiKey()
-              .timeout(const Duration(seconds: 5));
+          final geminiKey = await FirestoreService.loadGeminiApiKey().timeout(
+            const Duration(seconds: 5),
+          );
           if (geminiKey.isNotEmpty) {
-            GeminiService.setGeminiApiKey(geminiKey,
-                source: GeminiKeySource.appConfig); // BUILD 294
+            GeminiService.setGeminiApiKey(
+              geminiKey,
+              source: GeminiKeySource.appConfig,
+            ); // BUILD 294
           } else {
             await GeminiService.initFromStorage();
           }
@@ -6377,7 +8554,8 @@ class AppProvider extends ChangeNotifier {
       final geminiApiKey = GeminiService.apiKeyForLab;
       if (kDebugMode)
         debugPrint(
-            '[AI_ROUTER] freeKey=${geminiApiKey.isNotEmpty} motor=${longResponse ? "estudo" : "plantao"}');
+          '[AI_ROUTER] freeKey=${geminiApiKey.isNotEmpty} motor=${longResponse ? "estudo" : "plantao"}',
+        );
 
       final accumulator = StringBuffer();
 
@@ -6477,24 +8655,11 @@ class AppProvider extends ChangeNotifier {
       // All downstream cache clearing and completeAiRequest calls map to parentRequestId.
       // ignore: avoid_print
       print(
-          '[AI_PIPELINE_RESOLVER] parentRequestId=$thisRequestId providerRequestId=$requestId');
-
-      // ── BUILD 245: Smart AI Router — classifica prioridade da requisição ─────
-      // Plantão / keywords críticas → pago direto (sem tentar Free primeiro).
-      // Acadêmico / conceitual → Free primeiro, pago como fallback.
-      final contractName =
-          !longResponse ? 'CONTRACT_PLANTAO' : 'CONTRACT_ESTUDO';
-      final (aiPriority, aiPriorityReason) = AiSmartRouter.classifyPriority(
-        userMessage: input,
-        isPlantaoMode: !longResponse,
-        contractName: contractName,
+        '[AI_PIPELINE_RESOLVER] parentRequestId=$thisRequestId providerRequestId=$requestId',
       );
-      if (kDebugMode)
-        debugPrint(
-          '[AI_ROUTER] priority=$aiPriority reason=$aiPriorityReason '
-          'provider=${aiPriority == "critical" ? "paid" : "free"} '
-          'fallback=${aiPriority == "critical" ? "disabled" : "paid"}',
-        );
+
+      // M14-R7: contractName/aiPriority foram resolvidos uma única vez antes
+      // do gate GPT SSE. O fluxo normal reutiliza exatamente a mesma decisão.
 
       // ── Build 226: helper para acionar Gemini Paid após falha do Free ────────
       // Chamado tanto no chunk.isError quanto no onDone vazio.
@@ -6513,14 +8678,17 @@ class AppProvider extends ChangeNotifier {
         // silently — caller must then execute its own release + complete sequence.
         // BUILD 320: Id Guard — PRÉ-CHAMADA: descarta se requestId já foi invalidado
         if (_activeRequestId != thisRequestId) {
-          debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback PRE-CALL drop: '
-              'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
-              'activeId=$_activeRequestId — paid proxy call suppressed');
+          debugPrint(
+            '[BUILD320][STALE_GUARD] tryPaidFallback PRE-CALL drop: '
+            'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
+            'activeId=$_activeRequestId — paid proxy call suppressed',
+          );
           return false; // stale: caller retains responsibility for terminal events
         }
         if (kDebugMode)
           debugPrint(
-              '[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId');
+            '[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId',
+          );
 
         // ── BUILD 321: Layer 2 — GPT-4o Mini (antes do Gemini Paid) ──────────
         // Tenta GPT-4o Mini primeiro quando _openAiKey estiver configurada no
@@ -6530,14 +8698,16 @@ class AppProvider extends ChangeNotifier {
         if (_openAiKey.isNotEmpty) {
           if (kDebugMode) {
             debugPrint(
-                '[BUILD321][LAYER2] Tentando GPT-4o Mini reason=$reason requestId=$requestId');
+              '[BUILD321][LAYER2] Tentando GPT-4o Mini reason=$reason requestId=$requestId',
+            );
           }
 
           // PRE-CALL Id Guard Layer 2 (BUILD 320 pattern preservado)
           if (_activeRequestId != thisRequestId) {
             debugPrint(
-                '[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 PRE-CALL drop: '
-                'reason=$reason activeId=$_activeRequestId');
+              '[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 PRE-CALL drop: '
+              'reason=$reason activeId=$_activeRequestId',
+            );
             return false; // MICRO-BUILD 462E-A.5.3: stale — caller retains terminal responsibility
           }
 
@@ -6550,12 +8720,13 @@ class AppProvider extends ChangeNotifier {
                 status: threadStatus,
                 isPlantaoMode: !longResponse,
                 // MICRO-BUILD 462E-A.5.2: canonical override in paid fallback path.
-                currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
-                    canonicalOverride: _canonicalTaskOverride),
-              ).map((m) => {
-                    'role': m['role'] ?? '',
-                    'content': m['content'] ?? '',
-                  }),
+                currentTaskLabel: AiSmartRouter.detectTaskLabel(
+                  input,
+                  canonicalOverride: _canonicalTaskOverride,
+                ),
+              ).map(
+                (m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''},
+              ),
             ),
             mode: longResponse ? 'estudo' : 'plantao',
             lang: _lang,
@@ -6566,26 +8737,31 @@ class AppProvider extends ChangeNotifier {
           // POST-AWAIT Id Guard Layer 2 (BUILD 320 pattern preservado)
           if (_activeRequestId != thisRequestId) {
             debugPrint(
-                '[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 POST-AWAIT drop: '
-                'reason=$reason activeId=$_activeRequestId textLen=${gptResult.text.length} '
-                '— resultado tardio GPT descartado (Id Guard)');
+              '[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 POST-AWAIT drop: '
+              'reason=$reason activeId=$_activeRequestId textLen=${gptResult.text.length} '
+              '— resultado tardio GPT descartado (Id Guard)',
+            );
             return false; // stale post-await: caller retains responsibility
           }
 
           if (gptResult.success && gptResult.text.isNotEmpty) {
             // ignore: avoid_print
-            print('[RAW_AI_OUTPUT][GPT_PROXY] len=${gptResult.text.length} '
-                'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+            print(
+              '[RAW_AI_OUTPUT][GPT_PROXY] len=${gptResult.text.length} '
+              'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}',
+            );
 
             // MICRO-BUILD 462E-A.5.3.6: GPT Proxy Truncation Guard.
             // Uniform structural termination validation mirroring the Gemini free-stream path.
             final gptTruncResult = TruncationInspector.inspect(gptResult.text);
             // ignore: avoid_print
-            print('[TRUNCATION_CHECK][GPT_PROXY] '
-                'provider=gptProxy '
-                'truncated=${gptTruncResult.isTruncated} '
-                'confidence=${gptTruncResult.confidenceLevel.name} '
-                'requestId=$requestId');
+            print(
+              '[TRUNCATION_CHECK][GPT_PROXY] '
+              'provider=gptProxy '
+              'truncated=${gptTruncResult.isTruncated} '
+              'confidence=${gptTruncResult.confidenceLevel.name} '
+              'requestId=$requestId',
+            );
             TruncationInspector.emitTelemetry(
               requestId: requestId,
               result: gptTruncResult,
@@ -6596,40 +8772,87 @@ class AppProvider extends ChangeNotifier {
               isPlantaoMode: !longResponse,
               appLanguage: _lang,
             );
-            final gptText = gptSanitized.text;
+            final gptText = _applyPlantaoClinicalRegimenOutputGuard(
+              userInput: input,
+              assistantOutput: gptSanitized.text,
+              longResponse: longResponse,
+              requestId: thisRequestId,
+            );
             if (!_isFallbackText(gptText)) {
               _aiHistory
-                ..add({'role': 'user', 'content': input})
+                ..add({'role': 'user', 'content': persistedUserInput})
                 ..add({'role': 'assistant', 'content': gptText});
               while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+              // AI-RECONSTRUCTION-R18.6Q:
+              // O vencedor GPT pago / Layer 2 persiste pelo proprietário canônico.
+              // Safe-card, erro e texto fallback permanecem fora.
+              if (gptText.isNotEmpty) {
+                final gptPaidPersistStatus = await persistAiExchangeOnce(
+                  context: activeSessionCtx,
+                  userInput: persistedUserInput,
+                  userDisplayText: persistedUserDisplayText,
+                  assistantOutput: gptText,
+                );
+                // ignore: avoid_print
+                print(
+                  '[SESSION_PERSIST][STATUS] '
+                  'requestId=$thisRequestId '
+                  'providerRequestId=$requestId '
+                  'sessionId=${activeSessionCtx.sessionId} '
+                  'route=gpt_paid_fallback_layer2 '
+                  'status=${gptPaidPersistStatus.runtimeType}',
+                );
+
+                if (gptPaidPersistStatus is SessionPersistSynced) {
+                  _freeStreamTxn.emitPersistTelemetry(
+                    sessionId: activeSessionCtx.sessionId,
+                  );
+                } else {
+                  // ignore: avoid_print
+                  print(
+                    '[SESSION_PERSIST][NOT_SYNCED] '
+                    'requestId=$thisRequestId '
+                    'providerRequestId=$requestId '
+                    'sessionId=${activeSessionCtx.sessionId} '
+                    'route=gpt_paid_fallback_layer2 '
+                    'status=${gptPaidPersistStatus.runtimeType}',
+                  );
+                }
+              }
             } else if (kDebugMode) {
               debugPrint(
-                  '[HISTORY_SANITIZER] gpt_layer2_blocked reason=isFallbackText');
+                '[HISTORY_SANITIZER] gpt_layer2_blocked reason=isFallbackText',
+              );
             }
             debugPrint(
-                '[BUILD321][LAYER2] GPT-4o Mini sucesso requestId=$requestId '
-                'model=${gptResult.model} durationMs=${gptResult.durationMs}ms');
+              '[BUILD321][LAYER2] GPT-4o Mini sucesso requestId=$requestId '
+              'model=${gptResult.model} durationMs=${gptResult.durationMs}ms',
+            );
             wrappedOnDone(gptText);
             // MICRO-BUILD 462E-A.5.3: Layer 2 handled terminal UI event.
             // Fallback owns release + complete here.
             ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
             _completeAiRequestOnce(thisRequestId);
             return true; // Layer 2 resolved — handled terminal events
           }
 
           // GPT falhou — cai para Layer 3 (Gemini Paid)
           debugPrint(
-              '[BUILD321][LAYER2] GPT-4o Mini falhou error=${gptResult.errorCode} '
-              '— escalando para Gemini Paid (Layer 3) requestId=$requestId');
+            '[BUILD321][LAYER2] GPT-4o Mini falhou error=${gptResult.errorCode} '
+            '— escalando para Gemini Paid (Layer 3) requestId=$requestId',
+          );
         }
         // ── FIM BUILD 321: Layer 2 ────────────────────────────────────────────
 
         // BUILD 320: Id Guard — PRÉ-CHAMADA Layer 3 (Gemini Paid)
         if (_activeRequestId != thisRequestId) {
           debugPrint(
-              '[BUILD320][STALE_GUARD] tryPaidFallback LAYER3 PRE-CALL drop: '
-              'reason=$reason activeId=$_activeRequestId — gemini paid suppressed');
+            '[BUILD320][STALE_GUARD] tryPaidFallback LAYER3 PRE-CALL drop: '
+            'reason=$reason activeId=$_activeRequestId — gemini paid suppressed',
+          );
           return false; // stale: caller retains responsibility for terminal events
         }
 
@@ -6643,12 +8866,13 @@ class AppProvider extends ChangeNotifier {
               status: threadStatus,
               isPlantaoMode: !longResponse,
               // MICRO-BUILD 462E-A.5.2: canonical override in paid proxy path.
-              currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
-                  canonicalOverride: _canonicalTaskOverride), // BUILD 304 [G1b]
-            ).map((m) => {
-                  'role': m['role'] ?? '',
-                  'content': m['content'] ?? '',
-                }),
+              currentTaskLabel: AiSmartRouter.detectTaskLabel(
+                input,
+                canonicalOverride: _canonicalTaskOverride,
+              ), // BUILD 304 [G1b]
+            ).map(
+              (m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''},
+            ),
           ),
           mode: longResponse ? 'estudo' : 'plantao',
           lang: _lang,
@@ -6664,22 +8888,27 @@ class AppProvider extends ChangeNotifier {
         // _activeRequestId → resposta tardia do Proxy chegou → sem este guard,
         // wrappedOnDone chamaria setState num contexto já descartado → crash.
         if (_activeRequestId != thisRequestId) {
-          debugPrint('[BUILD320][STALE_GUARD] tryPaidFallback POST-AWAIT drop: '
-              'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
-              'activeId=$_activeRequestId textLen=${paidResult.text.length} '
-              '— resultado tardio descartado (Id Guard)');
+          debugPrint(
+            '[BUILD320][STALE_GUARD] tryPaidFallback POST-AWAIT drop: '
+            'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
+            'activeId=$_activeRequestId textLen=${paidResult.text.length} '
+            '— resultado tardio descartado (Id Guard)',
+          );
           return false; // stale post-await: caller retains responsibility
         }
 
         if (paidResult.success && paidResult.text.isNotEmpty) {
           // BUILD 252: print do rawText pago ANTES de sanitizeAndCheck
           // ignore: avoid_print
-          print('[RAW_AI_OUTPUT][PAID_PROXY] len=${paidResult.text.length} '
-              'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+          print(
+            '[RAW_AI_OUTPUT][PAID_PROXY] len=${paidResult.text.length} '
+            'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}',
+          );
           if (paidResult.text.length < 100) {
             // ignore: avoid_print
             print(
-                '[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta do Paid: "${paidResult.text.length < 200 ? paidResult.text : paidResult.text.substring(0, 200)}"');
+              '[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta do Paid: "${paidResult.text.length < 200 ? paidResult.text : paidResult.text.substring(0, 200)}"',
+            );
           }
           // BUILD 232: sanitizeAndCheck bloqueia meta leak severo antes de onDone
           final paidSanitized = AiSmartRouter.sanitizeAndCheck(
@@ -6687,65 +8916,117 @@ class AppProvider extends ChangeNotifier {
             isPlantaoMode: !longResponse,
             appLanguage: _lang,
           );
-          final paidText = paidSanitized.text;
+          final paidText = _applyPlantaoClinicalRegimenOutputGuard(
+            userInput: input,
+            assistantOutput: paidSanitized.text,
+            longResponse: longResponse,
+            requestId: thisRequestId,
+          );
           // HOTFIX 247D: nunca adicionar fallback ao histórico da API
           if (!_isFallbackText(paidText)) {
             _aiHistory
-              ..add({'role': 'user', 'content': input})
+              ..add({'role': 'user', 'content': persistedUserInput})
               ..add({'role': 'assistant', 'content': paidText});
             while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            // AI-RECONSTRUCTION-R18.6Q:
+            // O vencedor Gemini Paid / Layer 3 persiste pelo proprietário canônico.
+            // Safe-card, erro e texto fallback permanecem fora.
+            if (paidText.isNotEmpty) {
+              final geminiPaidPersistStatus = await persistAiExchangeOnce(
+                context: activeSessionCtx,
+                userInput: persistedUserInput,
+                userDisplayText: persistedUserDisplayText,
+                assistantOutput: paidText,
+              );
+              // ignore: avoid_print
+              print(
+                '[SESSION_PERSIST][STATUS] '
+                'requestId=$thisRequestId '
+                'providerRequestId=$requestId '
+                'sessionId=${activeSessionCtx.sessionId} '
+                'route=gemini_paid_fallback_layer3 '
+                'status=${geminiPaidPersistStatus.runtimeType}',
+              );
+
+              if (geminiPaidPersistStatus is SessionPersistSynced) {
+                _freeStreamTxn.emitPersistTelemetry(
+                  sessionId: activeSessionCtx.sessionId,
+                );
+              } else {
+                // ignore: avoid_print
+                print(
+                  '[SESSION_PERSIST][NOT_SYNCED] '
+                  'requestId=$thisRequestId '
+                  'providerRequestId=$requestId '
+                  'sessionId=${activeSessionCtx.sessionId} '
+                  'route=gemini_paid_fallback_layer3 '
+                  'status=${geminiPaidPersistStatus.runtimeType}',
+                );
+              }
+            }
           } else if (kDebugMode) {
             debugPrint(
-                '[HISTORY_SANITIZER] paid_fallback_blocked reason=isFallbackText');
+              '[HISTORY_SANITIZER] paid_fallback_blocked reason=isFallbackText',
+            );
           }
           wrappedOnDone(paidText); // BUILD 254: notifyListeners() incluso
           // MICRO-BUILD 462E-A.5.3: fallback owns release + complete.
           ExternalToolLinkEngine.releaseCanonicalDecision(
-              requestId: thisRequestId, decision: canonicalDecision);
+            requestId: thisRequestId,
+            decision: canonicalDecision,
+          );
           _completeAiRequestOnce(thisRequestId);
           return true; // handled: fallback took ownership of terminal events
         } else {
           // Paid também falhou — mostra mensagem de instabilidade
           debugPrint(
-              '[AI_PROVIDER] both_failed requestId=$requestId reason=${paidResult.errorCode}');
+            '[AI_PROVIDER] both_failed requestId=$requestId reason=${paidResult.errorCode}',
+          );
           final instabilityMsg = _lang == 'es'
               ? 'Estamos con inestabilidad temporal en la IA.\nIntenta nuevamente en algunos segundos. ⚕'
               : 'Estamos com instabilidade temporária na IA.\nTente novamente em alguns segundos. ⚕';
           wrappedOnError(instabilityMsg); // BUILD 254
           // Fallback emitted error UI — still owns release + complete.
           ExternalToolLinkEngine.releaseCanonicalDecision(
-              requestId: thisRequestId, decision: canonicalDecision);
+            requestId: thisRequestId,
+            decision: canonicalDecision,
+          );
           _completeAiRequestOnce(thisRequestId);
           return true; // handled (error path): fallback took ownership
         }
       }
 
-      // ── SUPER ORDEM MASTER 12 M1b: ROUTER BLINDAGEM ─────────────────────────
-      // Se o usuário tem sessão Gemini ativa (_geminiConnected), o proxy pago
-      // (geminiPaidProxy Cloud Function) retorna 503 — é inútil chamá-lo.
-      // Forçamos aiPriority='academic' para usar sempre o caminho Free (streaming
-      // direto com a app key), que funciona normalmente para usuários autenticados.
-      // O fallback pago ainda existe no caminho acadêmico caso o Free falhe por
-      // outros motivos (quota, network), mas o caminho crítico→pago direto é
-      // bypassado quando há sessão ativa — evitando o card de timeout falso.
-      // CANÁRIO LOCAL: permite testar o gateway pago mesmo com Gemini conectado.
-      // Restrito a kDebugMode — builds release preservam a blindagem original.
+      // ── M13-R2: ROTEAMENTO POR MODO ──────────────────────────────────────────
+      // Guardia/Plantão com prioridade critical permanece no caminho pago direto:
+      // GPT pago → Gemini pago. A sessão Gemini não pode rebaixar esse modo.
+      // Estudo com sessão Gemini preserva o caminho academic/free-first.
+      // O canário local continua permitindo forçar o gateway pago em debug.
       const bool kForcePaidGatewayCanaryInDebug = false;
       final bool forcePaidCanary = kDebugMode &&
           kForcePaidGatewayCanaryInDebug &&
           _geminiConnected &&
           aiPriority == 'critical';
 
-      final effectivePriority = forcePaidCanary
-          ? 'critical'
-          : (_geminiConnected ? 'academic' : aiPriority);
+      final effectivePriority = resolveEffectiveAiPriorityForRouting(
+        isPlantaoMode: !longResponse,
+        geminiConnected: _geminiConnected,
+        aiPriority: aiPriority,
+        forcePaidCanary: forcePaidCanary,
+      );
 
       if (forcePaidCanary) {
-        debugPrint('[ROUTER_CANARY] provider=paid reason=debug_canary '
-            'geminiConnected=true requestId=$requestId');
-      } else if (kDebugMode && _geminiConnected && aiPriority == 'critical') {
-        debugPrint('[ROUTER_BLINDAGEM] geminiConnected=true '
-            '→ override critical→academic requestId=$requestId');
+        debugPrint(
+          '[ROUTER_CANARY] provider=paid reason=debug_canary '
+          'geminiConnected=true requestId=$requestId',
+        );
+      } else if (kDebugMode &&
+          _geminiConnected &&
+          aiPriority == 'critical' &&
+          effectivePriority == 'academic') {
+        debugPrint(
+          '[ROUTER_BLINDAGEM] geminiConnected=true '
+          '→ override critical→academic requestId=$requestId',
+        );
       }
 
       // ── BUILD 245: Caminho crítico — vai direto ao pago, sem Free ───────────
@@ -6769,7 +9050,8 @@ class AppProvider extends ChangeNotifier {
           final elapsedMs =
               DateTime.now().millisecondsSinceEpoch - globalStartMs;
           debugPrint(
-              '[AI_TIMEOUT] mode=plantao timeoutMs=30000 provider=paid elapsedMs=$elapsedMs requestId=$thisRequestId');
+            '[AI_TIMEOUT] mode=plantao timeoutMs=30000 provider=paid elapsedMs=$elapsedMs requestId=$thisRequestId',
+          );
           if (_activeRequestId == thisRequestId) _activeRequestId = '';
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
@@ -6790,13 +9072,13 @@ class AppProvider extends ChangeNotifier {
                 status: threadStatus,
                 isPlantaoMode: !longResponse,
                 // MICRO-BUILD 462E-A.5.2: canonical override in critical direct path.
-                currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
-                    canonicalOverride:
-                        _canonicalTaskOverride), // BUILD 304 [G1b]
-              ).map((m) => {
-                    'role': m['role'] ?? '',
-                    'content': m['content'] ?? '',
-                  }),
+                currentTaskLabel: AiSmartRouter.detectTaskLabel(
+                  input,
+                  canonicalOverride: _canonicalTaskOverride,
+                ), // BUILD 304 [G1b]
+              ).map(
+                (m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''},
+              ),
             ),
             mode: longResponse ? 'estudo' : 'plantao',
             lang: _lang,
@@ -6818,42 +9100,91 @@ class AppProvider extends ChangeNotifier {
             // BUILD 252: print raw antes de sanitizeAndCheck (caminho crítico)
             // ignore: avoid_print
             print(
-                '[RAW_AI_OUTPUT][CRITICAL_PAID] len=${paidResult.text.length} '
-                'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+              '[RAW_AI_OUTPUT][CRITICAL_PAID] len=${paidResult.text.length} '
+              'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}',
+            );
             if (paidResult.text.length < 100) {
               // ignore: avoid_print
               print(
-                  '[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta (critical): "${paidResult.text.length < 200 ? paidResult.text : paidResult.text.substring(0, 200)}"');
+                '[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta (critical): "${paidResult.text.length < 200 ? paidResult.text : paidResult.text.substring(0, 200)}"',
+              );
             }
             final paidSanitized = AiSmartRouter.sanitizeAndCheck(
               paidResult.text,
               isPlantaoMode: !longResponse,
               appLanguage: _lang,
             );
-            final paidText = paidSanitized.text;
+            final paidText = _applyPlantaoClinicalRegimenOutputGuard(
+              userInput: input,
+              assistantOutput: paidSanitized.text,
+              longResponse: longResponse,
+              requestId: thisRequestId,
+            );
             // HOTFIX 247D: nunca adicionar fallback ao histórico da API
             if (!_isFallbackText(paidText)) {
               _aiHistory
-                ..add({'role': 'user', 'content': input})
+                ..add({'role': 'user', 'content': persistedUserInput})
                 ..add({'role': 'assistant', 'content': paidText});
               while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+              // AI-RECONSTRUCTION-R18.6S:
+              // O vencedor crítico pago persiste no Firebase canônico.
+              // Vazio, fallback, timeout, safe-card e falha ficam fora.
+              if (paidText.isNotEmpty) {
+                final criticalPaidPersistStatus = await persistAiExchangeOnce(
+                  context: activeSessionCtx,
+                  userInput: persistedUserInput,
+                  userDisplayText: persistedUserDisplayText,
+                  assistantOutput: paidText,
+                );
+                // ignore: avoid_print
+                print(
+                  '[SESSION_PERSIST][STATUS] '
+                  'requestId=$thisRequestId '
+                  'providerRequestId=$requestId '
+                  'sessionId=${activeSessionCtx.sessionId} '
+                  'route=gemini_paid_critical_direct '
+                  'status=${criticalPaidPersistStatus.runtimeType}',
+                );
+
+                if (criticalPaidPersistStatus is SessionPersistSynced) {
+                  _freeStreamTxn.emitPersistTelemetry(
+                    sessionId: activeSessionCtx.sessionId,
+                  );
+                } else {
+                  // ignore: avoid_print
+                  print(
+                    '[SESSION_PERSIST][NOT_SYNCED] '
+                    'requestId=$thisRequestId '
+                    'providerRequestId=$requestId '
+                    'sessionId=${activeSessionCtx.sessionId} '
+                    'route=gemini_paid_critical_direct '
+                    'status=${criticalPaidPersistStatus.runtimeType}',
+                  );
+                }
+              }
             } else if (kDebugMode) {
               debugPrint(
-                  '[HISTORY_SANITIZER] critical_paid_fallback_blocked reason=isFallbackText');
+                '[HISTORY_SANITIZER] critical_paid_fallback_blocked reason=isFallbackText',
+              );
             }
             wrappedOnDone(paidText); // BUILD 254
             // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path success).
             ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
             _completeAiRequestOnce(thisRequestId);
           } else {
             debugPrint(
-                '[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}');
+              '[AI_PROVIDER] critical_paid_failed requestId=$requestId reason=${paidResult.errorCode}',
+            );
             // Pago falhou → safe-card (sem tentar Free — intencional no modo crítico)
             wrappedOnDone(_timeoutSafeCard(_lang)); // BUILD 254
             // MICRO-BUILD 462E-A.5.3: release cache + coordinator AFTER UI emission (critical path failure).
             ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
             _completeAiRequestOnce(thisRequestId);
           }
         }());
@@ -6884,13 +9215,16 @@ class AppProvider extends ChangeNotifier {
       if (systemPrompt.length > _kFreeLayerCharCeiling) {
         // ignore: avoid_print
         print(
-            '[AI_ROUTER] Payload massivo detectado (Chars: ${systemPrompt.length}) '
-            '-> Conflitos Removidos -> Ignorando Gemini Free '
-            '-> Direcionando para Canal Dedicado');
+          '[AI_ROUTER] Payload massivo detectado (Chars: ${systemPrompt.length}) '
+          '-> Conflitos Removidos -> Ignorando Gemini Free '
+          '-> Direcionando para Canal Dedicado',
+        );
         // PRE-CALL Id Guard (BUILD 320 pattern)
         if (_activeRequestId != thisRequestId) {
-          debugPrint('[BUILD323][BYPASS_GUARD] massive_payload PRE-CALL drop: '
-              'activeId=$_activeRequestId thisRequestId=$thisRequestId');
+          debugPrint(
+            '[BUILD323][BYPASS_GUARD] massive_payload PRE-CALL drop: '
+            'activeId=$_activeRequestId thisRequestId=$thisRequestId',
+          );
           return false;
         }
         unawaited(tryPaidFallback('massive_payload_bypass_14k'));
@@ -6906,10 +9240,12 @@ class AppProvider extends ChangeNotifier {
       // NOTA: sendStream() inicia HTTP imediatamente (eagerly) — não é lazy.
       if (_canonicalTaskOverride.isNotEmpty) {
         // ignore: avoid_print
-        print('[CANONICAL_TASK_ENFORCEMENT] requestId=$thisRequestId '
-            'intent=${canonicalDecision!.intent.name} '
-            'task=$_canonicalTaskOverride '
-            'source=canonicalDecision regexSuppressed=true');
+        print(
+          '[CANONICAL_TASK_ENFORCEMENT] requestId=$thisRequestId '
+          'intent=${canonicalDecision!.intent.name} '
+          'task=$_canonicalTaskOverride '
+          'source=canonicalDecision regexSuppressed=true',
+        );
       }
 
       final stream = AiGatewayService.sendStream(
@@ -6917,14 +9253,18 @@ class AppProvider extends ChangeNotifier {
         systemPrompt: systemPrompt,
         apiKey: geminiApiKey, // ← chave do app (admin), carregada do Firestore
         // BUILD 249: thread-filtered history — empty on new case, minimal on continuation
-        history: List.unmodifiable(ClinicalThreadManager.buildThreadHistory(
-          fullHistory: _sanitizedHistory,
-          status: threadStatus,
-          isPlantaoMode: !longResponse,
-          // MICRO-BUILD 462E-A.5.2: canonical override propagated to thread label.
-          currentTaskLabel: AiSmartRouter.detectTaskLabel(input,
-              canonicalOverride: _canonicalTaskOverride), // BUILD 304 [G1b]
-        )),
+        history: List.unmodifiable(
+          ClinicalThreadManager.buildThreadHistory(
+            fullHistory: _sanitizedHistory,
+            status: threadStatus,
+            isPlantaoMode: !longResponse,
+            // MICRO-BUILD 462E-A.5.2: canonical override propagated to thread label.
+            currentTaskLabel: AiSmartRouter.detectTaskLabel(
+              input,
+              canonicalOverride: _canonicalTaskOverride,
+            ), // BUILD 304 [G1b]
+          ),
+        ),
         useGrounding: true,
         longResponse: longResponse, // false=Motor Plantão / true=Motor Estudos
         appLanguage: _lang, // Build 190: Language Lock Absoluto — idioma do app
@@ -6952,8 +9292,9 @@ class AppProvider extends ChangeNotifier {
       _globalTimeoutTimer = Timer(Duration(milliseconds: globalTimeoutMs), () {
         final elapsedMs = DateTime.now().millisecondsSinceEpoch - globalStartMs;
         debugPrint(
-            '[AI_TIMEOUT][BUILD320] mode=${longResponse ? "estudo" : "plantao"} '
-            'timeoutMs=$globalTimeoutMs provider=free elapsedMs=$elapsedMs requestId=$thisRequestId');
+          '[AI_TIMEOUT][BUILD320] mode=${longResponse ? "estudo" : "plantao"} '
+          'timeoutMs=$globalTimeoutMs provider=free elapsedMs=$elapsedMs requestId=$thisRequestId',
+        );
 
         // PHASE 4 — o timeout encerra somente a tentativa Free.
         // A propriedade terminal impede onDone/chunks tardios do stream antigo,
@@ -7024,24 +9365,30 @@ class AppProvider extends ChangeNotifier {
               'http_400',
               'unexpected',
             };
-            final bool isAlwaysFallback =
-                _alwaysFallbackCodes.contains(errCode);
+            final bool isAlwaysFallback = _alwaysFallbackCodes.contains(
+              errCode,
+            );
             if (isAlwaysFallback &&
                 ProviderRouterService.shouldTriggerPaidFallback(errCode)) {
               if (kDebugMode)
                 debugPrint(
-                    '[AI_ROUTER] BUILD334 $errCode → fallback=paid silencioso (${rawPartial.length}c descartados)');
+                  '[AI_ROUTER] BUILD334 $errCode → fallback=paid silencioso (${rawPartial.length}c descartados)',
+                );
               accumulator
                   .clear(); // descarta parcial — nunca exibir resposta incompleta
               // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
               unawaited(() async {
                 final handled = await tryPaidFallback(errCode);
                 if (!handled) {
-                  wrappedOnError(_lang == 'es'
-                      ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
-                      : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                  wrappedOnError(
+                    _lang == 'es'
+                        ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                        : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕',
+                  );
                   ExternalToolLinkEngine.releaseCanonicalDecision(
-                      requestId: thisRequestId, decision: canonicalDecision);
+                    requestId: thisRequestId,
+                    decision: canonicalDecision,
+                  );
                   _completeAiRequestOnce(thisRequestId);
                 }
               }());
@@ -7052,17 +9399,22 @@ class AppProvider extends ChangeNotifier {
                 rawPartial.length <= 40) {
               if (kDebugMode)
                 debugPrint(
-                    '[AI_ROUTER] free_error errCode=$errCode → aciona paid');
+                  '[AI_ROUTER] free_error errCode=$errCode → aciona paid',
+                );
               accumulator.clear();
               // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
               unawaited(() async {
                 final handled = await tryPaidFallback(errCode);
                 if (!handled) {
-                  wrappedOnError(_lang == 'es'
-                      ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
-                      : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                  wrappedOnError(
+                    _lang == 'es'
+                        ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                        : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕',
+                  );
                   ExternalToolLinkEngine.releaseCanonicalDecision(
-                      requestId: thisRequestId, decision: canonicalDecision);
+                    requestId: thisRequestId,
+                    decision: canonicalDecision,
+                  );
                   _completeAiRequestOnce(thisRequestId);
                 }
               }());
@@ -7077,16 +9429,22 @@ class AppProvider extends ChangeNotifier {
                 isPlantaoMode: !longResponse,
                 appLanguage: _lang,
               );
-              final partialText = partialSanitized.text;
+              final partialText = _applyPlantaoClinicalRegimenOutputGuard(
+                userInput: input,
+                assistantOutput: partialSanitized.text,
+                longResponse: longResponse,
+                requestId: thisRequestId,
+              );
               // HOTFIX 247D: nunca adicionar fallback ao histórico da API
               if (!_isFallbackText(partialText)) {
                 _aiHistory
-                  ..add({'role': 'user', 'content': input})
+                  ..add({'role': 'user', 'content': persistedUserInput})
                   ..add({'role': 'assistant', 'content': partialText});
                 while (_aiHistory.length > 20) _aiHistory.removeAt(0);
               } else if (kDebugMode) {
                 debugPrint(
-                    '[HISTORY_SANITIZER] partial_fallback_blocked reason=isFallbackText');
+                  '[HISTORY_SANITIZER] partial_fallback_blocked reason=isFallbackText',
+                );
               }
               wrappedOnDone(partialText); // BUILD 254
               return;
@@ -7100,12 +9458,26 @@ class AppProvider extends ChangeNotifier {
 
           if (chunk.text.isNotEmpty) {
             accumulator.write(chunk.text);
-            onChunk(accumulator.toString()); // texto acumulado até agora
+            guardiaTraceOnChunk(
+              accumulator.toString(),
+            ); // texto acumulado até agora
           }
 
           if (chunk.isDone && !chunk.isError) {
             // Resposta completa — dispara somente uma vez (guard anti-duplicata)
             // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
+            // STREAM-ZERO-I.1: um evento terminal sem conteúdo não representa
+            // uma resposta concluída. Deixa stream_onDone assumir e iniciar o
+            // mecanismo de auto-retry já existente.
+            if (accumulator.toString().trim().isEmpty) {
+              if (kDebugMode) {
+                debugPrint(
+                  '[EMPTY_TERMINAL_DEFER] source=chunk_isDone '
+                  'action=wait_stream_onDone',
+                );
+              }
+              return;
+            }
             if (!tryAcquireTerminalOwnership('chunk_isDone')) return;
             _globalTimeoutTimer
                 ?.cancel(); // BUILD 241: cancela timer pois terminamos
@@ -7113,12 +9485,15 @@ class AppProvider extends ChangeNotifier {
             // BUILD 252: print do rawText ANTES de sanitizeAndCheck — expõe saída bruta.
             final rawText = accumulator.toString().trim();
             // ignore: avoid_print
-            print('[RAW_AI_OUTPUT][FREE_STREAM] len=${rawText.length} '
-                'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}');
+            print(
+              '[RAW_AI_OUTPUT][FREE_STREAM] len=${rawText.length} '
+              'requestId=$requestId mode=${longResponse ? "estudo" : "plantao"}',
+            );
             if (rawText.length < 100) {
               // ignore: avoid_print
               print(
-                  '[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta do Free: "${rawText.length < 200 ? rawText : rawText.substring(0, 200)}"');
+                '[RAW_AI_OUTPUT] ⚠️  ALERTA resposta curta do Free: "${rawText.length < 200 ? rawText : rawText.substring(0, 200)}"',
+              );
             }
 
             // ── MICRO-BUILD 462E-A.5.1: TruncationInspector HARD BARRIER ──────
@@ -7148,11 +9523,12 @@ class AppProvider extends ChangeNotifier {
                           TruncationConfidence.high)) {
                 // ignore: avoid_print
                 print(
-                    '[TRUNCATION_CHECK] BARRIER_TRIGGERED requestId=$thisRequestId '
-                    'reason=${truncCheck.violationReason} '
-                    'confidence=${truncCheck.confidenceLevel.name} '
-                    'mode=${longResponse ? "estudo" : "plantao"} '
-                    '→ initiating repair (free_stream path)');
+                  '[TRUNCATION_CHECK] BARRIER_TRIGGERED requestId=$thisRequestId '
+                  'reason=${truncCheck.violationReason} '
+                  'confidence=${truncCheck.confidenceLevel.name} '
+                  'mode=${longResponse ? "estudo" : "plantao"} '
+                  '→ initiating repair (free_stream path)',
+                );
 
                 final repairResult = await AiService.repairTruncated(
                   originalText: rawText,
@@ -7186,20 +9562,58 @@ class AppProvider extends ChangeNotifier {
                       appLanguage: _lang,
                     )
                   : null;
-              final finalText = sanitized?.text ?? barrierText;
+              final finalText = _applyPlantaoClinicalRegimenOutputGuard(
+                userInput: input,
+                assistantOutput: sanitized?.text ?? barrierText,
+                longResponse: longResponse,
+                requestId: thisRequestId,
+              );
               // HOTFIX 247D: nunca adicionar fallback ao histórico da API
               if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
                 _aiHistory
-                  ..add({'role': 'user', 'content': input})
+                  ..add({'role': 'user', 'content': persistedUserInput})
                   ..add({'role': 'assistant', 'content': finalText});
                 while (_aiHistory.length > 20) _aiHistory.removeAt(0);
                 // MICRO-BUILD 462E-A.5.3.7: SESSION_PERSIST dedup key telemetry.
-                _freeStreamTxn.emitPersistTelemetry(sessionId: thisRequestId);
+                // AI-RECONSTRUCTION-R18.6N:
+                // Firebase/Firestore é a fonte canônica do histórico.
+                // uid, sessionId e requestId vêm do ActiveAiSessionContext.
+                final freePersistStatus = await persistAiExchangeOnce(
+                  context: activeSessionCtx,
+                  userInput: persistedUserInput,
+                  userDisplayText: persistedUserDisplayText,
+                  assistantOutput: finalText,
+                );
+                // ignore: avoid_print
+                print(
+                  '[SESSION_PERSIST][STATUS] '
+                  'requestId=$thisRequestId '
+                  'sessionId=${activeSessionCtx.sessionId} '
+                  'route=gemini_free_chunk_isDone '
+                  'status=${freePersistStatus.runtimeType}',
+                );
+
+                // A transação só registra assistantPersisted após sync real.
+                if (freePersistStatus is SessionPersistSynced) {
+                  _freeStreamTxn.emitPersistTelemetry(
+                    sessionId: activeSessionCtx.sessionId,
+                  );
+                } else {
+                  // ignore: avoid_print
+                  print(
+                    '[SESSION_PERSIST][NOT_SYNCED] '
+                    'requestId=$thisRequestId '
+                    'sessionId=${activeSessionCtx.sessionId} '
+                    'route=gemini_free_chunk_isDone '
+                    'status=${freePersistStatus.runtimeType}',
+                  );
+                }
               } else if (kDebugMode &&
                   finalText.isNotEmpty &&
                   _isFallbackText(finalText)) {
                 debugPrint(
-                    '[HISTORY_SANITIZER] free_done_fallback_blocked reason=isFallbackText');
+                  '[HISTORY_SANITIZER] free_done_fallback_blocked reason=isFallbackText',
+                );
               }
               _aiStreamActive = false;
               aiChatProvider.setStreaming(false); // BUILD 326
@@ -7228,11 +9642,12 @@ class AppProvider extends ChangeNotifier {
               // returned payload's requestId matches the displayed message's
               // requestId before rendering any tool calculator.
               if (!_freeStreamTxn.dropIfBusinessEventTerminal(
-                  callSite: 'canonical_finalizer')) {
+                callSite: 'canonical_finalizer',
+              )) {
                 if (_freeStreamTxn.tryMarkToolResolutionStarted()) {
                   // ── Canonical engine invocation — exactly once per request ──
                   final resolvedLink = ExternalToolLinkEngine.build(
-                    lastUserMessage: input,
+                    lastUserMessage: persistedUserInput,
                     lastAiResponse: finalText,
                     isPlantaoMode: !longResponse,
                     currentLanguage: _lang,
@@ -7256,28 +9671,34 @@ class AppProvider extends ChangeNotifier {
                     isAllowed: toolAllowed,
                   );
                   // ignore: avoid_print
-                  print('[EXT_TOOL_GATE] '
-                      'requestId=${_freeStreamTxn.parentRequestId} '
-                      'parentRequestId=${_freeStreamTxn.parentRequestId} '
-                      'transactionId=${_freeStreamTxn.transactionId} '
-                      'attemptId=${_freeStreamTxn.attemptId} '
-                      'phase=${_freeStreamTxn.phase.name} '
-                      'callSite=canonical_finalizer '
-                      'ownershipAcquired=true '
-                      'toolAllowed=$toolAllowed '
-                      'reason=$toolReason');
+                  print(
+                    '[EXT_TOOL_GATE] '
+                    'requestId=${_freeStreamTxn.parentRequestId} '
+                    'parentRequestId=${_freeStreamTxn.parentRequestId} '
+                    'transactionId=${_freeStreamTxn.transactionId} '
+                    'attemptId=${_freeStreamTxn.attemptId} '
+                    'phase=${_freeStreamTxn.phase.name} '
+                    'callSite=canonical_finalizer '
+                    'ownershipAcquired=true '
+                    'toolAllowed=$toolAllowed '
+                    'reason=$toolReason',
+                  );
                   if (toolAllowed) {
                     // ignore: avoid_print
-                    print('[EXT_TOOL_PAYLOAD_READY] '
-                        'requestId=${_freeStreamTxn.parentRequestId}');
+                    print(
+                      '[EXT_TOOL_PAYLOAD_READY] '
+                      'requestId=${_freeStreamTxn.parentRequestId}',
+                    );
                   }
                 } else {
                   // Duplicate gate call — should never happen in correct ordering,
                   // but logged for post-mortem analysis.
                   // ignore: avoid_print
-                  print('[EXT_TOOL_GATE][DUPLICATE_DROPPED] '
-                      'requestId=${_freeStreamTxn.parentRequestId} '
-                      'callSite=canonical_finalizer');
+                  print(
+                    '[EXT_TOOL_GATE][DUPLICATE_DROPPED] '
+                    'requestId=${_freeStreamTxn.parentRequestId} '
+                    'callSite=canonical_finalizer',
+                  );
                 }
               }
 
@@ -7285,23 +9706,43 @@ class AppProvider extends ChangeNotifier {
               // Persistence committed above ↑ → EXT_TOOL_GATE checked ↑ →
               // UI emitted → releaseDecision → completeAiRequest LAST.
               _freeStreamTxn.markCoordinatorCompleted();
-              wrappedOnDone(finalText.isNotEmpty
+              final String freeUiText = finalText.isNotEmpty
                   ? finalText
                   : _lang == 'es' // BUILD 254
                       ? 'No pude generar una respuesta. ¿Puedes reformular? ⚕ Apoyo educacional.'
-                      : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.');
+                      : 'Não consegui gerar uma resposta. Pode reformular? ⚕ Apoio educacional.';
+              final ClinicalStructuredOutput? freeClinicalOutput =
+                  !longResponse && finalText.isNotEmpty
+                      ? PlantaoLocalClinicalOutputAdapter.fromValidatedText(
+                          finalText,
+                        )
+                      : null;
+              if (kDebugMode) {
+                debugPrint(
+                  '[STRUCTURED_FREE][DERIVED] '
+                  'requestId=$thisRequestId '
+                  'source=chunk_isDone '
+                  'prescriptionCount='
+                  '${freeClinicalOutput?.prescricao.length ?? 0}',
+                );
+              }
+              wrappedOnDone(freeUiText, freeClinicalOutput);
               // Release canonical decision cache entry (COMPLETED) — after UI emit.
               ExternalToolLinkEngine.releaseCanonicalDecision(
-                  requestId: thisRequestId, decision: canonicalDecision);
+                requestId: thisRequestId,
+                decision: canonicalDecision,
+              );
               // ResumeCoordinator.complete() — TERMINAL POSITION (last in pyramid).
               _completeAiRequestOnce(thisRequestId);
             } on AiSafeOutputException catch (safeError) {
               // ── TERMINAL: DROP_PAYLOAD — free stream repair failure ───────────
               // ignore: avoid_print
-              print('[TRUNCATION_CHECK] DROP_PAYLOAD — REPAIR CRITICAL FAILURE '
-                  'requestId=${safeError.requestId} '
-                  'reason=${safeError.message} '
-                  'path=free_stream');
+              print(
+                '[TRUNCATION_CHECK] DROP_PAYLOAD — REPAIR CRITICAL FAILURE '
+                'requestId=${safeError.requestId} '
+                'reason=${safeError.message} '
+                'path=free_stream',
+              );
               _aiStreamActive = false;
               aiChatProvider.setStreaming(false);
               _aiStreamSub = null;
@@ -7312,7 +9753,9 @@ class AppProvider extends ChangeNotifier {
                     : 'Resposta interrompida (validação falhou). Tente novamente. ⚕',
               );
               ExternalToolLinkEngine.releaseCanonicalDecision(
-                  requestId: thisRequestId, decision: canonicalDecision);
+                requestId: thisRequestId,
+                decision: canonicalDecision,
+              );
               _completeAiRequestOnce(thisRequestId);
             }
           }
@@ -7343,7 +9786,9 @@ class AppProvider extends ChangeNotifier {
                   : 'Erro de rede no assistente IA. Tente novamente. ⚕',
             );
             ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
             _completeAiRequestOnce(thisRequestId); // BUILD 241 — TERMINAL
           }
           // fallbackHandled == true → tryPaidFallback already called release + complete.
@@ -7359,11 +9804,16 @@ class AppProvider extends ChangeNotifier {
             return;
           }
           _globalTimeoutTimer?.cancel(); // BUILD 241
-          final finalText = accumulator.toString().trim();
+          final finalText = _applyPlantaoClinicalRegimenOutputGuard(
+            userInput: input,
+            assistantOutput: accumulator.toString().trim(),
+            longResponse: longResponse,
+            requestId: thisRequestId,
+          );
           // HOTFIX 247D: nunca adicionar fallback ao histórico da API
           if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
             _aiHistory
-              ..add({'role': 'user', 'content': input})
+              ..add({'role': 'user', 'content': persistedUserInput})
               ..add({'role': 'assistant', 'content': finalText});
             while (_aiHistory.length > 20) _aiHistory.removeAt(0);
             _aiStreamActive = false;
@@ -7372,20 +9822,25 @@ class AppProvider extends ChangeNotifier {
             // MICRO-BUILD 462E-A.5.3.4+R5: wrappedOnDone → release → completeAiRequest LAST.
             wrappedOnDone(finalText); // BUILD 254
             ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
             _completeAiRequestOnce(thisRequestId);
           } else if (finalText.isNotEmpty && _isFallbackText(finalText)) {
             // É texto de fallback — exibe na UI mas não entra no histórico da API
             if (kDebugMode)
               debugPrint(
-                  '[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText');
+                '[HISTORY_SANITIZER] free_onDone_fallback_blocked reason=isFallbackText',
+              );
             _aiStreamActive = false;
             aiChatProvider.setStreaming(false); // BUILD 326
             _aiStreamSub = null;
             // MICRO-BUILD 462E-A.5.3.4+R5: wrappedOnDone → release → completeAiRequest LAST.
             wrappedOnDone(finalText); // BUILD 254
             ExternalToolLinkEngine.releaseCanonicalDecision(
-                requestId: thisRequestId, decision: canonicalDecision);
+              requestId: thisRequestId,
+              decision: canonicalDecision,
+            );
             _completeAiRequestOnce(thisRequestId);
           } else {
             // Stream fechou vazio — BUILD 432: tenta retry silencioso antes do paid fallback
@@ -7411,14 +9866,17 @@ class AppProvider extends ChangeNotifier {
               // Re-inicia streaming Free preservando estado de _thinking na UI
               // (aiChatProvider.setStreaming reativado para manter EcgLoadingBlock)
               if (kDebugMode) {
-                debugPrint('[BUILD432][AUTO_RETRY] stream empty → retry '
-                    '$_freeStreamRetryCount/1 requestId=$thisRequestId — '
-                    'UI mantida em thinking, soluço de rede ocultado');
+                debugPrint(
+                  '[BUILD432][AUTO_RETRY] stream empty → retry '
+                  '$_freeStreamRetryCount/1 requestId=$thisRequestId — '
+                  'UI mantida em thinking, soluço de rede ocultado',
+                );
               }
               // ignore: avoid_print
               print(
-                  '[BUILD432][AUTO_RETRY] empty_stream retry=$_freeStreamRetryCount '
-                  'requestId=$requestId');
+                '[BUILD432][AUTO_RETRY] empty_stream retry=$_freeStreamRetryCount '
+                'requestId=$requestId',
+              );
 
               // Re-aciona stream Free via AiGatewayService (mesmo gateway do fluxo original)
               unawaited(() async {
@@ -7426,13 +9884,15 @@ class AppProvider extends ChangeNotifier {
                 await Future<void>.delayed(const Duration(milliseconds: 800));
                 if (_activeRequestId != thisRequestId) {
                   debugPrint(
-                      '[BUILD432][AUTO_RETRY] requestId invalidado durante '
-                      'delay → retry cancelado');
+                    '[BUILD432][AUTO_RETRY] requestId invalidado durante '
+                    'delay → retry cancelado',
+                  );
                   return;
                 }
                 _aiStreamActive = true;
-                aiChatProvider
-                    .setStreaming(true); // reativa indicador de streaming
+                aiChatProvider.setStreaming(
+                  true,
+                ); // reativa indicador de streaming
                 final retryStream = AiGatewayService.sendStream(
                   userMessage: input,
                   systemPrompt: systemPrompt,
@@ -7446,19 +9906,32 @@ class AppProvider extends ChangeNotifier {
                   (chunk) async {
                     if (!chunk.isError && chunk.text.isNotEmpty) {
                       accumulator.write(chunk.text);
-                      onChunk(accumulator.toString());
+                      guardiaTraceOnChunk(accumulator.toString());
                     }
                     if (chunk.isDone && !chunk.isError) {
                       // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate for retry stream.
+                      // STREAM-ZERO-I.1: o segundo evento terminal vazio
+                      // deve deixar retry_onDone executar a escalada existente.
+                      if (accumulator.toString().trim().isEmpty) {
+                        if (kDebugMode) {
+                          debugPrint(
+                            '[EMPTY_TERMINAL_DEFER] '
+                            'source=retry_chunk_isDone '
+                            'action=wait_retry_onDone',
+                          );
+                        }
+                        return;
+                      }
                       if (!tryAcquireTerminalOwnership('retry_chunk_isDone'))
                         return;
                       _globalTimeoutTimer?.cancel();
                       final retryText = accumulator.toString().trim();
                       // ignore: avoid_print
                       print(
-                          '[BUILD432][AUTO_RETRY] done len=${retryText.length} '
-                          'requestId=$requestId '
-                          'finishReason=${chunk.finishReason ?? "none"}');
+                        '[BUILD432][AUTO_RETRY] done len=${retryText.length} '
+                        'requestId=$requestId '
+                        'finishReason=${chunk.finishReason ?? "none"}',
+                      );
 
                       String retryFinalText = retryText;
 
@@ -7483,12 +9956,14 @@ class AppProvider extends ChangeNotifier {
                               retryTruncCheck.confidenceLevel ==
                                   TruncationConfidence.high)) {
                         // ignore: avoid_print
-                        print('[TRUNCATION_CHECK] BARRIER_TRIGGERED '
-                            'requestId=$thisRequestId '
-                            'reason=${retryTruncCheck.violationReason} '
-                            'confidence=${retryTruncCheck.confidenceLevel.name} '
-                            'mode=${longResponse ? "estudo" : "plantao"} '
-                            '→ initiating repair (auto_retry path)');
+                        print(
+                          '[TRUNCATION_CHECK] BARRIER_TRIGGERED '
+                          'requestId=$thisRequestId '
+                          'reason=${retryTruncCheck.violationReason} '
+                          'confidence=${retryTruncCheck.confidenceLevel.name} '
+                          'mode=${longResponse ? "estudo" : "plantao"} '
+                          '→ initiating repair (auto_retry path)',
+                        );
 
                         final retryRepairResult =
                             await AiService.repairTruncated(
@@ -7526,43 +10001,106 @@ class AppProvider extends ChangeNotifier {
                         );
                       }
 
+                      retryFinalText = _applyPlantaoClinicalRegimenOutputGuard(
+                        userInput: input,
+                        assistantOutput: retryFinalText,
+                        longResponse: longResponse,
+                        requestId: thisRequestId,
+                      );
+
                       if (retryFinalText.isNotEmpty &&
                           !_isFallbackText(retryFinalText)) {
                         _aiHistory
-                          ..add({'role': 'user', 'content': input})
+                          ..add({'role': 'user', 'content': persistedUserInput})
                           ..add({
                             'role': 'assistant',
                             'content': retryFinalText,
                           });
                         while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+                        // AI-RECONSTRUCTION-R18.6P:
+                        // O auto-retry vencedor persiste no repositório canônico.
+                        // O ramo vazio continua escalando aos provedores pagos.
+                        final retryPersistStatus = await persistAiExchangeOnce(
+                          context: activeSessionCtx,
+                          userInput: persistedUserInput,
+                          userDisplayText: persistedUserDisplayText,
+                          assistantOutput: retryFinalText,
+                        );
+                        // ignore: avoid_print
+                        print(
+                          '[SESSION_PERSIST][STATUS] '
+                          'requestId=$thisRequestId '
+                          'sessionId=${activeSessionCtx.sessionId} '
+                          'route=gemini_free_retry_chunk_isDone '
+                          'status=${retryPersistStatus.runtimeType}',
+                        );
+
+                        // assistantPersisted somente após sincronização real.
+                        if (retryPersistStatus is SessionPersistSynced) {
+                          _freeStreamTxn.emitPersistTelemetry(
+                            sessionId: activeSessionCtx.sessionId,
+                          );
+                        } else {
+                          // ignore: avoid_print
+                          print(
+                            '[SESSION_PERSIST][NOT_SYNCED] '
+                            'requestId=$thisRequestId '
+                            'sessionId=${activeSessionCtx.sessionId} '
+                            'route=gemini_free_retry_chunk_isDone '
+                            'status=${retryPersistStatus.runtimeType}',
+                          );
+                        }
                         _aiStreamActive = false;
                         aiChatProvider.setStreaming(false);
                         _aiStreamSub = null;
                         // MICRO-BUILD 462E-A.5.3.4+R5: wrappedOnDone → release → completeAiRequest LAST.
-                        wrappedOnDone(retryFinalText);
+                        final ClinicalStructuredOutput? retryClinicalOutput =
+                            !longResponse && retryFinalText.isNotEmpty
+                                ? PlantaoLocalClinicalOutputAdapter
+                                    .fromValidatedText(
+                                    retryFinalText,
+                                  )
+                                : null;
+                        if (kDebugMode) {
+                          debugPrint(
+                            '[STRUCTURED_FREE][DERIVED] '
+                            'requestId=$thisRequestId '
+                            'source=retry_chunk_isDone '
+                            'prescriptionCount='
+                            '${retryClinicalOutput?.prescricao.length ?? 0}',
+                          );
+                        }
+                        wrappedOnDone(retryFinalText, retryClinicalOutput);
                         ExternalToolLinkEngine.releaseCanonicalDecision(
-                            requestId: thisRequestId,
-                            decision: canonicalDecision);
+                          requestId: thisRequestId,
+                          decision: canonicalDecision,
+                        );
                         _completeAiRequestOnce(thisRequestId);
                       } else {
                         // Retry também veio vazio → escala para paid
                         _aiStreamActive = false;
                         aiChatProvider.setStreaming(false);
                         _aiStreamSub = null;
-                        debugPrint('[BUILD432][AUTO_RETRY] retry also empty → '
-                            'escalando para paid fallback');
+                        debugPrint(
+                          '[BUILD432][AUTO_RETRY] retry also empty → '
+                          'escalando para paid fallback',
+                        );
                         // MICRO-BUILD 462E-A.5.3: delegate terminal ownership to fallback.
                         // If fallback returns false (stale), emit instability msg and complete.
                         unawaited(() async {
-                          final handled =
-                              await tryPaidFallback('empty_stream_after_retry');
+                          final handled = await tryPaidFallback(
+                            'empty_stream_after_retry',
+                          );
                           if (!handled) {
-                            wrappedOnError(_lang == 'es'
-                                ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
-                                : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                            wrappedOnError(
+                              _lang == 'es'
+                                  ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                                  : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕',
+                            );
                             ExternalToolLinkEngine.releaseCanonicalDecision(
-                                requestId: thisRequestId,
-                                decision: canonicalDecision);
+                              requestId: thisRequestId,
+                              decision: canonicalDecision,
+                            );
                             _completeAiRequestOnce(thisRequestId);
                           }
                         }());
@@ -7578,12 +10116,15 @@ class AppProvider extends ChangeNotifier {
                     // MICRO-BUILD 462E-A.5.3: await fallback; handle false (stale) case.
                     final handled = await tryPaidFallback('retry_stream_error');
                     if (!handled) {
-                      wrappedOnError(_lang == 'es'
-                          ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
-                          : 'Erro de rede no assistente IA. Tente novamente. ⚕');
+                      wrappedOnError(
+                        _lang == 'es'
+                            ? 'Error de red en el asistente IA. Intenta nuevamente. ⚕'
+                            : 'Erro de rede no assistente IA. Tente novamente. ⚕',
+                      );
                       ExternalToolLinkEngine.releaseCanonicalDecision(
-                          requestId: thisRequestId,
-                          decision: canonicalDecision);
+                        requestId: thisRequestId,
+                        decision: canonicalDecision,
+                      );
                       _completeAiRequestOnce(thisRequestId);
                     }
                   },
@@ -7601,15 +10142,19 @@ class AppProvider extends ChangeNotifier {
                     _aiStreamSub = null;
                     // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
                     unawaited(() async {
-                      final handled =
-                          await tryPaidFallback('empty_retry_onDone');
+                      final handled = await tryPaidFallback(
+                        'empty_retry_onDone',
+                      );
                       if (!handled) {
-                        wrappedOnError(_lang == 'es'
-                            ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
-                            : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                        wrappedOnError(
+                          _lang == 'es'
+                              ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                              : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕',
+                        );
                         ExternalToolLinkEngine.releaseCanonicalDecision(
-                            requestId: thisRequestId,
-                            decision: canonicalDecision);
+                          requestId: thisRequestId,
+                          decision: canonicalDecision,
+                        );
                         _completeAiRequestOnce(thisRequestId);
                       }
                     }());
@@ -7620,18 +10165,24 @@ class AppProvider extends ChangeNotifier {
             } else {
               // Esgotou retries → paid fallback
               if (kDebugMode) {
-                debugPrint('[AI_ROUTER] stream closed empty (retry esgotado) → '
-                    'paid fallback requestId=$thisRequestId');
+                debugPrint(
+                  '[AI_ROUTER] stream closed empty (retry esgotado) → '
+                  'paid fallback requestId=$thisRequestId',
+                );
               }
               // MICRO-BUILD 462E-A.5.3: delegate to fallback; handle false (stale) case.
               unawaited(() async {
                 final handled = await tryPaidFallback('empty_stream');
                 if (!handled) {
-                  wrappedOnError(_lang == 'es'
-                      ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
-                      : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕');
+                  wrappedOnError(
+                    _lang == 'es'
+                        ? 'Estamos con inestabilidad temporal en la IA. Intenta nuevamente. ⚕'
+                        : 'Estamos com instabilidade temporária na IA. Tente novamente. ⚕',
+                  );
                   ExternalToolLinkEngine.releaseCanonicalDecision(
-                      requestId: thisRequestId, decision: canonicalDecision);
+                    requestId: thisRequestId,
+                    decision: canonicalDecision,
+                  );
                   _completeAiRequestOnce(thisRequestId);
                 }
               }());
@@ -7680,7 +10231,8 @@ class AppProvider extends ChangeNotifier {
     // Guard: rejeita chamada se já há uma em andamento (evita duplicação)
     if (_aiAnswerInProgress) {
       debugPrint(
-          '[buildAIAnswer] chamada ignorada — já há resposta em andamento');
+        '[buildAIAnswer] chamada ignorada — já há resposta em andamento',
+      );
       return '';
     }
     _aiAnswerInProgress = true;
@@ -7712,10 +10264,11 @@ class AppProvider extends ChangeNotifier {
       _aiHistory.clear(); // contexto Gemini → zero
       _sessionMemory.reset(); // memória clínica → zero (reset duplo seguro)
       debugPrint(
-          '[HISTORY_SANITIZER] HARD RESET ATIVADO: Limpando _aiHistory de forma absoluta. '
-          'mode=plantao '
-          'strategy=empty sent=0 removed=$removed '
-          'reason=${threadStatusAnswer.reason}');
+        '[HISTORY_SANITIZER] HARD RESET ATIVADO: Limpando _aiHistory de forma absoluta. '
+        'mode=plantao '
+        'strategy=empty sent=0 removed=$removed '
+        'reason=${threadStatusAnswer.reason}',
+      );
     }
 
     // ── Passo 0: globalLanguageLock — bloqueia idioma da sessão ──────────────
@@ -7743,7 +10296,8 @@ class AppProvider extends ChangeNotifier {
       debugPrint('[RAG] intent=$intent | protocols=${finalProtocols.length}');
       if (finalProtocols.isNotEmpty)
         debugPrint(
-            '[RAG] protocols: ${finalProtocols.map((p) => p.substring(0, p.length.clamp(0, 60))).toList()}');
+          '[RAG] protocols: ${finalProtocols.map((p) => p.substring(0, p.length.clamp(0, 60))).toList()}',
+        );
     }
 
     // ── Passo 3: Análise local estruturada ────────────────────────────────
@@ -7780,12 +10334,15 @@ class AppProvider extends ChangeNotifier {
     // BUILD 253: log do tamanho real do systemPrompt no caminho buildAIAnswer.
     final _spCharsAns = systemPrompt.length;
     final _spTokensApproxAns = (_spCharsAns / 4).round();
-    print('[SYSTEM_PROMPT_AUDIT][buildAIAnswer] '
-        'systemPromptChars=$_spCharsAns systemPromptTokensApprox=$_spTokensApproxAns');
+    print(
+      '[SYSTEM_PROMPT_AUDIT][buildAIAnswer] '
+      'systemPromptChars=$_spCharsAns systemPromptTokensApprox=$_spTokensApproxAns',
+    );
     if (_spTokensApproxAns > 6000) {
       print(
-          '[SYSTEM_PROMPT_AUDIT] ⚠️  ALERTA buildAIAnswer: systemPrompt acima de 6000 tokens '
-          '(approx=$_spTokensApproxAns) — risco de Context Dilution.');
+        '[SYSTEM_PROMPT_AUDIT] ⚠️  ALERTA buildAIAnswer: systemPrompt acima de 6000 tokens '
+        '(approx=$_spTokensApproxAns) — risco de Context Dilution.',
+      );
     }
 
     // ── Passo 5: Gemini (prioridade) com Google Search Grounding ──────────
@@ -7797,13 +10354,17 @@ class AppProvider extends ChangeNotifier {
       // Garante API Key presente antes de chamar — pode ter sido perdida por reload
       if (!GeminiService.hasApiKey) {
         debugPrint(
-            '[buildAIAnswer] API Key ausente — recuperando automaticamente...');
+          '[buildAIAnswer] API Key ausente — recuperando automaticamente...',
+        );
         try {
-          final geminiKey = await FirestoreService.loadGeminiApiKey()
-              .timeout(const Duration(seconds: 5));
+          final geminiKey = await FirestoreService.loadGeminiApiKey().timeout(
+            const Duration(seconds: 5),
+          );
           if (geminiKey.isNotEmpty) {
-            GeminiService.setGeminiApiKey(geminiKey,
-                source: GeminiKeySource.appConfig); // BUILD 294
+            GeminiService.setGeminiApiKey(
+              geminiKey,
+              source: GeminiKeySource.appConfig,
+            ); // BUILD 294
             debugPrint('[buildAIAnswer] API Key recarregada do Firestore ✓');
           } else {
             // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js/eval)
@@ -7814,11 +10375,13 @@ class AppProvider extends ChangeNotifier {
           }
         } catch (e) {
           debugPrint(
-              '[buildAIAnswer] Firestore falhou: $e — tentando SharedPrefs...');
+            '[buildAIAnswer] Firestore falhou: $e — tentando SharedPrefs...',
+          );
           await GeminiService.initFromStorage();
           if (GeminiService.hasApiKey) {
             debugPrint(
-                '[buildAIAnswer] API Key restaurada do SharedPrefs (fallback) ✓');
+              '[buildAIAnswer] API Key restaurada do SharedPrefs (fallback) ✓',
+            );
           }
         }
       }
@@ -7827,11 +10390,13 @@ class AppProvider extends ChangeNotifier {
         userMessage: input,
         systemPrompt: systemPrompt,
         // BUILD 249: thread-filtered history — empty on new case, minimal on continuation
-        history: List.unmodifiable(ClinicalThreadManager.buildThreadHistory(
-          fullHistory: _sanitizedHistory,
-          status: threadStatusAnswer,
-          isPlantaoMode: true, // buildAIAnswer is always Plantão mode
-        )),
+        history: List.unmodifiable(
+          ClinicalThreadManager.buildThreadHistory(
+            fullHistory: _sanitizedHistory,
+            status: threadStatusAnswer,
+            isPlantaoMode: true, // buildAIAnswer is always Plantão mode
+          ),
+        ),
         maxTokens:
             2200, // Token base elevado — retry automático até 4000 se truncar
         useGrounding: true,
@@ -7846,14 +10411,16 @@ class AppProvider extends ChangeNotifier {
           while (_aiHistory.length > 20) _aiHistory.removeAt(0);
         } else if (kDebugMode) {
           debugPrint(
-              '[HISTORY_SANITIZER] buildAIAnswer_fallback_blocked reason=isFallbackText');
+            '[HISTORY_SANITIZER] buildAIAnswer_fallback_blocked reason=isFallbackText',
+          );
         }
         return geminiResult.text;
       }
 
       // Gemini falhou — logar o erro para diagnóstico
       debugPrint(
-          '[buildAIAnswer] Gemini ERRO: code=${geminiResult.errorCode} text=${geminiResult.text.substring(0, geminiResult.text.length.clamp(0, 100))}');
+        '[buildAIAnswer] Gemini ERRO: code=${geminiResult.errorCode} text=${geminiResult.text.substring(0, geminiResult.text.length.clamp(0, 100))}',
+      );
 
       // Build 126 — TOLERÂNCIA A FALHAS DE FORMATO:
       // Se o Gemini retornou texto bruto mesmo com isError=true (ex: formato
@@ -7877,7 +10444,8 @@ class AppProvider extends ChangeNotifier {
           while (_aiHistory.length > 20) _aiHistory.removeAt(0);
         } else if (kDebugMode) {
           debugPrint(
-              '[HISTORY_SANITIZER] buildAIAnswer_rawContent_blocked reason=isFallbackText');
+            '[HISTORY_SANITIZER] buildAIAnswer_rawContent_blocked reason=isFallbackText',
+          );
         }
         return rawContent;
       }
@@ -7946,11 +10514,13 @@ class AppProvider extends ChangeNotifier {
       userMessage: input,
       systemPrompt: systemPrompt,
       // BUILD 249: thread-filtered history — empty on new case, minimal on continuation
-      history: List.unmodifiable(ClinicalThreadManager.buildThreadHistory(
-        fullHistory: _sanitizedHistory,
-        status: threadStatusAnswer,
-        isPlantaoMode: true, // buildAIAnswer is always Plantão mode
-      )),
+      history: List.unmodifiable(
+        ClinicalThreadManager.buildThreadHistory(
+          fullHistory: _sanitizedHistory,
+          status: threadStatusAnswer,
+          isPlantaoMode: true, // buildAIAnswer is always Plantão mode
+        ),
+      ),
       maxTokens: 1100, // Passo 6 OpenAI legado — mesmo limite do Gemini
     );
 
@@ -7989,13 +10559,17 @@ class AppProvider extends ChangeNotifier {
       while (_aiHistory.length > 20) _aiHistory.removeAt(0);
     } else if (kDebugMode) {
       debugPrint(
-          '[HISTORY_SANITIZER] openai_result_blocked reason=isFallbackText');
+        '[HISTORY_SANITIZER] openai_result_blocked reason=isFallbackText',
+      );
     }
     return result.text;
   }
 
   // ── Retrieval estendido: retorna até 6 protocolos (para casos complexos) ──
-  List<String> _matchProtocolsExtended(String normalizedQuery) {
+  List<String> _matchProtocolsExtended(
+    String normalizedQuery, {
+    List<ProtocolModel>? matchedProtocols,
+  }) {
     const _highRiskIds = {
       'avc_hemorragico',
       'avc_isquemico',
@@ -8045,6 +10619,7 @@ class AppProvider extends ChangeNotifier {
       final isHighRisk = _highRiskIds.any((id) => p.id.contains(id));
       final minScore = isHighRisk ? 2 : 1;
       if (matchCount >= minScore) {
+        matchedProtocols?.add(p);
         final actions = p.getActions(_lang).take(4).join(' | ');
         // Extrai trecho da definition para contexto clínico adicional
         final defRaw = tDB(p.definition);
@@ -8053,9 +10628,11 @@ class AppProvider extends ChangeNotifier {
             : '';
         final defLine =
             defExcerpt.isNotEmpty ? '\n  Contexto: $defExcerpt...' : '';
-        results.add('• [${tDB(p.title)}]\n'
-            '  Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 180))}...$defLine\n'
-            '  Conduta: $actions');
+        results.add(
+          '• [${tDB(p.title)}]\n'
+          '  Reconhecer: ${tDB(p.recognize).substring(0, tDB(p.recognize).length.clamp(0, 180))}...$defLine\n'
+          '  Conduta: $actions',
+        );
         if (results.length >= 6) break;
       }
     }
@@ -8114,13 +10691,13 @@ class AppProvider extends ChangeNotifier {
           'fibrilac ventr',
           'tv sem pulso',
           'reanimac',
-          'acls'
+          'acls',
         ],
         exams: [
           'Monitor/desfibrilador',
           'Glicemia pós-ROSC',
           'Gasometria pós-ROSC',
-          'ECG pós-ROSC'
+          'ECG pós-ROSC',
         ],
         flags: [
           es
@@ -8128,20 +10705,20 @@ class AppProvider extends ChangeNotifier {
               : 'ACLS imediato: RCP de alta qualidade + desfibrilação',
           es
               ? 'Adrenalina 1 mg IV cada 3–5 min'
-              : 'Adrenalina 1 mg IV cada 3–5 min'
+              : 'Adrenalina 1 mg IV cada 3–5 min',
         ],
         differentials: es
             ? [
                 'FV/TVSP (desfibrilable)',
                 'AESP (no desfibrilable)',
                 'Asistolia',
-                'Causas 5H5T (hipoxia, hipovolemia, hipotermia, hipo/hiperpotasemia, hidrogenión, tensión neumotórax, taponamiento, trombosis, tóxicos)'
+                'Causas 5H5T (hipoxia, hipovolemia, hipotermia, hipo/hiperpotasemia, hidrogenión, tensión neumotórax, taponamiento, trombosis, tóxicos)',
               ]
             : [
                 'FV/TVSP (desfibrilável)',
                 'AESP (não desfibrilável)',
                 'Assistolia',
-                'Causas 5H5T (hipóxia, hipovolemia, hipotermia, hipo/hipercalemia, íon H+, tensão pneumotórax, tamponamento, trombose, tóxicos)'
+                'Causas 5H5T (hipóxia, hipovolemia, hipotermia, hipo/hipercalemia, íon H+, tensão pneumotórax, tamponamento, trombose, tóxicos)',
               ],
         treatment: es
             ? [
@@ -8150,7 +10727,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Adrenalina 1 mg IV cada 3-5 min (desde el 2º ciclo en no desfibrilables)',
                 '4. Amiodarona 300 mg IV en FV/TVSP refractaria (2ª dosis: 150 mg)',
                 '5. Identificar y corregir causas reversibles (5H5T)',
-                '6. Cuidados post-ROSC: normoxia, normocapnia, hipotermia terapéutica'
+                '6. Cuidados post-ROSC: normoxia, normocapnia, hipotermia terapéutica',
               ]
             : [
                 '1. RCP de alta qualidade: 30:2, profundidade 5-6 cm, frequência 100-120/min',
@@ -8158,7 +10735,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Adrenalina 1 mg IV a cada 3-5 min (a partir do 2º ciclo em não desfibriláveis)',
                 '4. Amiodarona 300 mg IV em FV/TVSP refratária (2ª dose: 150 mg)',
                 '5. Identificar e corrigir causas reversíveis (5H5T)',
-                '6. Cuidados pós-ROSC: normóxia, normocapnia, hipotermia terapêutica'
+                '6. Cuidados pós-ROSC: normóxia, normocapnia, hipotermia terapêutica',
               ],
         guidelines: ['AHA ACLS 2020', 'ILCOR 2020', 'ERC 2021'],
       ),
@@ -8179,13 +10756,13 @@ class AppProvider extends ChangeNotifier {
           'hipoperfus',
           'extremid frias',
           'pam ',
-          'vasopressor'
+          'vasopressor',
         ],
         exams: [
           es ? 'Lactato arterial' : 'Lactato arterial',
           'Gasometria',
           'ECG',
-          es ? 'Ecocardiograma a pie de cama' : 'Ecocardiograma beira-leito'
+          es ? 'Ecocardiograma a pie de cama' : 'Ecocardiograma beira-leito',
         ],
         flags: [
           es
@@ -8193,7 +10770,7 @@ class AppProvider extends ChangeNotifier {
               : 'PAM <65 → vasopressor imediato',
           es
               ? 'Lactato >4 → reanimación 30 mL/kg'
-              : 'Lactato >4 → reanimação agressiva 30 mL/kg'
+              : 'Lactato >4 → reanimação agressiva 30 mL/kg',
         ],
         differentials: es
             ? [
@@ -8201,14 +10778,14 @@ class AppProvider extends ChangeNotifier {
                 'Choque cardiogénico (IC, IAM)',
                 'Choque hipovolémico (hemorragia, deshidratación)',
                 'Choque distributivo (anafilaxia, neurológico)',
-                'Choque obstructivo (TEP masivo, taponamiento)'
+                'Choque obstructivo (TEP masivo, taponamiento)',
               ]
             : [
                 'Choque séptico (febre, foco infeccioso)',
                 'Choque cardiogênico (IC, IAM)',
                 'Choque hipovolêmico (hemorragia, desidratação)',
                 'Choque distributivo (anafilaxia, neurogênico)',
-                'Choque obstrutivo (TEP maciço, tamponamento)'
+                'Choque obstrutivo (TEP maciço, tamponamento)',
               ],
         treatment: es
             ? [
@@ -8217,7 +10794,7 @@ class AppProvider extends ChangeNotifier {
                 '3. PAM <65 refractaria a volumen: noradrenalina 0,1-3 mcg/kg/min',
                 '4. Choque cardiogénico: dobutamina 5-20 mcg/kg/min + furosemida si congestión',
                 '5. Choque séptico: antibiótico en <1h + hemocultivos',
-                '6. Meta: PAM ≥65, diuresis >0,5 mL/kg/h, lactato decrescente'
+                '6. Meta: PAM ≥65, diuresis >0,5 mL/kg/h, lactato decrescente',
               ]
             : [
                 '1. Acesso IV/IO + monitor contínuo',
@@ -8225,12 +10802,12 @@ class AppProvider extends ChangeNotifier {
                 '3. PAM <65 refratária a volume: noradrenalina 0,1-3 mcg/kg/min',
                 '4. Choque cardiogênico: dobutamina 5-20 mcg/kg/min + furosemida se congestão',
                 '5. Choque séptico: antibiótico em <1h + hemoculturas',
-                '6. Meta: PAM ≥65, diurese >0,5 mL/kg/h, lactato decrescente'
+                '6. Meta: PAM ≥65, diurese >0,5 mL/kg/h, lactato decrescente',
               ],
         guidelines: [
           'Surviving Sepsis Campaign 2021',
           'AHA Cardiogenic Shock 2022',
-          'ESICM 2023'
+          'ESICM 2023',
         ],
       ),
 
@@ -8252,14 +10829,14 @@ class AppProvider extends ChangeNotifier {
           ' sca ',
           'troponina',
           'supradesnivel',
-          'sindrome coron'
+          'sindrome coron',
         ],
         // NOTA: ' sca ' com espaços evita falso positivo em "brusca" (bru|sca)
         exams: [
           es ? 'ECG seriado (0–6–12h)' : 'ECG seriado (0–6–12h)',
           es ? 'Troponina (0–3h)' : 'Troponina (0–3h)',
           'RX tórax',
-          es ? 'Glucemia' : 'Glicemia'
+          es ? 'Glucemia' : 'Glicemia',
         ],
         flags: [
           es
@@ -8267,7 +10844,7 @@ class AppProvider extends ChangeNotifier {
               : 'Supradesnivelamento ST → cateterismo urgente',
           es
               ? 'Hipotensión → choque cardiogénico'
-              : 'Hipotensão → choque cardiogênico'
+              : 'Hipotensão → choque cardiogênico',
         ],
         differentials: es
             ? [
@@ -8276,7 +10853,7 @@ class AppProvider extends ChangeNotifier {
                 'Disección aórtica (dolor desgarrador, asimetría PA)',
                 'Pericarditis (mejora sentado, roce)',
                 'TEP (disnea, hipoxia, S1Q3T3)',
-                'Espasmo esofágico (alivia con nitrato)'
+                'Espasmo esofágico (alivia con nitrato)',
               ]
             : [
                 'IAMCSST (supradesnivelamento ST, reperfusão urgente)',
@@ -8284,7 +10861,7 @@ class AppProvider extends ChangeNotifier {
                 'Dissecção aórtica (dor dilacerante, assimetria PA)',
                 'Pericardite (melhora sentado, atrito)',
                 'TEP (dispneia, hipóxia, S1Q3T3)',
-                'Espasmo esofágico (alivia com nitrato)'
+                'Espasmo esofágico (alivia com nitrato)',
               ],
         treatment: es
             ? [
@@ -8293,7 +10870,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Morfina 2-4 mg IV si dolor intenso (con precaución — puede reducir absorción antiagregantes)',
                 '4. Nitratos: isosorbida SL o IV si PA >100 (contraindicado en IAM de VD e hipotensión)',
                 '5. Betabloqueantes VO en ausencia de IC aguda/bradicardia',
-                '6. Killip II-IV: furosemida 40 mg IV + VNI si EAP'
+                '6. Killip II-IV: furosemida 40 mg IV + VNI si EAP',
               ]
             : [
                 '1. IAMCSST: AAS 300 mg + clopidogrel/ticagrelor + heparina → cateterismo em <90 min',
@@ -8301,12 +10878,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Morfina 2-4 mg IV se dor intensa (cautela — pode reduzir absorção dos antiplaquetários)',
                 '4. Nitratos: isossorbida SL ou IV se PA >100 (contraindicado em IAM de VD e hipotensão)',
                 '5. Betabloqueadores VO na ausência de IC aguda/bradicardia',
-                '6. Killip II-IV: furosemida 40 mg IV + VNI se EAP'
+                '6. Killip II-IV: furosemida 40 mg IV + VNI se EAP',
               ],
         guidelines: [
           'ESC NSTEMI 2023',
           'ESC STEMI 2023',
-          'AHA/ACC NSTE-ACS 2021'
+          'AHA/ACC NSTE-ACS 2021',
         ],
       ),
 
@@ -8324,7 +10901,7 @@ class AppProvider extends ChangeNotifier {
           'tvp',
           'wells',
           'd-dimero',
-          'angiotc torac'
+          'angiotc torac',
         ],
         exams: [
           es
@@ -8333,12 +10910,12 @@ class AppProvider extends ChangeNotifier {
           es ? 'AngioTC tórax' : 'AngioTC tórax',
           'ECG (S1Q3T3)',
           'Troponina',
-          'Score de Wells'
+          'Score de Wells',
         ],
         flags: [
           es
               ? 'Choque/hipotensión → trombolítico sistémico urgente'
-              : 'Choque/hipotensão → trombolítico sistêmico urgente'
+              : 'Choque/hipotensão → trombolítico sistêmico urgente',
         ],
         differentials: es
             ? [
@@ -8347,7 +10924,7 @@ class AppProvider extends ChangeNotifier {
                 'Neumotórax (timpanismo, ausencia de MV)',
                 'Pericarditis aguda',
                 'EPOC exacerbado',
-                'Ansiedad/hiperventilación'
+                'Ansiedad/hiperventilación',
               ]
             : [
                 'Pneumonia/pleurite (febre, crepitações)',
@@ -8355,7 +10932,7 @@ class AppProvider extends ChangeNotifier {
                 'Pneumotórax (timpanismo, ausência MV)',
                 'Pericardite aguda',
                 'DPOC exacerbado',
-                'Ansiedade/hiperventilação'
+                'Ansiedade/hiperventilação',
               ],
         treatment: es
             ? [
@@ -8364,7 +10941,7 @@ class AppProvider extends ChangeNotifier {
                 '3. TEP leve: rivaroxabán 15 mg 2×/día ×21 días → 20 mg/día, o apixabán 10 mg 2×/día ×7 días → 5 mg 2×/día',
                 '4. Contraindicación DOAC: heparina + warfarina (INR 2-3)',
                 '5. O2 si SpO2 <94%, vasopresores si hipotensión',
-                '6. Filtro VCI solo si anticoagulación contraindicada'
+                '6. Filtro VCI solo si anticoagulación contraindicada',
               ]
             : [
                 '1. TEP maciço (choque): trombolítico alteplase 100 mg IV em 2h (ou 0,6 mg/kg em 15 min em PCR)',
@@ -8372,7 +10949,7 @@ class AppProvider extends ChangeNotifier {
                 '3. TEP leve: rivaroxabana 15 mg 2×/dia ×21 dias → 20 mg/dia, ou apixabana 10 mg 2×/dia ×7 dias → 5 mg 2×/dia',
                 '4. Contraindicação DOAC: heparina + warfarina (INR 2-3)',
                 '5. O2 se SpO2 <94%, vasopressores se hipotensão',
-                '6. Filtro de VCI só se anticoagulação contraindicada'
+                '6. Filtro de VCI só se anticoagulação contraindicada',
               ],
         guidelines: ['ESC TEP 2019', 'ACCP VTE 2021', 'AHA PE 2023'],
       ),
@@ -8393,14 +10970,14 @@ class AppProvider extends ChangeNotifier {
           'flutter',
           'fibrilacao',
           'cardioversao',
-          'anticoag'
+          'anticoag',
         ],
         exams: [
           es ? 'ECG 12 derivaciones' : 'ECG 12 derivações',
           'TSH',
           es ? 'Electrolitos (K+, Mg2+)' : 'Eletrólitos (K+, Mg2+)',
           'Ecocardiograma',
-          es ? 'Score CHA₂DS₂-VASc' : 'Score CHA₂DS₂-VASc'
+          es ? 'Score CHA₂DS₂-VASc' : 'Score CHA₂DS₂-VASc',
         ],
         flags: [
           es
@@ -8408,20 +10985,20 @@ class AppProvider extends ChangeNotifier {
               : 'FC >150 + instabilidade → cardioversão elétrica imediata',
           es
               ? 'FA >48h sin anticoagulación → riesgo de AVC'
-              : 'FA >48h sem anticoagulação → risco de AVC por trombo'
+              : 'FA >48h sem anticoagulação → risco de AVC por trombo',
         ],
         differentials: es
             ? [
                 'Flutter auricular (ondas F en dientes de sierra, conducción 2:1/3:1)',
                 'TSV (QRS estrecho regular)',
                 'TV (QRS ancho, no responde a maniobras vagales)',
-                'WPW (FA preexcitada: PELIGRO con digoxina/verapamilo)'
+                'WPW (FA preexcitada: PELIGRO con digoxina/verapamilo)',
               ]
             : [
                 'Flutter atrial (ondas F em dentes de serra, condução 2:1/3:1)',
                 'TSV (QRS estreito regular)',
                 'TV (QRS largo, não responde a manobras vagais)',
-                'WPW (FA pré-excitada: PERIGO com digoxina/verapamil)'
+                'WPW (FA pré-excitada: PERIGO com digoxina/verapamil)',
               ],
         treatment: es
             ? [
@@ -8430,7 +11007,7 @@ class AppProvider extends ChangeNotifier {
                 '3. FA <48h: cardioversión farmacológica — amiodarona 150 mg IV en 10 min → 1 mg/min 6h',
                 '4. FA >48h o desconocida: anticoagular 3 semanas ANTES de cardiovertir (o ETE para descartar trombo)',
                 '5. Anticoagulación crónica: CHA₂DS₂-VASc ≥2 (♂) o ≥3 (♀) → DOAC (rivaroxabán/apixabán/dabigatrán)',
-                '6. Control de FC crónica: betabloqueante (metoprolol/carvedilol) o diltiazem'
+                '6. Control de FC crónica: betabloqueante (metoprolol/carvedilol) o diltiazem',
               ]
             : [
                 '1. Instável (hipotensão/síncope/EAP): cardioversão elétrica sincronizada 120-200J',
@@ -8438,7 +11015,7 @@ class AppProvider extends ChangeNotifier {
                 '3. FA <48h: cardioversão farmacológica — amiodarona 150 mg IV em 10 min → 1 mg/min 6h',
                 '4. FA >48h ou desconhecida: anticoagular 3 semanas ANTES de cardioverter (ou ETE para excluir trombo)',
                 '5. Anticoagulação crônica: CHA₂DS₂-VASc ≥2 (♂) ou ≥3 (♀) → DOAC (rivaroxabana/apixabana/dabigatrana)',
-                '6. Controle da FC crônica: betabloqueador (metoprolol/carvedilol) ou diltiazem'
+                '6. Controle da FC crônica: betabloqueador (metoprolol/carvedilol) ou diltiazem',
               ],
         guidelines: ['ESC FA 2020', 'AHA/ACC/HRS Afib 2023', 'SBC FA 2022'],
       ),
@@ -8462,14 +11039,14 @@ class AppProvider extends ChangeNotifier {
           'congest',
           'crepit',
           'b3 ',
-          'killip'
+          'killip',
         ],
         exams: [
           'BNP/NT-proBNP',
           'RX tórax',
           'Ecocardiograma',
           es ? 'Electrolitos' : 'Eletrólitos',
-          es ? 'Función renal' : 'Função renal'
+          es ? 'Función renal' : 'Função renal',
         ],
         flags: [
           es
@@ -8477,7 +11054,7 @@ class AppProvider extends ChangeNotifier {
               : 'SpO2 <90% + esforço respiratório → VNI (CPAP/BIPAP) imediata',
           es
               ? 'Hipotensión + IC → choque cardiogénico'
-              : 'Hipotensão + IC → choque cardiogênico: cuidado com diurético'
+              : 'Hipotensão + IC → choque cardiogênico: cuidado com diurético',
         ],
         differentials: es
             ? [
@@ -8485,14 +11062,14 @@ class AppProvider extends ChangeNotifier {
                 'TEP (D-dímero, angioTC)',
                 'Neumonía (fiebre, infiltrado asimétrico)',
                 'Crisis hipertensiva (PA muy elevada sin congestión previa)',
-                'Taponamiento cardíaco (JVD, ruidos apagados, hipotensión)'
+                'Taponamiento cardíaco (JVD, ruidos apagados, hipotensión)',
               ]
             : [
                 'DPOC exacerbado (tabagismo, sibilos)',
                 'TEP (D-dímero, angioTC)',
                 'Pneumonia (febre, infiltrado assimétrico)',
                 'Crise hipertensiva (PA muito elevada sem congestão prévia)',
-                'Tamponamento cardíaco (TJV, bulhas abafadas, hipotensão)'
+                'Tamponamento cardíaco (TJV, bulhas abafadas, hipotensão)',
               ],
         treatment: es
             ? [
@@ -8501,7 +11078,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Furosemida 40-80 mg IV (doble dosis si usuario crónico)',
                 '4. Nitratos IV si PAS >110 (isosorbida 1-10 mg/h) — contraindicados si PAS <100',
                 '5. IC con FEr baja: IECA/ARA II + betabloqueante + espironolactona + SGLT2i (mantenimiento)',
-                '6. Hipotensión + IC: dobutamina 5-20 mcg/kg/min, evitar diuréticos agresivos'
+                '6. Hipotensión + IC: dobutamina 5-20 mcg/kg/min, evitar diuréticos agresivos',
               ]
             : [
                 '1. Posição sentada + O2 para SpO2 ≥94%',
@@ -8509,7 +11086,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Furosemida 40-80 mg IV (dose dupla se usuário crônico)',
                 '4. Nitratos IV se PAS >110 (isossorbida 1-10 mg/h) — contraindicados se PAS <100',
                 '5. ICFEr: IECA/BRA + betabloqueador + espironolactona + SGLT2i (manutenção)',
-                '6. Hipotensão + IC: dobutamina 5-20 mcg/kg/min, evitar diurético agressivo'
+                '6. Hipotensão + IC: dobutamina 5-20 mcg/kg/min, evitar diurético agressivo',
               ],
         guidelines: ['ESC IC 2021', 'AHA/ACC HF 2022', 'SBC IC 2023'],
       ),
@@ -8525,13 +11102,13 @@ class AppProvider extends ChangeNotifier {
           'dor torn',
           'interescap',
           'assimetr',
-          'diseccion aort'
+          'diseccion aort',
         ],
         exams: [
           es ? 'AngioTC aorta urgente' : 'AngioTC aorta urgente',
           'RX tórax',
           'ECG',
-          es ? 'PA en ambos brazos' : 'PA nos 2 braços'
+          es ? 'PA en ambos brazos' : 'PA nos 2 braços',
         ],
         flags: [
           es
@@ -8539,7 +11116,7 @@ class AppProvider extends ChangeNotifier {
               : 'NÃO anticoagular sem confirmar diagnóstico',
           es
               ? 'Control FC+PA: meta PAS <120 + FC <60'
-              : 'Controle FC+PA imediato: meta PAS <120 + FC <60'
+              : 'Controle FC+PA imediato: meta PAS <120 + FC <60',
         ],
         differentials: es
             ? [
@@ -8547,14 +11124,14 @@ class AppProvider extends ChangeNotifier {
                 'TEP masivo',
                 'Pericarditis/derrame pericárdico',
                 'Estenosis aórtica grave',
-                'Dolor músculo-esquelético intercostal'
+                'Dolor músculo-esquelético intercostal',
               ]
             : [
                 'IAM (ECG + troponina, mas dissecção pode mimetizar IAM)',
                 'TEP maciço',
                 'Pericardite/derrame pericárdico',
                 'Estenose aórtica grave',
-                'Dor musculoesquelética intercostal'
+                'Dor musculoesquelética intercostal',
               ],
         treatment: es
             ? [
@@ -8563,7 +11140,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Tipo B (aorta descendente sin complicaciones): tratamiento médico — labetalol 20 mg IV + nitroprusiato',
                 '4. Meta FC <60 lpm + PAS <120 mmHg: esmolol 0,5 mg/kg IV → infusión 50-200 mcg/kg/min',
                 '5. CONTRAINDICADO: anticoagulación sin confirmación de diagnóstico',
-                '6. CUIDADO: en IAM con supra + disección → NO fibrinolítico'
+                '6. CUIDADO: en IAM con supra + disección → NO fibrinolítico',
               ]
             : [
                 '1. AngioTC aorta URGENTE — confirmar diagnóstico antes de qualquer intervenção',
@@ -8571,7 +11148,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Tipo B (aorta descendente sem complicações): tratamento médico — labetalol 20 mg IV + nitroprussiato',
                 '4. Meta FC <60 bpm + PAS <120 mmHg: esmolol 0,5 mg/kg IV → infusão 50-200 mcg/kg/min',
                 '5. CONTRAINDICADO: anticoagulação sem confirmação diagnóstica',
-                '6. CUIDADO: em IAM com supra + dissecção → NÃO fibrinolítico'
+                '6. CUIDADO: em IAM com supra + dissecção → NÃO fibrinolítico',
               ],
         guidelines: ['ESC Aorta 2014', 'AHA/ACC Aorta 2022', 'SBH Aorta 2023'],
       ),
@@ -8588,12 +11165,12 @@ class AppProvider extends ChangeNotifier {
           'qrs estrei',
           'arritm supravent',
           'palpit',
-          'taquic supravent'
+          'taquic supravent',
         ],
         exams: [
           es ? 'ECG 12 derivaciones' : 'ECG 12 derivações',
           es ? 'Electrolitos (K+, Mg2+)' : 'Eletrólitos (K+, Mg2+)',
-          'TSH'
+          'TSH',
         ],
         flags: [
           es
@@ -8601,7 +11178,7 @@ class AppProvider extends ChangeNotifier {
               : 'Instabilidade hemodinâmica → cardioversão elétrica',
           es
               ? 'Estable con QRS estrecho → maniobras vagales → adenosina'
-              : 'Estável QRS estreito → manobras vagais → adenosina'
+              : 'Estável QRS estreito → manobras vagais → adenosina',
         ],
         differentials: es
             ? [
@@ -8609,14 +11186,14 @@ class AppProvider extends ChangeNotifier {
                 'Taquicardia sinusal (causa secundaria: deshidratación, anemia, infección)',
                 'TV (QRS ancho ≥0,12s — más peligrosa)',
                 'WPW (δ wave en ritmo sinusal)',
-                'Taquicardia por reentrada nodal (TRNAV): pausa post-adenosina diagnóstica'
+                'Taquicardia por reentrada nodal (TRNAV): pausa post-adenosina diagnóstica',
               ]
             : [
                 'FA/Flutter (RR irregular)',
                 'Taquicardia sinusal (causa secundária: desidratação, anemia, infecção)',
                 'TV (QRS largo ≥0,12s — mais perigosa)',
                 'WPW (δ wave no ritmo sinusal)',
-                'Taquicardia por reentrada nodal (TRNAV): pausa pós-adenosina diagnóstica'
+                'Taquicardia por reentrada nodal (TRNAV): pausa pós-adenosina diagnóstica',
               ],
         treatment: es
             ? [
@@ -8625,7 +11202,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Sin respuesta a vagal: adenosina 6 mg IV rápido (+ flush 20 mL SF) → si no: 12 mg → 12 mg',
                 '4. FA preexcitada (WPW): CONTRAINDICADO adenosina/verapamilo/diltiazem/digoxina → procainamida',
                 '5. Metoprolol 2,5-5 mg IV lento si no responde a adenosina y QRS estrecho',
-                '6. Para prevención: ablación por catéter (curación >95% en TRNAV)'
+                '6. Para prevención: ablación por catéter (curación >95% en TRNAV)',
               ]
             : [
                 '1. Instável (síncope/hipotensão/EAP): cardioversão elétrica sincronizada 50-100J',
@@ -8633,7 +11210,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Sem resposta à vagal: adenosina 6 mg IV rápido (+ flush 20 mL SF) → se não: 12 mg → 12 mg',
                 '4. FA pré-excitada (WPW): CONTRAINDICADO adenosina/verapamil/diltiazem/digoxina → procainamida',
                 '5. Metoprolol 2,5-5 mg IV lento se sem resposta à adenosina e QRS estreito',
-                '6. Para prevenção: ablação por cateter (cura >95% em TRNAV)'
+                '6. Para prevenção: ablação por cateter (cura >95% em TRNAV)',
               ],
         guidelines: ['ESC SVT 2019', 'AHA/ACC SVT 2015', 'ACC SVT 2016'],
       ),
@@ -8657,7 +11234,7 @@ class AppProvider extends ChangeNotifier {
           'tpa ',
           'alteplase',
           'acv ',
-          'ave '
+          'ave ',
         ],
         exams: [
           es
@@ -8666,7 +11243,7 @@ class AppProvider extends ChangeNotifier {
           es ? 'Glucemia capilar' : 'Glicemia capilar',
           es ? 'Coagulación' : 'Coagulação',
           'ECG',
-          'PA'
+          'PA',
         ],
         flags: [
           es ? 'Ventana trombolítica: <4,5h' : 'Janela trombolítica: <4,5h',
@@ -8675,7 +11252,7 @@ class AppProvider extends ChangeNotifier {
               : 'Hipoglicemia mimetiza AVC — checar glicemia sempre',
           es
               ? 'HTA grave: tratar solo si PAS >220 (sin trombolítico)'
-              : 'HTA grave: tratar só se PAS >220 (sem trombolítico)'
+              : 'HTA grave: tratar só se PAS >220 (sem trombolítico)',
         ],
         differentials: es
             ? [
@@ -8684,7 +11261,7 @@ class AppProvider extends ChangeNotifier {
                 'Parálisis de Todd (postictal)',
                 'Encefalopatía hipertensiva',
                 'Tumor cerebral con déficit agudo',
-                'Crisis focal epiléptica'
+                'Crisis focal epiléptica',
               ]
             : [
                 'AVC hemorrágico (TC sem contraste urgente antes do trombolítico)',
@@ -8692,7 +11269,7 @@ class AppProvider extends ChangeNotifier {
                 'Paralisia de Todd (pós-ictal)',
                 'Encefalopatia hipertensiva',
                 'Tumor cerebral com déficit agudo',
-                'Crise focal epiléptica'
+                'Crise focal epiléptica',
               ],
         treatment: es
             ? [
@@ -8701,7 +11278,7 @@ class AppProvider extends ChangeNotifier {
                 '3. ACV isquémico + <4,5h + sin CI: alteplase 0,9 mg/kg IV (máx 90 mg, 10% en bolo + 90% en 60 min)',
                 '4. Contraindicaciones tPA: hemorragia en TC, cirugía reciente, INR >1,7, plaquetas <100k',
                 '5. NIHSS ≥6 + oclusión proximal: trombectomía mecánica hasta 24h (seleccionar por imagen)',
-                '6. PA: no tratar si <220/120 (sin trombolítico) — si tPA: meta PA <180/105 durante 24h'
+                '6. PA: no tratar si <220/120 (sin trombolítico) — si tPA: meta PA <180/105 durante 24h',
               ]
             : [
                 '1. TC crânio URGENTE sem contraste (excluir hemorragia)',
@@ -8709,12 +11286,12 @@ class AppProvider extends ChangeNotifier {
                 '3. AVC isquêmico + <4,5h + sem CI: alteplase 0,9 mg/kg IV (máx 90 mg, 10% em bolo + 90% em 60 min)',
                 '4. Contraindicações tPA: hemorragia no TC, cirurgia recente, INR >1,7, plaquetas <100k',
                 '5. NIHSS ≥6 + oclusão proximal: trombectomia mecânica até 24h (selecionar por imagem)',
-                '6. PA: não tratar se <220/120 (sem trombolítico) — se tPA: meta PA <180/105 por 24h'
+                '6. PA: não tratar se <220/120 (sem trombolítico) — se tPA: meta PA <180/105 por 24h',
               ],
         guidelines: [
           'AHA/ASA Stroke 2019',
           'ESC Stroke 2021',
-          'SBC/SBN AVC 2022'
+          'SBC/SBN AVC 2022',
         ],
       ),
 
@@ -8730,12 +11307,12 @@ class AppProvider extends ChangeNotifier {
           'hematoma subdur',
           'hematoma extradur',
           'hsa',
-          'hic '
+          'hic ',
         ],
         exams: [
           es ? 'TC cráneo urgente' : 'TC crânio urgente',
           es ? 'Coagulación completa' : 'Coagulação completa',
-          'Plaquetas'
+          'Plaquetas',
         ],
         flags: [
           es
@@ -8743,7 +11320,7 @@ class AppProvider extends ChangeNotifier {
               : 'CONTRAINDICADO trombolítico e anticoagulantes',
           es
               ? 'Revertir anticoagulación inmediatamente'
-              : 'Reverter anticoagulação imediatamente'
+              : 'Reverter anticoagulação imediatamente',
         ],
         differentials: es
             ? [
@@ -8751,14 +11328,14 @@ class AppProvider extends ChangeNotifier {
                 'Hematoma epidural (intervalo lúcido + trauma)',
                 'Hematoma subdural agudo/crónico',
                 'HIC espontánea (HTA, angiopatía amiloide, malformación vascular)',
-                'Transformación hemorrágica de ACV isquémico'
+                'Transformación hemorrágica de ACV isquémico',
               ]
             : [
                 'HSA (punção lombar se TC negativa — xantocromia)',
                 'Hematoma epidural (intervalo lúcido + trauma)',
                 'Hematoma subdural agudo/crônico',
                 'HIC espontânea (HAS, angiopatia amiloide, malformação vascular)',
-                'Transformação hemorrágica de AVC isquêmico'
+                'Transformação hemorrágica de AVC isquêmico',
               ],
         treatment: es
             ? [
@@ -8767,7 +11344,7 @@ class AppProvider extends ChangeNotifier {
                 '3. PA: meta PAS 130-150 mmHg (labetalol o nicardipino IV)',
                 '4. Manejo PIC: cabecera 30°, evitar hipotónicas, considerar manitol 0,5-1 g/kg',
                 '5. Convulsiones: LEV 1 g IV (no profilaxis rutinaria)',
-                '6. HSA: nimodipino 60 mg VO c/4h por 21 días (vasoespasmo), clipaje/espiral urgente'
+                '6. HSA: nimodipino 60 mg VO c/4h por 21 días (vasoespasmo), clipaje/espiral urgente',
               ]
             : [
                 '1. CONTRAINDICADOS: tPA, anticoagulantes, AAS',
@@ -8775,12 +11352,12 @@ class AppProvider extends ChangeNotifier {
                 '3. PA: meta PAS 130-150 mmHg (labetalol ou nicardipino IV)',
                 '4. Manejo PIC: cabeceira 30°, evitar hipotônicas, considerar manitol 0,5-1 g/kg',
                 '5. Convulsões: LEV 1 g IV (sem profilaxia rotineira)',
-                '6. HSA: nimodipino 60 mg VO 4/4h por 21 dias (vasoespasmo), clipagem/espiral urgente'
+                '6. HSA: nimodipino 60 mg VO 4/4h por 21 dias (vasoespasmo), clipagem/espiral urgente',
               ],
         guidelines: [
           'AHA/ASA ICH 2022',
           'ESC Stroke 2021',
-          'Neurocrit Care Society 2022'
+          'Neurocrit Care Society 2022',
         ],
       ),
 
@@ -8800,7 +11377,7 @@ class AppProvider extends ChangeNotifier {
           'benzodiaz',
           'diazepam',
           'midazolam',
-          'lorazepam'
+          'lorazepam',
         ],
         exams: [
           es ? 'Glucemia' : 'Glicemia',
@@ -8808,7 +11385,7 @@ class AppProvider extends ChangeNotifier {
               ? 'Electrolitos (Na+, Mg2+, Ca2+)'
               : 'Eletrólitos (Na+, Mg2+, Ca2+)',
           es ? 'TC cráneo' : 'TC crânio',
-          'EEG se status refratário'
+          'EEG se status refratário',
         ],
         flags: [
           es
@@ -8816,7 +11393,7 @@ class AppProvider extends ChangeNotifier {
               : 'Crise >5 min → benzodiazepínico IMEDIATO',
           es
               ? 'Status refractario → midazolam/propofol en UTI'
-              : 'Status refratário → midazolam/propofol em UTI'
+              : 'Status refratário → midazolam/propofol em UTI',
         ],
         differentials: es
             ? [
@@ -8825,7 +11402,7 @@ class AppProvider extends ChangeNotifier {
                 'Meningitis/encefalitis (fiebre + rigidez)',
                 'Intoxicación/abstinencia (opioides, BZD, alcohol)',
                 'Trastorno metabólico (Na+, Ca2+, uremia)',
-                'Crisis psicógena no epiléptica (PNES — movimientos asincrónicos)'
+                'Crisis psicógena no epiléptica (PNES — movimientos asincrónicos)',
               ]
             : [
                 'Hipoglicemia (tratar antes do BZD)',
@@ -8833,7 +11410,7 @@ class AppProvider extends ChangeNotifier {
                 'Meningite/encefalite (febre + rigidez)',
                 'Intoxicação/abstinência (opioides, BZD, álcool)',
                 'Distúrbio metabólico (Na+, Ca2+, uremia)',
-                'Crise psicogênica não epiléptica (PNES — movimentos assíncronos)'
+                'Crise psicogênica não epiléptica (PNES — movimentos assíncronos)',
               ],
         treatment: es
             ? [
@@ -8842,7 +11419,7 @@ class AppProvider extends ChangeNotifier {
                 '3. 20-40 min (status establecido): fenitoína 20 mg/kg IV a 50 mg/min o LEV 60 mg/kg IV (máx 4,5 g) o valproato 40 mg/kg IV',
                 '4. 40-60 min (status refractario): intubación + midazolam infusión 0,1-2 mg/kg/h o propofol 2-12 mg/kg/h',
                 '5. >60 min (status superrefractario): ketamina, fenobarbital, anestesia general',
-                '6. Investigar y corregir causa subyacente (glucemia, electrolitos, infección)'
+                '6. Investigar y corregir causa subyacente (glucemia, electrolitos, infección)',
               ]
             : [
                 '1. 0-5 min: decúbito lateral, O2, glicemia capilar, acesso IV',
@@ -8850,12 +11427,12 @@ class AppProvider extends ChangeNotifier {
                 '3. 20-40 min (status estabelecido): fenitoína 20 mg/kg IV a 50 mg/min ou LEV 60 mg/kg IV (máx 4,5 g) ou valproato 40 mg/kg IV',
                 '4. 40-60 min (status refratário): intubação + midazolam infusão 0,1-2 mg/kg/h ou propofol 2-12 mg/kg/h',
                 '5. >60 min (status super-refratário): cetamina, fenobarbital, anestesia geral',
-                '6. Investigar e corrigir causa subjacente (glicemia, eletrólitos, infecção)'
+                '6. Investigar e corrigir causa subjacente (glicemia, eletrólitos, infecção)',
               ],
         guidelines: [
           'Neurocrit Care 2023',
           'EAN Status 2022',
-          'SBN Status 2021'
+          'SBN Status 2021',
         ],
       ),
 
@@ -8874,7 +11451,7 @@ class AppProvider extends ChangeNotifier {
           'brudzinski',
           'petequi',
           'nucal',
-          'rigidez de nuca'
+          'rigidez de nuca',
         ],
         exams: [
           es
@@ -8883,7 +11460,7 @@ class AppProvider extends ChangeNotifier {
           es ? 'Punción lumbar' : 'Punção lombar',
           es ? 'Hemocultivos' : 'Hemoculturas',
           es ? 'Glucemia' : 'Glicemia',
-          'PCR'
+          'PCR',
         ],
         flags: [
           es
@@ -8891,7 +11468,7 @@ class AppProvider extends ChangeNotifier {
               : 'ATB IMEDIATO — não atrasar por PL',
           es
               ? 'Dexametasona 0,15 mg/kg IV antes o junto al ATB'
-              : 'Dexametasona 0,15 mg/kg IV antes ou junto ao ATB'
+              : 'Dexametasona 0,15 mg/kg IV antes ou junto ao ATB',
         ],
         differentials: es
             ? [
@@ -8899,14 +11476,14 @@ class AppProvider extends ChangeNotifier {
                 'HSA (TC + PL: xantocromía)',
                 'Absceso cerebral (fiebre + déficit focal + efecto de masa)',
                 'Meningitis criptocócica (inmunodeprimido)',
-                'Meningitis tuberculosa (curso subagudo, LCR con linfocitos)'
+                'Meningitis tuberculosa (curso subagudo, LCR con linfocitos)',
               ]
             : [
                 'Encefalite viral herpética (HSV — aciclovir empírico)',
                 'HSA (TC + PL: xantocromia)',
                 'Abscesso cerebral (febre + déficit focal + efeito de massa)',
                 'Meningite criptocócica (imunodeprimido)',
-                'Meningite tuberculosa (curso subagudo, LCR com linfócitos)'
+                'Meningite tuberculosa (curso subagudo, LCR com linfócitos)',
               ],
         treatment: es
             ? [
@@ -8915,7 +11492,7 @@ class AppProvider extends ChangeNotifier {
                 '3. <50 años inmunocompetente: ceftriaxona + vancomicina 15-20 mg/kg IV c/8h',
                 '4. >50 años o inmunosuprimido: + ampicilina 2 g IV c/4h (cobertura Listeria)',
                 '5. HSV sospechado (encefalitis): aciclovir 10 mg/kg IV c/8h',
-                '6. PL solo después de TC negativo para efecto de masa (si hay signos focales)'
+                '6. PL solo después de TC negativo para efecto de masa (si hay signos focales)',
               ]
             : [
                 '1. ATB EMPÍRICO IMEDIATO (não atrasar por punção): ceftriaxona 2 g IV 12/12h',
@@ -8923,12 +11500,12 @@ class AppProvider extends ChangeNotifier {
                 '3. <50 anos imunocompetente: ceftriaxona + vancomicina 15-20 mg/kg IV 8/8h',
                 '4. >50 anos ou imunossuprimido: + ampicilina 2 g IV 4/4h (cobertura Listeria)',
                 '5. HSV suspeito (encefalite): aciclovir 10 mg/kg IV 8/8h',
-                '6. PL apenas após TC negativo para efeito de massa (se sinais focais)'
+                '6. PL apenas após TC negativo para efeito de massa (se sinais focais)',
               ],
         guidelines: [
           'IDSA Meningitis 2017',
           'ESC Neuroinfection 2016',
-          'SBI Meningite 2021'
+          'SBI Meningite 2021',
         ],
       ),
 
@@ -8946,7 +11523,7 @@ class AppProvider extends ChangeNotifier {
           'choque septic',
           'sofa',
           'qsofa',
-          'bundle'
+          'bundle',
         ],
         exams: [
           'Lactato',
@@ -8954,14 +11531,14 @@ class AppProvider extends ChangeNotifier {
           es ? 'Urocultivos' : 'Urocultura',
           'PCR/Procalcitonina',
           es ? 'Función renal' : 'Função renal',
-          'Gasometria'
+          'Gasometria',
         ],
         flags: [
           es ? 'Antibiótico en <1 HORA' : 'Antibiótico em <1 HORA',
           es ? 'Lactato >4 → 30 mL/kg SF' : 'Lactato >4 → 30 mL/kg SF',
           es
               ? 'Vasopresor si PAM <65 tras volumen'
-              : 'Vasopressor se PAM <65 após volume'
+              : 'Vasopressor se PAM <65 após volume',
         ],
         differentials: es
             ? [
@@ -8969,14 +11546,14 @@ class AppProvider extends ChangeNotifier {
                 'Anafilaxia (exposición alergénica, urticaria)',
                 'Choque hemorrágico (buscar foco de sangrado)',
                 'Insuficiencia suprarrenal aguda (hipotensión refractaria)',
-                'Intoxicación grave (toxicológico)'
+                'Intoxicación grave (toxicológico)',
               ]
             : [
                 'Choque cardiogênico (BNP, ecocardiograma)',
                 'Anafilaxia (exposição alergênica, urticária)',
                 'Choque hemorrágico (buscar foco de sangramento)',
                 'Insuficiência suprarrenal aguda (hipotensão refratária)',
-                'Intoxicação grave (toxicológico)'
+                'Intoxicação grave (toxicológico)',
               ],
         treatment: es
             ? [
@@ -8985,7 +11562,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Lactato >2: reanimación SF 30 mL/kg en 3h; lactato >4: UCI urgente',
                 '4. PAM <65 refractaria: noradrenalina 0,1-3 mcg/kg/min (primera línea)',
                 '5. Corticoides solo en choque séptico refractario: hidrocortisona 200 mg/día IV',
-                '6. Controlar foco: drenaje quirúrgico/IR si absceso/empiema/peritonitis; retirar catéter infectado'
+                '6. Controlar foco: drenaje quirúrgico/IR si absceso/empiema/peritonitis; retirar catéter infectado',
               ]
             : [
                 '1. Hemoculturas (2 pares) + urocultura ANTES do ATB (sem atrasar)',
@@ -8993,12 +11570,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Lactato >2: reanimação SF 30 mL/kg em 3h; lactato >4: UTI urgente',
                 '4. PAM <65 refratária: noradrenalina 0,1-3 mcg/kg/min (primeira linha)',
                 '5. Corticoides apenas em choque séptico refratário: hidrocortisona 200 mg/dia IV',
-                '6. Controlar foco: drenagem cirúrgica/IR se abscesso/empiema/peritonite; retirar cateter infectado'
+                '6. Controlar foco: drenagem cirúrgica/IR se abscesso/empiema/peritonite; retirar cateter infectado',
               ],
         guidelines: [
           'Surviving Sepsis Campaign 2021',
           'ESICM 2023',
-          'SBI Sepse 2020'
+          'SBI Sepse 2020',
         ],
       ),
 
@@ -9015,7 +11592,7 @@ class AppProvider extends ChangeNotifier {
           'exacerbac pulm',
           'epoc',
           'paco2',
-          'hipercapn'
+          'hipercapn',
         ],
         exams: ['Gasometria arterial', 'RX tórax', 'SpO2', 'Hemograma', 'PCR'],
         flags: [
@@ -9024,7 +11601,7 @@ class AppProvider extends ChangeNotifier {
               : 'O2 CONTROLADO: SpO2 alvo 88–92%',
           es
               ? 'pH <7,35 + PaCO2 elevado → VNI inmediata'
-              : 'pH <7,35 + PaCO2 elevado → VNI imediata'
+              : 'pH <7,35 + PaCO2 elevado → VNI imediata',
         ],
         differentials: es
             ? [
@@ -9032,14 +11609,14 @@ class AppProvider extends ChangeNotifier {
                 'Neumotórax (timpanismo, ausencia MV, RX)',
                 'IC descompensada (ortopnea, edemas, BNP)',
                 'TEP (hipoxia + disnea aguda + D-dímero)',
-                'Broncoespasmo por AINE/betabloqueante'
+                'Broncoespasmo por AINE/betabloqueante',
               ]
             : [
                 'Pneumonia (febre, infiltrado RX, escarro purulento)',
                 'Pneumotórax (timpanismo, ausência MV, RX)',
                 'IC descompensada (ortopneia, edemas, BNP)',
                 'TEP (hipóxia + dispneia aguda + D-dímero)',
-                'Broncoespasmo por AINE/betabloqueador'
+                'Broncoespasmo por AINE/betabloqueador',
               ],
         treatment: es
             ? [
@@ -9048,7 +11625,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Corticoides sistémicos: prednisona 40 mg VO 5 días (o prednisolona 0,5 mg/kg/día)',
                 '4. ATB si: esputo purulento + aumento disnea: amoxicilina-clavulanato 875/125 mg c/12h ×5-7d o azitromicina',
                 '5. pH <7,35 + PaCO2 >45 + FR >25: VNI (BIPAP): IPAP 10-20, EPAP 4-8 cmH2O',
-                '6. Falla VNI/apneas/Glasgow ≤8: intubación orotraqueal'
+                '6. Falla VNI/apneas/Glasgow ≤8: intubación orotraqueal',
               ]
             : [
                 '1. O2 CONTROLADO: Venturi 24-28% → meta SpO2 88-92% (risco de retenção CO2 com O2 alto)',
@@ -9056,7 +11633,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Corticoides sistêmicos: prednisona 40 mg VO 5 dias (ou prednisolona 0,5 mg/kg/dia)',
                 '4. ATB se: escarro purulento + aumento dispneia: amoxicilina-clavulanato 875/125 mg 12/12h ×5-7d ou azitromicina',
                 '5. pH <7,35 + PaCO2 >45 + FR >25: VNI (BIPAP): IPAP 10-20, EPAP 4-8 cmH2O',
-                '6. Falha VNI/apneias/Glasgow ≤8: intubação orotraqueal'
+                '6. Falha VNI/apneias/Glasgow ≤8: intubação orotraqueal',
               ],
         guidelines: ['GOLD 2024', 'NICE COPD 2023', 'SBPT DPOC 2022'],
       ),
@@ -9075,18 +11652,18 @@ class AppProvider extends ChangeNotifier {
           'wheezing',
           'peak flow',
           'pfe ',
-          'broncodilatad'
+          'broncodilatad',
         ],
         exams: [
           'SpO2',
           es ? 'PFE (peak flow)' : 'PFE (peak flow)',
           es ? 'Gasometría si grave' : 'Gasometria se grave',
-          es ? 'RX tórax si duda' : 'RX tórax se dúvida'
+          es ? 'RX tórax si duda' : 'RX tórax se dúvida',
         ],
         flags: [
           es
               ? 'Silencio auscultatorio + SpO2 <90% → riesgo de PCR inminente'
-              : 'Silêncio auscultório + SpO2 <90% → risco de PCR iminente'
+              : 'Silêncio auscultório + SpO2 <90% → risco de PCR iminente',
         ],
         differentials: es
             ? [
@@ -9094,14 +11671,14 @@ class AppProvider extends ChangeNotifier {
                 'Neumotórax (dolor pleurítico, asimetría MV)',
                 'Cuerpo extraño en vía aérea (inicio súbito, sin historia de asma)',
                 'Anafilaxia (urticaria, angioedema, hipotensión)',
-                'Insuficiencia cardíaca (ortopnea, BNP)'
+                'Insuficiencia cardíaca (ortopnea, BNP)',
               ]
             : [
                 'DPOC exacerbado (tabagismo, hipercapnia)',
                 'Pneumotórax (dor pleurítica, assimetria MV)',
                 'Corpo estranho nas vias aéreas (início súbito, sem história de asma)',
                 'Anafilaxia (urticária, angioedema, hipotensão)',
-                'Insuficiência cardíaca (ortopneia, BNP)'
+                'Insuficiência cardíaca (ortopneia, BNP)',
               ],
         treatment: es
             ? [
@@ -9110,7 +11687,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Ipratropio 0,5 mg nebulizado junto con salbutamol en moderada/grave (primeras 3h)',
                 '4. Corticoides IV: hidrocortisona 100-200 mg c/6h o metilprednisolona 1 mg/kg/día',
                 '5. MgSO4 2 g IV en 20 min: en crisis grave con SpO2 <92% sin respuesta a SABA',
-                '6. Silencio auscultatorio + hipercapnia + fatiga: intubación (Ket 1-2 mg/kg para inducción)'
+                '6. Silencio auscultatorio + hipercapnia + fatiga: intubación (Ket 1-2 mg/kg para inducción)',
               ]
             : [
                 '1. O2 para SpO2 ≥92% (≥95% na gestação)',
@@ -9118,7 +11695,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Ipratrópio 0,5 mg nebulizado junto ao salbutamol em moderada/grave (primeiras 3h)',
                 '4. Corticoides IV: hidrocortisona 100-200 mg 6/6h ou metilprednisolona 1 mg/kg/dia',
                 '5. MgSO4 2 g IV em 20 min: em crise grave com SpO2 <92% sem resposta ao SABA',
-                '6. Silêncio auscultório + hipercapnia + fadiga: intubação (Ket 1-2 mg/kg para indução)'
+                '6. Silêncio auscultório + hipercapnia + fadiga: intubação (Ket 1-2 mg/kg para indução)',
               ],
         guidelines: ['GINA 2024', 'BTS/SIGN 2023', 'SBPT Asma 2020'],
       ),
@@ -9136,14 +11713,14 @@ class AppProvider extends ChangeNotifier {
           'cetona',
           'acidose metabol',
           'dka',
-          'ph baixo+diabet'
+          'ph baixo+diabet',
         ],
         exams: [
           es ? 'Glucemia' : 'Glicemia',
           es ? 'Cetonemia/cetonuria' : 'Cetonemia/cetonúria',
           es ? 'Gasometría venosa' : 'Gasometria venosa',
           es ? 'Electrolitos (K+ urgente)' : 'Eletrólitos (K+ urgente)',
-          'BUN/Cr'
+          'BUN/Cr',
         ],
         flags: [
           _dkahhsPotassiumGateText(es),
@@ -9154,14 +11731,14 @@ class AppProvider extends ChangeNotifier {
                 'Acidosis láctica (lactato, no cetonuria)',
                 'Cetosis alcohólica (glucemia normal/baja, alcohol)',
                 'Acidosis metabólica por intoxicación (salicilatos, metanol)',
-                'Pancreatitis aguda (lipasa, imagen)'
+                'Pancreatitis aguda (lipasa, imagen)',
               ]
             : [
                 'Estado Hiperosmolar Hiperglicêmico (EHH): glicemia >600, osmolaridade >320, sem cetonúria',
                 'Acidose lática (lactato, sem cetonúria)',
                 'Cetose alcoólica (glicemia normal/baixa, álcool)',
                 'Acidose metabólica por intoxicação (salicilatos, metanol)',
-                'Pancreatite aguda (lipase, imagem)'
+                'Pancreatite aguda (lipase, imagem)',
               ],
         treatment: es
             ? [
@@ -9170,7 +11747,7 @@ class AppProvider extends ChangeNotifier {
                 _dkahhsGlucoseDeclineText(true),
                 '4. K+ cada 2h: meta 4-5 mEq/L (la insulina baja K+ — riesgo fatal)',
                 '5. Bicarbonato solo si pH <6,9 (100 mEq en 2h)',
-                '6. Buscar causa: infección, abandono insulina, IAM, pancreatitis — tratar causa'
+                '6. Buscar causa: infección, abandono insulina, IAM, pancreatitis — tratar causa',
               ]
             : [
                 _dkahhsFluidRouteText(false),
@@ -9178,7 +11755,7 @@ class AppProvider extends ChangeNotifier {
                 _dkahhsGlucoseDeclineText(false),
                 '4. K+ a cada 2h: meta 4-5 mEq/L (insulina baixa K+ — risco fatal)',
                 '5. Bicarbonato apenas se pH <6,9 (100 mEq em 2h)',
-                '6. Buscar causa: infecção, abandono insulina, IAM, pancreatite — tratar causa'
+                '6. Buscar causa: infecção, abandono insulina, IAM, pancreatite — tratar causa',
               ],
         guidelines: ['ADA DKA 2023', 'ISPAD DKA 2022', 'SBD 2023'],
       ),
@@ -9192,11 +11769,11 @@ class AppProvider extends ChangeNotifier {
           'hipoglicemi',
           'glicemia bai',
           'hipoglucemi',
-          'glicose baixa'
+          'glicose baixa',
         ],
         exams: [
           es ? 'Glucemia capilar URGENTE' : 'Glicemia capilar URGENTE',
-          es ? 'Glucemia venosa' : 'Glicemia venosa'
+          es ? 'Glucemia venosa' : 'Glicemia venosa',
         ],
         flags: [
           es
@@ -9204,7 +11781,7 @@ class AppProvider extends ChangeNotifier {
               : 'Glicemia <60 → 50 mL glicose 50% IV imediato',
           es
               ? 'Sin acceso IV → glucagón 1 mg IM/SC'
-              : 'Sem acesso IV → glucagon 1 mg IM/SC'
+              : 'Sem acesso IV → glucagon 1 mg IM/SC',
         ],
         differentials: es
             ? [
@@ -9212,14 +11789,14 @@ class AppProvider extends ChangeNotifier {
                 'Insulinoma (hipoglucemia de ayuno, péptido C elevado)',
                 'Insuficiencia suprarrenal (hipotensión, hiponatremia)',
                 'Hipoglucemia alcohólica (gluconeogénesis inhibida)',
-                'Causa iatrogénica (error de dosis, ayuno inadecuado)'
+                'Causa iatrogénica (error de dosis, ayuno inadecuado)',
               ]
             : [
                 'Hipoglicemia por insulina/sulfonilureias (mais frequente)',
                 'Insulinoma (hipoglicemia de jejum, peptídeo C elevado)',
                 'Insuficiência suprarrenal (hipotensão, hiponatremia)',
                 'Hipoglicemia alcoólica (gliconeogênese inibida)',
-                'Causa iatrogênica (erro de dose, jejum inadequado)'
+                'Causa iatrogênica (erro de dose, jejum inadequado)',
               ],
         treatment: es
             ? [
@@ -9228,7 +11805,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Glicemia post-tratamiento ≥100: alimentación con carbohidrato complejo + proteína',
                 '4. Sulfonilurea/insulina de acción larga: observación mínima 12-24h (riesgo de recurrencia)',
                 '5. Buscar causa: dosis excesiva, aumento ejercicio, disminución ingesta, IRC (ajuste dosis)',
-                '6. Educación: hipoglucemia asintomática → riesgo de no reconocimiento → ajustar umbral terapéutico'
+                '6. Educación: hipoglucemia asintomática → riesgo de no reconocimiento → ajustar umbral terapéutico',
               ]
             : [
                 '1. Glicemia <70 consciente: 15-20 g carboidrato VO (sacarose, suco); repetir se <70 em 15 min',
@@ -9236,12 +11813,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Glicemia pós-tratamento ≥100: alimentação com carboidrato complexo + proteína',
                 '4. Sulfonilureia/insulina de ação longa: observação mínima 12-24h (risco de recorrência)',
                 '5. Buscar causa: dose excessiva, aumento exercício, diminuição ingestão, IRC (ajuste dose)',
-                '6. Educação: hipoglicemia assintomática → risco de não reconhecimento → ajustar limiar terapêutico'
+                '6. Educação: hipoglicemia assintomática → risco de não reconhecimento → ajustar limiar terapêutico',
               ],
         guidelines: [
           'ADA Hypoglycemia 2023',
           'Endocrine Society 2019',
-          'SBD 2023'
+          'SBD 2023',
         ],
       ),
 
@@ -9256,13 +11833,13 @@ class AppProvider extends ChangeNotifier {
           'k alt',
           'hiperkalem',
           'onda t apic',
-          'k+ elev'
+          'k+ elev',
         ],
         exams: [
           es ? 'K+ sérico urgente' : 'K+ sérico urgente',
           'ECG',
           'Gasometria',
-          es ? 'Función renal' : 'Função renal'
+          es ? 'Función renal' : 'Função renal',
         ],
         flags: [
           es
@@ -9270,7 +11847,7 @@ class AppProvider extends ChangeNotifier {
               : 'K+ >6,5 ou alteração ECG → Gluconato Ca2+ IV imediato',
           es
               ? 'Insulina + glucosa + bicarbonato + diálisis si refractario'
-              : 'Insulina + glicose + bicarbonato + diálise se refratório'
+              : 'Insulina + glicose + bicarbonato + diálise se refratório',
         ],
         differentials: es
             ? [
@@ -9278,14 +11855,14 @@ class AppProvider extends ChangeNotifier {
                 'IRA/IRC descompensada',
                 'Hipoaldosteronismo (Addison)',
                 'Rabdomiólisis',
-                'Acidosis metabólica severa (redistribución)'
+                'Acidosis metabólica severa (redistribución)',
               ]
             : [
                 'Pseudo-hipercalemia (hemólise da amostra)',
                 'IRA/IRC descompensada',
                 'Hipoaldosteronismo (Addison)',
                 'Rabdomiólise',
-                'Acidose metabólica grave (redistribuição)'
+                'Acidose metabólica grave (redistribuição)',
               ],
         treatment: es
             ? [
@@ -9294,7 +11871,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Bicarbonato: NaHCO3 50 mEq IV si pH <7,2 (distribución intracelular)',
                 '4. Eliminación: furosemida 40-80 mg IV si función renal conservada; kayexalato 15-30 g VO si IRC',
                 '5. K+ >7 refractario o cambios ECG graves → diálisis de emergencia',
-                '6. Suspender fármacos que elevan K+: IECA/ARA II, espirolactona, AINEs, heparina'
+                '6. Suspender fármacos que elevan K+: IECA/ARA II, espirolactona, AINEs, heparina',
               ]
             : [
                 '1. ECG alterado (onda T apiculada, alargamento QRS, onda sinusoidal): gluconato de Ca2+ 10% 10 mL IV em 2-3 min (estabiliza membrana)',
@@ -9302,7 +11879,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Bicarbonato: NaHCO3 50 mEq IV se pH <7,2 (distribuição intracelular)',
                 '4. Eliminação: furosemida 40-80 mg IV se função renal conservada; kayexalato 15-30 g VO se IRC',
                 '5. K+ >7 refratário ou alterações ECG graves → diálise de emergência',
-                '6. Suspender fármacos que elevam K+: IECA/BRA, espironolactona, AINEs, heparina'
+                '6. Suspender fármacos que elevam K+: IECA/BRA, espironolactona, AINEs, heparina',
               ],
         guidelines: ['KDIGO AKI 2022', 'ESC Electrolytes 2019', 'ASN 2021'],
       ),
@@ -9317,18 +11894,18 @@ class AppProvider extends ChangeNotifier {
           'hipopotass',
           'k bai',
           'hipokalem',
-          'k+ baixo'
+          'k+ baixo',
         ],
         exams: [
           es ? 'K+ sérico' : 'K+ sérico',
           es ? 'ECG (ondas U, QT largo)' : 'ECG (ondas U, QT longo)',
           'Mg2+',
-          'Gasometria'
+          'Gasometria',
         ],
         flags: [
           es
               ? 'K+ <2,5 o cambios ECG → reposición IV monitorizada'
-              : 'K+ <2,5 ou alteração de ECG → reposição IV monitorada'
+              : 'K+ <2,5 ou alteração de ECG → reposição IV monitorada',
         ],
         differentials: es
             ? [
@@ -9336,14 +11913,14 @@ class AppProvider extends ChangeNotifier {
                 'Pérdidas renales (diuréticos, hiperaldosteronismo)',
                 'Redistribución (insulina, alcalosis, beta-agonistas)',
                 'Hipomagnesemia (siempre corregir Mg2+ en hipopotasemia refractaria)',
-                'CAD en tratamiento (insulina baja K+)'
+                'CAD en tratamiento (insulina baja K+)',
               ]
             : [
                 'Perdas gastrointestinais (vômitos, diarreia, fístulas)',
                 'Perdas renais (diuréticos, hiperaldosteronismo)',
                 'Redistribuição (insulina, alcalose, beta-agonistas)',
                 'Hipomagnesemia (sempre corrigir Mg2+ em hipopotassemia refratária)',
-                'CAD em tratamento (insulina baixa K+)'
+                'CAD em tratamento (insulina baixa K+)',
               ],
         treatment: es
             ? [
@@ -9352,7 +11929,7 @@ class AppProvider extends ChangeNotifier {
                 '3. K+ <2,5 o síntomas (debilidad, ECG alterado): KCl IV 20-40 mEq/h en vía central + monitoreo contínuo',
                 '4. SIEMPRE verificar y corregir Mg2+ (hipomagnesemia impide la corrección del K+)',
                 '5. Identificar causa: alcalosis → tratar; diuréticos → reducir dosis; diarrea → tratar',
-                '6. K+ no sube con reposición: pensar en síndrome de Bartter/Gitelman'
+                '6. K+ no sube con reposición: pensar en síndrome de Bartter/Gitelman',
               ]
             : [
                 '1. K+ 3,0-3,5: potássio VO 40-60 mEq/dia (cloreto de potássio)',
@@ -9360,7 +11937,7 @@ class AppProvider extends ChangeNotifier {
                 '3. K+ <2,5 ou sintomas (fraqueza, ECG alterado): KCl IV 20-40 mEq/h em via central + monitoração contínua',
                 '4. SEMPRE verificar e corrigir Mg2+ (hipomagnesemia impede a correção do K+)',
                 '5. Identificar causa: alcalose → tratar; diuréticos → reduzir dose; diarreia → tratar',
-                '6. K+ não sobe com reposição: pensar em síndrome de Bartter/Gitelman'
+                '6. K+ não sobe com reposição: pensar em síndrome de Bartter/Gitelman',
               ],
         guidelines: ['ASN Electrolytes 2021', 'AHA 2019', 'SBN 2022'],
       ),
@@ -9379,13 +11956,13 @@ class AppProvider extends ChangeNotifier {
           'anuria',
           'creatinina elev',
           'uremia',
-          'aki'
+          'aki',
         ],
         exams: [
           es ? 'Creatinina/Urea seriadas' : 'Creatinina/Ureia seriadas',
           es ? 'Electrolitos' : 'Eletrólitos',
           es ? 'Eco renal' : 'Eco renal',
-          'EAS/urocultura'
+          'EAS/urocultura',
         ],
         flags: [
           es
@@ -9393,18 +11970,18 @@ class AppProvider extends ChangeNotifier {
               : 'K+ >6 ou oligúria refratária → diálise de urgência',
           es
               ? 'Descartar prerrenal (volumen) y obstructivo (eco)'
-              : 'Excluir pré-renal (volume) e obstrutivo (eco)'
+              : 'Excluir pré-renal (volume) e obstrutivo (eco)',
         ],
         differentials: es
             ? [
                 'Prerrenal (deshidratación, hipotensión, IC): fracción de Na excreción <1%',
                 'Intrínseca: NTA isquémica/tóxica (AINE, aminoglucósidos, contraste), glomerulonefritis, vasculitis',
-                'Postrenal: obstrucción (próstata, tumor, litiasis) — eco urgente'
+                'Postrenal: obstrucción (próstata, tumor, litiasis) — eco urgente',
               ]
             : [
                 'Pré-renal (desidratação, hipotensão, IC): fração de excreção de Na <1%',
                 'Intrínseca: NTA isquêmica/tóxica (AINE, aminoglicosídeos, contraste), glomerulonefrite, vasculite',
-                'Pós-renal: obstrução (próstata, tumor, litíase) — eco urgente'
+                'Pós-renal: obstrução (próstata, tumor, litíase) — eco urgente',
               ],
         treatment: es
             ? [
@@ -9413,7 +11990,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Postrenal: sondaje vesical urgente o nefrostomía percutánea',
                 '4. Monitorizar K+, pH: hipercalemia >6 → gluconato Ca2+, insulina/glucosa, diálisis',
                 '5. Diálisis urgente: K+ >6,5 refractario, acidosis pH <7,1, uremia sintomática, sobrecarga hídrica',
-                '6. Ajustar TODAS las dosis de fármacos según ClCr (ver sección farmacológica)'
+                '6. Ajustar TODAS las dosis de fármacos según ClCr (ver sección farmacológica)',
               ]
             : [
                 '1. Pré-renal: hidratação SF 500 mL em 30 min, avaliar resposta (diurese >0,5 mL/kg/h)',
@@ -9421,12 +11998,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Pós-renal: sondagem vesical urgente ou nefrostomia percutânea',
                 '4. Monitorar K+, pH: hipercalemia >6 → gluconato Ca2+, insulina/glicose, diálise',
                 '5. Diálise urgente: K+ >6,5 refratário, acidose pH <7,1, uremia sintomática, sobrecarga hídrica',
-                '6. Ajustar TODAS as doses de fármacos conforme ClCr (ver seção farmacológica)'
+                '6. Ajustar TODAS as doses de fármacos conforme ClCr (ver seção farmacológica)',
               ],
         guidelines: [
           'KDIGO AKI 2012 (updated 2023)',
           'ERA-EDTA 2023',
-          'SBN 2022'
+          'SBN 2022',
         ],
       ),
 
@@ -9445,14 +12022,14 @@ class AppProvider extends ChangeNotifier {
           'hematoquezia',
           'sangr gi',
           'ulcera sangr',
-          'varizes esof'
+          'varizes esof',
         ],
         exams: [
           es ? 'Hemograma (Hb, Ht)' : 'Hemograma (Hb, Ht)',
           es ? 'Coagulación' : 'Coagulação',
           es ? 'Tipaje sanguíneo' : 'Tipagem sanguínea',
           es ? 'Función renal' : 'Função renal',
-          es ? 'EDA urgente' : 'EDA urgente'
+          es ? 'EDA urgente' : 'EDA urgente',
         ],
         flags: [
           es
@@ -9463,7 +12040,7 @@ class AppProvider extends ChangeNotifier {
               : 'Hb alvo 7–8 g/dL (transfusão restritiva)',
           es
               ? 'Cirrosis + HDA → octreótido + ATB + Terlipresina'
-              : 'Cirrose + HDA → octreotida + ATB profilático + Terlipressina'
+              : 'Cirrose + HDA → octreotida + ATB profilático + Terlipressina',
         ],
         differentials: es
             ? [
@@ -9472,7 +12049,7 @@ class AppProvider extends ChangeNotifier {
                 'Síndrome de Mallory-Weiss (vómitos repetidos)',
                 'Lesión de Dieulafoy (sangrado arterial puntual)',
                 'Cáncer gástrico/esofágico (hemorragia crónica)',
-                'Hemobilia o fístula aorto-entérica (raro, grave)'
+                'Hemobilia o fístula aorto-entérica (raro, grave)',
               ]
             : [
                 'Úlcera péptica (H. pylori, AINE — mais frequente)',
@@ -9480,7 +12057,7 @@ class AppProvider extends ChangeNotifier {
                 'Síndrome de Mallory-Weiss (vômitos repetidos)',
                 'Lesão de Dieulafoy (sangramento arterial pontual)',
                 'Câncer gástrico/esofágico (hemorragia crônica)',
-                'Hemobilia ou fístula aorto-entérica (raro, grave)'
+                'Hemobilia ou fístula aorto-entérica (raro, grave)',
               ],
         treatment: es
             ? [
@@ -9489,7 +12066,7 @@ class AppProvider extends ChangeNotifier {
                 '3. No cirrosis: EDA urgente en <12h (alta urgencia) o <24h (sin inestabilidad)',
                 '4. Cirrosis/varices: terlipresina 2 mg IV c/4-6h + ceftriaxona 1 g/día (ATB profiláctico 5-7d)',
                 '5. Score Glasgow-Blatchford ≥12 → EDA en <6h; Rockford C/D → ligadura variceal + octreótido',
-                '6. Refractario: TIPS (shunt intrahepático) o cirugía de urgencia'
+                '6. Refractario: TIPS (shunt intrahepático) o cirugía de urgencia',
               ]
             : [
                 '1. Acesso IV ×2 calibrosos + SF 1 L se PA <100/FC >100 + transfundir se Hb <7 (meta 7-9 g/dL)',
@@ -9497,7 +12074,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Sem cirrose: EDA urgente em <12h (alta urgência) ou <24h (sem instabilidade)',
                 '4. Cirrose/varizes: terlipressina 2 mg IV 4/4h-6/6h + ceftriaxona 1 g/dia (ATB profilático 5-7d)',
                 '5. Score Glasgow-Blatchford ≥12 → EDA em <6h; Rockford C/D → ligadura varicosa + octreotida',
-                '6. Refratário: TIPS (shunt intra-hepático) ou cirurgia de urgência'
+                '6. Refratário: TIPS (shunt intra-hepático) ou cirurgia de urgência',
               ],
         guidelines: ['BSG HDA 2021', 'ESGE 2021', 'SBH HDA 2022'],
       ),
@@ -9516,7 +12093,7 @@ class AppProvider extends ChangeNotifier {
           'apendicite',
           'colecistite',
           'obstru intestinal',
-          'peritonitis'
+          'peritonitis',
         ],
         exams: [
           es ? 'RX abdomen de pie' : 'RX abdome em pé',
@@ -9525,7 +12102,7 @@ class AppProvider extends ChangeNotifier {
               : 'TC abdome+pelve com contraste',
           'Hemograma',
           'PCR',
-          'Lipase/amilase'
+          'Lipase/amilase',
         ],
         flags: [
           es
@@ -9533,7 +12110,7 @@ class AppProvider extends ChangeNotifier {
               : 'Sinais peritoneais + instabilidade → cirurgia de emergência',
           es
               ? 'Neumoperitoneo en RX → perforación visceral: cirugía inmediata'
-              : 'Pneumoperitônio no RX → perfuração visceral: cirurgia imediata'
+              : 'Pneumoperitônio no RX → perfuração visceral: cirurgia imediata',
         ],
         differentials: es
             ? [
@@ -9542,7 +12119,7 @@ class AppProvider extends ChangeNotifier {
                 'Pancreatitis aguda (epigastrio irradiado a dorso, lipasa >3×)',
                 'Perforación de víscera hueca (neumoperitoneo, defensa total)',
                 'Obstrucción intestinal (distensión, ausencia de gases distales)',
-                'Isquemia mesentérica (dolor intenso, leucocitosis, acidosis, lactato)'
+                'Isquemia mesentérica (dolor intenso, leucocitosis, acidosis, lactato)',
               ]
             : [
                 'Apendicite aguda (fossa ilíaca direita, sinal de McBurney)',
@@ -9550,7 +12127,7 @@ class AppProvider extends ChangeNotifier {
                 'Pancreatite aguda (epigástrio irradiado ao dorso, lipase >3×)',
                 'Perfuração de víscera oca (pneumoperitônio, defesa total)',
                 'Obstrução intestinal (distensão, ausência de gases distais)',
-                'Isquemia mesentérica (dor intensa, leucocitose, acidose, lactato)'
+                'Isquemia mesentérica (dor intensa, leucocitose, acidose, lactato)',
               ],
         treatment: es
             ? [
@@ -9559,7 +12136,7 @@ class AppProvider extends ChangeNotifier {
                 '3. ATB empírico si sospecha infección: piperacilina-tazobactam 4,5 g IV c/6h o ampicilina + metronidazol',
                 '4. TC abdomen+pelvis con contraste IV (estudio diagnóstico principal)',
                 '5. Peritonitis/perforación/isquemia: cirugía de emergencia inmediata',
-                '6. Apendicitis confirmada: apendicectomía laparoscópica; colecistitis: colecistectomía en 24-72h'
+                '6. Apendicitis confirmada: apendicectomía laparoscópica; colecistitis: colecistectomía en 24-72h',
               ]
             : [
                 '1. Estabilização: 2 acessos IV, SF 1-2 L, analgesia IV (cetorrolaco 30 mg ou tramadol 100 mg)',
@@ -9567,7 +12144,7 @@ class AppProvider extends ChangeNotifier {
                 '3. ATB empírico se suspeita infecção: piperacilina-tazobactam 4,5 g IV 6/6h ou ampicilina + metronidazol',
                 '4. TC abdome+pelve com contraste IV (principal exame diagnóstico)',
                 '5. Peritonite/perfuração/isquemia: cirurgia de emergência imediata',
-                '6. Apendicite confirmada: apendicectomia laparoscópica; colecistite: colecistectomia em 24-72h'
+                '6. Apendicite confirmada: apendicectomia laparoscópica; colecistite: colecistectomia em 24-72h',
               ],
         guidelines: ['WSES Peritonitis 2020', 'SAGES 2023', 'SBC Abdome 2021'],
       ),
@@ -9584,13 +12161,13 @@ class AppProvider extends ChangeNotifier {
           'lipase elev',
           'amilase elev',
           'bisap',
-          'balthazar'
+          'balthazar',
         ],
         exams: [
           es ? 'Lipasa (>3× LSN)' : 'Lipase (>3× LSN diagnóstico)',
           es ? 'TC abdomen (Balthazar/CTSI)' : 'TC abdome (Balthazar/CTSI)',
           es ? 'Electrolitos' : 'Eletrólitos',
-          'Score BISAP'
+          'Score BISAP',
         ],
         flags: [
           es
@@ -9598,7 +12175,7 @@ class AppProvider extends ChangeNotifier {
               : 'Score BISAP ≥3 ou APACHE II alto → UTI',
           es
               ? 'Necroinfeción: fiebre + empeoramiento → TC + ATB'
-              : 'Necroinfeção: febre + piora clínica → TC + ATB'
+              : 'Necroinfeção: febre + piora clínica → TC + ATB',
         ],
         differentials: es
             ? [
@@ -9606,14 +12183,14 @@ class AppProvider extends ChangeNotifier {
                 'IAM inferior (ECG)',
                 'Colecistitis aguda (Murphy, eco)',
                 'Isquemia mesentérica (lactato, dolor + leucocitosis)',
-                'Obstrucción intestinal alta'
+                'Obstrucción intestinal alta',
               ]
             : [
                 'Úlcera péptica perfurada (pneumoperitônio, RX)',
                 'IAM inferior (ECG)',
                 'Colecistite aguda (Murphy, eco)',
                 'Isquemia mesentérica (lactato, dor + leucocitose)',
-                'Obstrução intestinal alta'
+                'Obstrução intestinal alta',
               ],
         treatment: es
             ? [
@@ -9622,7 +12199,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Nutrición: enteral precoz en <24-48h si tolera; parenteral solo si enteral imposible',
                 '4. BISAP ≥3/necrosante: UTI, monitoreo contínuo, anticipar complicaciones',
                 '5. ATB solo si necroinfeción confirmada (guiada por aspiración con aguja fina TC-guiada): meropenem o imipenem',
-                '6. Colangiopancreatografía (CPRE) urgente en <24h si: cálculo biliar + ictericia + colangitis'
+                '6. Colangiopancreatografía (CPRE) urgente en <24h si: cálculo biliar + ictericia + colangitis',
               ]
             : [
                 '1. Hidratação agressiva: Ringer lactato 250-500 mL/h (preferido ao SF) primeiras 24h (BISAP <3)',
@@ -9630,12 +12207,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Nutrição: enteral precoce em <24-48h se tolera; parenteral apenas se enteral impossível',
                 '4. BISAP ≥3/necrosante: UTI, monitoramento contínuo, antecipar complicações',
                 '5. ATB apenas em necroinfeção confirmada (guiada por aspiração com agulha fina TC-guiada): meropeném ou imipeném',
-                '6. CPRE urgente em <24h se: cálculo biliar + icterícia + colangite'
+                '6. CPRE urgente em <24h se: cálculo biliar + icterícia + colangite',
               ],
         guidelines: [
           'AGA Pancreatitis 2018',
           'IAP/APA 2015',
-          'SBH Pancreatite 2021'
+          'SBH Pancreatite 2021',
         ],
       ),
 
@@ -9656,7 +12233,7 @@ class AppProvider extends ChangeNotifier {
           'hipertensao grave',
           'pa > 180',
           'pa 220',
-          'pa 200'
+          'pa 200',
         ],
         exams: [
           es ? 'PA en ambos brazos' : 'PA em ambos os braços',
@@ -9665,7 +12242,7 @@ class AppProvider extends ChangeNotifier {
           es ? 'Creatinina/urea' : 'Creatinina/ureia',
           es
               ? 'TC cráneo si síntomas neurológicos'
-              : 'TC crânio se sintomas neurológicos'
+              : 'TC crânio se sintomas neurológicos',
         ],
         flags: [
           es
@@ -9673,7 +12250,7 @@ class AppProvider extends ChangeNotifier {
               : 'Encefalopatia + PA >180 → emergência: redução IV controlada',
           es
               ? 'NO reducir PA >25% en 1ª hora'
-              : 'NÃO reduzir PA >25% na 1ª hora'
+              : 'NÃO reduzir PA >25% na 1ª hora',
         ],
         differentials: es
             ? [
@@ -9681,14 +12258,14 @@ class AppProvider extends ChangeNotifier {
                 'Urgencia hipertensiva (PA muy elevada SIN lesión aguda de órgano)',
                 'HTA por dolor/ansiedad (tratar la causa)',
                 'Hipertensión de bata blanca (monitorización ambulatoria)',
-                'Crisis adrenérgica (feocromocitoma, cocaína — PA muy lábil)'
+                'Crisis adrenérgica (feocromocitoma, cocaína — PA muy lábil)',
               ]
             : [
                 'Emergência hipertensiva (lesão órgão-alvo: encefalopatia, IC aguda, dissecção, eclâmpsia)',
                 'Urgência hipertensiva (PA muito elevada SEM lesão aguda de órgão)',
                 'HAS por dor/ansiedade (tratar a causa)',
                 'HAS do avental branco (monitorização ambulatorial)',
-                'Crise adrenérgica (feocromocitoma, cocaína — PA muito lábil)'
+                'Crise adrenérgica (feocromocitoma, cocaína — PA muito lábil)',
               ],
         treatment: es
             ? [
@@ -9697,7 +12274,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Encefalopatía/IC aguda/disección: labetalol 20 mg IV → 40-80 mg c/10 min o nitroprusiato 0,25-10 mcg/kg/min',
                 '4. Urgencia (sin lesión diana): antihipertensivo VO — captopril 25-50 mg o amlodipino 5-10 mg',
                 '5. PA >220/120 asintomática: captopril SL + observación 30-60 min → alta si responde',
-                '6. Ajustar medicación habitual + seguimiento en 24-72h'
+                '6. Ajustar medicación habitual + seguimiento en 24-72h',
               ]
             : [
                 '1. Emergência (lesão de órgão-alvo): redução PA controlada IV — meta: baixar 20-25% em 1ª hora, NÃO normalizar',
@@ -9705,12 +12282,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Encefalopatia/IC aguda/dissecção: labetalol 20 mg IV → 40-80 mg a cada 10 min ou nitroprussiato 0,25-10 mcg/kg/min',
                 '4. Urgência (sem lesão de órgão): anti-hipertensivo VO — captopril 25-50 mg ou anlodipino 5-10 mg',
                 '5. PA >220/120 assintomática: captopril SL + observação 30-60 min → alta se responde',
-                '6. Ajustar medicação habitual + seguimento em 24-72h'
+                '6. Ajustar medicação habitual + seguimento em 24-72h',
               ],
         guidelines: [
           'ESC/ESH Hipertensão 2023',
           'AHA/ACC HTN 2022',
-          'SBC HAS 2020'
+          'SBC HAS 2020',
         ],
       ),
 
@@ -9729,14 +12306,14 @@ class AppProvider extends ChangeNotifier {
           'glasgow baixo',
           'confusao mental',
           'cam ',
-          'alterac conscien'
+          'alterac conscien',
         ],
         exams: [
           es ? 'Glucemia capilar URGENTE' : 'Glicemia capilar URGENTE',
           es ? 'TC cráneo' : 'TC crânio',
           es ? 'Electrolitos' : 'Eletrólitos',
           es ? 'Función renal y hepática' : 'Função renal e hepática',
-          'Gasometria'
+          'Gasometria',
         ],
         flags: [
           es
@@ -9744,7 +12321,7 @@ class AppProvider extends ChangeNotifier {
               : 'Excluir SEMPRE: hipoglicemia, AVC, meningite, IRA, intoxicação',
           es
               ? 'Glasgow ≤8 → proteger vía aérea (IOT)'
-              : 'Glasgow ≤8 → proteger via aérea (IOT)'
+              : 'Glasgow ≤8 → proteger via aérea (IOT)',
         ],
         differentials: es
             ? [
@@ -9753,7 +12330,7 @@ class AppProvider extends ChangeNotifier {
                 'Meningitis/encefalitis (rigidez, fiebre, LCR)',
                 'Encefalopatía urémica/hepática (creatinina, amoniaco)',
                 'Intoxicación/síndrome serotoninérgico/anticolinérgico',
-                'Delirium hipoactivo (agitación mínima — frecuentemente subdiagnosticado en UTI)'
+                'Delirium hipoactivo (agitación mínima — frecuentemente subdiagnosticado en UTI)',
               ]
             : [
                 'Hipoglicemia (SEMPRE primeira a excluir)',
@@ -9761,7 +12338,7 @@ class AppProvider extends ChangeNotifier {
                 'Meningite/encefalite (rigidez, febre, LCR)',
                 'Encefalopatia urêmica/hepática (creatinina, amoniaco)',
                 'Intoxicação/síndrome serotoninérgico/anticolinérgico',
-                'Delirium hipoativo (agitação mínima — frequentemente subdiagnosticado em UTI)'
+                'Delirium hipoativo (agitação mínima — frequentemente subdiagnosticado em UTI)',
               ],
         treatment: es
             ? [
@@ -9770,7 +12347,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Búsqueda sistemática de causa: TC, PL, electrolitos, función renal/hepática, toxicológico',
                 '4. Medidas no farmacológicas: reorientación, iluminación diurna, movilización, familia, ciclo sueño-vigilia',
                 '5. Agitación que pone en riesgo: haloperidol 2-5 mg IV (preferir IM en agitación grave) — en QT prolongado: quetiapina',
-                '6. Evitar BZD en delirium no alcohólico (empeoran delirium en ancianos)'
+                '6. Evitar BZD en delirium no alcohólico (empeoran delirium en ancianos)',
               ]
             : [
                 '1. Glicemia capilar IMEDIATA (corrigir se <60 ou >400)',
@@ -9778,12 +12355,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Busca sistemática de causa: TC, PL, eletrólitos, função renal/hepática, toxicológico',
                 '4. Medidas não farmacológicas: reorientação, iluminação diurna, mobilização, família, ciclo sono-vigília',
                 '5. Agitação que coloca em risco: haloperidol 2-5 mg IV (preferir IM em agitação grave) — em QT longo: quetiapina',
-                '6. Evitar BZD em delirium não alcoólico (pioram delirium em idosos)'
+                '6. Evitar BZD em delirium não alcoólico (pioram delirium em idosos)',
               ],
         guidelines: [
           'SCCM PADIS 2018',
           'APA Delirium 2023',
-          'ESICM Delirium 2022'
+          'ESICM Delirium 2022',
         ],
       ),
 
@@ -9802,14 +12379,14 @@ class AppProvider extends ChangeNotifier {
           'naloxona',
           'flumazenil',
           'carvao ativ',
-          'toxicolog'
+          'toxicolog',
         ],
         exams: [
           es ? 'Toxicológico urinario' : 'Toxicológico urinário',
           'Gasometria',
           es ? 'Electrolitos' : 'Eletrólitos',
           es ? 'ECG (QT largo)' : 'ECG (QT longo)',
-          es ? 'Glucemia' : 'Glicemia'
+          es ? 'Glucemia' : 'Glicemia',
         ],
         flags: [
           es
@@ -9820,14 +12397,14 @@ class AppProvider extends ChangeNotifier {
               : 'Antídotos: naloxona (opioides), flumazenil (BZD), N-acetilcisteína (paracetamol)',
           es
               ? 'Carbón activado 1 g/kg VO si <1h de ingesta'
-              : 'Carvão ativado 1 g/kg VO se <1h da ingestão'
+              : 'Carvão ativado 1 g/kg VO se <1h da ingestão',
         ],
         differentials: es
             ? [
-                'Identificar toxidrome: anticolinérgico (midriasis, taquicardia, retención urinaria), colinérgico/organofosf (miosis, broncosecreción, bradicardia), opioide (miosis, bradipnea, depresión SNC), simpaticomimético (midriasis, taquicardia, HTA), serotoninérgico (agitación, hiperreflexia, clonus)'
+                'Identificar toxidrome: anticolinérgico (midriasis, taquicardia, retención urinaria), colinérgico/organofosf (miosis, broncosecreción, bradicardia), opioide (miosis, bradipnea, depresión SNC), simpaticomimético (midriasis, taquicardia, HTA), serotoninérgico (agitación, hiperreflexia, clonus)',
               ]
             : [
-                'Identificar toxidrome: anticolinérgico (midríase, taquicardia, retenção urinária), colinérgico/organofosf (miose, broncossecreção, bradicardia), opioide (miose, bradipneia, depressão SNC), simpatomimérico (midríase, taquicardia, HAS), serotoninérgico (agitação, hiperreflexia, clonus)'
+                'Identificar toxidrome: anticolinérgico (midríase, taquicardia, retenção urinária), colinérgico/organofosf (miose, broncossecreção, bradicardia), opioide (miose, bradipneia, depressão SNC), simpatomimérico (midríase, taquicardia, HAS), serotoninérgico (agitação, hiperreflexia, clonus)',
               ],
         treatment: es
             ? [
@@ -9836,7 +12413,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Antídotos específicos: naloxona 0,4-2 mg IV/IM (opioides); flumazenil 0,2 mg IV (BZD — con cuidado en epilépticos); N-acetilcisteína 150 mg/kg IV/VO (paracetamol)',
                 '4. Organofosf/pesticidas: atropina 2-4 mg IV hasta secar secreciones + pralidoxima 1-2 g IV',
                 '5. ECG: QT largo → suspender causal + magnesio 2 g IV; QRS ancho (ADT) → bicarbonato 1-2 mEq/kg',
-                '6. Centro de Toxicología (Brasil): 0800 722 6001 — consultar caso complejo'
+                '6. Centro de Toxicología (Brasil): 0800 722 6001 — consultar caso complejo',
               ]
             : [
                 '1. ABCDE → via aérea se Glasgow ≤8 ou bradipneia',
@@ -9844,7 +12421,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Antídotos específicos: naloxona 0,4-2 mg IV/IM (opioides); flumazenil 0,2 mg IV (BZD — cuidado em epilépticos); N-acetilcisteína 150 mg/kg IV/VO (paracetamol)',
                 '4. Organofosf/pesticidas: atropina 2-4 mg IV até secar secreções + pralidoxima 1-2 g IV',
                 '5. ECG: QT longo → suspender causal + magnésio 2 g IV; QRS largo (ADT) → bicarbonato 1-2 mEq/kg',
-                '6. Centro de Informação Toxicológica (Brasil): 0800 722 6001 — consultar caso complexo'
+                '6. Centro de Informação Toxicológica (Brasil): 0800 722 6001 — consultar caso complexo',
               ],
         guidelines: ['AAPCC 2023', 'ESICM Toxicology 2022', 'SBT 2021'],
       ),
@@ -9864,7 +12441,7 @@ class AppProvider extends ChangeNotifier {
           'convulsao gravida',
           'hellp',
           'preeclamps',
-          'sulfato magn'
+          'sulfato magn',
         ],
         exams: [
           es ? 'PA seriada' : 'PA seriada',
@@ -9872,7 +12449,7 @@ class AppProvider extends ChangeNotifier {
           es ? 'Plaquetas' : 'Plaquetas',
           'TGO/TGP',
           'LDH',
-          es ? 'Creatinina' : 'Creatinina'
+          es ? 'Creatinina' : 'Creatinina',
         ],
         flags: [
           es
@@ -9883,20 +12460,20 @@ class AppProvider extends ChangeNotifier {
               : 'Convulsão → sulfato de magnésio 4–6 g EV (ataque) + 1–2 g/h manutenção',
           es
               ? 'HELLP → parto inmediato si ≥34 semanas'
-              : 'HELLP → parto imediato se ≥34 semanas'
+              : 'HELLP → parto imediato se ≥34 semanas',
         ],
         differentials: es
             ? [
                 'Eclampsia vs status epiléptico en embarazo (siempre MgSO4 primero)',
                 'HELLP vs hígado graso agudo del embarazo (HGAE): transaminasas muy elevadas + hipoglucemia',
                 'Síndrome hemolítico urémico atípico (SHUa)',
-                'Púrpura trombocitopénica trombótica (PTT)'
+                'Púrpura trombocitopénica trombótica (PTT)',
               ]
             : [
                 'Eclâmpsia vs status epiléptico na gestação (sempre MgSO4 primeiro)',
                 'HELLP vs fígado gorduroso agudo da gestação (FGAG): transaminases muito elevadas + hipoglicemia',
                 'Síndrome hemolítico urêmico atípico (SHUa)',
-                'Púrpura trombocitopênica trombótica (PTT)'
+                'Púrpura trombocitopênica trombótica (PTT)',
               ],
         treatment: es
             ? [
@@ -9905,7 +12482,7 @@ class AppProvider extends ChangeNotifier {
                 '3. MgSO4 toxicidad (reflejo abolido, FR <12): gluconato Ca2+ 1 g IV',
                 '4. HELLP: parto si ≥34 sem o inestabilidad; corticoides (dexametasona 12 mg c/12h) si <34 sem',
                 '5. Meta PA: 140-155/90-105 (evitar caídas bruscas — riesgo fetal)',
-                '6. Corticoides fetales si <34 semanas: betametasona 12 mg IM c/24h ×2 dosis'
+                '6. Corticoides fetales si <34 semanas: betametasona 12 mg IM c/24h ×2 dosis',
               ]
             : [
                 '1. PA ≥160/110: anti-hipertensivo IV IMEDIATO — hidralazina 5-10 mg IV a cada 20 min ou labetalol 20 mg IV ou nifedipino 10-20 mg VO',
@@ -9913,7 +12490,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Toxicidade MgSO4 (reflexo abolido, FR <12): gluconato de Ca2+ 1 g IV',
                 '4. HELLP: parto se ≥34 sem ou instabilidade; corticoides (dexametasona 12 mg 12/12h) se <34 sem',
                 '5. Meta PA: 140-155/90-105 (evitar quedas bruscas — risco fetal)',
-                '6. Corticoides fetais se <34 semanas: betametasona 12 mg IM 24/24h ×2 doses'
+                '6. Corticoides fetais se <34 semanas: betametasona 12 mg IM 24/24h ×2 doses',
               ],
         guidelines: ['ACOG Preeclampsia 2020', 'FIGO 2022', 'FEBRASGO 2022'],
       ),
@@ -9945,7 +12522,7 @@ class AppProvider extends ChangeNotifier {
           'pior cefal',
           'thunderclap',
           'hsa ',
-          'hemorragia subarac'
+          'hemorragia subarac',
         ],
         exams: [
           es
@@ -9953,7 +12530,7 @@ class AppProvider extends ChangeNotifier {
               : 'TC crânio sem contraste (excluir HSA)',
           es ? 'Punción lumbar si TC negativa' : 'Punção lombar se TC negativa',
           'Hemoculturas + PCR se febre',
-          'Hemograma'
+          'Hemograma',
         ],
         flags: [
           es
@@ -9961,7 +12538,7 @@ class AppProvider extends ChangeNotifier {
               : '"Pior cefaleia da vida" ou início súbito → excluir HSA urgente',
           es
               ? 'Déficit focal + cefalea → descartar AVC/hemorragia'
-              : 'Déficit focal + cefaleia → descartar AVC/hemorragia'
+              : 'Déficit focal + cefaleia → descartar AVC/hemorragia',
         ],
         differentials: es
             ? [
@@ -9970,7 +12547,7 @@ class AppProvider extends ChangeNotifier {
                 'ACV hemorrágico intraparenquimatoso',
                 'Trombosis de seno venoso cerebral (embarazo, ACO, hipercoagulabilidad)',
                 'Hipertensión intracraneal idiopática (papilededema bilateral)',
-                'Crisis hipertensiva con encefalopatía'
+                'Crisis hipertensiva con encefalopatía',
               ]
             : [
                 'HSA (TC + PL — xantocromia no LCR)',
@@ -9978,7 +12555,7 @@ class AppProvider extends ChangeNotifier {
                 'AVC hemorrágico intraparenquimatoso',
                 'Trombose de seio venoso cerebral (gestação, ACO, hipercoagulabilidade)',
                 'Hipertensão intracraniana idiopática (papiledema bilateral)',
-                'Crise hipertensiva com encefalopatia'
+                'Crise hipertensiva com encefalopatia',
               ],
         treatment: es
             ? [
@@ -9987,7 +12564,7 @@ class AppProvider extends ChangeNotifier {
                 '3. HSA confirmada: nimodipino 60 mg VO c/4h por 21 días + neurocirugía urgente (clipaje/coil)',
                 '4. Meningitis: ATB empírico + dexametasona ANTES de TC si no hay signos focales',
                 '5. Analgesia: ketorolac 30 mg IV o metoclopramida 10 mg IV (evitar opioides para no enmascarar síntomas)',
-                '6. NUNCA dar alta sin TC en "peor cefalea de su vida" — mortalidad no tratada HSA: >40%'
+                '6. NUNCA dar alta sin TC en "peor cefalea de su vida" — mortalidad no tratada HSA: >40%',
               ]
             : [
                 '1. TC crânio sem contraste URGENTE: diagnóstico em >98% das HSA nas primeiras 6h',
@@ -9995,12 +12572,12 @@ class AppProvider extends ChangeNotifier {
                 '3. HSA confirmada: nimodipino 60 mg VO 4/4h por 21 dias + neurocirurgia urgente (clipagem/coil)',
                 '4. Meningite: ATB empírico + dexametasona ANTES do TC se sem sinais focais',
                 '5. Analgesia: cetorrolaco 30 mg IV ou metoclopramida 10 mg IV (evitar opioides para não mascarar sintomas)',
-                '6. NUNCA dar alta sem TC em "pior cefaleia da vida" — mortalidade HSA não tratada: >40%'
+                '6. NUNCA dar alta sem TC em "pior cefaleia da vida" — mortalidade HSA não tratada: >40%',
               ],
         guidelines: [
           'AHA/ASA SAH 2023',
           'ESO Headache 2022',
-          'SBN Cefaleia 2022'
+          'SBN Cefaleia 2022',
         ],
       ),
 
@@ -10015,7 +12592,7 @@ class AppProvider extends ChangeNotifier {
           'monoartrite',
           'artrite infec',
           'artralgia febre',
-          'artritis septica'
+          'artritis septica',
         ],
         exams: [
           es
@@ -10023,12 +12600,12 @@ class AppProvider extends ChangeNotifier {
               : 'Artrocentese + análise do líquido sinovial',
           es ? 'Hemocultivos' : 'Hemoculturas',
           'PCR/VHS',
-          es ? 'Ácido úrico' : 'Ácido úrico'
+          es ? 'Ácido úrico' : 'Ácido úrico',
         ],
         flags: [
           es
               ? 'Artritis séptica → artrocentesis + ATB en <6h (S. aureus más común)'
-              : 'Artrite séptica → artrocentese + ATB em <6h (S. aureus mais comum)'
+              : 'Artrite séptica → artrocentese + ATB em <6h (S. aureus mais comum)',
         ],
         differentials: es
             ? [
@@ -10037,7 +12614,7 @@ class AppProvider extends ChangeNotifier {
                 'Artritis reumatoide (poliarticular, FR, anti-CCP)',
                 'Artritis pseudogotosa (cristales Ca-pirofosfato, ancianos)',
                 'Hemartros (anticoagulado o hemofílico)',
-                'Bursitis infecciosa (limitada a bolsa — no articular)'
+                'Bursitis infecciosa (limitada a bolsa — no articular)',
               ]
             : [
                 'Gota aguda (cristais de uratos, ácido úrico — pode coexistir com séptica)',
@@ -10045,7 +12622,7 @@ class AppProvider extends ChangeNotifier {
                 'Artrite reumatoide (poliarticular, FR, anti-CCP)',
                 'Artrite pseudogotosa (cristais de Ca-pirofosfato, idosos)',
                 'Hemartrose (anticoagulado ou hemofílico)',
-                'Bursite infecciosa (limitada à bolsa — não articular)'
+                'Bursite infecciosa (limitada à bolsa — não articular)',
               ],
         treatment: es
             ? [
@@ -10054,7 +12631,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Cultivo del líquido sinovial + hemocultivos (ANTES del ATB si posible, sin demorar)',
                 '4. Drenaje: artrocentesia diaria de evacuación o artroscopía (cadera: drenaje siempre quirúrgico)',
                 '5. ATB 3-4 semanas en total (2-4 semanas adicionales VO tras mejoría IV)',
-                '6. Inmovilización inicial → movilización precoz en 24-48h (previene rigidez)'
+                '6. Inmovilización inicial → movilización precoz en 24-48h (previene rigidez)',
               ]
             : [
                 '1. Artrocentese diagnóstica URGENTE: >50.000 leucócitos/mm³ + >90% PMN = séptica até provar o contrário',
@@ -10062,7 +12639,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Cultura do líquido sinovial + hemoculturas (ANTES do ATB se possível, sem atrasar)',
                 '4. Drenagem: artrocentese diária de evacuação ou artroscopia (quadril: drenagem sempre cirúrgica)',
                 '5. ATB 3-4 semanas no total (2-4 semanas adicionais VO após melhora IV)',
-                '6. Imobilização inicial → mobilização precoce em 24-48h (previne rigidez)'
+                '6. Imobilização inicial → mobilização precoce em 24-48h (previne rigidez)',
               ],
         guidelines: ['IDSA Septic Arthritis 2021', 'BSR 2020', 'SBR 2022'],
       ),
@@ -10082,13 +12659,13 @@ class AppProvider extends ChangeNotifier {
           'warfarin',
           'reverter anticoag',
           'inr elev',
-          'doac'
+          'doac',
         ],
         exams: [
           'INR/TP/TTPA',
           'Hemograma',
           es ? 'Tipaje' : 'Tipagem',
-          es ? 'Función renal' : 'Função renal'
+          es ? 'Función renal' : 'Função renal',
         ],
         flags: [
           es
@@ -10099,7 +12676,7 @@ class AppProvider extends ChangeNotifier {
               : 'Heparina → protamina 1 mg/100 UI heparina EV',
           es
               ? 'DOAC → idarucizumab (dabigatrán), andexanet (rivaroxabán/apixabán)'
-              : 'DOAC → idarucizumabe (dabigatrana), andexanete alfa (rivaroxabana/apixabana)'
+              : 'DOAC → idarucizumabe (dabigatrana), andexanete alfa (rivaroxabana/apixabana)',
         ],
         differentials: es
             ? [
@@ -10107,14 +12684,14 @@ class AppProvider extends ChangeNotifier {
                 'DOAC con función renal deteriorada (acumulación)',
                 'Hemorragia espontánea por trombocitopenia',
                 'Hemofilia A/B (TTPA largo aislado)',
-                'Coagulación intravascular diseminada (CID)'
+                'Coagulación intravascular diseminada (CID)',
               ]
             : [
                 'Supercoagulação por varfarina (INR >4)',
                 'DOAC com função renal deteriorada (acumulação)',
                 'Hemorragia espontânea por trombocitopenia',
                 'Hemofilia A/B (TTPA longo isolado)',
-                'Coagulação intravascular disseminada (CIVD)'
+                'Coagulação intravascular disseminada (CIVD)',
               ],
         treatment: es
             ? [
@@ -10123,7 +12700,7 @@ class AppProvider extends ChangeNotifier {
                 '3. Heparina IV no fraccionada: protamina 1 mg por cada 100 UI de heparina en las últimas 2-3h (máx 50 mg IV lento)',
                 '4. LMWH (HBPM): protamina 1 mg/1 mg HBPM (efectividad parcial ~60%)',
                 '5. Dabigatrán: idarucizumab 5 g IV (2 viales); Rivaroxabán/Apixabán: andexanet alfa IV (dosis según fármaco/momento)',
-                '6. DOAC sin antídoto disponible: CCP 4F 50 U/kg como alternativa'
+                '6. DOAC sin antídoto disponible: CCP 4F 50 U/kg como alternativa',
               ]
             : [
                 '1. Varfarina + sangramento leve (INR 4-9, sem sangramento): suspender + vitamina K1 1-2,5 mg VO',
@@ -10131,12 +12708,12 @@ class AppProvider extends ChangeNotifier {
                 '3. Heparina IV não fracionada: protamina 1 mg por cada 100 UI de heparina nas últimas 2-3h (máx 50 mg IV lento)',
                 '4. HBPM: protamina 1 mg/1 mg HBPM (efetividade parcial ~60%)',
                 '5. Dabigatrana: idarucizumabe 5 g IV (2 frascos); Rivaroxabana/Apixabana: andexanete alfa IV (dose conforme fármaco/momento)',
-                '6. DOAC sem antídoto disponível: CCP 4F 50 U/kg como alternativa'
+                '6. DOAC sem antídoto disponível: CCP 4F 50 U/kg como alternativa',
               ],
         guidelines: [
           'ESC Anticoagulation Reversal 2021',
           'ACCP 2022',
-          'SBC Anticoagulação 2023'
+          'SBC Anticoagulação 2023',
         ],
       ),
     ];
@@ -10171,44 +12748,58 @@ class AppProvider extends ChangeNotifier {
         'dor cabeca',
         'dor de cabe',
         'cefalea',
-        'dolor de cabeza'
+        'dolor de cabeza',
       ])) {
         final hasFever = _has(q, ['febre', 'fiebre', 'temperatura']);
         final buf2 = StringBuffer();
         if (hasFever) {
-          buf2.writeln(es
-              ? '## Cefalea con fiebre — investigar: viral, bacteriana, meningitis'
-              : '## Cefaleia com febre — investigar: viral, bacteriana, meningite');
+          buf2.writeln(
+            es
+                ? '## Cefalea con fiebre — investigar: viral, bacteriana, meningitis'
+                : '## Cefaleia com febre — investigar: viral, bacteriana, meningite',
+          );
           buf2.writeln('');
           buf2.writeln(es ? '## Evaluación clave:' : '## Avaliação-chave:');
           buf2.writeln(es ? '  • Temperatura' : '  • Temperatura');
           buf2.writeln(es ? '  • Hemograma, PCR' : '  • Hemograma, PCR');
-          buf2.writeln(es
-              ? '  • Evaluar rigidez nucal en el examen físico'
-              : '  • Avaliar rigidez nucal no exame físico');
+          buf2.writeln(
+            es
+                ? '  • Evaluar rigidez nucal en el examen físico'
+                : '  • Avaliar rigidez nucal no exame físico',
+          );
           buf2.writeln('');
           buf2.writeln(es ? '## Alerta:' : '## Alerta:');
-          buf2.writeln(es
-              ? '  • Rigidez nucal + fiebre + cefalea → sospechar meningitis — evaluación urgente'
-              : '  • Rigidez nucal + febre + cefaleia → suspeitar meningite — avaliação urgente');
+          buf2.writeln(
+            es
+                ? '  • Rigidez nucal + fiebre + cefalea → sospechar meningitis — evaluación urgente'
+                : '  • Rigidez nucal + febre + cefaleia → suspeitar meningite — avaliação urgente',
+          );
         } else {
-          buf2.writeln(es
-              ? '## Cefalea — causas frecuentes: migraña, tensional, viral, hipertensión'
-              : '## Cefaleia — causas comuns: enxaqueca, tensional, viral, hipertensão');
+          buf2.writeln(
+            es
+                ? '## Cefalea — causas frecuentes: migraña, tensional, viral, hipertensión'
+                : '## Cefaleia — causas comuns: enxaqueca, tensional, viral, hipertensão',
+          );
           buf2.writeln('');
           buf2.writeln(es ? '## Avaliação inicial:' : '## Avaliação inicial:');
-          buf2.writeln(es
-              ? '  • PA (descartar crisis hipertensiva)'
-              : '  • PA (descartar crise hipertensiva)');
+          buf2.writeln(
+            es
+                ? '  • PA (descartar crisis hipertensiva)'
+                : '  • PA (descartar crise hipertensiva)',
+          );
           buf2.writeln(es ? '  • Temperatura' : '  • Temperatura');
-          buf2.writeln(es
-              ? '  • Intensidad (EVA 0–10) y patrón temporal'
-              : '  • Intensidade (EVA 0–10) e padrão temporal');
+          buf2.writeln(
+            es
+                ? '  • Intensidad (EVA 0–10) y patrón temporal'
+                : '  • Intensidade (EVA 0–10) e padrão temporal',
+          );
           buf2.writeln('');
           buf2.writeln(es ? '## Alerta:' : '## Alerta:');
-          buf2.writeln(es
-              ? '  • Inicio súbito "en trueno" o peor cefalea de su vida → descartar HSA urgente'
-              : '  • Início súbito "em trovoada" ou pior da vida → excluir HSA urgente');
+          buf2.writeln(
+            es
+                ? '  • Inicio súbito "en trueno" o peor cefalea de su vida → descartar HSA urgente'
+                : '  • Início súbito "em trovoada" ou pior da vida → excluir HSA urgente',
+          );
         }
         buf2.writeln('');
         buf2.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
@@ -10232,26 +12823,36 @@ class AppProvider extends ChangeNotifier {
         ]);
         if (!hasGravity) {
           final buf3 = StringBuffer();
-          buf3.writeln(es
-              ? '## Síndrome emética — causas frecuentes: gastroenteritis viral, alimentaria, migraña, medicamentosa'
-              : '## Síndrome emética — causas comuns: gastroenterite viral, alimentar, enxaqueca, medicamentosa');
+          buf3.writeln(
+            es
+                ? '## Síndrome emética — causas frecuentes: gastroenteritis viral, alimentaria, migraña, medicamentosa'
+                : '## Síndrome emética — causas comuns: gastroenterite viral, alimentar, enxaqueca, medicamentosa',
+          );
           buf3.writeln('');
           buf3.writeln(es ? '## Avaliação inicial:' : '## Avaliação inicial:');
-          buf3.writeln(es
-              ? '  • Temperatura (fiebre → causa infecciosa)'
-              : '  • Temperatura (febre → causa infecciosa)');
-          buf3.writeln(es
-              ? '  • PA e FC (deshidratación / hipotensión ortostática)'
-              : '  • PA e FC (desidratação / hipotensão ortostática)');
+          buf3.writeln(
+            es
+                ? '  • Temperatura (fiebre → causa infecciosa)'
+                : '  • Temperatura (febre → causa infecciosa)',
+          );
+          buf3.writeln(
+            es
+                ? '  • PA e FC (deshidratación / hipotensión ortostática)'
+                : '  • PA e FC (desidratação / hipotensão ortostática)',
+          );
           buf3.writeln(es ? '  • Glucemia capilar' : '  • Glicemia capilar');
-          buf3.writeln(es
-              ? '  • Signos de deshidratación (turgencia, mucosas)'
-              : '  • Sinais de desidratação (turgor, mucosas)');
+          buf3.writeln(
+            es
+                ? '  • Signos de deshidratación (turgencia, mucosas)'
+                : '  • Sinais de desidratação (turgor, mucosas)',
+          );
           buf3.writeln('');
           buf3.writeln(es ? '## Alerta:' : '## Alerta:');
-          buf3.writeln(es
-              ? '  • Dolor abdominal intenso, sangrado, rigidez o alteración de consciencia → urgencia'
-              : '  • Dor abdominal intensa, sangramento, rigidez ou rebaixamento → urgência');
+          buf3.writeln(
+            es
+                ? '  • Dolor abdominal intenso, sangrado, rigidez o alteración de consciencia → urgencia'
+                : '  • Dor abdominal intensa, sangramento, rigidez ou rebaixamento → urgência',
+          );
           buf3.writeln('');
           buf3.writeln(es ? '⚕ Apoyo educacional.' : '⚕ Apoio educacional.');
           return buf3.toString();
@@ -10304,11 +12905,13 @@ class AppProvider extends ChangeNotifier {
           'tratamiento',
         ]);
         if (isFollowUp) {
-          final lastAI = _normalize(_aiHistory
-                  .where((m) => m['role'] == 'assistant')
-                  .map((m) => m['content'] ?? '')
-                  .lastOrNull ??
-              '');
+          final lastAI = _normalize(
+            _aiHistory
+                    .where((m) => m['role'] == 'assistant')
+                    .map((m) => m['content'] ?? '')
+                    .lastOrNull ??
+                '',
+          );
           if (lastAI.isNotEmpty) {
             final lastAIPadded = ' $lastAI ';
             int bestCtx = 0;
@@ -10362,7 +12965,7 @@ class AppProvider extends ChangeNotifier {
           'isso',
           'uma',
           'tipo',
-          'caso'
+          'caso',
         };
         final queryTerms = q
             .split(RegExp(r'\s+'))
@@ -10393,7 +12996,7 @@ class AppProvider extends ChangeNotifier {
                   'sepsis',
                   // español
                   'enfermedad', 'infeccion', 'lesion', 'insuficiencia',
-                  'tratamiento', 'diagnostico', 'paciente', 'sintoma'
+                  'tratamiento', 'diagnostico', 'paciente', 'sintoma',
                 ]) ||
                 queryTerms.length >= 2);
 
@@ -10408,12 +13011,15 @@ class AppProvider extends ChangeNotifier {
           buf2f.writeln('query_original="${input.trim()}"');
           buf2f.writeln('base_local="nao mapeado"');
           buf2f.writeln(
-              'fontes="Goodman&Gilman,Harrison,DiPiro,Braunwald,Mandell,Cecil,UpToDate,PubMed"');
+            'fontes="Goodman&Gilman,Harrison,DiPiro,Braunwald,Mandell,Cecil,UpToDate,PubMed"',
+          );
           // Dados do paciente se disponíveis
           if (_patient.age.isNotEmpty) {
-            buf2f.writeln('paciente="${_patient.age} anos, ${_patient.sex}'
-                '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
-                '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}"');
+            buf2f.writeln(
+              'paciente="${_patient.age} anos, ${_patient.sex}'
+              '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
+              '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}"',
+            );
           }
           if (_patient.medications.isNotEmpty) {
             buf2f.writeln('medicamentos="${_patient.medications}"');
@@ -10434,15 +13040,18 @@ class AppProvider extends ChangeNotifier {
             buf2e.writeln('mensagem_anterior="$prevUserMsg"');
           }
           if (_patient.age.isNotEmpty) {
-            buf2e.writeln('paciente: ${_patient.age} anos, ${_patient.sex}'
-                '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
-                '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}');
+            buf2e.writeln(
+              'paciente: ${_patient.age} anos, ${_patient.sex}'
+              '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
+              '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}',
+            );
           }
           if (_patient.medications.isNotEmpty) {
             buf2e.writeln('medicamentos: ${_patient.medications}');
           }
           buf2e.writeln(
-              'fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed');
+            'fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed',
+          );
           return buf2e.toString();
         } else {
           final buf2e = StringBuffer();
@@ -10451,15 +13060,18 @@ class AppProvider extends ChangeNotifier {
             buf2e.writeln('mensagem_anterior="$prevUserMsg"');
           }
           if (_patient.age.isNotEmpty) {
-            buf2e.writeln('paciente: ${_patient.age} anos, ${_patient.sex}'
-                '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
-                '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}');
+            buf2e.writeln(
+              'paciente: ${_patient.age} anos, ${_patient.sex}'
+              '${_patient.weight.isNotEmpty ? ", ${_patient.weight}kg" : ""}'
+              '${(clcr ?? '').isNotEmpty ? ", ClCr=${clcr}mL/min" : ""}',
+            );
           }
           if (_patient.medications.isNotEmpty) {
             buf2e.writeln('medicamentos: ${_patient.medications}');
           }
           buf2e.writeln(
-              'fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed');
+            'fontes: Goodman&Gilman, Harrison, DiPiro, Braunwald, Mandell, Cecil, UpToDate, PubMed',
+          );
           return buf2e.toString();
         }
       }
@@ -10486,9 +13098,11 @@ class AppProvider extends ChangeNotifier {
 
     // ── Diagnósticos diferenciais ─────────────────────────────────────────
     if (winner.differentials.isNotEmpty) {
-      buf.writeln(es
-          ? '### Diagnósticos diferenciales a considerar:'
-          : '### Diagnósticos diferenciais a considerar:');
+      buf.writeln(
+        es
+            ? '### Diagnósticos diferenciales a considerar:'
+            : '### Diagnósticos diferenciais a considerar:',
+      );
       for (final d in winner.differentials.take(5)) buf.writeln('  • $d');
       buf.writeln('');
     }
@@ -10496,7 +13110,8 @@ class AppProvider extends ChangeNotifier {
     // ── Conduta estruturada / Tratamento por etapas ───────────────────────
     if (winner.treatment.isNotEmpty) {
       buf.writeln(
-          es ? '### Conducta estructurada:' : '### Conduta estruturada:');
+        es ? '### Conducta estructurada:' : '### Conduta estruturada:',
+      );
       for (final step in winner.treatment) buf.writeln('  $step');
       buf.writeln('');
     }
@@ -10511,15 +13126,18 @@ class AppProvider extends ChangeNotifier {
 
     if (proto != null) {
       buf.writeln(
-          '### ${es ? "Protocolo interno" : "Protocolo interno"} — ${tDB(proto.title)}:');
+        '### ${es ? "Protocolo interno" : "Protocolo interno"} — ${tDB(proto.title)}:',
+      );
       final actions = proto.getActions(_lang);
       for (int i = 0; i < actions.length && i < 6; i++) {
         buf.writeln('  ${actions[i]}');
       }
       if (actions.length > 6) {
-        buf.writeln(_lang == 'es'
-            ? '  → Ver protocolo completo en la pestaña Protocolos'
-            : '  → Ver protocolo completo na aba Protocolos');
+        buf.writeln(
+          _lang == 'es'
+              ? '  → Ver protocolo completo en la pestaña Protocolos'
+              : '  → Ver protocolo completo na aba Protocolos',
+        );
       }
       buf.writeln('');
 
@@ -10543,14 +13161,17 @@ class AppProvider extends ChangeNotifier {
               ? '🟠 Alerta renal'
               : '🟡 Atenção renal';
       buf.writeln(
-          '$lvl — ${_lang == 'es' ? 'ClCr $clcr mL/min: ajustar todas las dosis renales' : 'ClCr $clcr mL/min: ajustar TODAS as doses renais'}');
+        '$lvl — ${_lang == 'es' ? 'ClCr $clcr mL/min: ajustar todas las dosis renales' : 'ClCr $clcr mL/min: ajustar TODAS as doses renais'}',
+      );
       buf.writeln('');
     }
     final ageVal = int.tryParse(_patient.age);
     if (ageVal != null && ageVal >= 75) {
-      buf.writeln(_lang == 'es'
-          ? '👴 Adulto mayor ≥75 años: reducir dosis opioides/BZD, vigilar delirium, ajustar AINE/IECA.'
-          : '👴 Idoso ≥75 anos: reduzir dose opioides/BZD, vigiar delirium, ajustar AINE/IECA.');
+      buf.writeln(
+        _lang == 'es'
+            ? '👴 Adulto mayor ≥75 años: reducir dosis opioides/BZD, vigilar delirium, ajustar AINE/IECA.'
+            : '👴 Idoso ≥75 anos: reduzir dose opioides/BZD, vigiar delirium, ajustar AINE/IECA.',
+      );
       buf.writeln('');
     }
     // Interações com medicamentos do paciente
@@ -10562,9 +13183,11 @@ class AppProvider extends ChangeNotifier {
           patientMedicationsText: _patient.medications,
         );
         if (interList.isNotEmpty) {
-          buf.writeln(es
-              ? '### ⚠ Interacciones con medicamentos actuales del paciente:'
-              : '### ⚠ Interações com medicamentos atuais do paciente:');
+          buf.writeln(
+            es
+                ? '### ⚠ Interacciones con medicamentos actuales del paciente:'
+                : '### ⚠ Interações com medicamentos atuais do paciente:',
+          );
           for (final inter in interList.take(3)) {
             final sevIcon =
                 inter.severity == InteractionSeverity.contraindicated
@@ -10575,7 +13198,8 @@ class AppProvider extends ChangeNotifier {
                             ? '🟠'
                             : '🟡';
             buf.writeln(
-                '  $sevIcon ${inter.drug1} + ${inter.drug2}: ${inter.effect.length > 120 ? "${inter.effect.substring(0, 120)}..." : inter.effect}');
+              '  $sevIcon ${inter.drug1} + ${inter.drug2}: ${inter.effect.length > 120 ? "${inter.effect.substring(0, 120)}..." : inter.effect}',
+            );
           }
           buf.writeln('');
         }
