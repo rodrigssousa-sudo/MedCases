@@ -3,20 +3,18 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
+import '../models/study_long_form_audio_handoff.dart';
 import '../models/study_workspace_model.dart';
 import '../services/study/study_artifact_generator.dart';
-import '../services/study/study_multimodal_extraction_service.dart';
-import '../models/study_long_form_audio_handoff.dart';
+import '../services/study/study_first_use_notice_service.dart';
 import '../services/study/study_library_service.dart';
 import '../services/study/study_long_form_segment_loader.dart';
+import '../services/study/study_multimodal_extraction_service.dart';
 import '../services/study/study_pdf_export_service.dart';
 import 'notes_audio_local_runtime_screen.dart';
 
 class StudyWorkspaceScreen extends StatefulWidget {
-  const StudyWorkspaceScreen({
-    super.key,
-    required this.isEs,
-  });
+  const StudyWorkspaceScreen({super.key, required this.isEs});
 
   final bool isEs;
 
@@ -27,22 +25,29 @@ class StudyWorkspaceScreen extends StatefulWidget {
 class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   late Study _study;
   final _title = TextEditingController();
-  bool _educationalConfirmed = false;
-  bool _busy = false;
-  StudyArtifactType _artifactType = StudyArtifactType.fullSummary;
-  List<Study> _library = const <Study>[];
+
   final Map<String, List<String>> _recordedRawPaths = <String, List<String>>{};
+
+  List<Study> _library = const <Study>[];
+  bool _busy = false;
+  bool _noticeAccepted = false;
+  StudyArtifactType _artifactType = StudyArtifactType.fullSummary;
 
   @override
   void initState() {
     super.initState();
+    final now = DateTime.now().toUtc();
     _study = Study(
-      id: 'study_${DateTime.now().toUtc().microsecondsSinceEpoch}',
+      id: 'study_${now.microsecondsSinceEpoch}',
       title: widget.isEs ? 'Nuevo estudio' : 'Novo estudo',
       locale: widget.isEs ? 'es-ES' : 'pt-BR',
-      createdAtUtc: DateTime.now().toUtc(),
+      createdAtUtc: now,
     );
     _title.text = _study.title;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadFirstUseNotice();
+    });
   }
 
   @override
@@ -51,9 +56,116 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     super.dispose();
   }
 
+  Future<void> _loadFirstUseNotice() async {
+    final accepted = await StudyFirstUseNoticeService.isAccepted();
+    if (!mounted) return;
+    setState(() => _noticeAccepted = accepted);
+    if (!accepted) {
+      await _showFirstUseNotice();
+    }
+  }
+
+  Future<bool> _ensureFirstUseNotice() async {
+    if (_noticeAccepted) return true;
+    return _showFirstUseNotice();
+  }
+
+  Future<bool> _showFirstUseNotice() async {
+    if (!mounted) return false;
+
+    final accepted =
+        await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (dialogContext) {
+            final dark = Theme.of(dialogContext).brightness == Brightness.dark;
+            final surface = dark ? const Color(0xFF252930) : Colors.white;
+            final text = dark
+                ? const Color(0xFFF8FAFC)
+                : const Color(0xFF111318);
+            final sub = dark
+                ? const Color(0xFFC6CED9)
+                : const Color(0xFF52606D);
+
+            return AlertDialog(
+              backgroundColor: surface,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              titlePadding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
+              contentPadding: const EdgeInsets.fromLTRB(18, 10, 18, 4),
+              actionsPadding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+              title: Row(
+                children: [
+                  const Icon(
+                    Icons.auto_stories_outlined,
+                    size: 19,
+                    color: Color(0xFF10B981),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      widget.isEs ? 'Área de Estudio' : 'Área de Estudos',
+                      style: TextStyle(
+                        color: text,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              content: Text(
+                widget.isEs
+                    ? 'Usa este espacio solo con material educativo. No '
+                          'incluyas datos identificables de pacientes. Este '
+                          'aviso aparecerá una sola vez.'
+                    : 'Use este espaço apenas com material educacional. Não '
+                          'inclua dados identificáveis de pacientes. Este '
+                          'aviso aparecerá apenas uma vez.',
+                style: TextStyle(color: sub, fontSize: 11.5, height: 1.45),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext, false),
+                  child: Text(widget.isEs ? 'Ahora no' : 'Agora não'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.pop(dialogContext, true),
+                  style: FilledButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: const Color(0xFF10B981),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(widget.isEs ? 'Continuar' : 'Continuar'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (!accepted) return false;
+
+    await StudyFirstUseNoticeService.accept();
+    if (!mounted) return true;
+    setState(() => _noticeAccepted = true);
+    return true;
+  }
+
+  Future<void> _persistStudy() async {
+    await StudyLibraryService.save(_study);
+    _library = await StudyLibraryService.loadAll();
+  }
+
   String _addSource(StudySourceType type, String title) {
     final id =
         'source_${DateTime.now().toUtc().microsecondsSinceEpoch}_${_study.sources.length}';
+
     final source = StudySource(
       id: id,
       type: type,
@@ -61,11 +173,13 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       state: StudySourceState.added,
       createdAtUtc: DateTime.now().toUtc(),
     );
+
     setState(() {
       _study = _study.copyWith(
         sources: <StudySource>[..._study.sources, source],
       );
     });
+
     return id;
   }
 
@@ -73,16 +187,20 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       _study.sources.firstWhere((source) => source.id == id);
 
   void _replace(StudySource source) {
-    final list = List<StudySource>.from(_study.sources);
-    final index = list.indexWhere((item) => item.id == source.id);
-    if (index < 0) throw StateError('study_source_missing');
-    list[index] = source;
-    setState(() => _study = _study.copyWith(sources: list));
+    final next = List<StudySource>.from(_study.sources);
+    final index = next.indexWhere((item) => item.id == source.id);
+    if (index < 0) return;
+    next[index] = source;
+    setState(() => _study = _study.copyWith(sources: next));
   }
 
-  Future<void> _persistStudy() async {
-    await StudyLibraryService.save(_study);
-    _library = await StudyLibraryService.loadAll();
+  Future<void> _removeSource(String sourceId) async {
+    _recordedRawPaths.remove(sourceId);
+    final next = _study.sources
+        .where((source) => source.id != sourceId)
+        .toList(growable: false);
+    setState(() => _study = _study.copyWith(sources: next));
+    await _persistStudy();
   }
 
   Future<void> _newStudy() async {
@@ -97,50 +215,131 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       _title.text = _study.title;
       _recordedRawPaths.clear();
     });
-    await _persistStudy();
   }
 
   Future<void> _openLibrary() async {
     final studies = await StudyLibraryService.loadAll();
     if (!mounted) return;
+
     _library = studies;
 
-    final selected = await showDialog<Study>(
+    final selected = await showModalBottomSheet<Study>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(
-            widget.isEs ? 'Biblioteca de estudios' : 'Biblioteca de estudos'),
-        content: SizedBox(
-          width: 430,
-          child: studies.isEmpty
-              ? Text(
-                  widget.isEs
-                      ? 'Todavía no hay estudios guardados.'
-                      : 'Ainda não há estudos salvos.',
-                )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: studies.length,
-                  itemBuilder: (_, index) {
-                    final study = studies[index];
-                    return ListTile(
-                      dense: true,
-                      title: Text(study.title),
-                      subtitle: Text(
-                        '${study.sources.length} '
-                        '${widget.isEs ? "fuentes" : "fontes"} · '
-                        '${study.artifacts.length} '
-                        '${widget.isEs ? "productos" : "produtos"}',
-                      ),
-                      onTap: () => Navigator.pop(dialogContext, study),
-                    );
-                  },
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final dark = Theme.of(sheetContext).brightness == Brightness.dark;
+        final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+        final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
+        final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF52606D);
+        final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+        return SafeArea(
+          top: false,
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.68,
+            ),
+            decoration: BoxDecoration(
+              color: page,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                Container(
+                  width: 34,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-        ),
-      ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.isEs
+                              ? 'Biblioteca de estudios'
+                              : 'Biblioteca de estudos',
+                          style: TextStyle(
+                            color: text,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${studies.length}/40',
+                        style: TextStyle(color: sub, fontSize: 10),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(height: 1, thickness: 0.7, color: border),
+                Expanded(
+                  child: studies.isEmpty
+                      ? Center(
+                          child: Text(
+                            widget.isEs
+                                ? 'Todavía no hay estudios guardados.'
+                                : 'Ainda não há estudos salvos.',
+                            style: TextStyle(color: sub, fontSize: 11.5),
+                          ),
+                        )
+                      : ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(12, 6, 12, 18),
+                          itemCount: studies.length,
+                          separatorBuilder: (_, __) =>
+                              Divider(height: 1, thickness: 0.7, color: border),
+                          itemBuilder: (_, index) {
+                            final study = studies[index];
+                            return ListTile(
+                              dense: true,
+                              minVerticalPadding: 8,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              title: Text(
+                                study.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: text,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${study.sources.length} '
+                                '${widget.isEs ? "fuentes" : "fontes"} · '
+                                '${study.artifacts.length} '
+                                '${widget.isEs ? "productos" : "produtos"}',
+                                style: TextStyle(color: sub, fontSize: 9.5),
+                              ),
+                              trailing: Icon(
+                                Icons.chevron_right_rounded,
+                                color: sub,
+                                size: 18,
+                              ),
+                              onTap: () => Navigator.pop(sheetContext, study),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
 
     if (selected == null || !mounted) return;
+
     setState(() {
       _study = selected;
       _title.text = selected.title;
@@ -148,59 +347,98 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     });
   }
 
-  Future<void> _exportPdf() async {
-    if (_study.acceptedSources.isEmpty && _study.artifacts.isEmpty) {
-      _message(
-        widget.isEs
-            ? 'Agrega contenido antes de exportar.'
-            : 'Adicione conteúdo antes de exportar.',
-      );
-      return;
-    }
-
-    setState(() => _busy = true);
-    try {
-      await _persistStudy();
-      await StudyPdfExportService.share(_study, isEs: widget.isEs);
-    } catch (error) {
-      _message(
-        widget.isEs
-            ? 'No se pudo generar el PDF: $error'
-            : 'Não foi possível gerar o PDF: $error',
-      );
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
   Future<void> _addText() async {
+    if (!await _ensureFirstUseNotice()) return;
+    if (!mounted) return;
+
     final editor = TextEditingController();
-    final result = await showDialog<String>(
+    final result = await showModalBottomSheet<String>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(widget.isEs ? 'Agregar texto' : 'Adicionar texto'),
-        content: TextField(
-          controller: editor,
-          autofocus: true,
-          minLines: 6,
-          maxLines: 12,
-          decoration: InputDecoration(
-            hintText: widget.isEs
-                ? 'Pega aquí el material de estudio…'
-                : 'Cole aqui o material de estudo…',
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final bottom = MediaQuery.viewInsetsOf(sheetContext).bottom;
+        final dark = Theme.of(sheetContext).brightness == Brightness.dark;
+        final surface = dark ? const Color(0xFF252930) : Colors.white;
+        final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+        final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
+        final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: bottom),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.isEs ? 'Agregar texto' : 'Adicionar texto',
+                          style: TextStyle(
+                            color: text,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(sheetContext),
+                        icon: const Icon(Icons.close_rounded, size: 19),
+                      ),
+                    ],
+                  ),
+                  TextField(
+                    controller: editor,
+                    autofocus: true,
+                    minLines: 6,
+                    maxLines: 11,
+                    style: TextStyle(color: text, fontSize: 12),
+                    decoration: InputDecoration(
+                      hintText: widget.isEs
+                          ? 'Pega aquí el material de estudio…'
+                          : 'Cole aqui o material de estudo…',
+                      filled: true,
+                      fillColor: page,
+                      contentPadding: const EdgeInsets.all(12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: border, width: 0.7),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 38,
+                    child: FilledButton(
+                      onPressed: () => Navigator.pop(sheetContext, editor.text),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF10B981),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(widget.isEs ? 'Agregar' : 'Adicionar'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(dialogContext, editor.text),
-            child: Text(widget.isEs ? 'Agregar' : 'Adicionar'),
-          ),
-        ],
-      ),
+        );
+      },
     );
     editor.dispose();
 
@@ -209,8 +447,9 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
     final id = _addSource(
       StudySourceType.text,
-      widget.isEs ? 'Texto pegado' : 'Texto colado',
+      widget.isEs ? 'Texto agregado' : 'Texto adicionado',
     );
+
     var source = _source(id).transition(StudySourceState.processing);
     _replace(source);
 
@@ -225,31 +464,25 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
         sourceRefs: extraction.refs,
       );
       _replace(source);
-    } catch (error) {
-      _replace(
-        source.transition(StudySourceState.failed, error: error.toString()),
+      await _persistStudy();
+    } catch (_) {
+      await _removeSource(id);
+      _message(
+        widget.isEs
+            ? 'No fue posible agregar el texto.'
+            : 'Não foi possível adicionar o texto.',
       );
     }
   }
 
   Future<void> _recordLecture() async {
-    if (!_educationalConfirmed) {
-      _message(
-        widget.isEs
-            ? 'Confirma primero que la grabación será material educativo sin '
-                'datos identificables de pacientes.'
-            : 'Confirme primeiro que a gravação será material educacional sem '
-                'dados identificáveis de pacientes.',
-      );
-      return;
-    }
+    if (!await _ensureFirstUseNotice()) return;
+    if (!mounted) return;
 
     final sourceId = _addSource(
       StudySourceType.recordedAudio,
       widget.isEs ? 'Clase grabada' : 'Aula gravada',
     );
-
-    if (!mounted) return;
 
     final handoff = await Navigator.of(context).push<StudyLongFormAudioHandoff>(
       MaterialPageRoute<StudyLongFormAudioHandoff>(
@@ -265,13 +498,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     );
 
     if (handoff == null || !handoff.isUsable) {
-      _replace(
-        _source(sourceId).transition(
-          StudySourceState.failed,
-          error: 'recording_not_completed',
-        ),
-      );
-      await _persistStudy();
+      await _removeSource(sourceId);
       return;
     }
 
@@ -287,6 +514,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
       for (final segment in handoff.segments) {
         final bytes = await StudyLongFormSegmentLoader.read(segment.path);
+
         final extraction = await StudyMultimodalExtractionService.binary(
           sourceId: sourceId,
           type: StudySourceType.recordedAudio,
@@ -297,6 +525,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
         );
 
         texts.add(extraction.text);
+
         for (final ref in extraction.refs) {
           refs.add(
             SourceRef(
@@ -314,6 +543,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       }
 
       _recordedRawPaths[sourceId] = List<String>.unmodifiable(paths);
+
       source = source.transition(
         StudySourceState.review,
         extractedText: texts.join('\n\n'),
@@ -324,23 +554,15 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
       _message(
         widget.isEs
-            ? 'Transcripción lista para revisar. El audio bruto se elimina '
-                'solo al aceptar la fuente.'
-            : 'Transcrição pronta para revisão. O áudio bruto é excluído '
-                'somente ao aceitar a fonte.',
+            ? 'Transcripción lista para revisar.'
+            : 'Transcrição pronta para revisão.',
       );
-    } catch (error) {
-      _replace(
-        source.transition(
-          StudySourceState.failed,
-          error: error.toString(),
-        ),
-      );
-      await _persistStudy();
+    } catch (_) {
+      await _removeSource(sourceId);
       _message(
         widget.isEs
-            ? 'No se pudo transcribir la grabación: $error'
-            : 'Não foi possível transcrever a gravação: $error',
+            ? 'No fue posible transcribir esta grabación.'
+            : 'Não foi possível transcrever esta gravação.',
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -348,16 +570,8 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   Future<void> _pick(StudySourceType type, List<String> extensions) async {
-    if (!_educationalConfirmed) {
-      _message(
-        widget.isEs
-            ? 'Confirma primero que el archivo es material educativo sin '
-                'datos identificables de pacientes.'
-            : 'Confirme primeiro que o arquivo é material educacional sem '
-                'dados identificáveis de pacientes.',
-      );
-      return;
-    }
+    if (!await _ensureFirstUseNotice()) return;
+    if (!mounted) return;
 
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -392,20 +606,21 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
         bytes: Uint8List.fromList(bytes),
         isEs: widget.isEs,
       );
+
       source = source.transition(
         StudySourceState.review,
         extractedText: extraction.text,
         sourceRefs: extraction.refs,
       );
+
       _replace(source);
-    } catch (error) {
-      _replace(
-        source.transition(StudySourceState.failed, error: error.toString()),
-      );
+      await _persistStudy();
+    } catch (_) {
+      await _removeSource(id);
       _message(
         widget.isEs
-            ? 'No se pudo procesar la fuente: $error'
-            : 'Não foi possível processar a fonte: $error',
+            ? 'No fue posible procesar este archivo.'
+            : 'Não foi possível processar este arquivo.',
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -414,14 +629,15 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
   Future<void> _accept(StudySource source) async {
     final rawPaths = _recordedRawPaths[source.id] ?? const <String>[];
+
     if (source.type == StudySourceType.recordedAudio && rawPaths.isNotEmpty) {
       try {
         await StudyLongFormSegmentLoader.deleteAll(rawPaths);
-      } catch (error) {
+      } catch (_) {
         _message(
           widget.isEs
-              ? 'No se pudo eliminar el audio bruto. Intenta nuevamente.'
-              : 'Não foi possível excluir o áudio bruto. Tente novamente.',
+              ? 'No se pudo eliminar el audio local. Intenta nuevamente.'
+              : 'Não foi possível excluir o áudio local. Tente novamente.',
         );
         return;
       }
@@ -433,14 +649,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   Future<void> _generate() async {
-    if (!_educationalConfirmed) {
-      _message(
-        widget.isEs
-            ? 'Confirma que las fuentes son material educativo sin datos de pacientes.'
-            : 'Confirme que as fontes são material educacional sem dados de pacientes.',
-      );
-      return;
-    }
+    if (!await _ensureFirstUseNotice()) return;
     if (_study.acceptedSources.isEmpty) {
       _message(
         widget.isEs
@@ -457,17 +666,45 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
         type: _artifactType,
         isEs: widget.isEs,
       );
-      final artifacts = _study.artifacts
-          .where((item) => item.type != artifact.type)
-          .toList(growable: true)
-        ..add(artifact);
+
+      final artifacts =
+          _study.artifacts
+              .where((item) => item.type != artifact.type)
+              .toList(growable: true)
+            ..add(artifact);
+
       setState(() => _study = _study.copyWith(artifacts: artifacts));
       await _persistStudy();
-    } catch (error) {
+    } catch (_) {
       _message(
         widget.isEs
-            ? 'No se pudo generar: $error'
-            : 'Não foi possível gerar: $error',
+            ? 'No fue posible generar este material.'
+            : 'Não foi possível gerar este material.',
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _exportPdf() async {
+    if (_study.acceptedSources.isEmpty && _study.artifacts.isEmpty) {
+      _message(
+        widget.isEs
+            ? 'Agrega contenido antes de exportar.'
+            : 'Adicione conteúdo antes de exportar.',
+      );
+      return;
+    }
+
+    setState(() => _busy = true);
+    try {
+      await _persistStudy();
+      await StudyPdfExportService.share(_study, isEs: widget.isEs);
+    } catch (_) {
+      _message(
+        widget.isEs
+            ? 'No fue posible generar el PDF.'
+            : 'Não foi possível gerar o PDF.',
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -477,11 +714,13 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
+
     final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
-    final card = dark ? const Color(0xFF252930) : Colors.white;
+    final surface = dark ? const Color(0xFF252930) : Colors.white;
+    final soft = dark ? const Color(0xFF20242B) : const Color(0xFFF6F8FA);
     final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
     final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
-    final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF52606D);
+    final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF59636E);
     const accent = Color(0xFF10B981);
 
     return ColoredBox(
@@ -494,39 +733,249 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
           112 + MediaQuery.paddingOf(context).bottom,
         ),
         children: [
-          _Card(
-            color: card,
-            border: border,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.isEs ? 'Nuevo estudio' : 'Novo estudo',
-                  style: TextStyle(
-                    color: text,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
+          _WorkspaceHeader(
+            isEs: widget.isEs,
+            text: text,
+            sub: sub,
+            accent: accent,
+            noticeAccepted: _noticeAccepted,
+            onLibrary: _busy ? null : _openLibrary,
+            onNew: _busy ? null : _newStudy,
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _title,
+            onChanged: (value) {
+              final name = value.trim();
+              if (name.isNotEmpty) {
+                _study = _study.copyWith(title: name);
+              }
+            },
+            onSubmitted: (_) => _persistStudy(),
+            style: TextStyle(
+              color: text,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w600,
+            ),
+            decoration: InputDecoration(
+              hintText: widget.isEs ? 'Nombre del estudio' : 'Nome do estudo',
+              isDense: true,
+              filled: true,
+              fillColor: surface,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 11,
+                vertical: 10,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: border, width: 0.7),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: border, width: 0.7),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: accent, width: 1),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          _SectionLabel(
+            title: widget.isEs ? 'Fuentes' : 'Fontes',
+            subtitle: widget.isEs
+                ? 'Combina uno o más materiales.'
+                : 'Combine um ou mais materiais.',
+            text: text,
+            sub: sub,
+          ),
+          const SizedBox(height: 6),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final width = (constraints.maxWidth - 8) / 3;
+              return Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: [
+                  _SourceAction(
+                    width: width,
+                    icon: Icons.mic_none_rounded,
+                    label: widget.isEs ? 'Grabar clase' : 'Gravar aula',
+                    surface: surface,
+                    soft: soft,
+                    border: border,
+                    text: text,
+                    sub: sub,
+                    accent: accent,
+                    onTap: _busy ? null : _recordLecture,
                   ),
-                ),
-                const SizedBox(height: 7),
-                SizedBox(
-                  height: 40,
-                  child: TextField(
-                    controller: _title,
-                    onChanged: (value) {
-                      final name = value.trim();
-                      if (name.isNotEmpty) {
-                        _study = _study.copyWith(title: name);
-                      }
-                    },
-                    style: TextStyle(color: text, fontSize: 12.5),
+                  _SourceAction(
+                    width: width,
+                    icon: Icons.audio_file_outlined,
+                    label: widget.isEs ? 'Audio' : 'Áudio',
+                    surface: surface,
+                    soft: soft,
+                    border: border,
+                    text: text,
+                    sub: sub,
+                    accent: accent,
+                    onTap: _busy
+                        ? null
+                        : () => _pick(
+                            StudySourceType.uploadedAudio,
+                            const <String>['m4a', 'mp3', 'wav', 'aac', 'mp4'],
+                          ),
+                  ),
+                  _SourceAction(
+                    width: width,
+                    icon: Icons.picture_as_pdf_outlined,
+                    label: 'PDF',
+                    surface: surface,
+                    soft: soft,
+                    border: border,
+                    text: text,
+                    sub: sub,
+                    accent: accent,
+                    onTap: _busy
+                        ? null
+                        : () =>
+                              _pick(StudySourceType.pdf, const <String>['pdf']),
+                  ),
+                  _SourceAction(
+                    width: width,
+                    icon: Icons.image_outlined,
+                    label: widget.isEs ? 'Imagen' : 'Imagem',
+                    surface: surface,
+                    soft: soft,
+                    border: border,
+                    text: text,
+                    sub: sub,
+                    accent: accent,
+                    onTap: _busy
+                        ? null
+                        : () => _pick(StudySourceType.image, const <String>[
+                            'jpg',
+                            'jpeg',
+                            'png',
+                            'webp',
+                            'gif',
+                          ]),
+                  ),
+                  _SourceAction(
+                    width: width,
+                    icon: Icons.notes_rounded,
+                    label: 'Texto',
+                    surface: surface,
+                    soft: soft,
+                    border: border,
+                    text: text,
+                    sub: sub,
+                    accent: accent,
+                    onTap: _busy ? null : _addText,
+                  ),
+                ],
+              );
+            },
+          ),
+          if (_busy) ...[
+            const SizedBox(height: 8),
+            const LinearProgressIndicator(
+              minHeight: 2,
+              color: accent,
+              backgroundColor: Colors.transparent,
+            ),
+          ],
+          if (_study.sources.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            _SectionLabel(
+              title: widget.isEs ? 'Fuentes del estudio' : 'Fontes do estudo',
+              subtitle: widget.isEs
+                  ? 'Revisa antes de aceptar.'
+                  : 'Revise antes de aceitar.',
+              text: text,
+              sub: sub,
+            ),
+            const SizedBox(height: 4),
+            Container(
+              decoration: BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: border, width: 0.7),
+              ),
+              child: Column(
+                children: [
+                  for (var i = 0; i < _study.sources.length; i++) ...[
+                    _SourceRow(
+                      source: _study.sources[i],
+                      isEs: widget.isEs,
+                      text: text,
+                      sub: sub,
+                      accent: accent,
+                      onAccept:
+                          _study.sources[i].state == StudySourceState.review
+                          ? () => _accept(_study.sources[i])
+                          : null,
+                    ),
+                    if (i < _study.sources.length - 1)
+                      Divider(
+                        height: 1,
+                        thickness: 0.7,
+                        color: border,
+                        indent: 12,
+                        endIndent: 12,
+                      ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 14),
+          _SectionLabel(
+            title: widget.isEs ? 'Generar con IA' : 'Gerar com IA',
+            subtitle: widget.isEs
+                ? 'Usa solamente las fuentes aceptadas.'
+                : 'Usa apenas as fontes aceitas.',
+            text: text,
+            sub: sub,
+          ),
+          const SizedBox(height: 5),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: border, width: 0.7),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<StudyArtifactType>(
+                    value: _artifactType,
+                    isExpanded: true,
+                    items: _artifactOptions
+                        .map(
+                          (value) => DropdownMenuItem<StudyArtifactType>(
+                            value: value,
+                            child: Text(_artifactLabel(value)),
+                          ),
+                        )
+                        .toList(growable: false),
+                    onChanged: _busy
+                        ? null
+                        : (value) {
+                            if (value != null) {
+                              setState(() => _artifactType = value);
+                            }
+                          },
+                    style: TextStyle(color: text, fontSize: 11),
+                    dropdownColor: surface,
                     decoration: InputDecoration(
                       isDense: true,
                       filled: true,
-                      fillColor: page,
+                      fillColor: soft,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 10,
-                        vertical: 9,
+                        vertical: 10,
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -535,212 +984,24 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 6),
-                InkWell(
-                  onTap: () => setState(
-                    () => _educationalConfirmed = !_educationalConfirmed,
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: Checkbox(
-                          value: _educationalConfirmed,
-                          activeColor: accent,
-                          onChanged: (value) => setState(
-                            () => _educationalConfirmed = value ?? false,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          widget.isEs
-                              ? 'Material educativo sin datos identificables de pacientes.'
-                              : 'Material educacional sem dados identificáveis de pacientes.',
-                          style: TextStyle(
-                            color: sub,
-                            fontSize: 10.5,
-                            height: 1.35,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            widget.isEs ? 'Agregar fuentes' : 'Adicionar fontes',
-            style: TextStyle(
-              color: text,
-              fontSize: 12.5,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 5),
-          Wrap(
-            spacing: 5,
-            runSpacing: 5,
-            children: [
-              _Action(
-                icon: Icons.mic_none_rounded,
-                label: widget.isEs ? 'Grabar clase' : 'Gravar aula',
-                onTap: _busy ? null : _recordLecture,
-              ),
-              _Action(
-                icon: Icons.audio_file_outlined,
-                label: widget.isEs ? 'Enviar audio' : 'Enviar áudio',
-                onTap: _busy
-                    ? null
-                    : () => _pick(StudySourceType.uploadedAudio, const <String>[
-                          'm4a',
-                          'mp3',
-                          'wav',
-                          'aac',
-                          'mp4',
-                        ]),
-              ),
-              _Action(
-                icon: Icons.picture_as_pdf_outlined,
-                label: 'PDF',
-                onTap: _busy
-                    ? null
-                    : () => _pick(StudySourceType.pdf, const <String>['pdf']),
-              ),
-              _Action(
-                icon: Icons.image_outlined,
-                label: widget.isEs ? 'Imagen' : 'Imagem',
-                onTap: _busy
-                    ? null
-                    : () => _pick(StudySourceType.image, const <String>[
-                          'jpg',
-                          'jpeg',
-                          'png',
-                          'webp',
-                          'gif',
-                        ]),
-              ),
-              _Action(
-                icon: Icons.text_snippet_outlined,
-                label: 'Texto',
-                onTap: _busy ? null : _addText,
-              ),
-              _Action(
-                icon: Icons.library_books_outlined,
-                label: widget.isEs ? 'Biblioteca' : 'Biblioteca',
-                onTap: _busy ? null : _openLibrary,
-              ),
-              _Action(
-                icon: Icons.add_rounded,
-                label: widget.isEs ? 'Nuevo' : 'Novo',
-                onTap: _busy ? null : _newStudy,
-              ),
-              _Action(
-                icon: Icons.picture_as_pdf_rounded,
-                label: 'PDF final',
-                onTap: _busy ? null : _exportPdf,
-              ),
-            ],
-          ),
-          if (_busy) ...[
-            const SizedBox(height: 7),
-            const LinearProgressIndicator(minHeight: 2),
-          ],
-          if (_study.sources.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              widget.isEs ? 'Fuentes del estudio' : 'Fontes do estudo',
-              style: TextStyle(
-                color: text,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const SizedBox(height: 5),
-            for (final source in _study.sources) ...[
-              _SourceTile(
-                source: source,
-                isEs: widget.isEs,
-                card: card,
-                border: border,
-                text: text,
-                sub: sub,
-                accent: accent,
-                onAccept: source.state == StudySourceState.review
-                    ? () => _accept(source)
-                    : null,
-              ),
-              const SizedBox(height: 5),
-            ],
-          ],
-          const SizedBox(height: 5),
-          _Card(
-            color: card,
-            border: border,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.isEs ? 'Generar con IA' : 'Gerar com IA',
-                  style: TextStyle(
-                    color: text,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 7),
-                DropdownButtonFormField<StudyArtifactType>(
-                  value: _artifactType,
-                  isExpanded: true,
-                  items: _artifactOptions
-                      .map(
-                        (value) => DropdownMenuItem<StudyArtifactType>(
-                          value: value,
-                          child: Text(_artifactLabel(value)),
-                        ),
-                      )
-                      .toList(growable: false),
-                  onChanged: _busy
-                      ? null
-                      : (value) {
-                          if (value != null) {
-                            setState(() => _artifactType = value);
-                          }
-                        },
-                  style: TextStyle(color: text, fontSize: 11.5),
-                  dropdownColor: card,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    filled: true,
-                    fillColor: page,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 9,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: border, width: 0.7),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 7),
+                const SizedBox(width: 6),
                 SizedBox(
-                  width: double.infinity,
-                  height: 38,
+                  height: 40,
                   child: FilledButton.icon(
                     onPressed: _busy ? null : _generate,
-                    icon: const Icon(Icons.auto_awesome_rounded, size: 16),
-                    label: Text(widget.isEs ? 'Generar' : 'Gerar'),
+                    icon: const Icon(Icons.auto_awesome_rounded, size: 15),
+                    label: Text(
+                      widget.isEs ? 'Generar' : 'Gerar',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     style: FilledButton.styleFrom(
+                      elevation: 0,
                       backgroundColor: accent,
                       foregroundColor: Colors.white,
-                      elevation: 0,
-                      shadowColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -751,20 +1012,43 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
             ),
           ),
           if (_study.artifacts.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              widget.isEs ? 'Productos de estudio' : 'Produtos de estudo',
-              style: TextStyle(
-                color: text,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w800,
-              ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: _SectionLabel(
+                    title: widget.isEs ? 'Resultados' : 'Resultados',
+                    subtitle: widget.isEs
+                        ? 'Listos para revisar o exportar.'
+                        : 'Prontos para revisar ou exportar.',
+                    text: text,
+                    sub: sub,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: _busy ? null : _exportPdf,
+                  icon: const Icon(Icons.picture_as_pdf_outlined, size: 15),
+                  label: Text(
+                    'PDF',
+                    style: TextStyle(
+                      color: accent,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 4),
             for (final artifact in _study.artifacts.reversed) ...[
-              _Card(
-                color: card,
-                border: border,
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
+                decoration: BoxDecoration(
+                  color: surface,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: border, width: 0.7),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -772,7 +1056,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                       artifact.title,
                       style: TextStyle(
                         color: text,
-                        fontSize: 12.5,
+                        fontSize: 11.5,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -781,25 +1065,16 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                       artifact.content,
                       style: TextStyle(
                         color: text,
-                        fontSize: 11.5,
+                        fontSize: 10.8,
                         height: 1.45,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 4),
             ],
           ],
-          const SizedBox(height: 6),
-          Text(
-            widget.isEs
-                ? 'Foundation V1 · biblioteca persistente, PDF final y handoff '
-                    'automático de la grabación larga: próxima expansión.'
-                : 'Foundation V1 · biblioteca persistente, PDF final e handoff '
-                    'automático da gravação longa: próxima expansão.',
-            style: TextStyle(color: sub, fontSize: 10, height: 1.35),
-          ),
         ],
       ),
     );
@@ -830,6 +1105,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       StudyArtifactType.comparisonTable: 'Tabela comparativa',
       StudyArtifactType.finalPdf: 'PDF final',
     };
+
     final es = <StudyArtifactType, String>{
       StudyArtifactType.fullSummary: 'Resumen completo',
       StudyArtifactType.examSummary: 'Resumen para examen',
@@ -842,6 +1118,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       StudyArtifactType.comparisonTable: 'Tabla comparativa',
       StudyArtifactType.finalPdf: 'PDF final',
     };
+
     return (widget.isEs ? es : pt)[type]!;
   }
 
@@ -866,69 +1143,214 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       ..clearSnackBars()
       ..showSnackBar(
         SnackBar(
-          content: Text(value, style: const TextStyle(fontSize: 11.5)),
+          content: Text(value, style: const TextStyle(fontSize: 11)),
           behavior: SnackBarBehavior.floating,
         ),
       );
   }
 }
 
-class _Card extends StatelessWidget {
-  const _Card({required this.color, required this.border, required this.child});
+class _WorkspaceHeader extends StatelessWidget {
+  const _WorkspaceHeader({
+    required this.isEs,
+    required this.text,
+    required this.sub,
+    required this.accent,
+    required this.noticeAccepted,
+    required this.onLibrary,
+    required this.onNew,
+  });
 
-  final Color color;
-  final Color border;
-  final Widget child;
+  final bool isEs;
+  final Color text;
+  final Color sub;
+  final Color accent;
+  final bool noticeAccepted;
+  final VoidCallback? onLibrary;
+  final VoidCallback? onNew;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: color,
-        border: Border.all(color: border, width: 0.7),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: child,
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    isEs ? 'Estudio' : 'Estudos',
+                    style: TextStyle(
+                      color: text,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  if (noticeAccepted) ...[
+                    const SizedBox(width: 5),
+                    Icon(Icons.verified_rounded, size: 14, color: accent),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 1),
+              Text(
+                isEs
+                    ? 'Organiza fuentes y crea material de repaso.'
+                    : 'Organize fontes e crie material de revisão.',
+                style: TextStyle(color: sub, fontSize: 10.2),
+              ),
+            ],
+          ),
+        ),
+        _HeaderAction(
+          icon: Icons.library_books_outlined,
+          tooltip: isEs ? 'Biblioteca' : 'Biblioteca',
+          onTap: onLibrary,
+        ),
+        const SizedBox(width: 2),
+        _HeaderAction(
+          icon: Icons.add_rounded,
+          tooltip: isEs ? 'Nuevo estudio' : 'Novo estudo',
+          onTap: onNew,
+        ),
+      ],
     );
   }
 }
 
-class _Action extends StatelessWidget {
-  const _Action({required this.icon, required this.label, required this.onTap});
+class _HeaderAction extends StatelessWidget {
+  const _HeaderAction({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+  });
 
   final IconData icon;
-  final String label;
+  final String tooltip;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 38,
-      child: OutlinedButton.icon(
+      width: 34,
+      height: 34,
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        tooltip: tooltip,
         onPressed: onTap,
-        icon: Icon(icon, size: 15),
-        label: Text(
-          label,
-          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+        icon: Icon(icon, size: 18),
+      ),
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({
+    required this.title,
+    required this.subtitle,
+    required this.text,
+    required this.sub,
+  });
+
+  final String title;
+  final String subtitle;
+  final Color text;
+  final Color sub;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: text,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w800,
+          ),
         ),
-        style: OutlinedButton.styleFrom(
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        const SizedBox(height: 1),
+        Text(
+          subtitle,
+          style: TextStyle(color: sub, fontSize: 9.8, height: 1.25),
+        ),
+      ],
+    );
+  }
+}
+
+class _SourceAction extends StatelessWidget {
+  const _SourceAction({
+    required this.width,
+    required this.icon,
+    required this.label,
+    required this.surface,
+    required this.soft,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+    required this.onTap,
+  });
+
+  final double width;
+  final IconData icon;
+  final String label;
+  final Color surface;
+  final Color soft;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: 58,
+      child: Material(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: border, width: 0.7),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(icon, color: accent, size: 17),
+                const Spacer(),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: onTap == null ? sub : text,
+                    fontSize: 10.2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class _SourceTile extends StatelessWidget {
-  const _SourceTile({
+class _SourceRow extends StatelessWidget {
+  const _SourceRow({
     required this.source,
     required this.isEs,
-    required this.card,
-    required this.border,
     required this.text,
     required this.sub,
     required this.accent,
@@ -937,8 +1359,6 @@ class _SourceTile extends StatelessWidget {
 
   final StudySource source;
   final bool isEs;
-  final Color card;
-  final Color border;
   final Color text;
   final Color sub;
   final Color accent;
@@ -946,73 +1366,100 @@ class _SourceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final preview = source.text.trim();
-    final refs =
-        source.refs.take(4).map((ref) => ref.label(isEs: isEs)).join(' · ');
+    final refs = source.refs
+        .take(3)
+        .map((ref) => ref.label(isEs: isEs))
+        .join(' · ');
 
-    return _Card(
-      color: card,
-      border: border,
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(11, 9, 9, 9),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
+          Icon(
+            _sourceIcon(source.type),
+            size: 17,
+            color: source.state == StudySourceState.accepted ? accent : sub,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
                   source.title,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: text,
-                    fontSize: 11.5,
+                    fontSize: 11.2,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-              ),
-              Text(
-                source.state.name.toUpperCase(),
-                style: TextStyle(
-                  color:
-                      source.state == StudySourceState.accepted ? accent : sub,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
+                const SizedBox(height: 2),
+                Text(
+                  refs.isNotEmpty ? refs : _stateLabel(source.state),
+                  style: TextStyle(
+                    color: source.state == StudySourceState.accepted
+                        ? accent
+                        : sub,
+                    fontSize: 9.5,
+                    height: 1.25,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          if (refs.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(refs, style: TextStyle(color: sub, fontSize: 9.5)),
-          ],
-          if (preview.isNotEmpty) ...[
-            const SizedBox(height: 5),
-            Text(
-              preview.length > 600 ? '${preview.substring(0, 600)}…' : preview,
-              style: TextStyle(color: text, fontSize: 10.5, height: 1.38),
-            ),
-          ],
-          if (source.errorCode != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              source.errorCode!,
-              style: const TextStyle(color: Color(0xFFEF4444), fontSize: 9.5),
-            ),
-          ],
-          if (onAccept != null) ...[
-            const SizedBox(height: 6),
+          if (onAccept != null)
             SizedBox(
-              height: 34,
-              child: FilledButton(
+              height: 30,
+              child: TextButton(
                 onPressed: onAccept,
+                style: TextButton.styleFrom(
+                  foregroundColor: accent,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
                 child: Text(
-                  isEs ? 'Aceptar fuente' : 'Aceitar fonte',
-                  style: const TextStyle(fontSize: 10.5),
+                  isEs ? 'Aceptar' : 'Aceitar',
+                  style: const TextStyle(
+                    fontSize: 9.8,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ),
-          ],
         ],
       ),
     );
+  }
+
+  String _stateLabel(StudySourceState state) {
+    switch (state) {
+      case StudySourceState.added:
+        return isEs ? 'Agregada' : 'Adicionada';
+      case StudySourceState.processing:
+        return isEs ? 'Procesando…' : 'Processando…';
+      case StudySourceState.review:
+        return isEs ? 'Lista para revisar' : 'Pronta para revisão';
+      case StudySourceState.accepted:
+        return isEs ? 'Aceptada' : 'Aceita';
+      case StudySourceState.failed:
+        return isEs ? 'No disponible' : 'Indisponível';
+    }
+  }
+
+  static IconData _sourceIcon(StudySourceType type) {
+    switch (type) {
+      case StudySourceType.recordedAudio:
+        return Icons.mic_none_rounded;
+      case StudySourceType.uploadedAudio:
+        return Icons.audio_file_outlined;
+      case StudySourceType.pdf:
+        return Icons.picture_as_pdf_outlined;
+      case StudySourceType.image:
+        return Icons.image_outlined;
+      case StudySourceType.text:
+        return Icons.notes_rounded;
+    }
   }
 }

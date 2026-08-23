@@ -198,8 +198,8 @@ class _NotesAudioConsultationLocalRuntimeScreenState
             child: Text(
               _transcript.trim().isEmpty
                   ? (isEs
-                      ? 'La transcripción aparecerá aquí durante la captura.'
-                      : 'A transcrição aparecerá aqui durante a captura.')
+                        ? 'La transcripción aparecerá aquí durante la captura.'
+                        : 'A transcrição aparecerá aqui durante a captura.')
                   : _transcript,
               style: TextStyle(
                 color: palette.secondary,
@@ -225,11 +225,12 @@ class _NotesAudioConsultationLocalRuntimeScreenState
                   icon: !_recording
                       ? Icons.mic_rounded
                       : (_paused
-                          ? Icons.play_arrow_rounded
-                          : Icons.pause_rounded),
+                            ? Icons.play_arrow_rounded
+                            : Icons.pause_rounded),
                   enabled: !_busy,
-                  onPressed:
-                      !_recording ? _start : (_paused ? _resume : _pause),
+                  onPressed: !_recording
+                      ? _start
+                      : (_paused ? _resume : _pause),
                 ),
               ),
               const SizedBox(width: 8),
@@ -250,9 +251,9 @@ class _NotesAudioConsultationLocalRuntimeScreenState
             palette: palette,
             text: isEs
                 ? 'Esta etapa no conecta este workspace al backend remoto de '
-                    'transcripción de audio de MedCases.'
+                      'transcripción de audio de MedCases.'
                 : 'Esta etapa não conecta este workspace ao backend remoto de '
-                    'transcrição de áudio do MedCases.',
+                      'transcrição de áudio do MedCases.',
           ),
         ],
       ),
@@ -546,15 +547,16 @@ class _NotesAudioLongFormLocalRuntimeScreenState
     final isEs = widget.isEs;
     final now = DateTime.now().toUtc();
 
-    final activeDuration =
-        _session == null ? Duration.zero : _session!.activeDurationAt(now);
+    final activeDuration = _session == null
+        ? Duration.zero
+        : _session!.activeDurationAt(now);
 
     return _AudioRuntimeScaffold(
       palette: palette,
       title: isEs ? 'Clase / audio largo' : 'Aula / áudio longo',
       subtitle: isEs
-          ? 'Grabación local M4A segmentada para sesiones extensas.'
-          : 'Gravação local M4A segmentada para sessões extensas.',
+          ? 'Captura local segmentada para clases y sesiones extensas.'
+          : 'Captura local segmentada para aulas e sessões extensas.',
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -563,10 +565,10 @@ class _NotesAudioLongFormLocalRuntimeScreenState
             label: _stoppedManifest != null
                 ? 'Finalizado'
                 : (_paused
-                    ? 'Pausado'
-                    : (_recording
-                        ? (isEs ? 'Grabando' : 'Gravando')
-                        : (isEs ? 'Listo' : 'Pronto'))),
+                      ? 'Pausado'
+                      : (_recording
+                            ? (isEs ? 'Grabando' : 'Gravando')
+                            : (isEs ? 'Listo' : 'Pronto'))),
             detail: _formatDuration(activeDuration.inSeconds),
           ),
           const SizedBox(height: 8),
@@ -603,9 +605,9 @@ class _NotesAudioLongFormLocalRuntimeScreenState
                   Text(
                     isEs
                         ? 'Segmentos mantenidos para revisión: '
-                            '${_stoppedManifest!.segments.length}'
+                              '${_stoppedManifest!.segments.length}'
                         : 'Segmentos mantidos para revisão: '
-                            '${_stoppedManifest!.segments.length}',
+                              '${_stoppedManifest!.segments.length}',
                     style: TextStyle(
                       color: palette.text,
                       fontSize: 12,
@@ -632,11 +634,12 @@ class _NotesAudioLongFormLocalRuntimeScreenState
                   icon: _session == null
                       ? Icons.fiber_manual_record_rounded
                       : (_paused
-                          ? Icons.play_arrow_rounded
-                          : Icons.pause_rounded),
+                            ? Icons.play_arrow_rounded
+                            : Icons.pause_rounded),
                   enabled: !_busy && _stoppedManifest == null,
-                  onPressed:
-                      _session == null ? _start : (_paused ? _resume : _pause),
+                  onPressed: _session == null
+                      ? _start
+                      : (_paused ? _resume : _pause),
                 ),
               ),
               const SizedBox(width: 8),
@@ -657,9 +660,9 @@ class _NotesAudioLongFormLocalRuntimeScreenState
             palette: palette,
             text: isEs
                 ? 'El M4A permanece local para revisión. Esta etapa no llama '
-                    'al backend remoto de transcripción.'
+                      'al backend remoto de transcripción.'
                 : 'O M4A permanece local para revisão. Esta etapa não chama '
-                    'o backend remoto de transcrição.',
+                      'o backend remoto de transcrição.',
           ),
         ],
       ),
@@ -694,11 +697,7 @@ class _AudioRuntimeScaffold extends StatelessWidget {
         toolbarHeight: 48,
         leading: IconButton(
           onPressed: () => Navigator.maybePop(context),
-          icon: Icon(
-            Icons.chevron_left_rounded,
-            size: 23,
-            color: palette.text,
-          ),
+          icon: Icon(Icons.chevron_left_rounded, size: 23, color: palette.text),
         ),
         title: Text(
           title,
@@ -755,11 +754,7 @@ class _StatusStrip extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.graphic_eq_rounded,
-            size: 18,
-            color: palette.accent,
-          ),
+          Icon(Icons.graphic_eq_rounded, size: 18, color: palette.accent),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -856,10 +851,7 @@ class _SolidActionButton extends StatelessWidget {
           overlayColor: Colors.transparent,
         ),
         icon: Icon(icon, size: 18),
-        label: Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.w700),
-        ),
+        label: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
       ),
     );
   }
@@ -897,20 +889,14 @@ class _NeutralActionButton extends StatelessWidget {
           overlayColor: Colors.transparent,
         ),
         icon: Icon(icon, size: 18),
-        label: Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
+        label: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
       ),
     );
   }
 }
 
 class _SafetyNote extends StatelessWidget {
-  const _SafetyNote({
-    required this.palette,
-    required this.text,
-  });
+  const _SafetyNote({required this.palette, required this.text});
 
   final _AudioRuntimePalette palette;
   final String text;
@@ -930,10 +916,7 @@ class _SafetyNote extends StatelessWidget {
 }
 
 class _RuntimeError extends StatelessWidget {
-  const _RuntimeError({
-    required this.palette,
-    required this.text,
-  });
+  const _RuntimeError({required this.palette, required this.text});
 
   final _AudioRuntimePalette palette;
   final String text;

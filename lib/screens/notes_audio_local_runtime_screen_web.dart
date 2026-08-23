@@ -49,9 +49,9 @@ class NotesAudioConsultationLocalRuntimeScreen extends StatelessWidget {
       icon: Icons.mic_none_rounded,
       description: isEs
           ? 'La captura clínica local está disponible en la aplicación '
-              'MedCases para iPhone y Android.'
+                'MedCases para iPhone y Android.'
           : 'A captura clínica local está disponível no aplicativo '
-              'MedCases para iPhone e Android.',
+                'MedCases para iPhone e Android.',
     );
   }
 }
@@ -74,9 +74,9 @@ class NotesAudioLongFormLocalRuntimeScreen extends StatelessWidget {
       icon: Icons.graphic_eq_rounded,
       description: isEs
           ? 'La grabación local M4A de larga duración está disponible en '
-              'la aplicación MedCases para iPhone y Android.'
+                'la aplicación MedCases para iPhone y Android.'
           : 'A gravação local M4A de longa duração está disponível no '
-              'aplicativo MedCases para iPhone e Android.',
+                'aplicativo MedCases para iPhone e Android.',
     );
   }
 }
@@ -110,10 +110,7 @@ class _WebAudioUnavailableScreen extends StatelessWidget {
         shadowColor: Colors.transparent,
         leading: IconButton(
           onPressed: () => Navigator.maybePop(context),
-          icon: const Icon(
-            Icons.chevron_left_rounded,
-            size: 23,
-          ),
+          icon: const Icon(Icons.chevron_left_rounded, size: 23),
         ),
         title: Text(
           title,
@@ -135,19 +132,12 @@ class _WebAudioUnavailableScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: palette.card,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: palette.divider,
-                  width: 0.7,
-                ),
+                border: Border.all(color: palette.divider, width: 0.7),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    icon,
-                    size: 24,
-                    color: palette.accent,
-                  ),
+                  Icon(icon, size: 24, color: palette.accent),
                   const SizedBox(width: 11),
                   Expanded(
                     child: Column(
@@ -177,11 +167,11 @@ class _WebAudioUnavailableScreen extends StatelessWidget {
                         Text(
                           isEs
                               ? 'La versión web mantiene Notas, Historial y '
-                                  'la interfaz de Audio sin activar captura '
-                                  'local no soportada.'
+                                    'la interfaz de Audio sin activar captura '
+                                    'local no soportada.'
                               : 'A versão web mantém Notas, Histórico e a '
-                                  'interface de Áudio sem ativar captura '
-                                  'local não suportada.',
+                                    'interface de Áudio sem ativar captura '
+                                    'local não suportada.',
                           style: TextStyle(
                             color: palette.secondary,
                             fontSize: 11.5,

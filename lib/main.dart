@@ -68,7 +68,8 @@ import 'services/app_resume_coordinator.dart'; // BUILD 241: background/resume s
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
 import 'widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
-import 'platform/web_impl.dart' if (dart.library.io) 'platform/web_stub.dart'
+import 'platform/web_impl.dart'
+    if (dart.library.io) 'platform/web_stub.dart'
     as webPlatform;
 
 Future<void> main() async {
@@ -125,15 +126,17 @@ Future<void> main() async {
     'BUILT_AT',
     defaultValue: 'unknown',
   );
-  final bool compileIdentityAvailable = buildCommit != 'unknown' &&
+  final bool compileIdentityAvailable =
+      buildCommit != 'unknown' &&
       buildCommit.isNotEmpty &&
       bundleVersion != 'dev' &&
       bundleVersion.isNotEmpty &&
       builtAt != 'unknown' &&
       builtAt.isNotEmpty;
 
-  final String compileIdentityState =
-      compileIdentityAvailable ? 'AVAILABLE' : 'FALLBACK';
+  final String compileIdentityState = compileIdentityAvailable
+      ? 'AVAILABLE'
+      : 'FALLBACK';
 
   // ignore: avoid_print
   print(
@@ -366,155 +369,156 @@ class MedCasesApp extends StatefulWidget {
   State<MedCasesApp> createState() => _MedCasesAppState();
 
   static ThemeData _buildTheme(bool dark) => ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-        brightness: dark ? Brightness.dark : Brightness.light,
-        // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
-        drawerTheme: DrawerThemeData(
-          scrimColor: Colors.black.withOpacity(0.52),
-          // width: null → cada Drawer define a própria via MediaQuery
-        ),
-        colorScheme: dark
-            ? ColorScheme.dark(
-                // ── Dark mode: neutro, menos verde, maior contraste ──────────
-                primary: const Color(0xFF00E5FF), // ouro
-                onPrimary: const Color(0xFF1C1C1C),
-                secondary: const Color(0xFF10B981), // verde médio
-                onSecondary: const Color(0xFFFFFFFF),
-                surface: const Color(0xFF252930), // cards
-                onSurface: const Color(0xFFFFFFFF), // texto principal
-                surfaceContainerHighest: const Color(0xFF252930),
-                surfaceContainerHigh: const Color(0xFF252930),
-                surfaceContainer: const Color(0xFF252930),
-                surfaceContainerLow: const Color(0xFF1A1D23),
-                surfaceDim: const Color(0xFF1A1D23),
-                outline: const Color(0xFF374151),
-                outlineVariant: const Color(0xFF2D3340),
-                error: const Color(0xFFFF7070),
-                onError: Colors.white,
-                inverseSurface: const Color(0xFFFFFFFF),
-                onInverseSurface: const Color(0xFF1A1D23),
-              )
-            : const ColorScheme.light(
-                // LIGHT_MODE_PREMIUM_V1_A_R14_ROOT_THEME
-                primary: Color(0xFF0F172A),
-                onPrimary: Color(0xFFFFFFFF),
-                secondary: Color(0xFF059669),
-                onSecondary: Color(0xFFFFFFFF),
-                surface: Color(0xFFFFFFFF),
-                onSurface: Color(0xFF0F172A),
-                surfaceContainerHighest: Color(0xFFF1F5F9),
-                surfaceContainerHigh: Color(0xFFF8FAFC),
-                surfaceContainer: Color(0xFFFFFFFF),
-                surfaceContainerLow: Color(0xFFF8FAFC),
-                surfaceDim: Color(0xFFE2E8F0),
-                outline: Color(0xFFCBD5E1),
-                outlineVariant: Color(0xFFE2E8F0),
-                error: Color(0xFFDC2626),
-                onError: Color(0xFFFFFFFF),
-                inverseSurface: Color(0xFF1A1D23),
-                onInverseSurface: Color(0xFFFFFFFF),
+    useMaterial3: true,
+    fontFamily: 'Roboto',
+    brightness: dark ? Brightness.dark : Brightness.light,
+    // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
+    drawerTheme: DrawerThemeData(
+      scrimColor: Colors.black.withOpacity(0.52),
+      // width: null → cada Drawer define a própria via MediaQuery
+    ),
+    colorScheme: dark
+        ? ColorScheme.dark(
+            // ── Dark mode: neutro, menos verde, maior contraste ──────────
+            primary: const Color(0xFF00E5FF), // ouro
+            onPrimary: const Color(0xFF1C1C1C),
+            secondary: const Color(0xFF10B981), // verde médio
+            onSecondary: const Color(0xFFFFFFFF),
+            surface: const Color(0xFF252930), // cards
+            onSurface: const Color(0xFFFFFFFF), // texto principal
+            surfaceContainerHighest: const Color(0xFF252930),
+            surfaceContainerHigh: const Color(0xFF252930),
+            surfaceContainer: const Color(0xFF252930),
+            surfaceContainerLow: const Color(0xFF1A1D23),
+            surfaceDim: const Color(0xFF1A1D23),
+            outline: const Color(0xFF374151),
+            outlineVariant: const Color(0xFF2D3340),
+            error: const Color(0xFFFF7070),
+            onError: Colors.white,
+            inverseSurface: const Color(0xFFFFFFFF),
+            onInverseSurface: const Color(0xFF1A1D23),
+          )
+        : const ColorScheme.light(
+            // LIGHT_MODE_PREMIUM_V1_A_R14_ROOT_THEME
+            primary: Color(0xFF0F172A),
+            onPrimary: Color(0xFFFFFFFF),
+            secondary: Color(0xFF059669),
+            onSecondary: Color(0xFFFFFFFF),
+            surface: Color(0xFFFFFFFF),
+            onSurface: Color(0xFF0F172A),
+            surfaceContainerHighest: Color(0xFFF1F5F9),
+            surfaceContainerHigh: Color(0xFFF8FAFC),
+            surfaceContainer: Color(0xFFFFFFFF),
+            surfaceContainerLow: Color(0xFFF8FAFC),
+            surfaceDim: Color(0xFFE2E8F0),
+            outline: Color(0xFFCBD5E1),
+            outlineVariant: Color(0xFFE2E8F0),
+            error: Color(0xFFDC2626),
+            onError: Color(0xFFFFFFFF),
+            inverseSurface: Color(0xFF1A1D23),
+            onInverseSurface: Color(0xFFFFFFFF),
+          ),
+    scaffoldBackgroundColor: dark
+        ? const Color(0xFF1A1D23)
+        : const Color(0xFFF4F7FA),
+    cardColor: dark ? const Color(0xFF252930) : Colors.white,
+    dividerColor: dark ? const Color(0xFF2D3340) : const Color(0xFFE2E6EA),
+    // Textos padrão do tema
+    textTheme: dark
+        ? const TextTheme(
+            bodyLarge: TextStyle(color: Color(0xFFFFFFFF)),
+            bodyMedium: TextStyle(color: Color(0xFFFFFFFF)),
+            bodySmall: TextStyle(color: Color(0xFFA8B2C1)),
+            titleLarge: TextStyle(color: Color(0xFFFFFFFF)),
+            titleMedium: TextStyle(color: Color(0xFFFFFFFF)),
+            titleSmall: TextStyle(color: Color(0xFFA8B2C1)),
+            labelLarge: TextStyle(color: Color(0xFFFFFFFF)),
+            labelMedium: TextStyle(color: Color(0xFFA8B2C1)),
+            labelSmall: TextStyle(color: Color(0xFF6B7280)),
+          )
+        : const TextTheme(
+            displayLarge: TextStyle(color: Color(0xFF0F172A)),
+            displayMedium: TextStyle(color: Color(0xFF0F172A)),
+            displaySmall: TextStyle(color: Color(0xFF0F172A)),
+            headlineLarge: TextStyle(color: Color(0xFF0F172A)),
+            headlineMedium: TextStyle(color: Color(0xFF0F172A)),
+            headlineSmall: TextStyle(color: Color(0xFF0F172A)),
+            titleLarge: TextStyle(color: Color(0xFF0F172A)),
+            titleMedium: TextStyle(color: Color(0xFF0F172A)),
+            titleSmall: TextStyle(color: Color(0xFF334155)),
+            bodyLarge: TextStyle(color: Color(0xFF0F172A)),
+            bodyMedium: TextStyle(color: Color(0xFF334155)),
+            bodySmall: TextStyle(color: Color(0xFF64748B)),
+            labelLarge: TextStyle(color: Color(0xFF0F172A)),
+            labelMedium: TextStyle(color: Color(0xFF475569)),
+            labelSmall: TextStyle(color: Color(0xFF64748B)),
+          ),
+    inputDecorationTheme: dark
+        ? const InputDecorationTheme()
+        : InputDecorationTheme(
+            filled: true,
+            fillColor: const Color(0xFFFFFFFF),
+            hintStyle: const TextStyle(
+              color: Color(0xFF94A3B8),
+              fontWeight: FontWeight.w500,
+            ),
+            labelStyle: const TextStyle(
+              color: Color(0xFF475569),
+              fontWeight: FontWeight.w600,
+            ),
+            floatingLabelStyle: const TextStyle(
+              color: Color(0xFF334155),
+              fontWeight: FontWeight.w600,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: Color(0xFF059669),
+                width: 1.4,
               ),
-        scaffoldBackgroundColor:
-            dark ? const Color(0xFF1A1D23) : const Color(0xFFF4F7FA),
-        cardColor: dark ? const Color(0xFF252930) : Colors.white,
-        dividerColor: dark ? const Color(0xFF2D3340) : const Color(0xFFE2E6EA),
-        // Textos padrão do tema
-        textTheme: dark
-            ? const TextTheme(
-                bodyLarge: TextStyle(color: Color(0xFFFFFFFF)),
-                bodyMedium: TextStyle(color: Color(0xFFFFFFFF)),
-                bodySmall: TextStyle(color: Color(0xFFA8B2C1)),
-                titleLarge: TextStyle(color: Color(0xFFFFFFFF)),
-                titleMedium: TextStyle(color: Color(0xFFFFFFFF)),
-                titleSmall: TextStyle(color: Color(0xFFA8B2C1)),
-                labelLarge: TextStyle(color: Color(0xFFFFFFFF)),
-                labelMedium: TextStyle(color: Color(0xFFA8B2C1)),
-                labelSmall: TextStyle(color: Color(0xFF6B7280)),
-              )
-            : const TextTheme(
-                displayLarge: TextStyle(color: Color(0xFF0F172A)),
-                displayMedium: TextStyle(color: Color(0xFF0F172A)),
-                displaySmall: TextStyle(color: Color(0xFF0F172A)),
-                headlineLarge: TextStyle(color: Color(0xFF0F172A)),
-                headlineMedium: TextStyle(color: Color(0xFF0F172A)),
-                headlineSmall: TextStyle(color: Color(0xFF0F172A)),
-                titleLarge: TextStyle(color: Color(0xFF0F172A)),
-                titleMedium: TextStyle(color: Color(0xFF0F172A)),
-                titleSmall: TextStyle(color: Color(0xFF334155)),
-                bodyLarge: TextStyle(color: Color(0xFF0F172A)),
-                bodyMedium: TextStyle(color: Color(0xFF334155)),
-                bodySmall: TextStyle(color: Color(0xFF64748B)),
-                labelLarge: TextStyle(color: Color(0xFF0F172A)),
-                labelMedium: TextStyle(color: Color(0xFF475569)),
-                labelSmall: TextStyle(color: Color(0xFF64748B)),
-              ),
-        inputDecorationTheme: dark
-            ? const InputDecorationTheme()
-            : InputDecorationTheme(
-                filled: true,
-                fillColor: const Color(0xFFFFFFFF),
-                hintStyle: const TextStyle(
-                  color: Color(0xFF94A3B8),
-                  fontWeight: FontWeight.w500,
-                ),
-                labelStyle: const TextStyle(
-                  color: Color(0xFF475569),
-                  fontWeight: FontWeight.w600,
-                ),
-                floatingLabelStyle: const TextStyle(
-                  color: Color(0xFF334155),
-                  fontWeight: FontWeight.w600,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF059669),
-                    width: 1.4,
-                  ),
-                ),
-              ),
-        // Transições de página suaves
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-          },
-        ),
-      );
+            ),
+          ),
+    // Transições de página suaves
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+        TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
+        TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+      },
+    ),
+  );
 
   static ThemeData get _authTheme => ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0F1116),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFC5A365),
-          secondary: Color(0xFF10B981),
-          surface: Color(0xFF0F1116),
-          onSurface: Colors.white,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-          },
-        ),
-      );
+    useMaterial3: true,
+    fontFamily: 'Roboto',
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: const Color(0xFF0F1116),
+    colorScheme: const ColorScheme.dark(
+      primary: Color(0xFFC5A365),
+      secondary: Color(0xFF10B981),
+      surface: Color(0xFF0F1116),
+      onSurface: Colors.white,
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+        TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+        TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
+        TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+      },
+    ),
+  );
 }
 
 class _MedCasesAppState extends State<MedCasesApp> {
@@ -1993,15 +1997,17 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     if (p.currentUser?.uid != widget.user.uid) {
       // Timeout de segurança de 3s: se setUser() travar (rede lenta),
       // mostra o app mesmo assim — dados mínimos já carregados pelo loadPrefs().
-      await p.setUser(widget.user).timeout(
+      await p
+          .setUser(widget.user)
+          .timeout(
             const Duration(seconds: 3),
             onTimeout: () {}, // silencioso — app abre com dados locais
           );
     } else {
       await p.checkGeminiSession().timeout(
-            const Duration(seconds: 2),
-            onTimeout: () {},
-          );
+        const Duration(seconds: 2),
+        onTimeout: () {},
+      );
     }
     AppResumeCoordinator.instance.completeLoading(
       '_webgate_${widget.user.uid}',
@@ -2304,8 +2310,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           if (mounted) {
             try {
               context.read<AppProvider>().resumeUsageTimer(
-                    fromVisibility: true,
-                  );
+                fromVisibility: true,
+              );
             } catch (_) {}
           }
         },
@@ -2745,7 +2751,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                     child: Padding(
                       padding: EdgeInsets.only(
                         // LABORATORIO_R8_HOME_TOP_INSET_OWNER
-                        top: (isHome ||
+                        top:
+                            (isHome ||
                                 _tab == 2 ||
                                 _tab == 4 ||
                                 _tab == 8 ||
@@ -2762,8 +2769,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                       color: dark
                           ? const Color(0xFF1A1D23)
                           : historyEditorOpen
-                              ? const Color(0xFFECF1F3)
-                              : bg,
+                          ? const Color(0xFFECF1F3)
+                          : bg,
                       child: child!,
                     ),
                   ),
@@ -2775,17 +2782,19 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   // via MainShell.navScrollingDown — suporte a TODAS as abas.
                   ValueListenableBuilder<bool>(
                     valueListenable: HistoryScreen.editorActive,
-                    builder: (_, editorOpen, __) =>
-                        ValueListenableBuilder<bool>(
+                    builder: (_, editorOpen, __) => ValueListenableBuilder<bool>(
                       valueListenable: AiScreen.chatKeyboardOpen,
                       builder: (_, kbOpen, __) {
                         // LABORATORIO_R8_KEYBOARD_FOOTER_VISIBILITY
                         // MEDCASES_FERRAMENTAS_KEYBOARD_VIEWPORT_SCROLL_PARITY_V1_B_R0
-                        final toolsKeyboardOpen = _tab == 4 &&
+                        final toolsKeyboardOpen =
+                            _tab == 4 &&
                             MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
-                        final labKeyboardOpen = _tab == 9 &&
+                        final labKeyboardOpen =
+                            _tab == 9 &&
                             MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
-                        final hidden = editorOpen ||
+                        final hidden =
+                            editorOpen ||
                             kbOpen ||
                             toolsKeyboardOpen ||
                             labKeyboardOpen;
@@ -3208,8 +3217,9 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                         ),
                       ),
                       Positioned.fill(
-                        child:
-                            widget.isAiActive ? _buildAiRow() : _buildNavRow(),
+                        child: widget.isAiActive
+                            ? _buildAiRow()
+                            : _buildNavRow(),
                       ),
                     ],
                   ),
@@ -3231,209 +3241,167 @@ class _FloatingFooterState extends State<_FloatingFooter> {
   // ── Row padrão (abas Home / Ferramentas / etc) ─────────────────────────────
   // [Início | IA | Menu] — Biblioteca removida; 3 ações independentes
   Widget _buildNavRow() => Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // 1. INÍCIO — home_outlined inativo / home_rounded (filled) ativo
-          Expanded(
-            child: _NavItem(
-              icon: Icons.home_outlined,
-              iconActive: Icons.home_rounded,
-              label: widget.lang == 'es' ? 'Inicio' : 'Início',
-              isActive: widget.currentTab == 0,
-              dark: widget.dark,
-              shrunk: _shrunk,
-              onTap: () => widget.onTabChange(0),
-            ),
-          ),
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      // 1. INÍCIO — home_outlined inativo / home_rounded (filled) ativo
+      Expanded(
+        child: _NavItem(
+          icon: Icons.home_outlined,
+          iconActive: Icons.home_rounded,
+          label: widget.lang == 'es' ? 'Inicio' : 'Início',
+          isActive: widget.currentTab == 0,
+          dark: widget.dark,
+          shrunk: _shrunk,
+          onTap: () => widget.onTabChange(0),
+        ),
+      ),
 
-          // 2. IA — círculo gradiente + label "IA"
-          Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: widget.onFabTap,
-              onDoubleTap: widget.onFabDoubleTap,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _IaDynamicFloat(
-                    child: Padding(
-                      padding: EdgeInsets.zero,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 220),
-                        curve: Curves.easeOutCubic,
+      // 2. IA — círculo gradiente + label "IA"
+      Expanded(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onFabTap,
+          onDoubleTap: widget.onFabDoubleTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _IaDynamicFloat(
+                child: Padding(
+                  padding: EdgeInsets.zero,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOutCubic,
+                    width: 54,
+                    height: 31.5,
+                    child: OverflowBox(
+                      alignment: Alignment.bottomCenter,
+                      minWidth: 54,
+                      maxWidth: 54,
+                      minHeight: 54,
+                      maxHeight: 54,
+                      child: SvgPicture.asset(
+                        'assets/icons/home_v2/ic_ia.svg',
                         width: 54,
-                        height: 31.5,
-                        child: OverflowBox(
-                          alignment: Alignment.bottomCenter,
-                          minWidth: 54,
-                          maxWidth: 54,
-                          minHeight: 54,
-                          maxHeight: 54,
-                          child: SvgPicture.asset(
-                            'assets/icons/home_v2/ic_ia.svg',
-                            width: 54,
-                            height: 54,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                        height: 54,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
-                  AnimatedOpacity(
-                    opacity: _shrunk ? 0.0 : 1.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Text(
-                      'IA',
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        fontWeight: widget.isAiActive
-                            ? FontWeight.w700
-                            : FontWeight.w400,
-                        color: widget.isAiActive
-                            ? (widget.dark ? _medcasesGreen : _menuLightGreen)
-                            : (widget.dark
-                                ? Colors.white
-                                : const Color(0xFF4B5563)),
-                        height: 1.0,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              AnimatedOpacity(
+                opacity: _shrunk ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                  'IA',
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    fontWeight: widget.isAiActive
+                        ? FontWeight.w700
+                        : FontWeight.w400,
+                    color: widget.isAiActive
+                        ? (widget.dark ? _medcasesGreen : _menuLightGreen)
+                        : (widget.dark
+                              ? Colors.white
+                              : const Color(0xFF4B5563)),
+                    height: 1.0,
+                  ),
+                ),
+              ),
+            ],
           ),
-          // 4. MENU M+
-          Expanded(child: _buildMenuButton()),
-        ],
-      );
+        ),
+      ),
+      // 4. MENU M+
+      Expanded(child: _buildMenuButton()),
+    ],
+  );
 
   // ── Row contextual IA — substitui toda a barra quando a aba IA está ativa ──
   // [Início | Histórico | Novo Chat | Menu] — 4×Expanded 25%
   Widget _buildAiRow() => Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // 1. INÍCIO — volta para Home (sempre inativo no contexto IA)
-          Expanded(
-            child: _NavItem(
-              icon: Icons.home_outlined,
-              iconActive: Icons.home_rounded,
-              label: widget.lang == 'es' ? 'Inicio' : 'Início',
-              isActive: false, // nunca ativo quando estamos na aba IA
-              dark: widget.dark,
-              shrunk: _shrunk,
-              onTap: () => widget.onTabChange(0),
-            ),
-          ),
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      // 1. INÍCIO — volta para Home (sempre inativo no contexto IA)
+      Expanded(
+        child: _NavItem(
+          icon: Icons.home_outlined,
+          iconActive: Icons.home_rounded,
+          label: widget.lang == 'es' ? 'Inicio' : 'Início',
+          isActive: false, // nunca ativo quando estamos na aba IA
+          dark: widget.dark,
+          shrunk: _shrunk,
+          onTap: () => widget.onTabChange(0),
+        ),
+      ),
 
-          // 2. HISTÓRICO — abre histórico de sessões do chat
-          Expanded(
-            child: ValueListenableBuilder<VoidCallback?>(
-              valueListenable: AiScreen.openHistoryCallback,
-              builder: (_, callback, __) => Selector<AppProvider, int>(
-                selector: (_, provider) =>
-                    provider.visibleAiSessionSummaries.length,
-                builder: (_, count, __) => GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: callback,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 3),
-                        // Badge de contagem sobre o ícone
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Icon(
-                              Icons.history_rounded,
-                              size: 22,
-                              // Cinza escuro sólido no light — contraste premium
-                              color: widget.dark
-                                  ? Colors.white
-                                  : const Color(0xFF4B5563),
-                            ),
-                            if (count > 0)
-                              Positioned(
-                                top: -4,
-                                right: -6,
-                                child: Container(
-                                  width: 14,
-                                  height: 14,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFFC5A365),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '$count',
-                                      style: const TextStyle(
-                                        fontSize: 7,
-                                        fontWeight: FontWeight.w900,
-                                        color: Color(0xFF1A1100),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      AnimatedOpacity(
-                        opacity: _shrunk ? 0.0 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Text(
-                          widget.lang == 'es' ? 'Historial' : 'Histórico',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.w400,
-                            // Cinza escuro sólido no light — contraste premium estilo Instagram
-                            color: widget.dark
-                                ? Colors.white
-                                : const Color(0xFF4B5563),
-                            height: 1.0,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // 3. NOVO CHAT — branco no dark, cinza oficial no light
-          Expanded(
-            child: GestureDetector(
+      // 2. HISTÓRICO — abre histórico de sessões do chat
+      Expanded(
+        child: ValueListenableBuilder<VoidCallback?>(
+          valueListenable: AiScreen.openHistoryCallback,
+          builder: (_, callback, __) => Selector<AppProvider, int>(
+            selector: (_, provider) =>
+                provider.visibleAiSessionSummaries.length,
+            builder: (_, count, __) => GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: widget.onFabDoubleTap,
+              onTap: callback,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 26,
-                    height: 26,
-                    child: Icon(
-                      Icons.add_rounded,
-                      size: 20,
-                      color:
-                          widget.dark ? Colors.white : const Color(0xFF4B5563),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3),
+                    // Badge de contagem sobre o ícone
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Icon(
+                          Icons.history_rounded,
+                          size: 22,
+                          // Cinza escuro sólido no light — contraste premium
+                          color: widget.dark
+                              ? Colors.white
+                              : const Color(0xFF4B5563),
+                        ),
+                        if (count > 0)
+                          Positioned(
+                            top: -4,
+                            right: -6,
+                            child: Container(
+                              width: 14,
+                              height: 14,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFFC5A365),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '$count',
+                                  style: const TextStyle(
+                                    fontSize: 7,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF1A1100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   AnimatedOpacity(
                     opacity: _shrunk ? 0.0 : 1.0,
                     duration: const Duration(milliseconds: 200),
                     child: Text(
-                      widget.lang == 'es' ? 'Nuevo' : 'Novo',
+                      widget.lang == 'es' ? 'Historial' : 'Histórico',
                       maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
+                        // Cinza escuro sólido no light — contraste premium estilo Instagram
                         color: widget.dark
                             ? Colors.white
                             : const Color(0xFF4B5563),
@@ -3445,11 +3413,50 @@ class _FloatingFooterState extends State<_FloatingFooter> {
               ),
             ),
           ),
+        ),
+      ),
 
-          // 4. MENU M+
-          Expanded(child: _buildMenuButton()),
-        ],
-      );
+      // 3. NOVO CHAT — branco no dark, cinza oficial no light
+      Expanded(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onFabDoubleTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 26,
+                height: 26,
+                child: Icon(
+                  Icons.add_rounded,
+                  size: 20,
+                  color: widget.dark ? Colors.white : const Color(0xFF4B5563),
+                ),
+              ),
+              AnimatedOpacity(
+                opacity: _shrunk ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                  widget.lang == 'es' ? 'Nuevo' : 'Novo',
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w500,
+                    color: widget.dark ? Colors.white : const Color(0xFF4B5563),
+                    height: 1.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+
+      // 4. MENU M+
+      Expanded(child: _buildMenuButton()),
+    ],
+  );
 
   // ── Avatar M+ circular — compartilhado entre as duas Rows ──────────────────
   Widget _buildMenuButton() {
@@ -3540,8 +3547,9 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // Dark: branco em repouso e verde no item selecionado.
     // Light: cinza-escuro em repouso e verde no item selecionado.
-    final activeColor =
-        dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
+    final activeColor = dark
+        ? const Color(0xFF00C781)
+        : const Color(0xFF008F66);
     final inactiveColor = dark ? Colors.white : const Color(0xFF4B5563);
     final color = isActive ? activeColor : inactiveColor;
 
@@ -3613,8 +3621,9 @@ class _MobileAppBar extends StatelessWidget {
         ? const Color(0xFF252930).withOpacity(0.70)
         : Colors.white.withOpacity(0.70);
 
-    final borderColor =
-        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final borderColor = dark
+        ? const Color(0xFF374151)
+        : const Color(0xFFE2E7EC);
 
     return ClipRect(
       child: BackdropFilter(
@@ -3665,11 +3674,11 @@ class _MobileAppBar extends StatelessWidget {
                                 letterSpacing: 1.2,
                                 color: currentTab == _kAiTab
                                     ? (dark
-                                        ? const Color(0xFF00C781)
-                                        : const Color(0xFF059669))
+                                          ? const Color(0xFF00C781)
+                                          : const Color(0xFF059669))
                                     : (dark
-                                        ? const Color(0xFF10B981)
-                                        : const Color(0xFF059669)),
+                                          ? const Color(0xFF10B981)
+                                          : const Color(0xFF059669)),
                               ),
                             ),
                           ],
@@ -3795,8 +3804,9 @@ class _DesktopSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
     final activeCol = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
-    final inactiveCol =
-        dark ? const Color(0xFF6B7280) : const Color(0xFFADB5BD);
+    final inactiveCol = dark
+        ? const Color(0xFF6B7280)
+        : const Color(0xFFADB5BD);
     final activeBg = dark
         ? const Color(0xFF10B981).withOpacity(0.12)
         : const Color(0xFF0A7C4E).withOpacity(0.08);
@@ -3889,8 +3899,9 @@ class _DesktopSidebar extends StatelessWidget {
               label: 'IA',
               active: currentTab == 2,
               dark: dark,
-              activeCol:
-                  dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
+              activeCol: dark
+                  ? const Color(0xFF00E5FF)
+                  : const Color(0xFF008CA4),
               inactiveCol: inactiveCol,
               activeBg: const Color(0xFF00E5FF).withOpacity(0.10),
               onTap: () => onTabChange(2),
@@ -4186,10 +4197,12 @@ class _SubTabBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor =
-        dark ? const Color(0xFFFFE8A6) : const Color(0xFF0F1116);
-    final inactiveColor =
-        dark ? Colors.white.withOpacity(0.30) : const Color(0xFFB8BEC4);
+    final activeColor = dark
+        ? const Color(0xFFFFE8A6)
+        : const Color(0xFF0F1116);
+    final inactiveColor = dark
+        ? Colors.white.withOpacity(0.30)
+        : const Color(0xFFB8BEC4);
     final activeBg = dark
         ? const Color(0xFF2D3340) // kBorderSoft — active highlight
         : const Color(0xFF0F1116).withOpacity(0.09);
@@ -4208,10 +4221,11 @@ class _SubTabBtn extends StatelessWidget {
             boxShadow: active
                 ? [
                     BoxShadow(
-                      color: (dark
-                              ? const Color(0xFFFFE8A6)
-                              : const Color(0xFF0F1116))
-                          .withOpacity(0.08),
+                      color:
+                          (dark
+                                  ? const Color(0xFFFFE8A6)
+                                  : const Color(0xFF0F1116))
+                              .withOpacity(0.08),
                       blurRadius: 6,
                       offset: const Offset(0, 1),
                     ),
@@ -4497,8 +4511,9 @@ class _LegalGlassShelf extends StatelessWidget {
         ? const Color(0xFF252930).withOpacity(0.70)
         : Colors.white.withOpacity(0.70);
 
-    final borderColor =
-        dark ? const Color(0xFF374151) : const Color(0xFFDDE4EA);
+    final borderColor = dark
+        ? const Color(0xFF374151)
+        : const Color(0xFFDDE4EA);
 
     return ClipRect(
       child: BackdropFilter(
@@ -4531,8 +4546,9 @@ class _LegalBar extends StatelessWidget {
     final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
 
     // Apple 1.4.1 — contraste sólido e texto permanentemente visível.
-    final textColor =
-        dark ? Colors.white.withOpacity(0.88) : const Color(0xFF4B5563);
+    final textColor = dark
+        ? Colors.white.withOpacity(0.88)
+        : const Color(0xFF4B5563);
 
     final disclaimer = isEs
         ? 'Herramienta educativa de apoyo clínico. La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.'
@@ -4582,11 +4598,13 @@ class _LegalBar extends StatelessWidget {
     }
 
     // Desktop/tablet: faixa tradicional e SafeArea próprias.
-    final standaloneBg =
-        dark ? const Color(0xFF1A1D23) : const Color(0xFFF0F2F4);
+    final standaloneBg = dark
+        ? const Color(0xFF1A1D23)
+        : const Color(0xFFF0F2F4);
 
-    final standaloneBorder =
-        dark ? const Color(0xFF374151) : const Color(0xFFDDE1E6);
+    final standaloneBorder = dark
+        ? const Color(0xFF374151)
+        : const Color(0xFFDDE1E6);
 
     return SafeArea(
       top: false,
@@ -4783,17 +4801,17 @@ class _AppDrawerState extends State<_AppDrawer> {
     final titleT = isEs ? 'Eliminar cuenta' : 'Excluir minha conta';
     final body1 = isEs
         ? 'Esta acción es PERMANENTE e IRREVERSIBLE.\n\n'
-            '• Todos tus datos clínicos serán eliminados\n'
-            '• Historial de consultas con la IA\n'
-            '• Anotaciones y configuraciones\n'
-            '• Tu acceso a MedCases Pro\n\n'
-            'Esta operación no puede deshacerse.'
+              '• Todos tus datos clínicos serán eliminados\n'
+              '• Historial de consultas con la IA\n'
+              '• Anotaciones y configuraciones\n'
+              '• Tu acceso a MedCases Pro\n\n'
+              'Esta operación no puede deshacerse.'
         : 'Esta ação é PERMANENTE e IRREVERSÍVEL.\n\n'
-            '• Todos os seus dados clínicos serão apagados\n'
-            '• Histórico de consultas com a IA\n'
-            '• Anotações e configurações\n'
-            '• Seu acesso ao MedCases Pro\n\n'
-            'Esta operação não pode ser desfeita.';
+              '• Todos os seus dados clínicos serão apagados\n'
+              '• Histórico de consultas com a IA\n'
+              '• Anotações e configurações\n'
+              '• Seu acesso ao MedCases Pro\n\n'
+              'Esta operação não pode ser desfeita.';
     final step1Label = isEs
         ? 'Para continuar, escribe EXCLUIR a continuación:'
         : 'Para continuar, digite EXCLUIR abaixo:';
@@ -4828,8 +4846,9 @@ class _AppDrawerState extends State<_AppDrawer> {
             final pwd = passCtrl.text.trim();
             if (!kIsWeb && pwd.isEmpty) {
               setS(
-                () => passErr =
-                    isEs ? 'Contraseña obligatoria' : 'Senha obrigatória',
+                () => passErr = isEs
+                    ? 'Contraseña obligatoria'
+                    : 'Senha obrigatória',
               );
               return;
             }
@@ -4947,8 +4966,9 @@ class _AppDrawerState extends State<_AppDrawer> {
                         style: TextStyle(
                           fontSize: 12.5,
                           height: 1.6,
-                          color:
-                              dark ? Colors.white70 : const Color(0xFF333344),
+                          color: dark
+                              ? Colors.white70
+                              : const Color(0xFF333344),
                         ),
                       ),
                     ),
@@ -5176,16 +5196,17 @@ class _AppDrawerState extends State<_AppDrawer> {
     final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
     final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
     final textCol = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
-    final subCol =
-        dark ? Colors.white.withOpacity(0.52) : const Color(0xFF64748B);
+    final subCol = dark
+        ? Colors.white.withOpacity(0.52)
+        : const Color(0xFF64748B);
 
     final initials = p.userName.isNotEmpty
         ? p.userName
-            .trim()
-            .split(' ')
-            .take(2)
-            .map((w) => w[0].toUpperCase())
-            .join()
+              .trim()
+              .split(' ')
+              .take(2)
+              .map((w) => w[0].toUpperCase())
+              .join()
         : 'MC';
 
     // ── Largura responsiva: max 300 em tablets/desktop, 72% em mobile ────────
@@ -5477,8 +5498,9 @@ class _AppDrawerState extends State<_AppDrawer> {
                     _DrawerRow(
                       icon: Icons.delete_outline_rounded,
                       iconColor: const Color(0xFFCC3333),
-                      title:
-                          p.lang == 'es' ? 'Eliminar Cuenta' : 'Excluir Conta',
+                      title: p.lang == 'es'
+                          ? 'Eliminar Cuenta'
+                          : 'Excluir Conta',
                       dark: dark,
                       textCol: const Color(0xFFCC3333),
                       subCol: subCol,
@@ -5808,7 +5830,8 @@ class _DrawerBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = context.select<AppProvider, bool>((p) => p.darkMode);
-    final divCol = dividerColor ??
+    final divCol =
+        dividerColor ??
         (dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7));
 
     return Column(
@@ -6028,8 +6051,9 @@ class _DrawerLegalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dividerColor =
-        dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    final dividerColor = dark
+        ? const Color(0xFF2D3340)
+        : const Color(0xFFD8E0E7);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -6214,8 +6238,9 @@ class _DrawerQuickAccess extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEs = p.lang == 'es';
     final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-    final subCol =
-        dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
+    final subCol = dark
+        ? Colors.white.withOpacity(0.36)
+        : const Color(0xFF9AA0A8);
     final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
 
     return _DrawerBlock(
@@ -6403,101 +6428,101 @@ class _AboutAppSheet extends StatelessWidget {
     final accent = dark ? _kGold : _kGreen;
 
     Widget infoRow(IconData icon, String label, String value) => Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            color: card,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: bdr),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: card,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: bdr),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: accent.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 16, color: accent),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: accent.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(8),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w800,
+                    color: accent,
+                    letterSpacing: 0.9,
+                  ),
                 ),
-                child: Icon(icon, size: 16, color: accent),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        color: accent,
-                        letterSpacing: 0.9,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      value,
-                      style: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w600,
-                        color: ttl,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 3),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w600,
+                    color: ttl,
+                    height: 1.3,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
+        ],
+      ),
+    );
 
     Widget textBlock(IconData icon, String label, String value) => Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          decoration: BoxDecoration(
-            color: card,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: bdr),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      decoration: BoxDecoration(
+        color: card,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: bdr),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: accent.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 16, color: accent),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: accent.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(8),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w800,
+                    color: accent,
+                    letterSpacing: 0.9,
+                  ),
                 ),
-                child: Icon(icon, size: 16, color: accent),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w800,
-                        color: accent,
-                        letterSpacing: 0.9,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      value,
-                      style: TextStyle(fontSize: 13, color: sub, height: 1.55),
-                    ),
-                  ],
+                const SizedBox(height: 5),
+                Text(
+                  value,
+                  style: TextStyle(fontSize: 13, color: sub, height: 1.55),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
+        ],
+      ),
+    );
 
     // ── DraggableScrollableSheet garante header sempre fixo no topo ──────────
     // initialChildSize=0.82: ocupa 82% da tela ao abrir
@@ -6741,18 +6766,18 @@ class _AboutAppSheet extends StatelessWidget {
                             child: Text(
                               isEs
                                   ? 'El contenido científico, los algoritmos de dosificación, las calculadoras '
-                                      'pediátricas y las directrices clínicas incluidos en esta aplicación son '
-                                      'revisados, actualizados y validados de forma continua por el Comitê de '
-                                      'Revisão Clínica MedCases Pro. Este comité está integrado por profesionales '
-                                      'médicos titulados y estudiantes avanzados de medicina, con base en las '
-                                      'directrices internacionales vigentes de la World Allergy Organization (WAO), '
-                                      'UpToDate y comités de pediatría de referencia.'
+                                        'pediátricas y las directrices clínicas incluidos en esta aplicación son '
+                                        'revisados, actualizados y validados de forma continua por el Comitê de '
+                                        'Revisão Clínica MedCases Pro. Este comité está integrado por profesionales '
+                                        'médicos titulados y estudiantes avanzados de medicina, con base en las '
+                                        'directrices internacionales vigentes de la World Allergy Organization (WAO), '
+                                        'UpToDate y comités de pediatría de referencia.'
                                   : 'O conteúdo científico, algoritmos de dosagem, calculadoras pediátricas e '
-                                      'diretrizes clínicas contidos neste aplicativo são revisados, atualizados e '
-                                      'validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, '
-                                      'composto por profissionais médicos diplomados e acadêmicos seniores de '
-                                      'medicina, com base nas diretrizes internacionais atualizadas da World Allergy '
-                                      'Organization (WAO), UpToDate e comitês de pediatria de referência.',
+                                        'diretrizes clínicas contidos neste aplicativo são revisados, atualizados e '
+                                        'validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, '
+                                        'composto por profissionais médicos diplomados e acadêmicos seniores de '
+                                        'medicina, com base nas diretrizes internacionais atualizadas da World Allergy '
+                                        'Organization (WAO), UpToDate e comitês de pediatria de referência.',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: sub,
@@ -6770,11 +6795,11 @@ class _AboutAppSheet extends StatelessWidget {
                       isEs ? 'PROPÓSITO' : 'PROPÓSITO',
                       isEs
                           ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la '
-                              'toma de decisiones clínicas. No reemplaza el juicio clínico del profesional '
-                              'de salud, ni constituye prescripción médica.'
+                                'toma de decisiones clínicas. No reemplaza el juicio clínico del profesional '
+                                'de salud, ni constituye prescripción médica.'
                           : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada '
-                              'de decisão clínica. Não substitui o julgamento clínico do profissional de '
-                              'saúde, nem constitui prescrição médica.',
+                                'de decisão clínica. Não substitui o julgamento clínico do profissional de '
+                                'saúde, nem constitui prescrição médica.',
                     ),
 
                     // Site — BUILD 323 MANDATO 2: in-app WebView
@@ -6888,8 +6913,9 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
     final bg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final titleColor = dark ? Colors.white : const Color(0xFF0F1116);
     final subColor = dark ? Colors.white54 : const Color(0xFF6B7280);
-    final borderColor =
-        dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
+    final borderColor = dark
+        ? const Color(0xFF2D3340)
+        : const Color(0xFFE5E7EB);
 
     return Padding(
       padding: EdgeInsets.only(
@@ -6977,8 +7003,9 @@ class _ProfileEditSheetState extends State<_ProfileEditSheet> {
 
             // Campo — Nome
             _SheetField(
-              label:
-                  widget.p.lang == 'es' ? 'Nombre completo' : 'Nome completo',
+              label: widget.p.lang == 'es'
+                  ? 'Nombre completo'
+                  : 'Nome completo',
               controller: _nameCtrl,
               icon: Icons.badge_outlined,
               dark: dark,
@@ -7126,8 +7153,9 @@ class _SheetField extends StatelessWidget {
     final fillColor = dark ? const Color(0xFF252930) : const Color(0xFFF9F9F9);
     final textColor = dark ? Colors.white : const Color(0xFF0F1116);
     final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
-    final borderColor =
-        dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
+    final borderColor = dark
+        ? const Color(0xFF2D3340)
+        : const Color(0xFFE5E7EB);
 
     return TextField(
       controller: controller,
@@ -7417,12 +7445,15 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
       _error = null;
     });
     try {
-      final userName =
-          widget.p.userName.isNotEmpty ? widget.p.userName : 'Usuário';
-      final userEmail =
-          widget.p.userEmail.isNotEmpty ? widget.p.userEmail : 'sem-email';
-      final stars =
-          _rating > 0 ? '${'⭐' * _rating} ($_rating/5)' : 'Não avaliado';
+      final userName = widget.p.userName.isNotEmpty
+          ? widget.p.userName
+          : 'Usuário';
+      final userEmail = widget.p.userEmail.isNotEmpty
+          ? widget.p.userEmail
+          : 'sem-email';
+      final stars = _rating > 0
+          ? '${'⭐' * _rating} ($_rating/5)'
+          : 'Não avaliado';
       final subject = Uri.encodeComponent(
         '[MedCases Feedback] $_category — $userName',
       );
@@ -7502,8 +7533,9 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color:
-                      dark ? const Color(0xFF48484A) : const Color(0xFFD1D5DB),
+                  color: dark
+                      ? const Color(0xFF48484A)
+                      : const Color(0xFFD1D5DB),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -7576,8 +7608,8 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                       color: filled
                           ? const Color(0xFFFBBF24)
                           : (dark
-                              ? const Color(0xFF48484A)
-                              : const Color(0xFFD1D5DB)),
+                                ? const Color(0xFF48484A)
+                                : const Color(0xFFD1D5DB)),
                       size: 34,
                     ),
                   ),
@@ -7625,8 +7657,9 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
                       '${cat['icon']}  ${cat['label']}',
                       style: TextStyle(
                         fontSize: 13,
-                        fontWeight:
-                            selected ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
                         color: selected ? const Color(0xFF7C3AED) : textCol,
                       ),
                     ),
@@ -8081,9 +8114,7 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
                     sub: sub,
                     accent: accent,
                   ),
-                  StudyWorkspaceScreen(
-                    isEs: isEs,
-                  ),
+                  StudyWorkspaceScreen(isEs: isEs),
                   _NotesAudioWorkspaceHistory(
                     isEs: isEs,
                     page: page,
@@ -8244,8 +8275,7 @@ class _NotesAudioWorkspaceAudio extends StatelessWidget {
                 ? 'Captura de voz para transcripción y organización de la historia clínica.'
                 : 'Captura de voz para transcrição e organização da história clínica.',
             badge: 'Consulta',
-            lockedLabel:
-                isEs ? 'Configurar consentimiento' : 'Configurar consentimento',
+            lockedLabel: isEs ? 'Local y privado' : 'Local e privado',
             onTap: () => _requestPurposeSpecificConsent(
               context,
               mode: 'Consulta clínica',
@@ -8265,8 +8295,7 @@ class _NotesAudioWorkspaceAudio extends StatelessWidget {
                 ? 'Grabación segmentada, transcripción cronológica, revisión y borrado del audio tras confirmar.'
                 : 'Gravação segmentada, transcrição cronológica, revisão e exclusão do áudio após confirmar.',
             badge: isEs ? 'Modo estudio' : 'Modo estudo',
-            lockedLabel:
-                isEs ? 'Configurar consentimiento' : 'Configurar consentimento',
+            lockedLabel: isEs ? 'Local y privado' : 'Local e privado',
             onTap: () => _requestPurposeSpecificConsent(
               context,
               mode: isEs ? 'Clase / audio largo' : 'Aula / áudio longo',
@@ -8279,50 +8308,6 @@ class _NotesAudioWorkspaceAudio extends StatelessWidget {
             accent: accent,
           ),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(8),
-              border: null,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.lock_outline_rounded, size: 17, color: accent),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isEs
-                            ? 'Privacidad y consentimiento'
-                            : 'Privacidade e consentimento',
-                        style: TextStyle(
-                          color: text,
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        isEs
-                            ? 'El procesamiento remoto exige consentimiento específico. El audio real de pacientes continúa desactivado hasta el cutover final.'
-                            : 'O processamento remoto exige consentimento específico. Áudio real de pacientes continua desativado até o cutover final.',
-                        style: TextStyle(
-                          color: sub,
-                          fontSize: 10.5,
-                          height: 1.35,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -8376,30 +8361,12 @@ class _NotesAudioHero extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        isEs ? 'Audio clínico' : 'Áudio clínico',
+                        isEs ? 'Audio y transcripción' : 'Áudio e transcrição',
                         style: TextStyle(
                           color: text,
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
                           letterSpacing: -0.1,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: accent.withValues(alpha: 0.10),
-                        borderRadius: BorderRadius.circular(99),
-                      ),
-                      child: Text(
-                        'Backend validado',
-                        style: TextStyle(
-                          color: accent,
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w800,
                         ),
                       ),
                     ),
@@ -8618,10 +8585,12 @@ void showNotesSheet(BuildContext context) {
       expand: false,
       builder: (ctx, scrollController) {
         final dark = Theme.of(ctx).brightness == Brightness.dark;
-        final panelBg =
-            dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
-        final surfaceStrong =
-            dark ? const Color(0xFF2D3340) : const Color(0xFFE9EDF2);
+        final panelBg = dark
+            ? const Color(0xFF1A1D23)
+            : const Color(0xFFF7F8FA);
+        final surfaceStrong = dark
+            ? const Color(0xFF2D3340)
+            : const Color(0xFFE9EDF2);
         final border = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
         return Container(
           clipBehavior: Clip.antiAlias,
@@ -8892,8 +8861,8 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                           Text(
                             _allNotes.isEmpty
                                 ? (isEs
-                                    ? 'Sin anotaciones'
-                                    : 'Nenhuma anotação')
+                                      ? 'Sin anotaciones'
+                                      : 'Nenhuma anotação')
                                 : '${_allNotes.length} ${isEs ? 'anotación${_allNotes.length != 1 ? "es" : ""}' : 'anotaç${_allNotes.length != 1 ? "ões" : "ão"}'}',
                             style: TextStyle(
                               color: subCol,
@@ -8942,8 +8911,9 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                     fontWeight: FontWeight.w500,
                   ),
                   decoration: InputDecoration(
-                    hintText:
-                        isEs ? 'Buscar anotaciones...' : 'Buscar anotações...',
+                    hintText: isEs
+                        ? 'Buscar anotaciones...'
+                        : 'Buscar anotações...',
                     hintStyle: TextStyle(
                       color: subCol,
                       fontSize: 12.5,
@@ -9014,34 +8984,34 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
                       ),
                     )
                   : _filtered.isEmpty
-                      ? _PanelEmptyState(
-                          isEs: isEs,
+                  ? _PanelEmptyState(
+                      isEs: isEs,
+                      dark: dark,
+                      onNew: () => _openEditor(),
+                    )
+                  : ListView.separated(
+                      controller: widget.scrollController,
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        4,
+                        16,
+                        widget.workspaceMode ? 112 : 18,
+                      ),
+                      itemCount: _filtered.length,
+                      separatorBuilder: (_, __) =>
+                          Divider(height: 1, thickness: 0.7, color: borderCol),
+                      itemBuilder: (ctx, i) {
+                        final note = _filtered[i];
+                        return _PanelNoteCard(
+                          note: note,
                           dark: dark,
-                          onNew: () => _openEditor(),
-                        )
-                      : ListView.separated(
-                          controller: widget.scrollController,
-                          padding: EdgeInsets.fromLTRB(
-                            16,
-                            4,
-                            16,
-                            widget.workspaceMode ? 112 : 18,
-                          ),
-                          itemCount: _filtered.length,
-                          separatorBuilder: (_, __) => Divider(
-                              height: 1, thickness: 0.7, color: borderCol),
-                          itemBuilder: (ctx, i) {
-                            final note = _filtered[i];
-                            return _PanelNoteCard(
-                              note: note,
-                              dark: dark,
-                              isEs: isEs,
-                              onTap: () => _openEditor(note: note),
-                              onDelete: () =>
-                                  _deleteNote(note['id'] as String? ?? ''),
-                            );
-                          },
-                        ),
+                          isEs: isEs,
+                          onTap: () => _openEditor(note: note),
+                          onDelete: () =>
+                              _deleteNote(note['id'] as String? ?? ''),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -9185,9 +9155,9 @@ const _panelNoteColors = [
 ];
 
 _NoteColor2 _panelColorFromHex(String hex) => _panelNoteColors.firstWhere(
-      (c) => c.hex == hex,
-      orElse: () => _panelNoteColors[0],
-    );
+  (c) => c.hex == hex,
+  orElse: () => _panelNoteColors[0],
+);
 
 class _PanelNoteCard extends StatelessWidget {
   final Map<String, dynamic> note;
@@ -9233,8 +9203,9 @@ class _PanelNoteCard extends StatelessWidget {
     final title = (note['title'] as String? ?? '').trim();
     final content = (note['content'] as String? ?? '').trim();
     final dateStr = _formatDate(note['updatedAt'] ?? note['createdAt']);
-    final displayTitle =
-        title.isEmpty ? (isEs ? 'Sin título' : 'Sem título') : title;
+    final displayTitle = title.isEmpty
+        ? (isEs ? 'Sin título' : 'Sem título')
+        : title;
 
     return InkWell(
       onTap: onTap,
