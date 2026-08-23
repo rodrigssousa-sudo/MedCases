@@ -3,6 +3,7 @@ enum StudySourceType { recordedAudio, uploadedAudio, pdf, image, text }
 enum StudySourceState { added, processing, review, accepted, failed }
 
 enum StudyArtifactType {
+  visualSummary,
   fullSummary,
   examSummary,
   mindMap,

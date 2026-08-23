@@ -40,15 +40,12 @@ $context
     }
 
     final clean = _cleanResult(result.text, type: type);
-
     if (clean.isEmpty) {
       throw StateError('study_generation_failed:empty_after_cleanup');
     }
 
     return StudyArtifact(
-      id:
-          'artifact_${type.name}_'
-          '${DateTime.now().toUtc().microsecondsSinceEpoch}',
+      id: 'artifact_${type.name}_${DateTime.now().toUtc().microsecondsSinceEpoch}',
       type: type,
       title: _title(type, isEs),
       content: clean,
@@ -62,35 +59,65 @@ $context
   static String _systemPrompt(StudyArtifactType type, bool isEs) {
     final language = isEs ? 'español' : 'português';
 
+    if (type == StudyArtifactType.visualSummary) {
+      return """
+Você é MEDCASES — MODO ESTUDO.
+
+Use SOMENTE o MATERIAL ACEITO como fonte factual.
+Não invente conhecimento ausente.
+Idioma obrigatório: $language.
+
+Sua saída será renderizada como um RESUMO VISUAL premium.
+Retorne APENAS JSON válido, sem Markdown, sem ``` e sem texto antes/depois.
+
+SCHEMA OBRIGATÓRIO:
+{
+  "title": "título curto do tema",
+  "overview": "síntese central em 2 a 4 frases contínuas",
+  "sections": [
+    {
+      "title": "subtema curto",
+      "body": "explicação clara em 2 a 5 frases"
+    }
+  ],
+  "keyPoints": [
+    "ponto-chave completo e autoexplicativo"
+  ],
+  "takeaway": "síntese final de revisão em 1 a 3 frases"
+}
+
+REGRAS:
+- Gere de 3 a 6 sections quando o material sustentar essa divisão.
+- Gere de 4 a 8 keyPoints quando houver conteúdo suficiente.
+- Escreva frases naturais, com pontos e vírgulas.
+- NÃO use Interlocutor A/B, Locutor 1/2 ou Speaker 1/2.
+- NÃO organize por falantes; organize por conceitos.
+- NÃO use *, **, #, bullets Markdown ou títulos decorativos.
+- Elimine conversa lateral, cumprimentos, logística e repetições sem valor.
+- Preserve números, doses, unidades, critérios, negações e classificações.
+- Se o material não tiver conteúdo acadêmico substantivo, assuma isso
+  claramente no overview e não invente matéria.
+""";
+    }
+
     final presentation = type == StudyArtifactType.fullSummary
         ? """
 RESUMO COMPLETO — CONTRATO RÍGIDO:
 - Escreva em PROSA CONTÍNUA, natural, acadêmica e realmente resumida.
 - Use parágrafos coesos, frases completas, pontos, vírgulas e progressão lógica.
 - Integre conceitos relacionados; não copie a estrutura fragmentada da fala.
-- NÃO use bullets, listas numeradas, tabela, mapa mental, Markdown, #, **,
-  blocos de código ou títulos decorativos.
-- NÃO comece com MEDCASES, MODO ESTUDO, "Aqui está", "A seguir",
-  "A continuación", "Presento el resumen" ou qualquer preâmbulo meta.
-- NÃO use "Interlocutor A/B", "Locutor 1/2", "Speaker 1/2" nem diarização
-  artificial. Se nomes ou papéis não forem explícitos e indispensáveis,
-  integre as ideias sem rotular falantes.
+- NÃO use bullets, listas numeradas, tabela, mapa mental, Markdown, #, **.
+- NÃO use Interlocutor A/B, Locutor 1/2 ou Speaker 1/2.
 - Sintetize o SIGNIFICADO, não reorganize mecanicamente frases transcritas.
 - Remova repetições, hesitações, vícios de linguagem e ruído conversacional.
-- Conversa lateral, logística, cumprimentos, táxi, tempo disponível e outros
-  detalhes sociais sem valor acadêmico devem ser omitidos ou comprimidos.
-- Se o material não tiver conteúdo acadêmico substantivo suficiente, diga isso
-  claramente em um parágrafo curto. Não invente matéria médica/acadêmica.
-- Seja completo, aprofundado e claro, mas evite repetição.
+- Se não houver conteúdo acadêmico substantivo, não invente matéria.
 """
         : """
 APRESENTAÇÃO DOS DEMAIS PRODUTOS:
-- Não use preâmbulos meta como "Aqui está", "A continuación" ou "MEDCASES".
-- Não use "Interlocutor A/B", "Locutor 1/2" ou "Speaker 1/2" salvo se a
-  distinção entre pessoas for factual e indispensável.
+- Não use preâmbulos meta.
+- Não use Interlocutor A/B, Locutor 1/2 ou Speaker 1/2.
 - Estruture por CONCEITOS, não por falantes.
-- Markdown é permitido somente quando ajuda o formato solicitado, como mapa
-  mental, flashcards, perguntas ou tabela. O aplicativo renderizará Markdown.
+- Markdown é permitido quando ajuda mapa mental, flashcards, perguntas ou tabela.
 """;
 
     return """
@@ -101,108 +128,81 @@ Não misture outros chats, pacientes, memória clínica ou conhecimento externo.
 Não invente fatos ausentes.
 Se houver conflito ou incerteza na fonte, torne isso explícito.
 
-Preserve com máxima fidelidade doses, números, unidades, classificações,
-critérios, negações, relações causais, exemplos relevantes e sequência
-temporal quando academicamente importante.
+Preserve doses, números, unidades, classificações, critérios, negações,
+relações causais, exemplos relevantes e sequência temporal quando importante.
 
 Idioma final obrigatório: $language.
 
 $presentation
 
 PROVENIÊNCIA:
-A proveniência serve para rastreabilidade, não para poluir a leitura.
-Não repita "(Áudio · 00:31)" em toda frase.
-No resumo completo e no resumo para prova, use no máximo uma referência
-compacta por parágrafo quando realmente necessária ou uma linha breve de
-fontes ao final. Nunca invente página ou timestamp.
+Use proveniência para rastreabilidade, não para poluir a leitura.
+Não repita timestamps em toda frase.
+Use no máximo uma referência compacta por bloco quando necessária.
 
 QUALIDADE:
-Corrija a fluidez gramatical sem alterar o sentido factual.
+Corrija fluidez gramatical sem alterar o sentido factual.
 Elimine repetições e ruído da fala.
-Não atribua diagnóstico, conduta, causalidade ou conclusão que a fonte
-não sustente.
+Não atribua diagnóstico, conduta, causalidade ou conclusão não sustentada.
 """;
   }
 
   static String _instruction(StudyArtifactType type, bool isEs) {
     final pt = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary:
+          'Crie um resumo visual estruturado, fiel e imediatamente revisável.',
       StudyArtifactType.fullSummary:
-          'Produza um resumo completo e aprofundado do conteúdo substantivo. '
-          'Construa uma narrativa acadêmica contínua em parágrafos, integrando '
-          'conceitos relacionados, explicações, relações, exemplos, números e '
-          'detalhes relevantes. Organize o raciocínio na ordem mais clara para '
-          'estudo, sem copiar a estrutura fragmentada da transcrição.',
+          'Produza um resumo completo e aprofundado em prosa acadêmica contínua.',
       StudyArtifactType.examSummary:
-          'Produza um resumo de alta retenção para prova. Seja denso, claro e '
-          'fiel. Priorize conceitos centrais, relações, critérios, diferenças '
-          'e detalhes que realmente podem ser cobrados. Elimine ruído da fala.',
+          'Produza um resumo de alta retenção para prova, denso e claro.',
       StudyArtifactType.mindMap:
-          'Crie um mapa mental textual hierárquico baseado nos CONCEITOS do '
-          'material, não nos falantes. Use Markdown limpo com tópicos curtos e '
-          'relações claras. Nunca use Interlocutor A/B.',
+          'Crie um mapa mental hierárquico por conceitos, com Markdown limpo.',
       StudyArtifactType.flashcards:
-          'Crie flashcards pergunta → resposta objetivos e abrangentes, '
-          'baseados somente no conteúdo substantivo. Elimine conversa lateral.',
+          'Crie flashcards pergunta → resposta objetivos e abrangentes.',
       StudyArtifactType.questionsAndAnswers:
-          'Crie perguntas e respostas discursivas progressivas, priorizando '
-          'compreensão, integração e pontos importantes do material.',
+          'Crie perguntas e respostas discursivas progressivas.',
       StudyArtifactType.multipleChoice:
-          'Crie questões de múltipla escolha com 4 alternativas, gabarito e '
-          'justificativa. Não introduza conhecimento não sustentado pela fonte.',
+          'Crie questões de múltipla escolha com 4 alternativas e justificativa.',
       StudyArtifactType.oralExam:
-          'Simule uma prova oral com perguntas progressivas e respostas-modelo '
-          'claras, completas e estritamente sustentadas pelo material.',
+          'Simule prova oral com perguntas progressivas e respostas-modelo.',
       StudyArtifactType.keyPoints:
-          'Extraia os pontos-chave por importância, eliminando ruído, '
-          'repetições e detalhes logísticos sem valor acadêmico.',
+          'Extraia pontos-chave por importância, removendo ruído.',
       StudyArtifactType.comparisonTable:
-          'Crie uma tabela comparativa Markdown somente quando o material '
-          'realmente contiver entidades comparáveis. Não force comparações.',
+          'Crie tabela comparativa Markdown quando houver entidades comparáveis.',
       StudyArtifactType.finalPdf: 'PDF final pertence ao exportador.',
     };
 
-    final spanish = <StudyArtifactType, String>{
+    final es = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary:
+          'Crea un resumen visual estructurado, fiel y listo para repasar.',
       StudyArtifactType.fullSummary:
-          'Produce un resumen completo y profundo del contenido sustantivo. '
-          'Construye una narrativa académica continua en párrafos, integrando '
-          'conceptos relacionados, explicaciones, relaciones, ejemplos, '
-          'números y detalles relevantes. Organiza el razonamiento en el orden '
-          'más claro para estudiar, sin copiar la estructura fragmentada de la '
-          'transcripción.',
+          'Produce un resumen completo y profundo en prosa académica continua.',
       StudyArtifactType.examSummary:
-          'Produce un resumen de alta retención para examen. Sé denso, claro '
-          'y fiel. Prioriza conceptos centrales, relaciones, criterios, '
-          'diferencias y detalles evaluables. Elimina el ruido conversacional.',
+          'Produce un resumen de alta retención para examen, denso y claro.',
       StudyArtifactType.mindMap:
-          'Crea un mapa mental textual jerárquico basado en los CONCEPTOS del '
-          'material, no en los hablantes. Usa Markdown limpio con tópicos '
-          'breves y relaciones claras. Nunca uses Interlocutor A/B.',
+          'Crea un mapa mental jerárquico por conceptos con Markdown limpio.',
       StudyArtifactType.flashcards:
-          'Crea flashcards pregunta → respuesta objetivos y completos, '
-          'basados solo en el contenido sustantivo. Elimina conversación lateral.',
+          'Crea flashcards pregunta → respuesta objetivos y completos.',
       StudyArtifactType.questionsAndAnswers:
-          'Crea preguntas y respuestas discursivas progresivas que prioricen '
-          'comprensión, integración y puntos importantes del material.',
+          'Crea preguntas y respuestas discursivas progresivas.',
       StudyArtifactType.multipleChoice:
-          'Crea preguntas de opción múltiple con 4 alternativas, respuesta y '
-          'justificación, sin introducir conocimiento no sustentado.',
+          'Crea preguntas de opción múltiple con 4 alternativas y justificación.',
       StudyArtifactType.oralExam:
-          'Simula un examen oral con preguntas progresivas y respuestas modelo '
-          'claras, completas y estrictamente sustentadas por el material.',
+          'Simula examen oral con preguntas progresivas y respuestas modelo.',
       StudyArtifactType.keyPoints:
-          'Extrae los puntos clave por importancia, eliminando ruido, '
-          'repeticiones y detalles logísticos sin valor académico.',
+          'Extrae puntos clave por importancia eliminando ruido.',
       StudyArtifactType.comparisonTable:
-          'Crea una tabla comparativa Markdown solo si el material contiene '
-          'entidades realmente comparables. No fuerces comparaciones.',
+          'Crea tabla comparativa Markdown cuando existan entidades comparables.',
       StudyArtifactType.finalPdf: 'El PDF final pertenece al exportador.',
     };
 
-    return (isEs ? spanish : pt)[type]!;
+    return (isEs ? es : pt)[type]!;
   }
 
   static int _maxTokens(StudyArtifactType type) {
     switch (type) {
+      case StudyArtifactType.visualSummary:
+        return 3200;
       case StudyArtifactType.fullSummary:
         return 5200;
       case StudyArtifactType.examSummary:
@@ -225,11 +225,13 @@ não sustente.
     var clean = value
         .trim()
         .replaceFirst(
-          RegExp(r'^```(?:markdown|md|text)?\s*', caseSensitive: false),
+          RegExp(r'^```(?:json|markdown|md|text)?\s*', caseSensitive: false),
           '',
         )
         .replaceFirst(RegExp(r'\s*```$'), '')
         .trim();
+
+    if (type == StudyArtifactType.visualSummary) return clean;
 
     for (final pattern in <RegExp>[
       RegExp(
@@ -242,17 +244,13 @@ não sustente.
         r'[^:\n]{0,120}:\s*',
         caseSensitive: false,
       ),
-      RegExp(
-        r'^\s*(?:Presento|Apresento)\s+[^:\n]{0,120}:\s*',
-        caseSensitive: false,
-      ),
     ]) {
       clean = clean.replaceFirst(pattern, '').trimLeft();
     }
 
     if (type == StudyArtifactType.fullSummary) {
       clean = clean
-          .replaceAll(RegExp(r'(?m)^\s*#{1,6}\s*'), '')
+          .replaceAll(RegExp(r'^\s*#{1,6}\s*', multiLine: true), '')
           .replaceAll('**', '')
           .replaceAll('__', '')
           .replaceAll(RegExp(r'\n{3,}'), '\n\n')
@@ -263,7 +261,8 @@ não sustente.
   }
 
   static String _title(StudyArtifactType type, bool isEs) {
-    const pt = <StudyArtifactType, String>{
+    final pt = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary: 'Resumo visual',
       StudyArtifactType.fullSummary: 'Resumo completo',
       StudyArtifactType.examSummary: 'Resumo para prova',
       StudyArtifactType.mindMap: 'Mapa mental',
@@ -276,7 +275,8 @@ não sustente.
       StudyArtifactType.finalPdf: 'PDF final',
     };
 
-    const spanish = <StudyArtifactType, String>{
+    final es = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary: 'Resumen visual',
       StudyArtifactType.fullSummary: 'Resumen completo',
       StudyArtifactType.examSummary: 'Resumen para examen',
       StudyArtifactType.mindMap: 'Mapa mental',
@@ -289,6 +289,6 @@ não sustente.
       StudyArtifactType.finalPdf: 'PDF final',
     };
 
-    return (isEs ? spanish : pt)[type]!;
+    return (isEs ? es : pt)[type]!;
   }
 }

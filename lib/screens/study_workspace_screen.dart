@@ -12,6 +12,7 @@ import '../services/study/study_library_service.dart';
 import '../services/study/study_long_form_segment_loader.dart';
 import '../services/study/study_multimodal_extraction_service.dart';
 import '../services/study/study_pdf_export_service.dart';
+import '../services/study/study_visual_result_codec.dart';
 import 'notes_audio_local_runtime_screen.dart';
 
 class StudyWorkspaceScreen extends StatefulWidget {
@@ -32,7 +33,8 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   List<Study> _library = const <Study>[];
   bool _busy = false;
   bool _noticeAccepted = false;
-  StudyArtifactType _artifactType = StudyArtifactType.fullSummary;
+  StudyArtifactType _artifactType = StudyArtifactType.visualSummary;
+  _StudyResultView _resultView = _StudyResultView.visual;
 
   @override
   void initState() {
@@ -784,20 +786,51 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     }
   }
 
+  StudyArtifact? _artifactOf(StudyArtifactType type) {
+    for (final artifact in _study.artifacts.reversed) {
+      if (artifact.type == type) return artifact;
+    }
+    return null;
+  }
+
+  Future<void> _generateType(StudyArtifactType type) async {
+    setState(() => _artifactType = type);
+    await _generate();
+  }
+
   Future<void> _exportPdf() async {
-    if (_study.acceptedSources.isEmpty && _study.artifacts.isEmpty) {
+    final available = _study.artifacts
+        .where((item) => item.type != StudyArtifactType.finalPdf)
+        .map((item) => item.type)
+        .toSet();
+
+    if (available.isEmpty) {
       _message(
         widget.isEs
-            ? 'Agrega contenido antes de exportar.'
-            : 'Adicione conteúdo antes de exportar.',
+            ? 'Genera al menos un material antes de exportar.'
+            : 'Gere pelo menos um material antes de exportar.',
       );
       return;
     }
 
+    final selected = await showModalBottomSheet<Set<StudyArtifactType>>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) =>
+          _StudyPdfSelectionSheet(isEs: widget.isEs, available: available),
+    );
+
+    if (selected == null || selected.isEmpty || !mounted) return;
+
     setState(() => _busy = true);
     try {
       await _persistStudy();
-      await StudyPdfExportService.share(_study, isEs: widget.isEs);
+      await StudyPdfExportService.shareSelected(
+        _study,
+        isEs: widget.isEs,
+        artifactTypes: selected,
+      );
     } catch (_) {
       _message(
         widget.isEs
@@ -1115,86 +1148,155 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
               children: [
                 Expanded(
                   child: _SectionLabel(
-                    title: widget.isEs ? 'Resultados' : 'Resultados',
+                    title: 'Resultados',
                     subtitle: widget.isEs
-                        ? 'Listos para revisar o exportar.'
-                        : 'Prontos para revisar ou exportar.',
+                        ? 'Revisa primero en formato visual.'
+                        : 'Revise primeiro em formato visual.',
                     text: text,
                     sub: sub,
                   ),
                 ),
                 TextButton.icon(
                   onPressed: _busy ? null : _exportPdf,
-                  icon: const Icon(Icons.picture_as_pdf_outlined, size: 15),
+                  icon: const Icon(Icons.ios_share_rounded, size: 15),
                   label: Text(
                     'PDF',
                     style: TextStyle(
                       color: accent,
                       fontSize: 10.5,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            for (final artifact in _study.artifacts.reversed) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
-                decoration: BoxDecoration(
-                  color: surface,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: border, width: 0.7),
+            const SizedBox(height: 6),
+            _StudyResultModeBar(
+              value: _resultView,
+              isEs: widget.isEs,
+              dark: dark,
+              surface: surface,
+              border: border,
+              text: text,
+              sub: sub,
+              accent: accent,
+              onChanged: (value) => setState(() => _resultView = value),
+            ),
+            const SizedBox(height: 7),
+            if (_resultView == _StudyResultView.visual) ...[
+              if (_artifactOf(StudyArtifactType.visualSummary)
+                  case final visual?)
+                _VisualSummaryPanel(
+                  artifact: visual,
+                  dark: dark,
+                  surface: surface,
+                  soft: soft,
+                  border: border,
+                  text: text,
+                  sub: sub,
+                  accent: accent,
+                )
+              else
+                _ResultGenerateCallout(
+                  icon: Icons.dashboard_customize_outlined,
+                  title: widget.isEs ? 'Resumen visual' : 'Resumo visual',
+                  subtitle: widget.isEs
+                      ? 'Convierte el contenido en bloques claros y revisables.'
+                      : 'Transforme o conteúdo em blocos claros e revisáveis.',
+                  action: widget.isEs ? 'Generar' : 'Gerar',
+                  surface: surface,
+                  border: border,
+                  text: text,
+                  sub: sub,
+                  accent: accent,
+                  onTap: _busy
+                      ? null
+                      : () => _generateType(StudyArtifactType.visualSummary),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      artifact.title,
-                      style: TextStyle(
-                        color: text,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    MarkdownBody(
-                      data: artifact.content,
-                      selectable: true,
-                      styleSheet: MarkdownStyleSheet(
-                        p: TextStyle(color: text, fontSize: 10.8, height: 1.5),
-                        h1: TextStyle(
-                          color: text,
-                          fontSize: 13,
-                          height: 1.35,
-                          fontWeight: FontWeight.w800,
-                        ),
-                        h2: TextStyle(
-                          color: text,
-                          fontSize: 12.2,
-                          height: 1.35,
-                          fontWeight: FontWeight.w800,
-                        ),
-                        h3: TextStyle(
-                          color: text,
-                          fontSize: 11.5,
-                          height: 1.35,
-                          fontWeight: FontWeight.w800,
-                        ),
-                        strong: TextStyle(
-                          color: text,
-                          fontWeight: FontWeight.w800,
-                        ),
-                        em: TextStyle(color: text, fontStyle: FontStyle.italic),
-                        listBullet: TextStyle(color: accent, fontSize: 10.8),
-                        blockSpacing: 7,
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 5),
+              if (_artifactOf(StudyArtifactType.mindMap) case final mindMap?)
+                _MindMapPanel(
+                  artifact: mindMap,
+                  surface: surface,
+                  soft: soft,
+                  border: border,
+                  text: text,
+                  sub: sub,
+                  accent: accent,
+                )
+              else
+                _ResultGenerateCallout(
+                  icon: Icons.account_tree_outlined,
+                  title: 'Mapa mental',
+                  subtitle: widget.isEs
+                      ? 'Organiza los conceptos como un árbol visual.'
+                      : 'Organize os conceitos como uma árvore visual.',
+                  action: widget.isEs ? 'Generar' : 'Gerar',
+                  surface: surface,
+                  border: border,
+                  text: text,
+                  sub: sub,
+                  accent: accent,
+                  onTap: _busy
+                      ? null
+                      : () => _generateType(StudyArtifactType.mindMap),
                 ),
-              ),
-              const SizedBox(height: 4),
+            ] else if (_resultView == _StudyResultView.complete) ...[
+              if (_artifactOf(StudyArtifactType.fullSummary) case final full?)
+                _MarkdownStudyArtifactCard(
+                  artifact: full,
+                  surface: surface,
+                  border: border,
+                  text: text,
+                  accent: accent,
+                )
+              else
+                _ResultGenerateCallout(
+                  icon: Icons.article_outlined,
+                  title: widget.isEs ? 'Resumen completo' : 'Resumo completo',
+                  subtitle: widget.isEs
+                      ? 'Profundiza en prosa continua.'
+                      : 'Aprofunde em prosa contínua.',
+                  action: widget.isEs ? 'Generar' : 'Gerar',
+                  surface: surface,
+                  border: border,
+                  text: text,
+                  sub: sub,
+                  accent: accent,
+                  onTap: _busy
+                      ? null
+                      : () => _generateType(StudyArtifactType.fullSummary),
+                ),
+              if (_artifactOf(StudyArtifactType.examSummary)
+                  case final exam?) ...[
+                const SizedBox(height: 5),
+                _MarkdownStudyArtifactCard(
+                  artifact: exam,
+                  surface: surface,
+                  border: border,
+                  text: text,
+                  accent: accent,
+                ),
+              ],
+            ] else ...[
+              for (final type in const <StudyArtifactType>[
+                StudyArtifactType.keyPoints,
+                StudyArtifactType.flashcards,
+                StudyArtifactType.questionsAndAnswers,
+                StudyArtifactType.multipleChoice,
+                StudyArtifactType.oralExam,
+                StudyArtifactType.comparisonTable,
+              ])
+                if (_artifactOf(type) case final training?) ...[
+                  _MarkdownStudyArtifactCard(
+                    artifact: training,
+                    surface: surface,
+                    border: border,
+                    text: text,
+                    accent: accent,
+                  ),
+                  const SizedBox(height: 5),
+                ],
             ],
           ],
         ],
@@ -1203,6 +1305,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   static const _artifactOptions = <StudyArtifactType>[
+    StudyArtifactType.visualSummary,
     StudyArtifactType.fullSummary,
     StudyArtifactType.examSummary,
     StudyArtifactType.mindMap,
@@ -1216,6 +1319,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
   String _artifactLabel(StudyArtifactType type) {
     final pt = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary: 'Resumo visual',
       StudyArtifactType.fullSummary: 'Resumo completo',
       StudyArtifactType.examSummary: 'Resumo para prova',
       StudyArtifactType.mindMap: 'Mapa mental',
@@ -1229,6 +1333,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     };
 
     final es = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary: 'Resumen visual',
       StudyArtifactType.fullSummary: 'Resumen completo',
       StudyArtifactType.examSummary: 'Resumen para examen',
       StudyArtifactType.mindMap: 'Mapa mental',
@@ -1583,5 +1688,757 @@ class _SourceRow extends StatelessWidget {
       case StudySourceType.text:
         return Icons.notes_rounded;
     }
+  }
+}
+
+enum _StudyResultView { visual, complete, training }
+
+class _StudyResultModeBar extends StatelessWidget {
+  const _StudyResultModeBar({
+    required this.value,
+    required this.isEs,
+    required this.dark,
+    required this.surface,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+    required this.onChanged,
+  });
+
+  final _StudyResultView value;
+  final bool isEs;
+  final bool dark;
+  final Color surface;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+  final ValueChanged<_StudyResultView> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = <(_StudyResultView, IconData, String)>[
+      (_StudyResultView.visual, Icons.auto_awesome_mosaic_outlined, 'Visual'),
+      (_StudyResultView.complete, Icons.article_outlined, 'Completo'),
+      (
+        _StudyResultView.training,
+        Icons.school_outlined,
+        isEs ? 'Entrenar' : 'Treino',
+      ),
+    ];
+
+    return Container(
+      height: 38,
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: border, width: 0.7),
+      ),
+      child: Row(
+        children: [
+          for (final item in items)
+            Expanded(
+              child: InkWell(
+                onTap: () => onChanged(item.$1),
+                borderRadius: BorderRadius.circular(6),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: value == item.$1
+                        ? accent.withValues(alpha: dark ? 0.13 : 0.10)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        item.$2,
+                        size: 14,
+                        color: value == item.$1 ? accent : sub,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        item.$3,
+                        style: TextStyle(
+                          color: value == item.$1 ? text : sub,
+                          fontSize: 10,
+                          fontWeight: value == item.$1
+                              ? FontWeight.w800
+                              : FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VisualSummaryPanel extends StatelessWidget {
+  const _VisualSummaryPanel({
+    required this.artifact,
+    required this.dark,
+    required this.surface,
+    required this.soft,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+  });
+
+  final StudyArtifact artifact;
+  final bool dark;
+  final Color surface;
+  final Color soft;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final data = StudyVisualResultCodec.decodeVisualSummary(artifact.content);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: border, width: 0.7),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: dark ? 0.12 : 0.09),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.dashboard_customize_outlined,
+                  size: 16,
+                  color: accent,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  data.title.isEmpty ? artifact.title : data.title,
+                  style: TextStyle(
+                    color: text,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (data.overview.isNotEmpty) ...[
+            const SizedBox(height: 9),
+            Text(
+              data.overview,
+              style: TextStyle(color: text, fontSize: 10.8, height: 1.48),
+            ),
+          ],
+          if (data.sections.isNotEmpty) ...[
+            const SizedBox(height: 9),
+            for (var i = 0; i < data.sections.length; i++) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(9, 8, 9, 8),
+                decoration: BoxDecoration(
+                  color: soft,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.sections[i].title,
+                      style: TextStyle(
+                        color: text,
+                        fontSize: 10.4,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    if (data.sections[i].body.isNotEmpty) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        data.sections[i].body,
+                        style: TextStyle(
+                          color: sub,
+                          fontSize: 9.8,
+                          height: 1.42,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (i < data.sections.length - 1) const SizedBox(height: 4),
+            ],
+          ],
+          if (data.keyPoints.isNotEmpty) ...[
+            const SizedBox(height: 9),
+            Text(
+              'PONTOS-CHAVE',
+              style: TextStyle(
+                color: accent,
+                fontSize: 8.7,
+                letterSpacing: 0.5,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 4),
+            for (final point in data.keyPoints)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 4,
+                      margin: const EdgeInsets.only(top: 5, right: 6),
+                      decoration: BoxDecoration(
+                        color: accent,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        point,
+                        style: TextStyle(
+                          color: text,
+                          fontSize: 9.8,
+                          height: 1.38,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+          if (data.takeaway.isNotEmpty) ...[
+            const SizedBox(height: 7),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: dark ? 0.08 : 0.06),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: accent.withValues(alpha: 0.35),
+                  width: 0.7,
+                ),
+              ),
+              child: Text(
+                data.takeaway,
+                style: TextStyle(
+                  color: text,
+                  fontSize: 9.8,
+                  height: 1.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _MindMapPanel extends StatelessWidget {
+  const _MindMapPanel({
+    required this.artifact,
+    required this.surface,
+    required this.soft,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+  });
+
+  final StudyArtifact artifact;
+  final Color surface;
+  final Color soft;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    final nodes = StudyVisualResultCodec.decodeMindMap(artifact.content);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: border, width: 0.7),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.account_tree_outlined, size: 17, color: accent),
+              const SizedBox(width: 6),
+              Text(
+                artifact.title,
+                style: TextStyle(
+                  color: text,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          for (final node in nodes)
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.fromLTRB(
+                (node.depth * 11).toDouble(),
+                0,
+                0,
+                4,
+              ),
+              padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+              decoration: BoxDecoration(
+                color: node.depth == 0 ? soft : Colors.transparent,
+                borderRadius: BorderRadius.circular(6),
+                border: Border(
+                  left: BorderSide(
+                    color: accent.withValues(
+                      alpha: node.depth == 0 ? 0.95 : 0.45,
+                    ),
+                    width: node.depth == 0 ? 2 : 1,
+                  ),
+                ),
+              ),
+              child: Text(
+                node.text,
+                style: TextStyle(
+                  color: node.depth == 0 ? text : sub,
+                  fontSize: node.depth == 0 ? 10.5 : 9.7,
+                  height: 1.35,
+                  fontWeight: node.depth == 0
+                      ? FontWeight.w800
+                      : FontWeight.w600,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MarkdownStudyArtifactCard extends StatelessWidget {
+  const _MarkdownStudyArtifactCard({
+    required this.artifact,
+    required this.surface,
+    required this.border,
+    required this.text,
+    required this.accent,
+  });
+
+  final StudyArtifact artifact;
+  final Color surface;
+  final Color border;
+  final Color text;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(11, 10, 11, 11),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: border, width: 0.7),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            artifact.title,
+            style: TextStyle(
+              color: text,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 5),
+          MarkdownBody(
+            data: artifact.content,
+            selectable: true,
+            styleSheet: MarkdownStyleSheet(
+              p: TextStyle(color: text, fontSize: 10.4, height: 1.48),
+              h1: TextStyle(
+                color: text,
+                fontSize: 12.5,
+                fontWeight: FontWeight.w800,
+              ),
+              h2: TextStyle(
+                color: text,
+                fontSize: 11.7,
+                fontWeight: FontWeight.w800,
+              ),
+              h3: TextStyle(
+                color: text,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+              ),
+              strong: TextStyle(color: text, fontWeight: FontWeight.w800),
+              listBullet: TextStyle(color: accent, fontSize: 10.4),
+              blockSpacing: 6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResultGenerateCallout extends StatelessWidget {
+  const _ResultGenerateCallout({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.action,
+    required this.surface,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String action;
+  final Color surface;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(10, 9, 8, 9),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: border, width: 0.7),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: accent),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: text,
+                    fontSize: 10.7,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  subtitle,
+                  style: TextStyle(color: sub, fontSize: 9.4, height: 1.3),
+                ),
+              ],
+            ),
+          ),
+          if (onTap != null)
+            TextButton(
+              onPressed: onTap,
+              child: Text(
+                action,
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 9.6,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StudyPdfSelectionSheet extends StatefulWidget {
+  const _StudyPdfSelectionSheet({required this.isEs, required this.available});
+
+  final bool isEs;
+  final Set<StudyArtifactType> available;
+
+  @override
+  State<_StudyPdfSelectionSheet> createState() =>
+      _StudyPdfSelectionSheetState();
+}
+
+class _StudyPdfSelectionSheetState extends State<_StudyPdfSelectionSheet> {
+  late Set<StudyArtifactType> _selected;
+
+  static const _order = <StudyArtifactType>[
+    StudyArtifactType.visualSummary,
+    StudyArtifactType.mindMap,
+    StudyArtifactType.fullSummary,
+    StudyArtifactType.examSummary,
+    StudyArtifactType.keyPoints,
+    StudyArtifactType.flashcards,
+    StudyArtifactType.questionsAndAnswers,
+    StudyArtifactType.multipleChoice,
+    StudyArtifactType.oralExam,
+    StudyArtifactType.comparisonTable,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    final preferred = <StudyArtifactType>{
+      StudyArtifactType.visualSummary,
+      StudyArtifactType.mindMap,
+    }.intersection(widget.available);
+
+    _selected = preferred.isNotEmpty
+        ? preferred
+        : Set<StudyArtifactType>.from(widget.available);
+  }
+
+  String _label(StudyArtifactType type) {
+    final pt = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary: 'Resumo visual',
+      StudyArtifactType.mindMap: 'Mapa mental',
+      StudyArtifactType.fullSummary: 'Resumo completo',
+      StudyArtifactType.examSummary: 'Resumo para prova',
+      StudyArtifactType.keyPoints: 'Pontos-chave',
+      StudyArtifactType.flashcards: 'Flashcards',
+      StudyArtifactType.questionsAndAnswers: 'Perguntas e respostas',
+      StudyArtifactType.multipleChoice: 'Múltipla escolha',
+      StudyArtifactType.oralExam: 'Prova oral',
+      StudyArtifactType.comparisonTable: 'Tabela comparativa',
+      StudyArtifactType.finalPdf: 'PDF final',
+    };
+    final es = <StudyArtifactType, String>{
+      StudyArtifactType.visualSummary: 'Resumen visual',
+      StudyArtifactType.mindMap: 'Mapa mental',
+      StudyArtifactType.fullSummary: 'Resumen completo',
+      StudyArtifactType.examSummary: 'Resumen para examen',
+      StudyArtifactType.keyPoints: 'Puntos clave',
+      StudyArtifactType.flashcards: 'Flashcards',
+      StudyArtifactType.questionsAndAnswers: 'Preguntas y respuestas',
+      StudyArtifactType.multipleChoice: 'Opción múltiple',
+      StudyArtifactType.oralExam: 'Examen oral',
+      StudyArtifactType.comparisonTable: 'Tabla comparativa',
+      StudyArtifactType.finalPdf: 'PDF final',
+    };
+    return (widget.isEs ? es : pt)[type]!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
+    final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF59636E);
+    const accent = Color(0xFF10B981);
+
+    final availableOrdered = _order
+        .where(widget.available.contains)
+        .toList(growable: false);
+    final allSelected = _selected.length == widget.available.length;
+
+    return SafeArea(
+      top: false,
+      child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.72,
+        ),
+        decoration: BoxDecoration(
+          color: page,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 34,
+              height: 3,
+              decoration: BoxDecoration(
+                color: border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 12, 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.isEs ? 'Crear PDF' : 'Gerar PDF',
+                          style: TextStyle(
+                            color: text,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.isEs
+                              ? 'Elige exactamente qué quieres exportar.'
+                              : 'Escolha exatamente o que deseja exportar.',
+                          style: TextStyle(color: sub, fontSize: 10),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selected = allSelected
+                            ? <StudyArtifactType>{}
+                            : Set<StudyArtifactType>.from(widget.available);
+                      });
+                    },
+                    child: Text(
+                      allSelected
+                          ? (widget.isEs ? 'Limpiar' : 'Limpar')
+                          : (widget.isEs ? 'Todo' : 'Tudo'),
+                      style: TextStyle(
+                        color: accent,
+                        fontSize: 9.8,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1, thickness: 0.7, color: border),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
+                itemCount: availableOrdered.length,
+                separatorBuilder: (_, __) =>
+                    Divider(height: 1, thickness: 0.7, color: border),
+                itemBuilder: (_, index) {
+                  final type = availableOrdered[index];
+                  final checked = _selected.contains(type);
+                  return InkWell(
+                    onTap: () {
+                      setState(() {
+                        checked ? _selected.remove(type) : _selected.add(type);
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: Checkbox(
+                              value: checked,
+                              activeColor: accent,
+                              onChanged: (_) {
+                                setState(() {
+                                  checked
+                                      ? _selected.remove(type)
+                                      : _selected.add(type);
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              _label(type),
+                              style: TextStyle(
+                                color: text,
+                                fontSize: 10.8,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+              child: SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: FilledButton.icon(
+                  onPressed: _selected.isEmpty
+                      ? null
+                      : () => Navigator.pop(
+                          context,
+                          Set<StudyArtifactType>.from(_selected),
+                        ),
+                  icon: const Icon(Icons.picture_as_pdf_outlined, size: 16),
+                  label: Text(
+                    widget.isEs
+                        ? 'Generar PDF (${_selected.length})'
+                        : 'Gerar PDF (${_selected.length})',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: accent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
