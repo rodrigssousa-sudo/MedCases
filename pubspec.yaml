@@ -106,17 +106,16 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#0F1116"
-  image: assets/icon/app_icon.png
+  image: assets/icon/splash_native_transparent.png
   color_dark: "#0F1116"
-  image_dark: assets/icon/app_icon.png
+  image_dark: assets/icon/splash_native_transparent.png
   android_12:
-    image: assets/icon/app_icon.png
+    image: assets/icon/splash_native_transparent.png
     icon_background_color: "#0F1116"
-    image_dark: assets/icon/app_icon.png
+    image_dark: assets/icon/splash_native_transparent.png
     icon_background_color_dark: "#0F1116"
   fullscreen: true
   web: false
-
 flutter:
   uses-material-design: true
   assets:
