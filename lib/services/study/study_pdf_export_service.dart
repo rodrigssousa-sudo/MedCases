@@ -9,10 +9,7 @@ import '../../models/study_workspace_model.dart';
 final class StudyPdfExportService {
   const StudyPdfExportService._();
 
-  static Future<Uint8List> build(
-    Study study, {
-    required bool isEs,
-  }) async {
+  static Future<Uint8List> build(Study study, {required bool isEs}) async {
     final document = pw.Document(
       title: study.title,
       author: 'MedCases Pro',
@@ -26,10 +23,7 @@ final class StudyPdfExportService {
         build: (_) => <pw.Widget>[
           pw.Text(
             study.title,
-            style: pw.TextStyle(
-              fontSize: 20,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 5),
           pw.Text(
@@ -39,10 +33,7 @@ final class StudyPdfExportService {
           pw.SizedBox(height: 18),
           pw.Text(
             isEs ? 'Fuentes aceptadas' : 'Fontes aceitas',
-            style: pw.TextStyle(
-              fontSize: 13,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 7),
           ...study.acceptedSources.map(
@@ -75,10 +66,7 @@ final class StudyPdfExportService {
           pw.SizedBox(height: 12),
           pw.Text(
             isEs ? 'Productos generados' : 'Produtos gerados',
-            style: pw.TextStyle(
-              fontSize: 13,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 8),
           ...study.artifacts.map(
@@ -96,11 +84,8 @@ final class StudyPdfExportService {
                   ),
                   pw.SizedBox(height: 4),
                   pw.Text(
-                    _safe(artifact.content),
-                    style: const pw.TextStyle(
-                      fontSize: 9.5,
-                      lineSpacing: 2,
-                    ),
+                    _artifactPlainText(artifact.content),
+                    style: const pw.TextStyle(fontSize: 9.5, lineSpacing: 2),
                   ),
                 ],
               ),
@@ -120,10 +105,7 @@ final class StudyPdfExportService {
     return document.save();
   }
 
-  static Future<void> share(
-    Study study, {
-    required bool isEs,
-  }) async {
+  static Future<void> share(Study study, {required bool isEs}) async {
     final bytes = await build(study, isEs: isEs);
     final safeName = study.title
         .replaceAll(RegExp(r'[^A-Za-z0-9_-]+'), '_')
@@ -133,6 +115,20 @@ final class StudyPdfExportService {
       bytes: bytes,
       filename: safeName.isEmpty ? 'medcases_estudo.pdf' : '$safeName.pdf',
     );
+  }
+
+  static String _artifactPlainText(String value) {
+    var clean = _safe(value);
+    clean = clean
+        .replaceAll(RegExp(r'(?m)^\s*#{1,6}\s*'), '')
+        .replaceAll('**', '')
+        .replaceAll('__', '')
+        .replaceAll('`', '')
+        .replaceAll(RegExp(r'(?m)^\s*[-*+]\s+'), '- ')
+        .replaceAll(RegExp(r'(?m)^\s*>\s?'), '')
+        .replaceAll(RegExp(r'\n{3,}'), '\n\n')
+        .trim();
+    return clean;
   }
 
   static String _safe(String value) => value

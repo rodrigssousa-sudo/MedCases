@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../models/study_long_form_audio_handoff.dart';
 import '../models/study_workspace_model.dart';
@@ -1158,12 +1159,36 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    SelectableText(
-                      artifact.content,
-                      style: TextStyle(
-                        color: text,
-                        fontSize: 10.8,
-                        height: 1.45,
+                    MarkdownBody(
+                      data: artifact.content,
+                      selectable: true,
+                      styleSheet: MarkdownStyleSheet(
+                        p: TextStyle(color: text, fontSize: 10.8, height: 1.5),
+                        h1: TextStyle(
+                          color: text,
+                          fontSize: 13,
+                          height: 1.35,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        h2: TextStyle(
+                          color: text,
+                          fontSize: 12.2,
+                          height: 1.35,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        h3: TextStyle(
+                          color: text,
+                          fontSize: 11.5,
+                          height: 1.35,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        strong: TextStyle(
+                          color: text,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        em: TextStyle(color: text, fontStyle: FontStyle.italic),
+                        listBullet: TextStyle(color: accent, fontSize: 10.8),
+                        blockSpacing: 7,
                       ),
                     ),
                   ],
