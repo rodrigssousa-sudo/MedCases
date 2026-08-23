@@ -218,133 +218,230 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   Future<void> _openLibrary() async {
-    final studies = await StudyLibraryService.loadAll();
+    var studies = await StudyLibraryService.loadAll();
     if (!mounted) return;
-
     _library = studies;
+    var deletedCurrent = false;
 
     final selected = await showModalBottomSheet<Study>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (sheetContext) {
-        final dark = Theme.of(sheetContext).brightness == Brightness.dark;
-        final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
-        final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
-        final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF52606D);
-        final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          final dark = Theme.of(sheetContext).brightness == Brightness.dark;
+          final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+          final surface = dark ? const Color(0xFF252930) : Colors.white;
+          final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
+          final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF52606D);
+          final border = dark
+              ? const Color(0xFF374151)
+              : const Color(0xFFE2E7EC);
+          const accent = Color(0xFF10B981);
+          const destructive = Color(0xFFDC2626);
 
-        return SafeArea(
-          top: false,
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.68,
-            ),
-            decoration: BoxDecoration(
-              color: page,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 8),
-                Container(
-                  width: 34,
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: border,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                  child: Row(
-                    children: [
-                      Expanded(
+          Future<void> deleteStudy(Study study) async {
+            final ok =
+                await showDialog<bool>(
+                  context: sheetContext,
+                  builder: (dialogContext) => AlertDialog(
+                    backgroundColor: surface,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    title: Text(
+                      widget.isEs ? 'Eliminar estudio' : 'Excluir estudo',
+                      style: TextStyle(
+                        color: text,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    content: Text(
+                      widget.isEs
+                          ? 'Este estudio se eliminará de la biblioteca y del historial.'
+                          : 'Este estudo será excluído da biblioteca e do histórico.',
+                      style: TextStyle(color: sub, fontSize: 11, height: 1.4),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext, false),
+                        child: Text('Cancelar', style: TextStyle(color: sub)),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext, true),
                         child: Text(
-                          widget.isEs
-                              ? 'Biblioteca de estudios'
-                              : 'Biblioteca de estudos',
-                          style: TextStyle(
-                            color: text,
-                            fontSize: 14,
+                          widget.isEs ? 'Eliminar' : 'Excluir',
+                          style: const TextStyle(
+                            color: destructive,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
-                      Text(
-                        '${studies.length}/40',
-                        style: TextStyle(color: sub, fontSize: 10),
-                      ),
                     ],
                   ),
+                ) ??
+                false;
+            if (!ok) return;
+            await StudyLibraryService.deleteById(study.id);
+            final refreshed = await StudyLibraryService.loadAll();
+            if (!sheetContext.mounted) return;
+            setSheetState(() => studies = refreshed);
+            _library = refreshed;
+            if (study.id == _study.id) deletedCurrent = true;
+          }
+
+          return SafeArea(
+            top: false,
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.68,
+              ),
+              decoration: BoxDecoration(
+                color: page,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
                 ),
-                Divider(height: 1, thickness: 0.7, color: border),
-                Expanded(
-                  child: studies.isEmpty
-                      ? Center(
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 34,
+                    height: 3,
+                    decoration: BoxDecoration(
+                      color: border,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 12, 8),
+                    child: Row(
+                      children: [
+                        Expanded(
                           child: Text(
                             widget.isEs
-                                ? 'Todavía no hay estudios guardados.'
-                                : 'Ainda não há estudos salvos.',
-                            style: TextStyle(color: sub, fontSize: 11.5),
+                                ? 'Biblioteca de estudios'
+                                : 'Biblioteca de estudos',
+                            style: TextStyle(
+                              color: text,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        )
-                      : ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(12, 6, 12, 18),
-                          itemCount: studies.length,
-                          separatorBuilder: (_, __) =>
-                              Divider(height: 1, thickness: 0.7, color: border),
-                          itemBuilder: (_, index) {
-                            final study = studies[index];
-                            return ListTile(
-                              dense: true,
-                              minVerticalPadding: 8,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                              ),
-                              title: Text(
-                                study.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: text,
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              subtitle: Text(
-                                '${study.sources.length} '
-                                '${widget.isEs ? "fuentes" : "fontes"} · '
-                                '${study.artifacts.length} '
-                                '${widget.isEs ? "productos" : "produtos"}',
-                                style: TextStyle(color: sub, fontSize: 9.5),
-                              ),
-                              trailing: Icon(
-                                Icons.chevron_right_rounded,
-                                color: sub,
-                                size: 18,
-                              ),
-                              onTap: () => Navigator.pop(sheetContext, study),
-                            );
-                          },
                         ),
-                ),
-              ],
+                        Text(
+                          '${studies.length}/40',
+                          style: TextStyle(
+                            color: sub,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(height: 1, thickness: 0.7, color: border),
+                  Expanded(
+                    child: studies.isEmpty
+                        ? Center(
+                            child: Text(
+                              widget.isEs
+                                  ? 'Biblioteca vacía'
+                                  : 'Biblioteca vazia',
+                              style: TextStyle(color: sub, fontSize: 11.5),
+                            ),
+                          )
+                        : ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(12, 6, 12, 18),
+                            itemCount: studies.length,
+                            separatorBuilder: (_, __) => Divider(
+                              height: 1,
+                              thickness: 0.7,
+                              color: border,
+                            ),
+                            itemBuilder: (_, index) {
+                              final study = studies[index];
+                              return ListTile(
+                                dense: true,
+                                minVerticalPadding: 7,
+                                contentPadding: const EdgeInsets.only(left: 4),
+                                leading: Container(
+                                  width: 32,
+                                  height: 32,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: accent.withValues(
+                                      alpha: dark ? 0.10 : 0.08,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.auto_stories_outlined,
+                                    size: 16,
+                                    color: accent,
+                                  ),
+                                ),
+                                title: Text(
+                                  study.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: text,
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  '${study.sources.length} ${widget.isEs ? "fuentes" : "fontes"} · ${study.artifacts.length} ${widget.isEs ? "productos" : "produtos"}',
+                                  style: TextStyle(color: sub, fontSize: 9.5),
+                                ),
+                                onTap: () => Navigator.pop(sheetContext, study),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      tooltip: widget.isEs
+                                          ? 'Eliminar'
+                                          : 'Excluir',
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () => deleteStudy(study),
+                                      icon: const Icon(
+                                        Icons.delete_outline_rounded,
+                                        size: 17,
+                                        color: destructive,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right_rounded,
+                                      size: 18,
+                                      color: sub,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
 
-    if (selected == null || !mounted) return;
-
-    setState(() {
-      _study = selected;
-      _title.text = selected.title;
-      _recordedRawPaths.clear();
-    });
+    if (!mounted) return;
+    if (selected != null) {
+      setState(() {
+        _study = selected;
+        _title.text = selected.title;
+        _recordedRawPaths.clear();
+      });
+    } else if (deletedCurrent) {
+      await _newStudy();
+    }
   }
 
   Future<void> _addText() async {

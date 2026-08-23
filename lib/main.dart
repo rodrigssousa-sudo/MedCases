@@ -55,6 +55,7 @@ import 'screens/laboratory_screen.dart'
 import 'screens/remote_audio_consent_sheet.dart';
 import 'screens/notes_audio_local_runtime_screen.dart';
 import 'screens/study_workspace_screen.dart';
+import 'screens/study_history_screen.dart';
 import 'screens/calculadora_screen.dart' show CalculadoraScreen;
 import 'services/firestore_service.dart';
 import 'services/activity_service.dart';
@@ -8060,9 +8061,10 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
                     showDivider: true,
                     onTap: () => setState(() => _section = 0),
                   ),
+
                   _NotesAudioWorkspaceTab(
-                    label: isEs ? 'Audio' : 'Áudio',
-                    icon: Icons.graphic_eq_rounded,
+                    label: isEs ? 'Estudio' : 'Estudos',
+                    icon: Icons.auto_stories_outlined,
                     selected: _section == 1,
                     accent: accent,
                     text: text,
@@ -8072,26 +8074,15 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
                     onTap: () => setState(() => _section = 1),
                   ),
                   _NotesAudioWorkspaceTab(
-                    label: isEs ? 'Estudio' : 'Estudos',
-                    icon: Icons.auto_stories_outlined,
+                    label: isEs ? 'Historial' : 'Histórico',
+                    icon: Icons.history_rounded,
                     selected: _section == 2,
                     accent: accent,
                     text: text,
                     sub: sub,
                     border: border,
-                    showDivider: true,
-                    onTap: () => setState(() => _section = 2),
-                  ),
-                  _NotesAudioWorkspaceTab(
-                    label: isEs ? 'Historial' : 'Histórico',
-                    icon: Icons.history_rounded,
-                    selected: _section == 3,
-                    accent: accent,
-                    text: text,
-                    sub: sub,
-                    border: border,
                     showDivider: false,
-                    onTap: () => setState(() => _section = 3),
+                    onTap: () => setState(() => _section = 2),
                   ),
                 ],
               ),
@@ -8105,25 +8096,9 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
                     onClose: widget.onBack,
                     workspaceMode: true,
                   ),
-                  _NotesAudioWorkspaceAudio(
-                    isEs: isEs,
-                    page: page,
-                    surface: surface,
-                    border: border,
-                    text: text,
-                    sub: sub,
-                    accent: accent,
-                  ),
+
                   StudyWorkspaceScreen(isEs: isEs),
-                  _NotesAudioWorkspaceHistory(
-                    isEs: isEs,
-                    page: page,
-                    surface: surface,
-                    border: border,
-                    text: text,
-                    sub: sub,
-                    accent: accent,
-                  ),
+                  StudyHistoryScreen(isEs: isEs),
                 ],
               ),
             ),
@@ -9024,75 +8999,122 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
 // ESTADO VAZIO DO PAINEL
 // ─────────────────────────────────────────────────────────────────────────────
 class _PanelEmptyState extends StatelessWidget {
-  final bool isEs;
-  final bool dark;
-  final VoidCallback onNew;
   const _PanelEmptyState({
     required this.isEs,
     required this.dark,
     required this.onNew,
   });
+  final bool isEs;
+  final bool dark;
+  final VoidCallback onNew;
 
   @override
   Widget build(BuildContext context) {
-    // NOTES V3.1 — ESTADO VAZIO MINIMALISTA
-    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
-    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
-    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
-
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 28, 24, 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.note_alt_outlined, size: 30, color: accent),
-            const SizedBox(height: 10),
-            Text(
-              isEs ? 'Ninguna anotación' : 'Nenhuma anotação',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: textCol,
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
+    final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
+    final sub = dark ? const Color(0xFFB7C0CC) : const Color(0xFF64748B);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final surface = dark ? const Color(0xFF252930) : Colors.white;
+    const accent = Color(0xFF10B981);
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 28, 16, 0),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 13),
+          decoration: BoxDecoration(
+            color: surface,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: border, width: 0.7),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: dark ? 0.10 : 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.edit_note_rounded,
+                      size: 20,
+                      color: accent,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs ? 'Tu espacio de notas' : 'Sua área de notas',
+                          style: TextStyle(
+                            color: text,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          isEs
+                              ? 'Registra información rápida sin salir de tu flujo clínico.'
+                              : 'Registre informações rápidas sem sair do seu fluxo clínico.',
+                          style: TextStyle(
+                            color: sub,
+                            fontSize: 10.4,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              isEs
-                  ? 'Crea una nota para guardar información importante.'
-                  : 'Crie uma nota para guardar informações importantes.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: subCol,
-                fontSize: 11.5,
-                fontWeight: FontWeight.w500,
-                height: 1.35,
-              ),
-            ),
-            const SizedBox(height: 14),
-            TextButton.icon(
-              onPressed: onNew,
-              style: TextButton.styleFrom(
-                foregroundColor: accent,
-                backgroundColor: Colors.transparent,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 10,
+              const SizedBox(height: 12),
+              Divider(height: 1, thickness: 0.7, color: border),
+              const SizedBox(height: 10),
+              Text(
+                isEs
+                    ? 'Protocolos · fármacos · casos · recordatorios'
+                    : 'Protocolos · fármacos · casos · lembretes',
+                style: TextStyle(
+                  color: sub,
+                  fontSize: 9.6,
+                  fontWeight: FontWeight.w600,
                 ),
-                minimumSize: const Size(44, 44),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              icon: const Icon(Icons.add_rounded, size: 18),
-              label: Text(
-                isEs ? 'Nueva anotación' : 'Nova anotação',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
+              const SizedBox(height: 11),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: FilledButton.icon(
+                  onPressed: onNew,
+                  icon: const Icon(Icons.add_rounded, size: 17),
+                  label: Text(
+                    isEs ? 'Nueva anotación' : 'Nova anotação',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  style: FilledButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: accent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -45,9 +45,23 @@ final class StudyLibraryService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       _key,
-      jsonEncode(
-        studies.map(_encodeStudy).toList(growable: false),
-      ),
+      jsonEncode(studies.map(_encodeStudy).toList(growable: false)),
+    );
+  }
+
+  static Future<void> deleteById(String studyId) async {
+    final normalized = studyId.trim();
+    if (normalized.isEmpty) return;
+    final studies = List<Study>.from(await loadAll())
+      ..removeWhere((item) => item.id == normalized);
+    final prefs = await SharedPreferences.getInstance();
+    if (studies.isEmpty) {
+      await prefs.remove(_key);
+      return;
+    }
+    await prefs.setString(
+      _key,
+      jsonEncode(studies.map(_encodeStudy).toList(growable: false)),
     );
   }
 
@@ -104,9 +118,7 @@ final class StudyLibraryService {
     if (rawSources is List) {
       for (final item in rawSources) {
         if (item is Map) {
-          sources.add(
-            _decodeSource(item.map((k, v) => MapEntry('$k', v))),
-          );
+          sources.add(_decodeSource(item.map((k, v) => MapEntry('$k', v))));
         }
       }
     }
@@ -116,9 +128,7 @@ final class StudyLibraryService {
     if (rawArtifacts is List) {
       for (final item in rawArtifacts) {
         if (item is Map) {
-          artifacts.add(
-            _decodeArtifact(item.map((k, v) => MapEntry('$k', v))),
-          );
+          artifacts.add(_decodeArtifact(item.map((k, v) => MapEntry('$k', v))));
         }
       }
     }
