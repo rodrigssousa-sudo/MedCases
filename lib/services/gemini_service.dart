@@ -7,11 +7,12 @@ import 'package:http/http.dart' as http;
 // Import condicional: ls_web.dart (Web, usa dart:js) ou ls_stub.dart (iOS/Android, no-op).
 // Isola completamente dart:js do compilador nativo — resolve o erro
 // "Undefined name 'context'" no Xcode / Android toolchain.
-import 'ls_stub.dart'
-    if (dart.library.js) 'ls_web.dart';
+import 'ls_stub.dart' if (dart.library.js) 'ls_web.dart';
 
 // Google Sign-In — usado APENAS no Android (não no web)
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'study/study_google_ai_server_auth_code_gate_v1.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GEMINI SERVICE — Autenticação por API Key
@@ -33,7 +34,11 @@ class GeminiResult {
   final String text;
   final bool isError;
   final String? errorCode;
-  const GeminiResult({required this.text, this.isError = false, this.errorCode});
+  const GeminiResult({
+    required this.text,
+    this.isError = false,
+    this.errorCode,
+  });
   factory GeminiResult.error(String msg, String code) =>
       GeminiResult(text: msg, isError: true, errorCode: code);
 }
@@ -51,8 +56,10 @@ String _cleanInternalBlocks(String raw) {
 
   // 1. Remove blocos de código interno com marcadores (tool_code, thinking, thought)
   text = text.replaceAll(
-    RegExp(r'```(?:tool_code|thinking|thought|python|json)[\s\S]*?```',
-        multiLine: true),
+    RegExp(
+      r'```(?:tool_code|thinking|thought|python|json)[\s\S]*?```',
+      multiLine: true,
+    ),
     '',
   );
 
@@ -65,16 +72,19 @@ String _cleanInternalBlocks(String raw) {
     '',
   );
   // Remove linhas isoladas que contenham padrões de chamada de ferramentas
-  text = text.split('\n').where((line) {
-    final lower = line.toLowerCase().trim();
-    if (lower.startsWith('tool_code')) return false;
-    if (lower.startsWith('print(google_search')) return false;
-    if (lower.startsWith('print(perplexity')) return false;
-    if (lower.startsWith('google_search.search')) return false;
-    if (lower.contains('queries=[')) return false;
-    if (lower.startsWith('search_query')) return false;
-    return true;
-  }).join('\n');
+  text = text
+      .split('\n')
+      .where((line) {
+        final lower = line.toLowerCase().trim();
+        if (lower.startsWith('tool_code')) return false;
+        if (lower.startsWith('print(google_search')) return false;
+        if (lower.startsWith('print(perplexity')) return false;
+        if (lower.startsWith('google_search.search')) return false;
+        if (lower.contains('queries=[')) return false;
+        if (lower.startsWith('search_query')) return false;
+        return true;
+      })
+      .join('\n');
 
   // 2. Remove blocos <thinking>...</thinking> do Gemini
   text = text.replaceAll(
@@ -113,7 +123,8 @@ String _cleanInternalBlocks(String raw) {
     ];
 
     for (final prefix in internalPrefixes) {
-      if (trimmed.startsWith(prefix) || trimmed.startsWith(prefix.toLowerCase())) {
+      if (trimmed.startsWith(prefix) ||
+          trimmed.startsWith(prefix.toLowerCase())) {
         return false;
       }
     }
@@ -129,8 +140,9 @@ String _cleanInternalBlocks(String raw) {
       final englishMatches = englishOnlyWords.allMatches(trimmed).length;
       final ratio = englishMatches / wordCount;
       // Se >55% das palavras são "inglês genérico" e parágrafo não tem números/doses
-      final hasMedicalNumbers = RegExp(r'\d+\s*(?:mg|mcg|µg|mL|g|UI|h|min|kg|%)')
-          .hasMatch(trimmed);
+      final hasMedicalNumbers = RegExp(
+        r'\d+\s*(?:mg|mcg|µg|mL|g|UI|h|min|kg|%)',
+      ).hasMatch(trimmed);
       final hasMedicalTerms = RegExp(
         r'\b(?:dosis|dosis|dose|mg|mcg|EV|VO|SC|IM|paciente|patient|tratamiento|tratamento|'
         r'fármaco|medicamento|droga|protocolo|urgencia|urgência|clínico|clínica|'
@@ -202,17 +214,16 @@ bool _isTruncated(String text) {
   return false;
 }
 
-
 // BUILD 294: Discriminador de origem da chave Gemini API.
 // SecurityWipe APENAS pode limpar: oauth, admin, cache, user.
 // NUNCA deve limpar: appConfig — essa chave pertence ao sistema.
 enum GeminiKeySource {
-  none,       // nenhuma chave carregada
-  appConfig,  // app_config/global.apiKey — chave do sistema, compartilhada
-  oauth,      // OAuth Google redirect — chave pessoal do usuário autenticado
-  admin,      // definida manualmente por admin/master via painel
-  user,       // chave BYOA individual do usuário
-  cache,      // restaurada de SharedPreferences/localStorage (origem desconhecida)
+  none, // nenhuma chave carregada
+  appConfig, // app_config/global.apiKey — chave do sistema, compartilhada
+  oauth, // OAuth Google redirect — chave pessoal do usuário autenticado
+  admin, // definida manualmente por admin/master via painel
+  user, // chave BYOA individual do usuário
+  cache, // restaurada de SharedPreferences/localStorage (origem desconhecida)
 }
 
 class GeminiService {
@@ -258,7 +269,8 @@ class GeminiService {
 
   // ── API Key estática (carregada do Firestore pelo AppProvider) ────────────
   static String _geminiApiKey = '';
-  static const _keyGak = 'medcases_gak'; // localStorage key para persistência entre reloads
+  static const _keyGak =
+      'medcases_gak'; // localStorage key para persistência entre reloads
 
   // BUILD 294: Discriminador de origem da chave Gemini.
   // CRÍTICO: SecurityWipe só pode apagar chaves de origem oauth/admin/cache.
@@ -282,18 +294,25 @@ class GeminiService {
 
   /// Setter chamado pelo AppProvider após carregar a chave do Firestore.
   /// Automaticamente persiste no localStorage para sobreviver reloads do service worker.
-  static void setGeminiApiKey(String key, {GeminiKeySource source = GeminiKeySource.appConfig}) {
+  static void setGeminiApiKey(
+    String key, {
+    GeminiKeySource source = GeminiKeySource.appConfig,
+  }) {
     final trimmed = key.trim();
     if (trimmed.isEmpty) return;
     _geminiApiKey = trimmed;
-    _keySource    = source;
+    _keySource = source;
     // Persiste via dart:js (mcLsSet) E via SharedPreferences (dupla garantia)
     if (kIsWeb) _webSet(_keyGak, trimmed);
     // SharedPreferences em background — não bloqueia, garante persistência
-    SharedPreferences.getInstance().then((p) {
-      p.setString(_keyGak, trimmed);
-    }).catchError((_) {});
-    debugPrint('[GeminiService] API Key definida (source=${source.name}) e cacheada ✓');
+    SharedPreferences.getInstance()
+        .then((p) {
+          p.setString(_keyGak, trimmed);
+        })
+        .catchError((_) {});
+    debugPrint(
+      '[GeminiService] API Key definida (source=${source.name}) e cacheada ✓',
+    );
   }
 
   /// Restaura a API Key do SharedPreferences/localStorage sem precisar do Firestore.
@@ -309,8 +328,10 @@ class GeminiService {
       final fromPrefs = prefs.getString(_keyGak) ?? '';
       if (fromPrefs.isNotEmpty) {
         _geminiApiKey = fromPrefs;
-        _keySource    = GeminiKeySource.cache;
-        debugPrint('[GeminiService] API Key restaurada do SharedPreferences no boot ✓');
+        _keySource = GeminiKeySource.cache;
+        debugPrint(
+          '[GeminiService] API Key restaurada do SharedPreferences no boot ✓',
+        );
         return;
       }
     } catch (_) {}
@@ -319,7 +340,7 @@ class GeminiService {
       final cached = _webGet(_keyGak);
       if (cached != null && cached.isNotEmpty) {
         _geminiApiKey = cached;
-        _keySource    = GeminiKeySource.cache;
+        _keySource = GeminiKeySource.cache;
         debugPrint('[GeminiService] API Key restaurada via mcLsGet no boot ✓');
       }
     }
@@ -340,8 +361,10 @@ class GeminiService {
   /// touching Firestore. Full wipe — use only on logout or admin reset.
   static void clearCachedApiKey() {
     _geminiApiKey = '';
-    _keySource    = GeminiKeySource.none;
-    debugPrint('[GeminiService] clearCachedApiKey() — in-memory key wiped (full)');
+    _keySource = GeminiKeySource.none;
+    debugPrint(
+      '[GeminiService] clearCachedApiKey() — in-memory key wiped (full)',
+    );
   }
 
   /// BUILD 294: SecurityWipe-safe clear — only clears OAuth/admin/cache keys.
@@ -351,16 +374,20 @@ class GeminiService {
   /// Returns true if a key was actually cleared, false if it was skipped.
   static bool clearOAuthCachedApiKey() {
     if (_keySource == GeminiKeySource.appConfig) {
-      debugPrint('[BUILD294][SecurityWipe] skipped reason=app_config_key '
-          'source=${_keySource.name}');
+      debugPrint(
+        '[BUILD294][SecurityWipe] skipped reason=app_config_key '
+        'source=${_keySource.name}',
+      );
       return false;
     }
     final hadKey = _geminiApiKey.isNotEmpty;
     _geminiApiKey = '';
-    _keySource    = GeminiKeySource.none;
+    _keySource = GeminiKeySource.none;
     if (hadKey) {
-      debugPrint('[BUILD294][SecurityWipe] wiped_oauth_only '
-          'source was=${_keySource == GeminiKeySource.none ? "cleared" : _keySource.name}');
+      debugPrint(
+        '[BUILD294][SecurityWipe] wiped_oauth_only '
+        'source was=${_keySource == GeminiKeySource.none ? "cleared" : _keySource.name}',
+      );
     }
     return hadKey;
   }
@@ -388,7 +415,10 @@ class GeminiService {
   // Sem serverClientId, o Google Sign-In opera no modo "email only" — sem auth code,
   // sem token server-side — que é exatamente o que precisamos.
   static final _googleSignIn = GoogleSignIn(
-    scopes: ['email'],  // Apenas email — sem scope restrito
+    scopes: ['email'], // Apenas email — sem scope restrito
+    serverClientId: StudyGoogleAiServerAuthCodeGateV1.effectiveServerClientId(),
+    forceCodeForRefreshToken:
+        StudyGoogleAiServerAuthCodeGateV1.effectiveForceCodeForRefreshToken(),
     // serverClientId omitido intencionalmente — ver documentação acima.
     // Adicionar serverClientId com o Web Client ID apenas se for necessário
     // validar ID tokens em um backend próprio no futuro.
@@ -409,7 +439,10 @@ class GeminiService {
   static void _webRemove(String key) => webLsRemove(key);
 
   static Future<void> _saveEmail(String email) async {
-    if (kIsWeb) { _webSet(_keyEmail, email); return; }
+    if (kIsWeb) {
+      _webSet(_keyEmail, email);
+      return;
+    }
     final p = await SharedPreferences.getInstance();
     await p.setString(_keyEmail, email);
   }
@@ -423,7 +456,7 @@ class GeminiService {
   static Future<void> _deleteEmail() async {
     if (kIsWeb) {
       _webRemove(_keyEmail);
-      _webRemove(_keyToken);  // Limpa token legado do localStorage
+      _webRemove(_keyToken); // Limpa token legado do localStorage
       return;
     }
     final p = await SharedPreferences.getInstance();
@@ -484,6 +517,43 @@ class GeminiService {
   ///
   /// IMPORTANTE: signIn() só salva o EMAIL. A API Key vem do Firestore via
   /// AppProvider._loadAiKeyFromFirestore() — não depende do OAuth token.
+
+  /// Inert Study OAuth callsite. It is intentionally unreachable while
+  /// [StudyGoogleAiServerAuthCodeGateV1.enabled] is false.
+  ///
+  /// Returns only the transient authorization code to the immediate caller;
+  /// it does not persist, log, exchange, or send it to any provider.
+  /// Inert incremental OAuth scope consent callsite.
+  ///
+  /// While the Study OAuth gate is false this returns false before asking
+  /// Google for any additional consent.
+  static Future<bool> requestStudyGeminiOAuthScopesInert() async {
+    if (!StudyGoogleAiServerAuthCodeGateV1.mayRequestIncrementalConsent()) {
+      return false;
+    }
+
+    final scopes =
+        StudyGoogleAiServerAuthCodeGateV1.effectiveIncrementalGeminiScopes();
+
+    if (scopes.isEmpty) {
+      return false;
+    }
+
+    return _googleSignIn.requestScopes(scopes);
+  }
+
+  static Future<String?> acquireStudyServerAuthCodeInert() async {
+    if (!StudyGoogleAiServerAuthCodeGateV1.mayReadServerAuthCode()) {
+      return null;
+    }
+
+    GoogleSignInAccount? account = await _googleSignIn.signInSilently();
+
+    account ??= await _googleSignIn.signIn();
+
+    return account?.serverAuthCode;
+  }
+
   static Future<bool> signIn() async {
     try {
       debugPrint('[GeminiService] signIn() — web: $kIsWeb');
@@ -493,18 +563,21 @@ class GeminiService {
         // _webSignIn() retorna null imediatamente (redirect — página vai recarregar).
         // O email chegará via checkGeminiSession() no próximo boot.
         await _webSignIn();
-        return false;  // false = redirect iniciado (não é erro)
-
+        return false; // false = redirect iniciado (não é erro)
       } else {
         // ── Android: google_sign_in — salva apenas email ─────────────────
         // BUILD 283: signOut() antes de signIn() evita cache stale de sessões
         // anteriores que podem causar ApiException code 10 (DEVELOPER_ERROR).
-        debugPrint('[GeminiService][Android] signOut() antes de signIn() (flush stale session)');
+        debugPrint(
+          '[GeminiService][Android] signOut() antes de signIn() (flush stale session)',
+        );
         await _googleSignIn.signOut();
         debugPrint('[GeminiService][Android] chamando _googleSignIn.signIn()…');
         final account = await _googleSignIn.signIn();
         if (account == null) {
-          debugPrint('[GeminiService][Android] signIn cancelado pelo usuário (account=null)');
+          debugPrint(
+            '[GeminiService][Android] signIn cancelado pelo usuário (account=null)',
+          );
           return false;
         }
         // Salva apenas o email — a API Key não depende do accessToken
@@ -528,16 +601,20 @@ class GeminiService {
       //   12502 = SIGN_IN_CURRENTLY_IN_PROGRESS → chamada dupla concorrente
       final eStr = e.toString();
       String hint = '';
-      if (eStr.contains('ApiException: 10') || eStr.contains('DEVELOPER_ERROR')) {
-        hint = '\n  ▶ DEVELOPER_ERROR (code 10): causas comuns:\n'
+      if (eStr.contains('ApiException: 10') ||
+          eStr.contains('DEVELOPER_ERROR')) {
+        hint =
+            '\n  ▶ DEVELOPER_ERROR (code 10): causas comuns:\n'
             '    1. SHA-1 do keystore NÃO está no Firebase Console\n'
             '       → Firebase Console → Configurações → Android → Adicionar SHA-1\n'
             '    2. google-services.json desatualizado\n'
             '       → Baixar novo google-services.json do Firebase Console\n'
             '    3. serverClientId configurado incorretamente\n'
             '       → BUILD 283 já removeu serverClientId — confirme flutter pub get';
-      } else if (eStr.contains('ApiException: 7') || eStr.contains('NETWORK_ERROR')) {
-        hint = '\n  ▶ NETWORK_ERROR (code 7): dispositivo sem conectividade com Google';
+      } else if (eStr.contains('ApiException: 7') ||
+          eStr.contains('NETWORK_ERROR')) {
+        hint =
+            '\n  ▶ NETWORK_ERROR (code 7): dispositivo sem conectividade com Google';
       }
       debugPrint(
         '[GeminiService][signIn][ERRO] '
@@ -609,13 +686,15 @@ class GeminiService {
     final result = Completer<GeminiResult>();
     _queue = _queue.then((_) async {
       try {
-        result.complete(await _chatInternal(
-          userMessage: userMessage,
-          systemPrompt: systemPrompt,
-          history: history,
-          maxTokens: maxTokens,
-          useGrounding: useGrounding,
-        ));
+        result.complete(
+          await _chatInternal(
+            userMessage: userMessage,
+            systemPrompt: systemPrompt,
+            history: history,
+            maxTokens: maxTokens,
+            useGrounding: useGrounding,
+          ),
+        );
       } catch (e) {
         result.completeError(e);
       }
@@ -638,15 +717,27 @@ class GeminiService {
     final contents = <Map<String, dynamic>>[];
     for (final msg in history) {
       final role = msg['role'] == 'assistant' ? 'model' : 'user';
-      contents.add({'role': role, 'parts': [{'text': msg['content'] ?? ''}]});
+      contents.add({
+        'role': role,
+        'parts': [
+          {'text': msg['content'] ?? ''},
+        ],
+      });
     }
-    contents.add({'role': 'user', 'parts': [{'text': userMessage}]});
+    contents.add({
+      'role': 'user',
+      'parts': [
+        {'text': userMessage},
+      ],
+    });
 
     // Google Search Grounding — permite ao Gemini buscar na web em tempo real.
     // Isso transforma o modelo em um RAG real: consulta base interna (system prompt)
     // + busca web quando necessário (guias atualizadas, doses, artigos).
     final tools = useGrounding
-        ? [{'google_search': {}}]
+        ? [
+            {'google_search': {}},
+          ]
         : null;
 
     // Build 113 — CORREÇÃO CRÍTICA: thinkingConfig: {thinkingBudget: 0} é
@@ -667,14 +758,24 @@ class GeminiService {
     };
 
     final bodyMap = <String, dynamic>{
-      'system_instruction': {'parts': [{'text': systemPrompt}]},
+      'system_instruction': {
+        'parts': [
+          {'text': systemPrompt},
+        ],
+      },
       'contents': contents,
       'generationConfig': generationConfig,
       'safetySettings': [
-        {'category': 'HARM_CATEGORY_HARASSMENT',        'threshold': 'BLOCK_NONE'},
-        {'category': 'HARM_CATEGORY_HATE_SPEECH',       'threshold': 'BLOCK_NONE'},
-        {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'},
-        {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'},
+        {'category': 'HARM_CATEGORY_HARASSMENT', 'threshold': 'BLOCK_NONE'},
+        {'category': 'HARM_CATEGORY_HATE_SPEECH', 'threshold': 'BLOCK_NONE'},
+        {
+          'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+          'threshold': 'BLOCK_NONE',
+        },
+        {
+          'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          'threshold': 'BLOCK_NONE',
+        },
       ],
     };
     if (tools != null) bodyMap['tools'] = tools;
@@ -682,18 +783,22 @@ class GeminiService {
     final body = jsonEncode(bodyMap);
 
     try {
-      final response = await http.post(
-        Uri.parse('$_endpoint?key=$_geminiApiKey'),
-        headers: {'Content-Type': 'application/json'},
-        body: body,
-      ).timeout(const Duration(seconds: 45));
+      final response = await http
+          .post(
+            Uri.parse('$_endpoint?key=$_geminiApiKey'),
+            headers: {'Content-Type': 'application/json'},
+            body: body,
+          )
+          .timeout(const Duration(seconds: 45));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final candidates = data['candidates'] as List?;
         if (candidates == null || candidates.isEmpty) {
           final blockReason = data['promptFeedback']?['blockReason'] as String?;
-          debugPrint('[GeminiService] sem candidates. blockReason=$blockReason useGrounding=$useGrounding');
+          debugPrint(
+            '[GeminiService] sem candidates. blockReason=$blockReason useGrounding=$useGrounding',
+          );
           // Se grounding falhou, tenta sem ele
           if (useGrounding) {
             return _chatInternal(
@@ -705,11 +810,16 @@ class GeminiService {
               retryCount: retryCount,
             );
           }
-          return GeminiResult.error('BLOCKED: ${blockReason ?? "unknown"}', 'blocked');
+          return GeminiResult.error(
+            'BLOCKED: ${blockReason ?? "unknown"}',
+            'blocked',
+          );
         }
         final candidate = candidates[0] as Map<String, dynamic>;
         final finishReason = candidate['finishReason'] as String?;
-        debugPrint('[GeminiService] finishReason=$finishReason useGrounding=$useGrounding');
+        debugPrint(
+          '[GeminiService] finishReason=$finishReason useGrounding=$useGrounding',
+        );
         if (finishReason == 'SAFETY' || finishReason == 'RECITATION') {
           if (useGrounding) {
             return _chatInternal(
@@ -745,7 +855,9 @@ class GeminiService {
             .trim();
         final cleanedText = _cleanInternalBlocks(text);
         if (cleanedText.isEmpty) {
-          debugPrint('[GeminiService] texto vazio após join/clean. parts=$parts');
+          debugPrint(
+            '[GeminiService] texto vazio após join/clean. parts=$parts',
+          );
           return GeminiResult.error('EMPTY_TEXT', 'unknown');
         }
 
@@ -755,12 +867,20 @@ class GeminiService {
         //          (pode ocorrer mesmo com STOP se o modelo parar no meio de bullet).
         // Em AMBOS os casos: retry com +60% tokens (cap 4000).
         // O usuário NUNCA deve ver resposta incompleta como mensagem final.
-        final truncated = finishReason == 'MAX_TOKENS' || _isTruncated(cleanedText);
+        final truncated =
+            finishReason == 'MAX_TOKENS' || _isTruncated(cleanedText);
         if (truncated) {
-          debugPrint('[GeminiService] Truncamento detectado — finishReason=$finishReason, isTruncated=${_isTruncated(cleanedText)}');
+          debugPrint(
+            '[GeminiService] Truncamento detectado — finishReason=$finishReason, isTruncated=${_isTruncated(cleanedText)}',
+          );
           if (maxTokens < 4000) {
-            final expandedTokens = (maxTokens * 1.6).round().clamp(maxTokens + 500, 4000);
-            debugPrint('[GeminiService] Retry $maxTokens→$expandedTokens tokens');
+            final expandedTokens = (maxTokens * 1.6).round().clamp(
+              maxTokens + 500,
+              4000,
+            );
+            debugPrint(
+              '[GeminiService] Retry $maxTokens→$expandedTokens tokens',
+            );
             return _chatInternal(
               userMessage: userMessage,
               systemPrompt: systemPrompt,
@@ -771,7 +891,9 @@ class GeminiService {
             );
           }
           // Já no limite: retorna o que tem mas loga
-          debugPrint('[GeminiService] MAX_TOKENS no limite (4000) — resposta pode estar incompleta');
+          debugPrint(
+            '[GeminiService] MAX_TOKENS no limite (4000) — resposta pode estar incompleta',
+          );
         }
 
         return GeminiResult(text: cleanedText);
@@ -788,14 +910,16 @@ class GeminiService {
       // ──────────────────────────────────────────────────────────────────────────
       if (response.statusCode == 401 || response.statusCode == 403) {
         final bodyPreview = response.body.substring(
-            0, response.body.length.clamp(0, 400));
+          0,
+          response.body.length.clamp(0, 400),
+        );
         // Extrai errorCode e message da resposta JSON do Google (se disponível)
         String errorCode = 'UNKNOWN';
         String errorMessage = '';
         try {
           final errorBody = jsonDecode(response.body) as Map<String, dynamic>?;
           final error = errorBody?['error'] as Map<String, dynamic>?;
-          errorCode    = error?['status']  as String? ?? 'UNKNOWN';
+          errorCode = error?['status'] as String? ?? 'UNKNOWN';
           errorMessage = error?['message'] as String? ?? '';
         } catch (_) {}
         // ── Logcat fingerprint ────────────────────────────────────────────
@@ -811,7 +935,8 @@ class GeminiService {
           'body_preview="$bodyPreview"',
         );
         // Diagnóstico específico por código de erro da API Google:
-        if (errorCode == 'API_KEY_INVALID' || errorCode == 'PERMISSION_DENIED') {
+        if (errorCode == 'API_KEY_INVALID' ||
+            errorCode == 'PERMISSION_DENIED') {
           debugPrint(
             '[GeminiService][DIAGNÓSTICO] API_KEY_INVALID/PERMISSION_DENIED:\n'
             '  1. Verifique se a chave está habilitada em console.cloud.google.com\n'
@@ -828,7 +953,9 @@ class GeminiService {
         const maxRetries = 3;
         if (retryCount < maxRetries) {
           final waitSeconds = [2, 4, 8][retryCount];
-          debugPrint('[GeminiService] 429 quota — retry ${retryCount + 1}/$maxRetries em ${waitSeconds}s');
+          debugPrint(
+            '[GeminiService] 429 quota — retry ${retryCount + 1}/$maxRetries em ${waitSeconds}s',
+          );
           await Future.delayed(Duration(seconds: waitSeconds));
           return _chatInternal(
             userMessage: userMessage,
@@ -840,12 +967,16 @@ class GeminiService {
           );
         }
         // Todas as tentativas esgotadas
-        debugPrint('[GeminiService] 429 quota DEFINITIVO após $maxRetries retries');
+        debugPrint(
+          '[GeminiService] 429 quota DEFINITIVO após $maxRetries retries',
+        );
         return GeminiResult.error('QUOTA_EXCEEDED', 'quota');
       }
       // ── Qualquer outro código HTTP (400, 500, 503, etc.) ─────────────────
       final unknownBody = response.body.substring(
-          0, response.body.length.clamp(0, 400));
+        0,
+        response.body.length.clamp(0, 400),
+      );
       debugPrint(
         '[GeminiService][HTTP${response.statusCode}] '
         'status=${response.statusCode} '
@@ -854,7 +985,6 @@ class GeminiService {
         'body="$unknownBody"',
       );
       return GeminiResult.error('HTTP_${response.statusCode}', 'unknown');
-
     } on http.ClientException catch (e, st) {
       // BUILD 283: ClientException inclui o tipo de falha de rede (DNS, timeout, TLS)
       debugPrint(

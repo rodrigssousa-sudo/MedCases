@@ -9,8 +9,8 @@
 //   • showToolsPatientSelectionSheet() — bottom sheet elegante com lista de pacientes
 //
 // FONTE DE DADOS:
-//   • InternacionPersistence.loadAllSessions() — SharedPreferences, acesso assíncrono
-//   • PacienteInternacaoData — campos demográficos: nome, cama, idade, sexo, diagnostico
+//   • InternacionFirestoreService.sessionsStream(uid) — mesma lista visível de Pacientes
+//   • PacienteSession — identidade, demografia e patientKey preservados
 //
 // NOTA ARQUITETURAL:
 //   • Labs são free-text em ExamenesComplementarios.laboratorio → NÃO mapeáveis
@@ -19,12 +19,11 @@
 //
 // DESIGN SYSTEM:
 //   • Paleta canônica MedCases Pro (dark-first) com suporte a modo claro
-//   • Border ciano sutil, fundo translúcido, ícone ⚡ de ação
+//   • Border ciano sutil, fundo translúcido, ícone  de ação
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 
 import 'internacion/services/internacion_firestore_service.dart';
 import 'internacion/services/internacion_persistence.dart';
@@ -32,17 +31,18 @@ import 'internacion/services/internacion_persistence.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // Paleta de cores local (dark-first, idêntica ao design system das tool screens)
 // ─────────────────────────────────────────────────────────────────────────────
-const _kBg       = Color(0xFF0F1116);
-const _kSurface  = Color(0xFF1A1D23);
-const _kBorder   = Color(0xFF2D3340);
-const _kCyan     = Color(0xFF00E5FF);
+const _kBg = Color(0xFF0F1116);
+const _kSurface = Color(0xFF1A1D23);
+const _kBorder = Color(0xFF2D3340);
+const _kAccentBrand = Color(0xFF0D6B57);
 // BUILD 450/451: Azul Petróleo — acento no Light Mode
 const _kPetroleo = Color(0xFF1A365D);
-const _kTextSub  = Color(0xFF8B9BB4);
+const _kTextSub = Color(0xFF8B9BB4);
 
 // ═════════════════════════════════════════════════════════════════════════════
 // ToolsPatientImportChip — Widget chip reutilizável
 // ═════════════════════════════════════════════════════════════════════════════
+
 class ToolsPatientImportChip extends StatelessWidget {
   final bool isEs;
   final bool dark;
@@ -57,76 +57,58 @@ class ToolsPatientImportChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surf   = dark ? _kSurface : Colors.white;
-    // BUILD 451: acento dinâmico — petróleo no light, cyan no dark
-    final accent = dark ? _kCyan : _kPetroleo;
+    // MEDCASES_FERRAMENTAS_CANONICAL_FLAT_SURFACE_CONVERGENCE_V1_B_R0_IMPORT
+    const accent = Color(0xFF0D6B57);
+    final border = dark
+        ? const Color(0xFF374151)
+        : const Color(0xFFD8E0E7);
+    final surface = dark
+        ? const Color(0xFF252930)
+        : const Color(0xFFFFFFFF);
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          splashColor: accent.withOpacity(0.12),
-          highlightColor: accent.withOpacity(0.06),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              color: surf.withOpacity(dark ? 0.80 : 0.95),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                // BUILD 451: borda petróleo no light, neon no dark
-                color: dark
-                    ? _kCyan.withOpacity(0.45)
-                    : _kPetroleo.withOpacity(0.55),
-                width: 1.3,
-              ),
-              boxShadow: dark
-                  ? [
-                      BoxShadow(
-                        color: _kCyan.withOpacity(0.06),
-                        blurRadius: 8,
-                        spreadRadius: 0,
-                      ),
-                    ]
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.06),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        splashColor: accent.withOpacity(0.10),
+        highlightColor: accent.withOpacity(0.05),
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            color: surface,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: dark ? border : accent.withOpacity(0.55),
+              width: 0.8,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  '⚡',
-                  style: TextStyle(fontSize: 15),
-                ),
-                const SizedBox(width: 8),
-                Text(
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
                   isEs
                       ? 'Importar datos del Paciente'
                       : 'Importar dados do Paciente',
-                  style: TextStyle(
-                    // BUILD 451: texto petróleo no light, cyan no dark
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
                     color: accent,
-                    fontSize: 13,
+                    fontSize: 12.5,
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 0.2,
+                    letterSpacing: 0.1,
                   ),
                 ),
-                const SizedBox(width: 6),
-                Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  // BUILD 451: ícone petróleo no light, cyan no dark
-                  color: accent.withOpacity(0.80),
-                  size: 18,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 5),
+              const Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: accent,
+                size: 17,
+              ),
+            ],
           ),
         ),
       ),
@@ -202,10 +184,8 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
     _loadSessions();
   }
 
-  // BUILD 452-2: consulta dual — Firestore (primário, pacientes com evolução
-  // salva no banco) + SharedPreferences (fallback offline / pacientes locais).
-  // Funde os resultados por sessionKey, eliminando duplicatas.
-  // Garante que pacientes ativos com SOAP salvo no Firestore apareçam na lista.
+  // V1-K-R2: consome exatamente a stream visível usada pela aba Pacientes.
+  // Não agrega documentos legados nem aplica uma segunda projeção local.
   //
   // BUILD 454-1: Auth race condition fix.
   // PROBLEMA: FirebaseAuth.currentUser == null nos primeiros ms do boot (Web e iOS
@@ -215,7 +195,7 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
   // SOLUÇÃO: _resolveUid() aguarda authStateChanges() com timeout de 5s.
   // Se currentUser já está disponível → retorna imediatamente (zero overhead).
   // Se null → escuta o stream até o primeiro evento não-nulo (token propagado).
-  // Timeout: fallback para uid vazio → apenas cache local é consultado.
+  // Timeout: retorna uid vazio e a lista canônica permanece vazia.
   static Future<String> _resolveUid({
     Duration timeout = const Duration(seconds: 5),
   }) async {
@@ -232,85 +212,68 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
           .timeout(timeout);
       return user?.uid ?? '';
     } catch (_) {
-      // Timeout ou erro — usa cache local
+      // Timeout ou erro — não consulta Firestore sem identidade canônica
       return '';
     }
   }
 
   Future<void> _loadSessions() async {
     try {
-      // BUILD 454-1: aguarda resolução do auth antes de qualquer query Firestore
       final uid = await _resolveUid();
-
-      // ── 1. Fonte primária: Firestore (pacientes com status==active) ─────────
-      List<PacienteSession> firestoreSessions = [];
-      if (uid.isNotEmpty) {
-        try {
-          firestoreSessions =
-              await InternacionFirestoreService.loadAllSessions(uid);
-          if (kDebugMode) {
-            debugPrint('[BUILD452-2] Firestore: ${firestoreSessions.length} sessões ativas');
-          }
-        } catch (e) {
-          if (kDebugMode) {
-            debugPrint('[BUILD452-2] Firestore erro: $e');
-          }
-        }
-      }
-
-      // ── 2. Fonte secundária: SharedPreferences (offline / pacientes locais) ─
-      List<PacienteSession> localSessions = [];
-      try {
-        localSessions = await InternacionPersistence.loadAllSessions();
-        if (kDebugMode) {
-          debugPrint('[BUILD452-2] Local: ${localSessions.length} sessões');
-        }
-      } catch (e) {
-        if (kDebugMode) {
-          debugPrint('[BUILD452-2] Local erro: $e');
-        }
-      }
-
-      // ── 3. Funde sem duplicatas (Firestore tem prioridade por sessionKey) ───
-      final seen = <String>{};
-      final merged = <PacienteSession>[];
-      for (final s in [...firestoreSessions, ...localSessions]) {
-        if (seen.add(s.sessionKey)) merged.add(s);
-      }
-      // Ordena por data mais recente primeiro
-      merged.sort((a, b) => b.savedAt.compareTo(a.savedAt));
-
-      if (mounted) {
+      if (uid.isEmpty) {
+        if (!mounted) return;
         setState(() {
-          _sessions = merged;
-          _loading  = false;
+          _sessions = const <PacienteSession>[];
+          _loading = false;
         });
+        return;
       }
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _sessions = [];
-          _loading  = false;
-        });
-      }
+
+      // V1-K-R2: mesma fonte visível e mesma semântica da aba Pacientes.
+      // Não agrega fonte histórica nem aplica uma segunda projeção local.
+      final patientsSessions =
+          await InternacionFirestoreService.sessionsStream(uid)
+              .firstWhere(
+                (_) => FirebaseAuth.instance.currentUser?.uid == uid,
+              )
+              .timeout(const Duration(seconds: 15));
+
+      if (!mounted) return;
+      setState(() {
+        _sessions = patientsSessions;
+        _loading = false;
+      });
+      debugPrint(
+        '[V1-K-R2-R3][TOOLS_PATIENTS] mesma fonte visual de Pacientes: '
+        '${patientsSessions.length}',
+      );
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _sessions = const <PacienteSession>[];
+        _loading = false;
+      });
+      debugPrint(
+        '[V1-K-R2-R3][TOOLS_PATIENTS] erro na stream compartilhada: $error',
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEs   = widget.isEs;
-    final dark   = widget.dark;
-    final bg     = dark ? _kSurface : Colors.white;
+    final isEs = widget.isEs;
+    final dark = widget.dark;
+    final bg = dark ? _kSurface : Colors.white;
     final handleColor = dark ? _kBorder : const Color(0xFFCBD5E1);
-    final txt    = dark ? Colors.white : const Color(0xFF0F1116);
-    final sub    = dark ? _kTextSub   : const Color(0xFF64748B);
-    final itemBg = dark ? _kBg        : const Color(0xFFF8FAFC);
+    final txt = dark ? Colors.white : const Color(0xFF0F1116);
+    final sub = dark ? _kTextSub : const Color(0xFF64748B);
+    final itemBg = dark ? _kBg : const Color(0xFFF8FAFC);
     final itemBorder = dark ? _kBorder : const Color(0xFFE2E8F0);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.50,
-      minChildSize:     0.35,
-      maxChildSize:     0.85,
+      minChildSize: 0.35,
+      maxChildSize: 0.85,
       expand: false,
       builder: (_, scrollCtrl) => Container(
         decoration: BoxDecoration(
@@ -343,19 +306,6 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      // BUILD 451: ícone ⚡ do sheet — petróleo no light
-                      color: (dark ? _kCyan : _kPetroleo).withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Center(
-                      child: Text('⚡', style: TextStyle(fontSize: 15)),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -399,12 +349,14 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
                             child: CircularProgressIndicator(
                               strokeWidth: 2.5,
                               // BUILD 451: spinner petróleo no light
-                              color: dark ? _kCyan : _kPetroleo,
+                              color: dark ? _kAccentBrand : _kPetroleo,
                             ),
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            isEs ? 'Cargando pacientes…' : 'Carregando pacientes…',
+                            isEs
+                                ? 'Cargando pacientes…'
+                                : 'Carregando pacientes…',
                             style: TextStyle(color: sub, fontSize: 13),
                           ),
                         ],
@@ -446,16 +398,20 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
                           controller: scrollCtrl,
                           padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                           itemCount: _sessions!.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 8),
+                          separatorBuilder: (_, __) => Divider(
+                            height: 1,
+                            thickness: 0.6,
+                            color: itemBorder.withOpacity(0.55),
+                          ),
                           itemBuilder: (_, i) {
                             final session = _sessions![i];
                             return _PatientListItem(
                               session: session,
-                              dark:    dark,
-                              isEs:    isEs,
-                              txt:     txt,
-                              sub:     sub,
-                              itemBg:  itemBg,
+                              dark: dark,
+                              isEs: isEs,
+                              txt: txt,
+                              sub: sub,
+                              itemBg: itemBg,
                               itemBorder: itemBorder,
                               onTap: () => widget.onSelected(session),
                             );
@@ -470,9 +426,10 @@ class _PatientSelectionSheetState extends State<_PatientSelectionSheet> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _PatientListItem — item de cada paciente na lista
+// _PatientListItem — linha plana de paciente na superfície do bottom sheet
 // ─────────────────────────────────────────────────────────────────────────────
 class _PatientListItem extends StatelessWidget {
+  // V1-L-R1-R5 — linha flat sem raio e sem card aninhado.
   final PacienteSession session;
   final bool dark;
   final bool isEs;
@@ -493,121 +450,163 @@ class _PatientListItem extends StatelessWidget {
     required this.onTap,
   });
 
+  String _explicitSeverityToken() {
+    final dynamic dynamicSession = session;
+    final dynamic dynamicPatient = session.paciente;
+    final readers = <Object? Function()>[
+      () => dynamicPatient.gravidade,
+      () => dynamicPatient.severity,
+      () => dynamicPatient.classificacaoRisco,
+      () => dynamicPatient.classificacao,
+      () => dynamicPatient.priority,
+      () => dynamicPatient.riskLevel,
+      () => dynamicPatient.corRisco,
+      () => dynamicPatient.riskColor,
+      () => dynamicSession.gravidade,
+      () => dynamicSession.severity,
+      () => dynamicSession.classificacaoRisco,
+      () => dynamicSession.classificacao,
+      () => dynamicSession.priority,
+      () => dynamicSession.riskLevel,
+      () => dynamicSession.corRisco,
+      () => dynamicSession.riskColor,
+    ];
+
+    for (final read in readers) {
+      try {
+        final token = read()?.toString().trim().toLowerCase() ?? '';
+        if (token.isNotEmpty) return token;
+      } catch (_) {}
+    }
+    return '';
+  }
+
+  Color _severityColor() {
+    final token = _explicitSeverityToken();
+    if (token.contains('vermelh') ||
+        token.contains('red') ||
+        token.contains('critical') ||
+        token.contains('crític') ||
+        token.contains('critic')) {
+      return const Color(0xFFEF4444);
+    }
+    if (token.contains('laranja') ||
+        token.contains('orange') ||
+        token.contains('urgent')) {
+      return const Color(0xFFF97316);
+    }
+    if (token.contains('amarel') || token.contains('yellow')) {
+      return const Color(0xFFEAB308);
+    }
+    if (token.contains('verde') ||
+        token.contains('green') ||
+        token.contains('stable') ||
+        token.contains('estável') ||
+        token.contains('estavel')) {
+      return const Color(0xFF22C55E);
+    }
+    if (token.contains('azul') || token.contains('blue')) {
+      return const Color(0xFF3B82F6);
+    }
+
+    // Sem gravidade explícita, usa apenas o acento clínico existente.
+    // Nenhuma classificação clínica é inferida pelo diagnóstico.
+    return dark ? _kAccentBrand : _kPetroleo;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final p = session.paciente;
-
-    // Label secundária: Leito · Idade · Sexo
+    final patient = session.paciente;
     final parts = <String>[];
-    if (p.cama.isNotEmpty) {
-      parts.add('${isEs ? "Cama" : "Leito"} ${p.cama}');
+    if (patient.cama.trim().isNotEmpty) {
+      parts.add('${isEs ? "Cama" : "Leito"} ${patient.cama.trim()}');
     }
-    if (p.idade.isNotEmpty) {
-      parts.add('${p.idade} ${isEs ? "años" : "anos"}');
+    if (patient.idade.trim().isNotEmpty) {
+      parts.add('${patient.idade.trim()} ${isEs ? "años" : "anos"}');
     }
-    if (p.sexo.isNotEmpty) {
-      final sexLabel = p.sexo.toUpperCase() == 'F'
-          ? (isEs ? 'Femenino' : 'Feminino')
-          : (isEs ? 'Masculino' : 'Masculino');
-      parts.add(sexLabel);
+    if (patient.sexo.trim().isNotEmpty) {
+      final sex = patient.sexo.trim().toUpperCase();
+      parts.add(
+        sex == 'F'
+            ? (isEs ? 'Femenino' : 'Feminino')
+            : (isEs ? 'Masculino' : 'Masculino'),
+      );
     }
-    final subtitle = parts.join(' · ');
 
-    // Inicial do nome para avatar
-    final initial = p.nome.isNotEmpty ? p.nome[0].toUpperCase() : '?';
+    final name = patient.nome.trim().isEmpty
+        ? (isEs ? 'Paciente sin nombre' : 'Paciente sem nome')
+        : patient.nome.trim();
+    final subtitle = parts.join(' · ');
+    final diagnosis = patient.diagnostico.trim();
+    final severityColor = _severityColor();
 
     return Material(
-      color: Colors.transparent,
+      color: itemBg.withOpacity(0),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        // BUILD 451: ripple petróleo no light
-        splashColor: (dark ? _kCyan : _kPetroleo).withOpacity(0.10),
-        highlightColor: (dark ? _kCyan : _kPetroleo).withOpacity(0.05),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            color: itemBg,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: itemBorder, width: 1),
-          ),
+        splashColor: severityColor.withOpacity(0.10),
+        highlightColor: severityColor.withOpacity(0.05),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // ── Avatar ──────────────────────────────────────────────────
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  // BUILD 451: avatar petróleo no light
-                  color: (dark ? _kCyan : _kPetroleo).withOpacity(0.14),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    initial,
-                    style: TextStyle(
-                      color: dark ? _kCyan : _kPetroleo,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(99),
+                child: ColoredBox(
+                  color: severityColor,
+                  child: const SizedBox(width: 5, height: 48),
                 ),
               ),
-              const SizedBox(width: 12),
-
-              // ── Texto ─────────────────────────────────────────────────
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      p.nome.isEmpty
-                          ? (isEs ? 'Sin nombre' : 'Sem nome')
-                          : p.nome,
-                      style: TextStyle(
-                        color: txt,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: txt,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     if (subtitle.isNotEmpty) ...[
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       Text(
                         subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: sub,
-                          fontSize: 11.5,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
-                    if (p.diagnostico.isNotEmpty) ...[
-                      const SizedBox(height: 2),
+                    if (diagnosis.isNotEmpty) ...[
+                      const SizedBox(height: 4),
                       Text(
-                        p.diagnostico,
-                        style: TextStyle(
-                          color: sub.withOpacity(0.75),
-                          fontSize: 11,
-                          fontStyle: FontStyle.italic,
-                        ),
+                        diagnosis,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: sub.withOpacity(0.78),
+                          fontSize: 12.5,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ],
                   ],
                 ),
               ),
-
-              // ── Ícone de ação ─────────────────────────────────────────
-              const SizedBox(width: 8),
-              // BUILD 451: ícone de ação petróleo no light
+              const SizedBox(width: 12),
               Icon(
-                Icons.input_rounded,
-                color: (dark ? _kCyan : _kPetroleo).withOpacity(0.70),
-                size: 20,
+                Icons.arrow_forward_ios_rounded,
+                size: 17,
+                color: itemBorder.withOpacity(0.92),
               ),
             ],
           ),

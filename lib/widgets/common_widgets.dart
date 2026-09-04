@@ -67,13 +67,16 @@ class MedBreakpoints {
   }
 
   /// < 768 px — smartphone
-  bool get isMobile   => width < 650;
+  bool get isMobile => width < 650;
+
   /// 768–1023 px — tablet
-  bool get isTablet   => width >= 768 && width < 1024;
+  bool get isTablet => width >= 768 && width < 1024;
+
   /// >= 1024 px — desktop/laptop
-  bool get isDesktop  => width >= 1024;
+  bool get isDesktop => width >= 1024;
+
   /// >= 1440 px — widescreen/ultrawide
-  bool get isUltra    => width >= 1440;
+  bool get isUltra => width >= 1440;
 
   /// Largura abaixo de 1024 px — deve renderizar o shell mobile (BottomNav + AppBar).
   /// NOTA: kIsWeb foi removido desta guard. O Chrome DevTools device emulator roda
@@ -82,34 +85,36 @@ class MedBreakpoints {
   bool get isWebMobile => width < 1024;
 
   /// true quando a tela é tablet ou maior
-  bool get isTabletOrLarger  => width >= 768;
+  bool get isTabletOrLarger => width >= 768;
+
   /// true quando a tela é desktop ou maior
   bool get isDesktopOrLarger => width >= 1024;
 
   /// Largura disponível para conteúdo principal (desktop: limitado ao útil)
   double get contentMaxWidth {
-    if (isUltra)   return 1600;
+    if (isUltra) return 1600;
     if (isDesktop) return 1280;
     return double.infinity;
   }
 
   /// Número ideal de colunas para grids de cards
   int get gridColumns {
-    if (isUltra)   return 4;
+    if (isUltra) return 4;
     if (isDesktop) return 3;
-    if (isTablet)  return 2;
+    if (isTablet) return 2;
     return 1;
   }
 
   /// Padding horizontal responsivo
   double get hPadding {
     if (isDesktop) return 32;
-    if (isTablet)  return 24;
+    if (isTablet) return 24;
     return 18;
   }
 
   /// Largura da sidebar de navegação no desktop
   static const double sidebarWidth = 72;
+
   /// Largura da sidebar expandida (com labels)
   static const double sidebarExpandedWidth = 200;
 
@@ -121,13 +126,13 @@ class MedBreakpoints {
 // CONSTANTES ESTÁTICAS (light mode — valores históricos mantidos para
 // compatibilidade com widgets que não recebem contexto)
 // ─────────────────────────────────────────────────────────────────────────────
-const kDark     = Color(0xFF07110d);
-const kGold     = Color(0xFFC5A365);
+const kDark = Color(0xFF07110d);
+const kGold = Color(0xFFC5A365);
 const kGoldLight = Color(0xFFFFE8A6);
-const kGreen    = Color(0xFF075f45);
-const kCream    = Color(0xFFF7F8FA);
-const kBorder   = Color(0xFFE2E6EA);
-const kSurface  = Color(0xFFF0F2F5);
+const kGreen = Color(0xFF0E8000);
+const kCream = Color(0xFFF7F8FA);
+const kBorder = Color(0xFFE2E6EA);
+const kSurface = Color(0xFFF0F2F5);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // APP COLORS — tokens adaptativos ao modo claro/escuro
@@ -146,64 +151,81 @@ class AppColors {
 
   // ── Fundos ────────────────────────────────────────────────────────────────
   /// Fundo de cards e superfícies elevadas
-  Color get cardBg      => dark ? const Color(0xFF252930) : Colors.white;
+  Color get cardBg => dark ? const Color(0xFF252930) : Colors.white;
+
   /// Fundo de cards com leve elevação extra
-  Color get cardBg2     => dark ? const Color(0xFF252930) : const Color(0xFFF8F9FA);
+  Color get cardBg2 => dark ? const Color(0xFF252930) : const Color(0xFFF8F9FA);
+
   /// Fundo de inputs e campos de texto
-  Color get inputBg     => dark ? const Color(0xFF1C1C1C) : Colors.white;
+  Color get inputBg => dark ? const Color(0xFF1C1C1C) : Colors.white;
+
   /// Surface geral (fundo de chips, pills)
-  Color get surface     => dark ? const Color(0xFF252930) : const Color(0xFFF0F2F5);
+  Color get surface => dark ? const Color(0xFF252930) : const Color(0xFFF0F2F5);
+
   /// Fundo do scaffold (backup — geralmente vem do theme)
-  Color get scaffoldBg  => dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8);
+  Color get scaffoldBg =>
+      dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8);
 
   // ── Textos ────────────────────────────────────────────────────────────────
   /// Texto principal — máximo contraste
-  Color get textPrimary   => dark ? const Color(0xFFFFFFFF) : const Color(0xFF07110d);
+  Color get textPrimary =>
+      dark ? const Color(0xFFFFFFFF) : const Color(0xFF07110d);
+
   /// Texto secundário — subtítulos, labels
-  Color get textSecondary => dark ? const Color(0xFFA8B2C1) : const Color(0xFF555F58);
+  Color get textSecondary =>
+      dark ? const Color(0xFFA8B2C1) : const Color(0xFF555F58);
+
   /// Texto terciário — hints, captions
-  Color get textHint      => dark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
+  Color get textHint =>
+      dark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
+
   /// Texto desabilitado
-  Color get textDisabled  => dark ? const Color(0xFF555555) : const Color(0xFFBBBBBB);
+  Color get textDisabled =>
+      dark ? const Color(0xFF555555) : const Color(0xFFBBBBBB);
 
   // ── Bordas ────────────────────────────────────────────────────────────────
-  Color get border        => dark ? const Color(0xFF374151) : const Color(0xFFE2E6EA);
-  Color get borderStrong  => dark ? const Color(0xFF444444) : const Color(0xFFCDD3D8);
+  Color get border => dark ? const Color(0xFF374151) : const Color(0xFFE2E6EA);
+  Color get borderStrong =>
+      dark ? const Color(0xFF444444) : const Color(0xFFCDD3D8);
 
   // ── Verde / brand ─────────────────────────────────────────────────────────
   /// Verde principal — suavizado no dark para menor saturação
-  Color get green         => dark ? const Color(0xFF10B981) : const Color(0xFF075f45);
+  Color get green => dark ? const Color(0xFF10B981) : const Color(0xFF075f45);
+
   /// Verde claro para backgrounds
-  Color get greenBg       => dark ? const Color(0xFF0F2A1E) : const Color(0xFFECFDF5);
+  Color get greenBg => dark ? const Color(0xFF0F2A1E) : const Color(0xFFECFDF5);
+
   /// Verde para bordas
-  Color get greenBorder   => dark ? const Color(0xFF1A4A32) : const Color(0xFFBBF7D0);
+  Color get greenBorder =>
+      dark ? const Color(0xFF1A4A32) : const Color(0xFFBBF7D0);
 
   // ── Ouro / gold ───────────────────────────────────────────────────────────
-  Color get gold          => dark ? const Color(0xFF00E5FF) : const Color(0xFFC5A365);
-  Color get goldLight     => dark ? const Color(0xFFFFE8A6) : const Color(0xFFFFE8A6);
-  Color get goldBg        => dark ? const Color(0xFF2A2010) : const Color(0xFFFFFBF0);
-  Color get goldBorder    => dark ? const Color(0xFF4A3820) : const Color(0xFFE8D8A0);
+  Color get gold => dark ? const Color(0xFFC5A365) : const Color(0xFFC5A365);
+  Color get goldLight =>
+      dark ? const Color(0xFFFFE8A6) : const Color(0xFFFFE8A6);
+  Color get goldBg => dark ? const Color(0xFF2A2010) : const Color(0xFFFFFBF0);
+  Color get goldBorder =>
+      dark ? const Color(0xFF4A3820) : const Color(0xFFE8D8A0);
 
   // ── Dark base ─────────────────────────────────────────────────────────────
   /// Cor escura para botões primários — mais clara no dark
-  Color get darkBtn       => dark ? const Color(0xFF2D3340) : const Color(0xFF07110d);
+  Color get darkBtn => dark ? const Color(0xFF2D3340) : const Color(0xFF07110d);
+
   /// Cor escura para text (alias contextual)
-  Color get darkText      => textPrimary;
+  Color get darkText => textPrimary;
 
   // ── Divisores ────────────────────────────────────────────────────────────
-  Color get divider       => dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
+  Color get divider => dark ? const Color(0xFF2D3340) : const Color(0xFFE8E1D2);
 
   // ── Interações / alertas (não mudam entre modos) ──────────────────────────
-  static const Color alertRed       = Color(0xFFCC2222);
-  static const Color alertRedBg     = Color(0xFFFFF0F0);
+  static const Color alertRed = Color(0xFFCC2222);
+  static const Color alertRedBg = Color(0xFFFFF0F0);
   static const Color alertRedBorder = Color(0xFFFFCCCC);
 
   // ── Helpers rápidos para withValues sem repetir ───────────────────────────
-  Color cardBorder([double opacity = 1.0]) =>
-      border.withOpacity(opacity);
+  Color cardBorder([double opacity = 1.0]) => border.withOpacity(opacity);
 
-  Color textWith(double opacity) =>
-      textPrimary.withOpacity(opacity);
+  Color textWith(double opacity) => textPrimary.withOpacity(opacity);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -214,7 +236,12 @@ class PremiumCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  const PremiumCard({super.key, required this.child, this.padding, this.margin});
+  const PremiumCard({
+    super.key,
+    required this.child,
+    this.padding,
+    this.margin,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -238,14 +265,16 @@ class StandardCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets? padding;
   final EdgeInsets? margin;
-  const StandardCard({super.key, required this.child, this.padding, this.margin});
+  const StandardCard({
+    super.key,
+    required this.child,
+    this.padding,
+    this.margin,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: padding ?? const EdgeInsets.all(14),
-      child: child,
-    );
+    return Padding(padding: padding ?? const EdgeInsets.all(14), child: child);
   }
 }
 
@@ -254,30 +283,54 @@ class SectionTitle extends StatelessWidget {
   final String title;
   final String? subtitle;
   final bool light;
-  const SectionTitle({super.key, this.eyebrow, required this.title, this.subtitle, this.light = false});
+  const SectionTitle({
+    super.key,
+    this.eyebrow,
+    required this.title,
+    this.subtitle,
+    this.light = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      if (eyebrow != null)
-        Text(eyebrow!, style: TextStyle(
-          fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0,
-          color: light ? const Color(0xBFFFE8A6) : c.gold,
-        )),
-      if (eyebrow != null) const SizedBox(height: 4),
-      Text(title, style: TextStyle(
-        fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: -0.8,
-        color: light ? Colors.white : c.textPrimary,
-      )),
-      if (subtitle != null) ...[
-        const SizedBox(height: 4),
-        Text(subtitle!, style: TextStyle(
-          fontSize: 13, fontWeight: FontWeight.w600, height: 1.4,
-          color: light ? Colors.white.withOpacity(0.7) : c.textSecondary,
-        )),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (eyebrow != null)
+          Text(
+            eyebrow!,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2.0,
+              color: light ? const Color(0xBFFFE8A6) : c.gold,
+            ),
+          ),
+        if (eyebrow != null) const SizedBox(height: 4),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.8,
+            color: light ? Colors.white : c.textPrimary,
+          ),
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            subtitle!,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              height: 1.4,
+              color: light ? Colors.white.withOpacity(0.7) : c.textSecondary,
+            ),
+          ),
+        ],
       ],
-    ]);
+    );
   }
 }
 
@@ -286,7 +339,13 @@ class DataPoint extends StatelessWidget {
   final String? value;
   final String? unit;
   final bool dark;
-  const DataPoint({super.key, required this.label, this.value, this.unit, this.dark = false});
+  const DataPoint({
+    super.key,
+    required this.label,
+    this.value,
+    this.unit,
+    this.dark = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -296,25 +355,51 @@ class DataPoint extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
         color: dark ? Colors.white.withOpacity(0.1) : c.surface,
-        border: Border.all(color: dark ? Colors.white.withOpacity(0.1) : c.border),
+        border: Border.all(
+          color: dark ? Colors.white.withOpacity(0.1) : c.border,
+        ),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: TextStyle(
-          fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2,
-          color: dark ? const Color(0xBFFFE8A6) : c.textHint,
-        )),
-        const SizedBox(height: 4),
-        Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Flexible(child: Text(value ?? '—', style: TextStyle(
-            fontSize: 17, fontWeight: FontWeight.w900, letterSpacing: -0.5,
-            color: dark ? Colors.white : c.textPrimary,
-          ))),
-          if (unit != null) ...[
-            const SizedBox(width: 2),
-            Text(unit!, style: TextStyle(fontSize: 10, color: dark ? Colors.white.withOpacity(0.6) : c.textHint)),
-          ],
-        ]),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+              color: dark ? const Color(0xBFFFE8A6) : c.textHint,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Flexible(
+                child: Text(
+                  value ?? '—',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
+                    color: dark ? Colors.white : c.textPrimary,
+                  ),
+                ),
+              ),
+              if (unit != null) ...[
+                const SizedBox(width: 2),
+                Text(
+                  unit!,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: dark ? Colors.white.withOpacity(0.6) : c.textHint,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -333,18 +418,30 @@ class ClinicalAlertBox extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: isDark ? const Color(0xFF2A1010) : const Color(0xFFFFF0F0),
-        border: Border.all(color: isDark ? const Color(0xFF6B2020) : const Color(0xFFFFCCCC)),
+        border: Border.all(
+          color: isDark ? const Color(0xFF6B2020) : const Color(0xFFFFCCCC),
+        ),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        for (final m in messages)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Text('• $m', style: TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w700,
-              color: isDark ? const Color(0xFFFF9090) : const Color(0xFFCC2222),
-              height: 1.4)),
-          ),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final m in messages)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                '• $m',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: isDark
+                      ? const Color(0xFFFF9090)
+                      : const Color(0xFFCC2222),
+                  height: 1.4,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -365,11 +462,30 @@ class InfoBlock extends StatelessWidget {
         color: c.cardBg2,
         border: Border.all(color: c.border),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: c.textHint)),
-        const SizedBox(height: 6),
-        Text(text ?? '—', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: c.textPrimary, height: 1.45)),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.4,
+              color: c.textHint,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            text ?? '—',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: c.textPrimary,
+              height: 1.45,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -380,7 +496,14 @@ class MedButton extends StatelessWidget {
   final bool primary;
   final bool fullWidth;
   final EdgeInsets? padding;
-  const MedButton({super.key, required this.label, this.onTap, this.primary = true, this.fullWidth = false, this.padding});
+  const MedButton({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.primary = true,
+    this.fullWidth = false,
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -389,17 +512,32 @@ class MedButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: fullWidth ? double.infinity : null,
-        padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           color: primary ? c.darkBtn : c.cardBg,
           border: primary ? null : Border.all(color: c.border),
-          boxShadow: primary ? [BoxShadow(color: c.darkBtn.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
+          boxShadow: primary
+              ? [
+                  BoxShadow(
+                    color: c.darkBtn.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
         ),
-        child: Center(child: Text(label, style: TextStyle(
-          fontSize: 13, fontWeight: FontWeight.w900,
-          color: primary ? kGoldLight : c.textSecondary,
-        ))),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+              color: primary ? kGoldLight : c.textSecondary,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -409,7 +547,12 @@ class GoldChip extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final bool active;
-  const GoldChip({super.key, required this.label, this.onTap, this.active = false});
+  const GoldChip({
+    super.key,
+    required this.label,
+    this.onTap,
+    this.active = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -423,15 +566,21 @@ class GoldChip extends StatelessWidget {
           color: active ? c.darkBtn : c.surface,
           border: Border.all(color: active ? c.darkBtn : c.border),
         ),
-        child: Text(label, style: TextStyle(
-          fontSize: 11, fontWeight: FontWeight.w900,
-          color: active ? kGoldLight : c.textPrimary,
-        )),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w900,
+            color: active ? kGoldLight : c.textPrimary,
+          ),
+        ),
       ),
     );
   }
 }
 
+// HISTORY_CLINICAL_V1_D_R6_KEYBOARD_FLOW
+// HISTORY_CLINICAL_V1_D_R14_REDUCED_OVERSCROLL
 class MedInput extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintText;
@@ -440,10 +589,9 @@ class MedInput extends StatelessWidget {
   final String? initialValue;
   final int? maxLines;
   final TextInputAction? textInputAction;
-  /// Força capitalize por palavra (padrão para campos de texto médico).
-  /// Passe [TextCapitalization.none] para campos numéricos/técnicos.
   final TextCapitalization textCapitalization;
-
+  final bool clinicalCompact;
+  final IconData? prefixIcon;
   const MedInput({
     super.key,
     this.controller,
@@ -454,35 +602,96 @@ class MedInput extends StatelessWidget {
     this.maxLines = 1,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.sentences,
+    this.clinicalCompact = false,
+    this.prefixIcon,
   });
-
   @override
   Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    // Campos numéricos não precisam de autocorrect/sugestões
-    final isNumeric = keyboardType == TextInputType.number ||
-        keyboardType == TextInputType.numberWithOptions(decimal: true) ||
-        keyboardType == TextInputType.numberWithOptions(decimal: false);
+    // HISTORY_CLINICAL_V1_C_R8_COMMON_MEDINPUT
+    final colors = AppColors.of(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final numeric = keyboardType == TextInputType.number ||
+        keyboardType == const TextInputType.numberWithOptions(decimal: true) ||
+        keyboardType == const TextInputType.numberWithOptions(decimal: false);
+    final fill =
+        clinicalCompact && dark ? const Color(0xFF2D3340) : colors.inputBg;
+    final borderColor =
+        clinicalCompact && dark ? const Color(0xFF374151) : colors.border;
+    final radius = clinicalCompact ? 10.0 : 14.0;
+    final focusColor = clinicalCompact ? const Color(0xFF0E8000) : colors.gold;
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
       onChanged: onChanged,
       maxLines: maxLines,
-      textInputAction: textInputAction ?? (maxLines == 1 ? TextInputAction.next : TextInputAction.newline),
-      // ── Sugestões e autocorreção do teclado nativo ────────────────────────
-      enableSuggestions: !isNumeric,
-      autocorrect: !isNumeric,
-      textCapitalization: isNumeric ? TextCapitalization.none : textCapitalization,
-      // ─────────────────────────────────────────────────────────────────────
-      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: c.textPrimary),
+      textInputAction: textInputAction ??
+          (maxLines == 1 ? TextInputAction.next : TextInputAction.newline),
+      scrollPadding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom + 88,
+      ),
+      onSubmitted: (_) {
+        final action = textInputAction ??
+            (maxLines == 1 ? TextInputAction.next : TextInputAction.newline);
+        if (action == TextInputAction.next) {
+          FocusScope.of(context).nextFocus();
+        } else if (action == TextInputAction.done) {
+          FocusScope.of(context).unfocus();
+        }
+      },
+      enableSuggestions: !numeric,
+      autocorrect: !numeric,
+      textCapitalization:
+          numeric ? TextCapitalization.none : textCapitalization,
+      style: TextStyle(
+        fontWeight: clinicalCompact ? FontWeight.w500 : FontWeight.w700,
+        fontSize: clinicalCompact ? 14 : 15,
+        color: colors.textPrimary,
+      ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: c.textHint, fontWeight: FontWeight.w500),
-        filled: true, fillColor: c.inputBg,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.border)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.border)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: c.gold, width: 1.5)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        hintStyle: TextStyle(
+          color: clinicalCompact && dark ? Colors.white54 : colors.textHint,
+          fontWeight: FontWeight.w500,
+          fontSize: clinicalCompact ? 13.5 : null,
+        ),
+        prefixIcon: prefixIcon == null
+            ? null
+            : Icon(
+                prefixIcon,
+                size: 17,
+                color:
+                    clinicalCompact && dark ? Colors.white60 : colors.textHint,
+              ),
+        prefixIconConstraints: prefixIcon == null
+            ? null
+            : const BoxConstraints(minWidth: 40, minHeight: 40),
+        filled: true,
+        fillColor: fill,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(
+            color: borderColor,
+            width: clinicalCompact ? 0.8 : 1.0,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(
+            color: borderColor,
+            width: clinicalCompact ? 0.8 : 1.0,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(
+            color: focusColor,
+            width: clinicalCompact ? 1.0 : 1.5,
+          ),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: clinicalCompact ? 10 : 12,
+        ),
         isDense: true,
       ),
     );
@@ -494,7 +703,13 @@ class ScoreToggle extends StatelessWidget {
   final bool checked;
   final String points;
   final ValueChanged<bool> onChange;
-  const ScoreToggle({super.key, required this.label, required this.checked, required this.points, required this.onChange});
+  const ScoreToggle({
+    super.key,
+    required this.label,
+    required this.checked,
+    required this.points,
+    required this.onChange,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -509,14 +724,35 @@ class ScoreToggle extends StatelessWidget {
           color: checked ? c.darkBtn : c.cardBg,
           border: Border.all(color: checked ? c.darkBtn : c.border),
         ),
-        child: Row(children: [
-          Expanded(child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: checked ? kGoldLight : c.textPrimary))),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: checked ? Colors.white.withOpacity(0.15) : c.surface),
-            child: Text(points, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: checked ? kGoldLight : c.gold)),
-          ),
-        ]),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  color: checked ? kGoldLight : c.textPrimary,
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: checked ? Colors.white.withOpacity(0.15) : c.surface,
+              ),
+              child: Text(
+                points,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: checked ? kGoldLight : c.gold,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -565,7 +801,8 @@ class DrugAutocompleteField extends StatefulWidget {
 
 class _DrugAutocompleteFieldState extends State<DrugAutocompleteField> {
   // Carregado uma única vez (static = compartilhado entre todas as instâncias)
-  static final List<String> _termNames = DrugInteractionService.getAllDrugNames();
+  static final List<String> _termNames =
+      DrugInteractionService.getAllDrugNames();
 
   OverlayEntry? _overlay;
   final LayerLink _layerLink = LayerLink();
@@ -599,6 +836,7 @@ class _DrugAutocompleteFieldState extends State<DrugAutocompleteField> {
       }
       return set;
     }
+
     final ta = trigrams(a);
     final tb = trigrams(b);
     final intersection = ta.intersection(tb).length;
@@ -686,8 +924,7 @@ class _DrugAutocompleteFieldState extends State<DrugAutocompleteField> {
 
   void _select(String name) {
     widget.controller.text = name;
-    widget.controller.selection =
-        TextSelection.collapsed(offset: name.length);
+    widget.controller.selection = TextSelection.collapsed(offset: name.length);
     widget.onChanged?.call(name);
     widget.onSelected?.call(name);
     _removeOverlay();
@@ -752,12 +989,22 @@ class _DrugAutocompleteFieldState extends State<DrugAutocompleteField> {
             },
             decoration: InputDecoration(
               hintText: widget.hint,
-              hintStyle: TextStyle(color: c.textHint, fontWeight: FontWeight.w500),
+              hintStyle: TextStyle(
+                color: c.textHint,
+                fontWeight: FontWeight.w500,
+              ),
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(left: 10, right: 6),
-                child: Icon(Icons.medication_rounded, size: 17, color: c.textHint),
+                child: Icon(
+                  Icons.medication_rounded,
+                  size: 17,
+                  color: c.textHint,
+                ),
               ),
-              prefixIconConstraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              prefixIconConstraints: const BoxConstraints(
+                minWidth: 36,
+                minHeight: 36,
+              ),
               suffixIcon: widget.controller.text.isNotEmpty
                   ? GestureDetector(
                       onTap: () {
@@ -767,11 +1014,18 @@ class _DrugAutocompleteFieldState extends State<DrugAutocompleteField> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10),
-                        child: Icon(Icons.close_rounded, size: 16, color: c.textHint),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 16,
+                          color: c.textHint,
+                        ),
                       ),
                     )
                   : null,
-              suffixIconConstraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              suffixIconConstraints: const BoxConstraints(
+                minWidth: 32,
+                minHeight: 32,
+              ),
               filled: true,
               fillColor: c.inputBg,
               border: OutlineInputBorder(
@@ -786,8 +1040,10 @@ class _DrugAutocompleteFieldState extends State<DrugAutocompleteField> {
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: c.gold, width: 1.5),
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 11,
+              ),
               isDense: true,
             ),
           ),
@@ -845,9 +1101,7 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
               height: 1,
               indent: 44,
               endIndent: 12,
-              color: dark
-                  ? const Color(0xFF374151)
-                  : const Color(0xFFF0F0F0),
+              color: dark ? const Color(0xFF374151) : const Color(0xFFF0F0F0),
             ),
             itemBuilder: (_, i) {
               final name = suggestions[i];
@@ -868,8 +1122,7 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
                           : const Color(0xFF1A1D23),
                     ),
                     children: [
-                      if (idx > 0)
-                        TextSpan(text: name.substring(0, idx)),
+                      if (idx > 0) TextSpan(text: name.substring(0, idx)),
                       TextSpan(
                         text: name.substring(idx, idx + query.length),
                         style: TextStyle(
@@ -919,24 +1172,26 @@ class _DrugSuggestionsDropdown extends StatelessWidget {
                     horizontal: 14,
                     vertical: 10,
                   ),
-                  child: Row(children: [
-                    Icon(
-                      Icons.medication_rounded,
-                      size: 16,
-                      color: dark
-                          ? const Color(0xFF666666)
-                          : const Color(0xFFBBBBBB),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(child: nameWidget),
-                    Icon(
-                      Icons.north_west_rounded,
-                      size: 12,
-                      color: dark
-                          ? const Color(0xFF555555)
-                          : const Color(0xFFA8B2C1),
-                    ),
-                  ]),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.medication_rounded,
+                        size: 16,
+                        color: dark
+                            ? const Color(0xFF666666)
+                            : const Color(0xFFBBBBBB),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(child: nameWidget),
+                      Icon(
+                        Icons.north_west_rounded,
+                        size: 12,
+                        color: dark
+                            ? const Color(0xFF555555)
+                            : const Color(0xFFA8B2C1),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -963,40 +1218,45 @@ class EvidenceBadgesRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c    = AppColors.of(context);
+    final c = AppColors.of(context);
     final dark = c.dark;
     final badges = <_EvBadge>[
-      _EvBadge('✓ Revisado',            const Color(0xFF059669)),
-      _EvBadge('✓ Actualizado',         const Color(0xFF0EA5E9)),
+      _EvBadge('✓ Revisado', const Color(0xFF059669)),
+      _EvBadge('✓ Actualizado', const Color(0xFF0EA5E9)),
       _EvBadge('✓ Basado en Evidencias', const Color(0xFF8B5CF6)),
-      _EvBadge('✓ Fuente Verificada',   const Color(0xFFF59E0B)),
+      _EvBadge('✓ Fuente Verificada', const Color(0xFFF59E0B)),
     ];
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: badges.map((b) => Padding(
-          padding: const EdgeInsets.only(right: 6),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 7 : 9,
-              vertical:   compact ? 3 : 4,
-            ),
-            decoration: BoxDecoration(
-              color:        b.color.withOpacity(dark ? 0.15 : 0.09),
-              borderRadius: BorderRadius.circular(6),
-              border:       Border.all(color: b.color.withOpacity(0.30)),
-            ),
-            child: Text(b.label,
-              style: TextStyle(
-                fontSize:   compact ? 9.0 : 10.0,
-                fontWeight: FontWeight.w700,
-                color:      b.color,
-                letterSpacing: 0.1,
+        children: badges
+            .map(
+              (b) => Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: compact ? 7 : 9,
+                    vertical: compact ? 3 : 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: b.color.withOpacity(dark ? 0.15 : 0.09),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: b.color.withOpacity(0.30)),
+                  ),
+                  child: Text(
+                    b.label,
+                    style: TextStyle(
+                      fontSize: compact ? 9.0 : 10.0,
+                      fontWeight: FontWeight.w700,
+                      color: b.color,
+                      letterSpacing: 0.1,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        )).toList(),
+            )
+            .toList(),
       ),
     );
   }
@@ -1004,7 +1264,7 @@ class EvidenceBadgesRow extends StatelessWidget {
 
 class _EvBadge {
   final String label;
-  final Color  color;
+  final Color color;
   const _EvBadge(this.label, this.color);
 }
 
@@ -1043,7 +1303,8 @@ const _kFallbackRefs = [
   DrugEvidenceRef(
     num: 3,
     source: 'AHA / ACC Emergency Guidelines',
-    title: 'Emergency Guidelines Reference Standards for acute pharmacological interventions.',
+    title:
+        'Emergency Guidelines Reference Standards for acute pharmacological interventions.',
     year: '2023',
     type: 'Directriz',
   ),
@@ -1052,259 +1313,381 @@ const _kFallbackRefs = [
 class _EvidenceCardWidgetState extends State<EvidenceCardWidget> {
   // Open by default — Apple Guideline 1.4.1: references must be immediately
   // visible to the reviewer without requiring any tap interaction.
-  bool _refsExpanded  = true;
+  bool _refsExpanded = true;
   bool _linksExpanded = true;
 
   Color _typeColor(String type) {
     switch (type) {
-      case 'Directriz':      return const Color(0xFF059669);
-      case 'Base de Datos':  return const Color(0xFF0EA5E9);
-      case 'Estudio':        return const Color(0xFF8B5CF6);
-      case 'Libro-Texto':    return const Color(0xFFF59E0B);
-      case 'Protocolo':      return const Color(0xFF06B6D4);
-      case 'FDA Label':      return const Color(0xFFDC2626);
-      default:               return const Color(0xFF6B7280);
+      case 'Directriz':
+        return const Color(0xFF059669);
+      case 'Base de Datos':
+        return const Color(0xFF0EA5E9);
+      case 'Estudio':
+        return const Color(0xFF8B5CF6);
+      case 'Libro-Texto':
+        return const Color(0xFFF59E0B);
+      case 'Protocolo':
+        return const Color(0xFF06B6D4);
+      case 'FDA Label':
+        return const Color(0xFFDC2626);
+      default:
+        return const Color(0xFF6B7280);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final c    = AppColors.of(context);
+    final c = AppColors.of(context);
     final dark = c.dark;
-    final ev   = widget.ev;
+    final ev = widget.ev;
 
     return Container(
       decoration: BoxDecoration(
-        color:        c.cardBg,
+        color: c.cardBg,
         borderRadius: BorderRadius.circular(16),
-        border:       Border.all(color: c.border),
+        border: Border.all(color: c.border),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-        // ── Header con metadatos ─────────────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-            border: Border(bottom: BorderSide(color: c.border)),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-            // Título + ícono
-            Row(children: [
-              const Icon(Icons.verified_rounded, size: 13, color: Color(0xFF059669)),
-              const SizedBox(width: 7),
-              Expanded(
-                child: Text('EVIDENCIA CIENTÍFICA',
-                  style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-                    letterSpacing: 1.4, color: c.textPrimary)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header con metadatos ─────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: c.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(15),
               ),
-              // ATC code badge si disponible
-              if (ev.atcCode != null)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF059669).withOpacity(0.10),
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(color: const Color(0xFF059669).withOpacity(0.25)),
-                  ),
-                  child: Text('ATC: ${ev.atcCode}',
-                    style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
-                      color: Color(0xFF059669), letterSpacing: 0.3)),
-                ),
-            ]),
-
-            const SizedBox(height: 10),
-
-            // Chips de metadatos
-            Wrap(spacing: 8, runSpacing: 6, children: [
-              _EvMetaChip(
-                label: 'Fuente Principal',
-                value: ev.primarySource,
-                color: const Color(0xFF059669), c: c,
-              ),
-              _EvMetaChip(
-                label: 'Directriz Utilizada',
-                value: ev.guidelineSource,
-                color: const Color(0xFF0EA5E9), c: c,
-              ),
-              _EvMetaChip(
-                label: 'Nivel de Evidencia',
-                value: ev.evidenceLevel,
-                color: const Color(0xFF8B5CF6), c: c,
-              ),
-              _EvMetaChip(
-                label: 'Recomendación',
-                value: ev.recommendation,
-                color: const Color(0xFF06B6D4), c: c,
-              ),
-              _EvMetaChip(
-                label: 'Última Revisión',
-                value: ev.lastReviewed,
-                color: const Color(0xFFF59E0B), c: c,
-              ),
-              _EvMetaChip(
-                label: 'Estado',
-                value: ev.reviewStatus,
-                color: const Color(0xFF059669), c: c,
-              ),
-            ]),
-
-            const SizedBox(height: 10),
-            // Badges de calidad
-            EvidenceBadgesRow(ev: ev, compact: true),
-          ]),
-        ),
-
-        // ── Referencias bibliográficas — ABIERTAS POR DEFECTO ─────────────
-        // Apple Guideline 1.4.1: bibliographic citations must be immediately
-        // visible. Fallback list shown when ev.references[] is empty.
-        ...() {
-          final refs = ev.references.isNotEmpty
-              ? ev.references
-              : _kFallbackRefs;
-          return [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => setState(() => _refsExpanded = !_refsExpanded),
-              borderRadius: const BorderRadius.all(Radius.circular(0)),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-                child: Row(children: [
-                  Icon(Icons.menu_book_rounded, size: 13,
-                    color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
-                  const SizedBox(width: 7),
-                  Expanded(
-                    child: Text('REFERENCIAS BIBLIOGRÁFICAS (${refs.length})',
-                      style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-                        letterSpacing: 1.1, color: c.textPrimary)),
-                  ),
-                  AnimatedRotation(
-                    turns: _refsExpanded ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                      size: 18, color: c.textHint),
-                  ),
-                ]),
-              ),
+              border: Border(bottom: BorderSide(color: c.border)),
             ),
-          ),
-          Container(height: 1, color: c.border),
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 220),
-            crossFadeState: _refsExpanded
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            firstChild: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
-              child: Column(
-                children: refs.map((ref) =>
-                  _EvRefRow(ref: ref, typeColor: _typeColor(ref.type), c: c)
-                ).toList(),
-              ),
-            ),
-            secondChild: const SizedBox(width: double.infinity),
-          ),
-          ];
-        }(),
-
-        // ── Links oficiales colapsibles ──────────────────────────────────────
-        if (ev.links.isNotEmpty) ...[
-          Container(height: 1, color: c.border),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => setState(() => _linksExpanded = !_linksExpanded),
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(15)),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-                child: Row(children: [
-                  Icon(Icons.link_rounded, size: 13,
-                    color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
-                  const SizedBox(width: 7),
-                  Expanded(
-                    child: Text('DOCUMENTOS OFICIALES (${ev.links.length})',
-                      style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-                        letterSpacing: 1.1, color: c.textPrimary)),
-                  ),
-                  AnimatedRotation(
-                    turns: _linksExpanded ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                      size: 18, color: c.textHint),
-                  ),
-                ]),
-              ),
-            ),
-          ),
-          AnimatedCrossFade(
-            duration: const Duration(milliseconds: 220),
-            crossFadeState: _linksExpanded
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            firstChild: Container(
-              padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: c.border)),
-                borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(15)),
-              ),
-              child: Column(children: [
-                const SizedBox(height: 10),
-                ...ev.links.map((link) => Padding(
-                  padding: const EdgeInsets.only(bottom: 7),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0EA5E9).withOpacity(0.06),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: const Color(0xFF0EA5E9).withOpacity(0.18)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Título + ícono
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.verified_rounded,
+                      size: 13,
+                      color: Color(0xFF059669),
                     ),
-                    child: Row(children: [
-                      Icon(link.icon, size: 14,
-                        color: const Color(0xFF0EA5E9)),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(link.label,
-                              style: const TextStyle(fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF0EA5E9))),
-                            if (link.org.isNotEmpty && link.org != 'Other')
-                              Text(link.org,
-                                style: TextStyle(fontSize: 9,
-                                  fontWeight: FontWeight.w600,
-                                  color: c.textHint)),
-                          ],
+                    const SizedBox(width: 7),
+                    Expanded(
+                      child: Text(
+                        'EVIDENCIA CIENTÍFICA',
+                        style: TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.4,
+                          color: c.textPrimary,
                         ),
                       ),
-                      // Badge de fuente verificada — sem botão de link
+                    ),
+                    // ATC code badge si disponible
+                    if (ev.atcCode != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: const Color(0xFF0EA5E9).withOpacity(0.10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
                         ),
-                        child: const Text('fuente',
-                          style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700,
-                            color: Color(0xFF0EA5E9))),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF059669).withOpacity(0.10),
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: const Color(0xFF059669).withOpacity(0.25),
+                          ),
+                        ),
+                        child: Text(
+                          'ATC: ${ev.atcCode}',
+                          style: const TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF059669),
+                            letterSpacing: 0.3,
+                          ),
+                        ),
                       ),
-                    ]),
-                  ),
-                )),
-              ]),
-            ),
-            secondChild: const SizedBox(width: double.infinity),
-          ),
-        ],
+                  ],
+                ),
 
-      ]),
+                const SizedBox(height: 10),
+
+                // Chips de metadatos
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  children: [
+                    _EvMetaChip(
+                      label: 'Fuente Principal',
+                      value: ev.primarySource,
+                      color: const Color(0xFF059669),
+                      c: c,
+                    ),
+                    _EvMetaChip(
+                      label: 'Directriz Utilizada',
+                      value: ev.guidelineSource,
+                      color: const Color(0xFF0EA5E9),
+                      c: c,
+                    ),
+                    _EvMetaChip(
+                      label: 'Nivel de Evidencia',
+                      value: ev.evidenceLevel,
+                      color: const Color(0xFF8B5CF6),
+                      c: c,
+                    ),
+                    _EvMetaChip(
+                      label: 'Recomendación',
+                      value: ev.recommendation,
+                      color: const Color(0xFF06B6D4),
+                      c: c,
+                    ),
+                    _EvMetaChip(
+                      label: 'Última Revisión',
+                      value: ev.lastReviewed,
+                      color: const Color(0xFFF59E0B),
+                      c: c,
+                    ),
+                    _EvMetaChip(
+                      label: 'Estado',
+                      value: ev.reviewStatus,
+                      color: const Color(0xFF059669),
+                      c: c,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+                // Badges de calidad
+                EvidenceBadgesRow(ev: ev, compact: true),
+              ],
+            ),
+          ),
+
+          // ── Referencias bibliográficas — ABIERTAS POR DEFECTO ─────────────
+          // Apple Guideline 1.4.1: bibliographic citations must be immediately
+          // visible. Fallback list shown when ev.references[] is empty.
+          ...() {
+            final refs =
+                ev.references.isNotEmpty ? ev.references : _kFallbackRefs;
+            return [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => setState(() => _refsExpanded = !_refsExpanded),
+                  borderRadius: const BorderRadius.all(Radius.circular(0)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 11,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.menu_book_rounded,
+                          size: 13,
+                          color: dark
+                              ? const Color(0xFFFFE8A6)
+                              : const Color(0xFF075f45),
+                        ),
+                        const SizedBox(width: 7),
+                        Expanded(
+                          child: Text(
+                            'REFERENCIAS BIBLIOGRÁFICAS (${refs.length})',
+                            style: TextStyle(
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.1,
+                              color: c.textPrimary,
+                            ),
+                          ),
+                        ),
+                        AnimatedRotation(
+                          turns: _refsExpanded ? 0.5 : 0.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 18,
+                            color: c.textHint,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Container(height: 1, color: c.border),
+              AnimatedCrossFade(
+                duration: const Duration(milliseconds: 220),
+                crossFadeState: _refsExpanded
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                firstChild: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+                  child: Column(
+                    children: refs
+                        .map(
+                          (ref) => _EvRefRow(
+                            ref: ref,
+                            typeColor: _typeColor(ref.type),
+                            c: c,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+                secondChild: const SizedBox(width: double.infinity),
+              ),
+            ];
+          }(),
+
+          // ── Links oficiales colapsibles ──────────────────────────────────────
+          if (ev.links.isNotEmpty) ...[
+            Container(height: 1, color: c.border),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => setState(() => _linksExpanded = !_linksExpanded),
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 11,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.link_rounded,
+                        size: 13,
+                        color: dark
+                            ? const Color(0xFFFFE8A6)
+                            : const Color(0xFF075f45),
+                      ),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: Text(
+                          'DOCUMENTOS OFICIALES (${ev.links.length})',
+                          style: TextStyle(
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.1,
+                            color: c.textPrimary,
+                          ),
+                        ),
+                      ),
+                      AnimatedRotation(
+                        turns: _linksExpanded ? 0.5 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 18,
+                          color: c.textHint,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            AnimatedCrossFade(
+              duration: const Duration(milliseconds: 220),
+              crossFadeState: _linksExpanded
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+              firstChild: Container(
+                padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: c.border)),
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(15),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    ...ev.links.map(
+                      (link) => Padding(
+                        padding: const EdgeInsets.only(bottom: 7),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF0EA5E9).withOpacity(0.06),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: const Color(0xFF0EA5E9).withOpacity(0.18),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                link.icon,
+                                size: 14,
+                                color: const Color(0xFF0EA5E9),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      link.label,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFF0EA5E9),
+                                      ),
+                                    ),
+                                    if (link.org.isNotEmpty &&
+                                        link.org != 'Other')
+                                      Text(
+                                        link.org,
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w600,
+                                          color: c.textHint,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              // Badge de fuente verificada — sem botão de link
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: const Color(
+                                    0xFF0EA5E9,
+                                  ).withOpacity(0.10),
+                                ),
+                                child: const Text(
+                                  'fuente',
+                                  style: TextStyle(
+                                    fontSize: 7.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF0EA5E9),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              secondChild: const SizedBox(width: double.infinity),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -1314,29 +1697,43 @@ class _EvMetaChip extends StatelessWidget {
   final Color color;
   final AppColors c;
   const _EvMetaChip({
-    required this.label, required this.value,
-    required this.color, required this.c,
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.c,
   });
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(label.toUpperCase(),
-        style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w800,
-          letterSpacing: 0.8, color: c.textHint)),
-      const SizedBox(height: 2),
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color:        color.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(6),
-          border:       Border.all(color: color.withOpacity(0.22)),
-        ),
-        child: Text(value,
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: color)),
-      ),
-    ],
-  );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: 7.5,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.8,
+              color: c.textHint,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: color.withOpacity(0.22)),
+            ),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+          ),
+        ],
+      );
 }
 
 class _EvRefRow extends StatelessWidget {
@@ -1344,7 +1741,9 @@ class _EvRefRow extends StatelessWidget {
   final Color typeColor;
   final AppColors c;
   const _EvRefRow({
-    required this.ref, required this.typeColor, required this.c,
+    required this.ref,
+    required this.typeColor,
+    required this.c,
   });
   @override
   Widget build(BuildContext context) {
@@ -1352,59 +1751,104 @@ class _EvRefRow extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color:        c.surface,
+        color: c.surface,
         borderRadius: BorderRadius.circular(10),
-        border:       Border.all(color: c.border),
+        border: Border.all(color: c.border),
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Número
-        Container(
-          width: 22, height: 22,
-          decoration: BoxDecoration(
-            color:  typeColor.withOpacity(0.12),
-            shape:  BoxShape.circle,
-            border: Border.all(color: typeColor.withOpacity(0.35)),
-          ),
-          child: Center(
-            child: Text('${ref.num}',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-                color: typeColor)),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color:        typeColor.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(ref.type.toUpperCase(),
-                style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
-                  letterSpacing: 0.6, color: typeColor)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Número
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              color: typeColor.withOpacity(0.12),
+              shape: BoxShape.circle,
+              border: Border.all(color: typeColor.withOpacity(0.35)),
             ),
-            const SizedBox(width: 6),
-            Text(ref.year,
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700,
-                color: c.textHint)),
-          ]),
-          const SizedBox(height: 3),
-          Text(ref.title,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-              color: c.textPrimary)),
-          const SizedBox(height: 1),
-          Text(ref.source,
-            style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500,
-              color: c.textSecondary)),
-          if (ref.doi != null) ...[
-            const SizedBox(height: 2),
-            Text('DOI: ${ref.doi}',
-              style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w500,
-                color: Color(0xFF0EA5E9))),
-          ],
-        ])),
-      ]),
+            child: Center(
+              child: Text(
+                '${ref.num}',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: typeColor,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: typeColor.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        ref.type.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 7.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.6,
+                          color: typeColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      ref.year,
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                        color: c.textHint,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  ref.title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: c.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  ref.source,
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w500,
+                    color: c.textSecondary,
+                  ),
+                ),
+                if (ref.doi != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    'DOI: ${ref.doi}',
+                    style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF0EA5E9),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1419,7 +1863,8 @@ class PharmacologicalDisclaimer extends StatefulWidget {
   final String? customText;
   const PharmacologicalDisclaimer({super.key, this.customText});
   @override
-  State<PharmacologicalDisclaimer> createState() => _PharmacologicalDisclaimerState();
+  State<PharmacologicalDisclaimer> createState() =>
+      _PharmacologicalDisclaimerState();
 }
 
 class _PharmacologicalDisclaimerState extends State<PharmacologicalDisclaimer> {
@@ -1437,13 +1882,13 @@ class _PharmacologicalDisclaimerState extends State<PharmacologicalDisclaimer> {
 
   @override
   Widget build(BuildContext context) {
-    final c    = AppColors.of(context);
+    final c = AppColors.of(context);
     final dark = c.dark;
     final text = widget.customText ?? _defaultText;
 
     const subtleGrey = Color(0xFF9CA3AF);
-    final borderCol  = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
-    final bgCol      = dark ? const Color(0xFF161616) : const Color(0xFFFAFAF8);
+    final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
+    final bgCol = dark ? const Color(0xFF161616) : const Color(0xFFFAFAF8);
 
     return GestureDetector(
       onTap: () => setState(() => _expanded = !_expanded),
@@ -1451,44 +1896,57 @@ class _PharmacologicalDisclaimerState extends State<PharmacologicalDisclaimer> {
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeInOut,
         margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), // BUILD 275: -2px vertical
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 6,
+        ), // BUILD 275: -2px vertical
         decoration: BoxDecoration(
           color: bgCol,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: borderCol),
         ),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Ícone fixo
-          Padding(
-            padding: const EdgeInsets.only(top: 1),
-            child: Icon(Icons.info_outline_rounded, size: 13, color: subtleGrey),
-          ),
-          const SizedBox(width: 8),
-          // Texto — 1 linha colapsado, completo expandido
-          Expanded(
-            child: Text(
-              text,
-              maxLines: _expanded ? null : 1,
-              overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 7.5, // BUILD 275: -2px fontSize
-                fontWeight: FontWeight.w400,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Ícone fixo
+            Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: Icon(
+                Icons.info_outline_rounded,
+                size: 13,
                 color: subtleGrey,
-                height: 1.5,
-                letterSpacing: 0.1,
               ),
             ),
-          ),
-          // Chevron de expandir
-          Padding(
-            padding: const EdgeInsets.only(top: 1, left: 6),
-            child: Icon(
-              _expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-              size: 15,
-              color: subtleGrey,
+            const SizedBox(width: 8),
+            // Texto — 1 linha colapsado, completo expandido
+            Expanded(
+              child: Text(
+                text,
+                maxLines: _expanded ? null : 1,
+                overflow:
+                    _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 7.5, // BUILD 275: -2px fontSize
+                  fontWeight: FontWeight.w400,
+                  color: subtleGrey,
+                  height: 1.5,
+                  letterSpacing: 0.1,
+                ),
+              ),
             ),
-          ),
-        ]),
+            // Chevron de expandir
+            Padding(
+              padding: const EdgeInsets.only(top: 1, left: 6),
+              child: Icon(
+                _expanded
+                    ? Icons.expand_less_rounded
+                    : Icons.expand_more_rounded,
+                size: 15,
+                color: subtleGrey,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -42,7 +42,8 @@ class DefaultFirebaseOptions {
     projectId: 'medcases-pro',
     storageBucket: 'medcases-pro.firebasestorage.app',
     messagingSenderId: '1076800980330',
-    appId: '1:1076800980330:ios:15758cfa2b974297711113',
-    iosBundleId: 'com.medcasespro.med',
+    appId: '1:1076800980330:ios:d4c00440534ac417711113',
+    iosClientId: '1076800980330-h06p1o1t4ll48qsqk5ovkfse8e0t98g0.apps.googleusercontent.com',
+    iosBundleId: 'com.medcasespro.app',
   );
 }

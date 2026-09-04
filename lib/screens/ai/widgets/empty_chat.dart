@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_4A_V2_B_R1_AI_WIDGETS
 import 'package:flutter/material.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -41,7 +42,7 @@ class EmptyChat extends StatelessWidget {
               Icon(
                 Icons.lock_outline_rounded,
                 size: 36,
-                color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                color: const Color(0xFF0D6B57).withValues(alpha: 0.35),
               ),
               const SizedBox(height: 20),
 
@@ -68,10 +69,10 @@ class EmptyChat extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(22),
                   border: Border.all(
-                    color: const Color(0xFF00E5FF).withValues(alpha: 0.35),
+                    color: const Color(0xFF0D6B57).withValues(alpha: 0.35),
                     width: 1,
                   ),
-                  color: const Color(0xFF00E5FF).withValues(alpha: 0.07),
+                  color: const Color(0xFF0D6B57).withValues(alpha: 0.07),
                 ),
                 child: Text(
                   isEs
@@ -80,7 +81,7 @@ class EmptyChat extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF00E5FF),
+                    color: Color(0xFF0D6B57),
                     letterSpacing: 0.2,
                   ),
                 ),

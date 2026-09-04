@@ -50,6 +50,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'package:cloud_functions/cloud_functions.dart';
+import 'clinical_identity_transport_envelope.dart';
 import 'gemini_service_v2.dart';  // GeminiChunk
 import 'ai_gateway_service.dart'; // AiGatewayService.sendStream
 
@@ -449,6 +450,7 @@ class AiEnginePayload {
     'uid':          uid,
     'isEs':         isEs,
     'systemPrompt': systemPrompt,
+    ...ClinicalIdentityTransportEnvelope.fromStructuredSystemPrompt(systemPrompt),
     'history':      history,
     'longResponse': longResponse,
     'useGrounding': useGrounding,

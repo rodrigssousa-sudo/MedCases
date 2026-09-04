@@ -33,4 +33,9 @@ abstract final class MedSpacing {
     horizontal: lg,
     vertical: md,
   );
+
+  // MEDCASES_GLOBAL_MOBILE_BASELINE_V1_M1_R4
+  // Foundation semântica; consumidores existentes permanecem inalterados.
+  /// Recuo horizontal padrão do conteúdo mobile.
+  static const double screenHorizontalPadding = 18;
 }

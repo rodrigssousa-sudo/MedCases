@@ -21,6 +21,8 @@ import 'package:firebase_core/firebase_core.dart'; // kept for FirebaseApp type 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../home_v2/theme/home_v2_palette.dart';
 import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -59,19 +61,69 @@ class CalcShortcut {
 
 const List<CalcShortcut> kAvailableCalcs = [
   // BUILD 408-NATIVE: Biometria → Nefrologia/Función Renal
-  CalcShortcut(id: 'calc_biometria',   labelPt: 'Função Renal',  labelEs: 'Función Renal',  icon: Icons.water_drop_rounded,        color: Color(0xFF00B4CC)),
-  CalcShortcut(id: 'calc_scores',      labelPt: 'Scores',        labelEs: 'Scores',         icon: Icons.bar_chart_rounded,         color: Color(0xFF8B5CF6)),
-  CalcShortcut(id: 'calc_cardio',      labelPt: 'Cardio',        labelEs: 'Cardio',         icon: Icons.favorite_outline_rounded,  color: Color(0xFFEF4444)),
-  CalcShortcut(id: 'calc_eletrólitos', labelPt: 'Eletrólitos',   labelEs: 'Electrolitos',   icon: Icons.science_outlined,          color: Color(0xFFF59E0B)),
-  CalcShortcut(id: 'calc_infusao',     labelPt: 'Infusão EV',    labelEs: 'Infusión EV',    icon: Icons.water_drop_outlined,       color: Color(0xFF06B6D4)),
-  CalcShortcut(id: 'calc_referencia',  labelPt: 'Referência',    labelEs: 'Referencia',     icon: Icons.menu_book_outlined,        color: Color(0xFF10B981)),
-  CalcShortcut(id: 'calc_prescricoes', labelPt: 'Prescrições',   labelEs: 'Prescripciones', icon: Icons.receipt_long_outlined,     color: Color(0xFFC5A365)),
-  CalcShortcut(id: 'calc_pediatria',   labelPt: 'Pediatria',     labelEs: 'Pediatría',      icon: Icons.child_care_outlined,       color: Color(0xFFEC4899)),
+  CalcShortcut(
+      id: 'calc_biometria',
+      labelPt: 'Função Renal',
+      labelEs: 'Función Renal',
+      icon: Icons.water_drop_rounded,
+      color: Color(0xFF00B4CC)),
+  CalcShortcut(
+      id: 'calc_scores',
+      labelPt: 'Scores',
+      labelEs: 'Scores',
+      icon: Icons.bar_chart_rounded,
+      color: Color(0xFF8B5CF6)),
+  CalcShortcut(
+      id: 'calc_cardio',
+      labelPt: 'Cardio',
+      labelEs: 'Cardio',
+      icon: Icons.favorite_outline_rounded,
+      color: Color(0xFFEF4444)),
+  CalcShortcut(
+      id: 'calc_eletrólitos',
+      labelPt: 'Eletrólitos',
+      labelEs: 'Electrolitos',
+      icon: Icons.science_outlined,
+      color: Color(0xFFF59E0B)),
+  CalcShortcut(
+      id: 'calc_infusao',
+      labelPt: 'Infusão EV',
+      labelEs: 'Infusión EV',
+      icon: Icons.water_drop_outlined,
+      color: Color(0xFF06B6D4)),
+  CalcShortcut(
+      id: 'calc_referencia',
+      labelPt: 'Referência',
+      labelEs: 'Referencia',
+      icon: Icons.menu_book_outlined,
+      color: Color(0xFF10B981)),
+  CalcShortcut(
+      id: 'calc_prescricoes',
+      labelPt: 'Prescrições',
+      labelEs: 'Prescripciones',
+      icon: Icons.receipt_long_outlined,
+      color: Color(0xFFC5A365)),
+  CalcShortcut(
+      id: 'calc_pediatria',
+      labelPt: 'Pediatria',
+      labelEs: 'Pediatría',
+      icon: Icons.child_care_outlined,
+      color: Color(0xFFEC4899)),
   // BUILD 431: Atalhos diretos para Nefrologia e Hepatologia
-  CalcShortcut(id: 'calc_nefrologia',  labelPt: 'Nefrologia',    labelEs: 'Nefrología',     icon: Icons.layers_outlined,           color: Color(0xFF00E5FF)),
+  CalcShortcut(
+      id: 'calc_nefrologia',
+      labelPt: 'Nefrologia',
+      labelEs: 'Nefrología',
+      icon: Icons.layers_outlined,
+      color: Color(0xFF00E5FF)),
   // BUILD 433: âmbar/ouro profundo — identidade cromática hepática exclusiva
   // BUILD 435 [PASSO 2]: ícone layers_outlined — visualmente distinto de Nefrologia
-  CalcShortcut(id: 'calc_hepatologia', labelPt: 'Hepatologia',   labelEs: 'Hepatología',     icon: Icons.layers_outlined,           color: Color(0xFFF59E0B)),
+  CalcShortcut(
+      id: 'calc_hepatologia',
+      labelPt: 'Hepatologia',
+      labelEs: 'Hepatología',
+      icon: Icons.layers_outlined,
+      color: Color(0xFFF59E0B)),
 ];
 
 /// IDs de calculadoras proibidas — nunca renderizadas no dashboard/grid:
@@ -86,8 +138,40 @@ const Set<String> _kForbiddenCalcIds = {
   'calc_eletrólitos', // BUILD 442 [P2]: extinção física do card MI GUARDIA
 };
 
+String? _medcasesSpecialtySvgAsset(String calcId) {
+  switch (calcId) {
+    case 'calc_cardio':
+      return 'assets/icons/home_v2/ic_cardio.svg';
+    case 'calc_nefrologia':
+      return 'assets/icons/home_v2/ic_nefro.svg';
+    case 'calc_hepatologia':
+      return 'assets/icons/home_v2/ic_hepato.svg';
+    default:
+      return null;
+  }
+}
+
+Widget _medcasesSpecialtySvgIcon(
+  String calcId,
+  Widget fallback, {
+  double size = 28,
+}) {
+  final asset = _medcasesSpecialtySvgAsset(calcId);
+  if (asset == null) return fallback;
+  return SvgPicture.asset(
+    asset,
+    width: size,
+    height: size,
+    fit: BoxFit.contain,
+  );
+}
+
 CalcShortcut? calcById(String id) {
-  try { return kAvailableCalcs.firstWhere((c) => c.id == id); } catch (_) { return null; }
+  try {
+    return kAvailableCalcs.firstWhere((c) => c.id == id);
+  } catch (_) {
+    return null;
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -98,6 +182,7 @@ class MeuPlantaoDashboard extends StatefulWidget {
   final void Function(DrugModel drug) onOpenDrug;
   final void Function(String calcId) onOpenCalc;
   final void Function() onManageTap;
+  final VoidCallback onAddPatient;
   // Build 195: passa PacienteSession para pré-carregar ao navegar para InternacionScreen
   final void Function(PacienteSession session)? onOpenInternacion;
 
@@ -106,6 +191,7 @@ class MeuPlantaoDashboard extends StatefulWidget {
     required this.onOpenDrug,
     required this.onOpenCalc,
     required this.onManageTap,
+    required this.onAddPatient,
     this.onOpenInternacion,
   });
 
@@ -148,8 +234,8 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       duration: const Duration(milliseconds: 250),
       value: 1.0, // 1 = expandido
     );
-    _chevronAngle = Tween<double>(begin: 0.0, end: 0.5)
-        .animate(CurvedAnimation(parent: _chevronCtrl, curve: Curves.easeInOut));
+    _chevronAngle = Tween<double>(begin: 0.0, end: 0.5).animate(
+        CurvedAnimation(parent: _chevronCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -204,17 +290,19 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       onError: (e) {
         _isInitializingStream = false;
         final errStr = e.toString().toLowerCase();
-        final isPermissionError = errStr.contains('permission-denied')
-            || errStr.contains('insufficient permissions')
-            || errStr.contains('permission_denied')
-            || errStr.contains('403');
+        final isPermissionError = errStr.contains('permission-denied') ||
+            errStr.contains('insufficient permissions') ||
+            errStr.contains('permission_denied') ||
+            errStr.contains('403');
 
         if (isPermissionError) {
           // MANDATO 1: ativa trava permanente — destroi stream, bloqueia toda
           // reconexão futura ao Firestore para este widget na sessão atual.
           // BUILD 288 DIAG: captura uid e path no momento exato do 403
-          final _diagUid = context.read<AppProvider>().currentUser?.uid ?? 'null';
-          debugPrint('[MeuPlantao][PATH] collection=users/$_diagUid/internaciones');
+          final _diagUid =
+              context.read<AppProvider>().currentUser?.uid ?? 'null';
+          debugPrint(
+              '[MeuPlantao][PATH] collection=users/$_diagUid/internaciones');
           debugPrint('[MeuPlantao][UID]  uid=$_diagUid');
           debugPrint('[MeuPlantao][AUTH] raw_error=$e');
           debugPrint('[MeuPlantao] ERRO PERMISSÃO (403/permission-denied). '
@@ -284,8 +372,10 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     } catch (e) {
       final errStr = e.toString().toLowerCase();
       // Se one-shot também retorna permissão negada, ativa latch e vai para SP
-      if (errStr.contains('permission-denied') || errStr.contains('insufficient permissions')
-          || errStr.contains('permission_denied') || errStr.contains('403')) {
+      if (errStr.contains('permission-denied') ||
+          errStr.contains('insufficient permissions') ||
+          errStr.contains('permission_denied') ||
+          errStr.contains('403')) {
         debugPrint('[MeuPlantao] One-shot também bloqueado (permissão). '
             'Modo offline permanente ativado.');
         _firestorePermissionDenied = true;
@@ -307,7 +397,11 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
   // O dashboard exibe sempre o header + AddFirstPatientRow + atalhos padrão.
   void _notifyEmptyChange() {
     AppProvider p;
-    try { p = context.read<AppProvider>(); } catch (_) { return; }
+    try {
+      p = context.read<AppProvider>();
+    } catch (_) {
+      return;
+    }
     final hasDrugs = p.pinnedDrugs.isNotEmpty;
     final filteredIds = p.pinnedCalcIds
         .where((id) => !_kForbiddenCalcIds.contains(id))
@@ -321,7 +415,10 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       // BUILD 279: apenas auto-expande ao transição vazio→com-conteúdo;
       // NÃO colapsa quando fica vazio (módulo sempre visível).
       if (_wasEmpty && !isEmpty && !_expanded) {
-        setState(() { _expanded = true; _chevronCtrl.forward(); });
+        setState(() {
+          _expanded = true;
+          _chevronCtrl.forward();
+        });
       }
       _wasEmpty = isEmpty;
     });
@@ -359,11 +456,12 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     if (uid != null && !(kIsWeb && FirebaseRuntimeGuard.isUnavailable)) {
       _subscribeToSessions(uid);
     } else if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
+      debugPrint(
+          '[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
     }
 
     final hasPatients = _firestoreSessions.isNotEmpty;
-    final hasDrugs    = (p.pinnedDrugs).isNotEmpty;
+    final hasDrugs = (p.pinnedDrugs).isNotEmpty;
     final filteredIds = (p.pinnedCalcIds)
         .where((id) => !_kForbiddenCalcIds.contains(id))
         .toList();
@@ -419,7 +517,7 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
       return _PlantaoLoadingShell(colors: c);
     }
 
-    final c    = AppColors.of(context);
+    final c = AppColors.of(context);
     final isEs = p.lang == 'es';
 
     // ── Build 183 FIX 1: patients come from Firestore stream ─────────────────
@@ -434,14 +532,15 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     if (uid != null && !(kIsWeb && FirebaseRuntimeGuard.isUnavailable)) {
       _subscribeToSessions(uid);
     } else if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
+      debugPrint(
+          '[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
     }
     final firestoreSessions = _firestoreSessions;
 
     // ── Leitura defensiva de listas — nunca acessa null diretamente ──────────
-    final drugs           = p.pinnedDrugs;        // List.unmodifiable([]) se vazio
-    final hasPatients     = firestoreSessions.isNotEmpty;
-    final hasDrugs        = drugs.isNotEmpty;
+    final drugs = p.pinnedDrugs; // List.unmodifiable([]) se vazio
+    final hasPatients = firestoreSessions.isNotEmpty;
+    final hasDrugs = drugs.isNotEmpty;
     // ── Filtra IDs proibidos ao nível do estado raiz ──────────────────────────
     // Garante que hasCalcs seja consistente com o que _PlantaoContent renderiza.
     // Sem este filtro, pinned forbidden IDs causam isEmpty=false mas UI vazia.
@@ -458,49 +557,19 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
     //   isEmpty && _expanded → setState(_expanded=false) → rebuild → ...
     // O resultado era o card abrindo e fechando instantaneamente.
 
-    // SUPER ORDEM MASTER 14 M6: layout minimalista premium.
-    // Cabeçalho sempre visível (card gradiente com botão único).
-    // _PlantaoContent só aparece quando há pacientes reais — sem bloco cinza vazio.
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ── Cabeçalho premium — card gradiente auto-contido ────────────────
-        _PlantaoHeader(
-          isEs: isEs,
-          colors: c,
-          expanded: _expanded,
-          isEmpty: isEmpty,
-          chevronAngle: _chevronAngle,
-          onHeaderTap: () => _toggle(true),
-          onManageTap: widget.onManageTap,
-          onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
-          // Fix#8: propaga onOpenCalc para os 3 atalhos rápidos do header
-          onOpenCalc: widget.onOpenCalc,
-        ),
+    // MB-I.5.14-B-R6 — somente projeção visual.
+    final homeV2Dark = Theme.of(context).brightness == Brightness.dark;
 
-        // ── Lista de pacientes — apenas quando existem dados reais ──────────
-        if (hasPatients || hasDrugs || hasCalcs)
-          AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOutCubic,
-            child: _expanded
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 14),
-                    child: _PlantaoContent(
-                      isEs: isEs,
-                      colors: c,
-                      p: p,
-                      firestoreSessions: firestoreSessions,
-                      onOpenDrug: widget.onOpenDrug,
-                      onOpenCalc: widget.onOpenCalc,
-                      onAddPatient: () => _showPatientEditSheet(context, isEs, c, p),
-                      onEditPatient: (pt) => _showPatientEditSheet(context, isEs, c, p, existing: pt),
-                      onOpenInternacion: widget.onOpenInternacion,
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
-      ],
+    return _MiGuardiaCompactBody(
+      dark: homeV2Dark,
+      isEs: isEs,
+      sessions: firestoreSessions,
+      expanded: _expanded,
+      chevronAngle: _chevronAngle,
+      onToggle: () => _toggle(true),
+      onAddPatient: widget.onAddPatient,
+      onOpenInternacion: widget.onOpenInternacion,
+      onOpenCalc: widget.onOpenCalc,
     );
   }
 
@@ -526,6 +595,790 @@ class _MeuPlantaoDashboardState extends State<MeuPlantaoDashboard>
 // ─────────────────────────────────────────────────────────────────────────────
 // CABEÇALHO — com chevron e botões de ação
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────
+// MB-I.5.14-B-R6 — PROJEÇÃO VISUAL COMPACTA DE MI GUARDIA
+// ─────────────────────────────────────────────────────────────
+
+enum _MiGuardiaSeverity {
+  critical(0),
+  high(1),
+  moderate(2),
+  low(3);
+
+  const _MiGuardiaSeverity(this.rank);
+
+  final int rank;
+
+  String label(bool isEs) {
+    switch (this) {
+      case _MiGuardiaSeverity.critical:
+        return 'CRÍTICA';
+
+      case _MiGuardiaSeverity.high:
+        return 'ALTA';
+
+      case _MiGuardiaSeverity.moderate:
+        return 'MODERADA';
+
+      case _MiGuardiaSeverity.low:
+        return isEs ? 'BAJA' : 'BAIXA';
+    }
+  }
+
+  Color foreground(bool dark) {
+    switch (this) {
+      case _MiGuardiaSeverity.critical:
+        return dark ? const Color(0xFFFF919A) : const Color(0xFFC83D48);
+
+      case _MiGuardiaSeverity.high:
+        return dark ? const Color(0xFFF5AD68) : const Color(0xFFB95B16);
+
+      case _MiGuardiaSeverity.moderate:
+        return dark ? const Color(0xFFE7CC68) : const Color(0xFF8B6A00);
+
+      case _MiGuardiaSeverity.low:
+        return dark ? const Color(0xFF79D8B4) : const Color(0xFF137A59);
+    }
+  }
+}
+
+_MiGuardiaSeverity _miGuardiaDiagnosisSeverity(
+  String diagnosis,
+) {
+  final normalized = diagnosis.trim();
+
+  if (normalized.isEmpty) {
+    return _MiGuardiaSeverity.low;
+  }
+
+  final triageColor = _triageColorFromDiag(
+    normalized,
+  );
+
+  if (triageColor == const Color(0xFFEF4444)) {
+    return _MiGuardiaSeverity.critical;
+  }
+
+  if (triageColor == const Color(0xFFF59E0B)) {
+    return _MiGuardiaSeverity.high;
+  }
+
+  return _MiGuardiaSeverity.low;
+}
+
+_MiGuardiaSeverity _miGuardiaSeverityForSession(
+  PacienteSession session,
+) {
+  if (session.historial.isNotEmpty) {
+    final state = session.historial.last.evaluacion.estado;
+
+    if (state == EstadoClinical.empeorando) {
+      return _MiGuardiaSeverity.critical;
+    }
+
+    if (state == EstadoClinical.estable) {
+      return _MiGuardiaSeverity.moderate;
+    }
+
+    if (state == EstadoClinical.mejorando) {
+      return _MiGuardiaSeverity.low;
+    }
+  }
+
+  return _miGuardiaDiagnosisSeverity(
+    session.paciente.diagnostico,
+  );
+}
+
+List<PacienteSession> _miGuardiaVisibleSessions(
+  List<PacienteSession> sessions,
+) {
+  final byPatient = <String, PacienteSession>{};
+
+  for (final session in sessions) {
+    final patientName = session.paciente.nome.trim();
+
+    final normalizedName = patientName.toLowerCase();
+
+    final key = normalizedName.isNotEmpty ? normalizedName : session.sessionKey;
+
+    final current = byPatient[key];
+
+    if (current == null || session.savedAt.isAfter(current.savedAt)) {
+      byPatient[key] = session;
+    }
+  }
+
+  final result = byPatient.values.toList();
+
+  result.sort((first, second) {
+    final firstSeverity = _miGuardiaSeverityForSession(first);
+
+    final secondSeverity = _miGuardiaSeverityForSession(second);
+
+    final severityComparison = firstSeverity.rank.compareTo(
+      secondSeverity.rank,
+    );
+
+    if (severityComparison != 0) {
+      return severityComparison;
+    }
+
+    return second.savedAt.compareTo(
+      first.savedAt,
+    );
+  });
+
+  return result;
+}
+
+class _MiGuardiaCompactBody extends StatelessWidget {
+  const _MiGuardiaCompactBody({
+    required this.dark,
+    required this.isEs,
+    required this.sessions,
+    required this.expanded,
+    required this.chevronAngle,
+    required this.onToggle,
+    required this.onAddPatient,
+    required this.onOpenInternacion,
+    required this.onOpenCalc,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final List<PacienteSession> sessions;
+  final bool expanded;
+  final Animation<double> chevronAngle;
+  final VoidCallback onToggle;
+  final VoidCallback onAddPatient;
+
+  final void Function(PacienteSession session)? onOpenInternacion;
+
+  final void Function(String calcId) onOpenCalc;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = HomeV2Palette.resolve(dark);
+
+    final visibleSessions = _miGuardiaVisibleSessions(
+      sessions,
+    );
+
+    final patientCount = visibleSessions.length;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        12,
+        10,
+        12,
+        12,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // MB-I.5.14-C-D — ancoragem horizontal explícita.
+          SizedBox(
+            width: double.infinity,
+            height: 0,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  top: -43,
+                  right: 2,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        constraints: const BoxConstraints(
+                          minWidth: 26,
+                          minHeight: 24,
+                        ),
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: palette.accentSoft,
+                          borderRadius: BorderRadius.circular(
+                            999,
+                          ),
+                          border: Border.all(
+                            color: palette.accent.withValues(
+                              alpha: 0.38,
+                            ),
+                            width: 0.7,
+                          ),
+                        ),
+                        child: Text(
+                          '$patientCount',
+                          style: TextStyle(
+                            color: palette.accent,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: onToggle,
+                          borderRadius: BorderRadius.circular(
+                            999,
+                          ),
+                          overlayColor: palette.pressedOverlay,
+                          child: Padding(
+                            padding: const EdgeInsets.all(
+                              4,
+                            ),
+                            child: RotationTransition(
+                              turns: chevronAngle,
+                              child: Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 20,
+                                color: palette.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 2),
+          _MiGuardiaAddPatientButton(
+            dark: dark,
+            palette: palette,
+            onTap: onAddPatient,
+          ),
+          AnimatedSize(
+            duration: const Duration(
+              milliseconds: 220,
+            ),
+            curve: Curves.easeOutCubic,
+            child: expanded
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(
+                        height: 11,
+                      ),
+                      _MiGuardiaPatientList(
+                        dark: dark,
+                        isEs: isEs,
+                        palette: palette,
+                        sessions: visibleSessions,
+                        onOpenInternacion: onOpenInternacion,
+                      ),
+                      const SizedBox(
+                        height: 14,
+                      ),
+                      Container(
+                        height: 1,
+                        color: palette.dividerStrong,
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        isEs
+                            ? 'ATAJOS DE ESPECIALIDAD'
+                            : 'ATALHOS DE ESPECIALIDADE',
+                        style: TextStyle(
+                          color: palette.textSecondary,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.05,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      _MiGuardiaShortcutStrip(
+                        palette: palette,
+                        onOpenCalc: onOpenCalc,
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MiGuardiaAddPatientButton extends StatelessWidget {
+  const _MiGuardiaAddPatientButton({
+    required this.dark,
+    required this.palette,
+    required this.onTap,
+  });
+
+  final bool dark;
+  final HomeV2Palette palette;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Material(
+        color: palette.accentSoft,
+        shape: StadiumBorder(
+          side: BorderSide(
+            color: palette.accent.withValues(
+              alpha: dark ? 0.46 : 0.36,
+            ),
+            width: 0.8,
+          ),
+        ),
+        child: InkWell(
+          onTap: () {
+            AppHaptics.light(context);
+            onTap();
+          },
+          customBorder: const StadiumBorder(),
+          overlayColor: palette.pressedOverlay,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 7,
+            ),
+            child: Text(
+              '+ PACIENTE',
+              style: TextStyle(
+                color: palette.accent,
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.35,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiGuardiaPatientList extends StatelessWidget {
+  const _MiGuardiaPatientList({
+    required this.dark,
+    required this.isEs,
+    required this.palette,
+    required this.sessions,
+    required this.onOpenInternacion,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final HomeV2Palette palette;
+  final List<PacienteSession> sessions;
+
+  final void Function(PacienteSession session)? onOpenInternacion;
+
+  @override
+  Widget build(BuildContext context) {
+    if (sessions.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 16,
+        ),
+        child: Column(
+          children: [
+            Icon(
+              Icons.person_add_alt_1_outlined,
+              size: 23,
+              color: palette.textMuted,
+            ),
+            const SizedBox(height: 7),
+            Text(
+              isEs
+                  ? 'Todavía no hay pacientes en la guardia.'
+                  : 'Ainda não há pacientes no plantão.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: palette.textSecondary,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        for (var index = 0; index < sessions.length; index++) ...[
+          _MiGuardiaPatientRow(
+            dark: dark,
+            isEs: isEs,
+            palette: palette,
+            session: sessions[index],
+            onOpenInternacion: onOpenInternacion,
+          ),
+          if (index < sessions.length - 1)
+            Container(
+              height: 0.7,
+              margin: const EdgeInsets.only(
+                left: 48,
+              ),
+              color: palette.dividerStrong,
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+class _MiGuardiaPatientRow extends StatelessWidget {
+  const _MiGuardiaPatientRow({
+    required this.dark,
+    required this.isEs,
+    required this.palette,
+    required this.session,
+    required this.onOpenInternacion,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final HomeV2Palette palette;
+  final PacienteSession session;
+
+  final void Function(PacienteSession session)? onOpenInternacion;
+
+  void _showSoapPreview(
+    BuildContext context,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => _SoapPreviewDialog(
+        session: session,
+        isEs: isEs,
+        dark: dark,
+        onOpenInternacion: onOpenInternacion,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final patient = session.paciente;
+    final patientName = patient.nome.trim();
+
+    final displayName = patientName.isNotEmpty
+        ? patientName
+        : (isEs ? 'Paciente sin nombre' : 'Paciente sem nome');
+
+    final bed = patient.cama.trim();
+
+    final severity = _miGuardiaSeverityForSession(
+      session,
+    );
+
+    final severityColor = severity.foreground(
+      dark,
+    );
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onOpenInternacion == null
+            ? null
+            : () {
+                AppHaptics.light(
+                  context,
+                );
+
+                onOpenInternacion?.call(
+                  session,
+                );
+              },
+        onLongPress: () {
+          AppHaptics.medium(
+            context,
+          );
+
+          _showSoapPreview(
+            context,
+          );
+        },
+        overlayColor: palette.pressedOverlay,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            2,
+            10,
+            2,
+            10,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: palette.surfaceStrong,
+                  borderRadius: BorderRadius.circular(
+                    6,
+                  ),
+                  border: Border.all(
+                    color: palette.border,
+                    width: 0.7,
+                  ),
+                ),
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  size: 17,
+                  color: palette.textSecondary,
+                ),
+              ),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: palette.textPrimary,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w800,
+                        height: 1.1,
+                      ),
+                    ),
+                    if (bed.isNotEmpty) ...[
+                      const SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        isEs ? 'Cama $bed' : 'Leito $bed',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: palette.textSecondary,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              _MiGuardiaSeverityChip(
+                dark: dark,
+                isEs: isEs,
+                severity: severity,
+                severityColor: severityColor,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiGuardiaSeverityChip extends StatelessWidget {
+  const _MiGuardiaSeverityChip({
+    required this.dark,
+    required this.isEs,
+    required this.severity,
+    required this.severityColor,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final _MiGuardiaSeverity severity;
+  final Color severityColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 7,
+        vertical: 4,
+      ),
+      decoration: BoxDecoration(
+        color: severityColor.withValues(
+          alpha: dark ? 0.16 : 0.10,
+        ),
+        borderRadius: BorderRadius.circular(
+          999,
+        ),
+        border: Border.all(
+          color: severityColor.withValues(
+            alpha: 0.42,
+          ),
+          width: 0.7,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 5,
+            height: 5,
+            decoration: BoxDecoration(
+              color: severityColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            severity.label(isEs),
+            style: TextStyle(
+              color: severityColor,
+              fontSize: 8.5,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.25,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MiGuardiaShortcutStrip extends StatelessWidget {
+  const _MiGuardiaShortcutStrip({
+    required this.palette,
+    required this.onOpenCalc,
+  });
+
+  final HomeV2Palette palette;
+
+  final void Function(String calcId) onOpenCalc;
+
+  static const shortcutIds = <String>[
+    'calc_cardio',
+    'calc_nefrologia',
+    'calc_hepatologia',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (var index = 0; index < shortcutIds.length; index++) ...[
+          Expanded(
+            child: _MiGuardiaShortcutButton(
+              palette: palette,
+              calcId: shortcutIds[index],
+              onTap: () {
+                onOpenCalc(
+                  shortcutIds[index],
+                );
+              },
+            ),
+          ),
+          if (index < shortcutIds.length - 1)
+            Container(
+              width: 0.7,
+              height: 48,
+              color: palette.dividerStrong,
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+class _MiGuardiaShortcutButton extends StatelessWidget {
+  const _MiGuardiaShortcutButton({
+    required this.palette,
+    required this.calcId,
+    required this.onTap,
+  });
+
+  final HomeV2Palette palette;
+  final String calcId;
+  final VoidCallback onTap;
+
+  String get label {
+    switch (calcId) {
+      case 'calc_cardio':
+        return 'CARDIO';
+
+      case 'calc_nefrologia':
+        return 'NEFRO';
+
+      case 'calc_hepatologia':
+        return 'HEPATO';
+
+      default:
+        return '';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final shortcut = calcById(
+      calcId,
+    );
+
+    if (shortcut == null) {
+      return const SizedBox(
+        height: 64,
+      );
+    }
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          AppHaptics.light(
+            context,
+          );
+
+          onTap();
+        },
+        overlayColor: palette.pressedOverlay,
+        child: SizedBox(
+          height: 95,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _medcasesSpecialtySvgIcon(
+                calcId,
+                Icon(
+                  shortcut.icon,
+                  size: 21,
+                  color: shortcut.color,
+                ),
+                size: 40,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: palette.textPrimary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.35,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class _PlantaoHeader extends StatelessWidget {
   final bool isEs;
@@ -565,13 +1418,13 @@ class _PlantaoHeader extends StatelessWidget {
     // Botão "+ Adicionar Paciente": borda e texto adaptativos
     final Color btnBorderColor = dark
         ? kGoldLight.withOpacity(0.55)
-        : Colors.grey.shade300;          // borda sutil, sem neon
+        : Colors.grey.shade300; // borda sutil, sem neon
     final Color btnBg = dark
         ? Colors.white.withOpacity(0.04)
-        : Colors.grey.shade50;           // fundo levemente destacado
+        : Colors.grey.shade50; // fundo levemente destacado
     final Color btnFgColor = dark
         ? kGoldLight.withOpacity(0.9)
-        : const Color(0xFF374151);       // slate-700 fosco legível
+        : const Color(0xFF374151); // slate-700 fosco legível
 
     // CORREÇÃO 1: container intermediário removido — botão e atalhos ficam
     // diretamente sobre o fundo do card principal "MEU PLANTÃO", sem camada
@@ -735,9 +1588,21 @@ class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
   // Cada entrada: (bg, border, textIcon)
   // Dark mode continua com color.withOpacity(0.12/0.30/1.0) — sem mudança.
   static const _kLightPalette = <String, (Color, Color, Color)>{
-    'calc_cardio':      (Color(0xFFFFEBEE), Color(0xFFEF9A9A), Color(0xFF7F0000)), // red.shade50 / red.shade200 / red.shade900
-    'calc_nefrologia':  (Color(0xFFE3F2FD), Color(0xFF90CAF9), Color(0xFF0D47A1)), // blue.shade50 / blue.shade200 / blue.shade900
-    'calc_hepatologia': (Color(0xFFFFF8E1), Color(0xFFFFCC80), Color(0xFFE65100)), // amber.shade50 / orange.shade200 / orange.shade900
+    'calc_cardio': (
+      Color(0xFFFFEBEE),
+      Color(0xFFEF9A9A),
+      Color(0xFF7F0000)
+    ), // red.shade50 / red.shade200 / red.shade900
+    'calc_nefrologia': (
+      Color(0xFFE3F2FD),
+      Color(0xFF90CAF9),
+      Color(0xFF0D47A1)
+    ), // blue.shade50 / blue.shade200 / blue.shade900
+    'calc_hepatologia': (
+      Color(0xFFFFF8E1),
+      Color(0xFFFFCC80),
+      Color(0xFFE65100)
+    ), // amber.shade50 / orange.shade200 / orange.shade900
   };
 
   @override
@@ -751,25 +1616,28 @@ class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
     // BUILD 435 [PASSO 3]: paleta adaptativa dark/light
     final Color bgColor;
     final Color borderColor;
-    final Color fgColor; // ícone + texto
+    final Color fgColor; // texto permanece com a paleta existente
+
+    // HOME V2: somente o ícone usa a cor clínica saturada original.
+    final Color vividIconColor = color;
 
     if (widget.dark) {
       // Dark mode: neon tint suave — comportamento original
-      bgColor     = color.withOpacity(0.12);
+      bgColor = color.withOpacity(0.12);
       borderColor = color.withOpacity(0.30);
-      fgColor     = color;
+      fgColor = color;
     } else {
       // Light mode: paleta pastel por card — legibilidade máxima
       final pastel = _kLightPalette[widget.calcId];
       if (pastel != null) {
-        bgColor     = pastel.$1;
+        bgColor = pastel.$1;
         borderColor = pastel.$2;
-        fgColor     = pastel.$3;
+        fgColor = pastel.$3;
       } else {
         // Fallback para cards sem paleta definida (future-proof)
-        bgColor     = color.withOpacity(0.08);
+        bgColor = color.withOpacity(0.08);
         borderColor = color.withOpacity(0.25);
-        fgColor     = color;
+        fgColor = color;
       }
     }
 
@@ -779,7 +1647,7 @@ class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
         widget.onTap();
       },
       onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp:   (_) => setState(() => _pressed = false),
+      onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
       child: AnimatedScale(
         scale: _pressed ? 0.93 : 1.0,
@@ -798,7 +1666,41 @@ class _GuardiaShortcutCardState extends State<_GuardiaShortcutCard> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(shortcut.icon, size: 20, color: fgColor),
+              Container(
+                width: 30,
+                height: 30,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: vividIconColor.withOpacity(
+                    widget.dark ? 0.20 : 0.12,
+                  ),
+                  border: Border.all(
+                    color: vividIconColor.withOpacity(
+                      widget.dark ? 0.82 : 0.56,
+                    ),
+                    width: 0.9,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: vividIconColor.withOpacity(
+                        widget.dark ? 0.58 : 0.32,
+                      ),
+                      blurRadius: 12,
+                      spreadRadius: -2,
+                    ),
+                  ],
+                ),
+                child: _medcasesSpecialtySvgIcon(
+                  widget.calcId,
+                  Icon(
+                    shortcut.icon,
+                    size: 19,
+                    color: vividIconColor,
+                  ),
+                  size: 28,
+                ),
+              ),
               const SizedBox(height: 5),
               Text(
                 label.toUpperCase(),
@@ -830,28 +1732,96 @@ Color _triageColorFromDiag(String diag) {
   final d = diag.toLowerCase();
   // RED — critical / emergency
   const redTerms = [
-    'shock', 'choque', 'sca', 'síndromo coronario agudo', 'síndrome coronariano agudo',
-    'infarto', 'iamcsst', 'iamssst', 'parada', 'pcrce', 'sepsis severa',
-    'falla orgánica', 'falla organica', 'falha orgânica', 'falha organica',
-    'iam', 'tep instável', 'tep instavel', 'edema agudo', 'insuficiencia respiratoria aguda',
-    'insuficiência respiratória aguda', 'status epileptico', 'status epilético',
-    'coma', 'stroke', 'avc isquemico', 'avc hemorragico', 'hemorragia',
-    'hemorragia cerebral', 'iam com supra', 'emergencia hipertensiva',
-    'emergencia hipertensíva', 'emergencia hipertensiva', 'anafilaxia', 'anafilaxis',
-    'tamponamento', 'pericardico', 'pericardi', 'eap', 'insuficiencia cardíaca aguda',
+    'shock',
+    'choque',
+    'sca',
+    'síndromo coronario agudo',
+    'síndrome coronariano agudo',
+    'infarto',
+    'iamcsst',
+    'iamssst',
+    'parada',
+    'pcrce',
+    'sepsis severa',
+    'falla orgánica',
+    'falla organica',
+    'falha orgânica',
+    'falha organica',
+    'iam',
+    'tep instável',
+    'tep instavel',
+    'edema agudo',
+    'insuficiencia respiratoria aguda',
+    'insuficiência respiratória aguda',
+    'status epileptico',
+    'status epilético',
+    'coma',
+    'stroke',
+    'avc isquemico',
+    'avc hemorragico',
+    'hemorragia',
+    'hemorragia cerebral',
+    'iam com supra',
+    'emergencia hipertensiva',
+    'emergencia hipertensíva',
+    'emergencia hipertensiva',
+    'anafilaxia',
+    'anafilaxis',
+    'tamponamento',
+    'pericardico',
+    'pericardi',
+    'eap',
+    'insuficiencia cardíaca aguda',
   ];
   // YELLOW — urgent / intermediate
   const yellowTerms = [
-    'sepsis', 'sepse', 'pneumonia', 'neumonía', 'neumonia', 'pielonefritis',
-    'pielonefrite', 'celulitis', 'celulite', 'ictericia', 'ictericia obstructiva',
-    'icterícia', 'colangitis', 'colangite', 'sdra', 'ards', 'irc descompensada',
-    'dra', 'irc', 'insuficiencia renal', 'insuficiência renal',
-    'epoc', 'epoc agudizado', 'dpoc', 'dpoc agudizado', 'crisis asmatica',
-    'crise asmática', 'hta', 'hipertension urgencia', 'hipertensão urgencia',
-    'disritmia', 'fibrilacão atrial', 'fibrilacion auricular', 'icpp', 'icc',
-    'diabetes descompensada', 'cetoacidose', 'cetoacidosis',
-    'meningitis', 'meningite', 'encefalitis', 'encefalite',
-    'trombosis', 'tvp', 'tep', 'embolismo pulmonar', 'embolia pulmonar',
+    'sepsis',
+    'sepse',
+    'pneumonia',
+    'neumonía',
+    'neumonia',
+    'pielonefritis',
+    'pielonefrite',
+    'celulitis',
+    'celulite',
+    'ictericia',
+    'ictericia obstructiva',
+    'icterícia',
+    'colangitis',
+    'colangite',
+    'sdra',
+    'ards',
+    'irc descompensada',
+    'dra',
+    'irc',
+    'insuficiencia renal',
+    'insuficiência renal',
+    'epoc',
+    'epoc agudizado',
+    'dpoc',
+    'dpoc agudizado',
+    'crisis asmatica',
+    'crise asmática',
+    'hta',
+    'hipertension urgencia',
+    'hipertensão urgencia',
+    'disritmia',
+    'fibrilacão atrial',
+    'fibrilacion auricular',
+    'icpp',
+    'icc',
+    'diabetes descompensada',
+    'cetoacidose',
+    'cetoacidosis',
+    'meningitis',
+    'meningite',
+    'encefalitis',
+    'encefalite',
+    'trombosis',
+    'tvp',
+    'tep',
+    'embolismo pulmonar',
+    'embolia pulmonar',
   ];
   for (final term in redTerms) {
     if (d.contains(term)) return const Color(0xFFEF4444); // red
@@ -889,8 +1859,9 @@ class _PlantaoContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = colors;
-    final hasPatients = firestoreSessions.isNotEmpty; // FIX 1: Firestore-sourced
-    final hasDrugs    = p.pinnedDrugs.isNotEmpty;
+    final hasPatients =
+        firestoreSessions.isNotEmpty; // FIX 1: Firestore-sourced
+    final hasDrugs = p.pinnedDrugs.isNotEmpty;
     // Filtra IDs proibidos antes de checar se há calcs para exibir
     final filteredCalcIds = p.pinnedCalcIds
         .where((id) => !_kForbiddenCalcIds.contains(id))
@@ -906,7 +1877,8 @@ class _PlantaoContent extends StatelessWidget {
 
     // SUPER ORDEM MASTER 306 M1: purga total — sem _AddFirstPatientRow,
     // sem _DefaultCalcShortcutsGrid. Apenas dados reais.
-    if (!hasPatients && !hasDrugs && !hasDeduplicatedCalcs) return const SizedBox.shrink();
+    if (!hasPatients && !hasDrugs && !hasDeduplicatedCalcs)
+      return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -940,7 +1912,8 @@ class _PlantaoContent extends StatelessWidget {
         // ── CALCULADORAS PINADAS — grid compacto (IDs fixos já deduplificados) ─
         if (hasDeduplicatedCalcs) ...[
           _PinnedCalcsGrid(
-            calcIds: deduplicatedCalcIds, // Fix#9: sem IDs cobertos por _GuardiaShortcutsRow
+            calcIds:
+                deduplicatedCalcIds, // Fix#9: sem IDs cobertos por _GuardiaShortcutsRow
             isEs: isEs,
             colors: c,
             onTap: onOpenCalc,
@@ -1037,9 +2010,12 @@ class _DefaultCalcCardState extends State<_DefaultCalcCard> {
     final s = widget.shortcut;
 
     return GestureDetector(
-      onTap: () { AppHaptics.selection(context); widget.onTap(); },
+      onTap: () {
+        AppHaptics.selection(context);
+        widget.onTap();
+      },
       onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp:   (_) => setState(() => _pressed = false),
+      onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
       child: AnimatedScale(
         scale: _pressed ? 0.95 : 1.0,
@@ -1101,29 +2077,36 @@ class _AddFirstPatientRow extends StatelessWidget {
   final bool isEs;
   final AppColors colors;
   final VoidCallback onTap;
-  const _AddFirstPatientRow({required this.isEs, required this.colors, required this.onTap});
+  const _AddFirstPatientRow(
+      {required this.isEs, required this.colors, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final c = colors;
     return GestureDetector(
-      onTap: () { AppHaptics.selection(context); onTap(); },
+      onTap: () {
+        AppHaptics.selection(context);
+        onTap();
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(
           color: const Color(0xFF3B82F6).withOpacity(0.05),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFF3B82F6).withOpacity(0.20), width: 1.2),
+          border: Border.all(
+              color: const Color(0xFF3B82F6).withOpacity(0.20), width: 1.2),
         ),
         child: Row(
           children: [
             Container(
-              width: 32, height: 32,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: const Color(0xFF3B82F6).withOpacity(0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.person_add_alt_1_rounded, size: 16, color: Color(0xFF3B82F6)),
+              child: const Icon(Icons.person_add_alt_1_rounded,
+                  size: 16, color: Color(0xFF3B82F6)),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -1131,18 +2114,26 @@ class _AddFirstPatientRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isEs ? 'Agregar paciente al turno' : 'Adicionar paciente ao plantão',
-                    style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700, color: c.textPrimary),
+                    isEs
+                        ? 'Agregar paciente al turno'
+                        : 'Adicionar paciente ao plantão',
+                    style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                        color: c.textPrimary),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    isEs ? 'Habitación, diagnóstico, tratamiento' : 'Quarto, diagnóstico, tratamento',
+                    isEs
+                        ? 'Habitación, diagnóstico, tratamiento'
+                        : 'Quarto, diagnóstico, tratamento',
                     style: TextStyle(fontSize: 11, color: c.textHint),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.add_circle_outline_rounded, size: 18, color: Color(0xFF3B82F6)),
+            const Icon(Icons.add_circle_outline_rounded,
+                size: 18, color: Color(0xFF3B82F6)),
           ],
         ),
       ),
@@ -1218,8 +2209,7 @@ class _FirestoreSessionsColumn extends StatelessWidget {
         final nome = s.paciente?.nome.trim() ?? '';
         final key = nome.isNotEmpty ? nome.toLowerCase() : s.sessionKey;
         final existing = byPatient[key];
-        if (existing == null ||
-            (s.savedAt.isAfter(existing.savedAt))) {
+        if (existing == null || (s.savedAt.isAfter(existing.savedAt))) {
           byPatient[key] = s;
         }
       }
@@ -1300,7 +2290,8 @@ class _FirestoreSessionCard extends StatelessWidget {
     // Build 188: RepaintBoundary isola cada card do grid — 120Hz fluido
     // Build 187: wraps card with Material+InkWell for tap-to-navigate
     // Build 192 Fix 3: onLongPress abre pop-up de prévia SOAP
-    return RepaintBoundary(child: Material(
+    return RepaintBoundary(
+        child: Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
@@ -1318,120 +2309,142 @@ class _FirestoreSessionCard extends StatelessWidget {
         splashColor: triageColor.withOpacity(0.10),
         highlightColor: triageColor.withOpacity(0.06),
         child: AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: c.cardBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: triageColor.withOpacity(0.70),
-          width: 1.8,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: triageColor.withOpacity(0.12),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Ícone com cor de triagem ────────────────────────────────────
-          Column(
-            children: [
-              Container(
-                width: 42, height: 42,
-                decoration: BoxDecoration(
-                  color: triageColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(Icons.bed_rounded, size: 20, color: triageColor),
-              ),
-              if (cama.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: triageColor.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    cama,
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: triageColor),
-                  ),
-                ),
-              ],
-            ],
-          ),
-          const SizedBox(width: 12),
-
-          // ── Dados do paciente ─────────────────────────────────────────
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Nome
-                Text(
-                  nome,
-                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w800, color: c.textPrimary, letterSpacing: -0.2),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (diag.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Dx: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: c.textHint)),
-                      Expanded(
-                        child: Text(
-                          diag,
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.textSecondary),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-                if (evol > 0) ...[
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.history_rounded, size: 10, color: triageColor),
-                      const SizedBox(width: 3),
-                      Text(
-                        isEs
-                            ? 'Día ${p.diaInternacao} · $evol evol.'
-                            : 'Dia ${p.diaInternacao} · $evol evol.',
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: triageColor),
-                      ),
-                    ],
-                  ),
-                ],
-              ],
+          duration: const Duration(milliseconds: 220),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: triageColor.withOpacity(0.70),
+              width: 1.8,
             ),
-          ),
-
-          // ── Ícone de prévia (toque longo) + indicador de triagem ──────
-          const SizedBox(width: 6),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.circle, size: 8, color: triageColor),
-              if (evol > 0) ...[
-                const SizedBox(height: 6),
-                Icon(Icons.preview_rounded, size: 13, color: triageColor.withOpacity(0.60)),
-              ],
+            boxShadow: [
+              BoxShadow(
+                color: triageColor.withOpacity(0.12),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
             ],
           ),
-        ],
-      ),
-    ),  // end InkWell child (AnimatedContainer)
-      ),  // end InkWell
-    ));  // end Material + RepaintBoundary
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Ícone com cor de triagem ────────────────────────────────────
+              Column(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: triageColor.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child:
+                        Icon(Icons.bed_rounded, size: 20, color: triageColor),
+                  ),
+                  if (cama.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: triageColor.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        cama,
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w900,
+                            color: triageColor),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(width: 12),
+
+              // ── Dados do paciente ─────────────────────────────────────────
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Nome
+                    Text(
+                      nome,
+                      style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w800,
+                          color: c.textPrimary,
+                          letterSpacing: -0.2),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (diag.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Dx: ',
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  color: c.textHint)),
+                          Expanded(
+                            child: Text(
+                              diag,
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: c.textSecondary),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    if (evol > 0) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.history_rounded,
+                              size: 10, color: triageColor),
+                          const SizedBox(width: 3),
+                          Text(
+                            isEs
+                                ? 'Día ${p.diaInternacao} · $evol evol.'
+                                : 'Dia ${p.diaInternacao} · $evol evol.',
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: triageColor),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+
+              // ── Ícone de prévia (toque longo) + indicador de triagem ──────
+              const SizedBox(width: 6),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.circle, size: 8, color: triageColor),
+                  if (evol > 0) ...[
+                    const SizedBox(height: 6),
+                    Icon(Icons.preview_rounded,
+                        size: 13, color: triageColor.withOpacity(0.60)),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        ), // end InkWell child (AnimatedContainer)
+      ), // end InkWell
+    )); // end Material + RepaintBoundary
   }
 }
 
@@ -1528,7 +2541,8 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
     if (ex.culturas.isNotEmpty) buf.writeln('Culturas: ${ex.culturas}');
     if (ex.ecg.isNotEmpty) buf.writeln('ECG: ${ex.ecg}');
     if (o.tratamientoActual.isNotEmpty)
-      buf.writeln('${isEs ? 'Tto. actual' : 'Tto. atual'}: ${o.tratamientoActual}');
+      buf.writeln(
+          '${isEs ? 'Tto. actual' : 'Tto. atual'}: ${o.tratamientoActual}');
 
     buf.writeln('');
     buf.writeln(isEs ? '── A — EVALUACIÓN ──' : '── A — AVALIAÇÃO ──');
@@ -1541,7 +2555,8 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
     buf.writeln(isEs ? '── P — PLAN ──' : '── P — PLANO ──');
     if (p.planTerapeutico.isNotEmpty) buf.writeln(p.planTerapeutico);
     if (p.criteriosAlta.isNotEmpty)
-      buf.writeln('${isEs ? 'Criterios de alta' : 'Critérios de alta'}: ${p.criteriosAlta}');
+      buf.writeln(
+          '${isEs ? 'Criterios de alta' : 'Critérios de alta'}: ${p.criteriosAlta}');
 
     // metadadosAdicionais — exibe se houver dados extras capturados pela IA
     if (ev.metadadosAdicionais.isNotEmpty) {
@@ -1586,8 +2601,10 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
       builder: (_) => _SoapCopySheet(
         dark: dark,
         lang: lang,
-        onCopyFull: () => doCopy(soapCompletoString(ev, isEs, autorNombre, paciente)),
-        onCopyResumida: () => doCopy(soapResumidoString(ev, isEs, autorNombre, paciente)),
+        onCopyFull: () =>
+            doCopy(soapCompletoString(ev, isEs, autorNombre, paciente)),
+        onCopyResumida: () =>
+            doCopy(soapResumidoString(ev, isEs, autorNombre, paciente)),
         onCopyPasaje: () => doCopy(soapPassagemString(ev, isEs, paciente)),
       ),
     );
@@ -1599,18 +2616,21 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
     final p = session.paciente;
     final nome = p.nome.isNotEmpty ? p.nome : (isEs ? 'Paciente' : 'Paciente');
     final hasHistorial = session.historial.isNotEmpty;
-    final selectedEv =
-        hasHistorial && _selectedEvolIndex >= 0 && _selectedEvolIndex < session.historial.length
-            ? session.historial[_selectedEvolIndex]
-            : null;
+    final selectedEv = hasHistorial &&
+            _selectedEvolIndex >= 0 &&
+            _selectedEvolIndex < session.historial.length
+        ? session.historial[_selectedEvolIndex]
+        : null;
     final soapText = selectedEv != null ? _buildSoapText(selectedEv) : '';
     final triageColor = _triageColorFromDiag(p.diagnostico);
 
     final bg = dark ? const Color(0xFF0F1116) : Colors.white;
     final textPrimary = dark ? Colors.white : const Color(0xFF0D1117);
-    final textSecondary = dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final textSecondary =
+        dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
     final cardBg = dark ? const Color(0xFF1A1F2E) : const Color(0xFFF8F9FA);
-    final borderColor = dark ? const Color(0xFF2D3748) : const Color(0xFFE5E7EB);
+    final borderColor =
+        dark ? const Color(0xFF2D3748) : const Color(0xFFE5E7EB);
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -1640,17 +2660,20 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
               padding: const EdgeInsets.fromLTRB(16, 14, 12, 12),
               decoration: BoxDecoration(
                 color: triageColor.withOpacity(dark ? 0.12 : 0.07),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(19)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(19)),
               ),
               child: Row(
                 children: [
                   Container(
-                    width: 36, height: 36,
+                    width: 36,
+                    height: 36,
                     decoration: BoxDecoration(
                       color: triageColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(Icons.bed_rounded, size: 18, color: triageColor),
+                    child:
+                        Icon(Icons.bed_rounded, size: 18, color: triageColor),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -1684,17 +2707,23 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                   // Build 196: Botão Copiar — abre tri-format ModalBottomSheet
                   if (selectedEv != null)
                     IconButton(
-                      icon: Icon(Icons.copy_all_rounded, size: 18, color: triageColor),
-                      tooltip: isEs ? 'Exportar evolución' : 'Exportar evolução',
-                      onPressed: () => _showCopySheet(context, selectedEv, session.paciente),
+                      icon: Icon(Icons.copy_all_rounded,
+                          size: 18, color: triageColor),
+                      tooltip:
+                          isEs ? 'Exportar evolución' : 'Exportar evolução',
+                      onPressed: () =>
+                          _showCopySheet(context, selectedEv, session.paciente),
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      constraints:
+                          const BoxConstraints(minWidth: 36, minHeight: 36),
                     ),
                   IconButton(
-                    icon: Icon(Icons.close_rounded, size: 20, color: textSecondary),
+                    icon: Icon(Icons.close_rounded,
+                        size: 20, color: textSecondary),
                     onPressed: () => Navigator.of(context).pop(),
                     padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
                   ),
                 ],
               ),
@@ -1706,7 +2735,8 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
                 decoration: BoxDecoration(
                   color: cardBg,
-                  border: Border(bottom: BorderSide(color: borderColor, width: 0.8)),
+                  border: Border(
+                      bottom: BorderSide(color: borderColor, width: 0.8)),
                 ),
                 child: Row(
                   children: [
@@ -1732,7 +2762,8 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                           fontWeight: FontWeight.w600,
                           color: textPrimary,
                         ),
-                        icon: Icon(Icons.expand_more_rounded, size: 18, color: triageColor),
+                        icon: Icon(Icons.expand_more_rounded,
+                            size: 18, color: triageColor),
                         items: List.generate(session.historial.length, (i) {
                           final label = _evolLabel(i);
                           final isLatest = i == session.historial.length - 1;
@@ -1745,13 +2776,16 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                               style: TextStyle(
                                 fontSize: 12.5,
                                 color: textPrimary,
-                                fontWeight: isLatest ? FontWeight.w700 : FontWeight.w500,
+                                fontWeight: isLatest
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
                               ),
                             ),
                           );
                         }),
                         onChanged: (idx) {
-                          if (idx != null) setState(() => _selectedEvolIndex = idx);
+                          if (idx != null)
+                            setState(() => _selectedEvolIndex = idx);
                         },
                       ),
                     ),
@@ -1763,11 +2797,15 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                 child: Row(
                   children: [
-                    Icon(Icons.access_time_rounded, size: 13, color: triageColor),
+                    Icon(Icons.access_time_rounded,
+                        size: 13, color: triageColor),
                     const SizedBox(width: 5),
                     Text(
                       _evolLabel(0),
-                      style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: triageColor),
+                      style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                          color: triageColor),
                     ),
                   ],
                 ),
@@ -1781,7 +2819,9 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                       child: Padding(
                         padding: const EdgeInsets.all(24),
                         child: Text(
-                          isEs ? 'Sin evoluciones registradas.' : 'Sem evoluções registradas.',
+                          isEs
+                              ? 'Sin evoluciones registradas.'
+                              : 'Sem evoluções registradas.',
                           style: TextStyle(fontSize: 13, color: textSecondary),
                           textAlign: TextAlign.center,
                         ),
@@ -1812,9 +2852,11 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                           // Texto SOAP formatado em blocos visuais
                           if (soapText.trim().isNotEmpty)
                             ...soapText.split('\n──').map((block) {
-                              if (block.trim().isEmpty) return const SizedBox.shrink();
+                              if (block.trim().isEmpty)
+                                return const SizedBox.shrink();
                               final lines = ('──$block').split('\n');
-                              final header = lines.isNotEmpty ? lines.first.trim() : '';
+                              final header =
+                                  lines.isNotEmpty ? lines.first.trim() : '';
                               final body = lines.skip(1).join('\n').trim();
                               final isHeader = header.startsWith('──');
                               return Column(
@@ -1822,7 +2864,8 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                                 children: [
                                   if (isHeader)
                                     Container(
-                                      margin: const EdgeInsets.only(top: 10, bottom: 4),
+                                      margin: const EdgeInsets.only(
+                                          top: 10, bottom: 4),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 3),
                                       decoration: BoxDecoration(
@@ -1830,7 +2873,10 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
-                                        header.replaceAll('──', '').replaceAll('─', '').trim(),
+                                        header
+                                            .replaceAll('──', '')
+                                            .replaceAll('─', '')
+                                            .trim(),
                                         style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.w800,
@@ -1856,7 +2902,9 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                                     Padding(
                                       padding: const EdgeInsets.only(bottom: 6),
                                       child: Text(
-                                        isEs ? 'Sin datos completados' : 'Sem dados preenchidos',
+                                        isEs
+                                            ? 'Sin datos completados'
+                                            : 'Sem dados preenchidos',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey[500],
@@ -1892,23 +2940,29 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                     runSpacing: 4,
                     children: [
                       if (p.idade.isNotEmpty)
-                        _infoPill(isEs ? 'Edad: ${p.idade}' : 'Idade: ${p.idade}',
-                            triageColor, dark),
+                        _infoPill(
+                            isEs ? 'Edad: ${p.idade}' : 'Idade: ${p.idade}',
+                            triageColor,
+                            dark),
                       if (p.sexo.isNotEmpty)
-                        _infoPill(p.sexo == 'M'
-                            ? (isEs ? 'Masculino' : 'Masculino')
-                            : (isEs ? 'Femenino' : 'Feminino'),
-                            triageColor, dark),
+                        _infoPill(
+                            p.sexo == 'M'
+                                ? (isEs ? 'Masculino' : 'Masculino')
+                                : (isEs ? 'Femenino' : 'Feminino'),
+                            triageColor,
+                            dark),
                       _infoPill(
                           isEs
                               ? 'Día ${p.diaInternacao}'
                               : 'Dia ${p.diaInternacao}',
-                          triageColor, dark),
+                          triageColor,
+                          dark),
                       _infoPill(
                           isEs
                               ? '${session.historial.length} evol.'
                               : '${session.historial.length} evol.',
-                          triageColor, dark),
+                          triageColor,
+                          dark),
                     ],
                   ),
 
@@ -1957,7 +3011,9 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  isEs ? 'Evoluir paciente' : 'Evoluir paciente',
+                                  isEs
+                                      ? 'Evoluir paciente'
+                                      : 'Evoluir paciente',
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
@@ -1982,21 +3038,21 @@ class _SoapPreviewDialogState extends State<_SoapPreviewDialog> {
   }
 
   Widget _infoPill(String label, Color color, bool dark) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-    decoration: BoxDecoration(
-      color: color.withOpacity(dark ? 0.15 : 0.08),
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: color.withOpacity(0.30), width: 0.8),
-    ),
-    child: Text(
-      label,
-      style: TextStyle(
-        fontSize: 10.5,
-        fontWeight: FontWeight.w600,
-        color: color,
-      ),
-    ),
-  );
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color: color.withOpacity(dark ? 0.15 : 0.08),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withOpacity(0.30), width: 0.8),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 10.5,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2025,18 +3081,22 @@ class _SoapCopySheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = dark ? const Color(0xFF0F1116) : Colors.white;
     final textPrimary = dark ? Colors.white : const Color(0xFF0D1117);
-    final textSecondary = dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final textSecondary =
+        dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
     final cardBg = dark ? const Color(0xFF1A1F2E) : const Color(0xFFF8F9FA);
-    final borderColor = dark ? const Color(0xFF2D3748) : const Color(0xFFE5E7EB);
+    final borderColor =
+        dark ? const Color(0xFF2D3748) : const Color(0xFFE5E7EB);
 
     return Container(
       decoration: BoxDecoration(
         color: bg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border.all(color: const Color(0xFF059669).withOpacity(0.25)),
+        border: Border.all(color: const Color(0xFF0D6B57).withOpacity(0.25)),
       ),
       padding: EdgeInsets.fromLTRB(
-        20, 12, 20,
+        20,
+        12,
+        20,
         20 + MediaQuery.of(context).viewPadding.bottom,
       ),
       child: Column(
@@ -2045,7 +3105,8 @@ class _SoapCopySheet extends StatelessWidget {
           // Handle
           Center(
             child: Container(
-              width: 36, height: 4,
+              width: 36,
+              height: 4,
               decoration: BoxDecoration(
                 color: borderColor,
                 borderRadius: BorderRadius.circular(2),
@@ -2058,14 +3119,16 @@ class _SoapCopySheet extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 34, height: 34,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF059669), Color(0xFF047857)],
+                    colors: [Color(0xFF0D6B57), Color(0xFF0D6B57)],
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.copy_all_rounded, size: 17, color: Colors.white),
+                child: const Icon(Icons.copy_all_rounded,
+                    size: 17, color: Colors.white),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -2116,7 +3179,7 @@ class _SoapCopySheet extends StatelessWidget {
           _SoapCopyTile(
             dark: dark,
             icon: Icons.compress_rounded,
-            iconColor: const Color(0xFF059669),
+            iconColor: const Color(0xFF0D6B57),
             cardBg: cardBg,
             borderColor: borderColor,
             textPrimary: textPrimary,
@@ -2126,7 +3189,7 @@ class _SoapCopySheet extends StatelessWidget {
                 ? 'Formato horizontal denso — ideal para sistemas legados'
                 : 'Formato horizontal denso — ideal para sistemas legados',
             badgeLabel: 'INLINE',
-            badgeColor: const Color(0xFF059669),
+            badgeColor: const Color(0xFF0D6B57),
             onTap: onCopyResumida,
           ),
           const SizedBox(height: 8),
@@ -2199,7 +3262,8 @@ class _SoapCopyTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 42, height: 42,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: iconColor.withOpacity(dark ? 0.15 : 0.10),
                 borderRadius: BorderRadius.circular(12),
@@ -2225,7 +3289,8 @@ class _SoapCopyTile extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: badgeColor.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(6),
@@ -2297,7 +3362,10 @@ class _PatientCardState extends State<_PatientCard> {
 
     return GestureDetector(
       onTap: () {
-        if (_showRemove) { setState(() => _showRemove = false); return; }
+        if (_showRemove) {
+          setState(() => _showRemove = false);
+          return;
+        }
         AppHaptics.selection(context);
         widget.onTap();
       },
@@ -2315,9 +3383,7 @@ class _PatientCardState extends State<_PatientCard> {
           duration: const Duration(milliseconds: 220),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: _showRemove
-                ? AppColors.alertRedBg
-                : c.cardBg,
+            color: _showRemove ? AppColors.alertRedBg : c.cardBg,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: _showRemove
@@ -2337,7 +3403,9 @@ class _PatientCardState extends State<_PatientCard> {
               ? _RemoveConfirmRow(
                   isEs: widget.isEs,
                   colors: c,
-                  label: pt.name.isNotEmpty ? pt.name : (widget.isEs ? 'este paciente' : 'este paciente'),
+                  label: pt.name.isNotEmpty
+                      ? pt.name
+                      : (widget.isEs ? 'este paciente' : 'este paciente'),
                   onConfirm: widget.onRemove,
                   onCancel: () => setState(() => _showRemove = false),
                 )
@@ -2353,7 +3421,8 @@ class _PatientCardContent extends StatelessWidget {
   final bool isEs;
   final AppColors colors;
 
-  const _PatientCardContent({required this.patient, required this.isEs, required this.colors});
+  const _PatientCardContent(
+      {required this.patient, required this.isEs, required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -2367,12 +3436,14 @@ class _PatientCardContent extends StatelessWidget {
         Column(
           children: [
             Container(
-              width: 42, height: 42,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: const Color(0xFF3B82F6).withOpacity(0.10),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.bed_rounded, size: 20, color: Color(0xFF3B82F6)),
+              child: const Icon(Icons.bed_rounded,
+                  size: 20, color: Color(0xFF3B82F6)),
             ),
             if (pt.room.isNotEmpty) ...[
               const SizedBox(height: 4),
@@ -2384,7 +3455,10 @@ class _PatientCardContent extends StatelessWidget {
                 ),
                 child: Text(
                   pt.room,
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF3B82F6)),
+                  style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF3B82F6)),
                 ),
               ),
             ],
@@ -2401,7 +3475,11 @@ class _PatientCardContent extends StatelessWidget {
               if (pt.name.isNotEmpty)
                 Text(
                   pt.name,
-                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w800, color: c.textPrimary, letterSpacing: -0.2),
+                  style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w800,
+                      color: c.textPrimary,
+                      letterSpacing: -0.2),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -2414,12 +3492,18 @@ class _PatientCardContent extends StatelessWidget {
                   children: [
                     Text(
                       isEs ? 'Dx: ' : 'Dx: ',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: c.textHint),
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: c.textHint),
                     ),
                     Expanded(
                       child: Text(
                         pt.diagnosis,
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.textSecondary),
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: c.textSecondary),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -2436,12 +3520,18 @@ class _PatientCardContent extends StatelessWidget {
                   children: [
                     Text(
                       isEs ? 'Tto: ' : 'Trat: ',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: c.textHint),
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: c.textHint),
                     ),
                     Expanded(
                       child: Text(
                         pt.treatment,
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.textSecondary),
+                        style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: c.textSecondary),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -2454,14 +3544,16 @@ class _PatientCardContent extends StatelessWidget {
               if (pt.notes.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                   decoration: BoxDecoration(
                     color: c.surface,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     pt.notes,
-                    style: TextStyle(fontSize: 10.5, color: c.textHint, height: 1.4),
+                    style: TextStyle(
+                        fontSize: 10.5, color: c.textHint, height: 1.4),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -2502,12 +3594,16 @@ class _RemoveConfirmRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.delete_outline_rounded, size: 18, color: AppColors.alertRed),
+        const Icon(Icons.delete_outline_rounded,
+            size: 18, color: AppColors.alertRed),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
             isEs ? 'Eliminar $label?' : 'Remover $label?',
-            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700, color: AppColors.alertRed),
+            style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.alertRed),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -2517,7 +3613,10 @@ class _RemoveConfirmRow extends StatelessWidget {
           onTap: onCancel,
           child: Text(
             isEs ? 'No' : 'Não',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colors.textSecondary),
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: colors.textSecondary),
           ),
         ),
         const SizedBox(width: 16),
@@ -2525,7 +3624,10 @@ class _RemoveConfirmRow extends StatelessWidget {
           onTap: onConfirm,
           child: const Text(
             'OK',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.alertRed),
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                color: AppColors.alertRed),
           ),
         ),
       ],
@@ -2559,7 +3661,8 @@ class _PlantaoLoadingShell extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: const Icon(Icons.local_hospital_outlined, size: 16, color: kGoldLight),
+          child: const Icon(Icons.local_hospital_outlined,
+              size: 16, color: kGoldLight),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -2578,7 +3681,8 @@ class _PlantaoLoadingShell extends StatelessWidget {
           height: 16,
           child: CircularProgressIndicator(
             strokeWidth: 1.5,
-            valueColor: AlwaysStoppedAnimation<Color>(c.green.withOpacity(0.60)),
+            valueColor:
+                AlwaysStoppedAnimation<Color>(c.green.withOpacity(0.60)),
           ),
         ),
       ],
@@ -2595,39 +3699,51 @@ class _EmptyState extends StatefulWidget {
   final AppColors colors;
   final VoidCallback onTap;
 
-  const _EmptyState({required this.isEs, required this.colors, required this.onTap});
+  const _EmptyState(
+      {required this.isEs, required this.colors, required this.onTap});
 
   @override
   State<_EmptyState> createState() => _EmptyStateState();
 }
 
-class _EmptyStateState extends State<_EmptyState> with SingleTickerProviderStateMixin {
+class _EmptyStateState extends State<_EmptyState>
+    with SingleTickerProviderStateMixin {
   late AnimationController _pulseCtrl;
   late Animation<double> _pulseAnim;
 
   @override
   void initState() {
     super.initState();
-    _pulseCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1800))
+    _pulseCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1800))
       ..repeat(reverse: true);
-    _pulseAnim = Tween(begin: 0.5, end: 1.0).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+    _pulseAnim = Tween(begin: 0.5, end: 1.0)
+        .animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
   }
 
   @override
-  void dispose() { _pulseCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    _pulseCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final c = widget.colors;
 
     return GestureDetector(
-      onTap: () { AppHaptics.selection(context); widget.onTap(); },
+      onTap: () {
+        AppHaptics.selection(context);
+        widget.onTap();
+      },
       child: AnimatedBuilder(
         animation: _pulseAnim,
         builder: (_, __) => CustomPaint(
           painter: _DashedBorderPainter(
             color: c.green.withOpacity(_pulseAnim.value * 0.4),
-            radius: 16, dashWidth: 6, dashSpace: 5,
+            radius: 16,
+            dashWidth: 6,
+            dashSpace: 5,
           ),
           child: Container(
             width: double.infinity,
@@ -2643,27 +3759,44 @@ class _EmptyStateState extends State<_EmptyState> with SingleTickerProviderState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _HintChip(icon: Icons.bed_outlined, label: widget.isEs ? 'Pacientes' : 'Pacientes', color: const Color(0xFF3B82F6)),
+                    _HintChip(
+                        icon: Icons.bed_outlined,
+                        label: widget.isEs ? 'Pacientes' : 'Pacientes',
+                        color: const Color(0xFF3B82F6)),
                     const SizedBox(width: 8),
-                    _HintChip(icon: Icons.medication_outlined, label: widget.isEs ? 'Fármacos' : 'Fármacos', color: const Color(0xFF10B981)),
+                    _HintChip(
+                        icon: Icons.medication_outlined,
+                        label: widget.isEs ? 'Fármacos' : 'Fármacos',
+                        color: const Color(0xFF10B981)),
                     const SizedBox(width: 8),
-                    _HintChip(icon: Icons.calculate_outlined, label: widget.isEs ? 'Calcs' : 'Calcs', color: const Color(0xFF8B5CF6)),
+                    _HintChip(
+                        icon: Icons.calculate_outlined,
+                        label: widget.isEs ? 'Calcs' : 'Calcs',
+                        color: const Color(0xFF8B5CF6)),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  width: 44, height: 44,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     color: c.green.withOpacity(0.10),
                     shape: BoxShape.circle,
-                    border: Border.all(color: c.green.withOpacity(0.25), width: 1.5),
+                    border: Border.all(
+                        color: c.green.withOpacity(0.25), width: 1.5),
                   ),
                   child: Icon(Icons.add_rounded, size: 22, color: c.green),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  widget.isEs ? 'Personaliza tu guardia' : 'Personalize seu plantão',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: c.textPrimary, letterSpacing: -0.3),
+                  widget.isEs
+                      ? 'Personaliza tu guardia'
+                      : 'Personalize seu plantão',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: c.textPrimary,
+                      letterSpacing: -0.3),
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -2671,15 +3804,24 @@ class _EmptyStateState extends State<_EmptyState> with SingleTickerProviderState
                       ? 'Fija pacientes, fármacos y calculadoras\npara acceso inmediato en tu turno.'
                       : 'Fixe pacientes, fármacos e calculadoras\npara acesso imediato no plantão.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: c.textSecondary, height: 1.5),
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: c.textSecondary,
+                      height: 1.5),
                 ),
                 const SizedBox(height: 14),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
-                  decoration: BoxDecoration(color: c.green, borderRadius: BorderRadius.circular(20)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
+                  decoration: BoxDecoration(
+                      color: c.green, borderRadius: BorderRadius.circular(20)),
                   child: Text(
                     widget.isEs ? 'Empezar →' : 'Começar →',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white),
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white),
                   ),
                 ),
               ],
@@ -2695,7 +3837,8 @@ class _HintChip extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
-  const _HintChip({required this.icon, required this.label, required this.color});
+  const _HintChip(
+      {required this.icon, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -2711,7 +3854,9 @@ class _HintChip extends StatelessWidget {
         children: [
           Icon(icon, size: 12, color: color),
           const SizedBox(width: 4),
-          Text(label, style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: color)),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 10.5, fontWeight: FontWeight.w700, color: color)),
         ],
       ),
     );
@@ -2728,18 +3873,31 @@ class _DashedBorderPainter extends CustomPainter {
   final double dashWidth;
   final double dashSpace;
 
-  _DashedBorderPainter({required this.color, required this.radius, required this.dashWidth, required this.dashSpace});
+  _DashedBorderPainter(
+      {required this.color,
+      required this.radius,
+      required this.dashWidth,
+      required this.dashSpace});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = color..strokeWidth = 1.8..style = PaintingStyle.stroke;
-    final path = Path()..addRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, size.width, size.height), Radius.circular(radius)));
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.8
+      ..style = PaintingStyle.stroke;
+    final path = Path()
+      ..addRRect(RRect.fromRectAndRadius(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+          Radius.circular(radius)));
     for (final metric in path.computeMetrics()) {
       double distance = 0;
       bool draw = true;
       while (distance < metric.length) {
         final next = distance + (draw ? dashWidth : dashSpace);
-        if (draw) canvas.drawPath(metric.extractPath(distance, next.clamp(0, metric.length)), paint);
+        if (draw)
+          canvas.drawPath(
+              metric.extractPath(distance, next.clamp(0, metric.length)),
+              paint);
         distance = next;
         draw = !draw;
       }
@@ -2778,7 +3936,11 @@ class _SectionLabel extends StatelessWidget {
         const SizedBox(width: 5),
         Text(
           label,
-          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, letterSpacing: 1.5, color: color),
+          style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+              color: color),
         ),
         const Spacer(),
         if (trailing != null) trailing!,
@@ -2798,7 +3960,12 @@ class _PinnedDrugsRow extends StatelessWidget {
   final void Function(DrugModel) onTap;
   final void Function(DrugModel) onUnpin;
 
-  const _PinnedDrugsRow({required this.drugs, required this.isEs, required this.colors, required this.onTap, required this.onUnpin});
+  const _PinnedDrugsRow(
+      {required this.drugs,
+      required this.isEs,
+      required this.colors,
+      required this.onTap,
+      required this.onUnpin});
 
   @override
   Widget build(BuildContext context) {
@@ -2813,7 +3980,9 @@ class _PinnedDrugsRow extends StatelessWidget {
         itemCount: drugs.length,
         separatorBuilder: (_, __) => const SizedBox(width: 10),
         itemBuilder: (_, i) => _DrugPinnedCard(
-          drug: drugs[i], isEs: isEs, colors: colors,
+          drug: drugs[i],
+          isEs: isEs,
+          colors: colors,
           onTap: () => onTap(drugs[i]),
           onUnpin: () => onUnpin(drugs[i]),
         ),
@@ -2833,7 +4002,12 @@ class _DrugPinnedCard extends StatefulWidget {
   final VoidCallback onTap;
   final VoidCallback onUnpin;
 
-  const _DrugPinnedCard({required this.drug, required this.isEs, required this.colors, required this.onTap, required this.onUnpin});
+  const _DrugPinnedCard(
+      {required this.drug,
+      required this.isEs,
+      required this.colors,
+      required this.onTap,
+      required this.onUnpin});
 
   @override
   State<_DrugPinnedCard> createState() => _DrugPinnedCardState();
@@ -2848,16 +4022,25 @@ class _DrugPinnedCardState extends State<_DrugPinnedCard> {
     final c = widget.colors;
     final drug = widget.drug;
     final route = drug.route.toUpperCase();
-    final className = (drug.className[widget.isEs ? 'es' : 'pt'] ?? drug.className['es'] ?? '');
-    final classShort = className.length > 14 ? '${className.substring(0, 13)}…' : className;
+    final className = (drug.className[widget.isEs ? 'es' : 'pt'] ??
+        drug.className['es'] ??
+        '');
+    final classShort =
+        className.length > 14 ? '${className.substring(0, 13)}…' : className;
 
     return GestureDetector(
       onTap: () {
-        if (_showUnpin) { setState(() => _showUnpin = false); return; }
+        if (_showUnpin) {
+          setState(() => _showUnpin = false);
+          return;
+        }
         AppHaptics.selection(context);
         widget.onTap();
       },
-      onLongPress: () { AppHaptics.medium(context); setState(() => _showUnpin = !_showUnpin); },
+      onLongPress: () {
+        AppHaptics.medium(context);
+        setState(() => _showUnpin = !_showUnpin);
+      },
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
@@ -2872,26 +4055,56 @@ class _DrugPinnedCardState extends State<_DrugPinnedCard> {
           decoration: BoxDecoration(
             color: _showUnpin ? AppColors.alertRedBg : c.cardBg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: _showUnpin ? AppColors.alertRedBorder : c.border, width: 1.2),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(c.dark ? 0.25 : 0.06), blurRadius: 8, offset: const Offset(0, 2))],
+            border: Border.all(
+                color: _showUnpin ? AppColors.alertRedBorder : c.border,
+                width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(c.dark ? 0.25 : 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2))
+            ],
           ),
           child: _showUnpin
-              ? _UnpinOverlay(isEs: widget.isEs, colors: c, onConfirm: widget.onUnpin, onCancel: () => setState(() => _showUnpin = false))
+              ? _UnpinOverlay(
+                  isEs: widget.isEs,
+                  colors: c,
+                  onConfirm: widget.onUnpin,
+                  onCancel: () => setState(() => _showUnpin = false))
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(color: c.green.withOpacity(0.12), borderRadius: BorderRadius.circular(4)),
-                      child: Text(route.length > 8 ? route.substring(0, 8) : route,
-                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: c.green, letterSpacing: 0.5)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                          color: c.green.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Text(
+                          route.length > 8 ? route.substring(0, 8) : route,
+                          style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w900,
+                              color: c.green,
+                              letterSpacing: 0.5)),
                     ),
                     const Spacer(),
-                    Text(drug.nameL10n(widget.isEs ? 'es' : 'pt'), maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: c.textPrimary, letterSpacing: -0.3)),
+                    Text(drug.nameL10n(widget.isEs ? 'es' : 'pt'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: c.textPrimary,
+                            letterSpacing: -0.3)),
                     const SizedBox(height: 2),
-                    Text(classShort, maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: c.textHint)),
+                    Text(classShort,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: c.textHint)),
                   ],
                 ),
         ),
@@ -2910,26 +4123,44 @@ class _UnpinOverlay extends StatelessWidget {
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
-  const _UnpinOverlay({required this.isEs, required this.colors, required this.onConfirm, required this.onCancel});
+  const _UnpinOverlay(
+      {required this.isEs,
+      required this.colors,
+      required this.onConfirm,
+      required this.onCancel});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.push_pin_outlined, size: 20, color: AppColors.alertRed),
+        const Icon(Icons.push_pin_outlined,
+            size: 20, color: AppColors.alertRed),
         const SizedBox(height: 6),
         Text(isEs ? 'Desfijar?' : 'Desafixar?',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.alertRed)),
+            style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: AppColors.alertRed)),
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GestureDetector(onTap: onCancel, child: Text(isEs ? 'No' : 'Não',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: colors.textSecondary))),
+            GestureDetector(
+                onTap: onCancel,
+                child: Text(isEs ? 'No' : 'Não',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: colors.textSecondary))),
             const SizedBox(width: 16),
-            GestureDetector(onTap: onConfirm, child: const Text('OK',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: AppColors.alertRed))),
+            GestureDetector(
+                onTap: onConfirm,
+                child: const Text('OK',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.alertRed))),
           ],
         ),
       ],
@@ -2959,9 +4190,8 @@ class _PinnedCalcsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Defesa belt-and-suspenders: nunca renderiza IDs proibidos
-    final safeIds = calcIds
-        .where((id) => !_kForbiddenCalcIds.contains(id))
-        .toList();
+    final safeIds =
+        calcIds.where((id) => !_kForbiddenCalcIds.contains(id)).toList();
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -2979,7 +4209,8 @@ class _PinnedCalcsGrid extends StatelessWidget {
                 // BUILD 443 [P2]: guard explícito belt-and-suspenders dentro do loop.
                 // Impede renderização de qualquer ID proibido mesmo que safeIds
                 // contenha um ID que passou pelo filtro upstream por algum motivo.
-                if (_kForbiddenCalcIds.contains(id)) return const SizedBox.shrink();
+                if (_kForbiddenCalcIds.contains(id))
+                  return const SizedBox.shrink();
                 final shortcut = calcById(id);
                 if (shortcut == null) return const SizedBox.shrink();
                 return SizedBox(
@@ -3011,13 +4242,17 @@ class _PinnedCalcsRow extends StatelessWidget {
   final void Function(String) onTap;
   final void Function(String) onUnpin;
 
-  const _PinnedCalcsRow({required this.calcIds, required this.isEs, required this.colors, required this.onTap, required this.onUnpin});
+  const _PinnedCalcsRow(
+      {required this.calcIds,
+      required this.isEs,
+      required this.colors,
+      required this.onTap,
+      required this.onUnpin});
 
   @override
   Widget build(BuildContext context) {
-    final safeIds = calcIds
-        .where((id) => !_kForbiddenCalcIds.contains(id))
-        .toList();
+    final safeIds =
+        calcIds.where((id) => !_kForbiddenCalcIds.contains(id)).toList();
 
     return SizedBox(
       height: 80,
@@ -3028,11 +4263,14 @@ class _PinnedCalcsRow extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(width: 10),
         itemBuilder: (_, i) {
           // BUILD 443 [P2]: guard explícito belt-and-suspenders no itemBuilder.
-          if (_kForbiddenCalcIds.contains(safeIds[i])) return const SizedBox.shrink();
+          if (_kForbiddenCalcIds.contains(safeIds[i]))
+            return const SizedBox.shrink();
           final shortcut = calcById(safeIds[i]);
           if (shortcut == null) return const SizedBox.shrink();
           return _CalcPinnedCard(
-            shortcut: shortcut, isEs: isEs, colors: colors,
+            shortcut: shortcut,
+            isEs: isEs,
+            colors: colors,
             onTap: () => onTap(shortcut.id),
             onUnpin: () => onUnpin(shortcut.id),
           );
@@ -3053,7 +4291,12 @@ class _CalcPinnedCard extends StatefulWidget {
   final VoidCallback onTap;
   final VoidCallback onUnpin;
 
-  const _CalcPinnedCard({required this.shortcut, required this.isEs, required this.colors, required this.onTap, required this.onUnpin});
+  const _CalcPinnedCard(
+      {required this.shortcut,
+      required this.isEs,
+      required this.colors,
+      required this.onTap,
+      required this.onUnpin});
 
   @override
   State<_CalcPinnedCard> createState() => _CalcPinnedCardState();
@@ -3070,11 +4313,17 @@ class _CalcPinnedCardState extends State<_CalcPinnedCard> {
 
     return GestureDetector(
       onTap: () {
-        if (_showUnpin) { setState(() => _showUnpin = false); return; }
+        if (_showUnpin) {
+          setState(() => _showUnpin = false);
+          return;
+        }
         AppHaptics.selection(context);
         widget.onTap();
       },
-      onLongPress: () { AppHaptics.medium(context); setState(() => _showUnpin = !_showUnpin); },
+      onLongPress: () {
+        AppHaptics.medium(context);
+        setState(() => _showUnpin = !_showUnpin);
+      },
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
@@ -3095,18 +4344,28 @@ class _CalcPinnedCardState extends State<_CalcPinnedCard> {
                   : s.color.withOpacity(0.20),
               width: 1.2,
             ),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(c.dark ? 0.22 : 0.05), blurRadius: 6, offset: const Offset(0, 2))],
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(c.dark ? 0.22 : 0.05),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2))
+            ],
           ),
           child: _showUnpin
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.remove_circle_outline, size: 18, color: AppColors.alertRed),
+                    const Icon(Icons.remove_circle_outline,
+                        size: 18, color: AppColors.alertRed),
                     const SizedBox(height: 4),
                     GestureDetector(
                       onTap: widget.onUnpin,
-                      child: const Text('OK', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, color: AppColors.alertRed)),
+                      child: const Text('OK',
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.alertRed)),
                     ),
                   ],
                 )
@@ -3169,17 +4428,20 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
   void initState() {
     super.initState();
     final pt = widget.existing;
-    _nameCtrl  = TextEditingController(text: pt?.name ?? '');
-    _roomCtrl  = TextEditingController(text: pt?.room ?? '');
-    _dxCtrl    = TextEditingController(text: pt?.diagnosis ?? '');
-    _ttoCtrl   = TextEditingController(text: pt?.treatment ?? '');
+    _nameCtrl = TextEditingController(text: pt?.name ?? '');
+    _roomCtrl = TextEditingController(text: pt?.room ?? '');
+    _dxCtrl = TextEditingController(text: pt?.diagnosis ?? '');
+    _ttoCtrl = TextEditingController(text: pt?.treatment ?? '');
     _notesCtrl = TextEditingController(text: pt?.notes ?? '');
   }
 
   @override
   void dispose() {
-    _nameCtrl.dispose(); _roomCtrl.dispose(); _dxCtrl.dispose();
-    _ttoCtrl.dispose();  _notesCtrl.dispose();
+    _nameCtrl.dispose();
+    _roomCtrl.dispose();
+    _dxCtrl.dispose();
+    _ttoCtrl.dispose();
+    _notesCtrl.dispose();
     super.dispose();
   }
 
@@ -3188,7 +4450,8 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
     final isEdit = widget.existing != null;
 
     final patient = PlantaoPatient(
-      id: widget.existing?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      id: widget.existing?.id ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
       name: _nameCtrl.text.trim(),
       room: _roomCtrl.text.trim(),
       diagnosis: _dxCtrl.text.trim(),
@@ -3197,7 +4460,9 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
       savedAt: widget.existing?.savedAt ?? DateTime.now(),
     );
 
-    if (patient.name.isEmpty && patient.room.isEmpty && patient.diagnosis.isEmpty) {
+    if (patient.name.isEmpty &&
+        patient.room.isEmpty &&
+        patient.diagnosis.isEmpty) {
       Navigator.pop(context);
       return;
     }
@@ -3210,7 +4475,9 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
       content: Text(
         isEdit
             ? (widget.isEs ? 'Paciente actualizado.' : 'Paciente atualizado.')
-            : (widget.isEs ? 'Paciente agregado al turno.' : 'Paciente adicionado ao plantão.'),
+            : (widget.isEs
+                ? 'Paciente agregado al turno.'
+                : 'Paciente adicionado ao plantão.'),
       ),
       behavior: SnackBarBehavior.floating,
       duration: const Duration(seconds: 2),
@@ -3235,7 +4502,13 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
           children: [
             // ── Handle ──────────────────────────────────────────────────────
             const SizedBox(height: 10),
-            Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: c.border, borderRadius: BorderRadius.circular(2)))),
+            Center(
+                child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                        color: c.border,
+                        borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
 
             // ── Título ──────────────────────────────────────────────────────
@@ -3249,7 +4522,8 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                       color: const Color(0xFF3B82F6).withOpacity(0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.bed_rounded, size: 18, color: Color(0xFF3B82F6)),
+                    child: const Icon(Icons.bed_rounded,
+                        size: 18, color: Color(0xFF3B82F6)),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -3259,11 +4533,19 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                         Text(
                           isEdit
                               ? (isEs ? 'Editar Paciente' : 'Editar Paciente')
-                              : (isEs ? 'Nuevo Paciente en Turno' : 'Novo Paciente no Plantão'),
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: c.textPrimary, letterSpacing: -0.3),
+                              : (isEs
+                                  ? 'Nuevo Paciente en Turno'
+                                  : 'Novo Paciente no Plantão'),
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              color: c.textPrimary,
+                              letterSpacing: -0.3),
                         ),
                         Text(
-                          isEs ? 'Presione guardar para fijar en el turno' : 'Pressione salvar para fixar no plantão',
+                          isEs
+                              ? 'Presione guardar para fijar en el turno'
+                              : 'Pressione salvar para fixar no plantão',
                           style: TextStyle(fontSize: 11, color: c.textHint),
                         ),
                       ],
@@ -3287,7 +4569,9 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                         Expanded(
                           flex: 3,
                           child: _FieldBlock(
-                            label: isEs ? 'Nombre del paciente' : 'Nome do paciente',
+                            label: isEs
+                                ? 'Nombre del paciente'
+                                : 'Nome do paciente',
                             icon: Icons.person_outline_rounded,
                             controller: _nameCtrl,
                             hint: isEs ? 'Ej: Juan Pérez' : 'Ex: João Silva',
@@ -3299,7 +4583,8 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                         Expanded(
                           flex: 2,
                           child: _FieldBlock(
-                            label: isEs ? 'Habitación / Cama' : 'Quarto / Leito',
+                            label:
+                                isEs ? 'Habitación / Cama' : 'Quarto / Leito',
                             icon: Icons.bed_outlined,
                             controller: _roomCtrl,
                             hint: '204-A',
@@ -3314,10 +4599,14 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
 
                     // Diagnóstico
                     _FieldBlock(
-                      label: isEs ? 'Diagnóstico principal' : 'Diagnóstico principal',
+                      label: isEs
+                          ? 'Diagnóstico principal'
+                          : 'Diagnóstico principal',
                       icon: Icons.medical_information_outlined,
                       controller: _dxCtrl,
-                      hint: isEs ? 'Ej: Neumonía adquirida en la comunidad' : 'Ex: Pneumonia adquirida na comunidade',
+                      hint: isEs
+                          ? 'Ej: Neumonía adquirida en la comunidad'
+                          : 'Ex: Pneumonia adquirida na comunidade',
                       colors: c,
                       maxLines: 3,
                     ),
@@ -3325,10 +4614,14 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
 
                     // Tratamento
                     _FieldBlock(
-                      label: isEs ? 'Tratamiento / medicamentos' : 'Tratamento / medicamentos',
+                      label: isEs
+                          ? 'Tratamiento / medicamentos'
+                          : 'Tratamento / medicamentos',
                       icon: Icons.medication_outlined,
                       controller: _ttoCtrl,
-                      hint: isEs ? 'Ej: Amoxicilina 875mg 12/12h + O2 2L/min' : 'Ex: Amoxicilina 875mg 12/12h + O2 2L/min',
+                      hint: isEs
+                          ? 'Ej: Amoxicilina 875mg 12/12h + O2 2L/min'
+                          : 'Ex: Amoxicilina 875mg 12/12h + O2 2L/min',
                       colors: c,
                       maxLines: 3,
                     ),
@@ -3339,7 +4632,9 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                       label: isEs ? 'Notas del turno' : 'Notas do plantão',
                       icon: Icons.notes_rounded,
                       controller: _notesCtrl,
-                      hint: isEs ? 'Evolución, pendientes, alertas…' : 'Evolução, pendências, alertas…',
+                      hint: isEs
+                          ? 'Evolución, pendientes, alertas…'
+                          : 'Evolução, pendências, alertas…',
                       colors: c,
                       maxLines: 4,
                     ),
@@ -3353,22 +4648,31 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                             child: GestureDetector(
                               onTap: () {
                                 AppHaptics.medium(context);
-                                context.read<AppProvider>().removePlantaoPatient(widget.existing!.id);
+                                context
+                                    .read<AppProvider>()
+                                    .removePlantaoPatient(widget.existing!.id);
                                 Navigator.pop(context);
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 14),
                                 decoration: BoxDecoration(
                                   color: AppColors.alertRedBg,
                                   borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: AppColors.alertRedBorder),
+                                  border: Border.all(
+                                      color: AppColors.alertRedBorder),
                                 ),
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.delete_outline_rounded, size: 16, color: AppColors.alertRed),
+                                    Icon(Icons.delete_outline_rounded,
+                                        size: 16, color: AppColors.alertRed),
                                     SizedBox(width: 6),
-                                    Text('Remover', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.alertRed)),
+                                    Text('Remover',
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                            color: AppColors.alertRed)),
                                   ],
                                 ),
                               ),
@@ -3384,23 +4688,36 @@ class _PatientEditSheetState extends State<_PatientEditSheet> {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF0A7C4E), Color(0xFF10B981)],
+                                  colors: [
+                                    Color(0xFF0A7C4E),
+                                    Color(0xFF10B981)
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 borderRadius: BorderRadius.circular(14),
                                 boxShadow: [
-                                  BoxShadow(color: const Color(0xFF0A7C4E).withOpacity(0.35), blurRadius: 10, offset: const Offset(0, 4)),
+                                  BoxShadow(
+                                      color: const Color(0xFF0A7C4E)
+                                          .withOpacity(0.35),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4)),
                                 ],
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(Icons.save_outlined, size: 16, color: Colors.white),
+                                  const Icon(Icons.save_outlined,
+                                      size: 16, color: Colors.white),
                                   const SizedBox(width: 6),
                                   Text(
-                                    isEs ? 'Guardar en turno' : 'Salvar no plantão',
-                                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.white),
+                                    isEs
+                                        ? 'Guardar en turno'
+                                        : 'Salvar no plantão',
+                                    style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -3454,7 +4771,12 @@ class _FieldBlock extends StatelessWidget {
           children: [
             Icon(icon, size: 12, color: ac),
             const SizedBox(width: 4),
-            Text(label, style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: ac, letterSpacing: 0.3)),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    color: ac,
+                    letterSpacing: 0.3)),
           ],
         ),
         const SizedBox(height: 6),
@@ -3468,12 +4790,15 @@ class _FieldBlock extends StatelessWidget {
             hintStyle: TextStyle(fontSize: 12.5, color: c.textHint),
             filled: true,
             fillColor: c.surface,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: ac.withOpacity(0.50), width: 1.5),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           ),
         ),
       ],
@@ -3536,9 +4861,14 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
         child: Column(
           children: [
             const SizedBox(height: 10),
-            Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: c.border, borderRadius: BorderRadius.circular(2)))),
+            Center(
+                child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                        color: c.border,
+                        borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -3548,7 +4878,11 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
                   Expanded(
                     child: Text(
                       isEs ? 'Gestionar Mi Guardia' : 'Gerenciar Meu Plantão',
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: c.textPrimary, letterSpacing: -0.4),
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w900,
+                          color: c.textPrimary,
+                          letterSpacing: -0.4),
                     ),
                   ),
                 ],
@@ -3561,24 +4895,30 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
                 isEs
                     ? 'Toca para fijar/desfijar. Límites: ${AppProvider.kMaxPinnedDrugsPublic} fármacos, ${AppProvider.kMaxPinnedCalcsPublic} calculadoras.'
                     : 'Toque para fixar/desafixar. Limites: ${AppProvider.kMaxPinnedDrugsPublic} fármacos, ${AppProvider.kMaxPinnedCalcsPublic} calculadoras.',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: c.textSecondary, height: 1.4),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: c.textSecondary,
+                    height: 1.4),
               ),
             ),
             const SizedBox(height: 14),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                decoration: BoxDecoration(color: c.surface, borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: c.surface, borderRadius: BorderRadius.circular(10)),
                 child: TabBar(
                   controller: _tabCtrl,
                   labelColor: Colors.white,
                   unselectedLabelColor: c.textSecondary,
-                  indicator: BoxDecoration(color: c.green, borderRadius: BorderRadius.circular(8)),
+                  indicator: BoxDecoration(
+                      color: c.green, borderRadius: BorderRadius.circular(8)),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
                   padding: const EdgeInsets.all(3),
-                  labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                  labelStyle: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w800),
                   tabs: [
                     Tab(text: isEs ? 'Fármacos' : 'Fármacos'),
                     Tab(text: isEs ? 'Calculadoras' : 'Calculadoras'),
@@ -3587,7 +4927,6 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
               ),
             ),
             const SizedBox(height: 12),
-
             AnimatedBuilder(
               animation: _tabCtrl,
               builder: (_, __) {
@@ -3599,24 +4938,29 @@ class _PlantaoManageSheetState extends State<_PlantaoManageSheet>
                     onChanged: (_) => setState(() {}),
                     style: TextStyle(fontSize: 14, color: c.textPrimary),
                     decoration: InputDecoration(
-                      hintText: isEs ? 'Buscar fármaco…' : 'Buscar medicamento…',
+                      hintText:
+                          isEs ? 'Buscar fármaco…' : 'Buscar medicamento…',
                       hintStyle: TextStyle(fontSize: 13, color: c.textHint),
-                      prefixIcon: Icon(Icons.search_rounded, color: c.textHint, size: 18),
+                      prefixIcon: Icon(Icons.search_rounded,
+                          color: c.textHint, size: 18),
                       filled: true,
                       fillColor: c.surface,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
                     ),
                   ),
                 );
               },
             ),
-
             Expanded(
               child: TabBarView(
                 controller: _tabCtrl,
                 children: [
-                  _DrugSelectorList(searchQuery: _searchCtrl.text, p: p, c: c, isEs: isEs),
+                  _DrugSelectorList(
+                      searchQuery: _searchCtrl.text, p: p, c: c, isEs: isEs),
                   _CalcSelectorList(p: p, c: c, isEs: isEs),
                 ],
               ),
@@ -3638,20 +4982,30 @@ class _DrugSelectorList extends StatelessWidget {
   final AppColors c;
   final bool isEs;
 
-  const _DrugSelectorList({required this.searchQuery, required this.p, required this.c, required this.isEs});
+  const _DrugSelectorList(
+      {required this.searchQuery,
+      required this.p,
+      required this.c,
+      required this.isEs});
 
   @override
   Widget build(BuildContext context) {
     final q = searchQuery.toLowerCase().trim();
     final drugs = q.isEmpty
         ? p.drugsDB
-        : p.drugsDB.where((d) =>
-            d.name.toLowerCase().contains(q) ||
-            (d.className[isEs ? 'es' : 'pt'] ?? '').toLowerCase().contains(q) ||
-            d.group.toLowerCase().contains(q)).toList();
+        : p.drugsDB
+            .where((d) =>
+                d.name.toLowerCase().contains(q) ||
+                (d.className[isEs ? 'es' : 'pt'] ?? '')
+                    .toLowerCase()
+                    .contains(q) ||
+                d.group.toLowerCase().contains(q))
+            .toList();
 
     if (drugs.isEmpty) {
-      return Center(child: Text(isEs ? 'Sin resultados' : 'Sem resultados', style: TextStyle(color: c.textHint, fontSize: 14)));
+      return Center(
+          child: Text(isEs ? 'Sin resultados' : 'Sem resultados',
+              style: TextStyle(color: c.textHint, fontSize: 14)));
     }
 
     return ListView.builder(
@@ -3660,7 +5014,8 @@ class _DrugSelectorList extends StatelessWidget {
       itemBuilder: (_, i) {
         final drug = drugs[i];
         final isPinned = p.isDrugPinned(drug.id);
-        final limitReached = p.pinnedDrugIds.length >= AppProvider.kMaxPinnedDrugsPublic;
+        final limitReached =
+            p.pinnedDrugIds.length >= AppProvider.kMaxPinnedDrugsPublic;
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
@@ -3684,7 +5039,9 @@ class _DrugSelectorList extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isPinned ? c.green.withOpacity(0.08) : c.cardBg2,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: isPinned ? c.green.withOpacity(0.35) : c.border, width: isPinned ? 1.5 : 1.0),
+                border: Border.all(
+                    color: isPinned ? c.green.withOpacity(0.35) : c.border,
+                    width: isPinned ? 1.5 : 1.0),
               ),
               child: Row(
                 children: [
@@ -3692,26 +5049,49 @@ class _DrugSelectorList extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(drug.nameL10n(isEs ? 'es' : 'pt'), style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, color: c.textPrimary)),
+                        Text(drug.nameL10n(isEs ? 'es' : 'pt'),
+                            style: TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w700,
+                                color: c.textPrimary)),
                         const SizedBox(height: 2),
-                        Text(drug.className[isEs ? 'es' : 'pt'] ?? drug.className['es'] ?? '',
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: c.textHint)),
+                        Text(
+                            drug.className[isEs ? 'es' : 'pt'] ??
+                                drug.className['es'] ??
+                                '',
+                            style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: c.textHint)),
                       ],
                     ),
                   ),
                   if (!isPinned && limitReached)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                      decoration: BoxDecoration(color: c.surface, borderRadius: BorderRadius.circular(6)),
-                      child: Text(isEs ? 'Lleno' : 'Cheio', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: c.textHint)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 3),
+                      decoration: BoxDecoration(
+                          color: c.surface,
+                          borderRadius: BorderRadius.circular(6)),
+                      child: Text(isEs ? 'Lleno' : 'Cheio',
+                          style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              color: c.textHint)),
                     ),
                   const SizedBox(width: 8),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 220),
                     padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(color: isPinned ? c.green : c.surface, shape: BoxShape.circle),
-                    child: Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                        size: 14, color: isPinned ? Colors.white : c.textHint),
+                    decoration: BoxDecoration(
+                        color: isPinned ? c.green : c.surface,
+                        shape: BoxShape.circle),
+                    child: Icon(
+                        isPinned
+                            ? Icons.push_pin_rounded
+                            : Icons.push_pin_outlined,
+                        size: 14,
+                        color: isPinned ? Colors.white : c.textHint),
                   ),
                 ],
               ),
@@ -3732,7 +5112,8 @@ class _CalcSelectorList extends StatelessWidget {
   final AppColors c;
   final bool isEs;
 
-  const _CalcSelectorList({required this.p, required this.c, required this.isEs});
+  const _CalcSelectorList(
+      {required this.p, required this.c, required this.isEs});
 
   @override
   Widget build(BuildContext context) {
@@ -3742,9 +5123,11 @@ class _CalcSelectorList extends StatelessWidget {
       itemBuilder: (_, i) {
         final shortcut = kAvailableCalcs[i];
         // ⛔ CRÍTICO — nunca exibe calc proibida (Apple 1.4.1 + regulatório)
-        if (_kForbiddenCalcIds.contains(shortcut.id)) return const SizedBox.shrink();
+        if (_kForbiddenCalcIds.contains(shortcut.id))
+          return const SizedBox.shrink();
         final isPinned = p.isCalcPinned(shortcut.id);
-        final limitReached = p.pinnedCalcIds.length >= AppProvider.kMaxPinnedCalcsPublic;
+        final limitReached =
+            p.pinnedCalcIds.length >= AppProvider.kMaxPinnedCalcsPublic;
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
@@ -3768,26 +5151,46 @@ class _CalcSelectorList extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isPinned ? shortcut.color.withOpacity(0.07) : c.cardBg2,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: isPinned ? shortcut.color.withOpacity(0.35) : c.border, width: isPinned ? 1.5 : 1.0),
+                border: Border.all(
+                    color:
+                        isPinned ? shortcut.color.withOpacity(0.35) : c.border,
+                    width: isPinned ? 1.5 : 1.0),
               ),
               child: Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(color: shortcut.color.withOpacity(0.12), borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(
+                        color: shortcut.color.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(10)),
                     child: Icon(shortcut.icon, size: 20, color: shortcut.color),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: Text(shortcut.label(isEs), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: c.textPrimary))),
+                  Expanded(
+                      child: Text(shortcut.label(isEs),
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: c.textPrimary))),
                   if (!isPinned && limitReached)
-                    Text(isEs ? 'Lleno' : 'Cheio', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: c.textHint)),
+                    Text(isEs ? 'Lleno' : 'Cheio',
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: c.textHint)),
                   const SizedBox(width: 8),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 220),
                     padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(color: isPinned ? shortcut.color : c.surface, shape: BoxShape.circle),
-                    child: Icon(isPinned ? Icons.push_pin_rounded : Icons.push_pin_outlined,
-                        size: 14, color: isPinned ? Colors.white : c.textHint),
+                    decoration: BoxDecoration(
+                        color: isPinned ? shortcut.color : c.surface,
+                        shape: BoxShape.circle),
+                    child: Icon(
+                        isPinned
+                            ? Icons.push_pin_rounded
+                            : Icons.push_pin_outlined,
+                        size: 14,
+                        color: isPinned ? Colors.white : c.textHint),
                   ),
                 ],
               ),

@@ -7,6 +7,9 @@
 
     <!-- RECORD_AUDIO: necessária para speech_to_text (ditado por voz nativo) -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
 
     <!-- POST_NOTIFICATIONS: necessária no Android 13+ para notificações do sistema -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
@@ -74,6 +77,20 @@
         <receiver
             android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
             android:exported="false"/>
+            <!-- PROFILE_ACCOUNT_HUB_PREMIUM_V1_B_R2 — image_cropper -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+            <service
+            android:name=".MedCasesRecordingForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+            <service
+            android:name=".MedCasesStudyBackgroundTranscriptionService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
     </application>
 
     <queries>

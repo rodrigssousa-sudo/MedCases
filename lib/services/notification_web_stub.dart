@@ -37,8 +37,14 @@ class DarwinInitializationSettings {
 class NotificationDetails {
   const NotificationDetails({dynamic android, dynamic iOS, dynamic macOS});
 }
+class NotificationVisibility {
+  static const public = NotificationVisibility._();
+  static const private = NotificationVisibility._();
+  const NotificationVisibility._();
+}
 class AndroidNotificationDetails {
   const AndroidNotificationDetails(String channelId, String channelName, {
+    NotificationVisibility? visibility,
     String? channelDescription,
     dynamic importance,
     dynamic priority,
@@ -95,6 +101,7 @@ class Priority {
 }
 class AndroidScheduleMode {
   static const exactAllowWhileIdle = AndroidScheduleMode._();
+  static const inexactAllowWhileIdle = AndroidScheduleMode._();
   const AndroidScheduleMode._();
 }
 class UILocalNotificationDateInterpretation {

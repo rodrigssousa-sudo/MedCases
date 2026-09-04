@@ -1,5 +1,8 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_3A_V2_B_R1_GENERIC_CONTEXTS
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/protocol_model.dart';
@@ -12,8 +15,8 @@ import '../services/activity_service.dart';
 // RECENTES — regista item se o usuário ficou 5s+ vendo
 // ─────────────────────────────────────────────────────────────────────────────
 // Recentes delegados ao AppProvider (chave prefixada por uid)
-Future<void> _registerRecentIfStayed(
-    BuildContext ctx, String type, String id, String title, DateTime openedAt) async {
+Future<void> _registerRecentIfStayed(BuildContext ctx, String type, String id,
+    String title, DateTime openedAt) async {
   final elapsed = DateTime.now().difference(openedAt);
   if (elapsed.inSeconds < 5) return;
   try {
@@ -23,18 +26,26 @@ Future<void> _registerRecentIfStayed(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_SIMULATION_DETAIL_SHELL_V1_R2
+// MEDCASES_SIMULATION_DETAIL_INTERNAL_SECTIONS_V1_R3_R1
+// MEDCASES_SIMULATION_DETAIL_FLAT_CLINICAL_READING_V1_B_R9
 // FUNÇÃO GLOBAL — abre detalhe de protocolo como bottom sheet
 // Pode ser chamada de qualquer tela do app (cockpit, chips, lista)
 // ─────────────────────────────────────────────────────────────────────────────
-void showProtocolDetail(BuildContext context, ProtocolModel protocol) {
-  final p    = context.read<AppProvider>();
+void showProtocolDetail(
+  BuildContext context,
+  ProtocolModel protocol, {
+  bool simulationContext = false,
+}) {
+  final p = context.read<AppProvider>();
   final isEs = p.lang == 'es';
-  final title = protocol.title[isEs ? 'es' : 'pt'] ?? protocol.title['pt'] ?? '';
+  final title =
+      protocol.title[isEs ? 'es' : 'pt'] ?? protocol.title['pt'] ?? '';
   final openedAt = DateTime.now();
   // Registra no histórico de atividades recentes
   ActivityService.log(
-    type:     ActivityType.protocolo,
-    title:    title,
+    type: ActivityType.protocolo,
+    title: title,
     subtitle: protocol.severity[isEs ? 'es' : 'pt'] ?? '',
   );
 
@@ -42,8 +53,12 @@ void showProtocolDetail(BuildContext context, ProtocolModel protocol) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _ProtocolDetailSheet(protocol: protocol),
-  ).then((_) => _registerRecentIfStayed(context, 'protocol', protocol.id, title, openedAt));
+    builder: (_) => _ProtocolDetailSheet(
+      protocol: protocol,
+      simulationContext: simulationContext,
+    ),
+  ).then((_) => _registerRecentIfStayed(
+      context, 'protocol', protocol.id, title, openedAt));
 }
 
 // Busca protocolo por ID no provider e abre o detalhe direto
@@ -54,6 +69,712 @@ void openProtocolById(BuildContext context, String id) {
     showProtocolDetail(context, found);
   } catch (_) {}
 }
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_SIMULATION_FULL_PAGE_NAVIGATION_V1_B_R0
+// Rota exclusiva da Simulação. O detalhe legado continua usando bottom sheet.
+// ─────────────────────────────────────────────────────────────────────────────
+Future<void> openSimulationProtocolPage(
+  BuildContext context,
+  ProtocolModel protocol,
+) async {
+  final p = context.read<AppProvider>();
+  final isEs = p.lang == 'es';
+  final title =
+      protocol.title[isEs ? 'es' : 'pt'] ?? protocol.title['pt'] ?? '';
+  final openedAt = DateTime.now();
+
+  ActivityService.log(
+    type: ActivityType.protocolo,
+    title: title,
+    subtitle: protocol.severity[isEs ? 'es' : 'pt'] ?? '',
+  );
+
+  await Navigator.of(context).push<void>(
+    MaterialPageRoute<void>(
+      builder: (_) => _SimulationProtocolDetailPage(protocol: protocol),
+    ),
+  );
+
+  if (context.mounted) {
+    await _registerRecentIfStayed(
+      context,
+      'protocol',
+      protocol.id,
+      title,
+      openedAt,
+    );
+  }
+}
+
+class _SimulationProtocolDetailPage extends StatelessWidget {
+  final ProtocolModel protocol;
+
+  const _SimulationProtocolDetailPage({required this.protocol});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+    final actions = protocol.getActions(p.lang);
+    final isFav = p.favProtocols.contains(protocol.id);
+    final avoidTxt = p.tDB(protocol.avoid);
+    final drugs = protocol.drugs;
+
+    final clinicalContent = _buildSimulationClinicalContent(
+      protocol: protocol,
+      p: p,
+      actions: actions,
+      avoidTxt: avoidTxt,
+      drugs: drugs,
+    );
+    final referenceLabel =
+        isEs ? 'REFERENCIAS / GUÍAS' : 'REFERÊNCIAS / DIRETRIZES';
+    final visibleClinicalContent = clinicalContent.where((widget) {
+      return widget is! _SimulationFlatListSection ||
+          widget.label != referenceLabel;
+    }).toList(growable: false);
+    final protocolReferences = protocol.getList(protocol.references, p.lang);
+
+    final evidenceRecords = <dynamic>[];
+    final seenEvidence = <String>{};
+    for (final drug in drugs) {
+      final ev = getGlobalEvidence(drug);
+      if (ev == null) continue;
+      final key = ev.drugKey.toString();
+      if (seenEvidence.add(key)) {
+        evidenceRecords.add(ev);
+      }
+    }
+
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    final topbarGlass = dark
+        ? const Color(0xFF252930).withValues(alpha: 0.70)
+        : Colors.white.withValues(alpha: 0.70);
+    final topbarDivider =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final topbarForeground = dark ? Colors.white : const Color(0xFF05070A);
+
+    final severityText = p.tDB(protocol.severity);
+    final severityLow = severityText.toLowerCase();
+    final Color severityColor;
+    if (severityLow.contains('crít') ||
+        severityLow.contains('grave') ||
+        severityLow.contains('alto')) {
+      severityColor = const Color(0xFFDC2626);
+    } else if (severityLow.contains('moder') ||
+        severityLow.contains('urgên') ||
+        severityLow.contains('urgen')) {
+      severityColor = const Color(0xFFD97706);
+    } else {
+      severityColor = const Color(0xFF10B981);
+    }
+
+    final pageTitle = p.tDB(protocol.title);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: dark ? Brightness.dark : Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: bg,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: topbarGlass,
+                  border: Border(
+                    bottom: BorderSide(color: topbarDivider, width: 0.7),
+                  ),
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: SizedBox(
+                    height: 48,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 48),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  pageTitle,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.2,
+                                    color: topbarForeground,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => Navigator.of(context).pop(),
+                              child: SizedBox(
+                                width: 36,
+                                height: 36,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.arrow_back_ios_new_rounded,
+                                    size: 20,
+                                    color: topbarForeground,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        body: SingleChildScrollView(
+          // MEDCASES_SIMULATION_DETAIL_FLAT_CANVAS_V1_B_R9
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // MEDCASES_SIMULATION_DETAIL_READING_HEADER_V1_B_R9
+              Semantics(
+                container: true,
+                label: severityText.isEmpty
+                    ? (isEs
+                        ? 'Lectura clínica completa. Reconoce, decide y revisa.'
+                        : 'Leitura clínica completa. Reconheça, decida e revise.')
+                    : '$severityText. ${isEs ? 'Lectura clínica completa. Reconoce, decide y revisa.' : 'Leitura clínica completa. Reconheça, decida e revise.'}',
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 3,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: severityColor,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (severityText.isNotEmpty)
+                                  Text(
+                                    severityText.toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w800,
+                                      color: severityColor,
+                                      letterSpacing: 0.7,
+                                    ),
+                                  ),
+                                if (severityText.isNotEmpty)
+                                  const SizedBox(height: 3),
+                                Text(
+                                  isEs
+                                      ? 'LECTURA CLÍNICA COMPLETA'
+                                      : 'LEITURA CLÍNICA COMPLETA',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.25,
+                                    color: primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Tooltip(
+                            message: isFav
+                                ? (isEs
+                                    ? 'Quitar de favoritos'
+                                    : 'Remover dos favoritos')
+                                : (isEs
+                                    ? 'Agregar a favoritos'
+                                    : 'Adicionar aos favoritos'),
+                            child: Semantics(
+                              button: true,
+                              label: isFav
+                                  ? (isEs
+                                      ? 'Quitar de favoritos'
+                                      : 'Remover dos favoritos')
+                                  : (isEs
+                                      ? 'Agregar a favoritos'
+                                      : 'Adicionar aos favoritos'),
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () => p.toggleFavProtocol(protocol.id),
+                                child: SizedBox(
+                                  width: 44,
+                                  height: 44,
+                                  child: Icon(
+                                    isFav
+                                        ? Icons.star_rounded
+                                        : Icons.star_border_rounded,
+                                    size: 21,
+                                    color: isFav
+                                        ? const Color(0xFFF4B942)
+                                        : secondary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.route_outlined,
+                            size: 14,
+                            color: secondary,
+                          ),
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: Text(
+                              isEs
+                                  ? 'Reconoce • Decide • Revisa'
+                                  : 'Reconheça • Decida • Revise',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.15,
+                                color: secondary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Container(height: 0.55, color: divider),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              ...visibleClinicalContent,
+              if (protocolReferences.isNotEmpty || evidenceRecords.isNotEmpty)
+                _SimulationReferencesEvidenceDisclosure(
+                  dark: dark,
+                  isEs: isEs,
+                  protocolReferences: protocolReferences,
+                  evidenceRecords: evidenceRecords,
+                ),
+              const PharmacologicalDisclaimer(),
+              const SizedBox(height: 14),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// MEDCASES_SIMULATION_REFS_EVIDENCE_FLAT_COLLAPSIBLE_V1_B_R0
+class _SimulationReferencesEvidenceDisclosure extends StatefulWidget {
+  final bool dark;
+  final bool isEs;
+  final List<String> protocolReferences;
+  final List<dynamic> evidenceRecords;
+
+  const _SimulationReferencesEvidenceDisclosure({
+    required this.dark,
+    required this.isEs,
+    required this.protocolReferences,
+    required this.evidenceRecords,
+  });
+
+  @override
+  State<_SimulationReferencesEvidenceDisclosure> createState() =>
+      _SimulationReferencesEvidenceDisclosureState();
+}
+
+class _SimulationReferencesEvidenceDisclosureState
+    extends State<_SimulationReferencesEvidenceDisclosure> {
+  bool _expanded = false;
+
+  String _text(dynamic value) =>
+      value == null ? '' : value.toString().trim();
+
+  Widget _label(String text, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10.5,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.9,
+          color: color,
+        ),
+      ),
+    );
+  }
+
+  Widget _row(
+    String label,
+    String value,
+    Color primary,
+    Color secondary,
+  ) {
+    if (value.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 7),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 112,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: secondary,
+                height: 1.35,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w500,
+                color: primary,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bullet(
+    String text,
+    Color textColor,
+    Color bulletColor, {
+    bool italic = false,
+  }) {
+    if (text.trim().isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 7),
+            child: Container(
+              width: 5,
+              height: 5,
+              decoration: BoxDecoration(
+                color: bulletColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w500,
+                fontStyle: italic ? FontStyle.italic : FontStyle.normal,
+                color: textColor,
+                height: 1.48,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+    final primary =
+        dark ? const Color(0xFFE2E8F0) : const Color(0xFF334155);
+    final secondary =
+        dark ? const Color(0xFF94A3B8) : const Color(0xFF59636E);
+    final divider =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    const accent = Color(0xFF0D6B57);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: divider, width: 0.55),
+                  bottom: BorderSide(color: divider, width: 0.55),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.menu_book_outlined, size: 16, color: accent),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs
+                              ? 'REFERENCIAS Y EVIDENCIA'
+                              : 'REFERÊNCIAS E EVIDÊNCIAS',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.9,
+                            color: primary,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          isEs
+                              ? 'Toca para ver todas las fuentes y referencias.'
+                              : 'Toque para ver todas as fontes e referências.',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color: secondary,
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  AnimatedRotation(
+                    turns: _expanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 160),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 20,
+                      color: secondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          child: _expanded
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.protocolReferences.isNotEmpty) ...[
+                        _label(
+                          isEs ? 'REFERENCIAS DEL CASO' : 'REFERÊNCIAS DO CASO',
+                          secondary,
+                        ),
+                        ...widget.protocolReferences.map(
+                          (ref) => _bullet(
+                            ref,
+                            secondary,
+                            secondary,
+                            italic: true,
+                          ),
+                        ),
+                      ],
+                      ...List.generate(widget.evidenceRecords.length, (index) {
+                        final ev = widget.evidenceRecords[index];
+                        final name = _text(ev.displayName);
+                        final atc = _text(ev.atcCode);
+                        final drugClass = _text(ev.drugClass);
+                        final primarySource = _text(ev.primarySource);
+                        final guideline = _text(ev.guidelineSource);
+                        final level = _text(ev.evidenceLevel);
+                        final recommendation = _text(ev.recommendation);
+                        final reviewed = _text(ev.lastReviewed);
+                        final status = _text(ev.reviewStatus);
+                        final badges = (ev.contextBadges as Iterable)
+                            .map((x) => x.toString())
+                            .where((x) => x.trim().isNotEmpty)
+                            .join(' · ');
+                        final refs =
+                            List<dynamic>.from(ev.references as Iterable);
+                        final links =
+                            List<dynamic>.from(ev.links as Iterable);
+
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            top: widget.protocolReferences.isNotEmpty ||
+                                    index > 0
+                                ? 14
+                                : 0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (widget.protocolReferences.isNotEmpty ||
+                                  index > 0)
+                                Divider(
+                                  color: divider,
+                                  height: 1,
+                                  thickness: 0.55,
+                                ),
+                              if (widget.protocolReferences.isNotEmpty ||
+                                  index > 0)
+                                const SizedBox(height: 14),
+                              Text(
+                                name.isEmpty
+                                    ? (isEs
+                                        ? 'EVIDENCIA FARMACOLÓGICA'
+                                        : 'EVIDÊNCIA FARMACOLÓGICA')
+                                    : name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
+                                  color: primary,
+                                  height: 1.3,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              _row(
+                                isEs ? 'Fuente principal' : 'Fonte principal',
+                                primarySource,
+                                primary,
+                                secondary,
+                              ),
+                              _row(
+                                isEs ? 'Directriz' : 'Diretriz',
+                                guideline,
+                                primary,
+                                secondary,
+                              ),
+                              _row(
+                                isEs ? 'Nivel' : 'Nível',
+                                level,
+                                primary,
+                                secondary,
+                              ),
+                              _row(
+                                isEs ? 'Recomendación' : 'Recomendação',
+                                recommendation,
+                                primary,
+                                secondary,
+                              ),
+                              _row(
+                                isEs ? 'Última revisión' : 'Última revisão',
+                                reviewed,
+                                primary,
+                                secondary,
+                              ),
+                              _row('Estado', status, primary, secondary),
+                              if (atc.isNotEmpty)
+                                _row('ATC', atc, primary, secondary),
+                              if (drugClass.isNotEmpty)
+                                _row(
+                                  isEs ? 'Clase' : 'Classe',
+                                  drugClass,
+                                  primary,
+                                  secondary,
+                                ),
+                              if (badges.isNotEmpty)
+                                _row('Contexto', badges, primary, secondary),
+                              if (refs.isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                _label(
+                                  isEs
+                                      ? 'REFERENCIAS BIBLIOGRÁFICAS'
+                                      : 'REFERÊNCIAS BIBLIOGRÁFICAS',
+                                  secondary,
+                                ),
+                                ...refs.map((ref) {
+                                  final parts = <String>[
+                                    _text(ref.source),
+                                    _text(ref.title),
+                                    _text(ref.year),
+                                    _text(ref.type),
+                                  ].where((x) => x.isNotEmpty).toList();
+                                  return _bullet(
+                                    parts.join(' · '),
+                                    secondary,
+                                    secondary,
+                                    italic: true,
+                                  );
+                                }),
+                              ],
+                              if (links.isNotEmpty) ...[
+                                const SizedBox(height: 6),
+                                _label(
+                                  isEs ? 'FUENTES OFICIALES' : 'FONTES OFICIAIS',
+                                  secondary,
+                                ),
+                                ...links.map((link) {
+                                  final parts = <String>[
+                                    _text(link.org),
+                                    _text(link.label),
+                                  ].where((x) => x.isNotEmpty).toList();
+                                  return _bullet(
+                                    parts.join(' · '),
+                                    primary,
+                                    accent,
+                                  );
+                                }),
+                              ],
+                            ],
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TELA DE PROTOCOLOS — lista por grupos (acordeão)
@@ -76,14 +797,14 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
 
-    final q           = _searchCtrl.text.toLowerCase().trim();
+    final q = _searchCtrl.text.toLowerCase().trim();
     final isSearching = q.isNotEmpty;
 
     // ── Lista completa de protocolos (deduplicada por id) ──────────────────
-    final seen  = <String>{};
+    final seen = <String>{};
     final allDB = p.protocolsDB.where((x) => seen.add(x.id)).toList();
 
     // ── Filtro de busca ────────────────────────────────────────────────────
@@ -92,16 +813,18 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             return p.tDB(proto.title).toLowerCase().contains(q) ||
                 p.tDB(proto.severity).toLowerCase().contains(q) ||
                 p.tDB(proto.recognize).toLowerCase().contains(q) ||
-                proto.getActions(p.lang).any((a) => a.toLowerCase().contains(q));
+                proto
+                    .getActions(p.lang)
+                    .any((a) => a.toLowerCase().contains(q));
           }).toList()
         : allDB;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
       child: Column(children: [
-
         // ── Header premium ─────────────────────────────────────────────────
-        PremiumCard(child: SectionTitle(
+        PremiumCard(
+            child: SectionTitle(
           eyebrow: 'Clinical Flow',
           title: p.t('protocols'),
           subtitle: p.t('protocols_subtitle'),
@@ -112,7 +835,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
         // ── Busca ──────────────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             MedInput(
               controller: _searchCtrl,
               hintText: p.t('search_protocol_hint'),
@@ -121,7 +845,10 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             const SizedBox(height: 8),
             Text(
               '${filtered.length} ${p.t("protocols_found")}',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF6B7280)),
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF6B7280)),
             ),
           ]),
         ),
@@ -130,16 +857,15 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
         // ── Modo busca: lista flat ─────────────────────────────────────────
         if (isSearching) ...[
           ...filtered.map((proto) => _ProtocolListTile(
-            proto: proto,
-            p: p,
-            isLast: proto == filtered.last,
-            onTap: () => showProtocolDetail(context, proto),
-          )),
+                proto: proto,
+                p: p,
+                isLast: proto == filtered.last,
+                onTap: () => showProtocolDetail(context, proto),
+              )),
         ]
 
         // ── Modo normal: acordeão por sistema clínico ──────────────────────
         else ...[
-
           // Favoritos no topo
           if (p.favProtocols.isNotEmpty) ...[
             _ProtocolGroupAccordion(
@@ -151,7 +877,8 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
               color: const Color(0xFFFFFBF0),
               borderColor: const Color(0xFFE8D8A0),
               iconColor: const Color(0xFFC5A365),
-              protocols: allDB.where((d) => p.favProtocols.contains(d.id)).toList(),
+              protocols:
+                  allDB.where((d) => p.favProtocols.contains(d.id)).toList(),
               isEs: isEs,
               p: p,
               onSelect: (proto) => showProtocolDetail(context, proto),
@@ -169,12 +896,20 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFFFF5F5),
             borderColor: const Color(0xFFFFCCCC),
             iconColor: const Color(0xFFCC2222),
-            protocols: allDB.where((d) => {
-              'pcr_adulto', 'pcr_pediatrica', 'parada_respiratoria',
-              'anafilaxia', 'anafilaxia_refrataria',
-              'choque_cardiogenico', 'choque_septico_avancado', 'choque_hipovolemico',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'pcr_adulto',
+                      'pcr_pediatrica',
+                      'parada_respiratoria',
+                      'anafilaxia',
+                      'anafilaxia_refrataria',
+                      'choque_cardiogenico',
+                      'choque_septico_avancado',
+                      'choque_hipovolemico',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -189,13 +924,22 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFFFF0F5),
             borderColor: const Color(0xFFFFCCDD),
             iconColor: const Color(0xFFAA1144),
-            protocols: allDB.where((d) => {
-              'iam_congestao', 'sindrome_coronariana_sem_st',
-              'insuficiencia_cardiaca_descomp', 'edema_agudo_pulmao',
-              'tpsv', 'fa_aguda', 'bradiarritmia_grave',
-              'crise_hipertensiva', 'miocardite_aguda', 'pericardite_aguda',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'iam_congestao',
+                      'sindrome_coronariana_sem_st',
+                      'insuficiencia_cardiaca_descomp',
+                      'edema_agudo_pulmao',
+                      'tpsv',
+                      'fa_aguda',
+                      'bradiarritmia_grave',
+                      'crise_hipertensiva',
+                      'miocardite_aguda',
+                      'pericardite_aguda',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -210,14 +954,20 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFF0F8FF),
             borderColor: const Color(0xFFBBD6F0),
             iconColor: const Color(0xFF1A5E8A),
-            protocols: allDB.where((d) => {
-              'asma_grave', 'crise_asmatica_quase_fatal',
-              'dpoc_exacerbacao',
-              'tep_agudo', 'tromboembolismo_pulmonar',
-              'pneumonia_grave', 'pneumonia_aspirativa',
-              'hemoptise_macica',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'asma_grave',
+                      'crise_asmatica_quase_fatal',
+                      'dpoc_exacerbacao',
+                      'tep_agudo',
+                      'tromboembolismo_pulmonar',
+                      'pneumonia_grave',
+                      'pneumonia_aspirativa',
+                      'hemoptise_macica',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -232,14 +982,19 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFF5F0FF),
             borderColor: const Color(0xFFCCBBEE),
             iconColor: const Color(0xFF5C2D91),
-            protocols: allDB.where((d) => {
-              'avc_isquemico', 'avc_hemorragico',
-              'status_epilepticus',
-              'meningite_bacteriana',
-              'agitacao_psicomotora', 'delirium_tremens',
-              'encefalopatia_hepatica',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'avc_isquemico',
+                      'avc_hemorragico',
+                      'status_epilepticus',
+                      'meningite_bacteriana',
+                      'agitacao_psicomotora',
+                      'delirium_tremens',
+                      'encefalopatia_hepatica',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -254,14 +1009,20 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFF0FFF4),
             borderColor: const Color(0xFFBBE8CC),
             iconColor: const Color(0xFF075F45),
-            protocols: allDB.where((d) => {
-              'sepse', 'sepse_foco_urinario',
-              'neutropenia_febril',
-              'pielonefrite_aguda', 'celulite_erisipela',
-              'dengue_manejo', 'colangite_aguda',
-              'pbe_cirrose',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'sepse',
+                      'sepse_foco_urinario',
+                      'neutropenia_febril',
+                      'pielonefrite_aguda',
+                      'celulite_erisipela',
+                      'dengue_manejo',
+                      'colangite_aguda',
+                      'pbe_cirrose',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -276,14 +1037,22 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFFFF8EC),
             borderColor: const Color(0xFFEED8A0),
             iconColor: const Color(0xFF8B6000),
-            protocols: allDB.where((d) => {
-              'cad_shh', 'cetoacidose_diabetica',
-              'hipoglicemia_grave',
-              'hipercalemia_grave', 'hiperpotassemia_grave',
-              'hipocalcemia_grave', 'hiponatremia_grave', 'hipernatremia_grave',
-              'crise_adrenal', 'crise_tireotoxica',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'cad_shh',
+                      'cetoacidose_diabetica',
+                      'hipoglicemia_grave',
+                      'hipercalemia_grave',
+                      'hiperpotassemia_grave',
+                      'hipocalcemia_grave',
+                      'hiponatremia_grave',
+                      'hipernatremia_grave',
+                      'crise_adrenal',
+                      'crise_tireotoxica',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -298,15 +1067,23 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFF5F5F0),
             borderColor: const Color(0xFFD8D4C0),
             iconColor: const Color(0xFF555544),
-            protocols: allDB.where((d) => {
-              'hda_varizeal', 'hda_nao_varicosa', 'hemorragia_digestiva_baixa',
-              'pancreatite_aguda', 'pancreatite_aguda_grave',
-              'apendicite_aguda', 'obstrucao_intestinal',
-              'hemorragia_intra_abdominal',
-              'politrauma_atls', 'sindrome_compartimental',
-              'colica_nefretica',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'hda_varizeal',
+                      'hda_nao_varicosa',
+                      'hemorragia_digestiva_baixa',
+                      'pancreatite_aguda',
+                      'pancreatite_aguda_grave',
+                      'apendicite_aguda',
+                      'obstrucao_intestinal',
+                      'hemorragia_intra_abdominal',
+                      'politrauma_atls',
+                      'sindrome_compartimental',
+                      'colica_nefretica',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -321,15 +1098,22 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFF0F5FF),
             borderColor: const Color(0xFFBBCCEE),
             iconColor: const Color(0xFF1A3A7A),
-            protocols: allDB.where((d) => {
-              'lesao_renal_aguda', 'rabdomiolise_aguda',
-              'coagulacao_intravascular',
-              'crise_de_anemia_falciforme',
-              'eclampsia_hellp', 'hemorragia_pos_parto', 'descolamento_placenta',
-              'tromboembolismo_venoso_ped',
-              'crise_gota', 'priapismo_emergencia',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'lesao_renal_aguda',
+                      'rabdomiolise_aguda',
+                      'coagulacao_intravascular',
+                      'crise_de_anemia_falciforme',
+                      'eclampsia_hellp',
+                      'hemorragia_pos_parto',
+                      'descolamento_placenta',
+                      'tromboembolismo_venoso_ped',
+                      'crise_gota',
+                      'priapismo_emergencia',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -344,15 +1128,23 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFF8F0FF),
             borderColor: const Color(0xFFDDBBFF),
             iconColor: const Color(0xFF6A0DAD),
-            protocols: allDB.where((d) => {
-              'intoxicacao_exogena',
-              'intox_opioides', 'intox_benzodiazepinas',
-              'intox_paracetamol', 'intox_organofosforados',
-              'intox_triciclicos', 'intox_betabloqueadores',
-              'intox_metanol_etilenoglicol', 'intox_monoxido_carbono',
-              'sindrome_abst_opioides', 'delirium_tremens',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'intoxicacao_exogena',
+                      'intox_opioides',
+                      'intox_benzodiazepinas',
+                      'intox_paracetamol',
+                      'intox_organofosforados',
+                      'intox_triciclicos',
+                      'intox_betabloqueadores',
+                      'intox_metanol_etilenoglicol',
+                      'intox_monoxido_carbono',
+                      'sindrome_abst_opioides',
+                      'delirium_tremens',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -367,19 +1159,25 @@ class _ProtocolsScreenState extends State<ProtocolsScreen> {
             color: const Color(0xFFF0FFFA),
             borderColor: const Color(0xFFAADDCC),
             iconColor: const Color(0xFF0A7060),
-            protocols: allDB.where((d) => {
-              'pcr_pediatrica',
-              'anafilaxia_ped',
-              'crise_asmatica_ped', 'mal_asmatico_ped',
-              'bronquiolite_aguda', 'laringite_estridulosa',
-              'convulsao_febril_ped',
-              'meningite_pediatrica',
-              'crise_hipertensiva_ped',
-              'sinusite_bacteriana_ped', 'faringite_estrep',
-              'mastoidite_aguda',
-              'tromboembolismo_venoso_ped',
-            }.contains(d.id)).toList(),
-            p: p, isEs: isEs,
+            protocols: allDB
+                .where((d) => {
+                      'pcr_pediatrica',
+                      'anafilaxia_ped',
+                      'crise_asmatica_ped',
+                      'mal_asmatico_ped',
+                      'bronquiolite_aguda',
+                      'laringite_estridulosa',
+                      'convulsao_febril_ped',
+                      'meningite_pediatrica',
+                      'crise_hipertensiva_ped',
+                      'sinusite_bacteriana_ped',
+                      'faringite_estrep',
+                      'mastoidite_aguda',
+                      'tromboembolismo_venoso_ped',
+                    }.contains(d.id))
+                .toList(),
+            p: p,
+            isEs: isEs,
             onSelect: (proto) => showProtocolDetail(context, proto),
           ),
           const SizedBox(height: 8),
@@ -461,7 +1259,8 @@ class _ProtocolGroupAccordion extends StatelessWidget {
           child: Row(children: [
             // Ícone
             Container(
-              width: 42, height: 42,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: borderColor.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(12),
@@ -474,28 +1273,34 @@ class _ProtocolGroupAccordion extends StatelessWidget {
             ),
             const SizedBox(width: 14),
             // Título + contagem
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title,
-                style: TextStyle(
-                  fontSize: 13.5, fontWeight: FontWeight.w900,
-                  color: iconColor, letterSpacing: -0.2)),
-              const SizedBox(height: 3),
-              Text(
-                '${protocols.length} ${protocols.length == 1
-                    ? (isEs ? 'protocolo' : 'protocolo')
-                    : (isEs ? 'protocolos' : 'protocolos')}',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                  color: iconColor.withOpacity(0.55))),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(title,
+                      style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w900,
+                          color: iconColor,
+                          letterSpacing: -0.2)),
+                  const SizedBox(height: 3),
+                  Text(
+                      '${protocols.length} ${protocols.length == 1 ? (isEs ? 'protocolo' : 'protocolo') : (isEs ? 'protocolos' : 'protocolos')}',
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: iconColor.withOpacity(0.55))),
+                ])),
             // Seta de abertura
             Container(
-              width: 32, height: 32,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: borderColor.withOpacity(0.6),
                 borderRadius: BorderRadius.circular(9),
               ),
               child: Icon(Icons.chevron_right_rounded,
-                size: 20, color: iconColor.withOpacity(0.8)),
+                  size: 20, color: iconColor.withOpacity(0.8)),
             ),
           ]),
         ),
@@ -542,9 +1347,13 @@ class _GroupSheet extends StatelessWidget {
 
   // Cor dos tiles — levemente mais clara que o fundo
   Color get _tileBg {
-    final r = (cardColor.red + (255 - cardColor.red) * 0.55).round().clamp(0, 255);
-    final g = (cardColor.green + (255 - cardColor.green) * 0.55).round().clamp(0, 255);
-    final b = (cardColor.blue + (255 - cardColor.blue) * 0.55).round().clamp(0, 255);
+    final r =
+        (cardColor.red + (255 - cardColor.red) * 0.55).round().clamp(0, 255);
+    final g = (cardColor.green + (255 - cardColor.green) * 0.55)
+        .round()
+        .clamp(0, 255);
+    final b =
+        (cardColor.blue + (255 - cardColor.blue) * 0.55).round().clamp(0, 255);
     return Color.fromARGB(255, r, g, b);
   }
 
@@ -564,12 +1373,12 @@ class _GroupSheet extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(children: [
-
         // ── Alça de arraste ────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 0),
           child: Container(
-            width: 40, height: 4,
+            width: 40,
+            height: 4,
             decoration: BoxDecoration(
               color: iconColor.withOpacity(0.25),
               borderRadius: BorderRadius.circular(2),
@@ -588,7 +1397,8 @@ class _GroupSheet extends StatelessWidget {
           ),
           child: Row(children: [
             Container(
-              width: 42, height: 42,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: borderColor.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(12),
@@ -600,17 +1410,24 @@ class _GroupSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 14),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(title,
-                style: TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w900,
-                  color: iconColor, letterSpacing: -0.2)),
-              const SizedBox(height: 3),
-              Text(
-                '${protocols.length} ${isEs ? 'protocolos disponibles' : 'protocolos disponíveis'}',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                  color: iconColor.withOpacity(0.55))),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(title,
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: iconColor,
+                          letterSpacing: -0.2)),
+                  const SizedBox(height: 3),
+                  Text(
+                      '${protocols.length} ${isEs ? 'protocolos disponibles' : 'protocolos disponíveis'}',
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: iconColor.withOpacity(0.55))),
+                ])),
           ]),
         ),
 
@@ -645,77 +1462,96 @@ class _GroupSheet extends StatelessWidget {
                 },
                 child: Container(
                   margin: EdgeInsets.only(bottom: isLast ? 0 : 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
                   decoration: BoxDecoration(
                     color: _tileBg,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: borderColor.withOpacity(0.7)),
                   ),
                   child: Row(children: [
-                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Expanded(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          // Severidade + favorito
+                          Row(children: [
+                            if (isFav)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Icon(Icons.star_rounded,
+                                    size: 12, color: kGold),
+                              ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: sevColor.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(sevText,
+                                  style: TextStyle(
+                                      fontSize: 8.5,
+                                      fontWeight: FontWeight.w900,
+                                      color: sevColor,
+                                      letterSpacing: 1.2)),
+                            ),
+                          ]),
+                          const SizedBox(height: 5),
 
-                      // Severidade + favorito
-                      Row(children: [
-                        if (isFav)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: Icon(Icons.star_rounded, size: 12, color: kGold),
-                          ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: sevColor.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(sevText,
-                            style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-                              color: sevColor, letterSpacing: 1.2)),
-                        ),
-                      ]),
-                      const SizedBox(height: 5),
+                          // Título
+                          Text(p.tDB(proto.title),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                  color: iconColor),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2),
+                          const SizedBox(height: 4),
 
-                      // Título
-                      Text(p.tDB(proto.title),
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                          color: iconColor),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2),
-                      const SizedBox(height: 4),
-
-                      // Preview
-                      Text(p.tDB(proto.recognize),
-                        style: TextStyle(fontSize: 11.5,
-                          color: iconColor.withOpacity(0.65),
-                          fontWeight: FontWeight.w500, height: 1.4),
-                        maxLines: 2, overflow: TextOverflow.ellipsis),
-                    ])),
+                          // Preview
+                          Text(p.tDB(proto.recognize),
+                              style: TextStyle(
+                                  fontSize: 11.5,
+                                  color: iconColor.withOpacity(0.65),
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.4),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis),
+                        ])),
 
                     const SizedBox(width: 10),
 
                     // Ações: favorito + seta
-                    Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      GestureDetector(
-                        onTap: () => p.toggleFavProtocol(proto.id),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: Icon(
-                            isFav ? Icons.star_rounded : Icons.star_border_rounded,
-                            size: 20,
-                            color: isFav ? kGold : iconColor.withOpacity(0.3),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () => p.toggleFavProtocol(proto.id),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Icon(
+                                isFav
+                                    ? Icons.star_rounded
+                                    : Icons.star_border_rounded,
+                                size: 20,
+                                color:
+                                    isFav ? kGold : iconColor.withOpacity(0.3),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Container(
-                        width: 32, height: 32,
-                        decoration: BoxDecoration(
-                          color: borderColor.withOpacity(0.6),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(Icons.arrow_forward_ios_rounded,
-                          size: 13, color: iconColor.withOpacity(0.8)),
-                      ),
-                    ]),
+                          const SizedBox(height: 6),
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: borderColor.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(Icons.arrow_forward_ios_rounded,
+                                size: 13, color: iconColor.withOpacity(0.8)),
+                          ),
+                        ]),
                   ]),
                 ),
               );
@@ -725,8 +1561,8 @@ class _GroupSheet extends StatelessWidget {
 
         // ── Botão fechar ───────────────────────────────────────────────────
         Padding(
-          padding: EdgeInsets.fromLTRB(16, 0, 16,
-            MediaQuery.of(context).padding.bottom + 12),
+          padding: EdgeInsets.fromLTRB(
+              16, 0, 16, MediaQuery.of(context).padding.bottom + 12),
           child: GestureDetector(
             onTap: () => Navigator.of(context).pop(),
             child: Container(
@@ -737,13 +1573,17 @@ class _GroupSheet extends StatelessWidget {
                 color: borderColor.withOpacity(0.35),
                 border: Border.all(color: borderColor),
               ),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: iconColor),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Icon(Icons.keyboard_arrow_down_rounded,
+                    size: 18, color: iconColor),
                 const SizedBox(width: 6),
                 Text(
                   isEs ? 'Cerrar' : 'Fechar',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800,
-                    color: iconColor),
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: iconColor),
                 ),
               ]),
             ),
@@ -773,64 +1613,80 @@ class _ProtocolListTile extends StatelessWidget {
   // Cor do badge de severidade
   Color _severityColor(String sev) {
     final lower = sev.toLowerCase();
-    if (lower.contains('crít') || lower.contains('crít')) return const Color(0xFFCC2222);
-    if (lower.contains('alto') || lower.contains('alto')) return const Color(0xFFE07000);
+    if (lower.contains('crít') || lower.contains('crít'))
+      return const Color(0xFFCC2222);
+    if (lower.contains('alto') || lower.contains('alto'))
+      return const Color(0xFFE07000);
     return kGold;
   }
 
   @override
   Widget build(BuildContext context) {
-    final isFav    = p.favProtocols.contains(proto.id);
-    final sevText  = p.tDB(proto.severity);
+    final isFav = p.favProtocols.contains(proto.id);
+    final sevText = p.tDB(proto.severity);
     final sevColor = _severityColor(sevText);
 
     return GestureDetector(
-      onTap: onTap,   // clique em qualquer área → abre o detalhe direto
+      onTap: onTap, // clique em qualquer área → abre o detalhe direto
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         decoration: BoxDecoration(
           color: Colors.transparent,
           border: isLast
               ? null
-              : Border(bottom: BorderSide(color: AppColors.of(context).border, width: 0.8)),
+              : Border(
+                  bottom: BorderSide(
+                      color: AppColors.of(context).border, width: 0.8)),
         ),
         child: Row(children: [
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                // Severidade + favorito
+                Row(children: [
+                  if (isFav)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Icon(Icons.star_rounded, size: 12, color: kGold),
+                    ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: sevColor.withOpacity(0.10),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(sevText,
+                        style: TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w900,
+                            color: sevColor,
+                            letterSpacing: 1.2)),
+                  ),
+                ]),
+                const SizedBox(height: 5),
 
-            // Severidade + favorito
-            Row(children: [
-              if (isFav)
-                Padding(
-                  padding: const EdgeInsets.only(right: 5),
-                  child: Icon(Icons.star_rounded, size: 12, color: kGold),
-                ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: sevColor.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(sevText,
-                  style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-                    color: sevColor, letterSpacing: 1.2)),
-              ),
-            ]),
-            const SizedBox(height: 5),
+                // Título
+                Text(p.tDB(proto.title),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.of(context).textPrimary),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2),
+                const SizedBox(height: 4),
 
-            // Título
-            Text(p.tDB(proto.title),
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                color: AppColors.of(context).textPrimary),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2),
-            const SizedBox(height: 4),
-
-            // Reconhecer — preview resumido
-            Text(p.tDB(proto.recognize),
-              style: const TextStyle(fontSize: 11.5, color: Color(0xFF777777),
-                fontWeight: FontWeight.w500, height: 1.4),
-              maxLines: 2, overflow: TextOverflow.ellipsis),
-          ])),
+                // Reconhecer — preview resumido
+                Text(p.tDB(proto.recognize),
+                    style: const TextStyle(
+                        fontSize: 11.5,
+                        color: Color(0xFF777777),
+                        fontWeight: FontWeight.w500,
+                        height: 1.4),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+              ])),
 
           const SizedBox(width: 10),
 
@@ -849,13 +1705,14 @@ class _ProtocolListTile extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Container(
-              width: 32, height: 32,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: AppColors.of(context).darkBtn,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(Icons.arrow_forward_ios_rounded,
-                size: 13, color: kGoldLight),
+                  size: 13, color: kGoldLight),
             ),
           ]),
         ]),
@@ -870,34 +1727,66 @@ class _ProtocolListTile extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _ProtocolDetailSheet extends StatelessWidget {
   final ProtocolModel protocol;
-  const _ProtocolDetailSheet({required this.protocol});
+  final bool simulationContext;
+
+  const _ProtocolDetailSheet({
+    required this.protocol,
+    this.simulationContext = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final p       = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
+    final dark = p.darkMode;
     final actions = protocol.getActions(p.lang);
-    final isFav   = p.favProtocols.contains(protocol.id);
+    final isFav = p.favProtocols.contains(protocol.id);
     final avoidTxt = p.tDB(protocol.avoid);
-    final drugs   = protocol.drugs;
+    final drugs = protocol.drugs;
     final maxH = MediaQuery.of(context).size.height * 0.92;
+
+    final simulationBg =
+        dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final simulationPrimary =
+        dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final simulationSecondary =
+        dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+    final simulationDivider =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+
+    final severityText = p.tDB(protocol.severity);
+    final severityLow = severityText.toLowerCase();
+    final Color simulationSeverityColor;
+    if (severityLow.contains('crít') ||
+        severityLow.contains('grave') ||
+        severityLow.contains('alto')) {
+      simulationSeverityColor = const Color(0xFFDC2626);
+    } else if (severityLow.contains('moder') ||
+        severityLow.contains('urgên') ||
+        severityLow.contains('urgen')) {
+      simulationSeverityColor = const Color(0xFFD97706);
+    } else {
+      simulationSeverityColor = const Color(0xFF10B981);
+    }
 
     return Container(
       height: maxH,
-      decoration: const BoxDecoration(
-        color: Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: simulationContext ? simulationBg : const Color(0xFFF7F8FA),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(children: [
-
         // ── Alça de arraste + botão fechar ────────────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 10, 8, 4),
           child: Row(children: [
             const Spacer(),
             Container(
-              width: 40, height: 4,
+              width: 40,
+              height: 4,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.15),
+                color: simulationContext
+                    ? simulationSecondary.withValues(alpha: 0.35)
+                    : Colors.black.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -907,12 +1796,21 @@ class _ProtocolDetailSheet extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
-                    width: 32, height: 32,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFFE5E7EB),
+                      color: simulationContext
+                          ? Colors.transparent
+                          : const Color(0xFFE5E7EB),
                     ),
-                    child: const Icon(Icons.close_rounded, size: 18, color: Color(0xFF6B7280)),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 18,
+                      color: simulationContext
+                          ? simulationSecondary
+                          : const Color(0xFF6B7280),
+                    ),
                   ),
                 ),
               ),
@@ -924,246 +1822,389 @@ class _ProtocolDetailSheet extends StatelessWidget {
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-              // ── Header premium ───────────────────────────────────────────
-              PremiumCard(
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(p.tDB(protocol.severity),
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-                        color: Color(0xBFFFE8A6), letterSpacing: 1.4)),
-                    const SizedBox(height: 4),
-                    Text(p.tDB(protocol.title),
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-                        color: Colors.white, letterSpacing: -0.5, height: 1.2)),
-                  ])),
-                  // Favorito
-                  GestureDetector(
-                    onTap: () => p.toggleFavProtocol(protocol.id),
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white.withOpacity(0.1),
-                        border: Border.all(color: Colors.white.withOpacity(0.1)),
-                      ),
-                      child: Icon(
-                        isFav ? Icons.star_rounded : Icons.star_border_rounded,
-                        size: 22,
-                        color: isFav ? const Color(0xFFFFE8A6) : Colors.white54,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // ── Header: flat somente no contexto Simulação ───────────────
+              if (simulationContext) ...[
+                Container(
+                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 14),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: simulationDivider,
+                        width: 0.55,
                       ),
                     ),
                   ),
-                ]),
-              ),
-              const SizedBox(height: 12),
-
-              // ════════════════════════════════════════════════════════════
-              // MODO V2.0 — Estrutura clínica completa (hasRichContent)
-              // ════════════════════════════════════════════════════════════
-              if (protocol.hasRichContent) ...[
-
-                // ── 1. Definição ───────────────────────────────────────────
-                if (protocol.definition != null &&
-                    protocol.getString(protocol.definition, p.lang).isNotEmpty) ...[
-                  _DefinitionCard(text: protocol.getString(protocol.definition, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 2. Classificação por gravidade ─────────────────────────
-                if (protocol.classification != null) ...[
-                  _ClassificationCard(data: protocol.getDynamic(protocol.classification, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 3. Critérios de gravidade ──────────────────────────────
-                if (protocol.severityCriteria != null) ...[
-                  _SeverityCriteriaCard(data: protocol.getDynamic(protocol.severityCriteria, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 5. Red Flags ───────────────────────────────────────────
-                if (protocol.getList(protocol.redFlags, p.lang).isNotEmpty) ...[
-                  _RedFlagsCard(items: protocol.getList(protocol.redFlags, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── Reconhecer (mantido no v2.0 como apresentação clínica) ─
-                _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
-                const SizedBox(height: 10),
-
-                // ── 6. Diagnóstico diferencial ─────────────────────────────
-                if (protocol.getList(protocol.differentialDiagnosis, p.lang).isNotEmpty) ...[
-                  _SectionListCard(
-                    icon: Icons.compare_arrows_rounded,
-                    labelKey: 'diff_diagnosis',
-                    labelEs: 'DIAGNÓSTICO DIFERENCIAL',
-                    labelPt: 'DIAGNÓSTICO DIFERENCIAL',
-                    iconColor: const Color(0xFF6366F1),
-                    bgColor: const Color(0xFFF5F3FF),
-                    borderColor: const Color(0xFFA5B4FC),
-                    textColor: const Color(0xFF312E81),
-                    items: protocol.getList(protocol.differentialDiagnosis, p.lang),
-                    p: p,
-                    bulletColor: const Color(0xFF818CF8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (severityText.isNotEmpty)
+                              Text(
+                                severityText.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: simulationSeverityColor,
+                                  letterSpacing: 0.7,
+                                ),
+                              ),
+                            if (severityText.isNotEmpty)
+                              const SizedBox(height: 5),
+                            Text(
+                              p.tDB(protocol.title),
+                              style: TextStyle(
+                                fontSize: 19,
+                                fontWeight: FontWeight.w800,
+                                color: simulationPrimary,
+                                letterSpacing: -0.3,
+                                height: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => p.toggleFavProtocol(protocol.id),
+                        child: SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Icon(
+                            isFav
+                                ? Icons.star_rounded
+                                : Icons.star_border_rounded,
+                            size: 21,
+                            color: isFav
+                                ? const Color(0xFFF4B942)
+                                : simulationSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 7. Exames ──────────────────────────────────────────────
-                if (protocol.getList(protocol.exams, p.lang).isNotEmpty) ...[
-                  _SectionListCard(
-                    icon: Icons.biotech_rounded,
-                    labelKey: 'exams',
-                    labelEs: 'EXAMES ESSENCIAIS',
-                    labelPt: 'EXAMES ESSENCIAIS',
-                    iconColor: const Color(0xFF0EA5E9),
-                    bgColor: const Color(0xFFF0F9FF),
-                    borderColor: const Color(0xFF7DD3FC),
-                    textColor: const Color(0xFF0C4A6E),
-                    items: protocol.getList(protocol.exams, p.lang),
-                    p: p,
-                    bulletColor: const Color(0xFF38BDF8),
+                ),
+                const SizedBox(height: 12),
+              ] else ...[
+                PremiumCard(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              p.tDB(protocol.severity),
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xBFFFE8A6),
+                                letterSpacing: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              p.tDB(protocol.title),
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                letterSpacing: -0.5,
+                                height: 1.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => p.toggleFavProtocol(protocol.id),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white.withOpacity(0.1),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.1),
+                            ),
+                          ),
+                          child: Icon(
+                            isFav
+                                ? Icons.star_rounded
+                                : Icons.star_border_rounded,
+                            size: 22,
+                            color: isFav
+                                ? const Color(0xFFFFE8A6)
+                                : Colors.white54,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                ],
+                ),
+                const SizedBox(height: 12),
+              ],
 
-                // ── 8. Objetivos terapêuticos ──────────────────────────────
-                if (protocol.getList(protocol.objectives, p.lang).isNotEmpty) ...[
-                  _ObjectivesCard(items: protocol.getList(protocol.objectives, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── Conduta imediata (actions legado — mantido em v2.0) ────
-                _ActionsCard(actions: actions, p: p),
-                const SizedBox(height: 10),
-
-                // ── 9/10/11/12. Fármacos por linhas ───────────────────────
-                if (protocol.drugsFirstLine != null ||
-                    protocol.drugsSecondLine != null ||
-                    protocol.drugsConditional != null ||
-                    protocol.drugsContraindicated != null) ...[
-                  _DrugsLinesCard(protocol: protocol, p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── Fármacos relacionados (chips legado) ───────────────────
-                if (drugs.isNotEmpty) ...[
-                  _DrugsChipsCard(drugs: drugs, p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 13. Cenários especiais ─────────────────────────────────
-                if (protocol.getList(protocol.scenarios, p.lang).isNotEmpty) ...[
-                  _SectionListCard(
-                    icon: Icons.people_alt_rounded,
-                    labelKey: 'scenarios',
-                    labelEs: 'ESCENARIOS ESPECIALES',
-                    labelPt: 'CENÁRIOS ESPECIAIS',
-                    iconColor: const Color(0xFF8B5CF6),
-                    bgColor: const Color(0xFFF5F3FF),
-                    borderColor: const Color(0xFFC4B5FD),
-                    textColor: const Color(0xFF4C1D95),
-                    items: protocol.getList(protocol.scenarios, p.lang),
-                    p: p,
-                    bulletColor: const Color(0xFFA78BFA),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 14. Monitorização ──────────────────────────────────────
-                if (protocol.getList(protocol.monitoring, p.lang).isNotEmpty) ...[
-                  _MonitoringCard(items: protocol.getList(protocol.monitoring, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 15. Complicações ───────────────────────────────────────
-                if (protocol.getList(protocol.complications, p.lang).isNotEmpty) ...[
-                  _SectionListCard(
-                    icon: Icons.report_problem_rounded,
-                    labelKey: 'complications',
-                    labelEs: 'COMPLICACIONES',
-                    labelPt: 'COMPLICAÇÕES',
-                    iconColor: const Color(0xFFF97316),
-                    bgColor: const Color(0xFFFFF7ED),
-                    borderColor: const Color(0xFFFDBA74),
-                    textColor: const Color(0xFF7C2D12),
-                    items: protocol.getList(protocol.complications, p.lang),
-                    p: p,
-                    bulletColor: const Color(0xFFFB923C),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── Evitar (legado — mantido em v2.0) ─────────────────────
-                if (avoidTxt.isNotEmpty) ...[
-                  _AvoidCard(text: avoidTxt, p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 16. Não Fazer ──────────────────────────────────────────
-                if (protocol.getList(protocol.doNotDo, p.lang).isNotEmpty) ...[
-                  _DoNotDoCard(items: protocol.getList(protocol.doNotDo, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 17. Pérolas clínicas ───────────────────────────────────
-                if (protocol.getList(protocol.pearls, p.lang).isNotEmpty) ...[
-                  _PearlsCard(items: protocol.getList(protocol.pearls, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 4. Fisiopatologia ──────────────────────────────────────
-                if (protocol.physiopathology != null &&
-                    protocol.getString(protocol.physiopathology, p.lang).isNotEmpty) ...[
-                  _SectionTextCard(
-                    icon: Icons.science_rounded,
-                    label: p.lang == 'es' ? 'FISIOPATOLOGÍA' : 'FISIOPATOLOGIA',
-                    iconColor: const Color(0xFF6366F1),
-                    bgColor: const Color(0xFFF5F3FF),
-                    borderColor: const Color(0xFFA5B4FC),
-                    textColor: const Color(0xFF312E81),
-                    text: protocol.getString(protocol.physiopathology, p.lang),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-
-                // ── 18. Referências ────────────────────────────────────────
-                if (protocol.getList(protocol.references, p.lang).isNotEmpty) ...[
-                  _ReferencesCard(items: protocol.getList(protocol.references, p.lang), p: p),
-                  const SizedBox(height: 10),
-                ],
-
+              if (simulationContext) ...[
+                ..._buildSimulationClinicalContent(
+                  protocol: protocol,
+                  p: p,
+                  actions: actions,
+                  avoidTxt: avoidTxt,
+                  drugs: drugs,
+                ),
               ] else ...[
                 // ════════════════════════════════════════════════════════════
-                // MODO LEGADO (v1.0) — renderiza campos originais
+                // MODO V2.0 — Estrutura clínica completa (hasRichContent)
                 // ════════════════════════════════════════════════════════════
+                if (protocol.hasRichContent) ...[
+                  // ── 1. Definição ───────────────────────────────────────────
+                  if (protocol.definition != null &&
+                      protocol
+                          .getString(protocol.definition, p.lang)
+                          .isNotEmpty) ...[
+                    _DefinitionCard(
+                        text: protocol.getString(protocol.definition, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
 
-                // ── Reconhecer ─────────────────────────────────────────────
-                _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
-                const SizedBox(height: 10),
+                  // ── 2. Classificação por gravidade ─────────────────────────
+                  if (protocol.classification != null) ...[
+                    _ClassificationCard(
+                        data: protocol.getDynamic(
+                            protocol.classification, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
 
-                // ── Conduta imediata ───────────────────────────────────────
-                _ActionsCard(actions: actions, p: p),
-                const SizedBox(height: 10),
+                  // ── 3. Critérios de gravidade ──────────────────────────────
+                  if (protocol.severityCriteria != null) ...[
+                    _SeverityCriteriaCard(
+                        data: protocol.getDynamic(
+                            protocol.severityCriteria, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
 
-                // ── Evitar ─────────────────────────────────────────────────
-                if (avoidTxt.isNotEmpty) ...[
-                  _AvoidCard(text: avoidTxt, p: p),
+                  // ── 5. Red Flags ───────────────────────────────────────────
+                  if (protocol
+                      .getList(protocol.redFlags, p.lang)
+                      .isNotEmpty) ...[
+                    _RedFlagsCard(
+                        items: protocol.getList(protocol.redFlags, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── Reconhecer (mantido no v2.0 como apresentação clínica) ─
+                  _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
                   const SizedBox(height: 10),
-                ],
 
-                // ── Fármacos relacionados ──────────────────────────────────
-                if (drugs.isNotEmpty) ...[
-                  _DrugsChipsCard(drugs: drugs, p: p),
+                  // ── 6. Diagnóstico diferencial ─────────────────────────────
+                  if (protocol
+                      .getList(protocol.differentialDiagnosis, p.lang)
+                      .isNotEmpty) ...[
+                    _SectionListCard(
+                      icon: Icons.compare_arrows_rounded,
+                      labelKey: 'diff_diagnosis',
+                      labelEs: 'DIAGNÓSTICO DIFERENCIAL',
+                      labelPt: 'DIAGNÓSTICO DIFERENCIAL',
+                      iconColor: const Color(0xFF6366F1),
+                      bgColor: const Color(0xFFF5F3FF),
+                      borderColor: const Color(0xFFA5B4FC),
+                      textColor: const Color(0xFF312E81),
+                      items: protocol.getList(
+                          protocol.differentialDiagnosis, p.lang),
+                      p: p,
+                      bulletColor: const Color(0xFF818CF8),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 7. Exames ──────────────────────────────────────────────
+                  if (protocol.getList(protocol.exams, p.lang).isNotEmpty) ...[
+                    _SectionListCard(
+                      icon: Icons.biotech_rounded,
+                      labelKey: 'exams',
+                      labelEs: 'EXAMES ESSENCIAIS',
+                      labelPt: 'EXAMES ESSENCIAIS',
+                      iconColor: const Color(0xFF0EA5E9),
+                      bgColor: const Color(0xFFF0F9FF),
+                      borderColor: const Color(0xFF7DD3FC),
+                      textColor: const Color(0xFF0C4A6E),
+                      items: protocol.getList(protocol.exams, p.lang),
+                      p: p,
+                      bulletColor: const Color(0xFF38BDF8),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 8. Objetivos terapêuticos ──────────────────────────────
+                  if (protocol
+                      .getList(protocol.objectives, p.lang)
+                      .isNotEmpty) ...[
+                    _ObjectivesCard(
+                        items: protocol.getList(protocol.objectives, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── Conduta imediata (actions legado — mantido em v2.0) ────
+                  _ActionsCard(actions: actions, p: p),
                   const SizedBox(height: 10),
+
+                  // ── 9/10/11/12. Fármacos por linhas ───────────────────────
+                  if (protocol.drugsFirstLine != null ||
+                      protocol.drugsSecondLine != null ||
+                      protocol.drugsConditional != null ||
+                      protocol.drugsContraindicated != null) ...[
+                    _DrugsLinesCard(protocol: protocol, p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── Fármacos relacionados (chips legado) ───────────────────
+                  if (drugs.isNotEmpty) ...[
+                    _DrugsChipsCard(drugs: drugs, p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 13. Cenários especiais ─────────────────────────────────
+                  if (protocol
+                      .getList(protocol.scenarios, p.lang)
+                      .isNotEmpty) ...[
+                    _SectionListCard(
+                      icon: Icons.people_alt_rounded,
+                      labelKey: 'scenarios',
+                      labelEs: 'ESCENARIOS ESPECIALES',
+                      labelPt: 'CENÁRIOS ESPECIAIS',
+                      iconColor: const Color(0xFF8B5CF6),
+                      bgColor: const Color(0xFFF5F3FF),
+                      borderColor: const Color(0xFFC4B5FD),
+                      textColor: const Color(0xFF4C1D95),
+                      items: protocol.getList(protocol.scenarios, p.lang),
+                      p: p,
+                      bulletColor: const Color(0xFFA78BFA),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 14. Monitorização ──────────────────────────────────────
+                  if (protocol
+                      .getList(protocol.monitoring, p.lang)
+                      .isNotEmpty) ...[
+                    _MonitoringCard(
+                        items: protocol.getList(protocol.monitoring, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 15. Complicações ───────────────────────────────────────
+                  if (protocol
+                      .getList(protocol.complications, p.lang)
+                      .isNotEmpty) ...[
+                    _SectionListCard(
+                      icon: Icons.report_problem_rounded,
+                      labelKey: 'complications',
+                      labelEs: 'COMPLICACIONES',
+                      labelPt: 'COMPLICAÇÕES',
+                      iconColor: const Color(0xFFF97316),
+                      bgColor: const Color(0xFFFFF7ED),
+                      borderColor: const Color(0xFFFDBA74),
+                      textColor: const Color(0xFF7C2D12),
+                      items: protocol.getList(protocol.complications, p.lang),
+                      p: p,
+                      bulletColor: const Color(0xFFFB923C),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── Evitar (legado — mantido em v2.0) ─────────────────────
+                  if (avoidTxt.isNotEmpty) ...[
+                    _AvoidCard(text: avoidTxt, p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 16. Não Fazer ──────────────────────────────────────────
+                  if (protocol
+                      .getList(protocol.doNotDo, p.lang)
+                      .isNotEmpty) ...[
+                    _DoNotDoCard(
+                        items: protocol.getList(protocol.doNotDo, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 17. Pérolas clínicas ───────────────────────────────────
+                  if (protocol.getList(protocol.pearls, p.lang).isNotEmpty) ...[
+                    _PearlsCard(
+                        items: protocol.getList(protocol.pearls, p.lang), p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 4. Fisiopatologia ──────────────────────────────────────
+                  if (protocol.physiopathology != null &&
+                      protocol
+                          .getString(protocol.physiopathology, p.lang)
+                          .isNotEmpty) ...[
+                    _SectionTextCard(
+                      icon: Icons.science_rounded,
+                      label:
+                          p.lang == 'es' ? 'FISIOPATOLOGÍA' : 'FISIOPATOLOGIA',
+                      iconColor: const Color(0xFF6366F1),
+                      bgColor: const Color(0xFFF5F3FF),
+                      borderColor: const Color(0xFFA5B4FC),
+                      textColor: const Color(0xFF312E81),
+                      text:
+                          protocol.getString(protocol.physiopathology, p.lang),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── 18. Referências ────────────────────────────────────────
+                  if (protocol
+                      .getList(protocol.references, p.lang)
+                      .isNotEmpty) ...[
+                    _ReferencesCard(
+                        items: protocol.getList(protocol.references, p.lang),
+                        p: p),
+                    const SizedBox(height: 10),
+                  ],
+                ] else ...[
+                  // ════════════════════════════════════════════════════════════
+                  // MODO LEGADO (v1.0) — renderiza campos originais
+                  // ════════════════════════════════════════════════════════════
+
+                  // ── Reconhecer ─────────────────────────────────────────────
+                  _RecognizeCard(text: p.tDB(protocol.recognize), p: p),
+                  const SizedBox(height: 10),
+
+                  // ── Conduta imediata ───────────────────────────────────────
+                  _ActionsCard(actions: actions, p: p),
+                  const SizedBox(height: 10),
+
+                  // ── Evitar ─────────────────────────────────────────────────
+                  if (avoidTxt.isNotEmpty) ...[
+                    _AvoidCard(text: avoidTxt, p: p),
+                    const SizedBox(height: 10),
+                  ],
+
+                  // ── Fármacos relacionados ──────────────────────────────────
+                  if (drugs.isNotEmpty) ...[
+                    _DrugsChipsCard(drugs: drugs, p: p),
+                    const SizedBox(height: 10),
+                  ],
                 ],
               ],
 
               // ── Evidencia por fármaco del protocolo ───────────────────
-              if (drugs.isNotEmpty) ...
-                drugs.map((drug) {
+              if (drugs.isNotEmpty)
+                ...drugs.map((drug) {
                   final ev = getGlobalEvidence(drug);
                   if (ev == null) return const SizedBox.shrink();
                   return Padding(
@@ -1183,24 +2224,888 @@ class _ProtocolDetailSheet extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFDDD8CC)),
-                    color: AppColors.of(context).cardBg,
+                    borderRadius: simulationContext
+                        ? BorderRadius.zero
+                        : BorderRadius.circular(14),
+                    border: simulationContext
+                        ? Border(
+                            top: BorderSide(
+                              color: simulationDivider,
+                              width: 0.55,
+                            ),
+                          )
+                        : Border.all(
+                            color: const Color(0xFFDDD8CC),
+                          ),
+                    color: simulationContext
+                        ? Colors.transparent
+                        : AppColors.of(context).cardBg,
                   ),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Icon(Icons.keyboard_arrow_down_rounded, size: 18, color: AppColors.of(context).textPrimary),
-                    const SizedBox(width: 6),
-                    Text(
-                      p.lang == 'es' ? 'Cerrar' : 'Fechar',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.of(context).textPrimary),
-                    ),
-                  ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 18,
+                        color: simulationContext
+                            ? simulationSecondary
+                            : AppColors.of(context).textPrimary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        p.lang == 'es' ? 'Cerrar' : 'Fechar',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: simulationContext
+                              ? simulationPrimary
+                              : AppColors.of(context).textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ]),
           ),
         ),
       ]),
+    );
+  }
+}
+
+
+// MEDCASES_SIMULACOES_TOXICOLOGIA_EXPERIENCE_2026_V1_B_R5
+const Set<String> _toxicologySimulationIds2026 = <String>{
+  'intoxicacao_exogena',
+  'intox_paracetamol',
+  'intox_opioides',
+  'intox_benzodiazepinas',
+  'intox_organofosforados',
+  'intox_triciclicos',
+  'intox_betabloqueadores',
+  'intox_monoxido_carbono',
+  'intox_metanol_etilenoglicol',
+  'intoxicacao_overdose',
+};
+
+class _ToxicologyLearningStageHeader extends StatelessWidget {
+  final bool dark; final int index; final String title; final String subtitle;
+  const _ToxicologyLearningStageHeader({required this.dark,required this.index,required this.title,required this.subtitle});
+  @override Widget build(BuildContext context) {
+    final primary=dark?const Color(0xFFE2E8F0):const Color(0xFF1F2937);
+    final secondary=dark?const Color(0xFF94A3B8):const Color(0xFF64748B);
+    final divider=dark?const Color(0xFF374151):const Color(0xFFE2E7EC);
+    const accent=Color(0xFF0D6B57);
+    return Container(width:double.infinity,margin:const EdgeInsets.only(top:12),padding:const EdgeInsets.fromLTRB(0,13,0,11),decoration:BoxDecoration(border:Border(top:BorderSide(color:divider,width:.7),bottom:BorderSide(color:divider,width:.7))),child:Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Container(width:24,height:24,alignment:Alignment.center,decoration:BoxDecoration(border:Border.all(color:accent,width:1.2),shape:BoxShape.circle),child:Text('$index',style:const TextStyle(fontSize:10,height:1,fontWeight:FontWeight.w900,color:accent))),const SizedBox(width:10),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:TextStyle(fontSize:11,height:1.2,fontWeight:FontWeight.w900,letterSpacing:.8,color:primary)),if(subtitle.trim().isNotEmpty)...[const SizedBox(height:3),Text(subtitle,style:TextStyle(fontSize:11.5,height:1.35,fontWeight:FontWeight.w500,color:secondary))]]))]));
+  }
+}
+
+class _ToxicologyMechanismSignatureSection extends StatelessWidget {
+  final bool dark; final bool isEs; final String text;
+  const _ToxicologyMechanismSignatureSection({required this.dark,required this.isEs,required this.text});
+  @override Widget build(BuildContext context) {
+    final primary=dark?const Color(0xFFE2E8F0):const Color(0xFF1F2937);
+    final secondary=dark?const Color(0xFFAAB5C4):const Color(0xFF526172);
+    final divider=dark?const Color(0xFF374151):const Color(0xFFE2E7EC); const accent=Color(0xFF0D6B57);
+    final parts=text.split(RegExp(r'\n{2,}')).map((e)=>e.trim()).where((e)=>e.isNotEmpty).toList(growable:false);
+    return Container(width:double.infinity,padding:const EdgeInsets.fromLTRB(0,16,0,17),decoration:BoxDecoration(border:Border(bottom:BorderSide(color:divider,width:.7))),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[const Text('DA TOXINA À CONDUTA',style:TextStyle(fontSize:11,height:1.2,fontWeight:FontWeight.w900,letterSpacing:.9,color:accent)),const SizedBox(height:4),Text(isEs?'TOXINA → DIANA → FISIOLOGÍA → CLÍNICA → EXAMEN → RIESGO → TRATAMIENTO':'TOXINA → ALVO → FISIOLOGIA → CLÍNICA → EXAME → RISCO → TRATAMENTO',style:TextStyle(fontSize:10.5,height:1.35,fontWeight:FontWeight.w700,color:secondary)),const SizedBox(height:12),...List.generate(parts.length,(i)=>Row(crossAxisAlignment:CrossAxisAlignment.start,children:[SizedBox(width:16,child:Column(children:[Container(width:7,height:7,margin:const EdgeInsets.only(top:5),decoration:const BoxDecoration(color:accent,shape:BoxShape.circle)),if(i!=parts.length-1)Container(width:1,height:38,color:divider)])),const SizedBox(width:8),Expanded(child:Padding(padding:const EdgeInsets.only(bottom:10),child:Text(parts[i],style:TextStyle(fontSize:12.5,height:1.5,fontWeight:FontWeight.w600,color:primary))))]))]));
+  }
+}
+
+List<Widget> _buildToxicology2026SimulationClinicalContent({required ProtocolModel protocol,required AppProvider p,required List<String> actions,required String avoidTxt,required List<String> drugs}) {
+  final dark=p.darkMode; final isEs=p.lang=='es'; final w=<Widget>[];
+  void add(Widget x){if(w.isNotEmpty)w.add(const SizedBox(height:2));w.add(x);}
+  void stage(int i,String pt,String es,String spt,String ses)=>add(_ToxicologyLearningStageHeader(dark:dark,index:i,title:isEs?es:pt,subtitle:isEs?ses:spt));
+  final scenarios=protocol.getList(protocol.scenarios,p.lang), red=protocol.getList(protocol.redFlags,p.lang), diff=protocol.getList(protocol.differentialDiagnosis,p.lang), exams=protocol.getList(protocol.exams,p.lang), obj=protocol.getList(protocol.objectives,p.lang), first=protocol.getList(protocol.drugsFirstLine,p.lang), second=protocol.getList(protocol.drugsSecondLine,p.lang), cond=protocol.getList(protocol.drugsConditional,p.lang), contra=protocol.getList(protocol.drugsContraindicated,p.lang), mon=protocol.getList(protocol.monitoring,p.lang), comp=protocol.getList(protocol.complications,p.lang), donot=protocol.getList(protocol.doNotDo,p.lang), pearls=protocol.getList(protocol.pearls,p.lang);
+  final definition=protocol.getString(protocol.definition,p.lang), mechanism=protocol.getString(protocol.physiopathology,p.lang), recognize=p.tDB(protocol.recognize);
+  stage(1,'CASO','CASO','Comece pelos dados do paciente antes de abrir a solução.','Empiece por los datos del paciente antes de abrir la solución.');
+  if(scenarios.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.person_outline_rounded,label:isEs?'PRESENTACIÓN DEL CASO':'APRESENTAÇÃO DO CASO',accent:const Color(0xFF0D6B57),items:<String>[scenarios.first],strong:true));
+  if(recognize.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.visibility_outlined,label:isEs?'QUÉ RECONOCER':'O QUE RECONHECER',accent:const Color(0xFFC5A365),text:recognize,strong:true));
+  stage(2,'DECISÕES','DECISIONES','Identifique o risco que muda a próxima conduta.','Identifique el riesgo que cambia la siguiente conducta.');
+  if(red.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.warning_amber_rounded,label:'RED FLAGS',accent:const Color(0xFFDC2626),items:red,strong:true));
+  if(exams.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.biotech_outlined,label:isEs?'DATOS QUE CAMBIAN CONDUCTA':'DADOS QUE MUDAM CONDUTA',accent:const Color(0xFF0284C7),items:exams));
+  if(diff.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.alt_route_rounded,label:isEs?'DIFERENCIALES CRÍTICOS':'DIFERENCIAIS CRÍTICOS',accent:dark?const Color(0xFFAAB5C4):const Color(0xFF526172),items:diff));
+  if(obj.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.gps_fixed,label:isEs?'OBJETIVOS DE LA DECISIÓN':'OBJETIVOS DA DECISÃO',accent:const Color(0xFF0D6B57),items:obj,numbered:true));
+  stage(3,'EVOLUÇÃO','EVOLUCIÓN','Reveja o caso como sequência, não como fotografia.','Revise el caso como secuencia, no como fotografía.');
+  if(scenarios.length>1)add(_SimulationFlatListSection(dark:dark,icon:Icons.timeline,label:isEs?'EVOLUCIÓN POR ETAPAS':'EVOLUÇÃO POR ETAPAS',accent:const Color(0xFFD97706),items:scenarios.sublist(1),numbered:true));
+  if(comp.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.warning_amber_rounded,label:isEs?'SI EMPEORA, PENSAR EN':'SE PIORAR, PENSAR EM',accent:const Color(0xFFDC2626),items:comp));
+  stage(4,'CONDUTA','CONDUCTA','Execute por prioridade e saiba qual endpoint procura.','Ejecute por prioridad y sepa qué endpoint busca.');
+  if(actions.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.playlist_add_check,label:isEs?'SECUENCIA PRÁCTICA':'SEQUÊNCIA PRÁTICA',accent:const Color(0xFF0D6B57),items:actions,numbered:true,strong:true));
+  if(first.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.medication_rounded,label:isEs?'PRIMERA LÍNEA / ANTÍDOTO':'PRIMEIRA LINHA / ANTÍDOTO',accent:const Color(0xFF0D6B57),items:first,strong:true));
+  if(second.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.medical_services_outlined,label:isEs?'SEGUNDA LÍNEA':'SEGUNDA LINHA',accent:const Color(0xFF0284C7),items:second));
+  if(cond.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.call_split,label:isEs?'CONDICIONAL / ESCALADA':'CONDICIONAL / ESCALADA',accent:const Color(0xFFD97706),items:cond));
+  if(contra.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.block_rounded,label:isEs?'EVITAR / CONTRAINDICADO':'EVITAR / CONTRAINDICADO',accent:const Color(0xFFDC2626),items:contra,strong:true));
+  if(mon.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.monitor_heart_outlined,label:isEs?'MONITORIZACIÓN Y ENDPOINTS':'MONITORIZAÇÃO E ENDPOINTS',accent:const Color(0xFF0284C7),items:mon));
+  if(donot.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.report_problem_outlined,label:isEs?'ERRORES CRÍTICOS':'ERROS CRÍTICOS',accent:const Color(0xFFDC2626),items:donot,strong:true));
+  if(avoidTxt.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.do_not_disturb_alt_rounded,label:isEs?'NO HACER':'NÃO FAZER',accent:const Color(0xFFDC2626),text:avoidTxt,strong:true));
+  stage(5,'REPASSO','REPASO','Entenda o porquê da clínica e consolide o que lembrar.','Entienda el porqué de la clínica y consolide lo que recordar.');
+  if(definition.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.info_outline_rounded,label:isEs?'QUÉ ERA ESTE CASO':'O QUE ERA ESTE CASO',accent:const Color(0xFF0284C7),text:definition));
+  if(protocol.classification!=null)add(_SimulationFlatClassificationSection(dark:dark,isEs:isEs,data:protocol.getDynamic(protocol.classification,p.lang)));
+  final sevRaw=protocol.getDynamic(protocol.severityCriteria,p.lang);
+  final sev=sevRaw==null
+      ? ''
+      : sevRaw is String
+          ? sevRaw
+          : sevRaw is Iterable
+              ? sevRaw.map((e)=>e.toString()).where((e)=>e.trim().isNotEmpty).join(' • ')
+              : sevRaw is Map
+                  ? sevRaw.entries.map((e)=>'${e.key}: ${e.value}').join(' • ')
+                  : sevRaw.toString();
+  if(sev.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.speed_rounded,label:isEs?'QUÉ DEFINE GRAVEDAD':'O QUE DEFINE GRAVIDADE',accent:const Color(0xFFD97706),text:sev));
+  if(mechanism.trim().isNotEmpty)add(_ToxicologyMechanismSignatureSection(dark:dark,isEs:isEs,text:mechanism));
+  if(pearls.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.school_outlined,label:isEs?'RESUMEN 30 S / TAKE-HOME POINTS':'RESUMO 30 S / TAKE-HOME POINTS',accent:const Color(0xFFC5A365),items:pearls,strong:true));
+  if(drugs.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.medication_rounded,label:isEs?'FÁRMACOS CLAVE DEL CASO':'FÁRMACOS CHAVE DO CASO',accent:const Color(0xFF0D6B57),items:drugs));
+  return w;
+}
+
+List<Widget> _buildSimulationClinicalContent({
+  required ProtocolModel protocol,
+  required AppProvider p,
+  required List<String> actions,
+  required String avoidTxt,
+  required List<String> drugs,
+}) {
+  if (_toxicologySimulationIds2026.contains(protocol.id)) {
+    return _buildToxicology2026SimulationClinicalContent(
+      protocol: protocol, p: p, actions: actions, avoidTxt: avoidTxt, drugs: drugs,
+    );
+  }
+
+  final dark = p.darkMode;
+  final isEs = p.lang == 'es';
+  final widgets = <Widget>[];
+
+  void addSection(Widget child) {
+    if (widgets.isNotEmpty) {
+      widgets.add(const SizedBox(height: 2));
+    }
+    widgets.add(child);
+  }
+
+  if (protocol.hasRichContent) {
+    if (protocol.definition != null &&
+        protocol.getString(protocol.definition, p.lang).isNotEmpty) {
+      addSection(_SimulationFlatTextSection(
+        dark: dark,
+        icon: Icons.info_outline_rounded,
+        label: isEs ? 'DEFINICIÓN' : 'DEFINIÇÃO',
+        accent: const Color(0xFF0284C7),
+        text: protocol.getString(protocol.definition, p.lang),
+      ));
+    }
+
+    if (protocol.classification != null) {
+      addSection(_SimulationFlatClassificationSection(
+        dark: dark,
+        isEs: isEs,
+        data: protocol.getDynamic(protocol.classification, p.lang),
+      ));
+    }
+
+    if (protocol.severityCriteria != null) {
+      final criteria = <String>[];
+      final data = protocol.getDynamic(protocol.severityCriteria, p.lang);
+      if (data is List) {
+        criteria.addAll(data.map((e) => e.toString()));
+      } else if (data is Map) {
+        data.forEach((k, v) => criteria.add('$k: $v'));
+      } else if (data != null && data.toString().isNotEmpty) {
+        criteria.add(data.toString());
+      }
+      if (criteria.isNotEmpty) {
+        addSection(_SimulationFlatListSection(
+          dark: dark,
+          icon: Icons.speed_rounded,
+          label: isEs ? 'CRITERIOS DE GRAVEDAD' : 'CRITÉRIOS DE GRAVIDADE',
+          accent: const Color(0xFFD97706),
+          items: criteria,
+        ));
+      }
+    }
+
+    final redFlags = protocol.getList(protocol.redFlags, p.lang);
+    if (redFlags.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.warning_amber_rounded,
+        label: 'RED FLAGS',
+        accent: const Color(0xFFDC2626),
+        items: redFlags,
+        strong: true,
+      ));
+    }
+
+    addSection(_SimulationFlatTextSection(
+      dark: dark,
+      icon: Icons.visibility_outlined,
+      label: p.t('recognize').toUpperCase(),
+      accent: const Color(0xFFC5A365),
+      text: p.tDB(protocol.recognize),
+    ));
+
+    final differential =
+        protocol.getList(protocol.differentialDiagnosis, p.lang);
+    if (differential.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.compare_arrows_rounded,
+        label: 'DIAGNÓSTICO DIFERENCIAL',
+        accent: const Color(0xFF3B82F6),
+        items: differential,
+      ));
+    }
+
+    final exams = protocol.getList(protocol.exams, p.lang);
+    if (exams.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.biotech_rounded,
+        label: isEs ? 'EXÁMENES ESENCIALES' : 'EXAMES ESSENCIAIS',
+        accent: const Color(0xFF0EA5E9),
+        items: exams,
+      ));
+    }
+
+    final objectives = protocol.getList(protocol.objectives, p.lang);
+    if (objectives.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.track_changes_rounded,
+        label: isEs ? 'OBJETIVOS TERAPÉUTICOS' : 'OBJETIVOS TERAPÊUTICOS',
+        accent: const Color(0xFF16A34A),
+        items: objectives,
+        numbered: true,
+      ));
+    }
+
+    if (actions.isNotEmpty) {
+      addSection(ProtocolChecklistWidget(
+        steps: actions,
+        isEs: isEs,
+        flat: true,
+      ));
+    }
+
+    if (protocol.drugsFirstLine != null ||
+        protocol.drugsSecondLine != null ||
+        protocol.drugsConditional != null ||
+        protocol.drugsContraindicated != null) {
+      addSection(_SimulationFlatDrugsLinesSection(
+        dark: dark,
+        isEs: isEs,
+        firstLine: protocol.getList(protocol.drugsFirstLine, p.lang),
+        secondLine: protocol.getList(protocol.drugsSecondLine, p.lang),
+        conditional: protocol.getList(protocol.drugsConditional, p.lang),
+        contraindicated:
+            protocol.getList(protocol.drugsContraindicated, p.lang),
+      ));
+    }
+
+    if (drugs.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.medication_rounded,
+        label: isEs ? 'FÁRMACOS CLAVE' : 'FÁRMACOS CHAVE',
+        accent: const Color(0xFF0D6B57),
+        items: drugs,
+      ));
+    }
+
+    final scenarios = protocol.getList(protocol.scenarios, p.lang);
+    if (scenarios.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.people_alt_rounded,
+        label: isEs ? 'ESCENARIOS ESPECIALES' : 'CENÁRIOS ESPECIAIS',
+        accent: const Color(0xFF0EA5E9),
+        items: scenarios,
+      ));
+    }
+
+    final monitoring = protocol.getList(protocol.monitoring, p.lang);
+    if (monitoring.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.monitor_heart_rounded,
+        label: isEs ? 'MONITORIZACIÓN' : 'MONITORIZAÇÃO',
+        accent: const Color(0xFF0284C7),
+        items: monitoring,
+      ));
+    }
+
+    final complications = protocol.getList(protocol.complications, p.lang);
+    if (complications.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.report_problem_rounded,
+        label: isEs ? 'COMPLICACIONES' : 'COMPLICAÇÕES',
+        accent: const Color(0xFFF97316),
+        items: complications,
+      ));
+    }
+
+    if (avoidTxt.isNotEmpty) {
+      addSection(_SimulationFlatTextSection(
+        dark: dark,
+        icon: Icons.block_rounded,
+        label: p.t('avoid').toUpperCase(),
+        accent: const Color(0xFFDC2626),
+        text: avoidTxt,
+        strong: true,
+      ));
+    }
+
+    final doNotDo = protocol.getList(protocol.doNotDo, p.lang);
+    if (doNotDo.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.do_not_disturb_on_rounded,
+        label: isEs ? 'NO HACER' : 'NÃO FAZER',
+        accent: const Color(0xFFDC2626),
+        items: doNotDo,
+        strong: true,
+      ));
+    }
+
+    final pearls = protocol.getList(protocol.pearls, p.lang);
+    if (pearls.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.lightbulb_rounded,
+        label: isEs ? 'PERLAS CLÍNICAS' : 'PÉROLAS CLÍNICAS',
+        accent: const Color(0xFF0D6B57),
+        items: pearls,
+      ));
+    }
+
+    if (protocol.physiopathology != null &&
+        protocol.getString(protocol.physiopathology, p.lang).isNotEmpty) {
+      addSection(_SimulationFlatTextSection(
+        dark: dark,
+        icon: Icons.science_rounded,
+        label: isEs ? 'FISIOPATOLOGÍA' : 'FISIOPATOLOGIA',
+        accent: const Color(0xFF3B82F6),
+        text: protocol.getString(protocol.physiopathology, p.lang),
+      ));
+    }
+
+    final references = protocol.getList(protocol.references, p.lang);
+    if (references.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.menu_book_rounded,
+        label: isEs ? 'REFERENCIAS / GUÍAS' : 'REFERÊNCIAS / DIRETRIZES',
+        accent: dark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+        items: references,
+        referenceStyle: true,
+      ));
+    }
+  } else {
+    addSection(_SimulationFlatTextSection(
+      dark: dark,
+      icon: Icons.visibility_outlined,
+      label: p.t('recognize').toUpperCase(),
+      accent: const Color(0xFFC5A365),
+      text: p.tDB(protocol.recognize),
+    ));
+
+    if (actions.isNotEmpty) {
+      addSection(ProtocolChecklistWidget(
+        steps: actions,
+        isEs: isEs,
+        flat: true,
+      ));
+    }
+
+    if (avoidTxt.isNotEmpty) {
+      addSection(_SimulationFlatTextSection(
+        dark: dark,
+        icon: Icons.block_rounded,
+        label: p.t('avoid').toUpperCase(),
+        accent: const Color(0xFFDC2626),
+        text: avoidTxt,
+        strong: true,
+      ));
+    }
+
+    if (drugs.isNotEmpty) {
+      addSection(_SimulationFlatListSection(
+        dark: dark,
+        icon: Icons.medication_rounded,
+        label: isEs ? 'FÁRMACOS CLAVE' : 'FÁRMACOS CHAVE',
+        accent: const Color(0xFF0D6B57),
+        items: drugs,
+      ));
+    }
+  }
+
+  return widgets;
+}
+
+class _SimulationFlatSectionShell extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final String label;
+  final Color accent;
+  final Widget child;
+
+  const _SimulationFlatSectionShell({
+    required this.dark,
+    required this.icon,
+    required this.label,
+    required this.accent,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    final sectionTitle =
+        dark ? const Color(0xFFE2E8F0) : const Color(0xFF334155);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(0, 12, 0, 14),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: divider, width: 0.55),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(icon, size: 15, color: accent),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.85,
+                      color: sectionTitle,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 9),
+          child,
+        ],
+      ),
+    );
+  }
+}
+class _SimulationFlatTextSection extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final String label;
+  final Color accent;
+  final String text;
+  final bool strong;
+
+  const _SimulationFlatTextSection({
+    required this.dark,
+    required this.icon,
+    required this.label,
+    required this.accent,
+    required this.text,
+    this.strong = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = dark ? const Color(0xFFE2E8F0) : const Color(0xFF334155);
+    return _SimulationFlatSectionShell(
+      dark: dark,
+      icon: icon,
+      label: label,
+      accent: accent,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: strong ? FontWeight.w700 : FontWeight.w500,
+          color: primary,
+          height: 1.52,
+        ),
+      ),
+    );
+  }
+}
+
+class _SimulationFlatListSection extends StatelessWidget {
+  final bool dark;
+  final IconData icon;
+  final String label;
+  final Color accent;
+  final List<String> items;
+  final bool strong;
+  final bool numbered;
+  final bool referenceStyle;
+
+  const _SimulationFlatListSection({
+    required this.dark,
+    required this.icon,
+    required this.label,
+    required this.accent,
+    required this.items,
+    this.strong = false,
+    this.numbered = false,
+    this.referenceStyle = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = dark ? const Color(0xFFE2E8F0) : const Color(0xFF334155);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+
+    return _SimulationFlatSectionShell(
+      dark: dark,
+      icon: icon,
+      label: label,
+      accent: accent,
+      child: Column(
+        children: List.generate(items.length, (index) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: index == items.length - 1 ? 0 : 8,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: numbered ? 22 : 14,
+                  child: numbered
+                      ? Text(
+                          '${index + 1}',
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w800,
+                            color: accent,
+                            height: 1.45,
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Container(
+                            width: 5,
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: accent,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    items[index],
+                    style: TextStyle(
+                      fontSize: referenceStyle ? 11.5 : 13,
+                      fontWeight: strong ? FontWeight.w700 : FontWeight.w500,
+                      color: referenceStyle ? secondary : primary,
+                      height: referenceStyle ? 1.48 : 1.45,
+                      fontStyle:
+                          referenceStyle ? FontStyle.italic : FontStyle.normal,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _SimulationFlatClassificationSection extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final dynamic data;
+
+  const _SimulationFlatClassificationSection({
+    required this.dark,
+    required this.isEs,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final grades = <String>[];
+    if (data is List) {
+      grades.addAll((data as List).map((e) => e.toString()));
+    } else if (data is Map) {
+      (data as Map).forEach((k, v) => grades.add('$k: $v'));
+    } else if (data != null && data.toString().isNotEmpty) {
+      grades.add(data.toString());
+    }
+    if (grades.isEmpty) return const SizedBox.shrink();
+
+    final primary = dark ? const Color(0xFFE2E8F0) : const Color(0xFF334155);
+
+    return _SimulationFlatSectionShell(
+      dark: dark,
+      icon: Icons.bar_chart_rounded,
+      label:
+          isEs ? 'CLASIFICACIÓN POR GRAVEDAD' : 'CLASSIFICAÇÃO POR GRAVIDADE',
+      accent: dark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
+      child: Column(
+        children: List.generate(grades.length, (index) {
+          final text = grades[index];
+          final accent = _simulationGradeAccent(text, index, grades.length);
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: index == grades.length - 1 ? 0 : 9,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 3,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: accent,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: primary,
+                      height: 1.45,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+Color _simulationGradeAccent(String text, int index, int total) {
+  final lower = text.toLowerCase();
+  if (lower.contains('crítico') ||
+      lower.contains('crítica') ||
+      lower.contains('emergência') ||
+      lower.contains('emergencia') ||
+      lower.contains('grau iv') ||
+      lower.contains('clase iv') ||
+      lower.contains('severo') ||
+      lower.contains('grave') ||
+      lower.contains('alto risco')) {
+    return const Color(0xFFDC2626);
+  }
+  if (lower.contains('moderado') ||
+      lower.contains('moderada') ||
+      lower.contains('grau iii') ||
+      lower.contains('clase iii') ||
+      lower.contains('intermedi') ||
+      lower.contains('urgência') ||
+      lower.contains('urgencia') ||
+      lower.contains('médio')) {
+    return const Color(0xFFF97316);
+  }
+  if (lower.contains('leve') ||
+      lower.contains('baixo risco') ||
+      lower.contains('riesgo bajo') ||
+      lower.contains('grau i') ||
+      lower.contains('clase i') ||
+      lower.contains('classe i') ||
+      lower.contains('estável') ||
+      lower.contains('estable')) {
+    return const Color(0xFF16A34A);
+  }
+  if (lower.contains('grau ii') ||
+      lower.contains('clase ii') ||
+      lower.contains('atenção')) {
+    return const Color(0xFFF59E0B);
+  }
+  if (index == 0) return const Color(0xFFDC2626);
+  if (index == total - 1) return const Color(0xFF16A34A);
+  return const Color(0xFFF59E0B);
+}
+
+class _SimulationFlatDrugsLinesSection extends StatelessWidget {
+  final bool dark;
+  final bool isEs;
+  final List<String> firstLine;
+  final List<String> secondLine;
+  final List<String> conditional;
+  final List<String> contraindicated;
+
+  const _SimulationFlatDrugsLinesSection({
+    required this.dark,
+    required this.isEs,
+    required this.firstLine,
+    required this.secondLine,
+    required this.conditional,
+    required this.contraindicated,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _SimulationFlatSectionShell(
+      dark: dark,
+      icon: Icons.medication_liquid_rounded,
+      label: isEs ? 'FARMACOTERAPIA POR LÍNEAS' : 'FARMACOTERAPIA POR LINHAS',
+      accent: const Color(0xFF0D6B57),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (firstLine.isNotEmpty)
+            _SimulationDrugGroup(
+              dark: dark,
+              label: isEs ? '1ª LÍNEA — INDICADO' : '1ª LINHA — INDICADO',
+              accent: const Color(0xFF16A34A),
+              items: firstLine,
+            ),
+          if (firstLine.isNotEmpty && secondLine.isNotEmpty)
+            const SizedBox(height: 12),
+          if (secondLine.isNotEmpty)
+            _SimulationDrugGroup(
+              dark: dark,
+              label: isEs ? '2ª LÍNEA — ALTERNATIVO' : '2ª LINHA — ALTERNATIVO',
+              accent: const Color(0xFF0284C7),
+              items: secondLine,
+            ),
+          if (secondLine.isNotEmpty && conditional.isNotEmpty)
+            const SizedBox(height: 12),
+          if (conditional.isNotEmpty)
+            _SimulationDrugGroup(
+              dark: dark,
+              label: isEs
+                  ? 'CONDICIONAL — ESCENARIOS ESPECÍFICOS'
+                  : 'CONDICIONAL — CENÁRIOS ESPECÍFICOS',
+              accent: const Color(0xFFD97706),
+              items: conditional,
+            ),
+          if (conditional.isNotEmpty && contraindicated.isNotEmpty)
+            const SizedBox(height: 12),
+          if (contraindicated.isNotEmpty)
+            _SimulationDrugGroup(
+              dark: dark,
+              label: isEs
+                  ? 'CONTRAINDICADO — NO USAR'
+                  : 'CONTRAINDICADO — NÃO USAR',
+              accent: const Color(0xFFDC2626),
+              items: contraindicated,
+              banned: true,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SimulationDrugGroup extends StatelessWidget {
+  final bool dark;
+  final String label;
+  final Color accent;
+  final List<String> items;
+  final bool banned;
+
+  const _SimulationDrugGroup({
+    required this.dark,
+    required this.label,
+    required this.accent,
+    required this.items,
+    this.banned = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = dark ? const Color(0xFFE2E8F0) : const Color(0xFF334155);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 9.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.7,
+            color: accent,
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...items.map((item) {
+          final parts = item.split(RegExp(r' — | – | - (?=[A-Z0-9])'));
+          final drugName = parts[0].trim();
+          final detail =
+              parts.length > 1 ? parts.sublist(1).join(' — ').trim() : null;
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Icon(
+                    banned
+                        ? Icons.block_rounded
+                        : Icons.fiber_manual_record_rounded,
+                    size: banned ? 10 : 7,
+                    color: accent,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        drugName,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: primary,
+                          height: 1.35,
+                          decoration: banned
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                          decorationColor: accent,
+                        ),
+                      ),
+                      if (detail != null && detail.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          detail,
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w500,
+                            color: secondary,
+                            height: 1.4,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ],
     );
   }
 }
@@ -1232,14 +3137,20 @@ class _RecognizeCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(p.t('recognize').toUpperCase(),
-              style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                color: Color(0xFF8B6914), letterSpacing: 1.8)),
+                style: const TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF8B6914),
+                    letterSpacing: 1.8)),
           ),
         ]),
         const SizedBox(height: 10),
         Text(text,
-          style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600,
-            color: Color(0xFF3D2E00), height: 1.55)),
+            style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF3D2E00),
+                height: 1.55)),
       ]),
     );
   }
@@ -1290,43 +3201,67 @@ class _ActionStepRow extends StatelessWidget {
     final lower = t.toLowerCase();
 
     // Urgência / Reperfusão / Cirurgia emergencial
-    if (lower.contains('urgente') || lower.contains('emergência') ||
-        lower.contains('cirurgia') || lower.contains('reperfusão') ||
-        lower.contains('reperfusión') || lower.contains('icp') ||
-        lower.contains('fibrinólise') || lower.contains('fibrinolisis') ||
-        lower.contains('rcp') || lower.contains('desfibril') ||
-        lower.contains('cardiovers') || lower.contains('intubação') ||
-        lower.contains('intubación') || lower.contains('cricotireot') ||
-        lower.contains('toracostomia') || lower.contains('pericardiocentese')) {
+    if (lower.contains('urgente') ||
+        lower.contains('emergência') ||
+        lower.contains('cirurgia') ||
+        lower.contains('reperfusão') ||
+        lower.contains('reperfusión') ||
+        lower.contains('icp') ||
+        lower.contains('fibrinólise') ||
+        lower.contains('fibrinolisis') ||
+        lower.contains('rcp') ||
+        lower.contains('desfibril') ||
+        lower.contains('cardiovers') ||
+        lower.contains('intubação') ||
+        lower.contains('intubación') ||
+        lower.contains('cricotireot') ||
+        lower.contains('toracostomia') ||
+        lower.contains('pericardiocentese')) {
       return _StepType.urgent;
     }
 
     // Evitar / Contraindicação inline
-    if (lower.contains('evitar') || lower.contains('não usar') ||
-        lower.contains('no usar') || lower.contains('contraindicado') ||
-        lower.contains('contraindicad') || lower.contains('cuidado com') ||
+    if (lower.contains('evitar') ||
+        lower.contains('não usar') ||
+        lower.contains('no usar') ||
+        lower.contains('contraindicado') ||
+        lower.contains('contraindicad') ||
+        lower.contains('cuidado com') ||
         lower.contains('cautela')) {
       return _StepType.avoid;
     }
 
     // Monitorização / Reavaliação
-    if (lower.contains('monitor') || lower.contains('reavaliar') ||
-        lower.contains('reevaluar') || lower.contains('controlar') ||
-        lower.contains('acompanhar') || lower.contains('verificar') ||
-        lower.contains('checar') || lower.contains('ecg') ||
-        lower.contains('spo2') || lower.contains('pa ') ||
-        lower.contains('diurese') || lower.contains('lactato')) {
+    if (lower.contains('monitor') ||
+        lower.contains('reavaliar') ||
+        lower.contains('reevaluar') ||
+        lower.contains('controlar') ||
+        lower.contains('acompanhar') ||
+        lower.contains('verificar') ||
+        lower.contains('checar') ||
+        lower.contains('ecg') ||
+        lower.contains('spo2') ||
+        lower.contains('pa ') ||
+        lower.contains('diurese') ||
+        lower.contains('lactato')) {
       return _StepType.monitor;
     }
 
     // Acesso / Via / Preparação
-    if (lower.contains('acesso venoso') || lower.contains('acesso iv') ||
-        lower.contains('acesso vv') || lower.contains('via aérea') ||
-        lower.contains('vía aérea') || lower.contains('posicionar') ||
-        lower.contains('exames') || lower.contains('gasometria') ||
-        lower.contains('hemograma') || lower.contains('colher') ||
-        lower.contains('solicitar') || lower.contains('chamar') ||
-        lower.contains('notificar') || lower.contains('acionar')) {
+    if (lower.contains('acesso venoso') ||
+        lower.contains('acesso iv') ||
+        lower.contains('acesso vv') ||
+        lower.contains('via aérea') ||
+        lower.contains('vía aérea') ||
+        lower.contains('posicionar') ||
+        lower.contains('exames') ||
+        lower.contains('gasometria') ||
+        lower.contains('hemograma') ||
+        lower.contains('colher') ||
+        lower.contains('solicitar') ||
+        lower.contains('chamar') ||
+        lower.contains('notificar') ||
+        lower.contains('acionar')) {
       return _StepType.prepare;
     }
 
@@ -1340,34 +3275,32 @@ class _ActionStepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = context.watch<AppProvider>().darkMode;
     final type = _classify(text);
-    final cfg  = _config(type);
+    final cfg = _config(type);
 
     // Divide texto em parte principal e sub-detalhe (entre parênteses)
     final parenMatch = RegExp(r'^(.*?)\s*\(([^)]+)\)\s*(.*)$').firstMatch(text);
-    final hasParen   = parenMatch != null;
-    final mainText   = hasParen
+    final hasParen = parenMatch != null;
+    final mainText = hasParen
         ? '${parenMatch.group(1)!.trim()}${parenMatch.group(3)!.trim()}'.trim()
         : text;
-    final subText    = hasParen ? parenMatch.group(2)! : null;
+    final subText = hasParen ? parenMatch.group(2)! : null;
 
     // Cores adaptativas dark/light
-    final cardBg     = dark ? cfg.cardBgDark     : cfg.cardBgLight;
+    final cardBg = dark ? cfg.cardBgDark : cfg.cardBgLight;
     final cardBorder = dark ? cfg.cardBorderDark : cfg.cardBorderLight;
-    final textMain   = dark ? cfg.textDark        : cfg.textLight;
-    final textSub    = dark
-        ? const Color(0xFF9CA3AF)
-        : const Color(0xFF6B7280);
+    final textMain = dark ? cfg.textDark : cfg.textLight;
+    final textSub = dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Badge numérico + linha conectora ──────────────────────────────
         SizedBox(
           width: 32,
           child: Column(children: [
             Container(
-              width: 28, height: 28,
+              width: 28,
+              height: 28,
               decoration: BoxDecoration(
                 color: cfg.badgeBg,
                 shape: BoxShape.circle,
@@ -1378,8 +3311,9 @@ class _ActionStepRow extends StatelessWidget {
                     ? Icon(cfg.badgeIcon, size: 13, color: cfg.badgeFg)
                     : Text('${index + 1}',
                         style: TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w900,
-                          color: cfg.badgeFg)),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            color: cfg.badgeFg)),
               ),
             ),
             if (!isLast)
@@ -1406,36 +3340,38 @@ class _ActionStepRow extends StatelessWidget {
               color: cardBg,
               border: Border.all(color: cardBorder, width: 1),
             ),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               // Label semântico
               if (cfg.label != null) ...[
                 Text(cfg.label!,
-                  style: TextStyle(
-                    fontSize: 8, fontWeight: FontWeight.w900,
-                    color: cfg.labelColor, letterSpacing: 1.8)),
+                    style: TextStyle(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w900,
+                        color: cfg.labelColor,
+                        letterSpacing: 1.8)),
                 const SizedBox(height: 4),
               ],
 
               // Texto principal
               Text(mainText,
-                style: TextStyle(
-                  fontSize: cfg.fontSize,
-                  fontWeight: cfg.fontWeight,
-                  color: textMain,
-                  height: 1.45,
-                  letterSpacing: -0.1)),
+                  style: TextStyle(
+                      fontSize: cfg.fontSize,
+                      fontWeight: cfg.fontWeight,
+                      color: textMain,
+                      height: 1.45,
+                      letterSpacing: -0.1)),
 
               // Sub-detalhe entre parênteses
               if (subText != null) ...[
                 const SizedBox(height: 5),
                 Text(subText,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: textSub,
-                    height: 1.4,
-                    fontStyle: FontStyle.italic)),
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: textSub,
+                        height: 1.4,
+                        fontStyle: FontStyle.italic)),
               ],
             ]),
           ),
@@ -1611,13 +3547,19 @@ class _AvoidCard extends StatelessWidget {
           const Icon(Icons.block_rounded, size: 13, color: Color(0xFFCC2222)),
           const SizedBox(width: 6),
           Text(p.t('avoid').toUpperCase(),
-            style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-              letterSpacing: 1.8, color: Color(0xFFCC2222))),
+              style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.8,
+                  color: Color(0xFFCC2222))),
         ]),
         const SizedBox(height: 8),
         Text(text,
-          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
-            color: Color(0xFF8B0000), height: 1.5)),
+            style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF8B0000),
+                height: 1.5)),
       ]),
     );
   }
@@ -1646,27 +3588,38 @@ class _DrugsChipsCard extends StatelessWidget {
           const Icon(Icons.medication_rounded, size: 13, color: kGold),
           const SizedBox(width: 6),
           Text(p.lang == 'es' ? 'FÁRMACOS CLAVE' : 'FÁRMACOS CHAVE',
-            style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-              letterSpacing: 1.8, color: kGold)),
+              style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.8,
+                  color: kGold)),
         ]),
         const SizedBox(height: 10),
         Wrap(
           spacing: 6,
           runSpacing: 6,
-          children: drugs.map((d) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFDDD8CC)),
-              boxShadow: [BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 4, offset: const Offset(0, 1))],
-            ),
-            child: Text(d,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
-                color: kDark)),
-          )).toList(),
+          children: drugs
+              .map((d) => Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFDDD8CC)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1))
+                      ],
+                    ),
+                    child: Text(d,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: kDark)),
+                  ))
+              .toList(),
         ),
       ]),
     );
@@ -1689,9 +3642,11 @@ Widget _sectionHeader({
     Icon(icon, size: 13, color: iconColor),
     const SizedBox(width: 6),
     Text(label,
-      style: TextStyle(
-        fontSize: 9, fontWeight: FontWeight.w900,
-        letterSpacing: 1.8, color: iconColor)),
+        style: TextStyle(
+            fontSize: 9,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.8,
+            color: iconColor)),
   ]);
 }
 
@@ -1721,9 +3676,11 @@ class _DefinitionCard extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(text,
-          style: const TextStyle(
-            fontSize: 13.5, fontWeight: FontWeight.w600,
-            color: Color(0xFF0C4A6E), height: 1.55)),
+            style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF0C4A6E),
+                height: 1.55)),
       ]),
     );
   }
@@ -1765,8 +3722,10 @@ class _ClassificationCard extends StatelessWidget {
       grades.add(_GradeItem(
         text: data as String,
         cfg: const _GradeCfg(
-          emoji: '🔵', bg: Color(0xFFF0F9FF),
-          border: Color(0xFF7DD3FC), text: Color(0xFF0C4A6E),
+          emoji: '🔵',
+          bg: Color(0xFFF0F9FF),
+          border: Color(0xFF7DD3FC),
+          text: Color(0xFF0C4A6E),
           badge: Color(0xFF0EA5E9),
         ),
       ));
@@ -1785,98 +3744,137 @@ class _ClassificationCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _sectionHeader(
           icon: Icons.bar_chart_rounded,
-          label: p.lang == 'es' ? 'CLASIFICACIÓN POR GRAVEDAD' : 'CLASSIFICAÇÃO POR GRAVIDADE',
+          label: p.lang == 'es'
+              ? 'CLASIFICACIÓN POR GRAVEDAD'
+              : 'CLASSIFICAÇÃO POR GRAVIDADE',
           iconColor: const Color(0xFF374151),
         ),
         const SizedBox(height: 12),
         ...grades.map((g) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: g.cfg.bg,
-              border: Border.all(color: g.cfg.border),
-            ),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(g.cfg.emoji, style: const TextStyle(fontSize: 15)),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(g.text,
-                  style: TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w700,
-                    color: g.cfg.text, height: 1.45)),
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: g.cfg.bg,
+                  border: Border.all(color: g.cfg.border),
+                ),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(g.cfg.emoji, style: const TextStyle(fontSize: 15)),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(g.text,
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: g.cfg.text,
+                                height: 1.45)),
+                      ),
+                    ]),
               ),
-            ]),
-          ),
-        )),
+            )),
       ]),
     );
   }
 
   _GradeCfg _gradeConfig(String text, int index, int total) {
     final lower = text.toLowerCase();
-    if (lower.contains('crítico') || lower.contains('crítica') ||
-        lower.contains('emergência') || lower.contains('emergencia') ||
-        lower.contains('grau iv') || lower.contains('clase iv') ||
-        lower.contains('severo') || lower.contains('grave') ||
-        lower.contains('killip iv') || lower.contains('nyha iv') ||
-        lower.contains('stage d') || lower.contains('alto risco')) {
+    if (lower.contains('crítico') ||
+        lower.contains('crítica') ||
+        lower.contains('emergência') ||
+        lower.contains('emergencia') ||
+        lower.contains('grau iv') ||
+        lower.contains('clase iv') ||
+        lower.contains('severo') ||
+        lower.contains('grave') ||
+        lower.contains('killip iv') ||
+        lower.contains('nyha iv') ||
+        lower.contains('stage d') ||
+        lower.contains('alto risco')) {
       return const _GradeCfg(
-        emoji: '🔴', bg: Color(0xFFFFF0F0),
-        border: Color(0xFFFCA5A5), text: Color(0xFF7F1D1D),
+        emoji: '🔴',
+        bg: Color(0xFFFFF0F0),
+        border: Color(0xFFFCA5A5),
+        text: Color(0xFF7F1D1D),
         badge: Color(0xFFEF4444),
       );
     }
-    if (lower.contains('moderado') || lower.contains('moderada') ||
-        lower.contains('grau iii') || lower.contains('clase iii') ||
-        lower.contains('killip iii') || lower.contains('nyha iii') ||
-        lower.contains('intermedi') || lower.contains('urgência') ||
-        lower.contains('urgencia') || lower.contains('médio')) {
+    if (lower.contains('moderado') ||
+        lower.contains('moderada') ||
+        lower.contains('grau iii') ||
+        lower.contains('clase iii') ||
+        lower.contains('killip iii') ||
+        lower.contains('nyha iii') ||
+        lower.contains('intermedi') ||
+        lower.contains('urgência') ||
+        lower.contains('urgencia') ||
+        lower.contains('médio')) {
       return const _GradeCfg(
-        emoji: '🟠', bg: Color(0xFFFFF7ED),
-        border: Color(0xFFFDBA74), text: Color(0xFF7C2D12),
+        emoji: '🟠',
+        bg: Color(0xFFFFF7ED),
+        border: Color(0xFFFDBA74),
+        text: Color(0xFF7C2D12),
         badge: Color(0xFFF97316),
       );
     }
-    if (lower.contains('leve') || lower.contains('baixo risco') ||
-        lower.contains('riesgo bajo') || lower.contains('grau i') ||
-        lower.contains('clase i') || lower.contains('classe i') ||
-        lower.contains('killip i') || lower.contains('nyha i') ||
-        lower.contains('estável') || lower.contains('estable')) {
+    if (lower.contains('leve') ||
+        lower.contains('baixo risco') ||
+        lower.contains('riesgo bajo') ||
+        lower.contains('grau i') ||
+        lower.contains('clase i') ||
+        lower.contains('classe i') ||
+        lower.contains('killip i') ||
+        lower.contains('nyha i') ||
+        lower.contains('estável') ||
+        lower.contains('estable')) {
       return const _GradeCfg(
-        emoji: '🟢', bg: Color(0xFFECFDF5),
-        border: Color(0xFF86EFAC), text: Color(0xFF14532D),
+        emoji: '🟢',
+        bg: Color(0xFFECFDF5),
+        border: Color(0xFF86EFAC),
+        text: Color(0xFF14532D),
         badge: Color(0xFF22C55E),
       );
     }
-    if (lower.contains('grau ii') || lower.contains('clase ii') ||
-        lower.contains('killip ii') || lower.contains('nyha ii') ||
-        lower.contains('subagudo') || lower.contains('atenção')) {
+    if (lower.contains('grau ii') ||
+        lower.contains('clase ii') ||
+        lower.contains('killip ii') ||
+        lower.contains('nyha ii') ||
+        lower.contains('subagudo') ||
+        lower.contains('atenção')) {
       return const _GradeCfg(
-        emoji: '🟡', bg: Color(0xFFFFFBEB),
-        border: Color(0xFFFDE68A), text: Color(0xFF78350F),
+        emoji: '🟡',
+        bg: Color(0xFFFFFBEB),
+        border: Color(0xFFFDE68A),
+        text: Color(0xFF78350F),
         badge: Color(0xFFF59E0B),
       );
     }
     // Gradiente por posição (primeiro = mais grave)
     if (index == 0) {
       return const _GradeCfg(
-        emoji: '🔴', bg: Color(0xFFFFF0F0),
-        border: Color(0xFFFCA5A5), text: Color(0xFF7F1D1D),
+        emoji: '🔴',
+        bg: Color(0xFFFFF0F0),
+        border: Color(0xFFFCA5A5),
+        text: Color(0xFF7F1D1D),
         badge: Color(0xFFEF4444),
       );
     }
     if (index == total - 1) {
       return const _GradeCfg(
-        emoji: '🟢', bg: Color(0xFFECFDF5),
-        border: Color(0xFF86EFAC), text: Color(0xFF14532D),
+        emoji: '🟢',
+        bg: Color(0xFFECFDF5),
+        border: Color(0xFF86EFAC),
+        text: Color(0xFF14532D),
         badge: Color(0xFF22C55E),
       );
     }
     return const _GradeCfg(
-      emoji: '🟡', bg: Color(0xFFFFFBEB),
-      border: Color(0xFFFDE68A), text: Color(0xFF78350F),
+      emoji: '🟡',
+      bg: Color(0xFFFFFBEB),
+      border: Color(0xFFFDE68A),
+      text: Color(0xFF78350F),
       badge: Color(0xFFF59E0B),
     );
   }
@@ -1892,8 +3890,11 @@ class _GradeCfg {
   final String emoji;
   final Color bg, border, text, badge;
   const _GradeCfg({
-    required this.emoji, required this.bg,
-    required this.border, required this.text, required this.badge,
+    required this.emoji,
+    required this.bg,
+    required this.border,
+    required this.text,
+    required this.badge,
   });
 }
 
@@ -1931,30 +3932,36 @@ class _SeverityCriteriaCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _sectionHeader(
           icon: Icons.speed_rounded,
-          label: p.lang == 'es' ? 'CRITERIOS DE GRAVEDAD' : 'CRITÉRIOS DE GRAVIDADE',
+          label: p.lang == 'es'
+              ? 'CRITERIOS DE GRAVEDAD'
+              : 'CRITÉRIOS DE GRAVIDADE',
           iconColor: const Color(0xFFD97706),
         ),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              width: 6, height: 6,
-              decoration: const BoxDecoration(
-                color: Color(0xFFD97706),
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(item,
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600,
-                  color: Color(0xFF7C2D12), height: 1.45)),
-            ),
-          ]),
-        )),
+              padding: const EdgeInsets.only(bottom: 6),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 5),
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFD97706),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(item,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF7C2D12),
+                          height: 1.45)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -1984,31 +3991,40 @@ class _RedFlagsCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.local_fire_department_rounded, size: 14, color: Color(0xFFFF9090)),
+          const Icon(Icons.local_fire_department_rounded,
+              size: 14, color: Color(0xFFFF9090)),
           const SizedBox(width: 6),
-          Text(p.lang == 'es' ? '🚨 RED FLAGS — ALARMAS CRÍTICAS' : '🚨 RED FLAGS — SINAIS DE ALARME',
-            style: const TextStyle(
-              fontSize: 9, fontWeight: FontWeight.w900,
-              letterSpacing: 1.8, color: Color(0xFFFF9090))),
+          Text(
+              p.lang == 'es'
+                  ? '🚨 RED FLAGS — ALARMAS CRÍTICAS'
+                  : '🚨 RED FLAGS — SINAIS DE ALARME',
+              style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.8,
+                  color: Color(0xFFFF9090))),
         ]),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 7),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 1),
-              child: Icon(Icons.warning_amber_rounded,
-                size: 14, color: Color(0xFFFF9090)),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(item,
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700,
-                  color: Color(0xFFFFCCCC), height: 1.45)),
-            ),
-          ]),
-        )),
+              padding: const EdgeInsets.only(bottom: 7),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 1),
+                  child: Icon(Icons.warning_amber_rounded,
+                      size: 14, color: Color(0xFFFF9090)),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(item,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFFFCCCC),
+                          height: 1.45)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -2035,36 +4051,44 @@ class _ObjectivesCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _sectionHeader(
           icon: Icons.track_changes_rounded,
-          label: p.lang == 'es' ? 'OBJETIVOS TERAPÉUTICOS' : 'OBJETIVOS TERAPÊUTICOS',
+          label: p.lang == 'es'
+              ? 'OBJETIVOS TERAPÉUTICOS'
+              : 'OBJETIVOS TERAPÊUTICOS',
           iconColor: const Color(0xFF15803D),
         ),
         const SizedBox(height: 10),
         ...items.asMap().entries.map((e) => Padding(
-          padding: const EdgeInsets.only(bottom: 7),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 20, height: 20,
-              decoration: BoxDecoration(
-                color: const Color(0xFF15803D).withOpacity(0.15),
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFF10B981).withOpacity(0.4)),
-              ),
-              child: Center(
-                child: Text('${e.key + 1}',
-                  style: const TextStyle(
-                    fontSize: 9, fontWeight: FontWeight.w900,
-                    color: Color(0xFF15803D))),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(e.value,
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600,
-                  color: Color(0xFF14532D), height: 1.45)),
-            ),
-          ]),
-        )),
+              padding: const EdgeInsets.only(bottom: 7),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF15803D).withOpacity(0.15),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                        color: const Color(0xFF10B981).withOpacity(0.4)),
+                  ),
+                  child: Center(
+                    child: Text('${e.key + 1}',
+                        style: const TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF15803D))),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(e.value,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF14532D),
+                          height: 1.45)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -2080,10 +4104,11 @@ class _DrugsLinesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstLine     = protocol.getList(protocol.drugsFirstLine,     p.lang);
-    final secondLine    = protocol.getList(protocol.drugsSecondLine,    p.lang);
-    final conditional   = protocol.getList(protocol.drugsConditional,   p.lang);
-    final contraindicated = protocol.getList(protocol.drugsContraindicated, p.lang);
+    final firstLine = protocol.getList(protocol.drugsFirstLine, p.lang);
+    final secondLine = protocol.getList(protocol.drugsSecondLine, p.lang);
+    final conditional = protocol.getList(protocol.drugsConditional, p.lang);
+    final contraindicated =
+        protocol.getList(protocol.drugsContraindicated, p.lang);
 
     return Container(
       width: double.infinity,
@@ -2096,7 +4121,9 @@ class _DrugsLinesCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _sectionHeader(
           icon: Icons.medication_liquid_rounded,
-          label: p.lang == 'es' ? 'FARMACOTERAPIA POR LÍNEAS' : 'FARMACOTERAPIA POR LINHAS',
+          label: p.lang == 'es'
+              ? 'FARMACOTERAPIA POR LÍNEAS'
+              : 'FARMACOTERAPIA POR LINHAS',
           iconColor: const Color(0xFF7C3AED),
         ),
         const SizedBox(height: 12),
@@ -2105,7 +4132,8 @@ class _DrugsLinesCard extends StatelessWidget {
         if (firstLine.isNotEmpty)
           _DrugLineBlock(
             emoji: '🥇',
-            label: p.lang == 'es' ? '1ª LÍNEA — INDICADO' : '1ª LINHA — INDICADO',
+            label:
+                p.lang == 'es' ? '1ª LÍNEA — INDICADO' : '1ª LINHA — INDICADO',
             labelColor: const Color(0xFF15803D),
             bgColor: const Color(0xFFECFDF5),
             borderColor: const Color(0xFF86EFAC),
@@ -2121,7 +4149,9 @@ class _DrugsLinesCard extends StatelessWidget {
         if (secondLine.isNotEmpty)
           _DrugLineBlock(
             emoji: '🥈',
-            label: p.lang == 'es' ? '2ª LÍNEA — ALTERNATIVO' : '2ª LINHA — ALTERNATIVO',
+            label: p.lang == 'es'
+                ? '2ª LÍNEA — ALTERNATIVO'
+                : '2ª LINHA — ALTERNATIVO',
             labelColor: const Color(0xFF0284C7),
             bgColor: const Color(0xFFF0F9FF),
             borderColor: const Color(0xFF7DD3FC),
@@ -2137,7 +4167,9 @@ class _DrugsLinesCard extends StatelessWidget {
         if (conditional.isNotEmpty)
           _DrugLineBlock(
             emoji: '⚡',
-            label: p.lang == 'es' ? 'CONDICIONAL — ESCENARIOS ESPECÍFICOS' : 'CONDICIONAL — CENÁRIOS ESPECÍFICOS',
+            label: p.lang == 'es'
+                ? 'CONDICIONAL — ESCENARIOS ESPECÍFICOS'
+                : 'CONDICIONAL — CENÁRIOS ESPECÍFICOS',
             labelColor: const Color(0xFFD97706),
             bgColor: const Color(0xFFFFFBEB),
             borderColor: const Color(0xFFFDE68A),
@@ -2153,7 +4185,9 @@ class _DrugsLinesCard extends StatelessWidget {
         if (contraindicated.isNotEmpty)
           _DrugLineBlock(
             emoji: '🚫',
-            label: p.lang == 'es' ? 'CONTRAINDICADO — NO USAR' : 'CONTRAINDICADO — NÃO USAR',
+            label: p.lang == 'es'
+                ? 'CONTRAINDICADO — NO USAR'
+                : 'CONTRAINDICADO — NÃO USAR',
             labelColor: const Color(0xFFDC2626),
             bgColor: const Color(0xFFFFF0F0),
             borderColor: const Color(0xFFFCA5A5),
@@ -2200,16 +4234,19 @@ class _DrugLineBlock extends StatelessWidget {
           Text(emoji, style: const TextStyle(fontSize: 11)),
           const SizedBox(width: 5),
           Text(label,
-            style: TextStyle(
-              fontSize: 8, fontWeight: FontWeight.w900,
-              letterSpacing: 1.5, color: labelColor)),
+              style: TextStyle(
+                  fontSize: 8,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                  color: labelColor)),
         ]),
         const SizedBox(height: 8),
         ...items.map((item) {
           // Divide em nome do fármaco e detalhe (após " — " ou " - " ou ":")
           final parts = item.split(RegExp(r' — | – | - (?=[A-Z0-9])'));
           final drugName = parts[0].trim();
-          final detail   = parts.length > 1 ? parts.sublist(1).join(' — ').trim() : null;
+          final detail =
+              parts.length > 1 ? parts.sublist(1).join(' — ').trim() : null;
 
           return Padding(
             padding: const EdgeInsets.only(bottom: 6),
@@ -2217,29 +4254,37 @@ class _DrugLineBlock extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 5),
                 child: Icon(
-                  isBanned ? Icons.block_rounded : Icons.fiber_manual_record_rounded,
+                  isBanned
+                      ? Icons.block_rounded
+                      : Icons.fiber_manual_record_rounded,
                   size: isBanned ? 10 : 7,
                   color: bulletColor,
                 ),
               ),
               const SizedBox(width: 8),
-              Expanded(child: Column(
+              Expanded(
+                  child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(drugName,
-                    style: TextStyle(
-                      fontSize: 13, fontWeight: FontWeight.w800,
-                      color: textColor, height: 1.35,
-                      decoration: isBanned ? TextDecoration.lineThrough : null,
-                      decorationColor: bulletColor,
-                    )),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: textColor,
+                        height: 1.35,
+                        decoration:
+                            isBanned ? TextDecoration.lineThrough : null,
+                        decorationColor: bulletColor,
+                      )),
                   if (detail != null) ...[
                     const SizedBox(height: 2),
                     Text(detail,
-                      style: TextStyle(
-                        fontSize: 11.5, fontWeight: FontWeight.w500,
-                        color: textColor.withOpacity(0.75),
-                        height: 1.4, fontStyle: FontStyle.italic)),
+                        style: TextStyle(
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w500,
+                            color: textColor.withOpacity(0.75),
+                            height: 1.4,
+                            fontStyle: FontStyle.italic)),
                   ],
                 ],
               )),
@@ -2277,22 +4322,25 @@ class _MonitoringCard extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 3),
-              child: Icon(Icons.radio_button_checked_rounded,
-                size: 9, color: Color(0xFF38BDF8)),
-            ),
-            const SizedBox(width: 9),
-            Expanded(
-              child: Text(item,
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600,
-                  color: Color(0xFF0C4A6E), height: 1.45)),
-            ),
-          ]),
-        )),
+              padding: const EdgeInsets.only(bottom: 6),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 3),
+                  child: Icon(Icons.radio_button_checked_rounded,
+                      size: 9, color: Color(0xFF38BDF8)),
+                ),
+                const SizedBox(width: 9),
+                Expanded(
+                  child: Text(item,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF0C4A6E),
+                          height: 1.45)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -2318,30 +4366,40 @@ class _DoNotDoCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.do_not_disturb_on_rounded, size: 13, color: Color(0xFFB45309)),
+          const Icon(Icons.do_not_disturb_on_rounded,
+              size: 13, color: Color(0xFFB45309)),
           const SizedBox(width: 6),
-          Text(p.lang == 'es' ? '⛔ NO HACER — ERRORES CRÍTICOS' : '⛔ NÃO FAZER — ERROS CRÍTICOS',
-            style: const TextStyle(
-              fontSize: 9, fontWeight: FontWeight.w900,
-              letterSpacing: 1.6, color: Color(0xFFB45309))),
+          Text(
+              p.lang == 'es'
+                  ? '⛔ NO HACER — ERRORES CRÍTICOS'
+                  : '⛔ NÃO FAZER — ERROS CRÍTICOS',
+              style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.6,
+                  color: Color(0xFFB45309))),
         ]),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 7),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 1),
-              child: Icon(Icons.close_rounded, size: 14, color: Color(0xFFDC2626)),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(item,
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700,
-                  color: Color(0xFF78350F), height: 1.45)),
-            ),
-          ]),
-        )),
+              padding: const EdgeInsets.only(bottom: 7),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 1),
+                  child: Icon(Icons.close_rounded,
+                      size: 14, color: Color(0xFFDC2626)),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(item,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF78350F),
+                          height: 1.45)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -2371,30 +4429,37 @@ class _PearlsCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          const Icon(Icons.lightbulb_rounded, size: 13, color: Color(0xFF10B981)),
+          const Icon(Icons.lightbulb_rounded,
+              size: 13, color: Color(0xFF0D6B57)),
           const SizedBox(width: 6),
           Text(p.lang == 'es' ? '💎 PERLAS CLÍNICAS' : '💎 PÉROLAS CLÍNICAS',
-            style: const TextStyle(
-              fontSize: 9, fontWeight: FontWeight.w900,
-              letterSpacing: 1.8, color: Color(0xFF10B981))),
+              style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.8,
+                  color: Color(0xFF0D6B57))),
         ]),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 7),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 2),
-              child: Icon(Icons.star_rounded, size: 11, color: Color(0xFF10B981)),
-            ),
-            const SizedBox(width: 9),
-            Expanded(
-              child: Text(item,
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600,
-                  color: Color(0xFFD1FAE5), height: 1.5)),
-            ),
-          ]),
-        )),
+              padding: const EdgeInsets.only(bottom: 7),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 2),
+                  child: Icon(Icons.star_rounded,
+                      size: 11, color: Color(0xFF0D6B57)),
+                ),
+                const SizedBox(width: 9),
+                Expanded(
+                  child: Text(item,
+                      style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFD1FAE5),
+                          height: 1.5)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -2421,27 +4486,32 @@ class _ReferencesCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _sectionHeader(
           icon: Icons.menu_book_rounded,
-          label: p.lang == 'es' ? 'REFERENCIAS / GUÍAS' : 'REFERÊNCIAS / DIRETRIZES',
+          label: p.lang == 'es'
+              ? 'REFERENCIAS / GUÍAS'
+              : 'REFERÊNCIAS / DIRETRIZES',
           iconColor: const Color(0xFF475569),
         ),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 4),
-              child: Icon(Icons.circle, size: 5, color: Color(0xFF94A3B8)),
-            ),
-            const SizedBox(width: 9),
-            Expanded(
-              child: Text(item,
-                style: const TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w500,
-                  color: Color(0xFF475569), height: 1.45,
-                  fontStyle: FontStyle.italic)),
-            ),
-          ]),
-        )),
+              padding: const EdgeInsets.only(bottom: 6),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child: Icon(Icons.circle, size: 5, color: Color(0xFF94A3B8)),
+                ),
+                const SizedBox(width: 9),
+                Expanded(
+                  child: Text(item,
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF475569),
+                          height: 1.45,
+                          fontStyle: FontStyle.italic)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -2486,27 +4556,31 @@ class _SectionListCard extends StatelessWidget {
         _sectionHeader(icon: icon, label: label, iconColor: iconColor),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Container(
-                width: 6, height: 6,
-                decoration: BoxDecoration(
-                  color: bulletColor,
-                  shape: BoxShape.circle,
+              padding: const EdgeInsets.only(bottom: 6),
+              child:
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: bulletColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(item,
-                style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600,
-                  color: textColor, height: 1.45)),
-            ),
-          ]),
-        )),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(item,
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: textColor,
+                          height: 1.45)),
+                ),
+              ]),
+            )),
       ]),
     );
   }
@@ -2544,9 +4618,11 @@ class _SectionTextCard extends StatelessWidget {
         _sectionHeader(icon: icon, label: label, iconColor: iconColor),
         const SizedBox(height: 10),
         Text(text,
-          style: TextStyle(
-            fontSize: 13, fontWeight: FontWeight.w600,
-            color: textColor, height: 1.55)),
+            style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: textColor,
+                height: 1.55)),
       ]),
     );
   }

@@ -9,6 +9,10 @@ class ChatMessage {
   final String role;
   final String text;
 
+  /// Display-only provenance for deterministic action-button user messages.
+  /// [text] remains canonical for provider/history/routing/editing.
+  final String? userDisplayText;
+
   /// Metadado clínico estruturado associado ao texto definitivo da mensagem.
   ///
   /// Permanece volátil até que a persistência estruturada seja formalmente
@@ -18,6 +22,7 @@ class ChatMessage {
   ChatMessage({
     required this.role,
     required this.text,
+    this.userDisplayText,
     this.clinicalOutput,
   }) : id = '${role}_${DateTime.now().microsecondsSinceEpoch}';
 
@@ -25,6 +30,7 @@ class ChatMessage {
     required this.id,
     required this.role,
     required this.text,
+    this.userDisplayText,
     this.clinicalOutput,
   });
 
@@ -37,6 +43,8 @@ class ChatMessage {
     String? id,
     String? role,
     String? text,
+    String? userDisplayText,
+    bool clearUserDisplayText = false,
     ClinicalStructuredOutput? clinicalOutput,
     bool clearClinicalOutput = false,
   }) {
@@ -44,6 +52,9 @@ class ChatMessage {
       id: id ?? this.id,
       role: role ?? this.role,
       text: text ?? this.text,
+      userDisplayText: clearUserDisplayText
+          ? null
+          : userDisplayText ?? this.userDisplayText,
       clinicalOutput:
           clearClinicalOutput ? null : clinicalOutput ?? this.clinicalOutput,
     );

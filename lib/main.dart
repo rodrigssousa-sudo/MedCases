@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'home_v2/home_screen_v2.dart';
+import 'screens/home_screen.dart'
+    show PediatricsMainShellWorkspace, InternacionMainShellWorkspace;
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,6 +21,8 @@ import 'package:cloud_firestore/cloud_firestore.dart'
     show Timestamp, FirebaseFirestore, Settings;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'firebase_options.dart';
 import 'theme/app_theme.dart';
 import 'providers/app_provider.dart';
@@ -39,14 +45,20 @@ import 'screens/maintenance_screen.dart';
 import 'screens/cases_screen.dart';
 import 'screens/prescripciones_screen.dart';
 import 'screens/legal_screen.dart';
+import 'screens/support_ticket_screen.dart';
 import 'screens/professional_gate_screen.dart';
 import 'screens/fontes_screen.dart';
 // Mantido temporariamente para rollback imediato da Home V3.
 // ignore: unused_import
-import 'screens/home_screen.dart' show HomeScreen;
-import 'screens/v3/home_screen_v3.dart' show HomeScreenV3;
 import 'screens/notes_screen.dart';
 import 'screens/library_screen.dart';
+import 'screens/vaccines_screen.dart';
+import 'screens/avaliacao_screen.dart';
+import 'screens/laboratory_screen.dart'
+    show LaboratoryMainShellWorkspace, LaboratorySessionBridge;
+import 'screens/remote_audio_consent_sheet.dart';
+import 'screens/notes_audio_local_runtime_screen.dart';
+import 'screens/calculadora_screen.dart' show CalculadoraScreen;
 import 'services/firestore_service.dart';
 import 'services/activity_service.dart';
 import 'services/gemini_service.dart';
@@ -55,9 +67,13 @@ import 'services/gemini_service.dart';
 import 'services/notification_service.dart';
 import 'services/update_service.dart';
 import 'services/offline_calculator_cache_service.dart'; // BUILD 240: smart offline cache
+import 'services/calculator_webview_prewarm_service.dart';
 import 'services/app_resume_coordinator.dart'; // BUILD 241: background/resume safety
 import 'widgets/brand_mark.dart';
 import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
+import 'screens/study_workspace_screen.dart';
+import 'screens/study_history_screen.dart';
+import 'home_v2/components/navigation/home_card_transition.dart';
 import 'widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-app WebView
 import 'platform/web_impl.dart' if (dart.library.io) 'platform/web_stub.dart'
     as webPlatform;
@@ -331,9 +347,182 @@ Future<void> _bootInBackground(AppProvider provider) async {
   }
 }
 
-class MedCasesApp extends StatelessWidget {
+class MedCasesApp extends StatefulWidget {
   final Future<void> firebaseInit;
   const MedCasesApp({super.key, required this.firebaseInit});
+
+  @override
+  State<MedCasesApp> createState() => _MedCasesAppState();
+
+  static ThemeData _buildTheme(bool dark) => ThemeData(
+        // MEDCASES_GLOBAL_DARK_THEME_SECOND_BRAND_V2_B_R1_ROOT
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+        brightness: dark ? Brightness.dark : Brightness.light,
+        // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
+        drawerTheme: DrawerThemeData(
+          scrimColor: Colors.black.withOpacity(0.52),
+          // width: null → cada Drawer define a própria via MediaQuery
+        ),
+        colorScheme: dark
+            ? ColorScheme.dark(
+                // ── Dark mode: neutro, menos verde, maior contraste ──────────
+                primary: const Color(0xFF0D6B57), // MedCases canonical
+                onPrimary: const Color(0xFFFFFFFF),
+                secondary: const Color(0xFF0D6B57), // single MedCases accent
+                onSecondary: const Color(0xFFFFFFFF),
+                surface: const Color(0xFF252930), // cards
+                onSurface: const Color(0xFFFFFFFF), // texto principal
+                surfaceContainerHighest: const Color(0xFF252930),
+                surfaceContainerHigh: const Color(0xFF252930),
+                surfaceContainer: const Color(0xFF252930),
+                surfaceContainerLow: const Color(0xFF1A1D23),
+                surfaceDim: const Color(0xFF1A1D23),
+                outline: const Color(0xFF374151),
+                outlineVariant: const Color(0xFF374151),
+                error: const Color(0xFFFF7070),
+                onError: Colors.white,
+                inverseSurface: const Color(0xFFFFFFFF),
+                onInverseSurface: const Color(0xFF1A1D23),
+              )
+            : const ColorScheme.light(
+                // LIGHT_MODE_PREMIUM_V1_A_R14_ROOT_THEME
+                primary: Color(0xFF0F172A),
+                onPrimary: Color(0xFFFFFFFF),
+                secondary: Color(0xFF0D6B57),
+                onSecondary: Color(0xFFFFFFFF),
+                surface: Color(0xFFFFFFFF),
+                onSurface: Color(0xFF0F172A),
+                surfaceContainerHighest: Color(0xFFF1F5F9),
+                surfaceContainerHigh: Color(0xFFF8FAFC),
+                surfaceContainer: Color(0xFFFFFFFF),
+                surfaceContainerLow: Color(0xFFF8FAFC),
+                surfaceDim: Color(0xFFE2E8F0),
+                outline: Color(0xFFCBD5E1),
+                outlineVariant: Color(0xFFE2E8F0),
+                error: Color(0xFFDC2626),
+                onError: Color(0xFFFFFFFF),
+                inverseSurface: Color(0xFF1A1D23),
+                onInverseSurface: Color(0xFFFFFFFF),
+              ),
+        scaffoldBackgroundColor:
+            dark ? const Color(0xFF1A1D23) : const Color(0xFFF4F7FA),
+        cardColor: dark ? const Color(0xFF252930) : Colors.white,
+        dividerColor: dark ? const Color(0xFF374151) : const Color(0xFFE2E6EA),
+        // Textos padrão do tema
+        textTheme: dark
+            ? const TextTheme(
+                bodyLarge: TextStyle(color: Color(0xFFFFFFFF)),
+                bodyMedium: TextStyle(color: Color(0xFFFFFFFF)),
+                bodySmall: TextStyle(color: Color(0xFFA8B2C1)),
+                titleLarge: TextStyle(color: Color(0xFFFFFFFF)),
+                titleMedium: TextStyle(color: Color(0xFFFFFFFF)),
+                titleSmall: TextStyle(color: Color(0xFFA8B2C1)),
+                labelLarge: TextStyle(color: Color(0xFFFFFFFF)),
+                labelMedium: TextStyle(color: Color(0xFFA8B2C1)),
+                labelSmall: TextStyle(color: Color(0xFF6B7280)),
+              )
+            : const TextTheme(
+                displayLarge: TextStyle(color: Color(0xFF0F172A)),
+                displayMedium: TextStyle(color: Color(0xFF0F172A)),
+                displaySmall: TextStyle(color: Color(0xFF0F172A)),
+                headlineLarge: TextStyle(color: Color(0xFF0F172A)),
+                headlineMedium: TextStyle(color: Color(0xFF0F172A)),
+                headlineSmall: TextStyle(color: Color(0xFF0F172A)),
+                titleLarge: TextStyle(color: Color(0xFF0F172A)),
+                titleMedium: TextStyle(color: Color(0xFF0F172A)),
+                titleSmall: TextStyle(color: Color(0xFF334155)),
+                bodyLarge: TextStyle(color: Color(0xFF0F172A)),
+                bodyMedium: TextStyle(color: Color(0xFF334155)),
+                bodySmall: TextStyle(color: Color(0xFF64748B)),
+                labelLarge: TextStyle(color: Color(0xFF0F172A)),
+                labelMedium: TextStyle(color: Color(0xFF475569)),
+                labelSmall: TextStyle(color: Color(0xFF64748B)),
+              ),
+        inputDecorationTheme: dark
+            ? const InputDecorationTheme()
+            : InputDecorationTheme(
+                filled: true,
+                fillColor: const Color(0xFFFFFFFF),
+                hintStyle: const TextStyle(
+                  color: Color(0xFF94A3B8),
+                  fontWeight: FontWeight.w500,
+                ),
+                labelStyle: const TextStyle(
+                  color: Color(0xFF475569),
+                  fontWeight: FontWeight.w600,
+                ),
+                floatingLabelStyle: const TextStyle(
+                  color: Color(0xFF334155),
+                  fontWeight: FontWeight.w600,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF0D6B57),
+                    width: 1.4,
+                  ),
+                ),
+              ),
+        // Transições de página suaves
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          },
+        ),
+      );
+
+  static ThemeData get _authTheme => ThemeData(
+        // MEDCASES_SPLASH_AUTH_THEME_UI_V2_B_R1_AUTH_THEME
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF1A1D23),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF0D6B57),
+          secondary: Color(0xFF0D6B57),
+          surface: Color(0xFF252930),
+          onSurface: Colors.white,
+          outline: Color(0xFF374151),
+        ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
+            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          },
+        ),
+      );
+}
+
+class _MedCasesAppState extends State<MedCasesApp> {
+  final GlobalKey<NavigatorState> _rootNavigatorKey =
+      GlobalKey<NavigatorState>();
+
+  late final _AuthGate _stableAuthGate;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // O fluxo de autenticação e o shell são criados uma única vez por sessão.
+    // A troca de tema atualiza somente ThemeMode e cores herdadas.
+    _stableAuthGate = _AuthGate(firebaseInit: widget.firebaseInit);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -341,13 +530,40 @@ class MedCasesApp extends StatelessWidget {
     // UiProvider é notificado SOMENTE por toggleDarkMode() / setLang() —
     // completamente isolado do streaming de IA e outros notifyListeners().
     final darkMode = context.select<UiProvider, bool>((p) => p.darkMode);
-    return NotificationOverlay(
-        child: MaterialApp(
+    return MaterialApp(
+      navigatorKey: _rootNavigatorKey,
       title: 'MedCases Pro',
       debugShowCheckedModeBanner: false,
-      theme: _buildTheme(false),
-      darkTheme: _buildTheme(true),
+      theme: (() {
+        // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R2
+        final baseTheme = MedCasesApp._buildTheme(false);
+        return baseTheme.copyWith(
+          appBarTheme: baseTheme.appBarTheme.copyWith(
+            backgroundColor: const Color(0xFFECF1F3),
+            foregroundColor: const Color(0xFF05070A),
+            surfaceTintColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: Color(0xFF05070A),
+            ),
+            actionsIconTheme: const IconThemeData(
+              color: Color(0xFF05070A),
+            ),
+            titleTextStyle: baseTheme.textTheme.titleLarge?.copyWith(
+              color: const Color(0xFF05070A),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        );
+      })(),
+      darkTheme: MedCasesApp._buildTheme(true),
       themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+      // Troca instantânea: evita frames híbridos entre AppProvider e Theme.
+      themeAnimationDuration: Duration.zero,
+      themeAnimationCurve: Curves.linear,
 
       // BUILD 330 — CAMADA 3: Cor primária fixa do MaterialApp
       // ─────────────────────────────────────────────────────────────────────
@@ -360,7 +576,7 @@ class MedCasesApp extends StatelessWidget {
       // 1 frame com a cor padrão do sistema (branca no iOS light mode).
       // Fixar #0F1116 aqui neutraliza esse frame residual de forma nativa — sem
       // depender da velocidade do SharedPreferences ou do ThemeData.
-      color: const Color(0xFF0F1116), // Dark background canônico do MedCases
+      color: darkMode ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF),
 
       // ── Localização: informa ao Flutter os idiomas suportados ──────────────
       // Necessário para que widgets nativos (DatePicker, etc.) usem o idioma certo
@@ -376,7 +592,7 @@ class MedCasesApp extends StatelessWidget {
         Locale('es'), // Espanhol
         Locale('en'), // Inglês (fallback padrão do Flutter)
       ],
-      home: _AuthGate(firebaseInit: firebaseInit),
+      home: _stableAuthGate,
 
       // BUILD 280 — CAMADA 3: Builder com ColoredBox de segurança
       // ─────────────────────────────────────────────────────────────────────
@@ -394,102 +610,14 @@ class MedCasesApp extends StatelessWidget {
       //   < 1024 px  → mobile/tablet shell (AppBar + bottom nav)
       //   >= 1024 px → desktop shell (sidebar lateral + conteúdo expandido)
       // Não há mais centralização forçada ou clamp de 560 px no iPad.
-      builder: (context, child) => ColoredBox(
-        color: const Color(
-            0xFF0F1116), // camada de segurança — fundo escuro MedCases
-        child: child ?? const SizedBox.shrink(),
+      builder: (context, child) => NotificationOverlay(
+        child: ColoredBox(
+          color: darkMode ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF),
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
-    )); // fecha NotificationOverlay
+    );
   }
-
-  ThemeData _buildTheme(bool dark) => ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-        brightness: dark ? Brightness.dark : Brightness.light,
-        // ── Drawer global: scrim escuro e sem largura forçada pelo tema ──────────
-        drawerTheme: DrawerThemeData(
-          scrimColor: Colors.black.withOpacity(0.52),
-          // width: null → cada Drawer define a própria via MediaQuery
-        ),
-        colorScheme: dark
-            ? ColorScheme.dark(
-                // ── Dark mode: neutro, menos verde, maior contraste ──────────
-                primary: const Color(0xFF00E5FF), // ouro
-                onPrimary: const Color(0xFF1C1C1C),
-                secondary: const Color(0xFF10B981), // verde médio
-                onSecondary: const Color(0xFFFFFFFF),
-                surface: const Color(0xFF252930), // cards
-                onSurface: const Color(0xFFFFFFFF), // texto principal
-                surfaceContainerHighest: const Color(0xFF252930),
-                surfaceContainerHigh: const Color(0xFF252930),
-                surfaceContainer: const Color(0xFF252930),
-                surfaceContainerLow: const Color(0xFF1A1D23),
-                surfaceDim: const Color(0xFF1A1D23),
-                outline: const Color(0xFF374151),
-                outlineVariant: const Color(0xFF2D3340),
-                error: const Color(0xFFFF7070),
-                onError: Colors.white,
-                inverseSurface: const Color(0xFFFFFFFF),
-                onInverseSurface: const Color(0xFF1A1D23),
-              )
-            : ColorScheme.light(
-                primary: const Color(0xFF0F1116),
-                secondary: const Color(0xFF10B981),
-                surface: const Color(0xFFFFFFFF),
-                onSurface: const Color(0xFF0F1116),
-                surfaceContainerHighest: const Color(0xFFF9F9F9),
-              ),
-        scaffoldBackgroundColor:
-            dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
-        cardColor: dark ? const Color(0xFF252930) : Colors.white,
-        dividerColor: dark ? const Color(0xFF2D3340) : const Color(0xFFE2E6EA),
-        // Textos padrão do tema
-        textTheme: dark
-            ? const TextTheme(
-                bodyLarge: TextStyle(color: Color(0xFFFFFFFF)),
-                bodyMedium: TextStyle(color: Color(0xFFFFFFFF)),
-                bodySmall: TextStyle(color: Color(0xFFA8B2C1)),
-                titleLarge: TextStyle(color: Color(0xFFFFFFFF)),
-                titleMedium: TextStyle(color: Color(0xFFFFFFFF)),
-                titleSmall: TextStyle(color: Color(0xFFA8B2C1)),
-                labelLarge: TextStyle(color: Color(0xFFFFFFFF)),
-                labelMedium: TextStyle(color: Color(0xFFA8B2C1)),
-                labelSmall: TextStyle(color: Color(0xFF6B7280)),
-              )
-            : null,
-        // Transições de página suaves
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-          },
-        ),
-      );
-
-  static ThemeData get _authTheme => ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF0F1116),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFC5A365),
-          secondary: Color(0xFF10B981),
-          surface: Color(0xFF0F1116),
-          onSurface: Colors.white,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.macOS: const CupertinoPageTransitionsBuilder(),
-            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
-          },
-        ),
-      );
 }
 
 // ── Auth Gate ─────────────────────────────────────────────────────────────────
@@ -654,7 +782,7 @@ class _AuthGateState extends State<_AuthGate> {
 
   @override
   Widget build(BuildContext context) {
-    // _TimedSplash garante visibilidade mínima de 1.2s + fade-out suave.
+    // _TimedSplash garante visibilidade mínima de 3.2s + fade-out suave.
     // Quando splash e boot terminam → readyBuilder() exibe o fluxo real de auth.
     // A lógica de auth (FutureBuilder → StreamBuilder) é preservada intacta.
     // BUILD 313: _TimedSplash recebe onAuthResolved para atrasar
@@ -832,6 +960,7 @@ class _ConsentGate extends StatefulWidget {
 }
 
 class _ConsentGateState extends State<_ConsentGate> {
+  // MEDCASES_AUTH_CONSENT_GATE_UI_V2_B_R1
   bool? _hasConsented;
 
   @override
@@ -851,15 +980,16 @@ class _ConsentGateState extends State<_ConsentGate> {
   Widget build(BuildContext context) {
     if (_hasConsented == null) {
       return const Scaffold(
-        backgroundColor: Color(0xFF0F1116),
+        backgroundColor: Color(0xFF1A1D23),
         body:
-            Center(child: CircularProgressIndicator(color: Color(0xFF00E5FF))),
+            Center(child: CircularProgressIndicator(color: Color(0xFF0D6B57))),
       );
     }
     if (_hasConsented!) return const LoginScreen();
     return Stack(children: [
       const LoginScreen(),
-      Positioned.fill(child: ColoredBox(color: Colors.black.withOpacity(0.55))),
+      Positioned.fill(
+          child: ColoredBox(color: Colors.black.withValues(alpha: 0.50))),
       Positioned(
         left: 0,
         right: 0,
@@ -890,7 +1020,7 @@ class _ConsentGateState extends State<_ConsentGate> {
 //
 // DESIGN:
 //   • Background: Color(0xFF0F1116) — idêntico ao storyboard/XML gerado
-//   • Logo: app_icon.png 120×120 com glow verde esmeralda
+//   • Logo: M+ isolado 150×150, sem moldura, giro 3D horizontal Y 360° no próprio centro + zoom suave
 //   • Título: "MedCases Pro" branco, bold, 26px, letterSpacing 1.2
 //   • Tagline: "IA Clínica de bolso" verde clínico, w500
 //   • Loader: CircularProgressIndicator verde + "Carregando dados clínicos..."
@@ -902,11 +1032,16 @@ class _SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<_SplashScreen>
     with TickerProviderStateMixin {
-  // ── Entrada (700 ms) ─────────────────────────────────────────
+  // MEDCASES_SPLASH_AUTH_THEME_UI_V2_B_R1_SPLASH
+  // ── Entrada premium (1450 ms) ─────────────────────────────────
   late AnimationController _ctrl;
   late Animation<double> _scale;
   late Animation<double> _fade;
   late Animation<Offset> _slide;
+
+  // MEDCASES_SPLASH_MPLUS_360_ZOOM_PREMIUM_V1_B_R5
+  late Animation<double> _logoTurns;
+  late Animation<double> _logoIntroScale;
 
   // ── Pulso contínuo do logo (2400 ms, repeat) ─────────────────
   // Opacity: 1.0 → 0.55 → 1.0 (Curves.easeInOut)
@@ -920,13 +1055,33 @@ class _SplashScreenState extends State<_SplashScreen>
     super.initState();
     // ── Animação de entrada ──────────────────────────────────────
     _ctrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 700));
+        vsync: this, duration: const Duration(milliseconds: 1450));
     _scale = Tween<double>(begin: 0.82, end: 1.0)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
     _fade = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.65)));
     _slide = Tween<Offset>(begin: const Offset(0, 0.10), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+
+    _logoTurns = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOutCubic),
+    );
+
+    _logoIntroScale = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.92, end: 1.10).chain(
+          CurveTween(curve: Curves.easeOutCubic),
+        ),
+        weight: 72,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.10, end: 1.00).chain(
+          CurveTween(curve: Curves.easeInOutCubic),
+        ),
+        weight: 28,
+      ),
+    ]).animate(_ctrl);
+
     _ctrl.forward();
 
     // ── Pulso contínuo — inicia após a entrada terminar ──────────
@@ -970,7 +1125,7 @@ class _SplashScreenState extends State<_SplashScreen>
             height: 240,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF0E7C52).withOpacity(0.055),
+              color: const Color(0xFF0D6B57).withOpacity(0.055),
             ),
           ),
         ),
@@ -982,7 +1137,7 @@ class _SplashScreenState extends State<_SplashScreen>
             height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF13A06A).withOpacity(0.035),
+              color: const Color(0xFF0D6B57).withOpacity(0.035),
             ),
           ),
         ),
@@ -1002,54 +1157,36 @@ class _SplashScreenState extends State<_SplashScreen>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // ── Logo 120×120 com glow verde + pulso suave ─────────────
+                    // ── M+ 150px: giro horizontal Y 360° + zoom, depois pulso ──
                     // AnimatedBuilder reage ao _pulseCtrl (repeat reverse):
                     // opacidade 1.0↔0.55 e escala 1.0↔1.06 com easeInOut 2.4s.
                     AnimatedBuilder(
-                      animation: _pulseCtrl,
+                      animation: Listenable.merge([_ctrl, _pulseCtrl]),
                       builder: (_, child) => Opacity(
                         opacity: _pulseOpacity.value,
                         child: Transform.scale(
-                          scale: _pulseScale.value,
-                          child: child,
+                          scale: _logoIntroScale.value * _pulseScale.value,
+                          alignment: Alignment.center,
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.identity()
+                              ..setEntry(3, 2, 0.0016)
+                              ..rotateY(
+                                _logoTurns.value * 6.283185307179586,
+                              ),
+                            child: child,
+                          ),
                         ),
                       ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF0E7C52).withOpacity(0.30),
-                              blurRadius: 60,
-                              spreadRadius: 12,
-                            ),
-                          ],
-                        ),
-                        child: Image.asset(
-                          'assets/icon/app_icon.png',
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.contain,
-                          // Fallback elegante caso o asset falhe (ex: hot-reload parcial)
-                          errorBuilder: (_, __, ___) => Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(28),
-                              gradient: const LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [Color(0xFF0F1C14), Color(0xFF1F6B48)],
-                              ),
-                            ),
-                            child: const Center(
-                              child: Text('M+',
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFFFFE8A6),
-                                  )),
-                            ),
+                      child: SizedBox.square(
+                        dimension: 150,
+                        child: Center(
+                          child: Image.asset(
+                            'assets/icon/splash_mplus_premium.png',
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.contain,
+                            filterQuality: FilterQuality.high,
                           ),
                         ),
                       ),
@@ -1076,7 +1213,7 @@ class _SplashScreenState extends State<_SplashScreen>
                       'IA Clínica de bolso',
                       style: TextStyle(
                         fontSize: 12,
-                        color: const Color(0xFF13A06A).withOpacity(0.85),
+                        color: const Color(0xFF0D6B57).withOpacity(0.85),
                         fontWeight: FontWeight.w500,
                         letterSpacing: 1.1,
                       ),
@@ -1149,7 +1286,7 @@ class _SplashLoadingIndicatorState extends State<_SplashLoadingIndicator> {
           child: CircularProgressIndicator(
             strokeWidth: 2.0,
             valueColor: AlwaysStoppedAnimation<Color>(
-              const Color(0xFF13A06A).withOpacity(0.70),
+              const Color(0xFF0D6B57).withOpacity(0.70),
             ),
           ),
         ),
@@ -1179,7 +1316,7 @@ class _SplashLoadingIndicatorState extends State<_SplashLoadingIndicator> {
 // independentemente de quão rápido o boot terminar.
 // Sem _TimedSplash: se o Firebase inicializar em < 200ms, a splash pisca
 // brevemente — visível apenas em cold starts rápidos (cache quente, WiFi).
-// Com _TimedSplash: a splash sempre exibe por mínimo 1.2s → transição suave.
+// Com _TimedSplash: a splash sempre exibe por mínimo 3.2s → transição suave.
 //
 // Lógica: dois semáforos em paralelo —
 //   • timer 1.2s           → _minTimeDone = true
@@ -1209,7 +1346,7 @@ class _TimedSplash extends StatefulWidget {
 }
 
 class _TimedSplashState extends State<_TimedSplash> {
-  static const _kMinMs = 1200; // mínimo 1.2s de splash dinâmico visível
+  static const _kMinMs = 4520; // mínimo 3.2s de splash dinâmico visível
   // BUILD 241: watchdog — se o bootstrap não terminar em 20s, força conclusão.
   // Protege contra: browser throttle, Firebase timeout, aba inativa durante boot.
   static const _kWatchdogMs = 20000;
@@ -1222,9 +1359,29 @@ class _TimedSplashState extends State<_TimedSplash> {
   // (aprovado / bloqueado / pendente / não autenticado).
   bool _authResolved = false;
 
+  // MEDCASES_SPLASH_NO_GRAY_HANDOFF_V1_B_R8
+  // O conteúdo real é montado atrás da splash; a splash só começa a sair
+  // depois que auth está estável e o conteúdo teve frames reais para pintar.
+  bool _handoffScheduled = false;
+  bool _handoffDone = false;
+
   @override
   void initState() {
     super.initState();
+
+    // MEDCASES_SPLASH_NATIVE_TO_FLUTTER_VISUAL_READY_HANDOFF_V1_B_R0
+    // O LaunchScreen nativo permanece sobre o Flutter enquanto o Splash 2 real
+    // monta e o asset premium M+ é decodificado. A remoção nativa só ocorre
+    // depois do precache + dois frames completos de paint do Splash 2.
+    //
+    // Isso evita que o primeiro frame genérico/sem asset descubra a superfície
+    // Flutter e elimina a disputa entre dois owners de FlutterNativeSplash.remove().
+    if (!kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _releaseNativeSplashAfterVisualReady();
+      });
+    }
 
     // Timer mínimo
     Future<void>.delayed(const Duration(milliseconds: _kMinMs), () {
@@ -1236,7 +1393,6 @@ class _TimedSplashState extends State<_TimedSplash> {
       if (mounted)
         setState(() {
           _bootDone = true;
-          _minTimeDone = true; // se boot terminou, min também está OK
         });
       AppResumeCoordinator.instance.completeBootstrap(); // BUILD 241
     });
@@ -1289,40 +1445,12 @@ class _TimedSplashState extends State<_TimedSplash> {
     // outer safety net for frozen processes — it does not interfere with auth.
   }
 
-  // ── GATE 1: remoção do splash nativo iOS ─────────────────────────────────
-  // BUILD 330 — OTIMIZAÇÃO CRÍTICA iOS: desacopla FlutterNativeSplash.remove()
-  // do semáforo _authResolved.
-  //
-  // PROBLEMA ANTERIOR: _ready = _minTimeDone && _bootDone && _authResolved
-  // gateava a remoção do storyboard nativo AO MESMO TEMPO que a transição para
-  // o conteúdo real. _authResolved só dispara após currentUserStream() resolver
-  // (Firestore cold-start = 6–8s em 4G/LTE) → storyboard estático ficava 6–8s.
-  //
-  // SOLUÇÃO: dois gates separados com responsabilidades distintas:
-  //   • _nativeSplashReady = boot concluído → remove storyboard (~1-2s)
-  //     O Flutter engine já pintou o primeiro frame dinâmico (_SplashScreen),
-  //     então o UIKit pode encerrar o storyboard sem flash intermediário.
-  //   • _ready = boot + auth resolvido → transição para o conteúdo real
-  //     (LoginScreen / HomeScreen). Auth pode demorar mais; durante esse
-  //     intervalo o médico vê o splash dinâmico animado, não a tela estática.
-  //
-  // TIMING iOS (BUILD 330):
-  //   [t=0ms]    runApp() → Dart engine ativo
-  //   [t=~200ms] 1º frame Flutter pintado (_SplashScreen com logo respirando)
-  //   [t=~800ms] Firebase + prefs inicializados (_bootDone = true)
-  //   [t=1200ms] _minTimeDone = true → _nativeSplashReady = true
-  //              → FlutterNativeSplash.remove() no próximo frame
-  //              → STORYBOARD ENCERRADO: médico vê splash dinâmico em < 1.5s
-  //   [t=var]    currentUserStream() resolve → _authResolved = true → _ready
-  //              → AnimatedSwitcher transiciona para HomeScreen/LoginScreen
-  bool get _nativeSplashReady => _minTimeDone && _bootDone;
-
   // ── GATE 2: monta o fluxo real após boot + tempo mínimo ───────────────
   // BUILD 331 — correção de deadlock circular:
   // _authResolved é produzido por widgets construídos dentro de readyBuilder().
   // Portanto, ele não pode ser pré-requisito para montar o próprio readyBuilder.
   //
-  // Após boot + 1.2s, _buildAuthFlow() é montado. Enquanto Firebase/Auth ainda
+  // Após boot + 3.2s, _buildAuthFlow() é montado. Enquanto Firebase/Auth ainda
   // estiverem resolvendo, o próprio fluxo retorna _SplashScreen; quando chegar
   // a um estado final, ele troca para Login/Home sem tela branca.
   bool get _ready => _minTimeDone && _bootDone;
@@ -1342,48 +1470,102 @@ class _TimedSplashState extends State<_TimedSplash> {
   // consecutivos no mesmo frame, causando chamadas duplicadas ao plugin nativo.
   bool _splashRemoved = false;
 
+  // MEDCASES_SPLASH_NATIVE_TO_FLUTTER_VISUAL_READY_HANDOFF_V1_B_R0
+  // ÚNICO owner produtivo de FlutterNativeSplash.remove().
+  Future<void> _releaseNativeSplashAfterVisualReady() async {
+    if (!mounted || _splashRemoved || kIsWeb) return;
+
+    // O primeiro frame Flutter já terminou porque este método é iniciado por
+    // addPostFrameCallback no initState. Agora garantimos que o M+ premium
+    // esteja efetivamente decodificado antes de descobrir a superfície Flutter.
+    try {
+      await precacheImage(
+        const AssetImage('assets/icon/splash_mplus_premium.png'),
+        context,
+      ).timeout(const Duration(milliseconds: 1500));
+    } catch (e) {
+      debugPrint(
+        '[SPLASH_VISUAL_READY_HANDOFF] precache fallback: $e',
+      );
+    }
+    if (!mounted || _splashRemoved) return;
+
+    // Frame A: Splash 2 com o asset já disponível atravessa layout/paint.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || _splashRemoved) return;
+
+    // Frame B: segunda passagem completa para evitar descoberta durante
+    // rasterização/primeira composição do asset no iOS.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || _splashRemoved) return;
+
+    _splashRemoved = true;
+    FlutterNativeSplash.remove();
+    debugPrint(
+      '[SPLASH_VISUAL_READY_HANDOFF] '
+      'native splash removed after asset precache + 2 painted frames',
+    );
+  }
+
+  Future<void> _releaseSplashAfterContentPaint() async {
+    // Frame 1: conteúdo real foi montado atrás da splash.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+
+    // Pequeno buffer para layout/paint/fontes/imagens síncronas estabilizarem.
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    if (!mounted) return;
+
+    // Frame 2: garante pelo menos um novo pipeline completo com o conteúdo
+    // real ainda totalmente coberto pela Splash 2.
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+
+    // PHYSICAL FIX: sem crossfade semitransparente. A splash permanece 100%
+    // opaca até este frame e então sai atomicamente, evitando expor frames
+    // intermediários do Home/Login durante composição.
+    setState(() => _handoffDone = true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // BUILD 330 — GATE 1: remoção do splash nativo iOS em < 1.5s
-    // ───────────────────────────────────────────────────────────────────────
-    // Dispara quando Firebase + prefs terminaram E o timer mínimo de 1.2s
-    // expirou — independentemente de _authResolved.
-    //
-    // Nesse momento o Flutter JÁ pintou pelo menos um frame da _SplashScreen
-    // dinâmica (logo respirando + "Carregando dados clínicos..."), portanto o
-    // UIKit pode encerrar o LaunchScreen.storyboard sem nenhum flash intermediário.
-    //
-    // A guard !kIsWeb é mandatória: no Web não existe FlutterNativeSplash.
-    // A flag _splashRemoved previne chamadas duplicadas entre builds.
-    if (_nativeSplashReady && !_splashRemoved && !kIsWeb) {
-      _splashRemoved = true;
+    // O handoff Splash 1 → Splash 2 é resolvido exclusivamente por
+    // _releaseNativeSplashAfterVisualReady(). Não existe segundo remove() aqui.
+
+    // GATE 2 — R8: conteúdo real monta ATRÁS da splash.
+    // O cinza intermediário não pode ficar exposto ao usuário.
+    if (!_ready) {
+      return KeyedSubtree(
+        key: const ValueKey('splash'),
+        child: widget.splash,
+      );
+    }
+
+    if (_authResolved && !_handoffScheduled) {
+      _handoffScheduled = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        FlutterNativeSplash.remove();
-        debugPrint('[BUILD330] FlutterNativeSplash.remove() — '
-            'storyboard encerrado após boot (sem aguardar auth)');
+        if (!mounted) return;
+        _releaseSplashAfterContentPaint();
       });
     }
 
-    // GATE 2: AnimatedSwitcher — splash ↔ conteúdo real
-    // Transição de 350ms com fade suave.
-    // _ready exige boot + auth → garante que a transição só ocorre quando
-    // o _AuthGate já sabe se o usuário está autenticado ou não.
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 350),
-      // FadeTransition personalizado — evita o piscar de borda do default
-      transitionBuilder: (child, animation) => FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
-      child: _ready
-          ? KeyedSubtree(
-              key: const ValueKey('ready'),
-              child: widget.readyBuilder(context),
-            )
-          : KeyedSubtree(
-              key: const ValueKey('splash'),
-              child: widget.splash,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        KeyedSubtree(
+          key: const ValueKey('ready-content-behind-splash'),
+          child: widget.readyBuilder(context),
+        ),
+        if (!_handoffDone)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: KeyedSubtree(
+                key: const ValueKey('splash-cover-until-rendered'),
+                child: widget.splash,
+              ),
             ),
+          ),
+      ],
     );
   }
 }
@@ -1840,10 +2022,34 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   // da classe, não lambdas inline) e reutilizá-las via IndexedStack.
   late final List<Widget> _staticScreens;
 
+  // iPad >=1024: workspace esquerdo independente + IA persistente à direita.
+  // Ao tocar na aba IA, preserva a última tela não-IA no painel esquerdo.
+  int _lastNonAiWorkspaceTab = 0;
+
   // ── Callbacks estáveis para HomeScreen ────────────────────────────────────
   // Lambdas inline no build() são recriadas a cada rebuild — geram instabilidade.
   // Métodos da classe são referências estáveis: mesma instância entre rebuilds.
+  // PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_BACK
+  void _closePediatrics() => _onTabChange(0);
+
+  // PACIENTES_MAIN_SHELL_FOOTER_V1_B_R3_CLOSE
+  void _closeInternacionMainShell() => _onTabChange(0);
+  // LABORATORIO_SUPER_PREMIUM_MAIN_SHELL_V1_B_R0_BACK
+  void _closeLaboratory() => _onTabChange(0);
+
+  // AVALIACAO_MAIN_SHELL_FOOTER_V1_B_R0_BACK
+  void _closeAvaliacaoMainShell() => _onTabChange(0);
+
   void _onTabChange(int t) {
+    // LABORATORIO_SUPER_PREMIUM_MAIN_SHELL_V1_B_R0_RESET
+    if (_tab == 9 && t != 9) {
+      LaboratorySessionBridge.reset();
+    }
+
+    if (t != 2) {
+      _lastNonAiWorkspaceTab = t;
+    }
+
     // Fecha o teclado SEMPRE que o utilizador muda de aba.
     // Isso previne o bug de "teclado automático" onde o FocusNode da aba anterior
     // (especialmente o AiScreen tab 2) permanece ativo no IndexedStack e
@@ -1858,14 +2064,39 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     }
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() => _tab = t);
+    if (t == 3) {
+      // MEDCASES_HC_DIRECT_NOVA_ENTRY_V1_B_R0_MAIN_TAB
+      HistoryScreen.requestNewWorkspace();
+    }
     // BUILD 445: notifica ToolsScreen sobre visibilidade (tab 4 = Ferramentas)
     toolsScreenVisibleNotifier.value = (t == 4);
   }
 
-  void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
-  void _onOpenNotes() => showNotesSheet(context);
+  void _openClinicalGuide() {
+    _onTabChange(5);
+  }
 
+  void _openSimulation() {
+    _onTabChange(7);
+  }
+
+  void _openVaccines() {
+    _onTabChange(6);
+  }
+
+  void _closeVaccines() {
+    _onTabChange(0);
+  }
+
+  void _onSubTabChange(int i) => setState(() => _rxProtoSub = i);
+  void _onOpenNotes() => _onTabChange(10);
+  void _closeNotesWorkspace() => _onTabChange(0);
   void _onScrollNotification(ScrollNotification n) {
+    // PEDIATRIA_HORIZONTAL_SUBNAV_SCROLL_AXIS_GUARD_V1_B_R0
+    // O motor global do footer reage apenas a scroll vertical de conteúdo.
+    // Subnavs horizontais (ex.: Pediatria) não podem alimentar navScrollingDown.
+    if (n.metrics.axis != Axis.vertical) return;
+
     // BUILD 329 — Motor de scroll dinâmico para a bottom nav (todas as abas).
     // Threshold de 4px para ignorar micro-vibrações do overscroll iOS.
     if (n is ScrollUpdateNotification) {
@@ -1938,11 +2169,14 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     _staticScreens = [
       RepaintBoundary(
         // 0 — tela inicial
-        child: HomeScreenV3(
+        child: HomeScreenV2(
           onTabChange: _onTabChange,
           onSubTabChange: _onSubTabChange,
           openProtocol: _openProtocol,
           onOpenNotes: _onOpenNotes,
+          onOpenClinicalGuide: _openClinicalGuide,
+          onOpenSimulation: _openSimulation,
+          onOpenVaccine: _openVaccines,
           onCheckUpdate: _forceShowUpdate,
         ),
       ),
@@ -1956,7 +2190,43 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
       const RepaintBoundary(child: AiScreen()), // 2
       const RepaintBoundary(child: HistoryScreen()), // 3
       const RepaintBoundary(child: ToolsScreen()), // 4
-      const RepaintBoundary(child: LibraryScreen()), // 5
+      const RepaintBoundary(
+        child: ClinicalGuideScreen(),
+      ), // 5 — GUIA CLÍNICO / GUÍA CLÍNICA
+      RepaintBoundary(
+        child: VaccinesScreen(onBack: _closeVaccines),
+      ), // 6 — VACINA/VACUNA workspace interno
+      const RepaintBoundary(
+        child: ClinicalSimulationScreen(),
+      ), // 7 — SIMULAÇÃO / SIMULACIÓN workspace interno
+      // PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_TAB_8
+      RepaintBoundary(
+        child: PediatricsMainShellWorkspace(onBack: _closePediatrics),
+      ), // 8 — PEDIATRIA / PEDIATRÍA workspace interno com footer global
+
+      // LABORATORIO_SUPER_PREMIUM_MAIN_SHELL_V1_B_R0_TAB_9
+      RepaintBoundary(
+        child: LaboratoryMainShellWorkspace(onBack: _closeLaboratory),
+      ), // 9 — LABORATORIO / LABORATÓRIO com footer global
+
+      RepaintBoundary(
+        child: _NotesAudioWorkspace(onBack: _closeNotesWorkspace),
+      ), // 10 — NOTAS / ÁUDIO workspace interno
+
+      // PACIENTES_MAIN_SHELL_FOOTER_V1_B_R3_TAB
+      RepaintBoundary(
+        child: InternacionMainShellWorkspace(
+          onBack: _closeInternacionMainShell,
+        ),
+      ), // 11 — PACIENTES workspace interno com footer global
+
+      // AVALIACAO_MAIN_SHELL_FOOTER_V1_B_R0_TAB_12
+      RepaintBoundary(
+        child: AvaliacaoScreen(
+          embeddedInMainShell: true,
+          onBack: _closeAvaliacaoMainShell,
+        ),
+      ), // 12 — AVALIAÇÃO FÍSICA workspace interno com footer global
     ];
 
     // ── Auto-Update / Cache Eviction (Service Worker) ──────────────────────
@@ -2018,6 +2288,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           () => provider.aiStreaming || provider.offlineCaching,
         );
         OfflineCalculatorCacheService.instance.startBackgroundSync();
+        unawaited(
+          CalculatorWebViewPrewarmService.instance.prewarm(
+            lang: provider.lang,
+            dark: provider.darkMode,
+          ),
+        );
       });
     }
   }
@@ -2113,6 +2389,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     if (t >= 0 && mounted) {
       FocusManager.instance.primaryFocus?.unfocus();
       setState(() => _tab = t.clamp(0, 5));
+      if (t == 3) {
+        // MEDCASES_HC_DIRECT_NOVA_ENTRY_V1_B_R2_PENDING_TAB
+        HistoryScreen.requestNewWorkspace();
+      }
       MainShell.pendingTab.value = -1; // reset imediato após consumir
       // BUILD 445: notifica ToolsScreen sobre visibilidade via pendingTab
       toolsScreenVisibleNotifier.value = (t == 4);
@@ -2151,6 +2431,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
     switch (state) {
       case AppLifecycleState.resumed:
+        OfflineCalculatorCacheService.instance.onAppResumed();
         // App voltou ao foreground — retoma contagem de tempo de tela
         // BUILD 241: resumeUsageTimer() agora também chama
         // AppResumeCoordinator.instance.onForeground() para verificar
@@ -2239,7 +2520,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
     // Split-View: iPad 13" / desktop largo quando na tela de IA (tab 2)
     // Exibe HomeDashboard (40%) + AiScreen (60%) simultaneamente.
     // Em outras tabs o IndexedStack normal garante a tela selecionada.
-    final bool showSplit = width >= 1024 && _tab == 2;
+    final bool showPersistentAiSplit = width >= 1024;
+    final int leftPaneIndex = _tab == 2 ? _lastNonAiWorkspaceTab : stackIdx;
 
     return Scaffold(
       backgroundColor: bg,
@@ -2282,14 +2564,17 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
               child: Column(
                 children: [
                   Expanded(
-                    child: showSplit
+                    child: showPersistentAiSplit
                         // ── SPLIT-VIEW: HomeDashboard 40% | AiScreen 60% ──────
-                        ? _buildSplitView(dark, divColor)
+                        ? _buildSplitView(dark, divColor, leftPaneIndex)
                         // ── IndexedStack normal para todas as outras tabs ──────
-                        : RepaintBoundary(
-                            child: IndexedStack(
-                              index: stackIdx,
-                              children: _staticScreens,
+                        : HomeCardWorkspaceTransition(
+                            transitionKey: stackIdx,
+                            child: RepaintBoundary(
+                              child: IndexedStack(
+                                index: stackIdx,
+                                children: _staticScreens,
+                              ),
                             ),
                           ),
                   ),
@@ -2300,7 +2585,10 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                         ? const _UpdateBanner()
                         : const SizedBox.shrink(),
                   ),
-                  _LegalBar(dark: dark),
+                  _LegalBar(
+                    dark: dark,
+                    liquidGlass: _tab == 0,
+                  ),
                 ],
               ),
             ),
@@ -2313,14 +2601,28 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   /// Build 136-B — Split-View para iPad 13" / desktop largo na tab IA.
   /// HomeDashboard (40%) + divisor + AiScreen (60%).
   /// Ambos os painéis ficam vivos — sem remontar ao alternar.
-  Widget _buildSplitView(bool dark, Color divColor) {
+  Widget _buildSplitView(bool dark, Color divColor, int leftPaneIndex) {
     return Row(
       children: [
         // ── Painel esquerdo: HomeDashboard (40%) ──────────────────────────────
         Flexible(
           flex: 40,
-          child: RepaintBoundary(
-            child: _staticScreens[0], // HomeScreen — sempre visível no split
+          // MEDCASES_WEB_40_60_LEFT_PANE_NAV_CONTAINMENT_V1_B_R1
+          // Desktop Web >=1024: the 40% workspace owns an isolated Navigator.
+          // Descendant push/search/sheet routes remain inside this pane and can
+          // never replace the persistent 60% AiScreen on the right.
+          child: ClipRect(
+            // MEDCASES_HOME_CARD_OPEN_TRANSITION_UNIFICATION_WEB_MOBILE_V1_B_R3
+            child: HomeCardWorkspaceTransition(
+              transitionKey: leftPaneIndex,
+              child: Navigator(
+                key: ValueKey<String>('web-left-pane-$leftPaneIndex'),
+                onGenerateRoute: (settings) => MaterialPageRoute<void>(
+                  settings: settings,
+                  builder: (_) => _staticScreens[leftPaneIndex],
+                ),
+              ),
+            ),
           ),
         ),
 
@@ -2347,6 +2649,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
     return Scaffold(
       backgroundColor: bg,
+      extendBodyBehindAppBar: isHome,
       endDrawer: _AppDrawer(p: p),
       drawerScrimColor: Colors.black.withOpacity(0.52),
       // ── AppBar HOME: sempre visível ───────────────────────────────────────
@@ -2385,7 +2688,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         },
         child: MediaQuery.removePadding(
           context: context,
-          removeTop: true,
+          removeTop: !isHome && _tab != 11 && _tab != 12,
           child: Builder(
             builder: (scaffoldBodyCtx) => SizedBox.expand(
               child: Stack(
@@ -2398,14 +2701,40 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   // cobre a notificação de SW — o banner Flutter gerava o DUPLO
                   // botão "ATUALIZAR" visível nas screenshots do bug.
                   // Demais abas (sem topbar própria) recebem padding.top manual.
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: (isHome || _tab == 2)
-                          ? 0
-                          : MediaQuery.of(context).padding.top,
+                  // HISTORY_CLINICAL_V1_C_R14_R4_EDITOR_TOP_INSET_LIGHT_CONTINUITY
+                  ValueListenableBuilder<bool>(
+                    valueListenable: HistoryScreen.editorActive,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        // LABORATORIO_R8_HOME_TOP_INSET_OWNER
+                        top: (isHome ||
+                                _tab == 2 ||
+                                _tab == 4 ||
+                                _tab == 5 ||
+                                _tab == 8 ||
+                                _tab == 9 ||
+                                _tab == 10 ||
+                                _tab == 11 ||
+                                _tab == 12)
+                            ? 0
+                            : MediaQuery.of(context).padding.top,
+                      ),
+                      child: HomeCardWorkspaceTransition(
+                          transitionKey: stackIdx,
+                          child: IndexedStack(
+                            index: stackIdx,
+                            children: _staticScreens,
+                          ),
+                        ),
                     ),
-                    child:
-                        IndexedStack(index: stackIdx, children: _staticScreens),
+                    builder: (_, historyEditorOpen, child) => ColoredBox(
+                      color: dark
+                          ? const Color(0xFF1A1D23)
+                          : historyEditorOpen
+                              ? const Color(0xFFECF1F3)
+                              : bg,
+                      child: child!,
+                    ),
                   ),
 
                   // ── Build 158.3 / BUILD 329: Floating footer unificado ───────
@@ -2419,7 +2748,22 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                         ValueListenableBuilder<bool>(
                       valueListenable: AiScreen.chatKeyboardOpen,
                       builder: (_, kbOpen, __) {
-                        final hidden = editorOpen || kbOpen;
+                        // LABORATORIO_R8_KEYBOARD_FOOTER_VISIBILITY
+                        // MEDCASES_FERRAMENTAS_KEYBOARD_VIEWPORT_SCROLL_PARITY_V1_B_R0
+                        final toolsKeyboardOpen = _tab == 4 &&
+                            MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
+                        final labKeyboardOpen = _tab == 9 &&
+                            MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
+                        final patientKeyboardOpen = _tab == 11 &&
+                            MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
+                        final assessmentKeyboardOpen = _tab == 12 &&
+                            MediaQuery.viewInsetsOf(scaffoldBodyCtx).bottom > 0;
+                        final hidden = editorOpen ||
+                            kbOpen ||
+                            toolsKeyboardOpen ||
+                            labKeyboardOpen ||
+                            patientKeyboardOpen ||
+                            assessmentKeyboardOpen;
                         return _FloatingFooter(
                           hidden: hidden,
                           dark: dark,
@@ -2504,31 +2848,91 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
         ..clearSnackBars()
         ..showSnackBar(
           SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.restart_alt_rounded,
-                    size: 16, color: Colors.white),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    isEs
-                        ? 'Nueva consulta iniciada — contexto anterior eliminado'
-                        : 'Nova consulta iniciada — contexto anterior eliminado',
-                    style: const TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+            // MEDCASES_AI_NEW_CHAT_PREMIUM_TOAST_V1_B_R0
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(milliseconds: 2600),
+            margin: const EdgeInsets.fromLTRB(18, 0, 18, 84),
+            padding: EdgeInsets.zero,
+            dismissDirection: DismissDirection.down,
+            content: Container(
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+              decoration: BoxDecoration(
+                color: p.darkMode
+                    ? const Color(0xFF252930)
+                    : const Color(0xFFFFFFFF),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: p.darkMode
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFE7EBEF),
+                  width: 0.6,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 3,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: p.darkMode
+                          ? const Color(0xFF00C781)
+                          : const Color(0xFF008F66),
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 10),
+                  Icon(
+                    Icons.check_circle_outline_rounded,
+                    size: 19,
+                    color: p.darkMode
+                        ? const Color(0xFF00C781)
+                        : const Color(0xFF008F66),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs
+                              ? 'Nueva consulta iniciada'
+                              : 'Nova consulta iniciada',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w800,
+                            height: 1.15,
+                            color: p.darkMode
+                                ? Colors.white
+                                : const Color(0xFF05070A),
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          isEs
+                              ? 'La consulta anterior quedó guardada en el historial.'
+                              : 'A consulta anterior foi salva no histórico.',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12.2,
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                            color: p.darkMode
+                                ? const Color(0xFFA7B0BA)
+                                : const Color(0xFF59636E),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            backgroundColor: const Color(0xFF0A7C4E),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
           ),
         );
     });
@@ -2565,6 +2969,80 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 //   • Botão Menu M+: avatar circular estilo Instagram com fundo verde esmeralda
 //     e logotipo "M+" em ouro metálico, abre o endDrawer lateral
 // ─────────────────────────────────────────────────────────────────────────────
+
+class _IaDynamicFloat extends StatefulWidget {
+  const _IaDynamicFloat({
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  State<_IaDynamicFloat> createState() => _IaDynamicFloatState();
+}
+
+class _IaDynamicFloatState extends State<_IaDynamicFloat>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _lift;
+  late final Animation<double> _tilt;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1900),
+    )..repeat(reverse: true);
+
+    _lift = Tween<double>(
+      begin: 0,
+      end: -4,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _tilt = Tween<double>(
+      begin: -0.5235987755982988,
+      end: 0.5235987755982988,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      child: widget.child,
+      builder: (context, child) => Transform.translate(
+        offset: Offset(
+          0,
+          2 + _lift.value,
+        ),
+        child: Transform.rotate(
+          angle: _tilt.value,
+          alignment: Alignment.bottomCenter,
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 class _FloatingFooter extends StatefulWidget {
   final bool hidden;
   final bool dark;
@@ -2593,17 +3071,16 @@ class _FloatingFooter extends StatefulWidget {
 }
 
 class _FloatingFooterState extends State<_FloatingFooter> {
-  static const _neonCyan = Color(0xFF00E5FF);
-  // Paleta do avatar M+ — verde esmeralda médico + ouro metálico
-  static const _avatarGreen = Color(0xFF0D7A5F); // verde petróleo esmeralda
-  static const _avatarGreenLight = Color(0xFF34D399); // borda luminosa
-  static const _avatarGold = Color(0xFFD4AF37); // ouro fosco canônico
+  static const _medcasesGreen = Color(0xFF0D6B57);
+  // M+ usa branco em repouso e verde enquanto pressionado.
+  static const _menuLightGreen = Color(0xFF0D6B57);
 
   // Alturas da barra: normal e encolhida
   static const _barHeightFull = 50.0;
   static const _barHeightShrunk = 38.0;
 
   bool _shrunk = false; // reflexo local do navScrollingDown
+  bool _menuPressed = false;
 
   @override
   void initState() {
@@ -2624,9 +3101,24 @@ class _FloatingFooterState extends State<_FloatingFooter> {
 
   @override
   Widget build(BuildContext context) {
+    // MEDCASES_GLOBAL_ACTION_BAR_TRUE_LIQUID_GLASS_V1_B_R1
+    // Material óptico premium: preserva leitura do fundo, acrescenta refração
+    // visual por blur, tint controlado e brilho especular sem neon/overblur.
     final navBg = widget.dark
-        ? const Color(0xFF0F1116).withOpacity(0.68)
-        : Colors.white.withOpacity(0.65);
+        ? const Color(0xFF161B22).withValues(alpha: 0.58)
+        : Colors.white.withValues(alpha: 0.56);
+    final liquidTop = widget.dark
+        ? Colors.white.withValues(alpha: 0.11)
+        : Colors.white.withValues(alpha: 0.52);
+    final liquidMid = widget.dark
+        ? Colors.white.withValues(alpha: 0.035)
+        : Colors.white.withValues(alpha: 0.16);
+    final liquidBorder = widget.dark
+        ? Colors.white.withValues(alpha: 0.14)
+        : Colors.white.withValues(alpha: 0.82);
+    final liquidSpecular = widget.dark
+        ? Colors.white.withValues(alpha: 0.22)
+        : Colors.white.withValues(alpha: 0.92);
 
     // BUILD 329: altura dinâmica — encolhe suavemente durante scroll down
     final barHeight = _shrunk ? _barHeightShrunk : _barHeightFull;
@@ -2652,7 +3144,7 @@ class _FloatingFooterState extends State<_FloatingFooter> {
     return Positioned(
       left: 0,
       right: 0,
-      bottom: safeBottom,
+      bottom: 0,
       child: AnimatedSlide(
         // Slide total quando hidden (teclado aberto / editor de história)
         offset: Offset(0, widget.hidden ? 1.0 : 0.0),
@@ -2671,58 +3163,103 @@ class _FloatingFooterState extends State<_FloatingFooter> {
               RepaintBoundary(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  child: ClipRRect(
-                    // PERF-FIX: borderRadius const → o Impeller não recalcula o
-                    // clipper a cada frame; cache de layer garantido.
-                    borderRadius: const BorderRadius.all(Radius.circular(32)),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                      child: AnimatedContainer(
-                        // BUILD 329: animação suave de encolhimento via scroll
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      // Camada de profundidade fora do clip: sombra ambiente real.
+                      AnimatedContainer(
                         duration: const Duration(milliseconds: 280),
                         curve: Curves.easeInOutCubic,
                         height: barHeight,
                         decoration: BoxDecoration(
-                          color: navBg,
                           borderRadius: BorderRadius.circular(32),
-                          border: Border.all(
-                            color: widget.dark
-                                ? _neonCyan.withOpacity(0.18)
-                                // Modo claro: borda teal petróleo slim — identifica o dock
-                                // sobre fundos brancos sem pesar no glassmorphism
-                                : const Color(0xFF0F766E).withOpacity(0.18),
-                            width: 0.9,
-                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: widget.dark
-                                  ? Colors.black.withOpacity(0.45)
-                                  : Colors.black.withOpacity(0.08),
-                              blurRadius: 20,
-                              offset: const Offset(0, -4),
-                            ),
-                            if (widget.dark)
-                              BoxShadow(
-                                color: _neonCyan.withOpacity(0.05),
-                                blurRadius: 24,
-                                offset: const Offset(0, -4),
+                              color: Colors.black.withValues(
+                                alpha: widget.dark ? 0.32 : 0.12,
                               ),
+                              blurRadius: 26,
+                              spreadRadius: -4,
+                              offset: const Offset(0, 10),
+                            ),
                           ],
                         ),
-                        // BUILD 331: Row contextual — muda conforme a aba ativa.
-                        // Aba IA (isAiActive) → [Início|Histórico|Novo Chat|Menu]
-                        // Demais abas              → [Início|IA|Ferramentas|Menu]
+                      ),
+                      ClipRRect(
+                        // PERF-FIX: clip const e apenas um BackdropFilter.
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(32)),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 280),
+                            curve: Curves.easeInOutCubic,
+                            height: barHeight,
+                            decoration: BoxDecoration(
+                              color: navBg,
+                              borderRadius: BorderRadius.circular(32),
+                              border: Border.all(
+                                color: liquidBorder,
+                                width: 0.8,
+                              ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  liquidTop,
+                                  liquidMid,
+                                  Colors.transparent,
+                                ],
+                                stops: const [0.0, 0.36, 1.0],
+                              ),
+                            ),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                // Highlight especular superior fino: assinatura
+                                // Liquid Glass sem glow e sem gradiente pesado.
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Container(
+                                    height: 0.8,
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 18,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(99),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.transparent,
+                                          liquidSpecular,
+                                          Colors.transparent,
+                                        ],
+                                        stops: const [0.0, 0.5, 1.0],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned.fill(
                         child:
                             widget.isAiActive ? _buildAiRow() : _buildNavRow(),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ), // RepaintBoundary
 
-              // ── LegalBar — faz parte do bloco animado ─────────────────────
-              _LegalBar(dark: widget.dark, insideSafeArea: true),
+              // ── Base de vidro até a borda física da tela ────────────────
+              _LegalGlassShelf(
+                dark: widget.dark,
+                safeBottom: safeBottom,
+                homeLiquidGlass: widget.currentTab == 0,
+                child: _LegalBar(dark: widget.dark, insideSafeArea: true),
+              ),
             ],
           ),
         ),
@@ -2731,7 +3268,7 @@ class _FloatingFooterState extends State<_FloatingFooter> {
   }
 
   // ── Row padrão (abas Home / Ferramentas / etc) ─────────────────────────────
-  // [Início | IA | Ferramentas | Menu] — 4×Expanded 25%
+  // [Início | IA | Menu] — Biblioteca removida; 3 ações independentes
   Widget _buildNavRow() => Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -2753,89 +3290,59 @@ class _FloatingFooterState extends State<_FloatingFooter> {
             behavior: HitTestBehavior.opaque,
             onTap: widget.onFabTap,
             onDoubleTap: widget.onFabDoubleTap,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.zero,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeOutCubic,
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: widget.isAiActive
-                            ? [const Color(0xFF008CA4), const Color(0xFF005566)]
-                            : [
-                                const Color(0xFF374151),
-                                const Color(0xFF1E2330)
-                              ],
+            child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _IaDynamicFloat(
+                      child: Padding(
+                        padding: EdgeInsets.zero,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          curve: Curves.easeOutCubic,
+                          width: 54,
+                          height: 31.5,
+                          child: OverflowBox(
+                            alignment: Alignment.bottomCenter,
+                            minWidth: 54,
+                            maxWidth: 54,
+                            minHeight: 54,
+                            maxHeight: 54,
+                            child: SvgPicture.asset(
+                              'assets/icons/home_v2/ic_ia.svg',
+                              width: 54,
+                              height: 54,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
                       ),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: widget.isAiActive
-                            ? _neonCyan.withOpacity(0.80)
-                            : const Color(0xFF4B5563),
-                        width: 1.5,
-                      ),
-                      boxShadow: widget.isAiActive
-                          ? [
-                              BoxShadow(
-                                  color: _neonCyan.withOpacity(0.50),
-                                  blurRadius: 12)
-                            ]
-                          : [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.30),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 2))
-                            ],
                     ),
-                    child: Icon(Icons.psychology_rounded,
-                        size: 16,
-                        color: widget.isAiActive ? _neonCyan : Colors.white70),
-                  ),
-                ),
-                AnimatedOpacity(
-                  opacity: _shrunk ? 0.0 : 1.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: Text('IA',
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        fontWeight: widget.isAiActive
-                            ? FontWeight.w700
-                            : FontWeight.w400,
-                        color: widget.isAiActive
-                            // Ativo: neon (dark) / preto sólido estilo Instagram (light)
-                            ? (widget.dark ? _neonCyan : Colors.black87)
-                            // Inativo: cinza médio (dark) / cinza escuro sólido (light)
-                            : (widget.dark
-                                ? const Color(0xFF6B7280)
-                                : const Color(0xFF4B5563)),
-                        height: 1.0,
-                      )),
-                ),
-              ],
-            ),
+                    AnimatedOpacity(
+                      opacity: _shrunk ? 0.0 : 1.0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Text('IA',
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 10.0,
+                            fontWeight: widget.isAiActive
+                                ? FontWeight.w700
+                                : FontWeight.w400,
+                            color: widget.isAiActive
+                                ? (widget.dark
+                                    ? _medcasesGreen
+                                    : _menuLightGreen)
+                                : (widget.dark
+                                    ? Colors.white
+                                    : const Color(0xFF4B5563)),
+                            height: 1.0,
+                          )),
+                    ),
+                  ],
+                )),
           )),
-
-          // 3. FERRAMENTAS — calculate_outlined inativo / calculate_rounded (filled) ativo
-          Expanded(
-              child: _NavItem(
-            icon: Icons.calculate_outlined,
-            iconActive: Icons.calculate_rounded,
-            label: widget.lang == 'es' ? 'Herramientas' : 'Ferramentas',
-            isActive: widget.currentTab == 4,
-            dark: widget.dark,
-            shrunk: _shrunk,
-            onTap: () => widget.onTabChange(4),
-          )),
-
           // 4. MENU M+
           Expanded(child: _buildMenuButton()),
         ],
@@ -2861,8 +3368,9 @@ class _FloatingFooterState extends State<_FloatingFooter> {
           Expanded(
               child: ValueListenableBuilder<VoidCallback?>(
             valueListenable: AiScreen.openHistoryCallback,
-            builder: (_, callback, __) => ValueListenableBuilder<int>(
-              valueListenable: AiScreen.historyCountNotifier,
+            builder: (_, callback, __) => Selector<AppProvider, int>(
+              selector: (_, provider) =>
+                  provider.visibleAiSessionSummaries.length,
               builder: (_, count, __) => GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: callback,
@@ -2880,7 +3388,7 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                               size: 22,
                               // Cinza escuro sólido no light — contraste premium
                               color: widget.dark
-                                  ? const Color(0xFF6B7280)
+                                  ? Colors.white
                                   : const Color(0xFF4B5563)),
                           if (count > 0)
                             Positioned(
@@ -2917,7 +3425,7 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                           fontSize: 10.0, fontWeight: FontWeight.w400,
                           // Cinza escuro sólido no light — contraste premium estilo Instagram
                           color: widget.dark
-                              ? const Color(0xFF6B7280)
+                              ? Colors.white
                               : const Color(0xFF4B5563),
                           height: 1.0,
                         ),
@@ -2929,44 +3437,22 @@ class _FloatingFooterState extends State<_FloatingFooter> {
             ),
           )),
 
-          // 3. NOVO CHAT — círculo com gradiente neonCyan, ícone add_rounded
+          // 3. NOVO CHAT — branco no dark, cinza oficial no light
           Expanded(
               child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: widget.onFabDoubleTap, // mesma ação do double-tap do FAB
+            onTap: widget.onFabDoubleTap,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsets.zero,
-                  child: Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          const Color(0xFF008CA4),
-                          const Color(0xFF005566)
-                        ],
-                      ),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: _neonCyan.withOpacity(0.75),
-                        width: 1.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: _neonCyan.withOpacity(0.35),
-                          blurRadius: 10,
-                          spreadRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(Icons.add_rounded,
-                        size: 16, color: Colors.white),
+                SizedBox(
+                  width: 26,
+                  height: 26,
+                  child: Icon(
+                    Icons.add_rounded,
+                    size: 20,
+                    color: widget.dark ? Colors.white : const Color(0xFF4B5563),
                   ),
                 ),
                 AnimatedOpacity(
@@ -2978,7 +3464,8 @@ class _FloatingFooterState extends State<_FloatingFooter> {
                     style: TextStyle(
                       fontSize: 10.0,
                       fontWeight: FontWeight.w500,
-                      color: widget.dark ? _neonCyan : const Color(0xFF008CA4),
+                      color:
+                          widget.dark ? Colors.white : const Color(0xFF4B5563),
                       height: 1.0,
                     ),
                   ),
@@ -2993,78 +3480,73 @@ class _FloatingFooterState extends State<_FloatingFooter> {
       );
 
   // ── Avatar M+ circular — compartilhado entre as duas Rows ──────────────────
-  Widget _buildMenuButton() => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: widget.onMenuTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.zero,
-              child: Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF16A87C), Color(0xFF0A5C45)],
-                  ),
-                  border: Border.all(
-                    color: _avatarGreenLight.withOpacity(0.70),
-                    width: 1.8,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                        color: _avatarGreen.withOpacity(0.45), blurRadius: 8),
-                  ],
-                ),
-                child: Center(
-                  child: Text('M+',
-                      style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w900,
-                        color: _avatarGold,
-                        letterSpacing: 0.3,
-                        height: 1.0,
-                        shadows: [
-                          Shadow(
-                              color: Colors.black.withOpacity(0.40),
-                              blurRadius: 3)
-                        ],
-                      )),
-                ),
+  Widget _buildMenuButton() {
+    final menuColor = _menuPressed
+        ? (widget.dark ? const Color(0xFF009C3B) : const Color(0xFF009C3B))
+        : (widget.dark ? Colors.white : const Color(0xFF4B5563));
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) {
+        if (!_menuPressed) {
+          setState(() {
+            _menuPressed = true;
+          });
+        }
+      },
+      onTapUp: (_) {
+        if (_menuPressed) {
+          setState(() {
+            _menuPressed = false;
+          });
+        }
+      },
+      onTapCancel: () {
+        if (_menuPressed) {
+          setState(() {
+            _menuPressed = false;
+          });
+        }
+      },
+      onTap: widget.onMenuTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Icon(
+              Icons.menu_rounded,
+              size: 24,
+              color: menuColor,
+            ),
+          ),
+          AnimatedOpacity(
+            opacity: _shrunk ? 0.0 : 1.0,
+            duration: const Duration(milliseconds: 200),
+            child: Text(
+              widget.lang == 'es' ? 'Menú' : 'Menu',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10.0,
+                fontWeight: FontWeight.w500,
+                color: menuColor,
+                height: 1.0,
               ),
             ),
-            AnimatedOpacity(
-              opacity: _shrunk ? 0.0 : 1.0,
-              duration: const Duration(milliseconds: 200),
-              child: Text(
-                widget.lang == 'es' ? 'Menú' : 'Menu',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 10.0, fontWeight: FontWeight.w500,
-                  // Cinza escuro sólido (light) — consistente com padrão Instagram
-                  color: widget.dark
-                      ? const Color(0xFF6B7280)
-                      : const Color(0xFF4B5563),
-                  height: 1.0,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ── Item individual da bottom nav ─────────────────────────────────────────────
 // BUILD 331 LIGHT PREMIUM: paleta estilo Instagram no modo claro.
 //   • Inativo light: cinza escuro sólido #4B5563 (legível, sem apagado)
 //   • Ativo   light: Colors.black87 — preto absoluto (ênfase premium)
-//   • Ativo   dark : Colors(0xFF00E5FF) — neon cyan (contraste no escuro)
+//   • Ativo   dark : Color(0xFF0D6B57) — accent canônico MedCases
 // iconActive: versão filled/bold do ícone para estado ativo — alternância
 // visual sofisticada sem precisar de underline ou círculo.
 class _NavItem extends StatelessWidget {
@@ -3088,11 +3570,11 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Dark mode: neon cyan ativo / cinza médio inativo (contraste sobre escuro)
-    // Light mode: preto absoluto ativo / cinza escuro sólido inativo (Instagram-style)
-    final activeColor = dark ? const Color(0xFF00E5FF) : Colors.black87;
-    final inactiveColor =
-        dark ? const Color(0xFF6B7280) : const Color(0xFF4B5563);
+    // Dark: branco em repouso e verde no item selecionado.
+    // Light: cinza-escuro em repouso e verde no item selecionado.
+    final activeColor =
+        dark ? const Color(0xFF009C3B) : const Color(0xFF009C3B);
+    final inactiveColor = dark ? Colors.white : const Color(0xFF4B5563);
     final color = isActive ? activeColor : inactiveColor;
 
     // Alterna ícone filled↔outline conforme estado (quando iconActive fornecido)
@@ -3139,6 +3621,7 @@ class _NavItem extends StatelessWidget {
 // à direita, usando os ValueNotifiers estáticos do AiScreen.
 // ─────────────────────────────────────────────────────────────────────────────
 class _MobileAppBar extends StatelessWidget {
+  // MEDCASES_GLOBAL_DARK_THEME_SECOND_BRAND_V2_B_R1_TOPBAR
   final bool dark;
   final int currentTab;
   final String lang;
@@ -3158,82 +3641,145 @@ class _MobileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // BUILD 331 HOME: topbar SEMPRE Black Piano (#000000) — identidade premium.
-    // Nunca branco, nunca transparente — fundo sólido absoluto.
-    // MEDCASES (branco w900) + PRO (dourado #FFD700 w900) — RichText bicolor.
-    const barDecoration = BoxDecoration(
-      color: Color(0xFF000000), // Black Piano absoluto
-      border: Border(
-        bottom: BorderSide(color: Color(0xFF2D3340), width: 0.5),
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Color(0x59000000), // black 35% opacity
-          blurRadius: 6.0,
-          offset: Offset(0, 2),
-        ),
-      ],
-    );
+    // MEDCASES_HOME_TOPBAR_TRUE_LIQUID_GLASS_V1_B_R0
+    // Mesmo idioma óptico do dock global, adaptado ao topbar edge-to-edge.
+    final glassColor = dark
+        ? const Color(0xFF161B22).withValues(alpha: 0.58)
+        : Colors.white.withValues(alpha: 0.56);
+    final liquidTop = dark
+        ? Colors.white.withValues(alpha: 0.10)
+        : Colors.white.withValues(alpha: 0.46);
+    final liquidMid = dark
+        ? Colors.white.withValues(alpha: 0.025)
+        : Colors.white.withValues(alpha: 0.12);
+    final borderColor = dark
+        ? Colors.white.withValues(alpha: 0.13)
+        : Colors.white.withValues(alpha: 0.78);
+    final liquidSpecular = dark
+        ? Colors.white.withValues(alpha: 0.18)
+        : Colors.white.withValues(alpha: 0.86);
 
-    return Container(
-      decoration: barDecoration,
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
-          // padding do sistema (notch / Dynamic Island / status bar).
-          // BUILD 328 M2: altura 36→46px — AppBar mais robusta e imponente
-          // BUILD 329 M3: +2px → 48px — respiro perfeito ao cabeçalho
-          height: 48,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.16 : 0.07),
+            blurRadius: 14,
+            spreadRadius: -8,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            decoration: BoxDecoration(
+              color: glassColor,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  liquidTop,
+                  liquidMid,
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.42, 1.0],
+              ),
+              border: Border(
+                bottom: BorderSide(color: borderColor, width: 0.7),
+              ),
+            ),
             child: Stack(
-              alignment: Alignment.center,
               children: [
-                // ── Título centralizado (HOME e IA tab) ───────────────────
-                // BUILD 278: "MEDCASES IA" com "IA" em ouro fosco na aba AI
-                // BUILD 331 HOME: Black Piano → título sempre branco + dourado
-                // "MEDCASES " branco w900 | "PRO"/"IA" dourado #FFD700 w900
-                if (isHome || currentTab == _kAiTab)
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        const TextSpan(
-                          text: 'MEDCASES ',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                            color: Colors.white, // SEMPRE branco
-                          ),
-                        ),
-                        TextSpan(
-                          text: currentTab == _kAiTab ? 'IA' : 'PRO',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                            color: Color(0xFFFFD700), // SEMPRE dourado
-                          ),
-                        ),
-                      ],
+                Positioned(
+                  left: 24,
+                  right: 24,
+                  bottom: 0.7,
+                  child: Container(
+                    height: 0.7,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          liquidSpecular,
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.5, 1.0],
+                      ),
                     ),
                   ),
+                ),
+                SafeArea(
+                  bottom: false,
+                  child: SizedBox(
+                    // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
+                    // padding do sistema (notch / Dynamic Island / status bar).
+                    // BUILD 328 M2: altura 36→46px — AppBar mais robusta e imponente
+                    // BUILD 329 M3: +2px → 48px — respiro perfeito ao cabeçalho
+                    height: 48,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // ── Título centralizado (HOME e IA tab) ───────────────────
+                          // BUILD 278: "MEDCASES IA" com "IA" em ouro fosco na aba AI
+                          // BUILD 331 HOME: Black Piano → título sempre branco + dourado
+                          // "MEDCASES " branco w900 | "PRO"/"IA" dourado #FFD700 w900
+                          if (isHome || currentTab == _kAiTab)
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'MEDCASES ',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 1.2,
+                                      color: dark
+                                          ? Colors.white
+                                          : const Color(0xFF05070A),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: currentTab == _kAiTab ? 'IA' : 'PRO',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 1.2,
+                                      color: currentTab == _kAiTab
+                                          ? (dark
+                                              ? const Color(0xFF009C3B)
+                                              : const Color(0xFF009C3B))
+                                          : (dark
+                                              ? const Color(0xFF009C3B)
+                                              : const Color(0xFF009C3B)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
 
-                // ── Row com botões contextuais (direita) ──────────────────
-                // BUILD 329: hambúrguer removido — apenas botões IA contextuais
-                // à direita. Título centralizado pelo Stack acima sem placeholder.
-                // BUILD 331: Topbar IA limpa — botões Histórico/Novo Chat migrados
-                // para a bottom nav contextual (isAiActive). Apenas título centralizado.
-                Row(
-                  children: [
-                    const Spacer(),
-                    // (sem botões — topbar só título)
-                  ],
-                ), // end inner Row
-              ], // end Stack children
-            ), // end Stack
+                          // ── Row com botões contextuais (direita) ──────────────────
+                          // BUILD 329: hambúrguer removido — apenas botões IA contextuais
+                          // à direita. Título centralizado pelo Stack acima sem placeholder.
+                          // BUILD 331: Topbar IA limpa — botões Histórico/Novo Chat migrados
+                          // para a bottom nav contextual (isAiActive). Apenas título centralizado.
+                          Row(
+                            children: [
+                              const Spacer(),
+                              // (sem botões — topbar só título)
+                            ],
+                          ), // end inner Row
+                        ], // end Stack children
+                      ), // end Stack
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -3245,6 +3791,7 @@ class _MobileAppBar extends StatelessWidget {
 // DESKTOP SIDEBAR — navegação vertical estilo rail
 // ─────────────────────────────────────────────────────────────────────────────
 class _DesktopSidebar extends StatelessWidget {
+  // MEDCASES_GLOBAL_DARK_THEME_SECOND_BRAND_V2_B_R1_SIDEBAR
   final int currentTab;
   final bool dark;
   final AppProvider p;
@@ -3264,11 +3811,11 @@ class _DesktopSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
-    final activeCol = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
+    final activeCol = dark ? const Color(0xFF0D6B57) : const Color(0xFF0A7C4E);
     final inactiveCol =
         dark ? const Color(0xFF6B7280) : const Color(0xFFADB5BD);
     final activeBg = dark
-        ? const Color(0xFF10B981).withOpacity(0.12)
+        ? const Color(0xFF0D6B57).withOpacity(0.12)
         : const Color(0xFF0A7C4E).withOpacity(0.08);
     final isEs = p.lang == 'es';
 
@@ -3357,9 +3904,9 @@ class _DesktopSidebar extends StatelessWidget {
               active: currentTab == 2,
               dark: dark,
               activeCol:
-                  dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4),
+                  dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57),
               inactiveCol: inactiveCol,
-              activeBg: const Color(0xFF00E5FF).withOpacity(0.10),
+              activeBg: const Color(0xFF0D6B57).withOpacity(0.10),
               onTap: () => onTabChange(2),
             ),
             _SidebarItem(
@@ -3926,6 +4473,136 @@ class _UpdateBanner extends StatelessWidget {
   }
 }
 
+class _LegalGlassShelf extends StatelessWidget {
+  final bool dark;
+  final double safeBottom;
+  final bool homeLiquidGlass;
+  final Widget child;
+
+  const _LegalGlassShelf({
+    required this.dark,
+    required this.safeBottom,
+    this.homeLiquidGlass = false,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Demais abas preservam byte-semanticamente o material glass anterior.
+    if (!homeLiquidGlass) {
+      final glassColor = dark
+          ? const Color(0xFF252930).withOpacity(0.70)
+          : Colors.white.withOpacity(0.70);
+
+      final borderColor =
+          dark ? const Color(0xFF374151) : const Color(0xFFDDE4EA);
+
+      return ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.only(bottom: safeBottom),
+            decoration: BoxDecoration(
+              color: glassColor,
+              border: Border(
+                top: BorderSide(
+                  color: borderColor,
+                  width: 0.7,
+                ),
+              ),
+            ),
+            child: child,
+          ),
+        ),
+      );
+    }
+
+    // MEDCASES_HOME_DISCLAIMER_TRUE_LIQUID_GLASS_V1_B_R1
+    // Mesmo idioma óptico homologado na Home: blur 16, tint translúcido,
+    // hairline e brilho especular fino, adaptados à borda inferior.
+    final glassColor = dark
+        ? const Color(0xFF161B22).withValues(alpha: 0.58)
+        : Colors.white.withValues(alpha: 0.56);
+    final liquidTop = dark
+        ? Colors.white.withValues(alpha: 0.10)
+        : Colors.white.withValues(alpha: 0.46);
+    final liquidMid = dark
+        ? Colors.white.withValues(alpha: 0.025)
+        : Colors.white.withValues(alpha: 0.12);
+    final borderColor = dark
+        ? Colors.white.withValues(alpha: 0.13)
+        : Colors.white.withValues(alpha: 0.78);
+    final liquidSpecular = dark
+        ? Colors.white.withValues(alpha: 0.18)
+        : Colors.white.withValues(alpha: 0.86);
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.16 : 0.07),
+            blurRadius: 14,
+            spreadRadius: -8,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.only(bottom: safeBottom),
+            decoration: BoxDecoration(
+              color: glassColor,
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  liquidTop,
+                  liquidMid,
+                  Colors.transparent,
+                ],
+                stops: const [0.0, 0.42, 1.0],
+              ),
+              border: Border(
+                top: BorderSide(
+                  color: borderColor,
+                  width: 0.7,
+                ),
+              ),
+            ),
+            child: Stack(
+              children: [
+                child,
+                Positioned(
+                  left: 24,
+                  right: 24,
+                  top: 0.7,
+                  child: Container(
+                    height: 0.7,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          liquidSpecular,
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.5, 1.0],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ── Barra legal ───────────────────────────────────────────────────────────────
 class _LegalBar extends StatelessWidget {
   final bool dark;
@@ -3933,60 +4610,159 @@ class _LegalBar extends StatelessWidget {
   /// true quando o widget já está dentro de um SafeArea pai (ex.: bottom nav).
   /// Evita duplo recuo — SafeArea aninhado sem parâmetro correto some do layout.
   final bool insideSafeArea;
-  const _LegalBar({required this.dark, this.insideSafeArea = false});
+
+  /// Variante visual exclusiva da Home em desktop/tablet.
+  final bool liquidGlass;
+
+  const _LegalBar({
+    required this.dark,
+    this.insideSafeArea = false,
+    this.liquidGlass = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // context.select — rebuild apenas quando lang muda
     final isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
-    final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFF0F2F4);
-    final border = dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6);
-    // Apple 1.4.1 — disclaimer deve ser legível: opacidade 0.85 no dark, cor
-    // sólida no light. Não usar valores abaixo de 0.70.
-    final textColor =
-        dark ? Colors.white.withOpacity(0.85) : const Color(0xFF5A6370);
 
-    // Texto exigido pela Apple guideline 1.4.1 — permanece visível em todas as telas
+    // Apple 1.4.1 — contraste sólido e texto permanentemente visível.
+    final textColor =
+        dark ? Colors.white.withOpacity(0.88) : const Color(0xFF4B5563);
+
     final disclaimer = isEs
         ? 'Herramienta educativa de apoyo clínico. La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.'
         : 'Ferramenta educacional de apoio clínico. A decisão e verificação de doses são de responsabilidade exclusiva do médico assistente.';
 
-    final content = Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border(top: BorderSide(color: border, width: 0.5)),
+    final centeredContent = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 6,
       ),
-      // BUILD 328 M4: padding v:1→5 — disclaimer totalmente visível acima da nav
-      // fontSize 9→10, maxLines 1→2, icon 8→10 — legibilidade Apple 1.4.1
-      // BUILD 329 M3: fontSize 10→11 — legibilidade definitiva e sólida
-      // BUILD 331 LB: −2px everywhere — vertical 5→3, icon 11→9, fontSize 11→9 (minimalista)
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
-      child: Row(children: [
-        Icon(Icons.info_outline_rounded,
-            size: 9, color: textColor.withOpacity(0.55)),
-        const SizedBox(width: 3),
-        Expanded(
-          child: Text(
-            disclaimer,
-            style: TextStyle(
-              fontSize: 9,
-              color: textColor,
-              height: 1.3,
-              letterSpacing: 0.0,
-              fontWeight: FontWeight.w400,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 18,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Icon(
+                Icons.info_outline_rounded,
+                size: 10,
+                color: textColor.withOpacity(0.68),
+              ),
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
-        ),
-      ]),
+          Expanded(
+            child: Text(
+              disclaimer,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 9.5,
+                color: textColor,
+                height: 1.28,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w400,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          // Compensa a largura do ícone para centralização geométrica real.
+          const SizedBox(width: 18),
+        ],
+      ),
     );
 
-    // insideSafeArea=true → conteúdo puro (SafeArea já aplicado pelo pai).
-    // insideSafeArea=false → envolve com SafeArea(top:false) para standalone.
-    if (insideSafeArea) return content;
-    return SafeArea(top: false, child: content);
+    // Mobile: fundo e proteção inferior pertencem à _LegalGlassShelf.
+    if (insideSafeArea) {
+      return SizedBox(
+        width: double.infinity,
+        child: centeredContent,
+      );
+    }
+
+    // Desktop/tablet: faixa tradicional e SafeArea próprias.
+    final standaloneBg =
+        dark ? const Color(0xFF1A1D23) : const Color(0xFFF0F2F4);
+
+    final standaloneBorder =
+        dark ? const Color(0xFF374151) : const Color(0xFFDDE1E6);
+
+    if (!liquidGlass) {
+      return SafeArea(
+        top: false,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: standaloneBg,
+            border: Border(
+              top: BorderSide(
+                color: standaloneBorder,
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: centeredContent,
+        ),
+      );
+    }
+
+    final liquidBg = dark
+        ? const Color(0xFF161B22).withValues(alpha: 0.58)
+        : Colors.white.withValues(alpha: 0.56);
+    final liquidTop = dark
+        ? Colors.white.withValues(alpha: 0.10)
+        : Colors.white.withValues(alpha: 0.46);
+    final liquidMid = dark
+        ? Colors.white.withValues(alpha: 0.025)
+        : Colors.white.withValues(alpha: 0.12);
+    final liquidBorder = dark
+        ? Colors.white.withValues(alpha: 0.13)
+        : Colors.white.withValues(alpha: 0.78);
+
+    return SafeArea(
+      top: false,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.16 : 0.07),
+              blurRadius: 14,
+              spreadRadius: -8,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: liquidBg,
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    liquidTop,
+                    liquidMid,
+                    Colors.transparent,
+                  ],
+                  stops: const [0.0, 0.42, 1.0],
+                ),
+                border: Border(
+                  top: BorderSide(
+                    color: liquidBorder,
+                    width: 0.7,
+                  ),
+                ),
+              ),
+              child: centeredContent,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -4006,9 +4782,189 @@ class _AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<_AppDrawer> {
+  // MEDCASES_MENU_LATERAL_SETTINGS_SHELL_UI_V2_B_R1
   AppProvider get p => widget.p;
 
   void _close(BuildContext context) => Navigator.of(context).pop();
+
+  // SIDEBAR_PROFILE_V1_B_R0_R1 — avatar local por usuário.
+  // Não altera UserModel/Firestore. A foto escolhida fica somente neste
+  // dispositivo, em SharedPreferences, usando bytes comprimidos pelo picker.
+  String? _avatarBase64;
+
+  String get _avatarPrefsKey {
+    final uid = p.currentUser?.uid.trim();
+    return 'medcases_profile_avatar_${(uid != null && uid.isNotEmpty) ? uid : 'local'}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocalAvatar();
+  }
+
+  Future<void> _loadLocalAvatar() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString(_avatarPrefsKey);
+      if (mounted) setState(() => _avatarBase64 = saved);
+    } catch (_) {
+      // Avatar opcional; falha local nunca bloqueia o Drawer.
+    }
+  }
+
+  Future<void> _pickLocalAvatar() async {
+    try {
+      final file = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1800,
+        maxHeight: 1800,
+        imageQuality: 95,
+      );
+      if (file == null || !mounted) return;
+
+      final isEs = context.read<AppProvider>().lang == 'es';
+      final cropped = await ImageCropper().cropImage(
+        sourcePath: file.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        maxWidth: 900,
+        maxHeight: 900,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 88,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Ajustar foto',
+            toolbarColor: const Color(0xFF1A1D23),
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor: const Color(0xFF0D6B57),
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+            aspectRatioPresets: const [CropAspectRatioPreset.square],
+          ),
+          IOSUiSettings(
+            title: 'Ajustar foto',
+            doneButtonTitle: isEs ? 'Listo' : 'Concluir',
+            cancelButtonTitle: 'Cancelar',
+            aspectRatioLockEnabled: true,
+            resetAspectRatioEnabled: false,
+            aspectRatioPresets: const [CropAspectRatioPreset.square],
+          ),
+          WebUiSettings(
+            context: context,
+            presentStyle: WebPresentStyle.dialog,
+            size: const CropperSize(width: 520, height: 520),
+          ),
+        ],
+      );
+      if (cropped == null) return;
+
+      final bytes = await cropped.readAsBytes();
+      if (bytes.isEmpty) return;
+      final encoded = base64Encode(bytes);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_avatarPrefsKey, encoded);
+
+      if (!mounted) return;
+      setState(() => _avatarBase64 = encoded);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            context.read<AppProvider>().lang == 'es'
+                ? 'No fue posible editar la foto.'
+                : 'Não foi possível editar a foto.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  Future<void> _removeLocalAvatar() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_avatarPrefsKey);
+      if (mounted) setState(() => _avatarBase64 = null);
+    } catch (_) {}
+  }
+
+  Future<void> _showAvatarActions(BuildContext context) async {
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+    final bg = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: bg,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Color(0xFF0D6B57),
+                ),
+                title: Text(
+                  isEs ? 'Elegir foto' : 'Escolher foto',
+                  style: TextStyle(
+                    color: primary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                subtitle: Text(
+                  isEs
+                      ? 'Se guarda solo en este dispositivo'
+                      : 'Salva apenas neste dispositivo',
+                  style: TextStyle(
+                    color: secondary,
+                    fontSize: 11,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _pickLocalAvatar();
+                },
+              ),
+              if (_avatarBase64 != null && _avatarBase64!.isNotEmpty) ...[
+                Divider(height: 1, color: divider),
+                ListTile(
+                  leading: const Icon(
+                    Icons.delete_outline_rounded,
+                    color: Color(0xFFCC3333),
+                  ),
+                  title: Text(
+                    isEs ? 'Quitar foto' : 'Remover foto',
+                    style: const TextStyle(
+                      color: Color(0xFFCC3333),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _removeLocalAvatar();
+                  },
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   // ── Dialog de eliminação de conta ────────────────────────────────────────
   // ── Task 8 — Exclusão de Conta Obrigatória (Apple Guideline 5.1.1(v)) ─────
@@ -4362,11 +5318,11 @@ class _AppDrawerState extends State<_AppDrawer> {
     // fiquem isolados — não fecham o drawer ao mudar darkMode/offlineMode.
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
-    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFFAFBFC);
-    final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFF0EDE8);
-    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final textCol = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
     final subCol =
-        dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
+        dark ? Colors.white.withValues(alpha: 0.58) : const Color(0xFF66717E);
 
     final initials = p.userName.isNotEmpty
         ? p.userName
@@ -4380,15 +5336,19 @@ class _AppDrawerState extends State<_AppDrawer> {
     // ── Largura responsiva: max 300 em tablets/desktop, 72% em mobile ────────
     final screenW = MediaQuery.of(context).size.width;
     final isTablet = screenW >= 600;
-    final drawerW = isTablet ? screenW.clamp(0.0, 300.0) : screenW * 0.72;
+    // MEDCASES_DRAWER_COMPACT_20_PERCENT_VISUAL_DENSITY_V1_B_R3
+    // True 20% outer-width reduction: factor + tablet/mobile clamps scaled.
+    final drawerW = isTablet
+        ? screenW.clamp(0.0, 256.0)
+        : (screenW * 0.672).clamp(224.0, 256.0);
 
     // ── Shape: cantos arredondados à esquerda apenas em tablets ──────────────
     // (endDrawer desliza da direita → arredondar topLeft + bottomLeft)
     final drawerShape = isTablet
         ? const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              bottomLeft: Radius.circular(20),
+              topLeft: Radius.circular(18),
+              bottomLeft: Radius.circular(18),
             ),
           )
         : const RoundedRectangleBorder(borderRadius: BorderRadius.zero);
@@ -4405,15 +5365,18 @@ class _AppDrawerState extends State<_AppDrawer> {
             p: p,
             initials: initials,
             dark: dark,
+            avatarBase64: _avatarBase64,
+            onAvatarTap: () => _showAvatarActions(context),
             onClose: () => _close(context),
-            onEditProfile: () {
+            onEditProfile: () async {
+              final navigator = Navigator.of(context);
               _close(context);
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (_) => _ProfileEditSheet(p: p),
+              await navigator.push(
+                MaterialPageRoute<void>(
+                  builder: (_) => ProfileAccountScreen(p: p),
+                ),
               );
+              if (mounted) await _loadLocalAvatar();
             },
           ),
 
@@ -4425,42 +5388,14 @@ class _AppDrawerState extends State<_AppDrawer> {
               children: [
                 // ─── 1. Bloco: Admin (TOPO — visível sem scroll) ─────────────
                 // Permissões inalteradas: if (p.isAdmin || p.isMaster)
-                if ((p.isAdmin || p.isMaster) && p.currentUser != null) ...[
-                  _DrawerSectionLabel(
-                    label: p.isMaster ? '⚡ MASTER' : '⚡ ADMIN',
-                    dark: dark,
-                    color: const Color(0xFFFF8C00),
-                  ),
-                  _DrawerBlock(
-                    children: [
-                      _DrawerRow(
-                        icon: Icons.admin_panel_settings_rounded,
-                        iconColor: const Color(0xFFFF8C00),
-                        title: p.lang == 'es' ? 'Panel Admin' : 'Painel Admin',
-                        subtitle: 'Usuários · Links · Indicações',
-                        dark: dark,
-                        textCol: textCol,
-                        subCol: subCol,
-                        showDivider: false,
-                        onTap: () {
-                          _close(context);
-                          final admin = p.currentUser;
-                          if (admin == null) return;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    AdminScreen(currentAdmin: admin),
-                              ));
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                ],
+                // ADMIN_V2_EXTERNAL_WEB_ONLY: painel administrativo removido do app clínico.
+                // O Admin V2 usa entrypoint web dedicado: lib/main_admin.dart
 
-                // ─── 2. Bloco: Premium (upgrade) — oculto em modo de revisão Apple
-                if (!kIsReviewMode)
+                // ─── 2. MedCases Pro / Paywall — bloco isolado ───────────────
+                // Mantém o gate de review e a navegação homologada; altera
+                // somente a composição visual entre perfil/Admin e Suporte.
+                if (!kIsReviewMode) ...[
+                  const SizedBox(height: 12),
                   _DrawerBlock(
                     children: [
                       _DrawerItemPremium(
@@ -4472,6 +5407,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 18),
+                ],
 
                 // ─── 3. Acesso Rápido ─────────────────────────────────────
                 // APPLE COMPLIANCE (Build 93) — bloco ACCESO RÁPIDO oculto.
@@ -4489,17 +5426,6 @@ class _AppDrawerState extends State<_AppDrawer> {
                 //   _DrawerQuickAccess(p: p, dark: dark, onClose: () => _close(context)),
                 // ],
 
-                // ─── 4. Sua Atividade (oculto se vazio) ──────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'TU ACTIVIDAD' : 'SUA ATIVIDADE',
-                  dark: dark,
-                ),
-                _DrawerActivity(
-                  p: p,
-                  dark: dark,
-                  onClose: () => _close(context),
-                ),
-
                 // ─── 5. Suporte ──────────────────────────────────────────
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
@@ -4511,13 +5437,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                     // ── Fontes e Diretrizes (Task 6 — App Store Guideline 1.4.1) ──
                     _DrawerRow(
                       icon: Icons.menu_book_rounded,
-                      iconColor: const Color(0xFF0D7A55),
-                      title: p.lang == 'es'
-                          ? 'Fuentes y Directrices'
-                          : 'Fontes e Diretrizes',
-                      subtitle: p.lang == 'es'
-                          ? 'AHA, Harrison, ESC, IDSA y más'
-                          : 'AHA, Harrison, ESC, IDSA e mais',
+                      iconColor: const Color(0xFF009C3B),
+                      title: p.lang == 'es' ? 'Fuentes' : 'Fontes',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4528,10 +5449,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                     ),
                     _DrawerRow(
                       icon: Icons.support_agent_rounded,
-                      iconColor: const Color(0xFF7C3AED),
-                      title: p.lang == 'es'
-                          ? 'Feedback y Soporte'
-                          : 'Feedback e Suporte',
+                      iconColor: const Color(0xFF009C3B),
+                      title: p.lang == 'es' ? 'Soporte' : 'Suporte',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4560,11 +5479,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                     // Idioma — toca para alternar PT ↔ ES
                     _DrawerRow(
                       icon: Icons.language_rounded,
-                      iconColor: const Color(0xFF1E88E5),
+                      iconColor: const Color(0xFF009C3B),
                       title: 'Idioma',
-                      subtitle: p.lang == 'es'
-                          ? 'Toca para cambiar a Português'
-                          : 'Toque para mudar para Español',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4581,9 +5497,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                       icon: dark
                           ? Icons.light_mode_rounded
                           : Icons.dark_mode_rounded,
-                      iconColor: dark
-                          ? const Color(0xFFFFCC44)
-                          : const Color(0xFF6B6B8A),
+                      iconColor: const Color(0xFF009C3B),
                       title: p.lang == 'es' ? 'Apariencia' : 'Aparência',
                       dark: dark,
                       textCol: textCol,
@@ -4602,7 +5516,6 @@ class _AppDrawerState extends State<_AppDrawer> {
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'MODO SIN CONEXIÓN' : 'MODO OFFLINE',
                   dark: dark,
-                  color: const Color(0xFF1D4ED8),
                 ),
                 // BUILD 327: _OfflineDrawerCard unificado — inclui controles da
                 // calculadora offline (Versão, Actualizar, Limpiar) dentro do
@@ -4619,10 +5532,8 @@ class _AppDrawerState extends State<_AppDrawer> {
                   children: [
                     _DrawerRow(
                       icon: Icons.info_outline_rounded,
-                      iconColor: const Color(0xFF0D9488),
-                      title: p.lang == 'es'
-                          ? 'Sobre MedCases Pro'
-                          : 'Sobre o MedCases Pro',
+                      iconColor: const Color(0xFF009C3B),
+                      title: p.lang == 'es' ? 'Sobre' : 'Sobre',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4640,9 +5551,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                     _DrawerLegalRow(
                       icon: Icons.article_outlined,
                       iconColor: const Color(0xFF546E7A),
-                      title:
-                          p.lang == 'es' ? 'Términos de Uso' : 'Termos de Uso',
-                      subtitle: p.lang == 'es' ? 'Ver en la app' : 'Ver no app',
+                      title: p.lang == 'es' ? 'Términos' : 'Termos',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4659,10 +5568,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                     _DrawerLegalRow(
                       icon: Icons.shield_outlined,
                       iconColor: const Color(0xFF546E7A),
-                      title: p.lang == 'es'
-                          ? 'Política de Privacidad'
-                          : 'Política de Privacidade',
-                      subtitle: p.lang == 'es' ? 'Ver en la app' : 'Ver no app',
+                      title: p.lang == 'es' ? 'Privacidad' : 'Privacidade',
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
@@ -4681,7 +5587,7 @@ class _AppDrawerState extends State<_AppDrawer> {
 
                 // ─── 9. Conta e Gestão (zona de perigo — SEMPRE NO FINAL) ───
                 _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'CUENTA Y GESTIÓN' : 'CONTA E GESTÃO',
+                  label: p.lang == 'es' ? 'CUENTA' : 'CONTA',
                   dark: dark,
                   color: const Color(0xFFCC3333),
                 ),
@@ -4726,9 +5632,9 @@ class _AppDrawerState extends State<_AppDrawer> {
 
           // ── RODAPÉ ─────────────────────────────────────────────────────────
           Container(
-            padding: const EdgeInsets.fromLTRB(16, 9, 16, 10),
+            padding: const EdgeInsets.fromLTRB(14, 8, 14, 9),
             decoration: BoxDecoration(
-              color: dark ? const Color(0xFF0F1116) : const Color(0xFFF0EDE8),
+              color: dark ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4),
               border: Border(top: BorderSide(color: divider, width: 0.5)),
             ),
             child: SafeArea(
@@ -4738,7 +5644,7 @@ class _AppDrawerState extends State<_AppDrawer> {
               child: Text(
                 'MedCases Pro · ${p.lang == 'es' ? 'Solo uso educativo' : 'Uso educacional'}',
                 style: TextStyle(
-                    fontSize: 9.5,
+                    fontSize: 8.74,
                     color: subCol,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.2),
@@ -4761,6 +5667,8 @@ class _DrawerHeader extends StatelessWidget {
   final AppProvider p;
   final String initials;
   final bool dark;
+  final String? avatarBase64;
+  final VoidCallback onAvatarTap;
   final VoidCallback onClose;
   final VoidCallback onEditProfile;
 
@@ -4768,252 +5676,210 @@ class _DrawerHeader extends StatelessWidget {
     required this.p,
     required this.initials,
     required this.dark,
+    required this.avatarBase64,
+    required this.onAvatarTap,
     required this.onClose,
     required this.onEditProfile,
   });
 
-  static const _kGold = Color(0xFFC5A365);
-  static const _kGoldL = Color(0xFFFFE8A6);
+  static const _kGreen = Color(0xFF009C3B);
+
+  Widget _avatarFallback(Color avatarBg, Color divider) {
+    return Container(
+      width: 48,
+      height: 48,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: avatarBg,
+        border: Border.all(color: divider, width: 0.8),
+      ),
+      child: Text(
+        initials,
+        style: const TextStyle(
+          color: _kGreen,
+          fontSize: 14.72,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+
+  Widget _avatar(Color avatarBg, Color divider) {
+    final encoded = avatarBase64;
+    if (encoded != null && encoded.isNotEmpty) {
+      try {
+        final bytes = base64Decode(encoded);
+        return Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: divider, width: 0.8),
+          ),
+          child: ClipOval(
+            child: Image.memory(
+              bytes,
+              width: 48,
+              height: 48,
+              fit: BoxFit.cover,
+              gaplessPlayback: true,
+              errorBuilder: (_, __, ___) => _avatarFallback(avatarBg, divider),
+            ),
+          ),
+        );
+      } catch (_) {
+        return _avatarFallback(avatarBg, divider);
+      }
+    }
+    return _avatarFallback(avatarBg, divider);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final hasBadge = p.isAdmin || p.isMaster;
+    final bg = dark ? const Color(0xE6252930) : const Color(0xE6FFFFFF);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF18202A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF66717E);
+    final tertiary = const Color(0xFF64748B);
+    final avatarBg = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
 
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF0F1116), Color(0xFF1A1D23), Color(0xFF252930)],
-          stops: [0.0, 0.45, 1.0],
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        left: false,
-        right: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 14, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Linha 1: badge (opcional) | Spacer | botão ✕ ─────────────────
-              // BUILD 326 — M1: BrandMark removido; X e badge mantidos no topo
-              Row(
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: bg,
+            border: Border(
+              bottom: BorderSide(color: divider, width: 0.6),
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            left: false,
+            right: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 11, 8, 12),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Badge Admin/Master — inline na linha do topo
-                  if (hasBadge) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: _kGold.withOpacity(0.14),
-                        border: Border.all(color: _kGold.withOpacity(0.40)),
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(Icons.verified_rounded,
-                            size: 9, color: _kGoldL),
-                        const SizedBox(width: 3),
-                        Text(
-                          p.isMaster ? 'MASTER' : 'ADMIN',
-                          style: const TextStyle(
-                            fontSize: 8.5,
-                            fontWeight: FontWeight.w900,
-                            color: _kGoldL,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ],
-                  const Spacer(),
-                  // Botão fechar
                   GestureDetector(
-                    onTap: onClose,
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(9),
-                        color: Colors.white.withOpacity(0.07),
-                        border: Border.all(
-                            color: Colors.white.withOpacity(0.10), width: 0.8),
-                      ),
-                      child: Icon(
-                        Icons.close_rounded,
-                        size: 14,
-                        color: Colors.white.withOpacity(0.55),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10),
-
-              // ── BUILD 326 — M1: Selo centralizado  ——  [M+]  —— ──────────────
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: const Color(0xFF334155).withOpacity(0.45),
-                      endIndent: 10,
-                      thickness: 0.8,
-                    ),
-                  ),
-                  const Text(
-                    'M+',
-                    style: TextStyle(
-                      color: Color(0xFFD4AF37),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 15,
-                      letterSpacing: 2.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: const Color(0xFF334155).withOpacity(0.45),
-                      indent: 10,
-                      thickness: 0.8,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 18),
-
-              // ── BUILD 326 — M2/M3: Avatar 58px + Stack lápis + coluna de texto ─
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // BUILD 326 — M2: Avatar 58px com overlay de lápis (Stack)
-                  GestureDetector(
-                    onTap: onEditProfile,
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onAvatarTap,
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        // Círculo principal 58px
-                        Container(
-                          width: 58,
-                          height: 58,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-                            ),
-                            border: Border.all(
-                              color: const Color(0xFF34D399).withOpacity(0.50),
-                              width: 1.8,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color:
-                                    const Color(0xFF34D399).withOpacity(0.15),
-                                blurRadius: 12,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              initials,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFFD4AF37),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Overlay lápis: 22px círculo verde no canto inferior direito
+                        _avatar(avatarBg, divider),
                         Positioned(
-                          bottom: 0,
-                          right: 0,
+                          right: -1,
+                          bottom: -1,
                           child: Container(
-                            width: 22,
-                            height: 22,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF34D399),
+                            width: 18,
+                            height: 18,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
+                              color: bg,
+                              border: Border.all(color: divider, width: 0.7),
                             ),
                             child: const Icon(
-                              Icons.edit_rounded,
-                              size: 11,
-                              color: Color(0xFF0F172A),
+                              Icons.photo_camera_outlined,
+                              size: 10,
+                              color: _kGreen,
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-
-                  const SizedBox(width: 14),
-
-                  // BUILD 326 — M3: Coluna vertical: nome + profissão + instituição
+                  const SizedBox(width: 12),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Título: nome do usuário
-                        Text(
-                          p.userName.isNotEmpty ? p.userName : 'MedCases Pro',
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: -0.3,
-                            height: 1.15,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onEditProfile,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              p.userName.isNotEmpty
+                                  ? p.userName
+                                  : 'MedCases Pro',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: primary,
+                                fontSize: 13.34,
+                                height: 1.15,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: -0.2,
+                              ),
+                            ),
+                            if (p.currentUser?.profession?.isNotEmpty ??
+                                false) ...[
+                              const SizedBox(height: 2),
+                              Text(
+                                p.currentUser!.profession!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: secondary,
+                                  fontSize: 10.58,
+                                  height: 1.2,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                            if (p.currentUser?.institution?.isNotEmpty ??
+                                false) ...[
+                              const SizedBox(height: 1),
+                              Text(
+                                p.currentUser!.institution!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: tertiary,
+                                  fontSize: 9.66,
+                                  height: 1.2,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: 3),
+                            Text(
+                              'Editar perfil',
+                              style: const TextStyle(
+                                color: _kGreen,
+                                fontSize: 9.2,
+                                height: 1.1,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
-                        // Subtítulo 1: profissão (fontSize 13, opacity 0.65)
-                        if (p.currentUser?.profession?.isNotEmpty ?? false) ...[
-                          const SizedBox(height: 3),
-                          Text(
-                            p.currentUser!.profession!,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white.withOpacity(0.65),
-                              fontWeight: FontWeight.w500,
-                              height: 1.2,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ],
-                        // Subtítulo 2: instituição (fontSize 11, opacity 0.42)
-                        if (p.currentUser?.institution?.isNotEmpty ??
-                            false) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            p.currentUser!.institution!,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.white.withOpacity(0.42),
-                              fontWeight: FontWeight.w400,
-                              height: 1.25,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
-                        ],
-                      ],
+                      ),
                     ),
                   ),
-                  // BUILD 326 — M5: Botão "Editar" externo REMOVIDO
+                  IconButton(
+                    onPressed: onClose,
+                    tooltip: p.lang == 'es' ? 'Cerrar' : 'Fechar',
+                    padding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 32,
+                      height: 32,
+                    ),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      size: 18.0,
+                      color: secondary,
+                    ),
+                  ),
                 ],
               ),
-
-              const SizedBox(height: 4),
-            ],
+            ),
           ),
         ),
       ),
@@ -5035,17 +5901,18 @@ class _DrawerSectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final col = color ??
-        (dark ? Colors.white.withOpacity(0.28) : const Color(0xFFAAB0B8));
+    final col =
+        color ?? (dark ? const Color(0xFF94A3B8) : const Color(0xFF66717E));
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 5),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 5),
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 9.5,
-          fontWeight: FontWeight.w800,
+          fontSize: 8.74,
+          fontWeight: FontWeight.w700,
           color: col,
-          letterSpacing: 1.2,
+          letterSpacing: 0.82,
         ),
       ),
     );
@@ -5064,41 +5931,25 @@ class _DrawerBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
-    final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFECE9E4);
+    final dark = context.select<AppProvider, bool>((p) => p.darkMode);
     final divCol = dividerColor ??
-        (dark ? const Color(0xFF2D3340) : const Color(0xFFECE9E4));
+        (dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC));
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderCol, width: 0.8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(dark ? 0.18 : 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (int i = 0; i < children.length; i++) ...[
+          children[i],
+          if (i < children.length - 1)
+            Divider(
+              height: 1,
+              thickness: 0.55,
+              color: divCol,
+              indent: 48,
+              endIndent: 0,
+            ),
         ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (int i = 0; i < children.length; i++) ...[
-            children[i],
-            if (i < children.length - 1)
-              Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  color: divCol,
-                  indent: 50,
-                  endIndent: 0),
-          ],
-        ],
-      ),
+      ],
     );
   }
 }
@@ -5107,67 +5958,80 @@ class _DrawerBlock extends StatelessWidget {
 class _DrawerItemPremium extends StatelessWidget {
   final bool dark;
   final VoidCallback onTap;
-  const _DrawerItemPremium({required this.dark, required this.onTap});
+
+  const _DrawerItemPremium({
+    required this.dark,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: dark
-                ? [const Color(0xFF252930), const Color(0xFF1A1D23)]
-                : [const Color(0xFF2D3340), const Color(0xFF0F1116)],
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    const accent = Color(0xFF009C3B);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        splashColor: accent.withValues(alpha: 0.05),
+        highlightColor: accent.withValues(alpha: 0.025),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 32,
+                child: Icon(
+                  Icons.workspace_premium_outlined,
+                  size: 19,
+                  color: accent,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Upgrade Premium',
+                      style: TextStyle(
+                        color: primary,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      'Acesso completo · 500+ casos clínicos',
+                      style: TextStyle(
+                        color: secondary,
+                        fontSize: 9.2,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Text(
+                'VER',
+                style: TextStyle(
+                  color: accent,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.6,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 14.4,
+                color: secondary,
+              ),
+            ],
           ),
         ),
-        child: Row(children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFFC5A365).withOpacity(0.18),
-            ),
-            child: const Icon(Icons.workspace_premium_rounded,
-                size: 18, color: Color(0xFFFFE8A6)),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                const Text('Upgrade Premium',
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFFFFE8A6),
-                        letterSpacing: -0.1)),
-                const SizedBox(height: 1),
-                Text('Acesso completo · 500+ casos clínicos',
-                    style: TextStyle(
-                        fontSize: 10, color: Colors.white.withOpacity(0.40))),
-              ])),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
-              color: const Color(0xFFC5A365).withOpacity(0.22),
-              border:
-                  Border.all(color: const Color(0xFFC5A365).withOpacity(0.50)),
-            ),
-            child: const Text('VER',
-                style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFFFFE8A6),
-                    letterSpacing: 0.8)),
-          ),
-        ]),
       ),
     );
   }
@@ -5201,56 +6065,60 @@ class _DrawerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      splashColor: iconColor.withOpacity(0.07),
-      highlightColor: iconColor.withOpacity(0.04),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-        child: Row(children: [
-          // Ícone simples (sem container/borda ao redor)
-          SizedBox(
-            width: 36,
-            child: Icon(icon, size: 20, color: iconColor),
-          ),
-          const SizedBox(width: 4),
-          // Título + subtítulo opcional
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w600,
-                    color: textCol,
-                    letterSpacing: -0.1,
-                  ),
-                ),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 1),
-                  Text(
-                    subtitle!,
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w500,
-                      color: subCol.withOpacity(0.65),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        splashColor: iconColor.withValues(alpha: 0.05),
+        highlightColor: iconColor.withValues(alpha: 0.025),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 28.8,
+                child: Icon(icon, size: 16.56, color: iconColor),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 11.904,
+                        fontWeight: FontWeight.w600,
+                        color: textCol,
+                        letterSpacing: -0.05,
+                      ),
                     ),
-                  ),
-                ],
-              ],
-            ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 1),
+                      Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 9.66,
+                          fontWeight: FontWeight.w400,
+                          color: subCol,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (trailing != null)
+                trailing!
+              else
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 14.4,
+                  color: subCol.withValues(alpha: 0.70),
+                ),
+            ],
           ),
-          // Trailing ou chevron
-          if (trailing != null)
-            trailing!
-          else
-            Icon(Icons.chevron_right_rounded,
-                size: 16, color: subCol.withOpacity(0.45)),
-        ]),
+        ),
       ),
     );
   }
@@ -5264,7 +6132,6 @@ class _DrawerLegalRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
-  final String? subtitle;
   final bool dark;
   final Color textCol;
   final Color subCol;
@@ -5283,12 +6150,9 @@ class _DrawerLegalRow extends StatelessWidget {
     required this.externalUrl,
     required this.externalTooltip,
     required this.onTap,
-    this.subtitle,
     this.showDivider = true,
   });
 
-  // BUILD 323 — MANDATO 2: abre documento legal in-app em vez de browser externo.
-  // MANDATO 1: título semântico visível, URL encapsulada e invisível.
   void _launch(BuildContext context) {
     openAcademicSourceSecurely(context, title, externalUrl);
   }
@@ -5296,78 +6160,69 @@ class _DrawerLegalRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dividerColor =
-        dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
-          splashColor: iconColor.withOpacity(0.07),
-          highlightColor: iconColor.withOpacity(0.04),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 11, 4, 11),
-            child: Row(children: [
-              SizedBox(
-                width: 36,
-                child: Icon(icon, size: 20, color: iconColor),
-              ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            splashColor: iconColor.withValues(alpha: 0.05),
+            highlightColor: iconColor.withValues(alpha: 0.025),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 9, 6, 9),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 29,
+                    child: Icon(icon, size: 16.56, color: iconColor),
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
                       title,
                       style: TextStyle(
-                        fontSize: 13.5,
+                        fontSize: 11.904,
                         fontWeight: FontWeight.w600,
                         color: textCol,
-                        letterSpacing: -0.1,
+                        letterSpacing: -0.05,
                       ),
                     ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: 1),
-                      Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w500,
-                          color: subCol.withOpacity(0.65),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              // BUILD 323 MANDATO 2: ícone abre in-app WebView (não browser externo)
-              Tooltip(
-                message: externalTooltip,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.open_in_new_rounded,
-                    size: 18,
-                    color: const Color(0xFF1E88E5).withOpacity(0.75),
                   ),
-                  onPressed: () => _launch(context),
-                  splashRadius: 18,
-                  padding: const EdgeInsets.all(8),
-                  constraints:
-                      const BoxConstraints(minWidth: 36, minHeight: 36),
-                ),
+                  IconButton(
+                    onPressed: () => _launch(context),
+                    tooltip: externalTooltip,
+                    visualDensity: VisualDensity.compact,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 36,
+                      height: 36,
+                    ),
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      Icons.open_in_new_rounded,
+                      size: 15,
+                      color: subCol.withValues(alpha: 0.85),
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 14.4,
+                    color: subCol.withValues(alpha: 0.70),
+                  ),
+                ],
               ),
-            ]),
+            ),
           ),
         ),
         if (showDivider)
           Divider(
-              height: 1,
-              thickness: 0.7,
-              color: dividerColor,
-              indent: 14,
-              endIndent: 14),
+            height: 1,
+            thickness: 0.55,
+            color: dividerColor,
+            indent: 48,
+          ),
       ],
     );
   }
@@ -5383,20 +6238,22 @@ class _LangBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = lang == 'pt' ? 'PT' : 'ES';
+    const accent = Color(0xFF009C3B);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 7.92, vertical: 2.7),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        color: const Color(0xFFC5A365).withOpacity(0.12),
-        border: Border.all(color: const Color(0xFFC5A365).withOpacity(0.38)),
+        borderRadius: BorderRadius.circular(6),
+        color: accent.withValues(alpha: 0.10),
+        border: Border.all(color: accent.withValues(alpha: 0.32)),
       ),
       child: Text(
         label,
         style: const TextStyle(
-          fontSize: 11,
+          fontSize: 9.66,
           fontWeight: FontWeight.w800,
-          color: Color(0xFFC5A365),
-          letterSpacing: 1.2,
+          color: accent,
+          letterSpacing: 1.0,
         ),
       ),
     );
@@ -5411,19 +6268,19 @@ class _ThemeToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
-      height: 22,
+      width: 34,
+      height: 19,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
-        color: dark ? const Color(0xFF10B981) : const Color(0xFFA8B2C1),
+        borderRadius: BorderRadius.circular(9.5),
+        color: dark ? const Color(0xFF009C3B) : const Color(0xFFA8B2C1),
       ),
       child: AnimatedAlign(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 90),
         curve: Curves.easeOutCubic,
         alignment: dark ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
-          width: 18,
-          height: 18,
+          width: 15.5,
+          height: 15.5,
           margin: const EdgeInsets.symmetric(horizontal: 2),
           decoration:
               const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
@@ -5441,19 +6298,19 @@ class _OnOffToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 40,
-      height: 22,
+      width: 34,
+      height: 19,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
-        color: value ? const Color(0xFF10B981) : const Color(0xFFA8B2C1),
+        borderRadius: BorderRadius.circular(9.5),
+        color: value ? const Color(0xFF009C3B) : const Color(0xFFA8B2C1),
       ),
       child: AnimatedAlign(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
         alignment: value ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
-          width: 18,
-          height: 18,
+          width: 15.5,
+          height: 15.5,
           margin: const EdgeInsets.symmetric(horizontal: 2),
           decoration:
               const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
@@ -5499,7 +6356,7 @@ class _DrawerQuickAccess extends StatelessWidget {
         // Nova Consulta → tab 0 (HomeScreen)
         _DrawerRow(
           icon: Icons.medical_services_outlined,
-          iconColor: const Color(0xFF10B981),
+          iconColor: const Color(0xFF0D6B57),
           title: isEs ? 'Nueva Consulta' : 'Nova Consulta',
           subtitle: isEs ? 'Iniciar caso clínico' : 'Iniciar caso clínico',
           dark: dark,
@@ -5544,456 +6401,6 @@ class _DrawerQuickAccess extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-// ── Bloco "Sua Atividade" do Drawer ───────────────────────────────────────────
-// Mostra as últimas atividades recentes do usuário no app (IA, Protocolos, etc.)
-// Sempre visível após a primeira ação. Abre _RecentActivitySheet ao tocar.
-class _DrawerActivity extends StatelessWidget {
-  final AppProvider p;
-  final bool dark;
-  final VoidCallback onClose;
-
-  const _DrawerActivity({
-    required this.p,
-    required this.dark,
-    required this.onClose,
-  });
-
-  void _openSheet(BuildContext context) {
-    onClose();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!context.mounted) return;
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (_) => _RecentActivitySheet(dark: dark, lang: p.lang),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<ActivityItem>>(
-      valueListenable: ActivityService.items,
-      builder: (context, items, _) {
-        if (items.isEmpty) return const SizedBox.shrink();
-
-        final isEs = p.lang == 'es';
-        final textCol =
-            dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-        final subCol =
-            dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
-        final divider =
-            dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
-        final recent = items.take(3).toList();
-        final total = items.length;
-
-        return _DrawerBlock(
-          dividerColor: divider,
-          children: [
-            // ── Header clicável ─────────────────────────────────────────────
-            _DrawerRow(
-              icon: Icons.history_edu_rounded,
-              iconColor: const Color(0xFF6366F1),
-              title: isEs ? 'Historial de Consultas' : 'Histórico de Consultas',
-              subtitle: isEs
-                  ? '$total ${total == 1 ? 'acción reciente' : 'acciones recientes'}'
-                  : '$total ${total == 1 ? 'ação recente' : 'ações recentes'}',
-              dark: dark,
-              textCol: textCol,
-              subCol: subCol,
-              showDivider: recent.isNotEmpty,
-              onTap: () => _openSheet(context),
-            ),
-            // ── Preview das 3 mais recentes ─────────────────────────────────
-            ...recent.asMap().entries.map((entry) {
-              final idx = entry.key;
-              final item = entry.value;
-              final isLast = idx == recent.length - 1;
-              return _DrawerActivityRow(
-                item: item,
-                lang: p.lang,
-                dark: dark,
-                textCol: textCol,
-                subCol: subCol,
-                showDivider: !isLast,
-                onTap: () => _openSheet(context),
-              );
-            }),
-          ],
-        );
-      },
-    );
-  }
-}
-
-// ── Mini-row de item de atividade no Drawer ────────────────────────────────────
-class _DrawerActivityRow extends StatelessWidget {
-  final ActivityItem item;
-  final String lang;
-  final bool dark;
-  final Color textCol;
-  final Color subCol;
-  final bool showDivider;
-  final VoidCallback onTap;
-
-  const _DrawerActivityRow({
-    required this.item,
-    required this.lang,
-    required this.dark,
-    required this.textCol,
-    required this.subCol,
-    required this.showDivider,
-    required this.onTap,
-  });
-
-  String _timeAgo(DateTime dt, String lang) {
-    final diff = DateTime.now().difference(dt);
-    final isEs = lang == 'es';
-    if (diff.inMinutes < 1) return isEs ? 'ahora' : 'agora';
-    if (diff.inMinutes < 60)
-      return isEs ? 'hace ${diff.inMinutes} min' : 'há ${diff.inMinutes} min';
-    if (diff.inHours < 24)
-      return isEs ? 'hace ${diff.inHours} h' : 'há ${diff.inHours} h';
-    return isEs ? 'hace ${diff.inDays} d' : 'há ${diff.inDays} d';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Color(item.type.colorValue);
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-            child: Row(children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.circle, size: 8, color: color),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w600,
-                            color: textCol),
-                      ),
-                      if (item.subtitle.isNotEmpty)
-                        Text(
-                          '${item.type.label(lang)} · ${item.subtitle}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 10.5, color: subCol),
-                        )
-                      else
-                        Text(
-                          item.type.label(lang),
-                          style: TextStyle(fontSize: 10.5, color: subCol),
-                        ),
-                    ]),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                _timeAgo(item.timestamp, lang),
-                style: TextStyle(fontSize: 9.5, color: subCol),
-              ),
-            ]),
-          ),
-          if (showDivider)
-            Divider(
-                height: 1,
-                indent: 52,
-                color: dark
-                    ? Colors.white.withOpacity(0.06)
-                    : const Color(0xFFEEEEEE)),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Bottom Sheet completo de Atividades Recentes ──────────────────────────────
-class _RecentActivitySheet extends StatelessWidget {
-  final bool dark;
-  final String lang;
-  const _RecentActivitySheet({required this.dark, required this.lang});
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs = lang == 'es';
-    final bg = dark ? const Color(0xFF0F1116) : Colors.white;
-    final handle =
-        dark ? Colors.white.withOpacity(0.18) : const Color(0xFFA8B2C1);
-    final title = dark ? Colors.white : const Color(0xFF0F1116);
-    final sub = dark ? Colors.white.withOpacity(0.45) : const Color(0xFF9AA0A8);
-    final div = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFF0F0F0);
-
-    return ValueListenableBuilder<List<ActivityItem>>(
-      valueListenable: ActivityService.items,
-      builder: (context, items, _) {
-        return Container(
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.80,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ── Handle ──────────────────────────────────────────────────────
-              const SizedBox(height: 10),
-              Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                      color: handle, borderRadius: BorderRadius.circular(2))),
-              const SizedBox(height: 14),
-
-              // ── Header ──────────────────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF6366F1).withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.history_edu_rounded,
-                        size: 18, color: Color(0xFF6366F1)),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            isEs
-                                ? 'Historial de Consultas'
-                                : 'Histórico de Consultas',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w900,
-                                color: title),
-                          ),
-                          Text(
-                            isEs
-                                ? 'Tus últimas acciones en el app'
-                                : 'Suas últimas ações no app',
-                            style: TextStyle(fontSize: 11, color: sub),
-                          ),
-                        ]),
-                  ),
-                  if (items.isNotEmpty)
-                    TextButton(
-                      onPressed: () async {
-                        await ActivityService.clear();
-                      },
-                      child: Text(
-                        isEs ? 'Limpiar' : 'Limpar',
-                        style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFFEF4444),
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                ]),
-              ),
-              const SizedBox(height: 12),
-              Divider(height: 1, color: div),
-
-              // ── Lista ou empty state ─────────────────────────────────────────
-              if (items.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 48),
-                  child: Column(children: [
-                    Icon(Icons.history_toggle_off_rounded,
-                        size: 52,
-                        color: dark ? Colors.white24 : Colors.black12),
-                    const SizedBox(height: 12),
-                    Text(
-                      isEs ? 'Sin actividad reciente' : 'Sem atividade recente',
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: sub,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      isEs
-                          ? 'Consulta protocolos, fármacos o usa la IA'
-                          : 'Consulte protocolos, fármacos ou use a IA',
-                      style: TextStyle(fontSize: 12, color: sub),
-                      textAlign: TextAlign.center,
-                    ),
-                  ]),
-                )
-              else
-                Flexible(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.only(bottom: 32),
-                    shrinkWrap: true,
-                    itemCount: items.length,
-                    separatorBuilder: (_, __) =>
-                        Divider(height: 1, indent: 68, color: div),
-                    itemBuilder: (context, i) {
-                      final item = items[i];
-                      final color = Color(item.type.colorValue);
-                      return _ActivityTile(
-                        item: item,
-                        color: color,
-                        lang: lang,
-                        dark: dark,
-                        titleCol: title,
-                        subCol: sub,
-                      );
-                    },
-                  ),
-                ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ── Tile individual no sheet de atividades ─────────────────────────────────────
-class _ActivityTile extends StatelessWidget {
-  final ActivityItem item;
-  final Color color;
-  final String lang;
-  final bool dark;
-  final Color titleCol;
-  final Color subCol;
-
-  const _ActivityTile({
-    required this.item,
-    required this.color,
-    required this.lang,
-    required this.dark,
-    required this.titleCol,
-    required this.subCol,
-  });
-
-  String _timeAgo(DateTime dt) {
-    final diff = DateTime.now().difference(dt);
-    final isEs = lang == 'es';
-    if (diff.inMinutes < 1) return isEs ? 'ahora mismo' : 'agora mesmo';
-    if (diff.inMinutes < 60)
-      return isEs ? 'hace ${diff.inMinutes} min' : 'há ${diff.inMinutes} min';
-    if (diff.inHours < 24)
-      return isEs ? 'hace ${diff.inHours} h' : 'há ${diff.inHours} h';
-    if (diff.inDays == 1) return isEs ? 'ayer' : 'ontem';
-    return isEs ? 'hace ${diff.inDays} días' : 'há ${diff.inDays} dias';
-  }
-
-  // Ícone real por tipo (flutter IconData)
-  IconData get _icon {
-    switch (item.type) {
-      case ActivityType.ia:
-        return Icons.psychology_rounded;
-      case ActivityType.protocolo:
-        return Icons.fact_check_rounded;
-      case ActivityType.farmaco:
-        return Icons.medication_rounded;
-      case ActivityType.calculadora:
-        return Icons.calculate_rounded;
-      case ActivityType.interacao:
-        return Icons.swap_horiz_rounded;
-      case ActivityType.prescricao:
-        return Icons.receipt_long_rounded;
-      case ActivityType.laboratorio:
-        return Icons.biotech_rounded;
-      case ActivityType.caso:
-        return Icons.person_rounded;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-      child: Row(children: [
-        // ── Ícone colorido ──────────────────────────────────────────────────
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withOpacity(0.20)),
-          ),
-          child: Icon(_icon, size: 18, color: color),
-        ),
-        const SizedBox(width: 12),
-        // ── Textos ─────────────────────────────────────────────────────────
-        Expanded(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              item.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  fontSize: 13.5, fontWeight: FontWeight.w700, color: titleCol),
-            ),
-            const SizedBox(height: 2),
-            Row(children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  item.type.label(lang),
-                  style: TextStyle(
-                      fontSize: 9.5, fontWeight: FontWeight.w700, color: color),
-                ),
-              ),
-              if (item.subtitle.isNotEmpty) ...[
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    item.subtitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 11, color: subCol),
-                  ),
-                ),
-              ],
-            ]),
-          ]),
-        ),
-        const SizedBox(width: 8),
-        // ── Timestamp ──────────────────────────────────────────────────────
-        Text(
-          _timeAgo(item.timestamp),
-          style: TextStyle(fontSize: 10, color: subCol),
-        ),
-      ]),
     );
   }
 }
@@ -6052,7 +6459,7 @@ class _AppHeader extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF00E5FF),
+                      color: Color(0xFF0D6B57),
                       letterSpacing: -0.2,
                       height: 1.1,
                     ),
@@ -6105,355 +6512,412 @@ class _AppHeader extends StatelessWidget {
 // ── Sobre o App — sheet institucional (Apple 1.5.0) ──────────────────────────
 // Usa DraggableScrollableSheet para garantir que header+X fiquem sempre fixos
 // no topo e nunca desapareçam, independente do tamanho do conteúdo.
+// MEDCASES_LEGAL_ABOUT_SUPPORT_VISUAL_V2_B_R2
 class _AboutAppSheet extends StatelessWidget {
+  const _AboutAppSheet({
+    required this.p,
+    required this.dark,
+  });
+
   final AppProvider p;
   final bool dark;
-  const _AboutAppSheet({required this.p, required this.dark});
 
-  static const _kGreen = Color(0xFF075f45);
-  static const _kGreenLight = Color(0xFF0D9488);
-  static const _kGold = Color(0xFF00E5FF);
+  static const _accent = Color(0xFF0D6B57);
 
   @override
   Widget build(BuildContext context) {
     final isEs = p.lang == 'es';
-    final bg = dark ? const Color(0xFF111A14) : const Color(0xFFF7F9F7);
-    final card = dark ? const Color(0xFF2D3340) : Colors.white;
-    final hdl = dark ? const Color(0xFF2E4038) : const Color(0xFFDDE6E0);
-    final ttl = dark ? const Color(0xFFECECEC) : const Color(0xFF07110D);
-    final sub = dark ? const Color(0xFF8A9E92) : const Color(0xFF5A6E62);
-    final bdr = dark ? const Color(0xFF1E3028) : const Color(0xFFD4E0D8);
-    final accent = dark ? _kGold : _kGreen;
+    final background = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4);
+    final surface = dark ? const Color(0xFF252930) : Colors.white;
+    final text = dark ? const Color(0xFFF7F8FA) : const Color(0xFF18202A);
+    final muted = dark ? const Color(0xFFAAB3BF) : const Color(0xFF66717E);
+    final line = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
 
-    Widget infoRow(IconData icon, String label, String value) => Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-              color: card,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: bdr)),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                  color: accent.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, size: 16, color: accent),
+    Widget sectionLabel(String value) => Padding(
+          padding: const EdgeInsets.fromLTRB(2, 7, 2, 7),
+          child: Text(
+            value,
+            style: TextStyle(
+              color: muted,
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.8,
             ),
-            const SizedBox(width: 12),
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(label,
-                      style: TextStyle(
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w800,
-                          color: accent,
-                          letterSpacing: 0.9)),
-                  const SizedBox(height: 3),
-                  Text(value,
-                      style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w600,
-                          color: ttl,
-                          height: 1.3)),
-                ])),
-          ]),
-        );
-
-    Widget textBlock(IconData icon, String label, String value) => Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          decoration: BoxDecoration(
-              color: card,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: bdr)),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                  color: accent.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(8)),
-              child: Icon(icon, size: 16, color: accent),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text(label,
-                      style: TextStyle(
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w800,
-                          color: accent,
-                          letterSpacing: 0.9)),
-                  const SizedBox(height: 5),
-                  Text(value,
-                      style: TextStyle(fontSize: 13, color: sub, height: 1.55)),
-                ])),
-          ]),
-        );
-
-    // ── DraggableScrollableSheet garante header sempre fixo no topo ──────────
-    // initialChildSize=0.82: ocupa 82% da tela ao abrir
-    // maxChildSize=0.92: máximo de 92% — nunca cobre a status bar
-    // O builder retorna uma Column:
-    //   - Header fixo (handle + título + X + divisor) → nunca scrolla
-    //   - ListView scrollável com o restante do conteúdo
-    return DraggableScrollableSheet(
-      initialChildSize: 0.82,
-      minChildSize: 0.5,
-      maxChildSize: 0.92,
-      expand: false,
-      builder: (ctx, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // ── Handle pill — fixo, nunca scrolla ──────────────────────
-              Padding(
-                padding: const EdgeInsets.only(top: 12, bottom: 6),
-                child: Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                        color: hdl, borderRadius: BorderRadius.circular(2)),
-                  ),
-                ),
-              ),
+        );
 
-              // ── Título + botão X — fixo, nunca scrolla ─────────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 2, 8, 10),
-                child: Row(children: [
-                  Expanded(
-                    child: Text(
-                      isEs ? 'Sobre MedCases Pro' : 'Sobre o MedCases Pro',
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: ttl,
-                          letterSpacing: -0.3),
+    Widget infoLine({
+      required IconData icon,
+      required String label,
+      required String value,
+      VoidCallback? onTap,
+    }) {
+      final child = Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: _accent.withValues(alpha: dark ? 0.18 : 0.09),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Icon(icon, color: _accent, size: 16),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: muted,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.55,
                     ),
                   ),
-                  // Botão fechar — SEMPRE visível no topo direito
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(20),
-                      onTap: () => Navigator.of(ctx).pop(),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Icon(Icons.close_rounded, size: 24, color: sub),
+                  const SizedBox(height: 2),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      color: text,
+                      fontSize: 13.2,
+                      height: 1.35,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (onTap != null)
+              Icon(
+                Icons.chevron_right_rounded,
+                color: muted.withValues(alpha: 0.72),
+                size: 20,
+              ),
+          ],
+        ),
+      );
+      if (onTap == null) return child;
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: child,
+        ),
+      );
+    }
+
+    Widget editorialBlock({
+      required IconData icon,
+      required String title,
+      required String body,
+      bool accentSurface = false,
+    }) =>
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(13, 13, 13, 14),
+          decoration: BoxDecoration(
+            color: accentSurface
+                ? _accent.withValues(alpha: dark ? 0.15 : 0.07)
+                : surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: accentSurface
+                  ? _accent.withValues(alpha: dark ? 0.35 : 0.20)
+                  : line,
+              width: 0.7,
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                size: 18,
+                color: accentSurface ? _accent : muted,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: text,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
-                  ),
-                ]),
-              ),
-
-              // ── Divisor ────────────────────────────────────────────────
-              Divider(height: 1, thickness: 0.5, color: hdl),
-
-              // ── Conteúdo scrollável (ListView usa o scrollController) ───
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
-                  children: [
-                    // Card: ícone + nome + badge
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                          color: card,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: bdr)),
-                      child: Row(children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(
-                            'assets/icon/app_icon.png',
-                            width: 56,
-                            height: 56,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              width: 56,
-                              height: 56,
-                              decoration: BoxDecoration(
-                                  color: _kGreen,
-                                  borderRadius: BorderRadius.circular(16)),
-                              child: const Icon(Icons.local_hospital_rounded,
-                                  size: 28, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                              Text('MedCases Pro',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: ttl,
-                                      letterSpacing: -0.4)),
-                              const SizedBox(height: 3),
-                              Text(
-                                  isEs
-                                      ? 'Apoyo clínico educativo'
-                                      : 'Apoio clínico educacional',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: sub,
-                                      fontWeight: FontWeight.w500)),
-                              const SizedBox(height: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: accent.withOpacity(0.10),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(
-                                      color: accent.withOpacity(0.25)),
-                                ),
-                                child: Text(
-                                    isEs
-                                        ? 'Herramienta educativa'
-                                        : 'Ferramenta educacional',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
-                                        color: accent,
-                                        letterSpacing: 0.3)),
-                              ),
-                            ])),
-                      ]),
-                    ),
-
-                    // Desenvolvedor
-                    infoRow(
-                        Icons.person_outline_rounded,
-                        isEs ? 'DESARROLLADO POR' : 'DESENVOLVIDO POR',
-                        'Bruno Rodrigues de Sousa'),
-
-                    // Contato
-                    infoRow(
-                        Icons.email_outlined,
-                        isEs
-                            ? 'CONTACTO TÉCNICO Y SOPORTE'
-                            : 'CONTATO TÉCNICO E SUPORTE',
-                        'medcasespro@gmail.com'),
-
-                    // Comitê de Revisão Clínica
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                          color: card,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: _kGreenLight.withOpacity(0.35))),
-                      child: Column(children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: _kGreenLight.withOpacity(dark ? 0.20 : 0.10),
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12)),
-                          ),
-                          child: Row(children: [
-                            const Icon(Icons.verified_user_rounded,
-                                size: 16, color: _kGreenLight),
-                            const SizedBox(width: 8),
-                            Flexible(
-                              child: Text(
-                                isEs
-                                    ? 'RESPONSABILIDAD TÉCNICA Y REVISIÓN MÉDICA'
-                                    : 'RESPONSABILIDADE TÉCNICA E REVISÃO MÉDICA',
-                                style: const TextStyle(
-                                    fontSize: 9.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: _kGreenLight,
-                                    letterSpacing: 0.8),
-                              ),
-                            ),
-                          ]),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                          child: Text(
-                            isEs
-                                ? 'El contenido científico, los algoritmos de dosificación, las calculadoras '
-                                    'pediátricas y las directrices clínicas incluidos en esta aplicación son '
-                                    'revisados, actualizados y validados de forma continua por el Comitê de '
-                                    'Revisão Clínica MedCases Pro. Este comité está integrado por profesionales '
-                                    'médicos titulados y estudiantes avanzados de medicina, con base en las '
-                                    'directrices internacionales vigentes de la World Allergy Organization (WAO), '
-                                    'UpToDate y comités de pediatría de referencia.'
-                                : 'O conteúdo científico, algoritmos de dosagem, calculadoras pediátricas e '
-                                    'diretrizes clínicas contidos neste aplicativo são revisados, atualizados e '
-                                    'validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, '
-                                    'composto por profissionais médicos diplomados e acadêmicos seniores de '
-                                    'medicina, com base nas diretrizes internacionais atualizadas da World Allergy '
-                                    'Organization (WAO), UpToDate e comitês de pediatria de referência.',
-                            style: TextStyle(
-                                fontSize: 13, color: sub, height: 1.55),
-                          ),
-                        ),
-                      ]),
-                    ),
-
-                    // Propósito
-                    textBlock(
-                        Icons.gavel_rounded,
-                        isEs ? 'PROPÓSITO' : 'PROPÓSITO',
-                        isEs
-                            ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la '
-                                'toma de decisiones clínicas. No reemplaza el juicio clínico del profesional '
-                                'de salud, ni constituye prescripción médica.'
-                            : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada '
-                                'de decisão clínica. Não substitui o julgamento clínico do profissional de '
-                                'saúde, nem constitui prescrição médica.'),
-
-                    // Site — BUILD 323 MANDATO 2: in-app WebView
-                    GestureDetector(
-                      onTap: () => openAcademicSourceSecurely(
-                          context,
-                          isEs
-                              ? 'MedCases Pro — Sitio Web'
-                              : 'MedCases Pro — Site Oficial',
-                          _kSiteUrl),
-                      child: infoRow(Icons.language_outlined,
-                          isEs ? 'SITIO WEB' : 'SITE', 'promedcases.com'),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    // Copyright
+                    const SizedBox(height: 5),
                     Text(
-                      'MedCases Pro © ${DateTime.now().year} — '
-                      '${isEs ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}',
+                      body,
                       style: TextStyle(
-                          fontSize: 11,
-                          color: sub.withOpacity(0.6),
-                          fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
+                        color: muted,
+                        fontSize: 12.6,
+                        height: 1.5,
+                      ),
                     ),
                   ],
                 ),
               ),
             ],
+          ),
+        );
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.86,
+      minChildSize: 0.52,
+      maxChildSize: 0.94,
+      expand: false,
+      builder: (context, controller) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: Material(
+            color: background,
+            child: Column(
+              children: [
+                ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: surface.withValues(
+                          alpha: dark ? 0.88 : 0.92,
+                        ),
+                        border: Border(
+                          bottom: BorderSide(color: line, width: 0.7),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 9),
+                          Center(
+                            child: Container(
+                              width: 38,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: muted.withValues(alpha: 0.34),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 7, 8, 10),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    isEs
+                                        ? 'Sobre MedCases Pro'
+                                        : 'Sobre o MedCases Pro',
+                                    style: TextStyle(
+                                      color: text,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.35,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 44,
+                                  height: 44,
+                                  child: IconButton(
+                                    tooltip: isEs ? 'Cerrar' : 'Fechar',
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    icon: Icon(
+                                      Icons.close_rounded,
+                                      color: muted,
+                                      size: 22,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    controller: controller,
+                    padding: const EdgeInsets.fromLTRB(16, 15, 16, 36),
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: surface,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: line, width: 0.7),
+                        ),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.asset(
+                                'assets/icon/app_icon.png',
+                                width: 54,
+                                height: 54,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  width: 54,
+                                  height: 54,
+                                  decoration: BoxDecoration(
+                                    color: _accent,
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: const Icon(
+                                    Icons.local_hospital_rounded,
+                                    color: Colors.white,
+                                    size: 27,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 13),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'MedCases Pro',
+                                    style: TextStyle(
+                                      color: text,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: -0.45,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 3),
+                                  Text(
+                                    isEs
+                                        ? 'Apoyo clínico educativo'
+                                        : 'Apoio clínico educacional',
+                                    style: TextStyle(
+                                      color: muted,
+                                      fontSize: 12.2,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 7),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: _accent.withValues(alpha: 0.09),
+                                      borderRadius: BorderRadius.circular(7),
+                                    ),
+                                    child: Text(
+                                      isEs
+                                          ? 'Herramienta educativa'
+                                          : 'Ferramenta educacional',
+                                      style: const TextStyle(
+                                        color: _accent,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      sectionLabel(
+                        isEs
+                            ? 'INFORMACIÓN INSTITUCIONAL'
+                            : 'INFORMAÇÃO INSTITUCIONAL',
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: line, width: 0.7),
+                        ),
+                        child: Column(
+                          children: [
+                            infoLine(
+                              icon: Icons.person_outline_rounded,
+                              label: isEs
+                                  ? 'DESARROLLADO POR'
+                                  : 'DESENVOLVIDO POR',
+                              value: 'Bruno Rodrigues de Sousa',
+                            ),
+                            Divider(height: 1, color: line),
+                            infoLine(
+                              icon: Icons.email_outlined,
+                              label: isEs
+                                  ? 'CONTACTO INSTITUCIONAL'
+                                  : 'CONTATO INSTITUCIONAL',
+                              value: 'medcasespro@gmail.com',
+                            ),
+                            Divider(height: 1, color: line),
+                            infoLine(
+                              icon: Icons.language_outlined,
+                              label: isEs ? 'SITIO WEB' : 'SITE',
+                              value: 'promedcases.com',
+                              onTap: () => openAcademicSourceSecurely(
+                                context,
+                                isEs
+                                    ? 'MedCases Pro — Sitio Web'
+                                    : 'MedCases Pro — Site Oficial',
+                                _kSiteUrl,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      sectionLabel(
+                        isEs ? 'SEGURIDAD Y REVISIÓN' : 'SEGURANÇA E REVISÃO',
+                      ),
+                      editorialBlock(
+                        icon: Icons.verified_user_outlined,
+                        title: isEs
+                            ? 'Responsabilidad técnica y revisión médica'
+                            : 'Responsabilidade técnica e revisão médica',
+                        accentSurface: true,
+                        body: isEs
+                            ? 'El contenido científico, los algoritmos de dosificación, las calculadoras pediátricas y las directrices clínicas incluidos en esta aplicación son revisados, actualizados y validados de forma continua por el Comitê de Revisão Clínica MedCases Pro. Este comité está integrado por profesionales médicos titulados y estudiantes avanzados de medicina, con base en las directrices internacionales vigentes de la World Allergy Organization (WAO), UpToDate y comités de pediatría de referencia.'
+                            : 'O conteúdo científico, algoritmos de dosagem, calculadoras pediátricas e diretrizes clínicas contidos neste aplicativo são revisados, atualizados e validados de forma contínua pelo Comitê de Revisão Clínica MedCases Pro, composto por profissionais médicos diplomados e acadêmicos seniores de medicina, com base nas diretrizes internacionais atualizadas da World Allergy Organization (WAO), UpToDate e comitês de pediatria de referência.',
+                      ),
+                      const SizedBox(height: 8),
+                      editorialBlock(
+                        icon: Icons.info_outline_rounded,
+                        title: 'Propósito',
+                        body: isEs
+                            ? 'Esta aplicación es una herramienta exclusivamente educativa de apoyo a la toma de decisiones clínicas. No reemplaza el juicio clínico del profesional de salud, ni constituye prescripción médica.'
+                            : 'Este aplicativo é uma ferramenta exclusivamente educacional de apoio à tomada de decisão clínica. Não substitui o julgamento clínico do profissional de saúde, nem constitui prescrição médica.',
+                      ),
+                      const SizedBox(height: 18),
+                      Text(
+                        'MedCases Pro © ${DateTime.now().year} — '
+                        '${isEs ? 'Todos los derechos reservados.' : 'Todos os direitos reservados.'}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: muted.withValues(alpha: 0.72),
+                          fontSize: 10.8,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -6462,314 +6926,1058 @@ class _AboutAppSheet extends StatelessWidget {
 }
 
 // ── Bottom sheet de edição de perfil ─────────────────────────────────────────
-class _ProfileEditSheet extends StatefulWidget {
+class ProfileAccountScreen extends StatefulWidget {
   final AppProvider p;
-  const _ProfileEditSheet({required this.p});
+
+  const ProfileAccountScreen({super.key, required this.p});
 
   @override
-  State<_ProfileEditSheet> createState() => _ProfileEditSheetState();
+  State<ProfileAccountScreen> createState() => _ProfileAccountScreenState();
 }
 
-class _ProfileEditSheetState extends State<_ProfileEditSheet> {
+class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
+  // MEDCASES_PROFILE_ACCOUNT_CANONICAL_TOPBAR_EDGELESS_SECTIONS_V1_B_R1
+  // Canonical topbar + edgeless section hierarchy; functional flows frozen.
+  // MEDCASES_PROFILE_ACCOUNT_UI_V2_B_R1
+  static const _green = Color(0xFF0D6B57);
+  static const _pageDark = Color(0xFF0F1116);
+  static const _surfaceDark = Color(0xFF181D25);
+  static const _borderDark = Color(0xFF374151);
+  static const _pageLight = Color(0xFFECF0F4);
+  static const _surfaceLight = Color(0xFFFFFFFF);
+  static const _borderLight = Color(0xFFE2E7EC);
+
   late final TextEditingController _nameCtrl;
-  late final TextEditingController _profCtrl;
-  late final TextEditingController _instCtrl;
+  late final TextEditingController _professionCtrl;
+  late final TextEditingController _institutionCtrl;
+  late final TextEditingController _currentPasswordCtrl;
+  late final TextEditingController _newPasswordCtrl;
+  late final TextEditingController _confirmPasswordCtrl;
+
+  String? _avatarBase64;
+  bool _avatarLoading = true;
   bool _saving = false;
-  String? _error;
+  bool _changingPassword = false;
+  bool _sendingReset = false;
+  bool _showCurrent = false;
+  bool _showNew = false;
+  bool _showConfirm = false;
+
+  AppProvider get p => widget.p;
+  bool get isEs => p.lang == 'es';
+  bool get dark => p.darkMode;
+
+  String get _avatarPrefsKey {
+    final uid = p.currentUser?.uid.trim();
+    return 'medcases_profile_avatar_${(uid != null && uid.isNotEmpty) ? uid : 'local'}';
+  }
 
   @override
   void initState() {
     super.initState();
-    final u = widget.p.currentUser;
+    final u = p.currentUser;
     _nameCtrl = TextEditingController(text: u?.displayName ?? '');
-    _profCtrl = TextEditingController(text: u?.profession ?? '');
-    _instCtrl = TextEditingController(text: u?.institution ?? '');
+    _professionCtrl = TextEditingController(text: u?.profession ?? '');
+    _institutionCtrl = TextEditingController(text: u?.institution ?? '');
+    _currentPasswordCtrl = TextEditingController();
+    _newPasswordCtrl = TextEditingController();
+    _confirmPasswordCtrl = TextEditingController();
+    _loadAvatar();
   }
 
   @override
   void dispose() {
     _nameCtrl.dispose();
-    _profCtrl.dispose();
-    _instCtrl.dispose();
+    _professionCtrl.dispose();
+    _institutionCtrl.dispose();
+    _currentPasswordCtrl.dispose();
+    _newPasswordCtrl.dispose();
+    _confirmPasswordCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _save() async {
+  Future<void> _loadAvatar() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final encoded = prefs.getString(_avatarPrefsKey);
+      if (!mounted) return;
+      setState(() {
+        _avatarBase64 = encoded;
+        _avatarLoading = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _avatarLoading = false);
+    }
+  }
+
+  Future<void> _pickCropAvatar() async {
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1800,
+        maxHeight: 1800,
+        imageQuality: 95,
+      );
+      if (picked == null || !mounted) return;
+
+      final cropped = await ImageCropper().cropImage(
+        sourcePath: picked.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        maxWidth: 900,
+        maxHeight: 900,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 88,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Ajustar foto',
+            toolbarColor: _pageDark,
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor: _green,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+            aspectRatioPresets: const [CropAspectRatioPreset.square],
+          ),
+          IOSUiSettings(
+            title: 'Ajustar foto',
+            doneButtonTitle: isEs ? 'Listo' : 'Concluir',
+            cancelButtonTitle: 'Cancelar',
+            aspectRatioLockEnabled: true,
+            resetAspectRatioEnabled: false,
+            aspectRatioPresets: const [CropAspectRatioPreset.square],
+          ),
+          WebUiSettings(
+            context: context,
+            presentStyle: WebPresentStyle.dialog,
+            size: const CropperSize(width: 520, height: 520),
+          ),
+        ],
+      );
+      if (cropped == null) return;
+
+      final bytes = await cropped.readAsBytes();
+      if (bytes.isEmpty) return;
+      final encoded = base64Encode(bytes);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_avatarPrefsKey, encoded);
+
+      if (!mounted) return;
+      setState(() => _avatarBase64 = encoded);
+      _snack(
+          isEs ? 'Foto de perfil actualizada.' : 'Foto de perfil atualizada.');
+    } catch (_) {
+      if (mounted) {
+        _snack(
+          isEs
+              ? 'No fue posible editar la foto.'
+              : 'Não foi possível editar a foto.',
+          error: true,
+        );
+      }
+    }
+  }
+
+  Future<void> _removeAvatar() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_avatarPrefsKey);
+      if (!mounted) return;
+      setState(() => _avatarBase64 = null);
+      _snack(isEs ? 'Foto eliminada.' : 'Foto removida.');
+    } catch (_) {
+      if (mounted) {
+        _snack(
+          isEs
+              ? 'No fue posible eliminar la foto.'
+              : 'Não foi possível remover a foto.',
+          error: true,
+        );
+      }
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    if (_saving) return;
     final name = _nameCtrl.text.trim();
-    if (name.isEmpty) {
-      setState(() => _error = widget.p.lang == 'es'
-          ? 'El nombre no puede estar vacío.'
-          : 'O nome não pode ficar em branco.');
+    if (name.length < 2) {
+      _snack(
+        isEs ? 'Ingresa un nombre válido.' : 'Informe um nome válido.',
+        error: true,
+      );
       return;
     }
-    setState(() {
-      _saving = true;
-      _error = null;
-    });
+
+    setState(() => _saving = true);
     try {
-      await widget.p.updateProfile(
+      await p.updateProfile(
         displayName: name,
-        profession: _profCtrl.text.trim(),
-        institution: _instCtrl.text.trim(),
+        profession: _professionCtrl.text.trim(),
+        institution: _institutionCtrl.text.trim(),
       );
-      if (mounted) Navigator.pop(context);
-    } catch (e) {
-      if (mounted)
-        setState(() {
-          _saving = false;
-          _error = widget.p.lang == 'es'
-              ? 'Error al guardar. Intente nuevamente.'
-              : 'Erro ao salvar. Tente novamente.';
-        });
+      if (mounted) _snack(isEs ? 'Perfil actualizado.' : 'Perfil atualizado.');
+    } catch (_) {
+      if (mounted) {
+        _snack(
+          isEs
+              ? 'No fue posible guardar el perfil.'
+              : 'Não foi possível salvar o perfil.',
+          error: true,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
+  }
+
+  Future<void> _changePassword() async {
+    if (_changingPassword) return;
+    final current = _currentPasswordCtrl.text;
+    final next = _newPasswordCtrl.text;
+    final confirm = _confirmPasswordCtrl.text;
+
+    if (current.isEmpty) {
+      _snack(
+        isEs ? 'Ingresa tu contraseña actual.' : 'Informe sua senha atual.',
+        error: true,
+      );
+      return;
+    }
+    if (next.length < 6) {
+      _snack(
+        isEs
+            ? 'La nueva contraseña debe tener al menos 6 caracteres.'
+            : 'A nova senha deve ter pelo menos 6 caracteres.',
+        error: true,
+      );
+      return;
+    }
+    if (next != confirm) {
+      _snack(
+        isEs ? 'Las contraseñas no coinciden.' : 'As senhas não coincidem.',
+        error: true,
+      );
+      return;
+    }
+    if (current == next) {
+      _snack(
+        isEs
+            ? 'La nueva contraseña debe ser diferente.'
+            : 'A nova senha deve ser diferente.',
+        error: true,
+      );
+      return;
+    }
+
+    setState(() => _changingPassword = true);
+    final result = await AuthService.changePassword(
+      currentPassword: current,
+      newPassword: next,
+      languageCode: p.lang,
+    );
+    if (!mounted) return;
+    setState(() => _changingPassword = false);
+
+    if (result.success) {
+      _currentPasswordCtrl.clear();
+      _newPasswordCtrl.clear();
+      _confirmPasswordCtrl.clear();
+      _snack(result.message ??
+          (isEs ? 'Contraseña actualizada.' : 'Senha atualizada.'));
+    } else {
+      _snack(
+        result.error ??
+            (isEs
+                ? 'No fue posible actualizar la contraseña.'
+                : 'Não foi possível atualizar a senha.'),
+        error: true,
+      );
+    }
+  }
+
+  Future<void> _sendReset() async {
+    if (_sendingReset) return;
+    final email = p.currentUser?.email.trim() ?? '';
+    if (email.isEmpty) {
+      _snack(
+        isEs
+            ? 'No hay un correo asociado a la cuenta.'
+            : 'Não há e-mail associado à conta.',
+        error: true,
+      );
+      return;
+    }
+
+    setState(() => _sendingReset = true);
+    final result = await AuthService.resetPassword(email);
+    if (!mounted) return;
+    setState(() => _sendingReset = false);
+
+    if (result.success) {
+      _snack(
+        isEs
+            ? 'Enviamos el enlace de redefinición a $email.'
+            : 'Enviamos o link de redefinição para $email.',
+      );
+    } else {
+      _snack(
+        isEs
+            ? 'No fue posible enviar el enlace de redefinición.'
+            : (result.error ??
+                'Não foi possível enviar o link de redefinição.'),
+        error: true,
+      );
+    }
+  }
+
+  void _snack(String text, {bool error = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor:
+            error ? const Color(0xFFB91C1C) : const Color(0xFF047857),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final dark = widget.p.darkMode;
-    final bg = dark ? const Color(0xFF1A1D23) : Colors.white;
-    final titleColor = dark ? Colors.white : const Color(0xFF0F1116);
-    final subColor = dark ? Colors.white54 : const Color(0xFF6B7280);
-    final borderColor =
-        dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
-
-    return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Container(
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          border: Border(top: BorderSide(color: borderColor, width: 1)),
-        ),
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+    final page = dark ? _pageDark : _pageLight;
+    return Scaffold(
+      backgroundColor: page,
+      body: SafeArea(
+        top: false,
+        bottom: false,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Handle bar
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: dark ? Colors.white24 : const Color(0xFFDDD8CE),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
+            _ProfileAccountTopBar(
+              dark: dark,
+              title: isEs ? 'Perfil y cuenta' : 'Perfil e conta',
+              onBack: () => Navigator.of(context).pop(true),
             ),
-            const SizedBox(height: 20),
-
-            // Título + botão fechar
-            Row(children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFFC5A365).withOpacity(0.15),
-                  border: Border.all(
-                      color: const Color(0xFFC5A365).withOpacity(0.4)),
+            Expanded(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  12,
+                  16,
+                  28 + MediaQuery.of(context).padding.bottom,
                 ),
-                child: const Icon(Icons.person_outline_rounded,
-                    size: 18, color: Color(0xFFC5A365)),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                    Text(
-                        widget.p.lang == 'es'
-                            ? 'Editar perfil'
-                            : 'Editar perfil',
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w900,
-                            color: titleColor)),
-                    Text(
-                        widget.p.lang == 'es'
-                            ? 'Tu información profesional'
-                            : 'Suas informações profissionais',
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: subColor,
-                            fontWeight: FontWeight.w500)),
-                  ])),
-              IconButton(
-                icon: Icon(Icons.close_rounded, size: 22, color: subColor),
-                onPressed: () => Navigator.pop(context),
-                padding: const EdgeInsets.all(8),
-                visualDensity: VisualDensity.compact,
-              ),
-            ]),
-            const SizedBox(height: 24),
-
-            // Campo — Nome
-            _SheetField(
-              label:
-                  widget.p.lang == 'es' ? 'Nombre completo' : 'Nome completo',
-              controller: _nameCtrl,
-              icon: Icons.badge_outlined,
-              dark: dark,
-              textInputAction: TextInputAction.next,
-            ),
-            const SizedBox(height: 12),
-
-            // Campo — Profissão
-            _SheetField(
-              label: widget.p.lang == 'es'
-                  ? 'Profesión (ej: Médico, Residente)'
-                  : 'Profissão (ex: Médico, Residente)',
-              controller: _profCtrl,
-              icon: Icons.work_outline_rounded,
-              dark: dark,
-              textInputAction: TextInputAction.next,
-            ),
-            const SizedBox(height: 12),
-
-            // Campo — Instituição
-            _SheetField(
-              label: widget.p.lang == 'es'
-                  ? 'Institución / Hospital'
-                  : 'Instituição / Hospital',
-              controller: _instCtrl,
-              icon: Icons.local_hospital_outlined,
-              dark: dark,
-              textInputAction: TextInputAction.done,
-              onSubmitted: (_) => _save(),
-            ),
-
-            // Erro
-            if (_error != null) ...[
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.red.withOpacity(0.08),
-                  border: Border.all(color: Colors.red.withOpacity(0.3)),
-                ),
-                child: Text(_error!,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600)),
-              ),
-            ],
-
-            const SizedBox(height: 20),
-
-            // Botões
-            Row(children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: _saving ? null : () => Navigator.pop(context),
-                  child: Container(
-                    height: 46,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderColor),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(widget.p.lang == 'es' ? 'Cancelar' : 'Cancelar',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: subColor)),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: GestureDetector(
-                  onTap: _saving ? null : _save,
-                  child: Container(
-                    height: 46,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color(0xFF0F1116),
-                      boxShadow: [
-                        BoxShadow(
-                            color: const Color(0xFF0F1116).withOpacity(0.35),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4))
+                        _avatarCard(),
+                        const SizedBox(height: 10),
+                        _ProfileAccountSection(
+                          dark: dark,
+                          title: isEs
+                              ? 'Datos profesionales'
+                              : 'Dados profissionais',
+                          subtitle: isEs
+                              ? 'Información que identifica tu perfil en MedCases.'
+                              : 'Informações que identificam seu perfil no MedCases.',
+                          children: [
+                            _ProfileAccountField(
+                              controller: _nameCtrl,
+                              label: isEs ? 'Nombre completo' : 'Nome completo',
+                              icon: Icons.person_outline_rounded,
+                              dark: dark,
+                            ),
+                            const SizedBox(height: 8),
+                            _ProfileAccountField(
+                              controller: _professionCtrl,
+                              label: isEs ? 'Profesión' : 'Profissão',
+                              icon: Icons.medical_services_outlined,
+                              dark: dark,
+                            ),
+                            const SizedBox(height: 8),
+                            _ProfileAccountField(
+                              controller: _institutionCtrl,
+                              label: isEs ? 'Institución' : 'Instituição',
+                              icon: Icons.apartment_rounded,
+                              dark: dark,
+                              textInputAction: TextInputAction.done,
+                            ),
+                            const SizedBox(height: 10),
+                            _ProfileAccountButton(
+                              label: _saving
+                                  ? (isEs ? 'Guardando...' : 'Salvando...')
+                                  : (isEs ? 'Guardar datos' : 'Salvar dados'),
+                              icon: Icons.check_rounded,
+                              loading: _saving,
+                              onTap: _saving ? null : _saveProfile,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        _securityCard(),
                       ],
                     ),
-                    alignment: Alignment.center,
-                    child: _saving
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                                strokeWidth: 2, color: Color(0xFFFFE8A6)))
-                        : Text(widget.p.lang == 'es' ? 'Guardar' : 'Salvar',
-                            style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFFFFE8A6))),
                   ),
                 ),
               ),
-            ]),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _avatarCard() {
+    final surface = dark ? _surfaceDark : _surfaceLight;
+    final border = dark ? _borderDark : _borderLight;
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final email = p.currentUser?.email ?? '';
+    Uint8List? bytes;
+    final encoded = _avatarBase64;
+    if (encoded != null && encoded.isNotEmpty) {
+      try {
+        bytes = base64Decode(encoded);
+      } catch (_) {
+        bytes = null;
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(2, 14, 2, 18),
+      child: Column(
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                width: 92,
+                height: 92,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color:
+                      dark ? const Color(0xFF2D3340) : const Color(0xFFF1F5F9),
+                  border: Border.all(color: border, width: 1),
+                ),
+                child: ClipOval(
+                  child: _avatarLoading
+                      ? const Center(
+                          child: SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: _green,
+                            ),
+                          ),
+                        )
+                      : bytes != null
+                          ? Image.memory(bytes,
+                              fit: BoxFit.cover, gaplessPlayback: true)
+                          : Icon(Icons.person_rounded,
+                              size: 42, color: secondary),
+                ),
+              ),
+              Positioned(
+                right: -3,
+                bottom: 1,
+                child: Material(
+                  color: _green,
+                  shape: const CircleBorder(),
+                  child: InkWell(
+                    onTap: _pickCropAvatar,
+                    customBorder: const CircleBorder(),
+                    child: const SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: Icon(Icons.edit_rounded,
+                          size: 16, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            _nameCtrl.text.trim().isEmpty
+                ? (isEs ? 'Tu perfil' : 'Seu perfil')
+                : _nameCtrl.text.trim(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: primary,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (email.isNotEmpty) ...[
+            const SizedBox(height: 3),
+            Text(
+              email,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: secondary,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _ProfilePhotoAction(
+                label: isEs ? 'Cambiar foto' : 'Alterar foto',
+                icon: Icons.photo_library_outlined,
+                dark: dark,
+                onTap: _pickCropAvatar,
+              ),
+              if (bytes != null)
+                _ProfilePhotoAction(
+                  label: isEs ? 'Quitar' : 'Remover',
+                  icon: Icons.delete_outline_rounded,
+                  dark: dark,
+                  destructive: true,
+                  onTap: _removeAvatar,
+                ),
+            ],
+          ),
+          const SizedBox(height: 7),
+          Text(
+            isEs
+                ? 'Podrás mover y ampliar la imagen antes de recortarla.'
+                : 'Você poderá mover e ampliar a imagem antes de recortar.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: secondary, fontSize: 10.5, height: 1.35),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _securityCard() {
+    if (kIsWeb) {
+      return _ProfileAccountSection(
+        dark: dark,
+        title: isEs ? 'Seguridad' : 'Segurança',
+        subtitle: isEs
+            ? 'En la Web, el cambio se protege con un enlace enviado a tu correo.'
+            : 'Na Web, a troca é protegida por um link enviado ao seu e-mail.',
+        children: [
+          _ProfileReadOnlyRow(
+            dark: dark,
+            label: isEs ? 'Correo de la cuenta' : 'E-mail da conta',
+            value: p.currentUser?.email ?? '—',
+          ),
+          const SizedBox(height: 10),
+          _ProfileAccountButton(
+            label: _sendingReset
+                ? (isEs ? 'Enviando...' : 'Enviando...')
+                : (isEs
+                    ? 'Enviar enlace de redefinición'
+                    : 'Enviar link de redefinição'),
+            icon: Icons.lock_reset_rounded,
+            loading: _sendingReset,
+            onTap: _sendingReset ? null : _sendReset,
+          ),
+        ],
+      );
+    }
+
+    return _ProfileAccountSection(
+      dark: dark,
+      title: isEs ? 'Seguridad' : 'Segurança',
+      subtitle: isEs
+          ? 'Confirma tu contraseña actual antes de crear una nueva.'
+          : 'Confirme sua senha atual antes de criar uma nova.',
+      children: [
+        _ProfileAccountField(
+          controller: _currentPasswordCtrl,
+          label: isEs ? 'Contraseña actual' : 'Senha atual',
+          icon: Icons.lock_outline_rounded,
+          dark: dark,
+          obscureText: !_showCurrent,
+          suffix: _ProfilePasswordToggle(
+            visible: _showCurrent,
+            dark: dark,
+            onTap: () => setState(() => _showCurrent = !_showCurrent),
+          ),
+        ),
+        const SizedBox(height: 8),
+        _ProfileAccountField(
+          controller: _newPasswordCtrl,
+          label: isEs ? 'Nueva contraseña' : 'Nova senha',
+          icon: Icons.password_rounded,
+          dark: dark,
+          obscureText: !_showNew,
+          suffix: _ProfilePasswordToggle(
+            visible: _showNew,
+            dark: dark,
+            onTap: () => setState(() => _showNew = !_showNew),
+          ),
+        ),
+        const SizedBox(height: 8),
+        _ProfileAccountField(
+          controller: _confirmPasswordCtrl,
+          label: isEs ? 'Confirmar nueva contraseña' : 'Confirmar nova senha',
+          icon: Icons.verified_user_outlined,
+          dark: dark,
+          obscureText: !_showConfirm,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) => _changePassword(),
+          suffix: _ProfilePasswordToggle(
+            visible: _showConfirm,
+            dark: dark,
+            onTap: () => setState(() => _showConfirm = !_showConfirm),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          isEs ? 'Mínimo de 6 caracteres.' : 'Mínimo de 6 caracteres.',
+          style: TextStyle(
+            color: dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+            fontSize: 10.5,
+          ),
+        ),
+        const SizedBox(height: 10),
+        _ProfileAccountButton(
+          label: _changingPassword
+              ? (isEs ? 'Actualizando...' : 'Atualizando...')
+              : (isEs ? 'Actualizar contraseña' : 'Atualizar senha'),
+          icon: Icons.shield_outlined,
+          loading: _changingPassword,
+          onTap: _changingPassword ? null : _changePassword,
+        ),
+        const SizedBox(height: 4),
+        TextButton(
+          onPressed: _sendingReset ? null : _sendReset,
+          child: Text(
+            isEs ? 'Olvidé mi contraseña' : 'Esqueci minha senha',
+            style: const TextStyle(
+              color: _green,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileAccountTopBar extends StatelessWidget {
+  final bool dark;
+  final String title;
+  final VoidCallback onBack;
+
+  const _ProfileAccountTopBar({
+    required this.dark,
+    required this.title,
+    required this.onBack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final topPad = MediaQuery.of(context).padding.top;
+    final glassColor = dark
+        ? const Color(0xFF252930).withValues(alpha: 0.70)
+        : Colors.white.withValues(alpha: 0.70);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final text = dark ? Colors.white : const Color(0xFF05070A);
+
+    return SizedBox(
+      height: topPad + 48,
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+          child: Container(
+            decoration: BoxDecoration(
+              color: glassColor,
+              border: Border(
+                bottom: BorderSide(color: border, width: 0.7),
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(top: topPad),
+              child: SizedBox(
+                height: 48,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      IgnorePointer(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 48),
+                          child: Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: text,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: onBack,
+                          child: SizedBox(
+                            width: 36,
+                            height: 36,
+                            child: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 20,
+                              color: text,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-// ── Campo de texto interno do sheet de perfil ─────────────────────────────────
-class _SheetField extends StatelessWidget {
-  final String label;
+class _ProfileAccountSection extends StatelessWidget {
+  final bool dark;
+  final String title;
+  final String subtitle;
+  final List<Widget> children;
+
+  const _ProfileAccountSection({
+    required this.dark,
+    required this.title,
+    required this.subtitle,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final divider = (dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC))
+        .withValues(alpha: 0.62);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(2, 14, 2, 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: primary,
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.12,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            subtitle,
+            style: TextStyle(
+              color: secondary,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w500,
+              height: 1.35,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...children,
+          const SizedBox(height: 16),
+          Container(
+            height: 0.7,
+            color: divider,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileAccountField extends StatelessWidget {
+  // MEDCASES_GLOBAL_DARK_THEME_SECOND_BRAND_V2_B_R1_PROFILE
   final TextEditingController controller;
+  final String label;
   final IconData icon;
   final bool dark;
+  final bool obscureText;
   final TextInputAction textInputAction;
+  final Widget? suffix;
   final ValueChanged<String>? onSubmitted;
-  const _SheetField({
-    required this.label,
+
+  const _ProfileAccountField({
     required this.controller,
+    required this.label,
     required this.icon,
     required this.dark,
+    this.obscureText = false,
     this.textInputAction = TextInputAction.next,
+    this.suffix,
     this.onSubmitted,
   });
 
   @override
   Widget build(BuildContext context) {
-    final fillColor = dark ? const Color(0xFF252930) : const Color(0xFFF9F9F9);
-    final textColor = dark ? Colors.white : const Color(0xFF0F1116);
-    final hintColor = dark ? Colors.white38 : const Color(0xFFAAAAAA);
-    final borderColor =
-        dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB);
+    final fill = dark ? const Color(0xFF181D25) : const Color(0xFFFFFFFF);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
 
     return TextField(
       controller: controller,
+      obscureText: obscureText,
       textInputAction: textInputAction,
-      enableSuggestions: false,
-      autocorrect: false,
-      spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       onSubmitted: onSubmitted,
+      autocorrect: !obscureText,
+      enableSuggestions: !obscureText,
+      cursorColor: const Color(0xFF10B981),
       style: TextStyle(
-          fontSize: 14, fontWeight: FontWeight.w600, color: textColor),
+        color: primary,
+        fontSize: 12.5,
+        fontWeight: FontWeight.w500,
+      ),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-            fontSize: 12, color: hintColor, fontWeight: FontWeight.w600),
-        prefixIcon: Icon(icon, size: 18, color: const Color(0xFFC5A365)),
+          color: secondary,
+          fontSize: 11.5,
+        ),
+        prefixIcon: Icon(
+          icon,
+          size: 18,
+          color: secondary,
+        ),
+        suffixIcon: suffix,
         filled: true,
-        fillColor: fillColor,
+        fillColor: fill,
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 11,
+        ),
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
+        ),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: borderColor)),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: border.withValues(alpha: 0.42),
+            width: 0.55,
+          ),
+        ),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Color(0xFFC5A365), width: 1.5)),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: Color(0xFF10B981),
+            width: 1.0,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileAccountButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool loading;
+  final VoidCallback? onTap;
+
+  const _ProfileAccountButton({
+    required this.label,
+    required this.icon,
+    required this.loading,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: FilledButton.icon(
+        onPressed: onTap,
+        style: FilledButton.styleFrom(
+          backgroundColor: const Color(0xFF0D6B57),
+          foregroundColor: Colors.white,
+          disabledBackgroundColor:
+              const Color(0xFF0D6B57).withValues(alpha: 0.45),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: 0,
+        ),
+        icon: loading
+            ? const SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: Colors.white),
+              )
+            : Icon(icon, size: 17),
+        label: Text(
+          label,
+          style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfilePhotoAction extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool dark;
+  final bool destructive;
+  final VoidCallback onTap;
+
+  const _ProfilePhotoAction({
+    required this.label,
+    required this.icon,
+    required this.dark,
+    required this.onTap,
+    this.destructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color =
+        destructive ? const Color(0xFFEF4444) : const Color(0xFF0B8A72);
+
+    return TextButton.icon(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        foregroundColor: color,
+        minimumSize: const Size(0, 34),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 9,
+          vertical: 5,
+        ),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(9),
+        ),
+      ),
+      icon: Icon(
+        icon,
+        size: 15,
+        color: color,
+      ),
+      label: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 11.5,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfilePasswordToggle extends StatelessWidget {
+  final bool visible;
+  final bool dark;
+  final VoidCallback onTap;
+
+  const _ProfilePasswordToggle({
+    required this.visible,
+    required this.dark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    return IconButton(
+      onPressed: onTap,
+      icon: Icon(
+        visible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+        size: 18,
+        color: color,
+      ),
+    );
+  }
+}
+
+class _ProfileReadOnlyRow extends StatelessWidget {
+  final bool dark;
+  final String label;
+  final String value;
+
+  const _ProfileReadOnlyRow({
+    required this.dark,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fill = dark ? const Color(0xFF181D25) : const Color(0xFFF8FAFC);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 10,
+      ),
+      decoration: BoxDecoration(
+        color: fill,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: border.withValues(alpha: 0.38),
+          width: 0.55,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.alternate_email_rounded,
+            size: 17,
+            color: secondary,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: secondary,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: TextStyle(
+                    color: primary,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -6920,427 +8128,21 @@ class _AppUpdateDialog extends StatelessWidget {
 }
 
 // ── Bottom Sheet de Feedback ──────────────────────────────────────────────────
-class _FeedbackSheet extends StatefulWidget {
+// MEDCASES_SUPPORT_TICKET_FOUNDATION_V2_B_R1
+class _FeedbackSheet extends StatelessWidget {
+  const _FeedbackSheet({
+    required this.p,
+    required this.dark,
+  });
+
   final AppProvider p;
   final bool dark;
-  const _FeedbackSheet({required this.p, required this.dark});
-  @override
-  State<_FeedbackSheet> createState() => _FeedbackSheetState();
-}
-
-class _FeedbackSheetState extends State<_FeedbackSheet> {
-  final _msgCtrl = TextEditingController();
-  int _rating = 0;
-  String _category = '';
-  bool _sending = false;
-  bool _sent = false;
-  String? _error;
-
-  static const _destEmail = 'medcasespro@gmail.com';
-  bool get _isEs => widget.p.lang == 'es';
-
-  final List<Map<String, String>> _categoriesPt = const [
-    {'icon': '🆘', 'label': 'Suporte / Ajuda'},
-    {'icon': '🐛', 'label': 'Erro no app'},
-    {'icon': '💡', 'label': 'Sugestão'},
-    {'icon': '💊', 'label': 'Fármaco/Protocolo'},
-    {'icon': '💳', 'label': 'Assinatura / Conta'},
-    {'icon': '⭐', 'label': 'Elogio'},
-    {'icon': '❓', 'label': 'Outro'},
-  ];
-  final List<Map<String, String>> _categoriesEs = const [
-    {'icon': '🆘', 'label': 'Soporte / Ayuda'},
-    {'icon': '🐛', 'label': 'Error en la app'},
-    {'icon': '💡', 'label': 'Sugerencia'},
-    {'icon': '💊', 'label': 'Fármaco/Protocolo'},
-    {'icon': '💳', 'label': 'Suscripción / Cuenta'},
-    {'icon': '⭐', 'label': 'Elogio'},
-    {'icon': '❓', 'label': 'Otro'},
-  ];
-
-  List<Map<String, String>> get _categories =>
-      _isEs ? _categoriesEs : _categoriesPt;
-
-  @override
-  void initState() {
-    super.initState();
-    _category = _isEs ? 'Soporte / Ayuda' : 'Suporte / Ajuda';
-  }
-
-  @override
-  void dispose() {
-    _msgCtrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _send() async {
-    final msg = _msgCtrl.text.trim();
-    if (msg.isEmpty) {
-      setState(() => _error = _isEs
-          ? 'Escribe tu mensaje antes de enviar.'
-          : 'Escreva sua mensagem antes de enviar.');
-      return;
-    }
-    setState(() {
-      _sending = true;
-      _error = null;
-    });
-    try {
-      final userName =
-          widget.p.userName.isNotEmpty ? widget.p.userName : 'Usuário';
-      final userEmail =
-          widget.p.userEmail.isNotEmpty ? widget.p.userEmail : 'sem-email';
-      final stars =
-          _rating > 0 ? '${'⭐' * _rating} ($_rating/5)' : 'Não avaliado';
-      final subject =
-          Uri.encodeComponent('[MedCases Feedback] $_category — $userName');
-      final body = Uri.encodeComponent(
-        '━━━━━━━━━━━━━━━━━━━━━━━\n'
-        'FEEDBACK & SUPORTE — MedCases Pro\n'
-        '━━━━━━━━━━━━━━━━━━━━━━━\n\n'
-        '👤 Usuário: $userName\n'
-        '📧 E-mail: $userEmail\n'
-        '🏷️ Categoria: $_category\n'
-        '⭐ Avaliação: $stars\n\n'
-        '💬 Mensagem:\n$msg\n\n'
-        '━━━━━━━━━━━━━━━━━━━━━━━\n'
-        'Enviado pelo app MedCases Pro',
-      );
-      final uri = Uri.parse('mailto:$_destEmail?subject=$subject&body=$body');
-      if (!await launchUrl(uri)) {
-        final fallback = Uri(
-          scheme: 'mailto',
-          path: _destEmail,
-          query: 'subject=[MedCases] $_category&body=$msg',
-        );
-        if (!await launchUrl(fallback)) {
-          throw Exception('Não foi possível abrir o app de e-mail.');
-        }
-      }
-      setState(() {
-        _sent = true;
-        _sending = false;
-      });
-    } catch (e) {
-      setState(() {
-        _sending = false;
-        _error = _isEs
-            ? 'No se pudo abrir el cliente de correo. Intente de nuevo.'
-            : 'Não foi possível abrir o app de e-mail. Tente novamente.';
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final dark = widget.dark;
-    final bg = dark ? const Color(0xFF1C1C1E) : Colors.white;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subCol = dark ? const Color(0xFF8E8E93) : const Color(0xFF6B7280);
-    final surfCol = dark ? const Color(0xFF2C2C2E) : const Color(0xFFF3F4F6);
-
-    if (_sent) {
-      return _SuccessView(
-        dark: dark,
-        isEs: _isEs,
-        onClose: () => Navigator.of(context).pop(),
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-        left: 20,
-        right: 20,
-        top: 0,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle bar
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 20),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color:
-                      dark ? const Color(0xFF48484A) : const Color(0xFFD1D5DB),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-
-            // Título + botão fechar
-            Row(children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF7C3AED).withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.support_agent_rounded,
-                    color: Color(0xFF7C3AED), size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: Text(
-                _isEs ? 'Feedback y Soporte' : 'Feedback e Suporte',
-                style: TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.w800, color: textCol),
-              )),
-              IconButton(
-                icon: Icon(Icons.close_rounded, size: 22, color: subCol),
-                onPressed: () => Navigator.pop(context),
-                padding: const EdgeInsets.all(8),
-                visualDensity: VisualDensity.compact,
-              ),
-            ]),
-            const SizedBox(height: 4),
-            Text(
-              _isEs
-                  ? 'Feedback, problemas, sugerencias o cualquier duda — estamos aquí.'
-                  : 'Feedback, problemas, sugestões ou qualquer dúvida — estamos aqui.',
-              style: TextStyle(fontSize: 13, color: subCol),
-            ),
-            const SizedBox(height: 24),
-
-            // Avaliação por estrelas
-            Text(
-              _isEs
-                  ? 'Evaluación'
-                  : 'Avaliação', // BUILD 334-FORENSE: hardcode PT corrigido
-              style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: List.generate(5, (i) {
-                final filled = i < _rating;
-                return GestureDetector(
-                  onTap: () => setState(() => _rating = i + 1),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: Icon(
-                      filled ? Icons.star_rounded : Icons.star_outline_rounded,
-                      color: filled
-                          ? const Color(0xFFFBBF24)
-                          : (dark
-                              ? const Color(0xFF48484A)
-                              : const Color(0xFFD1D5DB)),
-                      size: 34,
-                    ),
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 20),
-
-            // Categoria
-            Text(
-              _isEs ? 'Categoría' : 'Categoria',
-              style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _categories.map((cat) {
-                final selected = _category == cat['label'];
-                return GestureDetector(
-                  onTap: () => setState(() => _category = cat['label']!),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: selected
-                          ? const Color(0xFF7C3AED).withOpacity(0.12)
-                          : surfCol,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: selected
-                            ? const Color(0xFF7C3AED)
-                            : Colors.transparent,
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Text(
-                      '${cat['icon']}  ${cat['label']}',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight:
-                            selected ? FontWeight.w700 : FontWeight.w500,
-                        color: selected ? const Color(0xFF7C3AED) : textCol,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-
-            // Mensagem
-            Text(
-              _isEs ? 'Mensaje' : 'Mensagem',
-              style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700, color: textCol),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _msgCtrl,
-              maxLines: 4,
-              maxLength: 500,
-              style: TextStyle(fontSize: 14, color: textCol),
-              decoration: InputDecoration(
-                hintText: _isEs
-                    ? 'Describe tu problema, sugerencia o lo que necesitas...'
-                    : 'Descreva seu problema, sugestão ou o que precisar...',
-                hintStyle: TextStyle(color: subCol, fontSize: 13),
-                filled: true,
-                fillColor: surfCol,
-                counterStyle: TextStyle(color: subCol, fontSize: 11),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      const BorderSide(color: Color(0xFF7C3AED), width: 1.5),
-                ),
-                contentPadding: const EdgeInsets.all(14),
-              ),
-            ),
-
-            // Erro
-            if (_error != null) ...[
-              const SizedBox(height: 8),
-              Row(children: [
-                const Icon(Icons.error_outline_rounded,
-                    size: 14, color: Color(0xFFEF4444)),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(_error!,
-                      style: const TextStyle(
-                          fontSize: 12, color: Color(0xFFEF4444))),
-                ),
-              ]),
-            ],
-
-            const SizedBox(height: 20),
-
-            // Site link — BUILD 323 MANDATO 2: in-app WebView
-            GestureDetector(
-              onTap: () => openAcademicSourceSecurely(
-                  context,
-                  _isEs
-                      ? 'MedCases Pro — Sitio Web'
-                      : 'MedCases Pro — Site Oficial',
-                  _kSiteUrl),
-              child: Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                decoration: BoxDecoration(
-                  color: surfCol,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: dark
-                          ? const Color(0xFF48484A)
-                          : const Color(0xFFD1D5DB)),
-                ),
-                child: Row(children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF7C3AED).withOpacity(0.10),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.language_outlined,
-                        size: 16, color: Color(0xFF7C3AED)),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _isEs ? 'SITIO WEB' : 'SITE',
-                        style: const TextStyle(
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF7C3AED),
-                            letterSpacing: 0.9),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        'promedcases.com',
-                        style: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w600,
-                            color: textCol),
-                      ),
-                    ],
-                  )),
-                  Icon(Icons.open_in_new_rounded, size: 16, color: subCol),
-                ]),
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // Botão enviar
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _sending ? null : _send,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7C3AED),
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor:
-                      const Color(0xFF7C3AED).withOpacity(0.5),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
-                  elevation: 0,
-                ),
-                child: _sending
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                            color: Colors.white, strokeWidth: 2),
-                      )
-                    : Text(
-                        _isEs
-                            ? 'Abrir correo para enviar'
-                            : 'Abrir e-mail para enviar', // BUILD 334-FORENSE
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w700),
-                      ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: Text(
-                _isEs
-                    ? 'Se abrirá tu app de correo con el mensaje listo. Respondemos en hasta 48h.'
-                    : 'Seu app de e-mail abrirá com a mensagem pronta. Respondemos em até 48h.',
-                style: TextStyle(fontSize: 11, color: subCol),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return SupportTicketScreen(
+      p: p,
+      dark: dark,
     );
   }
 }
@@ -7387,7 +8189,7 @@ class _SuccessView extends StatelessWidget {
           // Ícone de sucesso
           Container(
             width: 72,
-            height: 72,
+            height: 71,
             decoration: BoxDecoration(
               color: const Color(0xFF7C3AED).withOpacity(0.12),
               shape: BoxShape.circle,
@@ -7448,39 +8250,668 @@ class _SuccessView extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // ABRE O PAINEL DE NOTAS COMO BOTTOM SHEET (igual a Recentes / Favoritos)
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES NOTAS + ÁUDIO — FULLSCREEN WORKSPACE V1
+// Home NOTAS -> MainShell tab 9. Reuses the productive Notes owner.
+// Audio remains fail-closed: no real-patient remote callsite is wired here.
+// ─────────────────────────────────────────────────────────────────────────────
+class _NotesAudioWorkspace extends StatefulWidget {
+  const _NotesAudioWorkspace({required this.onBack});
+
+  final VoidCallback onBack;
+
+  @override
+  State<_NotesAudioWorkspace> createState() => _NotesAudioWorkspaceState();
+}
+
+class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
+  int _section = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.watch<AppProvider>();
+    final dark = p.darkMode;
+    final isEs = p.lang == 'es';
+
+    final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final subnav = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
+    final text = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final sub = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    const accent = Color(0xFF0D6B57);
+    final topPad =
+        View.of(context).padding.top / View.of(context).devicePixelRatio;
+    final topbarGlass = dark
+        ? const Color(0xFF252930).withValues(alpha: 0.70)
+        : Colors.white.withValues(alpha: 0.70);
+
+    return Material(
+      color: page,
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: Column(
+          children: [
+            SizedBox(
+              height: topPad + 48,
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: topbarGlass,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: dark
+                              ? const Color(0xFF374151)
+                              : const Color(0xFFE2E7EC),
+                          width: 0.7,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: topPad),
+                      child: SizedBox(
+                        height: 48,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Text(
+                                isEs ? 'Área de Estudio' : 'Área de Estudos',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: dark
+                                      ? Colors.white
+                                      : const Color(0xFF05070A),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: widget.onBack,
+                                  child: SizedBox(
+                                    width: 36,
+                                    height: 36,
+                                    child: Icon(
+                                      Icons.arrow_back_ios_new_rounded,
+                                      size: 20,
+                                      color: dark
+                                          ? Colors.white
+                                          : const Color(0xFF05070A),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              height: 40,
+              color: subnav,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  _NotesAudioWorkspaceTab(
+                    label: 'Notas',
+                    icon: Icons.edit_note_rounded,
+                    selected: _section == 0,
+                    accent: accent,
+                    text: text,
+                    sub: sub,
+                    border: border,
+                    showDivider: true,
+                    onTap: () => setState(() => _section = 0),
+                  ),
+                  _NotesAudioWorkspaceTab(
+                    label: isEs ? 'Estudio' : 'Estudos',
+                    icon: Icons.auto_stories_outlined,
+                    selected: _section == 1,
+                    accent: accent,
+                    text: text,
+                    sub: sub,
+                    border: border,
+                    showDivider: true,
+                    onTap: () => setState(() => _section = 1),
+                  ),
+                  _NotesAudioWorkspaceTab(
+                    label: isEs ? 'Historial' : 'Histórico',
+                    icon: Icons.history_rounded,
+                    selected: _section == 2,
+                    accent: accent,
+                    text: text,
+                    sub: sub,
+                    border: border,
+                    showDivider: false,
+                    onTap: () => setState(() => _section = 2),
+                  ),
+                ],
+              ),
+            ),
+            Container(height: 0.7, color: border),
+            Expanded(
+              child: IndexedStack(
+                index: _section,
+                children: [
+                  _NotesPanelContent(
+                    onClose: widget.onBack,
+                    scrollController: PrimaryScrollController.maybeOf(context),
+                    workspaceMode: true,
+                  ),
+                  StudyWorkspaceScreen(isEs: isEs),
+                  StudyHistoryScreen(isEs: isEs),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NotesAudioWorkspaceTab extends StatelessWidget {
+  const _NotesAudioWorkspaceTab({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.accent,
+    required this.text,
+    required this.sub,
+    required this.border,
+    required this.showDivider,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final Color accent;
+  final Color text;
+  final Color sub;
+  final Color border;
+  final bool showDivider;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final activeBackground = Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xFF0D6B57).withValues(alpha: 0.10)
+        : const Color(0xFF0D6B57).withValues(alpha: 0.08);
+
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 160),
+          height: 40,
+          decoration: BoxDecoration(
+            color: selected ? activeBackground : Colors.transparent,
+          ),
+          child: Stack(
+            children: [
+              Center(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: selected ? text : sub,
+                    fontSize: 12,
+                    height: 1,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.05,
+                  ),
+                ),
+              ),
+              if (selected)
+                Positioned(
+                  left: 12,
+                  right: 12,
+                  bottom: 9,
+                  child: Container(
+                    height: 2,
+                    color: accent,
+                  ),
+                ),
+              if (showDivider)
+                Positioned(
+                  top: 10,
+                  bottom: 10,
+                  right: 0,
+                  child: Container(
+                    width: 0.7,
+                    color: border,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NotesAudioWorkspaceAudio extends StatelessWidget {
+  const _NotesAudioWorkspaceAudio({
+    required this.isEs,
+    required this.page,
+    required this.surface,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+  });
+
+  final bool isEs;
+  final Color page;
+  final Color surface;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+
+  Future<void> _requestPurposeSpecificConsent(
+    BuildContext context, {
+    required String mode,
+    required bool longForm,
+  }) async {
+    final accepted = await ClinicalLongFormRemoteAudioConsentUi.showIfNeeded(
+      context,
+      language: isEs ? 'es' : 'pt',
+    );
+
+    if (!context.mounted || !accepted) {
+      return;
+    }
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        settings: RouteSettings(name: 'notes_audio_local:$mode'),
+        builder: (_) => longForm
+            ? NotesAudioLongFormLocalRuntimeScreen(isEs: isEs)
+            : NotesAudioConsultationLocalRuntimeScreen(isEs: isEs),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: page,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(1, 1, 1, 124),
+        children: [
+          _NotesAudioHero(
+            isEs: isEs,
+            surface: surface,
+            border: border,
+            text: text,
+            sub: sub,
+            accent: accent,
+          ),
+          const SizedBox(height: 8),
+          _NotesAudioModeCard(
+            icon: Icons.medical_services_outlined,
+            title: 'Consulta clínica',
+            subtitle: isEs
+                ? 'Captura de voz para transcripción y organización de la historia clínica.'
+                : 'Captura de voz para transcrição e organização da história clínica.',
+            badge: 'Consulta',
+            lockedLabel: isEs ? 'Local y privado' : 'Local e privado',
+            onTap: () => _requestPurposeSpecificConsent(
+              context,
+              mode: 'Consulta clínica',
+              longForm: false,
+            ),
+            surface: surface,
+            border: border,
+            text: text,
+            sub: sub,
+            accent: accent,
+          ),
+          const SizedBox(height: 6),
+          _NotesAudioModeCard(
+            icon: Icons.school_outlined,
+            title: isEs ? 'Clase / audio largo' : 'Aula / áudio longo',
+            subtitle: isEs
+                ? 'Grabación segmentada, transcripción cronológica, revisión y borrado del audio tras confirmar.'
+                : 'Gravação segmentada, transcrição cronológica, revisão e exclusão do áudio após confirmar.',
+            badge: isEs ? 'Modo estudio' : 'Modo estudo',
+            lockedLabel: isEs ? 'Local y privado' : 'Local e privado',
+            onTap: () => _requestPurposeSpecificConsent(
+              context,
+              mode: isEs ? 'Clase / audio largo' : 'Aula / áudio longo',
+              longForm: true,
+            ),
+            surface: surface,
+            border: border,
+            text: text,
+            sub: sub,
+            accent: accent,
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _NotesAudioHero extends StatelessWidget {
+  const _NotesAudioHero({
+    required this.isEs,
+    required this.surface,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+  });
+
+  final bool isEs;
+  final Color surface;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 13, 14, 13),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: null,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.graphic_eq_rounded, size: 23, color: accent),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isEs ? 'Audio y transcripción' : 'Áudio e transcrição',
+                        style: TextStyle(
+                          color: text,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -0.1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  isEs
+                      ? 'Un espacio para consulta, clases y transcripciones con revisión antes de guardar.'
+                      : 'Um espaço para consulta, aulas e transcrições com revisão antes de salvar.',
+                  style: TextStyle(
+                    color: sub,
+                    fontSize: 10.5,
+                    height: 1.3,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NotesAudioModeCard extends StatelessWidget {
+  const _NotesAudioModeCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.badge,
+    required this.lockedLabel,
+    required this.onTap,
+    required this.surface,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String badge;
+  final String lockedLabel;
+  final VoidCallback onTap;
+  final Color surface;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 11, 10, 11),
+        decoration: BoxDecoration(
+          color: surface,
+          borderRadius: BorderRadius.circular(8),
+          border: null,
+        ),
+        child: Row(
+          children: [
+            SizedBox(width: 32, child: Icon(icon, size: 19, color: accent)),
+            const SizedBox(width: 7),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: text,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: sub,
+                      fontSize: 10.5,
+                      height: 1.3,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: accent.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(99),
+                        ),
+                        child: Text(
+                          badge,
+                          style: TextStyle(
+                            color: accent,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: Text(
+                          lockedLabel,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: sub,
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded, size: 18, color: sub),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NotesAudioWorkspaceHistory extends StatelessWidget {
+  const _NotesAudioWorkspaceHistory({
+    required this.isEs,
+    required this.page,
+    required this.surface,
+    required this.border,
+    required this.text,
+    required this.sub,
+    required this.accent,
+  });
+
+  final bool isEs;
+  final Color page;
+  final Color surface;
+  final Color border;
+  final Color text;
+  final Color sub;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: page,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(1, 1, 1, 124),
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(8),
+              border: null,
+            ),
+            child: Column(
+              children: [
+                Icon(Icons.history_rounded, size: 30, color: accent),
+                const SizedBox(height: 9),
+                Text(
+                  isEs
+                      ? 'Sin transcripciones confirmadas'
+                      : 'Nenhuma transcrição confirmada',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: text,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  isEs
+                      ? 'Las sesiones aparecerán aquí después de la revisión y confirmación del usuario.'
+                      : 'As sessões aparecerão aqui depois da revisão e confirmação do usuário.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: sub,
+                    fontSize: 10.5,
+                    height: 1.35,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 void showNotesSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => DraggableScrollableSheet(
-      initialChildSize: 0.82,
-      minChildSize: 0.50,
+      initialChildSize: 0.52,
+      minChildSize: 0.36,
       maxChildSize: 0.92,
       expand: false,
       builder: (ctx, scrollController) {
         final dark = Theme.of(ctx).brightness == Brightness.dark;
+        final panelBg =
+            dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+        final surfaceStrong =
+            dark ? const Color(0xFF2D3340) : const Color(0xFFE9EDF2);
+        final border = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
         return Container(
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: dark ? const Color(0xFF161616) : const Color(0xFFFFFFFF),
+            color: panelBg,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            border: Border.all(color: border, width: 0.8),
           ),
           child: Column(children: [
-            // Pill handle
             Container(
-              margin: const EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.fromLTRB(0, 9, 0, 5),
               width: 38,
               height: 4,
               decoration: BoxDecoration(
-                color: dark ? Colors.white24 : Colors.black26,
-                borderRadius: BorderRadius.circular(4),
+                color: surfaceStrong,
+                borderRadius: BorderRadius.circular(99),
               ),
             ),
             Expanded(
-                child: _NotesPanelContent(
-              onClose: () => Navigator.pop(ctx),
-              scrollController: scrollController,
-            )),
+              child: _NotesPanelContent(
+                onClose: () => Navigator.pop(ctx),
+                scrollController: scrollController,
+              ),
+            ),
           ]),
         );
       },
@@ -7580,7 +9011,12 @@ class _SideNotesPanelState extends State<_SideNotesPanel>
 class _NotesPanelContent extends StatefulWidget {
   final VoidCallback onClose;
   final ScrollController? scrollController;
-  const _NotesPanelContent({required this.onClose, this.scrollController});
+  final bool workspaceMode;
+  const _NotesPanelContent({
+    required this.onClose,
+    this.scrollController,
+    this.workspaceMode = false,
+  });
 
   @override
   State<_NotesPanelContent> createState() => _NotesPanelContentState();
@@ -7653,206 +9089,244 @@ class _NotesPanelContentState extends State<_NotesPanelContent> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          NoteEditorSheet(uid: uid, note: note, dark: dark, lang: lang),
+      builder: (_) => NoteEditorSheet(
+        uid: uid,
+        note: note,
+        dark: dark,
+        lang: lang,
+        onDelete: note == null || (note['id'] as String? ?? '').isEmpty
+            ? null
+            : () => _deleteNote(note['id'] as String),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // NOTES V3.0 — PAINEL MINIMALISTA SEM CARDS ANINHADOS
     final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    final panelBg = dark ? const Color(0xFF161616) : const Color(0xFFFFFFFF);
-    final searchBg = dark ? const Color(0xFF222222) : Colors.white;
-    final borderCol = dark ? const Color(0xFF2D3340) : const Color(0xFFE0E0E0);
-    final textCol = dark ? Colors.white : const Color(0xFF0F1116);
-    final subCol = dark ? Colors.white54 : Colors.black45;
+    final panelBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
 
     return Material(
       color: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-          color: panelBg,
+      child: ColoredBox(
+        color: panelBg,
+        child: Column(
+          children: [
+            if (!widget.workspaceMode)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 4, 14, 10),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: widget.onClose,
+                      tooltip: isEs ? 'Volver' : 'Voltar',
+                      icon: const Icon(Icons.chevron_left_rounded),
+                      iconSize: 25,
+                      color: textCol,
+                      padding: const EdgeInsets.all(8),
+                      constraints: const BoxConstraints(
+                        minWidth: 44,
+                        minHeight: 44,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isEs ? 'Mis Anotaciones' : 'Minhas Anotações',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: textCol,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            _allNotes.isEmpty
+                                ? (isEs
+                                    ? 'Sin anotaciones'
+                                    : 'Nenhuma anotação')
+                                : '${_allNotes.length} ${isEs ? 'anotación${_allNotes.length != 1 ? "es" : ""}' : 'anotaç${_allNotes.length != 1 ? "ões" : "ão"}'}',
+                            style: TextStyle(
+                              color: subCol,
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton.icon(
+                      onPressed: () => _openEditor(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: accent,
+                        backgroundColor: Colors.transparent,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 10,
+                        ),
+                        minimumSize: const Size(44, 44),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      icon: const Icon(Icons.add_rounded, size: 19),
+                      label: Text(
+                        isEs ? 'Nueva' : 'Nova',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            // MEDCASES_NOTES_SEARCH_BAR_VISUAL_V1_R1
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: SizedBox(
+                height: 40,
+                child: TextField(
+                  controller: _searchCtrl,
+                  style: TextStyle(
+                    color: textCol,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  decoration: InputDecoration(
+                    hintText:
+                        isEs ? 'Buscar anotaciones...' : 'Buscar anotações...',
+                    hintStyle: TextStyle(
+                      color: subCol,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      size: 16,
+                      color: subCol,
+                    ),
+                    prefixIconConstraints: const BoxConstraints(
+                      minWidth: 40,
+                      minHeight: 40,
+                    ),
+                    suffixIcon: _search.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              _searchCtrl.clear();
+                              setState(() => _search = '');
+                            },
+                            tooltip: isEs ? 'Limpiar' : 'Limpar',
+                            visualDensity: VisualDensity.compact,
+                            icon: Icon(
+                              Icons.close_rounded,
+                              size: 16,
+                              color: subCol,
+                            ),
+                          )
+                        : null,
+                    filled: true,
+                    fillColor: surface,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.fromLTRB(0, 10, 8, 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: borderCol,
+                        width: 0.7,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: borderCol,
+                        width: 0.7,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: accent,
+                        width: 1,
+                      ),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: borderCol,
+                        width: 0.7,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() => _search = value.trim().toLowerCase());
+                  },
+                ),
+              ),
+            ),
+            Container(height: 0.7, color: borderCol),
+            Expanded(
+              child: _loading
+                  ? Center(
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          color: accent,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    )
+                  : _filtered.isEmpty
+                      ? _PanelEmptyState(
+                          isEs: isEs,
+                          dark: dark,
+                          onNew: () => _openEditor(),
+                        )
+                      : ListView.separated(
+                          controller: widget.scrollController,
+                          padding: EdgeInsets.fromLTRB(
+                            16,
+                            4,
+                            16,
+                            widget.workspaceMode ? 112 : 18,
+                          ),
+                          itemCount: _filtered.length,
+                          separatorBuilder: (_, __) => Divider(
+                            height: 1,
+                            thickness: 0.7,
+                            color: borderCol,
+                          ),
+                          itemBuilder: (ctx, i) {
+                            final note = _filtered[i];
+                            return _PanelNoteCard(
+                              note: note,
+                              dark: dark,
+                              isEs: isEs,
+                              onTap: () => _openEditor(note: note),
+                              onDelete: () => _deleteNote(
+                                note['id'] as String? ?? '',
+                              ),
+                            );
+                          },
+                        ),
+            ),
+          ],
         ),
-        child: Column(children: [
-          // ── Header do painel ───────────────────────────────────────────────
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: dark
-                    ? [
-                        const Color(0xFF0F1116),
-                        const Color(0xFF2D3340),
-                        const Color(0xFF1F3A28)
-                      ]
-                    : [
-                        const Color(0xFF0F1116),
-                        const Color(0xFF1B3D2A),
-                        const Color(0xFF10B981)
-                      ],
-              ),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        // Botão fechar painel
-                        GestureDetector(
-                          onTap: widget.onClose,
-                          child: Container(
-                            width: 34,
-                            height: 34,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white.withOpacity(0.10),
-                            ),
-                            child: const Icon(Icons.chevron_left_rounded,
-                                color: Colors.white, size: 20),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  isEs ? 'Mis Anotaciones' : 'Minhas Anotações',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: -0.3,
-                                  ),
-                                ),
-                                Text(
-                                  _allNotes.isEmpty
-                                      ? (isEs
-                                          ? 'Sin anotaciones'
-                                          : 'Nenhuma anotação')
-                                      : '${_allNotes.length} ${isEs ? 'anotación${_allNotes.length != 1 ? "es" : ""}' : 'anotaç${_allNotes.length != 1 ? "ões" : "ão"}'}',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.white.withOpacity(0.55),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ]),
-                        ),
-                        // Botão nova nota
-                        GestureDetector(
-                          onTap: () => _openEditor(),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 7),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(9),
-                              color: const Color(0xFF10B981),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      const Color(0xFF10B981).withOpacity(0.45),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child:
-                                Row(mainAxisSize: MainAxisSize.min, children: [
-                              const Icon(Icons.add_rounded,
-                                  color: Colors.white, size: 15),
-                              const SizedBox(width: 4),
-                              Text(
-                                isEs ? 'Nueva' : 'Nova',
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ]),
-                          ),
-                        ),
-                      ]),
-                      const SizedBox(height: 12),
-                      // Busca
-                      Container(
-                        height: 38,
-                        decoration: BoxDecoration(
-                          color: searchBg,
-                          borderRadius: BorderRadius.circular(11),
-                          border: Border.all(color: borderCol, width: 0.8),
-                        ),
-                        child: Row(children: [
-                          const SizedBox(width: 10),
-                          Icon(Icons.search_rounded, size: 15, color: subCol),
-                          const SizedBox(width: 7),
-                          Expanded(
-                            child: TextField(
-                              controller: _searchCtrl,
-                              style: TextStyle(fontSize: 12, color: textCol),
-                              decoration: InputDecoration(
-                                hintText:
-                                    isEs ? 'Buscar...' : 'Buscar anotações...',
-                                hintStyle:
-                                    TextStyle(fontSize: 12, color: subCol),
-                                border: InputBorder.none,
-                                isDense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                            ),
-                          ),
-                          if (_search.isNotEmpty)
-                            GestureDetector(
-                              onTap: () => _searchCtrl.clear(),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 8),
-                                child: Icon(Icons.close_rounded,
-                                    size: 14, color: subCol),
-                              ),
-                            ),
-                        ]),
-                      ),
-                    ]),
-              ),
-            ),
-          ),
-
-          // ── Lista de notas ─────────────────────────────────────────────────
-          Expanded(
-            child: _loading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                        color: Color(0xFF10B981), strokeWidth: 2))
-                : _filtered.isEmpty
-                    ? _PanelEmptyState(
-                        isEs: isEs, dark: dark, onNew: () => _openEditor())
-                    : ListView.separated(
-                        controller: widget.scrollController,
-                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
-                        itemCount: _filtered.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 8),
-                        itemBuilder: (ctx, i) {
-                          final note = _filtered[i];
-                          return _PanelNoteCard(
-                            note: note,
-                            dark: dark,
-                            isEs: isEs,
-                            onTap: () => _openEditor(note: note),
-                            onDelete: () =>
-                                _deleteNote(note['id'] as String? ?? ''),
-                          );
-                        },
-                      ),
-          ),
-        ]),
       ),
     );
   }
@@ -7870,59 +9344,73 @@ class _PanelEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subCol = dark ? Colors.white30 : Colors.black26;
+    // NOTES V3.1 — ESTADO VAZIO MINIMALISTA
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
+
     return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Icon(Icons.edit_note_rounded,
-            size: 48,
-            color: dark
-                ? const Color(0xFF10B981).withOpacity(0.50)
-                : const Color(0xFF10B981).withOpacity(0.35)),
-        const SizedBox(height: 12),
-        Text(
-          isEs ? 'Sin anotaciones aún' : 'Nenhuma anotação ainda',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: dark ? Colors.white54 : Colors.black45,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          isEs ? 'Toca "Nueva" para comenzar' : 'Toque "Nova" para começar',
-          style: TextStyle(fontSize: 12, color: subCol),
-        ),
-        const SizedBox(height: 20),
-        GestureDetector(
-          onTap: onNew,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFF10B981),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF10B981).withOpacity(0.40),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.note_alt_outlined,
+              size: 30,
+              color: accent,
             ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.add_rounded, color: Colors.white, size: 16),
-              const SizedBox(width: 6),
-              Text(
+            const SizedBox(height: 10),
+            Text(
+              isEs ? 'Ninguna anotación' : 'Nenhuma anotação',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: textCol,
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              isEs
+                  ? 'Crea una nota para guardar información importante.'
+                  : 'Crie uma nota para guardar informações importantes.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: subCol,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w500,
+                height: 1.35,
+              ),
+            ),
+            const SizedBox(height: 14),
+            TextButton.icon(
+              onPressed: onNew,
+              style: TextButton.styleFrom(
+                foregroundColor: accent,
+                backgroundColor: Colors.transparent,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 10,
+                ),
+                minimumSize: const Size(44, 44),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              icon: const Icon(
+                Icons.add_rounded,
+                size: 18,
+              ),
+              label: Text(
                 isEs ? 'Nueva anotación' : 'Nova anotação',
                 style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-            ]),
-          ),
+            ),
+          ],
         ),
-      ]),
+      ),
     );
   }
 }
@@ -8009,142 +9497,158 @@ class _PanelNoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // NOTES V3.0 — ITEM MINIMALISTA COM MARCADOR SEMÂNTICO
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
+    final deleteCol = dark ? const Color(0xFFF28B82) : const Color(0xFFB42318);
+
     final hex = note['color'] as String? ?? '#FFFEF0';
     final nc = _panelColorFromHex(hex);
-    final cardBg = dark ? nc.dark : nc.light;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subCol = dark ? Colors.white54 : Colors.black45;
-    final title = note['title'] as String? ?? '';
-    final content = note['content'] as String? ?? '';
-    final dateStr = _formatDate(note['updatedAt'] ?? note['createdAt']);
+    final noteAccent = nc.border;
 
-    return GestureDetector(
+    final title = (note['title'] as String? ?? '').trim();
+    final content = (note['content'] as String? ?? '').trim();
+    final dateStr = _formatDate(
+      note['updatedAt'] ?? note['createdAt'],
+    );
+    final displayTitle =
+        title.isEmpty ? (isEs ? 'Sin título' : 'Sem título') : title;
+
+    return InkWell(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-        decoration: BoxDecoration(
-          color: cardBg,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: nc.border.withOpacity(0.70), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(dark ? 0.25 : 0.07),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(2, 10, 0, 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 3,
+              height: content.isEmpty ? 38 : 52,
+              decoration: BoxDecoration(
+                color: noteAccent,
+                borderRadius: BorderRadius.circular(99),
+              ),
+            ),
+            const SizedBox(width: 13),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    displayTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: textCol,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  if (content.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      content,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: subCol,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                  if (dateStr.isNotEmpty) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      dateStr,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: subCol,
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    backgroundColor: surface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    title: Text(
+                      isEs ? 'Eliminar nota' : 'Excluir anotação',
+                      style: TextStyle(
+                        color: textCol,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    content: Text(
+                      isEs
+                          ? '¿Eliminar esta nota?'
+                          : 'Deseja excluir esta anotação?',
+                      style: TextStyle(
+                        color: subCol,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          'Cancelar',
+                          style: TextStyle(
+                            color: subCol,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          onDelete();
+                        },
+                        child: Text(
+                          isEs ? 'Eliminar' : 'Excluir',
+                          style: TextStyle(
+                            color: deleteCol,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              visualDensity: VisualDensity.compact,
+              tooltip: isEs ? 'Eliminar' : 'Excluir',
+              icon: Icon(
+                Icons.delete_outline_rounded,
+                color: deleteCol,
+                size: 19,
+              ),
             ),
           ],
         ),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              if (title.isNotEmpty) ...[
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: textCol,
-                  ),
-                ),
-                const SizedBox(height: 3),
-              ],
-              if (content.isNotEmpty)
-                Text(
-                  content,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 11, color: subCol, height: 1.4),
-                ),
-              if (dateStr.isNotEmpty) ...[
-                const SizedBox(height: 5),
-                Text(
-                  dateStr,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: dark ? Colors.white30 : Colors.black26,
-                  ),
-                ),
-              ],
-            ]),
-          ),
-          // Botão deletar
-          GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  backgroundColor:
-                      dark ? const Color(0xFF252930) : Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
-                  title: Text(
-                    isEs ? 'Eliminar nota' : 'Excluir anotação',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: dark ? Colors.white : const Color(0xFF1A1D23),
-                    ),
-                  ),
-                  content: Text(
-                    isEs
-                        ? '¿Eliminar esta nota?'
-                        : 'Deseja excluir esta anotação?',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: dark ? Colors.white54 : Colors.black54,
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(isEs ? 'Cancelar' : 'Cancelar',
-                          style: const TextStyle(color: Colors.grey)),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        onDelete();
-                      },
-                      child: const Text('Excluir',
-                          style: TextStyle(
-                              color: Color(0xFFE53935),
-                              fontWeight: FontWeight.w700)),
-                    ),
-                  ],
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(left: 6, top: 2),
-              child: Icon(Icons.delete_outline_rounded,
-                  size: 17, color: dark ? Colors.white24 : Colors.black26),
-            ),
-          ),
-        ]),
       ),
     );
   }
 }
 
-// ── BUILD 327: Bloco offline unificado ────────────────────────────────────
-// Fusão do antigo _OfflineDrawerCard (switch Modo sin conexión) +
-// _CalcuOfflineStatusCard (versão da base, Actualizar, Limpiar cache).
-//
-// ESTRATÉGIA App Store:
-//   • Não exibe rótulo "Calculadora" — controles de atualização da base ficam
-//     discretamente integrados ao bloco "Modo sin conexión" já aprovado.
-//   • Não exibe contagem de arquivos ("37 arquivos em cache") nem tempo
-//     relativo ("Agora mismo") — remove evidências de download dinâmico.
-//   • Exibe apenas "Versão X" — string inócua que não levanta suspeitas.
-//
-// REATIVIDADE:
-//   • StatefulWidget escuta OfflineCalculatorCacheService.stateStream
-//     via StreamSubscription — localVersion atualiza em tempo real sem reiniciar.
-//   • Botões "Actualizar" e "Limpiar cache" disparam forceUpdate/clearCache
-//     e o estado muda reativamente via stateStream.
+// ── MEDCASES_OFFLINE_MINIMAL_CACHE_REFRESH_V1_R2 ─────────────────────────────────────────────
+// Contrato visual: somente Ativar/Desativar Offline + Limpar cache.
+// "Limpar cache" limpa/recria a base offline da Calculadora e solicita reload.
 class _OfflineDrawerCard extends StatefulWidget {
   final AppProvider p;
   final bool dark;
@@ -8155,136 +9659,56 @@ class _OfflineDrawerCard extends StatefulWidget {
 }
 
 class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
-  static const _kBlue = Color(0xFF1D4ED8);
-  static const _kBlueLt = Color(0xFFEFF6FF);
+  // MEDCASES_OFFLINE_MINIMAL_CACHE_REFRESH_V1_R2
+  bool _clearing = false;
 
-  /// Fallback build number shown when the local manifest has no version yet.
-  /// Kept in sync with pubspec.yaml version field (major.minor.patch+BUILD).
-  static const _kAppBuild = '1641';
-
-  // ── Estado reativo do serviço de cache offline ───────────────────────────
-  late CalcuCacheState _calcState;
-  StreamSubscription<CalcuCacheState>? _calcSub;
-
-  // ── Estado local dos botões (feedback assíncrono) ────────────────────────
-  bool _syncing = false; // true enquanto forceUpdate() está em andamento
-  bool _clearing = false; // true enquanto clearCache() está em andamento
-
-  @override
-  void initState() {
-    super.initState();
-    _calcState = OfflineCalculatorCacheService.instance.state;
-    _calcSub = OfflineCalculatorCacheService.instance.stateStream.listen((s) {
-      if (mounted) setState(() => _calcState = s);
-    });
-  }
-
-  @override
-  void dispose() {
-    _calcSub?.cancel();
-    super.dispose();
-  }
-
-  // ── Actualizar: sincronização assíncrona com feedback ────────────────────
-  Future<void> _doUpdate(BuildContext ctx, AppProvider p, bool isEs) async {
-    if (_syncing || _clearing) return;
-    setState(() => _syncing = true);
-    try {
-      // Dispara ambos os gatilhos em paralelo (AppProvider + CalcuService)
-      await Future.wait([
-        p.cacheAllDataForOffline(),
-        if (!kIsWeb) OfflineCalculatorCacheService.instance.forceUpdate(),
-      ]);
-      if (!mounted) return;
-      ScaffoldMessenger.of(ctx)
-        ..clearSnackBars()
-        ..showSnackBar(SnackBar(
-          content: Text(
-            isEs
-                ? '✅ Base de datos actualizada con éxito'
-                : '✅ Base de dados atualizada com sucesso',
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-          ),
-          backgroundColor: const Color(0xFF1D4ED8),
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ));
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(ctx)
-        ..clearSnackBars()
-        ..showSnackBar(SnackBar(
-          content: Text(
-            isEs ? '⚠️ Error al actualizar: $e' : '⚠️ Erro ao atualizar: $e',
-            style: const TextStyle(fontSize: 12),
-          ),
-          backgroundColor: const Color(0xFFB91C1C),
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 4),
-        ));
-    } finally {
-      if (mounted) setState(() => _syncing = false);
-    }
-  }
-
-  // ── Limpiar cache: limpeza assíncrona com feedback ───────────────────────
   Future<void> _doClear(BuildContext ctx, bool isEs) async {
-    if (_clearing || _syncing) return;
+    if (_clearing) return;
     setState(() => _clearing = true);
+
     try {
       if (!kIsWeb) {
         await OfflineCalculatorCacheService.instance.clearCache();
+        await OfflineCalculatorCacheService.instance.forceUpdate();
       }
+
+      CalculadoraScreen.requestCacheRefresh();
+
       if (!mounted) return;
       ScaffoldMessenger.of(ctx)
         ..clearSnackBars()
-        ..showSnackBar(SnackBar(
-          content: Text(
-            isEs
-                ? '🧹 Caché local limpiado correctamente'
-                : '🧹 Cache local limpo com sucesso',
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              isEs
+                  ? 'Caché de la calculadora borrada y actualizada'
+                  : 'Cache da calculadora limpo e atualizado',
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
+            backgroundColor: const Color(0xFF1D4ED8),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
           ),
-          backgroundColor: const Color(0xFF374151),
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ));
+        );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(ctx)
         ..clearSnackBars()
-        ..showSnackBar(SnackBar(
-          content: Text(
-            isEs ? '⚠️ Error al limpiar: $e' : '⚠️ Erro ao limpar: $e',
-            style: const TextStyle(fontSize: 12),
+        ..showSnackBar(
+          SnackBar(
+            content: Text(
+              isEs
+                  ? 'No se pudo actualizar la caché de la calculadora'
+                  : 'Não foi possível atualizar o cache da calculadora',
+            ),
+            backgroundColor: const Color(0xFFB91C1C),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 4),
           ),
-          backgroundColor: const Color(0xFFB91C1C),
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 4),
-        ));
+        );
     } finally {
       if (mounted) setState(() => _clearing = false);
     }
-  }
-
-  String _progressLabel(double prog, String lang) {
-    if (prog < 0.45)
-      return lang == 'es'
-          ? '📦 Guardando fármacos (501)…'
-          : '📦 Salvando fármacos (501)…';
-    if (prog < 0.75)
-      return lang == 'es'
-          ? '📋 Guardando protocolos…'
-          : '📋 Salvando protocolos…';
-    if (prog < 0.95)
-      return lang == 'es'
-          ? '🩺 Guardando casos clínicos…'
-          : '🩺 Salvando casos clínicos…';
-    return lang == 'es' ? '✅ Finalizando…' : '✅ Finalizando…';
   }
 
   @override
@@ -8294,358 +9718,48 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
     final isEs = p.lang == 'es';
     final offline = p.offlineMode;
     final caching = p.offlineCaching;
-    final progress = p.offlineProgress;
+    final textCol = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final subCol = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
 
-    // ── CalcuService: estado reativo ─────────────────────────────────────
-    final calcActive = _calcState.isActive; // baixando ou pausado
-    final calcVersion = _calcState.localVersion; // ex: "290" ou null
-
-    final cardBg = dark
-        ? (offline ? _kBlue.withOpacity(0.18) : const Color(0xFF1A2030))
-        : (offline ? _kBlueLt : Colors.white);
-    final cardBorder = offline
-        ? _kBlue.withOpacity(dark ? 0.5 : 0.35)
-        : (dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE8ECEF));
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: cardBg,
-          border: Border.all(color: cardBorder, width: 1.2),
+    return _DrawerBlock(
+      dividerColor: divider,
+      children: [
+        _DrawerRow(
+          icon: offline ? Icons.offline_bolt_rounded : Icons.cloud_off_outlined,
+          iconColor: const Color(0xFF1D4ED8),
+          title: isEs ? 'Modo sin conexión' : 'Modo offline',
+          dark: dark,
+          textCol: textCol,
+          subCol: subCol,
+          trailing: _OnOffToggle(value: offline),
+          onTap: () {
+            if (caching || _clearing) return;
+            p.setOfflineMode(!offline);
+          },
         ),
-        child: Column(
-          children: [
-            // ── Linha principal: ícone + texto + toggle ──────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-              child: Row(
-                children: [
-                  // Ícone animado (base de dados caching)
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: caching
-                        ? SizedBox(
-                            key: const ValueKey('loading'),
-                            width: 36,
-                            height: 36,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              CircularProgressIndicator(
-                                value: progress,
-                                strokeWidth: 2.5,
-                                color: _kBlue,
-                                backgroundColor: _kBlue.withOpacity(0.15),
-                              ),
-                              Text('${(progress * 100).toInt()}',
-                                  style: const TextStyle(
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.w900,
-                                      color: _kBlue)),
-                            ]),
-                          )
-                        : Container(
-                            key: const ValueKey('icon'),
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: offline
-                                  ? _kBlue.withOpacity(0.15)
-                                  : (dark
-                                      ? Colors.white.withOpacity(0.07)
-                                      : const Color(0xFFF0F4F8)),
-                              border: Border.all(
-                                  color: offline
-                                      ? _kBlue.withOpacity(0.45)
-                                      : Colors.transparent),
-                            ),
-                            child: Icon(
-                              offline
-                                  ? Icons.wifi_off_rounded
-                                  : Icons.download_for_offline_outlined,
-                              size: 18,
-                              color: offline
-                                  ? _kBlue
-                                  : (dark
-                                      ? Colors.white54
-                                      : const Color(0xFF6B7280)),
-                            ),
-                          ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // Texto principal + versão compacta da base
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isEs ? 'Modo sin conexión' : 'Modo offline',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: offline
-                                ? _kBlue
-                                : (dark
-                                    ? Colors.white70
-                                    : const Color(0xFF374151)),
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        // BUILD 327: subtítulo neutro — sem tempo relativo nem contagem
-                        Text(
-                          caching
-                              ? (isEs
-                                  ? 'Guardando base de datos…'
-                                  : 'Salvando base de dados…')
-                              : offline
-                                  ? (isEs
-                                      ? 'Base guardada localmente'
-                                      : 'Base salva localmente')
-                                  : (isEs
-                                      ? 'Guardar toda la base local'
-                                      : 'Salvar toda a base localmente'),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: offline
-                                ? _kBlue.withOpacity(0.7)
-                                : (dark
-                                    ? Colors.white38
-                                    : const Color(0xFF9CA3AF)),
-                          ),
-                        ),
-                        // BUILD 328: versão dinâmica — manifest local OU build do app
-                        // Sempre visível quando offline (sem a condição calcVersion!=null)
-                        if (offline && !caching) ...[
-                          const SizedBox(height: 3),
-                          Text(
-                            // calcVersion vem do manifest sincronizado; fallback = build do app
-                            '${isEs ? 'Versión' : 'Versão'} ${calcVersion ?? _kAppBuild}',
-                            style: TextStyle(
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w600,
-                              color: dark
-                                  ? Colors.white38
-                                  : const Color(0xFF9CA3AF),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-
-                  // Toggle on/off
-                  GestureDetector(
-                    onTap: caching ? null : () => p.setOfflineMode(!offline),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      width: 44,
-                      height: 26,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(13),
-                        color: offline
-                            ? _kBlue
-                            : (dark
-                                ? Colors.white.withOpacity(0.15)
-                                : const Color(0xFFD1D5DB)),
-                      ),
-                      child: AnimatedAlign(
-                        duration: const Duration(milliseconds: 250),
-                        alignment: offline
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child: Container(
-                          margin: const EdgeInsets.all(3),
-                          width: 20,
-                          height: 20,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // ── Barra de progresso da base (só durante caching) ──────
-            if (caching)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        minHeight: 4,
-                        backgroundColor: _kBlue.withOpacity(0.15),
-                        valueColor: const AlwaysStoppedAnimation(_kBlue),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      _progressLabel(progress, p.lang),
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        color: _kBlue.withOpacity(0.75),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            // ── Chips de conteúdo (só quando offline ativo e base pronta) ─
-            if (offline && !caching) ...[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                child: Wrap(spacing: 6, runSpacing: 4, children: [
-                  _OfflineChip(
-                      label: isEs ? '501 fármacos' : '501 fármacos',
-                      icon: Icons.medication_rounded),
-                  _OfflineChip(
-                      label: isEs ? 'Protocolos' : 'Protocolos',
-                      icon: Icons.assignment_rounded),
-                  _OfflineChip(
-                      label: isEs ? 'Casos clínicos' : 'Casos clínicos',
-                      icon: Icons.cases_rounded),
-                  _OfflineChip(
-                      label: isEs ? 'PEWS · Doses' : 'PEWS · Doses',
-                      icon: Icons.child_care_rounded),
-                ]),
-              ),
-            ],
-
-            // ── BUILD 328: Botões reativos — Actualizar + Limpiar cache ─────
-            // Visíveis: offline ativo E serviço CalcuCache não está baixando.
-            // _syncing/_clearing: feedback imediato sem bloquear a UI thread.
-            if (offline && !caching && !calcActive)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
-                child: Row(
-                  children: [
-                    // ── Actualizar base ──────────────────────────────────
-                    GestureDetector(
-                      onTap: (_syncing || _clearing)
-                          ? null
-                          : () => _doUpdate(context, p, isEs),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 11, vertical: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9),
-                          color: _syncing
-                              ? _kBlue.withOpacity(0.18)
-                              : _kBlue.withOpacity(0.10),
-                          border: Border.all(
-                            color: _syncing
-                                ? _kBlue.withOpacity(0.55)
-                                : _kBlue.withOpacity(0.30),
-                          ),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          // Spinner mini enquanto sincronizando, ícone normal caso contrário
-                          _syncing
-                              ? const SizedBox(
-                                  width: 12,
-                                  height: 12,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 1.8,
-                                    color: _kBlue,
-                                  ),
-                                )
-                              : const Icon(Icons.sync_rounded,
-                                  size: 12, color: _kBlue),
-                          const SizedBox(width: 5),
-                          Text(
-                            _syncing
-                                ? (isEs ? 'Sincronizando…' : 'Sincronizando…')
-                                : (isEs ? 'Actualizar' : 'Atualizar'),
-                            style: const TextStyle(
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w700,
-                                color: _kBlue),
-                          ),
-                        ]),
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    // ── Limpiar cache ────────────────────────────────────
-                    GestureDetector(
-                      onTap: (_clearing || _syncing)
-                          ? null
-                          : () => _doClear(context, isEs),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 11, vertical: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9),
-                          color: _clearing
-                              ? (dark
-                                  ? Colors.white.withOpacity(0.10)
-                                  : const Color(0xFFE5E7EB))
-                              : (dark
-                                  ? Colors.white.withOpacity(0.05)
-                                  : const Color(0xFFF3F4F6)),
-                          border: Border.all(
-                            color: dark
-                                ? Colors.white
-                                    .withOpacity(_clearing ? 0.20 : 0.10)
-                                : (_clearing
-                                    ? const Color(0xFF9CA3AF)
-                                    : const Color(0xFFD1D5DB)),
-                          ),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          _clearing
-                              ? SizedBox(
-                                  width: 12,
-                                  height: 12,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 1.8,
-                                    color: dark
-                                        ? Colors.white54
-                                        : const Color(0xFF6B7280),
-                                  ),
-                                )
-                              : Icon(Icons.delete_outline_rounded,
-                                  size: 12,
-                                  color: dark
-                                      ? Colors.white54
-                                      : const Color(0xFF6B7280)),
-                          const SizedBox(width: 5),
-                          Text(
-                            _clearing
-                                ? (isEs ? 'Limpiando…' : 'Limpando…')
-                                : (isEs ? 'Limpiar cache' : 'Limpar cache'),
-                            style: TextStyle(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w600,
-                              color: dark
-                                  ? Colors.white54
-                                  : const Color(0xFF6B7280),
-                            ),
-                          ),
-                        ]),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
+        _DrawerRow(
+          icon: Icons.cleaning_services_outlined,
+          iconColor: const Color(0xFF64748B),
+          title: _clearing
+              ? (isEs ? 'Limpiando…' : 'Limpando…')
+              : (isEs ? 'Limpiar caché' : 'Limpar cache'),
+          dark: dark,
+          textCol: textCol,
+          subCol: subCol,
+          trailing: _clearing
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 1.6),
+                )
+              : const Icon(Icons.refresh_rounded, size: 18),
+          onTap: () {
+            if (_clearing) return;
+            _doClear(context, isEs);
+          },
         ),
-      ),
+      ],
     );
   }
 }
@@ -8709,33 +9823,6 @@ class _DeletingAccountOverlay extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _OfflineChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  const _OfflineChip({required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: const Color(0xFF1D4ED8).withOpacity(0.10),
-        border: Border.all(color: const Color(0xFF1D4ED8).withOpacity(0.25)),
-      ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 10, color: const Color(0xFF1D4ED8)),
-        const SizedBox(width: 4),
-        Text(label,
-            style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1D4ED8))),
-      ]),
     );
   }
 }

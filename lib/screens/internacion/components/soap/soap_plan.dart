@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
 
+import '../../../../design_system/foundation/med_typography.dart';
 class SoapPlan extends StatefulWidget {
   final PlanData data;
   final ValueChanged<PlanData> onChanged;
@@ -122,7 +123,7 @@ class _SoapPlanState extends State<SoapPlan> {
           maxLines: 6,
           onChanged: (v) => widget.onChanged(widget.data.copyWith(planTerapeutico: v)),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
 
         // ── Critérios de alta ─────────────────────────────────────────────────
         _PlanLabel(
@@ -147,6 +148,7 @@ class _SoapPlanState extends State<SoapPlan> {
 
 // ── Chips de atalho para o campo de plano ─────────────────────────────────────
 class _PlanHintRow extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_PLAN_ACTIONS_V1
   final List<String> hints;
   final TextEditingController ctrl;
   final bool dark;
@@ -155,32 +157,33 @@ class _PlanHintRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final border = dark ? const Color(0xFF3A4350) : const Color(0xFFD5DCE5);
+    final muted = dark ? const Color(0xFFAEB7C4) : const Color(0xFF5F6B7A);
     return Wrap(
-      spacing: 6,
+      spacing: 5,
+      runSpacing: 5,
       children: hints.map((h) => GestureDetector(
         onTap: () {
           final cur = ctrl.text;
           final prefix = cur.isEmpty ? '' : '\n';
           ctrl.text = '$cur${prefix}$h: ';
-          ctrl.selection = TextSelection.fromPosition(
-            TextPosition(offset: ctrl.text.length),
-          );
+          ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
           decoration: BoxDecoration(
-            color: dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6),
-              width: 0.8,
-            ),
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(color: border, width: 0.65),
           ),
-          child: Text('+ $h', style: TextStyle(
-            fontSize: 11,
-            color: dark ? Colors.white54 : Colors.black54,
-            fontWeight: FontWeight.w500,
-          )),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.add_rounded, size: 12.5, color: Color(0xFF0D6B57)),
+              const SizedBox(width: 3),
+              Text(h, style: TextStyle(fontSize: 11.2, fontWeight: FontWeight.w600, color: muted)),
+            ],
+          ),
         ),
       )).toList(),
     );
@@ -189,6 +192,7 @@ class _PlanHintRow extends StatelessWidget {
 
 // ── Shared subwidgets ─────────────────────────────────────────────────────────
 class _PlanLabel extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_PLAN_HEADER_V1
   final String label;
   final IconData icon;
   final InternacionTheme theme;
@@ -196,19 +200,23 @@ class _PlanLabel extends StatelessWidget {
   const _PlanLabel({required this.label, required this.icon, required this.theme});
 
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Icon(icon, size: 13, color: theme.labelColor),
-      const SizedBox(width: 5),
-      Text(label, style: TextStyle(
-        fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8,
-        color: theme.labelColor,
-      )),
-    ],
-  );
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final line = dark ? const Color(0xFF3A424D) : const Color(0xFFD9DEE6);
+    return Row(
+      children: [
+        Icon(icon, size: 13.5, color: theme.labelColor),
+        const SizedBox(width: 6),
+        Text(label.toUpperCase(), style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, letterSpacing: 0.76, color: theme.labelColor)),
+        const SizedBox(width: 9),
+        Expanded(child: Container(height: 0.7, color: line.withOpacity(0.82))),
+      ],
+    );
+  }
 }
 
 class _PlanTextField extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_PLAN_ORDER_LINE_V1
   final TextEditingController controller;
   final String hint;
   final bool dark;
@@ -216,39 +224,33 @@ class _PlanTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   const _PlanTextField({
-    required this.controller, required this.hint,
-    required this.dark, required this.maxLines, required this.onChanged,
+    required this.controller,
+    required this.hint,
+    required this.dark,
+    required this.maxLines,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final border = dark ? const Color(0xFF3A4350) : const Color(0xFFD5DCE5);
+    final text = dark ? const Color(0xFFE8EDF3) : const Color(0xFF1F2937);
+    final muted = dark ? const Color(0xFF9AA5B4) : const Color(0xFF667085);
     return Container(
-      decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1A1D23) : const Color(0xFFF8F9FA),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6),
-          width: 0.8,
-        ),
-      ),
+      padding: const EdgeInsets.fromLTRB(0, 1, 0, 2),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: border, width: 0.7))),
       child: TextField(
         controller: controller,
         maxLines: maxLines,
-        minLines: 2,
+        minLines: 1,
         onChanged: onChanged,
-        style: TextStyle(
-          fontSize: 13,
-          color: dark ? Colors.white : const Color(0xFF1A1D23),
-          height: 1.6,
-        ),
+        style: TextStyle(fontSize: 13.4, height: 1.38, fontWeight: FontWeight.w500, color: text),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: 12,
-            color: dark ? Colors.white24 : Colors.black26,
-          ),
+          hintStyle: TextStyle(fontSize: 12.4, height: 1.35, fontWeight: FontWeight.w400, color: muted.withOpacity(0.64)),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 1, vertical: 7),
         ),
       ),
     );

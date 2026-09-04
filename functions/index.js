@@ -1,3 +1,11 @@
+// MEDCASES_SHADOW_OBSERVATION_S1_IMPORT_BEGIN
+const {
+  createClinicalShadowObservationS1Runtime,
+} = require("./clinical_context/clinical_shadow_observation_s1_runtime");
+const __clinicalShadowObservationS1 =
+  createClinicalShadowObservationS1Runtime();
+// MEDCASES_SHADOW_OBSERVATION_S1_IMPORT_END
+
 /**
  * Cloud Functions — MedCases Pro  (firebase-functions v6 / Node 22)
  *
@@ -32,12 +40,14 @@
  *   NUNCA retornada ao cliente. NUNCA logada.
  */
 
-const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
+const { onDocumentCreated, onDocumentUpdated, onDocumentDeleted } = require('firebase-functions/v2/firestore');
 const { onRequest, onCall, HttpsError } = require('firebase-functions/v2/https');
 const { defineSecret } = require('firebase-functions/params');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 const admin      = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const https      = require('https');
+const crypto     = require('crypto');
 
 // ── FASE 3B: projetor incremental de Structured Outputs ────────────────
 const { IncrementalDisplayTextProjector } = require('./lib/structured_output_stream');
@@ -54,7 +64,8 @@ const GMAIL_USER        = 'medcasespro@gmail.com';
 const GMAIL_PASS        = defineSecret('GMAIL_PASS');
 const ADMIN_EMAIL       = defineSecret('ADMIN_EMAIL');
 const GEMINI_PAID_KEY   = defineSecret('GEMINI_PAID_API_KEY'); // Build 226 — NUNCA exposta ao cliente
-const OPENAI_KEY        = defineSecret('OPENAI_API_KEY');       // BUILD 321 — GPT-4o Mini Layer 2 fallback
+const OPENAI_KEY        = defineSecret('OPENAI_API_KEY');
+const GPT_ADMIN_UNLOCK_CODE = defineSecret('GPT_ADMIN_UNLOCK_CODE'); // código operacional; nunca persistido       // BUILD 321 — GPT-4o Mini Layer 2 fallback
 
 // ── Helper: cria transporter com a senha do secret ────────────────────────────
 function getTransporter(gmailPass) {
@@ -931,6 +942,111 @@ function sanitizeHistory(history, currentUserMessage) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
+// AI_CONTROL_PLANE_SHADOW_V1_BIND — remote decision only; no live override.
+const {
+  resolveRemoteAiRouteShadowV1,
+  toRemoteAiRouteShadowTelemetryV1,
+  shouldEmitRemoteAiRouteShadowV1,
+} = require('./lib/ai_remote_router_shadow_v1');
+
+// AI_CONTROL_PLANE_REMOTE_CONFIG_READER_V1_BIND — server-only shadow config.
+const {
+  getCachedRemoteAiRouterConfigV1,
+  refreshRemoteAiRouterConfigV1,
+} = require('./lib/ai_remote_router_config_reader_v1');
+
+// AI_CONTROL_PLANE_V2_CONFIG_EXECUTION_STATE_BIND — hot-cache sync, expired-cache awaited refresh.
+const {
+  getV2ConfigStateForExecution,
+} = require('./lib/ai_control_plane_v2/config_reader');
+
+// AI_CONTROL_PLANE_V2_LEGACY_PARITY_EXECUTION_BIND — fail-closed authority gate.
+const {
+  observeExecutionGate,
+} = require('./lib/ai_control_plane_v2/legacy_parity_execution_gate');
+
+// AI_CONTROL_PLANE_V2_LEGACY_PARITY_BIND — shadow planning only.
+const {
+  observeLegacyLiveParity,
+} = require('./lib/ai_control_plane_v2/legacy_live_parity_planner');
+
+// AI_CONTROL_PLANE_V2_SHADOW_BIND — capability observation only; never live routing.
+const {
+  observeLegacyRequestV2Shadow,
+} = require('./lib/ai_control_plane_v2/shadow_bridge');
+
+const {
+  TELEMETRY_MARKER:
+    GPT5_NANO_REAL_SHADOW_TELEMETRY_MARKER,
+  ERROR_MARKER:
+    GPT5_NANO_REAL_SHADOW_ERROR_MARKER,
+  runGpt5NanoPlantaoRouterRealShadow,
+  buildGpt5NanoRealShadowTelemetry,
+} = require(
+  './lib/ai_control_plane_v2/gpt5_nano_plantao_router_real_shadow_v1'
+);
+
+const {
+  runGpt56LunaPlantaoPrimaryShadow,
+  buildGpt56LunaShadowTelemetry,
+} = require(
+  './lib/ai_control_plane_v2/gpt56_luna_plantao_primary_shadow_v1'
+);
+
+const {
+  runGemini31FlashLitePaidCrossProviderShadow,
+  buildGemini31PaidShadowTelemetry,
+} = require(
+  './lib/ai_control_plane_v2/gemini31_flash_lite_paid_cross_provider_shadow_v1'
+);
+
+const {
+  runGpt56TerraPlantaoComplexEscalationShadow,
+  buildGpt56TerraShadowTelemetry,
+} = require(
+  './lib/ai_control_plane_v2/gpt56_terra_plantao_complex_escalation_shadow_v1'
+);
+
+const {
+  buildServerContextMetricsV1,
+  buildTerraClinicalEscalationDecisionV1,
+  buildTerraClinicalEscalationTelemetry,
+} = require(
+  './lib/ai_control_plane_v2/terra_clinical_escalation_policy_v1'
+);
+
+const {
+  buildTerraStabilizedAuthorizationV1,
+  buildTerraStabilizationTelemetry,
+} = require(
+  './lib/ai_control_plane_v2/terra_escalation_stabilization_v1'
+);
+
+
+
+
+
+
+const {
+  buildOpenAiProtectedClinicalDataPolicyFromEnv,
+} = require(
+  './lib/ai_control_plane_v2/protected_clinical_data_policy_v1'
+);
+
+const {
+  buildServerDeidentifiedClinicalFactProjectionV2,
+} = require(
+  './lib/ai_control_plane_v2/server_deidentified_clinical_fact_projection_owner_v2'
+);
+
+const {
+  executePlantaoLiveAuthorityV1,
+} = require(
+  './lib/ai_control_plane_v2/plantao_live_authority_v1'
+);
+
+
+
 exports.geminiPaidProxy = onRequest(
   {
     region:         'us-central1',
@@ -945,6 +1061,48 @@ exports.geminiPaidProxy = onRequest(
     memory:         '512MiB',
   },
   async (req, res) => {
+  // AI_CONTROL_PLANE_SHADOW_V1_EXEC — server-side telemetry only.
+  // Never changes the live provider/model or response envelope.
+  try {
+    // AI_CONTROL_PLANE_REMOTE_CONFIG_READER_V1_USE
+    // Cache lookup is synchronous; Firestore refresh is non-blocking and
+    // cannot alter the live provider/model path.
+    const __medcasesAiRemoteConfigV1 =
+      getCachedRemoteAiRouterConfigV1();
+    const __medcasesAiRouteShadowV1 =
+      resolveRemoteAiRouteShadowV1(
+        req,
+        __medcasesAiRemoteConfigV1,
+      );
+    if (
+      shouldEmitRemoteAiRouteShadowV1(
+        __medcasesAiRemoteConfigV1,
+      )
+    ) {
+      console.info(
+        '[AI_CONTROL_PLANE_SHADOW_V1]',
+        JSON.stringify(
+          toRemoteAiRouteShadowTelemetryV1(__medcasesAiRouteShadowV1),
+        ),
+      );
+    }
+
+    // AI_CONTROL_PLANE_REMOTE_CONFIG_READER_V1_REFRESH
+    // Warm future shadow decisions only. Never awaited by the live request.
+    void refreshRemoteAiRouterConfigV1();
+  } catch (__medcasesAiRouteShadowErrorV1) {
+    console.warn(
+      '[AI_CONTROL_PLANE_SHADOW_V1_ERROR]',
+      String(
+        __medcasesAiRouteShadowErrorV1 &&
+        __medcasesAiRouteShadowErrorV1.message
+          ? __medcasesAiRouteShadowErrorV1.message
+          : __medcasesAiRouteShadowErrorV1,
+      ).slice(0, 240),
+    );
+  }
+
+
     const startMs = Date.now();
 
     // ── CORS: aplicar headers ANTES de qualquer lógica ou retorno ───────────
@@ -997,7 +1155,29 @@ exports.geminiPaidProxy = onRequest(
       return;
     }
 
-    // ── 3. Verifica se fallback pago está ativado no config ─────────────────
+      // AI_CONTROL_PLANE_V2_SHADOW_EXEC — legacy request -> capability metadata only.
+  // This block MUST NOT alter req/res/provider/model and MUST NOT await remote config.
+  try {
+    observeLegacyRequestV2Shadow(req.body, {
+      firestore: admin.firestore(),
+      env: process.env,
+      logger: console.log,
+      errorLogger: console.warn,
+      nextModelLogger: console.log,
+      nextModelErrorLogger: console.warn,
+    });
+  } catch (_) {
+    console.warn(
+      '[AI_CONTROL_PLANE_V2_SHADOW_ERROR]',
+      JSON.stringify({
+        code: 'shadow_observation_failed',
+        shadowOnly: true,
+        liveProviderOverride: false,
+      })
+    );
+  }
+
+// ── 3. Verifica se fallback pago está ativado no config ─────────────────
     let paidEnabled = false;
     try {
       const cfgDoc = await admin.firestore()
@@ -1082,7 +1262,550 @@ exports.geminiPaidProxy = onRequest(
     // que o Flutter espera do Gemini Paid ({text, model, inputTokensApprox,
     // outputTokensApprox, durationMs}) — invisibilidade total de contrato.
     // NUNCA expõe a chave ao cliente — processada 100% server-side.
-    const { provider: reqProvider = 'gemini' } = req.body || {};
+      // AI_CONTROL_PLANE_V2_LEGACY_PARITY_EXEC — mirror current live decision only.
+  // Never awaits, never writes res, never mutates req, never overrides provider/model.
+  try {
+    observeLegacyLiveParity(req.body, {
+      geminiPaidModel: GEMINI_PAID_MODEL,
+      logger: console.log,
+    });
+  } catch (_) {
+    console.warn(
+      '[AI_CONTROL_PLANE_V2_LEGACY_PARITY_ERROR]',
+      JSON.stringify({
+        code: 'legacy_parity_observation_failed',
+        shadowOnly: true,
+        liveProviderOverride: false,
+      })
+    );
+  }
+
+const { provider: reqProviderLegacy = 'gemini' } = req.body || {};
+
+    // V2 parity execution gate. Fail closed to legacy_v1 on every missing gate/error.
+    let __v2ParityExecution = null;
+    try {
+      const __v2ExecutionConfigState =
+        await getV2ConfigStateForExecution({
+          firestore: admin.firestore(),
+          env: process.env,
+        });
+
+      __v2ParityExecution = observeExecutionGate(req.body, {
+        uid,
+        geminiPaidModel: GEMINI_PAID_MODEL,
+        env: process.env,
+        configState: __v2ExecutionConfigState,
+        logger: console.log,
+      });
+
+  // GPT-5 nano Plantao router — real-provider shadow wiring.
+  //
+  // Authority contract:
+  // - both server + remote gates must open before provider inference;
+  // - shadow output never changes provider/model selection;
+  // - shadow output never becomes user response;
+  // - shadow failure never enters the live error path.
+  //
+  // Current rollout state is intentionally inert.
+  if (
+    req.body &&
+    typeof req.body.mode === 'string' &&
+    ['plantao', 'plantão'].includes(
+      req.body.mode.trim().toLowerCase()
+    )
+  ) {
+    const __protectedClinicalProjectionV2 =
+      buildServerDeidentifiedClinicalFactProjectionV2({
+        mode: 'plantao',
+        userMessage:
+          typeof req.body.userMessage === 'string'
+            ? req.body.userMessage
+            : '',
+        history:
+          Array.isArray(req.body.history)
+            ? req.body.history
+            : [],
+        patientContext:
+          req.body.patientContext &&
+          typeof req.body.patientContext === 'object'
+            ? req.body.patientContext
+            : null,
+      });
+
+    // AI_CONTROL_PLANE_V2_PLANTAO_LIVE_AUTHORITY_V1_BEGIN
+    // Explicit live authority owner. With current production config
+    // plantao_router_v2=false and plantao.enabled=false, this returns
+    // eligible=false and performs zero provider calls.
+    const __plantaoLiveAuthorityV1 =
+      await executePlantaoLiveAuthorityV1({
+        config:
+          __v2ExecutionConfigState &&
+          __v2ExecutionConfigState.config
+            ? __v2ExecutionConfigState.config
+            : null,
+        executionGateOpen:
+          !!(
+            __v2ParityExecution &&
+            __v2ParityExecution.gateOpen === true
+          ),
+        uid: uid,
+        mode: 'plantao',
+        lang:
+          typeof lang === 'string'
+            ? lang
+            : 'pt',
+        userMessage:
+          typeof req.body.userMessage === 'string'
+            ? req.body.userMessage
+            : '',
+        history:
+          Array.isArray(req.body.history)
+            ? req.body.history
+            : [],
+        patientContext:
+          req.body.patientContext &&
+          typeof req.body.patientContext === 'object'
+            ? req.body.patientContext
+            : null,
+        providerDataPolicy:
+          buildOpenAiProtectedClinicalDataPolicyFromEnv(
+            process.env
+          ),
+        protectedClinicalProjection:
+          __protectedClinicalProjectionV2,
+        openAiApiKey:
+          OPENAI_KEY.value(),
+        geminiApiKey:
+          process.env.GEMINI_PAID_API_KEY || '',
+      });
+
+
+    try {
+      const __r7OwnerDiagnostic = Object.freeze({
+        event: 'plantao_live_authority_result_v1',
+        handled: __plantaoLiveAuthorityV1?.handled === true,
+        reason:
+          typeof __plantaoLiveAuthorityV1?.reason === 'string'
+            ? __plantaoLiveAuthorityV1.reason
+            : null,
+        selectedAlias:
+          typeof __plantaoLiveAuthorityV1?.selectedAlias === 'string'
+            ? __plantaoLiveAuthorityV1.selectedAlias
+            : null,
+        suppressShadow:
+          __plantaoLiveAuthorityV1?.suppressShadow === true,
+        hasResponse:
+          !!__plantaoLiveAuthorityV1?.response,
+      });
+      console.log(JSON.stringify(__r7OwnerDiagnostic));
+    } catch (_) {
+      // Diagnostic telemetry must never affect request handling.
+    }
+
+    if (
+      __plantaoLiveAuthorityV1 &&
+      __plantaoLiveAuthorityV1.handled === true &&
+      __plantaoLiveAuthorityV1.response
+    ) {
+      res.status(200).json(
+        __plantaoLiveAuthorityV1.response
+      );
+      return;
+    }
+    // AI_CONTROL_PLANE_V2_PLANTAO_LIVE_AUTHORITY_V1_END
+
+
+        if (!(
+      __plantaoLiveAuthorityV1 &&
+      __plantaoLiveAuthorityV1.eligible === true
+    )) {
+void runGpt5NanoPlantaoRouterRealShadow({
+      config:
+        __v2ExecutionConfigState &&
+        __v2ExecutionConfigState.config
+          ? __v2ExecutionConfigState.config
+          : null,
+      uid: uid,
+      mode: 'plantao',
+      userMessage:
+        typeof req.body.userMessage === 'string'
+          ? req.body.userMessage
+          : '',
+      history:
+        Array.isArray(req.body.history)
+          ? req.body.history
+          : [],
+      patientContext:
+        req.body.patientContext &&
+        typeof req.body.patientContext === 'object'
+          ? req.body.patientContext
+          : null,
+      providerDataPolicy:
+        buildOpenAiProtectedClinicalDataPolicyFromEnv(
+          process.env
+        ),
+      // Deliberately not sourced from req.body. A future server-side
+      // de-identification owner must construct this projection.
+      protectedClinicalProjection: __protectedClinicalProjectionV2,
+      openAiApiKey: process.env.OPENAI_API_KEY || '',
+    })
+      .then((shadowResult) => {
+        console.log(
+          GPT5_NANO_REAL_SHADOW_TELEMETRY_MARKER,
+          JSON.stringify(
+            buildGpt5NanoRealShadowTelemetry(
+              shadowResult
+            )
+          )
+        );
+      })
+      .catch(() => {
+        console.warn(
+          GPT5_NANO_REAL_SHADOW_ERROR_MARKER,
+          JSON.stringify({
+            code: 'nano_shadow_observer_failed',
+            userResponseAuthority: false,
+            liveAuthorityChanged: false,
+            telemetryOnly: true,
+          })
+        );
+      });
+
+    // AI_CONTROL_PLANE_V2_GPT56_LUNA_INERT_BEGIN
+    // AI_CONTROL_PLANE_V2_GPT56_LUNA_REAL_SHADOW — inert primary shadow.
+    // Fire-and-forget only; no await, no res write, no req mutation,
+    // no provider/model/error authority.
+    void runGpt56LunaPlantaoPrimaryShadow({
+      config:
+        __v2ExecutionConfigState &&
+        __v2ExecutionConfigState.config
+          ? __v2ExecutionConfigState.config
+          : null,
+      uid: uid,
+      mode: 'plantao',
+      userMessage:
+        typeof req.body.userMessage === 'string'
+          ? req.body.userMessage
+          : '',
+      history:
+        Array.isArray(req.body.history)
+          ? req.body.history
+          : [],
+      patientContext:
+        req.body.patientContext &&
+        typeof req.body.patientContext === 'object'
+          ? req.body.patientContext
+          : null,
+      providerDataPolicy:
+        buildOpenAiProtectedClinicalDataPolicyFromEnv(
+          process.env
+        ),
+      // Never sourced from req.body. Real-patient traffic remains
+      // default-denied until a server de-identification owner exists.
+      protectedClinicalProjection: __protectedClinicalProjectionV2,
+      openAiApiKey: process.env.OPENAI_API_KEY || '',
+    })
+      .then((shadowResult) => {
+        console.log(
+          '[AI_CONTROL_PLANE_V2_GPT56_LUNA_REAL_SHADOW] ' +
+          JSON.stringify(
+            buildGpt56LunaShadowTelemetry(
+              shadowResult
+            )
+          )
+        );
+
+
+        // AI_CONTROL_PLANE_V2_GEMINI31_PAID_INERT_BEGIN
+        // Cross-provider technical fallback shadow only.
+        // The executor itself requires BOTH the server gate and
+        // shadowResult.technicalFailure===true before provider fetch.
+        // It has no user/live-model/live-error/Terra authority.
+        void runGemini31FlashLitePaidCrossProviderShadow({
+          config:
+            __v2ExecutionConfigState &&
+            __v2ExecutionConfigState.config
+              ? __v2ExecutionConfigState.config
+              : null,
+          uid: uid,
+          mode: 'plantao',
+          upstreamTechnicalFailure:
+            shadowResult &&
+            shadowResult.technicalFailure === true,
+          upstreamFailureClass:
+            shadowResult &&
+            typeof shadowResult.failureClass === 'string'
+              ? shadowResult.failureClass
+              : null,
+          upstreamClinicalEscalation: false,
+          userMessage:
+            typeof req.body.userMessage === 'string'
+              ? req.body.userMessage
+              : '',
+          history:
+            Array.isArray(req.body.history)
+              ? req.body.history
+              : [],
+          patientContext:
+            req.body.patientContext &&
+            typeof req.body.patientContext === 'object'
+              ? req.body.patientContext
+              : null,
+          providerDataPolicy:
+            buildOpenAiProtectedClinicalDataPolicyFromEnv(
+              process.env
+            ),
+          // Never sourced from req.body. Real-patient traffic remains
+          // default-denied until a server de-identification owner exists.
+          protectedClinicalProjection: __protectedClinicalProjectionV2,
+          geminiApiKey:
+            process.env.GEMINI_PAID_API_KEY || '',
+        })
+          .then((geminiShadowResult) => {
+            console.log(
+              '[AI_CONTROL_PLANE_V2_GEMINI31_PAID_REAL_SHADOW] ' +
+              JSON.stringify(
+                buildGemini31PaidShadowTelemetry(
+                  geminiShadowResult
+                )
+              )
+            );
+          })
+          .catch(() => {
+            console.log(
+              '[AI_CONTROL_PLANE_V2_GEMINI31_PAID_REAL_SHADOW_ERROR] ' +
+              JSON.stringify({
+                provider: 'google',
+                model: 'gemini-3.1-flash-lite',
+                alias: 'plantao_cross_provider',
+                userResponseAuthority: false,
+                liveModelSelectionAuthority: false,
+                liveErrorPathAuthority: false,
+                clinicalEscalationAuthority: false,
+                terraRoutingAuthority: false,
+                liveAuthorityChanged: false,
+                telemetryOnly: true,
+              })
+            );
+          });
+        // AI_CONTROL_PLANE_V2_GEMINI31_PAID_INERT_END
+
+
+        // AI_CONTROL_PLANE_V2_GPT56_TERRA_INERT_BEGIN
+        // Terra is NOT a technical fallback. No validated server-side
+        // clinical-escalation owner is attached yet, so both escalation
+        // predicates remain explicitly closed at this stage.
+        const __terraServerContextMetrics =
+          buildServerContextMetricsV1({
+            userMessage:
+              typeof req.body.userMessage === 'string'
+                ? req.body.userMessage
+                : '',
+            history:
+              Array.isArray(req.body.history)
+                ? req.body.history
+                : [],
+            patientContext:
+              req.body.patientContext &&
+              typeof req.body.patientContext === 'object'
+                ? req.body.patientContext
+                : null,
+          });
+
+        const __terraPolicyConfig =
+          __v2ExecutionConfigState &&
+          __v2ExecutionConfigState.config &&
+          __v2ExecutionConfigState.config.clinicalEscalationPolicies &&
+          __v2ExecutionConfigState.config.clinicalEscalationPolicies.terra
+            ? __v2ExecutionConfigState.config.clinicalEscalationPolicies.terra
+            : null;
+
+        const __terraEscalationDecision =
+          buildTerraClinicalEscalationDecisionV1({
+            mode: 'plantao',
+            lunaResult: shadowResult,
+            serverContextMetrics:
+              __terraServerContextMetrics,
+            policyConfig:
+              __terraPolicyConfig,
+          });
+
+        console.log(
+          '[AI_CONTROL_PLANE_V2_TERRA_ESCALATION_POLICY] ' +
+          JSON.stringify(
+            buildTerraClinicalEscalationTelemetry(
+              __terraEscalationDecision
+            )
+          )
+        );
+
+        const __terraProviderConfig =
+          __v2ExecutionConfigState &&
+          __v2ExecutionConfigState.config &&
+          __v2ExecutionConfigState.config.shadowProviderCalls &&
+          __v2ExecutionConfigState.config.shadowProviderCalls.gpt56Terra
+            ? __v2ExecutionConfigState.config.shadowProviderCalls.gpt56Terra
+            : null;
+
+        const __terraStabilizationConfig =
+          __v2ExecutionConfigState &&
+          __v2ExecutionConfigState.config &&
+          __v2ExecutionConfigState.config.clinicalEscalationStabilization &&
+          __v2ExecutionConfigState.config.clinicalEscalationStabilization.terra
+            ? __v2ExecutionConfigState.config.clinicalEscalationStabilization.terra
+            : null;
+
+        const __terraStabilizedAuthorization =
+          buildTerraStabilizedAuthorizationV1({
+            clinicalDecision:
+              __terraEscalationDecision,
+            serverContextMetrics:
+              __terraServerContextMetrics,
+            terraProviderConfig:
+              __terraProviderConfig,
+            stabilizationConfig:
+              __terraStabilizationConfig,
+          });
+
+        console.log(
+          '[AI_CONTROL_PLANE_V2_TERRA_STABILIZATION] ' +
+          JSON.stringify(
+            buildTerraStabilizationTelemetry(
+              __terraStabilizedAuthorization
+            )
+          )
+        );
+
+        void runGpt56TerraPlantaoComplexEscalationShadow({
+          config:
+            __v2ExecutionConfigState &&
+            __v2ExecutionConfigState.config
+              ? __v2ExecutionConfigState.config
+              : null,
+          uid: uid,
+          mode: 'plantao',
+          clinicalEscalation:
+            __terraStabilizedAuthorization.clinicalEscalation,
+          terraAllowed:
+            __terraStabilizedAuthorization.terraAllowed,
+          escalationReasons:
+            __terraStabilizedAuthorization.signalCodes,
+          upstreamTechnicalFailure:
+            shadowResult &&
+            shadowResult.technicalFailure === true,
+          upstreamFailureClass:
+            shadowResult &&
+            typeof shadowResult.failureClass === 'string'
+              ? shadowResult.failureClass
+              : null,
+          userMessage:
+            typeof req.body.userMessage === 'string'
+              ? req.body.userMessage
+              : '',
+          history:
+            Array.isArray(req.body.history)
+              ? req.body.history
+              : [],
+          patientContext:
+            req.body.patientContext &&
+            typeof req.body.patientContext === 'object'
+              ? req.body.patientContext
+              : null,
+          providerDataPolicy:
+            buildOpenAiProtectedClinicalDataPolicyFromEnv(
+              process.env
+            ),
+          // Never sourced from the request. Real-patient processing remains
+          // default-denied until the server projection owner is implemented.
+          protectedClinicalProjection: __protectedClinicalProjectionV2,
+          openAiApiKey:
+            process.env.OPENAI_API_KEY || '',
+        })
+          .then((terraShadowResult) => {
+            console.log(
+              '[AI_CONTROL_PLANE_V2_GPT56_TERRA_REAL_SHADOW] ' +
+              JSON.stringify(
+                buildGpt56TerraShadowTelemetry(
+                  terraShadowResult
+                )
+              )
+            );
+          })
+          .catch(() => {
+            console.log(
+              '[AI_CONTROL_PLANE_V2_GPT56_TERRA_REAL_SHADOW_ERROR] ' +
+              JSON.stringify({
+                provider: 'openai',
+                model: 'gpt-5.6-terra',
+                alias: 'plantao_complex',
+                userResponseAuthority: false,
+                liveModelSelectionAuthority: false,
+                liveErrorPathAuthority: false,
+                technicalFallbackAuthority: false,
+                liveAuthorityChanged: false,
+                telemetryOnly: true,
+              })
+            );
+          });
+        // AI_CONTROL_PLANE_V2_GPT56_TERRA_INERT_END
+      })
+      .catch(() => {
+        console.log(
+          '[AI_CONTROL_PLANE_V2_GPT56_LUNA_REAL_SHADOW_ERROR] ' +
+          JSON.stringify({
+            provider: 'openai',
+            model: 'gpt-5.6-luna',
+            alias: 'plantao_primary',
+            userResponseAuthority: false,
+            liveModelSelectionAuthority: false,
+            liveErrorPathAuthority: false,
+            liveAuthorityChanged: false,
+            telemetryOnly: true,
+          })
+        );
+      });
+    // AI_CONTROL_PLANE_V2_GPT56_LUNA_INERT_END
+
+  }
+
+
+    }
+    // AI_CONTROL_PLANE_V2_PLANTAO_LIVE_SHADOW_SUPPRESSION_END
+} catch (_) {
+      console.warn(
+        '[AI_CONTROL_PLANE_V2_EXECUTION_GATE_ERROR]',
+        JSON.stringify({
+          code: 'execution_gate_failed_closed',
+          authority: 'legacy_v1',
+          liveProviderOverride: false,
+        })
+      );
+    }
+
+    const reqProvider = (
+      __v2ParityExecution &&
+      __v2ParityExecution.gateOpen === true
+    )
+      ? __v2ParityExecution.provider
+      : reqProviderLegacy;
+
+    const __effectiveOpenAiModel = (
+      __v2ParityExecution &&
+      __v2ParityExecution.gateOpen === true &&
+      __v2ParityExecution.provider === 'openai'
+    )
+      ? __v2ParityExecution.model
+      : 'gpt-4o-mini';
+
+    const __effectiveGeminiPaidModel = (
+      __v2ParityExecution &&
+      __v2ParityExecution.gateOpen === true &&
+      __v2ParityExecution.provider === 'gemini'
+    )
+      ? __v2ParityExecution.model
+      : GEMINI_PAID_MODEL;
+
     if (reqProvider === 'openai') {
       const openAiKey = OPENAI_KEY.value();
       if (!openAiKey || openAiKey.trim().length === 0) {
@@ -1128,10 +1851,16 @@ exports.geminiPaidProxy = onRequest(
       openAiMessages.push({ role: 'user', content: userMessage.trim() });
 
       const openAiPayload = {
-        model:       'gpt-4o-mini',
+        model:       __effectiveOpenAiModel,
         messages:    openAiMessages,
         max_tokens:  maxOutClamped,
-        temperature: isPlantaoModeOai ? 0.2 : 0.4,
+        temperature: (
+          __v2ParityExecution &&
+          __v2ParityExecution.gateOpen === true &&
+          __v2ParityExecution.provider === 'openai'
+        )
+          ? __v2ParityExecution.temperature
+          : (isPlantaoModeOai ? 0.2 : 0.4),
       };
 
       const openAiPayloadStr   = JSON.stringify(openAiPayload);
@@ -1227,6 +1956,21 @@ exports.geminiPaidProxy = onRequest(
         + `inputTokensApprox=${inputTokensApproxOai} `
         + `outputTokensApprox=${outputTokensApproxOai} `
         + `durationMs=${durationMsOai}`);
+      await recordAdminAiTelemetry({
+        provider: 'openai',
+        model: (
+          typeof GPT_LEGACY_MODEL === 'string' && GPT_LEGACY_MODEL
+            ? GPT_LEGACY_MODEL
+            : 'openai-legacy-proxy'
+        ),
+        endpoint: 'geminiPaidProxy',
+        mode,
+        success: true,
+        inputTokens: inputTokensApproxOai,
+        outputTokens: outputTokensApproxOai,
+        durationMs: durationMsOai,
+      });
+
 
       console.log('[PROVIDER_ROUTER] '
         + `requestId=${requestId} `
@@ -1309,7 +2053,13 @@ exports.geminiPaidProxy = onRequest(
         // BUILD 271: temperature agora condicional por modo.
         // Plantão (guardia): 0.2 — mais determinístico, fiel às 21 matrizes sem inventar layouts.
         // Estudo: 0.4 — liberdade clínica guiada para resposta acadêmica completa.
-        temperature:     isPlantaoMode ? 0.2 : 0.4,
+        temperature:     (
+          __v2ParityExecution &&
+          __v2ParityExecution.gateOpen === true &&
+          __v2ParityExecution.provider === 'gemini'
+        )
+          ? __v2ParityExecution.temperature
+          : (isPlantaoMode ? 0.2 : 0.4),
         // BUILD 271: maxOutClamped agora pode chegar a 1600 (cliente envia 1600 no Plantão).
         // Estudo=2048 tok (full academic). Hard-clamped server-side: min=200, max=2048.
         maxOutputTokens: maxOutClamped,
@@ -1334,7 +2084,7 @@ exports.geminiPaidProxy = onRequest(
     const inputTokensApprox = Math.ceil(payloadStr.length / 4);
 
     // ── 8. Chama Gemini Paid ────────────────────────────────────────────────
-    const path = `/v1beta/models/${GEMINI_PAID_MODEL}:generateContent?key=${paidApiKey}`;
+    const path = `/v1beta/models/${__effectiveGeminiPaidModel}:generateContent?key=${paidApiKey}`;
     let responseText = '';
     let httpStatus   = 200;
 
@@ -1401,7 +2151,7 @@ exports.geminiPaidProxy = onRequest(
           : 'Não foi possível processar a solicitação clínica neste momento. Por favor, tente novamente ou reformule a pergunta.';
         res.status(200).json({
           text:              fallbackMsg,
-          model:             GEMINI_PAID_MODEL,
+          model:             __effectiveGeminiPaidModel,
           inputTokensApprox: 0,
           outputTokensApprox: 0,
           durationMs,
@@ -1449,12 +2199,23 @@ exports.geminiPaidProxy = onRequest(
       + `requestId=${requestId} `
       + `success=true `
       + `status=200 `
-      + `model=${GEMINI_PAID_MODEL} `
+      + `model=${__effectiveGeminiPaidModel} `
       + `mode=${mode} `
       + `lang=${lang} `
       + `inputTokensApprox=${inputTokensApprox} `
       + `outputTokensApprox=${outputTokensApprox} `
       + `durationMs=${durationMs}`);
+    await recordAdminAiTelemetry({
+      provider: 'gemini',
+      model: __effectiveGeminiPaidModel,
+      endpoint: 'geminiPaidProxy',
+      mode,
+      success: true,
+      inputTokens: inputTokensApprox,
+      outputTokens: outputTokensApprox,
+      durationMs,
+    });
+
 
     console.log('[PROVIDER_ROUTER] '
       + `requestId=${requestId} `
@@ -1470,7 +2231,7 @@ exports.geminiPaidProxy = onRequest(
     // ── 12. Responde com APENAS o texto — NUNCA com a chave ─────────────────
     res.status(200).json({
       text:              parsedText,
-      model:             GEMINI_PAID_MODEL,
+      model:             __effectiveGeminiPaidModel,
       inputTokensApprox,
       outputTokensApprox,
       durationMs,
@@ -1696,7 +2457,7 @@ const AI_MAX_OUTPUT_ESTUDO     = 2048;   // tokens — Motor Estudo (denso, acad
  * @param {number} maxOutputTokens Limite de tokens de saída
  * @returns {Promise<{text, inputTokensApprox, outputTokensApprox}>}
  */
-function callGeminiRestAI(apiKey, model, systemPrompt, contents, maxOutputTokens) {
+function _callGeminiRestAIRaw(apiKey, model, systemPrompt, contents, maxOutputTokens) {
   return new Promise((resolve, reject) => {
     const bodyObj = {
       system_instruction: {
@@ -1913,6 +2674,24 @@ exports.atenderConsultaIA = onCall(
 
     let aiResult;
     try {
+      // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_HANDLER_GEMINI_AI_BEGIN
+      if (
+        __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.runtimeActivationEnabled
+      ) {
+        void __medcasesCreatePhase7ProtocolLoader;
+        void __medcasesCreateClinicalRuntimeIdentityProtocolComposition;
+        throw new Error(
+          "clinical_context_macro30a_runtime_activation_requires_explicit_followup_wiring",
+        );
+      }
+      // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_HANDLER_GEMINI_AI_END
+      // MEDCASES_SHADOW_OBSERVATION_S1_CALL_BEGIN:atenderConsultaIA
+      __clinicalShadowObservationS1.observeFromRequest(request).catch((error) => {
+        console.warn("CLINICAL_SHADOW_OBSERVATION_S1_ERROR", {
+          code: String((error && error.code) || "observer_error"),
+        });
+      });
+      // MEDCASES_SHADOW_OBSERVATION_S1_CALL_END:atenderConsultaIA
       aiResult = await callGeminiRestAI(
         geminiKey,
         AI_GEMINI_MODEL,
@@ -2015,7 +2794,7 @@ exports.atenderConsultaIA = onCall(
  * @param {Function} onDelta  - Callback por fragmento: (delta: string, seq: number) => void
  * @returns {Promise<{text, inputTokensApprox, outputTokensApprox}>}
  */
-function callGeminiRestSSE(geminiKey, model, systemPrompt, contents, maxTokens, onDelta) {
+function _callGeminiRestSSERaw(geminiKey, model, systemPrompt, contents, maxTokens, onDelta) {
   return new Promise((resolve, reject) => {
     const modelId  = model || 'gemini-2.5-flash';
     const endpoint = `/v1beta/models/${modelId}:streamGenerateContent?alt=sse`;
@@ -2247,6 +3026,17 @@ exports.atenderConsultaIAStream = onRequest(
     // ── STREAMING GEMINI → SSE ────────────────────────────────────────────────
     let totalText = '';
     try {
+      // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_HANDLER_GEMINI_SSE_BEGIN
+      if (
+        __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.runtimeActivationEnabled
+      ) {
+        void __medcasesCreatePhase7ProtocolLoader;
+        void __medcasesCreateClinicalRuntimeIdentityProtocolComposition;
+        throw new Error(
+          "clinical_context_macro30a_runtime_activation_requires_explicit_followup_wiring",
+        );
+      }
+      // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_HANDLER_GEMINI_SSE_END
       const result = await callGeminiRestSSE(
         geminiKey,
         'gemini-2.5-flash',
@@ -2434,7 +3224,7 @@ const GPT_CLINICAL_RESPONSE_SCHEMA = {
 // Apenas o contrato MedCases é emitido via SSE.
 //
 // abortSignal: AbortSignal para cancelamento upstream via AbortController.
-function callOpenAiResponsesStream({
+function _callOpenAiResponsesStreamRaw({
   openAiKey,
   systemPrompt,
   userMessage,
@@ -3001,6 +3791,24 @@ exports.gptProxyStream = onRequest(
       });
 
       // ── STREAMING OPENAI → SSE ────────────────────────────────────────────
+      // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_HANDLER_OPENAI_STREAM_BEGIN
+      if (
+        __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.runtimeActivationEnabled
+      ) {
+        void __medcasesCreatePhase7ProtocolLoader;
+        void __medcasesCreateClinicalRuntimeIdentityProtocolComposition;
+        throw new Error(
+          "clinical_context_macro30a_runtime_activation_requires_explicit_followup_wiring",
+        );
+      }
+      // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_HANDLER_OPENAI_STREAM_END
+      // MEDCASES_SHADOW_OBSERVATION_S1_CALL_BEGIN:gptProxyStream
+      __clinicalShadowObservationS1.observeFromRequest(req).catch((error) => {
+        console.warn("CLINICAL_SHADOW_OBSERVATION_S1_ERROR", {
+          code: String((error && error.code) || "observer_error"),
+        });
+      });
+      // MEDCASES_SHADOW_OBSERVATION_S1_CALL_END:gptProxyStream
       const result = await callOpenAiResponsesStream({
         openAiKey,
         systemPrompt:    safeSystemPrompt,
@@ -3079,3 +3887,1026 @@ exports.gptProxyStream = onRequest(
     }
   }
 );
+
+
+// ============================================================================
+// ADMIN_AUDIT_LOG_V1 — imutável para clientes, produzido via Admin SDK.
+// ============================================================================
+const ADMIN_AUDIT_COLLECTION = 'admin_audit_logs';
+
+function auditChangedKeys(beforeData, afterData) {
+  const before = beforeData || {};
+  const after = afterData || {};
+  const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
+  return [...keys]
+    .filter((key) => !key.startsWith('_adminAudit'))
+    .filter((key) => JSON.stringify(before[key]) !== JSON.stringify(after[key]))
+    .sort();
+}
+
+function auditActor(data) {
+  const source = data || {};
+  const uid = String(
+    source._adminAuditBy ||
+    source.updatedBy ||
+    source.createdBy ||
+    source.approvedBy ||
+    source.resolvedBy ||
+    source.acknowledgedBy ||
+    ''
+  ).trim();
+
+  const email = String(
+    source._adminAuditEmail ||
+    source.createdByEmail ||
+    source.sentByEmail ||
+    (
+      typeof source.sentBy === 'string' && source.sentBy.includes('@')
+        ? source.sentBy
+        : ''
+    ) ||
+    ''
+  ).trim();
+
+  return { uid, email };
+}
+
+function auditAction(collection, operation, beforeData, afterData, changedFields) {
+  const before = beforeData || {};
+  const after = afterData || {};
+
+  if (operation === 'delete') return `${collection}.deleted`;
+
+  if (operation === 'create') {
+    if (collection === 'global_push_campaigns') return 'communication.push_created';
+    if (collection === 'email_campaigns') return 'communication.email_campaign_created';
+    if (collection === 'clinical_guides') return 'content.guide_created';
+    if (collection === 'app_updates') return 'settings.app_updates_created';
+    if (collection === 'app_config') return 'app_config.created';
+    return `${collection}.created`;
+  }
+
+  if (collection === 'users') {
+    if (changedFields.includes('role')) return 'users.role_changed';
+    if (changedFields.includes('status')) return 'users.status_changed';
+    return 'users.updated';
+  }
+
+  if (collection === 'app_config') {
+    if (changedFields.includes('geminiPaidEnabled')) return 'ai.paid_fallback_changed';
+    if (changedFields.includes('enabled') || changedFields.includes('message')) {
+      return 'settings.maintenance_changed';
+    }
+    if (
+      changedFields.includes('serviceId') ||
+      changedFields.includes('templateId') ||
+      changedFields.includes('publicKey')
+    ) {
+      return 'communication.email_config_changed';
+    }
+    return 'app_config.updated';
+  }
+
+  if (collection === 'app_updates') return 'settings.app_updates_changed';
+
+  if (collection === 'clinical_guides') {
+    if (before.isPublished !== true && after.isPublished === true) {
+      return 'content.guide_published';
+    }
+    if (before.isPublished === true && after.isPublished !== true) {
+      return 'content.guide_unpublished';
+    }
+    return 'content.guide_updated';
+  }
+
+  if (collection === 'admin_incidents') {
+    if (changedFields.includes('status')) return 'errors.incident_status_changed';
+    return 'errors.incident_updated';
+  }
+
+  return `${collection}.updated`;
+}
+
+function auditSummary(collection, resourceId, beforeData, afterData) {
+  const before = beforeData || {};
+  const after = afterData || {};
+  const data = Object.keys(after).length ? after : before;
+
+  if (collection === 'users') {
+    return { status: String(data.status || ''), role: String(data.role || '') };
+  }
+  if (collection === 'app_config') {
+    return {
+      document: String(resourceId || ''),
+      enabled: typeof data.enabled === 'boolean' ? data.enabled : null,
+      geminiPaidEnabled:
+        typeof data.geminiPaidEnabled === 'boolean' ? data.geminiPaidEnabled : null,
+    };
+  }
+  if (collection === 'app_updates') {
+    return {
+      version: String(data.version || ''),
+      active: typeof data.active === 'boolean' ? data.active : null,
+    };
+  }
+  if (collection === 'clinical_guides') {
+    return {
+      isPublished:
+        typeof data.isPublished === 'boolean' ? data.isPublished : null,
+    };
+  }
+  if (collection === 'admin_incidents') {
+    return {
+      status: String(data.status || ''),
+      severity: String(data.severity || ''),
+    };
+  }
+  if (collection === 'global_push_campaigns') {
+    return {
+      status: String(data.status || ''),
+      targetRole: String(data.targetRole || ''),
+    };
+  }
+  if (collection === 'email_campaigns') {
+    return {
+      status: String(data.status || ''),
+      recipients: String(data.recipients || ''),
+      recipientCount: Number(data.recipientCount || 0),
+    };
+  }
+  return {};
+}
+
+async function writeAdminAudit({
+  collection,
+  resourceId,
+  operation,
+  beforeData = {},
+  afterData = {},
+}) {
+  const changedFields =
+    operation === 'update' ? auditChangedKeys(beforeData, afterData) : [];
+
+  // Metadata-only pre-delete stamp: não gerar evento duplicado.
+  if (operation === 'update' && changedFields.length === 0) return;
+
+  const actor = auditActor(operation === 'delete' ? beforeData : afterData);
+  const action = auditAction(
+    collection,
+    operation,
+    beforeData,
+    afterData,
+    changedFields
+  );
+
+  await admin.firestore().collection(ADMIN_AUDIT_COLLECTION).add({
+    action,
+    operation,
+    resourceType: collection,
+    resourceId: String(resourceId || ''),
+    actorUid: actor.uid,
+    actorEmail: actor.email,
+    changedFields,
+    summary: auditSummary(collection, resourceId, beforeData, afterData),
+    source: 'firestore_trigger',
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+}
+
+exports.auditAdminUserUpdated = onDocumentUpdated('users/{uid}', async (event) => {
+  await writeAdminAudit({
+    collection: 'users',
+    resourceId: event.params.uid,
+    operation: 'update',
+    beforeData: event.data.before.data() || {},
+    afterData: event.data.after.data() || {},
+  });
+});
+
+exports.auditAdminUserDeleted = onDocumentDeleted('users/{uid}', async (event) => {
+  await writeAdminAudit({
+    collection: 'users',
+    resourceId: event.params.uid,
+    operation: 'delete',
+    beforeData: event.data.data() || {},
+  });
+});
+
+exports.auditAdminAppConfigCreated = onDocumentCreated('app_config/{docId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'app_config',
+    resourceId: event.params.docId,
+    operation: 'create',
+    afterData: event.data.data() || {},
+  });
+});
+
+exports.auditAdminAppConfigUpdated = onDocumentUpdated('app_config/{docId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'app_config',
+    resourceId: event.params.docId,
+    operation: 'update',
+    beforeData: event.data.before.data() || {},
+    afterData: event.data.after.data() || {},
+  });
+});
+
+exports.auditAdminAppUpdateCreated = onDocumentCreated('app_updates/{docId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'app_updates',
+    resourceId: event.params.docId,
+    operation: 'create',
+    afterData: event.data.data() || {},
+  });
+});
+
+exports.auditAdminAppUpdateChanged = onDocumentUpdated('app_updates/{docId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'app_updates',
+    resourceId: event.params.docId,
+    operation: 'update',
+    beforeData: event.data.before.data() || {},
+    afterData: event.data.after.data() || {},
+  });
+});
+
+exports.auditAdminGuideCreated = onDocumentCreated('clinical_guides/{guideId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'clinical_guides',
+    resourceId: event.params.guideId,
+    operation: 'create',
+    afterData: event.data.data() || {},
+  });
+});
+
+exports.auditAdminGuideUpdated = onDocumentUpdated('clinical_guides/{guideId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'clinical_guides',
+    resourceId: event.params.guideId,
+    operation: 'update',
+    beforeData: event.data.before.data() || {},
+    afterData: event.data.after.data() || {},
+  });
+});
+
+exports.auditAdminGuideDeleted = onDocumentDeleted('clinical_guides/{guideId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'clinical_guides',
+    resourceId: event.params.guideId,
+    operation: 'delete',
+    beforeData: event.data.data() || {},
+  });
+});
+
+exports.auditAdminIncidentUpdated = onDocumentUpdated('admin_incidents/{incidentId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'admin_incidents',
+    resourceId: event.params.incidentId,
+    operation: 'update',
+    beforeData: event.data.before.data() || {},
+    afterData: event.data.after.data() || {},
+  });
+});
+
+exports.auditAdminPushCreated = onDocumentCreated('global_push_campaigns/{campaignId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'global_push_campaigns',
+    resourceId: event.params.campaignId,
+    operation: 'create',
+    afterData: event.data.data() || {},
+  });
+});
+
+exports.auditAdminEmailCampaignCreated = onDocumentCreated('email_campaigns/{campaignId}', async (event) => {
+  await writeAdminAudit({
+    collection: 'email_campaigns',
+    resourceId: event.params.campaignId,
+    operation: 'create',
+    afterData: event.data.data() || {},
+  });
+});
+
+// ADMIN_AUDIT_LOG_V1_END
+
+
+
+// ============================================================================
+// ADMIN_AI_TELEMETRY_PRODUCER_V1
+// Privacy: no prompts, responses, history, uid, email, secrets or API keys.
+// Cost: only from explicit app_config/ai_cost_rates. Missing rate => null.
+// ============================================================================
+const ADMIN_AI_USAGE_COLLECTION = 'admin_ai_usage_events';
+const ADMIN_AI_METRICS_PATH = 'admin_ai_metrics/realtime';
+const ADMIN_AI_RATE_CONFIG_PATH = 'app_config/ai_cost_rates';
+const ADMIN_AI_USAGE_RETENTION_DAYS = 35;
+
+// ADMIN_AI_OFFICIAL_RATE_CARD_V1
+// Verified 2026-08-26 against official provider pricing.
+// Firestore app_config/ai_cost_rates remains an optional override layer.
+const ADMIN_AI_OFFICIAL_RATE_CARD = {
+  verifiedAt: '2026-08-26',
+  currency: 'USD',
+  models: {
+    'gpt-5.6': {
+      inputPerMillionUsd: 4.00,
+      cachedInputPerMillionUsd: 0.40,
+      outputPerMillionUsd: 20.00,
+      longContextThresholdInputTokens: 272000,
+      longContextInputMultiplier: 2.0,
+      longContextOutputMultiplier: 1.5,
+      source: 'openai_official',
+    },
+    'gpt-5.6-sol': {
+      inputPerMillionUsd: 4.00,
+      cachedInputPerMillionUsd: 0.40,
+      outputPerMillionUsd: 20.00,
+      longContextThresholdInputTokens: 272000,
+      longContextInputMultiplier: 2.0,
+      longContextOutputMultiplier: 1.5,
+      source: 'openai_official',
+    },
+    'gpt-4o-mini': {
+      inputPerMillionUsd: 0.15,
+      cachedInputPerMillionUsd: 0.075,
+      outputPerMillionUsd: 0.60,
+      source: 'openai_official',
+    },
+  },
+  endpointModels: {
+    'geminiPaidProxy:gemini-2.5-flash': {
+      inputPerMillionUsd: 0.30,
+      cachedInputPerMillionUsd: 0.03,
+      outputPerMillionUsd: 2.50,
+      source: 'google_official_paid_standard_text_image_video',
+    },
+  },
+};
+// ADMIN_AI_OFFICIAL_RATE_CARD_V1_END
+
+function _aiTelemetryNumber(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return 0;
+  return Math.max(0, Math.round(parsed));
+}
+
+function _aiTelemetrySafeText(value, maxLen = 80) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return raw.replace(/[^a-zA-Z0-9._:/-]/g, '_').slice(0, maxLen);
+}
+
+function _aiTelemetryErrorCode(error) {
+  const direct = _aiTelemetrySafeText(error?.code || '', 80);
+  if (direct) return direct;
+  const status = Number(error?.status || error?.statusCode || 0);
+  if (Number.isFinite(status) && status > 0) return `http_${Math.round(status)}`;
+  return 'provider_error';
+}
+
+async function recordAdminAiTelemetry({
+  provider,
+  model,
+  endpoint,
+  mode = '',
+  success,
+  inputTokens = 0,
+  cachedInputTokens = 0,
+  outputTokens = 0,
+  durationMs = 0,
+  errorCode = '',
+}) {
+  try {
+    const safeProvider = _aiTelemetrySafeText(provider, 24);
+    if (safeProvider !== 'openai' && safeProvider !== 'gemini') return;
+
+    const input = _aiTelemetryNumber(inputTokens);
+    const output = _aiTelemetryNumber(outputTokens);
+    const nowMs = Date.now();
+
+    const event = {
+      schemaVersion: 1,
+      provider: safeProvider,
+      model: _aiTelemetrySafeText(model, 96) || 'unknown',
+      endpoint: _aiTelemetrySafeText(endpoint, 64) || 'unknown',
+      mode: _aiTelemetrySafeText(mode, 24),
+      success: success === true,
+      inputTokens: input,
+      cachedInputTokens: _aiTelemetryNumber(cachedInputTokens),
+      outputTokens: output,
+      totalTokens: input + output,
+      durationMs: _aiTelemetryNumber(durationMs),
+      errorCode: success === true ? '' : (_aiTelemetrySafeText(errorCode, 80) || 'provider_error'),
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      expiresAt: admin.firestore.Timestamp.fromMillis(
+        nowMs + ADMIN_AI_USAGE_RETENTION_DAYS * 24 * 60 * 60 * 1000
+      ),
+    };
+
+    await admin.firestore().collection(ADMIN_AI_USAGE_COLLECTION).add(event);
+  } catch (error) {
+    console.warn('[ADMIN_AI_TELEMETRY] write_failed code=' + _aiTelemetryErrorCode(error));
+  }
+}
+function _aiTelemetryUsageFromResult(result) {
+  const usage = result?.usage || result?.response?.usage || {};
+  const geminiUsage = (
+    result?.usageMetadata ||
+    result?.response?.usageMetadata ||
+    {}
+  );
+
+  const geminiPrompt = _aiTelemetryNumber(
+    geminiUsage?.promptTokenCount ?? 0
+  );
+  const geminiCandidates = _aiTelemetryNumber(
+    geminiUsage?.candidatesTokenCount ?? 0
+  );
+  const geminiThoughts = _aiTelemetryNumber(
+    geminiUsage?.thoughtsTokenCount ?? 0
+  );
+  const geminiTotal = _aiTelemetryNumber(
+    geminiUsage?.totalTokenCount ?? 0
+  );
+
+  const geminiOutput = (
+    geminiCandidates + geminiThoughts > 0
+      ? geminiCandidates + geminiThoughts
+      : Math.max(0, geminiTotal - geminiPrompt)
+  );
+
+  const cachedInputTokens = _aiTelemetryNumber(
+    usage?.input_tokens_details?.cached_tokens ??
+    usage?.prompt_tokens_details?.cached_tokens ??
+    geminiUsage?.cachedContentTokenCount ??
+    0
+  );
+
+  return {
+    inputTokens: _aiTelemetryNumber(
+      result?.inputTokensApprox ??
+      result?.inputTokens ??
+      usage?.input_tokens ??
+      usage?.prompt_tokens ??
+      geminiPrompt
+    ),
+    cachedInputTokens,
+    outputTokens: _aiTelemetryNumber(
+      result?.outputTokensApprox ??
+      result?.outputTokens ??
+      usage?.output_tokens ??
+      usage?.completion_tokens ??
+      geminiOutput
+    ),
+  };
+}
+
+
+async function callGeminiRestAI(apiKey, model, systemPrompt, contents, maxOutputTokens) {
+  const startedAt = Date.now();
+  try {
+    // MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P2_GEMINI_AI_BEGIN
+    if (
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.runtimeActivationEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.shadowExecutionEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.realProviderExecutionEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.visibleCutoverEnabled
+    ) {
+      throw new Error(
+        "clinical_context_runtime_wiring_hard_off_invariant_violation",
+      );
+    }
+    // MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P2_GEMINI_AI_END
+    const result = await _callGeminiRestAIRaw(apiKey, model, systemPrompt, contents, maxOutputTokens);
+    const usage = _aiTelemetryUsageFromResult(result);
+    await recordAdminAiTelemetry({
+      provider: 'gemini', model, endpoint: 'callGeminiRestAI', success: true,
+      inputTokens: usage.inputTokens,
+      cachedInputTokens: usage.cachedInputTokens, outputTokens: usage.outputTokens,
+      durationMs: Date.now() - startedAt,
+    });
+    return result;
+  } catch (error) {
+    await recordAdminAiTelemetry({
+      provider: 'gemini', model, endpoint: 'callGeminiRestAI', success: false,
+      durationMs: Date.now() - startedAt, errorCode: _aiTelemetryErrorCode(error),
+    });
+    throw error;
+  }
+}
+
+async function callGeminiRestSSE(geminiKey, model, systemPrompt, contents, maxTokens, onDelta) {
+  const startedAt = Date.now();
+  try {
+    // MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P3_GEMINI_SSE_BEGIN
+    if (
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.runtimeActivationEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.shadowExecutionEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.realProviderExecutionEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.visibleCutoverEnabled
+    ) {
+      throw new Error(
+        "clinical_context_runtime_wiring_hard_off_invariant_violation",
+      );
+    }
+    // MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P3_GEMINI_SSE_END
+    const result = await _callGeminiRestSSERaw(geminiKey, model, systemPrompt, contents, maxTokens, onDelta);
+    const usage = _aiTelemetryUsageFromResult(result);
+    await recordAdminAiTelemetry({
+      provider: 'gemini', model, endpoint: 'callGeminiRestSSE', success: true,
+      inputTokens: usage.inputTokens,
+      cachedInputTokens: usage.cachedInputTokens, outputTokens: usage.outputTokens,
+      durationMs: Date.now() - startedAt,
+    });
+    return result;
+  } catch (error) {
+    await recordAdminAiTelemetry({
+      provider: 'gemini', model, endpoint: 'callGeminiRestSSE', success: false,
+      durationMs: Date.now() - startedAt, errorCode: _aiTelemetryErrorCode(error),
+    });
+    throw error;
+  }
+}
+
+async function callOpenAiResponsesStream(options) {
+  const startedAt = Date.now();
+  const safeOptions = options || {};
+  const skipTelemetry = safeOptions.openAiKey === 'test-key';
+  try {
+    // MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P4_OPENAI_STREAM_BEGIN
+    if (
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.runtimeActivationEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.shadowExecutionEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.realProviderExecutionEnabled ||
+      __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1.visibleCutoverEnabled
+    ) {
+      throw new Error(
+        "clinical_context_runtime_wiring_hard_off_invariant_violation",
+      );
+    }
+    // MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P4_OPENAI_STREAM_END
+    const result = await _callOpenAiResponsesStreamRaw(safeOptions);
+    if (!skipTelemetry) {
+      const usage = _aiTelemetryUsageFromResult(result);
+      await recordAdminAiTelemetry({
+        provider: 'openai',
+        model: result?.model || safeOptions?.model || 'openai-responses',
+        endpoint: 'gptProxyStream', mode: safeOptions?.mode || '', success: true,
+        inputTokens: usage.inputTokens,
+        cachedInputTokens: usage.cachedInputTokens, outputTokens: usage.outputTokens,
+        durationMs: Date.now() - startedAt,
+      });
+    }
+    return result;
+  } catch (error) {
+    if (!skipTelemetry) {
+      await recordAdminAiTelemetry({
+        provider: 'openai', model: safeOptions?.model || 'openai-responses',
+        endpoint: 'gptProxyStream', mode: safeOptions?.mode || '', success: false,
+        durationMs: Date.now() - startedAt, errorCode: _aiTelemetryErrorCode(error),
+      });
+    }
+    throw error;
+  }
+}
+function _aiTelemetryRateEntry(
+  rateConfig,
+  provider,
+  model,
+  endpoint = ''
+) {
+  const endpointModels = rateConfig?.endpointModels || {};
+  const models = rateConfig?.models || {};
+  const providers = rateConfig?.providers || {};
+
+  return (
+    endpointModels?.[`${endpoint}:${model}`] ||
+    models?.[model] ||
+    models?.[`${provider}:${model}`] ||
+    providers?.[provider] ||
+    null
+  );
+}
+function _aiTelemetryEventCostUsd(event, rateConfig) {
+  const explicit = Number(event?.costUsd);
+  if (Number.isFinite(explicit) && explicit >= 0) return explicit;
+
+  const rate = _aiTelemetryRateEntry(
+    rateConfig,
+    String(event?.provider || ''),
+    String(event?.model || ''),
+    String(event?.endpoint || '')
+  );
+
+  if (!rate || typeof rate !== 'object') return null;
+
+  const inputPerMillion = Number(
+    rate.inputPerMillionUsd ??
+    rate.inputUsdPerMillion ??
+    rate.inputUsdPer1M
+  );
+  const outputPerMillion = Number(
+    rate.outputPerMillionUsd ??
+    rate.outputUsdPerMillion ??
+    rate.outputUsdPer1M
+  );
+  const flatPerMillion = Number(
+    rate.totalPerMillionUsd ??
+    rate.totalUsdPerMillion ??
+    rate.totalUsdPer1M
+  );
+
+  const input = _aiTelemetryNumber(event?.inputTokens);
+  const cachedInput = Math.min(
+    input,
+    _aiTelemetryNumber(event?.cachedInputTokens)
+  );
+  const uncachedInput = Math.max(0, input - cachedInput);
+  const output = _aiTelemetryNumber(event?.outputTokens);
+
+  if (
+    Number.isFinite(inputPerMillion) &&
+    inputPerMillion >= 0 &&
+    Number.isFinite(outputPerMillion) &&
+    outputPerMillion >= 0
+  ) {
+    const cachedRate = Number(rate.cachedInputPerMillionUsd);
+    const threshold = Number(rate.longContextThresholdInputTokens);
+
+    const longContext = (
+      Number.isFinite(threshold) &&
+      threshold > 0 &&
+      input > threshold
+    );
+
+    const inputMultiplier = longContext
+      ? Number(rate.longContextInputMultiplier || 1)
+      : 1;
+
+    const outputMultiplier = longContext
+      ? Number(rate.longContextOutputMultiplier || 1)
+      : 1;
+
+    const uncachedCost = (
+      (uncachedInput / 1_000_000) *
+      inputPerMillion *
+      inputMultiplier
+    );
+
+    const cachedCost = (
+      cachedInput > 0 &&
+      Number.isFinite(cachedRate) &&
+      cachedRate >= 0
+        ? (
+          (cachedInput / 1_000_000) *
+          cachedRate *
+          inputMultiplier
+        )
+        : (
+          (cachedInput / 1_000_000) *
+          inputPerMillion *
+          inputMultiplier
+        )
+    );
+
+    const outputCost = (
+      (output / 1_000_000) *
+      outputPerMillion *
+      outputMultiplier
+    );
+
+    return uncachedCost + cachedCost + outputCost;
+  }
+
+  if (Number.isFinite(flatPerMillion) && flatPerMillion >= 0) {
+    return ((input + output) / 1_000_000) * flatPerMillion;
+  }
+
+  return null;
+}
+
+
+function _aiTelemetryEmptyProvider() {
+  return {
+    requests24h: 0, inputTokens24h: 0, outputTokens24h: 0, totalTokens24h: 0,
+    errors24h: 0, avgLatencyMs: 0, costTodayUsd: null, costMonthUsd: null,
+    model: '', models24h: {},
+  };
+}
+
+function _aiTelemetryMostUsedModel(models) {
+  const entries = Object.entries(models || {});
+  entries.sort((a, b) => Number(b[1] || 0) - Number(a[1] || 0));
+  return entries.length ? entries[0][0] : '';
+}
+
+async function refreshAdminAiMetricsNow() {
+  const db = admin.firestore();
+  const nowMs = Date.now();
+  const start24Ms = nowMs - 24 * 60 * 60 * 1000;
+  const now = new Date(nowMs);
+  const monthStartMs = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0);
+  const queryStartMs = Math.min(start24Ms, monthStartMs);
+
+  const [eventSnap, rateSnap] = await Promise.all([
+    db.collection(ADMIN_AI_USAGE_COLLECTION)
+      .where('createdAt', '>=', admin.firestore.Timestamp.fromMillis(queryStartMs))
+      .get(),
+    db.doc(ADMIN_AI_RATE_CONFIG_PATH).get(),
+  ]);
+  const overrideRateConfig = rateSnap.exists
+    ? (rateSnap.data() || {})
+    : {};
+
+  const rateConfig = {
+    ...ADMIN_AI_OFFICIAL_RATE_CARD,
+    ...overrideRateConfig,
+    models: {
+      ...(ADMIN_AI_OFFICIAL_RATE_CARD.models || {}),
+      ...(overrideRateConfig.models || {}),
+    },
+    endpointModels: {
+      ...(ADMIN_AI_OFFICIAL_RATE_CARD.endpointModels || {}),
+      ...(overrideRateConfig.endpointModels || {}),
+    },
+    providers: {
+      ...(ADMIN_AI_OFFICIAL_RATE_CARD.providers || {}),
+      ...(overrideRateConfig.providers || {}),
+    },
+  };
+  const providers = { openai: _aiTelemetryEmptyProvider(), gemini: _aiTelemetryEmptyProvider() };
+
+  let requests24h = 0;
+  let inputTokens24h = 0;
+  let outputTokens24h = 0;
+  let errors24h = 0;
+  let latencySum24h = 0;
+  let latencyCount24h = 0;
+  let cost24h = 0;
+  let cost24hKnown = false;
+  let monthCost = 0;
+  let monthCostKnown = false;
+
+  for (const doc of eventSnap.docs) {
+    const event = doc.data() || {};
+    const createdAt = event.createdAt;
+    const eventMs = createdAt && typeof createdAt.toMillis === 'function' ? createdAt.toMillis() : 0;
+    if (!eventMs) continue;
+
+    const providerKey = event.provider === 'openai' ? 'openai' : event.provider === 'gemini' ? 'gemini' : null;
+    if (!providerKey) continue;
+
+    const provider = providers[providerKey];
+    const input = _aiTelemetryNumber(event.inputTokens);
+    const output = _aiTelemetryNumber(event.outputTokens);
+    const duration = _aiTelemetryNumber(event.durationMs);
+    const success = event.success === true;
+    const model = _aiTelemetrySafeText(event.model, 96) || 'unknown';
+    const cost = _aiTelemetryEventCostUsd(event, rateConfig);
+
+    if (eventMs >= monthStartMs && cost !== null) {
+      provider.costMonthUsd = (provider.costMonthUsd || 0) + cost;
+      monthCost += cost;
+      monthCostKnown = true;
+    }
+
+    if (eventMs < start24Ms) continue;
+
+    requests24h += 1;
+    inputTokens24h += input;
+    outputTokens24h += output;
+    if (!success) errors24h += 1;
+    if (duration > 0) { latencySum24h += duration; latencyCount24h += 1; }
+
+    provider.requests24h += 1;
+    provider.inputTokens24h += input;
+    provider.outputTokens24h += output;
+    provider.totalTokens24h += input + output;
+    if (!success) provider.errors24h += 1;
+    if (duration > 0) {
+      provider._latencySum = (provider._latencySum || 0) + duration;
+      provider._latencyCount = (provider._latencyCount || 0) + 1;
+    }
+    provider.models24h[model] = Number(provider.models24h[model] || 0) + 1;
+
+    if (cost !== null) {
+      provider.costTodayUsd = (provider.costTodayUsd || 0) + cost;
+      cost24h += cost;
+      cost24hKnown = true;
+    }
+  }
+
+  for (const provider of Object.values(providers)) {
+    provider.avgLatencyMs = provider._latencyCount ? Math.round(provider._latencySum / provider._latencyCount) : 0;
+    provider.model = _aiTelemetryMostUsedModel(provider.models24h);
+    delete provider._latencySum;
+    delete provider._latencyCount;
+    if (provider.costTodayUsd !== null) provider.costTodayUsd = Number(provider.costTodayUsd.toFixed(8));
+    if (provider.costMonthUsd !== null) provider.costMonthUsd = Number(provider.costMonthUsd.toFixed(8));
+  }
+
+  const primaryModel = providers.openai.requests24h >= providers.gemini.requests24h ? providers.openai.model : providers.gemini.model;
+  const fallbackModel = providers.openai.requests24h >= providers.gemini.requests24h ? providers.gemini.model : providers.openai.model;
+
+  const metrics = {
+    schemaVersion: 1,
+    source: 'ADMIN_AI_TELEMETRY_PRODUCER_V1',
+    window: 'rolling_24h',
+    requests24h,
+    inputTokens24h,
+    outputTokens24h,
+    totalTokens24h: inputTokens24h + outputTokens24h,
+    errors24h,
+    errorRate24h: requests24h > 0 ? errors24h / requests24h : 0,
+    avgLatencyMs24h: latencyCount24h ? Math.round(latencySum24h / latencyCount24h) : 0,
+    costTodayUsd: cost24hKnown ? Number(cost24h.toFixed(8)) : null,
+    estimatedMonthCostUsd: monthCostKnown ? Number(monthCost.toFixed(8)) : null,
+    costRatesConfigured: true,
+    costRateSource: rateSnap.exists
+      ? 'official_defaults_plus_firestore_override'
+      : 'official_defaults',
+    costRateVerifiedAt: ADMIN_AI_OFFICIAL_RATE_CARD.verifiedAt,
+    costRateCurrency: ADMIN_AI_OFFICIAL_RATE_CARD.currency,
+    primaryModel,
+    fallbackModel,
+    routingMode: 'observed_provider_usage',
+    providers,
+    generatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    generatedAtIso: new Date(nowMs).toISOString(),
+  };
+
+  await db.doc(ADMIN_AI_METRICS_PATH).set(metrics, { merge: true });
+  return metrics;
+}
+
+async function cleanupExpiredAdminAiUsageEvents() {
+  const db = admin.firestore();
+  const expired = await db.collection(ADMIN_AI_USAGE_COLLECTION)
+    .where('expiresAt', '<=', admin.firestore.Timestamp.now())
+    .limit(100)
+    .get();
+  if (expired.empty) return 0;
+  const batch = db.batch();
+  for (const doc of expired.docs) batch.delete(doc.ref);
+  await batch.commit();
+  return expired.size;
+}
+
+exports.refreshAdminAiMetrics = onSchedule(
+  {
+    schedule: 'every 5 minutes',
+    region: 'us-central1',
+    timeoutSeconds: 120,
+    memory: '256MiB',
+  },
+  async () => {
+    const metrics = await refreshAdminAiMetricsNow();
+    const deleted = await cleanupExpiredAdminAiUsageEvents();
+    console.log('[ADMIN_AI_TELEMETRY] refresh_ok '
+      + `requests24h=${metrics.requests24h} `
+      + `totalTokens24h=${metrics.totalTokens24h} `
+      + `expiredDeleted=${deleted}`);
+  }
+);
+
+// ADMIN_AI_TELEMETRY_PRODUCER_V1_END
+
+// ============================================================================
+// ADMIN_V2_AI_COSTS_V2 — GPT operational unlock.
+// O código é comparado server-side com Firebase Secret e NUNCA é persistido.
+// ============================================================================
+function _safeSecretEquals(provided, expected) {
+  const a = Buffer.from(String(provided || ''), 'utf8');
+  const b = Buffer.from(String(expected || ''), 'utf8');
+  if (a.length === 0 || b.length === 0 || a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+async function _requireMasterForAiControl(request) {
+  if (!request.auth || !request.auth.uid) {
+    throw new HttpsError('unauthenticated', 'Autenticação obrigatória.');
+  }
+
+  const claimRole = String(request.auth.token?.role || '').trim();
+  if (claimRole === 'master') {
+    return {
+      uid: request.auth.uid,
+      email: String(request.auth.token?.email || ''),
+    };
+  }
+
+  const userDoc = await admin.firestore()
+    .collection('users')
+    .doc(request.auth.uid)
+    .get();
+
+  const role = userDoc.exists
+    ? String(userDoc.data()?.role || '').trim()
+    : '';
+
+  if (role !== 'master') {
+    throw new HttpsError(
+      'permission-denied',
+      'Somente Master pode alterar o estado operacional do GPT.'
+    );
+  }
+
+  return {
+    uid: request.auth.uid,
+    email: String(request.auth.token?.email || userDoc.data()?.email || ''),
+  };
+}
+
+exports.adminSetGptOperationalState = onCall(
+  {
+    region: 'us-central1',
+    secrets: [GPT_ADMIN_UNLOCK_CODE],
+    timeoutSeconds: 30,
+    memory: '256MiB',
+  },
+  async (request) => {
+    const actor = await _requireMasterForAiControl(request);
+    const enabled = request.data?.enabled === true;
+
+    if (enabled) {
+      const code = String(request.data?.code || '').trim();
+      const expected = String(GPT_ADMIN_UNLOCK_CODE.value() || '');
+
+      if (!expected) {
+        throw new HttpsError(
+          'failed-precondition',
+          'GPT_ADMIN_UNLOCK_CODE ainda não foi configurado.'
+        );
+      }
+
+      if (!_safeSecretEquals(code, expected)) {
+        throw new HttpsError(
+          'permission-denied',
+          'Código de liberação GPT inválido.'
+        );
+      }
+    }
+
+    await admin.firestore()
+      .collection('app_config')
+      .doc('ai_control')
+      .set(
+        {
+          gptEnabled: enabled,
+          gptUnlockVerified: enabled,
+          gptUnlockVerifiedAt:
+            enabled ? admin.firestore.FieldValue.serverTimestamp() : null,
+          gptUnlockVerifiedBy: enabled ? actor.uid : '',
+          updatedBy: actor.uid,
+          updatedByEmail: actor.email,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+          _adminAuditBy: actor.uid,
+          _adminAuditEmail: actor.email,
+        },
+        { merge: true }
+      );
+
+    return {
+      ok: true,
+      gptEnabled: enabled,
+      unlockRequired: true,
+    };
+  }
+);
+
+// ADMIN_V2_AI_COSTS_V2_END
+
+/* MEDCASES_CLINICAL_CONTEXT_SOURCE_WIRING_V1_START */
+// Pre-cutover source wiring only. Requiring this module performs no cloud
+// read/write, provider call, endpoint export, or cutover activation.
+require("./clinical_context/clinical_context_backend_integration");
+// MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P1_BEGIN
+const {
+  createClinicalContextRuntimeSeamPreparation:
+    __medcasesCreateClinicalContextRuntimeSeamPreparation,
+} = require("./clinical_context/clinical_context_runtime_seam_preparation");
+
+const __MEDCASES_CLINICAL_CONTEXT_RUNTIME_WIRING_V1 = Object.freeze({
+  sourceWired: true,
+  runtimeActivationEnabled: false,
+  shadowExecutionEnabled: false,
+  realProviderExecutionEnabled: false,
+  visibleCutoverEnabled: false,
+  cutoverState: "OFF",
+  visibleDisposition: "legacy_unchanged",
+});
+
+void __medcasesCreateClinicalContextRuntimeSeamPreparation;
+// MEDCASES_GLOBAL_CLINICAL_CONTEXT_BUILD21_P1_END
+// MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_IMPORTS_BEGIN
+const {
+  createPhase7ProtocolLoader:
+    __medcasesCreatePhase7ProtocolLoader,
+} = require("./clinical_context/clinical_phase7_protocol_loader");
+const {
+  createClinicalRuntimeIdentityProtocolComposition:
+    __medcasesCreateClinicalRuntimeIdentityProtocolComposition,
+} = require("./clinical_context/clinical_runtime_identity_protocol_composition");
+void __medcasesCreatePhase7ProtocolLoader;
+void __medcasesCreateClinicalRuntimeIdentityProtocolComposition;
+// MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_IMPORTS_END
+/* MEDCASES_CLINICAL_CONTEXT_SOURCE_WIRING_V1_END */

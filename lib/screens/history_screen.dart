@@ -1,3 +1,5 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_2C_V2_B_R1_R1_LINE_SCOPED_ALLOWLIST
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_2A_V2_B_R1_GENERIC_OWNER_PATCH
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
@@ -24,6 +26,7 @@ import 'package:http/http.dart' as http;
 import '../platform/web_impl.dart'
     if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
 import 'clinical_recorder_sheet.dart';
+import '../design_system/foundation/med_typography.dart';
 import '../services/clinical_recorder_service.dart' show SoapData;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -32,410 +35,906 @@ import '../services/clinical_recorder_service.dart' show SoapData;
 // ─────────────────────────────────────────────────────────────────────────────
 const _hcStrings = <String, Map<String, String>>{
   // Header
-  'tab_title':          {'pt': 'HISTÓRIA CLÍNICA',         'es': 'HISTORIA CLÍNICA'},
-  'tab_subtitle':       {'pt': 'Registro clínico completo', 'es': 'Registro clínico completo'},
-  'new_hc':             {'pt': 'Nova HC',                   'es': 'Nueva HC'},
-  'my_hcs':             {'pt': 'Minhas HCs',                'es': 'Mis HCs'},
-  'community':          {'pt': 'Comunidade',                'es': 'Comunidad'},
-  'search_hint':        {'pt': 'Buscar por diagnóstico, queixa, tags...', 'es': 'Buscar por diagnóstico, queja, etiquetas...'},
+  'tab_title': {'pt': 'HISTÓRIA CLÍNICA', 'es': 'HISTORIA CLÍNICA'},
+  'tab_subtitle': {
+    'pt': 'Registro clínico completo',
+    'es': 'Registro clínico completo',
+  },
+  'new_hc': {'pt': 'Nova HC', 'es': 'Nueva HC'},
+  'my_hcs': {'pt': 'Minhas HCs', 'es': 'Mis HCs'},
+  'community': {'pt': 'Comunidade', 'es': 'Comunidad'},
+  'search_hint': {
+    'pt': 'Buscar por diagnóstico, queixa, tags...',
+    'es': 'Buscar por diagnóstico, queja, etiquetas...',
+  },
   // Tabs contagem
-  'my_hcs_count':       {'pt': 'minhas',                   'es': 'mis HCs'},
-  'pub_count':          {'pt': 'públicas',                  'es': 'públicas'},
+  'my_hcs_count': {'pt': 'minhas', 'es': 'mis HCs'},
+  'pub_count': {'pt': 'públicas', 'es': 'públicas'},
   // Lista
-  'open':               {'pt': 'Abrir',                     'es': 'Abrir'},
-  'view':               {'pt': 'Ver',                       'es': 'Ver'},
-  'edit_btn':           {'pt': 'Editar',                    'es': 'Editar'},
-  'delete_btn':         {'pt': 'Excluir',                   'es': 'Eliminar'},
-  'public_badge':       {'pt': 'Público',                   'es': 'Público'},
-  'private_badge':      {'pt': 'Privado',                   'es': 'Privado'},
-  'hidden_mod':         {'pt': 'Oculta por moderador',      'es': 'Oculta por moderador'},
-  'show_mod':           {'pt': 'Mostrar',                   'es': 'Mostrar'},
-  'hide_mod':           {'pt': 'Ocultar',                   'es': 'Ocultar'},
-  'anon':               {'pt': 'Anônimo',                   'es': 'Anónimo'},
-  'years':              {'pt': 'anos',                      'es': 'años'},
+  'open': {'pt': 'Abrir', 'es': 'Abrir'},
+  'view': {'pt': 'Ver', 'es': 'Ver'},
+  'edit_btn': {'pt': 'Editar', 'es': 'Editar'},
+  'delete_btn': {'pt': 'Excluir', 'es': 'Eliminar'},
+  'public_badge': {'pt': 'Público', 'es': 'Público'},
+  'private_badge': {'pt': 'Privado', 'es': 'Privado'},
+  'hidden_mod': {'pt': 'Oculta por moderador', 'es': 'Oculta por moderador'},
+  'show_mod': {'pt': 'Mostrar', 'es': 'Mostrar'},
+  'hide_mod': {'pt': 'Ocultar', 'es': 'Ocultar'},
+  'anon': {'pt': 'Anônimo', 'es': 'Anónimo'},
+  'years': {'pt': 'anos', 'es': 'años'},
   // Diálogos confirmação
-  'del_title':          {'pt': 'Excluir história clínica?',             'es': '¿Eliminar historia clínica?'},
-  'del_content':        {'pt': 'Esta ação não pode ser desfeita.',      'es': 'Esta acción no se puede deshacer.'},
-  'cancel':             {'pt': 'Cancelar',                              'es': 'Cancelar'},
-  'del_confirm':        {'pt': 'Excluir',                               'es': 'Eliminar'},
-  'del_mod_title':      {'pt': 'Excluir HC da Comunidade?',             'es': '¿Eliminar HC de la Comunidad?'},
-  'del_mod_content':    {'pt': 'Esta ação é permanente e remove a história clínica de todos os usuários.\n\nProceder com a exclusão?',
-                          'es': 'Esta acción es permanente y elimina la historia clínica de todos los usuarios.\n\n¿Proceder con la eliminación?'},
-  'del_perm':           {'pt': 'Excluir permanentemente',               'es': 'Eliminar permanentemente'},
+  'del_title': {
+    'pt': 'Excluir história clínica?',
+    'es': '¿Eliminar historia clínica?',
+  },
+  'del_content': {
+    'pt': 'Esta ação não pode ser desfeita.',
+    'es': 'Esta acción no se puede deshacer.',
+  },
+  'cancel': {'pt': 'Cancelar', 'es': 'Cancelar'},
+  'del_confirm': {'pt': 'Excluir', 'es': 'Eliminar'},
+  'del_mod_title': {
+    'pt': 'Excluir HC da Comunidade?',
+    'es': '¿Eliminar HC de la Comunidad?',
+  },
+  'del_mod_content': {
+    'pt':
+        'Esta ação é permanente e remove a história clínica de todos os usuários.\n\nProceder com a exclusão?',
+    'es':
+        'Esta acción es permanente y elimina la historia clínica de todos los usuarios.\n\n¿Proceder con la eliminación?',
+  },
+  'del_perm': {
+    'pt': 'Excluir permanentemente',
+    'es': 'Eliminar permanentemente',
+  },
   // Snackbar moderação
-  'hc_visible':         {'pt': 'HC visível novamente',                  'es': 'HC visible nuevamente'},
-  'hc_hidden':          {'pt': 'HC ocultada da comunidade',             'es': 'HC ocultada de la comunidad'},
-  'hc_del_perm':        {'pt': 'HC excluída permanentemente',           'es': 'HC eliminada permanentemente'},
+  'hc_visible': {'pt': 'HC visível novamente', 'es': 'HC visible nuevamente'},
+  'hc_hidden': {
+    'pt': 'HC ocultada da comunidade',
+    'es': 'HC ocultada de la comunidad',
+  },
+  'hc_del_perm': {
+    'pt': 'HC excluída permanentemente',
+    'es': 'HC eliminada permanentemente',
+  },
   // Detalhe / Visualizador
-  'copy_hc':            {'pt': 'Copiar HC',                             'es': 'Copiar HC'},
-  'copied':             {'pt': 'História copiada',                      'es': 'Historia copiada'},
-  'pdf_hint':           {'pt': 'PDF abre janela de impressão  •  PNG salva imagem da HC', 'es': 'PDF abre ventana de impresión  •  PNG guarda imagen de la HC'},
-  'export_png_ok':      {'pt': 'PNG gerado — verifique seus downloads', 'es': 'PNG generado — revise sus descargas'},
-  'export_png_err':     {'pt': 'Erro ao exportar PNG:',                 'es': 'Error al exportar PNG:'},
-  'back':               {'pt': 'Voltar',                                'es': 'Volver'},
+  'copy_hc': {'pt': 'Copiar HC', 'es': 'Copiar HC'},
+  'copied': {'pt': 'História copiada', 'es': 'Historia copiada'},
+  'pdf_hint': {
+    'pt': 'PDF abre janela de impressão  •  PNG salva imagem da HC',
+    'es': 'PDF abre ventana de impresión  •  PNG guarda imagen de la HC',
+  },
+  'export_png_ok': {
+    'pt': 'PNG gerado — verifique seus downloads',
+    'es': 'PNG generado — revise sus descargas',
+  },
+  'export_png_err': {
+    'pt': 'Erro ao exportar PNG:',
+    'es': 'Error al exportar PNG:',
+  },
+  'back': {'pt': 'Voltar', 'es': 'Volver'},
   // HeroHeader
-  'pront':              {'pt': 'Pront.',                                'es': 'Expte.'},
+  'pront': {'pt': 'Pront.', 'es': 'Expte.'},
   // ── Copiar conteúdo (StringBuffer) — Esquema 11 secciones Argentina ─────
-  'copy_header':        {'pt': '=== MEDCASES PRO — HISTÓRIA CLÍNICA ===',
-                          'es': '══════════════════════════════════════════════════════════════════\nHISTORIA CLÍNICA — MEDCASES PRO  |  ARGENTINA\n══════════════════════════════════════════════════════════════════'},
-  'copy_date':          {'pt': 'Data:',                                 'es': 'Fecha y hora de ingreso:'},
-  'copy_author':        {'pt': 'Autor:',                                'es': 'Profesional:'},
-  'copy_patient':       {'pt': 'Paciente:',                            'es': 'Paciente:'},
+  'copy_header': {
+    'pt': '=== MEDCASES PRO — HISTÓRIA CLÍNICA ===',
+    'es':
+        '══════════════════════════════════════════════════════════════════\nHISTORIA CLÍNICA — MEDCASES PRO  |  ARGENTINA\n══════════════════════════════════════════════════════════════════',
+  },
+  'copy_date': {'pt': 'Data:', 'es': 'Fecha y hora de ingreso:'},
+  'copy_author': {'pt': 'Autor:', 'es': 'Profesional:'},
+  'copy_patient': {'pt': 'Paciente:', 'es': 'Paciente:'},
   // Sección 1
-  'copy_s1':            {'pt': '\n── 1. IDENTIFICAÇÃO DO PACIENTE ──',  'es': '\n── 1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS ──'},
-  'copy_nombre':        {'pt': 'Iniciais:',                             'es': 'Nombre y Apellido:'},
-  'copy_edad':          {'pt': 'Idade / Nascimento:',                   'es': 'Edad / Fecha de Nacimiento:'},
-  'copy_sexo':          {'pt': 'Sexo:',                                 'es': 'Sexo / Género:'},
-  'copy_dni':           {'pt': 'Prontuário:',                           'es': 'DNI / Pasaporte:'},
-  'copy_peso_talla':    {'pt': 'Peso / Altura:',                        'es': 'Peso / Talla:'},
-  'copy_obra_social':   {'pt': 'Convênio:',                             'es': 'Obra Social / Prepaga o Plan de Salud:'},
+  'copy_s1': {
+    'pt': '\n── 1. IDENTIFICAÇÃO DO PACIENTE ──',
+    'es': '\n── 1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS ──',
+  },
+  'copy_nombre': {'pt': 'Iniciais:', 'es': 'Nombre y Apellido:'},
+  'copy_edad': {
+    'pt': 'Idade / Nascimento:',
+    'es': 'Edad / Fecha de Nacimiento:',
+  },
+  'copy_sexo': {'pt': 'Sexo:', 'es': 'Sexo / Género:'},
+  'copy_dni': {'pt': 'Prontuário:', 'es': 'DNI / Pasaporte:'},
+  'copy_peso_talla': {'pt': 'Peso / Altura:', 'es': 'Peso / Talla:'},
+  'copy_obra_social': {
+    'pt': 'Convênio:',
+    'es': 'Obra Social / Prepaga o Plan de Salud:',
+  },
   // Sección 2
-  'copy_chief':         {'pt': '\n── 2. QUEIXA PRINCIPAL ──\n',         'es': '\n── 2. MOTIVO DE CONSULTA ──\n'},
+  'copy_chief': {
+    'pt': '\n── 2. QUEIXA PRINCIPAL ──\n',
+    'es': '\n── 2. MOTIVO DE CONSULTA ──\n',
+  },
   // Sección 3
-  'copy_hpi':           {'pt': '\n── 3. HISTÓRIA DA DOENÇA ATUAL ──\n', 'es': '\n── 3. ENFERMEDAD ACTUAL (EA) ──\n'},
+  'copy_hpi': {
+    'pt': '\n── 3. HISTÓRIA DA DOENÇA ATUAL ──\n',
+    'es': '\n── 3. ENFERMEDAD ACTUAL (EA) ──\n',
+  },
   // Sección 4
-  'copy_s4':            {'pt': '\n── 4. ANTECEDENTES PESSOAIS ──',      'es': '\n── 4. ANTECEDENTES PERSONALES ──'},
-  'copy_past':          {'pt': '  Patológicos:',                        'es': '  Patológicos:'},
-  'copy_allerg':        {'pt': '  Alergias:',                           'es': '  Alérgicos:'},
-  'copy_meds':          {'pt': '  Medicamentos habituais:',             'es': '  Medicamentos habituales (droga, dosis, tiempo):'},
-  'copy_social':        {'pt': '  Hábitos:',                            'es': '  Hábitos (tabaquismo, alcohol, actividad física):'},
-  'copy_rvs':           {'pt': '  Revisão de sistemas:',                'es': '  Gineco-obstétricos (si corresponde):'},
+  'copy_s4': {
+    'pt': '\n── 4. ANTECEDENTES PESSOAIS ──',
+    'es': '\n── 4. ANTECEDENTES PERSONALES ──',
+  },
+  'copy_past': {'pt': '  Patológicos:', 'es': '  Patológicos:'},
+  'copy_allerg': {'pt': '  Alergias:', 'es': '  Alérgicos:'},
+  'copy_meds': {
+    'pt': '  Medicamentos habituais:',
+    'es': '  Medicamentos habituales (droga, dosis, tiempo):',
+  },
+  'copy_social': {
+    'pt': '  Hábitos:',
+    'es': '  Hábitos (tabaquismo, alcohol, actividad física):',
+  },
+  'copy_rvs': {
+    'pt': '  Revisão de sistemas:',
+    'es': '  Gineco-obstétricos (si corresponde):',
+  },
   // Sección 5
-  'copy_family':        {'pt': '\n── 5. ANTECEDENTES FAMILIARES ──\n',  'es': '\n── 5. ANTECEDENTES FAMILIARES ──\n'},
+  'copy_family': {
+    'pt': '\n── 5. ANTECEDENTES FAMILIARES ──\n',
+    'es': '\n── 5. ANTECEDENTES FAMILIARES ──\n',
+  },
   // Sección 6
-  'copy_s6':            {'pt': '\n── 6. EXAME FÍSICO ──',               'es': '\n── 6. EXAMEN FÍSICO ──'},
-  'copy_vitals':        {'pt': '  Sinais vitais (PA, FC, FR, T°, SpO2, Peso, Altura, IMC):',
-                          'es': '  Signos Vitales — TA, FC, FR, T°, SatO2, Peso, Talla, IMC:'},
-  'copy_pe':            {'pt': '  Exame físico por sistemas:\n',         'es': '  Examen por Sistemas/Aparatos:\n'},
+  'copy_s6': {
+    'pt': '\n── 6. EXAME FÍSICO ──',
+    'es': '\n── 6. EXAMEN FÍSICO ──',
+  },
+  'copy_vitals': {
+    'pt': '  Sinais vitais (PA, FC, FR, T°, SpO2, Peso, Altura, IMC):',
+    'es': '  Signos Vitales — TA, FC, FR, T°, SatO2, Peso, Talla, IMC:',
+  },
+  'copy_pe': {
+    'pt': '  Exame físico por sistemas:\n',
+    'es': '  Examen por Sistemas/Aparatos:\n',
+  },
   // Sección 7
-  'copy_lab':           {'pt': '\n── 7. EXAMES COMPLEMENTARES ──\n',    'es': '\n── 7. ESTUDIOS COMPLEMENTARIOS ──\n'},
-  'copy_img':           {'pt': '  Imagem:\n',                           'es': '  Estudios de Imagen:\n'},
+  'copy_lab': {
+    'pt': '\n── 7. EXAMES COMPLEMENTARES ──\n',
+    'es': '\n── 7. ESTUDIOS COMPLEMENTARIOS ──\n',
+  },
+  'copy_img': {'pt': '  Imagem:\n', 'es': '  Estudios de Imagen:\n'},
   // Sección 8
-  'copy_work_dx':       {'pt': '\n── 8. HIPÓTESE DIAGNÓSTICA ──\n',     'es': '\n── 8. IMPRESIÓN DIAGNÓSTICA ──\n'},
-  'copy_final_dx':      {'pt': 'DIAGNÓSTICO FINAL: ',                   'es': 'Diagnóstico confirmado (CIE-10): '},
+  'copy_work_dx': {
+    'pt': '\n── 8. HIPÓTESE DIAGNÓSTICA ──\n',
+    'es': '\n── 8. IMPRESIÓN DIAGNÓSTICA ──\n',
+  },
+  'copy_final_dx': {
+    'pt': 'DIAGNÓSTICO FINAL: ',
+    'es': 'Diagnóstico confirmado (CIE-10): ',
+  },
   // Sección 9
-  'copy_evol':          {'pt': '\n── 9. EVOLUÇÃO CLÍNICA ──\nEvolução ', 'es': '\n── 9. EVOLUCIÓN CLÍNICA ──\nRegistro '},
+  'copy_evol': {
+    'pt': '\n── 9. EVOLUÇÃO CLÍNICA ──\nEvolução ',
+    'es': '\n── 9. EVOLUCIÓN CLÍNICA ──\nRegistro ',
+  },
   // Sección 10
-  'copy_treat':         {'pt': '\n── 10. CONDUTAS E INDICAÇÕES MÉDICAS ──\n', 'es': '\n── 10. INDICACIONES MÉDICAS ──\n'},
+  'copy_treat': {
+    'pt': '\n── 10. CONDUTAS E INDICAÇÕES MÉDICAS ──\n',
+    'es': '\n── 10. INDICACIONES MÉDICAS ──\n',
+  },
   // Sección 11
-  'copy_outcome':       {'pt': '\n── 11. DESFECHO E ALTA ──\nDesfecho: ', 'es': '\n── 11. EPICRISIS / RESUMEN DE ALTA ──\nDesenlace: '},
-  'copy_followup':      {'pt': 'Seguimento: ',                          'es': 'Indicaciones al alta / Seguimiento ambulatorio:\n'},
+  'copy_outcome': {
+    'pt': '\n── 11. DESFECHO E ALTA ──\nDesfecho: ',
+    'es': '\n── 11. EPICRISIS / RESUMEN DE ALTA ──\nDesenlace: ',
+  },
+  'copy_followup': {
+    'pt': 'Seguimento: ',
+    'es': 'Indicaciones al alta / Seguimiento ambulatorio:\n',
+  },
   // ── PDF sections — Esquema 11 secciones Argentina ─────────────────────
-  'pdf_hc_title':       {'pt': 'História Clínica',                     'es': 'Historia Clínica'},
-  'pdf_section1':       {'pt': '1. IDENTIFICAÇÃO DO PACIENTE',          'es': '1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS'},
-  'pdf_initials':       {'pt': 'Iniciais / Nome',                       'es': 'Nombre y Apellido'},
-  'pdf_demog':          {'pt': 'Dados demográficos',                    'es': 'Edad / Fecha de Nacimiento · Sexo / Género'},
-  'pdf_patient':        {'pt': 'Paciente',                              'es': 'Paciente'},
-  'pdf_age_label':      {'pt': 'Idade',                                 'es': 'Edad'},
-  'pdf_specialty':      {'pt': 'Especialidade',                         'es': 'Especialidad'},
-  'pdf_dni':            {'pt': 'Prontuário',                            'es': 'DNI / Pasaporte'},
-  'pdf_record':         {'pt': 'Nº Prontuário',                         'es': 'Nº Historia Clínica / Expediente'},
-  'pdf_obra_social':    {'pt': 'Convênio / Plano de Saúde',             'es': 'Obra Social / Prepaga o Plan de Salud'},
-  'pdf_ingreso':        {'pt': 'Data e hora de internação',             'es': 'Fecha y hora de ingreso'},
-  'pdf_contacto':       {'pt': 'Contato (familiar/responsável)',        'es': 'Persona de contacto (familiar/tutor)'},
-  'pdf_section2':       {'pt': '2. QUEIXA PRINCIPAL',                   'es': '2. MOTIVO DE CONSULTA'},
-  'pdf_section3':       {'pt': '3. ENFERMIDADE ATUAL (EA)',             'es': '3. ENFERMEDAD ACTUAL (EA)'},
-  'pdf_hpi':            {'pt': 'História da doença atual',              'es': 'Descripción cronológica detallada'},
-  'pdf_section4':       {'pt': '4. ANTECEDENTES PESSOAIS',              'es': '4. ANTECEDENTES PERSONALES'},
-  'pdf_past':           {'pt': 'Antecedentes patológicos',              'es': 'Patológicos (enfermedades, cirugías, internaciones)'},
-  'pdf_allerg':         {'pt': 'Alergias',                              'es': 'Alérgicos (medicamentos, alimentos, ambientales)'},
-  'pdf_meds':           {'pt': 'Medicamentos em uso',                   'es': 'Medicamentos habituales (droga, dosis, tiempo de uso)'},
-  'pdf_social':         {'pt': 'Hábitos (tabagismo, etilismo, atividade física)', 'es': 'Hábitos (tabaquismo, alcohol, actividad física, dieta)'},
-  'pdf_rvs':            {'pt': 'Revisão de sistemas',                   'es': 'Gineco-obstétricos (si corresponde)'},
-  'pdf_section5':       {'pt': '5. ANTECEDENTES FAMILIARES',            'es': '5. ANTECEDENTES FAMILIARES'},
-  'pdf_family':         {'pt': 'Antecedentes familiares',               'es': 'Enfermedades relevantes en familiares de 1ª y 2ª línea'},
-  'pdf_section6':       {'pt': '6. EXAME FÍSICO',                       'es': '6. EXAMEN FÍSICO'},
-  'pdf_vitals':         {'pt': 'Sinais vitais',                         'es': 'Signos Vitales — TA · FC · FR · T° · SatO2 · Peso · Talla · IMC'},
-  'pdf_vitals_sub':     {'pt': 'PA, FC, FR, T°, SpO2, Peso, Altura, IMC', 'es': 'Tensión arterial (TA), Frecuencia cardíaca (FC), Frecuencia respiratoria (FR), Temperatura (T°), Saturación de oxígeno (SatO2), Peso, Talla, IMC'},
-  'pdf_exam_gen':       {'pt': 'Exame geral',                           'es': 'Examen General (conciencia, piel/mucosas, TCS, ganglios)'},
-  'pdf_pe':             {'pt': 'Exame físico por sistemas',             'es': 'Examen por Sistemas/Aparatos (CV · Resp · Abdomen · SN · GU · Osteoarticular)'},
-  'pdf_section7':       {'pt': '7. EXAMES COMPLEMENTARES',             'es': '7. ESTUDIOS COMPLEMENTARIOS'},
-  'pdf_lab':            {'pt': 'Exames laboratoriais',                  'es': 'Análisis de laboratorio'},
-  'pdf_ecg':            {'pt': 'ECG / Outros (biópsia, EEG...)',        'es': 'ECG / Otros (biopsia, EEG, espirometría...)'},
-  'pdf_img':            {'pt': 'Exames de imagem',                      'es': 'Estudios por imágenes'},
-  'pdf_section8':       {'pt': '8. IMPRESIÓN DIAGNÓSTICA',              'es': '8. IMPRESIÓN DIAGNÓSTICA'},
-  'pdf_work_dx':        {'pt': 'Hipótese principal',                    'es': 'Presunciones diagnósticas (por orden de prioridad clínica)'},
-  'pdf_diff_dx':        {'pt': 'Diagnósticos diferenciais',             'es': 'Diagnósticos diferenciales / HCOP'},
-  'pdf_section9':       {'pt': '9. EVOLUÇÃO CLÍNICA',                   'es': '9. EVOLUCIÓN CLÍNICA'},
-  'pdf_section10':      {'pt': '10. CONDUTAS E INDICAÇÕES MÉDICAS',     'es': '10. INDICACIONES MÉDICAS'},
-  'pdf_plan':           {'pt': 'Plano terapêutico',                     'es': 'Dieta · Posición · Hidratación · Medicación (droga/dosis/vía/frecuencia)'},
-  'pdf_proc':           {'pt': 'Procedimentos realizados',              'es': 'Controles (signos vitales, balance hídrico) · Pedidos de estudios'},
-  'pdf_section11':      {'pt': '11. DESFECHO E ALTA',                   'es': '11. EPICRISIS / RESUMEN DE ALTA'},
-  'pdf_discharge':      {'pt': 'Condições de alta',                     'es': 'Diagnóstico de egreso · Condiciones de alta'},
-  'pdf_followup':       {'pt': 'Seguimento / Orientações ao alta',      'es': 'Tratamiento farmacológico · Pautas de alarma · Seguimiento ambulatorio'},
-  'pdf_footer':         {'pt': 'Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.',
-                          'es': 'Generado por MedCases Pro — Uso exclusivamente educativo y de apoyo clínico. No sustituye la evaluación médica individual presencial.'},
+  'pdf_hc_title': {'pt': 'História Clínica', 'es': 'Historia Clínica'},
+  'pdf_section1': {
+    'pt': '1. IDENTIFICAÇÃO DO PACIENTE',
+    'es': '1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS',
+  },
+  'pdf_initials': {'pt': 'Iniciais / Nome', 'es': 'Nombre y Apellido'},
+  'pdf_demog': {
+    'pt': 'Dados demográficos',
+    'es': 'Edad / Fecha de Nacimiento · Sexo / Género',
+  },
+  'pdf_patient': {'pt': 'Paciente', 'es': 'Paciente'},
+  'pdf_age_label': {'pt': 'Idade', 'es': 'Edad'},
+  'pdf_specialty': {'pt': 'Especialidade', 'es': 'Especialidad'},
+  'pdf_dni': {'pt': 'Prontuário', 'es': 'DNI / Pasaporte'},
+  'pdf_record': {
+    'pt': 'Nº Prontuário',
+    'es': 'Nº Historia Clínica / Expediente',
+  },
+  'pdf_obra_social': {
+    'pt': 'Convênio / Plano de Saúde',
+    'es': 'Obra Social / Prepaga o Plan de Salud',
+  },
+  'pdf_ingreso': {
+    'pt': 'Data e hora de internação',
+    'es': 'Fecha y hora de ingreso',
+  },
+  'pdf_contacto': {
+    'pt': 'Contato (familiar/responsável)',
+    'es': 'Persona de contacto (familiar/tutor)',
+  },
+  'pdf_section2': {'pt': '2. QUEIXA PRINCIPAL', 'es': '2. MOTIVO DE CONSULTA'},
+  'pdf_section3': {
+    'pt': '3. ENFERMIDADE ATUAL (EA)',
+    'es': '3. ENFERMEDAD ACTUAL (EA)',
+  },
+  'pdf_hpi': {
+    'pt': 'História da doença atual',
+    'es': 'Descripción cronológica detallada',
+  },
+  'pdf_section4': {
+    'pt': '4. ANTECEDENTES PESSOAIS',
+    'es': '4. ANTECEDENTES PERSONALES',
+  },
+  'pdf_past': {
+    'pt': 'Antecedentes patológicos',
+    'es': 'Patológicos (enfermedades, cirugías, internaciones)',
+  },
+  'pdf_allerg': {
+    'pt': 'Alergias',
+    'es': 'Alérgicos (medicamentos, alimentos, ambientales)',
+  },
+  'pdf_meds': {
+    'pt': 'Medicamentos em uso',
+    'es': 'Medicamentos habituales (droga, dosis, tiempo de uso)',
+  },
+  'pdf_social': {
+    'pt': 'Hábitos (tabagismo, etilismo, atividade física)',
+    'es': 'Hábitos (tabaquismo, alcohol, actividad física, dieta)',
+  },
+  'pdf_rvs': {
+    'pt': 'Revisão de sistemas',
+    'es': 'Gineco-obstétricos (si corresponde)',
+  },
+  'pdf_section5': {
+    'pt': '5. ANTECEDENTES FAMILIARES',
+    'es': '5. ANTECEDENTES FAMILIARES',
+  },
+  'pdf_family': {
+    'pt': 'Antecedentes familiares',
+    'es': 'Enfermedades relevantes en familiares de 1ª y 2ª línea',
+  },
+  'pdf_section6': {'pt': '6. EXAME FÍSICO', 'es': '6. EXAMEN FÍSICO'},
+  'pdf_vitals': {
+    'pt': 'Sinais vitais',
+    'es': 'Signos Vitales — TA · FC · FR · T° · SatO2 · Peso · Talla · IMC',
+  },
+  'pdf_vitals_sub': {
+    'pt': 'PA, FC, FR, T°, SpO2, Peso, Altura, IMC',
+    'es':
+        'Tensión arterial (TA), Frecuencia cardíaca (FC), Frecuencia respiratoria (FR), Temperatura (T°), Saturación de oxígeno (SatO2), Peso, Talla, IMC',
+  },
+  'pdf_exam_gen': {
+    'pt': 'Exame geral',
+    'es': 'Examen General (conciencia, piel/mucosas, TCS, ganglios)',
+  },
+  'pdf_pe': {
+    'pt': 'Exame físico por sistemas',
+    'es':
+        'Examen por Sistemas/Aparatos (CV · Resp · Abdomen · SN · GU · Osteoarticular)',
+  },
+  'pdf_section7': {
+    'pt': '7. EXAMES COMPLEMENTARES',
+    'es': '7. ESTUDIOS COMPLEMENTARIOS',
+  },
+  'pdf_lab': {'pt': 'Exames laboratoriais', 'es': 'Análisis de laboratorio'},
+  'pdf_ecg': {
+    'pt': 'ECG / Outros (biópsia, EEG...)',
+    'es': 'ECG / Otros (biopsia, EEG, espirometría...)',
+  },
+  'pdf_img': {'pt': 'Exames de imagem', 'es': 'Estudios por imágenes'},
+  'pdf_section8': {
+    'pt': '8. IMPRESIÓN DIAGNÓSTICA',
+    'es': '8. IMPRESIÓN DIAGNÓSTICA',
+  },
+  'pdf_work_dx': {
+    'pt': 'Hipótese principal',
+    'es': 'Presunciones diagnósticas (por orden de prioridad clínica)',
+  },
+  'pdf_diff_dx': {
+    'pt': 'Diagnósticos diferenciais',
+    'es': 'Diagnósticos diferenciales / HCOP',
+  },
+  'pdf_section9': {'pt': '9. EVOLUÇÃO CLÍNICA', 'es': '9. EVOLUCIÓN CLÍNICA'},
+  'pdf_section10': {
+    'pt': '10. CONDUTAS E INDICAÇÕES MÉDICAS',
+    'es': '10. INDICACIONES MÉDICAS',
+  },
+  'pdf_plan': {
+    'pt': 'Plano terapêutico',
+    'es':
+        'Dieta · Posición · Hidratación · Medicación (droga/dosis/vía/frecuencia)',
+  },
+  'pdf_proc': {
+    'pt': 'Procedimentos realizados',
+    'es': 'Controles (signos vitales, balance hídrico) · Pedidos de estudios',
+  },
+  'pdf_section11': {
+    'pt': '11. DESFECHO E ALTA',
+    'es': '11. EPICRISIS / RESUMEN DE ALTA',
+  },
+  'pdf_discharge': {
+    'pt': 'Condições de alta',
+    'es': 'Diagnóstico de egreso · Condiciones de alta',
+  },
+  'pdf_followup': {
+    'pt': 'Seguimento / Orientações ao alta',
+    'es':
+        'Tratamiento farmacológico · Pautas de alarma · Seguimiento ambulatorio',
+  },
+  'pdf_footer': {
+    'pt':
+        'Gerado por MedCases Pro — Uso exclusivamente educacional e de apoio clínico. Não substitui avaliação médica individual presencial.',
+    'es':
+        'Generado por MedCases Pro — Uso exclusivamente educativo y de apoyo clínico. No sustituye la evaluación médica individual presencial.',
+  },
   // Banner de diagnóstico
-  'dx_final_label':     {'pt': 'DIAGNÓSTICO FINAL',                    'es': 'DIAGNÓSTICO FINAL'},
-  'dx_working_label':   {'pt': 'HIPÓTESE DIAGNÓSTICA',                 'es': 'HIPÓTESIS DIAGNÓSTICA'},
-  'dx_diff_label':      {'pt': 'DIAGNÓSTICO DIFERENCIAL',              'es': 'DIAGNÓSTICO DIFERENCIAL'},
+  'dx_final_label': {'pt': 'DIAGNÓSTICO FINAL', 'es': 'DIAGNÓSTICO FINAL'},
+  'dx_working_label': {
+    'pt': 'HIPÓTESE DIAGNÓSTICA',
+    'es': 'HIPÓTESIS DIAGNÓSTICA',
+  },
+  'dx_diff_label': {
+    'pt': 'DIAGNÓSTICO DIFERENCIAL',
+    'es': 'DIAGNÓSTICO DIFERENCIAL',
+  },
   // PDF evolução tipos
-  'evo_med':            {'pt': 'Evolução Médica',                      'es': 'Evolución Médica'},
-  'evo_nurs':           {'pt': 'Nota de Enfermagem',                   'es': 'Nota de Enfermería'},
-  'evo_lab':            {'pt': 'Resultado Lab',                        'es': 'Resultado Lab'},
-  'evo_img':            {'pt': 'Laudo Imagem',                         'es': 'Informe Imagen'},
-  'evo_proc':           {'pt': 'Procedimento',                         'es': 'Procedimiento'},
-  'evo_default':        {'pt': 'Evolução',                             'es': 'Evolución'},
+  'evo_med': {'pt': 'Evolução Médica', 'es': 'Evolución Médica'},
+  'evo_nurs': {'pt': 'Nota de Enfermagem', 'es': 'Nota de Enfermería'},
+  'evo_lab': {'pt': 'Resultado Lab', 'es': 'Resultado Lab'},
+  'evo_img': {'pt': 'Laudo Imagem', 'es': 'Informe Imagen'},
+  'evo_proc': {'pt': 'Procedimento', 'es': 'Procedimiento'},
+  'evo_default': {'pt': 'Evolução', 'es': 'Evolución'},
   // PDF outcomes
-  'out_internado':      {'pt': 'Internado',                            'es': 'Hospitalizado'},
-  'out_alta':           {'pt': 'Alta hospitalar',                      'es': 'Alta hospitalaria'},
-  'out_obito':          {'pt': 'Óbito',                                'es': 'Fallecimiento'},
-  'out_transfer':       {'pt': 'Transferência',                        'es': 'Traslado'},
+  'out_internado': {'pt': 'Internado', 'es': 'Hospitalizado'},
+  'out_alta': {'pt': 'Alta hospitalar', 'es': 'Alta hospitalaria'},
+  'out_obito': {'pt': 'Óbito', 'es': 'Fallecimiento'},
+  'out_transfer': {'pt': 'Transferência', 'es': 'Traslado'},
   // Visualizador — seções com ícones
-  'det_anamnese':       {'pt': 'ANAMNESE',                             'es': 'ANAMNESIS'},
-  'det_chief':          {'pt': 'Queixa principal',                     'es': 'Motivo de consulta'},
-  'det_hpi':            {'pt': 'História da doença atual',             'es': 'Enfermedad actual'},
-  'det_past':           {'pt': 'Antecedentes pessoais',                'es': 'Antecedentes personales'},
-  'det_family':         {'pt': 'Antecedentes familiares',              'es': 'Antecedentes familiares'},
-  'det_social':         {'pt': 'História social',                      'es': 'Historia social'},
-  'det_meds':           {'pt': 'Medicamentos em uso',                  'es': 'Medicación habitual'},
-  'det_rvs':            {'pt': 'Revisão de sistemas',                  'es': 'Revisión de sistemas'},
-  'det_exam':           {'pt': 'EXAME FÍSICO',                         'es': 'EXAMEN FÍSICO'},
-  'det_vitals':         {'pt': 'Sinais vitais',                        'es': 'Signos vitales'},
-  'det_pe':             {'pt': 'Exame físico',                         'es': 'Examen físico'},
-  'det_labs':           {'pt': 'EXAMES COMPLEMENTARES',                'es': 'ESTUDIOS COMPLEMENTARIOS'},
-  'det_lab_res':        {'pt': 'Laboratório',                          'es': 'Laboratorio'},
-  'det_img':            {'pt': 'Imagem',                               'es': 'Imagen'},
-  'det_other':          {'pt': 'Outros (ECG, biópsia...)',              'es': 'Otros (ECG, biopsia...)'},
-  'det_treat':          {'pt': 'CONDUTA E TRATAMENTO',                 'es': 'CONDUCTA Y TRATAMIENTO'},
-  'det_plan':           {'pt': 'Plano terapêutico',                    'es': 'Plan terapéutico'},
-  'det_proc':           {'pt': 'Procedimentos',                        'es': 'Procedimientos'},
-  'det_outcome':        {'pt': 'DESFECHO E ALTA',                      'es': 'DESENLACE Y ALTA'},
-  'det_discharge':      {'pt': 'Condições de alta',                    'es': 'Condiciones de alta'},
-  'det_followup':       {'pt': 'Seguimento',                           'es': 'Seguimiento'},
+  'det_anamnese': {'pt': 'ANAMNESE', 'es': 'ANAMNESIS'},
+  'det_chief': {'pt': 'Queixa principal', 'es': 'Motivo de consulta'},
+  'det_hpi': {'pt': 'História da doença atual', 'es': 'Enfermedad actual'},
+  'det_past': {'pt': 'Antecedentes pessoais', 'es': 'Antecedentes personales'},
+  'det_family': {
+    'pt': 'Antecedentes familiares',
+    'es': 'Antecedentes familiares',
+  },
+  'det_social': {'pt': 'História social', 'es': 'Historia social'},
+  'det_meds': {'pt': 'Medicamentos em uso', 'es': 'Medicación habitual'},
+  'det_rvs': {'pt': 'Revisão de sistemas', 'es': 'Revisión de sistemas'},
+  'det_exam': {'pt': 'EXAME FÍSICO', 'es': 'EXAMEN FÍSICO'},
+  'det_vitals': {'pt': 'Sinais vitais', 'es': 'Signos vitales'},
+  'det_pe': {'pt': 'Exame físico', 'es': 'Examen físico'},
+  'det_labs': {'pt': 'EXAMES COMPLEMENTARES', 'es': 'ESTUDIOS COMPLEMENTARIOS'},
+  'det_lab_res': {'pt': 'Laboratório', 'es': 'Laboratorio'},
+  'det_img': {'pt': 'Imagem', 'es': 'Imagen'},
+  'det_other': {
+    'pt': 'Outros (ECG, biópsia...)',
+    'es': 'Otros (ECG, biopsia...)',
+  },
+  'det_treat': {'pt': 'CONDUTA E TRATAMENTO', 'es': 'CONDUCTA Y TRATAMIENTO'},
+  'det_plan': {'pt': 'Plano terapêutico', 'es': 'Plan terapéutico'},
+  'det_proc': {'pt': 'Procedimentos', 'es': 'Procedimientos'},
+  'det_outcome': {'pt': 'DESFECHO E ALTA', 'es': 'DESENLACE Y ALTA'},
+  'det_discharge': {'pt': 'Condições de alta', 'es': 'Condiciones de alta'},
+  'det_followup': {'pt': 'Seguimento', 'es': 'Seguimiento'},
   // Card lista — outcomes label
-  'outcome_alta':       {'pt': 'Alta',                                  'es': 'Alta'},
-  'outcome_obito':      {'pt': 'Óbito',                                 'es': 'Fallecimiento'},
-  'outcome_transfer':   {'pt': 'Transferência',                         'es': 'Traslado'},
-  'outcome_internado':  {'pt': 'Internado',                             'es': 'Hospitalizado'},
+  'outcome_alta': {'pt': 'Alta', 'es': 'Alta'},
+  'outcome_obito': {'pt': 'Óbito', 'es': 'Fallecimiento'},
+  'outcome_transfer': {'pt': 'Transferência', 'es': 'Traslado'},
+  'outcome_internado': {'pt': 'Internado', 'es': 'Hospitalizado'},
   // Card lista — hipótese
-  'card_dx':            {'pt': 'Dx:',                                   'es': 'Dx:'},
-  'card_hypo':          {'pt': 'Hipótese:',                             'es': 'Hipótesis:'},
+  'card_dx': {'pt': 'Dx:', 'es': 'Dx:'},
+  'card_hypo': {'pt': 'Hipótese:', 'es': 'Hipótesis:'},
   // Estado vazio
-  'empty_title':        {'pt': 'Nenhuma história clínica',              'es': 'Ninguna historia clínica'},
-  'empty_sub':          {'pt': 'Crie e documente seus casos clínicos\nde forma estruturada e completa', 'es': 'Cree y documente sus casos clínicos\nde forma estructurada y completa'},
-  'empty_btn':          {'pt': '+ Nova história clínica',               'es': '+ Nueva historia clínica'},
-  'empty_comm_title':   {'pt': 'Nenhuma história pública',              'es': 'Ninguna historia pública'},
-  'empty_comm_sub':     {'pt': 'Seja o primeiro a compartilhar!\nAnonimize e compartilhe seus casos.', 'es': '¡Sé el primero en compartir!\nAnonimiza y comparte tus casos.'},
-  'community_error_title': {'pt': 'Erro ao carregar comunidade',        'es': 'Error al cargar comunidad'},
-  'community_error_sub':   {'pt': 'Não foi possível buscar as histórias públicas agora.\nToque em atualizar para tentar novamente.', 'es': 'No fue posible cargar las historias públicas ahora.\nToque actualizar para reintentar.'},
-  'error_details':      {'pt': 'Detalhes técnicos',                     'es': 'Detalles técnicos'},
-  'refresh':            {'pt': 'Atualizar',                             'es': 'Actualizar'},
-  'loading_comm':       {'pt': 'Carregando histórias da comunidade…',   'es': 'Cargando historias de la comunidad…'},
+  'empty_title': {
+    'pt': 'Nenhuma história clínica',
+    'es': 'Ninguna historia clínica',
+  },
+  'empty_sub': {
+    'pt':
+        'Crie e documente seus casos clínicos\nde forma estruturada e completa',
+    'es':
+        'Cree y documente sus casos clínicos\nde forma estructurada y completa',
+  },
+  'empty_btn': {
+    'pt': '+ Nova história clínica',
+    'es': '+ Nueva historia clínica',
+  },
+  'empty_comm_title': {
+    'pt': 'Nenhuma história pública',
+    'es': 'Ninguna historia pública',
+  },
+  'empty_comm_sub': {
+    'pt':
+        'Seja o primeiro a compartilhar!\nAnonimize e compartilhe seus casos.',
+    'es': '¡Sé el primero en compartir!\nAnonimiza y comparte tus casos.',
+  },
+  'community_error_title': {
+    'pt': 'Erro ao carregar comunidade',
+    'es': 'Error al cargar comunidad',
+  },
+  'community_error_sub': {
+    'pt':
+        'Não foi possível buscar as histórias públicas agora.\nToque em atualizar para tentar novamente.',
+    'es':
+        'No fue posible cargar las historias públicas ahora.\nToque actualizar para reintentar.',
+  },
+  'error_details': {'pt': 'Detalhes técnicos', 'es': 'Detalles técnicos'},
+  'refresh': {'pt': 'Atualizar', 'es': 'Actualizar'},
+  'loading_comm': {
+    'pt': 'Carregando histórias da comunidade…',
+    'es': 'Cargando historias de la comunidad…',
+  },
   // Editor — header
-  'new_hc_title':       {'pt': 'Nova história clínica',                 'es': 'Nueva historia clínica'},
-  'preview_btn':        {'pt': 'Ver',                                   'es': 'Ver'},
-  'save_btn':           {'pt': 'Salvar',                                'es': 'Guardar'},
-  'progress_label':     {'pt': '% preenchido',                          'es': '% completado'},
+  'new_hc_title': {
+    'pt': 'Nova história clínica',
+    'es': 'Nueva historia clínica',
+  },
+  'preview_btn': {'pt': 'Ver', 'es': 'Ver'},
+  'save_btn': {'pt': 'Salvar', 'es': 'Guardar'},
+  'progress_label': {'pt': '% preenchido', 'es': '% completado'},
   // Editor — tabs seções
-  'sec_pe':             {'pt': 'Exame Físico',                          'es': 'Examen Físico'},
-  'sec_treat':          {'pt': 'Conduta',                               'es': 'Conducta'},
-  'sec_evol':           {'pt': 'Evolução',                              'es': 'Evolución'},
+  'sec_pe': {'pt': 'Exame Físico', 'es': 'Examen Físico'},
+  'sec_treat': {'pt': 'Conduta', 'es': 'Conducta'},
+  'sec_evol': {'pt': 'Evolução', 'es': 'Evolución'},
   // Editor — seção Paciente
-  'f_initials':         {'pt': 'Iniciais do paciente *',                'es': 'Iniciales del paciente *'},
-  'h_initials':         {'pt': 'J.S. (preservar privacidade)',          'es': 'J.S. (preservar privacidad)'},
-  'f_age':              {'pt': 'Idade',                                  'es': 'Edad'},
-  'f_sex':              {'pt': 'SEXO',                                   'es': 'SEXO'},
-  'sex_male':           {'pt': 'Masculino',                              'es': 'Masculino'},
-  'sex_female':         {'pt': 'Feminino',                               'es': 'Femenino'},
-  'f_weight':           {'pt': 'Peso (kg)',                              'es': 'Peso (kg)'},
-  'f_height':           {'pt': 'Altura (cm)',                            'es': 'Talla (cm)'},
-  'f_record':           {'pt': 'Nº Prontuário (opcional)',               'es': 'Nº Historia clínica (opcional)'},
-  'f_category':         {'pt': 'CATEGORIA / ESPECIALIDADE',              'es': 'CATEGORÍA / ESPECIALIDAD'},
-  'f_tags':             {'pt': 'Tags (ex: sepse, UTI, DM2)',             'es': 'Etiquetas (ej: sepsis, UCI, DM2)'},
-  'h_tags':             {'pt': 'sepse, pneumonia, idoso',                'es': 'sepsis, neumonía, anciano'},
-  'public_on':          {'pt': 'História pública — visível na Comunidade', 'es': 'Historia pública — visible en la Comunidad'},
-  'public_off':         {'pt': 'História privada — somente você vê',     'es': 'Historia privada — solo tú la ves'},
-  'public_hint':        {'pt': 'Toque para alternar. Dados do paciente são anonimizados (iniciais).', 'es': 'Toca para alternar. Los datos del paciente son anonimizados (iniciales).'},
+  'f_initials': {
+    'pt': 'Iniciais do paciente *',
+    'es': 'Iniciales del paciente *',
+  },
+  'h_initials': {
+    'pt': 'J.S. (preservar privacidade)',
+    'es': 'J.S. (preservar privacidad)',
+  },
+  'f_age': {'pt': 'Idade', 'es': 'Edad'},
+  'f_sex': {'pt': 'SEXO', 'es': 'SEXO'},
+  'sex_male': {'pt': 'Masculino', 'es': 'Masculino'},
+  'sex_female': {'pt': 'Feminino', 'es': 'Femenino'},
+  'f_weight': {'pt': 'Peso (kg)', 'es': 'Peso (kg)'},
+  'f_height': {'pt': 'Altura (cm)', 'es': 'Talla (cm)'},
+  'f_record': {
+    'pt': 'Nº Prontuário (opcional)',
+    'es': 'Nº Historia clínica (opcional)',
+  },
+  'f_category': {
+    'pt': 'CATEGORIA / ESPECIALIDADE',
+    'es': 'CATEGORÍA / ESPECIALIDAD',
+  },
+  'f_tags': {
+    'pt': 'Tags (ex: sepse, UTI, DM2)',
+    'es': 'Etiquetas (ej: sepsis, UCI, DM2)',
+  },
+  'h_tags': {
+    'pt': 'sepse, pneumonia, idoso',
+    'es': 'sepsis, neumonía, anciano',
+  },
+  'public_on': {
+    'pt': 'História pública — visível na Comunidade',
+    'es': 'Historia pública — visible en la Comunidad',
+  },
+  'public_off': {
+    'pt': 'História privada — somente você vê',
+    'es': 'Historia privada — solo tú la ves',
+  },
+  'public_hint': {
+    'pt': 'Toque para alternar. Dados do paciente são anonimizados (iniciais).',
+    'es':
+        'Toca para alternar. Los datos del paciente son anonimizados (iniciales).',
+  },
   // Editor — Anamnese
-  'f_chief':            {'pt': 'Queixa principal *',                     'es': 'Motivo de consulta *'},
-  'h_chief':            {'pt': 'Dor torácica há 2h',                    'es': 'Dolor torácico desde hace 2h'},
-  'f_hpi':              {'pt': 'História da doença atual (HDA)',         'es': 'Enfermedad actual (EA)'},
-  'h_hpi':              {'pt': 'Descrever cronologia, características, fatores...', 'es': 'Describir cronología, características, factores...'},
-  'f_past':             {'pt': 'Antecedentes pessoais',                  'es': 'Antecedentes personales'},
-  'h_past':             {'pt': 'HAS, DM2, IAM prévio, cirurgias...',    'es': 'HTA, DM2, IAM previo, cirugías...'},
-  'f_family':           {'pt': 'Antecedentes familiares',                'es': 'Antecedentes familiares'},
-  'h_family':           {'pt': 'Pai: IAM aos 55 anos. Mãe: DM2...',     'es': 'Padre: IAM a los 55 años. Madre: DM2...'},
-  'f_social':           {'pt': 'História social',                        'es': 'Historia social'},
-  'h_social':           {'pt': 'Tabagismo, etilismo, drogas, atividade física, profissão...', 'es': 'Tabaquismo, alcohol, drogas, actividad física, ocupación...'},
-  'f_meds':             {'pt': 'Medicamentos em uso',                    'es': 'Medicación habitual'},
-  'h_meds':             {'pt': 'AAS 100mg/dia, metformina 850mg 2x/dia...', 'es': 'AAS 100mg/día, metformina 850mg 2v/día...'},
-  'f_allerg':           {'pt': 'Alergias',                               'es': 'Alergias'},
-  'h_allerg':           {'pt': 'Penicilina (urticária), dipirona (angioedema)...', 'es': 'Penicilina (urticaria), dipirona (angioedema)...'},
-  'f_rvs':              {'pt': 'Revisão de sistemas',                    'es': 'Revisión de sistemas'},
-  'h_rvs':              {'pt': 'Cardiovascular, respiratório, GI, neurológico...', 'es': 'Cardiovascular, respiratorio, GI, neurológico...'},
+  'f_chief': {'pt': 'Queixa principal *', 'es': 'Motivo de consulta *'},
+  'h_chief': {'pt': 'Dor torácica há 2h', 'es': 'Dolor torácico desde hace 2h'},
+  'f_hpi': {
+    'pt': 'História da doença atual (HDA)',
+    'es': 'Enfermedad actual (EA)',
+  },
+  'h_hpi': {
+    'pt': 'Descrever cronologia, características, fatores...',
+    'es': 'Describir cronología, características, factores...',
+  },
+  'f_past': {'pt': 'Antecedentes pessoais', 'es': 'Antecedentes personales'},
+  'h_past': {
+    'pt': 'HAS, DM2, IAM prévio, cirurgias...',
+    'es': 'HTA, DM2, IAM previo, cirugías...',
+  },
+  'f_family': {
+    'pt': 'Antecedentes familiares',
+    'es': 'Antecedentes familiares',
+  },
+  'h_family': {
+    'pt': 'Pai: IAM aos 55 anos. Mãe: DM2...',
+    'es': 'Padre: IAM a los 55 años. Madre: DM2...',
+  },
+  'f_social': {'pt': 'História social', 'es': 'Historia social'},
+  'h_social': {
+    'pt': 'Tabagismo, etilismo, drogas, atividade física, profissão...',
+    'es': 'Tabaquismo, alcohol, drogas, actividad física, ocupación...',
+  },
+  'f_meds': {'pt': 'Medicamentos em uso', 'es': 'Medicación habitual'},
+  'h_meds': {
+    'pt': 'AAS 100mg/dia, metformina 850mg 2x/dia...',
+    'es': 'AAS 100mg/día, metformina 850mg 2v/día...',
+  },
+  'f_allerg': {'pt': 'Alergias', 'es': 'Alergias'},
+  'h_allerg': {
+    'pt': 'Penicilina (urticária), dipirona (angioedema)...',
+    'es': 'Penicilina (urticaria), dipirona (angioedema)...',
+  },
+  'f_rvs': {'pt': 'Revisão de sistemas', 'es': 'Revisión de sistemas'},
+  'h_rvs': {
+    'pt': 'Cardiovascular, respiratório, GI, neurológico...',
+    'es': 'Cardiovascular, respiratorio, GI, neurológico...',
+  },
   // Editor — Exame Físico
-  'f_pe':               {'pt': 'Exame físico por sistemas',              'es': 'Examen físico por sistemas'},
-  'h_pe':               {'pt': 'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...', 'es': 'General: BEG, normocolor, hidratado...\nCV: RCR 2T, sin soplos...\nTórax: MV+ bilateral, sin RA...\nAbdomen: RHA+, indoloro...'},
-  'f_work_dx':          {'pt': 'Hipótese diagnóstica principal',         'es': 'Hipótesis diagnóstica principal'},
-  'h_work_dx':          {'pt': 'Síndrome Coronariana Aguda STEMI anterior', 'es': 'Síndrome Coronario Agudo SCAEST anterior'},
-  'f_diff_dx':          {'pt': 'Diagnóstico diferencial',                'es': 'Diagnóstico diferencial'},
-  'h_diff_dx':          {'pt': 'Pericardite aguda, dissecção aórtica, TEP...', 'es': 'Pericarditis aguda, disección aórtica, TEP...'},
-  'f_final_dx':         {'pt': 'Diagnóstico final',                      'es': 'Diagnóstico final'},
-  'h_final_dx':         {'pt': 'IAM STEMI anterior',                    'es': 'IAM SCAEST anterior'},
+  'f_pe': {
+    'pt': 'Exame físico por sistemas',
+    'es': 'Examen físico por sistemas',
+  },
+  'h_pe': {
+    'pt':
+        'Geral: BEG, corado, hidratado...\nCV: RCR 2T, sem sopros...\nTórax: MV+ bilateral, sem RA...\nAbdome: RHA+, indolor...',
+    'es':
+        'General: BEG, normocolor, hidratado...\nCV: RCR 2T, sin soplos...\nTórax: MV+ bilateral, sin RA...\nAbdomen: RHA+, indoloro...',
+  },
+  'f_work_dx': {
+    'pt': 'Hipótese diagnóstica principal',
+    'es': 'Hipótesis diagnóstica principal',
+  },
+  'h_work_dx': {
+    'pt': 'Síndrome Coronariana Aguda STEMI anterior',
+    'es': 'Síndrome Coronario Agudo SCAEST anterior',
+  },
+  'f_diff_dx': {
+    'pt': 'Diagnóstico diferencial',
+    'es': 'Diagnóstico diferencial',
+  },
+  'h_diff_dx': {
+    'pt': 'Pericardite aguda, dissecção aórtica, TEP...',
+    'es': 'Pericarditis aguda, disección aórtica, TEP...',
+  },
+  'f_final_dx': {'pt': 'Diagnóstico final', 'es': 'Diagnóstico final'},
+  'h_final_dx': {'pt': 'IAM STEMI anterior', 'es': 'IAM SCAEST anterior'},
   // Editor — Exames
-  'f_img':              {'pt': 'Exames de imagem / Outros',              'es': 'Estudios de imagen / Otros'},
-  'h_img':              {'pt': 'RX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC crânio: sem lesões agudas...', 'es': 'RX tórax: sin congestión, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC cráneo: sin lesiones agudas...'},
+  'f_img': {
+    'pt': 'Exames de imagem / Outros',
+    'es': 'Estudios de imagen / Otros',
+  },
+  'h_img': {
+    'pt':
+        'RX tórax: sem congestão, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC crânio: sem lesões agudas...',
+    'es':
+        'RX tórax: sin congestión, ICT normal...\nEco: FE 48%, hipocinesia anterior...\nTC cráneo: sin lesiones agudas...',
+  },
   // Editor — Conduta
-  'f_plan':             {'pt': 'Plano terapêutico / Conduta',            'es': 'Plan terapéutico / Conducta'},
-  'h_plan':             {'pt': '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...', 'es': '1. AAS 300mg VO inmediato\n2. Ticagrelor 180mg VO\n3. Heparina no fraccionada EV\n4. Activar hemodinamia (meta puerta-balón < 90min)...'},
-  'f_proc':             {'pt': 'Procedimentos realizados',               'es': 'Procedimientos realizados'},
-  'h_proc':             {'pt': 'Cateterismo + angioplastia com stent em DA proximal...', 'es': 'Cateterismo + angioplastia con stent en DA proximal...'},
+  'f_plan': {
+    'pt': 'Plano terapêutico / Conduta',
+    'es': 'Plan terapéutico / Conducta',
+  },
+  'h_plan': {
+    'pt':
+        '1. AAS 300mg VO imediato\n2. Ticagrelor 180mg VO\n3. Heparina NF EV\n4. Ativar hemodinâmica (meta porta-balão < 90min)...',
+    'es':
+        '1. AAS 300mg VO inmediato\n2. Ticagrelor 180mg VO\n3. Heparina no fraccionada EV\n4. Activar hemodinamia (meta puerta-balón < 90min)...',
+  },
+  'f_proc': {
+    'pt': 'Procedimentos realizados',
+    'es': 'Procedimientos realizados',
+  },
+  'h_proc': {
+    'pt': 'Cateterismo + angioplastia com stent em DA proximal...',
+    'es': 'Cateterismo + angioplastia con stent en DA proximal...',
+  },
   // Editor — Evolução
-  'evol_title':         {'pt': 'NOTAS DE EVOLUÇÃO',                      'es': 'NOTAS DE EVOLUCIÓN'},
-  'evol_hint':          {'pt': 'Registre a evolução cronológica do paciente (diária, por turno, por evento).', 'es': 'Registre la evolución cronológica del paciente (diaria, por turno, por evento).'},
-  'add_evol':           {'pt': 'Adicionar nota de evolução',             'es': 'Agregar nota de evolución'},
-  'evol_author_hint':   {'pt': 'Dr./Enf. nome do profissional',          'es': 'Dr./Enf. nombre del profesional'},
-  'evol_text_hint':     {'pt': 'Nota de evolução...',                    'es': 'Nota de evolución...'},
+  'evol_title': {'pt': 'NOTAS DE EVOLUÇÃO', 'es': 'NOTAS DE EVOLUCIÓN'},
+  'evol_hint': {
+    'pt':
+        'Registre a evolução cronológica do paciente (diária, por turno, por evento).',
+    'es':
+        'Registre la evolución cronológica del paciente (diaria, por turno, por evento).',
+  },
+  'add_evol': {
+    'pt': 'Adicionar nota de evolução',
+    'es': 'Agregar nota de evolución',
+  },
+  'evol_author_hint': {
+    'pt': 'Dr./Enf. nome do profissional',
+    'es': 'Dr./Enf. nombre del profesional',
+  },
+  'evol_text_hint': {'pt': 'Nota de evolução...', 'es': 'Nota de evolución...'},
   // Editor — Desfecho
-  'outcome_title':      {'pt': 'DESFECHO',                               'es': 'DESENLACE'},
-  'f_discharge':        {'pt': 'Condições de alta',                      'es': 'Condiciones de alta'},
-  'h_discharge':        {'pt': 'BEG, estável, orientado, tolerando VO...', 'es': 'BEG, estable, orientado, tolerando VO...'},
-  'f_followup':         {'pt': 'Seguimento / Orientações',               'es': 'Seguimiento / Indicaciones'},
-  'h_followup':         {'pt': 'Retorno em 7 dias com cardiologista. Manter AAS + ticagrelor por 12 meses...', 'es': 'Retorno en 7 días con cardiólogo. Mantener AAS + ticagrelor por 12 meses...'},
+  'outcome_title': {'pt': 'DESFECHO', 'es': 'DESENLACE'},
+  'f_discharge': {'pt': 'Condições de alta', 'es': 'Condiciones de alta'},
+  'h_discharge': {
+    'pt': 'BEG, estável, orientado, tolerando VO...',
+    'es': 'BEG, estable, orientado, tolerando VO...',
+  },
+  'f_followup': {
+    'pt': 'Seguimento / Orientações',
+    'es': 'Seguimiento / Indicaciones',
+  },
+  'h_followup': {
+    'pt':
+        'Retorno em 7 dias com cardiologista. Manter AAS + ticagrelor por 12 meses...',
+    'es':
+        'Retorno en 7 días con cardiólogo. Mantener AAS + ticagrelor por 12 meses...',
+  },
   // Outcomes labels editor
-  'ol_internado':       {'pt': 'Internado',                              'es': 'Hospitalizado'},
-  'ol_alta':            {'pt': 'Alta',                                   'es': 'Alta'},
-  'ol_obito':           {'pt': 'Óbito',                                  'es': 'Fallec.'},
-  'ol_transfer':        {'pt': 'Transferência',                          'es': 'Traslado'},
+  'ol_internado': {'pt': 'Internado', 'es': 'Hospitalizado'},
+  'ol_alta': {'pt': 'Alta', 'es': 'Alta'},
+  'ol_obito': {'pt': 'Óbito', 'es': 'Fallec.'},
+  'ol_transfer': {'pt': 'Transferência', 'es': 'Traslado'},
   // Ditáfone
-  'dictaphone':         {'pt': 'Ditáfone inteligente',                   'es': 'Dictáfono inteligente'},
-  'dictaphone_active':  {'pt': 'DITÁFONE INTELIGENTE • Gravando',        'es': 'DICTÁFONO INTELIGENTE • Grabando'},
-  'dictaphone_hint':    {'pt': 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo', 'es': 'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto'},
-  'field_label':        {'pt': 'Campo: ',                                 'es': 'Campo: '},
-  'dictating':          {'pt': 'Ouvindo...',                             'es': 'Escuchando...'},
-  'dictate_btn':        {'pt': 'Ditar',                                  'es': 'Dictar'},
-  'dict_not_supported': {'pt': 'Ditado não suportado',                   'es': 'Dictado no soportado'},
-  'dict_browser_msg':   {'pt': 'Use Chrome ou Safari para o ditado.',    'es': 'Use Chrome o Safari para el dictado.'},
+  'dictaphone': {'pt': 'Ditáfone inteligente', 'es': 'Dictáfono inteligente'},
+  'dictaphone_active': {
+    'pt': 'DITÁFONE INTELIGENTE • Gravando',
+    'es': 'DICTÁFONO INTELIGENTE • Grabando',
+  },
+  'dictaphone_hint': {
+    'pt':
+        'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo',
+    'es':
+        'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto',
+  },
+  'field_label': {'pt': 'Campo: ', 'es': 'Campo: '},
+  'dictating': {'pt': 'Ouvindo...', 'es': 'Escuchando...'},
+  'dictate_btn': {'pt': 'Ditar', 'es': 'Dictar'},
+  'dict_not_supported': {
+    'pt': 'Ditado não suportado',
+    'es': 'Dictado no soportado',
+  },
+  'dict_browser_msg': {
+    'pt': 'Use Chrome ou Safari para o ditado.',
+    'es': 'Use Chrome o Safari para el dictado.',
+  },
   // Relato Livre — modo IA
-  'relato_btn':         {'pt': 'Relato Livre',                           'es': 'Relato Libre'},
-  'relato_active':      {'pt': 'GRAVANDO SEU RELATO CLÍNICO...',         'es': 'GRABANDO TU RELATO CLÍNICO...'},
-  'relato_hint':        {'pt': 'Fale livremente. A IA distribuirá nos campos ao final.', 'es': 'Habla libremente. La IA distribuirá en los campos al finalizar.'},
-  'relato_ready':       {'pt': 'Microfone pronto. Toque para ditar.',    'es': 'Micrófono listo. Toca para dictar.'},
-  'relato_processing':  {'pt': 'IA estruturando prontuário...',          'es': 'IA estructurando historia clínica...'},
-  'relato_done':        {'pt': 'Prontuário preenchido pela IA!',         'es': '¡Historia clínica completada por IA!'},
-  'relato_error':       {'pt': 'Erro ao processar com IA. Tente novamente.', 'es': 'Error al procesar con IA. Intenta de nuevo.'},
-  'relato_no_key':      {'pt': 'Configure a chave OpenAI nas configurações para usar este recurso.', 'es': 'Configura la clave OpenAI en ajustes para usar esta función.'},
-  'relato_empty':       {'pt': 'Nenhum áudio capturado. Tente novamente.', 'es': 'No se capturó audio. Intenta de nuevo.'},
+  'relato_btn': {'pt': 'Relato Livre', 'es': 'Relato Libre'},
+  'relato_active': {
+    'pt': 'GRAVANDO SEU RELATO CLÍNICO...',
+    'es': 'GRABANDO TU RELATO CLÍNICO...',
+  },
+  'relato_hint': {
+    'pt': 'Fale livremente. A IA distribuirá nos campos ao final.',
+    'es': 'Habla libremente. La IA distribuirá en los campos al finalizar.',
+  },
+  'relato_ready': {
+    'pt': 'Microfone pronto. Toque para ditar.',
+    'es': 'Micrófono listo. Toca para dictar.',
+  },
+  'relato_processing': {
+    'pt': 'IA estruturando prontuário...',
+    'es': 'IA estructurando historia clínica...',
+  },
+  'relato_done': {
+    'pt': 'Prontuário preenchido pela IA!',
+    'es': '¡Historia clínica completada por IA!',
+  },
+  'relato_error': {
+    'pt': 'Erro ao processar com IA. Tente novamente.',
+    'es': 'Error al procesar con IA. Intenta de nuevo.',
+  },
+  'relato_no_key': {
+    'pt': 'Configure a chave OpenAI nas configurações para usar este recurso.',
+    'es': 'Configura la clave OpenAI en ajustes para usar esta función.',
+  },
+  'relato_empty': {
+    'pt': 'Nenhum áudio capturado. Tente novamente.',
+    'es': 'No se capturó audio. Intenta de nuevo.',
+  },
   // Barra de navegação entre campos
-  'nav_prev':           {'pt': 'Campo anterior',                         'es': 'Campo anterior'},
-  'nav_next':           {'pt': 'Próximo campo',                          'es': 'Siguiente campo'},
+  'nav_prev': {'pt': 'Campo anterior', 'es': 'Campo anterior'},
+  'nav_next': {'pt': 'Próximo campo', 'es': 'Siguiente campo'},
   // Organizar com IA — modo texto livre
-  'organizar_btn':      {'pt': 'Organizar com IA',                       'es': 'Organizar con IA'},
-  'organizar_hint':     {'pt': 'Digite ou cole um texto clínico contínuo. A IA irá distribuir automaticamente nos campos da HC.', 'es': 'Escribe o pega un texto clínico continuo. La IA lo distribuirá automáticamente en los campos de la HC.'},
-  'organizar_placeholder': {'pt': 'Paciente de 58 anos, HAS, DM2, queixa de dor torácica há 2h irradiando para o braço esquerdo...', 'es': 'Paciente de 58 años, HTA, DM2, queja de dolor torácico desde hace 2h irradiado al brazo izquierdo...'},
-  'organizar_process':  {'pt': 'Organizar',                              'es': 'Organizar'},
-  'organizar_done':     {'pt': 'HC preenchida com sucesso!',             'es': '¡HC completada con éxito!'},
-  'organizar_error':    {'pt': 'Erro ao processar. Tente novamente.',    'es': 'Error al procesar. Intenta de nuevo.'},
-  'organizar_empty':    {'pt': 'Digite algum texto antes de continuar.', 'es': 'Escribe algún texto antes de continuar.'},
-  'organizar_title':    {'pt': 'Texto → Campos da HC',                   'es': 'Texto → Campos de la HC'},
+  'organizar_btn': {'pt': 'Organizar com IA', 'es': 'Organizar con IA'},
+  'organizar_hint': {
+    'pt':
+        'Digite ou cole um texto clínico contínuo. A IA irá distribuir automaticamente nos campos da HC.',
+    'es':
+        'Escribe o pega un texto clínico continuo. La IA lo distribuirá automáticamente en los campos de la HC.',
+  },
+  'organizar_placeholder': {
+    'pt':
+        'Paciente de 58 anos, HAS, DM2, queixa de dor torácica há 2h irradiando para o braço esquerdo...',
+    'es':
+        'Paciente de 58 años, HTA, DM2, queja de dolor torácico desde hace 2h irradiado al brazo izquierdo...',
+  },
+  'organizar_process': {'pt': 'Organizar', 'es': 'Organizar'},
+  'organizar_done': {
+    'pt': 'HC preenchida com sucesso!',
+    'es': '¡HC completada con éxito!',
+  },
+  'organizar_error': {
+    'pt': 'Erro ao processar. Tente novamente.',
+    'es': 'Error al procesar. Intenta de nuevo.',
+  },
+  'organizar_empty': {
+    'pt': 'Digite algum texto antes de continuar.',
+    'es': 'Escribe algún texto antes de continuar.',
+  },
+  'organizar_title': {
+    'pt': 'Texto → Campos da HC',
+    'es': 'Texto → Campos de la HC',
+  },
   // STT labels de campos
-  'stt_chief':          {'pt': 'Queixa principal',                       'es': 'Motivo de consulta'},
-  'stt_hpi':            {'pt': 'HDA',                                    'es': 'EA'},
-  'stt_past':           {'pt': 'Antecedentes pessoais',                  'es': 'Antecedentes personales'},
-  'stt_family':         {'pt': 'Antecedentes familiares',                'es': 'Antecedentes familiares'},
-  'stt_social':         {'pt': 'História social',                        'es': 'Historia social'},
-  'stt_meds':           {'pt': 'Medicamentos',                           'es': 'Medicación'},
-  'stt_allerg':         {'pt': 'Alergias',                               'es': 'Alergias'},
-  'stt_rvs':            {'pt': 'Revisão de sistemas',                    'es': 'Revisión de sistemas'},
-  'stt_vitals':         {'pt': 'Sinais vitais',                          'es': 'Signos vitales'},
-  'stt_pe':             {'pt': 'Exame físico',                           'es': 'Examen físico'},
-  'stt_work_dx':        {'pt': 'Hipótese diagnóstica',                   'es': 'Hipótesis diagnóstica'},
-  'stt_treat':          {'pt': 'Conduta',                                 'es': 'Conducta'},
+  'stt_chief': {'pt': 'Queixa principal', 'es': 'Motivo de consulta'},
+  'stt_hpi': {'pt': 'HDA', 'es': 'EA'},
+  'stt_past': {'pt': 'Antecedentes pessoais', 'es': 'Antecedentes personales'},
+  'stt_family': {
+    'pt': 'Antecedentes familiares',
+    'es': 'Antecedentes familiares',
+  },
+  'stt_social': {'pt': 'História social', 'es': 'Historia social'},
+  'stt_meds': {'pt': 'Medicamentos', 'es': 'Medicación'},
+  'stt_allerg': {'pt': 'Alergias', 'es': 'Alergias'},
+  'stt_rvs': {'pt': 'Revisão de sistemas', 'es': 'Revisión de sistemas'},
+  'stt_vitals': {'pt': 'Sinais vitais', 'es': 'Signos vitales'},
+  'stt_pe': {'pt': 'Exame físico', 'es': 'Examen físico'},
+  'stt_work_dx': {'pt': 'Hipótese diagnóstica', 'es': 'Hipótesis diagnóstica'},
+  'stt_treat': {'pt': 'Conduta', 'es': 'Conducta'},
   // Pré-visualização
-  'preview_title':      {'pt': 'PRÉ-VISUALIZAÇÃO',                       'es': 'PREVISUALIZACIÓN'},
-  'prev_anamnese':      {'pt': 'ANAMNESE',                               'es': 'ANAMNESIS'},
-  'prev_chief':         {'pt': 'Queixa principal',                        'es': 'Motivo de consulta'},
-  'prev_hpi':           {'pt': 'História da doença atual',               'es': 'Enfermedad actual'},
-  'prev_past':          {'pt': 'Antecedentes pessoais',                  'es': 'Antecedentes personales'},
-  'prev_social':        {'pt': 'História social',                        'es': 'Historia social'},
-  'prev_family':        {'pt': 'Antecedentes familiares',                'es': 'Antecedentes familiares'},
-  'prev_meds':          {'pt': 'Medicamentos em uso',                    'es': 'Medicación habitual'},
-  'prev_allerg':        {'pt': 'Alergias',                               'es': 'Alergias'},
-  'prev_rvs':           {'pt': 'Revisão de sistemas',                    'es': 'Revisión de sistemas'},
-  'prev_exam':          {'pt': 'EXAME FÍSICO',                           'es': 'EXAMEN FÍSICO'},
-  'prev_vitals':        {'pt': 'Sinais vitais',                          'es': 'Signos vitales'},
-  'prev_pe':            {'pt': 'Exame físico por sistemas',              'es': 'Examen físico por sistemas'},
-  'prev_dx':            {'pt': 'DIAGNÓSTICO',                            'es': 'DIAGNÓSTICO'},
-  'prev_work_dx':       {'pt': 'Hipótese diagnóstica',                   'es': 'Hipótesis diagnóstica'},
-  'prev_final_dx':      {'pt': 'Diagnóstico final',                      'es': 'Diagnóstico final'},
-  'prev_diff_dx':       {'pt': 'Diagnósticos diferenciais',              'es': 'Diagnósticos diferenciales'},
-  'prev_labs':          {'pt': 'EXAMES COMPLEMENTARES',                  'es': 'ESTUDIOS COMPLEMENTARIOS'},
-  'prev_lab':           {'pt': 'Laboratorio',                            'es': 'Laboratorio'},
-  'prev_img':           {'pt': 'Imagem',                                 'es': 'Imagen'},
-  'prev_other':         {'pt': 'Outros',                                 'es': 'Otros'},
-  'prev_treat':         {'pt': 'CONDUTA',                                'es': 'CONDUCTA'},
-  'prev_plan':          {'pt': 'Plano terapêutico',                      'es': 'Plan terapéutico'},
-  'prev_proc':          {'pt': 'Procedimentos',                          'es': 'Procedimientos'},
-  'prev_evol':          {'pt': 'EVOLUÇÃO',                               'es': 'EVOLUCIÓN'},
-  'prev_outcome':       {'pt': 'DESFECHO',                               'es': 'DESENLACE'},
-  'prev_discharge':     {'pt': 'Condições de alta',                      'es': 'Condiciones de alta'},
-  'prev_followup':      {'pt': 'Seguimento',                             'es': 'Seguimiento'},
+  'preview_title': {'pt': 'PRÉ-VISUALIZAÇÃO', 'es': 'PREVISUALIZACIÓN'},
+  'prev_anamnese': {'pt': 'ANAMNESE', 'es': 'ANAMNESIS'},
+  'prev_chief': {'pt': 'Queixa principal', 'es': 'Motivo de consulta'},
+  'prev_hpi': {'pt': 'História da doença atual', 'es': 'Enfermedad actual'},
+  'prev_past': {'pt': 'Antecedentes pessoais', 'es': 'Antecedentes personales'},
+  'prev_social': {'pt': 'História social', 'es': 'Historia social'},
+  'prev_family': {
+    'pt': 'Antecedentes familiares',
+    'es': 'Antecedentes familiares',
+  },
+  'prev_meds': {'pt': 'Medicamentos em uso', 'es': 'Medicación habitual'},
+  'prev_allerg': {'pt': 'Alergias', 'es': 'Alergias'},
+  'prev_rvs': {'pt': 'Revisão de sistemas', 'es': 'Revisión de sistemas'},
+  'prev_exam': {'pt': 'EXAME FÍSICO', 'es': 'EXAMEN FÍSICO'},
+  'prev_vitals': {'pt': 'Sinais vitais', 'es': 'Signos vitales'},
+  'prev_pe': {
+    'pt': 'Exame físico por sistemas',
+    'es': 'Examen físico por sistemas',
+  },
+  'prev_dx': {'pt': 'DIAGNÓSTICO', 'es': 'DIAGNÓSTICO'},
+  'prev_work_dx': {'pt': 'Hipótese diagnóstica', 'es': 'Hipótesis diagnóstica'},
+  'prev_final_dx': {'pt': 'Diagnóstico final', 'es': 'Diagnóstico final'},
+  'prev_diff_dx': {
+    'pt': 'Diagnósticos diferenciais',
+    'es': 'Diagnósticos diferenciales',
+  },
+  'prev_labs': {
+    'pt': 'EXAMES COMPLEMENTARES',
+    'es': 'ESTUDIOS COMPLEMENTARIOS',
+  },
+  'prev_lab': {'pt': 'Laboratorio', 'es': 'Laboratorio'},
+  'prev_img': {'pt': 'Imagem', 'es': 'Imagen'},
+  'prev_other': {'pt': 'Outros', 'es': 'Otros'},
+  'prev_treat': {'pt': 'CONDUTA', 'es': 'CONDUCTA'},
+  'prev_plan': {'pt': 'Plano terapêutico', 'es': 'Plan terapéutico'},
+  'prev_proc': {'pt': 'Procedimentos', 'es': 'Procedimientos'},
+  'prev_evol': {'pt': 'EVOLUÇÃO', 'es': 'EVOLUCIÓN'},
+  'prev_outcome': {'pt': 'DESFECHO', 'es': 'DESENLACE'},
+  'prev_discharge': {'pt': 'Condições de alta', 'es': 'Condiciones de alta'},
+  'prev_followup': {'pt': 'Seguimento', 'es': 'Seguimiento'},
   // OCR / Lab
-  'ocr_reading':        {'pt': 'Lendo imagem...',                        'es': 'Leyendo imagen...'},
-  'ocr_manual':         {'pt': 'Imagem carregada — preencha os campos manualmente ou instale Tesseract.js', 'es': 'Imagen cargada — complete los campos manualmente o instale Tesseract.js'},
-  'ocr_ok':             {'pt': 'Texto extraído! Revise os campos.',      'es': 'Texto extraído. Revise los campos.'},
-  'ocr_err':            {'pt': 'Falha OCR:',                             'es': 'Error OCR:'},
-  'ocr_btn':            {'pt': 'Foto/OCR',                               'es': 'Foto/OCR'},
-  'ocr_loading':        {'pt': 'Lendo...',                               'es': 'Leyendo...'},
-  'lab_filled':         {'pt': 'preenchido',                             'es': 'completado'},
-  'lab_exams':          {'pt': 'EXAMES LABORATORIAIS',                   'es': 'ESTUDIOS DE LABORATORIO'},
-  'lab_others_hint':    {'pt': 'Gasometria, hormônios, sorologia, culturas...', 'es': 'Gasometría, hormonas, serología, cultivos...'},
+  'ocr_reading': {'pt': 'Lendo imagem...', 'es': 'Leyendo imagen...'},
+  'ocr_manual': {
+    'pt':
+        'Imagem carregada — preencha os campos manualmente ou instale Tesseract.js',
+    'es':
+        'Imagen cargada — complete los campos manualmente o instale Tesseract.js',
+  },
+  'ocr_ok': {
+    'pt': 'Texto extraído! Revise os campos.',
+    'es': 'Texto extraído. Revise los campos.',
+  },
+  'ocr_err': {'pt': 'Falha OCR:', 'es': 'Error OCR:'},
+  'ocr_btn': {'pt': 'Foto/OCR', 'es': 'Foto/OCR'},
+  'ocr_loading': {'pt': 'Lendo...', 'es': 'Leyendo...'},
+  'lab_filled': {'pt': 'preenchido', 'es': 'completado'},
+  'lab_exams': {'pt': 'EXAMES LABORATORIAIS', 'es': 'ESTUDIOS DE LABORATORIO'},
+  'lab_others_hint': {
+    'pt': 'Gasometria, hormônios, sorologia, culturas...',
+    'es': 'Gasometría, hormonas, serología, cultivos...',
+  },
   // ── Seções do editor (tabs) ─────────────────────────────────────────────
-  'sec_patient':        {'pt': 'Paciente',                                'es': 'Paciente'},
-  'sec_anamnesis':      {'pt': 'Anamnese',                                'es': 'Anamnesis'},
-  'sec_physical':       {'pt': 'Exame Físico',                            'es': 'Examen Físico'},
-  'sec_exams':          {'pt': 'Exames',                                  'es': 'Estudios'},
-  'sec_treatment':      {'pt': 'Conduta',                                 'es': 'Conducta'},
-  'sec_evolution':      {'pt': 'Evolução',                                'es': 'Evolución'},
-  'sec_outcome':        {'pt': 'Desfecho',                                'es': 'Desenlace'},
+  'sec_patient': {'pt': 'Paciente', 'es': 'Paciente'},
+  'sec_anamnesis': {'pt': 'Anamnese', 'es': 'Anamnesis'},
+  'sec_physical': {'pt': 'Exame Físico', 'es': 'Examen Físico'},
+  'sec_exams': {'pt': 'Exames', 'es': 'Estudios'},
+  'sec_treatment': {'pt': 'Conduta', 'es': 'Conducta'},
+  'sec_evolution': {'pt': 'Evolução', 'es': 'Evolución'},
+  'sec_outcome': {'pt': 'Desfecho', 'es': 'Desenlace'},
   // ── Desfecho labels (botões) ─────────────────────────────────────────────
-  'out_transf':         {'pt': 'Transferência',                           'es': 'Transferencia'},
+  'out_transf': {'pt': 'Transferência', 'es': 'Transferencia'},
   // ── Labels de campos do editor ──────────────────────────────────────────
-  'f_allergies':        {'pt': 'Alergias',                                'es': 'Alergias'},
-  'f_cid':              {'pt': 'CID',                                     'es': 'CIE'},
-  'f_diffdx':           {'pt': 'Diagnóstico diferencial',                 'es': 'Diagnóstico diferencial'},
-  'f_finaldx':          {'pt': 'Diagnóstico final',                       'es': 'Diagnóstico final'},
-  'f_imaging':          {'pt': 'Exames de imagem / Outros',               'es': 'Estudios de imagen / Otros'},
-  'f_procedures':       {'pt': 'Procedimentos realizados',                'es': 'Procedimientos realizados'},
-  'f_ros':              {'pt': 'Revisão de sistemas',                     'es': 'Revisión de sistemas'},
-  'f_wdx':              {'pt': 'Hipótese diagnóstica principal',          'es': 'Hipótesis diagnóstica principal'},
+  'f_allergies': {'pt': 'Alergias', 'es': 'Alergias'},
+  'f_cid': {'pt': 'CID', 'es': 'CIE'},
+  'f_diffdx': {
+    'pt': 'Diagnóstico diferencial',
+    'es': 'Diagnóstico diferencial',
+  },
+  'f_finaldx': {'pt': 'Diagnóstico final', 'es': 'Diagnóstico final'},
+  'f_imaging': {
+    'pt': 'Exames de imagem / Outros',
+    'es': 'Estudios de imagen / Otros',
+  },
+  'f_procedures': {
+    'pt': 'Procedimentos realizados',
+    'es': 'Procedimientos realizados',
+  },
+  'f_ros': {'pt': 'Revisão de sistemas', 'es': 'Revisión de sistemas'},
+  'f_wdx': {
+    'pt': 'Hipótese diagnóstica principal',
+    'es': 'Hipótesis diagnóstica principal',
+  },
   // ── Hints de campos do editor ────────────────────────────────────────────
-  'h_allergies':        {'pt': 'Penicilina (urticária), dipirona (angioedema)...', 'es': 'Penicilina (urticaria), dipirona (angioedema)...'},
-  'h_diffdx':           {'pt': 'Pericardite aguda, dissecção aórtica, TEP...', 'es': 'Pericarditis aguda, disección aórtica, TEP...'},
-  'h_finaldx':          {'pt': 'IAM STEMI anterior',                     'es': 'IAM STEMI anterior'},
-  'h_imaging':          {'pt': 'RX tórax: sem congestão... Eco: FE 48%... TC crânio: sem lesões agudas...', 'es': 'RX tórax: sin congestión... Eco: FE 48%... TC cráneo: sin lesiones agudas...'},
-  'h_procedures':       {'pt': 'Cateterismo + angioplastia com stent em DA proximal...', 'es': 'Cateterismo + angioplastia con stent en DA proximal...'},
-  'h_ros':              {'pt': 'Cardiovascular, respiratório, GI, neurológico...', 'es': 'Cardiovascular, respiratorio, GI, neurológico...'},
-  'h_wdx':              {'pt': 'Síndrome Coronariana Aguda STEMI anterior', 'es': 'Síndrome Coronario Agudo STEMI anterior'},
+  'h_allergies': {
+    'pt': 'Penicilina (urticária), dipirona (angioedema)...',
+    'es': 'Penicilina (urticaria), dipirona (angioedema)...',
+  },
+  'h_diffdx': {
+    'pt': 'Pericardite aguda, dissecção aórtica, TEP...',
+    'es': 'Pericarditis aguda, disección aórtica, TEP...',
+  },
+  'h_finaldx': {'pt': 'IAM STEMI anterior', 'es': 'IAM STEMI anterior'},
+  'h_imaging': {
+    'pt':
+        'RX tórax: sem congestão... Eco: FE 48%... TC crânio: sem lesões agudas...',
+    'es':
+        'RX tórax: sin congestión... Eco: FE 48%... TC cráneo: sin lesiones agudas...',
+  },
+  'h_procedures': {
+    'pt': 'Cateterismo + angioplastia com stent em DA proximal...',
+    'es': 'Cateterismo + angioplastia con stent en DA proximal...',
+  },
+  'h_ros': {
+    'pt': 'Cardiovascular, respiratório, GI, neurológico...',
+    'es': 'Cardiovascular, respiratorio, GI, neurológico...',
+  },
+  'h_wdx': {
+    'pt': 'Síndrome Coronariana Aguda STEMI anterior',
+    'es': 'Síndrome Coronario Agudo STEMI anterior',
+  },
   // ── Ditáfone STT labels ──────────────────────────────────────────────────
-  'stt_allergies':      {'pt': 'Alergias',                                'es': 'Alergias'},
-  'stt_plan':           {'pt': 'Conduta',                                 'es': 'Conducta'},
-  'stt_ros':            {'pt': 'Revisão de sistemas',                     'es': 'Revisión de sistemas'},
-  'stt_wdx':            {'pt': 'Hipótese diagnóstica',                    'es': 'Hipótesis diagnóstica'},
-  'stt_evol_note':      {'pt': 'Nota de evolução',                       'es': 'Nota de evolución'},
+  'stt_allergies': {'pt': 'Alergias', 'es': 'Alergias'},
+  'stt_plan': {'pt': 'Conduta', 'es': 'Conducta'},
+  'stt_ros': {'pt': 'Revisão de sistemas', 'es': 'Revisión de sistemas'},
+  'stt_wdx': {'pt': 'Hipótese diagnóstica', 'es': 'Hipótesis diagnóstica'},
+  'stt_evol_note': {'pt': 'Nota de evolução', 'es': 'Nota de evolución'},
   // ── ECG labels ──────────────────────────────────────────────────────────
-  'ecg_ritmo':          {'pt': 'Ritmo',                                   'es': 'Ritmo'},
-  'ecg_st':             {'pt': 'Alterações ST/T',                         'es': 'Alteraciones ST/T'},
-  'ecg_outros':         {'pt': 'Outros Achados',                          'es': 'Otros Hallazgos'},
+  'ecg_ritmo': {'pt': 'Ritmo', 'es': 'Ritmo'},
+  'ecg_st': {'pt': 'Alterações ST/T', 'es': 'Alteraciones ST/T'},
+  'ecg_outros': {'pt': 'Outros Achados', 'es': 'Otros Hallazgos'},
   // ── Lab labels ───────────────────────────────────────────────────────────
-  'lab_others_title':   {'pt': 'Outros / Observações',                    'es': 'Otros / Observaciones'},
+  'lab_others_title': {
+    'pt': 'Outros / Observações',
+    'es': 'Otros / Observaciones',
+  },
   // ── Sinais vitais ─────────────────────────────────────────────────────
-  'vitals_title':       {'pt': 'Sinais Vitais',                           'es': 'Signos Vitales'},
+  'vitals_title': {'pt': 'Sinais Vitais', 'es': 'Signos Vitales'},
   // ── PDF labels (seções 5-10) ─────────────────────────────────────────
-  'pdf_lab_results':    {'pt': 'Exames laboratoriais',                    'es': 'Estudios de laboratorio'},
-  'pdf_ecg_others':     {'pt': 'ECG / Outros (biópsia, EEG...)',          'es': 'ECG / Otros (biopsia, EEG...)'},
-  'pdf_imaging_results':{'pt': 'Exames de imagem',                        'es': 'Estudios de imagen'},
-  'pdf_procedures':     {'pt': 'Procedimentos realizados',                'es': 'Procedimientos realizados'},
-  'pdf_out_alta':       {'pt': 'Alta hospitalar',                         'es': 'Alta hospitalaria'},
+  'pdf_lab_results': {
+    'pt': 'Exames laboratoriais',
+    'es': 'Estudios de laboratorio',
+  },
+  'pdf_ecg_others': {
+    'pt': 'ECG / Outros (biópsia, EEG...)',
+    'es': 'ECG / Otros (biopsia, EEG...)',
+  },
+  'pdf_imaging_results': {'pt': 'Exames de imagem', 'es': 'Estudios de imagen'},
+  'pdf_procedures': {
+    'pt': 'Procedimentos realizados',
+    'es': 'Procedimientos realizados',
+  },
+  'pdf_out_alta': {'pt': 'Alta hospitalar', 'es': 'Alta hospitalaria'},
   // ── PDF evolução typeMap ─────────────────────────────────────────────
-  'pdf_evo_med':        {'pt': 'Evolução Médica',                         'es': 'Evolución Médica'},
-  'pdf_evo_nurse':      {'pt': 'Nota de Enfermagem',                      'es': 'Nota de Enfermería'},
-  'pdf_evo_lab':        {'pt': 'Resultado Lab',                           'es': 'Resultado Lab'},
-  'pdf_evo_img':        {'pt': 'Laudo Imagem',                            'es': 'Informe de Imagen'},
-  'pdf_evo_proc':       {'pt': 'Procedimento',                            'es': 'Procedimiento'},
+  'pdf_evo_med': {'pt': 'Evolução Médica', 'es': 'Evolución Médica'},
+  'pdf_evo_nurse': {'pt': 'Nota de Enfermagem', 'es': 'Nota de Enfermería'},
+  'pdf_evo_lab': {'pt': 'Resultado Lab', 'es': 'Resultado Lab'},
+  'pdf_evo_img': {'pt': 'Laudo Imagem', 'es': 'Informe de Imagen'},
+  'pdf_evo_proc': {'pt': 'Procedimento', 'es': 'Procedimiento'},
   // ── Estado vazio — histórias ──────────────────────────────────────────
-  'new_history_btn':    {'pt': '+ Nova história clínica',                 'es': '+ Nuevo caso clínico'},
+  'new_history_btn': {
+    'pt': '+ Nova história clínica',
+    'es': '+ Nuevo caso clínico',
+  },
 };
 
 /// Retorna a string traduzida para o idioma dado.
@@ -470,11 +969,23 @@ class HistoryScreen extends StatefulWidget {
   /// Padrão idêntico ao AiScreen.chatKeyboardOpen.
   static final editorActive = ValueNotifier<bool>(false);
 
+  // MEDCASES_HC_DIRECT_NOVA_ENTRY_V1_B_R0_SIGNAL
+  // MainShell only requests the existing +NUEVA/+NOVA flow. The route itself
+  // remains owned by _HistoryScreenState/_startNewHistory.
+  static final newWorkspaceRequest = ValueNotifier<int>(0);
+
+  static void requestNewWorkspace() {
+    newWorkspaceRequest.value++;
+  }
+
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProviderStateMixin {
+class _HistoryScreenState extends State<HistoryScreen>
+    with SingleTickerProviderStateMixin {
+  // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_SCREEN_CANVAS_LIGHT
+  // MEDCASES_HISTORIA_CLINICA_CANONICAL_DENSITY_CARD_SURFACE_OVERFLOW_V1_B_R0_R1
   late TabController _tabCtrl;
   final _searchCtrl = TextEditingController();
 
@@ -489,12 +1000,38 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   // Filtro por intervalo de datas (null = sem filtro)
   DateTimeRange? _dateFilter;
 
+  // MEDCASES_HC_DIRECT_NOVA_ENTRY_V1_B_R0
+  int _handledNewWorkspaceRequest = HistoryScreen.newWorkspaceRequest.value;
+  bool _newWorkspaceRequestScheduled = false;
+
+  void _onNewWorkspaceRequest() {
+    // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_ENTRY
+    final request = HistoryScreen.newWorkspaceRequest.value;
+    if (request == _handledNewWorkspaceRequest) return;
+    _handledNewWorkspaceRequest = request;
+
+    if (_newWorkspaceRequestScheduled) return;
+    _newWorkspaceRequestScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _newWorkspaceRequestScheduled = false;
+      if (!mounted) return;
+      if (_tabCtrl.index != 2) {
+        _tabCtrl.animateTo(2);
+      }
+    });
+  }
+
   // MEMLEAK-FIX: listener nomeado em vez de lambda anônima — permite
   // removeListener() determinístico no dispose().
   void _onTabChange() {
-    if (_tabCtrl.index == 1 && mounted) {
+    if (!mounted) return;
+
+    if (_tabCtrl.index == 1) {
       context.read<AppProvider>().loadPublicHistories();
     }
+
+    setState(() {});
   }
 
   // PERF-FIX: debounce de busca — evita rebuild por cada letra.
@@ -511,7 +1048,13 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 2, vsync: this);
+    HistoryScreen.newWorkspaceRequest.addListener(_onNewWorkspaceRequest);
+    // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_CONTROLLER
+    _tabCtrl = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: 2,
+    );
     // PERF-FIX: listener de busca com debounce — substitui onChanged: setState
     _searchQuery.addListener(_onSearchQueryChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -541,6 +1084,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     _tabCtrl.dispose();
     _searchCtrl.dispose();
     _searchQuery.dispose(); // PERF-FIX: dispõe o ValueNotifier de busca
+    HistoryScreen.newWorkspaceRequest.removeListener(_onNewWorkspaceRequest);
     super.dispose();
   }
 
@@ -557,7 +1101,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       firstDate: DateTime(2020),
       lastDate: DateTime.now().add(const Duration(days: 1)),
       initialDateRange: _dateFilter,
-      locale: lang == 'es' ? const Locale('es', 'ES') : const Locale('pt', 'BR'),
+      locale:
+          lang == 'es' ? const Locale('es', 'ES') : const Locale('pt', 'BR'),
       builder: (context, child) {
         if (isDark) {
           // ── DARK MODE: esquema escuro com alto contraste ─────────────────
@@ -577,9 +1122,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 onSecondaryContainer: Colors.white,
               ),
               textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  foregroundColor: Color(0xFFF07E26),
-                ),
+                style: TextButton.styleFrom(foregroundColor: Color(0xFFF07E26)),
               ),
               dialogTheme: const DialogThemeData(
                 backgroundColor: Color(0xFF1E222D),
@@ -601,9 +1144,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 onSurface: Color(0xFF0F1116),
               ),
               textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  foregroundColor: Color(0xFFD46500),
-                ),
+                style: TextButton.styleFrom(foregroundColor: Color(0xFFD46500)),
               ),
             ),
             child: child!,
@@ -634,8 +1175,19 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       if (_dateFilter != null) {
         try {
           final dt = DateTime.parse(h.createdAt).toLocal();
-          final start = DateTime(_dateFilter!.start.year, _dateFilter!.start.month, _dateFilter!.start.day);
-          final end   = DateTime(_dateFilter!.end.year,   _dateFilter!.end.month,   _dateFilter!.end.day, 23, 59, 59);
+          final start = DateTime(
+            _dateFilter!.start.year,
+            _dateFilter!.start.month,
+            _dateFilter!.start.day,
+          );
+          final end = DateTime(
+            _dateFilter!.end.year,
+            _dateFilter!.end.month,
+            _dateFilter!.end.day,
+            23,
+            59,
+            59,
+          );
           if (dt.isBefore(start) || dt.isAfter(end)) return false;
         } catch (_) {
           // Se não puder parsear a data, não filtra esse item
@@ -650,7 +1202,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     if (_dateFilter == null) return '';
     final s = _dateFilter!.start;
     final e = _dateFilter!.end;
-    final fmt = (DateTime d) => '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year}';
+    final fmt = (DateTime d) =>
+        '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
     if (s.year == e.year && s.month == e.month && s.day == e.day) return fmt(s);
     return '${fmt(s)} – ${fmt(e)}';
   }
@@ -663,16 +1216,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   }
 
   void _startNewHistory(AppProvider p, String lang) {
-    // BUILD 331+ — Intercepção com Gravador Clínico Multimodal
-    // Exibe modal de seleção (gravar / digitar / blocos SOAP) antes do formulário
-    ClinicalRecorderSheet.showFlowSelection(
-      context,
-      onManual: () => _startBlankHistory(p, lang),
-      onSoapData: (soapData) {
-        // Cria modelo pré-populado com dados SOAP da IA e abre o editor
-        _startHistoryFromSoap(p, lang, soapData);
-      },
-    );
+    // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_NEW_ACTION
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_tabCtrl.index != 2) {
+      _tabCtrl.animateTo(2);
+    }
   }
 
   /// Cria e ativa um rascunho em branco (fluxo manual original)
@@ -682,11 +1230,13 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         p.currentUser?.email ??
         _hcT(lang, 'anon');
     final email = p.currentUser?.email ?? '';
-    _setEditing(ClinicalHistoryModel.blank(
-      authorUid: uid,
-      authorName: name,
-      authorEmail: email,
-    ));
+    _setEditing(
+      ClinicalHistoryModel.blank(
+        authorUid: uid,
+        authorName: name,
+        authorEmail: email,
+      ),
+    );
   }
 
   /// Cria modelo pré-populado com campos SOAP da IA e abre o editor
@@ -709,15 +1259,15 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
       authorName: name,
       authorEmail: email,
     ).copyWith(
-      chiefComplaint:    soap.subjective.isNotEmpty ? soap.subjective : null,
-      hpi:              soap.subjective.isNotEmpty ? soap.subjective : null,
-      vitalSigns:       soap.objective.isNotEmpty  ? soap.objective  : null,
-      physicalExam:     soap.objective.isNotEmpty  ? soap.objective  : null,
+      chiefComplaint: soap.subjective.isNotEmpty ? soap.subjective : null,
+      hpi: soap.subjective.isNotEmpty ? soap.subjective : null,
+      vitalSigns: soap.objective.isNotEmpty ? soap.objective : null,
+      physicalExam: soap.objective.isNotEmpty ? soap.objective : null,
       workingDiagnosis: soap.assessment.isNotEmpty ? soap.assessment : null,
-      differentialDx:   soap.assessment.isNotEmpty ? soap.assessment : null,
-      treatmentPlan:    soap.plan.isNotEmpty       ? soap.plan       : null,
-      medications:      soap.medications.isNotEmpty? soap.medications: null,
-      labResults:       soap.exams.isNotEmpty      ? soap.exams      : null,
+      differentialDx: soap.assessment.isNotEmpty ? soap.assessment : null,
+      treatmentPlan: soap.plan.isNotEmpty ? soap.plan : null,
+      medications: soap.medications.isNotEmpty ? soap.medications : null,
+      labResults: soap.exams.isNotEmpty ? soap.exams : null,
     );
 
     _setEditing(model);
@@ -749,10 +1299,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     );
   }
 
-  Widget _wrapHistoryCard({
-    required MedBreakpoints bp,
-    required Widget child,
-  }) {
+  Widget _wrapHistoryCard({required MedBreakpoints bp, required Widget child}) {
     if (!bp.isDesktop) return child;
     return Center(
       child: ConstrainedBox(
@@ -768,7 +1315,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     required Widget Function(BuildContext context, int index) itemBuilder,
   }) {
     return <Widget>[
-      const SliverToBoxAdapter(child: SizedBox(height: 8)),
+      const SliverToBoxAdapter(child: SizedBox(height: 6)),
       SliverPadding(
         padding: EdgeInsets.fromLTRB(
           bp.isDesktop ? bp.hPadding : 0,
@@ -788,11 +1335,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
 
   List<Widget> _buildStateSlivers(Widget child) {
     return <Widget>[
-      const SliverToBoxAdapter(child: SizedBox(height: 8)),
-      SliverFillRemaining(
-        hasScrollBody: false,
-        child: child,
-      ),
+      const SliverToBoxAdapter(child: SizedBox(height: 6)),
+      SliverFillRemaining(hasScrollBody: false, child: child),
     ];
   }
 
@@ -835,7 +1379,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
         onDelete: _viewingPublic
             ? null
             : () async {
-                await p.deleteHistory(_viewing!.id, wasPublic: _viewing!.isPublic);
+                await p.deleteHistory(
+                  _viewing!.id,
+                  wasPublic: _viewing!.isPublic,
+                );
                 if (!mounted) return;
                 setState(() => _viewing = null);
               },
@@ -847,7 +1394,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     final pub = _applyFilters(p.publicHistories);
     final visiblePub = _visibleCommunityHistories(pub, p);
     final bp = MedBreakpoints.of(context);
-    final bg = p.darkMode ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
+    final bg = p.darkMode ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
 
     Future<void> refreshCommunity() => p.loadPublicHistories(forceRemote: true);
     void triggerCommunityRefresh() {
@@ -859,7 +1406,6 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             slivers: _buildStateSlivers(
               _EmptyHistoryState(
                 lang: lang,
-                onNew: () => _startNewHistory(p, lang),
               ),
             ),
           )
@@ -938,16 +1484,22 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                                 if (context.mounted) {
                                   _showModSnack(
                                     context,
-                                    _hcT(lang, wasHidden ? 'hc_visible' : 'hc_hidden'),
+                                    _hcT(
+                                      lang,
+                                      wasHidden ? 'hc_visible' : 'hc_hidden',
+                                    ),
                                   );
                                 }
                               }
                             : null,
                         onModDelete: canModerate
                             ? () async {
-                                final confirm = await _confirmModDelete(context);
+                                final confirm =
+                                    await _confirmModDelete(context);
                                 if (!confirm) return;
-                                await FirestoreService.adminDeletePublicHistory(h.id);
+                                await FirestoreService.adminDeletePublicHistory(
+                                  h.id,
+                                );
                                 await p.loadPublicHistories(forceRemote: true);
                                 if (context.mounted) {
                                   _showModSnack(
@@ -975,8 +1527,14 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
     // para trás da status bar física. topPad via View.of() — imune ao
     // MediaQuery.removePadding do MainShell.
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    final double topPad = View.of(context).padding.top /
-        View.of(context).devicePixelRatio;
+    final newHistoryTab = _NewHistoryWorkspace(
+      lang: lang,
+      onManual: () => _startBlankHistory(p, lang),
+      onSoapData: (soapData) => _startHistoryFromSoap(p, lang, soapData),
+    );
+
+    final double topPad =
+        View.of(context).padding.top / View.of(context).devicePixelRatio;
 
     return ColoredBox(
       color: bg,
@@ -986,8 +1544,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
           // ── Corpo: espaço reservado + TabRow + busca + conteúdo ──────
           Column(
             children: [
-              // Reserva espaço para a topbar (fica por baixo do Positioned)
-              const SizedBox(height: 56),
+              // Reserva espaço para a topbar canônica (fica por baixo do Positioned)
+              const SizedBox(height: 48),
+              // MEDCASES_HISTORIA_CLINICA_CANONICAL_SUBTOPBAR_NAV_V1_B_R0
+              // MEDCASES_HISTORIA_CLINICA_SUBTOPBAR_GAP_0_2PX_V1_B_R0_R1
               // BUILD 331: Seletor triplo desacoplado — posicionado no corpo
               _HcTabRow(
                 dark: p.darkMode,
@@ -995,102 +1555,113 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 tabCtrl: _tabCtrl,
                 onNew: () => _startNewHistory(p, lang),
               ),
-              // ── Barra de busca ────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: MedInput(
-                        controller: _searchCtrl,
-                        hintText: _hcT(lang, 'search_hint'),
-                        // PERF-FIX: atualiza o ValueNotifier sem setState() global —
-                        // apenas o ValueListenableBuilder abaixo rebuilda.
-                        onChanged: (v) => _searchQuery.value = v,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: _showDateFilter,
-                      child: Container(
-                        height: 46,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: _dateFilter != null
-                              ? AppColors.of(context).darkBtn
-                              : AppColors.of(context).cardBg,
-                          border: Border.all(
-                            color: _dateFilter != null
-                                ? AppColors.of(context).darkBtn
-                                : AppColors.of(context).border,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.date_range_rounded,
-                              size: 16,
-                              color: _dateFilter != null
-                                  ? const Color(0xFFFFE8A6)
-                                  : const Color(0xFF6B7280),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (_dateFilter != null)
+              // MEDCASES_HC_INLINE_NOVA_SEARCH_HIDE_V1_B_R0
+              if (_tabCtrl.index != 2) ...[
+                // ── Barra de busca ────────────────────────────────────────
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
+                      Expanded(
+                        child: // HISTORY_CLINICAL_V1_C_R8_SEARCH_OWNER
+                            SizedBox(
+                          height: 44,
+                          child: MedInput(
+                            controller: _searchCtrl,
+                            hintText: _hcT(lang, 'search_hint'),
+                            clinicalCompact: true,
+                            prefixIcon: Icons.search_rounded,
+                            // PERF-FIX: atualiza o ValueNotifier sem setState() global —
+                            // apenas o ValueListenableBuilder abaixo rebuilda.
+                            onChanged: (v) => _searchQuery.value = v,
+                          ),
                         ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: AppColors.of(context).surface,
-                          border: Border.all(color: AppColors.of(context).border),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.date_range_rounded,
-                              size: 12,
-                              color: AppColors.of(context).textPrimary,
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: _showDateFilter,
+                        child: Container(
+                          height: 44,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: _dateFilter != null
+                                ? AppColors.of(context).darkBtn
+                                : AppColors.of(context).cardBg,
+                            border: Border.all(
+                              color: _dateFilter != null
+                                  ? AppColors.of(context).darkBtn
+                                  : AppColors.of(context).border,
                             ),
-                            const SizedBox(width: 6),
-                            Text(
-                              _dateFilterLabel,
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.of(context).textPrimary,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.date_range_rounded,
+                                size: 15,
+                                color: _dateFilter != null
+                                    ? const Color(0xFF0D6B57)
+                                    : const Color(0xFF6B7280),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: _clearDateFilter,
-                              child: const Icon(
-                                Icons.close_rounded,
-                                size: 13,
-                                color: Color(0xFF555555),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              const SizedBox(height: 4),
+                if (_dateFilter != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: AppColors.of(context).surface,
+                            border: Border.all(
+                              color: AppColors.of(context).border,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.date_range_rounded,
+                                size: 12,
+                                color: AppColors.of(context).textPrimary,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _dateFilterLabel,
+                                style: TextStyle(
+                                  fontSize: MedTypography.microTextSize,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.of(context).textPrimary,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: _clearDateFilter,
+                                child: const Icon(
+                                  Icons.close_rounded,
+                                  size: 13,
+                                  color: Color(0xFF555555),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 4),
+              ],
               // PERF-FIX: RepaintBoundary isola a TabBarView do bloco da topbar.
               // Quando o usuário digita na busca ou alterna abas, apenas esta
               // camada é redesenhada — a topbar (Positioned acima) mantém
@@ -1099,7 +1670,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 child: RepaintBoundary(
                   child: TabBarView(
                     controller: _tabCtrl,
-                    children: [mineTab, communityTab],
+                    children: [
+                      mineTab,
+                      communityTab,
+                      newHistoryTab,
+                    ],
                   ),
                 ),
               ),
@@ -1114,8 +1689,10 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             top: -topPad,
             left: 0,
             right: 0,
-            height: topPad + 56,
-            child: _HcTopbarBg(),
+            height: topPad + 48,
+            child: _HcTopbarBg(
+              isDark: Theme.of(context).brightness == Brightness.dark,
+            ),
           ),
           // ── LAYER 2: Conteúdo interativo — fica em y=0, abaixo da Dynamic Island
           // Padding ergonômico: botões e título em posição segura e clicável.
@@ -1123,7 +1700,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
             top: 0,
             left: 0,
             right: 0,
-            height: 56,
+            height: 48,
             child: _HcTopbarContent(dark: p.darkMode, lang: lang),
           ),
         ],
@@ -1134,87 +1711,416 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
   Future<bool> _confirmDelete(BuildContext context) async {
     final lang = context.read<AppProvider>().lang;
     return await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(_hcT(lang, 'del_title')),
-        content: Text(_hcT(lang, 'del_content')),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(_hcT(lang, 'cancel'))),
-          TextButton(onPressed: () => Navigator.pop(context, true),
-            child: Text(_hcT(lang, 'del_confirm'), style: const TextStyle(color: Colors.red))),
-        ],
-      ),
-    ) ?? false;
+          context: context,
+          useRootNavigator: !kIsWeb,
+          builder: (_) => AlertDialog(
+            title: Text(_hcT(lang, 'del_title')),
+            content: Text(_hcT(lang, 'del_content')),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(_hcT(lang, 'cancel')),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  _hcT(lang, 'del_confirm'),
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   Future<bool> _confirmModDelete(BuildContext context) async {
     final lang = context.read<AppProvider>().lang;
     return await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: const Color(0xFFFFFDF8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(_hcT(lang, 'del_mod_title'),
-          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFF0F1116))),
-        content: Text(
-          _hcT(lang, 'del_mod_content'),
-          style: const TextStyle(fontSize: 13, color: Color(0xFF444444))),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(_hcT(lang, 'cancel'), style: const TextStyle(color: Colors.grey)),
+          context: context,
+          useRootNavigator: !kIsWeb,
+          builder: (_) => AlertDialog(
+            backgroundColor: const Color(0xFFFFFDF8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text(
+              _hcT(lang, 'del_mod_title'),
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: MedTypography.internalTitleSize,
+                color: Color(0xFF0F1116),
+              ),
+            ),
+            content: Text(
+              _hcT(lang, 'del_mod_content'),
+              style: const TextStyle(
+                  fontSize: MedTypography.clinicalBodySize,
+                  color: Color(0xFF444444)),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(
+                  _hcT(lang, 'cancel'),
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(_hcT(lang, 'del_perm')),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-            child: Text(_hcT(lang, 'del_perm')),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   void _showModSnack(BuildContext context, String msg, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg, style: const TextStyle(fontWeight: FontWeight.w700)),
-      backgroundColor: isError ? Colors.red : Colors.green,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg, style: const TextStyle(fontWeight: FontWeight.w700)),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_HC_NEW_HISTORY_WORKSPACE_V1_B_R0
+// Tela dedicada de criação: sem bottom sheet e sem duplicar motores clínicos.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_HC_NEW_HISTORY_WORKSPACE_V1_B_R0
+// MEDCASES_HC_PREMIUM_NOVA_WORKSPACE_V1_B_R0
+// Tela dedicada de criação. Introdução sem falso card; três ações reais abaixo.
+// ─────────────────────────────────────────────────────────────────────────────
+class _NewHistoryWorkspace extends StatelessWidget {
+  // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0
+  // Conteúdo da terceira subaba. Não cria Scaffold, topbar ou rota duplicada.
+  final String lang;
+  final VoidCallback onManual;
+  final void Function(SoapData) onSoapData;
+
+  const _NewHistoryWorkspace({
+    required this.lang,
+    required this.onManual,
+    required this.onSoapData,
+  });
+
+  void _openManual() {
+    onManual();
+  }
+
+  void _finishSoap(SoapData soapData) {
+    onSoapData(soapData);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final text = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFFA8B2C1) : const Color(0xFF64748B);
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+
+    return ColoredBox(
+      color: bg,
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+          16,
+          14,
+          16,
+          112 + safeBottom,
+        ),
+        children: [
+          // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_INTRO
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  lang == 'es' ? 'NUEVA HISTORIA' : 'NOVA HISTÓRIA',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w800,
+                    color: secondary,
+                    letterSpacing: 0.9,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  lang == 'es'
+                      ? 'Seleccione cómo registrar esta consulta'
+                      : 'Escolha como registrar esta consulta',
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w800,
+                    color: text,
+                    height: 1.18,
+                    letterSpacing: -0.16,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  lang == 'es'
+                      ? 'Podrá revisar y editar la información antes de guardarla.'
+                      : 'Você poderá revisar e editar as informações antes de salvar.',
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w400,
+                    color: secondary,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          _NewHistoryFlowCard(
+            icon: Icons.mic_rounded,
+            title: lang == 'es'
+                ? 'Grabar consulta y transcribir todo'
+                : 'Gravar consulta e transcrever tudo',
+            subtitle: lang == 'es'
+                ? 'IA organiza automáticamente la consulta en estructura SOAP.'
+                : 'A IA organiza automaticamente a consulta em estrutura SOAP.',
+            showIaBadge: true,
+            onTap: () {
+              ClinicalRecorderSheet.openContinuousRecorder(
+                context,
+                onSoapData: (soapData) {
+                  if (!context.mounted) return;
+                  _finishSoap(soapData);
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+          _NewHistoryFlowCard(
+            icon: Icons.edit_note_rounded,
+            title: lang == 'es'
+                ? 'Completar manualmente'
+                : 'Preencher manualmente',
+            subtitle: lang == 'es'
+                ? 'Formulario clínico tradicional con campos SOAP.'
+                : 'Formulário clínico tradicional com campos SOAP.',
+            showIaBadge: false,
+            onTap: _openManual,
+          ),
+          const SizedBox(height: 8),
+          _NewHistoryFlowCard(
+            icon: Icons.view_agenda_outlined,
+            title: lang == 'es'
+                ? 'Grabar por bloques SOAP'
+                : 'Gravar por blocos SOAP',
+            subtitle: lang == 'es'
+                ? 'Dictado segmentado por cada categoría clínica.'
+                : 'Ditado segmentado por cada categoria clínica.',
+            showIaBadge: false,
+            onTap: () {
+              ClinicalRecorderSheet.openSoapBlocksRecorder(
+                context,
+                onSoapData: (soapData) {
+                  if (!context.mounted) return;
+                  _finishSoap(soapData);
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NewHistoryFlowCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool showIaBadge;
+  final VoidCallback onTap;
+
+  const _NewHistoryFlowCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.showIaBadge,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final text = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFFA8B2C1) : const Color(0xFF64748B);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
+    final surface = dark ? const Color(0xFF23272E) : const Color(0xFFFFFFFF);
+    final accent = const Color(0xFF10B981);
+    final iconColor = showIaBadge
+        ? accent
+        : (dark ? const Color(0xFFD7DCE3) : const Color(0xFF475569));
+    final iconSurface = showIaBadge
+        ? accent.withValues(alpha: dark ? 0.10 : 0.07)
+        : (dark ? const Color(0xFF30353D) : const Color(0xFFF1F4F7));
+
+    return Semantics(
+      button: true,
+      label: title,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(12, 12, 11, 12),
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: border, width: 0.7),
+            ),
+            child: Row(
+              children: [
+                if (showIaBadge) ...[
+                  Container(
+                    width: 2,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: accent,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: iconSurface,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(icon, size: 21, color: iconColor),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w700,
+                                color: text,
+                                height: 1.2,
+                                letterSpacing: -0.05,
+                              ),
+                            ),
+                          ),
+                          if (showIaBadge) ...[
+                            const SizedBox(width: 7),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: accent.withValues(
+                                  alpha: dark ? 0.08 : 0.05,
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: accent.withValues(alpha: 0.48),
+                                  width: 0.7,
+                                ),
+                              ),
+                              child: const Text(
+                                'IA',
+                                style: TextStyle(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF10B981),
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 12.2,
+                          fontWeight: FontWeight.w400,
+                          color: secondary,
+                          height: 1.34,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: secondary.withValues(alpha: 0.68),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // LAYER 1 — Plano de fundo da topbar História Clínica
 // Ocupa topPad+56 px, transladado top:-topPad para sangrar atrás da status bar.
 // SEM conteúdo interativo — apenas decoração visual.
 // ─────────────────────────────────────────────────────────────────────────────
 class _HcTopbarBg extends StatelessWidget {
-  const _HcTopbarBg();
+  final bool isDark;
 
-  // PERF-FIX: BoxDecoration const total — o Impeller cacheia esta camada
-  // e nunca a redesenha, mesmo quando a HistoryScreen recebe setState.
-  static const _kDecoration = BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [Color(0xFF5E2900), Color(0xFFF27405)],
-    ),
-    border: Border(
-      bottom: BorderSide(color: Color(0xFFc2410c), width: 0.5),
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: Color(0x59000000), // Colors.black.withOpacity(0.35) equivalente
-        blurRadius: 6,
-        offset: Offset(0, 2),
-      ),
-    ],
-  );
+  const _HcTopbarBg({required this.isDark});
 
   @override
   Widget build(BuildContext context) {
-    return const DecoratedBox(decoration: _kDecoration);
+    final glassColor = isDark
+        ? const Color(0xFF252930).withOpacity(0.70)
+        : Colors.white.withOpacity(0.70);
+    final borderColor =
+        isDark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+    // MEDCASES_H_CLINICA_HOME_TOPBAR_V1_B_R0
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: glassColor,
+            border: Border(
+              bottom: BorderSide(color: borderColor, width: 0.7),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -1240,11 +2146,14 @@ class _HcTopbarContent extends StatelessWidget {
           // ── CENTER: título BRANCO — contraste máximo sobre laranja ────────
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
-              color: Colors.white,
+              color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */
+                  Theme.of(context).brightness == Brightness.dark
+                      ? (Colors.white)
+                      : (const Color(0xFF05070A)),
             ),
           ),
           // ── LEFT: botão de voltar — SizedBox 36×36 clicável ──────────────
@@ -1260,13 +2169,16 @@ class _HcTopbarContent extends StatelessWidget {
                   MainShell.pendingTab.value = 0;
                 }
               },
-              child: const SizedBox(
+              child: SizedBox(
                 width: 36,
                 height: 36,
                 child: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 20,
-                  color: Colors.white,
+                  color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */
+                      Theme.of(context).brightness == Brightness.dark
+                          ? (Colors.white)
+                          : (const Color(0xFF05070A)),
                 ),
               ),
             ),
@@ -1297,88 +2209,77 @@ class _HcTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dividerColor = dark ? Colors.white24 : Colors.black12;
-    // Cor do "+ NOVA" — ciano em qualquer modo (ação especial)
-    final novaColor = dark
-        ? const Color(0xFF00E5FF)
-        : const Color(0xFF008CA4);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
+
+    Widget separator() => SizedBox(
+          width: 0.7,
+          height: 40,
+          child: Center(
+            child: Container(
+              width: 0.7,
+              height: 20,
+              color: divider,
+            ),
+          ),
+        );
 
     return Container(
+      height: 40,
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1A1D23) : Colors.white,
+        color: surface,
         border: Border(
-          bottom: BorderSide(
-            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
-            width: 0.5,
-          ),
+          bottom: BorderSide(color: divider, width: 0.7),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-        child: Row(
-          children: [
-            // Tab 0: MINHAS
-            Expanded(
-              child: _HcFlatTab(
-                label: lang == 'es' ? 'MIS HCs' : 'MINHAS',
-                index: 0,
-                tabCtrl: tabCtrl,
-                dark: dark,
-              ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _HcFlatTab(
+              label: lang == 'es' ? 'MIS HCs' : 'MINHAS',
+              index: 0,
+              tabCtrl: tabCtrl,
+              dark: dark,
             ),
-            Container(width: 1, height: 14, color: dividerColor),
-            // Tab 1: PÚBLICAS
-            Expanded(
-              child: _HcFlatTab(
-                label: 'PÚBLICAS',
-                index: 1,
-                tabCtrl: tabCtrl,
-                dark: dark,
-              ),
+          ),
+          separator(),
+          Expanded(
+            child: _HcFlatTab(
+              label: 'PÚBLICAS',
+              index: 1,
+              tabCtrl: tabCtrl,
+              dark: dark,
             ),
-            Container(width: 1, height: 14, color: dividerColor),
-            // Tab 2: + NOVA — ação direta (não é aba real do TabBarView)
-            Expanded(
-              child: GestureDetector(
-                onTap: onNew,
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  color: Colors.transparent,
-                  child: Text(
-                    lang == 'es' ? '+ NUEVA' : '+ NOVA',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: novaColor,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-              ),
+          ),
+          separator(),
+          Expanded(
+            child: _HcFlatTab(
+              // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_THIRD_SEGMENT
+              label: lang == 'es' ? '+ NUEVA' : '+ NOVA',
+              index: 2,
+              tabCtrl: tabCtrl,
+              dark: dark,
+              onTap: onNew,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HELPER: Tab flat minimalista para Historia Clínica — BUILD 331
-// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
-// ─────────────────────────────────────────────────────────────────────────────
 class _HcFlatTab extends StatefulWidget {
   final String label;
   final int index;
   final TabController tabCtrl;
   final bool dark;
+  final VoidCallback? onTap;
   const _HcFlatTab({
     required this.label,
     required this.index,
     required this.tabCtrl,
     this.dark = true,
+    this.onTap,
   });
   @override
   State<_HcFlatTab> createState() => _HcFlatTabState();
@@ -1404,43 +2305,59 @@ class _HcFlatTabState extends State<_HcFlatTab> {
   @override
   Widget build(BuildContext context) {
     final isActive = widget.tabCtrl.index == widget.index;
-    // BUILD 331: dark → branco; light → preto — máxima hierarquia de leitura
-    final activeColor = widget.dark ? Colors.white : const Color(0xFF0F1116);
-    final inactiveColor = widget.dark
-        ? Colors.white60
-        : const Color(0xFF0F1116).withOpacity(0.45);
+    final inactiveColor =
+        widget.dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeColor =
+        widget.dark ? const Color(0xFF0E8000) : const Color(0xFF0E8000);
+    final activeBackground = widget.dark
+        ? const Color(0xFF0E8000).withValues(alpha: 0.10)
+        : const Color(0xFFECFDF5);
+
     return GestureDetector(
-      onTap: () => widget.tabCtrl.animateTo(widget.index),
+      onTap: widget.onTap ?? () => widget.tabCtrl.animateTo(widget.index),
+      behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        duration: const Duration(milliseconds: 160),
+        height: 40,
         decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border(
-            bottom: isActive
-                ? const BorderSide(color: Color(0xFF00E5FF), width: 2.0)
-                : BorderSide.none,
-          ),
+          color: isActive ? activeBackground : Colors.transparent,
         ),
-        child: Text(
-          widget.label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: isActive ? activeColor : inactiveColor,
-            letterSpacing: 0.3,
-          ),
+        child: Stack(
+          children: [
+            Center(
+              child: Text(
+                widget.label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 1,
+                  fontWeight: FontWeight.w700,
+                  color: isActive ? activeColor : inactiveColor,
+                  letterSpacing: 0.05,
+                ),
+              ),
+            ),
+            if (isActive)
+              Positioned(
+                left: 12,
+                right: 12,
+                bottom: 9,
+                child: Container(
+                  height: 2,
+                  color: const Color(0xFF0E8000),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CARD DA LISTA
-// ─────────────────────────────────────────────────────────────────────────────
 class _HistoryCard extends StatelessWidget {
+  // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_HISTORY_CARD_LIGHT
   final ClinicalHistoryModel h;
   final AppProvider p;
   final VoidCallback onTap;
@@ -1452,36 +2369,54 @@ class _HistoryCard extends StatelessWidget {
   final VoidCallback? onModHide;
   final VoidCallback? onModDelete;
   const _HistoryCard({
-    required this.h, required this.p, required this.onTap,
-    this.onEdit, this.onDelete, this.onTogglePublic, this.readOnly = false,
-    this.onModHide, this.onModDelete,
+    required this.h,
+    required this.p,
+    required this.onTap,
+    this.onEdit,
+    this.onDelete,
+    this.onTogglePublic,
+    this.readOnly = false,
+    this.onModHide,
+    this.onModDelete,
   });
 
   Color get _outcomeColor {
     switch (h.outcome) {
-      case 'alta': return const Color(0xFF065F46);
-      case 'obito': return const Color(0xFFCC2222);
-      case 'transferencia': return const Color(0xFF1E40AF);
-      default: return const Color(0xFFC5A365);
+      case 'alta':
+        return const Color(0xFF065F46);
+      case 'obito':
+        return const Color(0xFFCC2222);
+      case 'transferencia':
+        return const Color(0xFF1E40AF);
+      default:
+        return const Color(0xFFC5A365);
     }
   }
 
   String _outcomeLabel(String lang) {
     switch (h.outcome) {
-      case 'alta': return _hcT(lang, 'outcome_alta');
-      case 'obito': return _hcT(lang, 'outcome_obito');
-      case 'transferencia': return _hcT(lang, 'outcome_transfer');
-      default: return _hcT(lang, 'outcome_internado');
+      case 'alta':
+        return _hcT(lang, 'outcome_alta');
+      case 'obito':
+        return _hcT(lang, 'outcome_obito');
+      case 'transferencia':
+        return _hcT(lang, 'outcome_transfer');
+      default:
+        return _hcT(lang, 'outcome_internado');
     }
   }
 
   // Cor lateral do card baseada no outcome
   Color get _cardAccent {
     switch (h.outcome) {
-      case 'alta':          return const Color(0xFF10B981); // verde alta
-      case 'obito':         return const Color(0xFFEF4444); // vermelho
-      case 'transferencia': return const Color(0xFF3B82F6); // azul
-      default:              return const Color(0xFFF59E0B); // âmbar internado
+      case 'alta':
+        return const Color(0xFF10B981); // verde alta
+      case 'obito':
+        return const Color(0xFFEF4444); // vermelho
+      case 'transferencia':
+        return const Color(0xFF3B82F6); // azul
+      default:
+        return const Color(0xFFF59E0B); // âmbar internado
     }
   }
 
@@ -1495,423 +2430,628 @@ class _HistoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: isDark ? const Color(0xFF1C2230) : Colors.white,
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        decoration: // HISTORY_CLINICAL_V1_C_R8_LIST_SURFACE_BEGIN
+            BoxDecoration(
+          color: isDark ? const Color(0xFF252930) : const Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isDark ? const Color(0xFF2D3748) : const Color(0xFFE8EDF2),
+            color: isDark ? const Color(0xFF374151) : const Color(0xFFD8DEE7),
+            width: 0.7,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.25 : 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
+        // HISTORY_CLINICAL_V1_C_R8_LIST_SURFACE_END
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── Barra colorida lateral (accent do outcome) ──────────────
               Container(
-                width: 4,
+                width: 3,
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                  ),
+                  borderRadius: BorderRadius.circular(99),
                   color: accent,
                 ),
               ),
               // ── Conteúdo principal ───────────────────────────────────────
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                    // ── LINHA 1: categoria + data ──────────────────────────
-                    Row(children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: accent.withOpacity(0.12),
-                        ),
-                        child: Text(
-                          h.category,
-                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: accent),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: (isDark ? Colors.white : Colors.black).withOpacity(0.05),
-                        ),
-                        child: Text(
-                          _outcomeLabel(lang),
-                          style: TextStyle(
-                            fontSize: 9, fontWeight: FontWeight.w800,
-                            color: isDark ? Colors.white60 : const Color(0xFF666666),
-                          ),
-                        ),
-                      ),
-                      if (h.isPublic) ...[
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            color: const Color(0xFF3B82F6).withOpacity(0.10),
-                          ),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            const Icon(Icons.public_rounded, size: 8, color: Color(0xFF3B82F6)),
-                            const SizedBox(width: 3),
-                            Text(_hcT(lang, 'public_badge'),
-                              style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF3B82F6))),
-                          ]),
-                        ),
-                      ],
-                      const Spacer(),
-                      Text(
-                        h.formattedDate,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isDark ? Colors.white38 : const Color(0xFFAAAAAA),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ]),
-
-                    const SizedBox(height: 9),
-
-                    // ── LINHA 2: Título principal ──────────────────────────
-                    Text(
-                      h.displayTitle,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        color: isDark ? Colors.white : const Color(0xFF0D1B2A),
-                        height: 1.25,
-                        letterSpacing: -0.3,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    // ── LINHA 3: Paciente (se houver) ─────────────────────
-                    if (h.patientInitials.isNotEmpty || h.patientAge.isNotEmpty) ...[
-                      const SizedBox(height: 5),
-                      Row(children: [
-                        Icon(Icons.person_rounded, size: 11,
-                          color: isDark ? Colors.white38 : const Color(0xFFAAAAAA)),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            [
-                              if (h.patientInitials.isNotEmpty) h.patientInitials,
-                              if (h.patientAge.isNotEmpty) '${h.patientAge} ${_hcT(p.lang, "years")}',
-                              if (h.patientSex.isNotEmpty) h.patientSex,
-                              if (h.patientWeight.isNotEmpty) '${h.patientWeight} kg',
-                            ].join(' · '),
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isDark ? Colors.white54 : const Color(0xFF778899),
-                              fontWeight: FontWeight.w600,
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── LINHA 1: categoria + estado + visibilidade + data ─
+                      // Responsive Wrap: nunca força chips + data numa Row rígida.
+                      Wrap(
+                        spacing: 4,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
                             ),
-                          ),
-                        ),
-                      ]),
-                    ],
-
-                    // ── LINHA 4: Diagnóstico em destaque ──────────────────
-                    if (h.finalDiagnosis.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xFF065F46).withOpacity(0.08),
-                          border: Border.all(color: const Color(0xFF065F46).withOpacity(0.20)),
-                        ),
-                        child: Row(children: [
-                          const Icon(Icons.check_circle_rounded, size: 13, color: Color(0xFF065F46)),
-                          const SizedBox(width: 6),
-                          Expanded(child: Text(
-                            'Dx: ${h.finalDiagnosis}',
-                            style: const TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w800,
-                              color: Color(0xFF065F46),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                        ]),
-                      ),
-                    ] else if (h.workingDiagnosis.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xFFF59E0B).withOpacity(0.08),
-                          border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.25)),
-                        ),
-                        child: Row(children: [
-                          const Icon(Icons.pending_rounded, size: 13, color: Color(0xFF92400E)),
-                          const SizedBox(width: 6),
-                          Expanded(child: Text(
-                            '${p.lang == "es" ? "Hip." : "Hip."}: ${h.workingDiagnosis}',
-                            style: const TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w800,
-                              color: Color(0xFF92400E),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                        ]),
-                      ),
-                    ],
-
-                    const SizedBox(height: 10),
-
-                    // ── LINHA 5: Progresso ────────────────────────────────
-                    Row(children: [
-                      Expanded(child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: completion,
-                          minHeight: 3,
-                          backgroundColor: isDark
-                              ? Colors.white.withOpacity(0.08)
-                              : const Color(0xFFEEF2F7),
-                          valueColor: AlwaysStoppedAnimation(
-                            completion >= 1.0
-                              ? const Color(0xFF10B981)
-                              : completion > 0.5
-                                  ? const Color(0xFF3B82F6)
-                                  : const Color(0xFFF59E0B),
-                          ),
-                        ),
-                      )),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${(completion * 100).round()}%',
-                        style: TextStyle(
-                          fontSize: 9, fontWeight: FontWeight.w900,
-                          color: completion >= 1.0
-                              ? const Color(0xFF10B981)
-                              : isDark ? Colors.white38 : const Color(0xFFAAAAAA),
-                        ),
-                      ),
-                    ]),
-
-                    const SizedBox(height: 10),
-
-                    // ── LINHA 6: Rodapé (ações ou autor) ──────────────────
-                    if (!readOnly) ...[
-                      // Divisor sutil
-                      Divider(
-                        height: 1, thickness: 0.5,
-                        color: isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFEEF2F7),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(children: [
-                        GestureDetector(
-                          onTap: onTogglePublic,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: h.isPublic
-                                  ? const Color(0xFF3B82F6).withOpacity(0.10)
-                                  : (isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF5F7FA)),
-                              border: Border.all(
-                                color: h.isPublic
-                                    ? const Color(0xFF3B82F6).withOpacity(0.30)
-                                    : (isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFDDE3ED)),
+                              borderRadius: BorderRadius.circular(6),
+                              color: accent.withOpacity(0.12),
+                            ),
+                            child: Text(
+                              h.category,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: accent,
                               ),
                             ),
-                            child: Row(mainAxisSize: MainAxisSize.min, children: [
-                              Icon(
-                                h.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded,
-                                size: 11,
-                                color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF6B7280),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              color: (isDark ? Colors.white : Colors.black)
+                                  .withOpacity(0.05),
+                            ),
+                            child: Text(
+                              _outcomeLabel(lang),
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: isDark
+                                    ? Colors.white60
+                                    : const Color(0xFF666666),
                               ),
-                              const SizedBox(width: 4),
-                              Text(
-                                h.isPublic ? _hcT(p.lang, 'public_badge') : _hcT(p.lang, 'private_badge'),
+                            ),
+                          ),
+                          if (h.isPublic)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color:
+                                    const Color(0xFF3B82F6).withOpacity(0.10),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.public_rounded,
+                                    size: 9,
+                                    color: Color(0xFF3B82F6),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    _hcT(lang, 'public_badge'),
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFF3B82F6),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          Text(
+                            h.formattedDate,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: isDark
+                                  ? Colors.white60
+                                  : const Color(0xFF6B7280),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      // ── LINHA 2: Título principal ──────────────────────────
+                      Text(
+                        h.displayTitle,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w700,
+                          color:
+                              isDark ? Colors.white : const Color(0xFF0D1B2A),
+                          height: 1.25,
+                          letterSpacing: -0.3,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      // ── LINHA 3: Paciente (se houver) ─────────────────────
+                      if (h.patientInitials.isNotEmpty ||
+                          h.patientAge.isNotEmpty) ...[
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.person_rounded,
+                              size: 11,
+                              color: isDark
+                                  ? Colors.white38
+                                  : const Color(0xFFAAAAAA),
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                [
+                                  if (h.patientInitials.isNotEmpty)
+                                    h.patientInitials,
+                                  if (h.patientAge.isNotEmpty)
+                                    '${h.patientAge} ${_hcT(p.lang, "years")}',
+                                  if (h.patientSex.isNotEmpty) h.patientSex,
+                                  if (h.patientWeight.isNotEmpty)
+                                    '${h.patientWeight} kg',
+                                ].join(' · '),
                                 style: TextStyle(
-                                  fontSize: 10, fontWeight: FontWeight.w800,
-                                  color: h.isPublic ? const Color(0xFF3B82F6) : const Color(0xFF6B7280),
+                                  fontSize: 10.0,
+                                  color: isDark
+                                      ? Colors.white70
+                                      : const Color(0xFF6B7280),
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ]),
-                          ),
-                        ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: onEdit,
-                          child: Container(
-                            padding: const EdgeInsets.all(7),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: kGold.withOpacity(0.10),
                             ),
-                            child: const Icon(Icons.edit_rounded, size: 14, color: kGold),
+                          ],
+                        ),
+                      ],
+
+                      // ── LINHA 4: Diagnóstico em destaque ──────────────────
+                      if (h.finalDiagnosis.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        // HISTORY_CLINICAL_V1_C_R8_DX_FLAT
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle_outline_rounded,
+                                size: 13,
+                                color: Color(0xFF0D6B57),
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  'Dx: ${h.finalDiagnosis}',
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : const Color(0xFF374151),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        GestureDetector(
-                          onTap: onDelete,
-                          child: Container(
-                            padding: const EdgeInsets.all(7),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: const Color(0xFFEF4444).withOpacity(0.08),
+                      ] else if (h.workingDiagnosis.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        // HISTORY_CLINICAL_V1_C_R8_WORKING_DX_FLAT
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.pending_outlined,
+                                size: 13,
+                                color: Color(0xFFF59E0B),
+                              ),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  '${p.lang == "es" ? "Hip." : "Hip."}: ${h.workingDiagnosis}',
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : const Color(0xFF374151),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+
+                      const SizedBox(height: 6),
+
+                      // ── LINHA 5: Progresso ────────────────────────────────
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: LinearProgressIndicator(
+                                value: completion,
+                                minHeight: 3,
+                                backgroundColor: isDark
+                                    ? Colors.white.withOpacity(0.08)
+                                    : const Color(0xFFEEF2F7),
+                                valueColor: AlwaysStoppedAnimation(
+                                  completion >= 1.0
+                                      ? const Color(0xFF10B981)
+                                      : completion > 0.5
+                                          ? const Color(0xFF3B82F6)
+                                          : const Color(0xFFF59E0B),
+                                ),
+                              ),
                             ),
-                            child: const Icon(Icons.delete_outline_rounded, size: 14, color: Color(0xFFEF4444)),
                           ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${(completion * 100).round()}%',
+                            style: TextStyle(
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.w900,
+                              color: completion >= 1.0
+                                  ? const Color(0xFF10B981)
+                                  : isDark
+                                      ? Colors.white38
+                                      : const Color(0xFFAAAAAA),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      // ── LINHA 6: Rodapé (ações ou autor) ──────────────────
+                      if (!readOnly) ...[
+                        // Divisor sutil
+                        Divider(
+                          height: 1,
+                          thickness: 0.5,
+                          color: isDark
+                              ? Colors.white.withOpacity(0.08)
+                              : const Color(0xFFEEF2F7),
                         ),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: onTap,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: onTogglePublic,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: h.isPublic
+                                      ? const Color(
+                                          0xFF3B82F6,
+                                        ).withOpacity(0.10)
+                                      : (isDark
+                                          ? Colors.white.withOpacity(0.05)
+                                          : const Color(0xFFF5F7FA)),
+                                  border: Border.all(
+                                    color: h.isPublic
+                                        ? const Color(
+                                            0xFF3B82F6,
+                                          ).withOpacity(0.30)
+                                        : (isDark
+                                            ? Colors.white.withOpacity(0.08)
+                                            : const Color(0xFFDDE3ED)),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      h.isPublic
+                                          ? Icons.public_rounded
+                                          : Icons.lock_outline_rounded,
+                                      size: 11,
+                                      color: h.isPublic
+                                          ? const Color(0xFF3B82F6)
+                                          : const Color(0xFF6B7280),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      h.isPublic
+                                          ? _hcT(p.lang, 'public_badge')
+                                          : _hcT(p.lang, 'private_badge'),
+                                      style: TextStyle(
+                                        fontSize: 10.0,
+                                        fontWeight: FontWeight.w800,
+                                        color: h.isPublic
+                                            ? const Color(0xFF3B82F6)
+                                            : const Color(0xFF6B7280),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: onEdit,
+                              child: Container(
+                                padding: const EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: kGold.withOpacity(0.10),
+                                ),
+                                child: const Icon(
+                                  Icons.edit_rounded,
+                                  size: 14,
+                                  color: kGold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: onDelete,
+                              child: Container(
+                                padding: const EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: const Color(
+                                    0xFFEF4444,
+                                  ).withOpacity(0.08),
+                                ),
+                                child: const Icon(
+                                  Icons.delete_outline_rounded,
+                                  size: 14,
+                                  color: Color(0xFFEF4444),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: onTap,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 7,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColors.of(context).darkBtn,
+                                ),
+                                child: Text(
+                                  _hcT(p.lang, 'open'),
+                                  style: const TextStyle(
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.w900,
+                                    color: kGoldLight,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ] else ...[
+                        // Banner de HC oculta
+                        if (h.isHidden) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AppColors.of(context).darkBtn,
-                              boxShadow: [
-                                BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 4, offset: const Offset(0, 2)),
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.orange.withOpacity(0.08),
+                              border: Border.all(
+                                color: Colors.orange.withOpacity(0.3),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.visibility_off_rounded,
+                                  size: 11,
+                                  color: Colors.orange,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  _hcT(p.lang, 'hidden_mod'),
+                                  style: const TextStyle(
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.orange,
+                                  ),
+                                ),
                               ],
                             ),
-                            child: Text(_hcT(p.lang, 'open'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
                           ),
-                        ),
-                      ]),
-                    ] else ...[
-                      // Banner de HC oculta
-                      if (h.isHidden) ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.orange.withOpacity(0.08),
-                            border: Border.all(color: Colors.orange.withOpacity(0.3)),
-                          ),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            const Icon(Icons.visibility_off_rounded, size: 11, color: Colors.orange),
-                            const SizedBox(width: 5),
-                            Text(_hcT(p.lang, 'hidden_mod'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
-                          ]),
+                          const SizedBox(height: 8),
+                        ],
+                        // Divisor sutil
+                        Divider(
+                          height: 1,
+                          thickness: 0.5,
+                          color: isDark
+                              ? Colors.white.withOpacity(0.08)
+                              : const Color(0xFFEEF2F7),
                         ),
                         const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isDark
+                                    ? Colors.white.withOpacity(0.07)
+                                    : const Color(0xFFEEF2F7),
+                              ),
+                              child: Icon(
+                                Icons.person_rounded,
+                                size: 14,
+                                color: isDark
+                                    ? Colors.white38
+                                    : const Color(0xFFAAAAAA),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    h.authorName.isNotEmpty
+                                        ? h.authorName
+                                        : _hcT(p.lang, 'anon'),
+                                    style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w800,
+                                      color: isDark
+                                          ? Colors.white70
+                                          : const Color(0xFF2D3748),
+                                    ),
+                                  ),
+                                  if (h.uploadedAt.isNotEmpty)
+                                    Text(
+                                      _formatUploadedAt(h.uploadedAt),
+                                      style: TextStyle(
+                                        fontSize: 10.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: isDark
+                                            ? Colors.white30
+                                            : const Color(0xFFAAAAAA),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: onTap,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 7,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColors.of(context).darkBtn,
+                                ),
+                                child: Text(
+                                  _hcT(p.lang, 'view'),
+                                  style: const TextStyle(
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.w900,
+                                    color: kGoldLight,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
-                      // Divisor sutil
-                      Divider(
-                        height: 1, thickness: 0.5,
-                        color: isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFEEF2F7),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(children: [
-                        Container(
-                          width: 28, height: 28,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: isDark ? Colors.white.withOpacity(0.07) : const Color(0xFFEEF2F7),
-                          ),
-                          child: Icon(Icons.person_rounded, size: 14,
-                            color: isDark ? Colors.white38 : const Color(0xFFAAAAAA)),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(
-                            h.authorName.isNotEmpty ? h.authorName : _hcT(p.lang, 'anon'),
-                            style: TextStyle(
-                              fontSize: 11, fontWeight: FontWeight.w800,
-                              color: isDark ? Colors.white70 : const Color(0xFF2D3748),
-                            ),
-                          ),
-                          if (h.uploadedAt.isNotEmpty)
-                            Text(
-                              _formatUploadedAt(h.uploadedAt),
-                              style: TextStyle(
-                                fontSize: 9, fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white30 : const Color(0xFFAAAAAA),
-                              ),
-                            ),
-                        ])),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: onTap,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AppColors.of(context).darkBtn,
-                              boxShadow: [
-                                BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 4, offset: const Offset(0, 2)),
-                              ],
-                            ),
-                            child: Text(_hcT(p.lang, 'view'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
-                          ),
-                        ),
-                      ]),
-                    ],
 
-                    // ── Botões de moderação (admin/supervisor) ─────────────
-                    if (onModHide != null || onModDelete != null) ...[
-                      const SizedBox(height: 8),
-                      Row(children: [
-                        if (onModHide != null)
-                          GestureDetector(
-                            onTap: onModHide,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.orange.withOpacity(0.08),
-                                border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                      // ── Botões de moderação (admin/supervisor) ─────────────
+                      if (onModHide != null || onModDelete != null) ...[
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            if (onModHide != null)
+                              GestureDetector(
+                                onTap: onModHide,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.orange.withOpacity(0.08),
+                                    border: Border.all(
+                                      color: Colors.orange.withOpacity(0.3),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        h.isHidden
+                                            ? Icons.visibility_rounded
+                                            : Icons.visibility_off_rounded,
+                                        size: 12,
+                                        color: Colors.orange,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        h.isHidden
+                                            ? _hcT(p.lang, 'show_mod')
+                                            : _hcT(p.lang, 'hide_mod'),
+                                        style: const TextStyle(
+                                          fontSize: 10.0,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.orange,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                Icon(h.isHidden ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 12, color: Colors.orange),
-                                const SizedBox(width: 4),
-                                Text(h.isHidden ? _hcT(p.lang, 'show_mod') : _hcT(p.lang, 'hide_mod'),
-                                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.orange)),
-                              ]),
-                            ),
-                          ),
-                        if (onModHide != null && onModDelete != null) const SizedBox(width: 8),
-                        if (onModDelete != null)
-                          GestureDetector(
-                            onTap: onModDelete,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.red.withOpacity(0.07),
-                                border: Border.all(color: Colors.red.withOpacity(0.25)),
+                            if (onModDelete != null)
+                              GestureDetector(
+                                onTap: onModDelete,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.red.withOpacity(0.07),
+                                    border: Border.all(
+                                      color: Colors.red.withOpacity(0.25),
+                                    ),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.delete_forever_rounded,
+                                        size: 12,
+                                        color: Colors.red,
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Excluir',
+                                        style: TextStyle(
+                                          fontSize: 10.0,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                                Icon(Icons.delete_forever_rounded, size: 12, color: Colors.red),
-                                SizedBox(width: 4),
-                                Text('Excluir', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.red)),
-                              ]),
-                            ),
-                          ),
-                      ]),
+                          ],
+                        ),
+                      ],
                     ],
-
-                  ]),          // ← Column children end
-                ),             // ← Padding end
-              ),               // ← Expanded end
-            ]),                // ← Row children end (accent bar + Expanded)
-          ),                   // ← IntrinsicHeight end
-        ),                     // ← Container (card) end
-    );                         // ← GestureDetector end
+                  ), // ← Column children end
+                ), // ← Padding end
+              ), // ← Expanded end
+            ],
+          ), // ← Row children end (accent bar + Expanded)
+        ), // ← IntrinsicHeight end
+      ), // ← Container (card) end
+    ); // ← GestureDetector end
   }
 }
 
@@ -1925,12 +3065,21 @@ class _HistoryDetail extends StatefulWidget {
   final VoidCallback onBack;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
-  const _HistoryDetail({required this.history, required this.p, required this.readOnly, required this.onBack, this.onEdit, this.onDelete});
+  const _HistoryDetail({
+    required this.history,
+    required this.p,
+    required this.readOnly,
+    required this.onBack,
+    this.onEdit,
+    this.onDelete,
+  });
 
   @override
   State<_HistoryDetail> createState() => _HistoryDetailState();
 }
 
+// HISTORY_CLINICAL_V1_D_R21_SAVED_DETAIL
+// HISTORY_CLINICAL_V1_D_R21_R3_DIRECT_VISUAL_OWNERS
 class _HistoryDetailState extends State<_HistoryDetail> {
   final _printKey = GlobalKey();
   bool _exporting = false;
@@ -1947,8 +3096,10 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     buf.writeln(_hcT(lang, 'copy_header'));
     buf.writeln('${_hcT(lang, 'copy_date')} ${history.formattedDate}');
     if (history.authorName.isNotEmpty) {
-      buf.writeln('${_hcT(lang, 'copy_author')} ${history.authorName}'
-          '${history.authorEmail.isNotEmpty ? " <${history.authorEmail}>" : ""}');
+      buf.writeln(
+        '${_hcT(lang, 'copy_author')} ${history.authorName}'
+        '${history.authorEmail.isNotEmpty ? " <${history.authorEmail}>" : ""}',
+      );
     }
 
     // ── 1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS ──────────────────────────
@@ -1956,15 +3107,24 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     if (history.patientInitials.isNotEmpty)
       buf.writeln('${_hcT(lang, 'copy_nombre')} ${history.patientInitials}');
     if (history.patientAge.isNotEmpty)
-      buf.writeln('${_hcT(lang, 'copy_edad')} ${history.patientAge} ${_hcT(lang, 'years')}');
+      buf.writeln(
+        '${_hcT(lang, 'copy_edad')} ${history.patientAge} ${_hcT(lang, 'years')}',
+      );
     if (history.patientSex.isNotEmpty)
       buf.writeln('${_hcT(lang, 'copy_sexo')} ${history.patientSex}');
     if (history.patientRecord.isNotEmpty)
       buf.writeln('${_hcT(lang, 'copy_dni')} ${history.patientRecord}');
     if (history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty) {
-      final pw = history.patientWeight.isNotEmpty ? '${history.patientWeight} kg' : '';
-      final ph = history.patientHeight.isNotEmpty ? '${history.patientHeight} cm' : '';
-      buf.writeln('${_hcT(lang, 'copy_peso_talla')} ${[pw, ph].where((s) => s.isNotEmpty).join(' / ')}');
+      final pw =
+          history.patientWeight.isNotEmpty ? '${history.patientWeight} kg' : '';
+      final ph =
+          history.patientHeight.isNotEmpty ? '${history.patientHeight} cm' : '';
+      buf.writeln(
+        '${_hcT(lang, 'copy_peso_talla')} ${[
+          pw,
+          ph
+        ].where((s) => s.isNotEmpty).join(' / ')}',
+      );
     }
 
     // ── 2. MOTIVO DE CONSULTA ────────────────────────────────────────────
@@ -1976,8 +3136,10 @@ class _HistoryDetailState extends State<_HistoryDetail> {
       buf.writeln('${_hcT(lang, 'copy_hpi')}${history.hpi}');
 
     // ── 4. ANTECEDENTES PERSONALES ────────────────────────────────────────
-    final hasAnt4 = history.pastHistory.isNotEmpty || history.allergies.isNotEmpty ||
-        history.medications.isNotEmpty || history.socialHistory.isNotEmpty ||
+    final hasAnt4 = history.pastHistory.isNotEmpty ||
+        history.allergies.isNotEmpty ||
+        history.medications.isNotEmpty ||
+        history.socialHistory.isNotEmpty ||
         history.reviewOfSystems.isNotEmpty;
     if (hasAnt4) {
       buf.writeln(_hcT(lang, 'copy_s4'));
@@ -2007,22 +3169,30 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     }
 
     // ── 7. ESTUDIOS COMPLEMENTARIOS ───────────────────────────────────────
-    if (history.labResults.isNotEmpty || history.imagingResults.isNotEmpty || history.otherResults.isNotEmpty) {
+    if (history.labResults.isNotEmpty ||
+        history.imagingResults.isNotEmpty ||
+        history.otherResults.isNotEmpty) {
       buf.writeln(_hcT(lang, 'copy_lab'));
-      if (history.labResults.isNotEmpty)   buf.writeln(history.labResults);
+      if (history.labResults.isNotEmpty) buf.writeln(history.labResults);
       if (history.otherResults.isNotEmpty) buf.writeln(history.otherResults);
       if (history.imagingResults.isNotEmpty)
         buf.writeln('${_hcT(lang, 'copy_img')}${history.imagingResults}');
     }
 
     // ── 8. IMPRESIÓN DIAGNÓSTICA ──────────────────────────────────────────
-    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty || history.finalDiagnosis.isNotEmpty) {
+    if (history.workingDiagnosis.isNotEmpty ||
+        history.differentialDx.isNotEmpty ||
+        history.finalDiagnosis.isNotEmpty) {
       buf.writeln(_hcT(lang, 'copy_work_dx'));
-      if (history.workingDiagnosis.isNotEmpty) buf.writeln(history.workingDiagnosis);
-      if (history.differentialDx.isNotEmpty)   buf.writeln(history.differentialDx);
+      if (history.workingDiagnosis.isNotEmpty)
+        buf.writeln(history.workingDiagnosis);
+      if (history.differentialDx.isNotEmpty)
+        buf.writeln(history.differentialDx);
       if (history.finalDiagnosis.isNotEmpty)
-        buf.writeln('${_hcT(lang, 'copy_final_dx')}${history.finalDiagnosis}'
-            '${history.cid.isNotEmpty ? " (CIE-10: ${history.cid})" : ""}');
+        buf.writeln(
+          '${_hcT(lang, 'copy_final_dx')}${history.finalDiagnosis}'
+          '${history.cid.isNotEmpty ? " (CIE-10: ${history.cid})" : ""}',
+        );
     }
 
     // ── 9. EVOLUCIÓN CLÍNICA ──────────────────────────────────────────────
@@ -2031,20 +3201,27 @@ class _HistoryDetailState extends State<_HistoryDetail> {
       final dateStr = dt != null
           ? '${dt.day.toString().padLeft(2, "0")}/${dt.month.toString().padLeft(2, "0")}/${dt.year} ${dt.hour.toString().padLeft(2, "0")}:${dt.minute.toString().padLeft(2, "0")}'
           : '';
-      buf.writeln('${_hcT(lang, "copy_evol")}($dateStr — ${e.author}):\n${e.text}');
+      buf.writeln(
+        '${_hcT(lang, "copy_evol")}($dateStr — ${e.author}):\n${e.text}',
+      );
     }
 
     // ── 10. INDICACIONES MÉDICAS ──────────────────────────────────────────
     if (history.treatmentPlan.isNotEmpty || history.procedures.isNotEmpty) {
       buf.writeln(_hcT(lang, 'copy_treat'));
       if (history.treatmentPlan.isNotEmpty) buf.writeln(history.treatmentPlan);
-      if (history.procedures.isNotEmpty)    buf.writeln(history.procedures);
+      if (history.procedures.isNotEmpty) buf.writeln(history.procedures);
     }
 
     // ── 11. EPICRISIS / RESUMEN DE ALTA ──────────────────────────────────
-    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
-      buf.writeln('${_hcT(lang, "copy_outcome")}${history.outcome.toUpperCase()}');
-      if (history.dischargeCondition.isNotEmpty) buf.writeln(history.dischargeCondition);
+    if (history.outcome != 'internado' ||
+        history.dischargeCondition.isNotEmpty ||
+        history.followUp.isNotEmpty) {
+      buf.writeln(
+        '${_hcT(lang, "copy_outcome")}${history.outcome.toUpperCase()}',
+      );
+      if (history.dischargeCondition.isNotEmpty)
+        buf.writeln(history.dischargeCondition);
       if (history.followUp.isNotEmpty)
         buf.writeln('${_hcT(lang, "copy_followup")}${history.followUp}');
     }
@@ -2054,23 +3231,37 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
     Clipboard.setData(ClipboardData(text: buf.toString()));
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_hcT(lang, "copied")), duration: const Duration(seconds: 1)));
+      SnackBar(
+        content: Text(_hcT(lang, "copied")),
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 
   // ── Exportar como PNG (web: download direto) ──────────────────────────────
   Future<void> _exportPng() async {
     setState(() => _exporting = true);
     try {
-      final boundary = _printKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      final boundary = _printKey.currentContext?.findRenderObject()
+          as RenderRepaintBoundary?;
       if (boundary == null) return;
       final image = await boundary.toImage(pixelRatio: 2.5);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) return;
       final bytes = byteData.buffer.asUint8List();
       _downloadBytes(bytes, '${_safeFilename()}.png', 'image/png');
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_hcT(p.lang, "export_png_ok")), duration: const Duration(seconds: 2)));
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_hcT(p.lang, "export_png_ok")),
+            duration: const Duration(seconds: 2),
+          ),
+        );
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_hcT(p.lang, "export_png_err")} $e')));
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${_hcT(p.lang, "export_png_err")} $e')),
+        );
     } finally {
       if (mounted) setState(() => _exporting = false);
     }
@@ -2079,6 +3270,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
   // ── Exportar como PDF (web: janela de impressão | mobile: diálogo nativo) ─
   // Esquema oficial 11 secciones — Argentina — fondo blanco clínico puro
   Future<void> _exportPdf() async {
+    // HISTORY_CLINICAL_V1_D_R22_R4_REAL_PDF_DARK
     final lang = p.lang;
     final buf = StringBuffer();
 
@@ -2181,6 +3373,23 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     .page-header { break-inside: avoid; }
     .section { break-inside: avoid; }
   }
+
+  /* HISTORY_CLINICAL_V1_D_R22_R4_PDF_CURRENT_STANDARD */
+  html, body { background: #1A1D23 !important; color: #E8F0EC !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { line-height: 1.48 !important; }
+  .page-header { background: transparent !important; border-bottom: 1px solid #374151 !important; box-shadow: none !important; }
+  .logo-block { align-items: flex-start !important; }
+  .logo-badge { display: inline-block !important; width: auto !important; height: auto !important; min-width: 0 !important; padding: 0 !important; margin: 0 10px 0 0 !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; color: #C5A365 !important; font-size: 22px !important; font-weight: 800 !important; line-height: 1 !important; letter-spacing: .2px !important; }
+  .logo-text, .case-title, .section-title, .field-value, .prof { color: #E8F0EC !important; }
+  .logo-sub, .meta-block, .case-sub, .field-label, .footer { color: #AAB4BE !important; }
+  .case-title { font-size: 24px !important; font-weight: 800 !important; letter-spacing: -.25px !important; }
+  .section { background: transparent !important; border: 0 !important; border-bottom: 1px solid #374151 !important; border-radius: 0 !important; box-shadow: none !important; }
+  .section-title { font-size: 11px !important; font-weight: 700 !important; letter-spacing: 1.1px !important; }
+  .field-label { font-size: 9px !important; font-weight: 600 !important; letter-spacing: .8px !important; }
+  .field-value { font-size: 13px !important; font-weight: 400 !important; }
+  .allergy-box, .allergy-alert, .alert, .danger, .dx-box, .outcome-badge { background: #252930 !important; box-shadow: none !important; }
+  .allergy-box, .allergy-alert, .alert, .danger { border-left-color: #EF4444 !important; }
+
 </style>
 </head><body>
 ''');
@@ -2188,7 +3397,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     // ── Cabeçalho da página: logo [M+] à esquerda | metadados do profissional à direita ──
     buf.write('<div class="page-header">');
     buf.write('<div class="logo-block">');
-    buf.write('<div class="logo-badge">M+</div>');
+    buf.write('<span class="logo-badge">M+</span>');
     buf.write('<div><div class="logo-text">MedCases Pro</div>');
     buf.write('<div class="logo-sub">Historia Clínica Oficial</div></div>');
     buf.write('</div>');
@@ -2198,7 +3407,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
       if (history.authorEmail.isNotEmpty)
         buf.write('<div>${_esc(history.authorEmail)}</div>');
     }
-    buf.write('<div>${history.category.isNotEmpty ? _esc(history.category) : "Clínica General"}</div>');
+    buf.write(
+      '<div>${history.category.isNotEmpty ? _esc(history.category) : "Clínica General"}</div>',
+    );
     buf.write('<div>${history.formattedDate}</div>');
     buf.write('</div></div>');
 
@@ -2206,66 +3417,92 @@ class _HistoryDetailState extends State<_HistoryDetail> {
     buf.write('<div class="case-title">${_esc(history.displayTitle)}</div>');
     buf.write('<div class="case-sub">');
     buf.write('Historia Clínica Completa');
-    if (history.tags.isNotEmpty) buf.write(' &nbsp;·&nbsp; ${_esc(history.tags)}');
+    if (history.tags.isNotEmpty)
+      buf.write(' &nbsp;·&nbsp; ${_esc(history.tags)}');
     buf.write('</div>');
 
     // ══════════════════════════════════════════════════════════════════════
     // FUNCIÓN auxiliar: sección simple con campos
     // ══════════════════════════════════════════════════════════════════════
-    void sec(String title, List<(String, String)> fields, {bool large = false}) {
+    void sec(
+      String title,
+      List<(String, String)> fields, {
+      bool large = false,
+    }) {
       final hasContent = fields.any((f) => f.$2.isNotEmpty);
       if (!hasContent) return;
       buf.write('<div class="section"><div class="section-title">$title</div>');
       for (final f in fields) {
         if (f.$2.isEmpty) continue;
         buf.write('<div class="field-label">${f.$1}</div>');
-        buf.write('<div class="${large ? "field-value-lg" : "field-value"}">${_escNl(f.$2)}</div>');
+        buf.write(
+          '<div class="${large ? "field-value-lg" : "field-value"}">${_escNl(f.$2)}</div>',
+        );
       }
       buf.write('</div>');
     }
 
     // ══ 1. DATOS DE FILIACIÓN Y ADMINISTRATIVOS ════════════════════════════
-    final hasSec1 = history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty ||
-        history.patientSex.isNotEmpty || history.patientRecord.isNotEmpty ||
-        history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty;
+    final hasSec1 = history.patientInitials.isNotEmpty ||
+        history.patientAge.isNotEmpty ||
+        history.patientSex.isNotEmpty ||
+        history.patientRecord.isNotEmpty ||
+        history.patientWeight.isNotEmpty ||
+        history.patientHeight.isNotEmpty;
     if (hasSec1) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section1")}</div>');
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section1")}</div>',
+      );
       // Fila superior: Nombre | Edad+Sexo | DNI
       buf.write('<div class="field-row">');
       if (history.patientInitials.isNotEmpty) {
         buf.write('<div class="field-group">');
-        buf.write('<div class="field-label">${_hcT(lang, "pdf_initials")}</div>');
-        buf.write('<div class="field-value">${_esc(history.patientInitials)}</div>');
+        buf.write(
+          '<div class="field-label">${_hcT(lang, "pdf_initials")}</div>',
+        );
+        buf.write(
+          '<div class="field-value">${_esc(history.patientInitials)}</div>',
+        );
         buf.write('</div>');
       }
       if (history.patientAge.isNotEmpty || history.patientSex.isNotEmpty) {
         buf.write('<div class="field-group">');
         buf.write('<div class="field-label">${_hcT(lang, "pdf_demog")}</div>');
         buf.write('<div class="field-value">');
-        if (history.patientAge.isNotEmpty) buf.write('${history.patientAge} ${_hcT(lang, "years")}');
-        if (history.patientAge.isNotEmpty && history.patientSex.isNotEmpty) buf.write(' &nbsp;·&nbsp; ');
+        if (history.patientAge.isNotEmpty)
+          buf.write('${history.patientAge} ${_hcT(lang, "years")}');
+        if (history.patientAge.isNotEmpty && history.patientSex.isNotEmpty)
+          buf.write(' &nbsp;·&nbsp; ');
         if (history.patientSex.isNotEmpty) buf.write(_esc(history.patientSex));
         buf.write('</div></div>');
       }
       if (history.patientRecord.isNotEmpty) {
         buf.write('<div class="field-group">');
         buf.write('<div class="field-label">${_hcT(lang, "pdf_record")}</div>');
-        buf.write('<div class="field-value">${_esc(history.patientRecord)}</div>');
+        buf.write(
+          '<div class="field-value">${_esc(history.patientRecord)}</div>',
+        );
         buf.write('</div>');
       }
       buf.write('</div>');
       // Fila inferior: Peso/Talla | Fecha ingreso
-      if (history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty) {
+      if (history.patientWeight.isNotEmpty ||
+          history.patientHeight.isNotEmpty) {
         buf.write('<div class="field-row">');
         buf.write('<div class="field-group">');
         buf.write('<div class="field-label">Peso / Talla</div>');
         buf.write('<div class="field-value">');
-        if (history.patientWeight.isNotEmpty) buf.write('${history.patientWeight} kg');
-        if (history.patientWeight.isNotEmpty && history.patientHeight.isNotEmpty) buf.write(' &nbsp;·&nbsp; ');
-        if (history.patientHeight.isNotEmpty) buf.write('${history.patientHeight} cm');
+        if (history.patientWeight.isNotEmpty)
+          buf.write('${history.patientWeight} kg');
+        if (history.patientWeight.isNotEmpty &&
+            history.patientHeight.isNotEmpty) buf.write(' &nbsp;·&nbsp; ');
+        if (history.patientHeight.isNotEmpty)
+          buf.write('${history.patientHeight} cm');
         buf.write('</div></div>');
         buf.write('<div class="field-group">');
-        buf.write('<div class="field-label">${_hcT(lang, "pdf_ingreso")}</div>');
+        buf.write(
+          '<div class="field-label">${_hcT(lang, "pdf_ingreso")}</div>',
+        );
         buf.write('<div class="field-value">${history.formattedDate}</div>');
         buf.write('</div></div>');
       }
@@ -2274,43 +3511,59 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
     // ══ 2. MOTIVO DE CONSULTA ══════════════════════════════════════════════
     if (history.chiefComplaint.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section2")}</div>');
-      buf.write('<div class="field-value-lg">${_escNl(history.chiefComplaint)}</div>');
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section2")}</div>',
+      );
+      buf.write(
+        '<div class="field-value-lg">${_escNl(history.chiefComplaint)}</div>',
+      );
       buf.write('</div>');
     }
 
     // ══ 3. ENFERMEDAD ACTUAL (EA) ══════════════════════════════════════════
-    sec(_hcT(lang, 'pdf_section3'), [
-      (_hcT(lang, 'pdf_hpi'), history.hpi),
-    ]);
+    sec(_hcT(lang, 'pdf_section3'), [(_hcT(lang, 'pdf_hpi'), history.hpi)]);
 
     // ══ 4. ANTECEDENTES PERSONALES ════════════════════════════════════════
-    final hasSec4 = history.pastHistory.isNotEmpty || history.allergies.isNotEmpty ||
-        history.medications.isNotEmpty || history.socialHistory.isNotEmpty ||
+    final hasSec4 = history.pastHistory.isNotEmpty ||
+        history.allergies.isNotEmpty ||
+        history.medications.isNotEmpty ||
+        history.socialHistory.isNotEmpty ||
         history.reviewOfSystems.isNotEmpty;
     if (hasSec4) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section4")}</div>');
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section4")}</div>',
+      );
       if (history.pastHistory.isNotEmpty) {
         buf.write('<div class="field-label">${_hcT(lang, "pdf_past")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.pastHistory)}</div>');
+        buf.write(
+          '<div class="field-value">${_escNl(history.pastHistory)}</div>',
+        );
       }
       if (history.allergies.isNotEmpty) {
         buf.write('<div class="allergy-box">');
-        buf.write('<div class="allergy-label">⚠ ${_hcT(lang, "pdf_allerg")}</div>');
+        buf.write(
+          '<div class="allergy-label">⚠ ${_hcT(lang, "pdf_allerg")}</div>',
+        );
         buf.write('<div class="allergy-text">${_esc(history.allergies)}</div>');
         buf.write('</div>');
       }
       if (history.medications.isNotEmpty) {
         buf.write('<div class="field-label">${_hcT(lang, "pdf_meds")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.medications)}</div>');
+        buf.write(
+          '<div class="field-value">${_escNl(history.medications)}</div>',
+        );
       }
       if (history.socialHistory.isNotEmpty) {
         buf.write('<div class="field-label">${_hcT(lang, "pdf_social")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.socialHistory)}</div>');
+        buf.write(
+          '<div class="field-value">${_escNl(history.socialHistory)}</div>',
+        );
       }
       if (history.reviewOfSystems.isNotEmpty) {
         buf.write('<div class="field-label">${_hcT(lang, "pdf_rvs")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.reviewOfSystems)}</div>');
+        buf.write(
+          '<div class="field-value">${_escNl(history.reviewOfSystems)}</div>',
+        );
       }
       buf.write('</div>');
     }
@@ -2322,46 +3575,76 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
     // ══ 6. EXAMEN FÍSICO ══════════════════════════════════════════════════
     if (history.vitalSigns.isNotEmpty || history.physicalExam.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section6")}</div>');
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section6")}</div>',
+      );
       if (history.vitalSigns.isNotEmpty) {
         buf.write('<div class="field-label">${_hcT(lang, "pdf_vitals")}</div>');
-        buf.write('<div class="field-value" style="font-family:monospace;font-size:12px">${_escNl(history.vitalSigns)}</div>');
+        buf.write(
+          '<div class="field-value" style="font-family:monospace;font-size:12px">${_escNl(history.vitalSigns)}</div>',
+        );
       }
       if (history.physicalExam.isNotEmpty) {
-        buf.write('<div class="field-label" style="margin-top:10px">${_hcT(lang, "pdf_pe")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.physicalExam)}</div>');
+        buf.write(
+          '<div class="field-label" style="margin-top:10px">${_hcT(lang, "pdf_pe")}</div>',
+        );
+        buf.write(
+          '<div class="field-value">${_escNl(history.physicalExam)}</div>',
+        );
       }
       buf.write('</div>');
     }
 
     // ══ 7. ESTUDIOS COMPLEMENTARIOS ══════════════════════════════════════
-    if (history.labResults.isNotEmpty || history.imagingResults.isNotEmpty || history.otherResults.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section7")}</div>');
+    if (history.labResults.isNotEmpty ||
+        history.imagingResults.isNotEmpty ||
+        history.otherResults.isNotEmpty) {
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section7")}</div>',
+      );
       if (history.labResults.isNotEmpty) {
         buf.write('<div class="field-label">${_hcT(lang, "pdf_lab")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.labResults)}</div>');
+        buf.write(
+          '<div class="field-value">${_escNl(history.labResults)}</div>',
+        );
       }
       if (history.otherResults.isNotEmpty) {
-        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_ecg")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.otherResults)}</div>');
+        buf.write(
+          '<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_ecg")}</div>',
+        );
+        buf.write(
+          '<div class="field-value">${_escNl(history.otherResults)}</div>',
+        );
       }
       if (history.imagingResults.isNotEmpty) {
-        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_img")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.imagingResults)}</div>');
+        buf.write(
+          '<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_img")}</div>',
+        );
+        buf.write(
+          '<div class="field-value">${_escNl(history.imagingResults)}</div>',
+        );
       }
       buf.write('</div>');
     }
 
     // ══ 8. IMPRESIÓN DIAGNÓSTICA ══════════════════════════════════════════
-    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty || history.finalDiagnosis.isNotEmpty) {
+    if (history.workingDiagnosis.isNotEmpty ||
+        history.differentialDx.isNotEmpty ||
+        history.finalDiagnosis.isNotEmpty) {
       buf.write('<div class="dx-section">');
       buf.write('<div class="dx-label">${_hcT(lang, "pdf_section8")}</div>');
       if (history.workingDiagnosis.isNotEmpty)
-        buf.write('<div class="dx-working">${_esc(history.workingDiagnosis)}</div>');
+        buf.write(
+          '<div class="dx-working">${_esc(history.workingDiagnosis)}</div>',
+        );
       if (history.differentialDx.isNotEmpty)
-        buf.write('<div class="dx-diff">${_escNl(history.differentialDx)}</div>');
+        buf.write(
+          '<div class="dx-diff">${_escNl(history.differentialDx)}</div>',
+        );
       if (history.finalDiagnosis.isNotEmpty) {
-        buf.write('<div class="dx-final">${_esc(history.finalDiagnosis)}</div>');
+        buf.write(
+          '<div class="dx-final">${_esc(history.finalDiagnosis)}</div>',
+        );
         if (history.cid.isNotEmpty)
           buf.write('<div class="cie-tag">CIE-10: ${_esc(history.cid)}</div>');
       }
@@ -2370,21 +3653,29 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
     // ══ 9. EVOLUCIÓN CLÍNICA ═════════════════════════════════════════════
     if (history.evolutions.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section9")}</div>');
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section9")}</div>',
+      );
       for (final e in history.evolutions) {
         final dt = DateTime.tryParse(e.date)?.toLocal();
         final ds = dt != null
-            ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year}  ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
+            ? '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}  ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}'
             : '';
         final typeMap = {
-          'evolution': _hcT(lang, 'evo_med'), 'nursing': _hcT(lang, 'evo_nurs'),
-          'lab': _hcT(lang, 'evo_lab'), 'imaging': _hcT(lang, 'evo_img'),
+          'evolution': _hcT(lang, 'evo_med'),
+          'nursing': _hcT(lang, 'evo_nurs'),
+          'lab': _hcT(lang, 'evo_lab'),
+          'imaging': _hcT(lang, 'evo_img'),
           'procedure': _hcT(lang, 'evo_proc'),
         };
         buf.write('<div class="evolution">');
-        buf.write('<div class="evo-meta">${typeMap[e.type] ?? _hcT(lang, "evo_default")} &nbsp;·&nbsp; $ds'
-            '${e.author.isNotEmpty ? " &nbsp;·&nbsp; ${_esc(e.author)}" : ""}</div>');
-        buf.write('<div class="field-value" style="margin-top:3px">${_escNl(e.text)}</div>');
+        buf.write(
+          '<div class="evo-meta">${typeMap[e.type] ?? _hcT(lang, "evo_default")} &nbsp;·&nbsp; $ds'
+          '${e.author.isNotEmpty ? " &nbsp;·&nbsp; ${_esc(e.author)}" : ""}</div>',
+        );
+        buf.write(
+          '<div class="field-value" style="margin-top:3px">${_escNl(e.text)}</div>',
+        );
         buf.write('</div>');
       }
       buf.write('</div>');
@@ -2392,14 +3683,22 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
     // ══ 10. INDICACIONES MÉDICAS ══════════════════════════════════════════
     if (history.treatmentPlan.isNotEmpty || history.procedures.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section10")}</div>');
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section10")}</div>',
+      );
       if (history.treatmentPlan.isNotEmpty) {
         buf.write('<div class="field-label">${_hcT(lang, "pdf_plan")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.treatmentPlan)}</div>');
+        buf.write(
+          '<div class="field-value">${_escNl(history.treatmentPlan)}</div>',
+        );
       }
       if (history.procedures.isNotEmpty) {
-        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_proc")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.procedures)}</div>');
+        buf.write(
+          '<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_proc")}</div>',
+        );
+        buf.write(
+          '<div class="field-value">${_escNl(history.procedures)}</div>',
+        );
       }
       buf.write('</div>');
     }
@@ -2411,15 +3710,27 @@ class _HistoryDetailState extends State<_HistoryDetail> {
       'obito': lang == 'es' ? 'Fallecimiento' : 'Óbito',
       'transferencia': lang == 'es' ? 'Traslado' : 'Transferência',
     };
-    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty) {
-      buf.write('<div class="section"><div class="section-title">${_hcT(lang, "pdf_section11")}</div>');
-      buf.write('<div class="outcome-badge">${outcomeLabels[history.outcome] ?? history.outcome}</div>');
+    if (history.outcome != 'internado' ||
+        history.dischargeCondition.isNotEmpty ||
+        history.followUp.isNotEmpty) {
+      buf.write(
+        '<div class="section"><div class="section-title">${_hcT(lang, "pdf_section11")}</div>',
+      );
+      buf.write(
+        '<div class="outcome-badge">${outcomeLabels[history.outcome] ?? history.outcome}</div>',
+      );
       if (history.dischargeCondition.isNotEmpty) {
-        buf.write('<div class="field-label">${_hcT(lang, "pdf_discharge")}</div>');
-        buf.write('<div class="field-value">${_escNl(history.dischargeCondition)}</div>');
+        buf.write(
+          '<div class="field-label">${_hcT(lang, "pdf_discharge")}</div>',
+        );
+        buf.write(
+          '<div class="field-value">${_escNl(history.dischargeCondition)}</div>',
+        );
       }
       if (history.followUp.isNotEmpty) {
-        buf.write('<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_followup")}</div>');
+        buf.write(
+          '<div class="field-label" style="margin-top:8px">${_hcT(lang, "pdf_followup")}</div>',
+        );
         buf.write('<div class="field-value">${_escNl(history.followUp)}</div>');
       }
       buf.write('</div>');
@@ -2438,19 +3749,21 @@ class _HistoryDetailState extends State<_HistoryDetail> {
       await Printing.layoutPdf(
         onLayout: (_) async {
           // Converte HTML para PDF usando o motor do pacote printing
-          return Printing.convertHtml(
-            format: PdfPageFormat.a4,
-            html: htmlStr,
-          );
+          return Printing.convertHtml(format: PdfPageFormat.a4, html: htmlStr);
         },
         name: _safeFilename(),
       );
     }
   }
 
-  String _esc(String s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+  String _esc(String s) => s
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
   String _escNl(String s) => _esc(s).replaceAll('\n', '<br>');
-  String _safeFilename() => 'HC_${history.displayTitle.replaceAll(RegExp(r'[^a-zA-Z0-9\u00C0-\u024F ]'), '').trim().replaceAll(' ', '_').substring(0, history.displayTitle.length.clamp(0, 30))}_${history.formattedDate.replaceAll('/', '-')}';
+  String _safeFilename() =>
+      'HC_${history.displayTitle.replaceAll(RegExp(r'[^a-zA-Z0-9\u00C0-\u024F ]'), '').trim().replaceAll(' ', '_').substring(0, history.displayTitle.length.clamp(0, 30))}_${history.formattedDate.replaceAll('/', '-')}';
 
   void _downloadBytes(Uint8List bytes, String filename, String mime) {
     webPlatform.webDownloadBytes(bytes, filename, mime);
@@ -2458,332 +3771,630 @@ class _HistoryDetailState extends State<_HistoryDetail> {
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_HISTORYDETAILSTATE_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     final bp = MedBreakpoints.of(context);
-    return Stack(children: [
-      // ── Conteúdo principal scrollável ──────────────────────────────────────
-      SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return ColoredBox(
+      color: (isDarkR10 ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3)),
+      child: Stack(
+        children: [
+          // ── Conteúdo principal scrollável ──────────────────────────────────────
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 120),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ══ HEADER HERO ══════════════════════════════════════════════════════
+                // Desktop: gradiente completo com decorações.
+                // Mobile/tablet: compacto sem gradiente (shell AppBar já no topo).
+                if (bp.isDesktop)
+                  _HistoryHeroHeader(
+                    history: history,
+                    readOnly: readOnly,
+                    onBack: widget.onBack,
+                    onEdit: widget.onEdit,
+                    lang: p.lang,
+                  )
+                else
+                  _HistoryHeroHeaderCompact(
+                    history: history,
+                    readOnly: readOnly,
+                    onBack: widget.onBack,
+                    onEdit: widget.onEdit,
+                    lang: p.lang,
+                  ),
+                const SizedBox(height: 14),
 
-          // ══ HEADER HERO ══════════════════════════════════════════════════════
-          // Desktop: gradiente completo com decorações.
-          // Mobile/tablet: compacto sem gradiente (shell AppBar já no topo).
-          if (bp.isDesktop)
-          _HistoryHeroHeader(
-            history: history,
-            readOnly: readOnly,
-            onBack: widget.onBack,
-            onEdit: widget.onEdit,
-            lang: p.lang,
-          )
-          else
-          _HistoryHeroHeaderCompact(
-            history: history,
-            readOnly: readOnly,
-            onBack: widget.onBack,
-            onEdit: widget.onEdit,
-            lang: p.lang,
-          ),
-          const SizedBox(height: 14),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ══ PNG CANVAS — fondo blanco clínico puro, esquema 11 secciones ══
+                      // HISTORY_CLINICAL_V1_D_R22_R4_REAL_PNG_DARK
+                      RepaintBoundary(
+                        key: _printKey,
+                        child: Container(
+                          color: (isDarkR10
+                              ? const Color(0xFF1A1D23)
+                              : const Color(0xFFECF1F3)),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // ── Cabeçalho da imagem: [M+] logo esq | metadados prof dir ─
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Logo badge
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 1),
+                                    child: Text(
+                                      'M+',
+                                      style: TextStyle(
+                                        fontSize:
+                                            MedTypography.internalTitleSize,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFFC5A365),
+                                        letterSpacing: 0.2,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 9),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'MedCases Pro',
+                                        style: TextStyle(
+                                          fontSize: MedTypography.auxiliarySize,
+                                          fontWeight: FontWeight.w800,
+                                          color: (isDarkR10
+                                              ? Color(0xFFE8F0EC)
+                                              : const Color(0xFF05070A)),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Historia Clínica Oficial',
+                                        style: TextStyle(
+                                          fontSize: MedTypography.microTextSize,
+                                          color: (isDarkR10
+                                              ? Colors.white54
+                                              : const Color(0xFF4B5563)),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      if (history.authorName.isNotEmpty)
+                                        Text(
+                                          history.authorName,
+                                          style: TextStyle(
+                                            fontSize:
+                                                MedTypography.microTextSize,
+                                            fontWeight: FontWeight.w700,
+                                            color: (isDarkR10
+                                                ? Color(0xFFE8F0EC)
+                                                : const Color(0xFF05070A)),
+                                          ),
+                                        ),
+                                      Text(
+                                        history.category.isNotEmpty
+                                            ? history.category
+                                            : 'Clínica General',
+                                        style: TextStyle(
+                                          fontSize: MedTypography.microTextSize,
+                                          color: (isDarkR10
+                                              ? Colors.white54
+                                              : const Color(0xFF4B5563)),
+                                        ),
+                                      ),
+                                      Text(
+                                        history.formattedDate,
+                                        style: TextStyle(
+                                          fontSize: MedTypography.microTextSize,
+                                          color: (isDarkR10
+                                              ? Colors.white54
+                                              : const Color(0xFF4B5563)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
 
-          Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+                              // Divisor dorado fino
+                              const SizedBox(height: 10),
+                              Container(
+                                height: 1.5,
+                                color:
+                                    const Color(0xFFC5A365).withOpacity(0.55),
+                              ),
+                              const SizedBox(height: 10),
 
-              // ══ PNG CANVAS — fondo blanco clínico puro, esquema 11 secciones ══
-              RepaintBoundary(
-                key: _printKey,
-                child: Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              // Título do caso
+                              Text(
+                                history.displayTitle,
+                                style: TextStyle(
+                                  fontSize: MedTypography.internalTitleSize,
+                                  fontWeight: FontWeight.w800,
+                                  color: (isDarkR10
+                                      ? Color(0xFFE8F0EC)
+                                      : const Color(0xFF05070A)),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
 
-                    // ── Cabeçalho da imagem: [M+] logo esq | metadados prof dir ─
-                    Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      // Logo badge
-                      Container(
-                        width: 34, height: 34,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF0F2D1C),
-                          borderRadius: BorderRadius.circular(8),
+                              // ── Widget helper para seção com divisor dourado ────────────
+                              // (definido inline via funções locais não é possível — usamos
+                              //  _PngSection widgets abaixo)
+
+                              // ── 1. DATOS DE FILIACIÓN ────────────────────────────────
+                              if (history.patientInitials.isNotEmpty ||
+                                  history.patientAge.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section1'),
+                                  children: [
+                                    if (history.patientInitials.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_initials'),
+                                        history.patientInitials,
+                                      ),
+                                    _PngField(
+                                      _hcT(p.lang, 'pdf_demog'),
+                                      [
+                                        if (history.patientAge.isNotEmpty)
+                                          '${history.patientAge} ${_hcT(p.lang, 'years')}',
+                                        if (history.patientSex.isNotEmpty)
+                                          history.patientSex,
+                                      ].join('  ·  '),
+                                    ),
+                                    if (history.patientRecord.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_record'),
+                                        history.patientRecord,
+                                      ),
+                                    if (history.patientWeight.isNotEmpty ||
+                                        history.patientHeight.isNotEmpty)
+                                      _PngField(
+                                        'Peso / Talla',
+                                        [
+                                          if (history.patientWeight.isNotEmpty)
+                                            '${history.patientWeight} kg',
+                                          if (history.patientHeight.isNotEmpty)
+                                            '${history.patientHeight} cm',
+                                        ].join('  ·  '),
+                                      ),
+                                  ],
+                                ),
+
+                              // ── 2. MOTIVO DE CONSULTA ────────────────────────────────
+                              if (history.chiefComplaint.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section2'),
+                                  children: [
+                                    _PngField(
+                                      '',
+                                      history.chiefComplaint,
+                                      large: true,
+                                    ),
+                                  ],
+                                ),
+
+                              // ── 3. ENFERMEDAD ACTUAL ──────────────────────────────────
+                              if (history.hpi.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section3'),
+                                  children: [
+                                    _PngField(
+                                      _hcT(p.lang, 'pdf_hpi'),
+                                      history.hpi,
+                                    ),
+                                  ],
+                                ),
+
+                              // ── 4. ANTECEDENTES PERSONALES ────────────────────────────
+                              if (history.pastHistory.isNotEmpty ||
+                                  history.allergies.isNotEmpty ||
+                                  history.medications.isNotEmpty ||
+                                  history.socialHistory.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section4'),
+                                  children: [
+                                    if (history.pastHistory.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_past'),
+                                        history.pastHistory,
+                                      ),
+                                    if (history.allergies.isNotEmpty)
+                                      _PngAllergyField(history.allergies),
+                                    if (history.medications.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_meds'),
+                                        history.medications,
+                                      ),
+                                    if (history.socialHistory.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_social'),
+                                        history.socialHistory,
+                                      ),
+                                    if (history.reviewOfSystems.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_rvs'),
+                                        history.reviewOfSystems,
+                                      ),
+                                  ],
+                                ),
+
+                              // ── 5. ANTECEDENTES FAMILIARES ────────────────────────────
+                              if (history.familyHistory.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section5'),
+                                  children: [
+                                    _PngField(
+                                      _hcT(p.lang, 'pdf_family'),
+                                      history.familyHistory,
+                                    ),
+                                  ],
+                                ),
+
+                              // ── 6. EXAMEN FÍSICO ──────────────────────────────────────
+                              if (history.vitalSigns.isNotEmpty ||
+                                  history.physicalExam.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section6'),
+                                  children: [
+                                    if (history.vitalSigns.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_vitals'),
+                                        history.vitalSigns,
+                                        mono: true,
+                                      ),
+                                    if (history.physicalExam.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_pe'),
+                                        history.physicalExam,
+                                      ),
+                                  ],
+                                ),
+
+                              // ── 7. ESTUDIOS COMPLEMENTARIOS ───────────────────────────
+                              if (history.labResults.isNotEmpty ||
+                                  history.imagingResults.isNotEmpty ||
+                                  history.otherResults.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section7'),
+                                  children: [
+                                    if (history.labResults.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_lab'),
+                                        history.labResults,
+                                      ),
+                                    if (history.otherResults.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_ecg'),
+                                        history.otherResults,
+                                      ),
+                                    if (history.imagingResults.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_img'),
+                                        history.imagingResults,
+                                      ),
+                                  ],
+                                ),
+
+                              // ── 8. IMPRESIÓN DIAGNÓSTICA ──────────────────────────────
+                              if (history.workingDiagnosis.isNotEmpty ||
+                                  history.differentialDx.isNotEmpty ||
+                                  history.finalDiagnosis.isNotEmpty)
+                                _PngDxSection(
+                                  title: _hcT(p.lang, 'pdf_section8'),
+                                  working: history.workingDiagnosis,
+                                  differential: history.differentialDx,
+                                  final_: history.finalDiagnosis,
+                                  cid: history.cid,
+                                ),
+
+                              // ── 9. EVOLUCIÓN CLÍNICA ──────────────────────────────────
+                              if (history.evolutions.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section9'),
+                                  children: history.evolutions.map((e) {
+                                    final dt = DateTime.tryParse(e.date);
+                                    final ds = dt != null
+                                        ? '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}  ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}'
+                                        : '';
+                                    return _PngEvolution(
+                                      dateStr: ds,
+                                      author: e.author,
+                                      text: e.text,
+                                    );
+                                  }).toList(),
+                                ),
+
+                              // ── 10. INDICACIONES MÉDICAS ──────────────────────────────
+                              if (history.treatmentPlan.isNotEmpty ||
+                                  history.procedures.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section10'),
+                                  children: [
+                                    if (history.treatmentPlan.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_plan'),
+                                        history.treatmentPlan,
+                                      ),
+                                    if (history.procedures.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_proc'),
+                                        history.procedures,
+                                      ),
+                                    if (history.drugIds.isNotEmpty)
+                                      _DrugChips(history.drugIds, p),
+                                  ],
+                                ),
+
+                              // ── 11. EPICRISIS / RESUMEN DE ALTA ──────────────────────
+                              if (history.outcome != 'internado' ||
+                                  history.dischargeCondition.isNotEmpty ||
+                                  history.followUp.isNotEmpty)
+                                _PngSection(
+                                  title: _hcT(p.lang, 'pdf_section11'),
+                                  children: [
+                                    _PngOutcomeBadge(history.outcome, p.lang),
+                                    if (history.dischargeCondition.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_discharge'),
+                                        history.dischargeCondition,
+                                      ),
+                                    if (history.followUp.isNotEmpty)
+                                      _PngField(
+                                        _hcT(p.lang, 'pdf_followup'),
+                                        history.followUp,
+                                      ),
+                                  ],
+                                ),
+
+                              // ── Pie / footer ──────────────────────────────────────────
+                              const SizedBox(height: 12),
+                              Container(
+                                height: 0.5,
+                                color: const Color(0xFFC5A365).withOpacity(0.4),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                _hcT(p.lang, 'pdf_footer'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: MedTypography.microTextSize,
+                                  color: (isDarkR10
+                                      ? Colors.white38
+                                      : const Color(0xFF4B5563)),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        child: const Center(child: Text('M+',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900,
-                                color: Color(0xFFFFE8A6), letterSpacing: -0.5))),
                       ),
-                      const SizedBox(width: 9),
-                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        const Text('MedCases Pro',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800,
-                                color: Color(0xFF0F2D1C))),
-                        Text('Historia Clínica Oficial',
-                            style: TextStyle(fontSize: 9, color: Colors.grey[500], fontWeight: FontWeight.w500)),
-                      ]),
-                      const Spacer(),
-                      Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                        if (history.authorName.isNotEmpty)
-                          Text(history.authorName,
-                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                                  color: Color(0xFF1a1a1a))),
-                        Text(history.category.isNotEmpty ? history.category : 'Clínica General',
-                            style: TextStyle(fontSize: 9, color: Colors.grey[500])),
-                        Text(history.formattedDate,
-                            style: TextStyle(fontSize: 9, color: Colors.grey[500])),
-                      ]),
-                    ]),
 
-                    // Divisor dorado fino
-                    const SizedBox(height: 10),
-                    Container(height: 1.5,
-                        color: const Color(0xFFC5A365).withOpacity(0.55)),
-                    const SizedBox(height: 10),
+                      const SizedBox(height: 16),
 
-                    // Título do caso
-                    Text(history.displayTitle,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800,
-                            color: Color(0xFF111827))),
-                    const SizedBox(height: 12),
-
-                    // ── Widget helper para seção com divisor dourado ────────────
-                    // (definido inline via funções locais não é possível — usamos
-                    //  _PngSection widgets abaixo)
-
-                    // ── 1. DATOS DE FILIACIÓN ────────────────────────────────
-                    if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section1'),
+                      // ── Ações ──────────────────────────────────────────────────────
+                      Row(
                         children: [
-                          if (history.patientInitials.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_initials'), history.patientInitials),
-                          _PngField(_hcT(p.lang, 'pdf_demog'),
-                            [
-                              if (history.patientAge.isNotEmpty) '${history.patientAge} ${_hcT(p.lang, 'years')}',
-                              if (history.patientSex.isNotEmpty) history.patientSex,
-                            ].join('  ·  ')),
-                          if (history.patientRecord.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_record'), history.patientRecord),
-                          if (history.patientWeight.isNotEmpty || history.patientHeight.isNotEmpty)
-                            _PngField('Peso / Talla',
-                              [
-                                if (history.patientWeight.isNotEmpty) '${history.patientWeight} kg',
-                                if (history.patientHeight.isNotEmpty) '${history.patientHeight} cm',
-                              ].join('  ·  ')),
+                          Expanded(
+                            child: GestureDetector(
+                              // HISTORY_CLINICAL_V1_D_R22_R4_PREMIUM_COMPACT_ACTIONS
+                              onTap: _copy,
+                              child: Container(
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: (isDarkR10
+                                        ? Color(0xFF374151)
+                                        : const Color(0xFFD8E0E7)),
+                                    width: 0.65,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.copy_rounded,
+                                        size: 14,
+                                        color: kGoldLight,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        _hcT(p.lang, 'copy_hc'),
+                                        style: const TextStyle(
+                                          fontSize: MedTypography.auxiliarySize,
+                                          fontWeight: FontWeight.w900,
+                                          color: kGoldLight,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: _exportPdf,
+                            child: Container(
+                              height: 48,
+                              width: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: (isDarkR10
+                                      ? Color(0xFF374151)
+                                      : const Color(0xFFD8E0E7)),
+                                  width: 0.65,
+                                ),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.picture_as_pdf_rounded,
+                                  size: 17,
+                                  color: (isDarkR10
+                                      ? Colors.white
+                                      : const Color(0xFF05070A)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: _exporting ? null : _exportPng,
+                            child: Container(
+                              height: 48,
+                              width: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: (isDarkR10
+                                      ? Color(0xFF374151)
+                                      : const Color(0xFFD8E0E7)),
+                                  width: 0.65,
+                                ),
+                              ),
+                              child: Center(
+                                child: _exporting
+                                    ? SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: (isDarkR10
+                                              ? Colors.white
+                                              : const Color(0xFF05070A)),
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.image_rounded,
+                                        size: 17,
+                                        color: (isDarkR10
+                                            ? Colors.white
+                                            : const Color(0xFF05070A)),
+                                      ),
+                              ),
+                            ),
+                          ),
+                          if (!readOnly && widget.onDelete != null) ...[
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: widget.onDelete,
+                              child: Container(
+                                height: 48,
+                                width: 48,
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: (isDarkR10
+                                        ? Color(0xFF374151)
+                                        : const Color(0xFFD8E0E7)),
+                                    width: 0.65,
+                                  ),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.delete_rounded,
+                                    size: 18,
+                                    color: Color(0xFFCC2222),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
 
-                    // ── 2. MOTIVO DE CONSULTA ────────────────────────────────
-                    if (history.chiefComplaint.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section2'),
-                        children: [_PngField('', history.chiefComplaint, large: true)],
-                      ),
-
-                    // ── 3. ENFERMEDAD ACTUAL ──────────────────────────────────
-                    if (history.hpi.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section3'),
-                        children: [_PngField(_hcT(p.lang, 'pdf_hpi'), history.hpi)],
-                      ),
-
-                    // ── 4. ANTECEDENTES PERSONALES ────────────────────────────
-                    if (history.pastHistory.isNotEmpty || history.allergies.isNotEmpty ||
-                        history.medications.isNotEmpty || history.socialHistory.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section4'),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if (history.pastHistory.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_past'), history.pastHistory),
-                          if (history.allergies.isNotEmpty)
-                            _PngAllergyField(history.allergies),
-                          if (history.medications.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_meds'), history.medications),
-                          if (history.socialHistory.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_social'), history.socialHistory),
-                          if (history.reviewOfSystems.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_rvs'), history.reviewOfSystems),
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: 11,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            _hcT(p.lang, 'pdf_hint'),
+                            style: TextStyle(
+                              fontSize: MedTypography.auxiliarySize,
+                              color: Colors.grey[400],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ],
                       ),
-
-                    // ── 5. ANTECEDENTES FAMILIARES ────────────────────────────
-                    if (history.familyHistory.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section5'),
-                        children: [_PngField(_hcT(p.lang, 'pdf_family'), history.familyHistory)],
-                      ),
-
-                    // ── 6. EXAMEN FÍSICO ──────────────────────────────────────
-                    if (history.vitalSigns.isNotEmpty || history.physicalExam.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section6'),
-                        children: [
-                          if (history.vitalSigns.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_vitals'), history.vitalSigns, mono: true),
-                          if (history.physicalExam.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_pe'), history.physicalExam),
-                        ],
-                      ),
-
-                    // ── 7. ESTUDIOS COMPLEMENTARIOS ───────────────────────────
-                    if (history.labResults.isNotEmpty || history.imagingResults.isNotEmpty || history.otherResults.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section7'),
-                        children: [
-                          if (history.labResults.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_lab'), history.labResults),
-                          if (history.otherResults.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_ecg'), history.otherResults),
-                          if (history.imagingResults.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_img'), history.imagingResults),
-                        ],
-                      ),
-
-                    // ── 8. IMPRESIÓN DIAGNÓSTICA ──────────────────────────────
-                    if (history.workingDiagnosis.isNotEmpty || history.differentialDx.isNotEmpty || history.finalDiagnosis.isNotEmpty)
-                      _PngDxSection(
-                        title: _hcT(p.lang, 'pdf_section8'),
-                        working: history.workingDiagnosis,
-                        differential: history.differentialDx,
-                        final_: history.finalDiagnosis,
-                        cid: history.cid,
-                      ),
-
-                    // ── 9. EVOLUCIÓN CLÍNICA ──────────────────────────────────
-                    if (history.evolutions.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section9'),
-                        children: history.evolutions.map((e) {
-                          final dt = DateTime.tryParse(e.date);
-                          final ds = dt != null
-                              ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year}  ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
-                              : '';
-                          return _PngEvolution(dateStr: ds, author: e.author, text: e.text);
-                        }).toList(),
-                      ),
-
-                    // ── 10. INDICACIONES MÉDICAS ──────────────────────────────
-                    if (history.treatmentPlan.isNotEmpty || history.procedures.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section10'),
-                        children: [
-                          if (history.treatmentPlan.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_plan'), history.treatmentPlan),
-                          if (history.procedures.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_proc'), history.procedures),
-                          if (history.drugIds.isNotEmpty) _DrugChips(history.drugIds, p),
-                        ],
-                      ),
-
-                    // ── 11. EPICRISIS / RESUMEN DE ALTA ──────────────────────
-                    if (history.outcome != 'internado' || history.dischargeCondition.isNotEmpty || history.followUp.isNotEmpty)
-                      _PngSection(
-                        title: _hcT(p.lang, 'pdf_section11'),
-                        children: [
-                          _PngOutcomeBadge(history.outcome, p.lang),
-                          if (history.dischargeCondition.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_discharge'), history.dischargeCondition),
-                          if (history.followUp.isNotEmpty)
-                            _PngField(_hcT(p.lang, 'pdf_followup'), history.followUp),
-                        ],
-                      ),
-
-                    // ── Pie / footer ──────────────────────────────────────────
-                    const SizedBox(height: 12),
-                    Container(height: 0.5,
-                        color: const Color(0xFFC5A365).withOpacity(0.4)),
-                    const SizedBox(height: 6),
-                    Text(_hcT(p.lang, 'pdf_footer'),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 8.5, color: Colors.grey[400])),
-                  ]),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // ── Ações ──────────────────────────────────────────────────────
-              Row(children: [
-                Expanded(child: GestureDetector(
-                  onTap: _copy,
-                  child: Container(height: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: kDark, boxShadow: [BoxShadow(color: kDark.withOpacity(0.25), blurRadius: 10, offset: const Offset(0,4))]),
-                    child: Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.copy_rounded, size: 14, color: kGoldLight),
-                      const SizedBox(width: 6),
-                      Text(_hcT(p.lang, 'copy_hc'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
-                    ]))),
-                )),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: _exportPdf,
-                  child: Container(
-                    height: 48, width: 48,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF1E40AF), boxShadow: [BoxShadow(color: const Color(0xFF1E40AF).withOpacity(0.3), blurRadius: 8, offset: const Offset(0,3))]),
-                    child: const Center(child: Icon(Icons.picture_as_pdf_rounded, size: 20, color: Colors.white)),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: _exporting ? null : _exportPng,
-                  child: Container(
-                    height: 48, width: 48,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), color: const Color(0xFF065F46), boxShadow: [BoxShadow(color: const Color(0xFF065F46).withOpacity(0.3), blurRadius: 8, offset: const Offset(0,3))]),
-                    child: Center(child: _exporting
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : const Icon(Icons.image_rounded, size: 20, color: Colors.white)),
-                  ),
-                ),
-                if (!readOnly && widget.onDelete != null) ...[
-                  const SizedBox(width: 8),
+              ],
+            ),
+          ),
+
+          // ══ FAB INFERIOR — Editar / Nova Evolução ═══════════════════════════════
+          if (!readOnly && widget.onEdit != null)
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // FAB principal — editar
                   GestureDetector(
-                    onTap: widget.onDelete,
-                    child: Container(height: 48, width: 48, decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFFFCCCC)), color: const Color(0xFFFFF0F0)),
-                      child: const Center(child: Icon(Icons.delete_rounded, size: 18, color: Color(0xFFCC2222)))),
+                    onTap: widget.onEdit,
+                    child: Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: (isDarkR10
+                              ? Color(0xFF374151)
+                              : const Color(0xFFD8E0E7)),
+                          width: 0.65,
+                        ),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.edit_rounded,
+                          size: 22,
+                          color: Color(0xFF0D6B57),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
-              ]),
-
-              const SizedBox(height: 8),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Icon(Icons.info_outline_rounded, size: 11, color: Colors.grey[400]),
-                const SizedBox(width: 4),
-                Text(_hcT(p.lang, 'pdf_hint'), style: TextStyle(fontSize: 10, color: Colors.grey[400], fontWeight: FontWeight.w500)),
-              ]),
-            ],
-          )),
-        ]),
-      ),
-
-      // ══ FAB INFERIOR — Editar / Nova Evolução ═══════════════════════════════
-      if (!readOnly && widget.onEdit != null)
-        Positioned(
-          bottom: 20,
-          right: 20,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            // FAB principal — editar
-            GestureDetector(
-              onTap: widget.onEdit,
-              child: Container(
-                width: 52, height: 52,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF10B981), Color(0xFF0A3D2A)],
-                  ),
-                  boxShadow: [BoxShadow(color: const Color(0xFF10B981).withOpacity(0.45), blurRadius: 14, offset: const Offset(0, 5))],
-                ),
-                child: const Center(child: Icon(Icons.edit_rounded, size: 22, color: Color(0xFFFFE8A6))),
               ),
             ),
-          ]),
-        ),
-    ]);
+        ],
+      ),
+    );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HEADER HERO — card verde escuro com gradiente
 // ─────────────────────────────────────────────────────────────────────────────
+// HISTORY_CLINICAL_V1_D_R21_SAVED_DETAIL_TOPBAR
+// HISTORY_CLINICAL_V1_D_R23_R2_ORDERED_TOPBAR
 class _HistoryHeroHeader extends StatelessWidget {
   final ClinicalHistoryModel history;
   final bool readOnly;
@@ -2801,142 +4412,196 @@ class _HistoryHeroHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF071A10), Color(0xFF0F2D1C), Color(0xFF155131), Color(0xFF10B981)],
-          stops: [0.0, 0.3, 0.7, 1.0],
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_HISTORYHEROHEADER_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
+    final isEs = lang == 'es';
+    final patientIdentity = history.patientInitials.trim();
+    final patientAge = history.patientAge.trim();
+    final patientSex = history.patientSex.trim();
+    final normalizedSex = patientSex.toLowerCase();
+
+    final isFemale = normalizedSex.contains('fem') ||
+        normalizedSex.contains('mujer') ||
+        normalizedSex.contains('mulher') ||
+        normalizedSex == 'f';
+    final isMale = normalizedSex.contains('masc') ||
+        normalizedSex.contains('male') ||
+        normalizedSex.contains('homem') ||
+        normalizedSex == 'm';
+
+    final sexColor = isFemale
+        ? const Color(0xFFF9A8D4)
+        : isMale
+            ? const Color(0xFF93C5FD)
+            : (isDarkR10 ? Colors.white70 : const Color(0xFF4B5563));
+
+    final patientSummary = <Widget>[];
+
+    void addSummaryPart(Widget child) {
+      if (patientSummary.isNotEmpty) {
+        patientSummary.add(
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              '/',
+              style: TextStyle(
+                fontSize: MedTypography.microTextSize,
+                fontWeight: FontWeight.w400,
+                color: (isDarkR10 ? Colors.white24 : const Color(0xFF4B5563)),
+              ),
+            ),
+          ),
+        );
+      }
+      patientSummary.add(child);
+    }
+
+    if (patientIdentity.isNotEmpty) {
+      addSummaryPart(
+        _PatientBadge(
+          icon: Icons.badge_outlined,
+          text: patientIdentity,
+          accent:
+              (isDarkR10 ? const Color(0xFFE8F0EC) : const Color(0xFF05070A)),
         ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(28),
-          bottomRight: Radius.circular(28),
+      );
+    }
+
+    if (patientAge.isNotEmpty) {
+      addSummaryPart(
+        _PatientBadge(
+          icon: Icons.cake_outlined,
+          text: '$patientAge ${_hcT(lang, 'years')}',
+          accent: (isDarkR10 ? Colors.white70 : const Color(0xFF4B5563)),
         ),
-        boxShadow: [BoxShadow(color: Color(0x551F6B48), blurRadius: 20, offset: Offset(0, 8))],
+      );
+    }
+
+    if (patientSex.isNotEmpty) {
+      addSummaryPart(
+        _PatientBadge(
+          icon: Icons.wc_rounded,
+          text: patientSex,
+          accent: sexColor,
+        ),
+      );
+    }
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: (isDarkR10 ? Color(0xFF1A1D23) : const Color(0xFFECF1F3)),
+        border: Border(
+          bottom: BorderSide(
+            color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+            width: 0.7,
+          ),
+        ),
       ),
-      child: Stack(children: [
-        // Ícone decorativo de fundo
-        Positioned(
-          right: -18, top: -18,
-          child: Icon(Icons.medical_information_rounded, size: 140,
-            color: Colors.white.withOpacity(0.04)),
-        ),
-        Positioned(
-          right: 60, bottom: -10,
-          child: Icon(Icons.local_hospital_rounded, size: 80,
-            color: Colors.white.withOpacity(0.04)),
-        ),
-
-        // Conteúdo
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Botão voltar
-            GestureDetector(
-              onTap: onBack,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withOpacity(0.12),
-                  border: Border.all(color: Colors.white.withOpacity(0.18)),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 6, 12, 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 42,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        onPressed: onBack,
+                        tooltip: _hcT(lang, 'back'),
+                        constraints: const BoxConstraints.tightFor(
+                          width: 38,
+                          height: 38,
+                        ),
+                        padding: EdgeInsets.zero,
+                        splashRadius: 19,
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 18,
+                          color: (isDarkR10
+                              ? Colors.white70
+                              : const Color(0xFF4B5563)),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        _hcT(lang, 'tab_title').toUpperCase(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: MedTypography.clinicalBodySize,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.4,
+                          color: (isDarkR10
+                              ? Color(0xFFE8F0EC)
+                              : const Color(0xFF05070A)),
+                        ),
+                      ),
+                    ),
+                    if (!readOnly && onEdit != null)
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          onPressed: onEdit,
+                          tooltip: _hcT(lang, 'edit_btn'),
+                          constraints: const BoxConstraints.tightFor(
+                            width: 38,
+                            height: 38,
+                          ),
+                          padding: EdgeInsets.zero,
+                          splashRadius: 19,
+                          icon: const Icon(
+                            Icons.edit_outlined,
+                            size: 18,
+                            color: Color(0xFF0D6B57),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.arrow_back_ios_rounded, size: 13, color: Colors.white),
-                  const SizedBox(width: 4),
-                  Text(_hcT(lang, 'back'), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white.withOpacity(0.9))),
-                ]),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Categoria badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white.withOpacity(0.12),
-                border: Border.all(color: const Color(0xFFFFE8A6).withOpacity(0.35)),
+              const SizedBox(height: 14),
+              Text(
+                isEs ? 'MOTIVO DE CONSULTA' : 'MOTIVO DA CONSULTA',
+                style: const TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.4,
+                  color: Color(0xFF0D6B57),
+                ),
               ),
-              child: Text(
-                history.category.toUpperCase(),
-                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                  color: Color(0xFFFFE8A6), letterSpacing: 1.8),
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // Título principal
-            Row(children: [
-              Expanded(child: Text(
+              const SizedBox(height: 4),
+              Text(
                 history.displayTitle,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900,
-                  color: Colors.white, height: 1.2, letterSpacing: -0.3),
-              )),
-            ]),
-            const SizedBox(height: 10),
-
-            // Autor + data
-            if (history.authorName.isNotEmpty)
-              Row(children: [
-                Container(
-                  width: 22, height: 22,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF10B981).withOpacity(0.2),
-                    border: Border.all(color: const Color(0xFF10B981).withOpacity(0.4)),
-                  ),
-                  child: const Center(child: Icon(Icons.person_rounded, size: 12, color: Color(0xFF10B981))),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: MedTypography.internalTitleSize,
+                  height: 1.12,
+                  fontWeight: FontWeight.w700,
+                  color:
+                      (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
                 ),
-                const SizedBox(width: 8),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    history.authorName,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
-                  ),
-                  if (history.authorEmail.isNotEmpty)
-                    Text(history.authorEmail,
-                      style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.55), fontWeight: FontWeight.w500)),
-                ])),
-                if (history.uploadedAt.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white.withOpacity(0.1),
-                    ),
-                    child: Text(
-                      _formatUploadedAt(history.uploadedAt),
-                      style: TextStyle(fontSize: 9, color: Colors.white.withOpacity(0.65), fontWeight: FontWeight.w600),
-                    ),
-                  ),
-              ]),
-
-            // Badges do paciente
-            if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Wrap(spacing: 6, runSpacing: 6, children: [
-                if (history.patientInitials.isNotEmpty) _PatientBadge(
-                  icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF10B981)),
-                if (history.patientAge.isNotEmpty) _PatientBadge(
-                  icon: Icons.cake_rounded, text: '${history.patientAge} ${_hcT(lang, 'years')}', accent: const Color(0xFF93C5FD)),
-                if (history.patientSex.isNotEmpty) _PatientBadge(
-                  icon: Icons.wc_rounded, text: history.patientSex, accent: const Color(0xFFF9A8D4)),
-                if (history.patientWeight.isNotEmpty) _PatientBadge(
-                  icon: Icons.monitor_weight_rounded, text: '${history.patientWeight} kg', accent: const Color(0xFFFBD38D)),
-                if (history.patientRecord.isNotEmpty) _PatientBadge(
-                  icon: Icons.folder_shared_rounded, text: '${_hcT(lang, 'pront')} ${history.patientRecord}', accent: const Color(0xFFFFE8A6)),
-              ]),
+              ),
+              if (patientSummary.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  runSpacing: 6,
+                  children: patientSummary,
+                ),
+              ],
             ],
-
-            if (history.tags.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(history.tags, style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.5), fontWeight: FontWeight.w500, letterSpacing: 0.3)),
-            ],
-          ]),
+          ),
         ),
-      ]),
+      ),
     );
   }
 }
@@ -2944,6 +4609,8 @@ class _HistoryHeroHeader extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // HEADER COMPACTO — mobile/tablet (sem gradiente decorativo, shell AppBar já visível)
 // ─────────────────────────────────────────────────────────────────────────────
+// HISTORY_CLINICAL_V1_D_R21_SAVED_DETAIL_COMPACT_DELEGATE
+// HISTORY_CLINICAL_V1_D_R23_R2_ORDERED_TOPBAR_COMPACT_DELEGATE
 class _HistoryHeroHeaderCompact extends StatelessWidget {
   final ClinicalHistoryModel history;
   final bool readOnly;
@@ -2961,94 +4628,42 @@ class _HistoryHeroHeaderCompact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF071A10), Color(0xFF155131)],
-        ),
-      ),
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Linha 1: botão voltar + categoria badge + (optional) editar
-        Row(children: [
-          GestureDetector(
-            onTap: onBack,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white.withOpacity(0.12),
-                border: Border.all(color: Colors.white.withOpacity(0.18)),
-              ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.arrow_back_ios_rounded, size: 12, color: Colors.white),
-                const SizedBox(width: 3),
-                Text(_hcT(lang, 'back'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
-              ]),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              history.displayTitle,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -0.2),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-          ),
-          if (!readOnly && onEdit != null) ...[
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: onEdit,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: kGold.withOpacity(0.15),
-                  border: Border.all(color: kGold.withOpacity(0.4)),
-                ),
-                child: const Icon(Icons.edit_rounded, size: 14, color: kGoldLight),
-              ),
-            ),
-          ],
-        ]),
-        // Linha 2: badges do paciente (se houver)
-        if (history.patientInitials.isNotEmpty || history.patientAge.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Wrap(spacing: 6, runSpacing: 4, children: [
-            if (history.patientInitials.isNotEmpty) _PatientBadge(icon: Icons.badge_rounded, text: history.patientInitials, accent: const Color(0xFF10B981)),
-            if (history.patientAge.isNotEmpty) _PatientBadge(icon: Icons.cake_rounded, text: '${history.patientAge} ${_hcT(lang, 'years')}', accent: const Color(0xFF93C5FD)),
-            if (history.patientSex.isNotEmpty) _PatientBadge(icon: Icons.wc_rounded, text: history.patientSex, accent: const Color(0xFFF9A8D4)),
-          ]),
-        ],
-      ]),
+    return _HistoryHeroHeader(
+      history: history,
+      readOnly: readOnly,
+      onBack: onBack,
+      onEdit: onEdit,
+      lang: lang,
     );
   }
 }
 
 // Badge colorido de dados do paciente
+// HISTORY_CLINICAL_V1_D_R21_PATIENT_METADATA_FLAT
+// HISTORY_CLINICAL_V1_D_R23_R2_PATIENT_BADGE_FLAT_TEXT
 class _PatientBadge extends StatelessWidget {
   final IconData icon;
   final String text;
   final Color accent;
-  const _PatientBadge({required this.icon, required this.text, required this.accent});
+
+  const _PatientBadge({
+    required this.icon,
+    required this.text,
+    required this.accent,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: accent.withOpacity(0.15),
-        border: Border.all(color: accent.withOpacity(0.35)),
+    return Text(
+      text,
+      key: ValueKey<IconData>(icon),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: MedTypography.clinicalBodySize,
+        fontWeight: FontWeight.w600,
+        color: accent,
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 10, color: accent),
-        const SizedBox(width: 4),
-        Text(text, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: accent)),
-      ]),
     );
   }
 }
@@ -3061,13 +4676,21 @@ class _HistoryEditor extends StatefulWidget {
   final AppProvider p;
   final ValueChanged<ClinicalHistoryModel> onSave;
   final VoidCallback onCancel;
-  const _HistoryEditor({required this.initial, required this.p, required this.onSave, required this.onCancel});
+  const _HistoryEditor({
+    required this.initial,
+    required this.p,
+    required this.onSave,
+    required this.onCancel,
+  });
 
   @override
   State<_HistoryEditor> createState() => _HistoryEditorState();
 }
 
+// HISTORY_CLINICAL_V1_D_R6_EDITOR_TABS
+// HISTORY_CLINICAL_V1_D_R14_EDITOR_KEYBOARD_BREATHING
 class _HistoryEditorState extends State<_HistoryEditor> {
+  // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R6_HISTORYEDITORSTATE_LIGHT
   late ClinicalHistoryModel _draft;
   int _section = 0; // seção ativa do editor
 
@@ -3075,25 +4698,56 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   late final Map<String, TextEditingController> _ctrls;
 
   List<(String, String)> get _sections => [
-    ('', _hcT(widget.p.lang, 'sec_patient')),
-    ('', _hcT(widget.p.lang, 'sec_anamnesis')),
-    ('', _hcT(widget.p.lang, 'sec_physical')),
-    ('', _hcT(widget.p.lang, 'sec_exams')),
-    ('', _hcT(widget.p.lang, 'sec_treatment')),
-    ('', _hcT(widget.p.lang, 'sec_evolution')),
-    ('', _hcT(widget.p.lang, 'sec_outcome')),
-  ];
+        ('', _hcT(widget.p.lang, 'sec_patient')),
+        ('', _hcT(widget.p.lang, 'sec_anamnesis')),
+        ('', _hcT(widget.p.lang, 'sec_physical')),
+        ('', _hcT(widget.p.lang, 'sec_exams')),
+        ('', _hcT(widget.p.lang, 'sec_treatment')),
+        ('', _hcT(widget.p.lang, 'sec_evolution')),
+        ('', _hcT(widget.p.lang, 'sec_outcome')),
+      ];
 
-  static const _categoriesPt = ['Clínica Geral', 'Cardiologia', 'Emergência', 'Pneumologia', 'Neurologia', 'Gastroenterologia', 'Endocrinologia', 'Nefrologia', 'Infectologia', 'Cirurgia', 'Pediatria', 'Ginecologia', 'Ortopedia', 'Outro'];
-  static const _categoriesEs = ['Medicina General', 'Cardiología', 'Urgencias', 'Neumología', 'Neurología', 'Gastroenterología', 'Endocrinología', 'Nefrología', 'Infectología', 'Cirugía', 'Pediatría', 'Ginecología', 'Traumatología', 'Otro'];
-  List<String> get _categories => widget.p.lang == 'es' ? _categoriesEs : _categoriesPt;
+  static const _categoriesPt = [
+    'Clínica Geral',
+    'Cardiologia',
+    'Emergência',
+    'Pneumologia',
+    'Neurologia',
+    'Gastroenterologia',
+    'Endocrinologia',
+    'Nefrologia',
+    'Infectologia',
+    'Cirurgia',
+    'Pediatria',
+    'Ginecologia',
+    'Ortopedia',
+    'Outro',
+  ];
+  static const _categoriesEs = [
+    'Medicina General',
+    'Cardiología',
+    'Urgencias',
+    'Neumología',
+    'Neurología',
+    'Gastroenterología',
+    'Endocrinología',
+    'Nefrología',
+    'Infectología',
+    'Cirugía',
+    'Pediatría',
+    'Ginecología',
+    'Traumatología',
+    'Otro',
+  ];
+  List<String> get _categories =>
+      widget.p.lang == 'es' ? _categoriesEs : _categoriesPt;
   static const _outcomes = ['internado', 'alta', 'obito', 'transferencia'];
   List<String> get _outcomesLabel => [
-    _hcT(widget.p.lang, 'out_internado'),
-    _hcT(widget.p.lang, 'out_alta'),
-    _hcT(widget.p.lang, 'out_obito'),
-    _hcT(widget.p.lang, 'out_transf'),
-  ];
+        _hcT(widget.p.lang, 'out_internado'),
+        _hcT(widget.p.lang, 'out_alta'),
+        _hcT(widget.p.lang, 'out_obito'),
+        _hcT(widget.p.lang, 'out_transf'),
+      ];
 
   @override
   void initState() {
@@ -3134,7 +4788,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       'otherResults': TextEditingController(text: _draft.otherResults),
       'treatmentPlan': TextEditingController(text: _draft.treatmentPlan),
       'procedures': TextEditingController(text: _draft.procedures),
-      'dischargeCondition': TextEditingController(text: _draft.dischargeCondition),
+      'dischargeCondition': TextEditingController(
+        text: _draft.dischargeCondition,
+      ),
       'followUp': TextEditingController(text: _draft.followUp),
       'tags': TextEditingController(text: _draft.tags),
     };
@@ -3142,41 +4798,53 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   @override
   void dispose() {
-    _sttRecog?.stop();          // Web: para WebSpeechRecognizer
-    _relatoRecog?.stop();       // Web: para relato livre
-    SttHelper.stop();           // Mobile: para speech_to_text nativo
+    _sttRecog?.stop(); // Web: para WebSpeechRecognizer
+    _relatoRecog?.stop(); // Web: para relato livre
+    SttHelper.stop(); // Mobile: para speech_to_text nativo
     for (final c in _ctrls.values) c.dispose();
     for (final fn in _fieldFocusNodes.values) fn.dispose();
     super.dispose();
   }
 
   // ── STT (Speech-to-Text) — Web via dart:html | Mobile via speech_to_text ──
-  String? _sttActiveKey;   // chave do campo atualmente ouvindo
+  String? _sttActiveKey; // chave do campo atualmente ouvindo
   bool _sttListening = false;
   String _sttInterim = '';
   // Web: usa WebSpeechRecognizer; Mobile: usa SttHelper (speech_to_text plugin)
   webPlatform.WebSpeechRecognizer? _sttRecog;
 
   // ── Ditáfone inteligente global ─────────────────────────────────────────
-  bool _smartDictActive = false;   // ditáfone global ativo
-  String _smartCurrentField = '';  // campo ativo atual (para feedback)
-  String _smartInterim = '';       // texto interim do ditáfone
+  bool _smartDictActive = false; // ditáfone global ativo
+  String _smartCurrentField = ''; // campo ativo atual (para feedback)
+  String _smartInterim = ''; // texto interim do ditáfone
   webPlatform.WebSpeechRecognizer? _smartRecog;
 
   // ── FocusNodes por campo ditável — rastreia campo focado pelas setas ────
   // Permite atualizar _smartCurrentField ao navegar com prev/nextFocus
   final Map<String, FocusNode> _fieldFocusNodes = {};
   static const _kDictableFields = [
-    'chiefComplaint', 'hpi', 'pastHistory', 'familyHistory', 'socialHistory',
-    'medications', 'allergies', 'reviewOfSystems', 'vitalSigns', 'physicalExam',
-    'workingDiagnosis', 'treatmentPlan', 'procedures', 'dischargeCondition', 'followUp',
+    'chiefComplaint',
+    'hpi',
+    'pastHistory',
+    'familyHistory',
+    'socialHistory',
+    'medications',
+    'allergies',
+    'reviewOfSystems',
+    'vitalSigns',
+    'physicalExam',
+    'workingDiagnosis',
+    'treatmentPlan',
+    'procedures',
+    'dischargeCondition',
+    'followUp',
   ];
 
   // ── Relato Livre — captura contínua → IA estrutura nos campos ────────────
-  bool   _relatoActive    = false;  // gravação de relato livre ativa
-  bool   _aiProcessing    = false;  // IA processando a transcrição
-  String _relatoBuffer    = '';     // buffer acumulado de texto final
-  String _relatoInterim   = '';     // texto interim (exibido em tempo real)
+  bool _relatoActive = false; // gravação de relato livre ativa
+  bool _aiProcessing = false; // IA processando a transcrição
+  String _relatoBuffer = ''; // buffer acumulado de texto final
+  String _relatoInterim = ''; // texto interim (exibido em tempo real)
   webPlatform.WebSpeechRecognizer? _relatoRecog; // Web recognizer do relato
 
   // ── Barra de controle — expandida / recolhida ────────────────────────────
@@ -3277,11 +4945,16 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   /// Retorna null para seções sem microfone (0=Paciente, 3=Exames, 6=Desfecho).
   String? _defaultFieldForSection(int section) {
     switch (section) {
-      case 1: return 'chiefComplaint';   // Anamnese
-      case 2: return 'vitalSigns';       // Exame Físico
-      case 4: return 'treatmentPlan';    // Conduta
-      case 5: return 'evolutionNote';    // Evolução (sentinel → insere no primeiro card)
-      default: return null;              // 0=Paciente, 3=Exames, 6=Desfecho → sem mic
+      case 1:
+        return 'chiefComplaint'; // Anamnese
+      case 2:
+        return 'vitalSigns'; // Exame Físico
+      case 4:
+        return 'treatmentPlan'; // Conduta
+      case 5:
+        return 'evolutionNote'; // Evolução (sentinel → insere no primeiro card)
+      default:
+        return null; // 0=Paciente, 3=Exames, 6=Desfecho → sem mic
     }
   }
 
@@ -3291,7 +4964,12 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     if (_smartDictActive) {
       _smartRecog?.stop();
       SttHelper.stop();
-      if (mounted) setState(() { _smartDictActive = false; _smartInterim = ''; _smartCurrentField = ''; });
+      if (mounted)
+        setState(() {
+          _smartDictActive = false;
+          _smartInterim = '';
+          _smartCurrentField = '';
+        });
       return;
     }
     // Para STT de campo individual se estava ativo
@@ -3300,21 +4978,32 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     // Campo inicial baseado na seção ativa
     _smartCurrentField = _defaultFieldForSection(_section) ?? 'chiefComplaint';
 
-    final appLang  = widget.p.lang;
-    final locale   = appLang == 'es' ? 'es-ES' : 'pt-BR';
+    final appLang = widget.p.lang;
+    final locale = appLang == 'es' ? 'es-ES' : 'pt-BR';
 
     if (kIsWeb) {
       // ── Web: Web Speech API contínua ────────────────────────────────────
       if (!webPlatform.webHasSpeechRecognition()) {
-        showDialog(context: context, builder: (_) => AlertDialog(
-          title: Text(widget.p.t('dictation_not_supported')),
-          content: Text(widget.p.t('dictation_browser_msg')),
-          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
-        ));
+        showDialog(
+          context: context,
+          useRootNavigator: !kIsWeb,
+          builder: (_) => AlertDialog(
+            title: Text(widget.p.t('dictation_not_supported')),
+            content: Text(widget.p.t('dictation_browser_msg')),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
         return;
       }
       final recog = webPlatform.WebSpeechRecognizer();
-      recog.start('smart', locale,
+      recog.start(
+        'smart',
+        locale,
         onResult: (transcript, isFinal) {
           if (!mounted) return;
           final detected = _detectFieldFromText(transcript);
@@ -3324,7 +5013,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           if (isFinal) {
             String clean = transcript;
             for (final trigger in _kTriggers.keys) {
-              clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
+              clean = clean.replaceAll(
+                RegExp(trigger, caseSensitive: false),
+                '',
+              );
             }
             clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
             if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
@@ -3332,24 +5024,34 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             }
             if (mounted) setState(() => _smartInterim = '');
           } else {
-            if (mounted) setState(() {
-              _smartInterim = transcript;
-              final det = _detectFieldFromText(transcript);
-              if (det.isNotEmpty) _smartCurrentField = det;
-            });
+            if (mounted)
+              setState(() {
+                _smartInterim = transcript;
+                final det = _detectFieldFromText(transcript);
+                if (det.isNotEmpty) _smartCurrentField = det;
+              });
           }
         },
         onEnd: () {
           if (_smartDictActive && mounted) {
             Future.delayed(const Duration(milliseconds: 200), () {
-              if (_smartDictActive && mounted) _smartRecog?.start('smart', locale,
-                onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
+              if (_smartDictActive && mounted)
+                _smartRecog?.start(
+                  'smart',
+                  locale,
+                  onResult: (t, f) {},
+                  onEnd: () {},
+                  onError: (_) {},
+                );
             });
           }
         },
         onError: (code) {
           if (code != 'no-speech' && mounted) {
-            setState(() { _smartDictActive = false; _smartInterim = ''; });
+            setState(() {
+              _smartDictActive = false;
+              _smartInterim = '';
+            });
           }
         },
       );
@@ -3371,7 +5073,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               }
               String clean = transcript;
               for (final trigger in _kTriggers.keys) {
-                clean = clean.replaceAll(RegExp(trigger, caseSensitive: false), '');
+                clean = clean.replaceAll(
+                  RegExp(trigger, caseSensitive: false),
+                  '',
+                );
               }
               clean = clean.trim().replaceAll(RegExp(r'^[,:\s]+'), '');
               if (clean.isNotEmpty && _smartCurrentField.isNotEmpty) {
@@ -3390,7 +5095,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                 }
                 return;
               }
-              setState(() { _smartDictActive = false; _smartInterim = ''; });
+              setState(() {
+                _smartDictActive = false;
+                _smartInterim = '';
+              });
               _showSttMobileError(code);
             },
             onEnd: () {
@@ -3402,13 +5110,24 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             },
           );
         } catch (e, st) {
-          debugPrint('[HistoryScreen][startMobileLoop] SttHelper.start exception: $e\n$st');
-          if (mounted) setState(() { _smartDictActive = false; _smartInterim = ''; });
+          debugPrint(
+            '[HistoryScreen][startMobileLoop] SttHelper.start exception: $e\n$st',
+          );
+          if (mounted)
+            setState(() {
+              _smartDictActive = false;
+              _smartInterim = '';
+            });
         }
       }
+
       startMobileLoop();
     }
-    if (mounted) setState(() { _smartDictActive = true; _smartInterim = ''; });
+    if (mounted)
+      setState(() {
+        _smartDictActive = true;
+        _smartInterim = '';
+      });
   }
 
   // ── Relato Livre — toggle de gravação contínua ───────────────────────────
@@ -3420,7 +5139,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       _relatoRecog?.stop();
       SttHelper.stop();
       final captured = _relatoBuffer.trim();
-      if (mounted) setState(() { _relatoActive = false; _relatoInterim = ''; });
+      if (mounted)
+        setState(() {
+          _relatoActive = false;
+          _relatoInterim = '';
+        });
       if (captured.isEmpty) {
         _showRelatoSnack(_hcT(widget.p.lang, 'relato_empty'));
         return;
@@ -3434,27 +5157,44 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     if (_smartDictActive) {
       _smartRecog?.stop();
       SttHelper.stop();
-      if (mounted) setState(() { _smartDictActive = false; _smartInterim = ''; _smartCurrentField = ''; });
+      if (mounted)
+        setState(() {
+          _smartDictActive = false;
+          _smartInterim = '';
+          _smartCurrentField = '';
+        });
     }
 
     _relatoBuffer = '';
-    final locale  = widget.p.lang == 'es' ? 'es-ES' : 'pt-BR';
+    final locale = widget.p.lang == 'es' ? 'es-ES' : 'pt-BR';
 
     if (kIsWeb) {
       if (!webPlatform.webHasSpeechRecognition()) {
-        showDialog(context: context, builder: (_) => AlertDialog(
-          title: Text(_hcT(widget.p.lang, 'dict_not_supported')),
-          content: Text(_hcT(widget.p.lang, 'dict_browser_msg')),
-          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
-        ));
+        showDialog(
+          context: context,
+          useRootNavigator: !kIsWeb,
+          builder: (_) => AlertDialog(
+            title: Text(_hcT(widget.p.lang, 'dict_not_supported')),
+            content: Text(_hcT(widget.p.lang, 'dict_browser_msg')),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
         return;
       }
       final recog = webPlatform.WebSpeechRecognizer();
-      recog.start('relato', locale,
+      recog.start(
+        'relato',
+        locale,
         onResult: (transcript, isFinal) {
           if (!mounted) return;
           if (isFinal) {
-            _relatoBuffer += (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
+            _relatoBuffer +=
+                (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
             if (mounted) setState(() => _relatoInterim = '');
           } else {
             if (mounted) setState(() => _relatoInterim = transcript);
@@ -3464,14 +5204,23 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           // Auto-reinicia enquanto relato estiver ativo
           if (_relatoActive && mounted) {
             Future.delayed(const Duration(milliseconds: 200), () {
-              if (_relatoActive && mounted) _relatoRecog?.start('relato', locale,
-                onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
+              if (_relatoActive && mounted)
+                _relatoRecog?.start(
+                  'relato',
+                  locale,
+                  onResult: (t, f) {},
+                  onEnd: () {},
+                  onError: (_) {},
+                );
             });
           }
         },
         onError: (code) {
           if (code != 'no-speech' && mounted) {
-            setState(() { _relatoActive = false; _relatoInterim = ''; });
+            setState(() {
+              _relatoActive = false;
+              _relatoInterim = '';
+            });
           }
         },
       );
@@ -3486,16 +5235,21 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             locale: locale,
             onResult: (transcript) {
               if (!mounted || !_relatoActive) return;
-              _relatoBuffer += (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
+              _relatoBuffer +=
+                  (_relatoBuffer.isEmpty ? '' : ' ') + transcript.trim();
               if (mounted) setState(() => _relatoInterim = '');
             },
             onError: (code) {
               if (!mounted) return;
               if (code == 'no_speech' || code == 'no-speech') {
-                if (_relatoActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
+                if (_relatoActive)
+                  Future.delayed(const Duration(milliseconds: 300), startLoop);
                 return;
               }
-              setState(() { _relatoActive = false; _relatoInterim = ''; });
+              setState(() {
+                _relatoActive = false;
+                _relatoInterim = '';
+              });
             },
             onEnd: () {
               if (_relatoActive && mounted) {
@@ -3504,13 +5258,24 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             },
           );
         } catch (e, st) {
-          debugPrint('[HistoryScreen][startLoop] SttHelper.start exception: $e\n$st');
-          if (mounted) setState(() { _relatoActive = false; _relatoInterim = ''; });
+          debugPrint(
+            '[HistoryScreen][startLoop] SttHelper.start exception: $e\n$st',
+          );
+          if (mounted)
+            setState(() {
+              _relatoActive = false;
+              _relatoInterim = '';
+            });
         }
       }
+
       startLoop();
     }
-    if (mounted) setState(() { _relatoActive = true; _relatoInterim = ''; });
+    if (mounted)
+      setState(() {
+        _relatoActive = true;
+        _relatoInterim = '';
+      });
   }
 
   // ── Envia transcrição bruta para IA estruturar nos campos do prontuário ──
@@ -3537,10 +5302,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         '}';
 
     final result = await AiService.chat(
-      apiKey:     apiKey,
+      apiKey: apiKey,
       systemPrompt: systemPrompt,
       userMessage: 'Texto Transcrito:\n$rawText',
-      maxTokens:  800,
+      maxTokens: 800,
     );
 
     if (!mounted) return;
@@ -3558,7 +5323,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           .replaceAll('```', '')
           .trim();
 
-      final Map<String, dynamic> data = jsonDecode(clean) as Map<String, dynamic>;
+      final Map<String, dynamic> data =
+          jsonDecode(clean) as Map<String, dynamic>;
 
       void _fill(String ctrlKey, String jsonKey) {
         final val = (data[jsonKey] ?? '').toString().trim();
@@ -3569,13 +5335,14 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         final existing = ctrl.text.trim();
         ctrl.text = existing.isEmpty ? val : '$existing\n$val';
         ctrl.selection = TextSelection.fromPosition(
-          TextPosition(offset: ctrl.text.length));
+          TextPosition(offset: ctrl.text.length),
+        );
       }
 
       _fill('chiefComplaint', 'motivo_consulta');
-      _fill('hpi',            'anamnese');
-      _fill('physicalExam',   'exame_fisico');
-      _fill('treatmentPlan',  'conduta');
+      _fill('hpi', 'anamnese');
+      _fill('physicalExam', 'exame_fisico');
+      _fill('treatmentPlan', 'conduta');
 
       _showRelatoSnack(_hcT(widget.p.lang, 'relato_done'), success: true);
     } catch (_) {
@@ -3606,36 +5373,52 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       if (ctrl == null) return;
       final existing = ctrl.text.trim();
       ctrl.text = existing.isEmpty ? val.trim() : '$existing\n${val.trim()}';
-      ctrl.selection = TextSelection.fromPosition(TextPosition(offset: ctrl.text.length));
+      ctrl.selection = TextSelection.fromPosition(
+        TextPosition(offset: ctrl.text.length),
+      );
     }
-    _fill('chiefComplaint',   data['motivo_consulta']);
-    _fill('hpi',              data['anamnese']);
-    _fill('pastHistory',      data['antecedentes']);
-    _fill('medications',      data['medicamentos']);
-    _fill('allergies',        data['alergias']);
-    _fill('vitalSigns',       data['sinais_vitais']);
-    _fill('physicalExam',     data['exame_fisico']);
+
+    _fill('chiefComplaint', data['motivo_consulta']);
+    _fill('hpi', data['anamnese']);
+    _fill('pastHistory', data['antecedentes']);
+    _fill('medications', data['medicamentos']);
+    _fill('allergies', data['alergias']);
+    _fill('vitalSigns', data['sinais_vitais']);
+    _fill('physicalExam', data['exame_fisico']);
     _fill('workingDiagnosis', data['hipotese_diagnostica']);
-    _fill('treatmentPlan',    data['conduta']);
-    _fill('labResults',       data['exames']);
+    _fill('treatmentPlan', data['conduta']);
+    _fill('labResults', data['exames']);
     _showRelatoSnack(_hcT(widget.p.lang, 'organizar_done'), success: true);
   }
 
   void _showRelatoSnack(String msg, {bool success = false}) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Row(children: [
-        Icon(success ? Icons.check_circle_outline_rounded : Icons.error_outline_rounded,
-          size: 18, color: Colors.white),
-        const SizedBox(width: 8),
-        Expanded(child: Text(msg, style: const TextStyle(fontSize: 13))),
-      ]),
-      backgroundColor: success ? const Color(0xFF10B981) : const Color(0xFFB91C1C),
-      duration: Duration(seconds: success ? 3 : 5),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 88),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              success
+                  ? Icons.check_circle_outline_rounded
+                  : Icons.error_outline_rounded,
+              size: 18,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+                child: Text(msg,
+                    style: const TextStyle(
+                        fontSize: MedTypography.auxiliarySize))),
+          ],
+        ),
+        backgroundColor:
+            success ? const Color(0xFF10B981) : const Color(0xFFB91C1C),
+        duration: Duration(seconds: success ? 3 : 5),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 88),
+      ),
+    );
   }
 
   void _showPreview() {
@@ -3681,7 +5464,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     if (_sttListening) _stopAllStt();
 
     final appLang = widget.p.lang;
-    final locale  = appLang == 'es' ? 'es-ES' : 'pt-BR';
+    final locale = appLang == 'es' ? 'es-ES' : 'pt-BR';
 
     if (kIsWeb) {
       // ── Web: usa Web Speech API via dart:html ────────────────────────────
@@ -3689,16 +5472,24 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         if (!mounted) return;
         showDialog(
           context: context,
+          useRootNavigator: !kIsWeb,
           builder: (_) => AlertDialog(
             title: Text(widget.p.t('dictation_not_supported')),
             content: Text(widget.p.t('dictation_browser_msg')),
-            actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
           ),
         );
         return;
       }
       final recog = webPlatform.WebSpeechRecognizer();
-      recog.start(key, locale,
+      recog.start(
+        key,
+        locale,
         onResult: (transcript, isFinal) {
           if (isFinal) {
             _insertIntoField(key, transcript);
@@ -3708,10 +5499,20 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           }
         },
         onEnd: () {
-          if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+          if (mounted)
+            setState(() {
+              _sttListening = false;
+              _sttActiveKey = null;
+              _sttInterim = '';
+            });
         },
         onError: (_) {
-          if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+          if (mounted)
+            setState(() {
+              _sttListening = false;
+              _sttActiveKey = null;
+              _sttInterim = '';
+            });
         },
       );
       _sttRecog = recog;
@@ -3725,25 +5526,47 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           onResult: (transcript) {
             if (!mounted) return;
             _insertIntoField(key, transcript);
-            setState(() { _sttInterim = ''; });
+            setState(() {
+              _sttInterim = '';
+            });
           },
           onError: (code) {
             if (!mounted) return;
-            setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+            setState(() {
+              _sttListening = false;
+              _sttActiveKey = null;
+              _sttInterim = '';
+            });
             _showSttMobileError(code);
           },
           onEnd: () {
-            if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+            if (mounted)
+              setState(() {
+                _sttListening = false;
+                _sttActiveKey = null;
+                _sttInterim = '';
+              });
           },
         );
       } catch (e, st) {
-        debugPrint('[HistoryScreen][_startSttForField] SttHelper.start exception: $e\n$st');
-        if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+        debugPrint(
+          '[HistoryScreen][_startSttForField] SttHelper.start exception: $e\n$st',
+        );
+        if (mounted)
+          setState(() {
+            _sttListening = false;
+            _sttActiveKey = null;
+            _sttInterim = '';
+          });
       }
     }
 
     _sttActiveKey = key;
-    if (mounted) setState(() { _sttListening = true; _sttInterim = ''; });
+    if (mounted)
+      setState(() {
+        _sttListening = true;
+        _sttInterim = '';
+      });
   }
 
   /// Insere texto transcrito no campo correto, com espaço inteligente.
@@ -3758,8 +5581,13 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         } else {
           final last = list.last;
           final spacer = last.text.isNotEmpty &&
-              !last.text.endsWith(' ') && !last.text.endsWith('\n') ? ' ' : '';
-          list[list.length - 1] = last.copyWith(text: last.text + spacer + transcript);
+                  !last.text.endsWith(' ') &&
+                  !last.text.endsWith('\n')
+              ? ' '
+              : '';
+          list[list.length - 1] = last.copyWith(
+            text: last.text + spacer + transcript,
+          );
         }
         _draft = _draft.copyWith(evolutions: list);
       });
@@ -3768,8 +5596,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     final ctrl = _ctrls[key];
     if (ctrl == null) return;
     final current = ctrl.text;
-    final spacer  = current.isNotEmpty &&
-        !current.endsWith(' ') && !current.endsWith('\n') ? ' ' : '';
+    final spacer =
+        current.isNotEmpty && !current.endsWith(' ') && !current.endsWith('\n')
+            ? ' '
+            : '';
     ctrl.text = current + spacer + transcript;
     ctrl.selection = TextSelection.fromPosition(
       TextPosition(offset: ctrl.text.length),
@@ -3778,9 +5608,14 @@ class _HistoryEditorState extends State<_HistoryEditor> {
 
   /// Para qualquer sessão STT ativa (web ou mobile).
   void _stopAllStt() {
-    _sttRecog?.stop();        // Web
-    SttHelper.stop();         // Mobile
-    if (mounted) setState(() { _sttListening = false; _sttActiveKey = null; _sttInterim = ''; });
+    _sttRecog?.stop(); // Web
+    SttHelper.stop(); // Mobile
+    if (mounted)
+      setState(() {
+        _sttListening = false;
+        _sttActiveKey = null;
+        _sttInterim = '';
+      });
   }
 
   /// Exibe snackbar de erro do STT nativo (mobile).
@@ -3810,13 +5645,15 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         return;
     }
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      duration: const Duration(seconds: 4),
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+      ),
+    );
   }
 
   void _save() {
@@ -3856,472 +5693,1114 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   Widget build(BuildContext context) {
     final completion = _draft.completionRatio;
     final bp = MedBreakpoints.of(context);
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R11_R2_MANUAL_LIGHT_SHELL
+    final manualShellDark = Theme.of(context).brightness == Brightness.dark;
+    final manualShellBackground =
+        manualShellDark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final manualShellPrimary =
+        manualShellDark ? Colors.white : const Color(0xFF05070A);
+    final manualShellSecondary =
+        manualShellDark ? Colors.white70 : const Color(0xFF4B5563);
+    final manualShellDivider =
+        manualShellDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
     // Desktop: header gradiente completo (sem shell AppBar).
     // Mobile/tablet: shell AppBar já visível → header compacto sem gradiente
     // (apenas barra de ações + progresso + tabs — sem duplicar o título).
     final showFullEditorHeader = bp.isDesktop;
 
-    // Conteúdo da barra de ações (Row com fechar, título, ver, salvar)
-    final actionRow = Row(children: [
-      GestureDetector(onTap: widget.onCancel,
-        child: Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.1)),
-          child: const Icon(Icons.close_rounded, size: 16, color: Colors.white))),
-      const SizedBox(width: 10),
-      Expanded(child: Text(_draft.chiefComplaint.isNotEmpty ? _draft.chiefComplaint : _hcT(widget.p.lang, 'new_hc_title'),
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white), overflow: TextOverflow.ellipsis)),
-      // Botão Pré-visualizar
-      GestureDetector(onTap: _showPreview,
-        child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8), margin: const EdgeInsets.only(right: 8),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.white.withOpacity(0.12), border: Border.all(color: Colors.white.withOpacity(0.2))),
-          child: const Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.visibility_rounded, size: 14, color: Colors.white),
-            SizedBox(width: 5),
-            Text('Ver', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
-          ]))),
-      GestureDetector(onTap: _save,
-        child: Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kGold),
-          child: Text(_hcT(widget.p.lang, 'save_btn'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF0F1116))))),
-    ]);
-
-    // Barra de progresso
-    final progressRow = Row(children: [
-      Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(4),
-        child: LinearProgressIndicator(value: completion, minHeight: 4, backgroundColor: Colors.white.withOpacity(0.15),
-          valueColor: const AlwaysStoppedAnimation(kGold)))),
-      const SizedBox(width: 8),
-      Text('${(completion * 100).round()}${_hcT(widget.p.lang, "progress_label")}', style: TextStyle(fontSize: 9, color: Colors.white.withOpacity(0.7), fontWeight: FontWeight.w700)),
-    ]);
-
-    return Column(children: [
-      // Header — desktop: gradiente completo; mobile: compacto sem gradiente duplicado
-      if (showFullEditorHeader)
-        PremiumCard(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-          child: Column(children: [
-            actionRow,
-            const SizedBox(height: 10),
-            progressRow,
-            const SizedBox(height: 10),
-            // Navegação de seções
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(children: List.generate(_sections.length, (i) {
-              final active = _section == i;
-              return Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: GestureDetector(
-                  onTap: () => setState(() {
-                    _section = i;
-                    if (_smartDictActive) {
-                      final newField = _defaultFieldForSection(i);
-                      if (newField == null) {
-                        // Seção sem microfone (Paciente, Exames, Desfecho) → para o ditado
-                        _smartRecog?.stop();
-                        SttHelper.stop();
-                        _smartDictActive = false;
-                        _smartInterim = '';
-                        _smartCurrentField = '';
-                      } else {
-                        // Seção com microfone → redireciona para o campo padrão da nova seção
-                        _smartCurrentField = newField;
-                      }
-                    }
-                  }),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: active ? kGold : Colors.white.withOpacity(0.1),
-                      border: Border.all(color: active ? kGold : Colors.white.withOpacity(0.15)),
-                    ),
-                    child: Text(_sections[i].$2,
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                        color: active ? const Color(0xFF0F1116) : Colors.white.withOpacity(0.85))),
+    // Conteúdo da barra de ações — superfície clínica flat.
+    // HISTORY_CLINICAL_V1_C_R8_EDITOR_ACTION_ROW
+    final actionRow = Row(
+      children: [
+        GestureDetector(
+          onTap: widget.onCancel,
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(Icons.close_rounded,
+                size: 18, color: manualShellSecondary),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            _draft.chiefComplaint.isNotEmpty
+                ? _draft.chiefComplaint
+                : _hcT(widget.p.lang, 'new_hc_title'),
+            style: TextStyle(
+              fontSize: MedTypography.internalTitleSize,
+              fontWeight: FontWeight.w700,
+              color: manualShellPrimary,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        GestureDetector(
+          onTap: _showPreview,
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.visibility_outlined,
+                  size: 15,
+                  color: manualShellSecondary,
+                ),
+                SizedBox(width: 5),
+                Text(
+                  'Ver',
+                  style: TextStyle(
+                    fontSize: MedTypography.auxiliarySize,
+                    fontWeight: FontWeight.w600,
+                    color: manualShellSecondary,
                   ),
                 ),
-              );
-            })),
+              ],
+            ),
           ),
-        ]),
-      )
-      else
-        // Mobile/tablet: header compacto — ações + progresso + tabs sem gradiente
-        // BUILD 277: flat dark header
-        Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF12161F),
-            border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5)),
+        ),
+        SizedBox(width: 4),
+        GestureDetector(
+          onTap: _save,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFF0E8000),
+            ),
+            child: Text(
+              _hcT(widget.p.lang, 'save_btn'),
+              style: const TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF0F1116),
+              ),
+            ),
           ),
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            actionRow,
-            const SizedBox(height: 8),
-            progressRow,
-            const SizedBox(height: 8),
-            // Navegação de seções (tabs compactos)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: List.generate(_sections.length, (i) {
-                final active = _section == i;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: GestureDetector(
-                    onTap: () => setState(() {
-                      _section = i;
-                      if (_smartDictActive) {
-                        final newField = _defaultFieldForSection(i);
-                        if (newField == null) {
-                          _smartRecog?.stop();
-                          SttHelper.stop();
-                          _smartDictActive = false;
-                          _smartInterim = '';
-                          _smartCurrentField = '';
-                        } else {
-                          _smartCurrentField = newField;
-                        }
-                      }
-                    }),
-                    // BUILD 277: minimalist underline tab (no background, no border box)
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
-                          child: Text(_sections[i].$2,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                              color: active
-                                  ? Colors.white
-                                  : Colors.white.withOpacity(0.45),
-                              letterSpacing: 0.3,
-                            ),
+        ),
+      ],
+    );
+
+    // Barra de progresso
+    final progressRow = Row(
+      children: [
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: completion,
+              minHeight: 3,
+              backgroundColor: manualShellDivider,
+              valueColor: const AlwaysStoppedAnimation(Color(0xFF10B981)),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          '${(completion * 100).round()}${_hcT(widget.p.lang, "progress_label")}',
+          style: TextStyle(
+            fontSize: MedTypography.auxiliarySize,
+            color: manualShellSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+
+    return Column(
+      children: [
+        // Header — desktop: gradiente completo; mobile: compacto sem gradiente duplicado
+        if (showFullEditorHeader)
+          Container(
+            color: manualShellBackground,
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            child: Column(
+              children: [
+                actionRow,
+                const SizedBox(height: 10),
+                progressRow,
+                const SizedBox(height: 10),
+                // Navegação de seções
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(_sections.length, (i) {
+                      final active = _section == i;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: GestureDetector(
+                          onTap: () => setState(() {
+                            _section = i;
+                            if (_smartDictActive) {
+                              final newField = _defaultFieldForSection(i);
+                              if (newField == null) {
+                                // Seção sem microfone (Paciente, Exames, Desfecho) → para o ditado
+                                _smartRecog?.stop();
+                                SttHelper.stop();
+                                _smartDictActive = false;
+                                _smartInterim = '';
+                                _smartCurrentField = '';
+                              } else {
+                                // Seção com microfone → redireciona para o campo padrão da nova seção
+                                _smartCurrentField = newField;
+                              }
+                            }
+                          }),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 6,
+                                ),
+                                child: Text(
+                                  _sections[i].$2,
+                                  style: TextStyle(
+                                    fontSize: MedTypography.sectionLabelSize,
+                                    fontWeight: active
+                                        ? FontWeight.w600
+                                        : FontWeight.w500,
+                                    color: active
+                                        ? manualShellPrimary
+                                        : manualShellSecondary,
+                                  ),
+                                ),
+                              ),
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
+                                height: 1.2,
+                                width: active ? 30 : 0,
+                                color: active
+                                    ? const Color(0xFF0E8000)
+                                    : Colors.transparent,
+                              ),
+                            ],
                           ),
                         ),
-                        // Thin underline for active tab
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          height: 2,
-                          width: active ? 24 : 0,
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          // Mobile/tablet: header compacto — ações + progresso + tabs sem gradiente
+          // BUILD 277: flat dark header
+          Container(
+            decoration: BoxDecoration(
+              color: manualShellBackground,
+              border: Border(
+                bottom: BorderSide(color: manualShellDivider, width: 0.7),
+              ),
+            ),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                actionRow,
+                const SizedBox(height: 8),
+                progressRow,
+                const SizedBox(height: 8),
+                // Navegação de seções (tabs compactos)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(_sections.length, (i) {
+                      final active = _section == i;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: GestureDetector(
+                          onTap: () => setState(() {
+                            _section = i;
+                            if (_smartDictActive) {
+                              final newField = _defaultFieldForSection(i);
+                              if (newField == null) {
+                                _smartRecog?.stop();
+                                SttHelper.stop();
+                                _smartDictActive = false;
+                                _smartInterim = '';
+                                _smartCurrentField = '';
+                              } else {
+                                _smartCurrentField = newField;
+                              }
+                            }
+                          }),
+                          // BUILD 277: minimalist underline tab (no background, no border box)
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 2,
+                                  vertical: 5,
+                                ),
+                                child: Text(
+                                  _sections[i].$2,
+                                  style: TextStyle(
+                                    fontSize: MedTypography.sectionLabelSize,
+                                    fontWeight: active
+                                        ? FontWeight.w600
+                                        : FontWeight.w500,
+                                    color: active
+                                        ? manualShellPrimary
+                                        : manualShellSecondary,
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                              ),
+                              // Thin underline for active tab
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
+                                height: 1.2,
+                                width: active ? 30 : 0,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF0E8000),
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        // Conteúdo da seção — no desktop: centraliza com max-width maior
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isDesktop = constraints.maxWidth >= 1024;
+              final hPad = isDesktop ? 48.0 : 16.0;
+              // Seções que têm campos de texto ditáveis (não Exames/Desfecho)
+              final hasMic = _section == 1 ||
+                  _section == 2 ||
+                  _section == 4 ||
+                  _section == 5;
+              // Padding inferior adaptativo:
+              //   Expandida: 168px (barra completa ~110px + SafeArea 34px + buffer 24px)
+              //   Recolhida:  72px (pílula ~40px + SafeArea 24px + buffer 8px)
+              final keyboardFocusMode =
+                  MediaQuery.viewInsetsOf(context).bottom > 0;
+              final micPad = keyboardFocusMode
+                  ? 16.0
+                  : hasMic
+                      ? (_micBarExpanded ? 164.0 : 104.0)
+                      : 64.0;
+              Widget content = SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.fromLTRB(
+                  hPad,
+                  keyboardFocusMode ? 12 : 26,
+                  hPad,
+                  micPad,
+                ),
+                child: isDesktop
+                    ? Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 900),
+                          child: _buildSection(),
+                        ),
+                      )
+                    : _buildSection(),
+              );
+              if (!hasMic) return content;
+              return Stack(
+                children: [
+                  content,
+                  // ── Barra de controle inferior (mic + IA + navegação) ────────
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: _MicControlBar(
+                      lang: widget.p.lang,
+                      // Colapso / expansão
+                      expanded: _micBarExpanded,
+                      onToggleExpand: () =>
+                          setState(() => _micBarExpanded = !_micBarExpanded),
+                      // Estado ditáfone inteligente
+                      smartActive: _smartDictActive,
+                      sttListening: _sttListening,
+                      currentField: _smartDictActive
+                          ? _smartCurrentField
+                          : (_sttActiveKey ?? ''),
+                      smartInterim:
+                          _smartDictActive ? _smartInterim : _sttInterim,
+                      onTapSmart: _toggleSmartDictaphone,
+                      // Estado relato livre
+                      relatoActive: _relatoActive,
+                      aiProcessing: _aiProcessing,
+                      relatoInterim: _relatoInterim,
+                      onTapRelato: _toggleRelatoLivre,
+                      // Organizar com IA (texto → campos)
+                      onOrganizarIA: () => _showOrganizarIASheet(),
+                      // Navegação entre campos
+                      onPrevField: () => FocusScope.of(context).previousFocus(),
+                      onNextField: () => FocusScope.of(context).nextFocus(),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSection() {
+    switch (_section) {
+      case 0:
+        return _buildPatientSection();
+      case 1:
+        return _buildAnamnesisSection();
+      case 2:
+        return _buildPhysicalExamSection();
+      case 3:
+        return _buildExamsSection();
+      case 4:
+        return _buildTreatmentSection();
+      case 5:
+        return _buildEvolutionSection();
+      case 6:
+        return _buildOutcomeSection();
+      default:
+        return const SizedBox();
+    }
+  }
+
+  // ── Seção 0: Paciente ──────────────────────────────────────────────────────
+  Widget _buildPatientSection() => Column(
+        children: [
+          _EditorField(
+            _hcT(widget.p.lang, 'f_initials'),
+            _ctrls['patientInitials']!,
+            hint: _hcT(widget.p.lang, 'h_initials'),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: _EditorField(
+                  _hcT(widget.p.lang, 'f_age'),
+                  _ctrls['patientAge']!,
+                  hint: '68',
+                  numeric: true,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _hcT(widget.p.lang, 'f_sex').toUpperCase(),
+                      style: TextStyle(
+                        fontSize: MedTypography.auxiliarySize,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.4,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white70
+                            : const Color(0xFF4B5563),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    // HISTORY_CLINICAL_V1_D_R14_SEX_SOLID_SEGMENTED
+                    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_SEX_SELECTOR_LIGHT
+                    Builder(
+                      builder: (ctx) {
+                        final isDarkSex =
+                            Theme.of(ctx).brightness == Brightness.dark;
+                        final male = _hcT(widget.p.lang, 'sex_male');
+                        final female = _hcT(widget.p.lang, 'sex_female');
+                        final selected = _draft.patientSex;
+
+                        Widget option({
+                          required String value,
+                          required Color activeColor,
+                          required BorderRadius radius,
+                        }) {
+                          final active = selected == value;
+                          return Expanded(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => setState(
+                                () =>
+                                    _draft = _draft.copyWith(patientSex: value),
+                              ),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 160),
+                                height: double.infinity,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: active
+                                      ? activeColor
+                                      : isDarkSex
+                                          ? const Color(0xFF2D3340)
+                                          : const Color(0xFFECF1F3),
+                                  borderRadius: radius,
+                                ),
+                                child: Text(
+                                  value,
+                                  style: TextStyle(
+                                    fontSize: MedTypography.auxiliarySize,
+                                    fontWeight: active
+                                        ? FontWeight.w600
+                                        : FontWeight.w500,
+                                    color: active
+                                        ? Colors.white
+                                        : isDarkSex
+                                            ? Colors.white70
+                                            : const Color(0xFF4B5563),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Container(
+                          height: 44,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFAC2A2A),
-                            borderRadius: BorderRadius.circular(2),
+                            color: isDarkSex
+                                ? const Color(0xFF2D3340)
+                                : const Color(0xFFECF1F3),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: isDarkSex
+                                  ? const Color(0xFF374151)
+                                  : const Color(0xFFD8E0E7),
+                              width: 0.8,
+                            ),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(13),
+                            child: Row(
+                              children: [
+                                option(
+                                  value: male,
+                                  activeColor: const Color(0xFF3B82F6),
+                                  radius: const BorderRadius.horizontal(
+                                    left: Radius.circular(13),
+                                  ),
+                                ),
+                                Container(
+                                  width: 1,
+                                  color: isDarkSex
+                                      ? const Color(0xFF374151)
+                                      : const Color(0xFFD8E0E7),
+                                ),
+                                option(
+                                  value: female,
+                                  activeColor: const Color(0xFFEC4899),
+                                  radius: const BorderRadius.horizontal(
+                                    right: Radius.circular(13),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: _EditorField(
+                  _hcT(widget.p.lang, 'f_weight'),
+                  _ctrls['patientWeight']!,
+                  hint: '72',
+                  numeric: true,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _EditorField(
+                  _hcT(widget.p.lang, 'f_height'),
+                  _ctrls['patientHeight']!,
+                  hint: '170',
+                  numeric: true,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_record'),
+            _ctrls['patientRecord']!,
+            hint: '00123456',
+          ),
+          const SizedBox(height: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _hcT(widget.p.lang, 'f_category').toUpperCase(),
+                style: TextStyle(
+                  fontSize: MedTypography.auxiliarySize,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.4,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white70
+                      : const Color(0xFF4B5563),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Builder(
+                builder: (ctx) {
+                  final isDarkDrop =
+                      Theme.of(ctx).brightness == Brightness.dark;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isDarkDrop
+                          ? const Color(0xFF2D3340)
+                          : const Color(0xFFECF1F3),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: isDarkDrop ? const Color(0xFF374151) : kBorder,
+                        width: 0.8,
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _draft.category,
+                        isExpanded: true,
+                        dropdownColor: isDarkDrop
+                            ? const Color(0xFF252930)
+                            : const Color(0xFFECF1F3),
+                        style: TextStyle(
+                          fontSize: MedTypography.auxiliarySize,
+                          fontWeight: FontWeight.w600,
+                          color: isDarkDrop
+                              ? Colors.white
+                              : const Color(0xFF0D1611),
+                        ),
+                        items: _categories
+                            .map((c) =>
+                                DropdownMenuItem(value: c, child: Text(c)))
+                            .toList(),
+                        onChanged: (v) => setState(
+                          () => _draft = _draft.copyWith(
+                            category: v ?? 'Clínica Geral',
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_tags'),
+            _ctrls['tags']!,
+            hint: _hcT(widget.p.lang, 'h_tags'),
+          ),
+          const SizedBox(height: 14),
+          // Compartilhar toggle
+          // HISTORY_CLINICAL_V1_C_R8_PRIVACY_SURFACE
+          // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_PRIVACY_SURFACE_LIGHT
+          GestureDetector(
+            onTap: () => setState(
+              () => _draft = _draft.copyWith(isPublic: !_draft.isPublic),
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: _draft.isPublic
+                      ? const Color(0xFF0E8000).withOpacity(0.52)
+                      : Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFD8E0E7),
+                  width: 0.8,
+                ),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? const Color(0xFF252930)
+                    : const Color(0xFFECF1F3),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    _draft.isPublic
+                        ? Icons.public_rounded
+                        : Icons.lock_outline_rounded,
+                    size: 19,
+                    color: _draft.isPublic
+                        ? const Color(0xFF0E8000)
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white60
+                            : const Color(0xFF4B5563),
+                  ),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _draft.isPublic
+                              ? _hcT(widget.p.lang, 'public_on')
+                              : _hcT(widget.p.lang, 'public_off'),
+                          style: TextStyle(
+                            fontSize: MedTypography.auxiliarySize,
+                            fontWeight: FontWeight.w600,
+                            color: _draft.isPublic
+                                ? const Color(0xFF0E8000)
+                                : Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white70
+                                    : const Color(0xFF05070A),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _hcT(widget.p.lang, 'public_hint'),
+                          style: TextStyle(
+                            fontSize: MedTypography.auxiliarySize,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white54
+                                    : const Color(0xFF4B5563),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
                   ),
-                );
-              })),
-            ),
-          ]),
-        ),
-
-      // Conteúdo da seção — no desktop: centraliza com max-width maior
-      Expanded(child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isDesktop = constraints.maxWidth >= 1024;
-          final hPad = isDesktop ? 48.0 : 16.0;
-          // Seções que têm campos de texto ditáveis (não Exames/Desfecho)
-          final hasMic = _section == 1 || _section == 2 || _section == 4 || _section == 5;
-          // Padding inferior adaptativo:
-          //   Expandida: 168px (barra completa ~110px + SafeArea 34px + buffer 24px)
-          //   Recolhida:  72px (pílula ~40px + SafeArea 24px + buffer 8px)
-          final micPad = hasMic
-              ? (_micBarExpanded ? 118.0 : 50.0)
-              : 24.0;
-          Widget content = SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(hPad, 14, hPad, micPad),
-            child: isDesktop
-                ? Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 900),
-                      child: _buildSection(),
+                  Switch(
+                    value: _draft.isPublic,
+                    onChanged: (v) =>
+                        setState(() => _draft = _draft.copyWith(isPublic: v)),
+                    thumbColor: WidgetStateProperty.resolveWith(
+                      (states) => states.contains(WidgetState.selected)
+                          ? const Color(0xFF0E8000)
+                          : null,
                     ),
-                  )
-                : _buildSection(),
-          );
-          if (!hasMic) return content;
-          return Stack(
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+
+  // ── Seção 1: Anamnese ─────────────────────────────────────────────────────
+  Widget _buildAnamnesisSection() => Column(
+        children: [
+          _EditorField(
+            _hcT(widget.p.lang, 'f_chief'),
+            _ctrls['chiefComplaint']!,
+            hint: _hcT(widget.p.lang, 'h_chief'),
+            multiline: true,
+            fieldKey: 'chiefComplaint',
+            focusNode: _fieldFocusNodes['chiefComplaint'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_hpi'),
+            _ctrls['hpi']!,
+            hint: _hcT(widget.p.lang, 'h_hpi'),
+            multiline: true,
+            lines: 5,
+            fieldKey: 'hpi',
+            focusNode: _fieldFocusNodes['hpi'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_past'),
+            _ctrls['pastHistory']!,
+            hint: _hcT(widget.p.lang, 'h_past'),
+            multiline: true,
+            fieldKey: 'pastHistory',
+            focusNode: _fieldFocusNodes['pastHistory'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_family'),
+            _ctrls['familyHistory']!,
+            hint: _hcT(widget.p.lang, 'h_family'),
+            multiline: true,
+            fieldKey: 'familyHistory',
+            focusNode: _fieldFocusNodes['familyHistory'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_social'),
+            _ctrls['socialHistory']!,
+            hint: _hcT(widget.p.lang, 'h_social'),
+            multiline: true,
+            fieldKey: 'socialHistory',
+            focusNode: _fieldFocusNodes['socialHistory'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_meds'),
+            _ctrls['medications']!,
+            hint: _hcT(widget.p.lang, 'h_meds'),
+            multiline: true,
+            fieldKey: 'medications',
+            focusNode: _fieldFocusNodes['medications'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_allergies'),
+            _ctrls['allergies']!,
+            hint: _hcT(widget.p.lang, 'h_allergies'),
+            multiline: true,
+            fieldKey: 'allergies',
+            focusNode: _fieldFocusNodes['allergies'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_ros'),
+            _ctrls['reviewOfSystems']!,
+            hint: _hcT(widget.p.lang, 'h_ros'),
+            multiline: true,
+            fieldKey: 'reviewOfSystems',
+            focusNode: _fieldFocusNodes['reviewOfSystems'],
+          ),
+        ],
+      );
+
+  // ── Seção 2: Exame físico ──────────────────────────────────────────────────
+  Widget _buildPhysicalExamSection() => Column(
+        children: [
+          // ── Sinais Vitais Estruturados ─────────────────────────────────────────
+          _VitalSignsWidget(controller: _ctrls['vitalSigns']!),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_pe'),
+            _ctrls['physicalExam']!,
+            hint: _hcT(widget.p.lang, 'h_pe'),
+            multiline: true,
+            lines: 8,
+            fieldKey: 'physicalExam',
+            focusNode: _fieldFocusNodes['physicalExam'],
+          ),
+          const SizedBox(height: 10),
+          // Diagnóstico logo após o exame físico
+          _EditorField(
+            _hcT(widget.p.lang, 'f_wdx'),
+            _ctrls['workingDiagnosis']!,
+            hint: _hcT(widget.p.lang, 'h_wdx'),
+            fieldKey: 'workingDiagnosis',
+            focusNode: _fieldFocusNodes['workingDiagnosis'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_diffdx'),
+            _ctrls['differentialDx']!,
+            hint: _hcT(widget.p.lang, 'h_diffdx'),
+            multiline: true,
+            fieldKey: 'differentialDx',
+          ),
+          const SizedBox(height: 10),
+          Row(
             children: [
-              content,
-              // ── Barra de controle inferior (mic + IA + navegação) ────────
-              Positioned(
-                left: 0, right: 0, bottom: 0,
-                child: _MicControlBar(
-                  lang:          widget.p.lang,
-                  // Colapso / expansão
-                  expanded:      _micBarExpanded,
-                  onToggleExpand: () => setState(() => _micBarExpanded = !_micBarExpanded),
-                  // Estado ditáfone inteligente
-                  smartActive:   _smartDictActive,
-                  sttListening:  _sttListening,
-                  currentField:  _smartDictActive ? _smartCurrentField : (_sttActiveKey ?? ''),
-                  smartInterim:  _smartDictActive ? _smartInterim : _sttInterim,
-                  onTapSmart:    _toggleSmartDictaphone,
-                  // Estado relato livre
-                  relatoActive:  _relatoActive,
-                  aiProcessing:  _aiProcessing,
-                  relatoInterim: _relatoInterim,
-                  onTapRelato:   _toggleRelatoLivre,
-                  // Organizar com IA (texto → campos)
-                  onOrganizarIA: () => _showOrganizarIASheet(),
-                  // Navegação entre campos
-                  onPrevField:   () => FocusScope.of(context).previousFocus(),
-                  onNextField:   () => FocusScope.of(context).nextFocus(),
+              Expanded(
+                flex: 2,
+                child: _EditorField(
+                  _hcT(widget.p.lang, 'f_finaldx'),
+                  _ctrls['finalDiagnosis']!,
+                  hint: _hcT(widget.p.lang, 'h_finaldx'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _EditorField(
+                  _hcT(widget.p.lang, 'f_cid'),
+                  _ctrls['cid']!,
+                  hint: 'I21.0',
                 ),
               ),
             ],
-          );
-        },
-      )),
-    ]);
-  }
-
-  Widget _buildSection() {
-    switch (_section) {
-      case 0: return _buildPatientSection();
-      case 1: return _buildAnamnesisSection();
-      case 2: return _buildPhysicalExamSection();
-      case 3: return _buildExamsSection();
-      case 4: return _buildTreatmentSection();
-      case 5: return _buildEvolutionSection();
-      case 6: return _buildOutcomeSection();
-      default: return const SizedBox();
-    }
-  }
-
-  // ── Seção 0: Paciente ──────────────────────────────────────────────────────
-  Widget _buildPatientSection() => Column(children: [
-    _EditorField(_hcT(widget.p.lang, 'f_initials'), _ctrls['patientInitials']!, hint: _hcT(widget.p.lang, 'h_initials')),
-    const SizedBox(height: 10),
-    Row(children: [
-      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_age'), _ctrls['patientAge']!, hint: '68', numeric: true)),
-      const SizedBox(width: 10),
-      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(_hcT(widget.p.lang, 'f_sex').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
-        const SizedBox(height: 5),
-        Builder(builder: (ctx) {
-          final isDarkDrop = Theme.of(ctx).brightness == Brightness.dark;
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
-            decoration: BoxDecoration(
-              color: isDarkDrop ? const Color(0xFF252930) : Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: isDarkDrop ? const Color(0xFF3A4A42) : kBorder)),
-            child: DropdownButtonHideUnderline(child: DropdownButton<String>(
-              value: _draft.patientSex, isExpanded: true,
-              dropdownColor: isDarkDrop ? const Color(0xFF1C2226) : Colors.white,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: isDarkDrop ? const Color(0xFFE8F0EC) : const Color(0xFF0D1611)),
-              items: [_hcT(widget.p.lang, 'sex_male'), _hcT(widget.p.lang, 'sex_female')].map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
-              onChanged: (v) => setState(() => _draft = _draft.copyWith(patientSex: v ?? _hcT(widget.p.lang, 'sex_male'))),
-            )),
-          );
-        }),
-      ])),
-    ]),
-    const SizedBox(height: 10),
-    Row(children: [
-      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_weight'), _ctrls['patientWeight']!, hint: '72', numeric: true)),
-      const SizedBox(width: 10),
-      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_height'), _ctrls['patientHeight']!, hint: '170', numeric: true)),
-    ]),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_record'), _ctrls['patientRecord']!, hint: '00123456'),
-    const SizedBox(height: 10),
-    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(_hcT(widget.p.lang, 'f_category').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
-      const SizedBox(height: 5),
-      Builder(builder: (ctx) {
-        final isDarkDrop = Theme.of(ctx).brightness == Brightness.dark;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12), height: 44,
-          decoration: BoxDecoration(
-            color: isDarkDrop ? const Color(0xFF252930) : Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: isDarkDrop ? const Color(0xFF3A4A42) : kBorder)),
-          child: DropdownButtonHideUnderline(child: DropdownButton<String>(
-            value: _draft.category, isExpanded: true,
-            dropdownColor: isDarkDrop ? const Color(0xFF1C2226) : Colors.white,
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: isDarkDrop ? const Color(0xFFE8F0EC) : const Color(0xFF0D1611)),
-            items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-            onChanged: (v) => setState(() => _draft = _draft.copyWith(category: v ?? 'Clínica Geral')),
-          )),
-        );
-      }),
-    ]),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_tags'), _ctrls['tags']!, hint: _hcT(widget.p.lang, 'h_tags')),
-    const SizedBox(height: 14),
-    // Compartilhar toggle
-    GestureDetector(
-      onTap: () => setState(() => _draft = _draft.copyWith(isPublic: !_draft.isPublic)),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(color: _draft.isPublic ? const Color(0xFF1E40AF).withOpacity(0.4) : kBorder),
-          color: _draft.isPublic ? const Color(0xFF1E40AF).withOpacity(0.06) : Colors.white),
-        child: Row(children: [
-          Icon(_draft.isPublic ? Icons.public_rounded : Icons.lock_outline_rounded, size: 20, color: _draft.isPublic ? const Color(0xFF1E40AF) : const Color(0xFF6B7280)),
-          const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(_draft.isPublic ? _hcT(widget.p.lang, 'public_on') : _hcT(widget.p.lang, 'public_off'),
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _draft.isPublic ? const Color(0xFF1E40AF) : kDark)),
-            const SizedBox(height: 2),
-            Text(_hcT(widget.p.lang, 'public_hint'), style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
-          ])),
-          Switch(value: _draft.isPublic, onChanged: (v) => setState(() => _draft = _draft.copyWith(isPublic: v)),
-            thumbColor: WidgetStateProperty.resolveWith((states) =>
-              states.contains(WidgetState.selected) ? const Color(0xFF1E40AF) : null)),
-        ]),
-      ),
-    ),
-  ]);
-
-  // ── Seção 1: Anamnese ─────────────────────────────────────────────────────
-  Widget _buildAnamnesisSection() => Column(children: [
-    _EditorField(_hcT(widget.p.lang, 'f_chief'), _ctrls['chiefComplaint']!, hint: _hcT(widget.p.lang, 'h_chief'), multiline: true, fieldKey: 'chiefComplaint', focusNode: _fieldFocusNodes['chiefComplaint']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_hpi'), _ctrls['hpi']!, hint: _hcT(widget.p.lang, 'h_hpi'), multiline: true, lines: 5, fieldKey: 'hpi', focusNode: _fieldFocusNodes['hpi']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_past'), _ctrls['pastHistory']!, hint: _hcT(widget.p.lang, 'h_past'), multiline: true, fieldKey: 'pastHistory', focusNode: _fieldFocusNodes['pastHistory']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_family'), _ctrls['familyHistory']!, hint: _hcT(widget.p.lang, 'h_family'), multiline: true, fieldKey: 'familyHistory', focusNode: _fieldFocusNodes['familyHistory']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_social'), _ctrls['socialHistory']!, hint: _hcT(widget.p.lang, 'h_social'), multiline: true, fieldKey: 'socialHistory', focusNode: _fieldFocusNodes['socialHistory']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_meds'), _ctrls['medications']!, hint: _hcT(widget.p.lang, 'h_meds'), multiline: true, fieldKey: 'medications', focusNode: _fieldFocusNodes['medications']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_allergies'), _ctrls['allergies']!, hint: _hcT(widget.p.lang, 'h_allergies'), multiline: true, fieldKey: 'allergies', focusNode: _fieldFocusNodes['allergies']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_ros'), _ctrls['reviewOfSystems']!, hint: _hcT(widget.p.lang, 'h_ros'), multiline: true, fieldKey: 'reviewOfSystems', focusNode: _fieldFocusNodes['reviewOfSystems']),
-  ]);
-
-  // ── Seção 2: Exame físico ──────────────────────────────────────────────────
-  Widget _buildPhysicalExamSection() => Column(children: [
-    // ── Sinais Vitais Estruturados ─────────────────────────────────────────
-    _VitalSignsWidget(
-      controller: _ctrls['vitalSigns']!,
-    ),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_pe'), _ctrls['physicalExam']!, hint: _hcT(widget.p.lang, 'h_pe'), multiline: true, lines: 8, fieldKey: 'physicalExam', focusNode: _fieldFocusNodes['physicalExam']),
-    const SizedBox(height: 10),
-    // Diagnóstico logo após o exame físico
-    _EditorField(_hcT(widget.p.lang, 'f_wdx'), _ctrls['workingDiagnosis']!, hint: _hcT(widget.p.lang, 'h_wdx'), fieldKey: 'workingDiagnosis', focusNode: _fieldFocusNodes['workingDiagnosis']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_diffdx'), _ctrls['differentialDx']!, hint: _hcT(widget.p.lang, 'h_diffdx'), multiline: true, fieldKey: 'differentialDx'),
-    const SizedBox(height: 10),
-    Row(children: [
-      Expanded(flex: 2, child: _EditorField(_hcT(widget.p.lang, 'f_finaldx'), _ctrls['finalDiagnosis']!, hint: _hcT(widget.p.lang, 'h_finaldx'))),
-      const SizedBox(width: 10),
-      Expanded(child: _EditorField(_hcT(widget.p.lang, 'f_cid'), _ctrls['cid']!, hint: 'I21.0')),
-    ]),
-  ]);
+          ),
+        ],
+      );
 
   // ── Seção 3: Exames ───────────────────────────────────────────────────────
-  Widget _buildExamsSection() => Column(children: [
-    // ── Botão OCR de Exame por IA ──────────────────────────────────────────
-    _OcrExamButton(
-      lang: widget.p.lang,
-      onResult: (text) {
-        final current = _ctrls['labResults']!.text.trim();
-        _ctrls['labResults']!.text = current.isEmpty
-            ? text
-            : '$current\n\n$text';
-      },
-    ),
-    const SizedBox(height: 10),
-    // ── Lab Estruturado + OCR ──────────────────────────────────────────────
-    _LabStructuredWidget(controller: _ctrls['labResults']!),
-    const SizedBox(height: 10),
-    // ── ECG Estruturado ────────────────────────────────────────────────────
-    _EcgStructuredWidget(controller: _ctrls['otherResults']!),
-    const SizedBox(height: 10),
-    // ── Exames de imagem ───────────────────────────────────────────────────
-    _EditorField(_hcT(widget.p.lang, 'f_imaging'), _ctrls['imagingResults']!, hint: _hcT(widget.p.lang, 'h_imaging'), multiline: true, lines: 5, fieldKey: 'imagingResults'),
-  ]);
+  Widget _buildExamsSection() => Column(
+        children: [
+          // ── Botão OCR de Exame por IA ──────────────────────────────────────────
+          _OcrExamButton(
+            lang: widget.p.lang,
+            onResult: (text) {
+              final current = _ctrls['labResults']!.text.trim();
+              _ctrls['labResults']!.text =
+                  current.isEmpty ? text : '$current\n\n$text';
+            },
+          ),
+          const SizedBox(height: 10),
+          // ── Lab Estruturado + OCR ──────────────────────────────────────────────
+          _LabStructuredWidget(controller: _ctrls['labResults']!),
+          const SizedBox(height: 10),
+          // ── ECG Estruturado ────────────────────────────────────────────────────
+          _EcgStructuredWidget(controller: _ctrls['otherResults']!),
+          const SizedBox(height: 10),
+          // ── Exames de imagem ───────────────────────────────────────────────────
+          _EditorField(
+            _hcT(widget.p.lang, 'f_imaging'),
+            _ctrls['imagingResults']!,
+            hint: _hcT(widget.p.lang, 'h_imaging'),
+            multiline: true,
+            lines: 5,
+            fieldKey: 'imagingResults',
+          ),
+        ],
+      );
 
   // ── Seção 4: Conduta / Tratamento ────────────────────────────────────────
-  Widget _buildTreatmentSection() => Column(children: [
-    _EditorField(_hcT(widget.p.lang, 'f_plan'), _ctrls['treatmentPlan']!, hint: _hcT(widget.p.lang, 'h_plan'), multiline: true, lines: 7, fieldKey: 'treatmentPlan', focusNode: _fieldFocusNodes['treatmentPlan']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_procedures'), _ctrls['procedures']!, hint: _hcT(widget.p.lang, 'h_procedures'), multiline: true, fieldKey: 'procedures', focusNode: _fieldFocusNodes['procedures']),
-  ]);
+  Widget _buildTreatmentSection() => Column(
+        children: [
+          _EditorField(
+            _hcT(widget.p.lang, 'f_plan'),
+            _ctrls['treatmentPlan']!,
+            hint: _hcT(widget.p.lang, 'h_plan'),
+            multiline: true,
+            lines: 7,
+            fieldKey: 'treatmentPlan',
+            focusNode: _fieldFocusNodes['treatmentPlan'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_procedures'),
+            _ctrls['procedures']!,
+            hint: _hcT(widget.p.lang, 'h_procedures'),
+            multiline: true,
+            fieldKey: 'procedures',
+            focusNode: _fieldFocusNodes['procedures'],
+          ),
+        ],
+      );
 
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
   Widget _buildEvolutionSection() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(_hcT(widget.p.lang, 'evol_title').toUpperCase(), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
-      const SizedBox(height: 4),
-      Text(_hcT(widget.p.lang, 'evol_hint'), style: const TextStyle(fontSize: 11, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
-      const SizedBox(height: 12),
-      ..._draft.evolutions.asMap().entries.map((entry) {
-        final i = entry.key;
-        final evo = entry.value;
-        return _EvolutionEditorCard(
-          evo: evo,
-          onDelete: () => setState(() {
-            final list = List<EvolutionEntry>.from(_draft.evolutions);
-            list.removeAt(i);
-            _draft = _draft.copyWith(evolutions: list);
-          }),
-          onUpdate: (updated) => setState(() {
-            final list = List<EvolutionEntry>.from(_draft.evolutions);
-            list[i] = updated;
-            _draft = _draft.copyWith(evolutions: list);
-          }),
-        );
-      }),
-      const SizedBox(height: 10),
-      GestureDetector(
-        onTap: () => setState(() {
-          final list = List<EvolutionEntry>.from(_draft.evolutions);
-          list.add(EvolutionEntry.blank());
-          _draft = _draft.copyWith(evolutions: list);
-        }),
-        child: Container(
-          width: double.infinity, height: 48,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder, style: BorderStyle.solid), color: kSurface),
-          child: Center(child: Row(mainAxisSize: MainAxisSize.min, children: [
-            const Icon(Icons.add_circle_outline_rounded, size: 16, color: kGold),
-            const SizedBox(width: 6),
-            Text(_hcT(widget.p.lang, 'add_evol'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGold)),
-          ])),
-        ),
-      ),
-    ]);
-  }
-
-  // ── Seção 6: Desfecho ──────────────────────────────────────────────────────
-  Widget _buildOutcomeSection() => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Text(_hcT(widget.p.lang, 'outcome_title').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
-    const SizedBox(height: 8),
-    Row(children: List.generate(_outcomes.length, (i) {
-      final selected = _draft.outcome == _outcomes[i];
-      final colors = [const Color(0xFFC5A365), const Color(0xFF065F46), const Color(0xFFCC2222), const Color(0xFF1E40AF)];
-      return Expanded(child: Padding(
-        padding: EdgeInsets.only(right: i < _outcomes.length - 1 ? 6 : 0),
-        child: GestureDetector(
-          onTap: () => setState(() => _draft = _draft.copyWith(outcome: _outcomes[i])),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12),
-              color: selected ? colors[i] : Colors.white,
-              border: Border.all(color: selected ? colors[i] : kBorder)),
-            child: Column(children: [
-              Icon(i == 0 ? Icons.hotel_rounded : i == 1 ? Icons.home_rounded : i == 2 ? Icons.close_rounded : Icons.arrow_forward_rounded,
-                size: 16, color: selected ? Colors.white : const Color(0xFF6B7280)),
-              const SizedBox(height: 3),
-              Text(_outcomesLabel[i], style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: selected ? Colors.white : const Color(0xFF6B7280))),
-            ]),
+    // HISTORY_CLINICAL_V1_D_R6_EVOLUTION_METHOD_OWNER
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_EVOLUTION_SECTION_LIGHT
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _hcT(widget.p.lang, 'evol_title').toUpperCase(),
+          style: TextStyle(
+            fontSize: MedTypography.auxiliarySize,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.4,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white70
+                : const Color(0xFF05070A),
           ),
         ),
-      ));
-    })),
-    const SizedBox(height: 14),
-    _EditorField(_hcT(widget.p.lang, 'f_discharge'), _ctrls['dischargeCondition']!, hint: _hcT(widget.p.lang, 'h_discharge'), multiline: true, fieldKey: 'dischargeCondition', focusNode: _fieldFocusNodes['dischargeCondition']),
-    const SizedBox(height: 10),
-    _EditorField(_hcT(widget.p.lang, 'f_followup'), _ctrls['followUp']!, hint: _hcT(widget.p.lang, 'h_followup'), multiline: true, fieldKey: 'followUp', focusNode: _fieldFocusNodes['followUp']),
-  ]);
+        const SizedBox(height: 5),
+        Text(
+          _hcT(widget.p.lang, 'evol_hint'),
+          style: TextStyle(
+            fontSize: MedTypography.auxiliarySize,
+            height: 1.35,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white54
+                : const Color(0xFF4B5563),
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        const SizedBox(height: 14),
+        ..._draft.evolutions.asMap().entries.map((entry) {
+          final i = entry.key;
+          final evo = entry.value;
+          return _EvolutionEditorCard(
+            evo: evo,
+            onDelete: () => setState(() {
+              final list = List<EvolutionEntry>.from(_draft.evolutions);
+              list.removeAt(i);
+              _draft = _draft.copyWith(evolutions: list);
+            }),
+            onUpdate: (updated) => setState(() {
+              final list = List<EvolutionEntry>.from(_draft.evolutions);
+              list[i] = updated;
+              _draft = _draft.copyWith(evolutions: list);
+            }),
+          );
+        }),
+        const SizedBox(height: 10),
+        GestureDetector(
+          onTap: () => setState(() {
+            final list = List<EvolutionEntry>.from(_draft.evolutions);
+            list.add(EvolutionEntry.blank());
+            _draft = _draft.copyWith(evolutions: list);
+          }),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            width: double.infinity,
+            height: 46,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? const Color(0xFF374151)
+                    : const Color(0xFFD8E0E7),
+                width: 0.8,
+              ),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF252930)
+                  : const Color(0xFFECF1F3),
+            ),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.add_circle_outline_rounded,
+                    size: 16,
+                    color: Color(0xFF0E8000),
+                  ),
+                  const SizedBox(width: 7),
+                  Text(
+                    _hcT(widget.p.lang, 'add_evol'),
+                    style: TextStyle(
+                      fontSize: MedTypography.sectionLabelSize,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white70
+                          : const Color(0xFF05070A),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Seção 6: Desfecho
+  // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_OUTCOME_SELECTOR_LIGHT ──────────────────────────────────────────────────────
+  Widget _buildOutcomeSection() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _hcT(widget.p.lang, 'outcome_title').toUpperCase(),
+            style: const TextStyle(
+              fontSize: MedTypography.auxiliarySize,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.4,
+              color: Color(0xFF6B7280),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: List.generate(_outcomes.length, (i) {
+              final selected = _draft.outcome == _outcomes[i];
+              final colors = [
+                const Color(0xFFC5A365),
+                const Color(0xFF065F46),
+                const Color(0xFFCC2222),
+                const Color(0xFF1E40AF),
+              ];
+              return Expanded(
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(right: i < _outcomes.length - 1 ? 6 : 0),
+                  child: GestureDetector(
+                    onTap: () => setState(
+                      () => _draft = _draft.copyWith(outcome: _outcomes[i]),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: selected
+                            ? colors[i]
+                            : Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : const Color(0xFFECF1F3),
+                        border: Border.all(
+                          color: selected
+                              ? colors[i]
+                              : Theme.of(context).brightness == Brightness.dark
+                                  ? kBorder
+                                  : const Color(0xFFD8E0E7),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            i == 0
+                                ? Icons.hotel_rounded
+                                : i == 1
+                                    ? Icons.home_rounded
+                                    : i == 2
+                                        ? Icons.close_rounded
+                                        : Icons.arrow_forward_rounded,
+                            size: 16,
+                            color: selected
+                                ? Colors.white
+                                : Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? const Color(0xFF6B7280)
+                                    : const Color(0xFF4B5563),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            _outcomesLabel[i],
+                            style: TextStyle(
+                              fontSize: MedTypography.auxiliarySize,
+                              fontWeight: FontWeight.w900,
+                              color: selected
+                                  ? Colors.white
+                                  : Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? const Color(0xFF6B7280)
+                                      : const Color(0xFF4B5563),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 14),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_discharge'),
+            _ctrls['dischargeCondition']!,
+            hint: _hcT(widget.p.lang, 'h_discharge'),
+            multiline: true,
+            fieldKey: 'dischargeCondition',
+            focusNode: _fieldFocusNodes['dischargeCondition'],
+          ),
+          const SizedBox(height: 10),
+          _EditorField(
+            _hcT(widget.p.lang, 'f_followup'),
+            _ctrls['followUp']!,
+            hint: _hcT(widget.p.lang, 'h_followup'),
+            multiline: true,
+            fieldKey: 'followUp',
+            focusNode: _fieldFocusNodes['followUp'],
+          ),
+        ],
+      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -4335,15 +6814,20 @@ class _EditorField extends StatefulWidget {
   final bool multiline, numeric;
   final int lines;
   final VoidCallback? onMic;
+
   /// Chave usada para persistir sugestões adaptativas (ex: 'hpi', 'physicalExam').
   /// Se null, autocomplete não é habilitado para este campo.
   final String? fieldKey;
+
   /// FocusNode externo — permite rastrear qual campo está focado (nav pelas setas).
   final FocusNode? focusNode;
+
   /// Chamado com a fieldKey quando este campo ganha foco (para atualizar badge do ditáfone).
   final void Function(String key)? onFocused;
 
-  const _EditorField(this.label, this.ctrl, {
+  const _EditorField(
+    this.label,
+    this.ctrl, {
     required this.hint,
     this.multiline = false,
     this.numeric = false,
@@ -4389,10 +6873,18 @@ class _EditorFieldState extends State<_EditorField> {
       // Pega a última palavra/frase digitada após pontuação ou quebra de linha
       final query = _getActiveQuery(text);
       if (query.length < 3) {
-        if (_showSuggestions) setState(() { _showSuggestions = false; _suggestions = []; });
+        if (_showSuggestions)
+          setState(() {
+            _showSuggestions = false;
+            _suggestions = [];
+          });
         return;
       }
-      final sugs = await SuggestionService.getSuggestions(widget.fieldKey!, query, limit: 5);
+      final sugs = await SuggestionService.getSuggestions(
+        widget.fieldKey!,
+        query,
+        limit: 5,
+      );
       if (!mounted) return;
       setState(() {
         _suggestions = sugs;
@@ -4426,7 +6918,10 @@ class _EditorFieldState extends State<_EditorField> {
     widget.ctrl.text = newText;
     // Posiciona cursor no final
     widget.ctrl.selection = TextSelection.collapsed(offset: newText.length);
-    setState(() { _showSuggestions = false; _suggestions = []; });
+    setState(() {
+      _showSuggestions = false;
+      _suggestions = [];
+    });
   }
 
   /// Salva o conteúdo do campo ao perder foco (quando o usuário termina de digitar).
@@ -4440,104 +6935,164 @@ class _EditorFieldState extends State<_EditorField> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // ── Header: label + botão mic ──────────────────────────────────────────
-      Row(children: [
-        Text(widget.label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF6B7280))),
-        if (widget.onMic != null) ...[
-          const Spacer(),
-          GestureDetector(
-            onTap: widget.onMic,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: const Color(0xFFDC2626).withOpacity(0.08),
-                border: Border.all(color: const Color(0xFFDC2626).withOpacity(0.25)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Header: label + botão mic ──────────────────────────────────────────
+        Row(
+          children: [
+            Text(
+              widget.label,
+              style: TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.4,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white70
+                    : const Color(0xFF4B5563),
               ),
-              child: Builder(builder: (ctx) {
-                final localLang = ctx.read<AppProvider>().lang;
-                return Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.mic_rounded, size: 11, color: Color(0xFFDC2626)),
-                  const SizedBox(width: 4),
-                  Text(_hcT(localLang, 'dictate_btn'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFFDC2626))),
-                ]);
-              }),
             ),
-          ),
-        ],
-      ]),
-      const SizedBox(height: 5),
-      // ── Campo de texto ─────────────────────────────────────────────────────
-      Focus(
-        focusNode: widget.focusNode,
-        onFocusChange: (hasFocus) {
-          if (hasFocus && widget.fieldKey != null && widget.onFocused != null) {
-            widget.onFocused!(widget.fieldKey!);
-          }
-          if (!hasFocus) {
-            _saveSuggestions();
-            if (_showSuggestions) setState(() { _showSuggestions = false; });
-          }
-        },
-        child: MedInput(
-          controller: widget.ctrl,
-          hintText: widget.hint,
-          maxLines: widget.multiline ? widget.lines : 1,
-          keyboardType: widget.numeric
-              ? TextInputType.number
-              : widget.multiline
-                  ? TextInputType.multiline
-                  : null,
-        ),
-      ),
-      // ── Chips de sugestão adaptativa ───────────────────────────────────────
-      if (_showSuggestions && _suggestions.isNotEmpty) ...[
-        const SizedBox(height: 6),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              // Ícone indicador
-              const Padding(
-                padding: EdgeInsets.only(right: 6),
-                child: Icon(Icons.auto_awesome_rounded, size: 12, color: Color(0xFFC5A365)),
-              ),
-              ..._suggestions.map((sug) => Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: GestureDetector(
-                  onTap: () => _applySuggestion(sug),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: const Color(0xFFC5A365).withOpacity(0.10),
-                      border: Border.all(color: const Color(0xFFC5A365).withOpacity(0.40)),
+            if (widget.onMic != null) ...[
+              const Spacer(),
+              GestureDetector(
+                onTap: widget.onMic,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.transparent,
+                    border: Border.all(
+                      color: const Color(0xFFDC2626).withOpacity(0.30),
+                      width: 0.7,
                     ),
-                    child: Text(
-                      sug.length > 40 ? '${sug.substring(0, 40)}…' : sug,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF8B6914),
+                  ),
+                  child: Builder(
+                    builder: (ctx) {
+                      final localLang = ctx.read<AppProvider>().lang;
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.mic_rounded,
+                            size: 11,
+                            color: Color(0xFFDC2626),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            _hcT(localLang, 'dictate_btn'),
+                            style: const TextStyle(
+                              fontSize: MedTypography.auxiliarySize,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFFDC2626),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 5),
+        // ── Campo de texto ─────────────────────────────────────────────────────
+        Focus(
+          focusNode: widget.focusNode,
+          onFocusChange: (hasFocus) {
+            if (hasFocus &&
+                widget.fieldKey != null &&
+                widget.onFocused != null) {
+              widget.onFocused!(widget.fieldKey!);
+            }
+            if (!hasFocus) {
+              _saveSuggestions();
+              if (_showSuggestions)
+                setState(() {
+                  _showSuggestions = false;
+                });
+            }
+          },
+          child: MedInput(
+            controller: widget.ctrl,
+            hintText: widget.hint,
+            clinicalCompact: true,
+            maxLines: widget.multiline ? widget.lines : 1,
+            keyboardType: widget.numeric
+                ? TextInputType.number
+                : widget.multiline
+                    ? TextInputType.multiline
+                    : null,
+          ),
+        ),
+        // ── Chips de sugestão adaptativa ───────────────────────────────────────
+        if (_showSuggestions && _suggestions.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                // Ícone indicador
+                const Padding(
+                  padding: EdgeInsets.only(right: 6),
+                  child: Icon(
+                    Icons.auto_awesome_rounded,
+                    size: 12,
+                    color: Color(0xFFC5A365),
+                  ),
+                ),
+                ..._suggestions.map(
+                  (sug) => Padding(
+                    padding: const EdgeInsets.only(right: 6),
+                    child: GestureDetector(
+                      onTap: () => _applySuggestion(sug),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: const Color(0xFFC5A365).withOpacity(0.10),
+                          border: Border.all(
+                            color: const Color(0xFFC5A365).withOpacity(0.40),
+                          ),
+                        ),
+                        child: Text(
+                          sug.length > 40 ? '${sug.substring(0, 40)}…' : sug,
+                          style: const TextStyle(
+                            fontSize: MedTypography.auxiliarySize,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF8B6914),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              )),
-              // Botão para dispensar sugestões
-              GestureDetector(
-                onTap: () => setState(() { _showSuggestions = false; }),
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 2),
-                  child: Icon(Icons.close_rounded, size: 14, color: Color(0xFFBBBBBB)),
+                // Botão para dispensar sugestões
+                GestureDetector(
+                  onTap: () => setState(() {
+                    _showSuggestions = false;
+                  }),
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 2),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 14,
+                      color: Color(0xFFBBBBBB),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ],
-    ]);
+    );
   }
 }
 
@@ -4548,22 +7103,40 @@ class _PulseDot extends StatefulWidget {
   @override
   State<_PulseDot> createState() => _PulseDotState();
 }
-class _PulseDotState extends State<_PulseDot> with SingleTickerProviderStateMixin {
+
+class _PulseDotState extends State<_PulseDot>
+    with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _anim;
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 700))..repeat(reverse: true);
-    _anim = Tween<double>(begin: 0.4, end: 1.0).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    )..repeat(reverse: true);
+    _anim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
   }
+
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => FadeTransition(
-    opacity: _anim,
-    child: Container(width: 10, height: 10, decoration: BoxDecoration(shape: BoxShape.circle, color: widget.color)),
-  );
+        opacity: _anim,
+        child: Container(
+          width: 10,
+          height: 10,
+          decoration:
+              BoxDecoration(shape: BoxShape.circle, color: widget.color),
+        ),
+      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -4583,33 +7156,35 @@ class _SmartDictaphoneButton extends StatelessWidget {
     required this.lang,
   });
 
-  static Map<String, String> _labels(String lang) => lang == 'es' ? {
-    'chiefComplaint': 'Motivo de consulta',
-    'hpi': 'Enfermedad actual',
-    'pastHistory': 'Antecedentes personales',
-    'familyHistory': 'Antecedentes familiares',
-    'socialHistory': 'Historia social',
-    'medications': 'Medicación habitual',
-    'allergies': 'Alergias',
-    'reviewOfSystems': 'Revisión de sistemas',
-    'vitalSigns': 'Signos vitales',
-    'physicalExam': 'Examen físico',
-    'workingDiagnosis': 'Hipótesis diagnóstica',
-    'treatmentPlan': 'Plan terapéutico',
-  } : {
-    'chiefComplaint': 'Queixa principal',
-    'hpi': 'HDA',
-    'pastHistory': 'Antecedentes pessoais',
-    'familyHistory': 'Antecedentes familiares',
-    'socialHistory': 'História social',
-    'medications': 'Medicamentos',
-    'allergies': 'Alergias',
-    'reviewOfSystems': 'Revisão de sistemas',
-    'vitalSigns': 'Sinais vitais',
-    'physicalExam': 'Exame físico',
-    'workingDiagnosis': 'Hipótese diagnóstica',
-    'treatmentPlan': 'Conduta',
-  };
+  static Map<String, String> _labels(String lang) => lang == 'es'
+      ? {
+          'chiefComplaint': 'Motivo de consulta',
+          'hpi': 'Enfermedad actual',
+          'pastHistory': 'Antecedentes personales',
+          'familyHistory': 'Antecedentes familiares',
+          'socialHistory': 'Historia social',
+          'medications': 'Medicación habitual',
+          'allergies': 'Alergias',
+          'reviewOfSystems': 'Revisión de sistemas',
+          'vitalSigns': 'Signos vitales',
+          'physicalExam': 'Examen físico',
+          'workingDiagnosis': 'Hipótesis diagnóstica',
+          'treatmentPlan': 'Plan terapéutico',
+        }
+      : {
+          'chiefComplaint': 'Queixa principal',
+          'hpi': 'HDA',
+          'pastHistory': 'Antecedentes pessoais',
+          'familyHistory': 'Antecedentes familiares',
+          'socialHistory': 'História social',
+          'medications': 'Medicamentos',
+          'allergies': 'Alergias',
+          'reviewOfSystems': 'Revisão de sistemas',
+          'vitalSigns': 'Sinais vitais',
+          'physicalExam': 'Exame físico',
+          'workingDiagnosis': 'Hipótese diagnóstica',
+          'treatmentPlan': 'Conduta',
+        };
 
   @override
   Widget build(BuildContext context) {
@@ -4623,64 +7198,100 @@ class _SmartDictaphoneButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           gradient: active
-            ? const LinearGradient(colors: [Color(0xFF0F1116), Color(0xFF10B981)], begin: Alignment.centerLeft, end: Alignment.centerRight)
-            : null,
+              ? const LinearGradient(
+                  colors: [Color(0xFF0F1116), Color(0xFF0D6B57)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                )
+              : null,
           color: active ? null : const Color(0xFFF0F7F4),
           border: Border.all(
-            color: active ? const Color(0xFF10B981) : const Color(0xFFBBD6C8),
+            color: active ? const Color(0xFF0D6B57) : const Color(0xFFBBD6C8),
             width: active ? 1.5 : 1,
           ),
-          boxShadow: active ? [BoxShadow(color: const Color(0xFF10B981).withOpacity(0.25), blurRadius: 16, offset: const Offset(0, 4))] : [],
+          boxShadow: active
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF0D6B57).withOpacity(0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [],
         ),
-        child: Row(children: [
-          // Ícone mic animado
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            width: 46, height: 46,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: active ? Colors.white.withOpacity(0.15) : const Color(0xFF10B981).withOpacity(0.12),
-              border: Border.all(color: active ? Colors.white.withOpacity(0.3) : const Color(0xFF10B981).withOpacity(0.3)),
-            ),
-            child: Center(child: Icon(
-              active ? Icons.mic_rounded : Icons.mic_none_rounded,
-              size: 22,
-              color: active ? Colors.white : const Color(0xFF10B981),
-            )),
-          ),
-          const SizedBox(width: 14),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              active
-                ? _hcT(lang, 'dictaphone_active')
-                : _hcT(lang, 'dictaphone'),
-              style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w900,
-                color: active ? Colors.white : const Color(0xFF10B981),
-                letterSpacing: 0.2,
+        child: Row(
+          children: [
+            // Ícone mic animado
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: 46,
+              height: 46,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: active
+                    ? Colors.white.withOpacity(0.15)
+                    : const Color(0xFF0D6B57).withOpacity(0.12),
+                border: Border.all(
+                  color: active
+                      ? Colors.white.withOpacity(0.3)
+                      : const Color(0xFF0D6B57).withOpacity(0.3),
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  active ? Icons.mic_rounded : Icons.mic_none_rounded,
+                  size: 22,
+                  color: active ? Colors.white : const Color(0xFF0D6B57),
+                ),
               ),
             ),
-            const SizedBox(height: 3),
-            Text(
-              active && currentField.isNotEmpty
-                ? '→ ${_labels(lang)[currentField] ?? currentField}'
-                : (isEs
-                    ? 'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto'
-                    : 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo'),
-              style: TextStyle(
-                fontSize: 10.5, fontWeight: FontWeight.w600,
-                color: active ? Colors.white.withOpacity(0.80) : const Color(0xFF666666),
-                height: 1.4,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    active
+                        ? _hcT(lang, 'dictaphone_active')
+                        : _hcT(lang, 'dictaphone'),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                      color: active ? Colors.white : const Color(0xFF0D6B57),
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    active && currentField.isNotEmpty
+                        ? '→ ${_labels(lang)[currentField] ?? currentField}'
+                        : (isEs
+                            ? 'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto'
+                            : 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo'),
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w600,
+                      color: active
+                          ? Colors.white.withOpacity(0.80)
+                          : const Color(0xFF666666),
+                      height: 1.4,
+                    ),
+                    maxLines: 2,
+                  ),
+                ],
               ),
-              maxLines: 2,
             ),
-          ])),
-          const SizedBox(width: 8),
-          if (active)
-            _PulseDot(color: const Color(0xFF86EFAC))
-          else
-            Icon(Icons.chevron_right_rounded, size: 20, color: const Color(0xFF10B981).withOpacity(0.5)),
-        ]),
+            const SizedBox(width: 8),
+            if (active)
+              _PulseDot(color: const Color(0xFF86EFAC))
+            else
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: const Color(0xFF0D6B57).withOpacity(0.5),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -4695,19 +7306,19 @@ class _MicControlBar extends StatelessWidget {
   final String lang;
 
   // Expansão
-  final bool       expanded;
+  final bool expanded;
   final VoidCallback onToggleExpand;
 
   // Ditáfone inteligente
-  final bool   smartActive;
-  final bool   sttListening;
+  final bool smartActive;
+  final bool sttListening;
   final String currentField;
   final String smartInterim;
   final VoidCallback onTapSmart;
 
   // Relato livre (IA)
-  final bool   relatoActive;
-  final bool   aiProcessing;
+  final bool relatoActive;
+  final bool aiProcessing;
   final String relatoInterim;
   final VoidCallback onTapRelato;
 
@@ -4737,230 +7348,347 @@ class _MicControlBar extends StatelessWidget {
     required this.onNextField,
     this.onFieldFocused,
   });
-
-  bool get _anyActive => smartActive || sttListening || relatoActive || aiProcessing;
+// HISTORY_CLINICAL_V1_C_R16_R3_MIC_EXPANDED_LIGHT_FINAL
 
   @override
   Widget build(BuildContext context) {
-    const bg         = Color(0xFFF8FAF9);
-    const bgDark     = Color(0xFF141F19);
-    const border     = Color(0xFFD4E8DC);
-    final isDark     = Theme.of(context).brightness == Brightness.dark;
-    final cardBg     = isDark ? bgDark : bg;
-    final cardBorder = isDark ? const Color(0xFF1F3829) : border;
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+    final keyboardTextMode = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final busy = smartActive || sttListening || relatoActive || aiProcessing;
+    // HISTORY_CLINICAL_V1_C_R14_R4_MIC_DOCK_LIGHT_CLOSURE
+    final micDockDark = Theme.of(context).brightness == Brightness.dark;
+    final micDockBackground =
+        micDockDark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final micPanelBackground =
+        micDockDark ? const Color(0xFF14213D) : Colors.white;
+    final micPrimary = micDockDark ? Colors.white : const Color(0xFF05070A);
+    final micSecondary = micDockDark ? Colors.white70 : const Color(0xFF4B5563);
+    final micMuted = micDockDark ? Colors.white54 : const Color(0xFF6B7280);
+    final micPanelBorder =
+        micDockDark ? const Color(0xFF147D64) : const Color(0xFF0D6B57);
+    final micActionIdleBackground =
+        micDockDark ? const Color(0xFF252930) : Colors.white;
+    final micActionBorder =
+        micDockDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
 
-    // Se qualquer modo está ativo, força expansão visual (botões devem aparecer)
-    final showFull = expanded || _anyActive;
+    final focusedWidget = FocusManager.instance.primaryFocus?.context?.widget;
+    final keyboardType =
+        focusedWidget is EditableText ? focusedWidget.keyboardType : null;
+    final numericKeyboardMode = keyboardType == TextInputType.number ||
+        keyboardType ==
+            const TextInputType.numberWithOptions(
+              decimal: true,
+              signed: false,
+            ) ||
+        keyboardType ==
+            const TextInputType.numberWithOptions(
+              decimal: false,
+              signed: false,
+            );
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 240),
-      curve: Curves.easeOutCubic,
-      decoration: BoxDecoration(
-        color: cardBg,
-        border: Border(top: BorderSide(color: cardBorder, width: 1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.40 : 0.08),
-            blurRadius: 20, offset: const Offset(0, -4)),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(10, showFull ? 7 : 4, 10, showFull ? 5 : 3),
-          child: showFull
-              // ── BARRA EXPANDIDA ────────────────────────────────────────────
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Status badge + botão fechar
-                    Row(children: [
-                      Expanded(
-                        child: _MicStatusBadge(
-                          lang:         lang,
-                          smartActive:  smartActive || sttListening,
-                          relatoActive: relatoActive,
-                          aiProcessing: aiProcessing,
-                          currentField: currentField,
-                          interim:      relatoActive ? relatoInterim : smartInterim,
-                        ),
-                      ),
-                      // Botão recolher (só quando não há modo ativo)
-                      if (!_anyActive) ...[
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: onToggleExpand,
-                          child: Container(
-                            width: 26, height: 26,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: isDark
-                                  ? Colors.white.withOpacity(0.07)
-                                  : const Color(0xFFE8EFF0),
-                              border: Border.all(
-                                color: isDark
-                                    ? Colors.white.withOpacity(0.10)
-                                    : const Color(0xFFCDD8DC)),
-                            ),
-                            child: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 15,
-                              color: isDark ? Colors.white54 : const Color(0xFF607D8B),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ]),
-                    const SizedBox(height: 6),
+    if (numericKeyboardMode) {
+      return Container(
+        color: micDockBackground,
+        padding: EdgeInsets.fromLTRB(16, 5, 16, safeBottom),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              onPressed: onNextField,
+              style: TextButton.styleFrom(
+                foregroundColor: micSecondary,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+              ),
+              child: const Text(
+                'Próximo',
+                style: TextStyle(
+                  fontSize: MedTypography.auxiliarySize,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+            TextButton(
+              onPressed: () => FocusScope.of(context).unfocus(),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF0D6B57),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
-                    // Botões de ação — linha 1: Ditáfone + Relato + Nav
-                    Row(children: [
-                      // Ditáfone inteligente
-                      Expanded(
-                        child: _MicActionBtn(
-                          icon:    smartActive || sttListening
-                              ? Icons.mic_rounded
-                              : Icons.mic_none_rounded,
-                          label:   smartActive || sttListening
-                              ? _hcT(lang, 'dictaphone_active').replaceAll(' • Gravando', '').replaceAll(' • Grabando', '')
-                              : _hcT(lang, 'dictaphone'),
-                          active:  smartActive || sttListening,
-                          color:   const Color(0xFF10B981),
-                          onTap:   onTapSmart,
-                          enabled: !relatoActive && !aiProcessing,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
+    if (keyboardTextMode) {
+      return const SizedBox.shrink();
+    }
 
-                      // Relato Livre (IA)
-                      Expanded(
-                        child: _MicActionBtn(
-                          icon:    aiProcessing
-                              ? Icons.auto_awesome_rounded
-                              : (relatoActive
-                                  ? Icons.stop_circle_rounded
-                                  : Icons.record_voice_over_rounded),
-                          label:   aiProcessing
-                              ? _hcT(lang, 'relato_processing')
-                              : (relatoActive
-                                  ? _hcT(lang, 'relato_active')
-                                  : _hcT(lang, 'relato_btn')),
-                          active:  relatoActive,
-                          color:   relatoActive
-                              ? const Color(0xFFDC2626)
-                              : const Color(0xFF7C3AED),
-                          onTap:   onTapRelato,
-                          enabled: !smartActive && !sttListening && !aiProcessing,
-                          loading: aiProcessing,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
+    final interim = smartInterim.isNotEmpty ? smartInterim : relatoInterim;
+    final status = aiProcessing
+        ? (lang == 'es' ? 'Organizando con IA...' : 'Organizando com IA...')
+        : smartActive
+            ? (lang == 'es' ? 'Dictado activo' : 'Ditado ativo')
+            : relatoActive
+                ? (lang == 'es' ? 'Relato libre activo' : 'Relato livre ativo')
+                : sttListening
+                    ? (lang == 'es' ? 'Escuchando...' : 'Ouvindo...')
+                    : '';
 
-                      // Navegação entre campos
-                      _FieldNavBar(
-                        onPrev: onPrevField,
-                        onNext: onNextField,
-                        isDark: isDark,
-                        onFieldFocused: onFieldFocused,
-                      ),
-                    ]),
-                    const SizedBox(height: 5),
-
-                    // Botão "Organizar com IA" — linha 2, largura total
-                    GestureDetector(
-                      onTap: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
-                          ? onOrganizarIA
-                          : null,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        height: 34,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          gradient: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
-                              ? const LinearGradient(
-                                  colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                )
-                              : null,
-                          color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
-                              ? null
-                              : (isDark ? Colors.white12 : const Color(0xFFE8E8F0)),
-                          border: Border.all(
-                            color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
-                                ? const Color(0xFF7C3AED).withOpacity(0.5)
-                                : (isDark
-                                    ? Colors.white.withOpacity(0.08)
-                                    : const Color(0xFFD0D0E8)),
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.auto_fix_high_rounded,
-                              size: 15,
-                              color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
-                                  ? Colors.white
-                                  : (isDark ? Colors.white38 : const Color(0xFFB0B0C8)),
-                            ),
-                            const SizedBox(width: 7),
-                            Text(
-                              _hcT(lang, 'organizar_btn'),
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: (!smartActive && !sttListening && !relatoActive && !aiProcessing)
-                                    ? Colors.white
-                                    : (isDark ? Colors.white38 : const Color(0xFFB0B0C8)),
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              // ── PÍLULA RECOLHIDA ───────────────────────────────────────────
-              : GestureDetector(
-                  onTap: onToggleExpand,
-                  child: Container(
-                    height: 26,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(13),
-                      color: isDark
-                          ? const Color(0xFF10B981).withOpacity(0.14)
-                          : const Color(0xFF10B981).withOpacity(0.07),
-                      border: Border.all(
-                        color: const Color(0xFF10B981).withOpacity(0.25),
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.mic_none_rounded, size: 13,
-                            color: const Color(0xFF10B981)),
-                        const SizedBox(width: 6),
-                        Text(
-                          lang == 'es' ? 'Dictado e IA' : 'Ditado e IA',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF10B981),
-                            letterSpacing: 0.2,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Icon(Icons.keyboard_arrow_up_rounded, size: 13,
-                            color: const Color(0xFF10B981).withOpacity(0.6)),
-                      ],
+    Widget action({
+      required IconData icon,
+      required String label,
+      required bool active,
+      required VoidCallback onTap,
+    }) {
+      return Expanded(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 160),
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: active ? const Color(0xFF143B32) : Colors.transparent,
+              borderRadius: BorderRadius.circular(9),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 16,
+                  color: active ? const Color(0xFF0D6B57) : micSecondary,
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: MedTypography.microTextSize,
+                      fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+                      color: active
+                          ? (micDockDark
+                              ? Colors.white
+                              : const Color(0xFF065F46))
+                          : micSecondary,
                     ),
                   ),
                 ),
+              ],
+            ),
+          ),
         ),
+      );
+    }
+
+    if (!expanded) {
+      return Container(
+        color: micDockBackground,
+        padding: EdgeInsets.fromLTRB(16, 7, 16, safeBottom),
+        child: Align(
+          alignment: Alignment.center,
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onToggleExpand,
+              child: Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  color: micPanelBackground,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: micPanelBorder,
+                    width: 0.8,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      busy ? Icons.mic_rounded : Icons.mic_none_rounded,
+                      size: 17,
+                      color: const Color(0xFF0D6B57),
+                    ),
+                    const SizedBox(width: 7),
+                    Flexible(
+                      child: Text(
+                        'Ditado e IA',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: MedTypography.clinicalBodySize,
+                          fontWeight: FontWeight.w600,
+                          color: micPrimary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(
+                      Icons.keyboard_arrow_up_rounded,
+                      size: 18,
+                      color: micMuted,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      color: micDockBackground,
+      padding: EdgeInsets.fromLTRB(18, 8, 18, safeBottom + 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.mic_none_rounded,
+                size: 17,
+                color: Color(0xFF0D6B57),
+              ),
+              const SizedBox(width: 7),
+              Expanded(
+                child: Text(
+                  'Ditado e IA',
+                  style: TextStyle(
+                    fontSize: MedTypography.microTextSize,
+                    fontWeight: FontWeight.w600,
+                    color: micPrimary,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onToggleExpand,
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 19,
+                    color: micMuted,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (status.isNotEmpty || interim.isNotEmpty) ...[
+            const SizedBox(height: 5),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                interim.isNotEmpty ? interim : status,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  height: 1.25,
+                  fontWeight: FontWeight.w500,
+                  color: busy ? const Color(0xFF8FD5B8) : micMuted,
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 8),
+          Divider(
+            height: 1,
+            thickness: 0.7,
+            color: micActionBorder,
+          ),
+          const SizedBox(height: 7),
+          Container(
+            height: 46,
+            padding: const EdgeInsets.all(1),
+            decoration: BoxDecoration(
+              color: micActionIdleBackground,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: micActionBorder,
+                width: 0.7,
+              ),
+            ),
+            child: Row(
+              children: [
+                action(
+                  icon: Icons.mic_none_rounded,
+                  label: _hcT(lang, 'dictate_btn'),
+                  active: smartActive || sttListening,
+                  onTap: onTapSmart,
+                ),
+                VerticalDivider(
+                  width: 1,
+                  thickness: 0.6,
+                  color: micActionBorder,
+                ),
+                action(
+                  icon: Icons.auto_awesome_outlined,
+                  label: lang == 'es' ? 'Relato' : 'Relato',
+                  active: relatoActive || aiProcessing,
+                  onTap: onTapRelato,
+                ),
+                VerticalDivider(
+                  width: 1,
+                  thickness: 0.6,
+                  color: micActionBorder,
+                ),
+                action(
+                  icon: Icons.dashboard_customize_outlined,
+                  label: 'IA',
+                  active: false,
+                  onTap: onOrganizarIA,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 3),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: onPrevField,
+                visualDensity: VisualDensity.compact,
+                tooltip: lang == 'es' ? 'Campo anterior' : 'Campo anterior',
+                icon: Icon(
+                  Icons.keyboard_arrow_up_rounded,
+                  size: 20,
+                  color: micMuted,
+                ),
+              ),
+              IconButton(
+                onPressed: onNextField,
+                visualDensity: VisualDensity.compact,
+                tooltip: lang == 'es' ? 'Campo siguiente' : 'Próximo campo',
+                icon: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  size: 20,
+                  color: micMuted,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -4970,214 +7698,10 @@ class _MicControlBar extends StatelessWidget {
 // MIC STATUS BADGE — indicador visual de estado de captação
 // Vermelho quando gravando, Verde quando pronto, Roxo quando IA processa
 // ─────────────────────────────────────────────────────────────────────────────
-class _MicStatusBadge extends StatelessWidget {
-  final String lang;
-  final bool smartActive;
-  final bool relatoActive;
-  final bool aiProcessing;
-  final String currentField;
-  final String interim;
-
-  const _MicStatusBadge({
-    required this.lang,
-    required this.smartActive,
-    required this.relatoActive,
-    required this.aiProcessing,
-    required this.currentField,
-    required this.interim,
-  });
-
-  // Mapa de chaves internas → nomes legíveis por idioma
-  static String _fieldReadable(String key, String lang) {
-    final isEs = lang == 'es';
-    const Map<String, Map<String, String>> _map = {
-      'chiefComplaint': {'pt': 'Queixa principal',        'es': 'Motivo de consulta'},
-      'hpi':            {'pt': 'HDA',                      'es': 'Enfermedad actual'},
-      'pastHistory':    {'pt': 'Antecedentes pessoais',    'es': 'Antecedentes personales'},
-      'familyHistory':  {'pt': 'Antecedentes familiares',  'es': 'Antecedentes familiares'},
-      'socialHistory':  {'pt': 'História social',          'es': 'Historia social'},
-      'medications':    {'pt': 'Medicamentos',             'es': 'Medicación'},
-      'allergies':      {'pt': 'Alergias',                 'es': 'Alergias'},
-      'reviewOfSystems':{'pt': 'Revisão de sistemas',      'es': 'Revisión de sistemas'},
-      'vitalSigns':     {'pt': 'Sinais vitais',            'es': 'Signos vitales'},
-      'physicalExam':   {'pt': 'Exame físico',             'es': 'Examen físico'},
-      'workingDiagnosis':{'pt': 'Hipótese diagnóstica',    'es': 'Hipótesis diagnóstica'},
-      'treatmentPlan':  {'pt': 'Conduta',                  'es': 'Plan terapéutico'},
-      'evolutionNote':  {'pt': 'Nota de evolução',         'es': 'Nota de evolución'},
-    };
-    final entry = _map[key];
-    if (entry == null) return '';
-    return isEs ? (entry['es'] ?? '') : (entry['pt'] ?? '');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // Determina estado dominante
-    final isRecording = relatoActive || smartActive;
-    final Color bgColor;
-    final Color dotColor;
-    final String label;
-    final IconData icon;
-
-    // ── Rótulo do campo ativo para o ditáfone inteligente ─────────────────
-    final String fieldReadable = currentField.isNotEmpty
-        ? _fieldReadable(currentField, lang)
-        : '';
-    final bool isEs = lang == 'es';
-
-    if (aiProcessing) {
-      bgColor  = const Color(0xFF7C3AED).withOpacity(0.10);
-      dotColor = const Color(0xFF7C3AED);
-      icon     = Icons.auto_awesome_rounded;
-      label    = _hcT(lang, 'relato_processing');
-    } else if (relatoActive) {
-      bgColor  = const Color(0xFFDC2626).withOpacity(0.08);
-      dotColor = const Color(0xFFDC2626);
-      icon     = Icons.fiber_manual_record_rounded;
-      label    = _hcT(lang, 'relato_active');
-    } else if (smartActive) {
-      bgColor  = const Color(0xFF10B981).withOpacity(0.10);
-      dotColor = const Color(0xFF16A34A);
-      icon     = Icons.fiber_manual_record_rounded;
-      // ✅ MELHORIA 1: mostra exatamente qual campo está escutando
-      label    = fieldReadable.isNotEmpty
-          ? (isEs ? 'Grabando: $fieldReadable' : 'Gravando: $fieldReadable')
-          : _hcT(lang, 'dictaphone_active');
-    } else {
-      bgColor  = const Color(0xFF10B981).withOpacity(0.06);
-      dotColor = const Color(0xFF10B981);
-      icon     = Icons.mic_none_rounded;
-      label    = _hcT(lang, 'relato_ready');
-    }
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: bgColor,
-        border: Border.all(color: dotColor.withOpacity(0.20), width: 1),
-      ),
-      child: Row(children: [
-        // Ícone / dot pulsante
-        if (isRecording || aiProcessing)
-          _PulseDot(color: dotColor)
-        else
-          Icon(icon, size: 14, color: dotColor),
-        const SizedBox(width: 8),
-        // Texto principal — mostra interim se houver, senão o label do campo
-        Expanded(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: Text(
-              key: ValueKey(interim.isNotEmpty ? 'interim' : label),
-              interim.isNotEmpty ? interim : label,
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: isRecording ? FontWeight.w800 : FontWeight.w600,
-                color: dotColor,
-                letterSpacing: isRecording ? 0.3 : 0,
-                fontStyle: interim.isNotEmpty ? FontStyle.italic : FontStyle.normal,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        // Chip com seta de campo para ditáfone inteligente
-        // (campo legível já aparece no texto principal — chip vira ícone de microfone)
-        if (smartActive) ...[
-          const SizedBox(width: 6),
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: dotColor.withOpacity(0.15),
-            ),
-            child: Icon(Icons.hearing_rounded, size: 12, color: dotColor),
-          ),
-        ],
-      ]),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MIC ACTION BTN — botão compacto de ação na barra inferior
 // ─────────────────────────────────────────────────────────────────────────────
-class _MicActionBtn extends StatelessWidget {
-  final IconData icon;
-  final String   label;
-  final bool     active;
-  final bool     enabled;
-  final bool     loading;
-  final Color    color;
-  final VoidCallback onTap;
-
-  const _MicActionBtn({
-    required this.icon,
-    required this.label,
-    required this.active,
-    required this.color,
-    required this.onTap,
-    this.enabled = true,
-    this.loading = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final effectiveColor = enabled ? color : color.withOpacity(0.35);
-    return GestureDetector(
-      onTap: enabled ? onTap : null,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        height: 36,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: active
-              ? effectiveColor.withOpacity(0.12)
-              : Colors.transparent,
-          border: Border.all(
-            color: active
-                ? effectiveColor.withOpacity(0.55)
-                : effectiveColor.withOpacity(0.25),
-            width: active ? 1.5 : 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (loading)
-              SizedBox(
-                width: 13, height: 13,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation(effectiveColor),
-                ),
-              )
-            else
-              Icon(icon, size: 14, color: effectiveColor),
-            const SizedBox(width: 5),
-            Flexible(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 9.5,
-                  fontWeight: active ? FontWeight.w800 : FontWeight.w600,
-                  color: effectiveColor,
-                  letterSpacing: 0.1,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FIELD NAV BAR — botões de navegação anterior/próximo campo
@@ -5186,6 +7710,7 @@ class _FieldNavBar extends StatelessWidget {
   final VoidCallback onPrev;
   final VoidCallback onNext;
   final bool isDark;
+
   /// Chamado após mover o foco — recebe a fieldKey do campo que ganhou foco.
   final void Function(String fieldKey)? onFieldFocused;
 
@@ -5198,22 +7723,37 @@ class _FieldNavBar extends StatelessWidget {
 
   // Mapa de debugLabel → fieldKey dos _EditorField que usam fieldKey
   static const _kKnownKeys = [
-    'chiefComplaint', 'hpi', 'pastHistory', 'familyHistory',
-    'socialHistory', 'medications', 'allergies', 'reviewOfSystems',
-    'vitalSigns', 'physicalExam', 'workingDiagnosis', 'treatmentPlan',
-    'procedures', 'evolution', 'dischargeCondition', 'followUp',
+    'chiefComplaint',
+    'hpi',
+    'pastHistory',
+    'familyHistory',
+    'socialHistory',
+    'medications',
+    'allergies',
+    'reviewOfSystems',
+    'vitalSigns',
+    'physicalExam',
+    'workingDiagnosis',
+    'treatmentPlan',
+    'procedures',
+    'evolution',
+    'dischargeCondition',
+    'followUp',
   ];
 
   void _afterNav(BuildContext context) {
     if (onFieldFocused == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
-        final scope   = FocusScope.of(context);
+        final scope = FocusScope.of(context);
         final focused = scope.focusedChild;
         if (focused == null) return;
         final label = focused.debugLabel ?? '';
         for (final key in _kKnownKeys) {
-          if (label.contains(key)) { onFieldFocused!(key); return; }
+          if (label.contains(key)) {
+            onFieldFocused!(key);
+            return;
+          }
         }
       } catch (_) {}
     });
@@ -5221,62 +7761,76 @@ class _FieldNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final btnBg     = isDark
-        ? Colors.white.withOpacity(0.07)
-        : const Color(0xFFEFF2F5);
-    final btnBorder = isDark
-        ? Colors.white.withOpacity(0.10)
-        : const Color(0xFFD1D9E0);
+    final btnBg =
+        isDark ? Colors.white.withOpacity(0.07) : const Color(0xFFEFF2F5);
+    final btnBorder =
+        isDark ? Colors.white.withOpacity(0.10) : const Color(0xFFD1D9E0);
     final iconColor = isDark ? Colors.white70 : const Color(0xFF475569);
 
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      _NavBtn(
-        icon:    Icons.keyboard_arrow_up_rounded,
-        bg:      btnBg,
-        border:  btnBorder,
-        iconC:   iconColor,
-        onTap:   () { onPrev(); _afterNav(context); },
-        tooltip: 'Campo anterior',
-      ),
-      const SizedBox(width: 6),
-      _NavBtn(
-        icon:    Icons.keyboard_arrow_down_rounded,
-        bg:      btnBg,
-        border:  btnBorder,
-        iconC:   iconColor,
-        onTap:   () { onNext(); _afterNav(context); },
-        tooltip: 'Próximo campo',
-      ),
-    ]);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _NavBtn(
+          icon: Icons.keyboard_arrow_up_rounded,
+          bg: btnBg,
+          border: btnBorder,
+          iconC: iconColor,
+          onTap: () {
+            onPrev();
+            _afterNav(context);
+          },
+          tooltip: 'Campo anterior',
+        ),
+        const SizedBox(width: 6),
+        _NavBtn(
+          icon: Icons.keyboard_arrow_down_rounded,
+          bg: btnBg,
+          border: btnBorder,
+          iconC: iconColor,
+          onTap: () {
+            onNext();
+            _afterNav(context);
+          },
+          tooltip: 'Próximo campo',
+        ),
+      ],
+    );
   }
 }
 
 class _NavBtn extends StatelessWidget {
   final IconData icon;
-  final Color    bg;
-  final Color    border;
-  final Color    iconC;
+  final Color bg;
+  final Color border;
+  final Color iconC;
   final VoidCallback onTap;
-  final String   tooltip;
-  const _NavBtn({required this.icon, required this.bg, required this.border,
-    required this.iconC, required this.onTap, required this.tooltip});
+  final String tooltip;
+  const _NavBtn({
+    required this.icon,
+    required this.bg,
+    required this.border,
+    required this.iconC,
+    required this.onTap,
+    required this.tooltip,
+  });
 
   @override
   Widget build(BuildContext context) => Tooltip(
-    message: tooltip,
-    child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 40, height: 48,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: bg,
-          border: Border.all(color: border, width: 1),
+        message: tooltip,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 48,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: bg,
+              border: Border.all(color: border, width: 1),
+            ),
+            child: Icon(icon, size: 22, color: iconC),
+          ),
         ),
-        child: Icon(icon, size: 22, color: iconC),
-      ),
-    ),
-  );
+      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -5358,11 +7912,23 @@ class _CentralMicButtonState extends State<_CentralMicButton>
     );
     // Três anéis desfasados
     _ring1 = Tween<double>(begin: 1.0, end: 1.9).animate(
-        CurvedAnimation(parent: _wave, curve: const Interval(0.0, 0.7, curve: Curves.easeOut)));
+      CurvedAnimation(
+        parent: _wave,
+        curve: const Interval(0.0, 0.7, curve: Curves.easeOut),
+      ),
+    );
     _ring2 = Tween<double>(begin: 1.0, end: 1.65).animate(
-        CurvedAnimation(parent: _wave, curve: const Interval(0.2, 0.9, curve: Curves.easeOut)));
+      CurvedAnimation(
+        parent: _wave,
+        curve: const Interval(0.2, 0.9, curve: Curves.easeOut),
+      ),
+    );
     _ring3 = Tween<double>(begin: 1.0, end: 1.38).animate(
-        CurvedAnimation(parent: _wave, curve: const Interval(0.4, 1.0, curve: Curves.easeOut)));
+      CurvedAnimation(
+        parent: _wave,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+      ),
+    );
     if (widget.active) _wave.repeat();
   }
 
@@ -5386,158 +7952,228 @@ class _CentralMicButtonState extends State<_CentralMicButton>
   @override
   Widget build(BuildContext context) {
     final active = widget.active;
-    const kGreen  = Color(0xFF10B981);
+    const kGreen = Color(0xFF0E8000);
     const kGreenL = Color(0xFF34A870);
     final btnColor = active ? kGreen : const Color(0xFFF0F7F4);
     final iconColor = active ? Colors.white : kGreen;
-    const btnSize  = 64.0;
+    const btnSize = 64.0;
 
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      // ── Texto interim / campo ativo ─────────────────────────────────────
-      if (active && (widget.interim.isNotEmpty || widget.currentField.isNotEmpty))
-        AnimatedContainer(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // ── Texto interim / campo ativo ─────────────────────────────────────
+        if (active &&
+            (widget.interim.isNotEmpty || widget.currentField.isNotEmpty))
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            constraints: const BoxConstraints(maxWidth: 320),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: kGreen.withOpacity(0.15),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+              border: Border.all(color: kGreen.withOpacity(0.25)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (widget.currentField.isNotEmpty)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.arrow_right_alt_rounded,
+                        size: 14,
+                        color: kGreen,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _fieldLabel(widget.currentField),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          color: kGreen,
+                        ),
+                      ),
+                    ],
+                  ),
+                if (widget.interim.isNotEmpty) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    widget.interim,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF444444),
+                      fontStyle: FontStyle.italic,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+        // ── Botão mic com ondas ─────────────────────────────────────────────
+        GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedBuilder(
+            animation: _wave,
+            builder: (ctx, child) {
+              return SizedBox(
+                width: btnSize * 2.2,
+                height: btnSize * 2.2,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Anel externo
+                    if (active)
+                      Transform.scale(
+                        scale: _ring1.value,
+                        child: Container(
+                          width: btnSize,
+                          height: btnSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: kGreen.withOpacity(
+                              (1 - _ring1.value / 2.0).clamp(0.0, 0.12),
+                            ),
+                            border: Border.all(
+                              color: kGreen.withOpacity(
+                                (1 - _ring1.value / 2.0).clamp(0.0, 0.25),
+                              ),
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Anel médio
+                    if (active)
+                      Transform.scale(
+                        scale: _ring2.value,
+                        child: Container(
+                          width: btnSize,
+                          height: btnSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: kGreen.withOpacity(
+                              (1 - _ring2.value / 1.8).clamp(0.0, 0.12),
+                            ),
+                            border: Border.all(
+                              color: kGreen.withOpacity(
+                                (1 - _ring2.value / 1.8).clamp(0.0, 0.3),
+                              ),
+                              width: 1.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Anel interno
+                    if (active)
+                      Transform.scale(
+                        scale: _ring3.value,
+                        child: Container(
+                          width: btnSize,
+                          height: btnSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: kGreen.withOpacity(
+                              (1 - _ring3.value / 1.5).clamp(0.0, 0.12),
+                            ),
+                            border: Border.all(
+                              color: kGreen.withOpacity(
+                                (1 - _ring3.value / 1.5).clamp(0.0, 0.35),
+                              ),
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Botão central
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      width: active ? btnSize + 8 : btnSize,
+                      height: active ? btnSize + 8 : btnSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: btnColor,
+                        gradient: active
+                            ? const LinearGradient(
+                                colors: [kGreen, kGreenL],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              )
+                            : null,
+                        border: Border.all(
+                          color: active ? kGreen : kGreen.withOpacity(0.35),
+                          width: active ? 0 : 1.5,
+                        ),
+                        boxShadow: active
+                            ? [
+                                BoxShadow(
+                                  color: kGreen.withOpacity(0.40),
+                                  blurRadius: 24,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, 6),
+                                ),
+                                BoxShadow(
+                                  color: kGreen.withOpacity(0.15),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ]
+                            : [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.10),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                      ),
+                      child: Icon(
+                        active ? Icons.mic_rounded : Icons.mic_none_rounded,
+                        size: active ? 32 : 28,
+                        color: iconColor,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+
+        // ── Label abaixo ────────────────────────────────────────────────────
+        const SizedBox(height: 4),
+        AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          constraints: const BoxConstraints(maxWidth: 320),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            color: Colors.white,
-            boxShadow: [BoxShadow(color: kGreen.withOpacity(0.15), blurRadius: 16, offset: const Offset(0, 4))],
-            border: Border.all(color: kGreen.withOpacity(0.25)),
-          ),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            if (widget.currentField.isNotEmpty)
-              Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.arrow_right_alt_rounded, size: 14, color: kGreen),
-                const SizedBox(width: 4),
-                Text(
-                  _fieldLabel(widget.currentField),
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGreen),
-                ),
-              ]),
-            if (widget.interim.isNotEmpty) ...[
-              const SizedBox(height: 3),
-              Text(
-                widget.interim,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF444444), fontStyle: FontStyle.italic),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ]),
-        ),
-
-      // ── Botão mic com ondas ─────────────────────────────────────────────
-      GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedBuilder(
-          animation: _wave,
-          builder: (ctx, child) {
-            return SizedBox(
-              width: btnSize * 2.2,
-              height: btnSize * 2.2,
-              child: Stack(alignment: Alignment.center, children: [
-                // Anel externo
-                if (active)
-                  Transform.scale(
-                    scale: _ring1.value,
-                    child: Container(
-                      width: btnSize,
-                      height: btnSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: kGreen.withOpacity((1 - _ring1.value / 2.0).clamp(0.0, 0.12)),
-                        border: Border.all(color: kGreen.withOpacity((1 - _ring1.value / 2.0).clamp(0.0, 0.25)), width: 1),
-                      ),
-                    ),
-                  ),
-                // Anel médio
-                if (active)
-                  Transform.scale(
-                    scale: _ring2.value,
-                    child: Container(
-                      width: btnSize,
-                      height: btnSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: kGreen.withOpacity((1 - _ring2.value / 1.8).clamp(0.0, 0.12)),
-                        border: Border.all(color: kGreen.withOpacity((1 - _ring2.value / 1.8).clamp(0.0, 0.3)), width: 1.2),
-                      ),
-                    ),
-                  ),
-                // Anel interno
-                if (active)
-                  Transform.scale(
-                    scale: _ring3.value,
-                    child: Container(
-                      width: btnSize,
-                      height: btnSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: kGreen.withOpacity((1 - _ring3.value / 1.5).clamp(0.0, 0.12)),
-                        border: Border.all(color: kGreen.withOpacity((1 - _ring3.value / 1.5).clamp(0.0, 0.35)), width: 1.5),
-                      ),
-                    ),
-                  ),
-                // Botão central
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  width: active ? btnSize + 8 : btnSize,
-                  height: active ? btnSize + 8 : btnSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: btnColor,
-                    gradient: active
-                        ? const LinearGradient(
-                            colors: [kGreen, kGreenL],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          )
-                        : null,
-                    border: Border.all(
-                      color: active ? kGreen : kGreen.withOpacity(0.35),
-                      width: active ? 0 : 1.5,
-                    ),
-                    boxShadow: active
-                        ? [
-                            BoxShadow(color: kGreen.withOpacity(0.40), blurRadius: 24, spreadRadius: 2, offset: const Offset(0, 6)),
-                            BoxShadow(color: kGreen.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 2)),
-                          ]
-                        : [BoxShadow(color: Colors.black.withOpacity(0.10), blurRadius: 12, offset: const Offset(0, 4))],
-                  ),
-                  child: Icon(
-                    active ? Icons.mic_rounded : Icons.mic_none_rounded,
-                    size: active ? 32 : 28,
-                    color: iconColor,
-                  ),
-                ),
-              ]),
-            );
-          },
-        ),
-      ),
-
-      // ── Label abaixo ────────────────────────────────────────────────────
-      const SizedBox(height: 4),
-      AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: Text(
-          active
-              ? (widget.lang == 'es' ? 'Tocá para detener' : 'Toque para parar')
-              : (widget.lang == 'es' ? 'Dictar' : 'Ditar'),
-          key: ValueKey(active),
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            color: active ? kGreen : const Color(0xFF6B7280),
-            letterSpacing: 0.3,
+          child: Text(
+            active
+                ? (widget.lang == 'es'
+                    ? 'Tocá para detener'
+                    : 'Toque para parar')
+                : (widget.lang == 'es' ? 'Dictar' : 'Ditar'),
+            key: ValueKey(active),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: active ? kGreen : const Color(0xFF6B7280),
+              letterSpacing: 0.3,
+            ),
           ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
@@ -5552,170 +8188,346 @@ class _HistoryPreviewSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_HISTORYPREVIEWSHEET_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     final isEs = lang == 'es';
     final now = DateTime.now();
-    final dateStr = '${now.day.toString().padLeft(2,'0')}/${now.month.toString().padLeft(2,'0')}/${now.year}  ${now.hour.toString().padLeft(2,'0')}:${now.minute.toString().padLeft(2,'0')}';
+    final dateStr =
+        '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}  ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
 
     return DraggableScrollableSheet(
       initialChildSize: 0.92,
       minChildSize: 0.5,
       maxChildSize: 0.97,
       builder: (_, ctrl) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          color:
+              (isDarkR10 ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         ),
-        child: Column(children: [
-          // Handle
-          Container(
-            margin: const EdgeInsets.only(top: 10),
-            width: 40, height: 4,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(2), color: const Color(0xFFA8B2C1)),
-          ),
-          // Header da sheet
-          Container(
-            margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: const LinearGradient(colors: [Color(0xFF0F1116), Color(0xFF10B981)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        child: Column(
+          children: [
+            // Handle
+            Container(
+              margin: const EdgeInsets.only(top: 10),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: const Color(0xFF6B7280),
+              ),
             ),
-            child: Row(children: [
-              const Icon(Icons.description_rounded, size: 20, color: Color(0xFFC5A365)),
-              const SizedBox(width: 10),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(_hcT(lang, 'preview_title'),
-                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1.5)),
-                Text(_hcT(lang, 'pdf_hc_title'),
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
-              ])),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.12)),
-                  child: const Icon(Icons.close_rounded, size: 16, color: Colors.white)),
-              ),
-            ]),
-          ),
-          // Conteúdo scrollável
-          Expanded(child: ListView(
-            controller: ctrl,
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
-            children: [
-              // ── Cabeçalho do documento ──────────────────────────────────────
-              _PreviewDocHeader(history: history, dateStr: dateStr, isEs: isEs),
-              const SizedBox(height: 14),
-
-              // ── ANAMNESE ────────────────────────────────────────────────────
-              if (_hasAny([history.chiefComplaint, history.hpi, history.pastHistory,
-                           history.familyHistory, history.socialHistory,
-                           history.medications, history.allergies, history.reviewOfSystems])) ...[
-                _PreviewSection(
-                  title: _hcT(lang, 'prev_anamnese'),
-                  icon: Icons.history_edu_rounded,
-                  color: const Color(0xFF1E40AF),
-                  children: [
-                    if (history.chiefComplaint.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_chief'), history.chiefComplaint),
-                    if (history.hpi.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_hpi'), history.hpi),
-                    if (history.pastHistory.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_past'), history.pastHistory),
-                    if (history.familyHistory.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_family'), history.familyHistory),
-                    if (history.socialHistory.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_social'), history.socialHistory),
-                    if (history.medications.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_meds'), history.medications, const Color(0xFF1E40AF)),
-                    if (history.allergies.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_allerg'), history.allergies, const Color(0xFFDC2626)),
-                    if (history.reviewOfSystems.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_rvs'), history.reviewOfSystems),
-                  ],
-                ),
-                const SizedBox(height: 12),
-              ],
-
-              // ── EXAME FÍSICO ─────────────────────────────────────────────────
-              if (_hasAny([history.vitalSigns, history.physicalExam])) ...[
-                _PreviewSection(
-                  title: _hcT(lang, 'prev_exam'),
-                  icon: Icons.accessibility_new_rounded,
-                  color: const Color(0xFF065F46),
-                  children: [
-                    if (history.vitalSigns.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_vitals'), history.vitalSigns, const Color(0xFF065F46)),
-                    if (history.physicalExam.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_pe'), history.physicalExam),
-                  ],
-                ),
-                const SizedBox(height: 12),
-              ],
-
-              // ── DIAGNÓSTICO ──────────────────────────────────────────────────
-              if (_hasAny([history.workingDiagnosis, history.finalDiagnosis, history.differentialDx])) ...[
-                _PreviewSection(
-                  title: _hcT(lang, 'prev_dx'),
-                  icon: Icons.lightbulb_rounded,
-                  color: const Color(0xFF92400E),
-                  children: [
-                    if (history.finalDiagnosis.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_final_dx'), '${history.finalDiagnosis}${history.cid.isNotEmpty ? "  (CID: ${history.cid})" : ""}', const Color(0xFF065F46)),
-                    if (history.workingDiagnosis.isNotEmpty && history.finalDiagnosis.isEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_work_dx'), history.workingDiagnosis, const Color(0xFF92400E)),
-                    if (history.differentialDx.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_diff_dx'), history.differentialDx),
-                  ],
-                ),
-                const SizedBox(height: 12),
-              ],
-
-              // ── EXAMES ───────────────────────────────────────────────────────
-              if (_hasAny([history.labResults, history.imagingResults, history.otherResults])) ...[
-                _PreviewSection(
-                  title: _hcT(lang, 'prev_labs'),
-                  icon: Icons.biotech_rounded,
-                  color: const Color(0xFF6B21A8),
-                  children: [
-                    if (history.labResults.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_lab'), history.labResults),
-                    if (history.imagingResults.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_img'), history.imagingResults),
-                    if (history.otherResults.isNotEmpty) _PreviewItem('ECG / Biópsia', history.otherResults),
-                  ],
-                ),
-                const SizedBox(height: 12),
-              ],
-
-              // ── CONDUTA ──────────────────────────────────────────────────────
-              if (_hasAny([history.treatmentPlan, history.procedures])) ...[
-                _PreviewSection(
-                  title: _hcT(lang, 'prev_treat'),
-                  icon: Icons.assignment_turned_in_rounded,
-                  color: const Color(0xFF0F1116),
-                  children: [
-                    if (history.treatmentPlan.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_plan'), history.treatmentPlan),
-                    if (history.procedures.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_proc'), history.procedures),
-                  ],
-                ),
-                const SizedBox(height: 12),
-              ],
-
-              // ── DESFECHO ─────────────────────────────────────────────────────
-              if (_hasAny([history.dischargeCondition, history.followUp]) || history.outcome.isNotEmpty) ...[
-                _PreviewSection(
-                  title: _hcT(lang, 'prev_outcome'),
-                  icon: Icons.door_front_door_rounded,
-                  color: const Color(0xFF1E40AF),
-                  children: [
-                    if (history.outcome.isNotEmpty) _PreviewItemHighlight(_hcT(lang, 'prev_discharge'), _outcomeLabel(history.outcome, isEs), const Color(0xFF1E40AF)),
-                    if (history.dischargeCondition.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_discharge'), history.dischargeCondition),
-                    if (history.followUp.isNotEmpty) _PreviewItem(_hcT(lang, 'prev_followup'), history.followUp),
-                  ],
-                ),
-                const SizedBox(height: 12),
-              ],
-
-              // Rodapé
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: const Color(0xFFF5F5F5)),
-                child: Text(
-                  isEs
-                    ? 'Documento generado el $dateStr por MedCases Pro. Para uso exclusivamente educativo.'
-                    : 'Documento gerado em $dateStr pelo MedCases Pro. Para uso exclusivamente educacional.',
-                  style: const TextStyle(fontSize: 10, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center,
+            // Header da sheet
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: (isDarkR10
+                    ? const Color(0xFF252930)
+                    : const Color(0xFFECF1F3)),
+                border: Border.all(
+                  color: (isDarkR10
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFD8E0E7)),
+                  width: 0.7,
                 ),
               ),
-            ],
-          )),
-        ]),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.description_rounded,
+                    size: 20,
+                    color: Color(0xFFC5A365),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _hcT(lang, 'preview_title'),
+                          style: const TextStyle(
+                            fontSize: MedTypography.microTextSize,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFFC5A365),
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                        Text(
+                          _hcT(lang, 'pdf_hc_title'),
+                          style: TextStyle(
+                            fontSize: MedTypography.internalTitleSize,
+                            fontWeight: FontWeight.w900,
+                            color: (isDarkR10
+                                ? Colors.white
+                                : const Color(0xFF05070A)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: (isDarkR10
+                            ? const Color(0xFF2D3340)
+                            : const Color(0xFFECF1F3)),
+                      ),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 16,
+                        color: (isDarkR10
+                            ? Colors.white
+                            : const Color(0xFF05070A)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Conteúdo scrollável
+            Expanded(
+              child: ListView(
+                controller: ctrl,
+                padding: const EdgeInsets.fromLTRB(18, 12, 18, 52),
+                children: [
+                  // ── Cabeçalho do documento ──────────────────────────────────────
+                  _PreviewDocHeader(
+                    history: history,
+                    dateStr: dateStr,
+                    isEs: isEs,
+                  ),
+                  const SizedBox(height: 14),
+
+                  // ── ANAMNESE ────────────────────────────────────────────────────
+                  if (_hasAny([
+                    history.chiefComplaint,
+                    history.hpi,
+                    history.pastHistory,
+                    history.familyHistory,
+                    history.socialHistory,
+                    history.medications,
+                    history.allergies,
+                    history.reviewOfSystems,
+                  ])) ...[
+                    _PreviewSection(
+                      title: _hcT(lang, 'prev_anamnese'),
+                      icon: Icons.history_edu_rounded,
+                      color: const Color(0xFF1E40AF),
+                      children: [
+                        if (history.chiefComplaint.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_chief'),
+                            history.chiefComplaint,
+                          ),
+                        if (history.hpi.isNotEmpty)
+                          _PreviewItem(_hcT(lang, 'prev_hpi'), history.hpi),
+                        if (history.pastHistory.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_past'),
+                            history.pastHistory,
+                          ),
+                        if (history.familyHistory.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_family'),
+                            history.familyHistory,
+                          ),
+                        if (history.socialHistory.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_social'),
+                            history.socialHistory,
+                          ),
+                        if (history.medications.isNotEmpty)
+                          _PreviewItemHighlight(
+                            _hcT(lang, 'prev_meds'),
+                            history.medications,
+                            const Color(0xFF1E40AF),
+                          ),
+                        if (history.allergies.isNotEmpty)
+                          _PreviewItemHighlight(
+                            _hcT(lang, 'prev_allerg'),
+                            history.allergies,
+                            const Color(0xFFDC2626),
+                          ),
+                        if (history.reviewOfSystems.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_rvs'),
+                            history.reviewOfSystems,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+
+                  // ── EXAME FÍSICO ─────────────────────────────────────────────────
+                  if (_hasAny([history.vitalSigns, history.physicalExam])) ...[
+                    _PreviewSection(
+                      title: _hcT(lang, 'prev_exam'),
+                      icon: Icons.accessibility_new_rounded,
+                      color: const Color(0xFF065F46),
+                      children: [
+                        if (history.vitalSigns.isNotEmpty)
+                          _PreviewItemHighlight(
+                            _hcT(lang, 'prev_vitals'),
+                            history.vitalSigns,
+                            const Color(0xFF065F46),
+                          ),
+                        if (history.physicalExam.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_pe'),
+                            history.physicalExam,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+
+                  // ── DIAGNÓSTICO ──────────────────────────────────────────────────
+                  if (_hasAny([
+                    history.workingDiagnosis,
+                    history.finalDiagnosis,
+                    history.differentialDx,
+                  ])) ...[
+                    _PreviewSection(
+                      title: _hcT(lang, 'prev_dx'),
+                      icon: Icons.lightbulb_rounded,
+                      color: const Color(0xFF92400E),
+                      children: [
+                        if (history.finalDiagnosis.isNotEmpty)
+                          _PreviewItemHighlight(
+                            _hcT(lang, 'prev_final_dx'),
+                            '${history.finalDiagnosis}${history.cid.isNotEmpty ? "  (CID: ${history.cid})" : ""}',
+                            const Color(0xFF065F46),
+                          ),
+                        if (history.workingDiagnosis.isNotEmpty &&
+                            history.finalDiagnosis.isEmpty)
+                          _PreviewItemHighlight(
+                            _hcT(lang, 'prev_work_dx'),
+                            history.workingDiagnosis,
+                            const Color(0xFF92400E),
+                          ),
+                        if (history.differentialDx.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_diff_dx'),
+                            history.differentialDx,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+
+                  // ── EXAMES ───────────────────────────────────────────────────────
+                  if (_hasAny([
+                    history.labResults,
+                    history.imagingResults,
+                    history.otherResults,
+                  ])) ...[
+                    _PreviewSection(
+                      title: _hcT(lang, 'prev_labs'),
+                      icon: Icons.biotech_rounded,
+                      color: const Color(0xFF6B21A8),
+                      children: [
+                        if (history.labResults.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_lab'),
+                            history.labResults,
+                          ),
+                        if (history.imagingResults.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_img'),
+                            history.imagingResults,
+                          ),
+                        if (history.otherResults.isNotEmpty)
+                          _PreviewItem('ECG / Biópsia', history.otherResults),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+
+                  // ── CONDUTA ──────────────────────────────────────────────────────
+                  if (_hasAny([history.treatmentPlan, history.procedures])) ...[
+                    _PreviewSection(
+                      title: _hcT(lang, 'prev_treat'),
+                      icon: Icons.assignment_turned_in_rounded,
+                      color: const Color(0xFF0F1116),
+                      children: [
+                        if (history.treatmentPlan.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_plan'),
+                            history.treatmentPlan,
+                          ),
+                        if (history.procedures.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_proc'),
+                            history.procedures,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+
+                  // ── DESFECHO ─────────────────────────────────────────────────────
+                  if (_hasAny([history.dischargeCondition, history.followUp]) ||
+                      history.outcome.isNotEmpty) ...[
+                    _PreviewSection(
+                      title: _hcT(lang, 'prev_outcome'),
+                      icon: Icons.door_front_door_rounded,
+                      color: const Color(0xFF1E40AF),
+                      children: [
+                        if (history.outcome.isNotEmpty)
+                          _PreviewItemHighlight(
+                            _hcT(lang, 'prev_discharge'),
+                            _outcomeLabel(history.outcome, isEs),
+                            const Color(0xFF1E40AF),
+                          ),
+                        if (history.dischargeCondition.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_discharge'),
+                            history.dischargeCondition,
+                          ),
+                        if (history.followUp.isNotEmpty)
+                          _PreviewItem(
+                            _hcT(lang, 'prev_followup'),
+                            history.followUp,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+
+                  // Rodapé
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: (isDarkR10
+                          ? const Color(0xFF252930)
+                          : const Color(0xFFECF1F3)),
+                    ),
+                    child: Text(
+                      isEs
+                          ? 'Documento generado el $dateStr por MedCases Pro. Para uso exclusivamente educativo.'
+                          : 'Documento gerado em $dateStr pelo MedCases Pro. Para uso exclusivamente educacional.',
+                      style: TextStyle(
+                        fontSize: MedTypography.microTextSize,
+                        color: (isDarkR10
+                            ? Colors.white38
+                            : const Color(0xFF4B5563)),
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -5724,10 +8536,20 @@ class _HistoryPreviewSheet extends StatelessWidget {
 
   static String _outcomeLabel(String outcome, bool isEs) {
     if (isEs) {
-      const m = {'internado': 'Internado', 'alta': 'Alta hospitalaria', 'obito': 'Óbito', 'transferencia': 'Transferencia'};
+      const m = {
+        'internado': 'Internado',
+        'alta': 'Alta hospitalaria',
+        'obito': 'Óbito',
+        'transferencia': 'Transferencia',
+      };
       return m[outcome] ?? outcome;
     }
-    const m = {'internado': 'Internado', 'alta': 'Alta hospitalar', 'obito': 'Óbito', 'transferencia': 'Transferência'};
+    const m = {
+      'internado': 'Internado',
+      'alta': 'Alta hospitalar',
+      'obito': 'Óbito',
+      'transferencia': 'Transferência',
+    };
     return m[outcome] ?? outcome;
   }
 }
@@ -5736,51 +8558,154 @@ class _PreviewDocHeader extends StatelessWidget {
   final ClinicalHistoryModel history;
   final String dateStr;
   final bool isEs;
-  const _PreviewDocHeader({required this.history, required this.dateStr, required this.isEs});
+
+  const _PreviewDocHeader({
+    required this.history,
+    required this.dateStr,
+    required this.isEs,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PREVIEWDOCHEADER_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(2, 10, 2, 14),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: const Color(0xFFF8FAFB),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: const Color(0xFF0F1116)),
-            child: Text('HC', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFC5A365), letterSpacing: 1)),
+        border: Border(
+          bottom: BorderSide(
+            color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+            width: 0.7,
           ),
-          const SizedBox(width: 8),
-          Expanded(child: Text(_hcT(isEs ? 'es' : 'pt', 'tab_title'),
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: Color(0xFF374151), letterSpacing: 1.2))),
-          Text(dateStr, style: const TextStyle(fontSize: 9, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w600)),
-        ]),
-        const Divider(height: 16, color: Color(0xFFEEEEEE)),
-        // Dados do paciente
-        Wrap(spacing: 16, runSpacing: 6, children: [
-          if (history.patientInitials.isNotEmpty) _PHItem(_hcT(isEs ? 'es' : 'pt', 'pdf_patient'), history.patientInitials),
-          if (history.patientAge.isNotEmpty) _PHItem(_hcT(isEs ? 'es' : 'pt', 'pdf_age_label'), '${history.patientAge} ${_hcT(isEs ? "es" : "pt", "years")}'),
-          if (history.patientSex.isNotEmpty) _PHItem(isEs ? 'Sexo' : 'Sexo', history.patientSex),
-          if (history.patientWeight.isNotEmpty) _PHItem(isEs ? 'Peso' : 'Peso', '${history.patientWeight} kg'),
-          if (history.category.isNotEmpty) _PHItem(_hcT(isEs ? 'es' : 'pt', 'pdf_specialty'), history.category),
-        ]),
-      ]),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 7,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: (isDarkR10
+                      ? const Color(0xFF252930)
+                      : const Color(0xFFECF1F3)),
+                  border: Border.all(
+                    color: (isDarkR10
+                        ? const Color(0xFF374151)
+                        : const Color(0xFFD8E0E7)),
+                    width: 0.7,
+                  ),
+                ),
+                child: const Text(
+                  'HC',
+                  style: TextStyle(
+                    fontSize: MedTypography.microTextSize,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFC5A365),
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Text(
+                  _hcT(isEs ? 'es' : 'pt', 'tab_title'),
+                  style: TextStyle(
+                    fontSize: MedTypography.sectionLabelSize,
+                    fontWeight: FontWeight.w700,
+                    color: (isDarkR10
+                        ? Color(0xFFE8F0EC)
+                        : const Color(0xFF05070A)),
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+              Text(
+                dateStr,
+                style: TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  color: (isDarkR10 ? Colors.white38 : const Color(0xFF4B5563)),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 18,
+            runSpacing: 9,
+            children: [
+              if (history.patientInitials.isNotEmpty)
+                _PHItem(
+                  _hcT(isEs ? 'es' : 'pt', 'pdf_patient'),
+                  history.patientInitials,
+                ),
+              if (history.patientAge.isNotEmpty)
+                _PHItem(
+                  _hcT(isEs ? 'es' : 'pt', 'pdf_age_label'),
+                  '${history.patientAge} '
+                  '${_hcT(isEs ? "es" : "pt", "years")}',
+                ),
+              if (history.patientSex.isNotEmpty)
+                _PHItem('Sexo', history.patientSex),
+              if (history.patientWeight.isNotEmpty)
+                _PHItem('Peso', '${history.patientWeight} kg'),
+              if (history.category.isNotEmpty)
+                _PHItem(
+                  _hcT(isEs ? 'es' : 'pt', 'pdf_specialty'),
+                  history.category,
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _PHItem extends StatelessWidget {
-  final String label, value;
+  final String label;
+  final String value;
+
   const _PHItem(this.label, this.value);
+
   @override
-  Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-    Text(label.toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA), letterSpacing: 0.8)),
-    Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFF222222))),
-  ]);
+  Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PHITEM_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 76),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: MedTypography.microTextSize,
+              fontWeight: FontWeight.w600,
+              color: (isDarkR10 ? Colors.white38 : const Color(0xFF4B5563)),
+              letterSpacing: 0.4,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: MedTypography.microTextSize,
+              fontWeight: FontWeight.w600,
+              color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _PreviewSection extends StatelessWidget {
@@ -5788,325 +8713,617 @@ class _PreviewSection extends StatelessWidget {
   final IconData icon;
   final Color color;
   final List<Widget> children;
-  const _PreviewSection({required this.title, required this.icon, required this.color, required this.children});
+
+  const _PreviewSection({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.children,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final visible = children.where((w) => w is! SizedBox).toList();
-    if (visible.isEmpty) return const SizedBox();
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PREVIEWSECTION_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
+    final visible = children.where((widget) => widget is! SizedBox).toList();
+    if (visible.isEmpty) return const SizedBox.shrink();
+
     return Container(
+      padding: const EdgeInsets.fromLTRB(2, 12, 2, 14),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFEEEEEE)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Header
-        Container(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            color: color.withOpacity(0.06),
-            border: Border(bottom: BorderSide(color: color.withOpacity(0.12))),
+        border: Border(
+          bottom: BorderSide(
+            color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+            width: 0.65,
           ),
-          child: Row(children: [
-            Container(width: 28, height: 28, decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-              child: Center(child: Icon(icon, size: 14, color: Colors.white))),
-            const SizedBox(width: 10),
-            Text(title, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.3, color: color)),
-          ]),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: visible),
-        ),
-      ]),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                icon,
+                size: 17,
+                color: color,
+              ),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: MedTypography.microTextSize,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.4,
+                    color: (isDarkR10
+                        ? Color(0xFFE8F0EC)
+                        : const Color(0xFF05070A)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 11),
+          Padding(
+            padding: const EdgeInsets.only(left: 26),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: visible,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _PreviewItem extends StatelessWidget {
-  final String label, text;
+  final String label;
+  final String text;
+
   const _PreviewItem(this.label, this.text);
+
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label.toUpperCase(), style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: Color(0xFF999999), letterSpacing: 0.8)),
-      const SizedBox(height: 3),
-      Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF222222), height: 1.55)),
-    ]),
-  );
+  Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PREVIEWITEM_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 11),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: MedTypography.microTextSize,
+              fontWeight: FontWeight.w600,
+              color: (isDarkR10 ? Colors.white54 : const Color(0xFF4B5563)),
+              letterSpacing: 0.4,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: MedTypography.auxiliarySize,
+              fontWeight: FontWeight.w400,
+              color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+              height: 1.48,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _PreviewItemHighlight extends StatelessWidget {
-  final String label, text;
+  final String label;
+  final String text;
   final Color color;
+
   const _PreviewItemHighlight(this.label, this.text, this.color);
+
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: Container(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: color.withOpacity(0.06), border: Border.all(color: color.withOpacity(0.18))),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label.toUpperCase(), style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900, color: color.withOpacity(0.7), letterSpacing: 0.8)),
-        const SizedBox(height: 3),
-        Text(text, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color, height: 1.5)),
-      ]),
-    ),
-  );
+  Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PREVIEWITEMHIGHLIGHT_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 11),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
+        decoration: BoxDecoration(
+          color:
+              (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+          border: Border(
+            left: BorderSide(
+              color: color,
+              width: 2,
+            ),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label.toUpperCase(),
+              style: TextStyle(
+                fontSize: MedTypography.microTextSize,
+                fontWeight: FontWeight.w600,
+                color: color,
+                letterSpacing: 0.4,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                fontWeight: FontWeight.w600,
+                color:
+                    (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                height: 1.45,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _MetaChip extends StatelessWidget {
   final String label;
+
   const _MetaChip(this.label);
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white.withOpacity(0.12), border: Border.all(color: Colors.white.withOpacity(0.2))),
-      child: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFF2D3340),
+        border: Border.all(
+          color: const Color(0xFF374151),
+          width: 0.65,
+        ),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 10.5,
+          fontWeight: FontWeight.w600,
+          color: Colors.white70,
+        ),
+      ),
     );
   }
 }
 
+// HISTORY_CLINICAL_V1_D_R21_R3_DETAIL_CARD_CONTINUOUS
 class _DetailCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final List<Widget> children;
-  const _DetailCard({required this.icon, required this.title, required this.children});
+
+  const _DetailCard({
+    required this.icon,
+    required this.title,
+    required this.children,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final filled = children.where((c) => c is! SizedBox).isNotEmpty;
+    final filled = children.where((child) => child is! SizedBox).isNotEmpty;
     if (!filled) return const SizedBox();
+
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: kBorder),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(2, 14, 2, 14),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Color(0xFF374151), width: 0.65),
+        ),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Header da seção
-        Container(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
-          decoration: BoxDecoration(
-            color: kDark.withOpacity(0.04),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            border: const Border(bottom: BorderSide(color: kBorder)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 15, color: const Color(0xFF0D6B57)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.05,
+                    color: Color(0xFFE8F0EC),
+                  ),
+                ),
+              ),
+            ],
           ),
-          child: Row(children: [
-            Container(
-              width: 30, height: 30,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: kDark),
-              child: Center(child: Icon(icon, size: 15, color: kGoldLight)),
-            ),
-            const SizedBox(width: 10),
-            Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1.3, color: kDark)),
-          ]),
-        ),
-        // Conteúdo com padding
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
-        ),
-      ]),
+          const SizedBox(height: 11),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          ),
+        ],
+      ),
     );
   }
 }
 
+// HISTORY_CLINICAL_V1_D_R21_R3_SECTION_BLOCK_FLAT
 class _SectionBlock extends StatelessWidget {
   final String label, text;
   final IconData? icon;
+
   const _SectionBlock(this.label, this.text, {this.icon});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Ícone circular verde
-        if (icon != null) ...[  
-          Container(
-            width: 28, height: 28,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: const Color(0xFF10B981).withOpacity(0.1),
-              border: Border.all(color: const Color(0xFF10B981).withOpacity(0.2)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (icon != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Icon(
+                icon,
+                size: 14,
+                color: const Color(0xFF0D6B57),
+              ),
             ),
-            child: Center(child: Icon(icon, size: 13, color: const Color(0xFF10B981))),
+            const SizedBox(width: 9),
+          ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.0,
+                    color: Colors.white54,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFFE8F0EC),
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(width: 10),
         ],
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF6B7280))),
-          const SizedBox(height: 3),
-          Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF222222), height: 1.55)),
-        ])),
-      ]),
-    );
-  }
-}
-
-class _AllergyBanner extends StatelessWidget {
-  final String text;
-  const _AllergyBanner(this.text);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4, top: 2),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: const Color(0xFFFFF1F1),
-          border: Border.all(color: const Color(0xFFFF8080), width: 1.5),
-          boxShadow: [BoxShadow(color: const Color(0xFFCC2222).withOpacity(0.08), blurRadius: 10, offset: const Offset(0, 3))],
-        ),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            width: 32, height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: const Color(0xFFCC2222).withOpacity(0.12),
-              border: Border.all(color: const Color(0xFFCC2222).withOpacity(0.3)),
-            ),
-            child: const Center(child: Icon(Icons.warning_amber_rounded, size: 18, color: Color(0xFFCC2222))),
-          ),
-          const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('⚠ ALERGIAS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFFCC2222), letterSpacing: 1.2)),
-            const SizedBox(height: 4),
-            Text(text, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFFB91C1C), height: 1.4)),
-          ])),
-        ]),
       ),
     );
   }
 }
 
+// HISTORY_CLINICAL_V1_D_R21_R3_ALLERGY_DARK_SEMANTIC
+class _AllergyBanner extends StatelessWidget {
+  final String text;
+
+  const _AllergyBanner(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 10, top: 2),
+      padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
+      decoration: const BoxDecoration(
+        color: Color(0xFF252930),
+        border: Border(
+          left: BorderSide(color: Color(0xFFEF4444), width: 2.2),
+          bottom: BorderSide(color: Color(0xFF374151), width: 0.65),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.warning_amber_rounded,
+            size: 17,
+            color: Color(0xFFF87171),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'ALERGIAS',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFF87171),
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFFE8F0EC),
+                    height: 1.45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// HISTORY_CLINICAL_V1_D_R21_R3_DX_DARK_SEMANTIC
 class _DxBanner extends StatelessWidget {
   final String final_, working, cid, differential, lang;
-  const _DxBanner({required this.final_, required this.working, required this.cid, required this.differential, required this.lang});
+  const _DxBanner({
+    required this.final_,
+    required this.working,
+    required this.cid,
+    required this.differential,
+    required this.lang,
+  });
   @override
   Widget build(BuildContext context) {
     final hasFinal = final_.isNotEmpty;
-    final primaryColor = hasFinal ? const Color(0xFF065F46) : const Color(0xFF92400E);
-    final bgColor = hasFinal ? const Color(0xFFECFDF5) : const Color(0xFFFFF8E6);
-    final borderColor = hasFinal ? const Color(0xFF6EE7B7) : const Color(0xFFFFD580);
-    final textColor = hasFinal ? const Color(0xFF064E3B) : const Color(0xFF78350F);
+    final primaryColor =
+        hasFinal ? const Color(0xFF10B981) : const Color(0xFF92400E);
+    final bgColor = const Color(0xFF252930);
+    final borderColor = primaryColor.withOpacity(0.55);
+    final textColor = const Color(0xFFE8F0EC);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
         color: bgColor,
         border: Border.all(color: borderColor, width: 1.5),
-        boxShadow: [BoxShadow(color: primaryColor.withOpacity(0.1), blurRadius: 12, offset: const Offset(0, 4))],
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Header da caixa de diagnóstico
-        Container(
-          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-          decoration: BoxDecoration(
-            color: primaryColor.withOpacity(0.08),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(17)),
-            border: Border(bottom: BorderSide(color: borderColor)),
-          ),
-          child: Row(children: [
-            Container(
-              width: 28, height: 28,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: primaryColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header da caixa de diagnóstico
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.08),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(17),
               ),
-              child: Center(child: Icon(
-                hasFinal ? Icons.check_rounded : Icons.lightbulb_outline_rounded,
-                size: 14, color: Colors.white,
-              )),
+              border: Border(bottom: BorderSide(color: borderColor)),
             ),
-            const SizedBox(width: 10),
-            Text(
-              hasFinal ? _hcT(lang, 'dx_final_label') : _hcT(lang, 'dx_working_label'),
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-                letterSpacing: 1.3, color: primaryColor),
-            ),
-          ]),
-        ),
-        // Conteúdo
-        Padding(padding: const EdgeInsets.all(14), child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(hasFinal ? final_ : working,
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: textColor, height: 1.25)),
-            if (cid.isNotEmpty) ...[const SizedBox(height: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: primaryColor.withOpacity(0.1),
+            child: Row(
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: primaryColor,
+                  ),
+                  child: Center(
+                    child: Icon(
+                      hasFinal
+                          ? Icons.check_rounded
+                          : Icons.lightbulb_outline_rounded,
+                      size: 14,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                child: Text('CID-10: $cid', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: primaryColor)),
-              )],
-            if (differential.isNotEmpty) ...[const SizedBox(height: 8),
-              Text(_hcT(lang, 'dx_diff_label'), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: primaryColor.withOpacity(0.6), letterSpacing: 1.1)),
-              const SizedBox(height: 3),
-              Text(differential, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF555555), height: 1.4))],
-          ],
-        )),
-      ]),
+                const SizedBox(width: 10),
+                Text(
+                  hasFinal
+                      ? _hcT(lang, 'dx_final_label')
+                      : _hcT(lang, 'dx_working_label'),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.3,
+                    color: primaryColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Conteúdo
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  hasFinal ? final_ : working,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    color: textColor,
+                    height: 1.25,
+                  ),
+                ),
+                if (cid.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: primaryColor.withOpacity(0.1),
+                    ),
+                    child: Text(
+                      'CID-10: $cid',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+                if (differential.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _hcT(lang, 'dx_diff_label'),
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      color: primaryColor.withOpacity(0.6),
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    differential,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF555555),
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
+// HISTORY_CLINICAL_V1_D_R21_R3_OUTCOME_DARK_SEMANTIC
 class _OutcomeBadge extends StatelessWidget {
   final String outcome;
+
   const _OutcomeBadge(this.outcome);
+
   @override
   Widget build(BuildContext context) {
     final lang = context.read<AppProvider>().lang;
     final map = {
       'internado': (_hcT(lang, 'out_internado'), const Color(0xFFC5A365)),
-      'alta': (_hcT(lang, 'pdf_out_alta'), const Color(0xFF065F46)),
-      'obito': (_hcT(lang, 'out_obito'), const Color(0xFFCC2222)),
-      'transferencia': (_hcT(lang, 'out_transf'), const Color(0xFF1E40AF)),
+      'alta': (_hcT(lang, 'pdf_out_alta'), const Color(0xFF10B981)),
+      'obito': (_hcT(lang, 'out_obito'), const Color(0xFFF87171)),
+      'transferencia': (_hcT(lang, 'out_transf'), const Color(0xFF60A5FA)),
     };
-    final info = map[outcome] ?? (_hcT(lang, 'out_internado'), kGold);
+    final info = map[outcome] ??
+        (
+          _hcT(lang, 'out_internado'),
+          const Color(0xFFC5A365),
+        );
     final outcomeLabel = info.$1;
     final outcomeColor = info.$2;
     final outcomePrefix = _hcT(lang, 'outcome_title');
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: outcomeColor.withOpacity(0.1), border: Border.all(color: outcomeColor.withOpacity(0.3))),
-        child: Text('$outcomePrefix: $outcomeLabel', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: outcomeColor)),
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
+      decoration: BoxDecoration(
+        color: const Color(0xFF252930),
+        border: Border(
+          left: BorderSide(color: outcomeColor, width: 2.2),
+          bottom: const BorderSide(color: Color(0xFF374151), width: 0.65),
+        ),
+      ),
+      child: Text(
+        '$outcomePrefix: $outcomeLabel',
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFFE8F0EC),
+        ),
       ),
     );
   }
 }
 
+// HISTORY_CLINICAL_V1_D_R21_R3_DRUGS_DARK
 class _DrugChips extends StatelessWidget {
   final List<String> ids;
   final AppProvider p;
+
   const _DrugChips(this.ids, this.p);
+
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text('FÁRMACOS UTILIZADOS', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF6B7280))),
-      const SizedBox(height: 6),
-      Wrap(spacing: 6, runSpacing: 6, children: ids.map((id) {
-        final drug = p.drugsDB.where((d) => d.id == id).firstOrNull;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: kDark),
-          child: Text(drug?.name ?? id, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: kGoldLight)),
-        );
-      }).toList()),
-    ]);
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_DRUGCHIPS_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'FÁRMACOS UTILIZADOS',
+          style: TextStyle(
+            fontSize: MedTypography.microTextSize,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.4,
+            color: (isDarkR10 ? Colors.white54 : const Color(0xFF4B5563)),
+          ),
+        ),
+        const SizedBox(height: 7),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: ids.map((id) {
+            final drug = p.drugsDB.where((item) => item.id == id).firstOrNull;
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+              decoration: BoxDecoration(
+                color: (isDarkR10
+                    ? const Color(0xFF252930)
+                    : const Color(0xFFECF1F3)),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: (isDarkR10
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFD8E0E7)),
+                  width: 0.7,
+                ),
+              ),
+              child: Text(
+                drug?.name ?? id,
+                style: TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  fontWeight: FontWeight.w600,
+                  color: (isDarkR10 ? Colors.white70 : const Color(0xFF4B5563)),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
   }
 }
 
+// HISTORY_CLINICAL_V1_D_R21_R3_SAVED_EVOLUTION_DARK
 class _EvolutionSection extends StatelessWidget {
   final List<EvolutionEntry> evolutions;
   const _EvolutionSection({required this.evolutions});
@@ -6114,44 +9331,120 @@ class _EvolutionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(14),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Row(children: [
-          Icon(Icons.timeline_rounded, size: 16, color: kGold),
-          SizedBox(width: 8),
-          Text('EVOLUÇÃO CLÍNICA', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: kDark)),
-        ]),
-        const SizedBox(height: 12),
-        ...evolutions.map((e) {
-          final _lang4 = context.read<AppProvider>().lang;
-          final dt = DateTime.tryParse(e.date);
-          final dateStr = dt != null
-            ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${_lang4 == "es" ? "a las" : "às"} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}'
-            : '';
-          final typeLabels = _lang4 == 'es'
-            ? {'evolution': 'Evolución', 'nursing': 'Enfermería', 'lab': 'Lab', 'imaging': 'Imagen', 'procedure': 'Procedimiento'}
-            : {'evolution': 'Evolução', 'nursing': 'Enfermagem', 'lab': 'Lab', 'imaging': 'Imagem', 'procedure': 'Procedimento'};
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Column(children: [
-                Container(width: 10, height: 10, decoration: const BoxDecoration(color: kGold, shape: BoxShape.circle)),
-                Container(width: 2, height: 40, color: kBorder),
-              ]),
-              const SizedBox(width: 10),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  Text(typeLabels[e.type] ?? (_lang4 == 'es' ? 'Evolución' : 'Evolução'), style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: kGold)),
-                  const Spacer(),
-                  Text(dateStr, style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
-                ]),
-                if (e.author.isNotEmpty) Text(e.author, style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600)),
-                const SizedBox(height: 4),
-                Text(e.text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF374151), height: 1.5)),
-              ])),
-            ]),
-          );
-        }),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.timeline_rounded,
+                  size: 16, color: const Color(0xFF10B981)),
+              SizedBox(width: 8),
+              Text(
+                'EVOLUÇÃO CLÍNICA',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
+                  color: const Color(0xFFE8F0EC),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...evolutions.map((e) {
+            final _lang4 = context.read<AppProvider>().lang;
+            final dt = DateTime.tryParse(e.date);
+            final dateStr = dt != null
+                ? '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')} ${_lang4 == "es" ? "a las" : "às"} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}'
+                : '';
+            final typeLabels = _lang4 == 'es'
+                ? {
+                    'evolution': 'Evolución',
+                    'nursing': 'Enfermería',
+                    'lab': 'Lab',
+                    'imaging': 'Imagen',
+                    'procedure': 'Procedimiento',
+                  }
+                : {
+                    'evolution': 'Evolução',
+                    'nursing': 'Enfermagem',
+                    'lab': 'Lab',
+                    'imaging': 'Imagem',
+                    'procedure': 'Procedimento',
+                  };
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: const Color(0xFF10B981),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      Container(width: 2, height: 40, color: kBorder),
+                    ],
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              typeLabels[e.type] ??
+                                  (_lang4 == 'es' ? 'Evolución' : 'Evolução'),
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                color: const Color(0xFF10B981),
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              dateStr,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.white60,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (e.author.isNotEmpty)
+                          Text(
+                            e.author,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white60,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        const SizedBox(height: 4),
+                        Text(
+                          e.text,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF374151),
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
@@ -6160,19 +9453,37 @@ class _EvolutionEditorCard extends StatefulWidget {
   final EvolutionEntry evo;
   final VoidCallback onDelete;
   final ValueChanged<EvolutionEntry> onUpdate;
-  const _EvolutionEditorCard({required this.evo, required this.onDelete, required this.onUpdate});
+  const _EvolutionEditorCard({
+    required this.evo,
+    required this.onDelete,
+    required this.onUpdate,
+  });
   @override
   State<_EvolutionEditorCard> createState() => _EvolutionEditorCardState();
 }
 
+// HISTORY_CLINICAL_V1_D_R6_EVOLUTION_CARD_GRAPHITE
+// HISTORY_CLINICAL_V1_D_R20_EVOLUTION_FLAT
 class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
   late final TextEditingController _textCtrl;
   late final TextEditingController _authorCtrl;
   late String _type;
 
   static const _types = ['evolution', 'nursing', 'lab', 'imaging', 'procedure'];
-  static const _typeLabelsEs = ['Evolución', 'Enfermería', 'Lab', 'Imagen', 'Procedimiento'];
-  static const _typeLabels   = ['Evolução',  'Enfermagem', 'Lab', 'Imagem', 'Procedimento'];
+  static const _typeLabelsEs = [
+    'Evolución',
+    'Enfermería',
+    'Lab',
+    'Imagen',
+    'Procedimiento',
+  ];
+  static const _typeLabels = [
+    'Evolução',
+    'Enfermagem',
+    'Lab',
+    'Imagem',
+    'Procedimento',
+  ];
 
   @override
   void initState() {
@@ -6190,41 +9501,183 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
   }
 
   void _update() {
-    widget.onUpdate(widget.evo.copyWith(text: _textCtrl.text, author: _authorCtrl.text, type: _type));
+    widget.onUpdate(
+      widget.evo.copyWith(
+        text: _textCtrl.text,
+        author: _authorCtrl.text,
+        type: _type,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final dt = DateTime.tryParse(widget.evo.date);
-    final _evoLang = context.read<AppProvider>().lang;
-    final _evoLabels = _evoLang == 'es' ? _typeLabelsEs : _typeLabels;
-    final dateStr = dt != null ? '${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}' : '';
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: kSurface),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Text(dateStr, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFF6B7280))),
-          const Spacer(),
-          GestureDetector(onTap: widget.onDelete, child: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFCC2222))),
-        ]),
-        const SizedBox(height: 8),
-        // Tipo de nota
-        SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: List.generate(_types.length, (i) {
-          final sel = _type == _types[i];
-          return Padding(padding: const EdgeInsets.only(right: 6), child: GestureDetector(
-            onTap: () { setState(() => _type = _types[i]); _update(); },
-            child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: sel ? kDark : Colors.white, border: Border.all(color: sel ? kDark : kBorder)),
-              child: Text(_evoLabels[i], style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: sel ? kGoldLight : const Color(0xFF6B7280)))),
-          ));
-        }))),
-        const SizedBox(height: 8),
-        MedInput(controller: _authorCtrl, hintText: _evoLang == 'es' ? 'Dr./Enf. nombre del profesional' : 'Dr./Enf. nome do profissional', onChanged: (_) => _update()),
-        const SizedBox(height: 6),
-        MedInput(controller: _textCtrl, hintText: _evoLang == 'es' ? 'Nota de evolución...' : 'Nota de evolução...', maxLines: 4, onChanged: (_) => _update()),
-      ]),
+    final evoLang = context.read<AppProvider>().lang;
+    final evoLabels = evoLang == 'es' ? _typeLabelsEs : _typeLabels;
+    final dateStr = dt != null
+        ? '${dt.day.toString().padLeft(2, '0')}/'
+            '${dt.month.toString().padLeft(2, '0')} '
+            '${dt.hour.toString().padLeft(2, '0')}:'
+            '${dt.minute.toString().padLeft(2, '0')}'
+        : '';
+
+    InputDecoration fieldDecoration(String hint) {
+      return InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(
+          fontSize: MedTypography.auxiliarySize,
+          fontWeight: FontWeight.w400,
+          color: Colors.white38,
+        ),
+        filled: true,
+        fillColor: const Color(0xFF252930),
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 13,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: const BorderSide(
+            color: Color(0xFF374151),
+            width: 0.8,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: const BorderSide(
+            color: Color(0xFF0D6B57),
+            width: 1.0,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(11),
+          borderSide: const BorderSide(
+            color: Color(0xFF374151),
+            width: 0.8,
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                dateStr,
+                style: const TextStyle(
+                  fontSize: MedTypography.auxiliarySize,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white54,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                onPressed: widget.onDelete,
+                visualDensity: VisualDensity.compact,
+                tooltip: evoLang == 'es' ? 'Eliminar nota' : 'Excluir nota',
+                icon: const Icon(
+                  Icons.delete_outline_rounded,
+                  size: 19,
+                  color: Color(0xFFEF4444),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            child: Row(
+              children: List.generate(_types.length, (index) {
+                final selected = _type == _types[index];
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    setState(() => _type = _types[index]);
+                    _update();
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    height: 42,
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(
+                      right: index < _types.length - 1 ? 8 : 0,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 11),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: selected
+                              ? const Color(0xFF0D6B57)
+                              : Colors.transparent,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      evoLabels[index],
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: MedTypography.sectionLabelSize,
+                        fontWeight:
+                            selected ? FontWeight.w700 : FontWeight.w600,
+                        color:
+                            selected ? const Color(0xFFE8F0EC) : Colors.white60,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _authorCtrl,
+            onChanged: (_) => _update(),
+            textCapitalization: TextCapitalization.words,
+            style: const TextStyle(
+              fontSize: MedTypography.clinicalBodySize,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFFE8F0EC),
+            ),
+            decoration: fieldDecoration(
+              _hcT(evoLang, 'evol_author_hint'),
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _textCtrl,
+            onChanged: (_) => _update(),
+            minLines: 4,
+            maxLines: 7,
+            keyboardType: TextInputType.multiline,
+            textCapitalization: TextCapitalization.sentences,
+            style: const TextStyle(
+              fontSize: MedTypography.clinicalBodySize,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFFE8F0EC),
+              height: 1.45,
+            ),
+            decoration: fieldDecoration(
+              _hcT(evoLang, 'evol_text_hint'),
+            ).copyWith(
+              contentPadding: const EdgeInsets.fromLTRB(14, 14, 14, 18),
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Divider(
+            height: 1,
+            thickness: 0.65,
+            color: Color(0xFF374151),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -6245,7 +9698,7 @@ class _CommunityLoadingState extends StatelessWidget {
             _hcT(lang, 'loading_comm'),
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: MedTypography.microTextSize,
               color: Color(0xFF6B7280),
               fontWeight: FontWeight.w600,
             ),
@@ -6257,95 +9710,74 @@ class _CommunityLoadingState extends StatelessWidget {
 }
 
 class _EmptyHistoryState extends StatelessWidget {
-  final VoidCallback onNew;
+  // MEDCASES_HC_NEW_HISTORY_WORKSPACE_V1_B_R0_EMPTY_STATE
   final String lang;
-  const _EmptyHistoryState({required this.onNew, this.lang = 'pt'});
+  const _EmptyHistoryState({this.lang = 'pt'});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary =
+        isDark ? const Color(0xFFDCE3EA) : const Color(0xFF334155);
+    final textSecondary =
+        isDark ? const Color(0xFF8F9AA8) : const Color(0xFF64748B);
+    final border = isDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
+    final iconBg = isDark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 36),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ── Ícone discreto com opacidade suave ──────────────────────
-            Icon(
-              Icons.description_outlined,
-              size: 38,
-              color: isDark
-                  ? Colors.white.withOpacity(0.18)
-                  : Colors.black.withOpacity(0.13),
+            Container(
+              width: 54,
+              height: 54,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: border, width: 0.7),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.description_outlined,
+                size: 25,
+                color: textSecondary,
+              ),
             ),
-            const SizedBox(height: 18),
-
-            // ── Título ───────────────────────────────────────────────────
+            const SizedBox(height: 16),
             Text(
               _hcT(lang, 'empty_title'),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: MedTypography.internalTitleSize,
                 fontWeight: FontWeight.w800,
-                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                color: textPrimary,
                 letterSpacing: -0.1,
               ),
             ),
-            const SizedBox(height: 8),
-
-            // ── Subtítulo ────────────────────────────────────────────────
+            const SizedBox(height: 7),
             Text(
               _hcT(lang, 'empty_sub'),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: MedTypography.auxiliarySize,
                 fontWeight: FontWeight.w500,
-                color: isDark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
-                height: 1.55,
+                color: textSecondary,
+                height: 1.45,
               ),
             ),
-            const SizedBox(height: 28),
-
-            // ── Botão elegante centralizado — outlined sutil ─────────────
-            GestureDetector(
-              onTap: onNew,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: const Color(0xFFF27405).withOpacity(0.65),
-                    width: 1.4,
-                  ),
-                  color: const Color(0xFFF27405).withOpacity(
-                    isDark ? 0.10 : 0.07,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.add_rounded,
-                      size: 15,
-                      color: isDark
-                          ? const Color(0xFFFF9A3C)
-                          : const Color(0xFFD46500),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      _hcT(lang, 'new_history_btn'),
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? const Color(0xFFFF9A3C)
-                            : const Color(0xFFD46500),
-                        letterSpacing: 0.1,
-                      ),
-                    ),
-                  ],
-                ),
+            const SizedBox(height: 12),
+            Text(
+              lang == 'es'
+                  ? 'Use + NUEVA para comenzar.'
+                  : 'Use + NOVA para começar.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: MedTypography.microTextSize,
+                fontWeight: FontWeight.w600,
+                color: textSecondary,
+                letterSpacing: 0.1,
               ),
             ),
           ],
@@ -6361,19 +9793,52 @@ class _EmptyCommunityState extends StatelessWidget {
   const _EmptyCommunityState({required this.onRefresh, this.lang = 'pt'});
   @override
   Widget build(BuildContext context) {
-    return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Icon(Icons.people_outline_rounded, size: 56, color: Colors.grey[300]),
-      const SizedBox(height: 14),
-      Text(_hcT(lang, 'empty_comm_title'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA))),
-      const SizedBox(height: 6),
-      Text(_hcT(lang, 'empty_comm_sub'), textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600)),
-      const SizedBox(height: 20),
-      GestureDetector(onTap: onRefresh, child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kDark),
-        child: Text(_hcT(lang, 'refresh'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
-      )),
-    ]));
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.people_outline_rounded, size: 56, color: Colors.grey[300]),
+          const SizedBox(height: 14),
+          Text(
+            _hcT(lang, 'empty_comm_title'),
+            style: const TextStyle(
+              fontSize: MedTypography.internalTitleSize,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFFAAAAAA),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _hcT(lang, 'empty_comm_sub'),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: MedTypography.microTextSize,
+              color: Color(0xFFBBBBBB),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 20),
+          GestureDetector(
+            onTap: onRefresh,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: kDark,
+              ),
+              child: Text(
+                _hcT(lang, 'refresh'),
+                style: const TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  fontWeight: FontWeight.w900,
+                  color: kGoldLight,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -6396,18 +9861,30 @@ class _CommunityErrorState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.cloud_off_rounded, size: 58, color: Color(0xFFD97D54)),
+            const Icon(
+              Icons.cloud_off_rounded,
+              size: 58,
+              color: Color(0xFFD97D54),
+            ),
             const SizedBox(height: 14),
             Text(
               _hcT(lang, 'community_error_title'),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Color(0xFFAAAAAA)),
+              style: const TextStyle(
+                fontSize: MedTypography.internalTitleSize,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFFAAAAAA),
+              ),
             ),
             const SizedBox(height: 6),
             Text(
               _hcT(lang, 'community_error_sub'),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB), fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                fontSize: MedTypography.microTextSize,
+                color: Color(0xFFBBBBBB),
+                fontWeight: FontWeight.w600,
+              ),
             ),
             if (details.isNotEmpty) ...[
               const SizedBox(height: 16),
@@ -6425,12 +9902,21 @@ class _CommunityErrorState extends StatelessWidget {
                   children: [
                     Text(
                       _hcT(lang, 'error_details'),
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: Color(0xFF7A3C20)),
+                      style: const TextStyle(
+                        fontSize: MedTypography.microTextSize,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF7A3C20),
+                      ),
                     ),
                     const SizedBox(height: 6),
                     SelectableText(
                       details,
-                      style: const TextStyle(fontSize: 11, height: 1.35, color: Color(0xFF8D4C2A), fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: MedTypography.microTextSize,
+                        height: 1.35,
+                        color: Color(0xFF8D4C2A),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -6440,9 +9926,22 @@ class _CommunityErrorState extends StatelessWidget {
             GestureDetector(
               onTap: onRefresh,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: kDark),
-                child: Text(_hcT(lang, 'refresh'), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: kGoldLight)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: kDark,
+                ),
+                child: Text(
+                  _hcT(lang, 'refresh'),
+                  style: const TextStyle(
+                    fontSize: MedTypography.microTextSize,
+                    fontWeight: FontWeight.w900,
+                    color: kGoldLight,
+                  ),
+                ),
               ),
             ),
           ],
@@ -6496,49 +9995,65 @@ class _VitalSignsWidget extends StatefulWidget {
   State<_VitalSignsWidget> createState() => _VitalSignsWidgetState();
 }
 
+// HISTORY_CLINICAL_V1_D_R6_VITALS_GRAPHITE
+// HISTORY_CLINICAL_V1_D_R14_VITALS_CARDLESS
 class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
-  final _pas   = TextEditingController();
-  final _pad   = TextEditingController();
-  final _fc    = TextEditingController();
-  final _fr    = TextEditingController();
-  final _temp  = TextEditingController();
-  final _spo2  = TextEditingController();
-  final _dext  = TextEditingController();
-  final _peso  = TextEditingController();
+  // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R8_VITALSIGNSWIDGETSTATE_LIGHT
+  // LIGHT_MODE_PREMIUM_V1_A_R14_VITALS
+  final _pas = TextEditingController();
+  final _pad = TextEditingController();
+  final _fc = TextEditingController();
+  final _fr = TextEditingController();
+  final _temp = TextEditingController();
+  final _spo2 = TextEditingController();
+  final _dext = TextEditingController();
+  final _peso = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     // Parse existing text back into fields on open
     _parseExisting(widget.controller.text);
-    for (final c in [_pas,_pad,_fc,_fr,_temp,_spo2,_dext,_peso]) {
+    for (final c in [_pas, _pad, _fc, _fr, _temp, _spo2, _dext, _peso]) {
       c.addListener(_syncToController);
     }
   }
 
   void _parseExisting(String text) {
-    final regexPA  = RegExp(r'PA[:\s]+(\d+)[/\\](\d+)', caseSensitive: false);
-    final regexFC  = RegExp(r'FC[:\s]+(\d+)', caseSensitive: false);
-    final regexFR  = RegExp(r'FR[:\s]+(\d+)', caseSensitive: false);
-    final regexT   = RegExp(r'[Tt]emp[:\s]+([\d,\.]+)', caseSensitive: false);
-    final regexSp  = RegExp(r'SpO2[:\s]+([\d,\.]+)', caseSensitive: false);
-    final regexDx  = RegExp(r'[Dd]extro[:\s]+([\d,\.]+)', caseSensitive: false);
-    final regexP   = RegExp(r'[Pp]eso[:\s]+([\d,\.]+)', caseSensitive: false);
-    final mPA  = regexPA.firstMatch(text);
-    if (mPA != null) { _pas.text = mPA.group(1) ?? ''; _pad.text = mPA.group(2) ?? ''; }
-    final mFC  = regexFC.firstMatch(text);  if (mFC  != null) _fc.text   = mFC.group(1)  ?? '';
-    final mFR  = regexFR.firstMatch(text);  if (mFR  != null) _fr.text   = mFR.group(1)  ?? '';
-    final mT   = regexT.firstMatch(text);   if (mT   != null) _temp.text = mT.group(1)   ?? '';
-    final mSp  = regexSp.firstMatch(text);  if (mSp  != null) _spo2.text = mSp.group(1)  ?? '';
-    final mDx  = regexDx.firstMatch(text);  if (mDx  != null) _dext.text = mDx.group(1)  ?? '';
-    final mP   = regexP.firstMatch(text);   if (mP   != null) _peso.text = mP.group(1)   ?? '';
+    final regexPA = RegExp(r'PA[:\s]+(\d+)[/\\](\d+)', caseSensitive: false);
+    final regexFC = RegExp(r'FC[:\s]+(\d+)', caseSensitive: false);
+    final regexFR = RegExp(r'FR[:\s]+(\d+)', caseSensitive: false);
+    final regexT = RegExp(r'[Tt]emp[:\s]+([\d,\.]+)', caseSensitive: false);
+    final regexSp = RegExp(r'SpO2[:\s]+([\d,\.]+)', caseSensitive: false);
+    final regexDx = RegExp(r'[Dd]extro[:\s]+([\d,\.]+)', caseSensitive: false);
+    final regexP = RegExp(r'[Pp]eso[:\s]+([\d,\.]+)', caseSensitive: false);
+    final mPA = regexPA.firstMatch(text);
+    if (mPA != null) {
+      _pas.text = mPA.group(1) ?? '';
+      _pad.text = mPA.group(2) ?? '';
+    }
+    final mFC = regexFC.firstMatch(text);
+    if (mFC != null) _fc.text = mFC.group(1) ?? '';
+    final mFR = regexFR.firstMatch(text);
+    if (mFR != null) _fr.text = mFR.group(1) ?? '';
+    final mT = regexT.firstMatch(text);
+    if (mT != null) _temp.text = mT.group(1) ?? '';
+    final mSp = regexSp.firstMatch(text);
+    if (mSp != null) _spo2.text = mSp.group(1) ?? '';
+    final mDx = regexDx.firstMatch(text);
+    if (mDx != null) _dext.text = mDx.group(1) ?? '';
+    final mP = regexP.firstMatch(text);
+    if (mP != null) _peso.text = mP.group(1) ?? '';
   }
 
   void _syncToController() {
     final parts = <String>[];
-    if (_pas.text.isNotEmpty || _pad.text.isNotEmpty) parts.add('PA ${_pas.text.isNotEmpty ? _pas.text : "?"}/${_pad.text.isNotEmpty ? _pad.text : "?"} mmHg');
-    if (_fc.text.isNotEmpty)   parts.add('FC ${_fc.text} bpm');
-    if (_fr.text.isNotEmpty)   parts.add('FR ${_fr.text} irpm');
+    if (_pas.text.isNotEmpty || _pad.text.isNotEmpty)
+      parts.add(
+        'PA ${_pas.text.isNotEmpty ? _pas.text : "?"}/${_pad.text.isNotEmpty ? _pad.text : "?"} mmHg',
+      );
+    if (_fc.text.isNotEmpty) parts.add('FC ${_fc.text} bpm');
+    if (_fr.text.isNotEmpty) parts.add('FR ${_fr.text} irpm');
     if (_temp.text.isNotEmpty) parts.add('Temp ${_temp.text}°C');
     if (_spo2.text.isNotEmpty) parts.add('SpO2 ${_spo2.text}%');
     if (_dext.text.isNotEmpty) parts.add('Dextro ${_dext.text} mg/dL');
@@ -6550,131 +10065,373 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
   void dispose() {
     // MEMLEAK-FIX: remove listeners antes de chamar dispose() nos controllers,
     // evitando callbacks disparados depois que o widget já foi desmontado.
-    for (final c in [_pas,_pad,_fc,_fr,_temp,_spo2,_dext,_peso]) {
+    for (final c in [_pas, _pad, _fc, _fr, _temp, _spo2, _dext, _peso]) {
       c.removeListener(_syncToController);
       c.dispose();
     }
     super.dispose();
   }
 
-  Widget _vsField(String label, TextEditingController ctrl, String unit,
-      {String hint = '', bool wide = false, bool decimal = false,
-       required bool isDark, required Color inputFill, required Color inputText}) {
-    final borderColor = isDark ? const Color(0xFF3A4A42) : kBorder;
+  Widget _fieldHeader(String label, String reference) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: RichText(
+        maxLines: 2,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: label,
+              style: TextStyle(
+                fontSize: MedTypography.microTextSize,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.45,
+                color: dark ? const Color(0xFFE8F0EC) : const Color(0xFF05070A),
+              ),
+            ),
+            TextSpan(
+              text: '  ($reference)',
+              style: TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                fontWeight: FontWeight.w500,
+                color: dark ? const Color(0xFF7F8C86) : const Color(0xFF4B5563),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _numericInput(
+    TextEditingController controller, {
+    required String hint,
+    required String unit,
+    required bool decimal,
+    required TextInputAction action,
+  }) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+
     return SizedBox(
-      width: wide ? double.infinity : null,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label, style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280))),
-        const SizedBox(height: 3),
-        Row(children: [
-          SizedBox(
-            width: wide ? 80 : 56,
-            height: 36,
-            child: TextField(
-              controller: ctrl,
-              // iOS: numberWithOptions(decimal:true) não garante ponto no teclado
-              // quando locale usa vírgula. TextInputType.text força teclado QWERTY
-              // completo onde ponto/vírgula estão sempre disponíveis.
-              keyboardType: decimal
-                  ? TextInputType.text
-                  : const TextInputType.numberWithOptions(decimal: false, signed: false),
-              inputFormatters: decimal
-                  ? [_DecimalInputFormatter()]
-                  : [FilteringTextInputFormatter.digitsOnly],
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: inputText),
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                hintText: hint,
-                hintStyle: TextStyle(fontSize: 11, color: isDark ? const Color(0xFF5A6A62) : const Color(0xFFBBBBBB)),
-                filled: true,
-                fillColor: inputFill,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5)),
+      height: 40,
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.numberWithOptions(
+          decimal: decimal,
+          signed: false,
+        ),
+        textInputAction: action,
+        scrollPadding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom + 36,
+        ),
+        onSubmitted: (_) {
+          if (action == TextInputAction.done) {
+            FocusScope.of(context).unfocus();
+          } else {
+            FocusScope.of(context).nextFocus();
+          }
+        },
+        inputFormatters: decimal
+            ? [_DecimalInputFormatter()]
+            : [FilteringTextInputFormatter.digitsOnly],
+        style: TextStyle(
+          fontSize: MedTypography.sectionLabelSize,
+          fontWeight: FontWeight.w600,
+          color: dark ? const Color(0xFFE8F0EC) : const Color(0xFF05070A),
+        ),
+        decoration: InputDecoration(
+          isDense: true,
+          hintText: hint,
+          hintStyle: TextStyle(
+            fontSize: MedTypography.auxiliarySize,
+            color: dark ? Colors.white30 : const Color(0xFF4B5563),
+          ),
+          suffixText: unit,
+          suffixStyle: TextStyle(
+            fontSize: MedTypography.microTextSize,
+            fontWeight: FontWeight.w600,
+            color: dark ? const Color(0xFF8B9992) : const Color(0xFF4B5563),
+          ),
+          filled: true,
+          fillColor: dark ? const Color(0xFF2D3340) : const Color(0xFFECF1F3),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 9,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
+              width: 0.8,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
+              width: 0.8,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: Color(0xFF0D6B57),
+              width: 1,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _vsField(
+    String label,
+    String reference,
+    TextEditingController controller,
+    String unit, {
+    required String hint,
+    bool decimal = false,
+    TextInputAction action = TextInputAction.next,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _fieldHeader(label, reference),
+        _numericInput(
+          controller,
+          hint: hint,
+          unit: unit,
+          decimal: decimal,
+          action: action,
+        ),
+      ],
+    );
+  }
+
+  Widget _paField() {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+
+    Widget pressureInput(
+      TextEditingController controller,
+      String hint,
+      TextInputAction action,
+    ) {
+      return Expanded(
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            textInputAction: action,
+            scrollPadding: EdgeInsets.only(
+              bottom: MediaQuery.viewInsetsOf(context).bottom + 36,
+            ),
+            onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            style: TextStyle(
+              fontSize: MedTypography.sectionLabelSize,
+              fontWeight: FontWeight.w600,
+              color: dark ? const Color(0xFFE8F0EC) : const Color(0xFF05070A),
+            ),
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: hint,
+              hintStyle: TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                color: dark ? Colors.white30 : const Color(0xFF4B5563),
+              ),
+              filled: true,
+              fillColor:
+                  dark ? const Color(0xFF2D3340) : const Color(0xFFECF1F3),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 9,
+                vertical: 9,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color:
+                      dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
+                  width: 0.8,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  color:
+                      dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
+                  width: 0.8,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(
+                  color: Color(0xFF0D6B57),
+                  width: 1,
+                ),
               ),
             ),
           ),
-          const SizedBox(width: 3),
-          Text(unit, style: TextStyle(fontSize: 9, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280), fontWeight: FontWeight.w700)),
-        ]),
-      ]),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _fieldHeader('PA', 'aprox. 120/80 mmHg'),
+        Row(
+          children: [
+            pressureInput(_pas, '120', TextInputAction.next),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Text(
+                '/',
+                style: TextStyle(
+                  fontSize: MedTypography.sectionLabelSize,
+                  fontWeight: FontWeight.w300,
+                  color:
+                      dark ? const Color(0xFF8B9992) : const Color(0xFF4B5563),
+                ),
+              ),
+            ),
+            pressureInput(_pad, '80', TextInputAction.next),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _pair(Widget left, Widget right, {required bool narrow}) {
+    if (narrow) {
+      return Column(
+        children: [
+          left,
+          const SizedBox(height: 11),
+          right,
+        ],
+      );
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: left),
+        const SizedBox(width: 12),
+        Expanded(child: right),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Dark mode: fundo do card escuro, texto de input visível
-    final cardBg    = isDark ? const Color(0xFF252930) : const Color(0xFFF8FBFA);
-    final inputFill = isDark ? const Color(0xFF1C2226) : const Color(0xFFF8F8F8);
-    final inputText = isDark ? const Color(0xFFE8F0EC) : const Color(0xFF0D1611);
-    final borderColor = isDark ? const Color(0xFF3A4A42) : kBorder;
-    final labelColor = isDark ? const Color(0xFF9AADA5) : const Color(0xFF555555);
+    final isEs = context.read<AppProvider>().lang == 'es';
+    final dark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderColor),
-        color: cardBg,
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          const Icon(Icons.monitor_heart_rounded, size: 14, color: kGreen),
-          const SizedBox(width: 6),
-          Text(_hcT(context.read<AppProvider>().lang, 'vitals_title').toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: labelColor)),
-          const Spacer(),
-
-        ]),
-        const SizedBox(height: 10),
-        // Linha 1: PA (2 campos) + FC + FR
-        Wrap(spacing: 10, runSpacing: 10, children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('PA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280))),
-            const SizedBox(height: 3),
-            Row(children: [
-              SizedBox(width: 50, height: 36, child: TextField(
-                controller: _pas, keyboardType: TextInputType.number,
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: inputText),
-                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), hintText: '120',
-                  hintStyle: TextStyle(fontSize: 11, color: isDark ? const Color(0xFF5A6A62) : const Color(0xFFBBBBBB)),
-                  filled: true, fillColor: inputFill,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
-              )),
-              Padding(padding: const EdgeInsets.symmetric(horizontal: 3), child: Text('/', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280)))),
-              SizedBox(width: 50, height: 36, child: TextField(
-                controller: _pad, keyboardType: TextInputType.number,
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: inputText),
-                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8), hintText: '80',
-                  hintStyle: TextStyle(fontSize: 11, color: isDark ? const Color(0xFF5A6A62) : const Color(0xFFBBBBBB)),
-                  filled: true, fillColor: inputFill,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: borderColor)),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGreen, width: 1.5))),
-              )),
-              const SizedBox(width: 4),
-              Text('mmHg', style: TextStyle(fontSize: 9, color: isDark ? const Color(0xFF9AADA5) : const Color(0xFF6B7280), fontWeight: FontWeight.w700)),
-            ]),
-          ]),
-          _vsField('FC', _fc, 'bpm', hint: '80', isDark: isDark, inputFill: inputFill, inputText: inputText),
-          _vsField('FR', _fr, 'irpm', hint: '16', isDark: isDark, inputFill: inputFill, inputText: inputText),
-          _vsField('Temp', _temp, '°C', hint: '36,5', decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
-          _vsField('SpO₂', _spo2, '%', hint: '98', decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
-          _vsField('Dextro', _dext, 'mg/dL', hint: '100', decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
-          _vsField('Peso', _peso, 'kg', hint: '70', wide: true, decimal: true, isDark: isDark, inputFill: inputFill, inputText: inputText),
-        ]),
-        if (widget.controller.text.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Container(
-            width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withOpacity(0.06)),
-            child: Text(widget.controller.text, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF065F46))),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.monitor_heart_outlined,
+                size: 15,
+                color: dark ? Colors.white60 : const Color(0xFF4B5563),
+              ),
+              const SizedBox(width: 7),
+              Text(
+                _hcT(
+                  context.read<AppProvider>().lang,
+                  'vitals_title',
+                ).toUpperCase(),
+                style: TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.4,
+                  color:
+                      dark ? const Color(0xFFE8F0EC) : const Color(0xFF475569),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final narrow = constraints.maxWidth < 320;
+              return Column(
+                children: [
+                  _pair(
+                    _paField(),
+                    _vsField(
+                      'FC',
+                      '60–100 bpm',
+                      _fc,
+                      'bpm',
+                      hint: '80',
+                    ),
+                    narrow: narrow,
+                  ),
+                  const SizedBox(height: 11),
+                  _pair(
+                    _vsField(
+                      'FR',
+                      '12–20 irpm',
+                      _fr,
+                      'irpm',
+                      hint: '16',
+                    ),
+                    _vsField(
+                      'Temperatura',
+                      '36–37,5 °C',
+                      _temp,
+                      '°C',
+                      hint: '36,5',
+                      decimal: true,
+                    ),
+                    narrow: narrow,
+                  ),
+                  const SizedBox(height: 11),
+                  _pair(
+                    _vsField(
+                      'SpO₂',
+                      '≥ 95%',
+                      _spo2,
+                      '%',
+                      hint: '98',
+                      decimal: true,
+                    ),
+                    _vsField(
+                      isEs ? 'Glucemia' : 'Dextro',
+                      '70–140 mg/dL',
+                      _dext,
+                      'mg/dL',
+                      hint: '100',
+                      decimal: true,
+                    ),
+                    narrow: narrow,
+                  ),
+                  const SizedBox(height: 11),
+                  _pair(
+                    _vsField(
+                      'Peso',
+                      'kg',
+                      _peso,
+                      'kg',
+                      hint: '70',
+                      decimal: true,
+                      action: TextInputAction.done,
+                    ),
+                    const SizedBox.shrink(),
+                    narrow: narrow,
+                  ),
+                ],
+              );
+            },
           ),
         ],
-      ]),
+      ),
     );
   }
 }
@@ -6682,6 +10439,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
 // ─────────────────────────────────────────────────────────────────────────────
 // ECG ESTRUTURADO
 // ─────────────────────────────────────────────────────────────────────────────
+
 class _EcgStructuredWidget extends StatefulWidget {
   final TextEditingController controller;
   const _EcgStructuredWidget({required this.controller});
@@ -6689,18 +10447,32 @@ class _EcgStructuredWidget extends StatefulWidget {
   State<_EcgStructuredWidget> createState() => _EcgStructuredWidgetState();
 }
 
+// HISTORY_CLINICAL_V1_D_R14_ECG_DARK
+// HISTORY_CLINICAL_V1_C_R16_R3_EXAM_INPUTS_LIGHT_FINAL _EcgStructuredWidgetState
 class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
   bool _expanded = false;
   String _ritmo = 'Sinusal';
-  final _fc    = TextEditingController();
-  final _pr    = TextEditingController();
-  final _qrs   = TextEditingController();
-  final _qt    = TextEditingController();
-  final _eixo  = TextEditingController();
-  final _st    = TextEditingController();
+  final _fc = TextEditingController();
+  final _pr = TextEditingController();
+  final _qrs = TextEditingController();
+  final _qt = TextEditingController();
+  final _eixo = TextEditingController();
+  final _st = TextEditingController();
   final _outros = TextEditingController();
 
-  static const _ritmos = ['Sinusal', 'FA', 'Flutter', 'BAV 1º', 'BAV 2º', 'BAV 3º', 'ESSV', 'TV', 'FV', 'Marcapasso', 'Outro'];
+  static const _ritmos = [
+    'Sinusal',
+    'FA',
+    'Flutter',
+    'BAV 1º',
+    'BAV 2º',
+    'BAV 3º',
+    'ESSV',
+    'TV',
+    'FV',
+    'Marcapasso',
+    'Outro',
+  ];
 
   @override
   void dispose() {
@@ -6711,112 +10483,349 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
   void _sync() {
     final parts = <String>[];
     parts.add('Ritmo: $_ritmo');
-    if (_fc.text.isNotEmpty)    parts.add('FC: ${_fc.text} bpm');
-    if (_pr.text.isNotEmpty)    parts.add('PR: ${_pr.text} ms');
-    if (_qrs.text.isNotEmpty)   parts.add('QRS: ${_qrs.text} ms');
-    if (_qt.text.isNotEmpty)    parts.add('QTc: ${_qt.text} ms');
-    if (_eixo.text.isNotEmpty)  parts.add('Eixo: ${_eixo.text}°');
-    if (_st.text.isNotEmpty)    parts.add('ST/T: ${_st.text}');
+    if (_fc.text.isNotEmpty) parts.add('FC: ${_fc.text} bpm');
+    if (_pr.text.isNotEmpty) parts.add('PR: ${_pr.text} ms');
+    if (_qrs.text.isNotEmpty) parts.add('QRS: ${_qrs.text} ms');
+    if (_qt.text.isNotEmpty) parts.add('QTc: ${_qt.text} ms');
+    if (_eixo.text.isNotEmpty) parts.add('Eixo: ${_eixo.text}°');
+    if (_st.text.isNotEmpty) parts.add('ST/T: ${_st.text}');
     if (_outros.text.isNotEmpty) parts.add('Outros: ${_outros.text}');
     widget.controller.text = 'ECG — ${parts.join(' | ')}';
     setState(() {});
   }
 
-  Widget _numField(String label, TextEditingController ctrl, {String hint = ''}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
-      const SizedBox(height: 3),
-      SizedBox(width: 64, height: 34, child: TextField(
-        controller: ctrl, keyboardType: TextInputType.number, onChanged: (_) => _sync(),
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
-        decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7), hintText: hint,
-          hintStyle: const TextStyle(fontSize: 10, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGold, width: 1.5))),
-      )),
-    ]);
+  Widget _numField(
+    String label,
+    TextEditingController ctrl, {
+    String hint = '',
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: MedTypography.auxiliarySize,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.4,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFFE8F0EC)
+                : const Color(0xFF4B5563),
+          ),
+        ),
+        const SizedBox(height: 4),
+        SizedBox(
+          width: 68,
+          height: 36,
+          child: TextField(
+            controller: ctrl,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            scrollPadding: EdgeInsets.only(
+              bottom: MediaQuery.viewInsetsOf(context).bottom + 36,
+            ),
+            onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (_) => _sync(),
+            style: TextStyle(
+              fontSize: MedTypography.sectionLabelSize,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFFE8F0EC)
+                  : const Color(0xFF05070A),
+            ),
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
+              ),
+              hintText: hint,
+              hintStyle: TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white30
+                    : const Color(0xFF6B7280),
+              ),
+              filled: true,
+              fillColor: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF2D3340)
+                  : const Color(0xFFF8FAFC),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+                borderSide: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFD8E0E7),
+                  width: 0.8,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+                borderSide: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFD8E0E7),
+                  width: 0.8,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+                borderSide: const BorderSide(
+                  color: Color(0xFF0D6B57),
+                  width: 1,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R15_ECG_LIGHT_CARD
+    final r15ExamDark = Theme.of(context).brightness == Brightness.dark;
+
+    final lang = context.read<AppProvider>().lang;
+
+    InputDecoration textDecoration(String hint) => InputDecoration(
+          isDense: true,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+          hintText: hint,
+          hintStyle: TextStyle(
+            fontSize: MedTypography.auxiliarySize,
+            color: (r15ExamDark ? Colors.white30 : const Color(0xFF4B5563)),
+          ),
+          filled: true,
+          fillColor:
+              (r15ExamDark ? const Color(0xFF2D3340) : const Color(0xFFF8FAFC)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(9),
+            borderSide: BorderSide(
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+              width: 0.8,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(9),
+            borderSide: BorderSide(
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+              width: 0.8,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(9),
+            borderSide: const BorderSide(
+              color: Color(0xFF0D6B57),
+              width: 1,
+            ),
+          ),
+        );
+
+    Widget label(String text) => Text(
+          text,
+          style: TextStyle(
+            fontSize: MedTypography.microTextSize,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.4,
+            color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+          ),
+        );
+
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: const Color(0xFFFFFBF2)),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Header clicável
-        GestureDetector(
-          onTap: () => setState(() => _expanded = !_expanded),
-          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), child: Row(children: [
-            const Icon(Icons.monitor_rounded, size: 14, color: kGold),
-            const SizedBox(width: 6),
-            const Text('ECG', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.4, color: Color(0xFF555555))),
-            const SizedBox(width: 8),
-            if (widget.controller.text.isNotEmpty)
-              Expanded(child: Text(widget.controller.text, style: const TextStyle(fontSize: 10, color: Color(0xFF6B7280), fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis)),
-            const Spacer(),
-            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF6B7280)),
-          ])),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color:
+              (r15ExamDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+          width: 0.7,
         ),
-        if (_expanded) ...[
-          const Divider(height: 1, color: kBorder),
-          Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Ritmo
-            Text(_hcT(context.read<AppProvider>().lang, 'ecg_ritmo').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
-            const SizedBox(height: 6),
-            SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: _ritmos.map((r) {
-              final sel = r == _ritmo;
-              return Padding(padding: const EdgeInsets.only(right: 6), child: GestureDetector(
-                onTap: () { setState(() => _ritmo = r); _sync(); },
-                child: Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: sel ? kDark : Colors.white, border: Border.all(color: sel ? kDark : kBorder)),
-                  child: Text(r, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: sel ? kGoldLight : const Color(0xFF666666)))),
-              ));
-            }).toList())),
-            const SizedBox(height: 10),
-            // Intervalos
-            Wrap(spacing: 10, runSpacing: 10, children: [
-              _numField('FC (bpm)', _fc, hint: '72'),
-              _numField('PR (ms)', _pr, hint: '160'),
-              _numField('QRS (ms)', _qrs, hint: '90'),
-              _numField('QTc (ms)', _qt, hint: '440'),
-              _numField('Eixo (°)', _eixo, hint: '60'),
-            ]),
-            const SizedBox(height: 10),
-            // ST livre
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_hcT(context.read<AppProvider>().lang, 'ecg_st').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
-              const SizedBox(height: 3),
-              TextField(controller: _st, onChanged: (_) => _sync(),
-                enableSuggestions: true,
-                autocorrect: true,
-                textCapitalization: TextCapitalization.sentences,
-                style: const TextStyle(fontSize: 12),
-                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  hintText: 'Supra V1-V4, infra lateral, invertida...',
-                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGold, width: 1.5)))),
-            ]),
-            const SizedBox(height: 8),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_hcT(context.read<AppProvider>().lang, 'ecg_outros').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
-              const SizedBox(height: 3),
-              TextField(controller: _outros, onChanged: (_) => _sync(),
-                enableSuggestions: true,
-                autocorrect: true,
-                textCapitalization: TextCapitalization.sentences,
-                style: const TextStyle(fontSize: 12),
-                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  hintText: 'BRD, BRE, HVE, ESSV, ondas Q...',
-                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kGold, width: 1.5)))),
-            ]),
-          ])),
+        color: (r15ExamDark ? const Color(0xFF252930) : Colors.white),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.monitor_heart_outlined,
+                    size: 15,
+                    color: (r15ExamDark
+                        ? Colors.white60
+                        : const Color(0xFF4B5563)),
+                  ),
+                  const SizedBox(width: 7),
+                  Text(
+                    'ECG',
+                    style: TextStyle(
+                      fontSize: MedTypography.microTextSize,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.4,
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
+                    ),
+                  ),
+                  const SizedBox(width: 9),
+                  if (widget.controller.text.isNotEmpty)
+                    Expanded(
+                      child: Text(
+                        widget.controller.text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: MedTypography.microTextSize,
+                          color: (r15ExamDark
+                              ? Color(0xFF8EA099)
+                              : const Color(0xFF4B5563)),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )
+                  else
+                    const Spacer(),
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: 19,
+                    color: (r15ExamDark
+                        ? Colors.white54
+                        : const Color(0xFF4B5563)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_expanded) ...[
+            Divider(
+              height: 1,
+              thickness: 0.7,
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label(_hcT(lang, 'ecg_ritmo').toUpperCase()),
+                  const SizedBox(height: 7),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: _ritmos.map((r) {
+                        final selected = r == _ritmo;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() => _ritmo = r);
+                              _sync();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: selected
+                                    ? const Color(0xFF143B32)
+                                    : const Color(0xFF2D3340),
+                                border: Border.all(
+                                  color: selected
+                                      ? const Color(0xFF147D64)
+                                      : const Color(0xFF374151),
+                                  width: 0.7,
+                                ),
+                              ),
+                              child: Text(
+                                r,
+                                style: TextStyle(
+                                  fontSize: MedTypography.microTextSize,
+                                  fontWeight: selected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                  color: selected
+                                      ? const Color(0xFFD8E9E1)
+                                      : const Color(0xFFA5B1AB),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: [
+                      _numField('FC (bpm)', _fc, hint: '72'),
+                      _numField('PR (ms)', _pr, hint: '160'),
+                      _numField('QRS (ms)', _qrs, hint: '90'),
+                      _numField('QTc (ms)', _qt, hint: '440'),
+                      _numField('Eixo (°)', _eixo, hint: '60'),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  label(_hcT(lang, 'ecg_st').toUpperCase()),
+                  const SizedBox(height: 4),
+                  TextField(
+                    controller: _st,
+                    onChanged: (_) => _sync(),
+                    enableSuggestions: true,
+                    autocorrect: true,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: TextStyle(
+                      fontSize: MedTypography.sectionLabelSize,
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
+                    ),
+                    decoration: textDecoration(
+                      'Supra V1-V4, infra lateral, invertida...',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  label(_hcT(lang, 'ecg_outros').toUpperCase()),
+                  const SizedBox(height: 4),
+                  TextField(
+                    controller: _outros,
+                    onChanged: (_) => _sync(),
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => FocusScope.of(context).unfocus(),
+                    enableSuggestions: true,
+                    autocorrect: true,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: TextStyle(
+                      fontSize: MedTypography.sectionLabelSize,
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
+                    ),
+                    decoration: textDecoration(
+                      'BRD, BRE, HVE, ESSV, ondas Q...',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }
@@ -6831,33 +10840,53 @@ class _LabStructuredWidget extends StatefulWidget {
   State<_LabStructuredWidget> createState() => _LabStructuredWidgetState();
 }
 
+// HISTORY_CLINICAL_V1_D_R14_LAB_DARK
+// HISTORY_CLINICAL_V1_C_R16_R3_EXAM_INPUTS_LIGHT_FINAL _LabStructuredWidgetState
 class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
   bool _expanded = false;
   bool _ocrLoading = false;
   String _ocrStatus = '';
 
-  final _hb    = TextEditingController();
-  final _ht    = TextEditingController();
+  final _hb = TextEditingController();
+  final _ht = TextEditingController();
   final _leuco = TextEditingController();
-  final _plaq  = TextEditingController();
-  final _na    = TextEditingController();
-  final _k     = TextEditingController();
-  final _cr    = TextEditingController();
-  final _ur    = TextEditingController();
-  final _gli   = TextEditingController();
-  final _pcr   = TextEditingController();
-  final _tni   = TextEditingController();
-  final _bnp   = TextEditingController();
-  final _lac   = TextEditingController();
-  final _tp    = TextEditingController();
-  final _tgo   = TextEditingController();
-  final _tgp   = TextEditingController();
+  final _plaq = TextEditingController();
+  final _na = TextEditingController();
+  final _k = TextEditingController();
+  final _cr = TextEditingController();
+  final _ur = TextEditingController();
+  final _gli = TextEditingController();
+  final _pcr = TextEditingController();
+  final _tni = TextEditingController();
+  final _bnp = TextEditingController();
+  final _lac = TextEditingController();
+  final _tp = TextEditingController();
+  final _tgo = TextEditingController();
+  final _tgp = TextEditingController();
   final _outros = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    for (final c in [_hb,_ht,_leuco,_plaq,_na,_k,_cr,_ur,_gli,_pcr,_tni,_bnp,_lac,_tp,_tgo,_tgp,_outros]) {
+    for (final c in [
+      _hb,
+      _ht,
+      _leuco,
+      _plaq,
+      _na,
+      _k,
+      _cr,
+      _ur,
+      _gli,
+      _pcr,
+      _tni,
+      _bnp,
+      _lac,
+      _tp,
+      _tgo,
+      _tgp,
+      _outros,
+    ]) {
       c.addListener(_sync);
     }
   }
@@ -6865,7 +10894,25 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
   @override
   void dispose() {
     // MEMLEAK-FIX: remove listeners antes de chamar dispose() nos controllers.
-    for (final c in [_hb,_ht,_leuco,_plaq,_na,_k,_cr,_ur,_gli,_pcr,_tni,_bnp,_lac,_tp,_tgo,_tgp,_outros]) {
+    for (final c in [
+      _hb,
+      _ht,
+      _leuco,
+      _plaq,
+      _na,
+      _k,
+      _cr,
+      _ur,
+      _gli,
+      _pcr,
+      _tni,
+      _bnp,
+      _lac,
+      _tp,
+      _tgo,
+      _tgp,
+      _outros,
+    ]) {
       c.removeListener(_sync);
       c.dispose();
     }
@@ -6877,10 +10924,23 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     void add(String label, TextEditingController ctrl, String unit) {
       if (ctrl.text.isNotEmpty) parts.add('$label: ${ctrl.text} $unit'.trim());
     }
-    add('Hb', _hb, 'g/dL'); add('Ht', _ht, '%'); add('Leuco', _leuco, '/mm³'); add('Plaq', _plaq, '×10³');
-    add('Na⁺', _na, 'mEq/L'); add('K⁺', _k, 'mEq/L'); add('Cr', _cr, 'mg/dL'); add('Ur', _ur, 'mg/dL');
-    add('Gli', _gli, 'mg/dL'); add('PCR', _pcr, 'mg/L'); add('TnI', _tni, 'ng/mL'); add('BNP', _bnp, 'pg/mL');
-    add('Lactato', _lac, 'mmol/L'); add('TP', _tp, '%'); add('TGO', _tgo, 'U/L'); add('TGP', _tgp, 'U/L');
+
+    add('Hb', _hb, 'g/dL');
+    add('Ht', _ht, '%');
+    add('Leuco', _leuco, '/mm³');
+    add('Plaq', _plaq, '×10³');
+    add('Na⁺', _na, 'mEq/L');
+    add('K⁺', _k, 'mEq/L');
+    add('Cr', _cr, 'mg/dL');
+    add('Ur', _ur, 'mg/dL');
+    add('Gli', _gli, 'mg/dL');
+    add('PCR', _pcr, 'mg/L');
+    add('TnI', _tni, 'ng/mL');
+    add('BNP', _bnp, 'pg/mL');
+    add('Lactato', _lac, 'mmol/L');
+    add('TP', _tp, '%');
+    add('TGO', _tgo, 'U/L');
+    add('TGP', _tgp, 'U/L');
     if (_outros.text.isNotEmpty) parts.add(_outros.text.trim());
     widget.controller.text = parts.join('\n');
     if (mounted) setState(() {});
@@ -6890,21 +10950,33 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
   Future<void> _openOcrPicker() async {
     if (kIsWeb) {
       // ── Web: fluxo original ──────────────────────────────────────────────
-      setState(() { _ocrLoading = true; _ocrStatus = 'Lendo imagem...'; });
+      setState(() {
+        _ocrLoading = true;
+        _ocrStatus = 'Lendo imagem...';
+      });
       try {
         final text = await webPlatform.webPickImageAndOcr();
         if (text.isEmpty) {
-          if (mounted) setState(() {
-            _ocrLoading = false;
-            _ocrStatus = 'Imagem carregada — preencha os campos manualmente';
-            _outros.text = '(Laudo de imagem — edite os valores acima)';
-          });
+          if (mounted)
+            setState(() {
+              _ocrLoading = false;
+              _ocrStatus = 'Imagem carregada — preencha os campos manualmente';
+              _outros.text = '(Laudo de imagem — edite os valores acima)';
+            });
         } else {
           _applyOcrText(text);
-          if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Texto extraído! Revise os campos.'; });
+          if (mounted)
+            setState(() {
+              _ocrLoading = false;
+              _ocrStatus = 'Texto extraído! Revise os campos.';
+            });
         }
       } catch (e) {
-        if (mounted) setState(() { _ocrLoading = false; _ocrStatus = 'Falha OCR: $e'; });
+        if (mounted)
+          setState(() {
+            _ocrLoading = false;
+            _ocrStatus = 'Falha OCR: $e';
+          });
       }
       return;
     }
@@ -6916,7 +10988,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     // Mostra bottom sheet de seleção: câmera ou galeria
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
-      backgroundColor: const Color(0xFF1A1D23),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF1A1D23)
+          : const Color(0xFFF8FAFC),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -6930,7 +11004,8 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
               // Handle
               Center(
                 child: Container(
-                  width: 36, height: 4,
+                  width: 36,
+                  height: 4,
                   decoration: BoxDecoration(
                     color: Colors.white24,
                     borderRadius: BorderRadius.circular(10),
@@ -6942,8 +11017,8 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                 isEs ? 'Importar Examen' : 'Importar Exame',
                 style: const TextStyle(
                   color: Color(0xFFEEF2EE),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
+                  fontSize: MedTypography.sectionLabelSize,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 4),
@@ -6951,26 +11026,32 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                 isEs
                     ? 'Fotografíe o seleccione el examen de laboratorio'
                     : 'Fotografe ou selecione o exame laboratorial',
-                style: const TextStyle(color: Color(0xFF7A9486), fontSize: 12),
+                style: const TextStyle(
+                    color: Color(0xFF7A9486),
+                    fontSize: MedTypography.sectionLabelSize),
               ),
               const SizedBox(height: 16),
               // Câmera
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Container(
-                  width: 40, height: 40,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: const Color(0xFF46E28C).withOpacity(0.10),
                   ),
-                  child: const Icon(Icons.camera_alt_rounded,
-                      color: Color(0xFF46E28C), size: 20),
+                  child: const Icon(
+                    Icons.camera_alt_rounded,
+                    color: Color(0xFF46E28C),
+                    size: 20,
+                  ),
                 ),
                 title: Text(
                   isEs ? 'Tirar Foto' : 'Tirar Foto',
                   style: const TextStyle(
                     color: Color(0xFFEEF2EE),
-                    fontSize: 14,
+                    fontSize: MedTypography.auxiliarySize,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -6979,7 +11060,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                       ? 'Capturar con la cámara del dispositivo'
                       : 'Capturar usando a câmera do dispositivo',
                   style: const TextStyle(
-                    color: Color(0xFF7A9486), fontSize: 12),
+                    color: Color(0xFF7A9486),
+                    fontSize: MedTypography.auxiliarySize,
+                  ),
                 ),
                 onTap: () => Navigator.pop(ctx, ImageSource.camera),
               ),
@@ -6987,19 +11070,23 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Container(
-                  width: 40, height: 40,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: const Color(0xFF46E28C).withOpacity(0.10),
                   ),
-                  child: const Icon(Icons.photo_library_rounded,
-                      color: Color(0xFF46E28C), size: 20),
+                  child: const Icon(
+                    Icons.photo_library_rounded,
+                    color: Color(0xFF46E28C),
+                    size: 20,
+                  ),
                 ),
                 title: Text(
                   isEs ? 'Elegir de la Galería' : 'Escolher da Galeria',
                   style: const TextStyle(
                     color: Color(0xFFEEF2EE),
-                    fontSize: 14,
+                    fontSize: MedTypography.auxiliarySize,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -7008,7 +11095,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                       ? 'Seleccionar imagen guardada'
                       : 'Selecionar imagem salva',
                   style: const TextStyle(
-                    color: Color(0xFF7A9486), fontSize: 12),
+                    color: Color(0xFF7A9486),
+                    fontSize: MedTypography.auxiliarySize,
+                  ),
                 ),
                 onTap: () => Navigator.pop(ctx, ImageSource.gallery),
               ),
@@ -7036,9 +11125,11 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
       return;
     }
     if (!status.isGranted && !status.isLimited) {
-      _setOcrStatus(isEs
-          ? 'Permiso denegado. Intente de nuevo.'
-          : 'Permissão negada. Tente novamente.');
+      _setOcrStatus(
+        isEs
+            ? 'Permiso denegado. Intente de nuevo.'
+            : 'Permissão negada. Tente novamente.',
+      );
       return;
     }
 
@@ -7060,72 +11151,90 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
 
     try {
       final bytes = await photo.readAsBytes();
-      final ext   = photo.name.toLowerCase().split('.').last;
-      final mime  = ext == 'png' ? 'image/png'
-                  : ext == 'webp' ? 'image/webp'
-                  : 'image/jpeg';
+      final ext = photo.name.toLowerCase().split('.').last;
+      final mime = ext == 'png'
+          ? 'image/png'
+          : ext == 'webp'
+              ? 'image/webp'
+              : 'image/jpeg';
 
       // Gemini Vision extrai o texto do laudo
       final results = await _LabOcrService.extractText(bytes, mime, lang);
 
       if (results.isEmpty) {
-        if (mounted) setState(() {
-          _ocrLoading = false;
-          _ocrStatus = isEs
-              ? 'No se identificaron valores. Complete manualmente.'
-              : 'Nenhum valor identificado. Preencha manualmente.';
-        });
+        if (mounted)
+          setState(() {
+            _ocrLoading = false;
+            _ocrStatus = isEs
+                ? 'No se identificaron valores. Complete manualmente.'
+                : 'Nenhum valor identificado. Preencha manualmente.';
+          });
       } else {
         _applyOcrText(results);
-        if (mounted) setState(() {
-          _ocrLoading = false;
-          _ocrStatus = isEs
-              ? 'Valores extraídos. Revise los campos.'
-              : 'Valores extraídos. Revise os campos.';
-        });
+        if (mounted)
+          setState(() {
+            _ocrLoading = false;
+            _ocrStatus = isEs
+                ? 'Valores extraídos. Revise los campos.'
+                : 'Valores extraídos. Revise os campos.';
+          });
       }
     } catch (e) {
-      if (mounted) setState(() {
-        _ocrLoading = false;
-        _ocrStatus = isEs ? 'Error: $e' : 'Erro: $e';
-      });
+      if (mounted)
+        setState(() {
+          _ocrLoading = false;
+          _ocrStatus = isEs ? 'Error: $e' : 'Erro: $e';
+        });
     }
   }
 
   void _setOcrStatus(String msg) {
-    if (mounted) setState(() { _ocrLoading = false; _ocrStatus = msg; });
+    if (mounted)
+      setState(() {
+        _ocrLoading = false;
+        _ocrStatus = msg;
+      });
   }
 
   void _showOcrPermissionDenied(bool isEs, bool isCamera) {
     if (!mounted) return;
     showDialog(
       context: context,
+      useRootNavigator: !kIsWeb,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1D23),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1A1D23)
+            : const Color(0xFFF8FAFC),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(children: [
-          Icon(
-            isCamera ? Icons.camera_alt_rounded : Icons.photo_library_rounded,
-            color: const Color(0xFFF59E0B), size: 20,
-          ),
-          const SizedBox(width: 10),
-          Text(
-            isEs
-                ? (isCamera ? 'Acceso a la Cámara' : 'Acceso a la Galería')
-                : (isCamera ? 'Acesso à Câmera' : 'Acesso à Galeria'),
-            style: const TextStyle(
-              color: Color(0xFFEEF2EE),
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
+        title: Row(
+          children: [
+            Icon(
+              isCamera ? Icons.camera_alt_rounded : Icons.photo_library_rounded,
+              color: const Color(0xFFF59E0B),
+              size: 20,
             ),
-          ),
-        ]),
+            const SizedBox(width: 10),
+            Text(
+              isEs
+                  ? (isCamera ? 'Acceso a la Cámara' : 'Acceso a la Galería')
+                  : (isCamera ? 'Acesso à Câmera' : 'Acesso à Galeria'),
+              style: const TextStyle(
+                color: Color(0xFFEEF2EE),
+                fontSize: MedTypography.clinicalBodySize,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
         content: Text(
           isEs
               ? 'MedCases Pro necesita este permiso para importar exámenes. Toque "Configuración" para habilitarlo.'
               : 'O MedCases Pro precisa desta permissão para importar exames. Toque em "Configurações" para habilitá-la.',
           style: const TextStyle(
-            color: Color(0xFF7A9486), fontSize: 13, height: 1.5),
+            color: Color(0xFF7A9486),
+            fontSize: MedTypography.sectionLabelSize,
+            height: 1.5,
+          ),
         ),
         actions: [
           TextButton(
@@ -7136,11 +11245,16 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
             ),
           ),
           TextButton(
-            onPressed: () { Navigator.pop(ctx); openAppSettings(); },
+            onPressed: () {
+              Navigator.pop(ctx);
+              openAppSettings();
+            },
             child: Text(
               isEs ? 'Configuración' : 'Configurações',
               style: const TextStyle(
-                color: Color(0xFF46E28C), fontWeight: FontWeight.w700),
+                color: Color(0xFF46E28C),
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -7154,154 +11268,435 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     void extract(TextEditingController c, List<String> patterns) {
       for (final p in patterns) {
         final m = RegExp('$p[:\\s]+(\\d+[,.]?\\d*)').firstMatch(t);
-        if (m != null && c.text.isEmpty) { c.text = m.group(1)?.replaceAll(',', '.') ?? ''; break; }
+        if (m != null && c.text.isEmpty) {
+          c.text = m.group(1)?.replaceAll(',', '.') ?? '';
+          break;
+        }
       }
     }
-    extract(_hb,   ['hemoglobina', 'hb']);
-    extract(_ht,   ['hematocrito', 'ht']);
-    extract(_leuco,['leucocitos', 'leuco', 'glóbulos blancos']);
+
+    extract(_hb, ['hemoglobina', 'hb']);
+    extract(_ht, ['hematocrito', 'ht']);
+    extract(_leuco, ['leucocitos', 'leuco', 'glóbulos blancos']);
     extract(_plaq, ['plaquetas', 'plaq', 'trombocitos']);
-    extract(_na,   ['sodio', 'na']);
-    extract(_k,    ['potasio', 'potássio', 'kalium', '\\bk\\b']);
-    extract(_cr,   ['creatinina', 'cr']);
-    extract(_ur,   ['ureia', 'urea', 'ur']);
-    extract(_gli,  ['glicose', 'glucosa', 'glucose']);
-    extract(_pcr,  ['pcr', 'proteina c reativa', 'proteína c reactiva']);
-    extract(_tni,  ['troponina', 'tni', 'tnI']);
-    extract(_bnp,  ['bnp', 'nt-probnp', 'proBNP']);
-    extract(_lac,  ['lactato', 'lactic']);
-    extract(_tp,   ['tp', 'tp%', 'atividade protrombinica']);
-    extract(_tgo,  ['tgo', 'ast', 'aspartato']);
-    extract(_tgp,  ['tgp', 'alt', 'alanino']);
+    extract(_na, ['sodio', 'na']);
+    extract(_k, ['potasio', 'potássio', 'kalium', '\\bk\\b']);
+    extract(_cr, ['creatinina', 'cr']);
+    extract(_ur, ['ureia', 'urea', 'ur']);
+    extract(_gli, ['glicose', 'glucosa', 'glucose']);
+    extract(_pcr, ['pcr', 'proteina c reativa', 'proteína c reactiva']);
+    extract(_tni, ['troponina', 'tni', 'tnI']);
+    extract(_bnp, ['bnp', 'nt-probnp', 'proBNP']);
+    extract(_lac, ['lactato', 'lactic']);
+    extract(_tp, ['tp', 'tp%', 'atividade protrombinica']);
+    extract(_tgo, ['tgo', 'ast', 'aspartato']);
+    extract(_tgp, ['tgp', 'alt', 'alanino']);
     // Restante vai para "outros" se houver linhas relevantes
     if (_outros.text.isEmpty && text.length > 50) {
-      _outros.text = text.substring(0, text.length > 300 ? 300 : text.length).trim();
+      _outros.text =
+          text.substring(0, text.length > 300 ? 300 : text.length).trim();
     }
   }
 
-  Widget _labField(String label, TextEditingController ctrl, String hint, {Color? flagColor}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF6B7280))),
-      const SizedBox(height: 3),
-      SizedBox(width: 68, height: 34, child: TextField(
-        controller: ctrl, keyboardType: TextInputType.numberWithOptions(decimal: true),
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: flagColor ?? const Color(0xFF1A1D23)),
-        decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7), hintText: hint,
-          hintStyle: const TextStyle(fontSize: 10, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withOpacity(0.4) ?? kBorder)),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor?.withOpacity(0.4) ?? kBorder)),
-          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: flagColor ?? const Color(0xFF065F46), width: 1.5))),
-      )),
-    ]);
+  Widget _labField(
+    String label,
+    TextEditingController ctrl,
+    String hint, {
+    Color? flagColor,
+  }) {
+    final focusColor = flagColor ?? const Color(0xFF0D6B57);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: MedTypography.microTextSize,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.4,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFFE8F0EC)
+                : const Color(0xFF4B5563),
+          ),
+        ),
+        const SizedBox(height: 4),
+        SizedBox(
+          width: 72,
+          height: 36,
+          child: TextField(
+            controller: ctrl,
+            keyboardType: const TextInputType.numberWithOptions(
+              decimal: true,
+              signed: false,
+            ),
+            textInputAction: TextInputAction.next,
+            scrollPadding: EdgeInsets.only(
+              bottom: MediaQuery.viewInsetsOf(context).bottom + 36,
+            ),
+            onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+            inputFormatters: [_DecimalInputFormatter()],
+            style: TextStyle(
+              fontSize: MedTypography.microTextSize,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFFE8F0EC)
+                  : const Color(0xFF05070A),
+            ),
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 8,
+              ),
+              hintText: hint,
+              hintStyle: TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white30
+                    : const Color(0xFF6B7280),
+              ),
+              filled: true,
+              fillColor: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF2D3340)
+                  : const Color(0xFFF8FAFC),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+                borderSide: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFD8E0E7),
+                  width: 0.8,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+                borderSide: BorderSide(
+                  color: flagColor?.withOpacity(0.42) ??
+                      (Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFD8E0E7)),
+                  width: 0.8,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(9),
+                borderSide: BorderSide(
+                  color: focusColor,
+                  width: 1,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R15_LAB_LIGHT_CARD
+    final r15ExamDark = Theme.of(context).brightness == Brightness.dark;
+
+    final lang = context.read<AppProvider>().lang;
+    final statusIsError = _ocrStatus.startsWith('Erro') ||
+        _ocrStatus.startsWith('Error') ||
+        _ocrStatus.startsWith('Falha');
+
+    Widget groupTitle(String text) => Text(
+          text,
+          style: TextStyle(
+            fontSize: MedTypography.microTextSize,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.4,
+            color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+          ),
+        );
+
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), border: Border.all(color: kBorder), color: const Color(0xFFF7FFFE)),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Header
-        GestureDetector(
-          onTap: () => setState(() => _expanded = !_expanded),
-          child: Padding(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10), child: Row(children: [
-            const Icon(Icons.science_rounded, size: 14, color: Color(0xFF065F46)),
-            const SizedBox(width: 6),
-            Text(_hcT(context.read<AppProvider>().lang, 'lab_exams').toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.2, color: Color(0xFF555555))),
-            const SizedBox(width: 8),
-            if (widget.controller.text.isNotEmpty && !_expanded)
-              Expanded(child: Text(_hcT(context.read<AppProvider>().lang, 'lab_filled'), style: const TextStyle(fontSize: 10, color: Color(0xFF065F46), fontWeight: FontWeight.w700))),
-            const Spacer(),
-            // Botão OCR
-            GestureDetector(
-              onTap: _ocrLoading ? null : _openOcrPicker,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withOpacity(0.08), border: Border.all(color: const Color(0xFF065F46).withOpacity(0.25))),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  if (_ocrLoading)
-                    const SizedBox(width: 10, height: 10, child: CircularProgressIndicator(strokeWidth: 1.5, color: Color(0xFF065F46)))
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color:
+              (r15ExamDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+          width: 0.7,
+        ),
+        color: (r15ExamDark ? const Color(0xFF252930) : Colors.white),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => setState(() => _expanded = !_expanded),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.science_outlined,
+                    size: 15,
+                    color: (r15ExamDark
+                        ? Colors.white60
+                        : const Color(0xFF4B5563)),
+                  ),
+                  const SizedBox(width: 7),
+                  Text(
+                    _hcT(lang, 'lab_exams').toUpperCase(),
+                    style: TextStyle(
+                      fontSize: MedTypography.microTextSize,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.4,
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  if (widget.controller.text.isNotEmpty && !_expanded)
+                    Expanded(
+                      child: Text(
+                        _hcT(lang, 'lab_filled'),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: MedTypography.microTextSize,
+                          color: (r15ExamDark
+                              ? Color(0xFF8EA099)
+                              : const Color(0xFF4B5563)),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )
                   else
-                    const Icon(Icons.document_scanner_rounded, size: 11, color: Color(0xFF065F46)),
-                  const SizedBox(width: 3),
-                  Text(_ocrLoading ? _hcT(context.read<AppProvider>().lang, 'ocr_loading') : _hcT(context.read<AppProvider>().lang, 'ocr_btn'), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Color(0xFF065F46))),
-                ]),
+                    const Spacer(),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: _ocrLoading ? null : _openOcrPicker,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: (r15ExamDark
+                            ? const Color(0xFF2D3340)
+                            : const Color(0xFFF8FAFC)),
+                        border: Border.all(
+                          color: const Color(0xFF147D64),
+                          width: 0.7,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_ocrLoading)
+                            const SizedBox(
+                              width: 11,
+                              height: 11,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.5,
+                                color: Color(0xFF0D6B57),
+                              ),
+                            )
+                          else
+                            const Icon(
+                              Icons.document_scanner_outlined,
+                              size: 12,
+                              color: Color(0xFF0D6B57),
+                            ),
+                          const SizedBox(width: 4),
+                          Text(
+                            _ocrLoading
+                                ? _hcT(lang, 'ocr_loading')
+                                : _hcT(lang, 'ocr_btn'),
+                            style: TextStyle(
+                              fontSize: MedTypography.microTextSize,
+                              fontWeight: FontWeight.w600,
+                              color: (r15ExamDark
+                                  ? Color(0xFFB8C7C0)
+                                  : const Color(0xFF4B5563)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 7),
+                  Icon(
+                    _expanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: 19,
+                    color: (r15ExamDark
+                        ? Colors.white54
+                        : const Color(0xFF4B5563)),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 6),
-            Icon(_expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded, size: 18, color: const Color(0xFF6B7280)),
-          ])),
-        ),
-        if (_ocrStatus.isNotEmpty)
-          Padding(padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-            child: Text(_ocrStatus, style: TextStyle(fontSize: 10, color: _ocrStatus.startsWith('Erro') || _ocrStatus.startsWith('Falha') ? Colors.red : const Color(0xFF065F46), fontWeight: FontWeight.w700))),
-        if (_expanded) ...[
-          const Divider(height: 1, color: kBorder),
-          Padding(padding: const EdgeInsets.all(12), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Hemograma
-            const Text('HEMOGRAMA', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFFAAAAAA))),
-            const SizedBox(height: 6),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              _labField('Hb (g/dL)', _hb, '12–16'),
-              _labField('Ht (%)', _ht, '36–48'),
-              _labField('Leuco (/mm³)', _leuco, '4–11k'),
-              _labField('Plaq (×10³)', _plaq, '150–400'),
-            ]),
-            const SizedBox(height: 10),
-            // Eletrólitos / Função Renal
-            const Text('ELETRÓLITOS / FUNÇÃO RENAL', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFFAAAAAA))),
-            const SizedBox(height: 6),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              _labField('Na⁺ (mEq/L)', _na, '135–145'),
-              _labField('K⁺ (mEq/L)', _k, '3.5–5.0'),
-              _labField('Cr (mg/dL)', _cr, '<1.2'),
-              _labField('Ur (mg/dL)', _ur, '15–40'),
-              _labField('Gli (mg/dL)', _gli, '70–100'),
-            ]),
-            const SizedBox(height: 10),
-            // Marcadores
-            const Text('MARCADORES / OUTROS', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.0, color: Color(0xFFAAAAAA))),
-            const SizedBox(height: 6),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              _labField('PCR (mg/L)', _pcr, '<5'),
-              _labField('TnI (ng/mL)', _tni, '<0.04'),
-              _labField('BNP (pg/mL)', _bnp, '<100'),
-              _labField('Lactato', _lac, '<2.0'),
-              _labField('TP (%)', _tp, '70–120'),
-              _labField('TGO (U/L)', _tgo, '<40'),
-              _labField('TGP (U/L)', _tgp, '<40'),
-            ]),
-            const SizedBox(height: 10),
-            // Campo livre
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(_hcT(context.read<AppProvider>().lang, 'lab_others_title').toUpperCase(), style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFFAAAAAA))),
-              const SizedBox(height: 3),
-              TextField(controller: _outros,
-                maxLines: 3,
-                enableSuggestions: true,
-                autocorrect: true,
-                textCapitalization: TextCapitalization.sentences,
-                style: const TextStyle(fontSize: 12),
-                decoration: InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  hintText: _hcT(context.read<AppProvider>().lang, 'lab_others_hint'),
-                  hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFBBBBBB)), filled: true, fillColor: const Color(0xFFF8F8F8),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorder)),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Color(0xFF065F46), width: 1.5))),),
-            ]),
-          ])),
-        ],
-        // Preview resumo
-        if (widget.controller.text.isNotEmpty && !_expanded) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-            child: Container(
-              width: double.infinity, padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: const Color(0xFF065F46).withOpacity(0.06)),
-              child: Text(widget.controller.text, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF065F46), height: 1.5), maxLines: 4, overflow: TextOverflow.ellipsis),
-            ),
           ),
+          if (_ocrStatus.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 9),
+              child: Text(
+                _ocrStatus,
+                style: TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  color: statusIsError
+                      ? const Color(0xFFF87171)
+                      : const Color(0xFF8EA099),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          if (_expanded) ...[
+            Divider(
+              height: 1,
+              thickness: 0.7,
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  groupTitle('HEMOGRAMA'),
+                  const SizedBox(height: 7),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 9,
+                    children: [
+                      _labField('Hb (g/dL)', _hb, '12–16'),
+                      _labField('Ht (%)', _ht, '36–48'),
+                      _labField('Leuco (/mm³)', _leuco, '4–11k'),
+                      _labField('Plaq (×10³)', _plaq, '150–400'),
+                    ],
+                  ),
+                  const SizedBox(height: 13),
+                  groupTitle('ELETRÓLITOS / FUNÇÃO RENAL'),
+                  const SizedBox(height: 7),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 9,
+                    children: [
+                      _labField('Na⁺ (mEq/L)', _na, '135–145'),
+                      _labField('K⁺ (mEq/L)', _k, '3.5–5.0'),
+                      _labField('Cr (mg/dL)', _cr, '<1.2'),
+                      _labField('Ur (mg/dL)', _ur, '15–40'),
+                      _labField('Gli (mg/dL)', _gli, '70–100'),
+                    ],
+                  ),
+                  const SizedBox(height: 13),
+                  groupTitle('MARCADORES / OUTROS'),
+                  const SizedBox(height: 7),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 9,
+                    children: [
+                      _labField('PCR (mg/L)', _pcr, '<5'),
+                      _labField('TnI (ng/mL)', _tni, '<0.04'),
+                      _labField('BNP (pg/mL)', _bnp, '<100'),
+                      _labField('Lactato', _lac, '<2.0'),
+                      _labField('TP (%)', _tp, '70–120'),
+                      _labField('TGO (U/L)', _tgo, '<40'),
+                      _labField('TGP (U/L)', _tgp, '<40'),
+                    ],
+                  ),
+                  const SizedBox(height: 13),
+                  Text(
+                    _hcT(lang, 'lab_others_title').toUpperCase(),
+                    style: TextStyle(
+                      fontSize: MedTypography.microTextSize,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.4,
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  TextField(
+                    controller: _outros,
+                    maxLines: 3,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => FocusScope.of(context).unfocus(),
+                    enableSuggestions: true,
+                    autocorrect: true,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: TextStyle(
+                      fontSize: MedTypography.sectionLabelSize,
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
+                    ),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 9,
+                      ),
+                      hintText: _hcT(lang, 'lab_others_hint'),
+                      hintStyle: TextStyle(
+                        fontSize: MedTypography.auxiliarySize,
+                        color: (r15ExamDark
+                            ? Colors.white30
+                            : const Color(0xFF4B5563)),
+                      ),
+                      filled: true,
+                      fillColor: (r15ExamDark
+                          ? const Color(0xFF2D3340)
+                          : const Color(0xFFF8FAFC)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9),
+                        borderSide: BorderSide(
+                          color: (r15ExamDark
+                              ? Color(0xFF374151)
+                              : const Color(0xFFD8E0E7)),
+                          width: 0.8,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9),
+                        borderSide: BorderSide(
+                          color: (r15ExamDark
+                              ? Color(0xFF374151)
+                              : const Color(0xFFD8E0E7)),
+                          width: 0.8,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(9),
+                        borderSide: const BorderSide(
+                          color: Color(0xFF0D6B57),
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (widget.controller.text.isNotEmpty && !_expanded)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+              child: Text(
+                widget.controller.text,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: MedTypography.microTextSize,
+                  height: 1.45,
+                  fontWeight: FontWeight.w500,
+                  color: (r15ExamDark
+                      ? Color(0xFF9AA7A1)
+                      : const Color(0xFF4B5563)),
+                ),
+              ),
+            ),
         ],
-      ]),
+      ),
     );
   }
 }
@@ -7312,16 +11707,23 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Divisor dourado fino reutilizável
+// HISTORY_CLINICAL_V1_D_R22_R4_PNGDIVIDER_DARK
 class _PngDivider extends StatelessWidget {
   const _PngDivider();
   @override
-  Widget build(BuildContext context) => Container(
-    height: 0.75, margin: const EdgeInsets.symmetric(vertical: 7),
-    color: const Color(0xFFC5A365).withOpacity(0.55),
-  );
+  Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGDIVIDER_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      height: 0.75,
+      margin: const EdgeInsets.symmetric(vertical: 7),
+      color: (isDarkR10 ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+    );
+  }
 }
 
 // Título de seção: texto UPPERCASE bold + divisor dourado fino
+// HISTORY_CLINICAL_V1_D_R22_R4_PNGSECTION_DARK
 class _PngSection extends StatelessWidget {
   final String title;
   final List<Widget> children;
@@ -7329,82 +11731,135 @@ class _PngSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGSECTION_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     final nonEmpty = children.where((w) => w is! SizedBox).toList();
     if (nonEmpty.isEmpty) return const SizedBox.shrink();
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const _PngDivider(),
-      Text(title,
-          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-              letterSpacing: 1.6, color: Color(0xFF111827))),
-      const SizedBox(height: 6),
-      ...children,
-      const SizedBox(height: 4),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _PngDivider(),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 10.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.1,
+            color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+          ),
+        ),
+        const SizedBox(height: 6),
+        ...children,
+        const SizedBox(height: 4),
+      ],
+    );
   }
 }
 
 // Campo individual: etiqueta cinza + valor grafito
+// HISTORY_CLINICAL_V1_D_R22_R4_PNGFIELD_DARK
 class _PngField extends StatelessWidget {
   final String label;
   final String value;
   final bool large;
   final bool mono;
-  const _PngField(this.label, this.value, {this.large = false, this.mono = false});
+  const _PngField(
+    this.label,
+    this.value, {
+    this.large = false,
+    this.mono = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGFIELD_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     if (value.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        if (label.isNotEmpty)
-          Text(label.toUpperCase(),
-              style: const TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700,
-                  color: Color(0xFF6b7280), letterSpacing: 0.9)),
-        if (label.isNotEmpty) const SizedBox(height: 1),
-        Text(value,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (label.isNotEmpty)
+            Text(
+              label.toUpperCase(),
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+                color: (isDarkR10 ? Colors.white54 : const Color(0xFF4B5563)),
+                letterSpacing: 0.9,
+              ),
+            ),
+          if (label.isNotEmpty) const SizedBox(height: 1),
+          Text(
+            value,
             style: TextStyle(
-              fontSize: large ? 13 : 11,
+              fontSize: large ? 16 : 13,
               fontWeight: large ? FontWeight.w700 : FontWeight.w400,
-              color: const Color(0xFF1a1a1a),
+              color: (isDarkR10
+                  ? const Color(0xFFE8F0EC)
+                  : const Color(0xFF05070A)),
               fontFamily: mono ? 'monospace' : null,
               height: 1.5,
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 // Bloco de alergias: linha vermelha discreta
+// HISTORY_CLINICAL_V1_D_R22_R4_PNGALLERGYFIELD_DARK
 class _PngAllergyField extends StatelessWidget {
   final String value;
   const _PngAllergyField(this.value);
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGALLERGYFIELD_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     if (value.isEmpty) return const SizedBox.shrink();
     return Container(
       margin: const EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF5F5),
-        border: Border(left: BorderSide(color: const Color(0xFFDC2626), width: 2.5)),
+        color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+        border: Border(
+          left: BorderSide(color: const Color(0xFFDC2626), width: 2.5),
+        ),
         borderRadius: BorderRadius.circular(3),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('⚠ ALÉRGICOS',
-            style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
-                color: Color(0xFFDC2626), letterSpacing: 0.9)),
-        const SizedBox(height: 2),
-        Text(value,
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                color: Color(0xFF991B1B), height: 1.4)),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '⚠ ALÉRGICOS',
+            style: TextStyle(
+              fontSize: 7.5,
+              fontWeight: FontWeight.w900,
+              color: Color(0xFFDC2626),
+              letterSpacing: 0.9,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 // Sección diagnóstica con fondo verde muy suave
+// HISTORY_CLINICAL_V1_D_R22_R4_PNGDXSECTION_DARK
 class _PngDxSection extends StatelessWidget {
   final String title;
   final String working;
@@ -7412,77 +11867,142 @@ class _PngDxSection extends StatelessWidget {
   final String final_;
   final String cid;
   const _PngDxSection({
-    required this.title, required this.working,
-    required this.differential, required this.final_, required this.cid,
+    required this.title,
+    required this.working,
+    required this.differential,
+    required this.final_,
+    required this.cid,
   });
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGDXSECTION_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     if (working.isEmpty && differential.isEmpty && final_.isEmpty)
       return const SizedBox.shrink();
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const _PngDivider(),
-      Text(title,
-          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-              letterSpacing: 1.6, color: Color(0xFF111827))),
-      const SizedBox(height: 6),
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF0FDF4),
-          border: Border(left: BorderSide(color: const Color(0xFF16A34A), width: 2.5)),
-          borderRadius: BorderRadius.circular(3),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _PngDivider(),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 8.5,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.6,
+            color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+          ),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          if (working.isNotEmpty) ...[
-            const Text('IMPRESIÓN / HIPÓTESIS',
-                style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w900,
-                    color: Color(0xFF15803D), letterSpacing: 0.9)),
-            const SizedBox(height: 2),
-            Text(working,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                    color: Color(0xFF14532D), height: 1.4)),
-          ],
-          if (differential.isNotEmpty) ...[
-            const SizedBox(height: 5),
-            const Text('DIAGNÓSTICOS DIFERENCIALES',
-                style: TextStyle(fontSize: 7.5, fontWeight: FontWeight.w700,
-                    color: Color(0xFF15803D), letterSpacing: 0.9)),
-            const SizedBox(height: 2),
-            Text(differential,
-                style: const TextStyle(fontSize: 10.5, color: Color(0xFF166534), height: 1.4)),
-          ],
-          if (final_.isNotEmpty) ...[
-            if (working.isNotEmpty || differential.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Container(height: 0.5, color: const Color(0xFF16A34A).withOpacity(0.35)),
-              const SizedBox(height: 6),
+        const SizedBox(height: 6),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+          decoration: BoxDecoration(
+            color:
+                (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+            border: Border(
+              left: BorderSide(color: const Color(0xFF16A34A), width: 2.5),
+            ),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (working.isNotEmpty) ...[
+                const Text(
+                  'IMPRESIÓN / HIPÓTESIS',
+                  style: TextStyle(
+                    fontSize: 7.5,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF10B981),
+                    letterSpacing: 0.9,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  working,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF14532D),
+                    height: 1.4,
+                  ),
+                ),
+              ],
+              if (differential.isNotEmpty) ...[
+                const SizedBox(height: 5),
+                const Text(
+                  'DIAGNÓSTICOS DIFERENCIALES',
+                  style: TextStyle(
+                    fontSize: 7.5,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF10B981),
+                    letterSpacing: 0.9,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  differential,
+                  style: const TextStyle(
+                    fontSize: 10.5,
+                    color: Color(0xFF166534),
+                    height: 1.4,
+                  ),
+                ),
+              ],
+              if (final_.isNotEmpty) ...[
+                if (working.isNotEmpty || differential.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Container(
+                    height: 0.5,
+                    color: const Color(0xFF16A34A).withOpacity(0.35),
+                  ),
+                  const SizedBox(height: 6),
+                ],
+                Text(
+                  final_,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: Color(0xFF0D4A24),
+                    height: 1.4,
+                  ),
+                ),
+                if (cid.isNotEmpty)
+                  Text(
+                    'CIE-10: $cid',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF10B981),
+                    ),
+                  ),
+              ],
             ],
-            Text(final_,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900,
-                    color: Color(0xFF0D4A24), height: 1.4)),
-            if (cid.isNotEmpty)
-              Text('CIE-10: $cid',
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                      color: Color(0xFF15803D))),
-          ],
-        ]),
-      ),
-      const SizedBox(height: 4),
-    ]);
+          ),
+        ),
+        const SizedBox(height: 4),
+      ],
+    );
   }
 }
 
 // Entrada de evolución clínica (línea dorada izquierda)
+// HISTORY_CLINICAL_V1_D_R22_R4_PNGEVOLUTION_DARK
 class _PngEvolution extends StatelessWidget {
   final String dateStr;
   final String author;
   final String text;
-  const _PngEvolution({required this.dateStr, required this.author, required this.text});
+  const _PngEvolution({
+    required this.dateStr,
+    required this.author,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGEVOLUTION_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     if (text.isEmpty) return const SizedBox.shrink();
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -7490,21 +12010,37 @@ class _PngEvolution extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(left: BorderSide(color: Color(0xFFC5A365), width: 2)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          [if (dateStr.isNotEmpty) dateStr, if (author.isNotEmpty) author].join('  ·  '),
-          style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700,
-              color: Color(0xFF6b7280)),
-        ),
-        const SizedBox(height: 2),
-        Text(text,
-            style: const TextStyle(fontSize: 10.5, color: Color(0xFF1a1a1a), height: 1.5)),
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            [
+              if (dateStr.isNotEmpty) dateStr,
+              if (author.isNotEmpty) author,
+            ].join('  ·  '),
+            style: TextStyle(
+              fontSize: 8.5,
+              fontWeight: FontWeight.w700,
+              color: (isDarkR10 ? Colors.white54 : const Color(0xFF4B5563)),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 10.5,
+              color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 // Badge de desfecho/alta
+// HISTORY_CLINICAL_V1_D_R22_R4_PNGOUTCOMEBADGE_DARK
 class _PngOutcomeBadge extends StatelessWidget {
   final String outcome;
   final String lang;
@@ -7512,23 +12048,33 @@ class _PngOutcomeBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGOUTCOMEBADGE_LIGHT_CLOSURE
+    final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     final labels = {
-      'internado':    lang == 'es' ? 'Hospitalizado'   : 'Internado',
-      'alta':         lang == 'es' ? 'Alta hospitalaria' : 'Alta hospitalar',
-      'obito':        lang == 'es' ? 'Fallecimiento'   : 'Óbito',
-      'transferencia': lang == 'es' ? 'Traslado'        : 'Transferência',
+      'internado': lang == 'es' ? 'Hospitalizado' : 'Internado',
+      'alta': lang == 'es' ? 'Alta hospitalaria' : 'Alta hospitalar',
+      'obito': lang == 'es' ? 'Fallecimiento' : 'Óbito',
+      'transferencia': lang == 'es' ? 'Traslado' : 'Transferência',
     };
     return Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0FDF4),
+        color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF16A34A).withOpacity(0.4), width: 1),
+        border: Border.all(
+          color: const Color(0xFF16A34A).withOpacity(0.4),
+          width: 1,
+        ),
       ),
-      child: Text(labels[outcome] ?? outcome,
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-              color: Color(0xFF15803D))),
+      child: Text(
+        labels[outcome] ?? outcome,
+        style: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          color: Color(0xFF10B981),
+        ),
+      ),
     );
   }
 }
@@ -7563,9 +12109,11 @@ class _LabOcrService {
   ) async {
     final apiKey = GeminiService.apiKeyForLab;
     if (apiKey.isEmpty) {
-      throw Exception(lang == 'es'
-          ? 'Conecta tu cuenta Google en el menú lateral.'
-          : 'Conecte sua conta Google no menu lateral.');
+      throw Exception(
+        lang == 'es'
+            ? 'Conecta tu cuenta Google en el menú lateral.'
+            : 'Conecte sua conta Google no menu lateral.',
+      );
     }
 
     final b64 = base64Encode(imageBytes);
@@ -7577,18 +12125,12 @@ class _LabOcrService {
           'parts': [
             {'text': prompt},
             {
-              'inline_data': {
-                'mime_type': mimeType,
-                'data': b64,
-              }
+              'inline_data': {'mime_type': mimeType, 'data': b64},
             },
-          ]
-        }
+          ],
+        },
       ],
-      'generationConfig': {
-        'temperature': 0.1,
-        'maxOutputTokens': 1024,
-      },
+      'generationConfig': {'temperature': 0.1, 'maxOutputTokens': 1024},
     };
 
     final response = await http
@@ -7607,7 +12149,7 @@ class _LabOcrService {
     final candidates = json['candidates'] as List? ?? [];
     if (candidates.isEmpty) return '';
     final content = candidates.first['content'] as Map<String, dynamic>? ?? {};
-    final parts   = content['parts'] as List? ?? [];
+    final parts = content['parts'] as List? ?? [];
     if (parts.isEmpty) return '';
     return (parts.first['text'] as String? ?? '').trim();
   }
@@ -7634,18 +12176,18 @@ class _OrganizarIASheet extends StatefulWidget {
 }
 
 class _OrganizarIASheetState extends State<_OrganizarIASheet> {
-  final _ctrl        = TextEditingController();
-  bool  _processing  = false;
-  bool  _voiceActive = false;
+  final _ctrl = TextEditingController();
+  bool _processing = false;
+  bool _voiceActive = false;
   String _voiceInterim = '';
-  String _voiceBuffer  = '';
+  String _voiceBuffer = '';
   webPlatform.WebSpeechRecognizer? _voiceRecog;
 
-  static const _kGreen  = Color(0xFF10B981);
+  static const _kGreen = Color(0xFF0D6B57);
   static const _kPurple = Color(0xFF7C3AED);
 
   String get _lang => widget.lang;
-  bool   get _isEs => _lang == 'es';
+  bool get _isEs => _lang == 'es';
 
   @override
   void dispose() {
@@ -7664,10 +12206,18 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
       // Flush buffer
       if (_voiceBuffer.isNotEmpty) {
         final existing = _ctrl.text.trim();
-        _ctrl.text = existing.isEmpty ? _voiceBuffer : '$existing $_voiceBuffer';
-        _ctrl.selection = TextSelection.fromPosition(TextPosition(offset: _ctrl.text.length));
+        _ctrl.text =
+            existing.isEmpty ? _voiceBuffer : '$existing $_voiceBuffer';
+        _ctrl.selection = TextSelection.fromPosition(
+          TextPosition(offset: _ctrl.text.length),
+        );
       }
-      if (mounted) setState(() { _voiceActive = false; _voiceInterim = ''; _voiceBuffer = ''; });
+      if (mounted)
+        setState(() {
+          _voiceActive = false;
+          _voiceInterim = '';
+          _voiceBuffer = '';
+        });
       return;
     }
 
@@ -7676,7 +12226,9 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
 
     if (kIsWeb) {
       final recog = webPlatform.WebSpeechRecognizer();
-      recog.start('organizar', locale,
+      recog.start(
+        'organizar',
+        locale,
         onResult: (t, isFinal) {
           if (!mounted) return;
           if (isFinal) {
@@ -7690,15 +12242,23 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
           if (_voiceActive && mounted) {
             Future.delayed(const Duration(milliseconds: 200), () {
               if (_voiceActive && mounted) {
-                _voiceRecog?.start('organizar', locale,
-                  onResult: (t, f) {}, onEnd: () {}, onError: (_) {});
+                _voiceRecog?.start(
+                  'organizar',
+                  locale,
+                  onResult: (t, f) {},
+                  onEnd: () {},
+                  onError: (_) {},
+                );
               }
             });
           }
         },
         onError: (code) {
           if (code != 'no-speech' && mounted) {
-            setState(() { _voiceActive = false; _voiceInterim = ''; });
+            setState(() {
+              _voiceActive = false;
+              _voiceInterim = '';
+            });
           }
         },
       );
@@ -7717,10 +12277,14 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
             onError: (code) {
               if (!mounted) return;
               if (code == 'no_speech' || code == 'no-speech') {
-                if (_voiceActive) Future.delayed(const Duration(milliseconds: 300), startLoop);
+                if (_voiceActive)
+                  Future.delayed(const Duration(milliseconds: 300), startLoop);
                 return;
               }
-              setState(() { _voiceActive = false; _voiceInterim = ''; });
+              setState(() {
+                _voiceActive = false;
+                _voiceInterim = '';
+              });
             },
             onEnd: () {
               if (_voiceActive && mounted) {
@@ -7729,13 +12293,24 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
             },
           );
         } catch (e, st) {
-          debugPrint('[HistoryScreen][organizar.startLoop] SttHelper.start exception: $e\n$st');
-          if (mounted) setState(() { _voiceActive = false; _voiceInterim = ''; });
+          debugPrint(
+            '[HistoryScreen][organizar.startLoop] SttHelper.start exception: $e\n$st',
+          );
+          if (mounted)
+            setState(() {
+              _voiceActive = false;
+              _voiceInterim = '';
+            });
         }
       }
+
       startLoop();
     }
-    if (mounted) setState(() { _voiceActive = true; _voiceInterim = ''; });
+    if (mounted)
+      setState(() {
+        _voiceActive = true;
+        _voiceInterim = '';
+      });
   }
 
   // ── Chama IA para estruturar o texto ─────────────────────────────────────
@@ -7746,32 +12321,48 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
       SttHelper.stop();
       if (_voiceBuffer.isNotEmpty) {
         final existing = _ctrl.text.trim();
-        _ctrl.text = existing.isEmpty ? _voiceBuffer : '$existing $_voiceBuffer';
-        _ctrl.selection = TextSelection.fromPosition(TextPosition(offset: _ctrl.text.length));
+        _ctrl.text =
+            existing.isEmpty ? _voiceBuffer : '$existing $_voiceBuffer';
+        _ctrl.selection = TextSelection.fromPosition(
+          TextPosition(offset: _ctrl.text.length),
+        );
       }
-      if (mounted) setState(() { _voiceActive = false; _voiceInterim = ''; _voiceBuffer = ''; });
+      if (mounted)
+        setState(() {
+          _voiceActive = false;
+          _voiceInterim = '';
+          _voiceBuffer = '';
+        });
     }
 
     final text = _ctrl.text.trim();
     if (text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(_hcT(_lang, 'organizar_empty')),
-        backgroundColor: const Color(0xFFB91C1C),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_hcT(_lang, 'organizar_empty')),
+          backgroundColor: const Color(0xFFB91C1C),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        ),
+      );
       return;
     }
 
     if (widget.apiKey.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(_hcT(_lang, 'relato_no_key')),
-        backgroundColor: const Color(0xFFB91C1C),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_hcT(_lang, 'relato_no_key')),
+          backgroundColor: const Color(0xFFB91C1C),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        ),
+      );
       return;
     }
 
@@ -7798,23 +12389,27 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
 
     try {
       final result = await AiService.chat(
-        apiKey:       widget.apiKey,
+        apiKey: widget.apiKey,
         systemPrompt: systemPrompt,
-        userMessage:  'Texto clínico:\n$text',
-        maxTokens:    1200,
+        userMessage: 'Texto clínico:\n$text',
+        maxTokens: 1200,
       );
 
       if (!mounted) return;
       setState(() => _processing = false);
 
       if (result.isError) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(_hcT(_lang, 'organizar_error')),
-          backgroundColor: const Color(0xFFB91C1C),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_hcT(_lang, 'organizar_error')),
+            backgroundColor: const Color(0xFFB91C1C),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+          ),
+        );
         return;
       }
 
@@ -7829,22 +12424,26 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
       widget.onFill(mapped);
     } catch (_) {
       if (mounted) setState(() => _processing = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(_hcT(_lang, 'organizar_error')),
-        backgroundColor: const Color(0xFFB91C1C),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_hcT(_lang, 'organizar_error')),
+          backgroundColor: const Color(0xFFB91C1C),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg     = isDark ? const Color(0xFF0F1A14) : Colors.white;
+    final bg = isDark ? const Color(0xFF0F1A14) : Colors.white;
     final border = isDark ? const Color(0xFF1F3829) : const Color(0xFFE2EDE7);
-    final textCol= isDark ? Colors.white : const Color(0xFF0F1116);
+    final textCol = isDark ? Colors.white : const Color(0xFF0F1116);
     final subCol = isDark ? Colors.white54 : const Color(0xFF6B7280);
 
     return Container(
@@ -7853,7 +12452,9 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         border: Border.all(color: border),
       ),
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: SafeArea(
         top: false,
         child: Column(
@@ -7863,10 +12464,12 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
             const SizedBox(height: 10),
             Center(
               child: Container(
-                width: 36, height: 4,
+                width: 36,
+                height: 4,
                 decoration: BoxDecoration(
                   color: isDark ? Colors.white24 : const Color(0xFFCDD6E0),
-                  borderRadius: BorderRadius.circular(2)),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
             const SizedBox(height: 14),
@@ -7874,33 +12477,49 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
             // Título
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Row(children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)]),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.auto_fix_high_rounded,
+                      size: 16,
+                      color: Colors.white,
+                    ),
                   ),
-                  child: const Icon(Icons.auto_fix_high_rounded, size: 16, color: Colors.white),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(
-                      _hcT(_lang, 'organizar_title'),
-                      style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w900,
-                        color: textCol),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _hcT(_lang, 'organizar_title'),
+                          style: TextStyle(
+                            fontSize: MedTypography.internalTitleSize,
+                            fontWeight: FontWeight.w900,
+                            color: textCol,
+                          ),
+                        ),
+                        Text(
+                          _hcT(_lang, 'organizar_hint'),
+                          style: TextStyle(
+                            fontSize: MedTypography.microTextSize,
+                            color: subCol,
+                            height: 1.4,
+                          ),
+                          maxLines: 2,
+                        ),
+                      ],
                     ),
-                    Text(
-                      _hcT(_lang, 'organizar_hint'),
-                      style: TextStyle(fontSize: 10, color: subCol, height: 1.4),
-                      maxLines: 2,
-                    ),
-                  ]),
-                ),
-              ]),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 14),
 
@@ -7919,12 +12538,18 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
                         controller: _ctrl,
                         maxLines: null,
                         minLines: 5,
-                        style: TextStyle(fontSize: 13, color: textCol, height: 1.5),
+                        style: TextStyle(
+                          fontSize: MedTypography.auxiliarySize,
+                          color: textCol,
+                          height: 1.5,
+                        ),
                         decoration: InputDecoration(
                           hintText: _hcT(_lang, 'organizar_placeholder'),
                           hintStyle: TextStyle(
-                            fontSize: 12, color: subCol.withOpacity(0.6),
-                            fontStyle: FontStyle.italic),
+                            fontSize: MedTypography.auxiliarySize,
+                            color: subCol.withOpacity(0.6),
+                            fontStyle: FontStyle.italic,
+                          ),
                           filled: true,
                           fillColor: isDark
                               ? Colors.white.withOpacity(0.04)
@@ -7939,21 +12564,33 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
-                            borderSide: const BorderSide(color: _kGreen, width: 1.5),
+                            borderSide: const BorderSide(
+                              color: _kGreen,
+                              width: 1.5,
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.fromLTRB(14, 12, 48, 12),
+                          contentPadding: const EdgeInsets.fromLTRB(
+                            14,
+                            12,
+                            48,
+                            12,
+                          ),
                         ),
                       ),
                     ),
                     // Indicador de ditado em tempo real
                     if (_voiceActive && _voiceInterim.isNotEmpty)
                       Positioned(
-                        bottom: 8, left: 14, right: 48,
+                        bottom: 8,
+                        left: 14,
+                        right: 48,
                         child: Text(
                           _voiceInterim,
                           style: TextStyle(
-                            fontSize: 12, fontStyle: FontStyle.italic,
-                            color: _kGreen.withOpacity(0.8)),
+                            fontSize: MedTypography.microTextSize,
+                            fontStyle: FontStyle.italic,
+                            color: _kGreen.withOpacity(0.8),
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -7967,80 +12604,105 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
             // Botões: Voz + Organizar
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-              child: Row(children: [
-                // Botão microfone
-                GestureDetector(
-                  onTap: _processing ? null : _toggleVoice,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 48, height: 48,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color: _voiceActive
-                          ? const Color(0xFFDC2626).withOpacity(0.12)
-                          : (isDark
-                              ? Colors.white.withOpacity(0.06)
-                              : const Color(0xFFF0F7F4)),
-                      border: Border.all(
-                        color: _voiceActive
-                            ? const Color(0xFFDC2626).withOpacity(0.45)
-                            : border,
-                        width: _voiceActive ? 1.5 : 1,
-                      ),
-                    ),
-                    child: Center(
-                      child: _voiceActive
-                          ? _PulseDot(color: const Color(0xFFDC2626))
-                          : Icon(Icons.mic_none_rounded, size: 20, color: _kGreen),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-
-                // Botão principal "Organizar"
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _processing ? null : _process,
+              child: Row(
+                children: [
+                  // Botão microfone
+                  GestureDetector(
+                    onTap: _processing ? null : _toggleVoice,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
+                      width: 48,
                       height: 48,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(14),
-                        gradient: _processing
-                            ? null
-                            : const LinearGradient(
-                                colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
-                        color: _processing
-                            ? (isDark ? Colors.white12 : const Color(0xFFE8E8F0))
-                            : null,
+                        color: _voiceActive
+                            ? const Color(0xFFDC2626).withOpacity(0.12)
+                            : (isDark
+                                ? Colors.white.withOpacity(0.06)
+                                : const Color(0xFFF0F7F4)),
+                        border: Border.all(
+                          color: _voiceActive
+                              ? const Color(0xFFDC2626).withOpacity(0.45)
+                              : border,
+                          width: _voiceActive ? 1.5 : 1,
+                        ),
                       ),
                       child: Center(
-                        child: _processing
-                            ? const SizedBox(
-                                width: 20, height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  valueColor: AlwaysStoppedAnimation(Colors.white70),
-                                ),
-                              )
-                            : Row(mainAxisSize: MainAxisSize.min, children: [
-                                const Icon(Icons.auto_awesome_rounded, size: 16, color: Colors.white),
-                                const SizedBox(width: 8),
-                                Text(
-                                  _hcT(_lang, 'organizar_process'),
-                                  style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w800,
-                                    color: Colors.white, letterSpacing: 0.3),
-                                ),
-                              ]),
+                        child: _voiceActive
+                            ? _PulseDot(color: const Color(0xFFDC2626))
+                            : Icon(
+                                Icons.mic_none_rounded,
+                                size: 20,
+                                color: _kGreen,
+                              ),
                       ),
                     ),
                   ),
-                ),
-              ]),
+                  const SizedBox(width: 10),
+
+                  // Botão principal "Organizar"
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _processing ? null : _process,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: 48,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          gradient: _processing
+                              ? null
+                              : const LinearGradient(
+                                  colors: [
+                                    Color(0xFF4F46E5),
+                                    Color(0xFF7C3AED),
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                          color: _processing
+                              ? (isDark
+                                  ? Colors.white12
+                                  : const Color(0xFFE8E8F0))
+                              : null,
+                        ),
+                        child: Center(
+                          child: _processing
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    valueColor: AlwaysStoppedAnimation(
+                                      Colors.white70,
+                                    ),
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.auto_awesome_rounded,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _hcT(_lang, 'organizar_process'),
+                                      style: const TextStyle(
+                                        fontSize: MedTypography.auxiliarySize,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                        letterSpacing: 0.3,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -8053,7 +12715,10 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
 // OCR EXAM BUTTON — Botão de escaneamento de exame por IA
 // Aparece na seção de Exames do editor de História Clínica
 // ═══════════════════════════════════════════════════════════════════════════════
+// HISTORY_CLINICAL_V1_D_R6_OCR_GRAPHITE
+// HISTORY_CLINICAL_V1_D_R14_OCR_INTELLIGENT_STYLE
 class _OcrExamButton extends StatelessWidget {
+  // LIGHT_MODE_PREMIUM_V1_A_R14_OCR
   final String lang;
   final void Function(String) onResult;
 
@@ -8061,63 +12726,62 @@ class _OcrExamButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
-      onTap: () => ClinicalRecorderSheet.showOcrScanner(
-        context,
-        onResult: onResult,
-      ),
+      onTap: () =>
+          ClinicalRecorderSheet.showOcrScanner(context, onResult: onResult),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFF0F766E).withOpacity(0.15),
-              const Color(0xFF14B8A6).withOpacity(0.08),
-            ],
+          gradient: const LinearGradient(
+            colors: [Color(0xFF14213D), Color(0xFF172A46)],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFF0F766E).withOpacity(0.4),
-            width: 1.2,
+            color: const Color(0xFF0D6B57).withOpacity(0.72),
+            width: 0.9,
           ),
         ),
         child: Row(
           children: [
-            const Text('🔬', style: TextStyle(fontSize: 20)),
-            const SizedBox(width: 12),
+            const Icon(Icons.biotech_rounded,
+                color: Color(0xFFE2E8F0), size: 24),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lang == 'es' ? 'Escanear Examen con IA' : 'Escanear Exame com IA',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w800,
-                      color: dark ? Colors.white : const Color(0xFF111111),
+                    lang == 'es'
+                        ? 'Escanear Examen con IA'
+                        : 'Escanear Exame com IA',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: MedTypography.sectionLabelSize,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.1,
                     ),
                   ),
+                  const SizedBox(height: 3),
                   Text(
                     lang == 'es'
-                        ? 'Foto ou PDF → extração automática por OCR multimodal'
+                        ? 'Foto o PDF → extracción automática por OCR multimodal'
                         : 'Foto ou PDF → extração automática por OCR multimodal',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: dark ? Colors.grey[400] : Colors.grey[600],
+                    style: const TextStyle(
+                      color: Color(0xFFCBD5E1),
+                      fontSize: MedTypography.sectionLabelSize,
+                      fontWeight: FontWeight.w400,
+                      height: 1.3,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
-              Icons.camera_alt_rounded,
-              color: Color(0xFF0F766E),
-              size: 22,
-            ),
+            const SizedBox(width: 12),
+            const Icon(Icons.camera_alt_rounded,
+                color: Color(0xFF0D6B57), size: 25),
           ],
         ),
       ),

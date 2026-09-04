@@ -328,8 +328,8 @@ void main() {
         queryIntent: 'caso_clinico',
         userQuery: 'paciente com dor toracica e troponina elevada');
       expect(pt, contains('MOTOR DE DIFERENCIAIS'));
-      expect(pt, contains('→ Principal:'));
-      expect(pt, contains('⚠️ Excluir primeiro:'));
+      expect(pt, contains('2-3 POSSIBILIDADES CLINICAS PRIORITARIAS'));
+      expect(pt, contains('PRIORIZAR por compatibilidade com os dados e por risco de omissao'));
       expect(pt, contains('PROIBIDO'));
       print('  [OK] caso_clinico PT → differential ativo');
     });
@@ -340,8 +340,8 @@ void main() {
         queryIntent: 'caso_clinico',
         userQuery: 'caso clinico dolor toracico troponina elevada');
       expect(es, contains('MOTOR DE DIFERENCIALES'));
-      expect(es, contains('→ Principal:'));
-      expect(es, contains('⚠️ Excluir primero:'));
+      expect(es, contains('2-3 POSIBILIDADES CLINICAS PRIORITARIAS'));
+      expect(es, contains('PRIORIZAR por compatibilidad con los datos y por peligro de omision'));
       expect(es, contains('PROHIBIDO'));
       print('  [OK] caso_clinico ES → differential ativo');
     });

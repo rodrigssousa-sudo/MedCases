@@ -1,24 +1,25 @@
-// ── Tela de preview pré-login — REDESIGN v4 (dark imersivo) ─────────────────
+// ── Tela de preview pré-login — MedCases Pro V2 (dark institucional) ─────────
+// MEDCASES_PRE_LOGIN_ONBOARDING_UI_V2_B_R1
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/login_screen.dart';
 import '../screens/legal_screen.dart';
 
-// ── Paleta MedixAI Premium (dark neon / glassmorphism médico) ─────────────────
-const _kBg          = Color(0xFF06110C);   // fundo — preto-verde profundo (MedixAI)
-const _kBgCard      = Color(0xFF0E1A14);   // card escuro MedixAI
-const _kGreen       = Color(0xFF0E7C52);   // verde principal
-const _kGreenMid    = Color(0xFF13A06A);   // verde médio
-const _kGreenLight  = Color(0xFF1DBF7B);   // verde claro acento
-const _kNeon        = Color(0xFF33FF88);   // neon verde MedixAI
-const _kNeonGlow    = Color(0xFF2AF07A);   // cor do glow neon
-const _kGold        = Color(0xFFD4A853);   // dourado — CTA
-const _kText        = Color(0xFFEAF6EF);   // texto principal MedixAI (quase branco)
-const _kTextMid     = Color(0xFF9FB4A6);   // texto secundário MedixAI
-const _kTextDim     = Color(0xFF3D6B52);   // texto suave
-const _kBorder      = Color(0xFF1A3828);   // bordas MedixAI
-const _kRed         = Color(0xFFE05252);   // vermelho acento
-const _kRedDark     = Color(0xFFC13030);
+// ── Paleta MedCases Pro (dark premium clínico institucional) ─────────────────
+const _kBg          = Color(0xFF1A1D23);   // fundo — preto-verde profundo (MedCases Pro)
+const _kBgCard      = Color(0xFF252930);   // card escuro MedCases Pro
+const _kGreen       = Color(0xFF0D6B57);   // verde principal
+const _kGreenMid    = Color(0xFF0D6B57);   // verde médio
+const _kGreenLight  = Color(0xFF0D6B57);   // verde claro acento
+const _kNeon        = Color(0xFF0D6B57);   // acento institucional MedCases Pro
+const _kNeonGlow    = Color(0xFF0D6B57);   // acento de profundidade
+const _kGold        = Color(0xFFC5A365);   // dourado — CTA
+const _kText        = Color(0xFFF1F5F9);   // texto principal MedCases Pro (quase branco)
+const _kTextMid     = Color(0xFF94A3B8);   // texto secundário MedCases Pro
+const _kTextDim     = Color(0xFF7C8797);   // texto suave
+const _kBorder      = Color(0xFF374151);   // bordas MedCases Pro
+const _kRed         = Color(0xFFCC3333);   // vermelho acento
+const _kRedDark     = Color(0xFFB91C1C);
 
 // ══════════════════════════════════════════════════════════════════════════════
 class PreLoginPreview extends StatefulWidget {
@@ -120,7 +121,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF06110C),   // MedixAI dark bg
+      backgroundColor: _kBg,
       body: Column(children: [
         // ── Header ────────────────────────────────────────────────────────────────
         _DarkHeader(isEs: _isEs, onToggleLang: _toggleLang, onLogin: _goLogin),
@@ -211,14 +212,14 @@ class _DarkHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF060F0A),
+      color: _kBg,
       child: SafeArea(
         bottom: false,
         child: Container(
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: _kNeonGlow.withOpacity(0.12), width: 0.8)),
+                color: _kNeonGlow.withOpacity(0.07), width: 0.8)),
           ),
           padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
           child: Row(children: [
@@ -226,8 +227,8 @@ class _DarkHeader extends StatelessWidget {
             Container(
               width: 38, height: 38,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: _kGreen.withOpacity(0.55)),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: _kBorder, width: 0.8),
                 color: _kBgCard,
               ),
               child: Center(
@@ -256,9 +257,9 @@ class _DarkHeader extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(8),
                   color: _kBgCard,
-                  border: Border.all(color: _kBorder),
+                  border: Border.all(color: _kBorder, width: 0.8),
                 ),
                 child: Text(
                   isEs ? 'PT' : 'ES',
@@ -274,7 +275,7 @@ class _DarkHeader extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                   color: _kGreen,
                 ),
                 child: Text(
@@ -368,7 +369,7 @@ class _ProtoCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: _kBgCard,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: _kBorder),
         ),
         child: Row(children: [
@@ -377,7 +378,7 @@ class _ProtoCard extends StatelessWidget {
             width: 3, height: 70,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.horizontal(
-                left: Radius.circular(10)),
+                left: Radius.circular(12)),
               color: data.tagIsGreen ? _kGreenMid : _kGold,
             ),
           ),
@@ -458,7 +459,7 @@ class _CritCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: _kBgCard,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: _kRed.withOpacity(0.25)),
         ),
         padding: const EdgeInsets.all(12),
@@ -507,7 +508,7 @@ class _CritCard extends StatelessWidget {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// BLOCO IA — MedixAI Premium: neon glow + radial gradient + glassmorphism
+// BLOCO IA — MedCases Pro: profundidade sutil + radial gradient + glassmorphism
 // ══════════════════════════════════════════════════════════════════════════════
 class _IaBlockDark extends StatelessWidget {
   final VoidCallback onTap;
@@ -526,52 +527,45 @@ class _IaBlockDark extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          // ── RadialGradient sutil para profundidade (MedixAI) ─────────────
+          // ── RadialGradient sutil para profundidade (MedCases Pro) ─────────────
           gradient: const RadialGradient(
             center: Alignment(-0.6, -0.7),
             radius: 1.2,
             colors: [
-              Color(0xFF112B1A),   // centro levemente mais claro
-              Color(0xFF0E1A14),   // _kBgCard
+              Color(0xFF2A3038),   // centro levemente mais claro
+              Color(0xFF252930),   // _kBgCard
             ],
           ),
           borderRadius: BorderRadius.circular(14),
           // ── Borda verde neon sutil ────────────────────────────────────────
           border: Border.all(
-            color: _kNeonGlow.withOpacity(0.20),
+            color: _kNeonGlow.withOpacity(0.12),
             width: 1.0,
           ),
-          // ── Neon glow 2 camadas (inner glow + outer diffuse) ─────────────
-          boxShadow: [
+          // ── Profundidade sutil 2 camadas (inner glow + outer diffuse) ─────────────
+          boxShadow: const [
             BoxShadow(
-              color: _kNeonGlow.withOpacity(0.22),
-              blurRadius: 20,
-              spreadRadius: 0,
-              offset: const Offset(0, 0),
-            ),
-            BoxShadow(
-              color: _kNeonGlow.withOpacity(0.10),
-              blurRadius: 55,
-              spreadRadius: 6,
-              offset: const Offset(0, 4),
+              color: Color(0x12000000),
+              blurRadius: 18,
+              offset: Offset(0, 6),
             ),
           ],
         ),
         padding: const EdgeInsets.all(16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // ── Header IA — ícone neon + badge AI POWERED ────────────────────
+          // ── Header IA — ícone MedCases + badge AI POWERED ────────────────────
           Row(children: [
             // Ícone circular com glow sutil
             Container(
               width: 38, height: 38,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _kNeonGlow.withOpacity(0.10),
+                color: _kNeonGlow.withOpacity(0.06),
                 border: Border.all(
-                  color: _kNeonGlow.withOpacity(0.30), width: 1.0),
+                  color: _kNeonGlow.withOpacity(0.18), width: 1.0),
                 boxShadow: [
                   BoxShadow(
-                    color: _kNeonGlow.withOpacity(0.18),
+                    color: _kNeonGlow.withOpacity(0.10),
                     blurRadius: 10,
                     spreadRadius: 0,
                   ),
@@ -599,14 +593,14 @@ class _IaBlockDark extends StatelessWidget {
                 ],
               ),
             ),
-            // Badge AI POWERED — estilo MedixAI
+            // Badge AI POWERED — estilo MedCases Pro
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
-                color: _kNeonGlow.withOpacity(0.10),
+                color: _kNeonGlow.withOpacity(0.06),
                 border: Border.all(
-                  color: _kNeonGlow.withOpacity(0.28), width: 0.8),
+                  color: _kNeonGlow.withOpacity(0.16), width: 0.8),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Container(
@@ -630,9 +624,9 @@ class _IaBlockDark extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: const Color(0xFF0B1710),
+              color: const Color(0xFF20242B),
               border: Border.all(
-                color: _kNeonGlow.withOpacity(0.12), width: 0.8),
+                color: _kNeonGlow.withOpacity(0.07), width: 0.8),
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
@@ -663,7 +657,7 @@ class _IaBlockDark extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // ── Chips sugestão — estilo MedixAI ─────────────────────────────
+          // ── Chips sugestão — estilo MedCases Pro ─────────────────────────────
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -673,10 +667,10 @@ class _IaBlockDark extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 8),
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0B1710),
+                    color: const Color(0xFF20242B),
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
-                      color: _kNeonGlow.withOpacity(0.15), width: 0.8),
+                      color: _kNeonGlow.withOpacity(0.09), width: 0.8),
                   ),
                   child: Text(p,
                     style: const TextStyle(
@@ -689,19 +683,19 @@ class _IaBlockDark extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // ── Input fake — neon border verde ───────────────────────────────
+          // ── Input fake — borda de foco MedCases ───────────────────────────────
           GestureDetector(
             onTap: onTap,
             child: Container(
               height: 46,
               decoration: BoxDecoration(
-                color: const Color(0xFF0B1710),
+                color: const Color(0xFF20242B),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: _kNeonGlow.withOpacity(0.30), width: 1.0),
+                  color: _kNeonGlow.withOpacity(0.18), width: 1.0),
                 boxShadow: [
                   BoxShadow(
-                    color: _kNeonGlow.withOpacity(0.08),
+                    color: _kNeonGlow.withOpacity(0.05),
                     blurRadius: 8,
                     spreadRadius: 0,
                   ),
@@ -718,19 +712,19 @@ class _IaBlockDark extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12, color: _kTextDim)),
                 ),
-                // Botão send neon
+                // Botão send MedCases
                 Container(
                   padding: const EdgeInsets.all(7),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF13A06A), Color(0xFF0E7C52)],
+                      colors: [Color(0xFF0D6B57), Color(0xFF0D6B57)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: _kNeonGlow.withOpacity(0.25),
+                        color: _kNeonGlow.withOpacity(0.14),
                         blurRadius: 8,
                         spreadRadius: 0,
                       ),
@@ -749,7 +743,7 @@ class _IaBlockDark extends StatelessWidget {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// MÉTRICAS RÁPIDAS — MedixAI Premium: 2 cards lado a lado, ícone circular neon
+// MÉTRICAS RÁPIDAS — MedCases Pro: 2 cards lado a lado, ícone circular
 // ══════════════════════════════════════════════════════════════════════════════
 class _MetricsRow extends StatelessWidget {
   final bool isEs;
@@ -762,7 +756,7 @@ class _MetricsRow extends StatelessWidget {
       Expanded(
         child: _MetricCard(
           icon: Icons.menu_book_rounded,
-          iconBg: const Color(0xFF0D2018),
+          iconBg: const Color(0xFF20242B),
           stat: '+2.400',
           title: isEs ? 'Condutas Médicas' : 'Condutas Médicas',
           subtitle: isEs ? 'Guiadas por IA' : 'Guiadas por IA',
@@ -774,7 +768,7 @@ class _MetricsRow extends StatelessWidget {
       Expanded(
         child: _MetricCard(
           icon: Icons.verified_rounded,
-          iconBg: const Color(0xFF0D2018),
+          iconBg: const Color(0xFF20242B),
           stat: isEs ? '100%' : '100%',
           title: isEs ? 'Actualización' : 'Atualização',
           subtitle: isEs ? 'Por comité experto' : 'Contínua por experts',
@@ -785,7 +779,7 @@ class _MetricsRow extends StatelessWidget {
   }
 }
 
-// ── Card de métrica individual — MedixAI style ──────────────────────────────
+// ── Card de métrica individual — MedCases Pro style ──────────────────────────────
 class _MetricCard extends StatelessWidget {
   final IconData icon;
   final Color iconBg;
@@ -811,13 +805,12 @@ class _MetricCard extends StatelessWidget {
         color: _kBgCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _kNeonGlow.withOpacity(0.15), width: 0.9),
-        boxShadow: [
+          color: _kNeonGlow.withOpacity(0.09), width: 0.9),
+        boxShadow: const [
           BoxShadow(
-            color: _kNeonGlow.withOpacity(0.10),
-            blurRadius: 16,
-            spreadRadius: 0,
-            offset: const Offset(0, 2),
+            color: Color(0x0A000000),
+            blurRadius: 14,
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -831,10 +824,10 @@ class _MetricCard extends StatelessWidget {
               shape: BoxShape.circle,
               color: iconBg,
               border: Border.all(
-                color: _kNeonGlow.withOpacity(0.22), width: 1.0),
+                color: _kNeonGlow.withOpacity(0.12), width: 1.0),
               boxShadow: [
                 BoxShadow(
-                  color: _kNeonGlow.withOpacity(0.14),
+                  color: _kNeonGlow.withOpacity(0.08),
                   blurRadius: 8,
                   spreadRadius: 0,
                 ),
@@ -843,7 +836,7 @@ class _MetricCard extends StatelessWidget {
             child: Icon(icon, size: 18, color: _kNeon),
           ),
           const SizedBox(height: 12),
-          // ── Número em destaque neon ───────────────────────────────────────
+          // ── Número em destaque ───────────────────────────────────────
           Text(stat,
             style: const TextStyle(
               fontSize: 26, fontWeight: FontWeight.w800,
@@ -869,7 +862,7 @@ class _MetricCard extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Icon(trailingIcon, size: 13,
-              color: _kNeonGlow.withOpacity(0.55)),
+              color: _kNeonGlow.withOpacity(0.42)),
           ]),
         ],
       ),
@@ -889,7 +882,7 @@ class _CtaDark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF061A12),
+      color: _kBg,
       padding: EdgeInsets.fromLTRB(
         20, 14, 20, MediaQuery.of(context).padding.bottom + 14),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -919,8 +912,8 @@ class _CtaDark extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           isEs
-            ? 'Acceso gratuito · Aprobado por administrador'
-            : 'Acesso gratuito · Aprovado pelo administrador',
+            ? 'Acceso gratuito · Para profesionales de salud'
+            : 'Acesso gratuito · Para profissionais de saúde',
           style: const TextStyle(
             fontSize: 10, color: _kTextMid,
             fontWeight: FontWeight.w400),

@@ -1,12 +1,15 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_4A_V2_B_R1_AI_WIDGETS
 import 'package:flutter/material.dart';
 
 import '../../calculadora_screen.dart';
 import '../../../services/ai_next_action_engine.dart';
+import '../../../services/plantao_continuation_policy.dart';
+import '../../../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart';
+import '../../../services/ai_pipeline/plantao/contracts/plantao_section.dart';
 import '../../../services/external_tool_link_engine.dart';
-import '../../../services/offline_calculator_cache_service.dart';
 import 'action_button_policy.dart';
 import 'action_card_button.dart';
+import 'plantao_continuation_button.dart';
 
 // ═════════════════════════════════════════════════════════════════════════════
 // ActionButtonsRow — Build 192: linha de botões de ação unificados
@@ -23,7 +26,13 @@ class ActionButtonsRow extends StatelessWidget {
   final String lang;
   final bool dark;
   final List<String> chatHistory;
-  final void Function(String prompt, {bool isStudyNext}) onActionTap;
+  final void Function(
+    String prompt, {
+    required String visibleLabel,
+    required bool isStudyNext,
+    required PlantaoContinuationType continuationType,
+    required List<PlantaoSection> requestedSections,
+  }) onActionTap;
   // BUILD 232: link pre-resolvido pelo pai com cache de deduplicacao.
   final ExternalToolLink? cachedLink;
   // BUILD 300: Modo Estudo — prompt e label dinâmico via tag [NEXT_ACTION_PROMPT:...]
@@ -36,12 +45,17 @@ class ActionButtonsRow extends StatelessWidget {
   // o botão é redirecionado para prompt de avanço linear.
   final String lastSentStudyPrompt;
 
+  /// Oculta somente a ação de IA desta linha.
+  ///
+  /// Ferramentas externas permanecem visíveis quando a continuação pedagógica
+  /// já foi migrada para StudyContinuationButton.
+  final bool suppressAiAction;
+
   // Cores institucionais -- imutaveis por design
   // Azul institucional IA (mesmo do AppBar/primary)
-  static const _kBlueAI = Color(0xFF1E88E5);
-  // Verde Esmeralda — identidade "Base de Dados Local/Segura"
-  // ORDEM VISUAL 02: substituição do roxo 0xFF7e22ce pelo verde 0xFF10B981
-  static const _kToolBtn = Color(0xFF10B981);
+  // Verde Pasto — identidade visual MedCases para ação/ferramenta
+  // BRAND GREEN PASTO: ação/ferramenta canônica = 0xFF0E8000
+  static const _kToolBtn = Color(0xFF0E8000);
 
   const ActionButtonsRow({
     super.key,
@@ -56,18 +70,37 @@ class ActionButtonsRow extends StatelessWidget {
     this.studyNextPrompt = '',
     this.studyNextLabel = '',
     this.lastSentStudyPrompt = '',
+    this.suppressAiAction = false,
   });
 
   @override
   Widget build(BuildContext context) {
     // ── Motor IA: Smart Next Action (local, zero rede) ────────────────────────
-    final action = NextActionEngine.build(
-      lastUserMessage: lastUserMessage,
-      lastAiResponse: lastAiResponse,
-      isPlantaoMode: isPlantaoMode,
-      currentLanguage: lang,
-      chatHistory: chatHistory,
-    );
+    final action = suppressAiAction
+        ? const SmartNextAction(
+            label: '',
+            promptToSend: '',
+          )
+        : NextActionEngine.build(
+            lastUserMessage: lastUserMessage,
+            lastAiResponse: lastAiResponse,
+            isPlantaoMode: isPlantaoMode,
+            currentLanguage: lang,
+            chatHistory: chatHistory,
+          );
+
+    // MEDCASES_PLANTAO_CONTINUATION_FINAL_SURGICAL_V1_B_R0
+    // NextActionEngine remains canonical. This local layer only avoids
+    // repeating already-covered Plantão follow-up domains.
+    final effectivePlantaoAction = isPlantaoMode
+        ? PlantaoContinuationPolicy.resolve(
+            baseAction: action,
+            lastUserMessage: lastUserMessage,
+            lastAiResponse: lastAiResponse,
+            chatHistory: chatHistory,
+            languageCode: lang,
+          )
+        : action;
 
     // BUILD 232: ExternalToolLink vem pre-resolvido do cache do pai.
     // Nao chama ExternalToolLinkEngine.build() aqui -- elimina duplicacao em rebuilds.
@@ -82,9 +115,21 @@ class ActionButtonsRow extends StatelessWidget {
     );
     final hasStudyNext = studyAction.hasStudyNext;
 
+    // Historical canonical predicate remains a real runtime seam.
+    final bool canonicalActionAvailable =
+        hasStudyNext || action.label.isNotEmpty;
+
+    // Plantão can surface a useful local gap even when NextActionEngine
+    // intentionally returned no generic filler action.
+    final bool effectivePlantaoAvailable =
+        isPlantaoMode && effectivePlantaoAction.label.isNotEmpty;
+
+    final bool showAiBtn = !suppressAiAction &&
+        (canonicalActionAvailable || effectivePlantaoAvailable);
+
     // Nenhum botão disponível → sem widget
     // Modo Estudo: sempre mostra o botão se hasStudyNext=true, mesmo sem action
-    if (action.label.isEmpty && link == null && !hasStudyNext) {
+    if (!showAiBtn && link == null) {
       return const SizedBox.shrink();
     }
 
@@ -126,19 +171,43 @@ class ActionButtonsRow extends StatelessWidget {
           // BUILD 300: botão azul dinâmico no Modo Estudo.
           // hasStudyNext=true → usa effectiveStudyPrompt (com dedup guard BUILD 308).
           // hasStudyNext=false → comportamento clássico via NextActionEngine.
-          final bool showAiBtn = hasStudyNext || action.label.isNotEmpty;
+          // showAiBtn foi resolvido acima, respeitando suppressAiAction.
           final aiBtn = showAiBtn
-              ? ActionCardButton(
+              ? (isPlantaoMode && !hasStudyNext
+                  ? (effectivePlantaoAction.label.isNotEmpty
+                      ? PlantaoContinuationButton(
+                          label: effectivePlantaoAction.label,
+                          accentColor: _kToolBtn,
+                          dark: dark,
+                          onTap: () => onActionTap(
+                            effectivePlantaoAction.promptToSend,
+                            visibleLabel: effectivePlantaoAction.label,
+                            isStudyNext: false,
+                            continuationType:
+                                effectivePlantaoAction.continuationType,
+                            requestedSections:
+                                effectivePlantaoAction.requestedSections,
+                          ),
+                        )
+                      : null)
+                  : ActionCardButton(
                   title: aiLabel,
                   icon: Icons.auto_awesome_rounded,
-                  accentColor: _kBlueAI,
+                  accentColor: _kToolBtn,
                   dark: dark,
                   onTap: () => onActionTap(
                     hasStudyNext ? effectiveStudyPrompt : action.promptToSend,
+                    visibleLabel: aiLabel,
                     isStudyNext:
                         hasStudyNext, // BUILD 308: sinaliza botão de Estudo
+                    continuationType: hasStudyNext
+                        ? PlantaoContinuationType.freeFollowUp
+                        : action.continuationType,
+                    requestedSections: hasStudyNext
+                        ? const <PlantaoSection>[]
+                        : action.requestedSections,
                   ),
-                )
+                ))
               : null;
 
           final calcBtn = link != null
@@ -149,39 +218,16 @@ class ActionButtonsRow extends StatelessWidget {
                   icon: Icons.calculate_rounded,
                   accentColor: _kToolBtn,
                   dark: dark,
-                  onTap: () async {
-                    // fix(ai): sempre abre WebView interna — NUNCA Safari/launchUrl externo.
-                    // Web usa iframe (CalculadoraScreen via calcu_web.dart);
-                    // iOS/Android usa WebViewController nativo (webview_flutter).
-                    // Regra: qualquer URL medcasescalcu.com vinda da IA → WebView interna.
-                    // BUILD 240: resolve URL local se cache offline disponível.
-                    String resolvedUrl = link.url;
-                    if (!kIsWeb) {
-                      try {
-                        final localUrl = await OfflineCalculatorCacheService
-                            .instance
-                            .buildLocalUrl(link.url);
-                        if (localUrl != null) {
-                          debugPrint(
-                              '[OFFLINE_CACHE] openSource=local (IA button) url=$localUrl');
-                          resolvedUrl = localUrl;
-                        } else {
-                          debugPrint(
-                              '[OFFLINE_CACHE] openSource=online (IA button) url=${link.url}');
-                        }
-                      } catch (e) {
-                        debugPrint(
-                            '[OFFLINE_CACHE] fallbackOnline=true (IA button) error=$e');
-                      }
-                    }
-                    if (context.mounted) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              CalculadoraScreen(initialUrl: resolvedUrl),
-                        ),
-                      );
-                    }
+                  onTap: () {
+                    // CACHE-FIRST SINGLE-NAV:
+                    // never await disk/cache resolution before opening the screen.
+                    // CalculadoraScreen owns local-vs-online source selection.
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CalculadoraScreen(initialUrl: link.url),
+                      ),
+                    );
                   },
                 )
               : null;

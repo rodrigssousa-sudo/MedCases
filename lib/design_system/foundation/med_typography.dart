@@ -183,4 +183,24 @@ abstract final class MedTypography {
         labelMedium: label,
         labelSmall: caption,
       );
+
+  // MEDCASES_GLOBAL_MOBILE_BASELINE_V1_M1_R4
+  // Foundation semântica; consumidores existentes permanecem inalterados.
+  /// Título de tela.
+  static const double screenTitleSize = 20;
+
+  /// Título interno.
+  static const double internalTitleSize = 17;
+
+  /// Texto clínico / principal.
+  static const double clinicalBodySize = 16;
+
+  /// Subtítulo / título de seção.
+  static const double sectionLabelSize = 14;
+
+  /// Texto auxiliar.
+  static const double auxiliarySize = 14;
+
+  /// Microtexto realmente secundário.
+  static const double microTextSize = 13;
 }

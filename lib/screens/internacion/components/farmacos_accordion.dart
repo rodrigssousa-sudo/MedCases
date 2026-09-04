@@ -19,6 +19,7 @@ import '../models/evolucion_model.dart';
 import 'internacion_theme.dart';
 import '../services/drug_interaction_service.dart';
 
+import '../../../design_system/foundation/med_typography.dart';
 class FarmacosAccordion extends StatefulWidget {
   final List<FarmacoEntry> farmacos;
   final bool dark;
@@ -42,15 +43,15 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
   bool _open = false;
 
   // Campo de entrada rápida (único)
-  final _inputCtrl  = TextEditingController();
+  final _inputCtrl = TextEditingController();
   final _inputFocus = FocusNode();
 
   // Animações de entrada dos chips (uma por índice)
   final Map<int, AnimationController> _chipAnims = {};
 
   // ── DDI ─────────────────────────────────────────────────────────────────
-  List<DdiAlert> _alerts    = [];
-  Set<String>    _flagged   = {};
+  List<DdiAlert> _alerts = [];
+  Set<String> _flagged = {};
 
   bool get isEs => widget.lang == 'es';
 
@@ -74,12 +75,12 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
 
   void _runDdiCheck() {
     if (!DrugInteractionService.instance.isLoaded) return;
-    final labels  = widget.farmacos.map((f) => f.medicamento).toList();
-    final alerts  = DrugInteractionService.instance.check(labels);
+    final labels = widget.farmacos.map((f) => f.medicamento).toList();
+    final alerts = DrugInteractionService.instance.check(labels);
     final flagged = DrugInteractionService.instance.flaggedDrugs(alerts);
     if (mounted) {
       setState(() {
-        _alerts  = alerts;
+        _alerts = alerts;
         _flagged = flagged;
       });
     }
@@ -125,7 +126,8 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
   // ── Dispara adição (Enter / + / ,) ───────────────────────────────────────
   void _commitInput() {
     final raw = _inputCtrl.text;
-    final segments = raw.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty);
+    final segments =
+        raw.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty);
     if (segments.isEmpty) return;
 
     final List<FarmacoEntry> added = [];
@@ -159,24 +161,25 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
 
   // ── Edição rápida via dialog ──────────────────────────────────────────────
   void _editChip(int idx) {
-    final entry  = widget.farmacos[idx];
+    final entry = widget.farmacos[idx];
     final medCtrl = TextEditingController(text: entry.medicamento);
     final dosCtrl = TextEditingController(text: entry.dosagem);
-    final theme   = InternacionTheme(widget.dark);
+    final theme = InternacionTheme(widget.dark);
 
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: theme.card,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         title: Row(
           children: [
-            Icon(Icons.medication_rounded, size: 18, color: theme.accent),
+            Icon(Icons.medication_rounded, size: 18, color: theme.pharmaAccent),
             const SizedBox(width: 8),
             Text(
               isEs ? 'Editar fármaco' : 'Editar fármaco',
               style: TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w700,
+                fontSize: MedTypography.clinicalBodySize,
+                fontWeight: FontWeight.w700,
                 color: theme.textPrimary,
               ),
             ),
@@ -185,12 +188,17 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _dialogField(ctrl: medCtrl, label: isEs ? 'Fármaco' : 'Fármaco',
-                hint: 'Ampicilina', theme: theme),
+            _dialogField(
+                ctrl: medCtrl,
+                label: isEs ? 'Fármaco' : 'Fármaco',
+                hint: 'Ampicilina',
+                theme: theme),
             const SizedBox(height: 10),
-            _dialogField(ctrl: dosCtrl,
+            _dialogField(
+                ctrl: dosCtrl,
                 label: isEs ? 'Dosificación' : 'Dosagem',
-                hint: '1.5g IV 6/6h', theme: theme),
+                hint: '1.5g IV 6/6h',
+                theme: theme),
           ],
         ),
         actions: [
@@ -202,15 +210,19 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
           TextButton(
             onPressed: () {
               final med = medCtrl.text.trim();
-              if (med.isEmpty) { Navigator.pop(context); return; }
+              if (med.isEmpty) {
+                Navigator.pop(context);
+                return;
+              }
               final updated = [...widget.farmacos];
-              updated[idx] = FarmacoEntry(
-                medicamento: med, dosagem: dosCtrl.text.trim());
+              updated[idx] =
+                  FarmacoEntry(medicamento: med, dosagem: dosCtrl.text.trim());
               widget.onChanged(updated);
               Navigator.pop(context);
             },
             child: Text(isEs ? 'Guardar' : 'Salvar',
-                style: TextStyle(color: theme.accent, fontWeight: FontWeight.w700)),
+                style: TextStyle(
+                    color: theme.pharmaAccent, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -226,23 +238,25 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
     return TextField(
       controller: ctrl,
       autofocus: label.contains('arm'),
-      style: TextStyle(fontSize: 13, color: theme.textPrimary),
+      style: TextStyle(fontSize: MedTypography.sectionLabelSize, color: theme.textPrimary),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: theme.textSecondary, fontSize: 12),
+        labelStyle: TextStyle(color: theme.textSecondary, fontSize: MedTypography.sectionLabelSize),
         hintText: hint,
-        hintStyle: TextStyle(color: theme.labelColor, fontSize: 12),
+        hintStyle: TextStyle(color: theme.labelColor, fontSize: MedTypography.sectionLabelSize),
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         filled: true,
-        fillColor: widget.dark ? const Color(0xFF151820) : const Color(0xFFF9FAFB),
+        fillColor:
+            widget.dark ? const Color(0xFF1F232A) : const Color(0xFFFFFFFF),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(9),
-          borderSide: BorderSide(color: theme.border, width: 0.9),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: theme.border, width: 0.7),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(9),
-          borderSide: BorderSide(color: theme.accent, width: 1.3),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: theme.pharmaAccent, width: 1.0),
         ),
       ),
     );
@@ -256,199 +270,210 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
 
   @override
   Widget build(BuildContext context) {
-    final theme    = InternacionTheme(widget.dark);
-    final count    = widget.farmacos.length;
+    final theme = InternacionTheme(widget.dark);
+    final count = widget.farmacos.length;
     final hasAlert = _alerts.isNotEmpty;
 
-    // Cor do borde do acordeão quando há alerta
-    final borderColor = hasAlert
-        ? const Color(0xFFFCA5A5)
-        : (_open ? theme.accent.withOpacity(0.45) : theme.border);
-    final borderWidth = (hasAlert || _open) ? 1.3 : 0.8;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
+    return Container(
       decoration: BoxDecoration(
         color: theme.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: borderColor, width: borderWidth),
-        boxShadow: [
-          if (hasAlert)
-            BoxShadow(
-              color: const Color(0xFFFCA5A5).withOpacity(0.30),
-              blurRadius: 12, offset: const Offset(0, 3),
-            )
-          else
-            theme.softShadow,
-        ],
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
-          // ── Header colapsável ───────────────────────────────────────────
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => setState(() => _open = !_open),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Row(
-                children: [
-                  // Ícone — vermelho se há alerta
-                  Container(
-                    width: 36, height: 36,
-                    decoration: BoxDecoration(
-                      color: hasAlert
-                          ? const Color(0xFFFEE2E2)
-                          : theme.accent.withOpacity(widget.dark ? 0.15 : 0.09),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => setState(() => _open = !_open),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12.5, 12, 12.5),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 28,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
                     child: Icon(
                       hasAlert
                           ? Icons.warning_amber_rounded
                           : Icons.medication_rounded,
                       size: 18,
-                      color: hasAlert ? const Color(0xFF991B1B) : theme.accent,
+                      color: hasAlert ? const Color(0xFF991B1B) : theme.pharmaAccent,
                     ),
                   ),
-                  const SizedBox(width: 10),
-
-                  // Título + subtítulo
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isEs ? 'Fármacos' : 'Fármacos',
-                          style: TextStyle(
-                            fontSize: 13.5, fontWeight: FontWeight.w700,
-                            color: hasAlert
-                                ? const Color(0xFF991B1B)
-                                : theme.textPrimary,
-                          ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isEs ? 'Fármacos' : 'Fármacos',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: hasAlert
+                              ? const Color(0xFF991B1B)
+                              : theme.textPrimary,
                         ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        hasAlert
+                            ? (isEs
+                                ? '${_alerts.length} interacción${_alerts.length > 1 ? 'es' : ''} detectada${_alerts.length > 1 ? 's' : ''}'
+                                : '${_alerts.length} interação${_alerts.length > 1 ? 'ões' : ''} detectada${_alerts.length > 1 ? 's' : ''}')
+                            : (count == 0
+                                ? (isEs ? 'Medicación activa' : 'Medicação ativa')
+                                : '$count fármaco${count > 1 ? 's' : ''} activo${count > 1 ? 's' : ''}'),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: hasAlert
+                              ? const Color(0xFFB91C1C)
+                              : theme.textSecondary,
+                          fontWeight:
+                              hasAlert ? FontWeight.w600 : FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (hasAlert) ...[
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFEE2E2),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color(0xFFFCA5A5),
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.warning_amber_rounded,
+                          size: 11,
+                          color: Color(0xFF991B1B),
+                        ),
+                        const SizedBox(width: 3),
                         Text(
-                          hasAlert
-                              ? (isEs
-                                  ? '${_alerts.length} interacción${_alerts.length > 1 ? 'es' : ''} detectada${_alerts.length > 1 ? 's' : ''}'
-                                  : '${_alerts.length} interação${_alerts.length > 1 ? 'ões' : ''} detectada${_alerts.length > 1 ? 's' : ''}')
-                              : (count == 0
-                                  ? (isEs ? 'Uso actual' : 'Uso atual')
-                                  : '$count fármaco${count > 1 ? 's' : ''} activo${count > 1 ? 's' : ''}'),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: hasAlert ? const Color(0xFFB91C1C) : theme.textSecondary,
-                            fontWeight: hasAlert ? FontWeight.w600 : FontWeight.normal,
+                          '${_alerts.length}',
+                          style: const TextStyle(
+                            fontSize: MedTypography.microTextSize,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF991B1B),
                           ),
                         ),
                       ],
                     ),
                   ),
-
-                  // Badge de contagem / alerta
-                  if (hasAlert) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFEE2E2),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFFFCA5A5), width: 0.8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.warning_amber_rounded,
-                              size: 11, color: Color(0xFF991B1B)),
-                          const SizedBox(width: 3),
-                          Text(
-                            '${_alerts.length}',
-                            style: const TextStyle(
-                              fontSize: 11, fontWeight: FontWeight.w800,
-                              color: Color(0xFF991B1B),
-                            ),
-                          ),
-                        ],
+                  const SizedBox(width: 4),
+                ] else if (count > 0) ...[
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    decoration: BoxDecoration(
+                      color:
+                          theme.pharmaAccent.withOpacity(widget.dark ? 0.18 : 0.10),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '$count',
+                      style: TextStyle(
+                        fontSize: MedTypography.sectionLabelSize,
+                        fontWeight: FontWeight.w700,
+                        color: theme.pharmaAccent,
                       ),
                     ),
-                    const SizedBox(width: 4),
-                  ] else if (count > 0) ...[
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: theme.accent.withOpacity(widget.dark ? 0.18 : 0.10),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text('$count',
-                          style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w700,
-                            color: theme.accent,
-                          )),
-                    ),
-                    const SizedBox(width: 6),
-                  ],
-
-                  // Seta
-                  AnimatedRotation(
-                    turns: _open ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                        size: 20, color: theme.textSecondary),
                   ),
+                  const SizedBox(width: 6),
                 ],
-              ),
+                AnimatedRotation(
+                  turns: _open ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 18,
+                    color: theme.textSecondary,
+                  ),
+                ),
+              ],
             ),
           ),
-
-          // ── Conteúdo colapsável ─────────────────────────────────────────
-          AnimatedSize(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeInOut,
-            child: _open
-                ? Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Divider(color: theme.divider, height: 1, thickness: 0.8),
-                        const SizedBox(height: 12),
-
-                        // ── Banner DDI (aparece se há alertas) ────────────
-                        if (_alerts.isNotEmpty) ...[
-                          _DdiBanner(
-                            alerts: _alerts,
-                            lang:   widget.lang,
-                            dark:   widget.dark,
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-
-                        // ── WRAP DE CHIPS + campo de entrada inline ───────
-                        _ChipsWithInput(
-                          farmacos:   widget.farmacos,
-                          flagged:    _flagged,
-                          dark:       widget.dark,
-                          lang:       widget.lang,
-                          theme:      theme,
-                          inputCtrl:  _inputCtrl,
-                          inputFocus: _inputFocus,
-                          animFor:    _animFor,
-                          onRemove:   _remove,
-                          onEdit:     _editChip,
-                          onCommit:   _commitInput,
-                          chipLabel:  _chipLabel,
-                          vsync:      this,
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeInOut,
+          child: _open
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Divider(
+                        color: theme.divider,
+                        height: 1,
+                        thickness: 0.7,
+                      ),
+                      const SizedBox(height: 8),
+                      if (_alerts.isNotEmpty) ...[
+                        _DdiBanner(
+                          alerts: _alerts,
+                          lang: widget.lang,
+                          dark: widget.dark,
                         ),
-
-                        const SizedBox(height: 10),
-                        _hint(theme),
+                        const SizedBox(height: 8),
                       ],
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
+                      // MEDICAL_REFINEMENT_V1_ACTIVE_MEDICATION
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.medication_outlined,
+                              size: 13,
+                              color: theme.pharmaAccent.withOpacity(0.90),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              isEs ? 'MEDICACIÓN ACTIVA' : 'MEDICAÇÃO ATIVA',
+                              style: TextStyle(
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.80,
+                                color: theme.pharmaAccent.withOpacity(0.90),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 7),
+                        _ChipsWithInput(
+                        farmacos: widget.farmacos,
+                        flagged: _flagged,
+                        dark: widget.dark,
+                        lang: widget.lang,
+                        theme: theme,
+                        inputCtrl: _inputCtrl,
+                        inputFocus: _inputFocus,
+                        animFor: _animFor,
+                        onRemove: _remove,
+                        onEdit: _editChip,
+                        onCommit: _commitInput,
+                        chipLabel: _chipLabel,
+                        vsync: this,
+                      ),
+                      const SizedBox(height: 6),
+                      _hint(theme),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
         ],
       ),
     );
-  }
+}
 
   Widget _hint(InternacionTheme theme) {
     return Row(
@@ -458,9 +483,10 @@ class _FarmacosAccordionState extends State<FarmacosAccordion>
         Expanded(
           child: Text(
             isEs
-                ? 'Enter, + o coma  para agregar · Toca un chip para editarlo · ✕ para eliminar'
-                : 'Enter, + ou vírgula para adicionar · Toque num chip para editar · ✕ para remover',
-            style: TextStyle(fontSize: 10.5, color: theme.labelColor, height: 1.3),
+                ? 'Enter para agregar · toca para editar · × para eliminar'
+                : 'Enter para adicionar · toque para editar · × para remover',
+            style:
+                TextStyle(fontSize: MedTypography.auxiliarySize, color: theme.labelColor, height: 1.3),
           ),
         ),
       ],
@@ -497,21 +523,21 @@ class _DdiBanner extends StatelessWidget {
     return Column(
       children: shown.map((alert) {
         final colors = alert.uiColors; // [bg, border, text]
-        final bg     = _hexColor(colors[0]);
+        final bg = _hexColor(colors[0]);
         final border = _hexColor(colors[1]);
-        final text   = _hexColor(colors[2]);
-        final descr  = isEs ? alert.descricaoEs : alert.descricaoPt;
-        final conduta = isEs ? alert.condutaEs   : alert.condutaPt;
+        final text = _hexColor(colors[2]);
+        final descr = isEs ? alert.descricaoEs : alert.descricaoPt;
+        final conduta = isEs ? alert.condutaEs : alert.condutaPt;
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: 6),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: border, width: 1.2),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: border, width: 0.7),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -521,14 +547,14 @@ class _DdiBanner extends StatelessWidget {
                   children: [
                     Text(
                       alert.emoji,
-                      style: const TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: MedTypography.internalTitleSize),
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         isEs ? alert.titleEs() : alert.titlePt(),
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: MedTypography.sectionLabelSize,
                           fontWeight: FontWeight.w800,
                           color: text,
                           height: 1.2,
@@ -546,7 +572,8 @@ class _DdiBanner extends StatelessWidget {
                       child: Text(
                         'Score ${alert.scoreClinico}/5',
                         style: TextStyle(
-                          fontSize: 10, fontWeight: FontWeight.w700,
+                          fontSize: MedTypography.microTextSize,
+                          fontWeight: FontWeight.w700,
                           color: text,
                         ),
                       ),
@@ -559,7 +586,7 @@ class _DdiBanner extends StatelessWidget {
                 // Par de drogas
                 RichText(
                   text: TextSpan(
-                    style: TextStyle(fontSize: 12.5, color: text, height: 1.3),
+                    style: TextStyle(fontSize: MedTypography.sectionLabelSize, color: text, height: 1.3),
                     children: [
                       TextSpan(
                         text: alert.drugA,
@@ -579,7 +606,7 @@ class _DdiBanner extends StatelessWidget {
                   Text(
                     descr,
                     style: TextStyle(
-                      fontSize: 11.5,
+                      fontSize: MedTypography.microTextSize,
                       color: text.withOpacity(0.87),
                       height: 1.4,
                     ),
@@ -590,8 +617,8 @@ class _DdiBanner extends StatelessWidget {
                   const SizedBox(height: 5),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     decoration: BoxDecoration(
                       color: border.withOpacity(0.20),
                       borderRadius: BorderRadius.circular(8),
@@ -599,7 +626,7 @@ class _DdiBanner extends StatelessWidget {
                     child: Text(
                       '${isEs ? 'Conducta' : 'Conduta'}: $conduta',
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: MedTypography.microTextSize,
                         color: text,
                         fontWeight: FontWeight.w600,
                         height: 1.4,
@@ -622,7 +649,7 @@ class _DdiBanner extends StatelessWidget {
 // ═════════════════════════════════════════════════════════════════════════════
 class _ChipsWithInput extends StatelessWidget {
   final List<FarmacoEntry> farmacos;
-  final Set<String>        flagged;   // Build 164: chips com alerta DDI
+  final Set<String> flagged; // Build 164: chips com alerta DDI
   final bool dark;
   final String lang;
   final InternacionTheme theme;
@@ -662,27 +689,27 @@ class _ChipsWithInput extends StatelessWidget {
       children: [
         // Chips existentes
         ...farmacos.asMap().entries.map(
-          (e) => _AnimatedChip(
-            key: ValueKey('fc_${e.key}_${e.value.medicamento}'),
-            entry:     e.value,
-            idx:       e.key,
-            label:     chipLabel(e.value),
-            isFlagged: flagged.contains(e.value.medicamento), // Build 164
-            dark:      dark,
-            theme:     theme,
-            animCtrl:  animFor(e.key),
-            onTap:     () => onEdit(e.key),
-            onRemove:  () => onRemove(e.key),
-          ),
-        ),
+              (e) => _AnimatedChip(
+                key: ValueKey('fc_${e.key}_${e.value.medicamento}'),
+                entry: e.value,
+                idx: e.key,
+                label: chipLabel(e.value),
+                isFlagged: flagged.contains(e.value.medicamento), // Build 164
+                dark: dark,
+                theme: theme,
+                animCtrl: animFor(e.key),
+                onTap: () => onEdit(e.key),
+                onRemove: () => onRemove(e.key),
+              ),
+            ),
 
         // Campo de entrada inline
         _InlineInput(
-          ctrl:    inputCtrl,
-          focus:   inputFocus,
-          dark:    dark,
-          theme:   theme,
-          hint:    isEs ? 'Ampicilina 1.5g IV…' : 'Ampicilina 1.5g IV…',
+          ctrl: inputCtrl,
+          focus: inputFocus,
+          dark: dark,
+          theme: theme,
+          hint: isEs ? 'Ampicilina 1.5g IV…' : 'Ampicilina 1.5g IV…',
           onCommit: onCommit,
         ),
       ],
@@ -695,7 +722,7 @@ class _AnimatedChip extends StatelessWidget {
   final FarmacoEntry entry;
   final int idx;
   final String label;
-  final bool isFlagged;  // Build 164: ⚠️ prefixo se DDI detectado
+  final bool isFlagged;
   final bool dark;
   final InternacionTheme theme;
   final AnimationController animCtrl;
@@ -717,88 +744,111 @@ class _AnimatedChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Cores do chip: normal = verde; flagged = vermelho soft
-    final chipBg = isFlagged
+    final medicine = entry.medicamento.trim().isNotEmpty
+        ? entry.medicamento.trim()
+        : label;
+    final dose = entry.dosagem.trim();
+
+    final bg = isFlagged
         ? (dark
-            ? const Color(0xFF7F1D1D).withOpacity(0.35)
-            : const Color(0xFFFEE2E2))
+            ? const Color(0xFF4A2025).withOpacity(0.72)
+            : const Color(0xFFFFF1F2))
         : (dark
-            ? theme.accent.withOpacity(0.13)
-            : theme.accent.withOpacity(0.09));
+            ? const Color(0xFF182820).withOpacity(0.82)
+            : const Color(0xFFF1F8F5));
 
-    final chipBorder = isFlagged
-        ? (dark ? const Color(0xFFFCA5A5).withOpacity(0.50)
-                : const Color(0xFFFCA5A5))
-        : theme.accent.withOpacity(dark ? 0.35 : 0.28);
+    final border = isFlagged
+        ? (dark
+            ? const Color(0xFFFB7185).withOpacity(0.46)
+            : const Color(0xFFFDA4AF))
+        : theme.pharmaAccent.withOpacity(dark ? 0.42 : 0.30);
 
-    final chipTextColor = isFlagged
-        ? (dark ? const Color(0xFFFCA5A5) : const Color(0xFF991B1B))
+    final primary = isFlagged
+        ? (dark ? const Color(0xFFFFB4BE) : const Color(0xFF9F1239))
+        : (dark ? const Color(0xFFE7FFF5) : const Color(0xFF14532D));
+
+    final secondary = isFlagged
+        ? primary.withOpacity(0.84)
         : (dark
-            ? theme.accent.withOpacity(0.95)
-            : theme.accent);
+            ? theme.pharmaAccent.withOpacity(0.92)
+            : const Color(0xFF047857));
 
     return FadeTransition(
       opacity: CurvedAnimation(parent: animCtrl, curve: Curves.easeOut),
       child: ScaleTransition(
-        scale: Tween<double>(begin: 0.75, end: 1.0).animate(
+        scale: Tween<double>(begin: 0.82, end: 1.0).animate(
           CurvedAnimation(parent: animCtrl, curve: Curves.easeOutBack),
         ),
         child: GestureDetector(
           onTap: onTap,
+          behavior: HitTestBehavior.opaque,
           child: Container(
-            padding: const EdgeInsets.only(left: 10, right: 4, top: 5, bottom: 5),
+            constraints: const BoxConstraints(minHeight: 32),
+            padding: const EdgeInsets.fromLTRB(8, 5, 5, 5),
             decoration: BoxDecoration(
-              color: chipBg,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: chipBorder, width: 0.9),
+              color: bg,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: border, width: 0.65),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ── Build 164: ícone de alerta se flagged, senão ícone padrão ──
-                if (isFlagged)
-                  const Icon(Icons.warning_amber_rounded,
-                      size: 12, color: Color(0xFF991B1B))
-                else
-                  Icon(Icons.medication_outlined,
-                      size: 12, color: theme.accent.withOpacity(0.80)),
-
-                const SizedBox(width: 5),
-
-                // Label
+                Icon(
+                  isFlagged
+                      ? Icons.warning_amber_rounded
+                      : Icons.medication_outlined,
+                  size: 13,
+                  color: secondary,
+                ),
+                const SizedBox(width: 6),
                 Flexible(
                   child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w600,
-                      color: chipTextColor,
-                      height: 1.2,
-                    ),
+                    medicine,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13.0,
+                      fontWeight: FontWeight.w700,
+                      height: 1.05,
+                      color: primary,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 4),
-
-                // Botão ✕
+                if (dose.isNotEmpty) ...[
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: secondary.withOpacity(dark ? 0.12 : 0.09),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      dose,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                        height: 1.0,
+                        color: secondary,
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(width: 5),
                 GestureDetector(
                   onTap: onRemove,
                   behavior: HitTestBehavior.opaque,
-                  child: Container(
-                    width: 18, height: 18,
-                    decoration: BoxDecoration(
-                      color: isFlagged
-                          ? const Color(0xFFFCA5A5).withOpacity(0.40)
-                          : theme.accent.withOpacity(dark ? 0.20 : 0.12),
-                      shape: BoxShape.circle,
-                    ),
+                  child: SizedBox(
+                    width: 22,
+                    height: 22,
                     child: Icon(
                       Icons.close_rounded,
-                      size: 11,
-                      color: isFlagged
-                          ? const Color(0xFF991B1B)
-                          : theme.accent.withOpacity(0.85),
+                      size: 13,
+                      color: secondary.withOpacity(0.82),
                     ),
                   ),
                 ),
@@ -837,8 +887,8 @@ class _InlineInputState extends State<_InlineInput> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 200,
-      height: 36,
+      width: 260,
+      height: 38,
       child: KeyboardListener(
         focusNode: FocusNode(),
         onKeyEvent: (event) {
@@ -853,10 +903,13 @@ class _InlineInputState extends State<_InlineInput> {
         },
         child: TextField(
           controller: widget.ctrl,
-          focusNode:  widget.focus,
-          style: TextStyle(fontSize: 12.5, color: widget.theme.textPrimary),
+          focusNode: widget.focus,
+          style: TextStyle(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
+            color: widget.theme.textPrimary,
+          ),
           onChanged: (v) {
-            // + ou vírgula disparam commit imediato
             if (v.endsWith('+') || v.endsWith(',')) {
               widget.onCommit();
             }
@@ -864,23 +917,38 @@ class _InlineInputState extends State<_InlineInput> {
           onSubmitted: (_) => widget.onCommit(),
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            hintText: widget.hint,
-            hintStyle: TextStyle(fontSize: 12, color: widget.theme.labelColor),
-            isDense: true,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            filled: true,
-            fillColor: widget.dark
-                ? const Color(0xFF151820)
-                : const Color(0xFFF9FAFB),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: BorderSide(color: widget.theme.border, width: 0.8),
+            prefixIcon: Icon(
+              Icons.add_rounded,
+              size: 16,
+              color: widget.theme.pharmaAccent.withOpacity(0.88),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide:
-                  BorderSide(color: widget.theme.accent, width: 1.2),
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 28,
+              minHeight: 28,
+            ),
+            hintText: widget.hint,
+            hintStyle: TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w500,
+              color: widget.theme.labelColor,
+            ),
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 2,
+              vertical: 8,
+            ),
+            filled: false,
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: widget.theme.border.withOpacity(0.84),
+                width: 0.7,
+              ),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: widget.theme.pharmaAccent,
+                width: 1.2,
+              ),
             ),
           ),
         ),

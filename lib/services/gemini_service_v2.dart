@@ -579,10 +579,10 @@ class GeminiServiceV2 {
       return [];
     }
 
-    // Build 184: janela reduzida de 5 → 2 pares (anti-503 / anti-30k chars).
-    // 2 pares = 4 entradas ≈ ~800 tokens de contexto conversacional.
-    // Suficiente para follow-up imediato; elimina a causa raiz do Erro 503.
-    const maxPairs = 2;
+    // STUDY-30TURN: downstream safety ceiling expanded to 30 exchange pairs.
+    // Upstream mode policy still decides the effective window; Study may carry 60 entries.
+    // Plantão remains upstream-minimal; Study preserves long same-topic continuity.
+    const maxPairs = 30;
     const maxEntries = maxPairs * 2; // 4 entradas = 2 user + 2 model
 
     if (history.length <= maxEntries) {

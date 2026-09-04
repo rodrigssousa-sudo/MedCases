@@ -63,6 +63,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constantes de throttling
@@ -204,6 +205,16 @@ class OfflineCalculatorCacheService {
   bool _syncInProgress = false;
   bool _cancelRequested = false; // sinaliza para o loop parar
 
+  // CALCULATOR_PERF_V1 — offline-ready + 3 checks/day.
+  static const bool offlineReadyByDefault = true;
+  static const String _kLastSuccessfulSlotKey =
+      'calculator_cache_last_successful_slot_v1';
+
+  Timer? _syncSlotTimer;
+  bool _schedulerStarted = false;
+  bool _lastManifestCheckSucceeded = false;
+
+
   // ── Callback de "AI ocupada" — injetado externamente ──────────────────────
   // Evita importação circular com app_provider.dart.
   // Registrado em main.dart após login:
@@ -288,15 +299,97 @@ class OfflineCalculatorCacheService {
   /// Inicia sync em background — fire-and-forget, nunca bloqueia.
   /// Seguro chamar múltiplas vezes (re-entrada protegida por _syncInProgress).
   /// Espera [_kInitialDelayMs] antes de qualquer I/O para deixar Home renderizar.
-  void startBackgroundSync() {
+  String _currentSyncSlotId([DateTime? value]) {
+    final now = value ?? DateTime.now();
+    final slot = now.hour ~/ 8;
+    return '${now.year.toString().padLeft(4, '0')}-'
+        '${now.month.toString().padLeft(2, '0')}-'
+        '${now.day.toString().padLeft(2, '0')}-$slot';
+  }
+
+  DateTime _nextSyncBoundary([DateTime? value]) {
+    final now = value ?? DateTime.now();
+
+    if (now.hour < 8) {
+      return DateTime(now.year, now.month, now.day, 8);
+    }
+    if (now.hour < 16) {
+      return DateTime(now.year, now.month, now.day, 16);
+    }
+
+    final tomorrow = DateTime(now.year, now.month, now.day)
+        .add(const Duration(days: 1));
+    return DateTime(tomorrow.year, tomorrow.month, tomorrow.day);
+  }
+
+  void _ensureSyncScheduler() {
     if (kIsWeb) return;
-    if (_syncInProgress) {
-      debugPrint('[OFFLINE_CACHE] sync já em andamento — nova chamada ignorada');
+    if (_schedulerStarted) return;
+
+    _schedulerStarted = true;
+    _scheduleNextSyncBoundary();
+  }
+
+  void _scheduleNextSyncBoundary() {
+    _syncSlotTimer?.cancel();
+
+    final now = DateTime.now();
+    final next = _nextSyncBoundary(now);
+    final delay = next.difference(now) + const Duration(seconds: 1);
+
+    _syncSlotTimer = Timer(delay, () {
+      unawaited(_runScheduledSync(skipInitialDelay: true));
+      _scheduleNextSyncBoundary();
+    });
+
+    debugPrint(
+      '[OFFLINE_CACHE][SCHEDULE] next=${next.toIso8601String()} '
+      'delaySec=${delay.inSeconds}',
+    );
+  }
+
+  Future<void> _runScheduledSync({
+    bool skipInitialDelay = false,
+  }) async {
+    if (kIsWeb || _syncInProgress) return;
+
+    final slot = _currentSyncSlotId();
+    final prefs = await SharedPreferences.getInstance();
+    final previous = prefs.getString(_kLastSuccessfulSlotKey);
+
+    if (previous == slot && await hasValidCache()) {
+      debugPrint('[OFFLINE_CACHE][SCHEDULE] slot=$slot alreadyChecked=true');
       return;
     }
-    _cancelRequested = false;
-    // ignore: unawaited_futures
-    _doSync();
+
+    _lastManifestCheckSucceeded = false;
+
+    await _doSync(skipInitialDelay: skipInitialDelay);
+
+    if (_lastManifestCheckSucceeded) {
+      await prefs.setString(_kLastSuccessfulSlotKey, slot);
+      debugPrint('[OFFLINE_CACHE][SCHEDULE] slot=$slot persisted=true');
+    } else {
+      debugPrint(
+        '[OFFLINE_CACHE][SCHEDULE] slot=$slot persisted=false retryOnResume=true',
+      );
+    }
+  }
+
+  /// Called by the app lifecycle owner whenever the app returns foreground.
+  /// If the current 8-hour slot was not successfully checked, catch up now.
+  void onAppResumed() {
+    if (kIsWeb) return;
+    _ensureSyncScheduler();
+    unawaited(_runScheduledSync(skipInitialDelay: true));
+  }
+
+  /// Starts offline-readiness automatically without forcing network-off mode.
+  void startBackgroundSync() {
+    if (kIsWeb) return;
+
+    _ensureSyncScheduler();
+    unawaited(_runScheduledSync());
   }
 
   /// Força atualização imediata (botão "Atualizar agora").
@@ -722,7 +815,9 @@ class OfflineCalculatorCacheService {
         debugPrint('[OFFLINE_CACHE] manifest HTTP ${resp.statusCode}');
         return null;
       }
-      return jsonDecode(resp.body) as Map<String, dynamic>;
+      final decoded = jsonDecode(resp.body) as Map<String, dynamic>;
+      _lastManifestCheckSucceeded = true;
+      return decoded;
     } catch (e) {
       debugPrint('[OFFLINE_CACHE] erro ao buscar manifest remoto: $e');
       return null;

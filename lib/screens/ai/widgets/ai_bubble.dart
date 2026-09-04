@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'ai_block_bubble.dart';
 import 'ai_skeleton_lines.dart';
+import 'streaming_text_drain.dart';
 
 String _cleanAiText(String raw) {
   String s = raw;
@@ -399,6 +400,7 @@ class AiBubble extends StatefulWidget {
   final VoidCallback onCopy;
   final bool animate;
   final String lang; // globalLanguageLock — propagado para AiBlockBubble
+  final bool studyMode;
   // TTS
   final bool ttsPlaying;
   final bool ttsReady;
@@ -409,6 +411,10 @@ class AiBubble extends StatefulWidget {
 
   /// Callback para notificar o pai que um bloco foi revelado
   final void Function(int generation)? onBlockRevealed;
+
+  /// Notifica que a resposta definitiva terminou a pintura visual.
+  /// Não é utilizado para scroll.
+  final void Function(int generation)? onVisualComplete;
 
   /// true enquanto esta bolha está sendo preenchida por streaming V2
   /// (exibe cursor piscante ▌ após o texto)
@@ -428,11 +434,13 @@ class AiBubble extends StatefulWidget {
     required this.onCopy,
     this.animate = false,
     this.lang = 'pt',
+    this.studyMode = false,
     this.ttsPlaying = false,
     this.ttsReady = false,
     this.onTts,
     this.scrollGeneration = 0,
     this.onBlockRevealed,
+    this.onVisualComplete,
     this.isStreaming = false,
     this.onChipTap,
     this.streamingTextNotifier,
@@ -458,67 +466,141 @@ class AiBubbleState extends State<AiBubble> {
   // Referência ao notifier atual — para removeListener no dispose/update
   ValueNotifier<String>? _attachedNotifier;
 
-  // ── BUILD 462-STREAMING-CORE: Batch Rendering Engine (40ms) ─────────────
-  // Desacopla a chegada de chunks da rede (networkBuffer) da atualização
-  // da UI (visibleTextNotifier). Limita rebuilds a 25/s (suavidade biológica).
+  // ── AI-STREAM-VISUAL-I.1-R4: latest snapshot coalescer ─────────────
   //
-  // Ciclo de vida:
-  //   1. Chunk chega em _onRawChunk() → escrito em _networkBuffer (zero setState)
-  //   2. _renderTimer (40ms) → drena _networkBuffer → atualiza _displayText
-  //      e _cachedBlocks em UM único setState por tick
-  //   3. No onDone: _renderTimer cancelado → setState final com texto completo
-  //      → _streamingComplete=true → build() usa MarkdownBody em vez de SelectableText
-  //
-  // Fase "Skeleton": quando widget.isStreaming=true mas _displayText está vazio
-  //   (AiStarted recebido, nenhum AiTextDelta ainda), exibe linhas pulsantes.
-  // ─────────────────────────────────────────────────────────────────────────
+  // O ValueNotifier entrega o texto acumulado completo.
+  // _pendingSnapshot mantém somente o alvo mais recente do transporte;
+  // _displayText avança gradualmente até esse alvo, sem acumular snapshots.
+  String _pendingSnapshot = '';
 
-  /// Buffer de rede: recebe deltas brutos sem custo de setState.
-  /// Drenado a cada 40ms pelo [_renderTimer].
-  final StringBuffer _networkBuffer = StringBuffer();
-
-  /// Timer periódico de 40ms — opera APENAS durante streaming ativo.
+  /// Timer one-shot de coalescência visual.
   Timer? _renderTimer;
 
-  /// true após o evento de conclusão (AiCompleted / isDone) — troca
-  /// SelectableText pelo MarkdownBody completo no próximo frame.
-  bool _streamingComplete = false;
+  // AI-RECONSTRUCTION-R18.6Z-R2-R2-R1:
+  // A AiBubble é a única proprietária da cadência de apresentação.
+  static const Duration _visualTick = Duration(milliseconds: 32);
+  static const int _maxVisualGraphemesPerTick = 8;
 
-  // ── Drena o buffer de rede e atualiza UI a cada 40ms ─────────────────
-  void _startRenderTimer() {
-    _renderTimer?.cancel();
-    _renderTimer = Timer.periodic(const Duration(milliseconds: 40), (_) {
-      if (!mounted) {
-        _renderTimer?.cancel();
-        _renderTimer = null;
+  /// true entre o fim do transporte e o último grafema pintado.
+  bool _terminalDrainPending = false;
+
+  int? _visualCompleteGeneration;
+  int? _visualCompleteTextHash;
+
+  /// Limita solicitações de scroll durante o crescimento da bolha.
+  int _lastStreamingScrollMs = 0;
+  bool _streamingScrollScheduled = false;
+
+  void _notifyVisualCompleteOnce() {
+    final callback = widget.onVisualComplete;
+
+    final visualText =
+        widget.text.trim().isNotEmpty ? widget.text : _displayText;
+
+    if (callback == null || widget.isStreaming || visualText.trim().isEmpty) {
+      return;
+    }
+
+    final generation = widget.scrollGeneration;
+    final textHash = visualText.hashCode;
+
+    if (_visualCompleteGeneration == generation &&
+        _visualCompleteTextHash == textHash) {
+      return;
+    }
+
+    // Reserva antes do post-frame para impedir agendamentos duplicados.
+    _visualCompleteGeneration = generation;
+    _visualCompleteTextHash = textHash;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          widget.isStreaming ||
+          widget.scrollGeneration != generation) {
         return;
       }
-      final pending = _networkBuffer.toString();
-      if (pending.isEmpty) return;
-      _networkBuffer.clear();
 
-      // Acumula no display text (o buffer contém o DELTA, não o acumulado)
-      final newText = _displayText + pending;
-      try {
-        setState(() {
-          _displayText = newText;
-          _cachedBlocks = _computeBlocksFromText(newText);
-          if (_cachedBlocks.isNotEmpty && _visibleCount < 1) {
-            _visibleCount = 1;
-          }
-          if (_cachedBlocks.length > _visibleCount) {
-            _visibleCount = _cachedBlocks.length;
-          }
-        });
-      } catch (_) {}
+      final currentVisualText =
+          widget.text.trim().isNotEmpty ? widget.text : _displayText;
 
-      if (widget.isStreaming && widget.onBlockRevealed != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          widget.onBlockRevealed!(widget.scrollGeneration);
-        });
+      if (currentVisualText.hashCode != textHash) {
+        return;
       }
+
+      callback(generation);
     });
+  }
+
+  void _startRenderTimer() {
+    if (_renderTimer?.isActive ?? false) return;
+
+    _renderTimer = Timer(
+      _visualTick,
+      () {
+        _renderTimer = null;
+
+        if (!mounted) return;
+
+        final targetText = _pendingSnapshot;
+
+        if (targetText.isEmpty || targetText == _displayText) {
+          if (targetText == _displayText) {
+            _pendingSnapshot = '';
+            _terminalDrainPending = false;
+          }
+
+          return;
+        }
+
+        final nextText = StreamingTextDrain.revealTowards(
+          current: _displayText,
+          target: targetText,
+          maxPerTick: _maxVisualGraphemesPerTick,
+        );
+
+        if (nextText == _displayText) {
+          return;
+        }
+
+        final nextBlocks = _computeBlocksFromText(nextText);
+
+        setState(() {
+          _displayText = nextText;
+          _cachedBlocks = nextBlocks;
+          _visibleCount = nextBlocks.isEmpty ? 0 : nextBlocks.length;
+        });
+
+        _scheduleStreamingScroll();
+
+        final reachedCurrentTarget =
+            nextText == targetText && _pendingSnapshot == targetText;
+
+        if (reachedCurrentTarget) {
+          _pendingSnapshot = '';
+
+          final completedTerminalDrain = _terminalDrainPending;
+
+          _terminalDrainPending = false;
+
+          if (completedTerminalDrain) {
+            _notifyVisualCompleteOnce();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+
+              widget.onBlockRevealed?.call(
+                widget.scrollGeneration,
+              );
+            });
+          }
+
+          return;
+        }
+
+        if (_pendingSnapshot.isNotEmpty && _pendingSnapshot != _displayText) {
+          _startRenderTimer();
+        }
+      },
+    );
   }
 
   void _stopRenderTimer() {
@@ -526,32 +608,62 @@ class AiBubbleState extends State<AiBubble> {
     _renderTimer = null;
   }
 
-  // ── Listener do notifier: recebe delta acumulado do provider ──────────
-  // O notifier passa o texto ACUMULADO completo (comportamento legado).
-  // Convertemos para delta (diff em relação ao _displayText anterior)
-  // e empurramos apenas o novo fragmento para o _networkBuffer.
+  void _scheduleStreamingScroll() {
+    if (!widget.isStreaming ||
+        widget.onBlockRevealed == null ||
+        _streamingScrollScheduled) {
+      return;
+    }
+
+    final nowMs = DateTime.now().millisecondsSinceEpoch;
+
+    if (nowMs - _lastStreamingScrollMs < 160) {
+      return;
+    }
+
+    _lastStreamingScrollMs = nowMs;
+    _streamingScrollScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _streamingScrollScheduled = false;
+
+      if (!mounted || !widget.isStreaming) {
+        return;
+      }
+
+      widget.onBlockRevealed?.call(
+        widget.scrollGeneration,
+      );
+    });
+  }
+
+  // O notifier entrega snapshots acumulados.
+  // Mantemos apenas o snapshot mais recente.
   void _onStreamingChunk() {
     if (!mounted) return;
+
     final notifier = _attachedNotifier;
     if (notifier == null) return;
+
     final fullAccumulated = notifier.value;
+    if (fullAccumulated.isEmpty) return;
 
-    // Extrai apenas o delta desde o último texto conhecido
-    final prevLen = _displayText.length + _networkBuffer.length;
-    if (fullAccumulated.length > prevLen) {
-      final delta = fullAccumulated.substring(prevLen);
-      _networkBuffer.write(delta);
-    } else if (fullAccumulated.length < _displayText.length) {
-      // Regressão rara (strip de metadata): reseta o buffer com o novo texto
-      _networkBuffer.clear();
-      _networkBuffer.write(fullAccumulated
-          .substring(_displayText.length.clamp(0, fullAccumulated.length)));
+    final visualFloorLength = _pendingSnapshot.isNotEmpty
+        ? _pendingSnapshot.length
+        : _displayText.length;
+
+    // Eventos atrasados não podem fazer o texto visível retroceder.
+    if (fullAccumulated.length < visualFloorLength) {
+      return;
     }
 
-    // Garante que o timer está ativo durante o streaming
-    if (_renderTimer == null || !_renderTimer!.isActive) {
-      _startRenderTimer();
+    if (fullAccumulated == _displayText ||
+        fullAccumulated == _pendingSnapshot) {
+      return;
     }
+
+    _pendingSnapshot = fullAccumulated;
+    _startRenderTimer();
   }
 
   void _attachNotifier(ValueNotifier<String>? notifier) {
@@ -567,8 +679,23 @@ class AiBubbleState extends State<AiBubble> {
     _displayText = widget.text;
     _cachedBlocks = _computeBlocksFromText(_displayText);
     _attachNotifier(widget.streamingTextNotifier);
-    // Inicia a sequência de exibição após o primeiro frame
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startSequence());
+
+    // AI-RECONSTRUCTION-R18.6Y-R3-R2:
+    // Bolhas estáticas ou já finalizadas precisam nascer com a altura
+    // definitiva no primeiro layout. Um frame com _visibleCount=0 faz
+    // respostas recicladas pelo ListView colapsarem e expandirem acima
+    // da viewport, deslocando a âncora visual da conversa.
+    final deferForActiveStreaming = widget.animate && widget.isStreaming;
+
+    if (deferForActiveStreaming) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _startSequence(),
+      );
+    } else {
+      _visibleCount = _cachedBlocks.isEmpty ? 0 : _cachedBlocks.length;
+      _started = true;
+      _notifyVisualCompleteOnce();
+    }
   }
 
   @override
@@ -583,106 +710,69 @@ class AiBubbleState extends State<AiBubble> {
   void didUpdateWidget(AiBubble old) {
     super.didUpdateWidget(old);
 
-    // Build 188: atualiza o listener do notifier se mudou
     if (old.streamingTextNotifier != widget.streamingTextNotifier) {
-      _attachNotifier(widget.streamingTextNotifier);
+      _attachNotifier(
+        widget.streamingTextNotifier,
+      );
     }
 
     final textChanged = old.text != widget.text;
     final streamingChanged = old.isStreaming != widget.isStreaming;
 
-    // ── BUILD 462: Detecta conclusão do stream (true → false) ─────────────
-    // Quando streaming termina: para o timer, drena qualquer delta residual
-    // no buffer, comita o texto final definitivo e marca _streamingComplete=true
-    // para que o build() substitua SelectableText → MarkdownBody.
+    final streamingJustStarted = !old.isStreaming && widget.isStreaming;
+
     final streamingJustEnded = old.isStreaming && !widget.isStreaming;
-    if (streamingJustEnded) {
-      _stopRenderTimer();
-      // Drena buffer residual sincronamente antes do setState final
-      final residual = _networkBuffer.toString();
-      _networkBuffer.clear();
-      // Texto final definitivo: usa widget.text (commitado pelo provider) como
-      // source-of-truth — descarta qualquer delta residual que possa ter chegado
-      // fora de ordem nos últimos milissegundos do stream.
-      try {
-        setState(() {
-          _displayText =
-              widget.text.isNotEmpty ? widget.text : (_displayText + residual);
-          _cachedBlocks = _computeBlocksFromText(_displayText);
-          _streamingComplete = true;
-          if (_cachedBlocks.isNotEmpty) _visibleCount = _cachedBlocks.length;
-        });
-      } catch (_) {}
-    }
 
-    if (!textChanged && !streamingChanged) return;
+    if (streamingJustStarted) {
+      _terminalDrainPending = false;
+      _visualCompleteGeneration = null;
+      _visualCompleteTextHash = null;
+      _pendingSnapshot = widget.text;
 
-    // ── CORREÇÃO CRÍTICA DE REATIVIDADE ─────────────────────────────────────
-    // Build 188: quando o notifier está ativo e streaming, os chunks chegam via
-    // _onStreamingChunk() — não precisamos processar widget.text aqui.
-    // Só processa widget.text quando: (a) não há notifier, ou (b) streaming acabou.
-    final hasActiveNotifier = _attachedNotifier != null && widget.isStreaming;
-
-    // Sempre atualiza _displayText a partir de widget.text quando streaming termina
-    // ou quando não há notifier (bolha histórica).
-    if (!hasActiveNotifier || streamingJustEnded) {
-      try {
-        setState(() {
-          _displayText = widget.text;
-          _cachedBlocks = _computeBlocksFromText(_displayText);
-
-          // Durante streaming: garante que _visibleCount >= 1 assim que o
-          // primeiro bloco existe, mesmo que _startSequence ainda não rodou.
-          // Sem isso, o primeiro chunk ficava invisível (visibleCount=0).
-          if (widget.isStreaming &&
-              _cachedBlocks.isNotEmpty &&
-              _visibleCount < 1) {
-            _visibleCount = 1;
-          }
-
-          // Quando novos blocos aparecem (quebras de parágrafo no stream),
-          // avança _visibleCount para revelar imediatamente — sem delay de animação.
-          // A animação de "revelação em sequência" só se aplica à resposta final,
-          // não ao texto chegando em tempo real.
-          if (widget.isStreaming && _cachedBlocks.length > _visibleCount) {
-            _visibleCount = _cachedBlocks.length;
-          }
-
-          // ── BUILD 101 FIX: garante visibilidade total ao fim do stream ────────
-          // Quando isStreaming muda de true → false (cursor removido), o
-          // _computeBlocksFromText() pode gerar um nº diferente de blocos (sem o ▌).
-          // Garante que _visibleCount cobre TODOS os blocos finais — evita que
-          // o último bloco fique invisível se o count anterior era para blocos-com-cursor.
-          if (streamingJustEnded && _cachedBlocks.isNotEmpty) {
-            _visibleCount = _cachedBlocks.length;
-          }
-        });
-      } catch (_) {
-        // Falha de render silenciosa: mantém estado anterior da bolha intacto.
-        // O próximo chunk válido aciona novo didUpdateWidget e recupera a tela.
+      if (_pendingSnapshot.isNotEmpty && _pendingSnapshot != _displayText) {
+        _startRenderTimer();
       }
     }
 
-    // Scroll para o fim a cada chunk — texto cresce e médico acompanha
-    if (widget.isStreaming && textChanged && widget.onBlockRevealed != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        widget.onBlockRevealed!(widget.scrollGeneration);
-      });
+    if (streamingJustEnded) {
+      _stopRenderTimer();
+
+      // O snapshot definitivo é recebido imediatamente,
+      // mas continua sendo pintado pelo mesmo drain visual.
+      final finalText = widget.text.isNotEmpty
+          ? widget.text
+          : (_pendingSnapshot.isNotEmpty ? _pendingSnapshot : _displayText);
+
+      if (finalText.isEmpty || finalText == _displayText) {
+        _pendingSnapshot = '';
+        _terminalDrainPending = false;
+        _displayText = finalText;
+        _cachedBlocks = _computeBlocksFromText(finalText);
+        _visibleCount = _cachedBlocks.isEmpty ? 0 : _cachedBlocks.length;
+        _notifyVisualCompleteOnce();
+      } else {
+        _pendingSnapshot = finalText;
+        _terminalDrainPending = true;
+        _startRenderTimer();
+      }
+
+      return;
     }
 
-    // ── BUILD 101 FIX: scroll final quando streaming termina ──────────────
-    // Quando isStreaming muda de true → false, o cursor ▌ é removido e o
-    // _computeBlocks() recomputa os blocos sem ele. Este addPostFrameCallback
-    // garante que o scroll se ajusta ao layout final DEPOIS que os blocos sem
-    // cursor foram renderizados — eliminando o congelamento mid-screen.
-    if (!widget.isStreaming &&
-        old.isStreaming &&
-        widget.onBlockRevealed != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        widget.onBlockRevealed!(widget.scrollGeneration);
-      });
+    if (!textChanged && !streamingChanged) {
+      return;
+    }
+
+    final hasActiveNotifier = _attachedNotifier != null && widget.isStreaming;
+
+    // Histórico, fallback sem notifier e atualizações não-streaming.
+    if (!hasActiveNotifier && textChanged) {
+      _displayText = widget.text;
+      _cachedBlocks = _computeBlocksFromText(_displayText);
+
+      if (widget.isStreaming) {
+        _visibleCount = _cachedBlocks.isEmpty ? 0 : _cachedBlocks.length;
+      }
     }
   }
 
@@ -931,8 +1021,10 @@ class AiBubbleState extends State<AiBubble> {
     // ── BUILD 462: SKELETON SCREEN — fase AiStarted (antes do 1º delta) ─────
     // Quando streaming está ativo mas nenhum texto chegou ainda (conexão
     // estabelecida, aguardando primeiro AiTextDelta), exibe 3 linhas pulsantes.
-    // Transição natural: skeleton → SelectableText (primeiros chars) → MarkdownBody.
-    if (widget.isStreaming && _displayText.isEmpty && _networkBuffer.isEmpty) {
+    // Transição natural: skeleton → AiBlockBubble/MarkdownBody contínuo.
+    if (widget.isStreaming &&
+        _displayText.isEmpty &&
+        _pendingSnapshot.isEmpty) {
       return RepaintBoundary(
         child: AiSkeletonLines(dark: widget.dark),
       );
@@ -941,41 +1033,11 @@ class AiBubbleState extends State<AiBubble> {
     // Build 123: _visibleCount não bloqueia mais — sempre exibe se há texto.
     if (_visibleCount == 0) return const SizedBox.shrink();
 
-    // ── BUILD 462: DIPARO ÚNICO DO MARKDOWN ─────────────────────────────────
-    // DURANTE streaming ativo (!_streamingComplete):
-    //   → SelectableText com estilo limpo (height: 1.45) — zero overhead de parse
-    //   → texto bruto do _displayText acumulado pelo batch timer (40ms)
-    //   → SelectionArea do pai permanece 100% funcional
+    // AI-STREAM-VISUAL-I.1-R4 — renderer único e contínuo.
     //
-    // APÓS conclusão (_streamingComplete = true):
-    //   → MarkdownBody substitui SelectableText EM UM ÚNICO FRAME
-    //   → aplica negritos, listas, emojis de card 🟥, hierarquia clínica
-    //   → usuário vivencia velocidade do texto cru + layout premium na finalização
-    if (widget.isStreaming && !_streamingComplete) {
-      // ── Texto em fluxo: SelectableText cru, máxima velocidade ──────────────
-      final rawText = _displayText.isNotEmpty ? _displayText : '';
-      // Remove cursor ▌ do texto bruto (adicionado pelo _computeBlocksFromText)
-      final displayRaw = rawText.replaceAll('\u258c', '');
-      final textColor = widget.dark
-          ? Colors.white.withOpacity(0.88)
-          : const Color(0xFF1A202C);
-      return RepaintBoundary(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2),
-          child: SelectableText(
-            displayRaw,
-            style: TextStyle(
-              fontSize: 14.5,
-              color: textColor,
-              height: 1.45,
-              fontFamily: 'Roboto',
-              letterSpacing: 0.01,
-            ),
-          ),
-        ),
-      );
-    }
-
+    // Streaming e texto final usam a mesma árvore AiBlockBubble/MarkdownBody.
+    // No fechamento, o mesmo widget recebe o texto definitivo, sem substituição
+    // SelectableText → MarkdownBody e sem flash estrutural.
     // ── Streaming concluído ou bolha histórica: AiBlockBubble com MarkdownBody
     // Build 123 — texto único direto: sem join, sem fragmentação.
     // Build 188: usa _displayText (pode vir do notifier) em vez de widget.text.
@@ -994,6 +1056,7 @@ class AiBubbleState extends State<AiBubble> {
         ttsPlaying: widget.ttsPlaying,
         ttsReady: widget.ttsReady,
         lang: widget.lang,
+        studyMode: widget.studyMode,
         onChipTap: widget.onChipTap,
       ),
     );

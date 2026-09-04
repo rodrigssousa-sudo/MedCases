@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../services/firestore_service.dart';
 import '../services/notification_service.dart';
+import '../design_system/foundation/med_typography.dart';
+import '../design_system/tokens/med_spacing.dart';
+import 'home_screen.dart' show ClinicalTimerExternalBridge;
 
 // ── Paleta de cores das notas (6 cores) ──────────────────────────────────────
 class _NoteColor {
@@ -187,13 +190,18 @@ class _NotesScreenState extends State<NotesScreen> {
                 end: Alignment.bottomRight,
                 colors: dark
                     ? [const Color(0xFF0F1116), const Color(0xFF2D3340), const Color(0xFF1F3A28)]
-                    : [const Color(0xFF0F1116), const Color(0xFF1B3D2A), const Color(0xFF10B981)],
+                    : [const Color(0xFF0F1116), const Color(0xFF1B3D2A), const Color(0xFF0D6B57)],
               ),
             ),
             child: SafeArea(
               bottom: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+                padding: const EdgeInsets.fromLTRB(
+          MedSpacing.screenHorizontalPadding,
+          10,
+          MedSpacing.screenHorizontalPadding,
+          16,
+        ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -218,7 +226,7 @@ class _NotesScreenState extends State<NotesScreen> {
                             Text(
                               isEs ? 'Mis Anotaciones' : 'Minhas Anotações',
                               style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w900,
+                                fontSize: MedTypography.screenTitleSize, fontWeight: FontWeight.w900,
                                 color: Colors.white, letterSpacing: -0.3,
                               ),
                             ),
@@ -227,7 +235,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                   ? (isEs ? 'Sin anotaciones' : 'Nenhuma anotação')
                                   : '${_allNotes.length} ${isEs ? 'anotación${_allNotes.length != 1 ? 'es' : ''}' : 'anotaç${_allNotes.length != 1 ? 'ões' : 'ão'}'}',
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: MedTypography.microTextSize,
                                 color: Colors.white.withOpacity(0.55),
                                 fontWeight: FontWeight.w500,
                               ),
@@ -242,7 +250,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         child: const Icon(
                           Icons.add,
                           size: 22,
-                          color: Color(0xFF00E5FF), // Cyan Elétrico Neon
+                          color: Color(0xFF0D6B57), // Accent canônico MedCases
                         ),
                       ),
                     ]),
@@ -262,12 +270,12 @@ class _NotesScreenState extends State<NotesScreen> {
                         Expanded(
                           child: TextField(
                             controller: _searchCtrl,
-                            style: TextStyle(fontSize: 13, color: textCol),
+                            style: TextStyle(fontSize: MedTypography.auxiliarySize, color: textCol),
                             decoration: InputDecoration(
                               hintText: isEs
                                   ? 'Buscar anotaciones...'
                                   : 'Buscar anotações...',
-                              hintStyle: TextStyle(fontSize: 13, color: subCol),
+                              hintStyle: TextStyle(fontSize: MedTypography.auxiliarySize, color: subCol),
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: EdgeInsets.zero,
@@ -304,7 +312,12 @@ class _NotesScreenState extends State<NotesScreen> {
                         onNew: () => _openEditor(),
                       )
                     : ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(14, 14, 14, 80),
+                        padding: const EdgeInsets.fromLTRB(
+          MedSpacing.screenHorizontalPadding,
+          14,
+          MedSpacing.screenHorizontalPadding,
+          80,
+        ),
                         itemCount: notes.length,
                         itemBuilder: (_, i) {
                           final note = notes[i];
@@ -325,7 +338,7 @@ class _NotesScreenState extends State<NotesScreen> {
       floatingActionButton: _allNotes.isNotEmpty
           ? FloatingActionButton(
               onPressed: () => _openEditor(),
-              backgroundColor: const Color(0xFF10B981),
+              backgroundColor: const Color(0xFF0D6B57),
               foregroundColor: Colors.white,
               elevation: 4,
               child: const Icon(Icons.add_rounded, size: 24),
@@ -351,7 +364,7 @@ class _NotesScreenState extends State<NotesScreen> {
             Text(
               isEs ? 'Eliminar anotación' : 'Excluir anotação',
               style: const TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w800,
+                fontSize: MedTypography.internalTitleSize, fontWeight: FontWeight.w800,
                 color: Color(0xFFCC3333)),
             ),
           ]),
@@ -360,7 +373,7 @@ class _NotesScreenState extends State<NotesScreen> {
                 ? '¿Eliminar esta anotación? Esta acción no se puede deshacer.'
                 : 'Excluir esta anotação? Esta ação não pode ser desfeita.',
             style: TextStyle(
-              fontSize: 13,
+              fontSize: MedTypography.clinicalBodySize,
               color: dark ? Colors.white70 : const Color(0xFF444444),
               height: 1.5,
             ),
@@ -482,7 +495,7 @@ class _NoteCard extends StatelessWidget {
                   child: Text(
                     title,
                     style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w800,
+                      fontSize: MedTypography.internalTitleSize, fontWeight: FontWeight.w800,
                       color: textMain, height: 1.3,
                     ),
                     maxLines: 1,
@@ -494,7 +507,7 @@ class _NoteCard extends StatelessWidget {
                 Text(
                   content,
                   style: TextStyle(
-                    fontSize: 12.5, fontWeight: FontWeight.w400,
+                    fontSize: MedTypography.clinicalBodySize, fontWeight: FontWeight.w400,
                     color: textMain.withOpacity(0.75), height: 1.5,
                   ),
                   maxLines: 2,
@@ -519,7 +532,7 @@ class _NoteCard extends StatelessWidget {
                           child: Text(
                             '#$tag',
                             style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w600,
+                              fontSize: MedTypography.microTextSize, fontWeight: FontWeight.w600,
                               color: textSub),
                           ),
                         )).toList(),
@@ -531,7 +544,7 @@ class _NoteCard extends StatelessWidget {
                 Text(
                   timeStr,
                   style: TextStyle(
-                    fontSize: 10, color: textSub, fontWeight: FontWeight.w500),
+                    fontSize: MedTypography.microTextSize, color: textSub, fontWeight: FontWeight.w500),
                 ),
               ]),
             ],
@@ -586,7 +599,7 @@ class _EmptyState extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: dark
                     ? Colors.white.withOpacity(0.06)
-                    : const Color(0xFF10B981).withOpacity(0.08),
+                    : const Color(0xFF0D6B57).withOpacity(0.08),
               ),
               child: Center(
                 child: Icon(
@@ -596,7 +609,7 @@ class _EmptyState extends StatelessWidget {
                   size: 34,
                   color: dark
                       ? Colors.white24
-                      : const Color(0xFF10B981).withOpacity(0.4),
+                      : const Color(0xFF0D6B57).withOpacity(0.4),
                 ),
               ),
             ),
@@ -606,7 +619,7 @@ class _EmptyState extends StatelessWidget {
                   ? (isEs ? 'Sin resultados' : 'Nenhum resultado')
                   : (isEs ? 'Sin anotaciones aún' : 'Nenhuma anotação ainda'),
               style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w800, color: textCol),
+                fontSize: MedTypography.internalTitleSize, fontWeight: FontWeight.w800, color: textCol),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -619,7 +632,7 @@ class _EmptyState extends StatelessWidget {
                       ? 'Guarda notas de protocolos, casos, medicamentos o cualquier referencia clínica importante'
                       : 'Salve anotações de protocolos, casos, medicamentos ou qualquer referência clínica importante'),
               style: TextStyle(
-                fontSize: 12.5, color: subCol, height: 1.6),
+                fontSize: MedTypography.auxiliarySize, color: subCol, height: 1.6),
               textAlign: TextAlign.center,
             ),
             if (!hasSearch) ...[
@@ -631,10 +644,10 @@ class _EmptyState extends StatelessWidget {
                     horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: const Color(0xFF10B981),
+                    color: const Color(0xFF0D6B57),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF10B981).withOpacity(0.35),
+                        color: const Color(0xFF0D6B57).withOpacity(0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -648,7 +661,7 @@ class _EmptyState extends StatelessWidget {
                       isEs ? 'Crear primera anotación'
                            : 'Criar primeira anotação',
                       style: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w700,
+                        fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w700,
                         color: Colors.white),
                     ),
                   ]),
@@ -670,12 +683,14 @@ class NoteEditorSheet extends StatefulWidget {
   final Map<String, dynamic>? note; // null = nova nota
   final bool dark;
   final String lang;
+  final Future<void> Function()? onDelete;
 
   const NoteEditorSheet({
     required this.uid,
     this.note,
     required this.dark,
     required this.lang,
+    this.onDelete,
   });
 
   @override
@@ -729,7 +744,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
   }
 
   Future<void> _save() async {
-    final title   = _titleCtrl.text.trim();
+    final title = _titleCtrl.text.trim();
     final content = _contentCtrl.text.trim();
     if (title.isEmpty && content.isEmpty) {
       Navigator.of(context).pop();
@@ -737,34 +752,65 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
     }
     setState(() => _saving = true);
     try {
-      final noteId = widget.note?['id'] as String?
-          ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final firstLine = content.split('\n').first.trim();
       final displayTitle = title.isEmpty
-          ? (content.split('\n').first.substring(0, content.length.clamp(0, 40)))
+          ? firstLine.substring(0, firstLine.length.clamp(0, 40))
           : title;
-
-      await FirestoreService.saveNote(
-        uid:     widget.uid,
-        noteId:  widget.note?['id'] as String?,
-        title:   displayTitle,
+      final savedNoteId = await FirestoreService.saveNote(
+        uid: widget.uid,
+        noteId: widget.note?['id'] as String?,
+        title: displayTitle,
         content: content,
-        color:   _selectedColor,
-        tags:    _tags,
+        color: _selectedColor,
+        tags: _tags,
       );
-
-      // Agenda notificação se alerta foi configurado
       if (_alertMinutes != null && _alertMinutes! > 0) {
+        final alertSeconds = _alertMinutes! * 60;
         final notifId = await NotificationService.scheduleNoteAlert(
-          noteId:    noteId,
+          noteId: savedNoteId,
           noteTitle: displayTitle,
-          seconds:   _alertMinutes! * 60,
-          lang:      widget.lang,
+          seconds: alertSeconds,
+          lang: widget.lang,
         );
-        // Registra stop callback — "Parar" no pop-up cancela a notificação
-        NotificationService.registerStopCallback(
-            notifId, () => NotificationService.cancel(notifId));
-      }
 
+        if (!mounted) {
+          if (notifId != 0) {
+            await NotificationService.cancel(notifId);
+          }
+          return;
+        }
+
+        final registration =
+            await ClinicalTimerExternalBridge.adoptExistingNotification(
+          notificationId: notifId,
+          seconds: alertSeconds,
+          label: displayTitle,
+          payload: 'note:$savedNoteId',
+          lang: widget.lang,
+        );
+
+        if (!registration.accepted) {
+          if (notifId != 0) {
+            await NotificationService.cancel(notifId);
+          }
+          if (!mounted) return;
+
+          final messenger = ScaffoldMessenger.of(context);
+          messenger
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(
+                  _isEs
+                      ? 'Anotación guardada, pero el recordatorio no '
+                          'pudo añadirse al Timer.'
+                      : 'Anotação salva, mas o lembrete não pôde ser '
+                          'adicionado ao Timer.',
+                ),
+              ),
+            );
+        }
+      }
       if (mounted) Navigator.of(context).pop();
     } catch (_) {
       if (mounted) setState(() => _saving = false);
@@ -782,325 +828,272 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
 
   @override
   Widget build(BuildContext context) {
+    // NOTES V2.6B — EDITOR CLÍNICO HOME/TIMER
     final dark = widget.dark;
-    final nc   = _colorFromHex(_selectedColor);
-    final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subCol  = dark ? Colors.white38 : Colors.black38;
-    final divCol  = dark ? Colors.white12 : Colors.black.withOpacity(0.07);
-    final inputBg = dark ? nc.dark.withOpacity(0.6) : nc.light;
-    final borderCol = dark
-        ? nc.border.withOpacity(0.20)
-        : nc.border.withOpacity(0.60);
-
+    final nc = _colorFromHex(_selectedColor);
+    final panelBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final surfaceStrong = dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
+    final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
+    final deleteCol = dark ? const Color(0xFFF28B82) : const Color(0xFFB42318);
+    final noteAccent = nc.border;
     final keyboardH = MediaQuery.viewInsetsOf(context).bottom;
-    final screenH   = MediaQuery.sizeOf(context).height;
+    final screenH = MediaQuery.sizeOf(context).height;
+
+    InputDecoration fieldDecoration(String hint, {String? prefix}) => InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: subCol, fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w500),
+      prefixText: prefix,
+      prefixStyle: TextStyle(color: subCol, fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w700),
+      border: InputBorder.none,
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
+    );
 
     return GestureDetector(
-      // Fecha ao tocar fora dos campos
       onTap: () => FocusScope.of(context).unfocus(),
       child: Container(
-        decoration: BoxDecoration(
-          color: sheetBg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        // Altura máxima = 92% da tela, para que o sheet não ultrapasse
-        // e o scroll interno funcione quando o teclado estiver aberto
         constraints: BoxConstraints(maxHeight: screenH * 0.92),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── Drag handle sempre visível no topo ─────────────────────────
-            Padding(
-              padding: const EdgeInsets.only(top: 12, bottom: 4),
-              child: Center(
-                child: Container(
-                  width: 36, height: 4,
-                  decoration: BoxDecoration(
-                    color: dark ? Colors.white24 : Colors.black12,
-                    borderRadius: BorderRadius.circular(2)),
-                ),
-              ),
-            ),
-            // ── Conteúdo rolável ───────────────────────────────────────────
-            Flexible(
-              child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const ClampingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(20, 8, 20, keyboardH + 28),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-              // Título da sheet
-              Row(children: [
-                Expanded(
-                  child: Text(
-                    _isNew
-                        ? (_isEs ? 'Nueva anotación' : 'Nova anotação')
-                        : (_isEs ? 'Editar anotación' : 'Editar anotação'),
-                    style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w900,
-                      color: textCol),
-                  ),
-                ),
-                if (!_isNew)
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      // Notifica o pai para deletar
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      child: Icon(Icons.delete_outline_rounded,
-                        size: 18, color: const Color(0xFFCC3333)),
-                    ),
-                  ),
-              ]),
-
-              const SizedBox(height: 16),
-
-              // ── Seletor de cor ───────────────────────────────────────────
-              Row(children: [
-                Text(
-                  _isEs ? 'Color:' : 'Cor:',
-                  style: TextStyle(
-                    fontSize: 11, fontWeight: FontWeight.w700,
-                    color: subCol, letterSpacing: 0.5),
-                ),
-                const SizedBox(width: 10),
-                ..._noteColors.map((nc2) => GestureDetector(
-                  onTap: () => setState(() => _selectedColor = nc2.hex),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    margin: const EdgeInsets.only(right: 8),
-                    width: _selectedColor == nc2.hex ? 26 : 22,
-                    height: _selectedColor == nc2.hex ? 26 : 22,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: dark ? nc2.dark : nc2.light,
-                      border: Border.all(
-                        color: _selectedColor == nc2.hex
-                            ? (dark ? Colors.white60 : const Color(0xFF0F1116))
-                            : nc2.border.withOpacity(0.5),
-                        width: _selectedColor == nc2.hex ? 2.5 : 1.0,
-                      ),
-                    ),
-                    child: _selectedColor == nc2.hex
-                        ? Icon(Icons.check_rounded,
-                            size: 13,
-                            color: dark ? Colors.white70 : const Color(0xFF0F1116))
-                        : null,
-                  ),
-                )),
-              ]),
-
-              const SizedBox(height: 14),
-
-              // ── Campo de título ──────────────────────────────────────────
-              Container(
-                decoration: BoxDecoration(
-                  color: inputBg,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: borderCol),
-                ),
-                child: TextField(
-                  controller: _titleCtrl,
-                  focusNode: _titleFocus,
-                  enableSuggestions: true,
-                  autocorrect: true,
-                  textCapitalization: TextCapitalization.words,
-                  style: TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w800,
-                    color: textCol),
-                  textInputAction: TextInputAction.next,
-                  onSubmitted: (_) => _contentFocus.requestFocus(),
-                  decoration: InputDecoration(
-                    hintText: _isEs ? 'Título (opcional)' : 'Título (opcional)',
-                    hintStyle: TextStyle(
-                      fontSize: 14, color: subCol,
-                      fontWeight: FontWeight.w500),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 12),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // ── Campo de conteúdo ────────────────────────────────────────
-              Container(
-                constraints: const BoxConstraints(minHeight: 120),
-                decoration: BoxDecoration(
-                  color: inputBg,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: borderCol),
-                ),
-                child: TextField(
-                  controller: _contentCtrl,
-                  focusNode: _contentFocus,
-                  maxLines: null,
-                  minLines: 5,
-                  keyboardType: TextInputType.multiline,
-                  enableSuggestions: true,
-                  autocorrect: true,
-                  textCapitalization: TextCapitalization.sentences,
-                  style: TextStyle(
-                    fontSize: 13.5, fontWeight: FontWeight.w400,
-                    color: textCol, height: 1.6),
-                  decoration: InputDecoration(
-                    hintText: _isEs
-                        ? 'Escribe tu anotación aquí...'
-                        : 'Escreva sua anotação aqui...',
-                    hintStyle: TextStyle(
-                      fontSize: 13, color: subCol,
-                      fontWeight: FontWeight.w400),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 12),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 14),
-              Divider(color: divCol, height: 1),
-              const SizedBox(height: 12),
-
-              // ── Campo de tags ────────────────────────────────────────────
-              Text(
-                _isEs ? 'Etiquetas (opcional)' : 'Tags (opcional)',
-                style: TextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w700,
-                  color: subCol, letterSpacing: 0.5),
-              ),
-              const SizedBox(height: 8),
-
-              if (_tags.isNotEmpty)
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: _tags.map((tag) => GestureDetector(
-                    onTap: () => setState(() => _tags.remove(tag)),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: const Color(0xFF10B981).withOpacity(0.12),
-                        border: Border.all(
-                          color: const Color(0xFF10B981).withOpacity(0.30)),
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Text(
-                          '#$tag',
-                          style: const TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.w700,
-                            color: Color(0xFF10B981)),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(Icons.close_rounded,
-                          size: 12,
-                          color: const Color(0xFF10B981).withOpacity(0.7)),
-                      ]),
-                    ),
-                  )).toList(),
-                ),
-
-              if (_tags.length < 5) ...[
-                if (_tags.isNotEmpty) const SizedBox(height: 8),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: panelBg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          border: Border.all(color: borderCol, width: 0.8),
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(
+            margin: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+            width: 38,
+            height: 4,
+            decoration: BoxDecoration(color: surfaceStrong, borderRadius: BorderRadius.circular(99)),
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              physics: const ClampingScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(
+            MedSpacing.screenHorizontalPadding,
+            8,
+            MedSpacing.screenHorizontalPadding,
+            keyboardH + 24,
+          ),
+              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(children: [
-                  Expanded(
-                    child: Container(
-                      height: 38,
-                      decoration: BoxDecoration(
+                  Container(width: 4, height: 38, decoration: BoxDecoration(color: noteAccent, borderRadius: BorderRadius.circular(99))),
+                  const SizedBox(width: 10),
+                  Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(
+                      _isNew ? (_isEs ? 'Nueva anotación' : 'Nova anotação') : (_isEs ? 'Editar anotación' : 'Editar anotação'),
+                      style: TextStyle(color: textCol, fontSize: MedTypography.internalTitleSize, fontWeight: FontWeight.w800, letterSpacing: -0.2),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _isEs ? 'Información clínica personal' : 'Informação clínica pessoal',
+                      style: TextStyle(color: subCol, fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w600),
+                    ),
+                  ])),
+                  if (!_isNew && widget.onDelete != null)
+                    IconButton(
+                      tooltip: _isEs ? 'Eliminar' : 'Excluir',
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (dialogContext) => AlertDialog(
+                            backgroundColor: surface,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              side: BorderSide(color: borderCol, width: 0.8),
+                            ),
+                            title: Text(
+                              _isEs ? 'Eliminar nota' : 'Excluir anotação',
+                              style: TextStyle(color: textCol, fontSize: MedTypography.internalTitleSize, fontWeight: FontWeight.w800),
+                            ),
+                            content: Text(
+                              _isEs ? '¿Eliminar esta nota?' : 'Deseja excluir esta anotação?',
+                              style: TextStyle(color: subCol, fontSize: MedTypography.clinicalBodySize),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext, false),
+                                child: Text('Cancelar', style: TextStyle(color: subCol, fontWeight: FontWeight.w700)),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext, true),
+                                child: Text(_isEs ? 'Eliminar' : 'Excluir', style: TextStyle(color: deleteCol, fontWeight: FontWeight.w800)),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed != true) return;
+                        final delete = widget.onDelete;
+                        if (delete == null) return;
+                        await delete();
+                        if (!context.mounted) return;
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(Icons.delete_outline_rounded, color: deleteCol, size: 19),
+                    ),
+                ]),
+                const SizedBox(height: 15),
+                Text(
+                  _isEs ? 'Identificación visual' : 'Identificação visual',
+                  style: TextStyle(color: subCol, fontSize: MedTypography.sectionLabelSize, fontWeight: FontWeight.w700, letterSpacing: 0.4),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(9),
+                  decoration: BoxDecoration(color: surface, borderRadius: BorderRadius.circular(14), border: Border.all(color: borderCol, width: 0.8)),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _noteColors.map((option) {
+                      final selected = _selectedColor == option.hex;
+                      final chipColor = option.border;
+                      return InkWell(
+                        onTap: () => setState(() => _selectedColor = option.hex),
                         borderRadius: BorderRadius.circular(10),
-                        color: dark ? const Color(0xFF252930) : const Color(0xFFF5F5F5),
-                        border: Border.all(color: divCol),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 140),
+                          width: selected ? 36 : 32,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: surfaceStrong,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: selected ? chipColor : borderCol, width: selected ? 1.8 : 0.8),
+                          ),
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(color: chipColor, shape: BoxShape.circle),
+                            child: selected ? const Icon(Icons.check_rounded, size: 9, color: Colors.white) : null,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  decoration: BoxDecoration(color: surface, borderRadius: BorderRadius.circular(14), border: Border.all(color: borderCol, width: 0.8)),
+                  child: TextField(
+                    controller: _titleCtrl,
+                    focusNode: _titleFocus,
+                    enableSuggestions: true,
+                    autocorrect: true,
+                    textCapitalization: TextCapitalization.words,
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (_) => _contentFocus.requestFocus(),
+                    style: TextStyle(color: textCol, fontSize: MedTypography.clinicalBodySize, fontWeight: FontWeight.w700),
+                    decoration: fieldDecoration('Título (opcional)'),
+                  ),
+                ),
+                const SizedBox(height: 9),
+                Container(
+                  constraints: const BoxConstraints(minHeight: 128),
+                  decoration: BoxDecoration(color: surface, borderRadius: BorderRadius.circular(14), border: Border.all(color: borderCol, width: 0.8)),
+                  child: TextField(
+                    controller: _contentCtrl,
+                    focusNode: _contentFocus,
+                    maxLines: null,
+                    minLines: 5,
+                    keyboardType: TextInputType.multiline,
+                    enableSuggestions: true,
+                    autocorrect: true,
+                    textCapitalization: TextCapitalization.sentences,
+                    style: TextStyle(color: textCol, fontSize: MedTypography.clinicalBodySize, fontWeight: FontWeight.w500, height: 1.45),
+                    decoration: fieldDecoration(_isEs ? 'Escribe tu anotación aquí...' : 'Escreva sua anotação aqui...'),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  _isEs ? 'Etiquetas (opcional)' : 'Tags (opcional)',
+                  style: TextStyle(color: subCol, fontSize: MedTypography.sectionLabelSize, fontWeight: FontWeight.w700, letterSpacing: 0.4),
+                ),
+                const SizedBox(height: 8),
+                if (_tags.isNotEmpty) ...[
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: _tags.map((tag) => InkWell(
+                      onTap: () => setState(() => _tags.remove(tag)),
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                        decoration: BoxDecoration(color: surfaceStrong, borderRadius: BorderRadius.circular(10), border: Border.all(color: borderCol, width: 0.8)),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Text('#$tag', style: TextStyle(color: textCol, fontSize: MedTypography.microTextSize, fontWeight: FontWeight.w700)),
+                          const SizedBox(width: 4),
+                          Icon(Icons.close_rounded, size: 12, color: subCol),
+                        ]),
                       ),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                if (_tags.length < 5)
+                  Row(children: [
+                    Expanded(child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(color: surface, borderRadius: BorderRadius.circular(8), border: Border.all(color: borderCol, width: 0.7)),
                       child: TextField(
                         controller: _tagCtrl,
-                        style: TextStyle(fontSize: 12, color: textCol),
+                        style: TextStyle(color: textCol, fontSize: MedTypography.auxiliarySize),
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) => _addTag(),
-                        decoration: InputDecoration(
-                          hintText: _isEs ? 'protocolo, caso, fármaco...' : 'protocolo, caso, fármaco...',
-                          hintStyle: TextStyle(fontSize: 12, color: subCol),
-                          border: InputBorder.none,
-                          prefixText: '#',
-                          prefixStyle: TextStyle(
-                            fontSize: 12, color: subCol,
-                            fontWeight: FontWeight.w700),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 9),
-                          isDense: true,
+                        decoration: fieldDecoration('protocolo, caso, fármaco...', prefix: '#'),
+                      ),
+                    )),
+                    const SizedBox(width: 8),
+                    Material(
+                      color: surfaceStrong,
+                      borderRadius: BorderRadius.circular(8),
+                      child: InkWell(
+                        onTap: _addTag,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: borderCol, width: 0.7)),
+                          child: Icon(Icons.add_rounded, color: accent, size: 19),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: _addTag,
-                    child: Container(
-                      height: 38, width: 38,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xFF10B981).withOpacity(0.12),
-                        border: Border.all(
-                          color: const Color(0xFF10B981).withOpacity(0.25)),
-                      ),
-                      child: const Icon(Icons.add_rounded,
-                        size: 18, color: Color(0xFF10B981)),
+                  ]),
+                const SizedBox(height: 16),
+                _NoteAlertPicker(
+                  dark: dark,
+                  isEs: _isEs,
+                  selectedMinutes: _alertMinutes,
+                  onChanged: (value) => setState(() => _alertMinutes = value),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _saving ? null : _save,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accent,
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: accent.withValues(alpha: 0.4),
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
+                    child: _saving
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : Text(_isEs ? 'Guardar anotación' : 'Salvar anotação', style: const TextStyle(fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w700)),
                   ),
-                ]),
-              ],
-
-              const SizedBox(height: 20),
-
-              // ── Alerta agendado (opcional) ───────────────────────────────
-              _NoteAlertPicker(
-                dark:          widget.dark,
-                isEs:          _isEs,
-                selectedMinutes: _alertMinutes,
-                onChanged:     (v) => setState(() => _alertMinutes = v),
-              ),
-
-              const SizedBox(height: 20),
-
-              // ── Botão salvar ─────────────────────────────────────────────
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _saving ? null : _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF10B981),
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor:
-                        const Color(0xFF10B981).withOpacity(0.4),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    elevation: 0,
-                  ),
-                  child: _saving
-                      ? const SizedBox(
-                          width: 20, height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
-                      : Text(
-                          _isEs ? 'Guardar anotación' : 'Salvar anotação',
-                          style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w700)),
                 ),
-              ),
-                  ],
-                ),
-              ),
+              ]),
             ),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }
@@ -1122,108 +1115,90 @@ class _NoteAlertPicker extends StatelessWidget {
     required this.onChanged,
   });
 
-  // Opções de tempo: null = sem alerta, outros = minutos
   static const _options = <int?>[null, 5, 10, 15, 30, 60, 120, 240];
 
-  String _label(int? m) {
-    if (m == null) return isEs ? 'Sin alerta' : 'Sem alerta';
-    if (m < 60) return '${m} min';
-    return '${m ~/ 60}h';
+  String _label(int? minutes) {
+    if (minutes == null) return isEs ? 'Sin recordatorio' : 'Sem lembrete';
+    if (minutes < 60) return '$minutes min';
+    return '${minutes ~/ 60}h';
   }
 
   @override
   Widget build(BuildContext context) {
-    final subCol  = dark ? Colors.white38 : Colors.black38;
-    final divCol  = dark ? Colors.white12 : Colors.black.withOpacity(0.07);
+    // NOTES V2.6B — LEMBRETE DE ANOTAÇÃO, NÃO TIMER CLÍNICO
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final surfaceStrong = dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
+    final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
+    final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(color: divCol, height: 1),
-        const SizedBox(height: 12),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: borderCol, width: 0.7),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Icon(
-            selectedMinutes != null
-                ? Icons.alarm_on_rounded
-                : Icons.alarm_add_rounded,
-            size: 15,
-            color: selectedMinutes != null
-                ? const Color(0xFF10B981)
-                : subCol,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            isEs ? 'Alerta (opcional)' : 'Alerta (opcional)',
-            style: TextStyle(
-              fontSize: 11, fontWeight: FontWeight.w700,
-              color: selectedMinutes != null
-                  ? const Color(0xFF10B981)
-                  : subCol,
-              letterSpacing: 0.5,
+          Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: surfaceStrong, borderRadius: BorderRadius.circular(10), border: Border.all(color: borderCol, width: 0.7)),
+            child: Icon(
+              selectedMinutes == null ? Icons.notifications_none_rounded : Icons.notifications_active_outlined,
+              color: selectedMinutes == null ? subCol : accent,
+              size: 17,
             ),
           ),
-          if (selectedMinutes != null) ...[
-            const Spacer(),
+          const SizedBox(width: 9),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
-              isEs
-                  ? 'en ${_label(selectedMinutes)}'
-                  : 'em ${_label(selectedMinutes)}',
-              style: const TextStyle(
-                fontSize: 11, fontWeight: FontWeight.w800,
-                color: Color(0xFF10B981),
-              ),
+              isEs ? 'Recordatorio de la anotación' : 'Lembrete da anotação',
+              style: TextStyle(color: textCol, fontSize: MedTypography.sectionLabelSize, fontWeight: FontWeight.w800),
             ),
-          ],
+            const SizedBox(height: 2),
+            Text(
+              isEs ? 'Notificación vinculada a esta nota' : 'Notificação vinculada a esta nota',
+              style: TextStyle(color: subCol, fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w500),
+            ),
+          ])),
+          if (selectedMinutes != null)
+            Text(_label(selectedMinutes), style: TextStyle(color: accent, fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w800)),
         ]),
-        const SizedBox(height: 8),
-        // Chips de opções
+        const SizedBox(height: 10),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Row(
-            children: _options.map((opt) {
-              final selected = selectedMinutes == opt;
-              return GestureDetector(
-                onTap: () => onChanged(opt),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  margin: const EdgeInsets.only(right: 7),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: selected
-                        ? const Color(0xFF10B981)
-                        : (dark
-                            ? Colors.white.withOpacity(0.07)
-                            : const Color(0xFFF0F0F0)),
-                    border: Border.all(
-                      color: selected
-                          ? const Color(0xFF10B981)
-                          : (dark
-                              ? Colors.white.withOpacity(0.10)
-                              : const Color(0xFFA8B2C1)),
+          child: Row(children: _options.map((option) {
+            final selected = selectedMinutes == option;
+            return Padding(
+              padding: const EdgeInsets.only(right: 7),
+              child: Material(
+                color: selected ? accent : surfaceStrong,
+                borderRadius: BorderRadius.circular(10),
+                child: InkWell(
+                  onTap: () => onChanged(option),
+                  borderRadius: BorderRadius.circular(10),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 130),
+                    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: selected ? accent : borderCol, width: 0.8),
+                    ),
+                    child: Text(
+                      _label(option),
+                      style: TextStyle(color: selected ? Colors.white : textCol, fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w700),
                     ),
                   ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    if (selected && opt != null) ...[
-                      const Icon(Icons.alarm_rounded, size: 11, color: Colors.white),
-                      const SizedBox(width: 4),
-                    ],
-                    Text(
-                      _label(opt),
-                      style: TextStyle(
-                        fontSize: 11, fontWeight: FontWeight.w700,
-                        color: selected
-                            ? Colors.white
-                            : (dark ? Colors.white54 : const Color(0xFF666666)),
-                      ),
-                    ),
-                  ]),
                 ),
-              );
-            }).toList(),
-          ),
+              ),
+            );
+          }).toList()),
         ),
-      ],
+      ]),
     );
   }
 }

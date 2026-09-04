@@ -47,6 +47,7 @@ import 'gemini_service_v2.dart'; // GeminiChunk — usado pelos métodos de stre
 import 'ai_stream/ai_event.dart';
 import 'ai_stream/gpt_sse_client.dart';
 
+import 'clinical_identity_transport_envelope.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // PaidProxyResult — resultado da chamada ao proxy pago
 // ─────────────────────────────────────────────────────────────────────────────
@@ -247,6 +248,7 @@ class ProviderRouterService {
     final payload = {
       'userMessage': userMessage,
       'systemPrompt': systemPrompt,
+      ...ClinicalIdentityTransportEnvelope.fromStructuredSystemPrompt(systemPrompt),
       'history': recentHistory,
       'mode': mode,
       'lang': lang,
@@ -602,6 +604,7 @@ class ProviderRouterService {
     final payload = {
       'userMessage': userMessage,
       'systemPrompt': systemPrompt,
+      ...ClinicalIdentityTransportEnvelope.fromStructuredSystemPrompt(systemPrompt),
       'history': recentHistory,
       'mode': mode,
       'lang': lang,
@@ -846,6 +849,7 @@ class ProviderRouterService {
     String lang = 'pt',
     String requestId = '',
     int maxOutputTokens = 800,
+    void Function(GptSseClient client)? onClientCreated,
   }) async* {
     // ── KILL SWITCH: kUseGptProxySse = false → legado ──────────────────────
     if (!kUseGptProxySse) {
@@ -938,6 +942,8 @@ class ProviderRouterService {
       endpointUrl: _gptSseUrl,
       idToken: resolvedToken,
     );
+
+    onClientCreated?.call(client);
 
     yield* client.stream(payload);
   }

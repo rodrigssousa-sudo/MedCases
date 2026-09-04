@@ -9,7 +9,6 @@
 //   • PlantaoOrganizer — BUILD 247: organiza estrutura, expõe sinais clínicos
 //   • PlantaoRepair    — reorganiza blocos, elimina duplicatas, normaliza espaços
 //                        (NUNCA inventa conteúdo clínico)
-//   • ResponseReformatter — BUILD 248B: reformata prosa em template emoji canônico
 //                           (preserva conteúdo, reorganiza forma)
 //
 // PIPELINE COMPLETO (Build 225):
@@ -79,30 +78,30 @@ import 'package:flutter/foundation.dart' show debugPrint;
 // PlantaoContext — contexto clínico do cenário (Build 225)
 // ─────────────────────────────────────────────────────────────────────────────
 enum PlantaoContext {
-  pcr,            // parada cardiorrespiratória / RCP / ACLS
-  arritmia,       // arritmias / cardioversão / antiarrítmicos
-  choque,         // choque (qualquer tipo) / vasopressores
-  sepse,          // sepse / infecção grave / bundle
-  viaAerea,       // intubação / IOT / RSI / via aérea difícil
-  ventilacao,     // ventilação mecânica / parâmetros
-  eletrolitos,    // distúrbios eletrolíticos / reposição iônica
-  glicemia,       // glicemia / CAD / DKA / hipoglicemia
-  renal,          // injúria renal / ajuste de dose / ClCr
+  pcr, // parada cardiorrespiratória / RCP / ACLS
+  arritmia, // arritmias / cardioversão / antiarrítmicos
+  choque, // choque (qualquer tipo) / vasopressores
+  sepse, // sepse / infecção grave / bundle
+  viaAerea, // intubação / IOT / RSI / via aérea difícil
+  ventilacao, // ventilação mecânica / parâmetros
+  eletrolitos, // distúrbios eletrolíticos / reposição iônica
+  glicemia, // glicemia / CAD / DKA / hipoglicemia
+  renal, // injúria renal / ajuste de dose / ClCr
   cardiovascular, // IAM / TEP / IC / SCA / crise hipertensiva
-  neurologia,     // AVC / convulsão / meningite / rebaixamento
-  toxicologia,    // intoxicação / antídoto / overdose
-  trauma,         // trauma / cirurgia / hemorragia
-  farmacologia,   // farmacologia clínica geral / interação / CI
-  geral,          // contexto não especificado
+  neurologia, // AVC / convulsão / meningite / rebaixamento
+  toxicologia, // intoxicação / antídoto / overdose
+  trauma, // trauma / cirurgia / hemorragia
+  farmacologia, // farmacologia clínica geral / interação / CI
+  geral, // contexto não especificado
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PlantaoComplexity — complexidade clínica da pergunta (Build 225)
 // ─────────────────────────────────────────────────────────────────────────────
 enum PlantaoComplexity {
-  simples,        // pergunta curta geral / definição / dose isolada sem gravidade
-  intermediaria,  // monitorização / ajuste / contraindicações / eletrólitos estáveis
-  critica,        // PCR / choque / sepse / via aérea / instabilidade hemodinâmica
+  simples, // pergunta curta geral / definição / dose isolada sem gravidade
+  intermediaria, // monitorização / ajuste / contraindicações / eletrólitos estáveis
+  critica, // PCR / choque / sepse / via aérea / instabilidade hemodinâmica
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -143,6 +142,56 @@ class PlantaoQueryAnalysis {
   /// Confiança do engine (0.0–1.0) — baseada em score total normalizado.
   final double confidence;
 
+  /// Proveniência estrutural: o `_DrugMatcher` reconheceu entidade farmacológica.
+  ///
+  /// Shadow-only nesta fase. Não participa do mandate, provider ou renderer.
+  final bool recognizedDrugEntity;
+
+  /// Proveniência estrutural: `_ContextMatcher` reconheceu contexto clínico
+  /// explicitamente presente na mensagem, em vez de contexto default do fármaco.
+  ///
+  /// Shadow-only nesta fase. Não participa do mandate, provider ou renderer.
+  final bool recognizedExplicitClinicalContext;
+
+  /// Proveniência shadow: pergunta por efeitos/reações adversas ou
+  /// efeitos colaterais de um medicamento.
+  final bool recognizedAdverseEffectTask;
+
+  /// Proveniência shadow: pergunta por informação de segurança medicamentosa.
+  final bool recognizedMedicationSafetyTask;
+
+  /// Proveniência shadow para o domínio gasometria / ácido-base.
+  final bool recognizedGasometryAcidBaseDomain;
+
+  /// Proveniência shadow para cálculo laboratorial clínico explicitamente
+  /// solicitado (V1: ânion gap / anion gap).
+  final bool recognizedLaboratoryCalculationDomain;
+
+  /// Proveniência shadow para sepse explícita na pergunta.
+  final bool recognizedSepsisDomain;
+
+  /// Proveniência shadow para choque explícito e afirmativo.
+  ///
+  /// Menções negadas como `sem choque` / `sin shock` não ativam o sinal.
+  final bool recognizedShockDomain;
+
+  /// Proveniência shadow para trauma explicitamente mencionado.
+  final bool recognizedTraumaDomain;
+
+  /// Tarefa shadow de escolha/cobertura antibiótica.
+  ///
+  /// Exige formulação terapêutica específica; não ativa com simples menção
+  /// genérica a antibiótico.
+  final bool recognizedAntibioticotherapyTask;
+
+  /// Domínio shadow de dispneia aguda / síndrome respiratória aguda.
+  final bool recognizedAcuteDyspneaDomain;
+
+  /// Domínio shadow de hemorragia clínica ativa, especialmente digestiva.
+  final bool recognizedHemorrhageDomain;
+
+  /// Tarefa shadow de resumo clínico geral para tema não tipado por domínio.
+  final bool recognizedClinicalSummaryTask;
   const PlantaoQueryAnalysis({
     required this.clinicalTopic,
     required this.clinicalSubtitle,
@@ -152,14 +201,27 @@ class PlantaoQueryAnalysis {
     required this.complexity,
     required this.matchedKeywords,
     required this.confidence,
+    this.recognizedDrugEntity = false,
+    this.recognizedExplicitClinicalContext = false,
+    this.recognizedAdverseEffectTask = false,
+    this.recognizedMedicationSafetyTask = false,
+    this.recognizedGasometryAcidBaseDomain = false,
+    this.recognizedLaboratoryCalculationDomain = false,
+    this.recognizedSepsisDomain = false,
+    this.recognizedShockDomain = false,
+    this.recognizedTraumaDomain = false,
+    this.recognizedAntibioticotherapyTask = false,
+    this.recognizedAcuteDyspneaDomain = false,
+    this.recognizedHemorrhageDomain = false,
+    this.recognizedClinicalSummaryTask = false,
   });
 
   /// Converte para PlantaoIntentResult (retrocompatibilidade com Build 224).
   PlantaoIntentResult toIntentResult() => PlantaoIntentResult(
-        intent: primaryIntent,
-        score: matchedKeywords.length,
-        matchedKeywords: matchedKeywords,
-      );
+    intent: primaryIntent,
+    score: matchedKeywords.length,
+    matchedKeywords: matchedKeywords,
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -200,7 +262,9 @@ abstract class _IntentMatcher {
   String get defaultSubtitle => '';
 
   _MatcherResult match(String msg) {
-    final matched = keywords.where((kw) => msg.contains(kw)).toList();
+    final matched = keywords
+        .where((kw) => _PlantaoSemanticNormalizer.keywordMatches(msg, kw))
+        .toList();
     return _MatcherResult(
       intent: intent,
       context: defaultContext,
@@ -217,59 +281,132 @@ abstract class _IntentMatcher {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class DoseMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.dose;
-  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
-  @override List<String> get keywords => const [
-    'dose', 'dosagem', 'quanto', 'mg/kg', 'posologia', 'dosis',
-    'qual a dose', 'dose de', 'dose do', 'dose da', 'dosis de',
-    'quantos mg', 'quantos mcg', 'qual dose', 'dose máxima',
-    'dose mínima', 'dose de ataque', 'dose de manutenção',
-    'dose em', 'dose para', 'dose na',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.dose;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override
+  List<String> get keywords => const [
+    'dose',
+    'dosagem',
+    'quanto',
+    'mg/kg',
+    'posologia',
+    'dosis',
+    'qual a dose',
+    'dose de',
+    'dose do',
+    'dose da',
+    'dosis de',
+    'quantos mg',
+    'quantos mcg',
+    'qual dose',
+    'dose máxima',
+    'dose mínima',
+    'dose de ataque',
+    'dose de manutenção',
+    'dose em',
+    'dose para',
+    'dose na',
   ];
 }
 
 class InfusionMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.infusao;
-  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
-  @override List<String> get keywords => const [
-    'infusão', 'infusao', 'velocidade', 'ml/h', 'mcg/kg/min', 'mcg/min',
-    'drip', 'bic', 'bomba infusora', 'titulação', 'titular',
-    'calcular infusão', 'como calcular a infusão', 'calcular velocidade',
-    'taxa de infusão', 'mL por hora',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.infusao;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override
+  List<String> get keywords => const [
+    'infusão',
+    'infusao',
+    'velocidade',
+    'ml/h',
+    'mcg/kg/min',
+    'mcg/min',
+    'drip',
+    'bic',
+    'bomba infusora',
+    'titulação',
+    'titular',
+    'calcular infusão',
+    'como calcular a infusão',
+    'calcular velocidade',
+    'taxa de infusão',
+    'mL por hora',
   ];
 }
 
 class DiluitionMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.diluicao;
-  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
-  @override List<String> get keywords => const [
-    'dilui', 'diluição', 'preparo', 'preparar', 'ampola', 'ampolas',
-    'como preparar', 'como dilui', 'prepara', 'reconstituir',
-    'gota', 'gotejo', 'gotejamento', 'gotejar', 'macrogotas', 'microgotas',
-    'equipo de soro', 'equipo de infusão',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.diluicao;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override
+  List<String> get keywords => const [
+    'dilui',
+    'diluição',
+    'preparo',
+    'preparar',
+    'ampola',
+    'ampolas',
+    'como preparar',
+    'como dilui',
+    'prepara',
+    'reconstituir',
+    'gota',
+    'gotejo',
+    'gotejamento',
+    'gotejar',
+    'macrogotas',
+    'microgotas',
+    'equipo de soro',
+    'equipo de infusão',
   ];
 }
 
 class MonitoringMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.monitorizacao;
-  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
-  @override List<String> get keywords => const [
-    'monitorar', 'monitorizar', 'monitorização', 'monitoreo',
-    'o que observar', 'o que monitorar', 'parâmetros', 'parametros',
-    'metas', 'meta terapêutica', 'valores esperados',
-    'alvo', 'alvos', 'target', 'frequência de monitorar',
-    'quando preocupar', 'sinal de gravidade', 'sinais de gravidade',
-    'monitorar ecg', 'monitorar potassio', 'vigiar',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.monitorizacao;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override
+  List<String> get keywords => const [
+    'monitorar',
+    'monitorizar',
+    'monitorização',
+    'monitoreo',
+    'o que observar',
+    'o que monitorar',
+    'parâmetros',
+    'parametros',
+    'metas',
+    'meta terapêutica',
+    'valores esperados',
+    'alvo',
+    'alvos',
+    'target',
+    'frequência de monitorar',
+    'quando preocupar',
+    'sinal de gravidade',
+    'sinais de gravidade',
+    'monitorar ecg',
+    'monitorar potassio',
+    'vigiar',
   ];
 }
 
 class ContraindicationMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.contraindicacao;
-  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
-  @override List<String> get keywords => const [
+  @override
+  PlantaoIntent get intent => PlantaoIntent.contraindicacao;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override
+  List<String> get keywords => const [
     // Variantes PT com e sem acentuação (substring matching seguro)
     'contraindicaç', 'contraindicado', 'contra-indica',
-    'contraindicaciones', 'quando não usar', 'quando não dar', 'quando evitar',
+    'contraindicaciones', 'quando não usar', 'quando não dar',
+    'quando evitar',
     'quem não pode', 'não pode usar', 'evitar em',
     'contraindicado em', 'contraindicada', 'proibido em',
     'não indicado', 'não recomendado',
@@ -277,71 +414,162 @@ class ContraindicationMatcher extends _IntentMatcher {
 }
 
 class DiagnosisMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.diagnostico;
-  @override PlantaoContext get defaultContext => PlantaoContext.geral;
-  @override List<String> get keywords => const [
-    'diagnóstico', 'diagnosticar', 'como diagnosticar', 'suspeitar',
-    'como suspeitar', 'criterios', 'critérios',
-    'diferencial', 'diagnóstico diferencial', 'como identificar',
-    'sinais', 'sintomas', 'apresentação', 'quadro clínico',
-    'como reconhecer', 'diagnose', 'suspeita de', 'pensar em',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.diagnostico;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override
+  List<String> get keywords => const [
+    'diagnóstico',
+    'diagnosticar',
+    'como diagnosticar',
+    'suspeitar',
+    'como suspeitar',
+    'criterios',
+    'critérios',
+    'diferencial',
+    'diagnóstico diferencial',
+    'como identificar',
+    'sinais',
+    'sintomas',
+    'apresentação',
+    'quadro clínico',
+    'como reconhecer',
+    'diagnose',
+    'suspeita de',
+    'pensar em',
   ];
 }
 
 class InterpretationMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.interpretacao;
-  @override PlantaoContext get defaultContext => PlantaoContext.geral;
-  @override List<String> get keywords => const [
-    'interpretar', 'interpretação', 'o que significa', 'o que quer dizer',
-    'interpretar resultado', 'valor alto', 'valor baixo', 'resultado de',
-    'resultado do', 'laudo', 'exame alterado', 'analisar',
-    'o que fazer com', 'como interpretar', 'analizar',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.interpretacao;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override
+  List<String> get keywords => const [
+    'interpretar',
+    'interpretação',
+    'o que significa',
+    'o que quer dizer',
+    'interpretar resultado',
+    'valor alto',
+    'valor baixo',
+    'resultado de',
+    'resultado do',
+    'laudo',
+    'exame alterado',
+    'analisar',
+    'o que fazer com',
+    'como interpretar',
+    'analizar',
   ];
 }
 
 class InteractionMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.interacao;
-  @override PlantaoContext get defaultContext => PlantaoContext.farmacologia;
-  @override List<String> get keywords => const [
-    'interação', 'interaçao', 'interação medicamentosa',
-    'pode usar com', 'pode dar com', 'combinar', 'associar',
-    'risco de interação', 'incompatível', 'incompatibilidade',
-    'junto com', 'associação de', 'combinar com',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.interacao;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.farmacologia;
+  @override
+  List<String> get keywords => const [
+    'interação',
+    'interaçao',
+    'interação medicamentosa',
+    'pode usar com',
+    'pode dar com',
+    'combinar',
+    'associar',
+    'risco de interação',
+    'incompatível',
+    'incompatibilidade',
+    'junto com',
+    'associação de',
+    'combinar com',
   ];
 }
 
 class CalculationMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.calculo;
-  @override PlantaoContext get defaultContext => PlantaoContext.geral;
-  @override List<String> get keywords => const [
-    'calcular', 'cálculo', 'fórmula', 'calculo', 'formula',
-    'clcr', 'cockcroft', 'tfg', 'ckd-epi', 'egfr',
-    'clearance de creatinina', 'ajuste renal',
-    'ânion gap', 'anion gap', 'be', 'base excess',
-    'osmolaridade', 'água livre', 'déficit de sódio',
-    'peso ideal', 'imc', 'bmi', 'score',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.calculo;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override
+  List<String> get keywords => const [
+    'calcular',
+    'cálculo',
+    'fórmula',
+    'calculo',
+    'formula',
+    'clcr',
+    'cockcroft',
+    'tfg',
+    'ckd-epi',
+    'egfr',
+    'clearance de creatinina',
+    'ajuste renal',
+    'ânion gap',
+    'anion gap',
+    'be',
+    'base excess',
+    'osmolaridade',
+    'água livre',
+    'déficit de sódio',
+    'peso ideal',
+    'imc',
+    'bmi',
+    'score',
   ];
 }
 
 class ProcedureMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.procedimento;
-  @override PlantaoContext get defaultContext => PlantaoContext.trauma;
-  @override List<String> get keywords => const [
-    'procedimento', 'técnica', 'como fazer', 'como realizar',
-    'punção', 'dreno', 'toracocentese', 'paracentese', 'artrocentese',
-    'acesso venoso central', 'cateter', 'linha arterial',
-    'dissecção venosa', 'cricotireoidostomia', 'pericardiocentese',
-    'marca-passo', 'drenagem', 'biópsia', 'punção lombar',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.procedimento;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.trauma;
+  @override
+  List<String> get keywords => const [
+    'procedimento',
+    'técnica',
+    'como fazer',
+    'como realizar',
+    'punção',
+    'dreno',
+    'toracocentese',
+    'paracentese',
+    'artrocentese',
+    'acesso venoso central',
+    'cateter',
+    'linha arterial',
+    'dissecção venosa',
+    'cricotireoidostomia',
+    'pericardiocentese',
+    'marca-passo',
+    'drenagem',
+    'biópsia',
+    'punção lombar',
   ];
 }
 
 class ConductMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.conduta;
-  @override PlantaoContext get defaultContext => PlantaoContext.geral;
-  @override List<String> get keywords => const [
-    'conduta', 'tratar', 'tratamento', 'como tratar', 'manejo',
-    'protocolo de', 'o que fazer', 'primeira linha',
-    'abordagem', 'manejo de', 'conduta em', 'tratar com',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.conduta;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.geral;
+  @override
+  List<String> get keywords => const [
+    'conduta',
+    'tratar',
+    'tratamento',
+    'como tratar',
+    'manejo',
+    'protocolo de',
+    'o que fazer',
+    'primeira linha',
+    'abordagem',
+    'manejo de',
+    'conduta em',
+    'tratar com',
   ];
 }
 
@@ -350,42 +578,100 @@ class ConductMatcher extends _IntentMatcher {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class ElectrolyteMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.eletrolitos;
-  @override PlantaoContext get defaultContext => PlantaoContext.eletrolitos;
-  @override List<String> get keywords => const [
-    'hipocalemia', 'hipercalemia', 'hypokale', 'hyperkale',
-    'hiponatremia', 'hipernatremia', 'hyponatremia',
-    'hipocalcemia', 'hipercalcemia', 'hypocalcemia',
-    'hipomagnesemia', 'hipofosfatemia',
-    'potássio', 'potassio', 'sódio', 'sodio', 'cálcio', 'calcio',
-    'magnésio', 'magnesio', 'fósforo', 'fosforo', 'cloro', 'cloreto',
-    'eletrólito', 'eletrolito', 'distúrbio eletrolítico',
-    'reposição de', 'reposição ev', 'repor potássio', 'repor sódio',
-    'kcl', 'k+', 'na+', 'ca2+', 'mg2+',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.eletrolitos;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.eletrolitos;
+  @override
+  List<String> get keywords => const [
+    'hipocalemia',
+    'hipercalemia',
+    'hypokale',
+    'hyperkale',
+    'hiponatremia',
+    'hipernatremia',
+    'hyponatremia',
+    'hipocalcemia',
+    'hipercalcemia',
+    'hypocalcemia',
+    'hipomagnesemia',
+    'hipofosfatemia',
+    'potássio',
+    'potassio',
+    'sódio',
+    'sodio',
+    'cálcio',
+    'calcio',
+    'magnésio',
+    'magnesio',
+    'fósforo',
+    'fosforo',
+    'cloro',
+    'cloreto',
+    'eletrólito',
+    'eletrolito',
+    'distúrbio eletrolítico',
+    'reposição de',
+    'reposição ev',
+    'repor potássio',
+    'repor sódio',
+    'kcl',
+    'k+',
+    'na+',
+    'ca2+',
+    'mg2+',
   ];
 }
 
 class GlycemiaMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.glicemia;
-  @override PlantaoContext get defaultContext => PlantaoContext.glicemia;
-  @override List<String> get keywords => const [
-    'cad', 'cetoacidose', 'cetoacidose diabética', 'dka', 'ehh',
-    'estado hiperosmolar', 'insulina ev', 'insulina endovenosa',
-    'protocolo insulina', 'glicemia', 'hiperglicemia',
-    'glicose ev', 'controle glicêmico', 'glicemia capilar',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.glicemia;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.glicemia;
+  @override
+  List<String> get keywords => const [
+    'cad',
+    'cetoacidose',
+    'cetoacidose diabética',
+    'dka',
+    'ehh',
+    'estado hiperosmolar',
+    'insulina ev',
+    'insulina endovenosa',
+    'protocolo insulina',
+    'glicemia',
+    'hiperglicemia',
+    'glicose ev',
+    'controle glicêmico',
+    'glicemia capilar',
     'insulinoterapia',
   ];
 }
 
 class VentilationMatcher extends _IntentMatcher {
-  @override PlantaoIntent get intent => PlantaoIntent.ventilacao;
-  @override PlantaoContext get defaultContext => PlantaoContext.ventilacao;
-  @override List<String> get keywords => const [
-    'ventilação mecânica', 'vm', 'ventilador',
-    'peep', 'pressão plateau', 'volume corrente', 'fio2',
-    'modo ventilatório', 'pressão suporte', 'fr ventilatória',
-    'desmame', 'extubação', 'driving pressure', 'plateau',
-    'modo controlado', 'modo assistido', 'ciclado',
+  @override
+  PlantaoIntent get intent => PlantaoIntent.ventilacao;
+  @override
+  PlantaoContext get defaultContext => PlantaoContext.ventilacao;
+  @override
+  List<String> get keywords => const [
+    'ventilação mecânica',
+    'vm',
+    'ventilador',
+    'peep',
+    'pressão plateau',
+    'volume corrente',
+    'fio2',
+    'modo ventilatório',
+    'pressão suporte',
+    'fr ventilatória',
+    'desmame',
+    'extubação',
+    'driving pressure',
+    'plateau',
+    'modo controlado',
+    'modo assistido',
+    'ciclado',
   ];
 }
 
@@ -397,10 +683,10 @@ class VentilationMatcher extends _IntentMatcher {
 // construir o título 🟥 específico.
 // ─────────────────────────────────────────────────────────────────────────────
 class _DrugEntry {
-  final String name;          // Nome canônico para o título 🟥
-  final String subtitle;      // Classe farmacológica / descrição breve
-  final List<String> keys;    // Keywords que identificam este fármaco
-  final PlantaoContext ctx;   // Contexto padrão quando não há override
+  final String name; // Nome canônico para o título 🟥
+  final String subtitle; // Classe farmacológica / descrição breve
+  final List<String> keys; // Keywords que identificam este fármaco
+  final PlantaoContext ctx; // Contexto padrão quando não há override
   const _DrugEntry(this.name, this.subtitle, this.keys, this.ctx);
 }
 
@@ -409,128 +695,305 @@ class _DrugMatcher {
 
   static const _kDrugs = <_DrugEntry>[
     // Antiarrítmicos
-    _DrugEntry('AMIODARONA', 'Antiarrítmico classe III',
-        ['amiodarona', 'amiodarone'], PlantaoContext.arritmia),
-    _DrugEntry('ADENOSINA', 'Antiarrítmico — bloqueador AV',
-        ['adenosina', 'adenosine'], PlantaoContext.arritmia),
-    _DrugEntry('LIDOCAÍNA', 'Antiarrítmico classe IB',
-        ['lidocaína', 'lidocaina', 'xilocaína'], PlantaoContext.arritmia),
-    _DrugEntry('METOPROLOL', 'Betabloqueador seletivo β1',
-        ['metoprolol'], PlantaoContext.arritmia),
-    _DrugEntry('DIGOXINA', 'Glicosídeo cardíaco',
-        ['digoxina', 'digoxin'], PlantaoContext.arritmia),
-    _DrugEntry('ATROPINA', 'Anticolinérgico / Cronotrópico positivo',
-        ['atropina', 'atropine'], PlantaoContext.arritmia),
+    _DrugEntry('AMIODARONA', 'Antiarrítmico classe III', [
+      'amiodarona',
+      'amiodarone',
+    ], PlantaoContext.arritmia),
+    _DrugEntry('ADENOSINA', 'Antiarrítmico — bloqueador AV', [
+      'adenosina',
+      'adenosine',
+    ], PlantaoContext.arritmia),
+    _DrugEntry('LIDOCAÍNA', 'Antiarrítmico classe IB', [
+      'lidocaína',
+      'lidocaina',
+      'xilocaína',
+    ], PlantaoContext.arritmia),
+    _DrugEntry('METOPROLOL', 'Betabloqueador seletivo β1', [
+      'metoprolol',
+    ], PlantaoContext.arritmia),
+    _DrugEntry('DIGOXINA', 'Glicosídeo cardíaco', [
+      'digoxina',
+      'digoxin',
+    ], PlantaoContext.arritmia),
+    _DrugEntry(
+      'ATROPINA',
+      'Anticolinérgico / Cronotrópico positivo',
+      ['atropina', 'atropine'],
+      PlantaoContext.arritmia,
+    ),
 
     // Vasopressores / Inotrópicos
-    _DrugEntry('NORADRENALINA', 'Vasopressor α1 predominante',
-        ['noradrenalina', 'norepinefrina', 'norepinephrine', 'nora'], PlantaoContext.choque),
-    _DrugEntry('ADRENALINA', 'Catecolamina endógena — α1 + β1 + β2',
-        ['adrenalina', 'epinefrina', 'epinephrine', 'adrenalina ev'], PlantaoContext.choque),
-    _DrugEntry('DOPAMINA', 'Catecolamina — dopaminérgico + β1 + α1',
-        ['dopamina', 'dopamine'], PlantaoContext.choque),
-    _DrugEntry('DOBUTAMINA', 'Inotrópico β1 seletivo',
-        ['dobutamina', 'dobutamine'], PlantaoContext.choque),
-    _DrugEntry('VASOPRESSINA', 'Vasopressor não-adrenérgico (V1)',
-        ['vasopressina', 'vasopressin'], PlantaoContext.choque),
-    _DrugEntry('LEVOSIMENDANA', 'Sensibilizador de cálcio — inotrópico',
-        ['levosimendana', 'levosimendan'], PlantaoContext.choque),
+    _DrugEntry('NORADRENALINA', 'Vasopressor α1 predominante', [
+      'noradrenalina',
+      'norepinefrina',
+      'norepinephrine',
+      'nora',
+    ], PlantaoContext.choque),
+    _DrugEntry('ADRENALINA', 'Catecolamina endógena — α1 + β1 + β2', [
+      'adrenalina',
+      'epinefrina',
+      'epinephrine',
+      'adrenalina ev',
+    ], PlantaoContext.choque),
+    _DrugEntry('DOPAMINA', 'Catecolamina — dopaminérgico + β1 + α1', [
+      'dopamina',
+      'dopamine',
+    ], PlantaoContext.choque),
+    _DrugEntry('DOBUTAMINA', 'Inotrópico β1 seletivo', [
+      'dobutamina',
+      'dobutamine',
+    ], PlantaoContext.choque),
+    _DrugEntry('VASOPRESSINA', 'Vasopressor não-adrenérgico (V1)', [
+      'vasopressina',
+      'vasopressin',
+    ], PlantaoContext.choque),
+    _DrugEntry(
+      'LEVOSIMENDANA',
+      'Sensibilizador de cálcio — inotrópico',
+      ['levosimendana', 'levosimendan'],
+      PlantaoContext.choque,
+    ),
 
     // Sedação / Analgesia / Indutores
-    _DrugEntry('KETAMINA', 'Anestésico dissociativo — NMDA antagonista',
-        ['ketamina', 'ketamine'], PlantaoContext.viaAerea),
-    _DrugEntry('ETOMIDATO', 'Indutor anestésico — GABA agonista',
-        ['etomidato', 'etomidate'], PlantaoContext.viaAerea),
-    _DrugEntry('MIDAZOLAM', 'Benzodiazepínico sedativo',
-        ['midazolam', 'dormicum'], PlantaoContext.farmacologia),
-    _DrugEntry('PROPOFOL', 'Anestésico geral / Sedativo EV',
-        ['propofol', 'diprivan'], PlantaoContext.farmacologia),
-    _DrugEntry('FENTANIL', 'Opioide sintético — analgesia EV',
-        ['fentanil', 'fentanyl'], PlantaoContext.farmacologia),
-    _DrugEntry('MORFINA', 'Opioide — analgesia / broncodilatação',
-        ['morfina', 'morphine'], PlantaoContext.farmacologia),
-    _DrugEntry('SUCCINILCOLINA', 'Bloqueador neuromuscular despolarizante',
-        ['succinilcolina', 'succinylcholine', 'suxametônio'], PlantaoContext.viaAerea),
-    _DrugEntry('ROCURÔNIO', 'Bloqueador neuromuscular não-despolarizante',
-        ['rocurônio', 'rocuronio', 'rocuronium'], PlantaoContext.viaAerea),
+    _DrugEntry(
+      'KETAMINA',
+      'Anestésico dissociativo — NMDA antagonista',
+      ['ketamina', 'ketamine'],
+      PlantaoContext.viaAerea,
+    ),
+    _DrugEntry('ETOMIDATO', 'Indutor anestésico — GABA agonista', [
+      'etomidato',
+      'etomidate',
+    ], PlantaoContext.viaAerea),
+    _DrugEntry('MIDAZOLAM', 'Benzodiazepínico sedativo', [
+      'midazolam',
+      'dormicum',
+    ], PlantaoContext.farmacologia),
+    _DrugEntry('PROPOFOL', 'Anestésico geral / Sedativo EV', [
+      'propofol',
+      'diprivan',
+    ], PlantaoContext.farmacologia),
+    _DrugEntry('FENTANIL', 'Opioide sintético — analgesia EV', [
+      'fentanil',
+      'fentanyl',
+    ], PlantaoContext.farmacologia),
+    _DrugEntry(
+      'MORFINA',
+      'Opioide — analgesia / broncodilatação',
+      ['morfina', 'morphine'],
+      PlantaoContext.farmacologia,
+    ),
+    _DrugEntry(
+      'SUCCINILCOLINA',
+      'Bloqueador neuromuscular despolarizante',
+      ['succinilcolina', 'succinylcholine', 'suxametônio'],
+      PlantaoContext.viaAerea,
+    ),
+    _DrugEntry(
+      'ROCURÔNIO',
+      'Bloqueador neuromuscular não-despolarizante',
+      ['rocurônio', 'rocuronio', 'rocuronium'],
+      PlantaoContext.viaAerea,
+    ),
 
     // Anticoagulantes / Hemostáticos
-    _DrugEntry('HEPARINA NÃO FRACIONADA', 'Anticoagulante — inibidor da trombina',
-        ['heparina não fracionada', 'hnf', 'heparina ev', 'heparin'], PlantaoContext.cardiovascular),
-    _DrugEntry('ENOXAPARINA', 'HBPM — anticoagulante subcutâneo',
-        ['enoxaparina', 'clexane', 'enoxaparin'], PlantaoContext.cardiovascular),
-    _DrugEntry('VARFARINA', 'Anticoagulante oral — inibidor de vitamina K',
-        ['varfarina', 'warfarina', 'warfarin', 'coumadin'], PlantaoContext.cardiovascular),
-    _DrugEntry('RIVAROXABANA', 'DOAC — inibidor direto do fator Xa',
-        ['rivaroxabana', 'xarelto', 'rivaroxaban'], PlantaoContext.cardiovascular),
-    _DrugEntry('DABIGATRANA', 'DOAC — inibidor direto da trombina',
-        ['dabigatrana', 'pradaxa', 'dabigatran'], PlantaoContext.cardiovascular),
+    _DrugEntry(
+      'HEPARINA NÃO FRACIONADA',
+      'Anticoagulante — inibidor da trombina',
+      ['heparina não fracionada', 'hnf', 'heparina ev', 'heparin'],
+      PlantaoContext.cardiovascular,
+    ),
+    _DrugEntry(
+      'ENOXAPARINA',
+      'HBPM — anticoagulante subcutâneo',
+      ['enoxaparina', 'clexane', 'enoxaparin'],
+      PlantaoContext.cardiovascular,
+    ),
+    _DrugEntry(
+      'VARFARINA',
+      'Anticoagulante oral — inibidor de vitamina K',
+      ['varfarina', 'warfarina', 'warfarin', 'coumadin'],
+      PlantaoContext.cardiovascular,
+    ),
+    _DrugEntry(
+      'RIVAROXABANA',
+      'DOAC — inibidor direto do fator Xa',
+      ['rivaroxabana', 'xarelto', 'rivaroxaban'],
+      PlantaoContext.cardiovascular,
+    ),
+    _DrugEntry(
+      'DABIGATRANA',
+      'DOAC — inibidor direto da trombina',
+      ['dabigatrana', 'pradaxa', 'dabigatran'],
+      PlantaoContext.cardiovascular,
+    ),
 
     // Antibióticos
-    _DrugEntry('VANCOMICINA', 'Glicopeptídeo — antibiótico anti-MRSA',
-        ['vancomicina', 'vancomycin'], PlantaoContext.sepse),
-    _DrugEntry('PIPERACILINA-TAZOBACTAM', 'Penicilina + inibidor de β-lactamase',
-        ['piperacilina', 'tazobactam', 'pip-tazo', 'tazocin'], PlantaoContext.sepse),
-    _DrugEntry('MEROPENEM', 'Carbapenem — amplo espectro',
-        ['meropenem', 'meronem'], PlantaoContext.sepse),
-    _DrugEntry('IMIPENEM', 'Carbapenem — amplo espectro',
-        ['imipenem', 'tienam'], PlantaoContext.sepse),
-    _DrugEntry('CEFTRIAXONA', 'Cefalosporina 3ª geração',
-        ['ceftriaxona', 'rocefin', 'ceftriaxone'], PlantaoContext.sepse),
-    _DrugEntry('AZITROMICINA', 'Macrolídeo — atípicos',
-        ['azitromicina', 'zithromax', 'azithromycin'], PlantaoContext.sepse),
-    _DrugEntry('CIPROFLOXACINO', 'Fluoroquinolona — amplo espectro',
-        ['ciprofloxacino', 'ciprofloxacin', 'cipro'], PlantaoContext.sepse),
-    _DrugEntry('METRONIDAZOL', 'Nitroimidazol — anaeróbios / protozoários',
-        ['metronidazol', 'metronidazole', 'flagyl'], PlantaoContext.sepse),
+    _DrugEntry('VANCOMICINA', 'Glicopeptídeo — antibiótico anti-MRSA', [
+      'vancomicina',
+      'vancomycin',
+    ], PlantaoContext.sepse),
+    _DrugEntry(
+      'PIPERACILINA-TAZOBACTAM',
+      'Penicilina + inibidor de β-lactamase',
+      ['piperacilina', 'tazobactam', 'pip-tazo', 'tazocin'],
+      PlantaoContext.sepse,
+    ),
+    _DrugEntry('MEROPENEM', 'Carbapenem — amplo espectro', [
+      'meropenem',
+      'meronem',
+    ], PlantaoContext.sepse),
+    _DrugEntry('IMIPENEM', 'Carbapenem — amplo espectro', [
+      'imipenem',
+      'tienam',
+    ], PlantaoContext.sepse),
+    _DrugEntry('CEFTRIAXONA', 'Cefalosporina 3ª geração', [
+      'ceftriaxona',
+      'rocefin',
+      'ceftriaxone',
+    ], PlantaoContext.sepse),
+    _DrugEntry('AZITROMICINA', 'Macrolídeo — atípicos', [
+      'azitromicina',
+      'zithromax',
+      'azithromycin',
+    ], PlantaoContext.sepse),
+    _DrugEntry('CIPROFLOXACINO', 'Fluoroquinolona — amplo espectro', [
+      'ciprofloxacino',
+      'ciprofloxacin',
+      'cipro',
+    ], PlantaoContext.sepse),
+    _DrugEntry(
+      'METRONIDAZOL',
+      'Nitroimidazol — anaeróbios / protozoários',
+      ['metronidazol', 'metronidazole', 'flagyl'],
+      PlantaoContext.sepse,
+    ),
 
     // Eletrolíticos / Correção
-    _DrugEntry('CLORETO DE POTÁSSIO', 'Reposição de potássio EV',
-        ['kcl', 'cloreto de potássio', 'cloreto de potassio', 'kci 19,1%', 'kcl 19,1', 'potássio ev'], PlantaoContext.eletrolitos),
-    _DrugEntry('SULFATO DE MAGNÉSIO', 'Reposição de magnésio EV',
-        ['sulfato de magnésio', 'mgso4', 'magnésio ev', 'magnesio ev'], PlantaoContext.eletrolitos),
-    _DrugEntry('GLUCONATO DE CÁLCIO', 'Protetor de membrana / reposição de Ca2+',
-        ['gluconato de cálcio', 'gluconato de calcio', 'cálcio ev', 'calcio ev'], PlantaoContext.eletrolitos),
-    _DrugEntry('BICARBONATO DE SÓDIO', 'Tampão / correção de acidose',
-        ['bicarbonato', 'nahco3', 'bicarbonato de sódio', 'bicarbonato de sodio'], PlantaoContext.eletrolitos),
-    _DrugEntry('INSULINA REGULAR', 'Insulina de ação rápida — controle glicêmico',
-        ['insulina regular', 'insulina ev', 'insulina endovenosa', 'insulinoterapia ev'], PlantaoContext.glicemia),
-    _DrugEntry('GLICOSE 50%', 'Correção de hipoglicemia EV',
-        ['glicose 50%', 'glicose a 50', 'soro glicosado 50', 'sg50%'], PlantaoContext.glicemia),
+    _DrugEntry('CLORETO DE POTÁSSIO', 'Reposição de potássio EV', [
+      'kcl',
+      'cloreto de potássio',
+      'cloreto de potassio',
+      'kci 19,1%',
+      'kcl 19,1',
+      'potássio ev',
+    ], PlantaoContext.eletrolitos),
+    _DrugEntry('SULFATO DE MAGNÉSIO', 'Reposição de magnésio EV', [
+      'sulfato de magnésio',
+      'mgso4',
+      'magnésio ev',
+      'magnesio ev',
+    ], PlantaoContext.eletrolitos),
+    _DrugEntry(
+      'GLUCONATO DE CÁLCIO',
+      'Protetor de membrana / reposição de Ca2+',
+      ['gluconato de cálcio', 'gluconato de calcio', 'cálcio ev', 'calcio ev'],
+      PlantaoContext.eletrolitos,
+    ),
+    _DrugEntry(
+      'BICARBONATO DE SÓDIO',
+      'Tampão / correção de acidose',
+      ['bicarbonato', 'nahco3', 'bicarbonato de sódio', 'bicarbonato de sodio'],
+      PlantaoContext.eletrolitos,
+    ),
+    _DrugEntry(
+      'INSULINA REGULAR',
+      'Insulina de ação rápida — controle glicêmico',
+      [
+        'insulina regular',
+        'insulina ev',
+        'insulina endovenosa',
+        'insulinoterapia ev',
+      ],
+      PlantaoContext.glicemia,
+    ),
+    _DrugEntry('GLICOSE 50%', 'Correção de hipoglicemia EV', [
+      'glicose 50%',
+      'glicose a 50',
+      'soro glicosado 50',
+      'sg50%',
+    ], PlantaoContext.glicemia),
 
     // Cardiovasculares
-    _DrugEntry('NITROPRUSSIATO', 'Vasodilatador arteriovenoso — crise hipertensiva',
-        ['nitroprussiato', 'nipride', 'nitroprusside'], PlantaoContext.cardiovascular),
-    _DrugEntry('NITROGLICERINA', 'Nitrato — vasodilatador coronário',
-        ['nitroglicerina', 'nitroglicerin', 'ntg', 'isordil ev'], PlantaoContext.cardiovascular),
-    _DrugEntry('FUROSEMIDA', 'Diurético de alça — IC / congestão',
-        ['furosemida', 'lasix', 'furosemide'], PlantaoContext.cardiovascular),
-    _DrugEntry('LABETALOL', 'Alfabetabloqueador — crise hipertensiva',
-        ['labetalol', 'trandate'], PlantaoContext.cardiovascular),
+    _DrugEntry(
+      'NITROPRUSSIATO',
+      'Vasodilatador arteriovenoso — crise hipertensiva',
+      ['nitroprussiato', 'nipride', 'nitroprusside'],
+      PlantaoContext.cardiovascular,
+    ),
+    _DrugEntry(
+      'NITROGLICERINA',
+      'Nitrato — vasodilatador coronário',
+      ['nitroglicerina', 'nitroglicerin', 'ntg', 'isordil ev'],
+      PlantaoContext.cardiovascular,
+    ),
+    _DrugEntry(
+      'FUROSEMIDA',
+      'Diurético de alça — IC / congestão',
+      ['furosemida', 'lasix', 'furosemide'],
+      PlantaoContext.cardiovascular,
+    ),
+    _DrugEntry(
+      'LABETALOL',
+      'Alfabetabloqueador — crise hipertensiva',
+      ['labetalol', 'trandate'],
+      PlantaoContext.cardiovascular,
+    ),
 
     // Neurologia
-    _DrugEntry('DIAZEPAM', 'Benzodiazepínico — anticonvulsivante',
-        ['diazepam', 'valium'], PlantaoContext.neurologia),
-    _DrugEntry('FENITOÍNA', 'Antiepiléptico — estabilizador de membrana',
-        ['fenitoína', 'fenitoina', 'phenytoin', 'hidantal'], PlantaoContext.neurologia),
-    _DrugEntry('FENOBARBITAL', 'Barbitúrico antiepiléptico',
-        ['fenobarbital', 'phenobarbital', 'gardenal'], PlantaoContext.neurologia),
-    _DrugEntry('LEVETIRACETAM', 'Antiepiléptico de nova geração',
-        ['levetiracetam', 'keppra'], PlantaoContext.neurologia),
-    _DrugEntry('ALTEPLASE', 'Trombolítico — rt-PA — AVC isquêmico / TEP',
-        ['alteplase', 'rtpa', 'rt-pa', 'actilyse', 'tenecteplase'], PlantaoContext.neurologia),
-    _DrugEntry('MANITOL', 'Diurético osmótico — hipertensão intracraniana',
-        ['manitol', 'mannitol'], PlantaoContext.neurologia),
+    _DrugEntry('DIAZEPAM', 'Benzodiazepínico — anticonvulsivante', [
+      'diazepam',
+      'valium',
+    ], PlantaoContext.neurologia),
+    _DrugEntry(
+      'FENITOÍNA',
+      'Antiepiléptico — estabilizador de membrana',
+      ['fenitoína', 'fenitoina', 'phenytoin', 'hidantal'],
+      PlantaoContext.neurologia,
+    ),
+    _DrugEntry('FENOBARBITAL', 'Barbitúrico antiepiléptico', [
+      'fenobarbital',
+      'phenobarbital',
+      'gardenal',
+    ], PlantaoContext.neurologia),
+    _DrugEntry('LEVETIRACETAM', 'Antiepiléptico de nova geração', [
+      'levetiracetam',
+      'keppra',
+    ], PlantaoContext.neurologia),
+    _DrugEntry(
+      'ALTEPLASE',
+      'Trombolítico — rt-PA — AVC isquêmico / TEP',
+      ['alteplase', 'rtpa', 'rt-pa', 'actilyse', 'tenecteplase'],
+      PlantaoContext.neurologia,
+    ),
+    _DrugEntry(
+      'MANITOL',
+      'Diurético osmótico — hipertensão intracraniana',
+      ['manitol', 'mannitol'],
+      PlantaoContext.neurologia,
+    ),
 
     // Broncodilatadores / Respiratórios
-    _DrugEntry('SALBUTAMOL', 'Broncodilatador β2 — broncoespasmo',
-        ['salbutamol', 'ventolin', 'albuterol'], PlantaoContext.ventilacao),
-    _DrugEntry('ADRENALINA NEBULIZADA', 'Vasoconstritora / broncodilatadora inalatória',
-        ['adrenalina nebulizada', 'adrenalina inalada'], PlantaoContext.ventilacao),
-    _DrugEntry('IPRATRÓPIO', 'Anticolinérgico broncodilatador',
-        ['ipratrópio', 'atrovent', 'ipratropium'], PlantaoContext.ventilacao),
-    _DrugEntry('AMINOFILINA', 'Xantina — broncodilatador',
-        ['aminofilina', 'aminophylline'], PlantaoContext.ventilacao),
+    _DrugEntry('SALBUTAMOL', 'Broncodilatador β2 — broncoespasmo', [
+      'salbutamol',
+      'ventolin',
+      'albuterol',
+    ], PlantaoContext.ventilacao),
+    _DrugEntry(
+      'ADRENALINA NEBULIZADA',
+      'Vasoconstritora / broncodilatadora inalatória',
+      ['adrenalina nebulizada', 'adrenalina inalada'],
+      PlantaoContext.ventilacao,
+    ),
+    _DrugEntry('IPRATRÓPIO', 'Anticolinérgico broncodilatador', [
+      'ipratrópio',
+      'atrovent',
+      'ipratropium',
+    ], PlantaoContext.ventilacao),
+    _DrugEntry('AMINOFILINA', 'Xantina — broncodilatador', [
+      'aminofilina',
+      'aminophylline',
+    ], PlantaoContext.ventilacao),
   ];
 
   static _MatcherResult match(String msg) {
@@ -558,13 +1021,17 @@ class _DrugMatcher {
 // ─────────────────────────────────────────────────────────────────────────────
 class _ContextEntry {
   final PlantaoContext context;
-  final String topicOverride;       // Override de tema se não houver drug match
-  final String subtitleOverride;    // Override de subtítulo
+  final String topicOverride; // Override de tema se não houver drug match
+  final String subtitleOverride; // Override de subtítulo
   final List<String> keys;
-  final bool isCritical;            // true → eleva complexidade para critica
+  final bool isCritical; // true → eleva complexidade para critica
   const _ContextEntry(
-      this.context, this.topicOverride, this.subtitleOverride, this.keys,
-      {this.isCritical = false});
+    this.context,
+    this.topicOverride,
+    this.subtitleOverride,
+    this.keys, {
+    this.isCritical = false,
+  });
 }
 
 class _ContextMatcher {
@@ -572,88 +1039,269 @@ class _ContextMatcher {
 
   static const _kContexts = <_ContextEntry>[
     _ContextEntry(PlantaoContext.pcr, 'PCR', 'Parada cardiorrespiratória', [
-      'pcr', 'parada cardíaca', 'parada cardiaca', 'parada cardiorrespiratória',
-      'rcp', 'ressuscitação', 'acls', 'bls', 'reanimação',
-      'fv', 'fibrilação ventricular', 'tvsp', 'aesp', 'assistolia',
-      'sem pulso', 'choque elétrico',
+      'pcr',
+      'parada cardíaca',
+      'parada cardiaca',
+      'parada cardiorrespiratória',
+      'rcp',
+      'ressuscitação',
+      'acls',
+      'bls',
+      'reanimação',
+      'fv',
+      'fibrilação ventricular',
+      'tvsp',
+      'aesp',
+      'assistolia',
+      'sem pulso',
+      'choque elétrico',
     ], isCritical: true),
     _ContextEntry(PlantaoContext.viaAerea, 'VIA AÉREA', 'Manejo da via aérea', [
-      'iot', 'intubar', 'intubação', 'sequência rápida', 'sri', 'rsi',
-      'laringoscopia', 'videolaringoscopia', 'via aérea difícil',
-      'cricotireoidostomia', 'cormack', 'mallampati',
+      'iot',
+      'intubar',
+      'intubação',
+      'sequência rápida',
+      'sri',
+      'rsi',
+      'laringoscopia',
+      'videolaringoscopia',
+      'via aérea difícil',
+      'cricotireoidostomia',
+      'cormack',
+      'mallampati',
     ], isCritical: true),
     _ContextEntry(PlantaoContext.choque, 'CHOQUE', 'Choque circulatório', [
-      'choque', 'shock', 'hipotensão refratária',
-      'pam < 65', 'pam baixa', 'ressuscitação hemodinâmica',
+      'choque',
+      'shock',
+      'hipotensão refratária',
+      'pam < 65',
+      'pam baixa',
+      'ressuscitação hemodinâmica',
       'instabilidade hemodinâmica',
     ], isCritical: true),
     _ContextEntry(PlantaoContext.sepse, 'SEPSE', 'Infecção grave / Sepse', [
-      'sepse', 'sepsis', 'septicemia', 'choque séptico',
-      'bundle sepse', 'hora 1', 'foco infeccioso',
-      'infecção grave', 'sofa', 'qsofa',
+      'sepse',
+      'sepsis',
+      'septicemia',
+      'choque séptico',
+      'bundle sepse',
+      'hora 1',
+      'foco infeccioso',
+      'infecção grave',
+      'sofa',
+      'qsofa',
     ], isCritical: true),
-    _ContextEntry(PlantaoContext.viaAerea, 'VIA AÉREA', 'Suporte ventilatório', [
-      'saturação baixa', 'sato2', 'sat o2', 'spO2', 'spO2 < 90',
-      'hipóxia', 'hipoxia', 'hipoxemia',
-    ], isCritical: true),
-    _ContextEntry(PlantaoContext.ventilacao, 'VENTILAÇÃO MECÂNICA', 'Suporte ventilatório invasivo', [
-      'ventilação mecânica', 'vm', 'ventilador', 'peep', 'fio2',
-      'volume corrente', 'pressão plateau', 'driving pressure',
-    ], isCritical: false),
-    _ContextEntry(PlantaoContext.arritmia, 'ARRITMIA', 'Distúrbio do ritmo cardíaco', [
-      'arritmia', 'taquicardia', 'fibrilação atrial', ' fa ',
-      'flutter atrial', 'tsvp', 'taqui supra', 'taqui ventricular',
-      'bradiarritmia', 'bloqueio av', 'bav',
-    ], isCritical: false),
-    _ContextEntry(PlantaoContext.cardiovascular, 'IAM', 'Síndrome coronariana aguda', [
-      'iam', 'infarto', 'sca', 'stemi', 'nstemi',
-      'dor torácica', 'sindrome coronariana', 'elevação de st',
-    ], isCritical: true),
-    _ContextEntry(PlantaoContext.cardiovascular, 'TEP', 'Tromboembolismo pulmonar', [
-      'tep', 'embolia pulmonar', 'tromboembolismo',
-    ], isCritical: true),
-    _ContextEntry(PlantaoContext.cardiovascular, 'CRISE HIPERTENSIVA', 'Emergência hipertensiva', [
-      'crise hipertensiva', 'emergência hipertensiva', 'encefalopatia hipertensiva',
-      'pa 220', 'pa 210', 'pa 200', 'pas ≥ 180', 'hipertensão grave',
-    ], isCritical: true),
-    _ContextEntry(PlantaoContext.eletrolitos, 'DISTÚRBIO ELETROLÍTICO', 'Desequilíbrio iônico', [
-      'hipocalemia grave', 'hipercalemia grave', 'k+ 6', 'k+ 7', 'k+ < 2',
-      'hiponatremia grave', 'hipernatremia grave', 'hipocalcemia grave',
-      'ecg alterado', 'ondas t apiculadas', 'alargamento de qrs',
-    ], isCritical: true),
-    _ContextEntry(PlantaoContext.eletrolitos, 'DISTÚRBIO ELETROLÍTICO', 'Desequilíbrio iônico', [
-      'hipocalemia', 'hipercalemia', 'hiponatremia', 'hipernatremia',
-      'hipocalcemia', 'hipercalcemia', 'hipomagnesemia',
-    ], isCritical: false),
-    _ContextEntry(PlantaoContext.glicemia, 'CETOACIDOSE DIABÉTICA', 'Emergência metabólica', [
-      'cad', 'cetoacidose', 'cetoacidose diabética', 'dka', 'ehh', 'estado hiperosmolar',
-    ], isCritical: true),
-    _ContextEntry(PlantaoContext.glicemia, 'DISTÚRBIO GLICÊMICO', 'Controle glicêmico', [
-      'hipoglicemia', 'hiperglicemia', 'glicemia',
-    ], isCritical: false),
-    _ContextEntry(PlantaoContext.neurologia, 'AVC ISQUÊMICO', 'Acidente vascular cerebral', [
-      'avc', 'acidente vascular', 'avc isquêmico', 'stroke', 'nihss',
-    ], isCritical: true),
-    _ContextEntry(PlantaoContext.neurologia, 'STATUS EPILÉPTICO', 'Estado de mal epiléptico', [
-      'status epiléptico', 'estado de mal epiléptico', 'convulsão', 'convulsão prolongada',
-      'convulsão há', 'crise convulsiva',
-    ], isCritical: true),
+    _ContextEntry(
+      PlantaoContext.viaAerea,
+      'VIA AÉREA',
+      'Suporte ventilatório',
+      [
+        'saturação baixa',
+        'sato2',
+        'sat o2',
+        'spO2',
+        'spO2 < 90',
+        'hipóxia',
+        'hipoxia',
+        'hipoxemia',
+      ],
+      isCritical: true,
+    ),
+    _ContextEntry(
+      PlantaoContext.ventilacao,
+      'VENTILAÇÃO MECÂNICA',
+      'Suporte ventilatório invasivo',
+      [
+        'ventilação mecânica',
+        'vm',
+        'ventilador',
+        'peep',
+        'fio2',
+        'volume corrente',
+        'pressão plateau',
+        'driving pressure',
+      ],
+      isCritical: false,
+    ),
+    _ContextEntry(
+      PlantaoContext.arritmia,
+      'ARRITMIA',
+      'Distúrbio do ritmo cardíaco',
+      [
+        'arritmia',
+        'taquicardia',
+        'fibrilação atrial',
+        ' fa ',
+        'flutter atrial',
+        'tsvp',
+        'taqui supra',
+        'taqui ventricular',
+        'bradiarritmia',
+        'bloqueio av',
+        'bav',
+      ],
+      isCritical: false,
+    ),
+    _ContextEntry(
+      PlantaoContext.cardiovascular,
+      'IAM',
+      'Síndrome coronariana aguda',
+      [
+        'iam',
+        'infarto',
+        'sca',
+        'stemi',
+        'nstemi',
+        'dor torácica',
+        'sindrome coronariana',
+        'elevação de st',
+      ],
+      isCritical: true,
+    ),
+    _ContextEntry(
+      PlantaoContext.cardiovascular,
+      'TEP',
+      'Tromboembolismo pulmonar',
+      ['tep', 'embolia pulmonar', 'tromboembolismo'],
+      isCritical: true,
+    ),
+    _ContextEntry(
+      PlantaoContext.cardiovascular,
+      'CRISE HIPERTENSIVA',
+      'Emergência hipertensiva',
+      [
+        'crise hipertensiva',
+        'emergência hipertensiva',
+        'encefalopatia hipertensiva',
+        'pa 220',
+        'pa 210',
+        'pa 200',
+        'pas ≥ 180',
+        'hipertensão grave',
+      ],
+      isCritical: true,
+    ),
+    _ContextEntry(
+      PlantaoContext.eletrolitos,
+      'DISTÚRBIO ELETROLÍTICO',
+      'Desequilíbrio iônico',
+      [
+        'hipocalemia grave',
+        'hipercalemia grave',
+        'k+ 6',
+        'k+ 7',
+        'k+ < 2',
+        'hiponatremia grave',
+        'hipernatremia grave',
+        'hipocalcemia grave',
+        'ecg alterado',
+        'ondas t apiculadas',
+        'alargamento de qrs',
+      ],
+      isCritical: true,
+    ),
+    _ContextEntry(
+      PlantaoContext.eletrolitos,
+      'DISTÚRBIO ELETROLÍTICO',
+      'Desequilíbrio iônico',
+      [
+        'hipocalemia',
+        'hipercalemia',
+        'hiponatremia',
+        'hipernatremia',
+        'hipocalcemia',
+        'hipercalcemia',
+        'hipomagnesemia',
+      ],
+      isCritical: false,
+    ),
+    _ContextEntry(
+      PlantaoContext.glicemia,
+      'CETOACIDOSE DIABÉTICA',
+      'Emergência metabólica',
+      [
+        'cad',
+        'cetoacidose',
+        'cetoacidose diabética',
+        'dka',
+        'ehh',
+        'estado hiperosmolar',
+      ],
+      isCritical: true,
+    ),
+    _ContextEntry(
+      PlantaoContext.glicemia,
+      'DISTÚRBIO GLICÊMICO',
+      'Controle glicêmico',
+      ['hipoglicemia', 'hiperglicemia', 'glicemia'],
+      isCritical: false,
+    ),
+    _ContextEntry(
+      PlantaoContext.neurologia,
+      'AVC ISQUÊMICO',
+      'Acidente vascular cerebral',
+      ['avc', 'acidente vascular', 'avc isquêmico', 'stroke', 'nihss'],
+      isCritical: true,
+    ),
+    _ContextEntry(
+      PlantaoContext.neurologia,
+      'STATUS EPILÉPTICO',
+      'Estado de mal epiléptico',
+      [
+        'status epiléptico',
+        'estado de mal epiléptico',
+        'convulsão',
+        'convulsão prolongada',
+        'convulsão há',
+        'crise convulsiva',
+      ],
+      isCritical: true,
+    ),
     _ContextEntry(PlantaoContext.neurologia, 'MENINGITE', 'Infecção do SNC', [
-      'meningite', 'meningismo', 'rigidez de nuca', 'kernig', 'brudzinski',
+      'meningite',
+      'meningismo',
+      'rigidez de nuca',
+      'kernig',
+      'brudzinski',
     ], isCritical: true),
-    _ContextEntry(PlantaoContext.renal, 'INJÚRIA RENAL AGUDA', 'IRA / ajuste de dose renal', [
-      'ira', 'injúria renal', 'lesão renal aguda', 'clcr', 'clearance', 'creatinina elevada',
-      'ajuste renal', 'dose em insuficiência renal', 'nefrotoxicidade',
-    ], isCritical: false),
-    _ContextEntry(PlantaoContext.toxicologia, 'INTOXICAÇÃO', 'Toxicologia clínica', [
-      'intoxicação', 'overdose', 'antídoto', 'envenenamento', 'toxicidade',
-    ], isCritical: true),
+    _ContextEntry(
+      PlantaoContext.renal,
+      'INJÚRIA RENAL AGUDA',
+      'IRA / ajuste de dose renal',
+      [
+        'ira',
+        'injúria renal',
+        'lesão renal aguda',
+        'clcr',
+        'clearance',
+        'creatinina elevada',
+        'ajuste renal',
+        'dose em insuficiência renal',
+        'nefrotoxicidade',
+      ],
+      isCritical: false,
+    ),
+    _ContextEntry(
+      PlantaoContext.toxicologia,
+      'INTOXICAÇÃO',
+      'Toxicologia clínica',
+      ['intoxicação', 'overdose', 'antídoto', 'envenenamento', 'toxicidade'],
+      isCritical: true,
+    ),
   ];
 
-  static ({PlantaoContext ctx, String topic, String subtitle, bool isCritical, List<String> matched})
-      match(String msg) {
+  static ({
+    PlantaoContext ctx,
+    String topic,
+    String subtitle,
+    bool isCritical,
+    List<String> matched,
+  })
+  match(String msg) {
     for (final entry in _kContexts) {
-      final matched = entry.keys.where((k) => msg.contains(k)).toList();
+      final matched = entry.keys
+          .where((k) => _PlantaoSemanticNormalizer.keywordMatches(msg, k))
+          .toList();
       if (matched.isNotEmpty) {
         return (
           ctx: entry.context,
@@ -689,14 +1337,41 @@ class _ComplexityResolver {
 
   // Sinais de gravidade que elevam qualquer cenário para `critica`
   static const _kCriticalSignals = [
-    'instabilidade', 'instável', 'sem pulso', 'apneia', 'glasgow < 8',
-    'glasgow 3', 'glasgow 4', 'glasgow 5', 'glasgow 6',
-    'rebaixamento', 'inconsciente', 'sem resposta', 'parada',
-    'pam < 65', 'pam baixa', 'pa 80', 'pa 70', 'pa 60',
-    'sat 80', 'sat 85', 'spo2 80', 'spo2 85', 'spo2 88',
-    'spo2 < 90', 'sat < 90', 'hipóxia grave', 'cianose',
-    'k+ 7', 'k+ 6,5', 'k+ 8', 'k+ < 2', 'k+ 1,',
-    'hemorragia grave', 'choque hemorrágico', 'exsanguinação',
+    'instabilidade',
+    'instável',
+    'sem pulso',
+    'apneia',
+    'glasgow < 8',
+    'glasgow 3',
+    'glasgow 4',
+    'glasgow 5',
+    'glasgow 6',
+    'rebaixamento',
+    'inconsciente',
+    'sem resposta',
+    'parada',
+    'pam < 65',
+    'pam baixa',
+    'pa 80',
+    'pa 70',
+    'pa 60',
+    'sat 80',
+    'sat 85',
+    'spo2 80',
+    'spo2 85',
+    'spo2 88',
+    'spo2 < 90',
+    'sat < 90',
+    'hipóxia grave',
+    'cianose',
+    'k+ 7',
+    'k+ 6,5',
+    'k+ 8',
+    'k+ < 2',
+    'k+ 1,',
+    'hemorragia grave',
+    'choque hemorrágico',
+    'exsanguinação',
   ];
 
   // Intenções que por natureza são críticas
@@ -742,11 +1417,13 @@ class _ComplexityResolver {
     if (contextIsCritical) return PlantaoComplexity.critica;
 
     // Passo 3: intenções intrinsecamente críticas
-    if (_kCriticalIntents.contains(primaryIntent)) return PlantaoComplexity.critica;
+    if (_kCriticalIntents.contains(primaryIntent))
+      return PlantaoComplexity.critica;
     if (_kCriticalContexts.contains(context)) return PlantaoComplexity.critica;
 
     // Passo 4: intenções intermediárias
-    if (_kIntermediateIntents.contains(primaryIntent)) return PlantaoComplexity.intermediaria;
+    if (_kIntermediateIntents.contains(primaryIntent))
+      return PlantaoComplexity.intermediaria;
     if (context == PlantaoContext.eletrolitos ||
         context == PlantaoContext.glicemia ||
         context == PlantaoContext.renal ||
@@ -773,12 +1450,175 @@ class _ComplexityResolver {
 //   3. Contexto clínico grave (pcr, choque, sepse) → contexto + complexidade
 //   4. Contexto eletrólito/glicemia/renal → contexto + complexidade intermediária
 // ─────────────────────────────────────────────────────────────────────────────
+class _PlantaoSemanticNormalizer {
+  _PlantaoSemanticNormalizer._();
+
+  /// Normalização EXCLUSIVA para classificação/roteamento.
+  ///
+  /// O texto original do usuário permanece intacto para histórico, edição,
+  /// provider e renderização. Aqui convertemos apenas sinônimos/variantes
+  /// linguísticas equivalentes para tokens já canônicos nos matchers.
+  static bool keywordMatches(String msg, String keyword) {
+    // Tokens clínicos curtos não podem casar dentro de palavras comuns.
+    // Exemplo: "fa" não pode casar dentro de "fazer".
+    final isShortAsciiToken =
+        keyword.length <= 3 && RegExp(r'^[a-z0-9]+$').hasMatch(keyword);
+
+    // Dose/dosis são clinicamente relevantes como palavras/tarefas, mas não
+    // podem casar dentro de termos de intoxicação como superdose/sobredosis.
+    // Frases iniciadas por dose/dosis também exigem boundary à esquerda.
+    final isDoseKeyword =
+        keyword == 'dose' ||
+        keyword == 'dosis' ||
+        keyword.startsWith('dose ') ||
+        keyword.startsWith('dosis ');
+
+    final needsWordBoundaries = isShortAsciiToken || isDoseKeyword;
+
+    if (!needsWordBoundaries) {
+      return msg.contains(keyword);
+    }
+
+    var start = msg.indexOf(keyword);
+
+    while (start != -1) {
+      final end = start + keyword.length;
+
+      final leftIsWord = start > 0 && _isLatinWordChar(msg[start - 1]);
+      final rightIsWord = end < msg.length && _isLatinWordChar(msg[end]);
+
+      if (!leftIsWord && !rightIsWord) {
+        return true;
+      }
+
+      start = msg.indexOf(keyword, start + 1);
+    }
+
+    return false;
+  }
+
+  static bool _isLatinWordChar(String char) {
+    return RegExp(r'[0-9A-Za-zÀ-ÖØ-öø-ÿ_]').hasMatch(char);
+  }
+
+  static String _replaceWholeToken(String input, String from, String to) {
+    var result = input;
+    var start = result.indexOf(from);
+
+    while (start != -1) {
+      final end = start + from.length;
+      final leftIsWord = start > 0 && _isLatinWordChar(result[start - 1]);
+      final rightIsWord = end < result.length && _isLatinWordChar(result[end]);
+
+      if (!leftIsWord && !rightIsWord) {
+        result = result.replaceRange(start, end, to);
+        start = result.indexOf(from, start + to.length);
+      } else {
+        start = result.indexOf(from, start + 1);
+      }
+    }
+
+    return result;
+  }
+
+  static String normalize(String input) {
+    var msg = input.toLowerCase().trim();
+
+    const replacements = <String, String>{
+      // Intenção de conduta — ES → token canônico já usado em PT.
+      'qué hacer': 'conduta',
+      'que hacer': 'conduta',
+      'tratamiento': 'tratamento',
+      'conducta': 'conduta',
+      'abordaje': 'abordagem',
+      'primera línea': 'primeira linha',
+      'primera linea': 'primeira linha',
+
+      // Potássio — variantes ES/internacionais → token canônico.
+      'hiperkalemia': 'hipercalemia',
+      'hiperkaliemia': 'hipercalemia',
+      'hipercaliemia': 'hipercalemia',
+      'hyperkalemia': 'hipercalemia',
+      'hiperpotasemia': 'hipercalemia',
+      'hipokalemia': 'hipocalemia',
+      'hipokaliemia': 'hipocalemia',
+      'hypokalemia': 'hipocalemia',
+      'hipopotasemia': 'hipocalemia',
+
+      // Termo genérico ES → token já reconhecido pelo matcher.
+      'electrolítico': 'eletrolítico',
+      'electrolitico': 'eletrolitico',
+      'electrolitos': 'eletrolitos',
+      'electrolito': 'eletrolito',
+
+      // Reconciliação lexical ES → tokens clínicos canônicos PT.
+      // Mantém o texto original intacto fora da classificação/roteamento.
+      'fibrilación auricular': 'fibrilação atrial',
+      'fibrilacion auricular': 'fibrilação atrial',
+      'interpretación': 'interpretação',
+      'interpretacion': 'interpretação',
+      // Canonicalizar "acidosis" antes do matcher elimina o falso
+      // positivo histórico de "dosis" dentro de "acidosis".
+      'acidosis': 'acidose',
+      'alcalosis': 'alcalose',
+      'intoxicación': 'intoxicação',
+      'intoxicacion': 'intoxicação',
+
+      // Intoxicação — termos de overdose não são intenção de dose.
+      'sobredosis': 'overdose',
+      'superdose': 'overdose',
+
+      // PCR — aliases ES canonicalizados para tokens já existentes.
+      'paro cardiorrespiratorio': 'parada cardiorrespiratória',
+      'paro cardíaco': 'parada cardíaca',
+      'paro cardiaco': 'parada cardiaca',
+      'actividad eléctrica sin pulso': 'atividade elétrica sem pulso',
+      'actividad electrica sin pulso': 'atividade elétrica sem pulso',
+      'asistolia': 'assistolia',
+      'sin pulso': 'sem pulso',
+      'ventilación mecánica': 'ventilação mecânica',
+      'ventilacion mecanica': 'ventilação mecânica',
+      'ventilación': 'ventilação',
+      'ventilacion': 'ventilacao',
+      'parámetros': 'parâmetros',
+      'lesión renal aguda': 'lesão renal aguda',
+      'lesion renal aguda': 'lesão renal aguda',
+      'lesión renal': 'lesão renal',
+      'lesion renal': 'lesão renal',
+      'emergencia hipertensiva': 'emergência hipertensiva',
+      'urgencia hipertensiva': 'urgência hipertensiva',
+      'órgano diana': 'órgão-alvo',
+      'organo diana': 'orgao-alvo',
+      'infusión': 'infusão',
+      'infusion': 'infusao',
+      'titulación': 'titulação',
+      'titulacion': 'titulacao',
+      'dolor torácico': 'dor torácica',
+      'dolor toracico': 'dor toracica',
+      'sospecha de': 'suspeita de',
+    };
+
+    for (final entry in replacements.entries) {
+      msg = msg.replaceAll(entry.key, entry.value);
+    }
+
+    // ACV é abreviação curta: substituir apenas como token inteiro,
+    // sem criar o mesmo tipo de falso positivo lexical já evitado para FA.
+    msg = _replaceWholeToken(msg, 'acv', 'avc');
+
+    return msg;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PlantaoIntentEngine
+// ─────────────────────────────────────────────────────────────────────────────
 class PlantaoIntentEngine {
   PlantaoIntentEngine._(); // 100% estático
 
   // Matchers de intenção — instâncias singleton (const não é possível com herança)
   static final _intentMatchers = <_IntentMatcher>[
-    DiluitionMatcher(),   // prioridade máxima (gotejamento/preparo)
+    DiluitionMatcher(), // prioridade máxima (gotejamento/preparo)
     InfusionMatcher(),
     MonitoringMatcher(),
     ContraindicationMatcher(),
@@ -787,10 +1627,10 @@ class PlantaoIntentEngine {
     InteractionMatcher(),
     CalculationMatcher(),
     ProcedureMatcher(),
-    DoseMatcher(),        // dose após os mais específicos
-    ConductMatcher(),     // conduta como fallback de intenção
+    DoseMatcher(), // dose após os mais específicos
+    ConductMatcher(), // conduta como fallback de intenção
     ElectrolyteMatcher(), // contexto eletrolítico (eleva Intent + Context)
-    GlycemiaMatcher(),    // contexto glicêmico
+    GlycemiaMatcher(), // contexto glicêmico
     VentilationMatcher(), // contexto ventilatório
   ];
 
@@ -798,7 +1638,7 @@ class PlantaoIntentEngine {
   ///
   /// Retorna PlantaoQueryAnalysis — produto principal da Build 225.
   static PlantaoQueryAnalysis analyze(String userMessage) {
-    final msg = userMessage.toLowerCase().trim();
+    final msg = _PlantaoSemanticNormalizer.normalize(userMessage);
 
     if (msg.isEmpty) {
       return const PlantaoQueryAnalysis(
@@ -828,8 +1668,22 @@ class PlantaoIntentEngine {
       }
     }
 
-    // Ordena por score descendente
-    intentScores.sort((a, b) => b.$2.compareTo(a.$2));
+    // Ordena por score descendente.
+    // Em empate, preserva de forma EXPLÍCITA a prioridade clínica declarada
+    // em _intentMatchers. Não depende do comportamento de estabilidade do sort.
+    intentScores.sort((a, b) {
+      final scoreComparison = b.$2.compareTo(a.$2);
+      if (scoreComparison != 0) return scoreComparison;
+
+      final aPriority = _intentMatchers.indexWhere(
+        (matcher) => matcher.intent == a.$1,
+      );
+      final bPriority = _intentMatchers.indexWhere(
+        (matcher) => matcher.intent == b.$1,
+      );
+
+      return aPriority.compareTo(bPriority);
+    });
 
     // Intenção primária: maior score; secundária: segunda (se diferente)
     PlantaoIntent primaryIntent;
@@ -841,8 +1695,7 @@ class PlantaoIntentEngine {
     } else {
       primaryIntent = intentScores.first.$1;
       intentKeywords.addAll(intentScores.first.$3);
-      if (intentScores.length > 1 &&
-          intentScores[1].$1 != primaryIntent) {
+      if (intentScores.length > 1 && intentScores[1].$1 != primaryIntent) {
         secondaryIntent = intentScores[1].$1;
       }
     }
@@ -869,7 +1722,8 @@ class PlantaoIntentEngine {
     final String finalTopic = drugResult.hasMatch && drugResult.topic.isNotEmpty
         ? drugResult.topic
         : (ctxResult.topic.isNotEmpty ? ctxResult.topic : 'CONSULTA CLÍNICA');
-    final String finalSubtitle = drugResult.hasMatch && drugResult.subtitle.isNotEmpty
+    final String finalSubtitle =
+        drugResult.hasMatch && drugResult.subtitle.isNotEmpty
         ? drugResult.subtitle
         : ctxResult.subtitle;
 
@@ -883,7 +1737,8 @@ class PlantaoIntentEngine {
 
     // ── Passo 7: Confiança ────────────────────────────────────────────────────
     // Score total normalizado (0–1): drug(peso 3) + intent + context
-    final totalScore = (drugResult.score) +
+    final totalScore =
+        (drugResult.score) +
         (intentScores.isNotEmpty ? intentScores.first.$2 : 0) +
         ctxResult.matched.length;
     final confidence = (totalScore / 10.0).clamp(0.0, 1.0);
@@ -904,18 +1759,166 @@ class PlantaoIntentEngine {
       complexity: complexity,
       matchedKeywords: allKeywords,
       confidence: confidence,
+      recognizedDrugEntity: drugResult.hasMatch,
+      recognizedExplicitClinicalContext:
+          ctxResult.matched.isNotEmpty ||
+          const <String>['via aérea', 'vía aérea'].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedAdverseEffectTask:
+          const <String>[
+            'efeitos adversos',
+            'efeito adverso',
+            'efectos adversos',
+            'efecto adverso',
+            'reações adversas',
+            'reacoes adversas',
+            'reação adversa',
+            'reacao adversa',
+            'reacciones adversas',
+            'reacción adversa',
+            'reaccion adversa',
+            'efeitos colaterais',
+            'efeito colateral',
+            'efectos secundarios',
+            'efecto secundario',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedMedicationSafetyTask:
+          const <String>['segurança', 'seguranca', 'seguridad'].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedGasometryAcidBaseDomain:
+          const <String>[
+            'gasometria',
+            'gasometría',
+            'acidose',
+            'acidosis',
+            'alcalose',
+            'alcalosis',
+            'ácido-base',
+            'acido-base',
+            'ácido base',
+            'acido base',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedLaboratoryCalculationDomain:
+          const <String>[
+            'anion gap',
+            'anión gap',
+            'ânion gap',
+            'gap anionico',
+            'gap aniônico',
+            'gap aniónico',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedSepsisDomain: const <String>['sepse', 'sepsis'].any(
+        (keyword) => _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+      ),
+      recognizedShockDomain:
+          const <String>['shock', 'choque'].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ) &&
+          !const <String>[
+            'sem choque',
+            'sem shock',
+            'sin choque',
+            'sin shock',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedTraumaDomain: const <String>['trauma', 'traumatismo'].any(
+        (keyword) => _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+      ),
+      recognizedAntibioticotherapyTask:
+          const <String>[
+            'antibiótico para',
+            'antibiotico para',
+            'antibiótico empírico',
+            'antibiótico empirico',
+            'antibiotico empírico',
+            'antibiotico empirico',
+            'antibioticoterapia para',
+            'antibioticoterapia empírica',
+            'antibioticoterapia empirica',
+            'cobertura empírica',
+            'cobertura empirica',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedAcuteDyspneaDomain:
+          const <String>[
+            'dispneia aguda',
+            'disnea aguda',
+            'dispneia súbita',
+            'dispneia subita',
+            'disnea súbita',
+            'disnea subita',
+            'dispneia intensa',
+            'disnea intensa',
+            'edema agudo de pulmão',
+            'edema agudo de pulmon',
+            'edema agudo de pulmón',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedHemorrhageDomain:
+          const <String>[
+            'hemorragia digestiva',
+            'sangrado digestivo',
+            'sangramento digestivo',
+            'hematemesis',
+            'hematêmese',
+            'hematemese',
+            'melena',
+            'hematoquezia',
+            'hematoquecia',
+            'sangrado activo grave',
+            'sangramento ativo grave',
+            'shock hemorrágico',
+            'shock hemorragico',
+            'choque hemorrágico',
+            'choque hemorragico',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
+      recognizedClinicalSummaryTask:
+          const <String>[
+            'resumo clínico',
+            'resumo clinico',
+            'resumen clínico',
+            'resumen clinico',
+          ].any(
+            (keyword) =>
+                _PlantaoSemanticNormalizer.keywordMatches(msg, keyword),
+          ),
     );
 
     // ── Log [PLANTAO_ANALYSIS] ────────────────────────────────────────────────
-    debugPrint('[PLANTAO_ANALYSIS] '
-        'topic=${analysis.clinicalTopic} '
-        'subtitle="${analysis.clinicalSubtitle}" '
-        'primaryIntent=${analysis.primaryIntent.name} '
-        'secondaryIntent=${analysis.secondaryIntent?.name ?? "none"} '
-        'context=${analysis.clinicalContext.name} '
-        'complexity=${analysis.complexity.name} '
-        'confidence=${analysis.confidence.toStringAsFixed(2)} '
-        'matched=${analysis.matchedKeywords}');
+    debugPrint(
+      '[PLANTAO_ANALYSIS] '
+      'topic=${analysis.clinicalTopic} '
+      'subtitle="${analysis.clinicalSubtitle}" '
+      'primaryIntent=${analysis.primaryIntent.name} '
+      'secondaryIntent=${analysis.secondaryIntent?.name ?? "none"} '
+      'context=${analysis.clinicalContext.name} '
+      'complexity=${analysis.complexity.name} '
+      'confidence=${analysis.confidence.toStringAsFixed(2)} '
+      'matched=${analysis.matchedKeywords}',
+    );
 
     return analysis;
   }
@@ -925,46 +1928,46 @@ class PlantaoIntentEngine {
   // Mapeia contexto clínico para o número exato da matriz no _modeAnchorPlantao.
   // Usado pela cláusula de supremacia para ponteiro numérico direto ao LLM.
   static const Map<PlantaoContext, int> _contextToMatriz = {
-    PlantaoContext.cardiovascular: 1,   // Caso clínico / Emergência (IAM, SCA)
-    PlantaoContext.farmacologia:   2,   // Efeitos adversos / Complicações
-    PlantaoContext.choque:         15,  // Choque / Vasopressores
-    PlantaoContext.arritmia:       4,   // Arritmia / FA / TV / FV
-    PlantaoContext.eletrolitos:    5,   // Distúrbio Eletrolítico
-    PlantaoContext.renal:          17,  // Insuficiência Renal Aguda
-    PlantaoContext.sepse:          8,   // Síndrome Complexa / Sepse
-    PlantaoContext.toxicologia:    9,   // Intoxicação Exógena
-    PlantaoContext.trauma:         10,  // Trauma
-    PlantaoContext.neurologia:     11,  // AVC / Neurologia crítica
-    PlantaoContext.ventilacao:     16,  // Ventilação Mecânica
-    PlantaoContext.viaAerea:       16,  // Via Aérea / IOT → Ventilação
-    PlantaoContext.pcr:            14,  // Parada Cardiorrespiratória
-    PlantaoContext.glicemia:       20,  // Alteração Laboratorial / CAD
-    PlantaoContext.geral:          21,  // Tema Livre (fallback)
+    PlantaoContext.cardiovascular: 1, // Caso clínico / Emergência (IAM, SCA)
+    PlantaoContext.farmacologia: 2, // Efeitos adversos / Complicações
+    PlantaoContext.choque: 15, // Choque / Vasopressores
+    PlantaoContext.arritmia: 4, // Arritmia / FA / TV / FV
+    PlantaoContext.eletrolitos: 5, // Distúrbio Eletrolítico
+    PlantaoContext.renal: 17, // Insuficiência Renal Aguda
+    PlantaoContext.sepse: 8, // Síndrome Complexa / Sepse
+    PlantaoContext.toxicologia: 9, // Intoxicação Exógena
+    PlantaoContext.trauma: 10, // Trauma
+    PlantaoContext.neurologia: 11, // AVC / Neurologia crítica
+    PlantaoContext.ventilacao: 16, // Ventilação Mecânica
+    PlantaoContext.viaAerea: 16, // Via Aérea / IOT → Ventilação
+    PlantaoContext.pcr: 14, // Parada Cardiorrespiratória
+    PlantaoContext.glicemia: 20, // Alteração Laboratorial / CAD
+    PlantaoContext.geral: 21, // Tema Livre (fallback)
   };
 
   // ── ORDEM 52 M1: Mapeamento PlantaoIntent → Número da Matriz ─────────────
   // Refinamento por intenção quando o contexto não é suficientemente específico.
   static const Map<PlantaoIntent, int> _intentToMatriz = {
-    PlantaoIntent.diluicao:        3,   // Diluição / Titulação / Desmame
-    PlantaoIntent.infusao:         3,   // Infusão contínua → Diluição
-    PlantaoIntent.eletrolitos:     5,   // Distúrbio Eletrolítico
-    PlantaoIntent.glicemia:        5,   // CAD → Eletrolítico/Metabólico
-    PlantaoIntent.ventilacao:      16,  // Ventilação Mecânica
-    PlantaoIntent.via_aerea:       16,  // Via Aérea
-    PlantaoIntent.pcr:             14,  // PCR / ACLS
-    PlantaoIntent.choque:          15,  // Choque
-    PlantaoIntent.sepse:           8,   // Sepse
-    PlantaoIntent.arritmia:        4,   // Arritmia
-    PlantaoIntent.contraindicacao: 2,   // Efeitos Adversos / CI
-    PlantaoIntent.interacao:       2,   // Interação → Efeitos Adversos
-    PlantaoIntent.interpretacao:   20,  // Interpretação Lab → Alteração Lab
-    PlantaoIntent.monitorizacao:   20,  // Monitorização → Alteração Lab
-    PlantaoIntent.calculo:         20,  // Cálculo → Alteração Lab/Fórmula
-    PlantaoIntent.procedimento:    10,  // Procedimento → Trauma/Cirurgia
-    PlantaoIntent.diagnostico:     1,   // Diagnóstico → Caso Clínico
-    PlantaoIntent.dose:            7,   // Dose → Antibiótico proxy
-    PlantaoIntent.conduta:         1,   // Conduta → Caso Clínico
-    PlantaoIntent.geral:           21,  // Geral → Tema Livre
+    PlantaoIntent.diluicao: 3, // Diluição / Titulação / Desmame
+    PlantaoIntent.infusao: 3, // Infusão contínua → Diluição
+    PlantaoIntent.eletrolitos: 5, // Distúrbio Eletrolítico
+    PlantaoIntent.glicemia: 5, // CAD → Eletrolítico/Metabólico
+    PlantaoIntent.ventilacao: 16, // Ventilação Mecânica
+    PlantaoIntent.via_aerea: 16, // Via Aérea
+    PlantaoIntent.pcr: 14, // PCR / ACLS
+    PlantaoIntent.choque: 15, // Choque
+    PlantaoIntent.sepse: 8, // Sepse
+    PlantaoIntent.arritmia: 4, // Arritmia
+    PlantaoIntent.contraindicacao: 2, // Efeitos Adversos / CI
+    PlantaoIntent.interacao: 2, // Interação → Efeitos Adversos
+    PlantaoIntent.interpretacao: 20, // Interpretação Lab → Alteração Lab
+    PlantaoIntent.monitorizacao: 20, // Monitorização → Alteração Lab
+    PlantaoIntent.calculo: 20, // Cálculo → Alteração Lab/Fórmula
+    PlantaoIntent.procedimento: 10, // Procedimento → Trauma/Cirurgia
+    PlantaoIntent.diagnostico: 1, // Diagnóstico → Caso Clínico
+    PlantaoIntent.dose: 7, // Dose → Antibiótico proxy
+    PlantaoIntent.conduta: 1, // Conduta → Caso Clínico
+    PlantaoIntent.geral: 21, // Geral → Tema Livre
   };
 
   // buildIntentMandateV2 — mandato rico para system_instruction (Build 225)
@@ -975,17 +1978,33 @@ class PlantaoIntentEngine {
   //
   // Vai EXCLUSIVAMENTE para system_instruction — NUNCA para contents[].
   // ─────────────────────────────────────────────────────────────────────────
-  static String buildIntentMandateV2(PlantaoQueryAnalysis qa, String lang) {
+  static String buildIntentMandateV2(
+    PlantaoQueryAnalysis qa,
+    String lang, {
+    int? forcedMatrixNumber,
+  }) {
     final isEs = lang == 'es';
 
+    if (forcedMatrixNumber != null &&
+        (forcedMatrixNumber < 1 || forcedMatrixNumber > 22)) {
+      throw ArgumentError.value(
+        forcedMatrixNumber,
+        'forcedMatrixNumber',
+        'must be between 1 and 22',
+      );
+    }
+
     // ── ORDEM 52 M1: Resolução do número da matriz ────────────────────────────
-    // Prioridade: intent específico > contexto clínico > fallback 21
-    int matrizNum = _intentToMatriz[qa.primaryIntent] ??
+    // Produção canônica pode fornecer a matriz já adjudicada.
+    // Sem override, o comportamento legado permanece exatamente o mesmo.
+    int matrizNum =
+        forcedMatrixNumber ??
+        _intentToMatriz[qa.primaryIntent] ??
         _contextToMatriz[qa.clinicalContext] ??
         21;
-    // Refinamento: se o intent é dose/conduta/geral mas o contexto é crítico,
-    // usa o contexto para dar uma matriz mais específica.
-    if ((qa.primaryIntent == PlantaoIntent.dose ||
+    // Refinamento legado somente quando não existe autoridade canônica.
+    if (forcedMatrixNumber == null &&
+        (qa.primaryIntent == PlantaoIntent.dose ||
             qa.primaryIntent == PlantaoIntent.conduta ||
             qa.primaryIntent == PlantaoIntent.geral) &&
         qa.clinicalContext != PlantaoContext.geral &&
@@ -997,18 +2016,20 @@ class PlantaoIntentEngine {
     // Ponteiro numérico direto à matriz + cancelamento do contrato genérico.
     final supremacyClause = isEs
         ? '⚡ AUTORIDADE MÁXIMA DESTE TURNO:\n'
-            'USE EXCLUSIVAMENTE A MATRIZ $matrizNum da lista acima.\n'
-            'DESCARTE todas as outras matrizes e o FORMATO GENÉRICO anterior.\n'
-            'O template desta matriz é o ÚNICO formato válido para esta resposta.'
+              'USE EXCLUSIVAMENTE A MATRIZ $matrizNum da lista acima.\n'
+              'DESCARTE todas as outras matrizes e o FORMATO GENÉRICO anterior.\n'
+              'O template desta matriz é o ÚNICO formato válido para esta resposta.'
         : '⚡ AUTORIDADE MÁXIMA DESTE TURNO:\n'
-            'USE EXCLUSIVAMENTE A MATRIZ $matrizNum da lista acima.\n'
-            'DESCARTE todas as outras matrizes e o FORMATO GENÉRICO anterior.\n'
-            'O template desta matriz é o ÚNICO formato válido para esta resposta.';
+              'USE EXCLUSIVAMENTE A MATRIZ $matrizNum da lista acima.\n'
+              'DESCARTE todas as outras matrizes e o FORMATO GENÉRICO anterior.\n'
+              'O template desta matriz é o ÚNICO formato válido para esta resposta.';
 
     // ── Bloco de identidade do turno ──────────────────────────────────────────
     final topicLine = 'TEMA DESTE TURNO: ${qa.clinicalTopic}';
     final subtitleLine = qa.clinicalSubtitle.isNotEmpty
-        ? (isEs ? 'CATEGORÍA: ${qa.clinicalSubtitle}' : 'CATEGORIA: ${qa.clinicalSubtitle}')
+        ? (isEs
+              ? 'CATEGORÍA: ${qa.clinicalSubtitle}'
+              : 'CATEGORIA: ${qa.clinicalSubtitle}')
         : '';
     final contextLine = isEs
         ? 'CONTEXTO CLÍNICO: ${_contextLabel(qa.clinicalContext, isEs)}'
@@ -1022,7 +2043,8 @@ class PlantaoIntentEngine {
 
     // ── Template de emojis baseado em primaryIntent ───────────────────────────
     // Build 226 Fix B: fármaco isolado sem intenção explícita → template farmacológico
-    final bool isFarmacoIsolado = qa.primaryIntent == PlantaoIntent.geral &&
+    final bool isFarmacoIsolado =
+        qa.primaryIntent == PlantaoIntent.geral &&
         qa.clinicalTopic != 'CONSULTA CLÍNICA' &&
         qa.clinicalTopic.isNotEmpty;
 
@@ -1037,7 +2059,10 @@ class PlantaoIntentEngine {
     }
 
     // ── Adaptação de complexidade ─────────────────────────────────────────────
-    final complexityAdaptation = _buildComplexityAdaptation(qa.complexity, isEs);
+    final complexityAdaptation = _buildComplexityAdaptation(
+      qa.complexity,
+      isEs,
+    );
 
     // ── Montagem final — cláusula de supremacia SEMPRE no final (viés de recência) ──
     final lines = <String>[
@@ -1049,7 +2074,7 @@ class PlantaoIntentEngine {
       template,
       if (complexityAdaptation.isNotEmpty) complexityAdaptation,
       '',
-      supremacyClause,  // ORDEM 52 M1: último — máximo viés de recência
+      supremacyClause, // ORDEM 52 M1: último — máximo viés de recência
     ];
 
     return lines.join('\n');
@@ -1059,29 +2084,51 @@ class PlantaoIntentEngine {
 
   static String _contextLabel(PlantaoContext ctx, bool isEs) {
     switch (ctx) {
-      case PlantaoContext.pcr:         return isEs ? 'PCR / Reanimación' : 'PCR / Reanimação';
-      case PlantaoContext.arritmia:    return isEs ? 'Arritmia' : 'Arritmia';
-      case PlantaoContext.choque:      return isEs ? 'Shock circulatorio' : 'Choque circulatório';
-      case PlantaoContext.sepse:       return isEs ? 'Sepsis / Infección grave' : 'Sepse / Infecção grave';
-      case PlantaoContext.viaAerea:    return isEs ? 'Vía aérea / IOT' : 'Via aérea / IOT';
-      case PlantaoContext.ventilacao:  return isEs ? 'Ventilación mecánica' : 'Ventilação mecânica';
-      case PlantaoContext.eletrolitos: return isEs ? 'Trastorno electrolítico' : 'Distúrbio eletrolítico';
-      case PlantaoContext.glicemia:    return isEs ? 'Trastorno glucémico' : 'Distúrbio glicêmico';
-      case PlantaoContext.renal:       return isEs ? 'Injuria renal / Ajuste de dosis' : 'Injúria renal / Ajuste de dose';
-      case PlantaoContext.cardiovascular: return isEs ? 'Cardiovascular' : 'Cardiovascular';
-      case PlantaoContext.neurologia:  return isEs ? 'Neurología crítica' : 'Neurologia crítica';
-      case PlantaoContext.toxicologia: return isEs ? 'Toxicología' : 'Toxicologia';
-      case PlantaoContext.trauma:      return isEs ? 'Trauma / Cirugía' : 'Trauma / Cirurgia';
-      case PlantaoContext.farmacologia:return isEs ? 'Farmacología clínica' : 'Farmacologia clínica';
-      case PlantaoContext.geral:       return isEs ? 'General' : 'Geral';
+      case PlantaoContext.pcr:
+        return isEs ? 'PCR / Reanimación' : 'PCR / Reanimação';
+      case PlantaoContext.arritmia:
+        return isEs ? 'Arritmia' : 'Arritmia';
+      case PlantaoContext.choque:
+        return isEs ? 'Shock circulatorio' : 'Choque circulatório';
+      case PlantaoContext.sepse:
+        return isEs ? 'Sepsis / Infección grave' : 'Sepse / Infecção grave';
+      case PlantaoContext.viaAerea:
+        return isEs ? 'Vía aérea / IOT' : 'Via aérea / IOT';
+      case PlantaoContext.ventilacao:
+        return isEs ? 'Ventilación mecánica' : 'Ventilação mecânica';
+      case PlantaoContext.eletrolitos:
+        return isEs ? 'Trastorno electrolítico' : 'Distúrbio eletrolítico';
+      case PlantaoContext.glicemia:
+        return isEs ? 'Trastorno glucémico' : 'Distúrbio glicêmico';
+      case PlantaoContext.renal:
+        return isEs
+            ? 'Injuria renal / Ajuste de dosis'
+            : 'Injúria renal / Ajuste de dose';
+      case PlantaoContext.cardiovascular:
+        return isEs ? 'Cardiovascular' : 'Cardiovascular';
+      case PlantaoContext.neurologia:
+        return isEs ? 'Neurología crítica' : 'Neurologia crítica';
+      case PlantaoContext.toxicologia:
+        return isEs ? 'Toxicología' : 'Toxicologia';
+      case PlantaoContext.trauma:
+        return isEs ? 'Trauma / Cirugía' : 'Trauma / Cirurgia';
+      case PlantaoContext.farmacologia:
+        return isEs ? 'Farmacología clínica' : 'Farmacologia clínica';
+      case PlantaoContext.geral:
+        return isEs ? 'General' : 'Geral';
     }
   }
 
   static String _complexityLabel(PlantaoComplexity c, bool isEs) {
     switch (c) {
-      case PlantaoComplexity.simples:       return isEs ? 'SIMPLE' : 'SIMPLES';
-      case PlantaoComplexity.intermediaria: return isEs ? 'INTERMEDIA' : 'INTERMEDIÁRIA';
-      case PlantaoComplexity.critica:       return isEs ? 'CRÍTICA — tom de urgência máxima' : 'CRÍTICA — tom de urgência máxima';
+      case PlantaoComplexity.simples:
+        return isEs ? 'SIMPLE' : 'SIMPLES';
+      case PlantaoComplexity.intermediaria:
+        return isEs ? 'INTERMEDIA' : 'INTERMEDIÁRIA';
+      case PlantaoComplexity.critica:
+        return isEs
+            ? 'CRÍTICA — tom de urgência máxima'
+            : 'CRÍTICA — tom de urgência máxima';
     }
   }
 
@@ -1093,16 +2140,16 @@ class PlantaoIntentEngine {
     if (subtitle.isNotEmpty) {
       return isEs
           ? 'TÍTULO 🟥 OBRIGATÓRIO: "$topic — $subtitle"\n'
-              '  (Nunca usar título genérico. Nunca escrever apenas o nome do fármaco sem classe.)'
+                '  (Nunca usar título genérico. Nunca escrever apenas o nome do fármaco sem classe.)'
           : 'TÍTULO 🟥 OBRIGATÓRIO: "$topic — $subtitle"\n'
-              '  (Nunca usar título genérico. Nunca escrever apenas o nome do fármaco sem classe.)';
+                '  (Nunca usar título genérico. Nunca escrever apenas o nome do fármaco sem classe.)';
     }
 
     return isEs
         ? 'TÍTULO 🟥 OBRIGATÓRIO: "$topic"\n'
-            '  (Nunca usar "CONDUCTA CLÍNICA INMEDIATA" como título genérico.)'
+              '  (Nunca usar "CONDUCTA CLÍNICA INMEDIATA" como título genérico.)'
         : 'TÍTULO 🟥 OBRIGATÓRIO: "$topic"\n'
-            '  (Nunca usar "CONDUTA CLÍNICA IMEDIATA" como título genérico.)';
+              '  (Nunca usar "CONDUTA CLÍNICA IMEDIATA" como título genérico.)';
   }
 
   static String _buildComplexityAdaptation(PlantaoComplexity c, bool isEs) {
@@ -1110,15 +2157,15 @@ class PlantaoIntentEngine {
       case PlantaoComplexity.critica:
         return isEs
             ? 'URGENCIA MÁXIMA: Incluir ⚠️ Alerta siempre. Incluir bloque de monitorización. '
-                'Usar numeración explícita si hay secuencia de pasos críticos.'
+                  'Usar numeración explícita si hay secuencia de pasos críticos.'
             : 'URGÊNCIA MÁXIMA: Incluir ⚠️ Alerta sempre. Incluir bloco de monitorização. '
-                'Usar numeração explícita se houver sequência de passos críticos.';
+                  'Usar numeração explícita se houver sequência de passos críticos.';
       case PlantaoComplexity.intermediaria:
         return isEs
             ? 'COMPLEJIDAD INTERMEDIA: ⚠️ Alerta solo si hay riesgo real. '
-                'Priorizar precisión sobre exhaustividad.'
+                  'Priorizar precisión sobre exhaustividad.'
             : 'COMPLEXIDADE INTERMEDIÁRIA: ⚠️ Alerta somente se houver risco real. '
-                'Priorizar precisão sobre completude.';
+                  'Priorizar precisão sobre completude.';
       case PlantaoComplexity.simples:
         return ''; // Sem instrução extra para respostas simples
     }
@@ -1137,10 +2184,15 @@ class PlantaoIntentEngine {
   //   📌 Monitorar: parâmetros de segurança
   //   ⚠️ Alerta: risco crítico principal
   // ─────────────────────────────────────────────────────────────────────────
-  static String _buildFarmacoResumoTemplate(PlantaoQueryAnalysis qa, bool isEs) {
+  static String _buildFarmacoResumoTemplate(
+    PlantaoQueryAnalysis qa,
+    bool isEs,
+  ) {
     final topic = qa.clinicalTopic;
     final subtitle = qa.clinicalSubtitle;
-    final classeFarm = subtitle.isNotEmpty ? subtitle : 'fármaco de uso clínico';
+    final classeFarm = subtitle.isNotEmpty
+        ? subtitle
+        : 'fármaco de uso clínico';
 
     if (isEs) {
       return 'TEMPLATE FARMACOLÓGICO (fármaco aislado sin intención explícita):\n'
@@ -1178,26 +2230,26 @@ class PlantaoIntentEngine {
 // Controla: qual template de emojis usar + qual mandato enviar para o LLM.
 // ─────────────────────────────────────────────────────────────────────────────
 enum PlantaoIntent {
-  conduta,          // conduta terapêutica geral / tratamento
-  dose,             // dose de fármaco específico
-  infusao,          // cálculo de infusão EV / mcg/kg/min → mL/h
-  diluicao,         // preparo de ampola / diluição / gotejamento
-  monitorizacao,    // parâmetros de monitorização / metas / valores
-  contraindicacao,  // contraindicações / quando não usar
-  diagnostico,      // como diagnosticar / suspeitar / confirmar
-  interpretacao,    // interpretar resultado / exame / parâmetro
-  eletrolitos,      // distúrbio eletrolítico / reposição iônica
-  glicemia,         // glicose / CAD / hipoglicemia / protocolo insulina
-  ventilacao,       // ventilação mecânica / parâmetros ventilatórios
-  pcr,              // PCR / ressuscitação cardiopulmonar / ACLS
-  choque,           // choque / vasopressores / ressuscitação hemodinâmica
-  sepse,            // sepse / infecção grave / antibioticoterapia empírica
-  arritmia,         // arritmias / cardioversão / antiarrítmicos
-  via_aerea,        // intubação / via aérea / IOT / RSI
-  calculo,          // cálculo clínico / Cockcroft-Gault / score / fórmula
-  interacao,        // interação medicamentosa
-  procedimento,     // procedimento / técnica / dreno / punção
-  geral,            // intenção genérica / não classificada
+  conduta, // conduta terapêutica geral / tratamento
+  dose, // dose de fármaco específico
+  infusao, // cálculo de infusão EV / mcg/kg/min → mL/h
+  diluicao, // preparo de ampola / diluição / gotejamento
+  monitorizacao, // parâmetros de monitorização / metas / valores
+  contraindicacao, // contraindicações / quando não usar
+  diagnostico, // como diagnosticar / suspeitar / confirmar
+  interpretacao, // interpretar resultado / exame / parâmetro
+  eletrolitos, // distúrbio eletrolítico / reposição iônica
+  glicemia, // glicose / CAD / hipoglicemia / protocolo insulina
+  ventilacao, // ventilação mecânica / parâmetros ventilatórios
+  pcr, // PCR / ressuscitação cardiopulmonar / ACLS
+  choque, // choque / vasopressores / ressuscitação hemodinâmica
+  sepse, // sepse / infecção grave / antibioticoterapia empírica
+  arritmia, // arritmias / cardioversão / antiarrítmicos
+  via_aerea, // intubação / via aérea / IOT / RSI
+  calculo, // cálculo clínico / Cockcroft-Gault / score / fórmula
+  interacao, // interação medicamentosa
+  procedimento, // procedimento / técnica / dreno / punção
+  geral, // intenção genérica / não classificada
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1213,155 +2265,403 @@ class PlantaoIntentClassifier {
   // ── Tabelas de keywords por intenção (ordem de prioridade decrescente) ────
 
   static const _kGotejamento = [
-    'gota', 'gotejo', 'gotejamento', 'gotejar', 'macrogotas', 'microgotas',
-    'equipo de soro', 'equipo de infusão',
+    'gota',
+    'gotejo',
+    'gotejamento',
+    'gotejar',
+    'macrogotas',
+    'microgotas',
+    'equipo de soro',
+    'equipo de infusão',
   ];
 
   static const _kDiluicao = [
-    'dilui', 'diluição', 'preparo', 'preparar', 'ampola', 'ampolas',
-    'como preparar', 'como dilui', 'prepara', 'reconstituir',
+    'dilui',
+    'diluição',
+    'preparo',
+    'preparar',
+    'ampola',
+    'ampolas',
+    'como preparar',
+    'como dilui',
+    'prepara',
+    'reconstituir',
   ];
 
   static const _kInfusao = [
-    'infusão', 'infusao', 'velocidade', 'ml/h', 'mcg/kg', 'mcg/min',
-    'drip', 'bic', 'bomba infusora', 'titulação', 'titular',
-    'calcular infusão', 'como calcular a infusão', 'calcular velocidade',
+    'infusão',
+    'infusao',
+    'velocidade',
+    'ml/h',
+    'mcg/kg',
+    'mcg/min',
+    'drip',
+    'bic',
+    'bomba infusora',
+    'titulação',
+    'titular',
+    'calcular infusão',
+    'como calcular a infusão',
+    'calcular velocidade',
   ];
 
   static const _kDose = [
-    'dose', 'dosagem', 'quanto', 'mg/kg', 'posologia', 'dosis',
-    'qual a dose', 'dose de', 'dose do', 'dose da', 'dosis de',
-    'quantos mg', 'quantos mcg',
+    'dose',
+    'dosagem',
+    'quanto',
+    'mg/kg',
+    'posologia',
+    'dosis',
+    'qual a dose',
+    'dose de',
+    'dose do',
+    'dose da',
+    'dosis de',
+    'quantos mg',
+    'quantos mcg',
   ];
 
   static const _kMonitorizacao = [
-    'monitorar', 'monitorizar', 'monitoring', 'monitorização', 'monitoreo',
-    'o que observar', 'o que monitorar', 'parâmetros', 'parametros',
-    'metas', 'meta terapêutica', 'meta terapeutica', 'valores esperados',
-    'alvo', 'alvos', 'target', 'frequência', 'frequencia',
-    'quando preocupar', 'sinal de gravidade', 'sinais de gravidade',
-    'ecg', 'eletro', 'monitorar ecg', 'monitorar potassio',
+    'monitorar',
+    'monitorizar',
+    'monitoring',
+    'monitorização',
+    'monitoreo',
+    'o que observar',
+    'o que monitorar',
+    'parâmetros',
+    'parametros',
+    'metas',
+    'meta terapêutica',
+    'meta terapeutica',
+    'valores esperados',
+    'alvo',
+    'alvos',
+    'target',
+    'frequência',
+    'frequencia',
+    'quando preocupar',
+    'sinal de gravidade',
+    'sinais de gravidade',
+    'ecg',
+    'eletro',
+    'monitorar ecg',
+    'monitorar potassio',
   ];
 
   static const _kContraindicacao = [
-    'contraindicaç', 'contraindicado', 'contra-indica',
-    'contraindicaciones', 'quando não usar', 'quando não dar', 'quando evitar',
-    'quem não pode', 'proibido', 'não pode usar', 'evitar em',
-    'contraindicado em', 'contraindicada', 'não indicado',
+    'contraindicaç',
+    'contraindicado',
+    'contra-indica',
+    'contraindicaciones',
+    'quando não usar',
+    'quando não dar',
+    'quando evitar',
+    'quem não pode',
+    'proibido',
+    'não pode usar',
+    'evitar em',
+    'contraindicado em',
+    'contraindicada',
+    'não indicado',
   ];
 
   static const _kDiagnostico = [
-    'diagnóstico', 'diagnosticar', 'como diagnosticar', 'suspeitar',
-    'como suspeitar', 'criterios', 'critérios', 'confirmar',
-    'diferencial', 'diagnóstico diferencial', 'como identificar',
-    'sinais', 'sintomas', 'apresentação', 'quadro clínico',
-    'como reconhecer', 'diagnose',
+    'diagnóstico',
+    'diagnosticar',
+    'como diagnosticar',
+    'suspeitar',
+    'como suspeitar',
+    'criterios',
+    'critérios',
+    'confirmar',
+    'diferencial',
+    'diagnóstico diferencial',
+    'como identificar',
+    'sinais',
+    'sintomas',
+    'apresentação',
+    'quadro clínico',
+    'como reconhecer',
+    'diagnose',
   ];
 
   static const _kInterpretacao = [
-    'interpretar', 'interpretação', 'o que significa', 'o que quer dizer',
-    'interpretar resultado', 'valor alto', 'valor baixo', 'resultado de',
-    'resultado do', 'laudo', 'exame alterado', 'analisar',
-    'o que fazer com', 'como interpretar', 'analizar',
+    'interpretar',
+    'interpretação',
+    'o que significa',
+    'o que quer dizer',
+    'interpretar resultado',
+    'valor alto',
+    'valor baixo',
+    'resultado de',
+    'resultado do',
+    'laudo',
+    'exame alterado',
+    'analisar',
+    'o que fazer com',
+    'como interpretar',
+    'analizar',
   ];
 
   static const _kEletrolitos = [
-    'hipocalemia', 'hipercalemia', 'hypokale', 'hyperkale',
-    'hiponatremia', 'hipernatremia', 'hyponatremia',
-    'hipocalcemia', 'hipercalcemia', 'hypocalcemia',
-    'hipomagnesemia', 'hipofosfatemia', 'hipoglicemia',
-    'potássio', 'potassio', 'sódio', 'sodio', 'cálcio', 'calcio',
-    'magnésio', 'magnesio', 'fósforo', 'fosforo', 'cloro', 'cloreto',
-    'eletrólito', 'eletrolito', 'distúrbio eletrolítico', 'reposição de',
-    'reposição ev', 'repor potássio', 'repor sódio',
+    'hipocalemia',
+    'hipercalemia',
+    'hypokale',
+    'hyperkale',
+    'hiponatremia',
+    'hipernatremia',
+    'hyponatremia',
+    'hipocalcemia',
+    'hipercalcemia',
+    'hypocalcemia',
+    'hipomagnesemia',
+    'hipofosfatemia',
+    'hipoglicemia',
+    'potássio',
+    'potassio',
+    'sódio',
+    'sodio',
+    'cálcio',
+    'calcio',
+    'magnésio',
+    'magnesio',
+    'fósforo',
+    'fosforo',
+    'cloro',
+    'cloreto',
+    'eletrólito',
+    'eletrolito',
+    'distúrbio eletrolítico',
+    'reposição de',
+    'reposição ev',
+    'repor potássio',
+    'repor sódio',
   ];
 
   static const _kGlicemia = [
-    'cad', 'cetoacidose', 'cetoacidose diabética', 'dka', 'ehh',
-    'estado hiperosmolar', 'insulina ev', 'insulina endovenosa',
-    'protocolo insulina', 'glicemia', 'hipoglicemia', 'hiperglicemia',
-    'glicose ev', 'controle glicêmico', 'glicemia capilar',
+    'cad',
+    'cetoacidose',
+    'cetoacidose diabética',
+    'dka',
+    'ehh',
+    'estado hiperosmolar',
+    'insulina ev',
+    'insulina endovenosa',
+    'protocolo insulina',
+    'glicemia',
+    'hipoglicemia',
+    'hiperglicemia',
+    'glicose ev',
+    'controle glicêmico',
+    'glicemia capilar',
     'insulinoterapia',
   ];
 
   static const _kVentilacao = [
-    'ventilação mecânica', 'ventilação', 'vm', 'ventilador',
-    'intubação', 'intubar', 'iot', 'rsi', 'ira',
-    'peep', 'pressão plateau', 'volume corrente', 'fio2',
-    'modo ventilatório', 'pressão suporte', 'vc', 'fr ventilatória',
-    'desmame', 'extubação', 'via aérea difícil',
+    'ventilação mecânica',
+    'ventilação',
+    'vm',
+    'ventilador',
+    'intubação',
+    'intubar',
+    'iot',
+    'rsi',
+    'ira',
+    'peep',
+    'pressão plateau',
+    'volume corrente',
+    'fio2',
+    'modo ventilatório',
+    'pressão suporte',
+    'vc',
+    'fr ventilatória',
+    'desmame',
+    'extubação',
+    'via aérea difícil',
   ];
 
   static const _kPcr = [
-    'pcr', 'parada cardíaca', 'parada cardiaca', 'parada cardiorrespiratória',
-    'rcp', 'ressuscitação', 'acls', 'bls', 'bls/acls',
-    'reanimação', 'desfibrilação', 'cardioversão',
-    'adrenalina pcr', 'amiodarona pcr', 'ritmo de pcr',
-    'fv', 'fibrilação ventricular', 'tvscp', 'atividade elétrica sem pulso',
-    'aesp', 'assistolia',
+    'pcr',
+    'parada cardíaca',
+    'parada cardiaca',
+    'parada cardiorrespiratória',
+    'rcp',
+    'ressuscitação',
+    'acls',
+    'bls',
+    'bls/acls',
+    'reanimação',
+    'desfibrilação',
+    'cardioversão',
+    'adrenalina pcr',
+    'amiodarona pcr',
+    'ritmo de pcr',
+    'fv',
+    'fibrilação ventricular',
+    'tvscp',
+    'atividade elétrica sem pulso',
+    'aesp',
+    'assistolia',
   ];
 
   static const _kChoque = [
-    'choque', 'shock', 'choque séptico', 'choque cardiogênico',
-    'choque distributivo', 'choque hipovolêmico',
-    'noradrenalina', 'norepinefrina', 'vasopressina', 'vasopressor',
-    'hipotensão refratária', 'pac', 'pressão arterial baixa',
-    'pam < 65', 'pam baixa', 'ressuscitação hemodinâmica',
+    'choque',
+    'shock',
+    'choque séptico',
+    'choque cardiogênico',
+    'choque distributivo',
+    'choque hipovolêmico',
+    'noradrenalina',
+    'norepinefrina',
+    'vasopressina',
+    'vasopressor',
+    'hipotensão refratária',
+    'pac',
+    'pressão arterial baixa',
+    'pam < 65',
+    'pam baixa',
+    'ressuscitação hemodinâmica',
   ];
 
   static const _kSepse = [
-    'sepse', 'sepsis', 'septicemia', 'choque séptico',
-    'antibioticoterapia empírica', 'cobertura empírica',
-    'bundle sepse', 'hora 1', 'lactato', 'foco infeccioso',
-    'infecção grave', 'sbcs', 'sofa', 'qsofa',
+    'sepse',
+    'sepsis',
+    'septicemia',
+    'choque séptico',
+    'antibioticoterapia empírica',
+    'cobertura empírica',
+    'bundle sepse',
+    'hora 1',
+    'lactato',
+    'foco infeccioso',
+    'infecção grave',
+    'sbcs',
+    'sofa',
+    'qsofa',
   ];
 
   static const _kArritmia = [
-    'arritmia', 'taquicardia', 'fibrilação atrial', 'fa',
-    'flutter atrial', 'tsvp', 'taqui supra', 'taqui ventricular',
-    'bradiarritmia', 'bloqueio av', 'bav', 'wcpw',
-    'cardioversão elétrica', 'cardioversão química',
-    'amiodarona arritmia', 'adenosina', 'metoprolol ev',
-    'digoxina', 'marcapasso',
+    'arritmia',
+    'taquicardia',
+    'fibrilação atrial',
+    'fa',
+    'flutter atrial',
+    'tsvp',
+    'taqui supra',
+    'taqui ventricular',
+    'bradiarritmia',
+    'bloqueio av',
+    'bav',
+    'wcpw',
+    'cardioversão elétrica',
+    'cardioversão química',
+    'amiodarona arritmia',
+    'adenosina',
+    'metoprolol ev',
+    'digoxina',
+    'marcapasso',
   ];
 
   static const _kViaAerea = [
-    'intubação', 'intubar', 'iot', 'via aérea', 'rsi', 'sri',
-    'sequência rápida', 'laringoscopia', 'videolaringoscopia',
-    'ketamina indutor', 'etomidato', 'succinilcolina', 'rocurônio',
-    'cricotireoidostomia', 'via aérea difícil', 'cormack',
-    'mnemônico para', 'mallampati',
+    'intubação',
+    'intubar',
+    'iot',
+    'via aérea',
+    'rsi',
+    'sri',
+    'sequência rápida',
+    'laringoscopia',
+    'videolaringoscopia',
+    'ketamina indutor',
+    'etomidato',
+    'succinilcolina',
+    'rocurônio',
+    'cricotireoidostomia',
+    'via aérea difícil',
+    'cormack',
+    'mnemônico para',
+    'mallampati',
   ];
 
   static const _kCalculo = [
-    'calcular', 'cálculo', 'fórmula', 'calculo', 'formula',
-    'clcr', 'cockcroft', 'tfg', 'ckd-epi', 'egfr',
-    'clearance de creatinina', 'ajuste renal',
-    'ânion gap', 'anion gap', 'be', 'base excess',
-    'osmolaridade', 'água livre', 'déficit de sódio',
-    'peso ideal', 'imc', 'bmi', 'score',
+    'calcular',
+    'cálculo',
+    'fórmula',
+    'calculo',
+    'formula',
+    'clcr',
+    'cockcroft',
+    'tfg',
+    'ckd-epi',
+    'egfr',
+    'clearance de creatinina',
+    'ajuste renal',
+    'ânion gap',
+    'anion gap',
+    'be',
+    'base excess',
+    'osmolaridade',
+    'água livre',
+    'déficit de sódio',
+    'peso ideal',
+    'imc',
+    'bmi',
+    'score',
   ];
 
   static const _kInteracao = [
-    'interação', 'interaçao', 'interação medicamentosa',
-    'pode usar com', 'pode dar com', 'combinar', 'associar',
-    'risco de interação', 'incompatível', 'incompatibilidade',
-    'junto com', 'associação de', 'combinar com',
+    'interação',
+    'interaçao',
+    'interação medicamentosa',
+    'pode usar com',
+    'pode dar com',
+    'combinar',
+    'associar',
+    'risco de interação',
+    'incompatível',
+    'incompatibilidade',
+    'junto com',
+    'associação de',
+    'combinar com',
   ];
 
   static const _kProcedimento = [
-    'procedimento', 'técnica', 'como fazer', 'como realizar',
-    'punção', 'dreno', 'toracocentese', 'paracentese', 'artrocentese',
-    'acesso venoso central', 'cateter', 'linha arterial',
-    'dissecção venosa', 'cricotireoidostomia', 'pericardiocentese',
-    'cardioversão elétrica', 'marca-passo', 'drenagem',
-    'biópsia', 'punção lombar',
+    'procedimento',
+    'técnica',
+    'como fazer',
+    'como realizar',
+    'punção',
+    'dreno',
+    'toracocentese',
+    'paracentese',
+    'artrocentese',
+    'acesso venoso central',
+    'cateter',
+    'linha arterial',
+    'dissecção venosa',
+    'cricotireoidostomia',
+    'pericardiocentese',
+    'cardioversão elétrica',
+    'marca-passo',
+    'drenagem',
+    'biópsia',
+    'punção lombar',
   ];
 
   static const _kConduta = [
-    'conduta', 'tratar', 'tratamento', 'como tratar', 'manejo',
-    'protocolo de', 'o que fazer', 'primeira linha',
-    'abordagem', 'manejo de', 'conduta em', 'tratar com',
+    'conduta',
+    'tratar',
+    'tratamento',
+    'como tratar',
+    'manejo',
+    'protocolo de',
+    'o que fazer',
+    'primeira linha',
+    'abordagem',
+    'manejo de',
+    'conduta em',
+    'tratar com',
   ];
 
   /// Classifica a intenção clínica a partir do texto da mensagem do usuário.
@@ -1369,7 +2669,7 @@ class PlantaoIntentClassifier {
   /// Retorna PlantaoIntentResult com a intenção classificada, score e keywords
   /// que dispararam a classificação (para log).
   static PlantaoIntentResult classify(String userMessage) {
-    final msg = userMessage.toLowerCase().trim();
+    final msg = _PlantaoSemanticNormalizer.normalize(userMessage);
     if (msg.isEmpty) {
       return PlantaoIntentResult(
         intent: PlantaoIntent.geral,
@@ -1425,7 +2725,7 @@ class PlantaoIntentClassifier {
     // Retorna a primeira intenção com score ≥ 1
     for (final check in checks) {
       final matched = check.keywords
-          .where((kw) => msg.contains(kw))
+          .where((kw) => _PlantaoSemanticNormalizer.keywordMatches(msg, kw))
           .toList();
       if (matched.isNotEmpty) {
         final result = PlantaoIntentResult(
@@ -1433,9 +2733,11 @@ class PlantaoIntentClassifier {
           score: matched.length,
           matchedKeywords: matched,
         );
-        debugPrint('[PLANTAO_INTENT] intent=${result.intent.name} '
-            'score=${result.score} '
-            'keywords=${result.matchedKeywords}');
+        debugPrint(
+          '[PLANTAO_INTENT] intent=${result.intent.name} '
+          'score=${result.score} '
+          'keywords=${result.matchedKeywords}',
+        );
         return result;
       }
     }
@@ -1458,320 +2760,319 @@ class PlantaoIntentClassifier {
       case PlantaoIntent.diluicao:
         return isEs
             ? 'TEMPLATE DILUCIÓN:\n'
-                '🟥 [FÁRMACO — DILUCIÓN/PREPARACIÓN]\n'
-                '🧪 Volumen: Aspire X mL (Y ampollas)\n'
-                '🧪 Dilución: Diluya en X mL SF/SG\n'
-                '🧪 Infusión: Administrar a X mL/h por Y horas\n'
-                '📌 Monitorizar: [parámetro]\n'
-                '⚠️ Alerta: [riesgo si aplica]'
+                  '🟥 [FÁRMACO — DILUCIÓN/PREPARACIÓN]\n'
+                  '🧪 Volumen: Aspire X mL (Y ampollas)\n'
+                  '🧪 Dilución: Diluya en X mL SF/SG\n'
+                  '🧪 Infusión: Administrar a X mL/h por Y horas\n'
+                  '📌 Monitorizar: [parámetro]\n'
+                  '⚠️ Alerta: [riesgo si aplica]'
             : 'TEMPLATE DILUIÇÃO:\n'
-                '🟥 [FÁRMACO — DILUIÇÃO/PREPARO]\n'
-                '🧪 Volume: Aspire X mL (Y ampolas)\n'
-                '🧪 Diluição: Dilua em X mL SF/SG\n'
-                '🧪 Infusão: Correr a X mL/h por Y horas\n'
-                '📌 Monitorar: [parâmetro]\n'
-                '⚠️ Alerta: [risco se houver]';
+                  '🟥 [FÁRMACO — DILUIÇÃO/PREPARO]\n'
+                  '🧪 Volume: Aspire X mL (Y ampolas)\n'
+                  '🧪 Diluição: Dilua em X mL SF/SG\n'
+                  '🧪 Infusão: Correr a X mL/h por Y horas\n'
+                  '📌 Monitorar: [parâmetro]\n'
+                  '⚠️ Alerta: [risco se houver]';
 
       case PlantaoIntent.infusao:
         return isEs
             ? 'TEMPLATE INFUSIÓN:\n'
-                '🟥 [FÁRMACO — INFUSIÓN EV]\n'
-                '💊 Dosis alvo: [X mcg/kg/min]\n'
-                '🧮 Velocidade: **[X mL/h]**\n'
-                '🔄 Titulación: [como ajustar]\n'
-                '📌 Monitorizar: [PAM/FC/parámetros]\n'
-                '⚠️ Alerta: [riesgo crítico]'
+                  '🟥 [FÁRMACO — INFUSIÓN EV]\n'
+                  '💊 Dosis alvo: [X mcg/kg/min]\n'
+                  '🧮 Velocidade: **[X mL/h]**\n'
+                  '🔄 Titulación: [como ajustar]\n'
+                  '📌 Monitorizar: [PAM/FC/parámetros]\n'
+                  '⚠️ Alerta: [riesgo crítico]'
             : 'TEMPLATE INFUSÃO:\n'
-                '🟥 [FÁRMACO — INFUSÃO EV]\n'
-                '💊 Dose alvo: [X mcg/kg/min]\n'
-                '🧮 Velocidade: **[X mL/h]**\n'
-                '🔄 Titulação: [como ajustar]\n'
-                '📌 Monitorar: [PAM/FC/parâmetros]\n'
-                '⚠️ Alerta: [risco crítico]';
+                  '🟥 [FÁRMACO — INFUSÃO EV]\n'
+                  '💊 Dose alvo: [X mcg/kg/min]\n'
+                  '🧮 Velocidade: **[X mL/h]**\n'
+                  '🔄 Titulação: [como ajustar]\n'
+                  '📌 Monitorar: [PAM/FC/parâmetros]\n'
+                  '⚠️ Alerta: [risco crítico]';
 
       case PlantaoIntent.monitorizacao:
         return isEs
             ? 'TEMPLATE MONITORIZACIÓN:\n'
-                '🟥 MONITORIZACIÓN — [PARÁMETRO]\n'
-                '📌 Observar: [qué vigilar + parámetros objetivos]\n'
-                '📈 Metas: [valores esperados / objetivos]\n'
-                '⚠️ Gravedad: [signos de alarma]\n'
-                '❌ Evitar: [errores comunes]\n'
-                '✅ Próximo paso: [acción si meta no alcanzada]'
+                  '🟥 MONITORIZACIÓN — [PARÁMETRO]\n'
+                  '📌 Observar: [qué vigilar + parámetros objetivos]\n'
+                  '📈 Metas: [valores esperados / objetivos]\n'
+                  '⚠️ Gravedad: [signos de alarma]\n'
+                  '❌ Evitar: [errores comunes]\n'
+                  '✅ Próximo paso: [acción si meta no alcanzada]'
             : 'TEMPLATE MONITORIZAÇÃO:\n'
-                '🟥 MONITORIZAÇÃO — [PARÂMETRO]\n'
-                '📌 Observar: [o que vigiar + parâmetros objetivos]\n'
-                '📈 Metas: [valores esperados / alvos]\n'
-                '⚠️ Gravidade: [sinais de alarme]\n'
-                '❌ Evitar: [erros comuns]\n'
-                '✅ Próximo passo: [ação se meta não atingida]';
+                  '🟥 MONITORIZAÇÃO — [PARÂMETRO]\n'
+                  '📌 Observar: [o que vigiar + parâmetros objetivos]\n'
+                  '📈 Metas: [valores esperados / alvos]\n'
+                  '⚠️ Gravidade: [sinais de alarme]\n'
+                  '❌ Evitar: [erros comuns]\n'
+                  '✅ Próximo passo: [ação se meta não atingida]';
 
       case PlantaoIntent.contraindicacao:
         return isEs
             ? 'TEMPLATE CONTRAINDICACIONES:\n'
-                '🟥 [FÁRMACO/PROCEDIMIENTO — CONTRAINDICACIONES]\n'
-                '❌ Contraindicado en: [condiciones absolutas]\n'
-                '⛔ Usar con cautela: [relativas]\n'
-                '💊 Alternativa: [qué usar en su lugar]\n'
-                '📌 Monitorizar si se decide usar: [parámetro]\n'
-                '⚠️ Alerta: [riesgo crítico]'
+                  '🟥 [FÁRMACO/PROCEDIMIENTO — CONTRAINDICACIONES]\n'
+                  '❌ Contraindicado en: [condiciones absolutas]\n'
+                  '⛔ Usar con cautela: [relativas]\n'
+                  '💊 Alternativa: [qué usar en su lugar]\n'
+                  '📌 Monitorizar si se decide usar: [parámetro]\n'
+                  '⚠️ Alerta: [riesgo crítico]'
             : 'TEMPLATE CONTRAINDICAÇÕES:\n'
-                '🟥 [FÁRMACO/PROCEDIMENTO — CONTRAINDICAÇÕES]\n'
-                '❌ Contraindicado em: [condições absolutas]\n'
-                '⛔ Usar com cautela: [relativas]\n'
-                '💊 Alternativa: [o que usar no lugar]\n'
-                '📌 Monitorar se decidir usar: [parâmetro]\n'
-                '⚠️ Alerta: [risco crítico]';
+                  '🟥 [FÁRMACO/PROCEDIMENTO — CONTRAINDICAÇÕES]\n'
+                  '❌ Contraindicado em: [condições absolutas]\n'
+                  '⛔ Usar com cautela: [relativas]\n'
+                  '💊 Alternativa: [o que usar no lugar]\n'
+                  '📌 Monitorar se decidir usar: [parâmetro]\n'
+                  '⚠️ Alerta: [risco crítico]';
 
       case PlantaoIntent.diagnostico:
         return isEs
             ? 'TEMPLATE DIAGNÓSTICO:\n'
-                '🟥 [ENFERMEDAD/SÍNDROME]\n'
-                '🔎 Sospechar si: [criterios clínicos]\n'
-                '🧪 Confirmar con: [examen/criterio diagnóstico]\n'
-                '⚠️ Gravedad: [señales de alarma]\n'
-                '✅ Próximo paso: [conducta inicial]'
+                  '🟥 [ENFERMEDAD/SÍNDROME]\n'
+                  '🔎 Sospechar si: [criterios clínicos]\n'
+                  '🧪 Confirmar con: [examen/criterio diagnóstico]\n'
+                  '⚠️ Gravedad: [señales de alarma]\n'
+                  '✅ Próximo paso: [conducta inicial]'
             : 'TEMPLATE DIAGNÓSTICO:\n'
-                '🟥 [DOENÇA/SÍNDROME]\n'
-                '🔎 Suspeitar se: [critérios clínicos]\n'
-                '🧪 Confirmar com: [exame/critério diagnóstico]\n'
-                '⚠️ Gravidade: [sinais de alarme]\n'
-                '✅ Próximo passo: [conduta inicial]';
+                  '🟥 [DOENÇA/SÍNDROME]\n'
+                  '🔎 Suspeitar se: [critérios clínicos]\n'
+                  '🧪 Confirmar com: [exame/critério diagnóstico]\n'
+                  '⚠️ Gravidade: [sinais de alarme]\n'
+                  '✅ Próximo passo: [conduta inicial]';
 
       case PlantaoIntent.interpretacao:
         return isEs
             ? 'TEMPLATE INTERPRETACIÓN:\n'
-                '🟥 INTERPRETACIÓN — [PARÁMETRO/EXAMEN]\n'
-                '📖 Significado: [qué indica este resultado]\n'
-                '📌 Hallazgos importantes: [valores de alerta]\n'
-                '⚠️ Implicaciones clínicas: [qué riesgo representa]\n'
-                '✅ Conducta sugerida: [próxima acción]'
+                  '🟥 INTERPRETACIÓN — [PARÁMETRO/EXAMEN]\n'
+                  '📖 Significado: [qué indica este resultado]\n'
+                  '📌 Hallazgos importantes: [valores de alerta]\n'
+                  '⚠️ Implicaciones clínicas: [qué riesgo representa]\n'
+                  '✅ Conducta sugerida: [próxima acción]'
             : 'TEMPLATE INTERPRETAÇÃO:\n'
-                '🟥 INTERPRETAÇÃO — [PARÂMETRO/EXAME]\n'
-                '📖 Significado: [o que indica este resultado]\n'
-                '📌 Achados importantes: [valores de alerta]\n'
-                '⚠️ Implicações clínicas: [qual risco representa]\n'
-                '✅ Conduta sugerida: [próxima ação]';
+                  '🟥 INTERPRETAÇÃO — [PARÂMETRO/EXAME]\n'
+                  '📖 Significado: [o que indica este resultado]\n'
+                  '📌 Achados importantes: [valores de alerta]\n'
+                  '⚠️ Implicações clínicas: [qual risco representa]\n'
+                  '✅ Conduta sugerida: [próxima ação]';
 
       case PlantaoIntent.eletrolitos:
         return isEs
             ? 'TEMPLATE ELECTROLITOS:\n'
-                '🟥 [TRASTORNO ELECTROLÍTICO — SEVERIDAD]\n'
-                '💊 Corrección: [fármaco + dosis + vía + velocidad]\n'
-                '📈 Meta terapéutica: [valor objetivo]\n'
-                '❌ Evitar: [error clínico / velocidad excesiva]\n'
-                '📌 Monitorizar: [ECG + ión sérico + frecuencia]\n'
-                '⚠️ Alerta: [riesgo si refractario / complicación]'
+                  '🟥 [TRASTORNO ELECTROLÍTICO — SEVERIDAD]\n'
+                  '💊 Corrección: [fármaco + dosis + vía + velocidad]\n'
+                  '📈 Meta terapéutica: [valor objetivo]\n'
+                  '❌ Evitar: [error clínico / velocidad excesiva]\n'
+                  '📌 Monitorizar: [ECG + ión sérico + frecuencia]\n'
+                  '⚠️ Alerta: [riesgo si refractario / complicación]'
             : 'TEMPLATE ELETRÓLITOS:\n'
-                '🟥 [DISTÚRBIO ELETROLÍTICO — GRAVIDADE]\n'
-                '💊 Correção: [fármaco + dose + via + velocidade]\n'
-                '📈 Meta terapêutica: [valor alvo]\n'
-                '❌ Evitar: [erro clínico / velocidade excessiva]\n'
-                '📌 Monitorar: [ECG + íon sérico + frequência]\n'
-                '⚠️ Alerta: [risco se refratário / complicação]';
+                  '🟥 [DISTÚRBIO ELETROLÍTICO — GRAVIDADE]\n'
+                  '💊 Correção: [fármaco + dose + via + velocidade]\n'
+                  '📈 Meta terapêutica: [valor alvo]\n'
+                  '❌ Evitar: [erro clínico / velocidade excessiva]\n'
+                  '📌 Monitorar: [ECG + íon sérico + frequência]\n'
+                  '⚠️ Alerta: [risco se refratário / complicação]';
 
       case PlantaoIntent.dose:
         return isEs
             ? 'TEMPLATE DOSIS:\n'
-                '🟥 [FÁRMACO — CLASE FARMACOLÓGICA]\n'
-                '💊 Dosis inicial: [X mg/kg o dose flat]\n'
-                '🔄 Ajuste / Titulación: [cómo titular]\n'
-                '⛔ Contraindicaciones: [absolutas]\n'
-                '📌 Monitorización: [parámetro de seguridad]\n'
-                '⚠️ Alerta: [riesgo / interacción crítica]'
+                  '🟥 [FÁRMACO — CLASE FARMACOLÓGICA]\n'
+                  '💊 Dosis inicial: [X mg/kg o dose flat]\n'
+                  '🔄 Ajuste / Titulación: [cómo titular]\n'
+                  '⛔ Contraindicaciones: [absolutas]\n'
+                  '📌 Monitorización: [parámetro de seguridad]\n'
+                  '⚠️ Alerta: [riesgo / interacción crítica]'
             : 'TEMPLATE DOSE:\n'
-                '🟥 [FÁRMACO — CLASSE FARMACOLÓGICA]\n'
-                '💊 Dose inicial: [X mg/kg ou dose flat]\n'
-                '🔄 Ajuste / Titulação: [como titular]\n'
-                '⛔ Contraindicações: [absolutas]\n'
-                '📌 Monitorização: [parâmetro de segurança]\n'
-                '⚠️ Alerta: [risco / interação crítica]';
+                  '🟥 [FÁRMACO — CLASSE FARMACOLÓGICA]\n'
+                  '💊 Dose inicial: [X mg/kg ou dose flat]\n'
+                  '🔄 Ajuste / Titulação: [como titular]\n'
+                  '⛔ Contraindicações: [absolutas]\n'
+                  '📌 Monitorização: [parâmetro de segurança]\n'
+                  '⚠️ Alerta: [risco / interação crítica]';
 
       case PlantaoIntent.glicemia:
         return isEs
             ? 'TEMPLATE GLUCOSA/CAD:\n'
-                '🟥 [TRASTORNO GLICÉMICO — SEVERIDAD]\n'
-                '💊 Corrección: [insulina + hidratación + electrolitos]\n'
-                '📈 Meta: [glucosa objetivo / bicarbonato]\n'
-                '❌ Evitar: [error común / hipoglicemia]\n'
-                '📌 Monitorizar: [glucemia + K+ + gasometría + frecuencia]\n'
-                '⚠️ Alerta: [riesgo de hipoglicemia / hipocalemia]'
+                  '🟥 [TRASTORNO GLICÉMICO — SEVERIDAD]\n'
+                  '💊 Corrección: [insulina + hidratación + electrolitos]\n'
+                  '📈 Meta: [glucosa objetivo / bicarbonato]\n'
+                  '❌ Evitar: [error común / hipoglicemia]\n'
+                  '📌 Monitorizar: [glucemia + K+ + gasometría + frecuencia]\n'
+                  '⚠️ Alerta: [riesgo de hipoglicemia / hipocalemia]'
             : 'TEMPLATE GLICEMIA/CAD:\n'
-                '🟥 [DISTÚRBIO GLICÊMICO — GRAVIDADE]\n'
-                '💊 Correção: [insulina + hidratação + eletrólitos]\n'
-                '📈 Meta: [glicemia alvo / bicarbonato]\n'
-                '❌ Evitar: [erro comum / hipoglicemia]\n'
-                '📌 Monitorar: [glicemia + K+ + gasometria + frequência]\n'
-                '⚠️ Alerta: [risco de hipoglicemia / hipocalemia]';
+                  '🟥 [DISTÚRBIO GLICÊMICO — GRAVIDADE]\n'
+                  '💊 Correção: [insulina + hidratação + eletrólitos]\n'
+                  '📈 Meta: [glicemia alvo / bicarbonato]\n'
+                  '❌ Evitar: [erro comum / hipoglicemia]\n'
+                  '📌 Monitorar: [glicemia + K+ + gasometria + frequência]\n'
+                  '⚠️ Alerta: [risco de hipoglicemia / hipocalemia]';
 
       case PlantaoIntent.ventilacao:
         return isEs
             ? 'TEMPLATE VENTILACIÓN MECÁNICA:\n'
-                '🟥 [MODO/INDICACIÓN — VENTILACIÓN]\n'
-                '💊 Parámetros iniciales: [VC + FR + PEEP + FiO2]\n'
-                '📈 Metas: [SpO2 + pPlat + pH + pO2/FiO2]\n'
-                '🔄 Ajuste: [cómo titular parámetros]\n'
-                '📌 Monitorizar: [presión plateau + driving pressure]\n'
-                '⚠️ Alerta: [barotrauma / hipercapnia permisiva]'
+                  '🟥 [MODO/INDICACIÓN — VENTILACIÓN]\n'
+                  '💊 Parámetros iniciales: [VC + FR + PEEP + FiO2]\n'
+                  '📈 Metas: [SpO2 + pPlat + pH + pO2/FiO2]\n'
+                  '🔄 Ajuste: [cómo titular parámetros]\n'
+                  '📌 Monitorizar: [presión plateau + driving pressure]\n'
+                  '⚠️ Alerta: [barotrauma / hipercapnia permisiva]'
             : 'TEMPLATE VENTILAÇÃO MECÂNICA:\n'
-                '🟥 [MODO/INDICAÇÃO — VENTILAÇÃO]\n'
-                '💊 Parâmetros iniciais: [VC + FR + PEEP + FiO2]\n'
-                '📈 Metas: [SpO2 + pPlat + pH + pO2/FiO2]\n'
-                '🔄 Ajuste: [como titular parâmetros]\n'
-                '📌 Monitorar: [pressão plateau + driving pressure]\n'
-                '⚠️ Alerta: [barotrauma / hipercapnia permissiva]';
+                  '🟥 [MODO/INDICAÇÃO — VENTILAÇÃO]\n'
+                  '💊 Parâmetros iniciais: [VC + FR + PEEP + FiO2]\n'
+                  '📈 Metas: [SpO2 + pPlat + pH + pO2/FiO2]\n'
+                  '🔄 Ajuste: [como titular parâmetros]\n'
+                  '📌 Monitorar: [pressão plateau + driving pressure]\n'
+                  '⚠️ Alerta: [barotrauma / hipercapnia permissiva]';
 
       case PlantaoIntent.pcr:
         return isEs
             ? 'TEMPLATE RCP/PCR:\n'
-                '🟥 PCR — RITMO: [FV/TVSP/AESP/ASISTOLIA]\n'
-                '💊 1ª linha: [RCP 30:2 / choque se desfibrilável + adrenalina]\n'
-                '🔄 Alternativa: [amiodarona / atropina conforme ritmo]\n'
-                '⛔ Evitar: [interrupciones > 10s / hiperventilación]\n'
-                '📌 Monitorizar: [ritmo + causas reversibles: 5H5T]\n'
-                '⚠️ Alerta: [causa reversible no tratada]'
+                  '🟥 PCR — RITMO: [FV/TVSP/AESP/ASISTOLIA]\n'
+                  '💊 1ª linha: [RCP 30:2 / choque se desfibrilável + adrenalina]\n'
+                  '🔄 Alternativa: [amiodarona / atropina conforme ritmo]\n'
+                  '⛔ Evitar: [interrupciones > 10s / hiperventilación]\n'
+                  '📌 Monitorizar: [ritmo + causas reversibles: 5H5T]\n'
+                  '⚠️ Alerta: [causa reversible no tratada]'
             : 'TEMPLATE PCR/RCP:\n'
-                '🟥 PCR — RITMO: [FV/TVSP/AESP/ASSISTOLIA]\n'
-                '💊 1ª linha: [RCP 30:2 / choque se desfibrilável + adrenalina]\n'
-                '🔄 Alternativa: [amiodarona / atropina conforme ritmo]\n'
-                '⛔ Evitar: [interrupções > 10s / hiperventilaçâo]\n'
-                '📌 Monitorar: [ritmo + causas reversíveis: 5H5T]\n'
-                '⚠️ Alerta: [causa reversível não tratada]';
+                  '🟥 PCR — RITMO: [FV/TVSP/AESP/ASSISTOLIA]\n'
+                  '💊 1ª linha: [RCP 30:2 / choque se desfibrilável + adrenalina]\n'
+                  '🔄 Alternativa: [amiodarona / atropina conforme ritmo]\n'
+                  '⛔ Evitar: [interrupções > 10s / hiperventilaçâo]\n'
+                  '📌 Monitorar: [ritmo + causas reversíveis: 5H5T]\n'
+                  '⚠️ Alerta: [causa reversível não tratada]';
 
       case PlantaoIntent.choque:
         return isEs
             ? 'TEMPLATE SHOCK:\n'
-                '🟥 [TIPO DE SHOCK — SEVERIDAD]\n'
-                '💊 Vasopressor/reanimación: [fármaco + dosis + velocidad]\n'
-                '🔄 Alternativa: [segundo vasopressor se necesario]\n'
-                '📈 Metas: [PAM ≥ 65 + diuresis + lactato]\n'
-                '📌 Monitorizar: [PAM + FC + diuresis + lactato seriado]\n'
-                '⚠️ Alerta: [shock refractário / causa no tratada]'
+                  '🟥 [TIPO DE SHOCK — SEVERIDAD]\n'
+                  '💊 Vasopressor/reanimación: [fármaco + dosis + velocidad]\n'
+                  '🔄 Alternativa: [segundo vasopressor se necesario]\n'
+                  '📈 Metas: [PAM ≥ 65 + diuresis + lactato]\n'
+                  '📌 Monitorizar: [PAM + FC + diuresis + lactato seriado]\n'
+                  '⚠️ Alerta: [shock refractário / causa no tratada]'
             : 'TEMPLATE CHOQUE:\n'
-                '🟥 [TIPO DE CHOQUE — GRAVIDADE]\n'
-                '💊 Vasopressor/ressuscitação: [fármaco + dose + velocidade]\n'
-                '🔄 Alternativa: [segundo vasopressor se necessário]\n'
-                '📈 Metas: [PAM ≥ 65 + diurese + lactato]\n'
-                '📌 Monitorar: [PAM + FC + diurese + lactato seriado]\n'
-                '⚠️ Alerta: [choque refratário / causa não tratada]';
+                  '🟥 [TIPO DE CHOQUE — GRAVIDADE]\n'
+                  '💊 Vasopressor/ressuscitação: [fármaco + dose + velocidade]\n'
+                  '🔄 Alternativa: [segundo vasopressor se necessário]\n'
+                  '📈 Metas: [PAM ≥ 65 + diurese + lactato]\n'
+                  '📌 Monitorar: [PAM + FC + diurese + lactato seriado]\n'
+                  '⚠️ Alerta: [choque refratário / causa não tratada]';
 
       case PlantaoIntent.sepse:
         return isEs
             ? 'TEMPLATE SEPSIS:\n'
-                '🟥 [SEPSIS/SHOCK SÉPTICO — FOCO]\n'
-                '💊 Antibiótico: [esquema empírico + dosis + vía]\n'
-                '🔄 Alternativa: [si alergia/resistencia]\n'
-                '⛔ Evitar: [retrasar antibiótico / foco no drenado]\n'
-                '📌 Monitorizar: [lactato + hemocultivos + diuresis + SOFA]\n'
-                '⚠️ Alerta: [shock refractario / foco oculto]'
+                  '🟥 [SEPSIS/SHOCK SÉPTICO — FOCO]\n'
+                  '💊 Antibiótico: [esquema empírico + dosis + vía]\n'
+                  '🔄 Alternativa: [si alergia/resistencia]\n'
+                  '⛔ Evitar: [retrasar antibiótico / foco no drenado]\n'
+                  '📌 Monitorizar: [lactato + hemocultivos + diuresis + SOFA]\n'
+                  '⚠️ Alerta: [shock refractario / foco oculto]'
             : 'TEMPLATE SEPSE:\n'
-                '🟥 [SEPSE/CHOQUE SÉPTICO — FOCO]\n'
-                '💊 Antibiótico: [esquema empírico + dose + via]\n'
-                '🔄 Alternativa: [se alergia/resistência]\n'
-                '⛔ Evitar: [atrasar antibiótico / foco não drenado]\n'
-                '📌 Monitorar: [lactato + hemoculturas + diurese + SOFA]\n'
-                '⚠️ Alerta: [choque refratário / foco oculto]';
+                  '🟥 [SEPSE/CHOQUE SÉPTICO — FOCO]\n'
+                  '💊 Antibiótico: [esquema empírico + dose + via]\n'
+                  '🔄 Alternativa: [se alergia/resistência]\n'
+                  '⛔ Evitar: [atrasar antibiótico / foco não drenado]\n'
+                  '📌 Monitorar: [lactato + hemoculturas + diurese + SOFA]\n'
+                  '⚠️ Alerta: [choque refratário / foco oculto]';
 
       case PlantaoIntent.arritmia:
         return isEs
             ? 'TEMPLATE ARRITMIA:\n'
-                '🟥 [ARRITMIA — ESTABILIDAD HEMODINÁMICA]\n'
-                '💊 1ª línea: [fármaco + dosis OU cardioversión]\n'
-                '🔄 Alternativa: [segunda opción]\n'
-                '⛔ Contraindicado: [fármaco peligroso en esta arritmia]\n'
-                '📌 Monitorizar: [ECG continuo + PA + FC]\n'
-                '⚠️ Alerta: [deterioro hemodinámico → cardioversión eléctrica]'
+                  '🟥 [ARRITMIA — ESTABILIDAD HEMODINÁMICA]\n'
+                  '💊 1ª línea: [fármaco + dosis OU cardioversión]\n'
+                  '🔄 Alternativa: [segunda opción]\n'
+                  '⛔ Contraindicado: [fármaco peligroso en esta arritmia]\n'
+                  '📌 Monitorizar: [ECG continuo + PA + FC]\n'
+                  '⚠️ Alerta: [deterioro hemodinámico → cardioversión eléctrica]'
             : 'TEMPLATE ARRITMIA:\n'
-                '🟥 [ARRITMIA — ESTABILIDADE HEMODINÂMICA]\n'
-                '💊 1ª linha: [fármaco + dose OU cardioversão]\n'
-                '🔄 Alternativa: [segunda opção]\n'
-                '⛔ Contraindicado: [fármaco perigoso nesta arritmia]\n'
-                '📌 Monitorar: [ECG contínuo + PA + FC]\n'
-                '⚠️ Alerta: [deterioração hemodinâmica → cardioversão elétrica]';
+                  '🟥 [ARRITMIA — ESTABILIDADE HEMODINÂMICA]\n'
+                  '💊 1ª linha: [fármaco + dose OU cardioversão]\n'
+                  '🔄 Alternativa: [segunda opção]\n'
+                  '⛔ Contraindicado: [fármaco perigoso nesta arritmia]\n'
+                  '📌 Monitorar: [ECG contínuo + PA + FC]\n'
+                  '⚠️ Alerta: [deterioração hemodinâmica → cardioversão elétrica]';
 
       case PlantaoIntent.via_aerea:
         return isEs
             ? 'TEMPLATE VÍA AÉREA:\n'
-                '🟥 [INDICACIÓN IOT / SECUENCIA RÁPIDA]\n'
-                '💊 Inductor: [ketamina/etomidato + dosis] + bloq: [succinilcolina/rocurônio]\n'
-                '🔄 Alternativa: [si contraindicación al inductor]\n'
-                '⛔ Evitar: [en vía aérea difícil / estómago lleno]\n'
-                '📌 Monitorizar: [SpO2 + EtCO2 + PA post-IOT]\n'
-                '⚠️ Alerta: [vía aérea difícil → tener plan B/C]'
+                  '🟥 [INDICACIÓN IOT / SECUENCIA RÁPIDA]\n'
+                  '💊 Inductor: [ketamina/etomidato + dosis] + bloq: [succinilcolina/rocurônio]\n'
+                  '🔄 Alternativa: [si contraindicación al inductor]\n'
+                  '⛔ Evitar: [en vía aérea difícil / estómago lleno]\n'
+                  '📌 Monitorizar: [SpO2 + EtCO2 + PA post-IOT]\n'
+                  '⚠️ Alerta: [vía aérea difícil → tener plan B/C]'
             : 'TEMPLATE VIA AÉREA:\n'
-                '🟥 [INDICAÇÃO IOT / SEQUÊNCIA RÁPIDA]\n'
-                '💊 Indutor: [ketamina/etomidato + dose] + bloq: [succinilcolina/rocurônio]\n'
-                '🔄 Alternativa: [se contraindicação ao indutor]\n'
-                '⛔ Evitar: [em via aérea difícil / estômago cheio]\n'
-                '📌 Monitorar: [SpO2 + EtCO2 + PA pós-IOT]\n'
-                '⚠️ Alerta: [via aérea difícil → ter plano B/C]';
+                  '🟥 [INDICAÇÃO IOT / SEQUÊNCIA RÁPIDA]\n'
+                  '💊 Indutor: [ketamina/etomidato + dose] + bloq: [succinilcolina/rocurônio]\n'
+                  '🔄 Alternativa: [se contraindicação ao indutor]\n'
+                  '⛔ Evitar: [em via aérea difícil / estômago cheio]\n'
+                  '📌 Monitorar: [SpO2 + EtCO2 + PA pós-IOT]\n'
+                  '⚠️ Alerta: [via aérea difícil → ter plano B/C]';
 
       case PlantaoIntent.calculo:
         return isEs
             ? 'TEMPLATE CÁLCULO:\n'
-                '🟥 [CÁLCULO CLÍNICO — PARÁMETRO]\n'
-                '🧮 Fórmula: [fórmula utilizada]\n'
-                '🧮 Resultado: **[valor calculado + unidad]**\n'
-                '📌 Interpretación: [qué significa ese valor]\n'
-                '⚠️ Alerta: [si valor crítico, acción inmediata]'
+                  '🟥 [CÁLCULO CLÍNICO — PARÁMETRO]\n'
+                  '🧮 Fórmula: [fórmula utilizada]\n'
+                  '🧮 Resultado: **[valor calculado + unidad]**\n'
+                  '📌 Interpretación: [qué significa ese valor]\n'
+                  '⚠️ Alerta: [si valor crítico, acción inmediata]'
             : 'TEMPLATE CÁLCULO:\n'
-                '🟥 [CÁLCULO CLÍNICO — PARÂMETRO]\n'
-                '🧮 Fórmula: [fórmula utilizada]\n'
-                '🧮 Resultado: **[valor calculado + unidade]**\n'
-                '📌 Interpretação: [o que significa esse valor]\n'
-                '⚠️ Alerta: [se valor crítico, ação imediata]';
+                  '🟥 [CÁLCULO CLÍNICO — PARÂMETRO]\n'
+                  '🧮 Fórmula: [fórmula utilizada]\n'
+                  '🧮 Resultado: **[valor calculado + unidade]**\n'
+                  '📌 Interpretação: [o que significa esse valor]\n'
+                  '⚠️ Alerta: [se valor crítico, ação imediata]';
 
       case PlantaoIntent.interacao:
         return isEs
             ? 'TEMPLATE INTERACCIÓN MEDICAMENTOSA:\n'
-                '🟥 INTERACCIÓN: [FÁRMACO A] + [FÁRMACO B]\n'
-                '⚠️ Riesgo: [mecanismo + gravedad]\n'
-                '❌ Evitar: [la combinación si riesgo absoluto]\n'
-                '🔄 Alternativa: [qué usar en su lugar]\n'
-                '📌 Monitorizar si se mantiene: [parámetro]'
+                  '🟥 INTERACCIÓN: [FÁRMACO A] + [FÁRMACO B]\n'
+                  '⚠️ Riesgo: [mecanismo + gravedad]\n'
+                  '❌ Evitar: [la combinación si riesgo absoluto]\n'
+                  '🔄 Alternativa: [qué usar en su lugar]\n'
+                  '📌 Monitorizar si se mantiene: [parámetro]'
             : 'TEMPLATE INTERAÇÃO MEDICAMENTOSA:\n'
-                '🟥 INTERAÇÃO: [FÁRMACO A] + [FÁRMACO B]\n'
-                '⚠️ Risco: [mecanismo + gravidade]\n'
-                '❌ Evitar: [a combinação se risco absoluto]\n'
-                '🔄 Alternativa: [o que usar no lugar]\n'
-                '📌 Monitorar se mantiver: [parâmetro]';
+                  '🟥 INTERAÇÃO: [FÁRMACO A] + [FÁRMACO B]\n'
+                  '⚠️ Risco: [mecanismo + gravidade]\n'
+                  '❌ Evitar: [a combinação se risco absoluto]\n'
+                  '🔄 Alternativa: [o que usar no lugar]\n'
+                  '📌 Monitorar se mantiver: [parâmetro]';
 
       case PlantaoIntent.procedimento:
         return isEs
             ? 'TEMPLATE PROCEDIMIENTO:\n'
-                '🟥 [PROCEDIMIENTO — INDICACIÓN]\n'
-                '💊 Técnica: [pasos clave]\n'
-                '🔄 Alternativa: [si no es posible la 1ª opción]\n'
-                '⛔ Contraindicado: [cuándo no realizar]\n'
-                '📌 Monitorizar: [post-procedimiento]\n'
-                '⚠️ Alerta: [complicación principal]'
+                  '🟥 [PROCEDIMIENTO — INDICACIÓN]\n'
+                  '💊 Técnica: [pasos clave]\n'
+                  '🔄 Alternativa: [si no es posible la 1ª opción]\n'
+                  '⛔ Contraindicado: [cuándo no realizar]\n'
+                  '📌 Monitorizar: [post-procedimiento]\n'
+                  '⚠️ Alerta: [complicación principal]'
             : 'TEMPLATE PROCEDIMENTO:\n'
-                '🟥 [PROCEDIMENTO — INDICAÇÃO]\n'
-                '💊 Técnica: [passos chave]\n'
-                '🔄 Alternativa: [se 1ª opção não for possível]\n'
-                '⛔ Contraindicado: [quando não realizar]\n'
-                '📌 Monitorar: [pós-procedimento]\n'
-                '⚠️ Alerta: [complicação principal]';
+                  '🟥 [PROCEDIMENTO — INDICAÇÃO]\n'
+                  '💊 Técnica: [passos chave]\n'
+                  '🔄 Alternativa: [se 1ª opção não for possível]\n'
+                  '⛔ Contraindicado: [quando não realizar]\n'
+                  '📌 Monitorar: [pós-procedimento]\n'
+                  '⚠️ Alerta: [complicação principal]';
 
       // Conduta explícita, sepse, choque, arritmia e geral → template de conduta padrão
       case PlantaoIntent.conduta:
       case PlantaoIntent.geral:
-      default:
         return isEs
             ? 'TEMPLATE CONDUCTA ESTÁNDAR:\n'
-                '🟥 [DIAGNÓSTICO — CONDUCTA INMEDIATA]\n'
-                '💊 1ª línea: [fármaco + dosis + vía]\n'
-                '🔄 Alternativa: [si 1ª contraindicada]\n'
-                '⛔ Evitar: [contraindicación — omitir si no hay]\n'
-                '📌 Monitorizar: [parámetro de seguridad]\n'
-                '⚠️ Alerta: [riesgo crítico — omitir si no hay]'
+                  '🟥 [DIAGNÓSTICO — CONDUCTA INMEDIATA]\n'
+                  '💊 1ª línea: [fármaco + dosis + vía]\n'
+                  '🔄 Alternativa: [si 1ª contraindicada]\n'
+                  '⛔ Evitar: [contraindicación — omitir si no hay]\n'
+                  '📌 Monitorizar: [parámetro de seguridad]\n'
+                  '⚠️ Alerta: [riesgo crítico — omitir si no hay]'
             : 'TEMPLATE CONDUTA PADRÃO:\n'
-                '🟥 [DIAGNÓSTICO — CONDUTA IMEDIATA]\n'
-                '💊 1ª linha: [fármaco + dose + via]\n'
-                '🔄 Alternativa: [se 1ª contraindicada]\n'
-                '⛔ Evitar: [contraindicação — omitir se não houver]\n'
-                '📌 Monitorar: [parâmetro de segurança]\n'
-                '⚠️ Alerta: [risco crítico — omitir se não houver]';
+                  '🟥 [DIAGNÓSTICO — CONDUTA IMEDIATA]\n'
+                  '💊 1ª linha: [fármaco + dose + via]\n'
+                  '🔄 Alternativa: [se 1ª contraindicada]\n'
+                  '⛔ Evitar: [contraindicação — omitir se não houver]\n'
+                  '📌 Monitorar: [parâmetro de segurança]\n'
+                  '⚠️ Alerta: [risco crítico — omitir se não houver]';
     }
   }
 }
@@ -1903,7 +3204,7 @@ class PlantaoResponse {
 // _EmojiBlock — representação interna de um bloco emoji durante parsing
 // ─────────────────────────────────────────────────────────────────────────────
 class _EmojiBlock {
-  final String emoji;       // âncora: '🟥', '💊', '🔄', '⛔', '📌', '⚠️'
+  final String emoji; // âncora: '🟥', '💊', '🔄', '⛔', '📌', '⚠️'
   final List<String> lines; // linhas de conteúdo deste bloco
 
   _EmojiBlock({required this.emoji, required this.lines});
@@ -1926,21 +3227,21 @@ class PlantaoParser {
   PlantaoParser._(); // 100% estático
 
   // Âncoras — template conduta (ordem canônica original)
-  static const _kConduta      = '🟥';
-  static const _kPrimeira     = '💊';
-  static const _kAlternativa  = '🔄';
-  static const _kEvitar       = '⛔';
-  static const _kMonitorar    = '📌';
-  static const _kAlerta       = '⚠️';
+  static const _kConduta = '🟥';
+  static const _kPrimeira = '💊';
+  static const _kAlternativa = '🔄';
+  static const _kEvitar = '⛔';
+  static const _kMonitorar = '📌';
+  static const _kAlerta = '⚠️';
 
   // Âncoras — templates alternativos (Build 224)
-  static const _kMetas        = '📈'; // valores esperados / metas
-  static const _kProxPasso    = '✅'; // próximo passo
-  static const _kEvitarAlt    = '❌'; // alternativa a ⛔
-  static const _kSuspeitar    = '🔎'; // suspeitar se / diagnóstico
-  static const _kConfirmar    = '🧪'; // confirmar com / diluição
-  static const _kCalculo      = '🧮'; // cálculo / velocidade
-  static const _kSignificado  = '📖'; // significado / interpretação
+  static const _kMetas = '📈'; // valores esperados / metas
+  static const _kProxPasso = '✅'; // próximo passo
+  static const _kEvitarAlt = '❌'; // alternativa a ⛔
+  static const _kSuspeitar = '🔎'; // suspeitar se / diagnóstico
+  static const _kConfirmar = '🧪'; // confirmar com / diluição
+  static const _kCalculo = '🧮'; // cálculo / velocidade
+  static const _kSignificado = '📖'; // significado / interpretação
 
   // Todas as âncoras válidas (Build 224 — ordem de prioridade de matching)
   static const _kAllAnchors = [
@@ -1976,6 +3277,46 @@ class PlantaoParser {
     // Segurança: nunca renderizar linhas com marcadores técnicos
     if (t.startsWith('[')) return true;
     return false;
+  }
+
+  // M55D_R5_ZERO_EMOJI_CANONICAL_TITLE_ANCHOR_V1
+  // Zero-emoji responses are now the canonical visible contract. Preserve
+  // legacy emoji parsing for historical/raw compatibility, but allow a safe
+  // text title only when an explicit immediate-conduct section exists.
+  static String _zeroEmojiCanonicalTitle(String rawText) {
+    final hasImmediateHeading = RegExp(
+      r'^[ \t]*(?:[*_`#]+[ \t]*)*(?:conducta[ \t]+inmediata|conduta[ \t]+imediata)[ \t]*:?[ \t]*$',
+      caseSensitive: false,
+      multiLine: true,
+    ).hasMatch(rawText);
+    if (!hasImmediateHeading) return '';
+
+    final lines = rawText
+        .split('\n')
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty)
+        .toList(growable: false);
+    if (lines.isEmpty) return '';
+
+    var first = lines.first
+        .replaceAll(RegExp(r'^[*_`#\s]+'), '')
+        .replaceAll(RegExp(r'[*_`#\s]+$'), '')
+        .trim();
+    if (first.isEmpty ||
+        first.startsWith('|') ||
+        first.startsWith('-') ||
+        first.startsWith('•') ||
+        RegExp(r'^[0-9]+[.)]\s').hasMatch(first)) {
+      return '';
+    }
+
+    if (RegExp(
+      r'^(?:conducta|conduta|tratamiento|tratamento|clasificaci[oó]n|classifica[cç][aã]o|puntos[ \t]+clave|pontos[- \t]+chave|red[ \t]+flags?)\b',
+      caseSensitive: false,
+    ).hasMatch(first)) {
+      return '';
+    }
+    return first;
   }
 
   /// Parse principal: texto → PlantaoResponse
@@ -2025,36 +3366,46 @@ class PlantaoParser {
     flushBlock(); // flush do último bloco
 
     // ── Passo 2: extrai campos (Build 224: template-agnóstico) ───────────────
-    final condutaBlock     = blocks[_kConduta];
-    final primeiraBlock    = blocks[_kPrimeira];
+    final condutaBlock = blocks[_kConduta];
+    final primeiraBlock = blocks[_kPrimeira];
     final alternativaBlock = blocks[_kAlternativa];
-    final evitarBlock      = blocks[_kEvitar];
-    final monitorarBlock   = blocks[_kMonitorar];
-    final alertaBlock      = blocks[_kAlerta];
+    final evitarBlock = blocks[_kEvitar];
+    final monitorarBlock = blocks[_kMonitorar];
+    final alertaBlock = blocks[_kAlerta];
     // Templates alternativos
-    final metasBlock       = blocks[_kMetas];
-    final proxPassoBlock   = blocks[_kProxPasso];
-    final evitarAltBlock   = blocks[_kEvitarAlt];
-    final suspeitarBlock   = blocks[_kSuspeitar];
-    final confirmarBlock   = blocks[_kConfirmar];
-    final calculoBlock     = blocks[_kCalculo];
+    final metasBlock = blocks[_kMetas];
+    final proxPassoBlock = blocks[_kProxPasso];
+    final evitarAltBlock = blocks[_kEvitarAlt];
+    final suspeitarBlock = blocks[_kSuspeitar];
+    final confirmarBlock = blocks[_kConfirmar];
+    final calculoBlock = blocks[_kCalculo];
     final significadoBlock = blocks[_kSignificado];
 
     // BUILD 265: único campo obrigatório é conduta (🟥).
     // monitorar/📌 agora OPCIONAL — parser aceita resposta com liberdade estrutural.
     // Princípio: se tem 🟥, a resposta é válida e deve ser renderizada.
-    final condutaText   = condutaBlock?.text ?? '';
-    // 📌 pode ser substituído por 📈 ou ✅ ou estar ausente (liberdade clínica guiada)
-    final monitorarText = monitorarBlock?.text
-        ?? metasBlock?.text
-        ?? proxPassoBlock?.text
-        ?? '';
+    final emojiCondutaText = condutaBlock?.text ?? '';
+    // M55D_R5_ZERO_EMOJI_CANONICAL_TITLE_ANCHOR_V1
+    // Legacy emoji anchor remains compatible, but zero-emoji canonical
+    // responses may use the disease/topic title when Conducta/Conduta
+    // inmediata is explicit.
+    final zeroEmojiCondutaText = emojiCondutaText.isEmpty
+        ? _zeroEmojiCanonicalTitle(rawText)
+        : '';
+    final condutaText = emojiCondutaText.isNotEmpty
+        ? emojiCondutaText
+        : zeroEmojiCondutaText;
+    // Legacy monitor anchors remain optional.
+    final monitorarText =
+        monitorarBlock?.text ?? metasBlock?.text ?? proxPassoBlock?.text ?? '';
 
-    // BUILD 265: só bloqueia se NÃO houver 🟥 algum (resposta realmente inválida)
     if (condutaText.isEmpty) {
-      debugPrint('[PLANTAO_PARSER] parse falhou: 🟥 ausente '
-          '(conduta=${condutaText.isNotEmpty} '
-          'monitorar/metas=${monitorarText.isNotEmpty})');
+      debugPrint(
+        '[PLANTAO_PARSER] parse falhou: âncora clínica ausente '
+        '(legacyEmoji=${emojiCondutaText.isNotEmpty} '
+        'zeroEmojiCanonical=${zeroEmojiCondutaText.isNotEmpty} '
+        'monitorar/metas=${monitorarText.isNotEmpty})',
+      );
       return null;
     }
 
@@ -2062,21 +3413,21 @@ class PlantaoParser {
     String? _opt(String? t) => (t?.isNotEmpty == true) ? t : null;
 
     return PlantaoResponse(
-      conduta:       condutaText,
-      monitorar:     monitorarText,
+      conduta: condutaText,
+      monitorar: monitorarText,
       // Template conduta
       primeiraLinha: _opt(primeiraBlock?.text),
-      alternativa:   _opt(alternativaBlock?.text),
-      evitar:        _opt(evitarBlock?.text),
-      alerta:        _opt(alertaBlock?.text),
+      alternativa: _opt(alternativaBlock?.text),
+      evitar: _opt(evitarBlock?.text),
+      alerta: _opt(alertaBlock?.text),
       // Templates alternativos
-      metas:         _opt(metasBlock?.text),
-      proxPasso:     _opt(proxPassoBlock?.text),
-      evitarAlt:     _opt(evitarAltBlock?.text),
-      suspeitar:     _opt(suspeitarBlock?.text),
-      confirmar:     _opt(confirmarBlock?.text),
-      calculo:       _opt(calculoBlock?.text),
-      significado:   _opt(significadoBlock?.text),
+      metas: _opt(metasBlock?.text),
+      proxPasso: _opt(proxPassoBlock?.text),
+      evitarAlt: _opt(evitarAltBlock?.text),
+      suspeitar: _opt(suspeitarBlock?.text),
+      confirmar: _opt(confirmarBlock?.text),
+      calculo: _opt(calculoBlock?.text),
+      significado: _opt(significadoBlock?.text),
     );
   }
 }
@@ -2108,57 +3459,195 @@ class PlantaoOrganizer {
 
   // Emojis âncora válidos em todos os templates
   static const _kAllValidAnchors = [
-    '🟥', '💊', '🔄', '⛔', '📌', '⚠️',
-    '📈', '✅', '❌', '🔎', '🧪', '🧮', '📖',
+    '🟥',
+    '💊',
+    '🔄',
+    '⛔',
+    '📌',
+    '⚠️',
+    '📈',
+    '✅',
+    '❌',
+    '🔎',
+    '🧪',
+    '🧮',
+    '📖',
   ];
 
   // Siglas clínicas reconhecidas — nunca bloquear respostas contendo estas
   static const _kClinicalAcronyms = [
-    'iam', 'tep', 'pcr', 'avc', 'sca', 'fa', 'tvp', 'eap',
-    'sepse', 'sepsis', 'choque', 'shock', 'icc', 'ira', 'dpoc',
-    'hipercalemia', 'hipocalemia', 'hiponatremia', 'hipernatremia',
-    'anafilaxia', 'anafilaxis', 'taqui', 'bradi', 'avch', 'avci',
-    'dissecc', 'tamponamento', 'pneumotorax', 'edema', 'infarto',
-    'tromboembolismo', 'embolismo', 'trombose', 'coagulação',
+    'iam',
+    'tep',
+    'pcr',
+    'avc',
+    'sca',
+    'fa',
+    'tvp',
+    'eap',
+    'sepse',
+    'sepsis',
+    'choque',
+    'shock',
+    'icc',
+    'ira',
+    'dpoc',
+    'hipercalemia',
+    'hipocalemia',
+    'hiponatremia',
+    'hipernatremia',
+    'anafilaxia',
+    'anafilaxis',
+    'taqui',
+    'bradi',
+    'avch',
+    'avci',
+    'dissecc',
+    'tamponamento',
+    'pneumotorax',
+    'edema',
+    'infarto',
+    'tromboembolismo',
+    'embolismo',
+    'trombose',
+    'coagulação',
   ];
 
   // Palavras clínicas de alto valor — indicam conteúdo útil
   static const _kClinicalKeywords = [
-    'dose', 'dosis', 'mg', 'mcg', 'ml', 'ui', 'ampola', 'ampolla',
-    'via', 'iv', 'sc', 'im', 'vo', 'sl', 'infusão', 'infusión',
-    'conduta', 'conducta', 'tratamento', 'tratamiento',
-    'contraindicado', 'contraindicado', 'evitar', 'precaução',
-    'monitorar', 'monitorizar', 'vigilar', 'observar',
-    'pressão', 'presión', 'saturação', 'saturación', 'frequência',
-    'diagnóstico', 'diagnóstico', 'suspeitar', 'confirmar',
-    'exame', 'examen', 'laborat', 'ecg', 'rx', 'tc ', 'rmn',
-    'antibiótico', 'antibiótico', 'anticoagul', 'antiarrítm',
-    'betabloq', 'diurético', 'vasopress', 'vasopressor',
-    'noradren', 'dopamina', 'dobutamina', 'adrenalina',
-    'amiodarona', 'heparina', 'varfarina', 'insulina',
-    'pressão arterial', 'frequência cardíaca', 'oxigenio',
-    'reposição', 'reposición', 'correção', 'corrección',
-    'intubação', 'intubación', 'cardioversão', 'desfibril',
-    'acesso venoso', 'acesso', 'soro', 'solução', 'solución',
-    'glasgow', 'sofa', 'apache', 'wells', 'curb',
+    'dose',
+    'dosis',
+    'mg',
+    'mcg',
+    'ml',
+    'ui',
+    'ampola',
+    'ampolla',
+    'via',
+    'iv',
+    'sc',
+    'im',
+    'vo',
+    'sl',
+    'infusão',
+    'infusión',
+    'conduta',
+    'conducta',
+    'tratamento',
+    'tratamiento',
+    'contraindicado',
+    'contraindicado',
+    'evitar',
+    'precaução',
+    'monitorar',
+    'monitorizar',
+    'vigilar',
+    'observar',
+    'pressão',
+    'presión',
+    'saturação',
+    'saturación',
+    'frequência',
+    'diagnóstico',
+    'diagnóstico',
+    'suspeitar',
+    'confirmar',
+    'exame',
+    'examen',
+    'laborat',
+    'ecg',
+    'rx',
+    'tc ',
+    'rmn',
+    'antibiótico',
+    'antibiótico',
+    'anticoagul',
+    'antiarrítm',
+    'betabloq',
+    'diurético',
+    'vasopress',
+    'vasopressor',
+    'noradren',
+    'dopamina',
+    'dobutamina',
+    'adrenalina',
+    'amiodarona',
+    'heparina',
+    'varfarina',
+    'insulina',
+    'pressão arterial',
+    'frequência cardíaca',
+    'oxigenio',
+    'reposição',
+    'reposición',
+    'correção',
+    'corrección',
+    'intubação',
+    'intubación',
+    'cardioversão',
+    'desfibril',
+    'acesso venoso',
+    'acesso',
+    'soro',
+    'solução',
+    'solución',
+    'glasgow',
+    'sofa',
+    'apache',
+    'wells',
+    'curb',
   ];
 
   // Padrões de meta-leak — vazamento de raciocínio interno
   static const _kMetaLeakPatterns = [
-    '[pensando', '[thinking', '[analisando', '[analyzing',
-    '[raciocínio]', '[reasoning]', '<thinking>', '</thinking>',
-    'vou pensar', 'deixa eu pensar', 'preciso analisar',
-    'como ia de', 'como modelo de', 'como assistente',
-    'não posso fornecer', 'não sou médico', 'consulte um médico',
-    'procure atendimento médico', 'busque atención médica',
+    '[pensando',
+    '[thinking',
+    '[analisando',
+    '[analyzing',
+    '[raciocínio]',
+    '[reasoning]',
+    '<thinking>',
+    '</thinking>',
+    'vou pensar',
+    'deixa eu pensar',
+    'preciso analisar',
+    'como ia de',
+    'como modelo de',
+    'como assistente',
+    'não posso fornecer',
+    'não sou médico',
+    'consulte um médico',
+    'procure atendimento médico',
+    'busque atención médica',
   ];
 
   // Conectores que ao terminar a resposta indicam truncamento
   static const _kTruncationConnectors = [
-    ' e', ' ou', ' com', ' para', ' de', ' da', ' do',
-    ' em', ' por', ' mas', ' se', ' que', ' a', ' o',
-    ' y', ' o ', ' con', ' para', ' de', ' en', ' por',
-    ' pero', ' si', ' que', ' la', ' el',
+    ' e',
+    ' ou',
+    ' com',
+    ' para',
+    ' de',
+    ' da',
+    ' do',
+    ' em',
+    ' por',
+    ' mas',
+    ' se',
+    ' que',
+    ' a',
+    ' o',
+    ' y',
+    ' o ',
+    ' con',
+    ' para',
+    ' de',
+    ' en',
+    ' por',
+    ' pero',
+    ' si',
+    ' que',
+    ' la',
+    ' el',
   ];
 
   /// BUILD 247: isValid() — LOOSE check para o pipeline estruturado.
@@ -2208,7 +3697,11 @@ class PlantaoOrganizer {
     if (_kClinicalKeywords.any((k) => lower.contains(k))) return true;
 
     // Tem emoji âncora (🟥, 💊, etc.) com conteúdo após ele
-    final lines = text.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
+    final lines = text
+        .split('\n')
+        .map((l) => l.trim())
+        .where((l) => l.isNotEmpty)
+        .toList();
     for (final line in lines) {
       for (final anchor in _kAllValidAnchors) {
         if (line.startsWith(anchor) && line.length > anchor.length + 2) {
@@ -2267,7 +3760,9 @@ class PlantaoOrganizer {
     }
 
     // Termina com vírgula, dois pontos, ponto-e-vírgula → truncada
-    if (trimmed.endsWith(',') || trimmed.endsWith(':') || trimmed.endsWith(';')) {
+    if (trimmed.endsWith(',') ||
+        trimmed.endsWith(':') ||
+        trimmed.endsWith(';')) {
       return true;
     }
 
@@ -2320,18 +3815,18 @@ class PlantaoRepair {
 
   // Build 224: ordem canônica expandida com todos os emojis de template
   static const _kCanonicalOrder = [
-    '🟥',  // título — sempre primeiro
-    '💊',  // 1ª linha / dose / correção
-    '🔄',  // alternativa / titulação
-    '⛔',  // evitar / contraindicação
-    '🔎',  // suspeitar se (diagnóstico)
-    '🧪',  // confirmar com / diluição
-    '🧮',  // cálculo / velocidade
-    '📖',  // significado / interpretação
-    '📈',  // metas / valores esperados
-    '❌',  // evitar (alternativo)
-    '📌',  // monitorar / observar — sempre penúltimo
-    '✅',  // próximo passo
+    '🟥', // título — sempre primeiro
+    '💊', // 1ª linha / dose / correção
+    '🔄', // alternativa / titulação
+    '⛔', // evitar / contraindicação
+    '🔎', // suspeitar se (diagnóstico)
+    '🧪', // confirmar com / diluição
+    '🧮', // cálculo / velocidade
+    '📖', // significado / interpretação
+    '📈', // metas / valores esperados
+    '❌', // evitar (alternativo)
+    '📌', // monitorar / observar — sempre penúltimo
+    '✅', // próximo passo
     '⚠️', // alerta — sempre último
   ];
 
@@ -2339,9 +3834,14 @@ class PlantaoRepair {
   ///
   /// Retorna (repairedText, wasRepaired, removedLines, orderFixed)
   static ({String text, bool repaired, int removedLines, bool orderFixed})
-      repair(String rawText) {
+  repair(String rawText) {
     if (rawText.trim().isEmpty) {
-      return (text: rawText, repaired: false, removedLines: 0, orderFixed: false);
+      return (
+        text: rawText,
+        repaired: false,
+        removedLines: 0,
+        orderFixed: false,
+      );
     }
 
     final originalLines = rawText.split('\n');
@@ -2482,9 +3982,8 @@ class PlantaoRepair {
         .where((l) => l.trim().isNotEmpty)
         .join('\n');
 
-    final wasRepaired = (removedLines > 0) ||
-        orderFixed ||
-        (originalClean != repairedClean);
+    final wasRepaired =
+        (removedLines > 0) || orderFixed || (originalClean != repairedClean);
 
     return (
       text: repairedText,
@@ -2512,9 +4011,10 @@ class PlantatoPipelineResult {
   final bool orderFixed;
   final String fallbackText; // texto original para fallback se response == null
   // BUILD 247: sinais para ResponseValidator / SafetyFallback
-  final bool hasClinicalContent; // tem valor clínico mesmo sem estrutura perfeita
-  final bool isTruncated;        // resposta claramente cortada
-  final bool hasMetaLeak;        // vazamento de raciocínio interno
+  final bool
+  hasClinicalContent; // tem valor clínico mesmo sem estrutura perfeita
+  final bool isTruncated; // resposta claramente cortada
+  final bool hasMetaLeak; // vazamento de raciocínio interno
 
   const PlantatoPipelineResult({
     required this.response,
@@ -2529,568 +4029,6 @@ class PlantatoPipelineResult {
     this.hasMetaLeak = false,
   });
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ResponseReformatter — BUILD 248B
-//
-// RESPONSABILIDADE:
-//   Detecta respostas em prosa útil e as reformata no template canônico de
-//   emojis correspondente à intenção clínica detectada.
-//
-// PRINCÍPIOS:
-//   • Preserva conteúdo clínico — NUNCA substitui por fallback
-//   • Reorganiza forma — não altera substância
-//   • Atua SOMENTE quando shouldFallback=false e resposta está em prosa
-//   • Não altera respostas já estruturadas (com emojis âncora)
-//   • Modo Estudo (longResponse=true) → pass-through, sem reformatação
-//
-// PIPELINE:
-//   1. isAlreadyStructured() → skip se já há emojis âncora
-//   2. stripProse()          → remove prefixos de saudação/introdução
-//   3. applyTemplate()       → envolve prosa no template correto para a intenção
-//
-// LOG: [PLANTAO_ORGANIZER] intent=X action=template_applied preserved=true
-// ─────────────────────────────────────────────────────────────────────────────
-class ResponseReformatter {
-  ResponseReformatter._(); // 100% estático
-
-  // Emojis âncora que indicam resposta já estruturada
-  static const _kStructureAnchors = [
-    '🟥', '💊', '🔄', '⛔', '📌', '⚠️',
-    '📈', '✅', '❌', '🔎', '🧪', '🧮', '📖',
-  ];
-
-  // Prefixos de saudação/prosa a remover (insensível a maiúsculas)
-  static const _kProseGreetings = [
-    'Olá colega',
-    'Olá, colega',
-    'Entendido',
-    'Claro',
-    'Vamos analisar',
-    'Vou analisar',
-    'Com prazer',
-    'Certamente',
-    'Claro que sim',
-    'Sem dúvida',
-    'Excelente pergunta',
-    'Boa pergunta',
-    'Hola colega',
-    'Hola, colega',
-    'Por supuesto',
-    'Claro que sí',
-    'Vamos a analizar',
-    'Con mucho gusto',
-    'Ciertamente',
-  ];
-
-  /// Verifica se a resposta já está estruturada com emojis âncora.
-  /// Se true → não precisa reformatar.
-  static bool isAlreadyStructured(String text) {
-    final trimmed = text.trimLeft();
-    // Verifica se começa com emoji âncora OU tem pelo menos 2 âncoras no texto
-    if (_kStructureAnchors.any((a) => trimmed.startsWith(a))) return true;
-    int anchorCount = 0;
-    for (final a in _kStructureAnchors) {
-      if (text.contains(a)) {
-        anchorCount++;
-        if (anchorCount >= 2) return true;
-      }
-    }
-    return false;
-  }
-
-  /// Remove linhas de saudação/introdução em prosa antes do conteúdo clínico.
-  /// Preserva o restante do texto intacto.
-  static String stripProse(String text) {
-    final lines = text.split('\n');
-    final result = <String>[];
-    bool foundClinical = false;
-
-    for (final line in lines) {
-      final trimmed = line.trim();
-      if (trimmed.isEmpty) {
-        if (foundClinical) result.add('');
-        continue;
-      }
-
-      // Verifica se a linha é uma saudação/introdução
-      if (!foundClinical) {
-        final lower = trimmed.toLowerCase();
-        bool isGreeting = false;
-        for (final g in _kProseGreetings) {
-          if (lower.startsWith(g.toLowerCase())) {
-            isGreeting = true;
-            break;
-          }
-        }
-        if (isGreeting) continue; // Remove a linha de saudação
-      }
-
-      foundClinical = true;
-      result.add(line);
-    }
-
-    return result.join('\n').trim();
-  }
-
-  /// Aplica o template de emojis para a intenção detectada, preservando
-  /// todo o conteúdo clínico da prosa original.
-  ///
-  /// Estratégia:
-  ///   1. Remove prefixos de saudação
-  ///   2. Se a resposta é muito curta após remoção → retorna original
-  ///   3. Extrai título clínico (primeiro parágrafo/frase ou fallback)
-  ///   4. Mapeia o corpo da prosa para blocos emoji canônicos segundo a intenção
-  ///   5. Retorna texto reformatado
-  static String applyTemplate(
-      String text, String lang, PlantaoIntent intent, String userQuery) {
-    final isEs = lang == 'es';
-
-    // Passo 1: remove saudações
-    final stripped = stripProse(text);
-    if (stripped.trim().length < 20) return text; // muito curto pós-strip → preserva
-
-    // Passo 2: extrai título clínico
-    // Usa o análise da query do usuário para construir o título
-    final analysis = PlantaoIntentEngine.analyze(userQuery);
-    final topic = analysis.clinicalTopic.isNotEmpty &&
-            analysis.clinicalTopic != 'CONSULTA CLÍNICA'
-        ? analysis.clinicalTopic
-        : _extractTitleFromProse(stripped, isEs);
-
-    // Passo 3: particiona a prosa em segmentos temáticos
-    final segments = _segmentProse(stripped);
-
-    // Passo 4: monta template baseado na intenção
-    return _buildTemplateFromSegments(
-      segments: segments,
-      fullText: stripped,
-      topic: topic,
-      intent: intent,
-      isEs: isEs,
-    );
-  }
-
-  // ── Helpers privados ───────────────────────────────────────────────────────
-
-  /// Extrai um título clínico a partir da primeira frase/parágrafo da prosa.
-  static String _extractTitleFromProse(String text, bool isEs) {
-    final lines = text
-        .split('\n')
-        .map((l) => l.trim())
-        .where((l) => l.isNotEmpty)
-        .toList();
-    if (lines.isEmpty) return isEs ? 'CONSULTA CLÍNICA' : 'CONSULTA CLÍNICA';
-
-    // Primeira linha: truncar em 60 chars se longa, ou usar "CONSULTA CLÍNICA"
-    final first = lines.first;
-    // Remove markdown bold/italic/headers
-    final clean = first
-        .replaceAll(RegExp(r'\*+'), '')
-        .replaceAll(RegExp(r'^#+\s*'), '')
-        .trim();
-    if (clean.length > 5 && clean.length <= 60) return clean.toUpperCase();
-    if (clean.length > 60) return '${clean.substring(0, 57).toUpperCase()}...';
-    return isEs ? 'CONSULTA CLÍNICA' : 'CONSULTA CLÍNICA';
-  }
-
-  /// Divide a prosa em segmentos: lista de (tema, conteúdo) baseado em
-  /// palavras-chave clínicas. Cada segmento é uma linha ou parágrafo do original.
-  static List<String> _segmentProse(String text) {
-    // Divide por linhas não-vazias; preserva conteúdo intacto
-    return text
-        .split('\n')
-        .map((l) => l.trim())
-        .where((l) => l.isNotEmpty)
-        .toList();
-  }
-
-  /// Keywords indicativas para identificar o tipo de conteúdo de cada segmento
-  static bool _segmentContains(String seg, List<String> keywords) {
-    final lower = seg.toLowerCase();
-    return keywords.any((k) => lower.contains(k));
-  }
-
-  static const _kDoseKw = [
-    'dose', 'dosis', 'mg', 'mcg', 'g/', 'kg', 'posologia', 'dose inicial',
-    'dose de ataque', 'dose de manutenção', '1ª linha', 'primeira linha',
-    'administrar', 'infundir', 'dar', 'iniciar com',
-  ];
-  static const _kAltKw = [
-    'alternativa', 'alternativo', 'segunda opção', 'se não', 'caso contrário',
-    'pode-se usar', 'outra opção', 'outra alternativa', 'substituir por',
-  ];
-  static const _kCiKw = [
-    'contraindicado', 'contraindicação', 'não usar', 'evitar', 'proibido',
-    'não deve', 'contraindicado em', 'não indicado', 'não recomendado',
-  ];
-  static const _kMonKw = [
-    'monitorar', 'monitorizar', 'vigiar', 'observar', 'verificar',
-    'acompanhar', 'checar', 'controlar', 'parâmetro', 'meta', 'alvo',
-    'ecg', 'pa', 'fc', 'pressão', 'frequência',
-  ];
-  static const _kAlertKw = [
-    'atenção', 'alerta', 'risco', 'cuidado', 'importante', 'aviso',
-    'toxicidade', 'interação', 'grave', 'crítico', 'fatal',
-  ];
-  static const _kRiskKw = [
-    'mecanismo', 'causa', 'sinergismo', 'potencializ', 'antagoniz',
-    'prolongamento', 'qt', 'torsades', 'bradicardia', 'bloqueio',
-  ];
-
-  /// Monta o texto final com emojis baseado nos segmentos e na intenção
-  static String _buildTemplateFromSegments({
-    required List<String> segments,
-    required String fullText,
-    required String topic,
-    required PlantaoIntent intent,
-    required bool isEs,
-  }) {
-    final sb = StringBuffer();
-
-    // Linha de título 🟥 — sempre primeira
-    sb.writeln('🟥 $topic');
-
-    // Para intenção interação — template especializado
-    if (intent == PlantaoIntent.interacao) {
-      return _buildInteracaoTemplate(
-          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
-    }
-
-    // Para intenção diagnóstico
-    if (intent == PlantaoIntent.diagnostico) {
-      return _buildDiagnosticoTemplate(
-          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
-    }
-
-    // Para contraindicação
-    if (intent == PlantaoIntent.contraindicacao) {
-      return _buildContraindicacaoTemplate(
-          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
-    }
-
-    // Para monitorização
-    if (intent == PlantaoIntent.monitorizacao) {
-      return _buildMonitorizacaoTemplate(
-          segments: segments, fullText: fullText, topic: topic, isEs: isEs);
-    }
-
-    // Template padrão (conduta/dose/infusão/geral): 💊 + 🔄 + ⛔ + 📌 + ⚠️
-    final List<String> doseLines = [];
-    final List<String> altLines = [];
-    final List<String> ciLines = [];
-    final List<String> monLines = [];
-    final List<String> alertLines = [];
-    final List<String> otherLines = [];
-
-    for (final seg in segments) {
-      if (_segmentContains(seg, _kDoseKw) && doseLines.isEmpty) {
-        doseLines.add(seg);
-      } else if (_segmentContains(seg, _kAltKw) && altLines.isEmpty) {
-        altLines.add(seg);
-      } else if (_segmentContains(seg, _kCiKw) && ciLines.isEmpty) {
-        ciLines.add(seg);
-      } else if (_segmentContains(seg, _kMonKw) && monLines.isEmpty) {
-        monLines.add(seg);
-      } else if (_segmentContains(seg, _kAlertKw) && alertLines.isEmpty) {
-        alertLines.add(seg);
-      } else if (seg != topic && !seg.toUpperCase().startsWith(topic)) {
-        otherLines.add(seg);
-      }
-    }
-
-    // Se não encontrou dose, usa todo o conteúdo no bloco 💊
-    if (doseLines.isEmpty && otherLines.isNotEmpty) {
-      doseLines.addAll(otherLines.take(2));
-      otherLines.removeRange(0, otherLines.length < 2 ? otherLines.length : 2);
-    }
-
-    // 💊 Dose / 1ª linha
-    if (doseLines.isNotEmpty) {
-      final label = isEs ? '💊 1ª línea' : '💊 1ª linha';
-      sb.writeln('$label: ${doseLines.join(' ')}');
-    }
-
-    // 🔄 Alternativa
-    if (altLines.isNotEmpty) {
-      final label = isEs ? '🔄 Alternativa' : '🔄 Alternativa';
-      sb.writeln('$label: ${altLines.join(' ')}');
-    }
-
-    // ⛔ Contraindicação
-    if (ciLines.isNotEmpty) {
-      final label = isEs ? '⛔ Contraindicado' : '⛔ Contraindicado';
-      sb.writeln('$label: ${ciLines.join(' ')}');
-    }
-
-    // 📌 Monitorar — se não encontrado, usa outras linhas restantes
-    if (monLines.isNotEmpty) {
-      final label = isEs ? '📌 Monitorizar' : '📌 Monitorar';
-      sb.writeln('$label: ${monLines.join(' ')}');
-    } else if (otherLines.isNotEmpty) {
-      final label = isEs ? '📌 Monitorizar' : '📌 Monitorar';
-      sb.writeln('$label: ${otherLines.join(' ')}');
-    }
-
-    // ⚠️ Alerta
-    if (alertLines.isNotEmpty) {
-      sb.writeln('⚠️ Alerta: ${alertLines.join(' ')}');
-    }
-
-    return sb.toString().trim();
-  }
-
-  /// Template especializado para intenção INTERAÇÃO medicamentosa
-  static String _buildInteracaoTemplate({
-    required List<String> segments,
-    required String fullText,
-    required String topic,
-    required bool isEs,
-  }) {
-    final sb = StringBuffer();
-
-    // 🟥 título
-    sb.writeln('🟥 ${isEs ? "INTERACCIÓN" : "INTERAÇÃO"}: $topic');
-
-    // Classifica segmentos
-    final List<String> riskLines = [];
-    final List<String> avoidLines = [];
-    final List<String> altLines = [];
-    final List<String> monLines = [];
-    final List<String> otherLines = [];
-
-    for (final seg in segments) {
-      if (_segmentContains(seg, _kRiskKw) || _segmentContains(seg, _kAlertKw)) {
-        riskLines.add(seg);
-      } else if (_segmentContains(seg, _kCiKw) || _segmentContains(seg, ['evitar', 'não combinar', 'não associar'])) {
-        avoidLines.add(seg);
-      } else if (_segmentContains(seg, _kAltKw)) {
-        altLines.add(seg);
-      } else if (_segmentContains(seg, _kMonKw)) {
-        monLines.add(seg);
-      } else if (!seg.toUpperCase().startsWith('INTERAÇÃO') &&
-          !seg.toUpperCase().startsWith('INTERACCIÓN')) {
-        otherLines.add(seg);
-      }
-    }
-
-    // ⚠️ Risco — obrigatório para interação
-    final riskContent = riskLines.isNotEmpty
-        ? riskLines.first
-        : (otherLines.isNotEmpty ? otherLines.first : fullText.split('\n').first.trim());
-    final riskLabel = isEs ? '⚠️ Riesgo' : '⚠️ Risco';
-    sb.writeln('$riskLabel: $riskContent');
-
-    // ❌ Evitar
-    if (avoidLines.isNotEmpty) {
-      final label = isEs ? '❌ Evitar' : '❌ Evitar';
-      sb.writeln('$label: ${avoidLines.first}');
-    }
-
-    // 🔄 Alternativa
-    if (altLines.isNotEmpty) {
-      final label = isEs ? '🔄 Alternativa' : '🔄 Alternativa';
-      sb.writeln('$label: ${altLines.first}');
-    }
-
-    // 📌 Monitorar se mantiver
-    final monContent = monLines.isNotEmpty
-        ? monLines.first
-        : (otherLines.length > 1 ? otherLines.last : '');
-    if (monContent.isNotEmpty) {
-      final label =
-          isEs ? '📌 Monitorizar si se mantiene' : '📌 Monitorar se mantiver';
-      sb.writeln('$label: $monContent');
-    }
-
-    return sb.toString().trim();
-  }
-
-  /// Template especializado para intenção DIAGNÓSTICO
-  static String _buildDiagnosticoTemplate({
-    required List<String> segments,
-    required String fullText,
-    required String topic,
-    required bool isEs,
-  }) {
-    final sb = StringBuffer();
-    sb.writeln('🟥 $topic');
-
-    const suspKw = ['suspeitar', 'sospechar', 'critério', 'critérios', 'sinal', 'sintoma', 'apresentação'];
-    const confKw = ['confirmar', 'exame', 'diagnóstico', 'laboratório', 'ecg', 'rx', 'tc', 'confirmar com'];
-    const gravKw = ['grave', 'gravidade', 'alarme', 'urgência', 'severo', 'critico'];
-
-    final List<String> suspLines = [];
-    final List<String> confLines = [];
-    final List<String> gravLines = [];
-    final List<String> otherLines = [];
-
-    for (final seg in segments) {
-      if (_segmentContains(seg, suspKw)) {
-        suspLines.add(seg);
-      } else if (_segmentContains(seg, confKw)) {
-        confLines.add(seg);
-      } else if (_segmentContains(seg, gravKw)) {
-        gravLines.add(seg);
-      } else {
-        otherLines.add(seg);
-      }
-    }
-
-    if (suspLines.isNotEmpty) {
-      final label = isEs ? '🔎 Sospechar si' : '🔎 Suspeitar se';
-      sb.writeln('$label: ${suspLines.first}');
-    } else if (otherLines.isNotEmpty) {
-      final label = isEs ? '🔎 Sospechar si' : '🔎 Suspeitar se';
-      sb.writeln('$label: ${otherLines.first}');
-    }
-
-    if (confLines.isNotEmpty) {
-      final label = isEs ? '🧪 Confirmar con' : '🧪 Confirmar com';
-      sb.writeln('$label: ${confLines.first}');
-    }
-
-    if (gravLines.isNotEmpty) {
-      final label = isEs ? '⚠️ Gravedad' : '⚠️ Gravidade';
-      sb.writeln('$label: ${gravLines.first}');
-    }
-
-    final nextLines = <String>[
-      ...confLines.skip(1),
-      ...otherLines.skip(suspLines.isEmpty ? 1 : 0),
-    ];
-    if (nextLines.isNotEmpty) {
-      final label = isEs ? '✅ Conducta inicial' : '✅ Conduta inicial';
-      sb.writeln('$label: ${nextLines.first}');
-    }
-
-    return sb.toString().trim();
-  }
-
-  /// Template especializado para intenção CONTRAINDICAÇÃO
-  static String _buildContraindicacaoTemplate({
-    required List<String> segments,
-    required String fullText,
-    required String topic,
-    required bool isEs,
-  }) {
-    final sb = StringBuffer();
-    sb.writeln('🟥 $topic');
-
-    const absKw = ['absoluta', 'nunca', 'proibido', 'sempre', 'incompatível'];
-    const relKw = ['relativa', 'cautela', 'cuidado', 'pode usar com', 'monitorar'];
-    const altKw = ['alternativa', 'usar no lugar', 'substituir', 'opção'];
-
-    final List<String> absLines = [];
-    final List<String> relLines = [];
-    final List<String> altLines = [];
-    final List<String> otherLines = [];
-
-    for (final seg in segments) {
-      if (_segmentContains(seg, absKw)) {
-        absLines.add(seg);
-      } else if (_segmentContains(seg, relKw)) {
-        relLines.add(seg);
-      } else if (_segmentContains(seg, altKw)) {
-        altLines.add(seg);
-      } else if (_segmentContains(seg, _kCiKw)) {
-        absLines.add(seg);
-      } else {
-        otherLines.add(seg);
-      }
-    }
-
-    // ❌ Contraindicado em (absolutas)
-    final ciContent = absLines.isNotEmpty
-        ? absLines.first
-        : (otherLines.isNotEmpty ? otherLines.first : fullText.split('\n').first.trim());
-    final ciLabel = isEs ? '❌ Contraindicado en' : '❌ Contraindicado em';
-    sb.writeln('$ciLabel: $ciContent');
-
-    if (relLines.isNotEmpty) {
-      final label = isEs ? '⛔ Usar con cautela' : '⛔ Usar com cautela';
-      sb.writeln('$label: ${relLines.first}');
-    }
-
-    if (altLines.isNotEmpty) {
-      final label = isEs ? '💊 Alternativa' : '💊 Alternativa';
-      sb.writeln('$label: ${altLines.first}');
-    }
-
-    final monContent = otherLines.isNotEmpty ? otherLines.last : '';
-    if (monContent.isNotEmpty) {
-      final label = isEs ? '📌 Monitorizar si se decide usar' : '📌 Monitorar se decidir usar';
-      sb.writeln('$label: $monContent');
-    }
-
-    return sb.toString().trim();
-  }
-
-  /// Template especializado para intenção MONITORIZAÇÃO
-  static String _buildMonitorizacaoTemplate({
-    required List<String> segments,
-    required String fullText,
-    required String topic,
-    required bool isEs,
-  }) {
-    final sb = StringBuffer();
-    sb.writeln('🟥 ${isEs ? "MONITORIZACIÓN — " : "MONITORIZAÇÃO — "}$topic');
-
-    const metaKw = ['meta', 'alvo', 'objetivo', 'valor esperado', 'normaliz', 'atingir'];
-    const gravKw = ['grave', 'alarme', 'urgência', 'preocup', 'anormal', 'alterado'];
-    const evitarKw = ['erro', 'evitar', 'não fazer', 'risco', 'iatrogenic'];
-
-    final List<String> obsLines = [];
-    final List<String> metaLines = [];
-    final List<String> gravLines = [];
-    final List<String> evitLines = [];
-    final List<String> otherLines = [];
-
-    for (final seg in segments) {
-      if (_segmentContains(seg, _kMonKw) && obsLines.isEmpty) {
-        obsLines.add(seg);
-      } else if (_segmentContains(seg, metaKw)) {
-        metaLines.add(seg);
-      } else if (_segmentContains(seg, gravKw)) {
-        gravLines.add(seg);
-      } else if (_segmentContains(seg, evitarKw)) {
-        evitLines.add(seg);
-      } else {
-        otherLines.add(seg);
-      }
-    }
-
-    final obsContent = obsLines.isNotEmpty
-        ? obsLines.first
-        : (otherLines.isNotEmpty ? otherLines.first : fullText.split('\n').first.trim());
-    final obsLabel = isEs ? '📌 Observar' : '📌 Observar';
-    sb.writeln('$obsLabel: $obsContent');
-
-    if (metaLines.isNotEmpty) {
-      final label = isEs ? '📈 Metas' : '📈 Metas';
-      sb.writeln('$label: ${metaLines.first}');
-    }
-
-    if (gravLines.isNotEmpty) {
-      final label = isEs ? '⚠️ Gravedad' : '⚠️ Gravidade';
-      sb.writeln('$label: ${gravLines.first}');
-    }
-
-    if (evitLines.isNotEmpty) {
-      final label = isEs ? '❌ Evitar' : '❌ Evitar';
-      sb.writeln('$label: ${evitLines.first}');
-    }
-
-    final nextLines = otherLines.where((l) => l != obsContent).toList();
-    if (nextLines.isNotEmpty) {
-      final label = isEs ? '✅ Próximo paso' : '✅ Próximo passo';
-      sb.writeln('$label: ${nextLines.first}');
-    }
-
-    return sb.toString().trim();
-  }
-}
-
 class PlantatoPipeline {
   PlantatoPipeline._(); // 100% estático
 
@@ -3133,38 +4071,54 @@ class PlantatoPipeline {
     }
 
     // ── Log [PLANTAO_ORGANIZER] BUILD 247 ─────────────────────────────────
-    final hasClinical = PlantaoOrganizer.hasUsefulClinicalContent(sanitizedText);
-    final isTrunc     = PlantaoOrganizer.isTruncated(sanitizedText);
-    final hasMetaLk   = PlantaoOrganizer.hasMetaLeak(sanitizedText);
+    final hasClinical = PlantaoOrganizer.hasUsefulClinicalContent(
+      sanitizedText,
+    );
+    final isTrunc = PlantaoOrganizer.isTruncated(sanitizedText);
+    final hasMetaLk = PlantaoOrganizer.hasMetaLeak(sanitizedText);
 
     // Determina action para o log
     final String logAction;
     if (response != null) {
-      logAction = repairResult.repaired || repairResult.orderFixed ? 'organize' : 'preserve';
+      logAction = repairResult.repaired || repairResult.orderFixed
+          ? 'organize'
+          : 'preserve';
     } else if (hasClinical && !isTrunc && !hasMetaLk) {
-      logAction = 'preserve'; // conteúdo útil sem estrutura — preservar como texto
+      logAction =
+          'preserve'; // conteúdo útil sem estrutura — preservar como texto
     } else {
       logAction = 'fallback';
     }
 
-    debugPrint('[PLANTAO_ORGANIZER] '
-        'action=$logAction '
-        'valid=$isValid '
-        'repaired=${repairResult.repaired} '
-        'removedLines=${repairResult.removedLines} '
-        'hiddenFields=$hiddenFields '
-        'orderFixed=${repairResult.orderFixed} '
-        'hasClinical=$hasClinical '
-        'isTruncated=$isTrunc '
-        'hasMetaLeak=$hasMetaLk');
+    debugPrint(
+      '[PLANTAO_ORGANIZER] '
+      'action=$logAction '
+      'valid=$isValid '
+      'repaired=${repairResult.repaired} '
+      'removedLines=${repairResult.removedLines} '
+      'hiddenFields=$hiddenFields '
+      'orderFixed=${repairResult.orderFixed} '
+      'hasClinical=$hasClinical '
+      'isTruncated=$isTrunc '
+      'hasMetaLeak=$hasMetaLk',
+    );
 
     if (response != null) {
-      debugPrint('[PLANTAO_ORGANIZER] parse=ok '
-          'conduta="${response.conduta.length > 40 ? response.conduta.substring(0, 40) : response.conduta}…"');
+      final condutaPreview = String.fromCharCodes(
+        response.conduta.runes.take(40),
+      );
+      debugPrint(
+        '[PLANTAO_ORGANIZER] parse=ok '
+        'conduta="$condutaPreview…"',
+      );
     } else if (hasClinical) {
-      debugPrint('[PLANTAO_ORGANIZER] parse=null reason=useful_content — preservar como texto plano');
+      debugPrint(
+        '[PLANTAO_ORGANIZER] parse=null reason=useful_content — preservar como texto plano',
+      );
     } else {
-      debugPrint('[PLANTAO_ORGANIZER] parse=null reason=no_clinical_value — aguarda ResponseValidator');
+      debugPrint(
+        '[PLANTAO_ORGANIZER] parse=null reason=no_clinical_value — aguarda ResponseValidator',
+      );
     }
 
     return PlantatoPipelineResult(

@@ -89,15 +89,6 @@ class _ActionCardButtonState extends State<ActionCardButton>
     // Rest: alpha ultra-elegante 0.06 light / 0.12 dark
     // Hover: slightly elevated 0.11 light / 0.20 dark
     // Tap (_tapping): escurece fundo para feedback imediato
-    final bg = widget.dark
-        ? accent.withValues(alpha: 0.12)
-        : accent.withValues(alpha: 0.06);
-    final bgHover = widget.dark
-        ? accent.withValues(alpha: 0.20)
-        : accent.withValues(alpha: 0.11);
-    final bgTap = widget.dark
-        ? accent.withValues(alpha: 0.28)
-        : accent.withValues(alpha: 0.16);
 
     // Bordas translúcidas — 1.0px sólida, quase invisível em repouso
     final border = widget.dark
@@ -111,14 +102,8 @@ class _ActionCardButtonState extends State<ActionCardButton>
     final textColor = widget.dark ? accent.withValues(alpha: 1.0) : accent;
 
     // Sombra mínima para descolar do fundo — sem sombra pesada em hover
-    final shadow = BoxShadow(
-      color: accent.withValues(alpha: widget.dark ? 0.15 : 0.04),
-      blurRadius: 4,
-      offset: const Offset(0, 2),
-    );
 
     // Estado de fundo efetivo: tap > hover > rest
-    final effectiveBg = _tapping ? bgTap : (_hovered ? bgHover : bg);
     final effectiveBorder = (_hovered && !_tapping) ? borderHover : border;
 
     return MouseRegion(
@@ -140,14 +125,13 @@ class _ActionCardButtonState extends State<ActionCardButton>
             curve: Curves.easeOutCubic,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: effectiveBg,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: effectiveBorder,
                 width: 1.0,
               ),
               // Sombra mínima — apenas descola do fundo, sem glow
-              boxShadow: [shadow],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -1,3 +1,4 @@
+// MEDCASES_COPILOT_PRE_R013_VISUAL_RESTORED_V1
 // ─────────────────────────────────────────────────────────────────────────────
 // CopilotButton — Build 160 — Botão Medcases Inteligente
 //
@@ -7,11 +8,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/soap_copilot_service.dart';
 import '../../../services/gemini_service.dart';
 import 'internacion_theme.dart';
 import 'revision_sheet.dart';
+
+import '../../../design_system/foundation/med_typography.dart';
 
 // ── Callback de aprovação passada para o pai ──────────────────────────────────
 typedef OnAiApproved = void Function(SoapDraftResult draft);
@@ -77,7 +81,8 @@ class _CopilotButtonState extends State<CopilotButton>
   }
 
   // ── Processa o input e chama a IA ────────────────────────────────────────
-  Future<void> _handleSubmit(String text, List<_ImageAttachment> attachments) async {
+  Future<void> _handleSubmit(
+      String text, List<_ImageAttachment> attachments) async {
     if (!mounted) return;
 
     final apiKey = GeminiService.apiKeyForLab;
@@ -89,7 +94,8 @@ class _CopilotButtonState extends State<CopilotButton>
               : 'Configure sua API Key do Gemini em Configurações primeiro.'),
           backgroundColor: InternacionTheme.amber,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ));
       }
       return;
@@ -119,12 +125,11 @@ class _CopilotButtonState extends State<CopilotButton>
         onDiscard: () {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(isEs
-                  ? 'Datos descartados.'
-                  : 'Dados descartados.'),
+              content: Text(isEs ? 'Datos descartados.' : 'Dados descartados.'),
               behavior: SnackBarBehavior.floating,
               duration: const Duration(seconds: 1),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ));
           }
         },
@@ -143,7 +148,8 @@ class _CopilotButtonState extends State<CopilotButton>
               backgroundColor: InternacionTheme.green,
               behavior: SnackBarBehavior.floating,
               duration: const Duration(seconds: 3),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ));
           }
         },
@@ -154,7 +160,8 @@ class _CopilotButtonState extends State<CopilotButton>
           content: Text('${isEs ? 'Error de IA' : 'Erro da IA'}: $e'),
           backgroundColor: InternacionTheme.red,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ));
       }
     } finally {
@@ -163,42 +170,44 @@ class _CopilotButtonState extends State<CopilotButton>
   }
 
   @override
+  @override
+  @override
+  @override
+  @override
   Widget build(BuildContext context) {
+    // MEDCASES_PACIENTES_HOME_COMPACT_COPILOT_V1_B_R0
+    // MEDCASES_PACIENTES_FINAL_AI_EMPHASIS_V1_B_R0
+    // MEDCASES_PACIENTES_AI_SIGNATURE_CARD_V1_B_R0
     final dark = widget.dark;
+    final surface =
+        dark ? const Color(0xFF202A29) : const Color(0xFFF4FAF7);
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: _isLoading ? null : _openInputSheet,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 160),
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        padding: const EdgeInsets.fromLTRB(16, 21.5, 14, 21.5),
         decoration: BoxDecoration(
-          gradient: _isLoading
-              ? null
-              : const LinearGradient(
-                  colors: [Color(0xFF1A1A2E), Color(0xFF16213E), Color(0xFF0F3460)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-          color: _isLoading
-              ? (dark ? const Color(0xFF1A1E28) : const Color(0xFFF0F2F5))
-              : null,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: _isLoading
-                ? const Color(0xFF059669).withOpacity(0.40)
-                : const Color(0xFF059669).withOpacity(0.60),
-            width: 1.5,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              surface,
+              dark ? const Color(0xFF17342C) : const Color(0xFFE7F7F0),
+            ],
           ),
-          boxShadow: _isLoading
-              ? []
-              : [
-                  BoxShadow(
-                    color: const Color(0xFF059669).withOpacity(0.20),
-                    blurRadius: 20,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: InternacionTheme.accentLight.withOpacity(
+                dark ? 0.14 : 0.09,
+              ),
+              blurRadius: 18,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
         child: _isLoading ? _buildLoadingState() : _buildIdleState(),
       ),
@@ -207,73 +216,107 @@ class _CopilotButtonState extends State<CopilotButton>
 
   // ── Estado idle (botão normal) ────────────────────────────────────────────
   Widget _buildIdleState() {
+    final textPrimary =
+        widget.dark ? Colors.white : const Color(0xFF111827);
+    final textSecondary =
+        widget.dark ? const Color(0xFFCBD5E1) : const Color(0xFF667085);
+
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Ícone animado com gradiente
-        Container(
-          width: 40, height: 40,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF059669), Color(0xFF047857)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        AnimatedBuilder(
+          animation: _shimmerCtrl,
+          builder: (_, child) {
+            final t = _shimmerCtrl.value;
+            final lift = 1.5 * (1 - ((2 * t) - 1).abs());
+
+            return Transform.translate(
+              offset: Offset(0, -lift),
+              child: child,
+            );
+          },
+          child: SizedBox(
+            width: 58,
+            height: 58,
+            child: SvgPicture.asset(
+              'assets/icons/home_v2/ic_ia.svg',
+              width: 58,
+              height: 58,
+              fit: BoxFit.contain,
             ),
-            borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.auto_awesome_rounded,
-              size: 20, color: Colors.white),
         ),
         const SizedBox(width: 14),
-
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
+
               const Text(
-                'Medcases Inteligente',
+                'IA CLÍNICA · SOAP',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 9.5,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: 0.2,
+                  letterSpacing: 0.75,
+                  color: InternacionTheme.accentLight,
                 ),
               ),
+              const SizedBox(height: 4),
+              Text(
+                'MedCases Inteligente',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: textPrimary,
+                  height: 1.12,
+                ),
+              ),
+              const SizedBox(height: 3),
               Text(
                 isEs
-                    ? 'pegar texto, sube imagen — IA extrae'
-                    : 'colar texto, subir imagem — IA extrai',
+                    ? 'Texto o imagen → organiza el SOAP'
+                    : 'Texto ou imagem → organiza o SOAP',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.white.withOpacity(0.70),
-                  height: 1.4,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w500,
+                  color: textSecondary,
+                  height: 1.15,
                 ),
               ),
             ],
           ),
         ),
-
         const SizedBox(width: 8),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
           decoration: BoxDecoration(
-            color: const Color(0xFF059669).withOpacity(0.20),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: const Color(0xFF059669).withOpacity(0.50),
-              width: 0.8,
+            color: InternacionTheme.accentLight.withOpacity(
+              widget.dark ? 0.13 : 0.10,
             ),
+            borderRadius: BorderRadius.circular(10),
           ),
-          child: Row(
+          child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.bolt_rounded,
-                  size: 12, color: Color(0xFF059669)),
-              const SizedBox(width: 3),
-              const Text('IA', style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF059669),
-              )),
+              Text(
+                'Abrir',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: InternacionTheme.accentLight,
+                ),
+              ),
+              SizedBox(width: 2),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 16,
+                color: InternacionTheme.accentLight,
+              ),
             ],
           ),
         ),
@@ -286,36 +329,88 @@ class _CopilotButtonState extends State<CopilotButton>
     return AnimatedBuilder(
       animation: _shimmerAnim,
       builder: (_, __) {
+        final textPrimary =
+            widget.dark ? Colors.white : const Color(0xFF111827);
+        final textSecondary =
+            widget.dark ? const Color(0xFFCBD5E1) : const Color(0xFF667085);
+
         return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Ícone pulsante
-            Container(
-              width: 40, height: 40,
-              decoration: BoxDecoration(
-                color: const Color(0xFF059669).withOpacity(0.15),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Center(
-                child: SizedBox(
-                  width: 20, height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(Color(0xFF059669)),
+            SizedBox(
+              width: 38,
+              height: 38,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Opacity(
+                    opacity: 0.42,
+                    child: SvgPicture.asset(
+                      'assets/icons/home_v2/ic_ia.svg',
+                      width: 38,
+                      height: 38,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
+                  const SizedBox(
+                    width: 34,
+                    height: 34,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.6,
+                      valueColor: AlwaysStoppedAnimation(
+                        InternacionTheme.accentLight,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 14),
-
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Shimmer bar 1
-                  _shimmerBar(width: 160, height: 14),
-                  const SizedBox(height: 6),
-                  // Shimmer bar 2
-                  _shimmerBar(width: 220, height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: InternacionTheme.accentLight.withOpacity(
+                        widget.dark ? 0.14 : 0.10,
+                      ),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'IA CLÍNICA',
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.55,
+                        color: InternacionTheme.accentLight,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isEs ? 'Organizando SOAP…' : 'Organizando SOAP…',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    isEs
+                        ? 'Revisa antes de aplicar'
+                        : 'Revise antes de aplicar',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: textSecondary,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -325,34 +420,6 @@ class _CopilotButtonState extends State<CopilotButton>
     );
   }
 
-  Widget _shimmerBar({required double width, required double height}) {
-    final dark = widget.dark;
-    final base = dark ? const Color(0xFF2D3340) : const Color(0xFFE0E4EA);
-    final highlight = dark ? const Color(0xFF3D4A5A) : const Color(0xFFF5F7FA);
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(height / 2),
-      child: AnimatedBuilder(
-        animation: _shimmerAnim,
-        builder: (_, __) => Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              stops: [
-                (_shimmerAnim.value - 0.3).clamp(0.0, 1.0),
-                _shimmerAnim.value.clamp(0.0, 1.0),
-                (_shimmerAnim.value + 0.3).clamp(0.0, 1.0),
-              ],
-              colors: [base, highlight, base],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -371,7 +438,8 @@ class _ImageAttachment {
   });
 }
 
-typedef _OnSubmit = void Function(String text, List<_ImageAttachment> attachments);
+typedef _OnSubmit = void Function(
+    String text, List<_ImageAttachment> attachments);
 
 class _CopilotInputSheet extends StatefulWidget {
   final bool dark;
@@ -414,14 +482,15 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
       final bytes = await picked.readAsBytes();
       final mime = picked.mimeType ?? 'image/jpeg';
       setState(() => _attachments.add(_ImageAttachment(
-        bytes: bytes,
-        mimeType: mime,
-        name: picked.name,
-      )));
+            bytes: bytes,
+            mimeType: mime,
+            name: picked.name,
+          )));
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('${isEs ? 'Error al cargar imagen' : 'Erro ao carregar imagem'}: $e'),
+          content: Text(
+              '${isEs ? 'Error al cargar imagen' : 'Erro ao carregar imagem'}: $e'),
           backgroundColor: InternacionTheme.red,
         ));
       }
@@ -456,7 +525,7 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
           color: bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           border: Border.all(
-            color: const Color(0xFF059669).withOpacity(0.30),
+            color: const Color(0xFF0D6B57).withOpacity(0.30),
             width: 1.2,
           ),
         ),
@@ -471,7 +540,8 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                 // Handle
                 Center(
                   child: Container(
-                    width: 36, height: 4,
+                    width: 36,
+                    height: 4,
                     decoration: BoxDecoration(
                       color: theme.border,
                       borderRadius: BorderRadius.circular(2),
@@ -483,10 +553,11 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                 // Header
                 Row(children: [
                   Container(
-                    width: 32, height: 32,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF059669), Color(0xFF047857)],
+                        colors: [Color(0xFF0D6B57), Color(0xFF0D6B57)],
                       ),
                       borderRadius: BorderRadius.circular(9),
                     ),
@@ -497,7 +568,8 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                   Text(
                     isEs ? 'Copiloto Medcases' : 'Copiloto Medcases',
                     style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w800,
+                      fontSize: MedTypography.clinicalBodySize,
+                      fontWeight: FontWeight.w800,
                       color: theme.textPrimary,
                     ),
                   ),
@@ -507,7 +579,10 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                   isEs
                       ? 'Dicta notas rápidas, pega valores o sube fotos de monitores y labs.'
                       : 'Dite notas rápidas, cole valores ou suba fotos de monitores e labs.',
-                  style: TextStyle(fontSize: 12, color: theme.textSecondary, height: 1.4),
+                  style: TextStyle(
+                      fontSize: MedTypography.auxiliarySize,
+                      color: theme.textSecondary,
+                      height: 1.4),
                 ),
                 const SizedBox(height: 14),
 
@@ -524,14 +599,17 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                     minLines: 3,
                     onChanged: (_) => setState(() {}),
                     style: TextStyle(
-                      fontSize: 14, color: theme.textPrimary, height: 1.5,
+                      fontSize: MedTypography.clinicalBodySize,
+                      color: theme.textPrimary,
+                      height: 1.5,
                     ),
                     decoration: InputDecoration(
                       hintText: isEs
                           ? 'Ej: "paciente bien, pa 120/80, sin dor, Hb 10.2, vou manter atb..."'
                           : 'Ex: "paciente bem, pa 120/80, sem dor, Hb 10.2, vou manter atb..."',
                       hintStyle: TextStyle(
-                        fontSize: 13, color: theme.textSecondary.withOpacity(0.6),
+                        fontSize: MedTypography.auxiliarySize,
+                        color: theme.textSecondary.withOpacity(0.6),
                       ),
                       contentPadding: const EdgeInsets.all(14),
                       border: InputBorder.none,
@@ -589,20 +667,19 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                       decoration: BoxDecoration(
                         gradient: _canSubmit
                             ? const LinearGradient(
-                                colors: [Color(0xFF34D399), Color(0xFF047857)],
+                                colors: [Color(0xFF0D6B57), Color(0xFF0D6B57)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               )
                             : null,
-                        color: _canSubmit
-                            ? null
-                            : theme.border.withOpacity(0.5),
+                        color:
+                            _canSubmit ? null : theme.border.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: _canSubmit
                             ? [
                                 BoxShadow(
-                                  color: const Color(0xFF059669)
-                                      .withOpacity(0.35),
+                                  color:
+                                      const Color(0xFF0D6B57).withOpacity(0.35),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 )
@@ -616,11 +693,10 @@ class _CopilotInputSheetState extends State<_CopilotInputSheet> {
                         Text(
                           isEs ? 'Analizar' : 'Analisar',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: MedTypography.auxiliarySize,
                             fontWeight: FontWeight.w700,
-                            color: _canSubmit
-                                ? Colors.white
-                                : theme.textSecondary,
+                            color:
+                                _canSubmit ? Colors.white : theme.textSecondary,
                           ),
                         ),
                       ]),
@@ -645,8 +721,11 @@ class _AttachBtn extends StatelessWidget {
   final VoidCallback onTap;
 
   const _AttachBtn({
-    required this.icon, required this.label, required this.dark,
-    required this.theme, required this.onTap,
+    required this.icon,
+    required this.label,
+    required this.dark,
+    required this.theme,
+    required this.onTap,
   });
 
   @override
@@ -663,10 +742,12 @@ class _AttachBtn extends StatelessWidget {
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, size: 16, color: InternacionTheme.cyan),
           const SizedBox(width: 6),
-          Text(label, style: TextStyle(
-            fontSize: 12, fontWeight: FontWeight.w600,
-            color: theme.textPrimary,
-          )),
+          Text(label,
+              style: TextStyle(
+                fontSize: MedTypography.sectionLabelSize,
+                fontWeight: FontWeight.w600,
+                color: theme.textPrimary,
+              )),
         ]),
       ),
     );
@@ -681,8 +762,10 @@ class _AttachmentThumbnail extends StatelessWidget {
   final VoidCallback onRemove;
 
   const _AttachmentThumbnail({
-    required this.attachment, required this.dark,
-    required this.theme, required this.onRemove,
+    required this.attachment,
+    required this.dark,
+    required this.theme,
+    required this.onRemove,
   });
 
   @override
@@ -695,10 +778,12 @@ class _AttachmentThumbnail extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: Image.memory(
               attachment.bytes,
-              width: 68, height: 68,
+              width: 68,
+              height: 68,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
-                width: 68, height: 68,
+                width: 68,
+                height: 68,
                 color: theme.card,
                 child: const Icon(Icons.insert_drive_file_rounded,
                     color: InternacionTheme.cyan),
@@ -706,11 +791,13 @@ class _AttachmentThumbnail extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 2, right: 2,
+            top: 2,
+            right: 2,
             child: GestureDetector(
               onTap: onRemove,
               child: Container(
-                width: 18, height: 18,
+                width: 18,
+                height: 18,
                 decoration: const BoxDecoration(
                   color: Colors.black87,
                   shape: BoxShape.circle,

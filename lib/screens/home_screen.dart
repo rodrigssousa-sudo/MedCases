@@ -1,6 +1,7 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_3A_V2_B_R1_GENERIC_CONTEXTS
+import 'dart:ui';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui' show FontFeature;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -21,8 +22,10 @@ import 'cockpit_screen.dart';
 import 'internacion/internacion_screen.dart';
 import 'internacion/services/internacion_persistence.dart' show PacienteSession;
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
-import 'prescripciones_screen.dart' show PrescripcionesScreen, prescriptionModels;
-import 'tools_screen.dart' show PediatricsTabContent, ToolsScreen, toolsScreenTabNotifier;
+import 'prescripciones_screen.dart'
+    show PrescripcionesScreen, prescriptionModels;
+import 'tools_screen.dart'
+    show PediatricsTabContent, ToolsScreen, toolsScreenTabNotifier;
 import 'calculadora_screen.dart' show CalculadoraScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
@@ -30,18 +33,149 @@ import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
 import '../models/protocol_model.dart';
 import 'avaliacao_screen.dart';
 import '../widgets/meu_plantao_dashboard.dart';
+import '../home_v2/components/home_v2_modules_view.dart';
+import '../home_v2/theme/home_v2_palette.dart';
 import 'ai_screen.dart' show AiScreen;
+import '../home_v2/components/chat/inline_chat_view.dart';
+import 'ai/widgets/streaming_text_drain.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import '../services/stt_helper.dart';
+import '../home_v2/components/navigation/home_card_transition.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // HOME SCREEN — 4 cards de navegação principal
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Projeção imutável e exclusivamente visual do timer canônico.
+///
+/// Não possui ticker, wall-clock, persistência, lifecycle,
+/// notification id ou acesso ao NotificationService.
+class _TimerVisualState {
+  const _TimerVisualState({
+    required this.active,
+    required this.remainingSecs,
+    required this.label,
+    this.activeCount = 0,
+    this.progress = 0,
+  });
+
+  const _TimerVisualState.inactive()
+      : active = false,
+        remainingSecs = 0,
+        label = '',
+        activeCount = 0,
+        progress = 0;
+
+  final bool active;
+  final int remainingSecs;
+  final String label;
+  final int activeCount;
+  final double progress;
+}
+
+enum ClinicalTimerExternalRegistrationStatus {
+  adopted,
+  alreadyRegistered,
+  unavailable,
+  invalidRequest,
+  limitReached,
+}
+
+class ClinicalTimerExternalRegistrationResult {
+  const ClinicalTimerExternalRegistrationResult(this.status);
+
+  final ClinicalTimerExternalRegistrationStatus status;
+
+  bool get accepted =>
+      status == ClinicalTimerExternalRegistrationStatus.adopted ||
+      status == ClinicalTimerExternalRegistrationStatus.alreadyRegistered;
+}
+
+typedef _ClinicalTimerExternalRegistrationHandler
+    = Future<ClinicalTimerExternalRegistrationResult> Function({
+  required int notificationId,
+  required int seconds,
+  required String label,
+  required String payload,
+  required String lang,
+});
+
+/// Entrada pública para consumidores que já possuem uma notificação agendada.
+///
+/// Não possui ticker, lista, persistência, badge ou acesso direto ao
+/// NotificationService. Apenas encaminha a solicitação ao owner canônico
+/// atualmente montado.
+class ClinicalTimerExternalBridge {
+  ClinicalTimerExternalBridge._();
+
+  static final Map<Object, _ClinicalTimerExternalRegistrationHandler>
+      _handlers = <Object, _ClinicalTimerExternalRegistrationHandler>{};
+
+  static Future<ClinicalTimerExternalRegistrationResult>
+      adoptExistingNotification({
+    required int notificationId,
+    required int seconds,
+    required String label,
+    required String payload,
+    required String lang,
+  }) async {
+    final normalizedPayload = payload.trim();
+    final normalizedLang = lang == 'es' ? 'es' : 'pt';
+
+    if (notificationId == 0 ||
+        seconds <= 0 ||
+        seconds > 86400 ||
+        normalizedPayload.isEmpty) {
+      return const ClinicalTimerExternalRegistrationResult(
+        ClinicalTimerExternalRegistrationStatus.invalidRequest,
+      );
+    }
+
+    if (_handlers.isEmpty) {
+      return const ClinicalTimerExternalRegistrationResult(
+        ClinicalTimerExternalRegistrationStatus.unavailable,
+      );
+    }
+
+    final handler = _handlers.values.last;
+    return handler(
+      notificationId: notificationId,
+      seconds: seconds,
+      label: label,
+      payload: normalizedPayload,
+      lang: normalizedLang,
+    );
+  }
+
+  static void _bind({
+    required Object ownerToken,
+    required _ClinicalTimerExternalRegistrationHandler handler,
+  }) {
+    _handlers.remove(ownerToken);
+    _handlers[ownerToken] = handler;
+  }
+
+  static void _unbind(Object ownerToken) {
+    _handlers.remove(ownerToken);
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   final ValueChanged<int> onTabChange;
   final ValueChanged<int> onSubTabChange;
   final Function(String) openProtocol;
   final VoidCallback onOpenNotes;
   final VoidCallback? onCheckUpdate;
+
+  /// Slots temporários da migração incremental para a Home V2.
+  ///
+  /// Quando ausentes, a Home utiliza os blocos privados canônicos.
+  final Widget? inlineChat;
+  final Widget? calculatorDrugsCard;
+  final Widget? patientPediatricsRow;
+  final Widget? libraryHistoryRow;
+  final Widget? assessmentNotesTimerCard;
+  final Widget? miGuardiaSection;
 
   const HomeScreen({
     super.key,
@@ -50,6 +184,12 @@ class HomeScreen extends StatefulWidget {
     required this.openProtocol,
     required this.onOpenNotes,
     this.onCheckUpdate,
+    this.inlineChat,
+    this.calculatorDrugsCard,
+    this.patientPediatricsRow,
+    this.libraryHistoryRow,
+    this.assessmentNotesTimerCard,
+    this.miGuardiaSection,
   });
 
   static void _openAvaliacao(BuildContext context) {
@@ -72,6 +212,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // Referência estrutural ao único proprietário canônico do timer.
+  //
+  // A GlobalKey não armazena estado funcional e não executa operações
+  // nesta micro-build.
+  final GlobalKey<_HistorialCompactCardState> _timerOwnerKey =
+      GlobalKey<_HistorialCompactCardState>();
+
+  // Projeção passiva destinada aos futuros consumidores visuais.
+  //
+  // Nenhuma publicação ou conexão será realizada nesta micro-build.
+  final ValueNotifier<_TimerVisualState> _timerVisualState =
+      ValueNotifier<_TimerVisualState>(
+    const _TimerVisualState.inactive(),
+  );
+
+  @override
+  void dispose() {
+    _timerVisualState.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint('[BUILD297][HomeScreen] build_start');
@@ -93,7 +254,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // acesso a Firebase SDK (Auth, Firestore) lança NullError em dart2js.
     // A Home renderiza limpa/parcial enquanto aguarda o init completo.
     if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][HomeScreen] build_abort reason=firebase_runtime_unavailable');
+      debugPrint(
+          '[BUILD299][HomeScreen] build_abort reason=firebase_runtime_unavailable');
       return const _HomeSafeLoadingShell();
     }
 
@@ -109,9 +271,10 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       dark = context.select<AppProvider, bool>((p) => p.darkMode);
       isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
-      p    = context.read<AppProvider>();
+      p = context.read<AppProvider>();
     } catch (e, st) {
-      debugPrint('[BUILD297][HomeScreen] component_skipped reason=provider_not_ready error=$e');
+      debugPrint(
+          '[BUILD297][HomeScreen] component_skipped reason=provider_not_ready error=$e');
       // Fallback seguro: mostra spinner centralizado enquanto provider carrega.
       // O framework vai reconstruir este widget quando o provider estiver pronto.
       return const _HomeSafeLoadingShell();
@@ -146,16 +309,19 @@ class _HomeScreenState extends State<HomeScreen> {
           return _buildDesktopLayout(context, dark, isEs, p, bp);
         }
         // Mobile / tablet / iPad nativo — layout nativo com max-width no tablet
-        return _buildMobileLayout(context, dark, isEs, p, availableWidth: width);
+        return _buildMobileLayout(context, dark, isEs, p,
+            availableWidth: width);
       },
     );
   }
 
-  Widget _buildDesktopLayout(BuildContext context, bool dark, bool isEs, AppProvider p, MedBreakpoints bp) {
+  Widget _buildDesktopLayout(BuildContext context, bool dark, bool isEs,
+      AppProvider p, MedBreakpoints bp) {
     final hPad = bp.hPadding;
 
     // Helpers de navegação inline para o desktop
-    void push(Widget page) => Navigator.of(context).push(_HomeScreenState._slide(page));
+    void push(Widget page) =>
+        Navigator.of(context).push(_HomeScreenState._slide(page));
 
     // Definição dos cards principais para o grid desktop
     // Build 138: FÁRMACOS/INTERACCIONES removidos como cards independentes.
@@ -167,25 +333,39 @@ class _HomeScreenState extends State<HomeScreen> {
         label: 'ADULTO',
         subtitle: isEs ? 'Explorar caso clínico' : 'Explorar caso clínico',
         // B141: Emerald Green #059669 → #10b981
-        gradientColors: const [Color(0xFF022c22), Color(0xFF059669), Color(0xFF10b981)],
+        gradientColors: const [
+          Color(0xFF022c22),
+          Color(0xFF059669),
+          Color(0xFF10b981)
+        ],
         accentColor: const Color(0xFF6ee7b7),
         onTap: () => push(_AdultoShell(openProtocol: widget.openProtocol)),
       ),
       _HomeCardData(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-        subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
+        subtitle: isEs
+            ? 'Casos clínicos de referencia'
+            : 'Casos clínicos de referência',
         // B144: Azul Petróleo — dark teal elegante, nunca chega ao ciano
-        gradientColors: const [Color(0xFF042f2e), Color(0xFF0f766e), Color(0xFF134e4a)],
+        gradientColors: const [
+          Color(0xFF042f2e),
+          Color(0xFF0f766e),
+          Color(0xFF134e4a)
+        ],
         accentColor: const Color(0xFFccfbf1),
-        onTap: () => push(const _PediatricsShell()),
+        onTap: () => widget.onTabChange(8),
       ),
       _HomeCardData(
         icon: Icons.menu_book_rounded,
         label: 'BIBLIOTECA',
         subtitle: isEs ? 'Referencias clínicas' : 'Referências clínicas',
         // B141: Elegant Gray #475569 → #64748b
-        gradientColors: const [Color(0xFF1e293b), Color(0xFF475569), Color(0xFF64748b)],
+        gradientColors: const [
+          Color(0xFF1e293b),
+          Color(0xFF475569),
+          Color(0xFF64748b)
+        ],
         accentColor: const Color(0xFFe2e8f0),
         onTap: () => widget.onTabChange(5),
       ),
@@ -194,7 +374,11 @@ class _HomeScreenState extends State<HomeScreen> {
         label: 'H. CLÍNICA',
         subtitle: isEs ? 'Historial del paciente' : 'Histórico do paciente',
         // B141: Orange Vibrant #ea580c → #fb923c
-        gradientColors: const [Color(0xFF431407), Color(0xFFea580c), Color(0xFFfb923c)],
+        gradientColors: const [
+          Color(0xFF431407),
+          Color(0xFFea580c),
+          Color(0xFFfb923c)
+        ],
         accentColor: const Color(0xFFfed7aa),
         onTap: () => widget.onTabChange(3),
       ),
@@ -204,7 +388,11 @@ class _HomeScreenState extends State<HomeScreen> {
         subtitle: isEs
             ? '${prescriptionModels(true).length} ejemplos'
             : '${prescriptionModels(false).length} exemplos',
-        gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
+        gradientColors: const [
+          Color(0xFF2A0B52),
+          Color(0xFF3D1280),
+          Color(0xFF5B21B6)
+        ],
         accentColor: const Color(0xFFA78BFA),
         onTap: () => push(const _PrescripcionesShell()),
       ),
@@ -214,7 +402,6 @@ class _HomeScreenState extends State<HomeScreen> {
       physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.fromLTRB(hPad, 20, hPad, 40),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Linha superior: pesquisa ──────────────────────────────────────
         _HomeSearchBar(dark: dark, isEs: isEs),
         const SizedBox(height: 14),
@@ -252,66 +439,73 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 14),
 
         // ── Timer Rápido de Plantão ───────────────────────────────────────
-        _ShiftTimerBar(dark: dark, isEs: isEs),
+        _ShiftTimerBar(
+          dark: dark,
+          isEs: isEs,
+          ownerKey: _timerOwnerKey,
+          visualState: _timerVisualState,
+        ),
         const SizedBox(height: 24),
 
         // ── Build 138: CALCULADORA E FÁRMACOS — card unificado full-width ─
         if (kIsWeb) ...[
           _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
-          const SizedBox(height: 12),  // ORDEM 43: 16→12 gap vertical compacto
+          const SizedBox(height: 12), // ORDEM 43: 16→12 gap vertical compacto
         ],
 
         // ── Grid de cards principais — 3 colunas no desktop ─────────────
         // BUILD 93: apenas Web exibe ferramentas clínicas (Apple 1.4.1)
-        if (kIsWeb) LayoutBuilder(builder: (context, constraints) {
-          const cols   = 3;
-          const gap    = 12.0;  // ORDEM 43: 14→12 crossAxisSpacing premium
-          final width  = (constraints.maxWidth - gap * (cols - 1)) / cols;
-          final rows   = (mainCards.length / cols).ceil();
+        if (kIsWeb)
+          LayoutBuilder(builder: (context, constraints) {
+            const cols = 3;
+            const gap = 12.0; // ORDEM 43: 14→12 crossAxisSpacing premium
+            final width = (constraints.maxWidth - gap * (cols - 1)) / cols;
+            final rows = (mainCards.length / cols).ceil();
 
-          return Column(
-            children: List.generate(rows, (rowIdx) {
-              final start = rowIdx * cols;
-              final end   = (start + cols).clamp(0, mainCards.length);
-              final rowItems = mainCards.sublist(start, end);
+            return Column(
+              children: List.generate(rows, (rowIdx) {
+                final start = rowIdx * cols;
+                final end = (start + cols).clamp(0, mainCards.length);
+                final rowItems = mainCards.sublist(start, end);
 
-              return Padding(
-                padding: EdgeInsets.only(bottom: rowIdx < rows - 1 ? gap : 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (int i = 0; i < rowItems.length; i++) ...[
-                      if (i > 0) const SizedBox(width: gap),
-                      SizedBox(
-                        width: width,
-                        child: _HomeCard(
-                          icon:           rowItems[i].icon,
-                          label:          rowItems[i].label,
-                          subtitle:       rowItems[i].subtitle,
-                          gradientColors: rowItems[i].gradientColors,
-                          accentColor:    rowItems[i].accentColor,
-                          dark:           dark,
-                          onTap:          rowItems[i].onTap,
+                return Padding(
+                  padding: EdgeInsets.only(bottom: rowIdx < rows - 1 ? gap : 0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (int i = 0; i < rowItems.length; i++) ...[
+                        if (i > 0) const SizedBox(width: gap),
+                        SizedBox(
+                          width: width,
+                          child: _HomeCard(
+                            icon: rowItems[i].icon,
+                            label: rowItems[i].label,
+                            subtitle: rowItems[i].subtitle,
+                            gradientColors: rowItems[i].gradientColors,
+                            accentColor: rowItems[i].accentColor,
+                            dark: dark,
+                            onTap: rowItems[i].onTap,
+                          ),
                         ),
-                      ),
+                      ],
+                      // Preenche colunas vazias na última linha
+                      for (int i = rowItems.length; i < cols; i++) ...[
+                        if (i > 0 || rowItems.isNotEmpty)
+                          const SizedBox(width: gap),
+                        SizedBox(width: width),
+                      ],
                     ],
-                    // Preenche colunas vazias na última linha
-                    for (int i = rowItems.length; i < cols; i++) ...[
-                      if (i > 0 || rowItems.isNotEmpty) const SizedBox(width: gap),
-                      SizedBox(width: width),
-                    ],
-                  ],
-                ),
-              );
-            }),
-          );
-        }),
+                  ),
+                );
+              }),
+            );
+          }),
 
         // BUILD 93: seção 2 colunas (Plantão + Emergências) web-only
         if (kIsWeb) ...[
-          const SizedBox(height: 12),  // ORDEM 43: 24→12 vertical gap compacto
+          const SizedBox(height: 12), // ORDEM 43: 24→12 vertical gap compacto
           _HomeDivider(dark: dark),
-          const SizedBox(height: 12),  // ORDEM 43: 20→12 vertical gap compacto
+          const SizedBox(height: 12), // ORDEM 43: 20→12 vertical gap compacto
 
           // ── Layout de 2 colunas: Shortcuts + Emergências ───────────────
           LayoutBuilder(builder: (context, constraints) {
@@ -322,24 +516,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Coluna 1: Atalhos + Plantão
                 SizedBox(
                   width: half,
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    _QuickShortcuts(
-                      dark: dark,
-                      isEs: isEs,
-                      openProtocol: widget.openProtocol,
-                      onOpenNotes: widget.onOpenNotes,
-                      onCheckUpdate: widget.onCheckUpdate,
-                    ),
-                    const SizedBox(height: 20),
-                    _HomeDivider(dark: dark),
-                    const SizedBox(height: 20),
-                    // ══════════════════════════════════════════════════════════
-                    // BUILD 281 — ISOLAMENTO DE ESCOPO: Meu Plantão (desktop)
-                    // OCULTO para submissão App Store / Google Play.
-                    // REVERSÃO: remover /* e */ para reativar o Consumer abaixo.
-                    // Estrutura: lib/widgets/meu_plantao_dashboard.dart (intacta)
-                    // ══════════════════════════════════════════════════════════
-                    /*
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _QuickShortcuts(
+                          dark: dark,
+                          isEs: isEs,
+                          openProtocol: widget.openProtocol,
+                          onOpenNotes: widget.onOpenNotes,
+                          onCheckUpdate: widget.onCheckUpdate,
+                        ),
+                        const SizedBox(height: 20),
+                        _HomeDivider(dark: dark),
+                        const SizedBox(height: 20),
+                        // ══════════════════════════════════════════════════════════
+                        // BUILD 281 — ISOLAMENTO DE ESCOPO: Meu Plantão (desktop)
+                        // OCULTO para submissão App Store / Google Play.
+                        // REVERSÃO: remover /* e */ para reativar o Consumer abaixo.
+                        // Estrutura: lib/widgets/meu_plantao_dashboard.dart (intacta)
+                        // ══════════════════════════════════════════════════════════
+                        /*
                     Consumer<AppProvider>(
                       builder: (ctx, _, __) => MeuPlantaoDashboard(
                         onOpenDrug: (drug) => showDrugDetailSheet(ctx, drug),
@@ -372,7 +568,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     */
-                  ]),
+                      ]),
                 ),
 
                 const SizedBox(width: 20),
@@ -396,7 +592,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ── HOME V2 — layout mobile ───────────────────────────────────────────────
-  Widget _buildMobileLayout(BuildContext context, bool dark, bool isEs, AppProvider p, {double availableWidth = 0}) {
+  Widget _buildMobileLayout(
+      BuildContext context, bool dark, bool isEs, AppProvider p,
+      {double availableWidth = 0}) {
     // ── NULL-SAFETY: valida estado do provider antes de renderizar ────────────
     // Após flutter clean, SharedPreferences pode não ter retornado ainda.
     // Se isLoadingPublic (dados remotos carregando) → mostra skeleton sem crash.
@@ -406,7 +604,8 @@ class _HomeScreenState extends State<HomeScreen> {
       // ignore: unnecessary_statements
       p.lang; // força acesso rápido para checar se o provider está vivo
     } catch (e, st) {
-      debugPrint('ERRO CRÍTICO HOME [_buildMobileLayout/provider-check]: $e\n$st');
+      debugPrint(
+          'ERRO CRÍTICO HOME [_buildMobileLayout/provider-check]: $e\n$st');
       return const _HomeSafeLoadingShell();
     }
 
@@ -445,129 +644,150 @@ class _HomeScreenState extends State<HomeScreen> {
     // do dispositivo + 112px (altura do Dock + margem de conforto).
     // kIsWeb: footer no fluxo normal — sem Dock — 24px suficiente.
     final double safeBottom = MediaQuery.of(context).padding.bottom;
-    final double bottomPad  = kIsWeb ? 24.0 : safeBottom + 112.0;
+    final double bottomPad = kIsWeb ? 24.0 : safeBottom + 112.0;
 
     Widget mobileContent = SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(
-          isTabletLandscape ? 20 : 16,  // ORDEM 43: 12→16 margem lateral premium
-          6,  // ORDEM 12: compactado (era 8)
-          isTabletLandscape ? 20 : 16,  // ORDEM 43: 12→16 margem lateral premium
-          bottomPad,
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-          // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
-          // Azul MedCases IA após Build 138. O chat cresce naturalmente com
-          // cada turno, empurrando os cards abaixo no scroll.
-          // BUILD 434 [PASSO 1]: substituído Builder + p.currentUser por
-          // _HomeInlineChatGate com context.select granular (mobile).
-          _HomeInlineChatGate(
-            dark: dark,
-            isEs: isEs,
-            onNavigateToAi: widget.onTabChange,
-          ),
-          const SizedBox(height: 4),  // ORDEM 45: esmagamento soberano 8→4
-
-          // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
-          _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
-          const SizedBox(height: 4),  // ORDEM 45: mosaico 12→4
-
-          // ── LINHA 2: ADULTO + PEDIATRÍA — dois cards paralelos ──────────────
-          _HomeAdultoPediatriaRow(
-            dark: dark,
-            isEs: isEs,
-            onTapAdulto: () => Navigator.of(context).push(
-              _HomeScreenState._slide(_AdultoShell(openProtocol: widget.openProtocol)),
-            ),
-            onTapPediatria: () => Navigator.of(context).push(
-              _HomeScreenState._slide(const _PediatricsShell()),
-            ),
-          ),
-          const SizedBox(height: 4),  // ORDEM 45: mosaico 12→4
-
-          // ── LINHA 3: BIBLIOTECA + H. CLÍNICA — dois cards paralelos ─────────
-          _HomeBibliotecaHClinicaRow(
-            dark: dark,
-            isEs: isEs,
-            onTabChange: widget.onTabChange,
-          ),
-          const SizedBox(height: 4),  // ORDEM 45: mosaico 12→4
-
-          // ── QUICK ACCESS BAR — BUSCAR | NOTAS | RECIENTES | FAVORITOS | EVAL ─
-          _HistorialCompactCard(
-            dark: dark,
-            isEs: isEs,
-            openProtocol: widget.openProtocol,
-            onOpenNotes: widget.onOpenNotes,
-            onCheckUpdate: widget.onCheckUpdate,
-          ),
-          const SizedBox(height: 6),  // ORDEM 12: trailer slim
-
-          // ══════════════════════════════════════════════════════════════════
-          // BUILD 281 — ISOLAMENTO DE ESCOPO: Meu Plantão / Mi Guardia
-          // Módulo OCULTO para submissão App Store / Google Play.
-          // REVERSÃO: remover os comentários /* e */ abaixo para reativar.
-          // Estrutura interna intacta em: lib/widgets/meu_plantao_dashboard.dart
-          // ══════════════════════════════════════════════════════════════════
-          // ORDEM 37 M1: Mi Guardia / Meu Plantão restaurado
-          // BUILD 297: guard no pai — MeuPlantaoDashboard abre stream Firestore
-          // em build()/didChangeDependencies(). Não montar antes do Firebase estar
-          // pronto evita NullError na subscrição do stream em Safari.
-          Builder(builder: (ctx) {
-            if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-              debugPrint('[BUILD299][HomeScreen] component_skipped reason=firebase_runtime_unavailable component=HomeMiGuardiaSection');
-              return const SizedBox.shrink();
-            }
-            return _HomeMiGuardiaSection(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(
+        isTabletLandscape ? 20 : 16, // ORDEM 43: 12→16 margem lateral premium
+        6, // ORDEM 12: compactado (era 8)
+        isTabletLandscape ? 20 : 16, // ORDEM 43: 12→16 margem lateral premium
+        bottomPad,
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // ── BLOCO 1: IA INLINE CHAT — expansão vertical dinâmica ────────────
+        // Azul MedCases IA após Build 138. O chat cresce naturalmente com
+        // cada turno, empurrando os cards abaixo no scroll.
+        // BUILD 434 [PASSO 1]: substituído Builder + p.currentUser por
+        // _HomeInlineChatGate com context.select granular (mobile).
+        widget.inlineChat ??
+            _HomeInlineChatGate(
               dark: dark,
               isEs: isEs,
-              onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
-              onOpenCalc: (calcId) {
-                // BUILD 443 [P2]: removidos calc_eletrólitos e calc_infusao do mapa
-                // (IDs proibidos — nunca renderizados, entradas mortas purgadas).
-                const calcTabMap = {
-                  'calc_biometria':   0,
-                  'calc_scores':      0,
-                  'calc_cardio':      1,
-                  'calc_referencia':  3,
-                  'calc_prescricoes': 0,
-                  'calc_pediatria':   0,
-                  // BUILD 431: atalhos diretos Nefrologia + Hepatologia
-                  'calc_nefrologia':  0, // tab 0 = NephrologyToolsScreen
-                  'calc_hepatologia': 3, // tab 3 = HepatologyToolsScreen
-                };
-                toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
-                widget.onTabChange(4);
-              },
-              onManageTap: () => showPlantaoManageSheet(context),
-              // BUILD 319: rootNavigator:true → InternacionScreen sobe ACIMA do
-              // MainShell e da _FloatingFooter — zero sobreposição de dock.
-              onOpenInternacion: (session) =>
-                  Navigator.of(context, rootNavigator: true).push(
-                HomeScreen.slideRoute(
-                  _AdultoShell(
-                    openProtocol: widget.openProtocol,
-                    initialSession: session,
+              onNavigateToAi: widget.onTabChange,
+            ),
+        const SizedBox(height: 4), // ORDEM 45: esmagamento soberano 8→4
+
+        // ── LINHA 1: CALCULADORA E FÁRMACOS — card unificado full-width ─────
+        widget.calculatorDrugsCard ??
+            _HomeCalculadoraFarmacosCard(dark: dark, isEs: isEs),
+        const SizedBox(height: 4), // ORDEM 45: mosaico 12→4
+
+        // ── LINHA 2: ADULTO + PEDIATRÍA — dois cards paralelos ──────────────
+        widget.patientPediatricsRow ??
+            _HomeAdultoPediatriaRow(
+              dark: dark,
+              isEs: isEs,
+              onTapAdulto: () => Navigator.of(context).push(
+                _HomeScreenState._slide(
+                    _AdultoShell(openProtocol: widget.openProtocol)),
+              ),
+              onTapPediatria: () => widget.onTabChange(8),
+            ),
+        const SizedBox(height: 4), // ORDEM 45: mosaico 12→4
+
+        // ── LINHA 3: BIBLIOTECA + H. CLÍNICA — dois cards paralelos ─────────
+        widget.libraryHistoryRow ??
+            _HomeBibliotecaHClinicaRow(
+              dark: dark,
+              isEs: isEs,
+              onTabChange: widget.onTabChange,
+            ),
+        const SizedBox(height: 4), // ORDEM 45: mosaico 12→4
+
+        // ── QUICK ACCESS BAR — BUSCAR | NOTAS | RECIENTES | FAVORITOS | EVAL ─
+        widget.assessmentNotesTimerCard ??
+            _HistorialCompactCard(
+              key: _timerOwnerKey,
+              dark: dark,
+              isEs: isEs,
+              openProtocol: widget.openProtocol,
+              onOpenNotes: widget.onOpenNotes,
+              onCheckUpdate: widget.onCheckUpdate,
+              visualState: _timerVisualState,
+            ),
+        const SizedBox(height: 6), // ORDEM 12: trailer slim
+
+        // ══════════════════════════════════════════════════════════════════
+        // BUILD 281 — ISOLAMENTO DE ESCOPO: Meu Plantão / Mi Guardia
+        // Módulo OCULTO para submissão App Store / Google Play.
+        // REVERSÃO: remover os comentários /* e */ abaixo para reativar.
+        // Estrutura interna intacta em: lib/widgets/meu_plantao_dashboard.dart
+        // ══════════════════════════════════════════════════════════════════
+        // ORDEM 37 M1: Mi Guardia / Meu Plantão restaurado
+        // BUILD 297: guard no pai — MeuPlantaoDashboard abre stream Firestore
+        // em build()/didChangeDependencies(). Não montar antes do Firebase estar
+        // pronto evita NullError na subscrição do stream em Safari.
+        widget.miGuardiaSection ??
+            Builder(builder: (ctx) {
+              if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+                debugPrint(
+                    '[BUILD299][HomeScreen] component_skipped reason=firebase_runtime_unavailable component=HomeMiGuardiaSection');
+                return const SizedBox.shrink();
+              }
+              return _HomeMiGuardiaSection(
+                dark: dark,
+                isEs: isEs,
+                onOpenDrug: (drug) => showDrugDetailSheet(context, drug),
+                onOpenCalc: (calcId) {
+                  // BUILD 443 [P2]: removidos calc_eletrólitos e calc_infusao do mapa
+                  // (IDs proibidos — nunca renderizados, entradas mortas purgadas).
+                  const calcTabMap = {
+                    'calc_biometria': 0,
+                    'calc_scores': 0,
+                    'calc_cardio': 1,
+                    'calc_referencia': 3,
+                    'calc_prescricoes': 0,
+                    'calc_pediatria': 0,
+                    // BUILD 431: atalhos diretos Nefrologia + Hepatologia
+                    'calc_nefrologia': 0, // tab 0 = NephrologyToolsScreen
+                    'calc_hepatologia': 3, // tab 3 = HepatologyToolsScreen
+                  };
+                  toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+                  widget.onTabChange(4);
+                },
+                onManageTap: () => showPlantaoManageSheet(context),
+                onAddPatient: () {
+                  AppHaptics.light(context);
+                  Navigator.of(
+                    context,
+                    rootNavigator: !kIsWeb,
+                  ).push(
+                    HomeScreen.slideRoute(
+                      _AdultoShell(
+                        openProtocol: widget.openProtocol,
+                      ),
+                    ),
+                  );
+                },
+                // BUILD 319: rootNavigator: !kIsWeb → InternacionScreen sobe ACIMA do
+                // MainShell e da _FloatingFooter — zero sobreposição de dock.
+                onOpenInternacion: (session) =>
+                    Navigator.of(context, rootNavigator: !kIsWeb).push(
+                  HomeScreen.slideRoute(
+                    _AdultoShell(
+                      openProtocol: widget.openProtocol,
+                      initialSession: session,
+                    ),
                   ),
                 ),
-              ),
-            );
-          }),
-          const SizedBox(height: 10),
+              );
+            }),
+        const SizedBox(height: 10),
 
-          // ── BLOCO WEB-ONLY — EMERGÊNCIAS RÁPIDAS ────────────────────────────
-          if (kIsWeb) ...[
-            _QuickEmergencies(p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
-          ],
+        // ── BLOCO WEB-ONLY — EMERGÊNCIAS RÁPIDAS ────────────────────────────
+        if (kIsWeb) ...[
+          _QuickEmergencies(
+              p: p, dark: dark, isEs: isEs, openProtocol: widget.openProtocol),
+        ],
 
-          // ── ITENS PRESERVADOS MAS OCULTOS (Apple review) ─────────────────────
-          // Fármacos standalone, Interacciones, Simulaciones, Herramientas:
-          // Código e lógica 100% intactos. Apenas removidos da árvore de widgets.
-          // (see: _FarmacosShell, DrugInteractionsScreen, _PrescripcionesShell,
-          //       _CalculadorasShell, ToolsScreen, _HomeMiGuardiaSection)
-        ]),
-      );
+        // ── ITENS PRESERVADOS MAS OCULTOS (Apple review) ─────────────────────
+        // Fármacos standalone, Interacciones, Simulaciones, Herramientas:
+        // Código e lógica 100% intactos. Apenas removidos da árvore de widgets.
+        // (see: _FarmacosShell, DrugInteractionsScreen, _PrescripcionesShell,
+        //       _CalculadorasShell, ToolsScreen, _HomeMiGuardiaSection)
+      ]),
+    );
 
     // B143: tablet/iPad nativo em landscape → centraliza com maxWidth 800 px
     if (isTabletLandscape) {
@@ -614,8 +834,9 @@ class _HomeSafeLoadingShell extends StatelessWidget {
     // Detecta dark mode via Brightness do tema — sem ler o AppProvider
     // (que pode estar em estado inválido, por isso chegamos aqui).
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg     = isDark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
-    final spinnerColor = isDark ? const Color(0xFF10B981) : const Color(0xFF075f45);
+    final bg = isDark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF);
+    final spinnerColor =
+        isDark ? const Color(0xFF0D6B57) : const Color(0xFF075f45);
 
     return Container(
       color: bg,
@@ -640,7 +861,7 @@ class _Greeting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c    = AppColors.of(context);
+    final c = AppColors.of(context);
     final name = p.currentUser?.displayName ?? '';
     final first = name.isNotEmpty ? name.split(' ').first : '';
 
@@ -652,12 +873,12 @@ class _Greeting extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
-            colors: [Color(0xFF10B981), Color(0xFF0F1116)],
+            colors: [Color(0xFF0D6B57), Color(0xFF0F1116)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           border: Border.all(
-            color: const Color(0xFF10B981).withOpacity(0.3),
+            color: const Color(0xFF0D6B57).withOpacity(0.3),
             width: 1.5,
           ),
         ),
@@ -734,9 +955,8 @@ class _HomeSearchBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(23),
           color: dark ? const Color(0xFF252930) : const Color(0xFFEFF1F7),
           border: Border.all(
-            color: dark
-                ? Colors.white.withOpacity(0.08)
-                : const Color(0xFFDDE1EC),
+            color:
+                dark ? Colors.white.withOpacity(0.08) : const Color(0xFFDDE1EC),
           ),
         ),
         child: Row(children: [
@@ -749,7 +969,9 @@ class _HomeSearchBar extends StatelessWidget {
           const SizedBox(width: 9),
           Expanded(
             child: Text(
-              isEs ? 'Buscar fármaco, protocolo…' : 'Buscar medicamento, protocolo…',
+              isEs
+                  ? 'Buscar fármaco, protocolo…'
+                  : 'Buscar medicamento, protocolo…',
               style: TextStyle(
                 fontSize: 13.5,
                 color: dark ? Colors.white24 : const Color(0xFFAAB2C4),
@@ -807,13 +1029,14 @@ class _SearchSheetState extends State<_SearchSheet> {
   Widget build(BuildContext context) {
     final dark = widget.dark;
     final isEs = widget.isEs;
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
 
-    final sheetBg  = dark ? const Color(0xFF1A1D23) : Colors.white;
-    final inputBg  = dark ? const Color(0xFF252930) : const Color(0xFFF2F4F8);
+    final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final inputBg = dark ? const Color(0xFF252930) : const Color(0xFFF2F4F8);
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
-    final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
-    final divColor = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
+    final textSub = dark ? Colors.white54 : const Color(0xFF718096);
+    final divColor =
+        dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
 
     // ── Resultados ────────────────────────────────────────────────────────
     // BUILD 93 — Apple 1.4.1/1.4.2: Fármacos e Protocolos clínicos
@@ -827,8 +1050,12 @@ class _SearchSheetState extends State<_SearchSheet> {
         : p.drugsDB
             .where((d) =>
                 d.name.toLowerCase().contains(q) ||
-                (d.className[isEs ? 'es' : 'pt'] ?? '').toLowerCase().contains(q) ||
-                (d.category[isEs ? 'es' : 'pt'] ?? '').toLowerCase().contains(q))
+                (d.className[isEs ? 'es' : 'pt'] ?? '')
+                    .toLowerCase()
+                    .contains(q) ||
+                (d.category[isEs ? 'es' : 'pt'] ?? '')
+                    .toLowerCase()
+                    .contains(q))
             .take(8)
             .toList();
 
@@ -880,7 +1107,8 @@ class _SearchSheetState extends State<_SearchSheet> {
                   ),
                   child: Row(children: [
                     const SizedBox(width: 14),
-                    Icon(Icons.search_rounded, size: 19,
+                    Icon(Icons.search_rounded,
+                        size: 19,
                         color: dark ? Colors.white38 : const Color(0xFF9AA3B4)),
                     const SizedBox(width: 8),
                     Expanded(
@@ -899,7 +1127,8 @@ class _SearchSheetState extends State<_SearchSheet> {
                               ? 'Caso clínico, simulación, pregunta académica…'
                               : 'Caso clínico, simulação, pergunta acadêmica…',
                           hintStyle: TextStyle(
-                            color: dark ? Colors.white30 : const Color(0xFFADB5C7),
+                            color:
+                                dark ? Colors.white30 : const Color(0xFFADB5C7),
                             fontSize: 14,
                           ),
                           isDense: true,
@@ -907,7 +1136,8 @@ class _SearchSheetState extends State<_SearchSheet> {
                         ),
                         onChanged: (v) {
                           _debounce?.cancel();
-                          _debounce = Timer(const Duration(milliseconds: 300), () {
+                          _debounce =
+                              Timer(const Duration(milliseconds: 300), () {
                             if (mounted) setState(() => _q = v);
                           });
                         },
@@ -921,8 +1151,11 @@ class _SearchSheetState extends State<_SearchSheet> {
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(right: 12),
-                          child: Icon(Icons.close_rounded, size: 18,
-                              color: dark ? Colors.white38 : const Color(0xFF9AA3B4)),
+                          child: Icon(Icons.close_rounded,
+                              size: 18,
+                              color: dark
+                                  ? Colors.white38
+                                  : const Color(0xFF9AA3B4)),
                         ),
                       ),
                   ]),
@@ -950,13 +1183,20 @@ class _SearchSheetState extends State<_SearchSheet> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.search_rounded, size: 48,
-                            color: dark ? Colors.white12 : const Color(0xFFCBD5E0)),
+                        Icon(Icons.search_rounded,
+                            size: 48,
+                            color: dark
+                                ? Colors.white12
+                                : const Color(0xFFCBD5E0)),
                         const SizedBox(height: 12),
                         Text(
                           isEs
-                              ? (kIsWeb ? 'Busca fármacos, protocolos\ny prescrições' : 'Busca fármacos, protocolos\ny casos clínicos')
-                              : (kIsWeb ? 'Busque fármacos, protocolos\ne prescrições' : 'Busque fármacos, protocolos\ne casos clínicos'),
+                              ? (kIsWeb
+                                  ? 'Busca fármacos, protocolos\ny prescrições'
+                                  : 'Busca fármacos, protocolos\ny casos clínicos')
+                              : (kIsWeb
+                                  ? 'Busque fármacos, protocolos\ne prescrições'
+                                  : 'Busque fármacos, protocolos\ne casos clínicos'),
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 14, color: textSub),
                         ),
@@ -977,44 +1217,54 @@ class _SearchSheetState extends State<_SearchSheet> {
                           // ── Fármacos ─────────────────────────────────
                           if (drugs.isNotEmpty) ...[
                             _SearchSectionLabel(
-                                label: isEs ? 'FÁRMACOS' : 'FÁRMACOS', dark: dark),
+                                label: isEs ? 'FÁRMACOS' : 'FÁRMACOS',
+                                dark: dark),
                             ...drugs.map((d) => _SearchResultTile(
-                              leading: Icons.medication_rounded,
-                              leadingColor: const Color(0xFFFF8A00),
-                              title: d.name,
-                              subtitle: (d.className[isEs ? 'es' : 'pt'] ?? ''),
-                              dark: dark,
-                              divColor: divColor,
-                              onTap: () async {
-                                Navigator.pop(context);
-                                // Registra como recente imediatamente
-                                await homeRegisterRecent('drug', d.id, d.name, p: context.read<AppProvider>());
-                                if (context.mounted) {
-                                  showDrugDetailSheet(context, d);
-                                }
-                              },
-                            )),
+                                  leading: Icons.medication_rounded,
+                                  leadingColor: const Color(0xFFFF8A00),
+                                  title: d.name,
+                                  subtitle:
+                                      (d.className[isEs ? 'es' : 'pt'] ?? ''),
+                                  dark: dark,
+                                  divColor: divColor,
+                                  onTap: () async {
+                                    Navigator.pop(context);
+                                    // Registra como recente imediatamente
+                                    await homeRegisterRecent(
+                                        'drug', d.id, d.name,
+                                        p: context.read<AppProvider>());
+                                    if (context.mounted) {
+                                      showDrugDetailSheet(context, d);
+                                    }
+                                  },
+                                )),
                             const SizedBox(height: 8),
                           ],
 
                           // ── Protocolos ───────────────────────────────
                           if (protocols.isNotEmpty) ...[
                             _SearchSectionLabel(
-                                label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS', dark: dark), // técnico
+                                label: isEs ? 'PROTOCOLOS' : 'PROTOCOLOS',
+                                dark: dark), // técnico
                             ...protocols.map((pr) {
-                              final lang  = isEs ? 'es' : 'pt';
-                              final title = pr.title[lang] ?? pr.title['pt'] ?? '';
+                              final lang = isEs ? 'es' : 'pt';
+                              final title =
+                                  pr.title[lang] ?? pr.title['pt'] ?? '';
                               return _SearchResultTile(
                                 leading: Icons.emergency_rounded,
                                 leadingColor: const Color(0xFFCC2222),
                                 title: title,
-                                subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico', // igual // igual
+                                subtitle: isEs
+                                    ? 'Protocolo clínico'
+                                    : 'Protocolo clínico', // igual // igual
                                 dark: dark,
                                 divColor: divColor,
                                 onTap: () async {
                                   Navigator.pop(context);
                                   // Registra como recente imediatamente
-                                  await homeRegisterRecent('protocol', pr.id, title, p: context.read<AppProvider>());
+                                  await homeRegisterRecent(
+                                      'protocol', pr.id, title,
+                                      p: context.read<AppProvider>());
                                   if (context.mounted) {
                                     showProtocolDetail(context, pr);
                                   }
@@ -1076,7 +1326,10 @@ class _SearchResultTile extends StatelessWidget {
     return Column(
       children: [
         InkWell(
-          onTap: () { AppHaptics.selection(context); onTap(); },
+          onTap: () {
+            AppHaptics.selection(context);
+            onTap();
+          },
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -1092,22 +1345,28 @@ class _SearchResultTile extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(title,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: dark ? Colors.white : const Color(0xFF1A202C),
-                      )),
-                  if (subtitle.isNotEmpty)
-                    Text(subtitle,
-                        style: TextStyle(
-                          fontSize: 11.5,
-                          color: dark ? Colors.white38 : const Color(0xFF8A94A6),
-                        )),
-                ]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color:
+                                dark ? Colors.white : const Color(0xFF1A202C),
+                          )),
+                      if (subtitle.isNotEmpty)
+                        Text(subtitle,
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              color: dark
+                                  ? Colors.white38
+                                  : const Color(0xFF8A94A6),
+                            )),
+                    ]),
               ),
-              Icon(Icons.chevron_right_rounded, size: 18,
+              Icon(Icons.chevron_right_rounded,
+                  size: 18,
                   color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
             ]),
           ),
@@ -1141,6 +1400,370 @@ class _SearchResultTile extends StatelessWidget {
 //   NÃO chegam até _HomeInlineChatGate → _HomeInlineChatState.build()
 //   só dispara quando realmente necessário.
 // ═══════════════════════════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HOME V2 — WRAPPERS PÚBLICOS TEMPORÁRIOS DE MIGRAÇÃO
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Estes componentes não possuem estado, engine, persistência, timer,
+// NotificationService ou lógica clínica própria.
+//
+// Eles apenas expõem as implementações privadas canônicas durante a migração
+// incremental da Home V2.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Ponte pública para o chat inline real da Home.
+///
+/// Autenticação, streaming, histórico e persistência continuam pertencendo à
+/// implementação canônica privada [_HomeInlineChatGate]/[_HomeInlineChat].
+class HomeInlineChat extends StatelessWidget {
+  const HomeInlineChat({
+    required this.dark,
+    required this.isEs,
+    required this.onNavigateToAi,
+    super.key,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final ValueChanged<int> onNavigateToAi;
+
+  @override
+  Widget build(BuildContext context) {
+    return _HomeInlineChatGate(
+      dark: dark,
+      isEs: isEs,
+      onNavigateToAi: onNavigateToAi,
+    );
+  }
+}
+
+/// Ponte pública para o card canônico de calculadoras e fármacos.
+class HomeCalculatorDrugsCard extends StatelessWidget {
+  const HomeCalculatorDrugsCard({
+    required this.dark,
+    required this.isEs,
+    required this.onOpenVaccine,
+    this.embedded = false,
+    super.key,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final VoidCallback onOpenVaccine;
+  final bool embedded;
+
+  @override
+  Widget build(BuildContext context) {
+    return HomeV2PrimaryClinicalCard(
+      dark: dark,
+      isEs: isEs,
+      onVaccine: onOpenVaccine,
+      embedded: embedded,
+      onTap: () {
+        AppHaptics.light(context);
+        Navigator.of(context, rootNavigator: !kIsWeb).push(
+          HomeCardTransition.route<void>(
+            builder: (_) => const CalculadoraScreen(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Ponte pública para a linha canônica Paciente/Pediatria.
+
+// PACIENTES_MAIN_SHELL_FOOTER_V1_B_R3_WORKSPACE_BEGIN
+/// Workspace público de Pacientes. O MainShell continua sendo o único owner
+/// da barra inferior; InternacionScreen mantém integralmente a UI e lógica clínica.
+class InternacionMainShellWorkspace extends StatelessWidget {
+  const InternacionMainShellWorkspace({
+    required this.onBack,
+    super.key,
+  });
+
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return InternacionScreen(
+      embeddedInMainShell: true,
+      onBack: onBack,
+    );
+  }
+}
+// PACIENTES_MAIN_SHELL_FOOTER_V1_B_R3_WORKSPACE_END
+
+class HomePatientPediatricsRow extends StatelessWidget {
+  const HomePatientPediatricsRow({
+    required this.dark,
+    required this.isEs,
+    required this.openProtocol,
+    this.section = HomeV2ClinicalGridSection.all,
+    required this.onTabChange,
+    this.embedded = false,
+    super.key,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final Function(String) openProtocol;
+  final HomeV2ClinicalGridSection section;
+  final ValueChanged<int> onTabChange;
+  final bool embedded;
+
+  @override
+  Widget build(BuildContext context) {
+    return HomeV2ClinicalGrid(
+      dark: dark,
+      isEs: isEs,
+      embedded: embedded,
+      onPatient: () {
+        AppHaptics.light(context);
+        onTabChange(11);
+      },
+      // PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_ROUTE_BEGIN
+      onPediatrics: () {
+        AppHaptics.light(context);
+        onTabChange(8);
+      },
+      // PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_ROUTE_END
+      // MEDCASES_FERRAMENTAS_4_TABS_SUPER_PREMIUM_STRUCTURED_FOOTER_V1_B_R0_R5_PROOF_GATE_FIX_TRANSACTIONAL_HOME_MAIN_SHELL_ROUTE
+      onTools: () {
+        AppHaptics.light(context);
+        toolsScreenTabNotifier.value = 0;
+        onTabChange(4);
+      },
+      // HISTORY_CLINICAL_V1_B_R4_ROUTE_BEGIN
+      onClinicalHistory: () {
+        AppHaptics.light(context);
+        onTabChange(3);
+      }
+      // HISTORY_CLINICAL_V1_B_R4_ROUTE_END
+      ,
+
+      section: section,
+    );
+  }
+}
+
+/// Ponte pública para a linha canônica Biblioteca/História Clínica.
+class HomeLibraryHistoryRow extends StatelessWidget {
+  const HomeLibraryHistoryRow({
+    required this.dark,
+    required this.isEs,
+    required this.onTabChange,
+    super.key,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final ValueChanged<int> onTabChange;
+
+  @override
+  Widget build(BuildContext context) {
+    // A grade clínica visual é renderizada pelo adaptador
+    // HomePatientPediatricsRow. Este adaptador permanece responsável
+    // por disponibilizar os callbacks reais de Ferramentas e História Clínica.
+    return Offstage(
+      offstage: true,
+      child: HomeV2ClinicalGrid(
+        dark: dark,
+        isEs: isEs,
+        onPatient: () {},
+        onPediatrics: () {},
+        onTools: () {
+          AppHaptics.light(context);
+          toolsScreenTabNotifier.value = 0;
+          onTabChange(4);
+        },
+        onClinicalHistory: () {
+          AppHaptics.light(context);
+          onTabChange(3);
+        },
+      ),
+    );
+  }
+}
+
+/// Ponte pública para o módulo canônico Meu Plantão/Mi Guardia.
+///
+/// O wrapper reproduz apenas o wiring de navegação da Home. Todo estado e toda
+/// implementação funcional continuam em [_HomeMiGuardiaSection] e
+/// [MeuPlantaoDashboard].
+class HomeMiGuardiaSection extends StatelessWidget {
+  const HomeMiGuardiaSection({
+    required this.dark,
+    required this.isEs,
+    required this.onTabChange,
+    required this.openProtocol,
+    super.key,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final ValueChanged<int> onTabChange;
+  final Function(String) openProtocol;
+
+  @override
+  Widget build(BuildContext context) {
+    if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
+      debugPrint(
+        '[BUILD299][HomeMiGuardiaSection] component_skipped '
+        'reason=firebase_runtime_unavailable',
+      );
+      return const SizedBox.shrink();
+    }
+
+    return HomeV2GuardiaSurface(
+      dark: dark,
+      isEs: isEs,
+      child: _HomeMiGuardiaSection(
+        dark: dark,
+        isEs: isEs,
+        onOpenDrug: (drug) {
+          showDrugDetailSheet(context, drug);
+        },
+        onOpenCalc: (calcId) {
+          const calcTabMap = <String, int>{
+            'calc_biometria': 0,
+            'calc_scores': 0,
+            'calc_cardio': 1,
+            'calc_referencia': 3,
+            'calc_prescricoes': 0,
+            'calc_pediatria': 0,
+            'calc_nefrologia': 0,
+            'calc_hepatologia': 3,
+          };
+
+          toolsScreenTabNotifier.value = calcTabMap[calcId] ?? 0;
+          onTabChange(4);
+        },
+        onManageTap: () {
+          showPlantaoManageSheet(context);
+        },
+        onAddPatient: () {
+          AppHaptics.light(context);
+          Navigator.of(
+            context,
+            rootNavigator: !kIsWeb,
+          ).push(
+            HomeCardTransition.route<void>(
+                  builder: (_) => _AdultoShell(
+                openProtocol: openProtocol,
+              ),
+                ),
+          );
+        },
+        onOpenInternacion: (session) {
+          Navigator.of(
+            context,
+            rootNavigator: !kIsWeb,
+          ).push(
+            HomeCardTransition.route<void>(
+                  builder: (_) => _AdultoShell(
+                openProtocol: openProtocol,
+                initialSession: session,
+              ),
+                ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Ponte pública para o bloco canônico Avaliação / Notas / Timer.
+///
+/// Este wrapper não possui State, contagem regressiva, wall-clock,
+/// persistência, NotificationService ou notification id próprios.
+///
+/// Toda a propriedade funcional do temporizador permanece exclusivamente em
+/// [_HistorialCompactCardState].
+class HomeAssessmentNotesTimerCard extends StatefulWidget {
+  const HomeAssessmentNotesTimerCard({
+    required this.dark,
+    required this.isEs,
+    required this.openProtocol,
+    required this.onOpenNotes,
+    this.onCheckUpdate,
+    required this.onTabChange,
+    this.betweenRows,
+    super.key,
+  });
+
+  final bool dark;
+  final bool isEs;
+  final Function(String) openProtocol;
+  final VoidCallback onOpenNotes;
+  final VoidCallback? onCheckUpdate;
+  final ValueChanged<int> onTabChange;
+  final Widget? betweenRows;
+
+  @override
+  State<HomeAssessmentNotesTimerCard> createState() =>
+      _HomeAssessmentNotesTimerCardState();
+}
+
+class _HomeAssessmentNotesTimerCardState
+    extends State<HomeAssessmentNotesTimerCard> {
+  final GlobalKey<_HistorialCompactCardState> _ownerKey =
+      GlobalKey<_HistorialCompactCardState>();
+
+  final ValueNotifier<_TimerVisualState> _visualState =
+      ValueNotifier<_TimerVisualState>(
+    const _TimerVisualState.inactive(),
+  );
+
+  @override
+  void dispose() {
+    _visualState.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Offstage(
+          offstage: true,
+          child: _HistorialCompactCard(
+            key: _ownerKey,
+            dark: widget.dark,
+            isEs: widget.isEs,
+            openProtocol: widget.openProtocol,
+            onOpenNotes: widget.onOpenNotes,
+            onCheckUpdate: widget.onCheckUpdate,
+            visualState: _visualState,
+          ),
+        ),
+        HomeV2UtilityRow(
+          dark: widget.dark,
+          isEs: widget.isEs,
+          onAssessment: () {
+            AppHaptics.light(context);
+            widget.onTabChange(12);
+          },
+          onLaboratory: () {
+            widget.onTabChange(9);
+          },
+          onNotes: () {
+            AppHaptics.light(context);
+            widget.onOpenNotes();
+          },
+          onTimer: () {
+            AppHaptics.light(context);
+            _ownerKey.currentState?._openTimerSheet();
+          },
+          betweenRows: widget.betweenRows,
+        ),
+      ],
+    );
+  }
+}
+
 class _HomeInlineChatGate extends StatelessWidget {
   final bool dark;
   final bool isEs;
@@ -1156,24 +1779,30 @@ class _HomeInlineChatGate extends StatelessWidget {
   Widget build(BuildContext context) {
     // BUILD 434 [PASSO 1]: guard absoluto Firebase — idêntico ao Builder anterior
     if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][HomeInlineChatGate] skipped reason=firebase_runtime_unavailable');
+      debugPrint(
+          '[BUILD299][HomeInlineChatGate] skipped reason=firebase_runtime_unavailable');
       return const SizedBox.shrink();
     }
 
     // BUILD 434 [PASSO 1]: seletores granulares — só rebuilda quando UID ou
     // status de conexão mudam. Nunca rebuilda por offlineProgress / pinnedDrugs
     // / lang (já tratado pelo pai via widget props) / outros campos voláteis.
-    final uid             = context.select<AppProvider, String?>((p) => p.currentUser?.uid);
-    final geminiConnected = context.select<AppProvider, bool>((p) => p.geminiConnected);
+    final uid = context.select<AppProvider, String?>((p) => p.currentUser?.uid);
+    final geminiConnected =
+        context.select<AppProvider, bool>((p) => p.geminiConnected);
 
     // Fontes 2 e 3: token REST + FirebaseAuth SDK (não observáveis via select —
     // lidos pontualmente. Mudam apenas na mesma janela onde uid muda.)
-    final hasCachedTk  = AuthService.hasCachedToken;
+    final hasCachedTk = AuthService.hasCachedToken;
     final firebaseUser = AuthService.currentUser;
 
     final bool hasSession = uid != null || hasCachedTk || firebaseUser != null;
     if (kIsWeb && !hasSession) {
-      final String source = uid != null ? 'provider' : hasCachedTk ? 'cached_token' : 'none';
+      final String source = uid != null
+          ? 'provider'
+          : hasCachedTk
+              ? 'cached_token'
+              : 'none';
       debugPrint('[BUILD434][HomeInlineChatGate] skipped reason=no_session '
           'uid=${uid ?? "null"} cachedToken=$hasCachedTk '
           'firebaseUser=${firebaseUser?.uid ?? "null"} source=$source');
@@ -1185,7 +1814,8 @@ class _HomeInlineChatGate extends StatelessWidget {
         : hasCachedTk
             ? 'cached_token'
             : 'firebase';
-    debugPrint('[BUILD434][HomeInlineChatGate] render uid=${uid ?? firebaseUser?.uid ?? "n/a"} '
+    debugPrint(
+        '[BUILD434][HomeInlineChatGate] render uid=${uid ?? firebaseUser?.uid ?? "n/a"} '
         'source=$sessionSource gemini=$geminiConnected');
 
     return _HomeInlineChat(
@@ -1224,23 +1854,46 @@ class _HomeInlineChat extends StatefulWidget {
 
 class _HomeInlineChatState extends State<_HomeInlineChat>
     with WidgetsBindingObserver {
-  final _ctrl       = TextEditingController();
+  final _ctrl = TextEditingController();
   // autofocus: false é obrigatório — o FocusNode NUNCA deve adquirir foco
   // automaticamente. Sem isso, o teclado abre sozinho ao retornar para a Home
   // (o IndexedStack preserva o widget mas o FocusNode pode ser re-attached).
-  final _focus      = FocusNode();
+  final _focus = FocusNode();
   final _scrollCtrl = ScrollController();
 
+  // MB-I.5.15-C-R2 — estado visual da sessão STT.
+  // Reconhecimento e permissões permanecem em SttHelper.
+  bool _sttListening = false;
+  int _sttSessionEpoch = 0;
+
   // MedCases IA Official Blue palette — Build 138
-  static const _kAiBlue     = Color(0xFF1B6FD8);
-  static const _kAiBlueBg   = Color(0xFF252930);
+  static const _kAiBlue = Color(0xFF1B6FD8);
+  static const _kAiBlueBg = Color(0xFF252930);
   static const _kAiBlueBord = Color(0xFF60A5FA);
 
   // ── Histórico de mensagens (multi-turn inline) ────────────────────────────
   // Cada item: {'role': 'user'|'ai', 'text': '...', 'isError': bool}
   final List<Map<String, dynamic>> _messages = [];
+  bool _isInlineExpanded = false;
   String _streaming = '';
-  bool   _thinking  = false;
+
+  // Buffer visual do streaming da Home.
+  //
+  // `_streaming` contém apenas os grafemas já revelados ao usuário.
+  // `_streamingPending` contém os grafemas recebidos da rede que ainda serão
+  // revelados pelo dreno visual. O provider e o transporte SSE permanecem
+  // inalterados.
+  /// Texto bruto já revelado a partir da resposta final definitiva.
+  ///
+  /// É separado de [_streaming] porque este último recebe apenas a projeção
+  /// Markdown estabilizada para exibição.
+  String _streamingRaw = '';
+  String _streamingPending = '';
+  String? _streamingFinalText;
+  bool _streamingDrainRunning = false;
+  int _streamingDrainEpoch = 0;
+
+  bool _thinking = false;
 
   // ── Auto-persist session tracking ────────────────────────────────────────
   // ID estável da sessão inline — gerado na primeira mensagem enviada e
@@ -1253,7 +1906,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   // BUILD 434 [PASSO 2]: trava idempotente de carregamento de histórico.
   // Impede race conditions quando didUpdateWidget dispara _loadChatHistory()
   // em paralelo com uma chamada anterior ainda pendente.
-  bool    _isLoadingHistory = false;
+  bool _isLoadingHistory = false;
   // UID do último carregamento bem-sucedido — evita re-fetch desnecessário
   // quando o widget rebuilda sem mudança de usuário.
   String? _lastLoadedUid;
@@ -1278,9 +1931,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _focus.unfocus();
-          // BUILD 434 [PASSO 2]: dispara carregamento inicial do histórico
-          // somente após o primeiro frame — provider já está disponível na árvore.
-          _loadChatHistory();
+          // A sessão visual da Home é estritamente efêmera.
+          // O histórico continua persistido e acessível pelo botão Histórico,
+          // mas nunca é restaurado automaticamente neste card.
         }
       });
     } catch (e, st) {
@@ -1292,25 +1945,26 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   // Mesma lógica do AiScreenState._checkScreenTtl() — usa a mesma chave
   // SharedPreferences para manter consistência entre as duas superfícies de chat.
   // Se passados > 30 min desde a última interação ativa, limpa o histórico local.
-  static const _kScreenTtlMs   = 30 * 60 * 1000; // 30 min em milissegundos
+  static const _kScreenTtlMs = 30 * 60 * 1000; // 30 min em milissegundos
   static const _kLastActiveKey = 'ai_screen_last_active_ms';
 
   Future<void> _checkHomeTtl() async {
     if (!mounted) return;
     try {
-      final prefs  = await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
       final lastMs = prefs.getInt(_kLastActiveKey) ?? 0;
-      final nowMs  = DateTime.now().millisecondsSinceEpoch;
+      final nowMs = DateTime.now().millisecondsSinceEpoch;
       if (nowMs - lastMs > _kScreenTtlMs) {
-        debugPrint('[BUILD454][HomeInlineChat] TTL expirado — limpando histórico '
+        debugPrint(
+            '[BUILD454][HomeInlineChat] TTL expirado — limpando histórico '
             'elapsed=${(nowMs - lastMs) ~/ 1000}s');
         if (mounted) {
           setState(() {
             _messages.clear();
             _streaming = '';
-            _thinking  = false;
+            _thinking = false;
             _sessionId = null;
-            _lastLoadedUid    = null;
+            _lastLoadedUid = null;
             _lastLoadWasEmpty = true;
           });
         }
@@ -1344,7 +1998,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     if (!mounted) return;
     // Trava de concorrência: aborta se carregamento já em voo
     if (_isLoadingHistory) {
-      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=already_loading');
+      debugPrint(
+          '[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=already_loading');
       return;
     }
 
@@ -1352,7 +2007,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     try {
       p = context.read<AppProvider>();
     } catch (_) {
-      debugPrint('[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=provider_not_ready');
+      debugPrint(
+          '[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=provider_not_ready');
       return;
     }
 
@@ -1372,7 +2028,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
         'lastWasEmpty=$_lastLoadWasEmpty');
 
     try {
-      final prefs   = await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
       if (!mounted) return;
       final histKey = '${uid}_$_kHistKey';
 
@@ -1405,14 +2061,16 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
           '→ loadHistoriesTypedForUi() Firestore (typed)');
 
       if (!mounted) return;
-      final fsResult = await context.read<AppProvider>().loadHistoriesTypedForUi(uid);
+      final fsResult =
+          await context.read<AppProvider>().loadHistoriesTypedForUi(uid);
       if (!mounted) return;
 
       if (fsResult.isSuccess) {
         // ── _FsSuccess: hydrate active memory structures, mount timeline ────
         // Provider already wrote _myHistories + persisted cache in loadHistoriesTypedForUi.
         // Re-read local cache to populate _messages for this widget.
-        final rawAfterFetch = (await SharedPreferences.getInstance()).getString(histKey);
+        final rawAfterFetch =
+            (await SharedPreferences.getInstance()).getString(histKey);
         if (!mounted) return;
         if (rawAfterFetch != null && rawAfterFetch.isNotEmpty) {
           _lastLoadWasEmpty = false;
@@ -1420,45 +2078,45 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
         } else {
           // Firestore returned data but local persist is not yet visible — rare
           // race; treat as new session (provider data is in memory via stream).
-          _lastLoadedUid    = uid;
+          _lastLoadedUid = uid;
           _lastLoadWasEmpty = false;
           debugPrint('[BUILD442][HomeInlineChat] confirmed_new_user uid=$uid '
               '→ _FsSuccess but no local cache, sessão inicializada');
         }
-
       } else if (fsResult.isEmpty) {
         // ── _FsEmpty: ONLY legitimate confirmed_new_user path ───────────────
         // Firestore responded authoritatively: this uid has zero history docs.
         // The auth barrier was open (loadHistoriesTypedForUi verifies via the
         // dual-uid barrier inside FirestoreService.loadHistoriesTyped).
-        _lastLoadedUid    = uid;
+        _lastLoadedUid = uid;
         _lastLoadWasEmpty = false; // engaja trava; sem mais retries até OAuth
         debugPrint('[BUILD442][HomeInlineChat] confirmed_new_user uid=$uid '
             '→ _FsEmpty (Firestore authReady confirmed), sessão inicializada vazia');
         if (mounted) setState(() {}); // força rebuild do campo de texto
-
       } else if (fsResult.isAuthDenied) {
         // ── _FsAuthDenied: abort all state mutations — degraded_wait ─────────
         // Firebase SDK session not established. No authoritative confirmation
         // that this user has no history. Do NOT emit confirmed_new_user.
         // Do NOT modify _lastLoadedUid guard — preserve retry on next auth event.
         // Do NOT set _lastLoadWasEmpty=false — keep retry window open.
-        _lastLoadedUid    = uid;
+        _lastLoadedUid = uid;
         _lastLoadWasEmpty = true; // permits retry on next auth resolution
-        debugPrint('[UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait '
+        debugPrint(
+            '[UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait '
             'uid=$uid result=_FsAuthDenied → cache frozen, retry_permitted');
         // Do NOT setState() — avoid UI flicker on a recoverable auth state.
-
       } else {
         // ── _FsOffline / _FsFailure: hold existing state; freeze rendering ───
         // Retain in-memory data. Do not overwrite any cache. Permit retry.
-        _lastLoadedUid    = uid;
+        _lastLoadedUid = uid;
         _lastLoadWasEmpty = true;
-        debugPrint('[BUILD442][HomeInlineChat] result=${fsResult.runtimeType} uid=$uid '
+        debugPrint(
+            '[BUILD442][HomeInlineChat] result=${fsResult.runtimeType} uid=$uid '
             '→ state frozen, retry permitido na próxima transição');
       }
     } catch (e) {
-      debugPrint('[BUILD441][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
+      debugPrint(
+          '[BUILD441][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
     } finally {
       _isLoadingHistory = false;
     }
@@ -1477,24 +2135,36 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       _lastLoadedUid = uid;
       return;
     }
-    if (sessions.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
+    if (sessions.isEmpty || !mounted) {
+      _lastLoadedUid = uid;
+      return;
+    }
 
     final latest = sessions.first;
-    if (latest is! Map) { _lastLoadedUid = uid; return; }
+    if (latest is! Map) {
+      _lastLoadedUid = uid;
+      return;
+    }
     final msgs = latest['messages'];
-    if (msgs is! List || msgs.isEmpty) { _lastLoadedUid = uid; return; }
+    if (msgs is! List || msgs.isEmpty) {
+      _lastLoadedUid = uid;
+      return;
+    }
 
     final restored = msgs
         .whereType<Map>()
         .map((m) => {
-              'role':    m['role']?.toString() ?? 'unknown',
-              'text':    m['text']?.toString() ?? '',
+              'role': m['role']?.toString() ?? 'unknown',
+              'text': m['text']?.toString() ?? '',
               'isError': false,
             })
         .where((m) => (m['text'] as String).isNotEmpty)
         .toList();
 
-    if (restored.isEmpty || !mounted) { _lastLoadedUid = uid; return; }
+    if (restored.isEmpty || !mounted) {
+      _lastLoadedUid = uid;
+      return;
+    }
 
     if (_messages.isEmpty) {
       setState(() {
@@ -1533,43 +2203,200 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     //   4. p.loadHistories() → fetch direto no servidor + rebind stream reativo
     //   5. _loadChatHistory() → relê SharedPreferences (agora preenchido pelo loadHistories)
     if (!old.geminiConnected && widget.geminiConnected) {
-      AppProvider? pRef;
-      try { pRef = context.read<AppProvider>(); } catch (_) {}
-      debugPrint('[BUILD437][HomeInlineChat] geminiConnected false→true '
-          'uid=${pRef?.currentUser?.uid ?? "null"} '
-          '→ invalidando buffers + loadHistories + re-fetch em 400ms');
-      // Invalida TODA a trava para garantir fetch limpo pós-OAuth
-      _lastLoadedUid  = null;
-      _lastLoadWasEmpty = false;
-      Future.delayed(const Duration(milliseconds: 400), () async {
-        if (!mounted) return;
-        final uidForFetch = context.read<AppProvider>().currentUser?.uid;
-        // Step 4: força fetch Firestore typed — bump generation to invalidate
-        // any stale in-flight future from the previous session epoch.
-        if (uidForFetch != null) {
-          try {
-            await context.read<AppProvider>().loadHistoriesTypedForUi(uidForFetch);
-          } catch (e) {
-            debugPrint('[BUILD437][HomeInlineChat] loadHistoriesTypedForUi error: $e');
-          }
-        }
-        // Step 5: relê SharedPreferences (agora populado pelo typed fetch)
-        if (mounted) _loadChatHistory();
-      });
-      return; // evita disparo duplo no mesmo frame
+      debugPrint(
+        '[HomeInlineChat] conexão IA restabelecida — '
+        'sessão efêmera da Home preservada sem restauração histórica',
+      );
+      return;
     }
 
-    // BUILD 434 [PASSO 3]: re-dispara carregamento se o UID mudou (ex: troca
-    // de conta sem logout completo). A trava _lastLoadedUid garante idempotência.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _loadChatHistory();
+    // Mudanças de tema, idioma ou UID não restauram mensagens históricas
+    // dentro da Home. A sessão permanece somente em memória até o widget sair
+    // da árvore ou o processo do aplicativo ser encerrado.
+  }
+
+  // ── Ditado por voz da Home ───────────────────────────────────────────────
+
+  void _toggleInlineStt() {
+    if (_thinking) {
+      return;
+    }
+
+    if (_sttListening) {
+      _stopInlineStt();
+      return;
+    }
+
+    _startInlineStt();
+  }
+
+  Future<void> _startInlineStt() async {
+    if (!mounted || _thinking || _sttListening) {
+      return;
+    }
+
+    final epoch = ++_sttSessionEpoch;
+
+    AppHaptics.light(context);
+
+    setState(() {
+      _sttListening = true;
     });
+
+    try {
+      await SttHelper.start(
+        locale: widget.isEs ? 'es-ES' : 'pt-BR',
+        onResult: (recognizedText) {
+          if (!mounted || epoch != _sttSessionEpoch) {
+            return;
+          }
+
+          final spoken = recognizedText.trim();
+
+          if (spoken.isEmpty) {
+            return;
+          }
+
+          setState(() {
+            _sttListening = false;
+
+            final existing = _ctrl.text.trim();
+
+            final combined = existing.isEmpty ? spoken : '$existing $spoken';
+
+            _ctrl.value = TextEditingValue(
+              text: combined,
+              selection: TextSelection.collapsed(
+                offset: combined.length,
+              ),
+            );
+          });
+
+          _focus.requestFocus();
+        },
+        onError: (code) {
+          if (!mounted || epoch != _sttSessionEpoch) {
+            return;
+          }
+
+          SttHelper.stop();
+
+          setState(() {
+            _sttListening = false;
+          });
+
+          _showInlineSttErrorSnack(code);
+        },
+        onEnd: () {
+          if (!mounted || epoch != _sttSessionEpoch) {
+            return;
+          }
+
+          if (_sttListening) {
+            setState(() {
+              _sttListening = false;
+            });
+          }
+        },
+      );
+
+      if (!mounted || epoch != _sttSessionEpoch) {
+        await SttHelper.stop();
+      }
+    } catch (error, stackTrace) {
+      debugPrint(
+        '[HomeInlineChat][_startInlineStt] '
+        'SttHelper.start exception: '
+        '$error\n$stackTrace',
+      );
+
+      if (mounted && epoch == _sttSessionEpoch) {
+        setState(() {
+          _sttListening = false;
+        });
+
+        _showInlineSttErrorSnack(
+          'unknown',
+        );
+      }
+    }
+  }
+
+  Future<void> _stopInlineStt() async {
+    ++_sttSessionEpoch;
+
+    await SttHelper.stop();
+
+    if (mounted && _sttListening) {
+      setState(() {
+        _sttListening = false;
+      });
+    }
+  }
+
+  void _showInlineSttErrorSnack(
+    String code,
+  ) {
+    if (!mounted || code == 'no_speech') {
+      return;
+    }
+
+    final String message;
+
+    if (code == 'permission_denied') {
+      message = widget.isEs
+          ? 'Permiso de micrófono denegado. '
+              'Habilítalo en Ajustes.'
+          : 'Permissão de microfone negada. '
+              'Habilite nas Configurações.';
+    } else if (code == 'not_available') {
+      message = widget.isEs
+          ? 'El dictado no está disponible. '
+              'Verifica el reconocimiento de voz '
+              'en los ajustes del dispositivo.'
+          : 'O ditado não está disponível. '
+              'Verifique o reconhecimento de voz '
+              'nas configurações do aparelho.';
+    } else if (code == 'network') {
+      message = widget.isEs
+          ? 'Verifica tu conexión a internet '
+              'para utilizar el dictado.'
+          : 'Verifique sua conexão com a internet '
+              'para utilizar o ditado.';
+    } else if (code == 'audio_session') {
+      message = widget.isEs
+          ? 'No fue posible iniciar el micrófono. '
+              'Inténtalo nuevamente.'
+          : 'Não foi possível iniciar o microfone. '
+              'Tente novamente.';
+    } else {
+      message = widget.isEs
+          ? 'No fue posible iniciar el dictado.'
+          : 'Não foi possível iniciar o ditado.';
+    }
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: const Duration(
+            milliseconds: 2200,
+          ),
+        ),
+      );
   }
 
   @override
   void dispose() {
     // BUILD 454-2: remove o observer de ciclo de vida ao destruir o widget.
     WidgetsBinding.instance.removeObserver(this);
+
+    if (_sttListening) {
+      ++_sttSessionEpoch;
+      SttHelper.stop();
+    }
+
     _ctrl.dispose();
     _focus.dispose();
     _scrollCtrl.dispose();
@@ -1577,6 +2404,103 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   }
 
   /// Rola o ListView até o final após setState.
+  void _resetInlineStreamingDrain() {
+    _streamingDrainEpoch++;
+    _streamingRaw = '';
+    _streaming = '';
+    _streamingPending = '';
+    _streamingFinalText = null;
+    _streamingDrainRunning = false;
+  }
+
+  void _queueInlineStreamingFinal(String finalText) {
+    if (!mounted || finalText.trim().isEmpty) return;
+
+    // Única source-of-truth visual: a resposta final já higienizada.
+    //
+    // Nenhum snapshot parcial é concatenado ou reescrito antes deste ponto.
+    _streamingFinalText = finalText;
+    _streamingRaw = '';
+    _streaming = '';
+    _streamingPending = finalText;
+
+    _ensureInlineStreamingDrain();
+  }
+
+  void _ensureInlineStreamingDrain() {
+    if (_streamingDrainRunning || !mounted) return;
+
+    _streamingDrainRunning = true;
+    final epoch = _streamingDrainEpoch;
+
+    Future<void>(() async {
+      while (mounted && epoch == _streamingDrainEpoch) {
+        if (_streamingPending.isEmpty) {
+          final finalText = _streamingFinalText;
+
+          if (finalText != null) {
+            setState(() {
+              _messages.add({
+                'role': 'ai',
+                'text': finalText,
+                'isError': false,
+              });
+              _streamingRaw = '';
+              _streaming = '';
+              _streamingPending = '';
+              _streamingFinalText = null;
+              _streamingDrainRunning = false;
+              _thinking = false;
+            });
+
+            _scrollToBottom();
+            _homePersistTurn();
+            return;
+          }
+
+          _streamingDrainRunning = false;
+          return;
+        }
+
+        final drained = StreamingTextDrain.take(_streamingPending);
+
+        // 24 ms mantém o efeito fluido sem atrasar excessivamente respostas
+        // clínicas extensas. O próprio StreamingTextDrain acelera o lote quando
+        // existe backlog, sempre preservando grafemas Unicode completos.
+        await Future<void>.delayed(
+          const Duration(milliseconds: 24),
+        );
+
+        if (!mounted || epoch != _streamingDrainEpoch) {
+          return;
+        }
+
+        final completesDrain = drained.remainder.isEmpty;
+
+        setState(() {
+          _streamingRaw += drained.visible;
+
+          // O último lote usa exatamente o Markdown final definitivo.
+          // Os lotes anteriores estabilizam marcadores incompletos.
+          _streaming = completesDrain && _streamingFinalText != null
+              ? _streamingFinalText!
+              : _homeCleanPartialMd(_streamingRaw);
+          _streamingPending = drained.remainder;
+        });
+
+        _scrollToBottom();
+
+        if (completesDrain) {
+          // Permite que o último Markdown definitivo seja pintado antes
+          // do handoff atômico para a lista de mensagens.
+          //
+          // Não adiciona atraso artificial.
+          await WidgetsBinding.instance.endOfFrame;
+        }
+      }
+    });
+  }
+
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollCtrl.hasClients) {
@@ -1598,11 +2522,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   //      → evita duplicatas no Firestore ao salvar turno a turno
   //   2. Constrói o payload do mesmo formato de _ChatSession.toJson()
   //      → compatível com o histórico de ai_screen.dart / _ChatHistorySheet
-  //   3. Dual-write: Firestore (primário) + SharedPreferences (offline cache)
+  //   3. Cache local em SharedPreferences; o Firebase remoto pertence ao pipeline central
   //      → chave uid_medcases_ia_chat_history_v1 — mesma convenção da IA Tab
   //
   // Chamado em onDone (sucesso) e onError (erro da IA) após setState,
-  // garantindo que cada resposta é gravada assim que chega.
+  // garantindo que o espelho local seja atualizado assim que a resposta chega.
   // ─────────────────────────────────────────────────────────────────────────
   Future<void> _homePersistTurn() async {
     // BUILD 295: guard primário — widget pode ter sido desmontado entre o
@@ -1614,7 +2538,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       p = context.read<AppProvider>();
     } catch (_) {
       // context.read() pode lançar se o Provider foi removido da árvore
-      debugPrint('[BUILD295][HomeInlineChat] skipped reason=provider_not_ready (persist)');
+      debugPrint(
+          '[BUILD295][HomeInlineChat] skipped reason=provider_not_ready (persist)');
       return;
     }
 
@@ -1626,9 +2551,7 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     final msgSnapshot = List<Map<String, dynamic>>.from(_messages);
 
     // Filtra apenas mensagens reais (sem erros de API) para não poluir o histórico
-    final validMsgs = msgSnapshot
-        .where((m) => m['isError'] != true)
-        .toList();
+    final validMsgs = msgSnapshot.where((m) => m['isError'] != true).toList();
     if (validMsgs.isEmpty) return;
 
     // BUILD 295: guard extra — verifica tanto lista quanto último item antes
@@ -1642,37 +2565,40 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     _sessionId ??= DateTime.now().toIso8601String();
     final stableSessionId = _sessionId ?? DateTime.now().toIso8601String();
 
-    final firstUserMsg = validMsgs
-        .firstWhere((m) => m['role'] == 'user', orElse: () => validMsgs.first);
+    final firstUserMsg = validMsgs.firstWhere((m) => m['role'] == 'user',
+        orElse: () => validMsgs.first);
     // BUILD 295: cast seguro — usa safeString em vez de 'as String'
     final summary = (firstUserMsg['text']?.toString()) ?? '';
 
     // BUILD 295: serialização null-safe — nenhum campo usa cast duro 'as String'.
     // Em Safari, valores de Map podem chegar como JavaScriptObject cujo .toString()
     // é seguro, mas 'as String' lança TypeError se o tipo JS não for exatamente String.
-    final msgsPayload = validMsgs.map((m) => {
-      'id':   '${m['role']?.toString() ?? 'msg'}_${DateTime.now().microsecondsSinceEpoch}',
-      'role': m['role']?.toString() ?? 'unknown',
-      'text': m['text']?.toString() ?? '',
-    }).toList();
+    final msgsPayload = validMsgs
+        .map((m) => {
+              'id':
+                  '${m['role']?.toString() ?? 'msg'}_${DateTime.now().microsecondsSinceEpoch}',
+              'role': m['role']?.toString() ?? 'unknown',
+              'text': m['text']?.toString() ?? '',
+            })
+        .toList();
 
     final session = {
-      'id':       stableSessionId,
-      'savedAt':  DateTime.now().toIso8601String(),
-      'summary':  summary.length > 100 ? summary.substring(0, 100) : summary,
+      'id': stableSessionId,
+      'savedAt': DateTime.now().toIso8601String(),
+      'summary': summary.length > 100 ? summary.substring(0, 100) : summary,
       'messages': msgsPayload,
     };
 
     final uid = p.currentUser?.uid;
 
-    // ── Write 1: SharedPreferences local — PRIORITÁRIO e SÍNCRONO ───────────
-    // BUILD 441 [P1]: ORDEM INVERTIDA vs. versões anteriores.
-    // O cache local é gravado ANTES do Firestore, garantindo que mesmo em
-    // cenários de 'permission-denied' no servidor (ex: DigitalOcean sem auth
-    // inicializada) o histórico já está disponível para _loadChatHistory().
+    // ── SharedPreferences — espelho local/offline aguardado ──────────────────
+    // O cache local é um espelho temporário e nunca o proprietário canônico.
+    // Ele permanece disponível quando conectividade ou autenticação
+    // remota ainda não estão prontas, permitindo restauração
+    // local imediata sem substituir a fonte canônica.
     // Esta gravação é AGUARDADA (await) — não é fire-and-forget.
     try {
-      final prefs   = await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
       if (!mounted) return;
       final histKey = '${uid ?? 'anon'}_$_kHistKey';
       final existing = prefs.getString(histKey);
@@ -1698,22 +2624,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       debugPrint('[BUILD441][HomeInlineChat] local_persist ERROR $e');
     }
 
-    // ── Write 2: Firestore (fire-and-forget, tolerante a permission-denied) ──
-    // BUILD 441 [P1]: Firestore é secundário — enviado após o cache local estar
-    // garantido. Erros de permission-denied são silenciados (logs apenas).
-    if (uid != null && uid.isNotEmpty) {
-      FirestoreService.saveAiSession(uid, session).catchError((e) {
-        final errStr = e.toString().toLowerCase();
-        if (errStr.contains('permission-denied') ||
-            errStr.contains('permission_denied') ||
-            errStr.contains('missing or insufficient permissions')) {
-          debugPrint('[BUILD441][HomeInlineChat] Firestore permission_denied '
-              '(local cache já salvo) uid=$uid');
-        } else {
-          debugPrint('[BUILD441][HomeInlineChat] Firestore saveAiSession error: $e');
-        }
-      });
-    }
+    // ── AI-RECONSTRUCTION-R18.6U: cache local somente ────────────────
+    // O Firebase remoto pertence exclusivamente ao pipeline central.
+    // A Home mantém somente o espelho local/offline.
+    // canonical_remote_owned_by_app_provider
   }
 
   /// Botão enviar — comportamento inteligente:
@@ -1724,7 +2638,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   void _onSendPressed() {
     // BUILD 295: widget guard antes de qualquer acesso a context ou _messages
     if (!mounted) {
-      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=not_mounted (onSendPressed)');
+      debugPrint(
+          '[BUILD295][HomeInlineChat] send_blocked reason=not_mounted (onSendPressed)');
       return;
     }
     final text = _ctrl.text.trim();
@@ -1734,15 +2649,17 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
         // Extrai a primeira mensagem do usuário que iniciou o fluxo na Home.
         // pendingQuery substitui qualquer histórico anterior aberto na IA tab.
         // BUILD 295: ['text'] pode ser null em Safari — usar ?. e toString()
-        final firstUserMsg = (_messages
-            .firstWhere(
+        final firstUserMsg = (_messages.firstWhere(
               (m) => m['role'] == 'user',
               orElse: () => <String, dynamic>{},
-            )['text'])?.toString() ?? '';
+            )['text'])
+                ?.toString() ??
+            '';
         if (firstUserMsg.isNotEmpty) {
           // Limpa histórico pendente e define apenas a primeira query
-          AiScreen.pendingHistory.value = [];          // limpa histórico anterior da IA tab
-          AiScreen.pendingQuery.value   = firstUserMsg;
+          AiScreen.pendingHistory.value =
+              []; // limpa histórico anterior da IA tab
+          AiScreen.pendingQuery.value = firstUserMsg;
         }
       }
       widget.onNavigateToAi(2);
@@ -1774,7 +2691,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     // pode falhar. Tentar sendAiMessage() nesse estado causa NullError no SDK.
     // Solução: redirecionar para aba IA completa que tem seu próprio fallback.
     if (FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][HomeInlineChat] send_blocked reason=firebase_runtime_unavailable');
+      debugPrint(
+          '[BUILD299][HomeInlineChat] send_blocked reason=firebase_runtime_unavailable');
       widget.onNavigateToAi(2);
       return;
     }
@@ -1785,7 +2703,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     try {
       pCheck = context.read<AppProvider>();
     } catch (_) {
-      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=provider_not_ready');
+      debugPrint(
+          '[BUILD295][HomeInlineChat] send_blocked reason=provider_not_ready');
       widget.onNavigateToAi(2);
       return;
     }
@@ -1802,10 +2721,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
 
     _ctrl.clear();
     _focus.unfocus();
+    _resetInlineStreamingDrain();
     setState(() {
       _messages.add({'role': 'user', 'text': text, 'isError': false});
       _streaming = '';
-      _thinking  = true;
+      _thinking = true;
     });
     _scrollToBottom();
     // BUILD 295: segundo guard de Provider — between setState() and sendAiMessage(),
@@ -1815,9 +2735,13 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     try {
       p = context.read<AppProvider>();
     } catch (_) {
-      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=provider_lost_after_setState');
+      debugPrint(
+          '[BUILD295][HomeInlineChat] send_blocked reason=provider_lost_after_setState');
       if (mounted) {
-        setState(() { _streaming = ''; _thinking = false; });
+        setState(() {
+          _streaming = '';
+          _thinking = false;
+        });
       }
       return;
     }
@@ -1830,29 +2754,24 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
         // (longResponse=false / CONTRACT_PLANTAO) só é ativo na tela dedicada IA
         // quando o médico altera o toggle manualmente.
         longResponse: true,
-        onChunk: (acc) {
-          if (mounted) {
-            // CAMADA 1 — Stream sanitizer: expurga metadados de cabeçalho antes
-            // de exibir o texto parcial. Idêntico ao pipeline de ai_screen.dart.
-            final cleaned = _homeStripMetadataHeaders(acc);
-            setState(() => _streaming = cleaned);
-            _scrollToBottom();
-          }
+        onChunk: (_) {
+          // O transporte SSE continua recebendo normalmente.
+          //
+          // A Home não projeta snapshots parciais porque os sanitizadores podem
+          // corrigir prefixos durante a transmissão. A interface aguarda o onDone
+          // e revela uma única vez a resposta final já limpa.
         },
         onDone: (fin) {
           if (mounted) {
             // CAMADA 1 + 2 — Strip cabeçalhos E limpeza profunda de CoT/tags
             // na resposta final. Idêntico ao tratamento de ai_screen.dart.
-            final cleanFin = _cleanHomeAiText(_homeStripMetadataHeaders(fin));
-            setState(() {
-              _messages.add({'role': 'ai', 'text': cleanFin, 'isError': false});
-              _streaming = '';
-              _thinking  = false;
-            });
-            _scrollToBottom();
-            // AUTO-PERSIST: grava o turno completo (user+AI) no histórico
-            // dual-write (Firestore + SharedPreferences) fire-and-forget.
-            _homePersistTurn();
+            final cleanFin = _cleanHomeAiText(
+              _homeStripMetadataHeaders(fin),
+            );
+
+            // O texto final permanece como source-of-truth, mas só é commitado
+            // ao histórico depois que todos os seus grafemas forem revelados.
+            _queueInlineStreamingFinal(cleanFin);
           }
         },
         onError: (err) {
@@ -1861,11 +2780,13 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
           // Factor3 do provider emite AUTH_REQUIRED quando a barreira de backend
           // bloqueia. Suprimimos, limpamos a pergunta do usuário e abrimos modal.
           if (err == 'AUTH_REQUIRED') {
+            _resetInlineStreamingDrain();
             setState(() {
               _streaming = '';
-              _thinking  = false;
+              _thinking = false;
               // Remove a pergunta do usuário que ficou sem resposta
-              if (_messages.isNotEmpty && _messages.last['role'] == 'user' &&
+              if (_messages.isNotEmpty &&
+                  _messages.last['role'] == 'user' &&
                   _messages.last['text'] == text) {
                 _messages.removeLast();
               }
@@ -1873,10 +2794,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
             _openConnectModal();
             return;
           }
+          _resetInlineStreamingDrain();
           setState(() {
             _messages.add({'role': 'ai', 'text': err, 'isError': true});
             _streaming = '';
-            _thinking  = false;
+            _thinking = false;
           });
           _scrollToBottom();
           // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
@@ -1888,12 +2810,17 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       // Captura exceções não tratadas (ex: TimeoutException, SocketException)
       // que possam escapar do onError — garante limpeza total do estado.
       if (mounted) {
+        _resetInlineStreamingDrain();
         setState(() {
           _streaming = '';
-          _thinking  = false;
+          _thinking = false;
           // Adiciona bolha de erro genérico se não houver resposta AI ainda
           if (_messages.isEmpty || _messages.last['role'] != 'ai') {
-            _messages.add({'role': 'ai', 'text': '⚠️ Erro de conexão. Tente novamente.', 'isError': true});
+            _messages.add({
+              'role': 'ai',
+              'text': '⚠️ Erro de conexão. Tente novamente.',
+              'isError': true
+            });
           }
         });
       }
@@ -1933,9 +2860,9 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       final clean = _messages.where((m) => m['isError'] != true).toList();
       final pairs = clean
           .map((m) => {
-            'role': m['role']?.toString() ?? 'user',
-            'text': m['text']?.toString() ?? '',
-          })
+                'role': m['role']?.toString() ?? 'user',
+                'text': m['text']?.toString() ?? '',
+              })
           .toList();
 
       // Snapshot do streaming em vôo (race condition: onDone ainda não disparou)
@@ -1962,11 +2889,11 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
       if (mounted) {
         setState(() {
           _messages.clear();
-          _streaming    = '';
-          _thinking     = false;
-          _sessionId    = null;
-          _lastLoadedUid     = null;
-          _lastLoadWasEmpty  = true;
+          _streaming = '';
+          _thinking = false;
+          _sessionId = null;
+          _lastLoadedUid = null;
+          _lastLoadWasEmpty = true;
         });
       }
     });
@@ -1983,7 +2910,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     // NUNCA usar FirebaseAuth.instance.currentUser aqui — é justamente a fonte do crash.
     // O widget se oculta e será reconstruído quando o Provider notificar init completo.
     if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][HomeInlineChat] build_abort reason=firebase_runtime_unavailable');
+      debugPrint(
+          '[BUILD299][HomeInlineChat] build_abort reason=firebase_runtime_unavailable');
       return const SizedBox.shrink();
     }
 
@@ -1995,11 +2923,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     // Hierarquia: AppProvider (primária) > token REST em cache > FirebaseAuth SDK.
     if (kIsWeb) {
       AppProvider? safeProvider;
-      try { safeProvider = context.read<AppProvider>(); } catch (_) {}
+      try {
+        safeProvider = context.read<AppProvider>();
+      } catch (_) {}
       final providerUser = safeProvider?.currentUser;
-      final hasCachedTk  = AuthService.hasCachedToken;
+      final hasCachedTk = AuthService.hasCachedToken;
       final firebaseUser = AuthService.currentUser;
-      final bool hasSession = providerUser != null || hasCachedTk || firebaseUser != null;
+      final bool hasSession =
+          providerUser != null || hasCachedTk || firebaseUser != null;
       if (!hasSession) {
         debugPrint('[BUILD298][HomeInlineChat] build_abort reason=no_session '
             'provider=${providerUser?.uid ?? "null"} '
@@ -2015,7 +2946,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     try {
       context.read<AppProvider>();
     } catch (_) {
-      debugPrint('[BUILD298][HomeInlineChat] build_abort reason=provider_not_ready');
+      debugPrint(
+          '[BUILD298][HomeInlineChat] build_abort reason=provider_not_ready');
       return const SizedBox.shrink();
     }
 
@@ -2032,527 +2964,101 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
     }
   }
 
-  Widget _buildChatContent(BuildContext context) {
-    final dark  = widget.dark;
-    final isEs  = widget.isEs;
+  void _toggleInlineExpansion() {
+    if (!mounted) return;
 
-    // BUILD 436-LIGHT-CHAT-CARD: paleta adaptativa dark/light.
-    // Dark mode — graphite imersivo idêntico ao AiScreen (SUPER ORDEM 11):
-    //   cardBg=0xFF1A1D23, header=0xFF1E2330, border=0xFF2A2D35,
-    //   fieldBg=0xFF252930, text=white, hint=white35, subText=0xFF6B8ABE
-    // Light mode — superfície branca sofisticada compatível com design system:
-    //   cardBg=white, header=grey.shade50, border=grey.shade200,
-    //   fieldBg=grey.shade100, text=0xFF121418, hint=grey.600, subText=grey.600
+    setState(() {
+      _isInlineExpanded = !_isInlineExpanded;
+    });
 
-    // PASSO 1 — Contêiner / superfície
-    final Color cardBg      = dark ? const Color(0xFF1A1D23) : Colors.white;
-    final Color headerBg    = dark ? const Color(0xFF1E2330) : Colors.grey.shade50;
-    final Color borderColor = dark ? const Color(0xFF2A2D35) : Colors.grey.shade200;
-    final Color headerDivider = dark ? const Color(0xFF2A2D35) : Colors.grey.shade200;
+    _scrollToBottom();
+  }
 
-    // PASSO 2 — Tipografia
-    final Color textColor = dark ? Colors.white : const Color(0xFF121418);
-    final Color hintColor = dark
-        ? Colors.white.withOpacity(0.35)
-        : Colors.grey.shade500;
-    final Color subText   = dark ? const Color(0xFF6B8ABE) : Colors.grey.shade600;
+  void _openInlineHistory() {
+    AppHaptics.light(context);
+    widget.onNavigateToAi(2);
 
-    // PASSO 3 — Campo de entrada e botões de ação
-    final Color fieldBg     = dark ? const Color(0xFF252930) : Colors.grey.shade100;
-    final Color fieldBorder = dark
-        ? Colors.white.withOpacity(0.10)
-        : Colors.grey.shade300;
-    // Ícones dos botões de ação (histórico / novo chat)
-    final Color actionIconBg     = dark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.black.withOpacity(0.04);
-    final Color actionIconBorder = dark
-        ? Colors.white.withOpacity(0.10)
-        : Colors.black.withOpacity(0.08);
-    final Color actionIconColor  = dark
-        ? Colors.white.withOpacity(0.55)
-        : Colors.black.withOpacity(0.50);
-    // Botão de envio: disabled/vazio vs. active
-    final Color sendBtnDisabledBg = dark
-        ? const Color(0xFF1A2335)
-        : Colors.grey.shade200;
-    final Color sendBtnEmptyBg    = dark
-        ? Colors.white.withOpacity(0.10)
-        : Colors.grey.shade300;
-    final Color sendBtnEmptyIcon  = dark
-        ? Colors.white.withOpacity(0.35)
-        : Colors.black.withOpacity(0.35);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AiScreen.openHistoryCallback.value?.call();
+    });
+  }
 
-    final hasHistory  = _messages.isNotEmpty;
-    final hasStream   = _thinking && _streaming.isNotEmpty;
-    final hasThinking = _thinking && _streaming.isEmpty;
+  void _startInlineNewChat() {
+    if (_thinking) return;
 
-    // ── BUILD 456-1: CLAMP VISUAL — Home exibe no máximo as últimas 4 mensagens.
-    // Históricos longos originados na AiScreen NUNCA esticam a Home.
-    // • homeMessages = últimas 4 do _messages (ou todas se ≤ 4)
-    // • hasTruncation = true → exibe fade top + banner "ver histórico completo"
-    // O estado interno _messages permanece intacto para injeção no AiScreen.
-    const int _kHomeMaxMessages = 4;
-    final bool hasTruncation = _messages.length > _kHomeMaxMessages;
-    final List<Map<String, dynamic>> homeMessages = hasTruncation
-        ? _messages.sublist(_messages.length - _kHomeMaxMessages)
-        : List.unmodifiable(_messages);
+    AppHaptics.light(context);
 
-    // ── Constrói a lista de bolhas como widgets ────────────────────────────
-    // BUILD 456-2: conversationArea agora tem altura RÍGIDA máxima de 260px.
-    // ClipRect + ConstrainedBox impedem qualquer crescimento além desse limite.
-    // O ListView interno tem scroll habilitado dentro dessa caixa.
-    // ShaderMask aplica fade superior quando hasTruncation para indicar
-    // que há mais histórico acima, sem expô-lo na Home.
-    Widget conversationArea;
-    if (hasHistory || hasStream || hasThinking) {
-      final itemCount = homeMessages.length + (_thinking ? 1 : 0);
-      conversationArea = ListView.builder(
-        controller: _scrollCtrl,
-        shrinkWrap: false,
-        physics: const ClampingScrollPhysics(),
-        itemCount: itemCount,
-        itemBuilder: (_, i) {
-          // Último item artificial = estado de streaming / thinking dots
-          if (i == homeMessages.length && _thinking) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _streaming.isNotEmpty
-                  // Streaming em andamento — bolha IA parcial
-                  ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      _AiBubbleAvatar(dark: dark),
-                      Expanded(child: _AiBubble(
-                        text: _streaming,
-                        isError: false,
-                        isStreaming: true,
-                        dark: dark,
-                        isEs: isEs,
-                        onExpand: () => _goToAiTab(null, true),
-                      )),
-                    ])
-                  // Aguardando primeira palavra — dots animados
-                  : Row(children: [
-                      _AiBubbleAvatar(dark: dark),
-                      _ThinkingDots(dark: dark),
-                    ]),
-            );
-          }
+    _resetInlineStreamingDrain();
 
-          // BUILD 295: index guard — Safari pode reconstruir o ListView com
-          // itemCount desatualizado se setState() foi chamado entre frames.
-          // RangeError em homeMessages[i] lança 'Null check operator' em dart2js.
-          if (i >= homeMessages.length) return const SizedBox.shrink();
+    setState(() {
+      _messages.clear();
+      _streaming = '';
+      _thinking = false;
+      _sessionId = null;
+      _isInlineExpanded = false;
+      _ctrl.clear();
+    });
 
-          final msg     = homeMessages[i];
-          final isUser  = msg['role'] == 'user';
-          // BUILD 295: cast null-safe — msg['text'] pode ser JavaScriptObject
-          // no Safari cujo 'as String' lança TypeError em dart2js release mode.
-          // toString() é definido para todos os objetos JS — nunca lança.
-          final text    = msg['text']?.toString() ?? '';
-          final isError = msg['isError'] == true;
-          final isLast  = i == homeMessages.length - 1;
+    _focus.unfocus();
+    AiScreen.clearChatCallback.value?.call();
+  }
 
-          // ── BUILD 312 M3 + BUILD 295: Render guard — suprime AUTH_REQUIRED ──
-          // Também suprime strings vazias que resultam de valores null no Safari.
-          if (text == 'AUTH_REQUIRED' || text.isEmpty) return const SizedBox.shrink();
+  void _copyInlineAnswer(String text) {
+    final normalized = text.trim();
+    if (normalized.isEmpty) return;
 
-          if (isUser) {
-            // BUILD 436 [PASSO 1+2]: bolha do usuário adaptativa dark/light
-            final userBubbleBg = dark
-                ? const Color(0xFF0F2340)        // dark: azul-marinho imersivo
-                : const Color(0xFFEFF6FF);       // light: azul pastel suave
-            final userBubbleBorder = dark
-                ? _kAiBlueBord.withOpacity(0.25)
-                : const Color(0xFFBFDBFE);       // light: blue.shade200
-            return Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 280),
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 9),
-                decoration: BoxDecoration(
-                  color: userBubbleBg,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(14), topRight: Radius.circular(14),
-                    bottomLeft: Radius.circular(14), bottomRight: Radius.circular(4),
-                  ),
-                  border: Border.all(color: userBubbleBorder),
-                ),
-                child: Text(text,
-                  style: TextStyle(fontSize: 13, color: textColor, height: 1.45)),
-              ),
-            );
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                _AiBubbleAvatar(dark: dark),
-                Expanded(child: _AiBubble(
-                  text: text,
-                  isError: isError,
-                  isStreaming: false,
-                  dark: dark,
-                  isEs: isEs,
-                  // "Ver resposta completa" só no último AI bubble
-                  onExpand: isLast ? () => _goToAiTab(null, true) : null,
-                )),
-              ]),
-            );
-          }
-        },
-      );
+    Clipboard.setData(
+      ClipboardData(text: normalized),
+    );
 
-      // BUILD 456-2: wrap com altura máxima física de 260px + ClipRect.
-      // ShaderMask aplica gradiente de opacidade no topo quando hasTruncation
-      // (histórico longo vindo da AiScreen) — feedback visual sem exposição total.
-      final boundedList = ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 260),
-        child: ClipRect(child: conversationArea),
-      );
-      conversationArea = hasTruncation
-          ? ShaderMask(
-              shaderCallback: (rect) => LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.white,
-                ],
-                stops: const [0.0, 0.18],
-              ).createShader(rect),
-              blendMode: BlendMode.dstIn,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Banner sutil: indica histórico truncado → toque para ver tudo
-                  GestureDetector(
-                    onTap: () => _goToAiTab(null, true),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Row(
-                        children: [
-                          Icon(Icons.unfold_more_rounded, size: 12,
-                              color: dark
-                                  ? const Color(0xFF38BDF8).withOpacity(0.7)
-                                  : const Color(0xFF1B6FD8).withOpacity(0.7)),
-                          const SizedBox(width: 4),
-                          Text(
-                            widget.isEs
-                                ? 'Ver historial completo'
-                                : 'Ver histórico completo',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: dark
-                                  ? const Color(0xFF38BDF8).withOpacity(0.7)
-                                  : const Color(0xFF1B6FD8).withOpacity(0.7),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  boundedList,
-                ],
-              ),
-            )
-          : boundedList;
-    } else {
-      // Estado inicial — placeholder elegante com mínimo de 120px para o card
-      // não ser pequeno demais quando ainda não há histórico.
-      conversationArea = SizedBox(
-        height: 120,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // BUILD 436 [PASSO 2]: ícone placeholder adaptativo dark/light
-              Icon(Icons.psychology_rounded, size: 32,
-                color: dark
-                    ? _kAiBlue.withOpacity(0.25)
-                    : Colors.grey.shade400),
-              const SizedBox(height: 8),
-              Text(
-                isEs
-                    ? 'Haz tu pregunta clínica\no toca para abrir el chat completo'
-                    : 'Faça sua pergunta clínica\nou toque para abrir o chat completo',
-                textAlign: TextAlign.center,
-                // subText já é adaptativo via paleta acima
-                style: TextStyle(fontSize: 12, color: subText, height: 1.5),
-              ),
-            ],
-          ),
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          widget.isEs ? 'Respuesta copiada.' : 'Resposta copiada.',
         ),
-      );
-    }
-
-    // BUILD 436: container adaptativo dark/light
-    return Container(
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: const BorderRadius.all(Radius.circular(8)),  // ORDEM 45: mosaico
-        border: Border.all(color: borderColor, width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: dark
-                ? const Color(0x40000000)
-                : const Color(0x14000000),  // sombra mais suave no light
-            blurRadius: dark ? 20 : 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        duration: const Duration(milliseconds: 1200),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    );
+  }
 
-          // ── Header premium: ícone + MEDCASES IA + botão fechar + expandir ──
-          // BUILD 436: header adaptativo dark/light
-          Container(
-            decoration: BoxDecoration(
-              color: headerBg,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-              border: Border(
-                bottom: BorderSide(color: headerDivider, width: 0.5),
-              ),
-            ),
-            padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
-            child: Row(
-              children: [
-                // BUILD 320: ícone + título "MEDCASES IA" envolvidos num único
-                // GestureDetector opaco — navega direto para a aba IA (tab 2).
-                // Os botões direitos (histórico / novo chat) têm handlers próprios
-                // e ficam fora deste detector para preservar comportamento.
-                Expanded(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      AppHaptics.light(context);
-                      widget.onNavigateToAi(2);
-                    },
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 26, height: 26,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7),
-                            color: const Color(0xFF00E5FF).withOpacity(0.10),
-                            border: Border.all(
-                              color: const Color(0xFF00E5FF).withOpacity(0.22),
-                              width: 0.8,
-                            ),
-                          ),
-                          child: const Icon(Icons.psychology_rounded, size: 15, color: Color(0xFF00E5FF)),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          // BUILD 436 [PASSO 2]: título adaptativo dark/light
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'MEDCASES',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    // Dark: branco / Light: quase-preto sólido
-                                    color: dark ? Colors.white : const Color(0xFF121418),
-                                    letterSpacing: 0.4,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ' IA',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    // Dourado médico nos dois modos — lido sobre branco ou grafite
-                                    color: const Color(0xFFD4AF37),
-                                    letterSpacing: 0.4,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                // ORDEM 34 — BOTÃO HISTÓRICO (era: fechar/limpar)
-                // BUILD 328 M3: 26→34px, icon 13→16px — alvo ergônomico
-                // BUILD 436 [PASSO 3]: ícones adaptados para dark/light
-                GestureDetector(
-                  onTap: () {
-                    AppHaptics.light(context);
-                    widget.onNavigateToAi(2);
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      AiScreen.openHistoryCallback.value?.call();
-                    });
-                  },
-                  child: Container(
-                    width: 34, height: 34,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9),
-                      color: actionIconBg,
-                      border: Border.all(
-                        color: actionIconBorder,
-                        width: 0.8,
-                      ),
-                    ),
-                    child: Icon(Icons.history_rounded, size: 16,
-                      color: actionIconColor),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                // ORDEM 34 — BOTÃO NOVO CHAT / HARD RESET (era: expandir)
-                // BUILD 328 M3: 26→34px, icon 14→17px — alvo ergônomico
-                // BUILD 436 [PASSO 3]: ícones adaptados para dark/light
-                GestureDetector(
-                  onTap: _thinking ? null : () {
-                    AppHaptics.light(context);
-                    setState(() {
-                      _messages.clear();
-                      _streaming = '';
-                      _thinking  = false;
-                      _sessionId = null;
-                      _ctrl.clear();
-                    });
-                    _focus.unfocus();
-                    AiScreen.clearChatCallback.value?.call();
-                  },
-                  child: Container(
-                    width: 34, height: 34,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9),
-                      color: actionIconBg,
-                      border: Border.all(
-                        color: actionIconBorder,
-                        width: 0.8,
-                      ),
-                    ),
-                    child: Icon(Icons.add_rounded, size: 17,
-                      color: actionIconColor),
-                  ),
-                ),
-              ],
-            ),
-          ),
+  void _continueInlineInAi() {
+    _goToAiTab(null, true);
+  }
 
-          // Conteúdo: conversa + input
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+  Widget _buildChatContent(BuildContext context) {
+    final hasHistory = _messages.isNotEmpty;
+    final hasStream = _thinking && _streaming.isNotEmpty;
+    final hasThinking = _thinking && _streaming.isEmpty;
+    final hasExpandableContent = hasHistory || hasStream || hasThinking;
 
-          // ── BUILD 457-FRENTE2: SelectionArea envolve a área de conversa ────────
-          // Habilita seleção nativa de trecho de texto (long-press / duplo clique)
-          // no inline chat da Home. MarkdownBody permanece selectable:false —
-          // SelectionArea é a única âncora de seleção (evita conflito duplo).
-          SelectionArea(child: conversationArea),
+    final displayName =
+        context.read<AppProvider>().currentUser?.displayName.trim() ?? '';
 
-          const SizedBox(height: 10),
+    final firstName =
+        displayName.isEmpty ? '' : displayName.split(RegExp(r'\s+')).first;
 
-          // ── Campo de entrada adaptativo dark/light (BUILD 436 PASSO 3) ─────
-          ValueListenableBuilder<TextEditingValue>(
-            valueListenable: _ctrl,
-            builder: (_, val, __) {
-              final isEmpty = val.text.trim().isEmpty;
-              return TextField(
-                controller: _ctrl,
-                focusNode: _focus,
-                autofocus: false, // CRÍTICO — nunca abrir teclado automaticamente
-                minLines: 1,
-                maxLines: 4,
-                keyboardType: TextInputType.multiline,
-                autocorrect: true,
-                enableSuggestions: true,
-                textCapitalization: TextCapitalization.sentences,
-                // BUILD 436 [PASSO 3]: texto digitado adapta dark/light
-                style: TextStyle(fontSize: 14, color: textColor, height: 1.5),
-                textInputAction: TextInputAction.send,
-                onSubmitted: (_) => _send(),
-                decoration: InputDecoration(
-                  hintText: isEs
-                      ? 'Sintomas, fármaco, protocolo…'
-                      : 'Sintomas, fármaco, protocolo…',
-                  // BUILD 436 [PASSO 2+3]: hint e fundo adaptativos
-                  hintStyle: TextStyle(fontSize: 14, color: hintColor),
-                  contentPadding: const EdgeInsets.fromLTRB(18, 14, 6, 14),
-                  // Borda arredondada estilo Gemini
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(28),
-                    borderSide: BorderSide(color: fieldBorder, width: 1.2),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(28),
-                    borderSide: BorderSide(
-                      // Dark: cyan MedCases IA / Light: azul sólido rico
-                      color: dark
-                          ? const Color(0xFF00E5FF)
-                          : const Color(0xFF1B6FD8),
-                      width: 1.5,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: fieldBg,
-                  // ── Botão embutido — círculo colorido com ícone ────────────
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.only(right: 6),
-                    child: GestureDetector(
-                      onTap: _thinking ? null : () {
-                        AppHaptics.light(context);
-                        _onSendPressed();
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        width: 36, height: 36,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          // BUILD 436 [PASSO 3]: botão send adaptativo
-                          color: _thinking
-                              ? sendBtnDisabledBg
-                              : isEmpty
-                                  ? sendBtnEmptyBg
-                                  : const Color(0xFF008CA4), // teal MedCases IA (ambos modos)
-                        ),
-                        child: _thinking
-                            ? const Padding(
-                                padding: EdgeInsets.all(10),
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(_kAiBlue),
-                                ),
-                              )
-                            : Icon(
-                                // Vazio → "abrir chat completo" / Cheio → enviar
-                                isEmpty
-                                    ? Icons.open_in_full_rounded
-                                    : Icons.arrow_upward_rounded,
-                                color: isEmpty
-                                    ? sendBtnEmptyIcon
-                                    : Colors.white,
-                                size: 17,
-                              ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-
-              ],
-            ),
-          ),
-        ],
-      ),
+    return HomeInlineChatV2View(
+      dark: widget.dark,
+      isEs: widget.isEs,
+      userName: firstName,
+      messages: _messages,
+      streaming: _streaming,
+      thinking: _thinking,
+      expanded: _isInlineExpanded,
+      hasExpandableContent: hasExpandableContent,
+      controller: _ctrl,
+      focusNode: _focus,
+      scrollController: _scrollCtrl,
+      onSend: _onSendPressed,
+      onVoice: _toggleInlineStt,
+      sttListening: _sttListening,
+      onHistory: _openInlineHistory,
+      onNewChat: _startInlineNewChat,
+      onToggleExpanded: _toggleInlineExpansion,
+      onCopyAnswer: _copyInlineAnswer,
+      onContinueInAi: _continueInlineInAi,
     );
   }
 }
@@ -2613,6 +3119,17 @@ String _homeStripMetadataHeaders(String accumulated) {
       r'|Baseado\s+(?:no|na|em)\s+(?:contexto|conversa|solicita|que\s+(?:o|foi))'
       r'|Basado\s+en\s+(?:el\s+contexto|la\s+conversaci[oó]n|la\s+solicitud|lo\s+que)'
       r').*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // HOME → IA: NEXT_ACTION é metadado interno de continuidade e nunca texto
+  // clínico visível. Em streaming, remove também a linha corrente incompleta.
+  result = result.replaceAll(
+    RegExp(
+      r'^\s*\[NEXT_ACTION_(?:LABEL|PROMPT):[^\n]*(?:\]\s*)?$',
       caseSensitive: false,
       multiLine: true,
     ),
@@ -2683,6 +3200,16 @@ String _cleanHomeAiText(String raw) {
       r'|CONTEXTO_INTERNO[^\]\n]*|FIM_DADOS?[^\]\n]*|FIN_DATOS?[^\]\n]*'
       r'|nao\s+exibir[^\]\n]*|no\s+mostrar[^\]\n]*'
       r'|INTERNAL[^\]\n]*|BASE_LOCAL[^\]\n]*)\]\s*$',
+      caseSensitive: false,
+      multiLine: true,
+    ),
+    '',
+  );
+
+  // 3b. NEXT_ACTION pertence ao motor de continuidade, não ao Markdown visível.
+  s = s.replaceAll(
+    RegExp(
+      r'^\s*\[NEXT_ACTION_(?:LABEL|PROMPT):[^\n]*(?:\]\s*)?$',
       caseSensitive: false,
       multiLine: true,
     ),
@@ -2808,7 +3335,6 @@ String _cleanHomeAiText(String raw) {
 
   // 7. Sanitização final de formatação
   s = s
-      .replaceAll(RegExp(r'^#{1,3}\s*', multiLine: true), '') // ## ### → plain
       .replaceAll('---', '')
       .replaceAll('--', '')
       .replaceAll(RegExp(r'\*{3,}'), ''); // *** ou mais → remove
@@ -2834,7 +3360,8 @@ class _AiBubbleAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 28, height: 28,
+      width: 28,
+      height: 28,
       margin: const EdgeInsets.only(right: 8, top: 2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -2844,7 +3371,7 @@ class _AiBubbleAvatar extends StatelessWidget {
         child: Icon(
           Icons.psychology_alt_rounded,
           size: 14,
-          color: dark ? const Color(0xFF00E5FF) : const Color(0xFF0A7C4E),
+          color: dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57),
         ),
       ),
     );
@@ -2859,9 +3386,9 @@ class _AiBubbleAvatar extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 String _homeCleanPartialMd(String text) {
   if (text.isEmpty) return text;
-  final lines   = text.split('\n');
+  final lines = text.split('\n');
   final lastIdx = lines.length - 1;
-  String last   = lines[lastIdx];
+  String last = lines[lastIdx];
 
   // Retira o cursor ▌ temporariamente para analisar conteúdo real
   final hasCursor = last.endsWith('\u258c');
@@ -2935,9 +3462,9 @@ class _AiBubble extends StatefulWidget {
 
 class _AiBubbleState extends State<_AiBubble>
     with SingleTickerProviderStateMixin {
-  static const _kGreen   = Color(0xFF0D7A55);
-  static const _kCyan    = Color(0xFF00E5FF);
-  static const _kTeal    = Color(0xFF008CA4);
+  static const _kGreen = Color(0xFF0D6B57);
+  static const _kCyan = Color(0xFF0D6B57);
+  static const _kTeal = Color(0xFF0D6B57);
   static const _kFerrari = Color(0xFFFF2400);
 
   // ── BUILD 462: Batch Rendering ────────────────────────────────────────────
@@ -2993,13 +3520,12 @@ class _AiBubbleState extends State<_AiBubble>
       // Comita o texto definitivo do provider como source-of-truth
       final residual = _networkBuffer.toString();
       _networkBuffer.clear();
-      final finalText = widget.text.isNotEmpty
-          ? widget.text
-          : (_visibleText + residual);
+      final finalText =
+          widget.text.isNotEmpty ? widget.text : (_visibleText + residual);
 
       try {
         setState(() {
-          _visibleText       = finalText;
+          _visibleText = finalText;
           _streamingComplete = true;
         });
       } catch (_) {}
@@ -3007,7 +3533,8 @@ class _AiBubbleState extends State<_AiBubble>
     }
 
     // Streaming continua — empurra delta novo para o buffer
-    if (widget.isStreaming && widget.text.length > _visibleText.length + _networkBuffer.length) {
+    if (widget.isStreaming &&
+        widget.text.length > _visibleText.length + _networkBuffer.length) {
       final alreadyKnown = _visibleText.length + _networkBuffer.length;
       final delta = widget.text.substring(alreadyKnown);
       _networkBuffer.write(delta);
@@ -3017,7 +3544,7 @@ class _AiBubbleState extends State<_AiBubble>
     // Bolha histórica (não streaming): sincroniza texto diretamente
     if (!widget.isStreaming && !old.isStreaming && old.text != widget.text) {
       setState(() {
-        _visibleText       = widget.text;
+        _visibleText = widget.text;
         _streamingComplete = true;
       });
     }
@@ -3026,11 +3553,16 @@ class _AiBubbleState extends State<_AiBubble>
   void _ensureTimerRunning() {
     if (_renderTimer != null && _renderTimer!.isActive) return;
     _renderTimer = Timer.periodic(const Duration(milliseconds: 40), (_) {
-      if (!mounted) { _renderTimer?.cancel(); return; }
+      if (!mounted) {
+        _renderTimer?.cancel();
+        return;
+      }
       final pending = _networkBuffer.toString();
       if (pending.isEmpty) return;
       _networkBuffer.clear();
-      setState(() { _visibleText += pending; });
+      setState(() {
+        _visibleText += pending;
+      });
     });
   }
 
@@ -3044,22 +3576,30 @@ class _AiBubbleState extends State<_AiBubble>
   // ── Build ─────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final bubbleBg = widget.dark ? const Color(0xFF161616) : const Color(0xFFF9F9F9);
+    final bubbleBg =
+        widget.dark ? const Color(0xFF161616) : const Color(0xFFF9F9F9);
     final bubbleBorder = widget.isError
         ? Colors.red.withOpacity(0.3)
-        : (widget.dark ? Colors.white.withOpacity(0.07) : const Color(0xFFE2E8F0));
+        : (widget.dark
+            ? Colors.white.withOpacity(0.07)
+            : const Color(0xFFE2E8F0));
     final textCol = widget.isError
         ? Colors.red.shade400
-        : (widget.dark ? Colors.white.withOpacity(0.88) : const Color(0xFF1A202C));
+        : (widget.dark
+            ? Colors.white.withOpacity(0.88)
+            : const Color(0xFF1A202C));
 
     Widget buildBodyContent() {
       // ── SKELETON: fase AiStarted (stream ativo, nenhum texto ainda) ─────────
-      if (widget.isStreaming && _visibleText.isEmpty && _networkBuffer.isEmpty) {
+      if (widget.isStreaming &&
+          _visibleText.isEmpty &&
+          _networkBuffer.isEmpty) {
         return AnimatedBuilder(
           animation: _skeletonOpacity,
           builder: (_, __) => Opacity(
             opacity: _skeletonOpacity.value,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               _skeletonBar(widget.dark, double.infinity),
               const SizedBox(height: 7),
               _skeletonBar(widget.dark, double.infinity),
@@ -3092,7 +3632,8 @@ class _AiBubbleState extends State<_AiBubble>
       }
 
       // ── PÓS-CONCLUSÃO (disparo único): MarkdownBody com layout premium ─────
-      String displayText = _cleanHomeAiText(_visibleText.isNotEmpty ? _visibleText : widget.text);
+      String displayText = _cleanHomeAiText(
+          _visibleText.isNotEmpty ? _visibleText : widget.text);
       final mdText = displayText.replaceAll('\u258c', '');
 
       return MarkdownBody(
@@ -3102,34 +3643,44 @@ class _AiBubbleState extends State<_AiBubble>
         styleSheet: MarkdownStyleSheet(
           p: TextStyle(fontSize: 13.5, color: textCol, height: 1.55),
           strong: TextStyle(
-            fontSize: 13.5, fontWeight: FontWeight.w700,
+            fontSize: 13.5,
+            fontWeight: FontWeight.w700,
             color: widget.dark ? _kCyan : _kFerrari,
           ),
-          em: TextStyle(fontSize: 13.5, color: textCol, fontStyle: FontStyle.italic),
+          em: TextStyle(
+              fontSize: 13.5, color: textCol, fontStyle: FontStyle.italic),
           listBullet: TextStyle(
             fontSize: 13.5,
             color: widget.dark ? _kCyan.withOpacity(0.70) : _kTeal,
           ),
           h2: TextStyle(
-            fontSize: 15, fontWeight: FontWeight.w800,
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
             color: widget.dark ? _kCyan : _kFerrari,
-            letterSpacing: 0.1, height: 1.3,
+            letterSpacing: 0.1,
+            height: 1.3,
           ),
           h3: TextStyle(
-            fontSize: 13.5, fontWeight: FontWeight.w700,
-            color: widget.dark ? _kCyan : _kTeal, height: 1.3,
+            fontSize: 13.5,
+            fontWeight: FontWeight.w700,
+            color: widget.dark ? _kCyan : _kTeal,
+            height: 1.3,
           ),
           codeblockDecoration: const BoxDecoration(color: Colors.transparent),
           blockquote: TextStyle(fontSize: 13, color: textCol.withOpacity(0.78)),
           blockquoteDecoration: BoxDecoration(
             color: Colors.transparent,
-            border: Border(left: BorderSide(
-              color: widget.dark ? Colors.white24 : Colors.black26, width: 3,
+            border: Border(
+                left: BorderSide(
+              color: widget.dark ? Colors.white24 : Colors.black26,
+              width: 3,
             )),
           ),
           horizontalRuleDecoration: BoxDecoration(
-            border: Border(top: BorderSide(
-              color: widget.dark ? Colors.white12 : Colors.black12, width: 1,
+            border: Border(
+                top: BorderSide(
+              color: widget.dark ? Colors.white12 : Colors.black12,
+              width: 1,
             )),
           ),
           blockSpacing: 5,
@@ -3143,22 +3694,30 @@ class _AiBubbleState extends State<_AiBubble>
       decoration: BoxDecoration(
         color: bubbleBg,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(4), topRight: Radius.circular(14),
-          bottomLeft: Radius.circular(14), bottomRight: Radius.circular(14),
+          topLeft: Radius.circular(4),
+          topRight: Radius.circular(14),
+          bottomLeft: Radius.circular(14),
+          bottomRight: Radius.circular(14),
         ),
         border: Border.all(color: bubbleBorder),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         buildBodyContent(),
-        if (!widget.isStreaming && !widget.isError && widget.onExpand != null) ...[
+        if (!widget.isStreaming &&
+            !widget.isError &&
+            widget.onExpand != null) ...[
           const SizedBox(height: 8),
           GestureDetector(
             onTap: widget.onExpand,
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Text(
-                widget.isEs ? 'Ver respuesta completa' : 'Ver resposta completa',
+                widget.isEs
+                    ? 'Ver respuesta completa'
+                    : 'Ver resposta completa',
                 style: const TextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w600, color: _kGreen,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: _kGreen,
                 ),
               ),
               const SizedBox(width: 3),
@@ -3171,13 +3730,13 @@ class _AiBubbleState extends State<_AiBubble>
   }
 
   Widget _skeletonBar(bool dark, double width) => Container(
-    height: 12,
-    width: width,
-    decoration: BoxDecoration(
-      color: dark ? const Color(0xFF2A3040) : const Color(0xFFE2E8F0),
-      borderRadius: BorderRadius.circular(5),
-    ),
-  );
+        height: 12,
+        width: width,
+        decoration: BoxDecoration(
+          color: dark ? const Color(0xFF2A3040) : const Color(0xFFE2E8F0),
+          borderRadius: BorderRadius.circular(5),
+        ),
+      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -3198,7 +3757,8 @@ class _ThinkingDotsState extends State<_ThinkingDots>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1200))
       ..repeat();
   }
 
@@ -3210,19 +3770,23 @@ class _ThinkingDotsState extends State<_ThinkingDots>
 
   @override
   Widget build(BuildContext context) {
-    final dotColor = widget.dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
+    final dotColor =
+        widget.dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
     return AnimatedBuilder(
       animation: _ctrl,
       builder: (_, __) => Row(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(3, (i) {
-          final delay   = i / 3.0;
-          final t       = (_ctrl.value - delay).clamp(0.0, 1.0);
-          final opacity = (0.3 + 0.7 * (t < 0.5 ? t * 2 : (1 - t) * 2)).clamp(0.0, 1.0);
+          final delay = i / 3.0;
+          final t = (_ctrl.value - delay).clamp(0.0, 1.0);
+          final opacity =
+              (0.3 + 0.7 * (t < 0.5 ? t * 2 : (1 - t) * 2)).clamp(0.0, 1.0);
           return Container(
             margin: const EdgeInsets.only(right: 4),
-            width: 7, height: 7,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: dotColor.withOpacity(opacity)),
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle, color: dotColor.withOpacity(opacity)),
           );
         }),
       ),
@@ -3280,7 +3844,7 @@ class _HomeMplusPulseState extends State<_HomeMplusPulse>
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF10B981), // Verde Clínico
+            color: Color(0xFF0D6B57), // Verde Clínico
             letterSpacing: -0.5,
           ),
         ),
@@ -3297,7 +3861,8 @@ class _HomeMplusPulseState extends State<_HomeMplusPulse>
 class _HomeIaCard extends StatefulWidget {
   final bool dark;
   final bool isEs;
-  final ValueChanged<int> onNavigateToAi; // callback para mudar aba → IA (tab 2)
+  final ValueChanged<int>
+      onNavigateToAi; // callback para mudar aba → IA (tab 2)
 
   const _HomeIaCard({
     required this.dark,
@@ -3313,14 +3878,26 @@ class _HomeIaCardState extends State<_HomeIaCard> {
   final _ctrl = TextEditingController();
   final _focus = FocusNode();
 
-  static const _kGreen     = Color(0xFF0D7A55);
-  static const _kGreenBg   = Color(0xFF0D7A55);
+  static const _kGreen = Color(0xFF0D7A55);
+  static const _kGreenBg = Color(0xFF0D7A55);
   static const _kGreenBord = Color(0xFF0D9E6E);
 
   // Chips de exemplo bilíngues
   // BUILD 93 — chips educacionais (Apple 1.4.1: sem referência a Simulações/doses/emergências)
-  static const _chipsEs = ['Caso clínico', 'Diagnóstico dif.', 'Farmacología', 'Razonamiento', 'Educación'];
-  static const _chipsPt = ['Caso clínico', 'Diagnóstico dif.', 'Farmacologia', 'Raciocínio', 'Educação'];
+  static const _chipsEs = [
+    'Caso clínico',
+    'Diagnóstico dif.',
+    'Farmacología',
+    'Razonamiento',
+    'Educación'
+  ];
+  static const _chipsPt = [
+    'Caso clínico',
+    'Diagnóstico dif.',
+    'Farmacologia',
+    'Raciocínio',
+    'Educação'
+  ];
 
   @override
   void dispose() {
@@ -3341,33 +3918,23 @@ class _HomeIaCardState extends State<_HomeIaCard> {
 
   @override
   Widget build(BuildContext context) {
-    final dark   = widget.dark;
-    final isEs   = widget.isEs;
-    final chips  = isEs ? _chipsEs : _chipsPt;
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+    final chips = isEs ? _chipsEs : _chipsPt;
 
     final cardBg = dark ? const Color(0xFF252930) : Colors.white;
-    final borderColor = dark
-        ? _kGreenBord.withOpacity(0.35)
-        : _kGreenBord.withOpacity(0.22);
-    final fieldBg = dark
-        ? const Color(0xFF162A1C)
-        : const Color(0xFFF4FAF7);
-    final fieldBorder = dark
-        ? _kGreenBord.withOpacity(0.22)
-        : _kGreenBord.withOpacity(0.18);
+    final borderColor =
+        dark ? _kGreenBord.withOpacity(0.35) : _kGreenBord.withOpacity(0.22);
+    final fieldBg = dark ? const Color(0xFF162A1C) : const Color(0xFFF4FAF7);
+    final fieldBorder =
+        dark ? _kGreenBord.withOpacity(0.22) : _kGreenBord.withOpacity(0.18);
     final textColor = dark ? Colors.white : const Color(0xFF0F1116);
-    final hintColor = dark
-        ? Colors.white.withOpacity(0.38)
-        : const Color(0xFF7A9E8E);
-    final chipBg = dark
-        ? const Color(0xFF162A1C)
-        : _kGreen.withOpacity(0.07);
-    final chipBorder = dark
-        ? _kGreenBord.withOpacity(0.25)
-        : _kGreenBord.withOpacity(0.22);
-    final chipText = dark
-        ? const Color(0xFF10B981)
-        : _kGreen;
+    final hintColor =
+        dark ? Colors.white.withOpacity(0.38) : const Color(0xFF7A9E8E);
+    final chipBg = dark ? const Color(0xFF162A1C) : _kGreen.withOpacity(0.07);
+    final chipBorder =
+        dark ? _kGreenBord.withOpacity(0.25) : _kGreenBord.withOpacity(0.22);
+    final chipText = dark ? const Color(0xFF0D6B57) : _kGreen;
 
     return Container(
       decoration: BoxDecoration(
@@ -3382,7 +3949,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                   offset: const Offset(0, 4),
                 ),
                 BoxShadow(
-                  color: const Color(0xFF00E5FF).withOpacity(0.06),
+                  color: const Color(0xFF0D6B57).withOpacity(0.06),
                   blurRadius: 28,
                   offset: const Offset(0, 0),
                 ),
@@ -3394,7 +3961,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                   offset: const Offset(0, 4),
                 ),
                 BoxShadow(
-                  color: const Color(0xFF008CA4).withOpacity(0.06),
+                  color: const Color(0xFF0D6B57).withOpacity(0.06),
                   blurRadius: 24,
                   offset: const Offset(0, 6),
                 ),
@@ -3402,11 +3969,10 @@ class _HomeIaCardState extends State<_HomeIaCard> {
       ),
       // SUPER ORDEM MASTER 306 M3: cérebro background destruído
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
-          child: Column(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // ── Header: M+ VIVO + título + badge IA — SUPER ORDEM MASTER 12 M4 ────
             Row(children: [
               // SUPER ORDEM MASTER 15 M2: M+ verde ESTRITO — somente sessão de IA real do usuário.
@@ -3431,25 +3997,27 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                   // Desconectado: texto 'Conectar IA' ciano — clicável, sem container quadrado
                   child: connected
                       ? Container(
-                          width: 38, height: 38,
+                          width: 38,
+                          height: 38,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
                             color: const Color(0xFF0C0E12),
                             border: Border.all(
-                              color: const Color(0xFF10B981).withOpacity(0.35),
+                              color: const Color(0xFF0D6B57).withOpacity(0.35),
                               width: 1,
                             ),
                           ),
                           child: const Center(child: _HomeMplusPulse()),
                         )
                       : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 2, vertical: 8),
                           child: const Text(
                             'Conectar IA',
                             style: TextStyle(
                               fontSize: 13, // SUPER ORDEM MASTER 12 M2: 13px
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF00E5FF),
+                              color: Color(0xFF0D6B57),
                               letterSpacing: -0.1,
                             ),
                           ),
@@ -3474,7 +4042,9 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                               fontSize: 14,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 0.3,
-                              color: dark ? const Color(0xFF00E5FF) : const Color(0xFF252930),
+                              color: dark
+                                  ? const Color(0xFF0D6B57)
+                                  : const Color(0xFF252930),
                             ),
                           ),
                           const SizedBox(width: 7),
@@ -3483,7 +4053,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                                 horizontal: 7, vertical: 2),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFF008CA4), Color(0xFF252930)],
+                                colors: [Color(0xFF0D6B57), Color(0xFF252930)],
                               ),
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -3507,8 +4077,8 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                         style: TextStyle(
                           fontSize: 10.5,
                           color: dark
-                              ? const Color(0xFF00E5FF).withOpacity(0.60)
-                              : const Color(0xFF008CA4),
+                              ? const Color(0xFF0D6B57).withOpacity(0.60)
+                              : const Color(0xFF0D6B57),
                           height: 1.3,
                         ),
                       ),
@@ -3566,9 +4136,13 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                 ),
                 const SizedBox(width: 10),
                 GestureDetector(
-                  onTap: () { AppHaptics.light(context); _navigate(); },
+                  onTap: () {
+                    AppHaptics.light(context);
+                    _navigate();
+                  },
                   child: Container(
-                    width: 38, height: 38,
+                    width: 38,
+                    height: 38,
                     margin: const EdgeInsets.only(bottom: 4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -3576,13 +4150,14 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                           ? const Color(0xFF252930)
                           : const Color(0xFFE0F7FA),
                       border: Border.all(
-                        color: const Color(0xFF00E5FF).withOpacity(dark ? 0.45 : 0.50),
+                        color: const Color(0xFF0D6B57)
+                            .withOpacity(dark ? 0.45 : 0.50),
                         width: 1.2,
                       ),
                     ),
                     child: const Icon(
                       Icons.arrow_upward_rounded,
-                      color: Color(0xFF008CA4),
+                      color: Color(0xFF0D6B57),
                       size: 18,
                     ),
                   ),
@@ -3597,32 +4172,37 @@ class _HomeIaCardState extends State<_HomeIaCard> {
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               child: Row(
-                children: chips.map((chip) => GestureDetector(
-                  onTap: () { AppHaptics.selection(context); _navigate(chip); },
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 7),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 11, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: chipBg,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: chipBorder),
-                    ),
-                    child: Text(
-                      chip,
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w600,
-                        color: chipText,
-                      ),
-                    ),
-                  ),
-                )).toList(),
+                children: chips
+                    .map((chip) => GestureDetector(
+                          onTap: () {
+                            AppHaptics.selection(context);
+                            _navigate(chip);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 7),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 11, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: chipBg,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: chipBorder),
+                            ),
+                            child: Text(
+                              chip,
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                                color: chipText,
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
               ),
             ),
           ],
-          ),
-          ),
+        ),
+      ),
     );
   }
 }
@@ -3647,23 +4227,35 @@ class _HomeAdultoPediatriaRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       // B141: Emerald Green — #059669 → #10b981
-      Expanded(child: _AgeCard(
+      Expanded(
+          child: _AgeCard(
         icon: Icons.person_rounded,
         // chore(home): renomeado ADULTO → PACIENTE (BUILD 238 PARTE 6)
         label: 'PACIENTE',
         subtitle: 'Explorar caso clínico',
-        gradientColors: const [Color(0xFF022c22), Color(0xFF059669), Color(0xFF10b981)],
+        gradientColors: const [
+          Color(0xFF022c22),
+          Color(0xFF059669),
+          Color(0xFF10b981)
+        ],
         accentColor: const Color(0xFF6ee7b7),
         dark: dark,
         onTap: onTapAdulto,
       )),
-      const SizedBox(width: 4),  // ORDEM 45: mosaico 12→4 gap horizontal
+      const SizedBox(width: 4), // ORDEM 45: mosaico 12→4 gap horizontal
       // B144: Azul Petróleo — dark teal elegante, nunca chega ao ciano
-      Expanded(child: _AgeCard(
+      Expanded(
+          child: _AgeCard(
         icon: Icons.child_care_rounded,
         label: isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-        subtitle: isEs ? 'Casos clínicos de referencia' : 'Casos clínicos de referência',
-        gradientColors: const [Color(0xFF042f2e), Color(0xFF0f766e), Color(0xFF134e4a)],
+        subtitle: isEs
+            ? 'Casos clínicos de referencia'
+            : 'Casos clínicos de referência',
+        gradientColors: const [
+          Color(0xFF042f2e),
+          Color(0xFF0f766e),
+          Color(0xFF134e4a)
+        ],
         accentColor: const Color(0xFFccfbf1),
         dark: dark,
         onTap: onTapPediatria,
@@ -3692,22 +4284,25 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
   @override
   void initState() {
     super.initState();
-    _ctrl  = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 120));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 120));
     _scale = Tween<double>(begin: 1.0, end: 0.96)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
   }
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   void _handleTap() {
     AppHaptics.light(context);
     // PR #73: abre CalculadoraScreen (WebView → promedcases.com + User-Agent MedCasesApp/6.1.0)
-    // rootNavigator: true → coloca a tela ACIMA do shell (bottom nav bar).
+    // rootNavigator: !kIsWeb → coloca a tela ACIMA do shell (bottom nav bar).
     // Sem isso, o Navigator do shell impõe constraints de altura reduzida
     // e deixa uma faixa escura abaixo da WebView.
-    Navigator.of(context, rootNavigator: true).push(
+    Navigator.of(context, rootNavigator: !kIsWeb).push(
       _HomeScreenState._slide(const CalculadoraScreen()),
     );
   }
@@ -3722,9 +4317,15 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
     const accentColor = Color(0xFFA78BFA);
 
     return GestureDetector(
-      onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
-      onTapUp:     (_) { _ctrl.reverse(); _handleTap(); },
-      onTapCancel: ()  => _ctrl.reverse(),
+      onTapDown: (_) {
+        _ctrl.forward();
+        AppHaptics.light(context);
+      },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        _handleTap();
+      },
+      onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
         child: Container(
@@ -3733,10 +4334,11 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
-              end:   Alignment.bottomRight,
+              end: Alignment.bottomRight,
               colors: gradientColors,
             ),
-            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
+            borderRadius:
+                BorderRadius.circular(8), // ORDEM 45: mosaico industrial
             boxShadow: [
               BoxShadow(
                 color: gradientColors.last.withOpacity(0.40),
@@ -3748,7 +4350,8 @@ class _HomeCalculadoraCardState extends State<_HomeCalculadoraCard>
           child: Row(children: [
             // ── Ícone ──────────────────────────────────────────────────────
             Container(
-              width: 52, height: 52,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: accentColor.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(14),
@@ -3820,46 +4423,59 @@ class _AgeCard extends StatefulWidget {
   State<_AgeCard> createState() => _AgeCardState();
 }
 
-class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin {
+class _AgeCardState extends State<_AgeCard>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
-    _ctrl  = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 120));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 120));
     _scale = Tween<double>(begin: 1.0, end: 0.96)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
   }
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final g = widget.gradientColors;
     return GestureDetector(
-      onTapDown:    (_) { _ctrl.forward(); AppHaptics.light(context); },
-      onTapUp:      (_) { _ctrl.reverse(); widget.onTap(); },
-      onTapCancel:  ()  => _ctrl.reverse(),
+      onTapDown: (_) {
+        _ctrl.forward();
+        AppHaptics.light(context);
+      },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
         child: Container(
-          height: 92,  // ORDEM 43: +10% altura premium (84×1.10=92.4→92)
+          height: 92, // ORDEM 43: +10% altura premium (84×1.10=92.4→92)
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: g,
             ),
-            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
+            borderRadius:
+                BorderRadius.circular(8), // ORDEM 45: mosaico industrial
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),  // ORDEM 12: slim
+            padding: const EdgeInsets.symmetric(
+                horizontal: 13, vertical: 11), // ORDEM 12: slim
             child: Row(children: [
               Container(
-                width: 42, height: 42,
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
                   color: widget.accentColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(12),
@@ -3900,8 +4516,7 @@ class _AgeCardState extends State<_AgeCard> with SingleTickerProviderStateMixin 
                 ),
               ),
               const Icon(Icons.chevron_right_rounded,
-                  size: 20,
-                  color: Colors.white),
+                  size: 20, color: Colors.white),
             ]),
           ),
         ),
@@ -3921,10 +4536,12 @@ class _HomeCalculadoraFarmacosCard extends StatefulWidget {
   final bool isEs;
   const _HomeCalculadoraFarmacosCard({required this.dark, required this.isEs});
   @override
-  State<_HomeCalculadoraFarmacosCard> createState() => _HomeCalculadoraFarmacosCardState();
+  State<_HomeCalculadoraFarmacosCard> createState() =>
+      _HomeCalculadoraFarmacosCardState();
 }
 
-class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCard>
+class _HomeCalculadoraFarmacosCardState
+    extends State<_HomeCalculadoraFarmacosCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _scale;
@@ -3932,17 +4549,21 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
   @override
   void initState() {
     super.initState();
-    _ctrl  = AnimationController(vsync: this, duration: const Duration(milliseconds: 120));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 120));
     _scale = Tween<double>(begin: 1.0, end: 0.96)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
   }
 
   @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   void _openCalc() {
     AppHaptics.light(context);
-    Navigator.of(context, rootNavigator: true).push(
+    Navigator.of(context, rootNavigator: !kIsWeb).push(
       _HomeScreenState._slide(const CalculadoraScreen()),
     );
   }
@@ -3957,35 +4578,49 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
   @override
   Widget build(BuildContext context) {
     // B141: Vibrant Purple — #7e22ce → #a855f7
-    const gradientColors = [Color(0xFF3B0764), Color(0xFF7e22ce), Color(0xFFa855f7)];
+    const gradientColors = [
+      Color(0xFF3B0764),
+      Color(0xFF7e22ce),
+      Color(0xFFa855f7)
+    ];
     const accentColor = Color(0xFFe9d5ff);
 
     return GestureDetector(
-      onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
-      onTapUp:     (_) { _ctrl.reverse(); _openCalc(); },
-      onTapCancel: ()  => _ctrl.reverse(),
+      onTapDown: (_) {
+        _ctrl.forward();
+        AppHaptics.light(context);
+      },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        _openCalc();
+      },
+      onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),  // ORDEM 43: 14→16 (+14% impacto visual ≈ 108%)
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16), // ORDEM 43: 14→16 (+14% impacto visual ≈ 108%)
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
-              end:   Alignment.bottomRight,
+              end: Alignment.bottomRight,
               colors: gradientColors,
             ),
-            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
+            borderRadius:
+                BorderRadius.circular(8), // ORDEM 45: mosaico industrial
           ),
           // B139: sub-chip FÁRMACOS removido — card limpo com apenas a linha principal
           child: Row(children: [
             Container(
-              width: 48, height: 48,  // ORDEM 12: ícone slim (era 52)
+              width: 48, height: 48, // ORDEM 12: ícone slim (era 52)
               decoration: BoxDecoration(
                 color: accentColor.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(Icons.calculate_rounded, size: 26, color: accentColor),
+              child: const Icon(Icons.calculate_rounded,
+                  size: 26, color: accentColor),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -3994,7 +4629,9 @@ class _HomeCalculadoraFarmacosCardState extends State<_HomeCalculadoraFarmacosCa
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    widget.isEs ? 'CALCULADORA Y FÁRMACOS' : 'CALCULADORA E FÁRMACOS',
+                    widget.isEs
+                        ? 'CALCULADORA Y FÁRMACOS'
+                        : 'CALCULADORA E FÁRMACOS',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
@@ -4045,22 +4682,32 @@ class _HomeBibliotecaHClinicaRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       // ── BIBLIOTECA — B141: Elegant Gray #475569 → #64748b ───────────────
-      Expanded(child: _AgeCard(
+      Expanded(
+          child: _AgeCard(
         icon: Icons.menu_book_rounded,
         label: 'BIBLIOTECA',
         subtitle: isEs ? 'Referencias clínicas' : 'Referências clínicas',
-        gradientColors: const [Color(0xFF1e293b), Color(0xFF475569), Color(0xFF64748b)],
+        gradientColors: const [
+          Color(0xFF1e293b),
+          Color(0xFF475569),
+          Color(0xFF64748b)
+        ],
         accentColor: const Color(0xFFe2e8f0),
         dark: dark,
         onTap: () => onTabChange(5),
       )),
-      const SizedBox(width: 4),  // ORDEM 45: mosaico 12→4 gap horizontal
+      const SizedBox(width: 4), // ORDEM 45: mosaico 12→4 gap horizontal
       // ── H. CLÍNICA — B141: Orange Vibrant #ea580c → #fb923c ─────────────
-      Expanded(child: _AgeCard(
+      Expanded(
+          child: _AgeCard(
         icon: Icons.assignment_ind_outlined,
         label: 'H. CLÍNICA',
         subtitle: isEs ? 'Historial del paciente' : 'Histórico do paciente',
-        gradientColors: const [Color(0xFF431407), Color(0xFFea580c), Color(0xFFfb923c)],
+        gradientColors: const [
+          Color(0xFF431407),
+          Color(0xFFea580c),
+          Color(0xFFfb923c)
+        ],
         accentColor: const Color(0xFFfed7aa),
         dark: dark,
         onTap: () => onTabChange(3),
@@ -4079,7 +4726,8 @@ class _HomeMiGuardiaSection extends StatelessWidget {
   final Function(dynamic) onOpenDrug;
   final Function(String) onOpenCalc;
   final VoidCallback onManageTap;
-  // Build 195: passa PacienteSession para pr\u00e9-carregar ao navegar para InternacionScreen
+  final VoidCallback onAddPatient;
+
   final void Function(PacienteSession session)? onOpenInternacion;
 
   const _HomeMiGuardiaSection({
@@ -4088,55 +4736,20 @@ class _HomeMiGuardiaSection extends StatelessWidget {
     required this.onOpenDrug,
     required this.onOpenCalc,
     required this.onManageTap,
+    required this.onAddPatient,
     this.onOpenInternacion,
   });
 
   @override
   Widget build(BuildContext context) {
-    final cardBg = dark ? const Color(0xFF252930) : Colors.white;
-    // BUILD 437 [PASSO 1]: acento lateral adaptativo.
-    // Dark: dourado quente / Light: slate-400 sutil (sem neon amarelo sobre branco)
-    final leftAccent = dark ? const Color(0xFFC5A365) : Colors.grey.shade400;
-    // BUILD 437 [PASSO 1]: borda do card adaptativa.
-    // Dark: branco translúcido / Light: grey.shade300 (borda fina sutil premium)
-    final border = dark
-        ? Colors.white.withOpacity(0.07)
-        : Colors.grey.shade300;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: border, width: 1),
-        boxShadow: dark
-            ? []
-            : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(width: 3, color: leftAccent),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-                child: MeuPlantaoDashboard(
-                  onOpenDrug:  onOpenDrug,
-                  onOpenCalc:  onOpenCalc,
-                  onManageTap: onManageTap,
-                  onOpenInternacion: onOpenInternacion,
-                ),
-              ),
-            ),
-          ],
-        ),
+    return SizedBox(
+      width: double.infinity,
+      child: MeuPlantaoDashboard(
+        onOpenDrug: onOpenDrug,
+        onOpenCalc: onOpenCalc,
+        onManageTap: onManageTap,
+        onAddPatient: onAddPatient,
+        onOpenInternacion: onOpenInternacion,
       ),
     );
   }
@@ -4159,9 +4772,7 @@ class _HomeDivider extends StatelessWidget {
             gradient: LinearGradient(
               colors: [
                 Colors.transparent,
-                dark
-                    ? Colors.white.withOpacity(0.10)
-                    : const Color(0xFFCDD1DC),
+                dark ? Colors.white.withOpacity(0.10) : const Color(0xFFCDD1DC),
                 Colors.transparent,
               ],
             ),
@@ -4189,9 +4800,11 @@ class _HomeSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor  = dark ? const Color(0xFF10B981) : const Color(0xFF0A7C4E);
-    final textColor  = dark ? Colors.white.withOpacity(0.72) : const Color(0xFF374151);
-    final lineColor  = dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE5E7EB);
+    final iconColor = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final textColor =
+        dark ? Colors.white.withOpacity(0.72) : const Color(0xFF374151);
+    final lineColor =
+        dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE5E7EB);
 
     return Row(children: [
       Container(
@@ -4273,9 +4886,15 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown:   (_) { _ctrl.forward(); AppHaptics.light(context); },
-      onTapUp:     (_) { _ctrl.reverse(); widget.onTap(); },
-      onTapCancel: ()  => _ctrl.reverse(),
+      onTapDown: (_) {
+        _ctrl.forward();
+        AppHaptics.light(context);
+      },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
         child: Container(
@@ -4376,175 +4995,59 @@ class _HomeCardHalfState extends State<_HomeCardHalf>
 class _ShiftTimerBar extends StatefulWidget {
   final bool dark;
   final bool isEs;
-  const _ShiftTimerBar({required this.dark, required this.isEs});
+  final GlobalKey<_HistorialCompactCardState> ownerKey;
+  final ValueNotifier<_TimerVisualState> visualState;
+
+  const _ShiftTimerBar({
+    required this.dark,
+    required this.isEs,
+    required this.ownerKey,
+    required this.visualState,
+  });
 
   @override
   State<_ShiftTimerBar> createState() => _ShiftTimerBarState();
 }
 
-class _ShiftTimerBarState extends State<_ShiftTimerBar>
-    with WidgetsBindingObserver {
-  // iOS FIX: Timer.periodic congela quando o iOS suspende o isolate Dart.
-  // Persiste DateTime de término em SharedPreferences; recalcula delta no resume.
-  static const _kShiftEndKey   = 'shift_timer_end_time';
-  static const _kShiftLabelKey = 'shift_timer_label';
-  static const _kShiftNotifKey = 'shift_timer_notif_id';
+class _ShiftTimerBarState extends State<_ShiftTimerBar> {
+  String _formatTime(int seconds) {
+    if (seconds <= 0) return '0s';
 
-  int    _notifId        = -1;    // ID da notificação agendada
-  bool   _active         = false; // timer ativo?
-  int    _remainingSecs  = 0;     // segundos restantes (recalculado por wall-clock)
-  Timer? _ticker;
-  String _label          = '';    // descrição do timer ativo
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    final remainingSeconds = seconds % 60;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _restoreTimerFromPrefs();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _restoreTimerFromPrefs();
-    }
-  }
-
-  Future<void> _restoreTimerFromPrefs() async {
-    final prefs  = await SharedPreferences.getInstance();
-    final endIso = prefs.getString(_kShiftEndKey);
-    if (endIso == null) return;
-
-    final endTime = DateTime.tryParse(endIso);
-    if (endTime == null) {
-      await prefs.remove(_kShiftEndKey);
-      return;
+    if (hours > 0) {
+      return '${hours}h ${minutes.toString().padLeft(2, '0')}m';
     }
 
-    final remaining = endTime.difference(DateTime.now()).inSeconds;
-    if (remaining <= 0) {
-      await _clearTimerPrefs();
-      if (mounted && _active) setState(() { _active = false; _remainingSecs = 0; });
-      return;
+    if (minutes > 0) {
+      return '${minutes}m ${remainingSeconds.toString().padLeft(2, '0')}s';
     }
 
-    final label   = prefs.getString(_kShiftLabelKey) ?? '';
-    final notifId = prefs.getInt(_kShiftNotifKey) ?? -1;
-
-    _ticker?.cancel();
-    if (mounted) {
-      setState(() {
-        _active        = true;
-        _remainingSecs = remaining;
-        _label         = label;
-        _notifId       = notifId;
-      });
-    }
-    _ticker = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) { t.cancel(); return; }
-      final secs = endTime.difference(DateTime.now()).inSeconds;
-      setState(() {
-        _remainingSecs = secs > 0 ? secs : 0;
-        if (secs <= 0) { _active = false; t.cancel(); _clearTimerPrefs(); }
-      });
-    });
-  }
-
-  Future<void> _clearTimerPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_kShiftEndKey);
-    await prefs.remove(_kShiftLabelKey);
-    await prefs.remove(_kShiftNotifKey);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _ticker?.cancel();
-    if (_notifId >= 0) NotificationService.cancel(_notifId);
-    super.dispose();
-  }
-
-  void _start(int seconds, String description) {
-    // Cancela timer anterior
-    _ticker?.cancel();
-    if (_notifId >= 0) NotificationService.cancel(_notifId);
-
-    final label = description.trim().isNotEmpty
-        ? description.trim()
-        : (widget.isEs ? 'Recordatorio de Guardia' : 'Lembrete de Plantão');
-
-    final endTime = DateTime.now().add(Duration(seconds: seconds));
-
-    // Persiste endTime para restaurar o countdown se o iOS suspender o app
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString(_kShiftEndKey,   endTime.toIso8601String());
-      prefs.setString(_kShiftLabelKey, label);
-    });
-
-    setState(() {
-      _active        = true;
-      _remainingSecs = seconds;
-      _label         = label;
-    });
-
-    // Wall-clock based tick — immune to iOS background suspension
-    _ticker = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) { t.cancel(); return; }
-      final secs = endTime.difference(DateTime.now()).inSeconds;
-      setState(() {
-        _remainingSecs = secs > 0 ? secs : 0;
-        if (secs <= 0) { _active = false; t.cancel(); _clearTimerPrefs(); }
-      });
-    });
-
-    // Agenda notificação nativa e registra callback de parada
-    NotificationService.scheduleTimer(
-      seconds: seconds,
-      title:   'MedCases Pro',
-      body:    label,
-      payload: 'shift_timer',
-    ).then((id) {
-      if (!mounted) return;
-      _notifId = id;
-      // Persiste notifId para poder cancelar ao restaurar
-      SharedPreferences.getInstance().then((p) => p.setInt(_kShiftNotifKey, id));
-      // Quando o pop-up tocar "Parar", o _cancel() desta barra é chamado
-      NotificationService.registerStopCallback(id, _cancel);
-    });
-  }
-
-  void _cancel() {
-    _ticker?.cancel();
-    if (_notifId >= 0) {
-      NotificationService.cancel(_notifId);
-      _notifId = -1;
-    }
-    _clearTimerPrefs();
-    if (mounted) setState(() { _active = false; _remainingSecs = 0; _label = ''; });
-  }
-
-  String get _timeLabel {
-    if (_remainingSecs <= 0) return '0s';
-    final h = _remainingSecs ~/ 3600;
-    final m = (_remainingSecs % 3600) ~/ 60;
-    final s = _remainingSecs % 60;
-    if (h > 0) return '${h}h ${m.toString().padLeft(2,'0')}m';
-    if (m > 0) return '${m}m ${s.toString().padLeft(2,'0')}s';
-    return '${s}s';
+    return '${remainingSeconds}s';
   }
 
   void _openSheet() {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _ShiftTimerSheet(
         dark: widget.dark,
         isEs: widget.isEs,
-        onStart: _start,
+        onStart: (seconds, description) {
+          widget.ownerKey.currentState?.startFromShiftConsumer(
+            seconds,
+            description,
+          );
+        },
       ),
     );
+  }
+
+  void _cancelFromVisualConsumer() {
+    widget.ownerKey.currentState?.cancelFromVisualConsumer();
   }
 
   @override
@@ -4552,79 +5055,114 @@ class _ShiftTimerBarState extends State<_ShiftTimerBar>
     final dark = widget.dark;
     final isEs = widget.isEs;
 
-    final bg     = dark ? const Color(0xFF2D3340) : const Color(0xFFECFDF5);
+    final bg = dark ? const Color(0xFF2D3340) : const Color(0x140D6B57);
     final border = dark
-        ? const Color(0xFF10B981).withOpacity(0.35)
-        : const Color(0xFF10B981).withOpacity(0.25);
-    final accent = const Color(0xFF10B981);
-    final textC  = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subC   = dark ? Colors.white54 : const Color(0xFF4B7A62);
+        ? const Color(0xFF0D6B57).withOpacity(0.35)
+        : const Color(0xFF0D6B57).withOpacity(0.25);
+    final accent = const Color(0xFF0D6B57);
+    final textC = dark ? Colors.white : const Color(0xFF1A1D23);
+    final subC = dark ? Colors.white54 : const Color(0xFF4B7A62);
 
-    return GestureDetector(
-      onTap: _active ? null : _openSheet,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: bg,
-          border: Border.all(color: border),
-        ),
-        child: Row(children: [
-          // Ícone
-          Container(
-            width: 36, height: 36,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: accent.withOpacity(_active ? 0.18 : 0.10),
+    return ValueListenableBuilder<_TimerVisualState>(
+      valueListenable: widget.visualState,
+      builder: (context, state, _) {
+        final active = state.active;
+        final label = state.label;
+        final remainingSecs = state.remainingSecs;
+
+        return GestureDetector(
+          onTap: active ? null : _openSheet,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 11,
             ),
-            child: Icon(
-              _active ? Icons.alarm_on_rounded : Icons.alarm_add_rounded,
-              color: _active ? const Color(0xFF10B981) : accent,
-              size: 19,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              color: bg,
+              border: Border.all(color: border),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: accent.withOpacity(active ? 0.18 : 0.10),
+                  ),
+                  child: Icon(
+                    active ? Icons.alarm_on_rounded : Icons.alarm_add_rounded,
+                    color: active ? const Color(0xFF0D6B57) : accent,
+                    size: 19,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        active
+                            ? (label.isNotEmpty
+                                ? label
+                                : (isEs
+                                    ? 'Recordatorio de Guardia'
+                                    : 'Lembrete de Plantão'))
+                            : (isEs
+                                ? 'Timer Rápido de Guardia'
+                                : 'Timer Rápido de Plantão'),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: textC,
+                          letterSpacing: -0.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        active
+                            ? _formatTime(remainingSecs)
+                            : (isEs
+                                ? 'Toca para iniciar un recordatorio'
+                                : 'Toque para iniciar um lembrete'),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: subC,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (active)
+                  GestureDetector(
+                    onTap: _cancelFromVisualConsumer,
+                    child: Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFEF4444).withOpacity(0.10),
+                      ),
+                      child: const Icon(
+                        Icons.close_rounded,
+                        size: 16,
+                        color: Color(0xFFEF4444),
+                      ),
+                    ),
+                  )
+                else
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: subC,
+                    size: 20,
+                  ),
+              ],
             ),
           ),
-          const SizedBox(width: 12),
-          // Texto
-          Expanded(child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _active
-                    ? (_label.isNotEmpty ? _label
-                        : (isEs ? 'Recordatorio de Guardia' : 'Lembrete de Plantão'))
-                    : (isEs ? 'Timer Rápido de Guardia' : 'Timer Rápido de Plantão'),
-                style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w800,
-                  color: textC, letterSpacing: -0.2),
-                maxLines: 1, overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                _active
-                    ? _timeLabel
-                    : (isEs ? 'Toca para iniciar un recordatorio' : 'Toque para iniciar um lembrete'),
-                style: TextStyle(fontSize: 11, color: subC),
-              ),
-            ],
-          )),
-          // Botão cancelar (quando ativo) ou seta
-          if (_active)
-            GestureDetector(
-              onTap: _cancel,
-              child: Container(
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFEF4444).withOpacity(0.10),
-                ),
-                child: const Icon(Icons.close_rounded,
-                  size: 16, color: Color(0xFFEF4444)),
-              ),
-            )
-          else
-            Icon(Icons.chevron_right_rounded, color: subC, size: 20),
-        ]),
-      ),
+        );
+      },
     );
   }
 }
@@ -4649,27 +5187,30 @@ class _ShiftTimerSheet extends StatefulWidget {
 
 class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
   // Seletor: horas + minutos separados
-  int _hours   = 0;
+  int _hours = 0;
   int _minutes = 5;
 
   final _descCtrl = TextEditingController();
 
   // Presets rápidos: (label, hours, minutes)
   static const _presets = [
-    ('5 min',  0,  5),
+    ('5 min', 0, 5),
     ('10 min', 0, 10),
     ('15 min', 0, 15),
     ('30 min', 0, 30),
-    ('1 h',    1,  0),
-    ('2 h',    2,  0),
-    ('4 h',    4,  0),
-    ('6 h',    6,  0),
+    ('1 h', 1, 0),
+    ('2 h', 2, 0),
+    ('4 h', 4, 0),
+    ('6 h', 6, 0),
   ];
 
   int get _totalSeconds => (_hours * 60 + _minutes) * 60;
 
   @override
-  void dispose() { _descCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    _descCtrl.dispose();
+    super.dispose();
+  }
 
   void _confirm() {
     if (_totalSeconds <= 0) return;
@@ -4679,14 +5220,14 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final dark  = widget.dark;
-    final isEs  = widget.isEs;
-    final bg    = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+    final bg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textC = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subC  = dark ? Colors.white38 : Colors.black38;
-    final divC  = dark ? Colors.white10 : const Color(0xFFEEEEEE);
-    final accent = const Color(0xFF10B981);
-    final kb    = MediaQuery.viewInsetsOf(context).bottom;
+    final subC = dark ? Colors.white38 : Colors.black38;
+    final divC = dark ? Colors.white10 : const Color(0xFFEEEEEE);
+    final accent = const Color(0xFF0D6B57);
+    final kb = MediaQuery.viewInsetsOf(context).bottom;
 
     return Container(
       decoration: BoxDecoration(
@@ -4695,15 +5236,16 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
       ),
       padding: EdgeInsets.fromLTRB(20, 0, 20, kb + 24),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-
         // Handle
         Padding(
           padding: const EdgeInsets.only(top: 12, bottom: 8),
-          child: Center(child: Container(
-            width: 36, height: 4,
+          child: Center(
+              child: Container(
+            width: 36,
+            height: 4,
             decoration: BoxDecoration(
-              color: dark ? Colors.white24 : Colors.black12,
-              borderRadius: BorderRadius.circular(2)),
+                color: dark ? Colors.white24 : Colors.black12,
+                borderRadius: BorderRadius.circular(2)),
           )),
         ),
 
@@ -4712,7 +5254,8 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
           padding: const EdgeInsets.only(bottom: 18),
           child: Row(children: [
             Container(
-              width: 38, height: 38,
+              width: 38,
+              height: 38,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: accent.withOpacity(0.12),
@@ -4720,40 +5263,62 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
               child: Icon(Icons.alarm_add_rounded, color: accent, size: 20),
             ),
             const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                isEs ? 'Timer Rápido de Guardia' : 'Timer Rápido de Plantão',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: textC),
-              ),
-              Text(
-                isEs ? 'Recibe una notificación cuando el tiempo acabe'
-                     : 'Receba uma notificação quando o tempo acabar',
-                style: TextStyle(fontSize: 11, color: subC),
-              ),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Text(
+                    isEs
+                        ? 'Timer Rápido de Guardia'
+                        : 'Timer Rápido de Plantão',
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: textC),
+                  ),
+                  Text(
+                    isEs
+                        ? 'Recibe una notificación cuando el tiempo acabe'
+                        : 'Receba uma notificação quando o tempo acabar',
+                    style: TextStyle(fontSize: 11, color: subC),
+                  ),
+                ])),
           ]),
         ),
 
         // Presets rápidos
         Wrap(
-          spacing: 8, runSpacing: 8,
+          spacing: 8,
+          runSpacing: 8,
           children: _presets.map((p) {
             final sel = _hours == p.$2 && _minutes == p.$3;
             return GestureDetector(
-              onTap: () => setState(() { _hours = p.$2; _minutes = p.$3; }),
+              onTap: () => setState(() {
+                _hours = p.$2;
+                _minutes = p.$3;
+              }),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: sel ? accent : (dark ? const Color(0xFF252930) : const Color(0xFFF3F4F6)),
+                  color: sel
+                      ? accent
+                      : (dark
+                          ? const Color(0xFF252930)
+                          : const Color(0xFFF3F4F6)),
                   border: Border.all(
-                    color: sel ? accent : (dark ? Colors.white12 : const Color(0xFFE0E0E0))),
+                      color: sel
+                          ? accent
+                          : (dark ? Colors.white12 : const Color(0xFFE0E0E0))),
                 ),
-                child: Text(p.$1, style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w800,
-                  color: sel ? Colors.white : textC,
-                )),
+                child: Text(p.$1,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: sel ? Colors.white : textC,
+                    )),
               ),
             );
           }).toList(),
@@ -4766,48 +5331,86 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
         // Seletor manual: horas e minutos
         Row(children: [
           // Horas
-          Expanded(child: Column(children: [
+          Expanded(
+              child: Column(children: [
             Text(isEs ? 'Horas' : 'Horas', // igual nos dois idiomas
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                color: subC, letterSpacing: 0.5)),
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: subC,
+                    letterSpacing: 0.5)),
             const SizedBox(height: 8),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               _StepBtn(
                 icon: Icons.remove,
-                onTap: () { if (_hours > 0) setState(() => _hours--); },
+                onTap: () {
+                  if (_hours > 0) setState(() => _hours--);
+                },
                 dark: dark,
               ),
-              SizedBox(width: 48, child: Center(
-                child: Text('$_hours', style: TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.w900, color: textC)),
-              )),
+              SizedBox(
+                  width: 48,
+                  child: Center(
+                    child: Text('$_hours',
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            color: textC)),
+                  )),
               _StepBtn(
                 icon: Icons.add,
-                onTap: () { if (_hours < 12) setState(() => _hours++); },
+                onTap: () {
+                  if (_hours < 12) setState(() => _hours++);
+                },
                 dark: dark,
               ),
             ]),
           ])),
           Container(width: 1, height: 48, color: divC),
           // Minutos
-          Expanded(child: Column(children: [
+          Expanded(
+              child: Column(children: [
             Text(isEs ? 'Minutos' : 'Minutos', // igual nos dois idiomas
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                color: subC, letterSpacing: 0.5)),
+                style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: subC,
+                    letterSpacing: 0.5)),
             const SizedBox(height: 8),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               _StepBtn(
                 icon: Icons.remove,
-                onTap: () { if (_minutes > 0) setState(() => _minutes--); else if (_hours > 0) { _hours--; _minutes = 59; setState((){}); } },
+                onTap: () {
+                  if (_minutes > 0)
+                    setState(() => _minutes--);
+                  else if (_hours > 0) {
+                    _hours--;
+                    _minutes = 59;
+                    setState(() {});
+                  }
+                },
                 dark: dark,
               ),
-              SizedBox(width: 48, child: Center(
-                child: Text(_minutes.toString().padLeft(2,'0'), style: TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.w900, color: textC)),
-              )),
+              SizedBox(
+                  width: 48,
+                  child: Center(
+                    child: Text(_minutes.toString().padLeft(2, '0'),
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            color: textC)),
+                  )),
               _StepBtn(
                 icon: Icons.add,
-                onTap: () { if (_minutes < 59) setState(() => _minutes++); else { _hours++; _minutes = 0; setState((){}); } },
+                onTap: () {
+                  if (_minutes < 59)
+                    setState(() => _minutes++);
+                  else {
+                    _hours++;
+                    _minutes = 0;
+                    setState(() {});
+                  }
+                },
                 dark: dark,
               ),
             ]),
@@ -4835,7 +5438,8 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
                   : 'Descrição (ex: Ver exame do Leito 4)…',
               hintStyle: TextStyle(fontSize: 13, color: subC),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               prefixIcon: Icon(Icons.edit_note_rounded, color: subC, size: 18),
             ),
           ),
@@ -4850,7 +5454,9 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
             onPressed: _totalSeconds > 0 ? _confirm : null,
             icon: const Icon(Icons.alarm_on_rounded, size: 18),
             label: Text(
-              isEs ? 'Iniciar timer' : 'Iniciar timer', // igual nos dois idiomas
+              isEs
+                  ? 'Iniciar timer'
+                  : 'Iniciar timer', // igual nos dois idiomas
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
             ),
             style: ElevatedButton.styleFrom(
@@ -4858,7 +5464,8 @@ class _ShiftTimerSheetState extends State<_ShiftTimerSheet> {
               foregroundColor: Colors.white,
               disabledBackgroundColor: accent.withOpacity(0.35),
               padding: const EdgeInsets.symmetric(vertical: 15),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
               elevation: 0,
             ),
           ),
@@ -4880,13 +5487,15 @@ class _StepBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 32, height: 32,
+        width: 32,
+        height: 32,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: dark ? Colors.white.withOpacity(0.08) : const Color(0xFFEFF2F7),
+          color:
+              dark ? Colors.white.withOpacity(0.08) : const Color(0xFFEFF2F7),
         ),
-        child: Icon(icon, size: 16,
-          color: dark ? Colors.white70 : const Color(0xFF334155)),
+        child: Icon(icon,
+            size: 16, color: dark ? Colors.white70 : const Color(0xFF334155)),
       ),
     );
   }
@@ -4903,6 +5512,7 @@ class _HistorialCompactCard extends StatefulWidget {
   final Function(String) openProtocol;
   final VoidCallback onOpenNotes;
   final VoidCallback? onCheckUpdate;
+  final ValueNotifier<_TimerVisualState>? visualState;
 
   const _HistorialCompactCard({
     required this.dark,
@@ -4910,10 +5520,82 @@ class _HistorialCompactCard extends StatefulWidget {
     required this.openProtocol,
     required this.onOpenNotes,
     this.onCheckUpdate,
+    this.visualState,
+    super.key,
   });
 
   @override
   State<_HistorialCompactCard> createState() => _HistorialCompactCardState();
+}
+
+class _ClinicalTimerEntry {
+  const _ClinicalTimerEntry({
+    required this.notificationId,
+    required this.endTime,
+    required this.label,
+    required this.durationSeconds,
+    this.payload = 'shift_timer',
+    this.lang = 'pt',
+  });
+
+  final int notificationId;
+  final DateTime endTime;
+  final String label;
+  final int durationSeconds;
+  final String payload;
+  final String lang;
+
+  String get source {
+    if (payload.startsWith('note:')) return 'note';
+    if (payload.startsWith('cockpit:')) return 'cockpit';
+    return 'shift';
+  }
+
+  int get remainingSeconds {
+    final value = endTime.difference(DateTime.now()).inSeconds;
+    return value > 0 ? value : 0;
+  }
+
+  double get progress {
+    if (durationSeconds <= 0) return 0;
+    return (remainingSeconds / durationSeconds).clamp(0.0, 1.0).toDouble();
+  }
+
+  Map<String, Object> toJson() => <String, Object>{
+        'notificationId': notificationId,
+        'endTime': endTime.toIso8601String(),
+        'label': label,
+        'durationSeconds': durationSeconds,
+        'payload': payload,
+        'lang': lang,
+        'source': source,
+      };
+
+  static _ClinicalTimerEntry? fromJson(Object? value) {
+    if (value is! Map) return null;
+
+    final map = Map<String, dynamic>.from(value);
+    final endTime = DateTime.tryParse(map['endTime']?.toString() ?? '');
+    if (endTime == null) return null;
+
+    final notificationId = map['notificationId'];
+    final durationSeconds = map['durationSeconds'];
+    if (notificationId is! num || durationSeconds is! num) {
+      return null;
+    }
+
+    final rawPayload = map['payload']?.toString().trim() ?? '';
+    final rawLang = map['lang']?.toString() ?? '';
+
+    return _ClinicalTimerEntry(
+      notificationId: notificationId.toInt(),
+      endTime: endTime,
+      label: map['label']?.toString() ?? '',
+      durationSeconds: durationSeconds.toInt().clamp(1, 86400),
+      payload: rawPayload.isEmpty ? 'shift_timer' : rawPayload,
+      lang: rawLang == 'es' ? 'es' : 'pt',
+    );
+  }
 }
 
 class _HistorialCompactCardState extends State<_HistorialCompactCard>
@@ -4922,27 +5604,148 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
   // iOS FIX: Timer.periodic congela quando o iOS suspende o isolate Dart.
   // Solução: persiste o DateTime de término em SharedPreferences e recalcula
   // o delta restante toda vez que o app retorna ao foreground.
-  static const _kPomodoroEndKey   = 'pomodoro_end_time';
+  static const _kPomodoroEndKey = 'pomodoro_end_time';
   static const _kPomodoroLabelKey = 'pomodoro_label';
   static const _kPomodoroNotifKey = 'pomodoro_notif_id';
+  static const _kPomodoroTimersKey = 'pomodoro_timers_v2';
+  static const int _maxTimers = 5;
 
   Timer? _countdownTimer;
-  int    _remainingSecs = 0;
-  int    _notifId       = 0;
-  String _timerLabel    = '';   // ex: "Box 3 — João"
+  int _remainingSecs = 0;
+  int _notifId = 0;
+  String _timerLabel = '';
 
-  // BUILD 331/QA: guard-clause para evitar dupla instância do _PomodoroSheet.
-  // Sem essa flag, toques rápidos e repetidos no badge do timer enquanto o sheet
-  // anima sua abertura podem empilhar múltiplos showModalBottomSheet() na stack
-  // do Navigator, corrompendo o estado do roteamento do Flutter.
+  final List<_ClinicalTimerEntry> _timers = <_ClinicalTimerEntry>[];
+  final ValueNotifier<List<_ClinicalTimerEntry>> _timerListNotifier =
+      ValueNotifier<List<_ClinicalTimerEntry>>(
+    const <_ClinicalTimerEntry>[],
+  );
+  bool _timerListDisposed = false;
+
+  // Guard de rota: continua impedindo sheets duplicados.
   bool _sheetIsOpen = false;
 
-  bool get _timerActive => _remainingSecs > 0;
+  bool get _timerActive => _timers.isNotEmpty;
+
+  _ClinicalTimerEntry? get _primaryTimer {
+    if (_timers.isEmpty) return null;
+    return _timers.reduce(
+      (current, next) =>
+          current.endTime.isBefore(next.endTime) ? current : next,
+    );
+  }
+
+  double get _primaryTimerProgress => _primaryTimer?.progress ?? 0;
 
   String get _remainingDisplay {
     final m = _remainingSecs ~/ 60;
     final s = _remainingSecs % 60;
-    return '${m.toString().padLeft(2,'0')}:${s.toString().padLeft(2,'0')}';
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  void _publishTimerVisualState() {
+    _syncProjection();
+
+    final sorted = List<_ClinicalTimerEntry>.of(_timers)
+      ..sort((a, b) => a.endTime.compareTo(b.endTime));
+    if (!_timerListDisposed) {
+      _timerListNotifier.value = List<_ClinicalTimerEntry>.unmodifiable(sorted);
+    }
+
+    final visualState = widget.visualState;
+    if (visualState == null) return;
+
+    final primary = _primaryTimer;
+    final next = _TimerVisualState(
+      active: _timerActive,
+      remainingSecs: _remainingSecs,
+      label: _timerLabel,
+      activeCount: _timers.length,
+      progress: primary?.progress ?? 0,
+    );
+
+    final current = visualState.value;
+    if (current.active == next.active &&
+        current.remainingSecs == next.remainingSecs &&
+        current.label == next.label &&
+        current.activeCount == next.activeCount &&
+        (current.progress - next.progress).abs() < 0.0001) {
+      return;
+    }
+    visualState.value = next;
+  }
+
+  void _syncProjection() {
+    final primary = _primaryTimer;
+    if (primary == null) {
+      _remainingSecs = 0;
+      _notifId = 0;
+      _timerLabel = '';
+      return;
+    }
+    _remainingSecs = primary.remainingSeconds;
+    _notifId = primary.notificationId;
+    _timerLabel = primary.label;
+  }
+
+  void _startTicker() {
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+    if (_timers.isEmpty) return;
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      _tickTimers();
+    });
+  }
+
+  void _tickTimers() {
+    final expired = _timers
+        .where((entry) => entry.remainingSeconds <= 0)
+        .toList(growable: false);
+    if (expired.isNotEmpty) {
+      _timers.removeWhere((entry) => entry.remainingSeconds <= 0);
+      unawaited(_persistTimers());
+      _onTimerExpired();
+    }
+    if (_timers.isEmpty) {
+      _countdownTimer?.cancel();
+      _countdownTimer = null;
+    }
+    if (mounted) setState(_syncProjection);
+    _publishTimerVisualState();
+  }
+
+  Future<void> _persistTimers() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _kPomodoroTimersKey,
+      jsonEncode(_timers.map((entry) => entry.toJson()).toList()),
+    );
+    final primary = _primaryTimer;
+    if (primary == null) {
+      await prefs.remove(_kPomodoroEndKey);
+      await prefs.remove(_kPomodoroLabelKey);
+      await prefs.remove(_kPomodoroNotifKey);
+      return;
+    }
+    await prefs.setString(_kPomodoroEndKey, primary.endTime.toIso8601String());
+    await prefs.setString(_kPomodoroLabelKey, primary.label);
+    if (primary.notificationId > 0) {
+      await prefs.setInt(_kPomodoroNotifKey, primary.notificationId);
+    }
+  }
+
+  void _registerEntryCallbacks(_ClinicalTimerEntry entry) {
+    if (entry.notificationId == 0) return;
+
+    NotificationService.registerStopCallback(
+      entry.notificationId,
+      () => _cancelTimerById(entry.notificationId),
+    );
+    NotificationService.registerSnoozeCallback(
+      entry.notificationId,
+      (minutes) => _snoozeTimerEntry(entry, minutes),
+    );
   }
 
   // ── Lifecycle ─────────────────────────────────────────────
@@ -4950,6 +5753,11 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    ClinicalTimerExternalBridge._bind(
+      ownerToken: this,
+      handler: _adoptExistingNotification,
+    );
+    _publishTimerVisualState();
     // Restore timer if app was killed/suspended while timer was running
     _restoreTimerFromPrefs();
   }
@@ -4964,224 +5772,401 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
 
   Future<void> _restoreTimerFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    final endIso = prefs.getString(_kPomodoroEndKey);
-    if (endIso == null) return;
+    final restored = <_ClinicalTimerEntry>[];
+    final raw = prefs.getString(_kPomodoroTimersKey);
 
-    final endTime = DateTime.tryParse(endIso);
-    if (endTime == null) {
-      await prefs.remove(_kPomodoroEndKey);
-      return;
-    }
-
-    final remaining = endTime.difference(DateTime.now()).inSeconds;
-    if (remaining <= 0) {
-      // Timer already expired while in background — clear and fire expired dialog
-      await _clearTimerPrefs();
-      if (mounted && _timerActive) _onTimerExpired();
-      return;
-    }
-
-    final label  = prefs.getString(_kPomodoroLabelKey) ?? '';
-    final notifId = prefs.getInt(_kPomodoroNotifKey) ?? 0;
-
-    // Restart the tick loop from the wall-clock remainder
-    _countdownTimer?.cancel();
-    if (mounted) {
-      setState(() {
-        _remainingSecs = remaining;
-        _timerLabel    = label;
-        _notifId       = notifId;
-      });
-    }
-    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) { t.cancel(); return; }
-      final secs = endTime.difference(DateTime.now()).inSeconds;
-      setState(() => _remainingSecs = secs > 0 ? secs : 0);
-      if (secs <= 0) {
-        t.cancel();
-        _clearTimerPrefs();
-        _onTimerExpired();
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          for (final value in decoded) {
+            final entry = _ClinicalTimerEntry.fromJson(value);
+            if (entry != null && entry.remainingSeconds > 0) {
+              restored.add(entry);
+            }
+          }
+        }
+      } catch (error) {
+        debugPrint('[Timer] restauração multi-timer inválida: $error');
       }
-    });
+    }
+
+    // Migração transparente do timer único anterior.
+    if (restored.isEmpty) {
+      final endIso = prefs.getString(_kPomodoroEndKey);
+      final endTime = endIso == null ? null : DateTime.tryParse(endIso);
+      if (endTime != null) {
+        final remaining = endTime.difference(DateTime.now()).inSeconds;
+        if (remaining > 0) {
+          restored.add(
+            _ClinicalTimerEntry(
+              notificationId: prefs.getInt(_kPomodoroNotifKey) ?? 0,
+              endTime: endTime,
+              label: prefs.getString(_kPomodoroLabelKey) ?? '',
+              durationSeconds: remaining,
+              payload: 'shift_timer',
+              lang: widget.isEs ? 'es' : 'pt',
+            ),
+          );
+        }
+      }
+    }
+
+    restored.sort((a, b) => a.endTime.compareTo(b.endTime));
+    _timers
+      ..clear()
+      ..addAll(restored.take(_maxTimers));
+    for (final entry in _timers) {
+      _registerEntryCallbacks(entry);
+    }
+
+    if (mounted) setState(_syncProjection);
+    _publishTimerVisualState();
+    _startTicker();
+    await _persistTimers();
   }
 
   Future<void> _clearTimerPrefs() async {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kPomodoroTimersKey);
     await prefs.remove(_kPomodoroEndKey);
     await prefs.remove(_kPomodoroLabelKey);
     await prefs.remove(_kPomodoroNotifKey);
   }
 
   void _startTimer(int seconds, String label) {
-    _cancelTimer();
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+    if (seconds <= 0 || _timers.length >= _maxTimers) return;
+
     final endTime = DateTime.now().add(Duration(seconds: seconds));
+    final entry = _ClinicalTimerEntry(
+      notificationId: _notifId,
+      endTime: endTime,
+      label: label,
+      durationSeconds: seconds,
+      payload: 'shift_timer',
+      lang: widget.isEs ? 'es' : 'pt',
+    );
 
-    // Persist endTime so iOS can restore the UI countdown on resume
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString(_kPomodoroEndKey,   endTime.toIso8601String());
-      prefs.setString(_kPomodoroLabelKey, label);
-      if (_notifId > 0) prefs.setInt(_kPomodoroNotifKey, _notifId);
-    });
+    _timers.removeWhere(
+      (current) => current.notificationId == entry.notificationId,
+    );
+    _timers.add(entry);
+    _timers.sort(
+      (current, next) => current.endTime.compareTo(next.endTime),
+    );
 
-    setState(() {
-      _remainingSecs = seconds;
-      _timerLabel    = label;
-    });
+    debugPrint(
+      '[Timer] countdown iniciado preservando notificationId='
+      '${entry.notificationId} seconds=$seconds',
+    );
 
-    // Wall-clock based tick — immune to iOS background suspension
-    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) { t.cancel(); return; }
-      final secs = endTime.difference(DateTime.now()).inSeconds;
-      setState(() => _remainingSecs = secs > 0 ? secs : 0);
-      if (secs <= 0) {
-        t.cancel();
-        _clearTimerPrefs();
-        _onTimerExpired();
-      }
-    });
+    if (mounted) setState(_syncProjection);
+    _publishTimerVisualState();
+    unawaited(_persistTimers());
+    _startTicker();
   }
 
   void _cancelTimer({bool updateUi = true}) {
     _countdownTimer?.cancel();
     _countdownTimer = null;
 
-    if (_notifId > 0) {
-      NotificationService.cancel(_notifId);
-      _notifId = 0;
+    final ids = _timers
+        .map((entry) => entry.notificationId)
+        .where((id) => id > 0)
+        .toSet();
+    for (final id in ids) {
+      NotificationService.cancel(id);
     }
-
+    if (_notifId > 0 && !ids.contains(_notifId)) {
+      NotificationService.cancel(_notifId);
+    }
+    _notifId = 0;
+    _timers.clear();
     _clearTimerPrefs();
 
-    // Durante dispose(), mounted ainda pode ser true enquanto o Element
-    // já está sendo desmontado. Nesse caso, nunca chama setState().
     if (updateUi && mounted) {
-      setState(() => _remainingSecs = 0);
+      setState(_syncProjection);
+      _publishTimerVisualState();
     } else {
-      _remainingSecs = 0;
+      _syncProjection();
     }
   }
 
   void _onTimerExpired() {
-    if (!mounted) return;
-    // In-app AlertDialog
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        backgroundColor: widget.dark ? const Color(0xFF1E2128) : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(children: [
-          const Icon(Icons.alarm_rounded, color: Color(0xFFDC2626), size: 26),
-          const SizedBox(width: 10),
-          Expanded(child: Text(
-            widget.isEs ? '¡Revisión requerida!' : 'Revisão necessária!',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-          )),
-        ]),
-        content: Text(
-          _timerLabel.isNotEmpty
-              ? (_timerLabel)
-              : (widget.isEs ? 'Tiempo de revisión agotado.' : 'Tempo de revisão esgotado.'),
-          style: TextStyle(
-            fontSize: 14,
-            color: widget.dark ? Colors.white70 : const Color(0xFF374151),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () { Navigator.pop(context); widget.onOpenNotes(); },
-            child: Text(widget.isEs ? 'Ver Notas' : 'Ver Notas',
-              style: const TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.w700)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFDC2626),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            ),
-            onPressed: () => Navigator.pop(context),
-            child: Text(widget.isEs ? 'Revisar ahora' : 'Revisar agora',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-          ),
-        ],
-      ),
+    debugPrint(
+        '[Timer] timer concluído; alerta gerenciado pelo NotificationService.');
+  }
+
+  void _cancelTimerById(int notificationId) {
+    final removed = _timers.any(
+      (entry) => entry.notificationId == notificationId,
+    );
+    _timers.removeWhere(
+      (entry) => entry.notificationId == notificationId,
+    );
+    if (notificationId > 0) {
+      NotificationService.cancel(notificationId);
+    }
+    if (!removed) return;
+    if (_timers.isEmpty) {
+      _countdownTimer?.cancel();
+      _countdownTimer = null;
+    }
+    if (mounted) setState(_syncProjection);
+    _publishTimerVisualState();
+    unawaited(_persistTimers());
+  }
+
+  Future<void> _snoozeExpiredTimer(
+    int previousNotificationId,
+    String label,
+    int minutes,
+  ) async {
+    final boundedMinutes = minutes.clamp(1, 10);
+    _timers.removeWhere(
+      (entry) => entry.notificationId == previousNotificationId,
+    );
+    _publishTimerVisualState();
+    unawaited(_persistTimers());
+    if (_timers.length >= _maxTimers) return;
+    await startFromShiftConsumer(
+      boundedMinutes * 60,
+      label,
     );
   }
 
+  Future<void> _snoozeTimerEntry(
+    _ClinicalTimerEntry entry,
+    int minutes,
+  ) async {
+    if (entry.source != 'note') {
+      await _snoozeExpiredTimer(
+        entry.notificationId,
+        entry.label,
+        minutes,
+      );
+      return;
+    }
+
+    final boundedMinutes = minutes.clamp(1, 10);
+    _timers.removeWhere(
+      (current) => current.notificationId == entry.notificationId,
+    );
+    _publishTimerVisualState();
+    unawaited(_persistTimers());
+
+    if (_timers.length >= _maxTimers) return;
+
+    final noteId = entry.payload.substring('note:'.length).trim();
+    if (noteId.isEmpty) return;
+
+    final newNotificationId = await NotificationService.scheduleNote(
+      noteId: noteId,
+      noteTitle: entry.label,
+      seconds: boundedMinutes * 60,
+      lang: entry.lang,
+    );
+
+    if (!mounted) {
+      if (newNotificationId != 0) {
+        await NotificationService.cancel(newNotificationId);
+      }
+      return;
+    }
+
+    final result = await _adoptExistingNotification(
+      notificationId: newNotificationId,
+      seconds: boundedMinutes * 60,
+      label: entry.label,
+      payload: entry.payload,
+      lang: entry.lang,
+    );
+
+    if (!result.accepted && newNotificationId != 0) {
+      await NotificationService.cancel(newNotificationId);
+    }
+  }
+
+  Future<ClinicalTimerExternalRegistrationResult> _adoptExistingNotification({
+    required int notificationId,
+    required int seconds,
+    required String label,
+    required String payload,
+    required String lang,
+  }) async {
+    if (!mounted) {
+      return const ClinicalTimerExternalRegistrationResult(
+        ClinicalTimerExternalRegistrationStatus.unavailable,
+      );
+    }
+
+    final normalizedPayload = payload.trim();
+    if (notificationId == 0 ||
+        seconds <= 0 ||
+        seconds > 86400 ||
+        normalizedPayload.isEmpty) {
+      return const ClinicalTimerExternalRegistrationResult(
+        ClinicalTimerExternalRegistrationStatus.invalidRequest,
+      );
+    }
+
+    final alreadyRegistered = _timers.any(
+      (entry) => entry.notificationId == notificationId,
+    );
+    if (alreadyRegistered) {
+      return const ClinicalTimerExternalRegistrationResult(
+        ClinicalTimerExternalRegistrationStatus.alreadyRegistered,
+      );
+    }
+
+    if (_timers.length >= _maxTimers) {
+      return const ClinicalTimerExternalRegistrationResult(
+        ClinicalTimerExternalRegistrationStatus.limitReached,
+      );
+    }
+
+    final normalizedLabel = label.trim().isNotEmpty
+        ? label.trim()
+        : (lang == 'es' ? 'Recordatorio de anotación' : 'Lembrete da anotação');
+
+    final entry = _ClinicalTimerEntry(
+      notificationId: notificationId,
+      endTime: DateTime.now().add(
+        Duration(seconds: seconds),
+      ),
+      label: normalizedLabel,
+      durationSeconds: seconds,
+      payload: normalizedPayload,
+      lang: lang == 'es' ? 'es' : 'pt',
+    );
+
+    _timers.add(entry);
+    _timers.sort(
+      (current, next) => current.endTime.compareTo(next.endTime),
+    );
+    _registerEntryCallbacks(entry);
+
+    if (mounted) setState(_syncProjection);
+    _publishTimerVisualState();
+    await _persistTimers();
+    _startTicker();
+
+    return const ClinicalTimerExternalRegistrationResult(
+      ClinicalTimerExternalRegistrationStatus.adopted,
+    );
+  }
+
+  Future<void> startFromShiftConsumer(
+    int seconds,
+    String description,
+  ) async {
+    if (!mounted || seconds <= 0 || _timers.length >= _maxTimers) return;
+
+    final trimmedDescription = description.trim();
+    final timerLabel = trimmedDescription.isNotEmpty
+        ? trimmedDescription
+        : (widget.isEs
+            ? 'Tiempo de revisión agotado'
+            : 'Tempo de revisão esgotado');
+
+    final notificationTitle = widget.isEs ? 'Hola Doc.' : 'Olá Doc.';
+    final notificationBody = widget.isEs
+        ? 'Es hora de revisar el paciente.'
+        : 'É hora de revisar o paciente.';
+
+    await NotificationService.requestPermission();
+    if (!mounted) return;
+
+    final notifId = await NotificationService.scheduleTimer(
+      seconds: seconds,
+      title: notificationTitle,
+      body: notificationBody,
+      payload: 'shift_timer',
+      channel: 'medcases_shift',
+    );
+
+    if (!mounted) {
+      if (notifId > 0) NotificationService.cancel(notifId);
+      return;
+    }
+
+    _notifId = notifId;
+
+    if (notifId > 0) {
+      // Linha de compatibilidade do contrato canônico; o callback específico
+      // abaixo substitui a mesma chave para cancelar apenas este timer.
+      NotificationService.registerStopCallback(
+        notifId,
+        _cancelTimer,
+      );
+      NotificationService.registerStopCallback(
+        notifId,
+        () => _cancelTimerById(notifId),
+      );
+      NotificationService.registerSnoozeCallback(
+        notifId,
+        (minutes) => _snoozeExpiredTimer(
+          notifId,
+          timerLabel,
+          minutes,
+        ),
+      );
+
+      final prefs = await SharedPreferences.getInstance();
+      if (!mounted) {
+        NotificationService.cancel(notifId);
+        return;
+      }
+      await prefs.setInt(_kPomodoroNotifKey, notifId);
+    }
+
+    _startTimer(seconds, timerLabel);
+  }
+
+  void cancelFromVisualConsumer() {
+    _cancelTimer();
+  }
+
   void _openTimerSheet() {
-    // BUILD 331/QA: guard-clause — impede que toques rápidos e repetidos no
-    // badge empilhem múltiplos sheets na stack do Navigator, evitando corrupção
-    // do estado de roteamento do Flutter e o erro "Navigator state mismatch".
     if (_sheetIsOpen || !mounted) return;
     _sheetIsOpen = true;
-
-    // BUILD 331: se timer ATIVO, abre o sheet em modo "countdown" exibindo
-    // o contador regressivo em tempo real + botão de cancelar.
-    // Se NÃO ativo, abre o modo seletor normal (comportamento original).
-    //
-    // endTime é calculado a partir de _remainingSecs (já sincronizado com
-    // wall-clock via _restoreTimerFromPrefs) para evitar leitura async no builder.
-    final DateTime? activeEndTime = _timerActive
-        ? DateTime.now().add(Duration(seconds: _remainingSecs))
-        : null;
-    final String activeLabel = _timerActive ? _timerLabel : '';
-
     showModalBottomSheet<void>(
+      sheetAnimationStyle: HomeCardTransition.modalAnimationStyle,
       context: context,
+      useRootNavigator: !kIsWeb,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _PomodoroSheet(
         dark: widget.dark,
         isEs: widget.isEs,
-        // BUILD 331: passa endTime ativo para o sheet exibir countdown real
-        activeEndTime: activeEndTime,
-        activeLabel:   activeLabel,
-        onCancel: _cancelTimer,           // botão vermelho "Cancelar Alerta"
-        onStart: (int secs, String label) async {
-          // Agenda notificação push (funciona com app fechado/bloqueado)
-          final title = widget.isEs
-              ? '⏰ Revisión de paciente'
-              : '⏰ Revisão de paciente';
-          final body = label.isNotEmpty ? label
-              : (widget.isEs ? 'Tiempo de revisión agotado' : 'Tempo de revisão esgotado');
-          _notifId = await NotificationService.scheduleTimer(
-            seconds: secs,
-            title:   title,
-            body:    body,
-            payload: 'shift_timer',
-            channel: 'medcases_shift',
-          );
-          // Persist notifId so _restoreTimerFromPrefs can cancel it on clear
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setInt(_kPomodoroNotifKey, _notifId);
-          _startTimer(secs, body);
-        },
+        timersListenable: _timerListNotifier,
+        onStart: startFromShiftConsumer,
+        onCancelTimer: _cancelTimerById,
       ),
-    ).whenComplete(() {
-      // BUILD 331/QA: reseta o guard APÓS o sheet ser completamente fechado
-      // (animação de saída concluída). O .whenComplete() garante reset mesmo
-      // se o sheet for descartado por swipe, botão de voltar ou Navigator.pop.
-      if (mounted) setState(() => _sheetIsOpen = false);
-    });
+    ).whenComplete(() => _sheetIsOpen = false);
   }
 
   @override
   void dispose() {
+    ClinicalTimerExternalBridge._unbind(this);
     WidgetsBinding.instance.removeObserver(this);
     _cancelTimer(updateUi: false);
+    _timerListDisposed = true;
+    _timerListNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final dark        = widget.dark;
-    final isEs        = widget.isEs;
-    final cardBg      = dark ? const Color(0xFF1A1D23) : Colors.white;
-    final borderColor = dark
-        ? Colors.white.withOpacity(0.07)
-        : const Color(0xFFE8ECF5);
-    final dividerColor = dark
-        ? Colors.white.withOpacity(0.07)
-        : const Color(0xFFECEFF7);
+    final dark = widget.dark;
+    final isEs = widget.isEs;
+    final cardBg = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final borderColor =
+        dark ? Colors.white.withOpacity(0.07) : const Color(0xFFE8ECF5);
+    final dividerColor =
+        dark ? Colors.white.withOpacity(0.07) : const Color(0xFFECEFF7);
     final shadow = dark
         ? <BoxShadow>[]
         : <BoxShadow>[
@@ -5201,7 +6186,10 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
     }) {
       return Expanded(
         child: GestureDetector(
-          onTap: () { AppHaptics.selection(context); onTap(); },
+          onTap: () {
+            AppHaptics.selection(context);
+            onTap();
+          },
           behavior: HitTestBehavior.opaque,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -5210,15 +6198,20 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
                 Icon(icon, size: 20, color: color),
                 if (badge != null)
                   Positioned(
-                    top: -4, right: -10,
+                    top: -4,
+                    right: -10,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 3, vertical: 1),
                       decoration: BoxDecoration(
                         color: color,
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(badge,
-                        style: const TextStyle(fontSize: 7, color: Colors.white, fontWeight: FontWeight.w800)),
+                          style: const TextStyle(
+                              fontSize: 7,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800)),
                     ),
                   ),
               ]),
@@ -5244,12 +6237,11 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
     Widget _div() => Container(width: 1, height: 34, color: dividerColor);
 
     // Timer badge: mostra countdown se ativo, senão mostra "Timer"
-    final timerColor = _timerActive
-        ? const Color(0xFF7C3AED)   // roxo quando ativo
-        : const Color(0xFF6B7280);  // cinza quando inativo
-    final timerIcon  = _timerActive
-        ? Icons.alarm_on_rounded
-        : Icons.alarm_rounded;
+    final timerPalette = HomeV2Palette.resolve(widget.dark);
+    final timerColor =
+        _timerActive ? timerPalette.accent : timerPalette.textMuted;
+    final timerIcon =
+        _timerActive ? Icons.alarm_on_rounded : Icons.alarm_rounded;
 
     return Container(
       height: 58,
@@ -5288,21 +6280,67 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
           _timerActive
               ? Expanded(
                   child: GestureDetector(
-                    onTap: () { AppHaptics.selection(context); _openTimerSheet(); },
+                    onTap: () {
+                      AppHaptics.selection(context);
+                      _openTimerSheet();
+                    },
                     behavior: HitTestBehavior.opaque,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(timerIcon, size: 20, color: timerColor),
-                        const SizedBox(height: 3),
-                        Text(
-                          _remainingDisplay,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w800,
-                            color: timerColor,
-                            letterSpacing: 0.5,
+                        SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                value: _primaryTimerProgress,
+                                strokeWidth: 2.6,
+                                backgroundColor:
+                                    timerColor.withValues(alpha: 0.18),
+                                color: timerColor,
+                              ),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Text(
+                                    _remainingDisplay,
+                                    style: TextStyle(
+                                      fontSize: 7,
+                                      fontWeight: FontWeight.w900,
+                                      color: timerColor,
+                                      letterSpacing: -0.2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              if (_timers.length > 1)
+                                Positioned(
+                                  right: -1,
+                                  top: -1,
+                                  child: Container(
+                                    width: 13,
+                                    height: 13,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: timerColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Text(
+                                      '${_timers.length}',
+                                      style: TextStyle(
+                                        color: widget.dark
+                                            ? const Color(0xFF102320)
+                                            : Colors.white,
+                                        fontSize: 7,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ],
@@ -5325,420 +6363,695 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
 // POMODORO SHEET — Bottom sheet para configurar o timer clínico
 // ─────────────────────────────────────────────────────────────────────────────
 class _PomodoroSheet extends StatefulWidget {
-  final bool dark;
-  final bool isEs;
-  final Future<void> Function(int seconds, String label) onStart;
-  // BUILD 331: modo countdown ativo
-  final DateTime? activeEndTime;  // não-null → exibe countdown em tempo real
-  final String activeLabel;       // label do paciente/box ativo
-  final VoidCallback? onCancel;   // cancela o timer e fecha o sheet
-
   const _PomodoroSheet({
     required this.dark,
     required this.isEs,
+    required this.timersListenable,
     required this.onStart,
-    this.activeEndTime,
-    this.activeLabel = '',
-    this.onCancel,
+    required this.onCancelTimer,
   });
+
+  final bool dark;
+  final bool isEs;
+  final ValueNotifier<List<_ClinicalTimerEntry>> timersListenable;
+  final Future<void> Function(int seconds, String label) onStart;
+  final void Function(int notificationId) onCancelTimer;
 
   @override
   State<_PomodoroSheet> createState() => _PomodoroSheetState();
 }
 
 class _PomodoroSheetState extends State<_PomodoroSheet> {
+  static const _presets = <int>[15, 30, 60];
+  static const int _armingDelaySeconds = 5;
+
   int _selectedMinutes = 15;
   bool _customMode = false;
-  final _labelCtrl  = TextEditingController();
-  final _customCtrl = TextEditingController();
   bool _loading = false;
+  int _armingSeconds = 0;
+  int _armingToken = 0;
 
-  // BUILD 331: tick para atualizar o countdown em tempo real dentro do sheet.
-  // BUILD 331/QA: _tickCancelled é flag de guard para evitar setState após dispose.
-  // Garante zero memory leak mesmo se o SO atrasar o GC do Timer entre frames.
-  Timer? _sheetTick;
-  bool   _tickCancelled = false;
-  int _sheetRemaining = 0;
+  final _labelCtrl = TextEditingController();
+  final _customCtrl = TextEditingController(text: '0');
+  final _customFocus = FocusNode();
 
-  static const _presets = [15, 30, 60];
-
-  // Cancela o tick de forma segura e idempotente — chame antes de qualquer pop.
-  void _cancelSheetTick() {
-    _tickCancelled = true;
-    _sheetTick?.cancel();
-    _sheetTick = null;
+  int get _effectiveMinutes {
+    if (!_customMode) return _selectedMinutes;
+    final value = int.tryParse(_customCtrl.text.trim()) ?? 0;
+    return value.clamp(0, 999);
   }
 
   @override
   void initState() {
     super.initState();
-    if (widget.activeEndTime != null) {
-      // Inicializa o countdown com o delta real (wall-clock, imune a suspensão iOS)
-      _sheetRemaining = widget.activeEndTime!
-          .difference(DateTime.now())
-          .inSeconds
-          .clamp(0, 99999);
-      // BUILD 331/QA: dupla guarda — _tickCancelled + mounted — evita setState
-      // após dispose em qualquer interleaving de frames do Flutter engine.
-      _sheetTick = Timer.periodic(const Duration(seconds: 1), (_) {
-        if (_tickCancelled || !mounted) return;
-        final secs = widget.activeEndTime!
-            .difference(DateTime.now())
-            .inSeconds
-            .clamp(0, 99999);
-        setState(() => _sheetRemaining = secs);
-        if (secs <= 0) {
-          _cancelSheetTick();
-          if (mounted) Navigator.pop(context);
-        }
-      });
+    _customFocus.addListener(_handleCustomFocus);
+  }
+
+  void _handleCustomFocus() {
+    if (_customFocus.hasFocus) {
+      if (_customCtrl.text.trim() == '0') {
+        _customCtrl.clear();
+      }
+      if (!_customMode && mounted) setState(() => _customMode = true);
+      return;
     }
+    if (_customCtrl.text.trim().isEmpty) {
+      _customCtrl.text = '0';
+    }
+    if (mounted) setState(() {});
+  }
+
+  void _dismissKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override
   void dispose() {
-    // BUILD 331/QA: cancela o tick ANTES do super.dispose() — ordem obrigatória.
-    // Sem isso, o Timer pode disparar um setState no frame após o widget ser
-    // removido da árvore, causando "setState called after dispose" no log.
-    _cancelSheetTick();
+    _armingToken++;
+    _customFocus.removeListener(_handleCustomFocus);
+    _customFocus.dispose();
     _labelCtrl.dispose();
     _customCtrl.dispose();
     super.dispose();
   }
 
-  // Formata _sheetRemaining como HH:MM:SS ou MM:SS
-  String get _sheetDisplay {
-    final s = _sheetRemaining;
-    final h = s ~/ 3600;
-    final m = (s % 3600) ~/ 60;
-    final sec = s % 60;
-    if (h > 0) {
-      return '${h.toString().padLeft(2,'0')}:${m.toString().padLeft(2,'0')}:${sec.toString().padLeft(2,'0')}';
+  Future<void> _confirm(int activeCount) async {
+    if (_loading || activeCount >= 5) return;
+
+    final minutes = _effectiveMinutes;
+    if (minutes <= 0) {
+      _customFocus.requestFocus();
+      return;
     }
-    return '${m.toString().padLeft(2,'0')}:${sec.toString().padLeft(2,'0')}';
+
+    _dismissKeyboard();
+    final armingToken = ++_armingToken;
+
+    setState(() {
+      _loading = true;
+      _armingSeconds = _armingDelaySeconds;
+    });
+
+    try {
+      while (_armingSeconds > 0) {
+        await Future<void>.delayed(const Duration(seconds: 1));
+        if (!mounted || armingToken != _armingToken) return;
+        setState(() => _armingSeconds -= 1);
+      }
+
+      if (!mounted || armingToken != _armingToken) return;
+
+      if (widget.timersListenable.value.length >= 5) {
+        setState(() {
+          _loading = false;
+          _armingSeconds = 0;
+        });
+        return;
+      }
+
+      await widget.onStart(minutes * 60, _labelCtrl.text.trim());
+      if (!mounted || armingToken != _armingToken) return;
+
+      _labelCtrl.clear();
+      _customCtrl.text = '0';
+      setState(() {
+        _selectedMinutes = 15;
+        _customMode = false;
+        _loading = false;
+        _armingSeconds = 0;
+      });
+    } catch (_) {
+      if (mounted && armingToken == _armingToken) {
+        setState(() {
+          _loading = false;
+          _armingSeconds = 0;
+        });
+      }
+      rethrow;
+    }
   }
 
-  Future<void> _confirm() async {
-    final secs = _customMode
-        ? (int.tryParse(_customCtrl.text.trim()) ?? 15) * 60
-        : _selectedMinutes * 60;
-    if (secs <= 0) return;
-    setState(() => _loading = true);
-    await widget.onStart(secs, _labelCtrl.text.trim());
-    if (mounted) {
-      setState(() => _loading = false);
-      Navigator.pop(context);
-    }
+  String _formatSeconds(int seconds) {
+    final minutes = seconds ~/ 60;
+    final remaining = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:'
+        '${remaining.toString().padLeft(2, '0')}';
   }
 
   @override
   Widget build(BuildContext context) {
-    final dark = widget.dark;
-    final isEs = widget.isEs;
-    final bg    = dark ? const Color(0xFF1A1D23) : Colors.white;
-    final text1 = dark ? Colors.white : const Color(0xFF111827);
-    final text2 = dark ? Colors.white70 : const Color(0xFF6B7280);
+    final palette = HomeV2Palette.resolve(widget.dark);
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final insets = MediaQuery.viewInsetsOf(context);
 
-    // ── Handle e wrapper comuns ──────────────────────────────────────────────
-    final handle = Center(child: Container(
-      width: 40, height: 4,
-      decoration: BoxDecoration(
-        color: dark ? Colors.white24 : const Color(0xFFD1D5DB),
-        borderRadius: BorderRadius.circular(2),
-      ),
-    ));
-
-    // ── MODO COUNTDOWN ATIVO ─────────────────────────────────────────────────
-    // BUILD 331: quando activeEndTime != null, exibe o contador regressivo em
-    // tempo real em tamanho grande (MM:SS), label do paciente e botão vermelho
-    // de Cancelar Alerta. NÃO reseta nem pausa o timer de fundo por acidente.
-    if (widget.activeEndTime != null) {
-      return Container(
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        padding: EdgeInsets.only(
-          left: 24, right: 24, top: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 40,
-        ),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          handle,
-          const SizedBox(height: 24),
-
-          // Ícone + título
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Icon(Icons.alarm_on_rounded, color: Color(0xFF7C3AED), size: 24),
-            const SizedBox(width: 10),
-            Text(
-              isEs ? 'Revisão em andamento' : 'Revisão em andamento',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: text1),
-            ),
-          ]),
-          const SizedBox(height: 6),
-
-          // Label do paciente/box (se houver)
-          if (widget.activeLabel.isNotEmpty)
-            Text(
-              widget.activeLabel,
-              style: TextStyle(fontSize: 13, color: text2, fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
-            ),
-          const SizedBox(height: 28),
-
-          // Contador regressivo em tamanho grande
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: _dismissKeyboard,
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 160),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.only(bottom: insets.bottom),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: screenHeight * 0.64),
+          child: DecoratedBox(
             decoration: BoxDecoration(
-              color: const Color(0xFF7C3AED).withOpacity(0.10),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFF7C3AED).withOpacity(0.25)),
+              color: palette.background,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+              border: Border(
+                top: BorderSide(color: palette.border),
+              ),
             ),
-            child: Text(
-              _sheetDisplay,
-              style: const TextStyle(
-                fontSize: 52,
-                fontWeight: FontWeight.w900,
-                color: Color(0xFF7C3AED),
-                letterSpacing: 2,
-                fontFeatures: [FontFeature.tabularFigures()],
+            child: SafeArea(
+              top: false,
+              child: ValueListenableBuilder<List<_ClinicalTimerEntry>>(
+                valueListenable: widget.timersListenable,
+                builder: (context, timers, _) {
+                  final activeCount = timers.length;
+                  final canAdd = activeCount < 5;
+
+                  return SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.fromLTRB(18, 8, 18, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _dragHandle(palette),
+                        const SizedBox(height: 14),
+                        _header(palette, activeCount),
+                        if (timers.isNotEmpty) ...[
+                          const SizedBox(height: 16),
+                          Divider(
+                            height: 1,
+                            thickness: 0.7,
+                            color: palette.border,
+                          ),
+                          const SizedBox(height: 12),
+                          _activeTimers(palette, timers),
+                        ],
+                        const SizedBox(height: 18),
+                        _sectionLabel(
+                          palette,
+                          widget.isEs
+                              ? 'INTERVALO DE REVISIÓN'
+                              : 'INTERVALO DE REVISÃO',
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            for (var index = 0;
+                                index < _presets.length;
+                                index++) ...[
+                              if (index > 0) const SizedBox(width: 14),
+                              Expanded(
+                                child: _preset(
+                                  palette,
+                                  _presets[index],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        Divider(
+                          height: 1,
+                          thickness: 0.7,
+                          color: palette.border,
+                        ),
+                        const SizedBox(height: 12),
+                        _customField(palette),
+                        const SizedBox(height: 14),
+                        _patientField(palette),
+                        const SizedBox(height: 16),
+                        _primaryAction(
+                          palette,
+                          activeCount,
+                          canAdd,
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            isEs ? 'restantes para la próxima revisión' : 'restantes para a próxima revisão',
-            style: TextStyle(fontSize: 11, color: text2),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
+        ),
+      ),
+    );
+  }
 
-          // Botão vermelho destacado — Cancelar Alerta / Parar Timer
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFDC2626),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                elevation: 0,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                widget.onCancel?.call();
-              },
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Icon(Icons.stop_circle_rounded, size: 20, color: Colors.white),
-                const SizedBox(width: 8),
-                Text(
-                  isEs ? 'Cancelar Alerta / Parar Timer' : 'Cancelar Alerta / Parar Timer',
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
-                ),
-              ]),
-            ),
+  Widget _dragHandle(HomeV2Palette palette) => Center(
+        child: Container(
+          width: 36,
+          height: 4,
+          decoration: BoxDecoration(
+            color: palette.borderActive,
+            borderRadius: BorderRadius.circular(99),
           ),
-          const SizedBox(height: 8),
-
-          // Botão secundário — fechar sem cancelar
-          // BUILD 331/QA: cancela o _sheetTick ANTES do pop para evitar memory
-          // leak e "setState after dispose" quando o usuário abre/fecha o sheet
-          // múltiplas vezes rapidamente (ex: touch repetido no badge do timer).
-          TextButton(
-            onPressed: () {
-              _cancelSheetTick(); // garante cancel antes do widget sair da árvore
-              Navigator.pop(context);
-            },
-            child: Text(
-              isEs ? 'Fechar (timer continua ativo)' : 'Fechar (timer continua ativo)',
-              style: TextStyle(fontSize: 12, color: text2),
-            ),
-          ),
-        ]),
+        ),
       );
-    }
-
-    // ── MODO SELETOR (timer não ativo — comportamento original) ───────────────
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: EdgeInsets.only(
-        left: 24, right: 24, top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 32,
-      ),
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        handle,
-        const SizedBox(height: 20),
-
-        // Title
-        Row(children: [
-          const Icon(Icons.alarm_rounded, color: Color(0xFF7C3AED), size: 22),
-          const SizedBox(width: 10),
-          Text(
-            isEs ? 'Timer de Revisão Clínica' : 'Timer de Revisão Clínica',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: text1),
+  Widget _header(HomeV2Palette palette, int activeCount) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.timer_outlined,
+          color: palette.accent,
+          size: 25,
+        ),
+        const SizedBox(width: 11),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.isEs ? 'Temporizador clínico' : 'Timer clínico',
+                style: TextStyle(
+                  color: palette.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.25,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                widget.isEs
+                    ? 'Programa una nueva revisión.'
+                    : 'Programe uma nova revisão.',
+                style: TextStyle(
+                  color: palette.textSecondary,
+                  fontSize: 11.5,
+                  height: 1.25,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
-        ]),
-        const SizedBox(height: 6),
+        ),
+        const SizedBox(width: 10),
         Text(
-          isEs
-              ? 'Configure un recordatorio para revisar al paciente.'
-              : 'Configure um lembrete para revisar o paciente.',
-          style: TextStyle(fontSize: 12, color: text2),
-        ),
-        const SizedBox(height: 20),
-
-        // Preset buttons
-        Text(isEs ? 'Tiempo rápido' : 'Tempo rápido',
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-            color: dark ? Colors.white54 : const Color(0xFF9CA3AF))),
-        const SizedBox(height: 10),
-        Row(children: _presets.map((m) {
-          final selected = !_customMode && _selectedMinutes == m;
-          return Expanded(child: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: GestureDetector(
-              onTap: () => setState(() { _customMode = false; _selectedMinutes = m; }),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                decoration: BoxDecoration(
-                  color: selected
-                      ? const Color(0xFF7C3AED).withOpacity(0.15)
-                      : (dark ? const Color(0xFF252930) : const Color(0xFFF3F4F6)),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: selected
-                        ? const Color(0xFF7C3AED)
-                        : Colors.transparent,
-                    width: 1.5,
-                  ),
-                ),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Text('$m',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900,
-                      color: selected ? const Color(0xFF7C3AED) : text1)),
-                  Text(isEs ? 'min' : 'min',
-                    style: TextStyle(fontSize: 10, color: text2)),
-                ]),
-              ),
-            ),
-          ));
-        }).toList()),
-        const SizedBox(height: 14),
-
-        // Custom time
-        GestureDetector(
-          onTap: () => setState(() => _customMode = true),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            decoration: BoxDecoration(
-              color: _customMode
-                  ? const Color(0xFF7C3AED).withOpacity(0.08)
-                  : (dark ? const Color(0xFF252930) : const Color(0xFFF9FAFB)),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: _customMode
-                    ? const Color(0xFF7C3AED)
-                    : (dark ? Colors.white12 : const Color(0xFFE5E7EB)),
-              ),
-            ),
-            child: Row(children: [
-              Icon(Icons.tune_rounded, size: 16,
-                color: _customMode ? const Color(0xFF7C3AED) : text2),
-              const SizedBox(width: 8),
-              Text(isEs ? 'Tiempo personalizado:' : 'Tempo personalizado:',
-                style: TextStyle(fontSize: 12, color: text2)),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 50,
-                child: TextField(
-                  controller: _customCtrl,
-                  keyboardType: TextInputType.number,
-                  onTap: () => setState(() => _customMode = true),
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: text1),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                    hintText: '45',
-                    hintStyle: TextStyle(color: text2),
-                    filled: true,
-                    fillColor: dark ? Colors.white10 : const Color(0xFFEFF6FF),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text('min', style: TextStyle(fontSize: 12, color: text2)),
-            ]),
+          '$activeCount/5',
+          style: TextStyle(
+            color: activeCount >= 5 ? palette.textMuted : palette.accent,
+            fontSize: 11,
+            fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 16),
+      ],
+    );
+  }
 
-        // Label (Box + paciente)
-        Text(isEs ? 'Paciente / Box (opcional)' : 'Paciente / Box (opcional)',
-          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-            color: dark ? Colors.white54 : const Color(0xFF9CA3AF))),
+  Widget _activeTimers(
+    HomeV2Palette palette,
+    List<_ClinicalTimerEntry> timers,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                widget.isEs ? 'Revisión programada' : 'Revisão programada',
+                style: TextStyle(
+                  color: palette.textPrimary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            Text(
+              '${timers.length}',
+              style: TextStyle(
+                color: palette.accent,
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 8),
-        TextField(
-          controller: _labelCtrl,
-          style: TextStyle(fontSize: 14, color: text1),
-          decoration: InputDecoration(
-            hintText: isEs ? 'Ej: Box 3 — María García' : 'Ex: Box 3 — João Silva',
-            hintStyle: TextStyle(color: text2, fontSize: 13),
-            filled: true,
-            fillColor: dark ? const Color(0xFF252930) : const Color(0xFFF9FAFB),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: dark ? Colors.white12 : const Color(0xFFE5E7EB)),
+        for (var index = 0; index < timers.length; index++) ...[
+          if (index > 0)
+            Divider(
+              height: 13,
+              thickness: 0.7,
+              color: palette.border,
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: dark ? Colors.white12 : const Color(0xFFE5E7EB)),
-            ),
-            prefixIcon: Icon(Icons.person_rounded, size: 16, color: text2),
-          ),
-        ),
-        const SizedBox(height: 20),
+          _timerRow(palette, timers[index]),
+        ],
+      ],
+    );
+  }
 
-        // Confirm button
+  Widget _timerRow(
+    HomeV2Palette palette,
+    _ClinicalTimerEntry timer,
+  ) {
+    return Row(
+      children: [
         SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF7C3AED),
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              elevation: 0,
-            ),
-            onPressed: _loading ? null : _confirm,
-            child: _loading
-                ? const SizedBox(width: 20, height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.alarm_on_rounded, size: 18, color: Colors.white),
-                    const SizedBox(width: 8),
-                    Text(
-                      isEs ? 'Iniciar Timer' : 'Iniciar Timer',
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
-                    ),
-                  ]),
+          width: 36,
+          height: 36,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              CircularProgressIndicator(
+                value: timer.progress,
+                strokeWidth: 2.8,
+                backgroundColor: palette.accentSoft,
+                color: palette.accent,
+              ),
+              Text(
+                _formatSeconds(timer.remainingSeconds),
+                style: TextStyle(
+                  color: palette.textPrimary,
+                  fontSize: 6.7,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -0.3,
+                ),
+              ),
+            ],
           ),
         ),
-      ]),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                timer.label.isEmpty ? 'Paciente' : timer.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: palette.textPrimary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                _formatSeconds(timer.remainingSeconds),
+                style: TextStyle(
+                  color: palette.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+        TextButton.icon(
+          onPressed: () {
+            widget.onCancelTimer(timer.notificationId);
+          },
+          style: TextButton.styleFrom(
+            foregroundColor: palette.textSecondary,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 6,
+              vertical: 8,
+            ),
+            minimumSize: const Size(44, 40),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: const Icon(
+            Icons.close_rounded,
+            size: 15,
+          ),
+          label: Text(
+            widget.isEs ? 'Cerrar' : 'Encerrar',
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _sectionLabel(
+    HomeV2Palette palette,
+    String text,
+  ) =>
+      Text(
+        text,
+        style: TextStyle(
+          color: palette.textSecondary,
+          fontSize: 9.5,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.75,
+        ),
+      );
+  Widget _preset(
+    HomeV2Palette palette,
+    int minutes,
+  ) {
+    final selected = !_customMode && _selectedMinutes == minutes;
+
+    return GestureDetector(
+      onTap: () {
+        if (_loading) return;
+        _dismissKeyboard();
+        setState(() {
+          _customMode = false;
+          _selectedMinutes = minutes;
+        });
+      },
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 140),
+        height: 46,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          border: Border(
+            bottom: BorderSide(
+              color: selected ? palette.accent : palette.border,
+              width: selected ? 2 : 0.7,
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$minutes',
+              style: TextStyle(
+                color: selected ? palette.accent : palette.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(width: 3),
+            Text(
+              'min',
+              style: TextStyle(
+                color: selected ? palette.accent : palette.textSecondary,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _customField(HomeV2Palette palette) {
+    final underline = UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: _customMode ? palette.accent : palette.border,
+        width: _customMode ? 1.5 : 0.8,
+      ),
+    );
+
+    return Row(
+      children: [
+        Icon(
+          Icons.tune_rounded,
+          color: _customMode ? palette.accent : palette.textSecondary,
+          size: 18,
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Text(
+            widget.isEs ? 'Tiempo personalizado' : 'Tempo personalizado',
+            style: TextStyle(
+              color: palette.textPrimary,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 58,
+          child: TextField(
+            controller: _customCtrl,
+            focusNode: _customFocus,
+            enabled: !_loading,
+            keyboardType: TextInputType.number,
+            textAlign: TextAlign.center,
+            onTapOutside: (_) => _dismissKeyboard(),
+            onChanged: (_) {
+              if (!_customMode) {
+                setState(() => _customMode = true);
+              }
+            },
+            style: TextStyle(
+              color: palette.textPrimary,
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+            ),
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 7,
+              ),
+              border: underline,
+              enabledBorder: underline,
+              focusedBorder: underline,
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          'min',
+          style: TextStyle(
+            color: palette.textSecondary,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _patientField(HomeV2Palette palette) {
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: palette.border),
+    );
+
+    return TextField(
+      controller: _labelCtrl,
+      enabled: !_loading,
+      textCapitalization: TextCapitalization.words,
+      onTapOutside: (_) => _dismissKeyboard(),
+      style: TextStyle(
+        color: palette.textPrimary,
+        fontSize: 12.5,
+        fontWeight: FontWeight.w600,
+      ),
+      decoration: InputDecoration(
+        isDense: true,
+        hintText: 'Paciente / Box · opcional',
+        hintStyle: TextStyle(
+          color: palette.textMuted,
+          fontSize: 11.5,
+          fontWeight: FontWeight.w500,
+        ),
+        prefixIcon: Icon(
+          Icons.person_outline_rounded,
+          color: palette.textSecondary,
+          size: 19,
+        ),
+        filled: true,
+        fillColor: palette.surfaceStrong,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 13,
+        ),
+        border: border,
+        enabledBorder: border,
+        focusedBorder: border.copyWith(
+          borderSide: BorderSide(
+            color: palette.accent,
+            width: 1.3,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _primaryAction(
+    HomeV2Palette palette,
+    int activeCount,
+    bool canAdd,
+  ) {
+    final enabled = canAdd && !_loading;
+
+    return SizedBox(
+      height: 48,
+      child: FilledButton.icon(
+        onPressed: enabled ? () => _confirm(activeCount) : null,
+        icon: _loading
+            ? SizedBox(
+                width: 17,
+                height: 17,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: widget.dark ? const Color(0xFF04130E) : Colors.white,
+                ),
+              )
+            : Icon(
+                canAdd
+                    ? Icons.add_alarm_rounded
+                    : Icons.check_circle_outline_rounded,
+                size: 19,
+              ),
+        label: Text(
+          _loading
+              ? (_armingSeconds > 0
+                  ? (widget.isEs
+                      ? 'Iniciando en $_armingSeconds s'
+                      : 'Iniciando em $_armingSeconds s')
+                  : (widget.isEs
+                      ? 'Creando temporizador...'
+                      : 'Criando timer...'))
+              : canAdd
+                  ? (widget.isEs ? 'Programar revisión' : 'Programar revisão')
+                  : (widget.isEs ? 'Límite de 5 timers' : 'Limite de 5 timers'),
+        ),
+        style: ButtonStyle(
+          elevation: const WidgetStatePropertyAll(0),
+          backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+            (states) {
+              if (states.contains(WidgetState.disabled)) {
+                return palette.surfaceStrong;
+              }
+              return palette.accent;
+            },
+          ),
+          foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+            (states) {
+              if (states.contains(WidgetState.disabled)) {
+                return palette.textMuted;
+              }
+              return widget.dark ? const Color(0xFF04130E) : Colors.white;
+            },
+          ),
+          textStyle: const WidgetStatePropertyAll(
+            TextStyle(
+              fontSize: 13.5,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // QUICK SHORTCUTS — Notas · Recentes · Favoritos (web desktop column)
 // ─────────────────────────────────────────────────────────────────────────────
 class _QuickShortcuts extends StatelessWidget {
@@ -5801,9 +7114,8 @@ class _QuickShortcuts extends StatelessWidget {
         color: cardBg,
         boxShadow: shadow,
         border: Border.all(
-          color: dark
-              ? Colors.white.withOpacity(0.06)
-              : const Color(0xFFE8ECF5),
+          color:
+              dark ? Colors.white.withOpacity(0.06) : const Color(0xFFE8ECF5),
         ),
       ),
       child: Row(
@@ -5820,7 +7132,10 @@ class _QuickShortcuts extends StatelessWidget {
           final item = items[i ~/ 2];
           return Expanded(
             child: GestureDetector(
-              onTap: () { AppHaptics.selection(context); item.onTap(); },
+              onTap: () {
+                AppHaptics.selection(context);
+                item.onTap();
+              },
               behavior: HitTestBehavior.opaque,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -5858,7 +7173,7 @@ class _QuickShortcuts extends StatelessWidget {
   }
 
   void _openRecentes(BuildContext context) {
-    final p    = context.read<AppProvider>();
+    final p = context.read<AppProvider>();
     final dark = this.dark;
     final isEs = this.isEs;
     showModalBottomSheet(
@@ -5870,7 +7185,7 @@ class _QuickShortcuts extends StatelessWidget {
   }
 
   void _openFavoritos(BuildContext context) {
-    final p    = context.read<AppProvider>();
+    final p = context.read<AppProvider>();
     final dark = this.dark;
     final isEs = this.isEs;
     showModalBottomSheet(
@@ -5901,7 +7216,8 @@ class _ShortcutItem {
 
 /// Chave SharedPreferences para recentes
 // homeRegisterRecent — delega ao AppProvider (chave prefixada por uid)
-Future<void> homeRegisterRecent(String type, String id, String title, {required AppProvider p}) async {
+Future<void> homeRegisterRecent(String type, String id, String title,
+    {required AppProvider p}) async {
   await p.registerRecent(type, id, title);
 }
 
@@ -5909,7 +7225,8 @@ class _RecentesSheet extends StatefulWidget {
   final bool dark;
   final bool isEs;
   final AppProvider p;
-  const _RecentesSheet({required this.dark, required this.isEs, required this.p});
+  const _RecentesSheet(
+      {required this.dark, required this.isEs, required this.p});
 
   @override
   State<_RecentesSheet> createState() => _RecentesSheetState();
@@ -5931,7 +7248,11 @@ class _RecentesSheetState extends State<_RecentesSheet> {
     _hasLoaded = true;
     try {
       final items = await widget.p.loadRecents();
-      if (mounted) setState(() { _items = items; _loading = false; });
+      if (mounted)
+        setState(() {
+          _items = items;
+          _loading = false;
+        });
     } catch (_) {
       if (mounted) setState(() => _loading = false);
     }
@@ -5943,8 +7264,9 @@ class _RecentesSheetState extends State<_RecentesSheet> {
     final isEs = widget.isEs;
     final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
-    final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
-    final divColor = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
+    final textSub = dark ? Colors.white54 : const Color(0xFF718096);
+    final divColor =
+        dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.55,
@@ -5959,7 +7281,8 @@ class _RecentesSheetState extends State<_RecentesSheet> {
         child: Column(children: [
           Container(
             margin: const EdgeInsets.only(top: 10, bottom: 4),
-            width: 36, height: 4,
+            width: 36,
+            height: 4,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
               color: dark ? Colors.white24 : const Color(0xFFCBD5E0),
@@ -5968,7 +7291,8 @@ class _RecentesSheetState extends State<_RecentesSheet> {
           Padding(
             padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
             child: Row(children: [
-              Icon(Icons.history_rounded, size: 20, color: const Color(0xFF1F78FF)),
+              Icon(Icons.history_rounded,
+                  size: 20, color: const Color(0xFF1F78FF)),
               const SizedBox(width: 8),
               Text(
                 isEs ? 'Recientes' : 'Recentes',
@@ -5986,38 +7310,46 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                 ? const Center(child: CircularProgressIndicator())
                 : _items.isEmpty
                     ? Center(
-                        child: Column(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.history_rounded, size: 48,
-                              color: dark ? Colors.white12 : const Color(0xFFCBD5E0)),
+                        child:
+                            Column(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.history_rounded,
+                              size: 48,
+                              color: dark
+                                  ? Colors.white12
+                                  : const Color(0xFFCBD5E0)),
                           const SizedBox(height: 12),
                           Text(
-                            isEs ? 'Sin elementos recientes' : 'Nenhum item recente',
+                            isEs
+                                ? 'Sin elementos recientes'
+                                : 'Nenhum item recente',
                             style: TextStyle(fontSize: 14, color: textSub),
                           ),
                         ]),
                       )
                     : ListView.separated(
                         controller: sc,
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
                         itemCount: _items.length,
                         separatorBuilder: (_, __) =>
                             Container(height: 1, color: divColor),
                         itemBuilder: (ctx, i) {
                           final item = _items[i];
                           final type = item['type'] ?? '';
-                          final id   = item['id'] ?? '';
+                          final id = item['id'] ?? '';
                           final title = item['title'] ?? '';
                           final isProtocol = type == 'protocol';
                           return ListTile(
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 4),
                             leading: Container(
-                              width: 38, height: 38,
+                              width: 38,
+                              height: 38,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: (isProtocol
-                                    ? const Color(0xFFCC2222)
-                                    : const Color(0xFFFF8A00))
+                                        ? const Color(0xFFCC2222)
+                                        : const Color(0xFFFF8A00))
                                     .withOpacity(0.12),
                               ),
                               child: Icon(
@@ -6044,7 +7376,9 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                             ),
                             trailing: Icon(Icons.chevron_right_rounded,
                                 size: 18,
-                                color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+                                color: dark
+                                    ? Colors.white24
+                                    : const Color(0xFFCBD5E0)),
                             onTap: () {
                               AppHaptics.selection(context);
                               Navigator.pop(context);
@@ -6054,11 +7388,13 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                                 // Abre direto o fármaco pelo ID
                                 final p = ctx.read<AppProvider>();
                                 try {
-                                  final drug = p.drugsDB.firstWhere((d) => d.id == id);
+                                  final drug =
+                                      p.drugsDB.firstWhere((d) => d.id == id);
                                   showDrugDetailSheet(ctx, drug);
                                 } catch (_) {
                                   Navigator.of(ctx).push(
-                                    _HomeScreenState._slide(const _FarmacosShell()),
+                                    _HomeScreenState._slide(
+                                        const _FarmacosShell()),
                                   );
                                 }
                               }
@@ -6080,24 +7416,23 @@ class _FavoritosSheet extends StatelessWidget {
   final bool dark;
   final bool isEs;
   final AppProvider p;
-  const _FavoritosSheet({required this.dark, required this.isEs, required this.p});
+  const _FavoritosSheet(
+      {required this.dark, required this.isEs, required this.p});
 
   @override
   Widget build(BuildContext context) {
     final sheetBg = dark ? const Color(0xFF1A1D23) : Colors.white;
     final textMain = dark ? Colors.white : const Color(0xFF1A202C);
-    final textSub  = dark ? Colors.white54 : const Color(0xFF718096);
-    final divColor = dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
+    final textSub = dark ? Colors.white54 : const Color(0xFF718096);
+    final divColor =
+        dark ? Colors.white.withOpacity(0.07) : const Color(0xFFEDF0F7);
 
     // Fármacos favoritos
-    final favDrugs = p.drugsDB
-        .where((d) => p.favDrugs.contains(d.id))
-        .toList();
+    final favDrugs = p.drugsDB.where((d) => p.favDrugs.contains(d.id)).toList();
 
     // Protocolos favoritos
-    final favProtos = p.protocolsDB
-        .where((pr) => p.favProtocols.contains(pr.id))
-        .toList();
+    final favProtos =
+        p.protocolsDB.where((pr) => p.favProtocols.contains(pr.id)).toList();
 
     // Prescrições favoritas
     final allPrescriptions = prescriptionModels(isEs);
@@ -6106,12 +7441,13 @@ class _FavoritosSheet extends StatelessWidget {
         .toList();
 
     // Casos clínicos favoritos
-    final favClinical = p.casesDB
-        .where((c) => p.favCases.contains(c.id))
-        .toList();
+    final favClinical =
+        p.casesDB.where((c) => p.favCases.contains(c.id)).toList();
 
-    final hasAny = favDrugs.isNotEmpty || favProtos.isNotEmpty ||
-                   favPrescs.isNotEmpty || favClinical.isNotEmpty;
+    final hasAny = favDrugs.isNotEmpty ||
+        favProtos.isNotEmpty ||
+        favPrescs.isNotEmpty ||
+        favClinical.isNotEmpty;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.55,
@@ -6126,7 +7462,8 @@ class _FavoritosSheet extends StatelessWidget {
         child: Column(children: [
           Container(
             margin: const EdgeInsets.only(top: 10, bottom: 4),
-            width: 36, height: 4,
+            width: 36,
+            height: 4,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
               color: dark ? Colors.white24 : const Color(0xFFCBD5E0),
@@ -6135,7 +7472,8 @@ class _FavoritosSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(18, 10, 18, 14),
             child: Row(children: [
-              Icon(Icons.bookmark_rounded, size: 20, color: const Color(0xFF6C2BD9)),
+              Icon(Icons.bookmark_rounded,
+                  size: 20, color: const Color(0xFF6C2BD9)),
               const SizedBox(width: 8),
               Text(
                 isEs ? 'Favoritos' : 'Favoritos', // igual nos dois idiomas
@@ -6152,8 +7490,10 @@ class _FavoritosSheet extends StatelessWidget {
             child: !hasAny
                 ? Center(
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.bookmark_border_rounded, size: 48,
-                          color: dark ? Colors.white12 : const Color(0xFFCBD5E0)),
+                      Icon(Icons.bookmark_border_rounded,
+                          size: 48,
+                          color:
+                              dark ? Colors.white12 : const Color(0xFFCBD5E0)),
                       const SizedBox(height: 12),
                       Text(
                         isEs ? 'Sin favoritos aún' : 'Nenhum favorito ainda',
@@ -6171,7 +7511,8 @@ class _FavoritosSheet extends StatelessWidget {
                   )
                 : ListView(
                     controller: sc,
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     children: [
                       // Fármacos favoritos
                       if (favDrugs.isNotEmpty) ...[
@@ -6183,44 +7524,52 @@ class _FavoritosSheet extends StatelessWidget {
                               fontSize: 10,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 1.3,
-                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                              color: dark
+                                  ? Colors.white38
+                                  : const Color(0xFF8A94A6),
                             ),
                           ),
                         ),
                         ...favDrugs.map((d) => Column(
-                          children: [
-                            ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 4),
-                              leading: Container(
-                                width: 38, height: 38,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: const Color(0xFFFF8A00).withOpacity(0.12),
+                              children: [
+                                ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 4),
+                                  leading: Container(
+                                    width: 38,
+                                    height: 38,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: const Color(0xFFFF8A00)
+                                          .withOpacity(0.12),
+                                    ),
+                                    child: const Icon(Icons.medication_rounded,
+                                        size: 18, color: Color(0xFFFF8A00)),
+                                  ),
+                                  title: Text(d.name,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: textMain,
+                                      )),
+                                  subtitle: Text(
+                                    d.className[isEs ? 'es' : 'pt'] ?? '',
+                                    style:
+                                        TextStyle(fontSize: 11, color: textSub),
+                                  ),
+                                  trailing: Icon(Icons.chevron_right_rounded,
+                                      size: 18,
+                                      color: dark
+                                          ? Colors.white24
+                                          : const Color(0xFFCBD5E0)),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    showDrugDetailSheet(context, d);
+                                  },
                                 ),
-                                child: const Icon(Icons.medication_rounded,
-                                    size: 18, color: Color(0xFFFF8A00)),
-                              ),
-                              title: Text(d.name,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: textMain,
-                                  )),
-                              subtitle: Text(
-                                d.className[isEs ? 'es' : 'pt'] ?? '',
-                                style: TextStyle(fontSize: 11, color: textSub),
-                              ),
-                              trailing: Icon(Icons.chevron_right_rounded, size: 18,
-                                  color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
-                              onTap: () {
-                                Navigator.pop(context);
-                                showDrugDetailSheet(context, d);
-                              },
-                            ),
-                            Container(height: 1, color: divColor),
-                          ],
-                        )),
+                                Container(height: 1, color: divColor),
+                              ],
+                            )),
                       ],
 
                       // BUILD 93 — Prescrições/Simulações favoritas OCULTAS (Apple 1.4.1)
@@ -6241,22 +7590,28 @@ class _FavoritosSheet extends StatelessWidget {
                               fontSize: 10,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 1.3,
-                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                              color: dark
+                                  ? Colors.white38
+                                  : const Color(0xFF8A94A6),
                             ),
                           ),
                         ),
                         ...favProtos.map((pr) {
-                          final title = pr.title[isEs ? 'es' : 'pt'] ?? pr.title['pt'] ?? '';
+                          final title = pr.title[isEs ? 'es' : 'pt'] ??
+                              pr.title['pt'] ??
+                              '';
                           return Column(
                             children: [
                               ListTile(
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 2, horizontal: 4),
                                 leading: Container(
-                                  width: 38, height: 38,
+                                  width: 38,
+                                  height: 38,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: const Color(0xFFCC2222).withOpacity(0.12),
+                                    color: const Color(0xFFCC2222)
+                                        .withOpacity(0.12),
                                   ),
                                   child: const Icon(Icons.emergency_rounded,
                                       size: 18, color: Color(0xFFCC2222)),
@@ -6268,11 +7623,17 @@ class _FavoritosSheet extends StatelessWidget {
                                       color: textMain,
                                     )),
                                 subtitle: Text(
-                                  isEs ? 'Protocolo clínico' : 'Protocolo clínico', // igual
-                                  style: TextStyle(fontSize: 11, color: textSub),
+                                  isEs
+                                      ? 'Protocolo clínico'
+                                      : 'Protocolo clínico', // igual
+                                  style:
+                                      TextStyle(fontSize: 11, color: textSub),
                                 ),
-                                trailing: Icon(Icons.chevron_right_rounded, size: 18,
-                                    color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
+                                trailing: Icon(Icons.chevron_right_rounded,
+                                    size: 18,
+                                    color: dark
+                                        ? Colors.white24
+                                        : const Color(0xFFCBD5E0)),
                                 onTap: () {
                                   Navigator.pop(context);
                                   openProtocolById(context, pr.id);
@@ -6291,33 +7652,54 @@ class _FavoritosSheet extends StatelessWidget {
                           child: Text(
                             isEs ? 'CASOS CLÍNICOS' : 'CASOS CLÍNICOS', // igual
                             style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w800,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
                               letterSpacing: 1.3,
-                              color: dark ? Colors.white38 : const Color(0xFF8A94A6),
+                              color: dark
+                                  ? Colors.white38
+                                  : const Color(0xFF8A94A6),
                             ),
                           ),
                         ),
                         ...favClinical.map((c) => Column(children: [
-                          ListTile(
-                            contentPadding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                            leading: Container(
-                              width: 38, height: 38,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: const Color(0xFFFBBF24).withOpacity(0.15),
+                              ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 4),
+                                leading: Container(
+                                  width: 38,
+                                  height: 38,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: const Color(0xFFFBBF24)
+                                        .withOpacity(0.15),
+                                  ),
+                                  child: const Icon(Icons.cases_rounded,
+                                      size: 18, color: Color(0xFFFBBF24)),
+                                ),
+                                title: Text(c.title,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: textMain)),
+                                subtitle: Text(
+                                    c.category.isNotEmpty
+                                        ? c.category
+                                        : (isEs
+                                            ? 'Caso clínico'
+                                            : 'Caso clínico'),
+                                    style: TextStyle(
+                                        fontSize: 11, color: textSub)),
+                                trailing: Icon(Icons.chevron_right_rounded,
+                                    size: 18,
+                                    color: dark
+                                        ? Colors.white24
+                                        : const Color(0xFFCBD5E0)),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
                               ),
-                              child: const Icon(Icons.cases_rounded, size: 18, color: Color(0xFFFBBF24)),
-                            ),
-                            title: Text(c.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: textMain)),
-                            subtitle: Text(c.category.isNotEmpty ? c.category : (isEs ? 'Caso clínico' : 'Caso clínico'),
-                                style: TextStyle(fontSize: 11, color: textSub)),
-                            trailing: Icon(Icons.chevron_right_rounded, size: 18, color: dark ? Colors.white24 : const Color(0xFFCBD5E0)),
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          Container(height: 1, color: divColor),
-                        ])),
+                              Container(height: 1, color: divColor),
+                            ])),
                       ],
                     ],
                   ),
@@ -6406,16 +7788,23 @@ class _HomeCardState extends State<_HomeCard>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown:    (_) { _ctrl.forward(); AppHaptics.light(context); },
-      onTapUp:      (_) { _ctrl.reverse(); widget.onTap(); },
-      onTapCancel:  ()  => _ctrl.reverse(),
+      onTapDown: (_) {
+        _ctrl.forward();
+        AppHaptics.light(context);
+      },
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _ctrl.reverse(),
       child: ScaleTransition(
         scale: _scale,
         child: Container(
           width: double.infinity,
-          height: 101,  // ORDEM 43: 92→101 (+10% proporção premium)
+          height: 101, // ORDEM 43: 92→101 (+10% proporção premium)
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),  // ORDEM 45: mosaico industrial
+            borderRadius:
+                BorderRadius.circular(8), // ORDEM 45: mosaico industrial
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -6475,7 +7864,8 @@ class _HomeCardState extends State<_HomeCard>
                           fontWeight: FontWeight.w900,
                           letterSpacing: 0.4,
                           // Build 138: dark mode → branco puro para máximo contraste
-                          color: widget.dark ? Colors.white : widget.accentColor,
+                          color:
+                              widget.dark ? Colors.white : widget.accentColor,
                         ),
                       ),
                     ),
@@ -6536,33 +7926,33 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
 
   // ── 10 protocolos principais (visíveis por padrão) ─────────────────────
   static const _mainProtocols = [
-    ('iam_supra',             'IAM',              Icons.favorite_border_rounded),
-    ('avc_isquemico',         'AVC',              Icons.bolt_rounded),
-    ('sepse',                 'Sepse',            Icons.emergency_rounded),
-    ('choque_septico_avancado', 'Choque Séptico',  Icons.warning_amber_rounded),
-    ('anafilaxia',            'Anafilaxia',       Icons.warning_rounded),
-    ('hiperpotassemia_grave', 'Hipercalemia',     Icons.science_rounded),
-    ('tep_agudo',             'TEP Instável',     Icons.bloodtype_rounded),
-    ('tpsv',                  'TPSV',             Icons.favorite_rounded),
-    ('cetoacidose_diabetica',  'Cetoacidose',      Icons.water_drop_rounded),
-    ('asma_grave',            'Crise Asmática',   Icons.air_rounded),
+    ('iam_supra', 'IAM', Icons.favorite_border_rounded),
+    ('avc_isquemico', 'AVC', Icons.bolt_rounded),
+    ('sepse', 'Sepse', Icons.emergency_rounded),
+    ('choque_septico_avancado', 'Choque Séptico', Icons.warning_amber_rounded),
+    ('anafilaxia', 'Anafilaxia', Icons.warning_rounded),
+    ('hiperpotassemia_grave', 'Hipercalemia', Icons.science_rounded),
+    ('tep_agudo', 'TEP Instável', Icons.bloodtype_rounded),
+    ('tpsv', 'TPSV', Icons.favorite_rounded),
+    ('cetoacidose_diabetica', 'Cetoacidose', Icons.water_drop_rounded),
+    ('asma_grave', 'Crise Asmática', Icons.air_rounded),
   ];
 
   // ── Extras (visíveis ao expandir) ──────────────────────────────────────
   static const _extraProtocols = [
-    ('pcr_adulto',            'PCR',              Icons.monitor_heart_rounded),
-    ('fa_aguda',              'FA Aguda',         Icons.electric_bolt_rounded),
-    ('choque_cardiogenico',   'Choque Card.',     Icons.heart_broken_rounded),
-    ('crise_hipertensiva',    'Crise HAS',        Icons.speed_rounded),
-    ('edema_agudo_pulmao',    'EAP',              Icons.waves_rounded),
-    ('status_epilepticus',    'Status Epil.',     Icons.psychology_rounded),
+    ('pcr_adulto', 'PCR', Icons.monitor_heart_rounded),
+    ('fa_aguda', 'FA Aguda', Icons.electric_bolt_rounded),
+    ('choque_cardiogenico', 'Choque Card.', Icons.heart_broken_rounded),
+    ('crise_hipertensiva', 'Crise HAS', Icons.speed_rounded),
+    ('edema_agudo_pulmao', 'EAP', Icons.waves_rounded),
+    ('status_epilepticus', 'Status Epil.', Icons.psychology_rounded),
   ];
 
-  static const _kRed        = Color(0xFFCC2222);
-  static const _kRedDark    = Color(0xFFFF8888);
-  static const _kRedBg      = Color(0xFFFFF0F0);
-  static const _kRedBgDark  = Color(0xFF2A0A0A);
-  static const _kRedBord    = Color(0xFFFFCCCC);
+  static const _kRed = Color(0xFFCC2222);
+  static const _kRedDark = Color(0xFFFF8888);
+  static const _kRedBg = Color(0xFFFFF0F0);
+  static const _kRedBgDark = Color(0xFF2A0A0A);
+  static const _kRedBord = Color(0xFFFFCCCC);
   static const _kRedBordDark = Color(0xFF6B1A1A);
 
   Widget _buildCard(String id, String label, IconData icon) {
@@ -6575,9 +7965,7 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
           borderRadius: BorderRadius.circular(13),
           color: dark ? _kRedBgDark : _kRedBg,
           border: Border.all(
-            color: dark
-                ? _kRedBordDark.withOpacity(0.55)
-                : _kRedBord,
+            color: dark ? _kRedBordDark.withOpacity(0.55) : _kRedBord,
             width: 1,
           ),
           boxShadow: dark
@@ -6594,15 +7982,13 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 28, height: 28,
+              width: 28,
+              height: 28,
               decoration: BoxDecoration(
-                color: dark
-                    ? _kRed.withOpacity(0.15)
-                    : _kRed.withOpacity(0.09),
+                color: dark ? _kRed.withOpacity(0.15) : _kRed.withOpacity(0.09),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, size: 15,
-                  color: dark ? _kRedDark : _kRed),
+              child: Icon(icon, size: 15, color: dark ? _kRedDark : _kRed),
             ),
             const SizedBox(height: 5),
             Padding(
@@ -6632,13 +8018,11 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
     final dark = widget.dark;
     final isEs = widget.isEs;
     final cardBg = dark ? const Color(0xFF0E1210) : Colors.white;
-    final borderColor = dark
-        ? _kRedBordDark.withOpacity(0.20)
-        : _kRedBord.withOpacity(0.60);
+    final borderColor =
+        dark ? _kRedBordDark.withOpacity(0.20) : _kRedBord.withOpacity(0.60);
 
-    final allProtos = _expanded
-        ? [..._mainProtocols, ..._extraProtocols]
-        : _mainProtocols;
+    final allProtos =
+        _expanded ? [..._mainProtocols, ..._extraProtocols] : _mainProtocols;
 
     return Container(
       decoration: BoxDecoration(
@@ -6658,17 +8042,17 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
           // ── Cabeçalho ────────────────────────────────────────────────
           Row(children: [
             Container(
-              width: 32, height: 32,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: _kRed.withOpacity(dark ? 0.18 : 0.09),
                 borderRadius: BorderRadius.circular(9),
               ),
-              child: Icon(Icons.emergency_rounded, size: 17,
-                  color: dark ? _kRedDark : _kRed),
+              child: Icon(Icons.emergency_rounded,
+                  size: 17, color: dark ? _kRedDark : _kRed),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -6705,14 +8089,13 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
             GestureDetector(
               onTap: () => setState(() => _expanded = !_expanded),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: dark ? _kRedBgDark : _kRedBg,
                   border: Border.all(
-                    color: dark
-                        ? _kRedBordDark.withOpacity(0.40)
-                        : _kRedBord,
+                    color: dark ? _kRedBordDark.withOpacity(0.40) : _kRedBord,
                   ),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -6750,8 +8133,9 @@ class _QuickEmergenciesState extends State<_QuickEmergencies> {
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
             childAspectRatio: 1.10,
-            children: allProtos.map((proto) =>
-                _buildCard(proto.$1, proto.$2, proto.$3)).toList(),
+            children: allProtos
+                .map((proto) => _buildCard(proto.$1, proto.$2, proto.$3))
+                .toList(),
           ),
 
           // ── Dica visual de fluxo ──────────────────────────────────────
@@ -6792,9 +8176,7 @@ class _EmergStep extends StatelessWidget {
         style: TextStyle(
           fontSize: 9,
           fontWeight: FontWeight.w700,
-          color: dark
-              ? const Color(0xFFFF8888)
-              : const Color(0xFFCC2222),
+          color: dark ? const Color(0xFFFF8888) : const Color(0xFFCC2222),
         ),
       ),
     );
@@ -6826,6 +8208,7 @@ class _EmergArrow extends StatelessWidget {
 class _ShellHeader extends StatelessWidget {
   final List<Color> gradientColors;
   final Color accentColor;
+  final Color foregroundColor;
   final IconData icon;
   final String label;
   final String subtitle;
@@ -6836,6 +8219,7 @@ class _ShellHeader extends StatelessWidget {
   const _ShellHeader({
     required this.gradientColors,
     required this.accentColor,
+    this.foregroundColor = Colors.white,
     required this.icon,
     required this.label,
     required this.subtitle,
@@ -6888,11 +8272,12 @@ class _ShellHeader extends StatelessWidget {
               child: Row(children: [
                 // BUILD 282 ORDEM 2/3: arrow_back_ios_new (canônico, size:20)
                 IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new,
-                      size: 20, color: Colors.white),
+                  icon: Icon(Icons.arrow_back_ios_new,
+                      size: 20, color: foregroundColor),
                   onPressed: () => Navigator.of(context).pop(),
                   padding: const EdgeInsets.all(8),
-                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  constraints:
+                      const BoxConstraints(minWidth: 36, minHeight: 36),
                 ),
                 // BUILD 282 ORDEM 4: ícone condicional (showIcon=false na Pediatria)
                 if (showIcon) ...[
@@ -6919,10 +8304,10 @@ class _ShellHeader extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: foregroundColor,
                           letterSpacing: -0.2,
                         ),
                       ),
@@ -6952,104 +8337,130 @@ class _ShellHeader extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // PEDIATRICS SHELL
 // ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_PEDS_2026_UI_RECOVERY_GROWTH_V1_B_R3
+// MEDCASES_PEDS_2026_DEVICE_VISUAL_FIX_V1_B_R5
+// PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_WORKSPACE_BEGIN
+class PediatricsMainShellWorkspace extends StatelessWidget {
+  const PediatricsMainShellWorkspace({
+    required this.onBack,
+    super.key,
+  });
+
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) => _PediatricsShell(onBack: onBack);
+}
+// PEDIATRIA_MAIN_SHELL_FOOTER_V1_B_R0_WORKSPACE_END
+
 class _PediatricsShell extends StatelessWidget {
-  const _PediatricsShell();
+  const _PediatricsShell({this.onBack});
+
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // TOPBAR BLEED — Padrão idêntico à InternacaoScreen (PACIENTES).
-    // appBar: PreferredSize → Flutter estende automaticamente o gradiente
-    // atrás da status bar / Dynamic Island.
-    // SafeArea(bottom:false) DENTRO do Container empurra o conteúdo
-    // interativo abaixo do notch sem cortar o gradiente.
-    // extendBodyBehindAppBar: true garante que o body ocupa toda a tela.
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(56),
-        child: Container(
-          decoration: const BoxDecoration(
-            // BUILD 331 PEDIATRIA: gradiente idêntico ao card PEDIATRIA da Home
-            // topLeft #0A3F36 (petróleo escuro) → bottomRight #0F6B5C (verde água)
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF0A3F36), Color(0xFF0F6B5C)],
-            ),
-            border: Border(
-              bottom: BorderSide(color: Color(0xFF0A4F43), width: 0.5),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x59000000),
-                blurRadius: 6,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: SizedBox(
-              height: 56,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // CENTER: título BRANCO — contraste máximo sobre gradiente petróleo
-                    IgnorePointer(
-                      child: Text(
-                        isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2,
-                          color: Colors.white,
+    final body = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final glassColor = dark
+        ? const Color(0xFF252930).withOpacity(0.70)
+        : Colors.white.withOpacity(0.70);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final foreground = dark ? Colors.white : const Color(0xFF05070A);
+
+    // MEDCASES_PEDIATRIA_LABORATORIO_TOPBAR_SAFE_AREA_PARITY_V1_B_R0_R7_TRANSACTIONAL
+    // MEDCASES_PEDIATRIA_HOME_TOPBAR_V1_B_R0
+    // Legacy compatibility sentinel only. The old PreferredSize/SafeArea
+    // architecture is NOT restored; R7 remains the productive geometry.
+    // Same ownership contract homologated in Laboratorio R8-R1:
+    // MainShell tab owns Y=0; this workspace paints physical safe top + 48px.
+    final topPad =
+        View.of(context).padding.top / View.of(context).devicePixelRatio;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: dark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: dark ? Brightness.dark : Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: body,
+        body: Column(
+          children: [
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                child: Container(
+                  width: double.infinity,
+                  height: topPad + 48,
+                  decoration: BoxDecoration(
+                    color: glassColor,
+                    border: Border(
+                      bottom: BorderSide(
+                        color: divider,
+                        width: 0.7,
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: topPad),
+                    child: SizedBox(
+                      height: 48,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            IgnorePointer(
+                              child: Text(
+                                isEs ? 'PEDIATRÍA' : 'PEDIATRIA',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.2,
+                                  color: foreground,
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap:
+                                    onBack ?? () => Navigator.of(context).pop(),
+                                child: SizedBox(
+                                  width: 36,
+                                  height: 36,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.arrow_back_ios_new_rounded,
+                                      size: 20,
+                                      color: foreground,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    // LEFT: botão de voltar BRANCO — SizedBox 36×36
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => Navigator.of(context).pop(),
-                        child: const SizedBox(
-                          width: 36,
-                          height: 36,
-                          child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+            const Expanded(child: PediatricsTabContent()),
+          ],
         ),
       ),
-      body: const Column(children: [
-        // Espaçamento compensatório: empurra o conteúdo abaixo do AppBar
-        SizedBox(height: 56), // altura fixa da PreferredSize
-        // ── Conteúdo — PediatricsTabContent (quad tabs desacopladas) ─
-        Expanded(child: PediatricsTabContent()),
-      ]),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // ADULTO SHELL
 // ─────────────────────────────────────────────────────────────────────────────
 // ─────────────────────────────────────────────────────────────────────────────
@@ -7101,7 +8512,7 @@ class _FarmacosShellState extends State<_FarmacosShell> {
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
@@ -7109,13 +8520,16 @@ class _FarmacosShellState extends State<_FarmacosShell> {
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
         _ShellHeader(
-          gradientColors: const [Color(0xFF3B2200), Color(0xFF6B3A00), Color(0xFF9A5B00)],
-          accentColor:    const Color(0xFFFBBF24),
-          icon:    Icons.medication_rounded,
-          label:   'FÁRMACOS',
-          subtitle: isEs
-              ? 'Actualizados en 2026'
-              : 'Atualizados em 2026',
+          gradientColors: Theme.of(context).brightness == Brightness.dark
+              ? const [Color(0xFF1A1D23), Color(0xFF1A1D23)]
+              : const [Color(0xFFECF1F3), Color(0xFFECF1F3)],
+          accentColor: const Color(0xFF0D6B57),
+          foregroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : const Color(0xFF111827),
+          icon: Icons.medication_rounded,
+          label: 'FÁRMACOS',
+          subtitle: isEs ? 'Actualizados en 2026' : 'Atualizados em 2026',
         ),
         Expanded(
           child: _ready
@@ -7142,16 +8556,18 @@ class _FarmacosShellState extends State<_FarmacosShell> {
         ),
         const SizedBox(height: 20),
         // Linhas de grupo skeleton
-        ...List.generate(6, (i) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Container(
-            height: 52,
-            decoration: BoxDecoration(
-              color: bg,
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        )),
+        ...List.generate(
+            6,
+            (i) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: bg,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                )),
       ]),
     );
   }
@@ -7165,7 +8581,7 @@ class _CalculadorasShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
@@ -7175,10 +8591,15 @@ class _CalculadorasShell extends StatelessWidget {
         // BUILD 282-CROMATICO: Gradiente idêntico ao card da Home (topLeft→bottomRight)
         // 3B0764→7E22CE→A855F7 — mesmo cromatismo, continuidade visual perfeita.
         _ShellHeader(
-          gradientColors: const [Color(0xFF3B0764), Color(0xFF7E22CE), Color(0xFFA855F7)],
-          accentColor:    const Color(0xFFE9D5FF), // lilás claro — consistente com home card
-          icon:    Icons.calculate_rounded,
-          label:   'CALCULADORA CLÍNICA',
+          gradientColors: const [
+            Color(0xFF3B0764),
+            Color(0xFF7E22CE),
+            Color(0xFFA855F7)
+          ],
+          accentColor: const Color(
+              0xFFE9D5FF), // lilás claro — consistente com home card
+          icon: Icons.calculate_rounded,
+          label: 'CALCULADORA CLÍNICA',
           subtitle: isEs
               ? 'Nefrología · Cardio · Hepatología'
               : 'Nefrologia · Cardio · Hepatologia',
@@ -7197,7 +8618,7 @@ class _PrescripcionesShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
@@ -7205,10 +8626,14 @@ class _PrescripcionesShell extends StatelessWidget {
       backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
       body: Column(children: [
         _ShellHeader(
-          gradientColors: const [Color(0xFF2A0B52), Color(0xFF3D1280), Color(0xFF5B21B6)],
-          accentColor:    const Color(0xFFA78BFA),
-          icon:    Icons.description_rounded,
-          label:   isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
+          gradientColors: const [
+            Color(0xFF2A0B52),
+            Color(0xFF3D1280),
+            Color(0xFF5B21B6)
+          ],
+          accentColor: const Color(0xFFA78BFA),
+          icon: Icons.description_rounded,
+          label: isEs ? 'SIMULACIONES' : 'SIMULAÇÕES',
           subtitle: isEs
               ? '${prescriptionModels(true).length} ejemplos'
               : '${prescriptionModels(false).length} exemplos',
@@ -7241,9 +8666,9 @@ enum _SearchCat { drug, protocol, prescription, interaction }
 
 class _SearchResult {
   final _SearchCat cat;
-  final String     title;
-  final String     subtitle;
-  final dynamic    data;      // DrugModel | ProtocolModel | PrescriptionModel | String
+  final String title;
+  final String subtitle;
+  final dynamic data; // DrugModel | ProtocolModel | PrescriptionModel | String
 
   const _SearchResult({
     required this.cat,
@@ -7262,7 +8687,7 @@ class _GlobalSearchModal extends StatefulWidget {
 }
 
 class _GlobalSearchModalState extends State<_GlobalSearchModal> {
-  final _ctrl  = TextEditingController();
+  final _ctrl = TextEditingController();
   final _focus = FocusNode();
   List<_SearchResult> _results = [];
   bool _searched = false;
@@ -7286,16 +8711,19 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
   void _onChanged(String q) {
     final query = q.trim().toLowerCase();
     if (query.length < 2) {
-      setState(() { _results = []; _searched = false; });
+      setState(() {
+        _results = [];
+        _searched = false;
+      });
       return;
     }
     _runSearch(query);
   }
 
   void _runSearch(String q) {
-    final p    = context.read<AppProvider>();
+    final p = context.read<AppProvider>();
     final isEs = p.lang == 'es';
-    final res  = <_SearchResult>[];
+    final res = <_SearchResult>[];
 
     // BUILD 325: busca local de fármacos removida — dados via WebView calculadora.
 
@@ -7304,13 +8732,14 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
     final lang = p.lang;
     for (final proto in p.protocolsDB) {
       if (protoCount >= _maxPerCat) break;
-      final titleText = (proto.title[lang] ?? proto.title['pt'] ?? '').toLowerCase();
+      final titleText =
+          (proto.title[lang] ?? proto.title['pt'] ?? '').toLowerCase();
       if (titleText.contains(q)) {
         res.add(_SearchResult(
-          cat:      _SearchCat.protocol,
-          title:    proto.title[lang] ?? proto.title['pt'] ?? '',
+          cat: _SearchCat.protocol,
+          title: proto.title[lang] ?? proto.title['pt'] ?? '',
           subtitle: isEs ? 'Protocolo clínico' : 'Protocolo clínico', // igual
-          data:     proto,
+          data: proto,
         ));
         protoCount++;
       }
@@ -7329,16 +8758,19 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
       if (interCount >= _maxPerCat) break;
       if (name.toLowerCase().contains(q)) {
         res.add(_SearchResult(
-          cat:      _SearchCat.interaction,
-          title:    name,
+          cat: _SearchCat.interaction,
+          title: name,
           subtitle: isEs ? 'Ver interacciones' : 'Ver interações',
-          data:     name,
+          data: name,
         ));
         interCount++;
       }
     }
 
-    setState(() { _results = res; _searched = true; });
+    setState(() {
+      _results = res;
+      _searched = true;
+    });
   }
 
   // ── Navegar ao resultado ────────────────────────────────────────────────
@@ -7365,16 +8797,16 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
   // ── UI ──────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final dark = p.darkMode;
     final isEs = p.lang == 'es';
 
-    final bg      = dark ? const Color(0xFF111714) : const Color(0xFFFFFFFF);
+    final bg = dark ? const Color(0xFF111714) : const Color(0xFFFFFFFF);
     final surface = dark ? const Color(0xFF1A211D) : const Color(0xFFF4F6F5);
-    final border  = dark ? const Color(0x1AFFFFFF) : const Color(0x14000000);
+    final border = dark ? const Color(0x1AFFFFFF) : const Color(0x14000000);
     final textPri = dark ? const Color(0xFFEEF2EE) : const Color(0xFF101C14);
     final textSec = dark ? const Color(0xFF7A9486) : const Color(0xFF6B8272);
-    final green   = const Color(0xFF46E28C);
+    final green = const Color(0xFF46E28C);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.88,
@@ -7388,7 +8820,8 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 4),
             child: Container(
-              width: 38, height: 4,
+              width: 38,
+              height: 4,
               decoration: BoxDecoration(
                 color: Colors.white24,
                 borderRadius: BorderRadius.circular(10),
@@ -7453,12 +8886,15 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
                     GestureDetector(
                       onTap: () {
                         _ctrl.clear();
-                        setState(() { _results = []; _searched = false; });
+                        setState(() {
+                          _results = [];
+                          _searched = false;
+                        });
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: Icon(Icons.close_rounded,
-                            color: textSec, size: 18),
+                        child:
+                            Icon(Icons.close_rounded, color: textSec, size: 18),
                       ),
                     ),
                 ],
@@ -7472,19 +8908,25 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                _CatChip(label: isEs ? 'Fármacos' : 'Fármacos',
-                    color: const Color(0xFFFBBF24), dark: dark),
+                _CatChip(
+                    label: isEs ? 'Fármacos' : 'Fármacos',
+                    color: const Color(0xFFFBBF24),
+                    dark: dark),
                 const SizedBox(width: 6),
-                _CatChip(label: 'Protocolos',
-                    color: const Color(0xFF10B981), dark: dark),
+                _CatChip(
+                    label: 'Protocolos',
+                    color: const Color(0xFF10B981),
+                    dark: dark),
                 const SizedBox(width: 6),
                 // BUILD 93 — chip 'Simulaciones/Simulações' ocultado (Apple 1.4.1)
                 // Reativar após aprovação com In-App Browser
                 // _CatChip(label: isEs ? 'Simulaciones' : 'Simulações',
                 //     color: const Color(0xFFA78BFA), dark: dark),
                 const SizedBox(width: 6),
-                _CatChip(label: isEs ? 'Interacciones' : 'Interações',
-                    color: const Color(0xFFFF6BA0), dark: dark),
+                _CatChip(
+                    label: isEs ? 'Interacciones' : 'Interações',
+                    color: const Color(0xFFFF6BA0),
+                    dark: dark),
               ],
             ),
           ),
@@ -7549,9 +8991,10 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
 // ── Category chip ──────────────────────────────────────────────────────────
 class _CatChip extends StatelessWidget {
   final String label;
-  final Color  color;
-  final bool   dark;
-  const _CatChip({required this.label, required this.color, required this.dark});
+  final Color color;
+  final bool dark;
+  const _CatChip(
+      {required this.label, required this.color, required this.dark});
 
   @override
   Widget build(BuildContext context) {
@@ -7563,15 +9006,14 @@ class _CatChip extends StatelessWidget {
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Container(
-          width: 6, height: 6,
+          width: 6,
+          height: 6,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 5),
         Text(label,
             style: TextStyle(
-                color: color,
-                fontSize: 10,
-                fontWeight: FontWeight.w700)),
+                color: color, fontSize: 10, fontWeight: FontWeight.w700)),
       ]),
     );
   }
@@ -7580,10 +9022,10 @@ class _CatChip extends StatelessWidget {
 // ── Result tile ────────────────────────────────────────────────────────────
 class _GlobalSearchResultTile extends StatelessWidget {
   final _SearchResult result;
-  final bool          dark;
-  final Color         textPri;
-  final Color         textSec;
-  final VoidCallback  onTap;
+  final bool dark;
+  final Color textPri;
+  final Color textSec;
+  final VoidCallback onTap;
 
   const _GlobalSearchResultTile({
     required this.result,
@@ -7594,18 +9036,18 @@ class _GlobalSearchResultTile extends StatelessWidget {
   });
 
   static IconData _icon(_SearchCat c) => switch (c) {
-    _SearchCat.drug         => Icons.medication_rounded,
-    _SearchCat.protocol     => Icons.assignment_rounded,
-    _SearchCat.prescription => Icons.description_rounded,
-    _SearchCat.interaction  => Icons.compare_arrows_rounded,
-  };
+        _SearchCat.drug => Icons.medication_rounded,
+        _SearchCat.protocol => Icons.assignment_rounded,
+        _SearchCat.prescription => Icons.description_rounded,
+        _SearchCat.interaction => Icons.compare_arrows_rounded,
+      };
 
   static Color _color(_SearchCat c) => switch (c) {
-    _SearchCat.drug         => const Color(0xFFFBBF24),
-    _SearchCat.protocol     => const Color(0xFF10B981),
-    _SearchCat.prescription => const Color(0xFFA78BFA),
-    _SearchCat.interaction  => const Color(0xFFFF6BA0),
-  };
+        _SearchCat.drug => const Color(0xFFFBBF24),
+        _SearchCat.protocol => const Color(0xFF10B981),
+        _SearchCat.prescription => const Color(0xFFA78BFA),
+        _SearchCat.interaction => const Color(0xFFFF6BA0),
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -7616,7 +9058,8 @@ class _GlobalSearchResultTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 2),
         child: Row(children: [
           Container(
-            width: 38, height: 38,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: color.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),

@@ -5,7 +5,14 @@
 import 'package:flutter/material.dart';
 import 'internacion_theme.dart';
 
+
 class ResumenHeader extends StatelessWidget {
+  // MEDCASES_PACIENTES_FINAL_SUMMARY_SOURCE_DRIVEN_V2
+  // MEDCASES_PACIENTES_PHYSICAL_CARD_V1
+  // MEDCASES_PACIENTES_SUMMARY_BORDERLESS_V1
+  // MEDCASES_PACIENTES_SUMMARY_EDGE_0_5PX_V1
+  // MEDCASES_PACIENTES_HOME_COMPACT_SUMMARY_V1_B_R0
+  // MEDCASES_PACIENTES_FINAL_BREATHING_SUMMARY_V1_B_R0
   final String pacienteId;
   final String cama;
   final String diagnostico;
@@ -25,132 +32,85 @@ class ResumenHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEs = lang == 'es';
     final theme = InternacionTheme(dark);
-    final isEs  = lang == 'es';
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final title = pacienteId.isEmpty
+        ? (isEs ? 'Paciente sin identificar' : 'Paciente não identificado')
+        : pacienteId;
 
-    final diaLabel = isEs
-        ? (diadeInternacion == 1 ? '1er día' : '${diadeInternacion}º día')
-        : ('${diadeInternacion}º dia');
+    final meta = <String>[
+      if (cama.trim().isNotEmpty)
+        '${isEs ? 'Cama' : 'Leito'} ${cama.trim()}',
+      if (diagnostico.trim().isNotEmpty) diagnostico.trim(),
+    ];
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12.5),
       decoration: BoxDecoration(
-        color: theme.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: theme.border, width: 0.8),
-        boxShadow: [theme.softShadow],
+        color: surface,
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
-          // ── Avatar do paciente ───────────────────────────────────────────
           Container(
-            width: 44, height: 44,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
-              color: InternacionTheme.cyan.withOpacity(dark ? 0.15 : 0.10),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: InternacionTheme.cyan.withOpacity(0.35),
-                width: 1.2,
+              color: InternacionTheme.accentLight.withOpacity(
+                dark ? 0.14 : 0.10,
               ),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: const Center(
-              child: Icon(Icons.person_outline_rounded,
-                  size: 24, color: InternacionTheme.cyan),
+            alignment: Alignment.center,
+            child: const Icon(
+              Icons.person_outline_rounded,
+              size: 19,
+              color: InternacionTheme.accentLight,
             ),
           ),
-          const SizedBox(width: 12),
-
-          // ── Info do paciente ─────────────────────────────────────────────
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Nome / ID
                 Text(
-                  pacienteId.isEmpty
-                      ? (isEs ? 'Paciente sin identificar' : 'Paciente não identificado')
-                      : pacienteId,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: theme.textPrimary,
-                  ),
+                  title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 3),
-                // Diagnóstico
-                if (diagnostico.isNotEmpty) ...[
-                  Text(
-                    diagnostico,
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: theme.textSecondary,
-                      height: 1.3,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: theme.textPrimary,
+                    height: 1.15,
                   ),
-                  const SizedBox(height: 3),
-                ],
-                // Cama + Dia
-                Row(
-                  children: [
-                    if (cama.isNotEmpty) ...[
-                      Icon(Icons.bed_rounded, size: 12, color: theme.labelColor),
-                      const SizedBox(width: 3),
-                      Text(
-                        '${isEs ? 'Cama' : 'Leito'} $cama',
-                        style: TextStyle(fontSize: 11, color: theme.labelColor),
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                    Icon(Icons.calendar_today_rounded,
-                        size: 11, color: InternacionTheme.cyan.withOpacity(0.70)),
-                    const SizedBox(width: 3),
-                    Text(
-                      diaLabel,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: InternacionTheme.cyan,
-                      ),
-                    ),
-                  ],
                 ),
+                if (meta.isNotEmpty) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    meta.join(' · '),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: theme.textSecondary,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
-
-          // ── Dia badge ────────────────────────────────────────────────────
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: InternacionTheme.cyan.withOpacity(dark ? 0.18 : 0.10),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              children: [
-                Text(
-                  '${isEs ? 'DÍA' : 'DIA'}',
-                  style: TextStyle(
-                    fontSize: 8, fontWeight: FontWeight.w700,
-                    color: InternacionTheme.cyan.withOpacity(0.70),
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                Text(
-                  '$diadeInternacion',
-                  style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w800,
-                    color: InternacionTheme.cyan,
-                    height: 1.1,
-                  ),
-                ),
-              ],
+          const SizedBox(width: 10),
+          Text(
+            '${isEs ? 'DÍA' : 'DIA'} $diadeInternacion',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: InternacionTheme.accentLight,
             ),
           ),
         ],

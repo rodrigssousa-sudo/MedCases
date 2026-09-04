@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
 
+import '../../../../design_system/foundation/med_typography.dart';
 class SoapEvaluacion extends StatefulWidget {
   final EvaluacionData data;
   final ValueChanged<EvaluacionData> onChanged;
@@ -25,6 +26,7 @@ class SoapEvaluacion extends StatefulWidget {
 }
 
 class _SoapEvaluacionState extends State<SoapEvaluacion> {
+  // MEDCASES_SOAP_EVALUACION_COMPACT_CONSOLE_V2
   late final TextEditingController _notasCtrl;
   late final TextEditingController _problemaCtrl;
 
@@ -84,213 +86,152 @@ class _SoapEvaluacionState extends State<SoapEvaluacion> {
   }
 
   @override
-  Widget build(BuildContext context) {
+Widget build(BuildContext context) {
+    // MEDCASES_SOAP4_TRUE_INNER_EVALUATION_SEGMENTED_V1
     final d = widget.data;
     final dark = widget.dark;
     final theme = InternacionTheme(dark);
+    final border = dark ? const Color(0xFF3A4350) : const Color(0xFFD5DCE5);
+    final muted = dark ? const Color(0xFF9AA5B4) : const Color(0xFF667085);
+    final text = dark ? const Color(0xFFE8EDF3) : const Color(0xFF1F2937);
+
+    Widget sectionTitle(String value) => Row(
+      children: [
+        Text(value.toUpperCase(), style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w800, letterSpacing: 0.76, color: theme.labelColor)),
+        const SizedBox(width: 9),
+        Expanded(child: Container(height: 0.7, color: border.withOpacity(0.82))),
+      ],
+    );
+
+    final states = <EstadoClinical>[
+      EstadoClinical.mejorando,
+      EstadoClinical.estable,
+      EstadoClinical.empeorando,
+    ];
+    final labels = isEs
+        ? <String>['Mejorando', 'Estable', 'Empeorando']
+        : <String>['Melhorando', 'Estável', 'Piorando'];
+    const colors = <Color>[
+      Color(0xFF10B981),
+      Color(0xFFF59E0B),
+      Color(0xFFEF4444),
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
-        // ── Estado clínico ───────────────────────────────────────────────────
-        Text(
-          (isEs ? '¿CÓMO EVOLUCIONA EL PACIENTE?' : 'COMO O PACIENTE EVOLUI?').toUpperCase(),
-          style: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8,
-            color: theme.labelColor,
+        sectionTitle(isEs ? 'Evolución clínica' : 'Evolução clínica'),
+        const SizedBox(height: 8),
+        Container(
+          height: 36,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(color: border, width: 0.7),
           ),
-        ),
-        const SizedBox(height: 10),
-        Row(children: EstadoClinical.values.map((estado) {
-          final isSelected = d.estado == estado;
-          final col = Color(estado.colorValue);
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => widget.onChanged(
-                d.copyWith(estado: isSelected ? null : estado),
-              ),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                margin: EdgeInsets.only(
-                  right: estado != EstadoClinical.empeorando ? 8 : 0,
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? col.withOpacity(dark ? 0.18 : 0.12)
-                      : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSelected ? col : Colors.transparent,
-                    width: 1.5,
+          child: Row(
+            children: List.generate(5, (index) {
+              if (index.isOdd) return Container(width: 0.55, color: border.withOpacity(0.82));
+              final i = index ~/ 2;
+              final state = states[i];
+              final active = d.estado == state;
+              final color = colors[i];
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => widget.onChanged(d.copyWith(estado: state)),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 140),
+                    alignment: Alignment.center,
+                    color: active ? color.withOpacity(dark ? 0.18 : 0.10) : Colors.transparent,
+                    child: Text(labels[i], maxLines: 1, overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 11.3, fontWeight: active ? FontWeight.w800 : FontWeight.w500, color: active ? color : muted)),
                   ),
                 ),
-                child: Column(
+              );
+            }),
+          ),
+        ),
+        const SizedBox(height: 14),
+        sectionTitle(isEs ? 'Problemas activos' : 'Problemas ativos'),
+        const SizedBox(height: 7),
+        if (d.problemasActivos.isNotEmpty)
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: d.problemasActivos.asMap().entries.map((e) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(8, 5, 5, 5),
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(7),
+                  border: Border.all(color: border, width: 0.65),
+                ),
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      _iconForEstado(estado),
-                      size: 20,
-                      color: isSelected ? col : theme.textSecondary,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      estado.label(widget.lang),
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-                        color: isSelected ? col : theme.textSecondary,
-                      ),
+                    Text(e.value, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: text)),
+                    const SizedBox(width: 4),
+                    GestureDetector(
+                      onTap: () => _removeProblema(e.key),
+                      child: Icon(Icons.close_rounded, size: 14, color: muted),
                     ),
                   ],
                 ),
-              ),
-            ),
-          );
-        }).toList()),
-        const SizedBox(height: 16),
-
-        // ── Problemas activos ────────────────────────────────────────────────
-        Text(
-          (isEs ? 'PROBLEMAS ACTIVOS' : 'PROBLEMAS ATIVOS').toUpperCase(),
-          style: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8,
-            color: theme.labelColor,
-          ),
-        ),
+              );
+            }).toList(),
+          )
+        else
+          Text(isEs ? 'Sin problemas activos agregados' : 'Nenhum problema ativo adicionado',
+            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w400, color: muted.withOpacity(0.75))),
         const SizedBox(height: 8),
-
-        // Lista de problemas
-        if (d.problemasActivos.isNotEmpty) ...[
-          ...d.problemasActivos.asMap().entries.map((e) => Container(
-            margin: const EdgeInsets.only(bottom: 6),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6),
-                width: 0.8,
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 6, height: 6,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF59E0B),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(e.value, style: TextStyle(
-                    fontSize: 13,
-                    color: dark ? Colors.white : const Color(0xFF1A1D23),
-                  )),
-                ),
-                GestureDetector(
-                  onTap: () => _removeProblema(e.key),
-                  child: Icon(Icons.close_rounded, size: 14,
-                      color: theme.textSecondary),
-                ),
-              ],
-            ),
-          )),
-          const SizedBox(height: 6),
-        ],
-
-        // Input para adicionar problema
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: dark ? const Color(0xFF1A1D23) : const Color(0xFFF8F9FA),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6),
-                    width: 0.8,
-                  ),
-                ),
+        Container(
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: border, width: 0.7))),
+          child: Row(
+            children: [
+              Expanded(
                 child: TextField(
                   controller: _problemaCtrl,
                   onSubmitted: _addProblema,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: dark ? Colors.white : const Color(0xFF1A1D23),
-                  ),
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: text),
                   decoration: InputDecoration(
-                    hintText: isEs
-                        ? 'Agregar problema activo…'
-                        : 'Adicionar problema ativo…',
-                    hintStyle: TextStyle(
-                      fontSize: 13,
-                      color: dark ? Colors.white24 : Colors.black26,
-                    ),
+                    hintText: isEs ? 'Agregar problema clínico…' : 'Adicionar problema clínico…',
+                    hintStyle: TextStyle(fontSize: 12.3, color: muted.withOpacity(0.62)),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
                     isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 7),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () => _addProblema(_problemaCtrl.text),
-              child: Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  color: InternacionTheme.cyan,
-                  borderRadius: BorderRadius.circular(10),
+              GestureDetector(
+                onTap: () => _addProblema(_problemaCtrl.text),
+                behavior: HitTestBehavior.opaque,
+                child: const Padding(
+                  padding: EdgeInsets.all(7),
+                  child: Icon(Icons.add_rounded, size: 18, color: Color(0xFF0D6B57)),
                 ),
-                child: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: 14),
-
-        // ── Notas de avaliação ───────────────────────────────────────────────
-        Text(
-          (isEs ? 'IMPRESIÓN CLÍNICA' : 'IMPRESSÃO CLÍNICA').toUpperCase(),
-          style: TextStyle(
-            fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8,
-            color: theme.labelColor,
-          ),
-        ),
-        const SizedBox(height: 6),
+        sectionTitle(isEs ? 'Impresión clínica' : 'Impressão clínica'),
+        const SizedBox(height: 5),
         Container(
-          decoration: BoxDecoration(
-            color: dark ? const Color(0xFF1A1D23) : const Color(0xFFF8F9FA),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6),
-              width: 0.8,
-            ),
-          ),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: border, width: 0.7))),
           child: TextField(
             controller: _notasCtrl,
-            maxLines: 3,
-            minLines: 2,
+            maxLines: 4,
+            minLines: 1,
             onChanged: (v) => widget.onChanged(d.copyWith(notasEvaluacion: v)),
-            style: TextStyle(
-              fontSize: 13,
-              color: dark ? Colors.white : const Color(0xFF1A1D23),
-              height: 1.5,
-            ),
+            style: TextStyle(fontSize: 13.3, height: 1.34, fontWeight: FontWeight.w500, color: text),
             decoration: InputDecoration(
-              hintText: isEs
-                  ? 'Paciente evoluciona favorablemente…'
-                  : 'Paciente evolui favoravelmente…',
-              hintStyle: TextStyle(
-                fontSize: 13,
-                color: dark ? Colors.white24 : Colors.black26,
-              ),
+              hintText: isEs ? 'Paciente evoluciona favorablemente…' : 'Paciente evolui favoravelmente…',
+              hintStyle: TextStyle(fontSize: 12.4, height: 1.3, color: muted.withOpacity(0.62)),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 7),
             ),
           ),
         ),

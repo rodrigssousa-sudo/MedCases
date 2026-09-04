@@ -1,5 +1,7 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_4A_V2_B_R1_AI_WIDGETS
 import 'package:flutter/material.dart';
 
+import '../../../home_v2/theme/home_v2_palette.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // Bolha do usuário — Build 170
 // Long-press → modal de ações: [Copiar Mensaje] [Editar Mensaje]
@@ -8,19 +10,28 @@ import 'package:flutter/material.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 class UserBubble extends StatefulWidget {
   final String text;
+  /// Canonical text used only by the edit flow.
+  ///
+  /// When null, editing behaves exactly as before and uses [text].
+  /// This lets a user bubble render a compact projection while preserving the
+  /// original semantic message for edits/re-send.
+  final String? editText;
   final bool dark;
   // Build 170: callbacks para copiar e editar
   final VoidCallback? onCopy;
   final void Function(String newText)? onEdit;
   // Fix 5: desabilita ícone de edição durante streaming da IA
   final bool isAiStreaming;
+  final bool cleanPlantaoPresentation;
   const UserBubble({
     super.key,
     required this.text,
+    this.editText,
     required this.dark,
     this.onCopy,
     this.onEdit,
     this.isAiStreaming = false,
+    this.cleanPlantaoPresentation = false,
   });
 
   @override
@@ -35,7 +46,9 @@ class _UserBubbleState extends State<UserBubble> {
   @override
   void initState() {
     super.initState();
-    _editCtrl = TextEditingController(text: widget.text);
+    _editCtrl = TextEditingController(
+      text: widget.editText ?? widget.text,
+    );
     _editFocus = FocusNode();
   }
 
@@ -47,11 +60,12 @@ class _UserBubbleState extends State<UserBubble> {
   }
 
   void _startEdit() {
+    final editableText = widget.editText ?? widget.text;
     setState(() {
       _editing = true;
-      _editCtrl.text = widget.text;
+      _editCtrl.text = editableText;
       _editCtrl.selection =
-          TextSelection(baseOffset: 0, extentOffset: widget.text.length);
+          TextSelection(baseOffset: 0, extentOffset: editableText.length);
     });
     // Abre teclado no próximo frame
     WidgetsBinding.instance
@@ -61,7 +75,8 @@ class _UserBubbleState extends State<UserBubble> {
   void _saveEdit() {
     final newText = _editCtrl.text.trim();
     setState(() => _editing = false);
-    if (newText.isNotEmpty && newText != widget.text) {
+    final originalEditText = (widget.editText ?? widget.text).trim();
+    if (newText.isNotEmpty && newText != originalEditText) {
       widget.onEdit?.call(newText);
     }
   }
@@ -90,136 +105,211 @@ class _UserBubbleState extends State<UserBubble> {
 
   @override
   Widget build(BuildContext context) {
-    // ── ORDEM VISUAL 04 M2: iOS Flat / Minimalista ────────────────────────────
-    // Bolha neutra e suave — não compete com o conteúdo clínico da IA.
-    // dark: grafite suave 0xFF2A2D35 / light: cinza gelo 0xFFF0F2F5
-    // Sem borda desenhada — bloco sólido de cor plana.
-    final bubbleColor =
-        widget.dark ? const Color(0xFF2A2D35) : const Color(0xFFF0F2F5);
-    final textColor = widget.dark ? Colors.white : const Color(0xFF1A1D23);
-    // Cor primária do botão "Enviar" (único elemento de destaque)
-    final sendColor =
-        widget.dark ? const Color(0xFF00E5FF) : const Color(0xFF008CA4);
+    final palette = HomeV2Palette.resolve(widget.dark);
+    final isEs =
+        Localizations.localeOf(context).languageCode == 'es';
 
-    const borderRadius = BorderRadius.only(
-      topLeft: Radius.circular(16),
-      topRight: Radius.circular(16),
-      bottomLeft: Radius.circular(16),
-      bottomRight: Radius.circular(4),
+    final disabledEditColor = palette.textSecondary.withValues(
+      alpha: 0.30,
     );
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: _editing
-            // ── Modo edição inline — paleta flat neutra ────────────────────
-            ? Container(
-                constraints: const BoxConstraints(maxWidth: 320),
-                decoration: BoxDecoration(
-                  color: bubbleColor,
-                  borderRadius: borderRadius,
-                  // Sem borda — bloco sólido flat
+    if (_editing) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(
+            14,
+            12,
+            10,
+            10,
+          ),
+          decoration: BoxDecoration(
+            color: palette.surfaceStrong,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: palette.border,
+              width: 0.6,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isEs
+                    ? 'EDITAR PREGUNTA'
+                    : 'EDITAR PERGUNTA',
+                style: TextStyle(
+                  color: palette.textPrimary,
+                  fontSize: 10.2,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.25,
                 ),
-                padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    TextField(
-                      controller: _editCtrl,
-                      focusNode: _editFocus,
-                      maxLines: null,
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.45,
-                        color: textColor,
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _editCtrl,
+                focusNode: _editFocus,
+                minLines: 1,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                style: TextStyle(
+                  color: palette.textPrimary,
+                  fontSize: 13.6,
+                  height: 1.45,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  hintText: isEs
+                      ? 'Edita tu pregunta'
+                      : 'Edite sua pergunta',
+                  hintStyle: TextStyle(
+                    color: palette.textSecondary,
+                    fontSize: 13.6,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: _cancelEdit,
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 7,
                       ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
+                      child: Text(
+                        isEs ? 'Cancelar' : 'Cancelar',
+                        style: TextStyle(
+                          color: palette.textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                          onTap: _cancelEdit,
-                          child: Text(
-                            'Cancelar',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: widget.dark
-                                    ? Colors.white54
-                                    : Colors.black45),
-                          ),
+                  ),
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: _saveEdit,
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 13,
+                        vertical: 7,
+                      ),
+                      decoration: BoxDecoration(
+                        color: palette.accent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        'Enviar',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
                         ),
-                        const SizedBox(width: 16),
-                        GestureDetector(
-                          onTap: _saveEdit,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: sendColor,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Text('Enviar',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white)),
-                          ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        12,
+        0,
+        12,
+        28,
+      ),
+      child: GestureDetector(
+        onLongPress: () => _showActions(context),
+        behavior: HitTestBehavior.translucent,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (!widget.cleanPlantaoPresentation) ...[
+                Container(
+                  width: 3,
+                  decoration: BoxDecoration(
+                    color: palette.accent,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                const SizedBox(width: 11),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (!widget.cleanPlantaoPresentation) ...[
+                      Text(
+                        isEs ? 'PREGUNTA' : 'PERGUNTA',
+                        style: TextStyle(
+                          color: palette.textPrimary,
+                          fontSize: 10.2,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.25,
                         ),
-                      ],
+                      ),
+                      const SizedBox(height: 7),
+                    ],
+                    SelectableText(
+                      widget.text,
+                      style: TextStyle(
+                        color: palette.textPrimary,
+                        fontSize:
+                            widget.cleanPlantaoPresentation ? 16.0 : 13.6,
+                        height:
+                            widget.cleanPlantaoPresentation ? 1.38 : 1.45,
+                        fontWeight: widget.cleanPlantaoPresentation
+                            ? FontWeight.w500
+                            : FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
+              ),
+              if (
+                !widget.isAiStreaming &&
+                widget.onEdit != null
               )
-            // ── Modo normal — bolha flat sem borda ────────────────────────
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onLongPress: () => _showActions(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: borderRadius,
-                        color: bubbleColor,
-                        // Sem border — design flat puro
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 2,
+                    left: 8,
+                  ),
+                  child: GestureDetector(
+                    onTap: _startEdit,
+                    behavior: HitTestBehavior.opaque,
+                    child: SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: Icon(
+                        Icons.edit_outlined,
+                        size: 15,
+                        color: disabledEditColor,
                       ),
-                      child: Text(widget.text,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: textColor,
-                              height: 1.45)),
                     ),
                   ),
-                  // Ícone de edição discreto abaixo do balão
-                  // Desabilitado e invisível durante streaming/thinking da IA
-                  if (!widget.isAiStreaming && widget.onEdit != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3, right: 2),
-                      child: GestureDetector(
-                        onTap: _startEdit,
-                        child: Icon(
-                          Icons.edit_outlined,
-                          size: 14,
-                          color: widget.dark
-                              ? Colors.white.withValues(alpha: 0.30)
-                              : Colors.black.withValues(alpha: 0.28),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -281,7 +371,7 @@ class _UserBubbleActionsSheet extends StatelessWidget {
                 : 'Copia o texto para a área de transferência',
             textCol: textCol,
             subCol: subCol,
-            iconColor: const Color(0xFF008CA4),
+            iconColor: const Color(0xFF0D6B57),
             onTap: onCopy,
           ),
           Divider(height: 1, color: dark ? Colors.white12 : Colors.black12),

@@ -23,12 +23,15 @@ void main() {
         lang: 'es',
       );
 
-      expect(result.sourceType, 'polypharmacy_protocol');
-      expect(result.protocolId, 'iam_congestao');
+      expect(result.sourceType, 'specialty_fallback_acute_coronary_syndrome');
+      expect(result.protocolId, isNull);
       expect(result.drugKeys.length, greaterThan(1));
-      expect(result.lines.join(' '), contains('ESC Guidelines for STEMI'));
-      expect(result.lines.join(' '), contains('Goodman & Gilman'));
-      expect(result.lines.join(' '), contains('Harrison'));
+      expect(result.lines.join(' '), contains('Guideline for Management of Acute Coronary Syndromes (2025)'));
+      expect(
+        result.lines.join(' '),
+        contains('ACC/AHA/ACEP/NAEMSP/SCAI'),
+      );
+      expect(result.lines.join(' '), contains('2025'));
     });
 
     test('usa protocolo temático mesmo sem fármaco detectado', () {
@@ -43,6 +46,19 @@ void main() {
       expect(result.lines.join(' '), contains('GINA'));
     });
 
+    test('não vincula protocolo específico em sintoma ainda diferencial', () {
+      final result = ClinicalReferenceResolver.resolve(
+        userText: 'Dor torácica',
+        aiText: '🟥 DOR TORÁCICA — DIFERENCIAIS PRIORITÁRIOS\n'
+            '🔑 Pontos-chave:\n'
+            '• Diferenciais prioritários: IAM, TEP, pneumotórax, dissecção aórtica',
+        lang: 'pt',
+      );
+
+      expect(result.sourceType, 'general_fallback');
+      expect(result.protocolId, isNull);
+    });
+
     test('nunca devolve resposta sem referências', () {
       final result = ClinicalReferenceResolver.resolve(
         userText: 'explicar fisiopatologia',
@@ -52,8 +68,9 @@ void main() {
 
       expect(result.lines, isNotEmpty);
       expect(result.lines.join(' '), contains('Harrison'));
-      expect(result.lines.join(' '), contains('Goodman & Gilman'));
-      expect(result.lines.join(' '), contains('UpToDate'));
+      expect(result.lines.join(' '), contains('22nd'));
+      expect(result.lines.join(' '), isNot(contains('Goodman & Gilman')));
+      expect(result.lines.join(' '), isNot(contains('UpToDate')));
     });
   });
 }

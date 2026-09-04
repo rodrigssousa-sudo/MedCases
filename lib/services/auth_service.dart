@@ -37,20 +37,23 @@ class AuthService {
     return FirebaseFirestore.instance;
   }
 
-  static const _webApiKey    = 'AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18';
-  static const _projectId    = 'medcases-pro';
-  static const _fsBase       = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
+  static const _webApiKey = 'AIzaSyB0qklzhpRDAuppvieY3dy8hiPLQDucF18';
+  static const _projectId = 'medcases-pro';
+  static const _fsBase =
+      'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static const String adminEmail = 'rodrigssousa@gmail.com';
 
   // ── Estado de autenticação Web (ValueNotifier) ─────────────────────────────
-  static final ValueNotifier<UserModel?> webUser = ValueNotifier<UserModel?>(null);
+  static final ValueNotifier<UserModel?> webUser =
+      ValueNotifier<UserModel?>(null);
 
   // ── Cache de idToken para operações admin REST ─────────────────────────────
   // O idToken do Firebase expira em 1h. Armazenamos token + refreshToken +
   // timestamp para fazer refresh automático antes de cada chamada admin.
-  static String _cachedIdToken    = '';
-  static String _cachedRefreshTk  = '';
-  static DateTime _tokenExpiresAt = DateTime(2000); // forçar refresh na primeira chamada
+  static String _cachedIdToken = '';
+  static String _cachedRefreshTk = '';
+  static DateTime _tokenExpiresAt =
+      DateTime(2000); // forçar refresh na primeira chamada
 
   // ── Stream de estado de autenticação (Android/iOS via SDK nativo) ──────────
   // BUILD 294: Se Firebase não inicializou (Safari ITP/private mode), retorna
@@ -58,7 +61,8 @@ class AuthService {
   // currentUser retorna null — caller verifica null antes de usar.
   static Stream<User?> get authStateChanges {
     if (FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][AuthService] authStateChanges: Firebase runtime unavailable — Stream.empty()');
+      debugPrint(
+          '[BUILD299][AuthService] authStateChanges: Firebase runtime unavailable — Stream.empty()');
       return const Stream.empty();
     }
     return _auth.authStateChanges();
@@ -66,7 +70,8 @@ class AuthService {
 
   static User? get currentUser {
     if (FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][AuthService] currentUser: Firebase runtime unavailable — null');
+      debugPrint(
+          '[BUILD299][AuthService] currentUser: Firebase runtime unavailable — null');
       return null;
     }
     return _auth.currentUser;
@@ -76,8 +81,7 @@ class AuthService {
   /// Usado pelo FirestoreService._isUserAuthenticated para detectar auth
   /// no Web sem chamar getAdminToken() (que faz refresh de rede).
   static bool get hasCachedToken =>
-      _cachedIdToken.isNotEmpty &&
-      DateTime.now().isBefore(_tokenExpiresAt);
+      _cachedIdToken.isNotEmpty && DateTime.now().isBefore(_tokenExpiresAt);
 
   // ── BUILD 463-A.2: Explicit credential type separation ─────────────────────
   //
@@ -225,16 +229,20 @@ class AuthService {
     if (_cachedRefreshTk.isNotEmpty) {
       try {
         final resp = await http.post(
-          Uri.parse('https://securetoken.googleapis.com/v1/token?key=$_webApiKey'),
+          Uri.parse(
+              'https://securetoken.googleapis.com/v1/token?key=$_webApiKey'),
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           body: 'grant_type=refresh_token&refresh_token=$_cachedRefreshTk',
         );
         if (resp.statusCode == 200) {
           final body = jsonDecode(resp.body) as Map<String, dynamic>;
-          _cachedIdToken   = body['id_token']      as String? ?? '';
-          _cachedRefreshTk = body['refresh_token'] as String? ?? _cachedRefreshTk;
-          final expiresIn  = int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
-          _tokenExpiresAt  = DateTime.now().add(Duration(seconds: expiresIn - 300));
+          _cachedIdToken = body['id_token'] as String? ?? '';
+          _cachedRefreshTk =
+              body['refresh_token'] as String? ?? _cachedRefreshTk;
+          final expiresIn =
+              int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
+          _tokenExpiresAt =
+              DateTime.now().add(Duration(seconds: expiresIn - 300));
           return _cachedIdToken;
         }
       } catch (_) {}
@@ -244,11 +252,12 @@ class AuthService {
   }
 
   /// Armazena o par idToken + refreshToken após login/registro bem-sucedido.
-  static void _cacheTokens({required String idToken, required String refreshToken}) {
-    _cachedIdToken   = idToken;
+  static void _cacheTokens(
+      {required String idToken, required String refreshToken}) {
+    _cachedIdToken = idToken;
     _cachedRefreshTk = refreshToken;
     // idToken do Firebase tem vida de 1h; guardamos 55 min para ter margem
-    _tokenExpiresAt  = DateTime.now().add(const Duration(minutes: 55));
+    _tokenExpiresAt = DateTime.now().add(const Duration(minutes: 55));
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -261,7 +270,7 @@ class AuthService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   static const _kRefreshToken = 'session_refresh_token';
-  static const _kUserJson     = 'session_user_json';
+  static const _kUserJson = 'session_user_json';
   static const _kKeepLoggedIn = 'session_keep_logged_in';
 
   /// Persiste a sessão no SharedPreferences.
@@ -297,7 +306,8 @@ class AuthService {
     // Isso previne a dupla troca de refreshToken quando visibilitychange ou resize
     // dispara um segundo restoreSession() antes do primeiro completar.
     if (_restoreInFlight != null) {
-      debugPrint('[AuthService] restoreSession() já em voo — retornando Future existente (idempotente)');
+      debugPrint(
+          '[AuthService] restoreSession() já em voo — retornando Future existente (idempotente)');
       return _restoreInFlight!;
     }
     _restoreInFlight = _restoreSessionImpl();
@@ -313,32 +323,39 @@ class AuthService {
     // only native SDK sign-in methods (email_password, google_credential, custom_token)
     // qualify for those tags. If the REST restore completes but the SDK user is still
     // null, AppProvider._setUserImpl() will terminate at authRequired.
-    logSdkEstablishStart(method: 'persistence_restore', expectedUid: 'cached_session');
+    logSdkEstablishStart(
+        method: 'persistence_restore', expectedUid: 'cached_session');
     try {
       final p = await SharedPreferences.getInstance();
       final keepLoggedIn = p.getBool(_kKeepLoggedIn) ?? false;
       if (!keepLoggedIn) {
-        logSdkEstablishFailed(stage: 'prefs_check', reason: 'keep_logged_in_false');
+        logSdkEstablishFailed(
+            stage: 'prefs_check', reason: 'keep_logged_in_false');
         return null;
       }
 
       final refreshToken = p.getString(_kRefreshToken) ?? '';
-      final userJson     = p.getString(_kUserJson)     ?? '';
+      final userJson = p.getString(_kUserJson) ?? '';
       if (refreshToken.isEmpty || userJson.isEmpty) {
-        logSdkEstablishFailed(stage: 'prefs_check', reason: 'missing_refresh_token_or_user_json');
+        logSdkEstablishFailed(
+            stage: 'prefs_check', reason: 'missing_refresh_token_or_user_json');
         return null;
       }
 
       // Troca o refreshToken por um novo idToken
-      final resp = await http.post(
-        Uri.parse('https://securetoken.googleapis.com/v1/token?key=$_webApiKey'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'grant_type=refresh_token&refresh_token=$refreshToken',
-      ).timeout(const Duration(seconds: 4));
+      final resp = await http
+          .post(
+            Uri.parse(
+                'https://securetoken.googleapis.com/v1/token?key=$_webApiKey'),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'grant_type=refresh_token&refresh_token=$refreshToken',
+          )
+          .timeout(const Duration(seconds: 4));
 
       if (resp.statusCode != 200) {
         // Token inválido/expirado — limpa sessão e força novo login
-        logSdkEstablishFailed(stage: 'token_refresh', reason: 'http_${resp.statusCode}');
+        logSdkEstablishFailed(
+            stage: 'token_refresh', reason: 'http_${resp.statusCode}');
         await clearSession();
         return null;
       }
@@ -355,15 +372,16 @@ class AuthService {
           'note=sdk_session_not_established_by_rest_path');
 
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
-      final newIdToken      = body['id_token']      as String? ?? '';
+      final newIdToken = body['id_token'] as String? ?? '';
       final newRefreshToken = body['refresh_token'] as String? ?? refreshToken;
-      final expiresIn       = int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
-      final uid             = body['user_id']       as String? ?? '';
+      final expiresIn =
+          int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
+      final uid = body['user_id'] as String? ?? '';
 
       // Atualiza cache em memória
-      _cachedIdToken   = newIdToken;
+      _cachedIdToken = newIdToken;
       _cachedRefreshTk = newRefreshToken;
-      _tokenExpiresAt  = DateTime.now().add(Duration(seconds: expiresIn - 300));
+      _tokenExpiresAt = DateTime.now().add(Duration(seconds: expiresIn - 300));
 
       // Persiste o novo refreshToken
       await p.setString(_kRefreshToken, newRefreshToken);
@@ -381,9 +399,9 @@ class AuthService {
 
           if (fsResp.statusCode == 200) {
             final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;
-            final data   = _firestoreDocToMap(fsBody);
-            data['uid']  = uid;
-            freshUser    = UserModel.fromMap(data);
+            final data = _firestoreDocToMap(fsBody);
+            data['uid'] = uid;
+            freshUser = UserModel.fromMap(data);
             // Atualiza o JSON em cache com os dados frescos
             await p.setString(_kUserJson, jsonEncode(freshUser.toJson()));
           }
@@ -393,9 +411,10 @@ class AuthService {
       }
 
       // Fallback: reconstrói a partir do JSON salvo se Firestore falhou
-      final user = freshUser ?? UserModel.fromJson(
-        jsonDecode(userJson) as Map<String, dynamic>,
-      );
+      final user = freshUser ??
+          UserModel.fromJson(
+            jsonDecode(userJson) as Map<String, dynamic>,
+          );
 
       // Seta webUser para que _AuthGate roteie direto ao MainShell
       if (kIsWeb) webUser.value = user;
@@ -409,7 +428,8 @@ class AuthService {
           'note=authRequired_if_sdk_user_null');
       return user;
     } catch (_) {
-      logSdkEstablishFailed(stage: 'restore_session_impl', reason: 'unexpected_exception');
+      logSdkEstablishFailed(
+          stage: 'restore_session_impl', reason: 'unexpected_exception');
       return null;
     }
   }
@@ -437,6 +457,64 @@ class AuthService {
   // ═══════════════════════════════════════════════════════════════════════════
   // LOGIN
   // ═══════════════════════════════════════════════════════════════════════════
+  // MEDCASES_LOGIN_V3_GOOGLE_APPLE_PERSISTENT_SESSION_MODERN_UI_V1_B_R0
+  /// Converges a Firebase social credential into the canonical MedCases
+  /// profile/session model. Provider-specific UI/OAuth remains outside AuthService.
+  static Future<AuthResult> completeSocialSignIn({
+    required UserCredential credential,
+    required String provider,
+  }) async {
+    try {
+      final firebaseUser = credential.user;
+      if (firebaseUser == null) {
+        return AuthResult.error(
+          'Não foi possível confirmar a identidade do provedor.',
+        );
+      }
+
+      // Force a fresh SDK token so Firestore Rules see the social identity now.
+      final idToken = await firebaseUser.getIdToken(true) ?? '';
+      final refreshToken = firebaseUser.refreshToken ?? '';
+      if (idToken.isNotEmpty) {
+        _cacheTokens(idToken: idToken, refreshToken: refreshToken);
+      }
+
+      final user = await ensureUserProfileExists(
+        firebaseUser,
+        displayName: firebaseUser.displayName,
+        platform: kIsWeb ? 'web' : 'mobile',
+      );
+
+      // Web AuthGate is ValueNotifier-based; native AuthGate follows
+      // authStateChanges/currentUserStream.
+      if (kIsWeb) webUser.value = user;
+
+      // Social access is intentionally persistent by default.
+      await saveSession(user);
+
+      debugPrint(
+        '[AUTH_SOCIAL][READY] provider=$provider uid=${firebaseUser.uid} '
+        'sdkUserPresent=${_auth.currentUser != null}',
+      );
+
+      return AuthResult.success(user);
+    } on FirebaseAuthException catch (e) {
+      debugPrint(
+        '[AUTH_SOCIAL][FAILED] provider=$provider code=${e.code}',
+      );
+      return AuthResult.error(
+        'Não foi possível concluir o acesso social. Tente novamente.',
+      );
+    } catch (e) {
+      debugPrint(
+        '[AUTH_SOCIAL][FAILED] provider=$provider reason=$e',
+      );
+      return AuthResult.error(
+        'Não foi possível concluir o acesso social. Tente novamente.',
+      );
+    }
+  }
+
   static Future<AuthResult> login({
     required String email,
     required String password,
@@ -453,17 +531,20 @@ class AuthService {
     // BUILD 463-A.2-R1: AUTH_SDK_ESTABLISH telemetry (corrected)
     logSdkEstablishStart(method: 'email_password', expectedUid: email.trim());
     try {
-      await _auth.signInWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      ).timeout(const Duration(seconds: 15));
+      await _auth
+          .signInWithEmailAndPassword(
+            email: email.trim(),
+            password: password,
+          )
+          .timeout(const Duration(seconds: 15));
 
       // STRICT GATE: resolve currentUser BEFORE emitting CREDENTIAL_ACCEPTED.
       // signInWithEmailAndPassword() may return before authStateChanges propagates
       // on slow connections — poll once before the stream fallback.
       User? firebaseUser = _auth.currentUser;
       if (firebaseUser == null) {
-        firebaseUser = await _auth.authStateChanges()
+        firebaseUser = await _auth
+            .authStateChanges()
             .where((u) => u != null)
             .first
             .timeout(const Duration(seconds: 5), onTimeout: () => null);
@@ -496,15 +577,19 @@ class AuthService {
       debugPrint('[Auth] Perfil verificado — status=${user.status.name}');
       return AuthResult.success(user);
     } on TimeoutException {
-      return AuthResult.error('Conexão lenta. Verifique sua internet e tente novamente.');
+      return AuthResult.error(
+          'Conexão lenta. Verifique sua internet e tente novamente.');
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_authErrorMessage(e.code));
     } catch (e) {
       // BUILD 282: SocketException (dart:io) removida — dart2js não pode linkar dart:io.
       // Erros de rede nativa (sem conexão) chegam aqui como Exception genérica.
       final msg = e.toString().toLowerCase();
-      if (msg.contains('socket') || msg.contains('network') || msg.contains('connection')) {
-        return AuthResult.error('Sem conexão. Verifique sua internet e tente novamente.');
+      if (msg.contains('socket') ||
+          msg.contains('network') ||
+          msg.contains('connection')) {
+        return AuthResult.error(
+            'Sem conexão. Verifique sua internet e tente novamente.');
       }
       return AuthResult.error('Não foi possível fazer login. Tente novamente.');
     }
@@ -546,7 +631,8 @@ class AuthService {
     debugPrint('[Auth][LOGIN]   EMAIL : ${email.trim()}');
 
     // MICRO-BUILD 463-A.2-R2: emit SDK establish start for the web path.
-    logSdkEstablishStart(method: 'email_password_web', expectedUid: email.trim());
+    logSdkEstablishStart(
+        method: 'email_password_web', expectedUid: email.trim());
 
     try {
       // ── Passo 1: REST credential validation ─────────────────────────────
@@ -554,9 +640,14 @@ class AuthService {
       // idToken + refreshToken needed for REST API calls (admin operations,
       // Firestore REST reads). It does NOT establish a Firebase SDK session.
       final authResp = await http.post(
-        Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_webApiKey'),
+        Uri.parse(
+            'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$_webApiKey'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email.trim(), 'password': password, 'returnSecureToken': true}),
+        body: jsonEncode({
+          'email': email.trim(),
+          'password': password,
+          'returnSecureToken': true
+        }),
       );
 
       // ── MICRO-BUILD 462E-A.5.3.7.3.2.2: Hygienic auth telemetry ──────────
@@ -564,8 +655,8 @@ class AuthService {
       // Only structural metadata is logged — zero credential values.
       final authBody = jsonDecode(authResp.body) as Map<String, dynamic>;
       {
-        final _loginUid  = authBody['localId'] as String? ?? '';
-        final _uidHash   = _loginUid.isNotEmpty
+        final _loginUid = authBody['localId'] as String? ?? '';
+        final _uidHash = _loginUid.isNotEmpty
             ? _loginUid.substring(0, _loginUid.length.clamp(0, 8))
             : 'unknown';
         debugPrint('[AUTH][LOGIN] status=${authResp.statusCode} '
@@ -576,28 +667,36 @@ class AuthService {
       }
 
       if (authResp.statusCode != 200) {
-        final msg = ((authBody['error']?['message'] as String?) ?? '').toUpperCase();
+        final msg =
+            ((authBody['error']?['message'] as String?) ?? '').toUpperCase();
         debugPrint('[Auth][LOGIN]   ERROR_CODE : $msg');
-        if (msg.contains('EMAIL_NOT_FOUND') || msg.contains('INVALID_LOGIN_CREDENTIALS') ||
-            msg.contains('WRONG_PASSWORD') || msg.contains('INVALID_PASSWORD')) {
-          logSdkEstablishFailed(stage: 'rest_auth', reason: 'invalid_credentials');
+        if (msg.contains('EMAIL_NOT_FOUND') ||
+            msg.contains('INVALID_LOGIN_CREDENTIALS') ||
+            msg.contains('WRONG_PASSWORD') ||
+            msg.contains('INVALID_PASSWORD')) {
+          logSdkEstablishFailed(
+              stage: 'rest_auth', reason: 'invalid_credentials');
           return AuthResult.error('E-mail ou senha incorretos.');
         }
-        if (msg.contains('TOO_MANY_ATTEMPTS') || msg.contains('TOO_MANY_REQUESTS')) {
-          logSdkEstablishFailed(stage: 'rest_auth', reason: 'too_many_attempts');
+        if (msg.contains('TOO_MANY_ATTEMPTS') ||
+            msg.contains('TOO_MANY_REQUESTS')) {
+          logSdkEstablishFailed(
+              stage: 'rest_auth', reason: 'too_many_attempts');
           return AuthResult.error('Muitas tentativas. Aguarde alguns minutos.');
         }
         if (msg.contains('USER_DISABLED')) {
           logSdkEstablishFailed(stage: 'rest_auth', reason: 'user_disabled');
-          return AuthResult.error('Conta desativada. Entre em contato com o administrador.');
+          return AuthResult.error(
+              'Conta desativada. Entre em contato com o administrador.');
         }
-        logSdkEstablishFailed(stage: 'rest_auth', reason: 'http_${authResp.statusCode}');
+        logSdkEstablishFailed(
+            stage: 'rest_auth', reason: 'http_${authResp.statusCode}');
         return AuthResult.error('E-mail ou senha incorretos. [$msg]');
       }
 
-      final uid          = authBody['localId']      as String;
-      final idToken      = authBody['idToken']       as String;
-      final refreshToken = authBody['refreshToken']  as String? ?? '';
+      final uid = authBody['localId'] as String;
+      final idToken = authBody['idToken'] as String;
+      final refreshToken = authBody['refreshToken'] as String? ?? '';
 
       // Salva tokens em cache para uso posterior (operações admin REST).
       // REST plane is now populated: hasRestCredential = true.
@@ -644,7 +743,8 @@ class AuthService {
           // Emitted immediately after SDK resolves a non-null user — before
           // token refresh — to mark the precise point of SDK identity establishment.
           if (firebaseUser != null) {
-            debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] Active session connected.');
+            debugPrint(
+                '[AUTH_SDK_ESTABLISH][WEB_BRIDGE] Active session connected.');
           }
 
           // CREDENTIAL_ACCEPTED: null guard enforced inside logSdkCredentialAccepted.
@@ -661,7 +761,7 @@ class AuthService {
                 // Overwrite the REST-plane cached token with the SDK-refreshed
                 // token so all downstream REST calls use the freshest JWT.
                 _cacheTokens(
-                  idToken:      sdkToken,
+                  idToken: sdkToken,
                   refreshToken: firebaseUser.refreshToken ?? refreshToken,
                 );
                 debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
@@ -749,7 +849,8 @@ class AuthService {
         if (fsRetry.statusCode == 200) {
           final retryBody = jsonDecode(fsRetry.body) as Map<String, dynamic>;
           final retryData = _firestoreDocToMap(retryBody);
-          final retryResult = _buildResultFromDoc(exists: true, data: retryData, uid: uid, email: email);
+          final retryResult = _buildResultFromDoc(
+              exists: true, data: retryData, uid: uid, email: email);
           if (retryResult.user != null) webUser.value = retryResult.user;
           return retryResult;
         }
@@ -776,20 +877,29 @@ class AuthService {
       }
 
       final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;
-      final data   = _firestoreDocToMap(fsBody);
-      final result = _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
+      final data = _firestoreDocToMap(fsBody);
+      final result =
+          _buildResultFromDoc(exists: true, data: data, uid: uid, email: email);
 
       if (result.user != null) webUser.value = result.user;
 
       return result;
     } catch (e) {
-      return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
+      return AuthResult.error(
+          'Falha na conexão. Verifique sua internet e tente novamente.');
     }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // CADASTRO
   // ═══════════════════════════════════════════════════════════════════════════
+  // MEDCASES_MOBILE_SIGNUP_PROFILE_BOOTSTRAP_RACE_FIX_V1_B_R0
+  // Publica o Future do cadastro antes de o Firebase Auth emitir a nova sessão.
+  // O gate nativo usa esta barreira para não confundir perfil ainda não criado
+  // com usuário inválido e encerrar a sessão prematuramente.
+  static Future<AuthResult>? _nativeRegistrationInFlight;
+  static String? _nativeRegistrationEmail;
+
   static Future<AuthResult> register({
     required String email,
     required String password,
@@ -800,21 +910,34 @@ class AuthService {
   }) async {
     if (kIsWeb) {
       return _registerWeb(
-        email: email, password: password, displayName: displayName,
-        profession: profession, institution: institution,
+        email: email,
+        password: password,
+        displayName: displayName,
+        profession: profession,
+        institution: institution,
         referredBy: referredBy,
       );
     }
-    return _registerNative(
-      email: email, password: password, displayName: displayName,
-      profession: profession, institution: institution,
+
+    _nativeRegistrationEmail = email.trim().toLowerCase();
+    final nativeRegistration = _registerNative(
+      email: email,
+      password: password,
+      displayName: displayName,
+      profession: profession,
+      institution: institution,
       referredBy: referredBy,
     );
+    _nativeRegistrationInFlight = nativeRegistration;
+    return nativeRegistration;
   }
 
   static Future<AuthResult> _registerNative({
-    required String email, required String password,
-    required String displayName, String? profession, String? institution,
+    required String email,
+    required String password,
+    required String displayName,
+    String? profession,
+    String? institution,
     String? referredBy,
   }) async {
     try {
@@ -822,7 +945,8 @@ class AuthService {
 
       // 1. Cria a conta Firebase Auth
       final cred = await _auth.createUserWithEmailAndPassword(
-        email: email.trim(), password: password,
+        email: email.trim(),
+        password: password,
       );
       final firebaseUser = cred.user!;
       debugPrint('[Auth] Auth criado — uid=${firebaseUser.uid}');
@@ -859,11 +983,13 @@ class AuthService {
         referredBy: referredBy,
         platform: 'ios',
       );
-      debugPrint('[Auth] Perfil criado/verificado — status=${user.status.name}');
+      debugPrint(
+          '[Auth] Perfil criado/verificado — status=${user.status.name}');
 
       // 7. Aguarda authStateChanges propagar (segurança contra iOS lento)
       if (_auth.currentUser == null) {
-        await _auth.authStateChanges()
+        await _auth
+            .authStateChanges()
             .where((u) => u != null)
             .first
             .timeout(const Duration(seconds: 3), onTimeout: () => null);
@@ -881,18 +1007,28 @@ class AuthService {
   }
 
   static Future<AuthResult> _registerWeb({
-    required String email, required String password,
-    required String displayName, String? profession, String? institution,
+    required String email,
+    required String password,
+    required String displayName,
+    String? profession,
+    String? institution,
     String? referredBy,
   }) async {
     // ── DIAGNÓSTICO COMPLETO — log de request antes de enviar ──────────────
-    final endpoint = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_webApiKey';
-    final payload  = {'email': email.trim(), 'password': password, 'returnSecureToken': true};
+    final endpoint =
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_webApiKey';
+    final payload = {
+      'email': email.trim(),
+      'password': password,
+      'returnSecureToken': true
+    };
     debugPrint('[Auth][REGISTER] REQUEST:');
     debugPrint('[Auth][REGISTER]   ENDPOINT : $endpoint');
     debugPrint('[Auth][REGISTER]   EMAIL    : ${email.trim()}');
-    debugPrint('[Auth][REGISTER]   API_KEY  : ${_webApiKey.substring(0, 8)}...${_webApiKey.substring(_webApiKey.length - 4)}');
-    debugPrint('[Auth][REGISTER]   PAYLOAD  : ${jsonEncode(payload).replaceAll(password, '***')}');
+    debugPrint(
+        '[Auth][REGISTER]   API_KEY  : ${_webApiKey.substring(0, 8)}...${_webApiKey.substring(_webApiKey.length - 4)}');
+    debugPrint(
+        '[Auth][REGISTER]   PAYLOAD  : ${jsonEncode(payload).replaceAll(password, '***')}');
 
     try {
       final resp = await http.post(
@@ -906,7 +1042,7 @@ class AuthService {
       // Single decode — body reused for both telemetry and business logic.
       final body = jsonDecode(resp.body) as Map<String, dynamic>;
       {
-        final _regUid  = body['localId'] as String? ?? '';
+        final _regUid = body['localId'] as String? ?? '';
         final _regHash = _regUid.isNotEmpty
             ? _regUid.substring(0, _regUid.length.clamp(0, 8))
             : 'unknown';
@@ -918,30 +1054,43 @@ class AuthService {
       }
 
       if (resp.statusCode != 200) {
-        final msg = ((body['error']?['message'] as String?) ?? '').toUpperCase();
+        final msg =
+            ((body['error']?['message'] as String?) ?? '').toUpperCase();
         debugPrint('[Auth][REGISTER]   ERROR_CODE : $msg');
-        if (msg.contains('EMAIL_EXISTS'))        return AuthResult.error('Este e-mail já está cadastrado.');
-        if (msg.contains('WEAK_PASSWORD'))        return AuthResult.error('Senha fraca. Use ao menos 6 caracteres.');
-        if (msg.contains('INVALID_EMAIL'))        return AuthResult.error('Endereço de e-mail inválido.');
-        if (msg.contains('MISSING_PASSWORD'))     return AuthResult.error('Senha não informada.');
-        if (msg.contains('INVALID_API_KEY'))      return AuthResult.error('Erro de configuração (API key). Contate o suporte.');
-        if (msg.contains('OPERATION_NOT_ALLOWED')) return AuthResult.error('Cadastro por e-mail desabilitado. Contate o suporte.');
-        if (msg.contains('TOO_MANY_ATTEMPTS') || msg.contains('TOO_MANY_REQUESTS'))
-                                                  return AuthResult.error('Muitas tentativas. Aguarde alguns minutos.');
+        if (msg.contains('EMAIL_EXISTS'))
+          return AuthResult.error('Este e-mail já está cadastrado.');
+        if (msg.contains('WEAK_PASSWORD'))
+          return AuthResult.error('Senha fraca. Use ao menos 6 caracteres.');
+        if (msg.contains('INVALID_EMAIL'))
+          return AuthResult.error('Endereço de e-mail inválido.');
+        if (msg.contains('MISSING_PASSWORD'))
+          return AuthResult.error('Senha não informada.');
+        if (msg.contains('INVALID_API_KEY'))
+          return AuthResult.error(
+              'Erro de configuração (API key). Contate o suporte.');
+        if (msg.contains('OPERATION_NOT_ALLOWED'))
+          return AuthResult.error(
+              'Cadastro por e-mail desabilitado. Contate o suporte.');
+        if (msg.contains('TOO_MANY_ATTEMPTS') ||
+            msg.contains('TOO_MANY_REQUESTS'))
+          return AuthResult.error('Muitas tentativas. Aguarde alguns minutos.');
         // fallback: retorna o código bruto para facilitar diagnóstico
         return AuthResult.error('Erro ao criar conta [$msg]. Tente novamente.');
       }
 
-      final uid          = body['localId']     as String;
-      final idToken      = body['idToken']      as String;
+      final uid = body['localId'] as String;
+      final idToken = body['idToken'] as String;
       final refreshToken = body['refreshToken'] as String? ?? '';
 
       debugPrint('[Auth][REGISTER]   UID : $uid');
       _cacheTokens(idToken: idToken, refreshToken: refreshToken);
 
       final user = _buildNewUser(
-        uid: uid, email: email, displayName: displayName,
-        profession: profession, institution: institution,
+        uid: uid,
+        email: email,
+        displayName: displayName,
+        profession: profession,
+        institution: institution,
         referredBy: referredBy,
       );
       await _createUserDocRest(user: user, idToken: idToken);
@@ -950,7 +1099,102 @@ class AuthService {
     } catch (e, st) {
       debugPrint('[Auth][REGISTER] EXCEPTION: $e');
       debugPrint('[Auth][REGISTER] STACK: $st');
-      return AuthResult.error('Falha na conexão. Verifique sua internet e tente novamente.');
+      return AuthResult.error(
+          'Falha na conexão. Verifique sua internet e tente novamente.');
+    }
+  }
+
+// PROFILE_ACCOUNT_HUB_PREMIUM_V1_B_R0 — troca de senha.
+  static Future<AuthResult> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    String languageCode = 'pt',
+  }) async {
+    final isEs = languageCode.trim().toLowerCase().startsWith('es');
+    final next = newPassword.trim();
+
+    if (next.length < 6) {
+      return AuthResult.error(
+        isEs
+            ? 'La nueva contraseña debe tener al menos 6 caracteres.'
+            : 'A nova senha deve ter pelo menos 6 caracteres.',
+      );
+    }
+
+    if (kIsWeb) {
+      final email = webUser.value?.email.trim() ?? '';
+      if (email.isEmpty) {
+        return AuthResult.error(
+          isEs
+              ? 'No hay un correo asociado a la sesión.'
+              : 'Não há e-mail associado à sessão.',
+        );
+      }
+      return resetPassword(email);
+    }
+
+    try {
+      final user = _auth.currentUser;
+      final email = user?.email?.trim() ?? '';
+      if (user == null || email.isEmpty) {
+        return AuthResult.error(
+          isEs
+              ? 'La sesión expiró. Inicia sesión nuevamente.'
+              : 'A sessão expirou. Entre novamente.',
+        );
+      }
+
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(next);
+
+      return AuthResult.success(
+        null,
+        message: isEs
+            ? 'Contraseña actualizada correctamente.'
+            : 'Senha atualizada com sucesso.',
+      );
+    } on FirebaseAuthException catch (e) {
+      return AuthResult.error(_profilePasswordError(e.code, isEs: isEs));
+    } catch (_) {
+      return AuthResult.error(
+        isEs
+            ? 'No fue posible actualizar la contraseña.'
+            : 'Não foi possível atualizar a senha.',
+      );
+    }
+  }
+
+  static String _profilePasswordError(String code, {required bool isEs}) {
+    switch (code) {
+      case 'wrong-password':
+      case 'invalid-credential':
+        return isEs
+            ? 'La contraseña actual es incorrecta.'
+            : 'A senha atual está incorreta.';
+      case 'weak-password':
+        return isEs
+            ? 'La nueva contraseña es demasiado débil.'
+            : 'A nova senha é muito fraca.';
+      case 'requires-recent-login':
+        return isEs
+            ? 'Por seguridad, inicia sesión nuevamente antes de cambiar la contraseña.'
+            : 'Por segurança, entre novamente antes de trocar a senha.';
+      case 'network-request-failed':
+        return isEs
+            ? 'Sin conexión. Verifica tu internet.'
+            : 'Sem conexão. Verifique sua internet.';
+      case 'too-many-requests':
+        return isEs
+            ? 'Demasiados intentos. Inténtalo nuevamente más tarde.'
+            : 'Muitas tentativas. Tente novamente mais tarde.';
+      default:
+        return isEs
+            ? 'No fue posible actualizar la contraseña.'
+            : 'Não foi possível atualizar a senha.';
     }
   }
 
@@ -961,7 +1205,8 @@ class AuthService {
     if (kIsWeb) return _resetPasswordWeb(email);
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
-      return AuthResult.success(null, message: 'E-mail de redefinição enviado!');
+      return AuthResult.success(null,
+          message: 'E-mail de redefinição enviado!');
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_authErrorMessage(e.code));
     }
@@ -970,14 +1215,18 @@ class AuthService {
   static Future<AuthResult> _resetPasswordWeb(String email) async {
     try {
       final resp = await http.post(
-        Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=$_webApiKey'),
+        Uri.parse(
+            'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=$_webApiKey'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'requestType': 'PASSWORD_RESET', 'email': email.trim()}),
+        body: jsonEncode(
+            {'requestType': 'PASSWORD_RESET', 'email': email.trim()}),
       );
       if (resp.statusCode == 200) {
-        return AuthResult.success(null, message: 'E-mail de redefinição enviado!');
+        return AuthResult.success(null,
+            message: 'E-mail de redefinição enviado!');
       }
-      return AuthResult.error('Não foi possível enviar o e-mail. Verifique o endereço.');
+      return AuthResult.error(
+          'Não foi possível enviar o e-mail. Verifique o endereço.');
     } catch (_) {
       return AuthResult.error('Falha na conexão. Tente novamente.');
     }
@@ -988,15 +1237,17 @@ class AuthService {
   // ═══════════════════════════════════════════════════════════════════════════
   static Future<void> logout() async {
     // Limpa tokens em cache
-    _cachedIdToken   = '';
+    _cachedIdToken = '';
     _cachedRefreshTk = '';
-    _tokenExpiresAt  = DateTime(2000);
+    _tokenExpiresAt = DateTime(2000);
 
     // Limpa sessão persistida (SharedPreferences)
     await clearSession();
 
     if (kIsWeb) webUser.value = null;
-    try { await _auth.signOut(); } catch (_) {}
+    try {
+      await _auth.signOut();
+    } catch (_) {}
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1009,17 +1260,93 @@ class AuthService {
       final doc = await _db.collection('users').doc(uid).get();
       if (!doc.exists) return null;
       return UserModel.fromDoc(doc);
-    } catch (_) { return null; }
+    } catch (_) {
+      return null;
+    }
   }
 
-  static Stream<UserModel?> currentUserStream() {
-    final uid = _auth.currentUser?.uid;
-    if (uid == null) return Stream.value(null);
-    return _db
-        .collection('users')
-        .doc(uid)
-        .snapshots()
-        .map((doc) => doc.exists ? UserModel.fromDoc(doc) : null);
+  static Stream<UserModel?> currentUserStream() async* {
+    final firebaseUser = _auth.currentUser;
+    if (firebaseUser == null) {
+      yield null;
+      return;
+    }
+
+    final uid = firebaseUser.uid;
+    UserModel? bootstrapUser;
+
+    // O createUserWithEmailAndPassword emite authStateChanges antes de o
+    // users/{uid} existir. Aguardar o Future publicado pelo registro impede que
+    // o primeiro snapshot ausente seja convertido em logout pelo AuthGate.
+    final nativeRegistration = _nativeRegistrationInFlight;
+    final registrationEmail = _nativeRegistrationEmail;
+    final authenticatedEmail = (firebaseUser.email ?? '').trim().toLowerCase();
+
+    if (nativeRegistration != null && registrationEmail == authenticatedEmail) {
+      AuthResult? registrationResult;
+      try {
+        registrationResult = await nativeRegistration;
+      } catch (error) {
+        debugPrint(
+          '[Auth] Bootstrap do cadastro falhou antes do perfil — uid=$uid error=$error',
+        );
+      }
+
+      if (identical(_nativeRegistrationInFlight, nativeRegistration)) {
+        _nativeRegistrationInFlight = null;
+        _nativeRegistrationEmail = null;
+      }
+
+      final activeUser = _auth.currentUser;
+      if (activeUser == null || activeUser.uid != uid) {
+        yield null;
+        return;
+      }
+
+      final registeredUser = registrationResult?.user;
+      if (registrationResult?.success == true &&
+          registeredUser != null &&
+          registeredUser.uid == uid) {
+        bootstrapUser = registeredUser;
+        debugPrint(
+          '[Auth] Cadastro e perfil convergiram antes do AuthGate — uid=$uid',
+        );
+        yield registeredUser;
+      }
+    }
+
+    await for (final doc in _db.collection('users').doc(uid).snapshots()) {
+      final activeUser = _auth.currentUser;
+      if (activeUser == null || activeUser.uid != uid) {
+        yield null;
+        return;
+      }
+
+      if (doc.exists) {
+        yield UserModel.fromDoc(doc);
+        continue;
+      }
+
+      // Recuperação limitada ao próprio usuário ainda autenticado. Preserva os
+      // metadados capturados no cadastro caso a primeira escrita tenha falhado.
+      debugPrint(
+        '[Auth] Perfil ausente com sessão válida; reparando users/$uid',
+      );
+      final recoveredUser = await ensureUserProfileExists(
+        activeUser,
+        displayName: bootstrapUser?.displayName ?? activeUser.displayName,
+        profession: bootstrapUser?.profession,
+        institution: bootstrapUser?.institution,
+        referredBy: bootstrapUser?.referredBy,
+        platform: 'mobile',
+      );
+
+      if (_auth.currentUser?.uid != uid) {
+        yield null;
+        return;
+      }
+      yield recoveredUser;
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1067,19 +1394,19 @@ class AuthService {
         }
 
         final body = jsonDecode(resp.body) as Map<String, dynamic>;
-        final docs  = body['documents'] as List<dynamic>? ?? [];
+        final docs = body['documents'] as List<dynamic>? ?? [];
 
         final users = <UserModel>[];
         for (final doc in docs) {
           try {
             final docMap = doc as Map<String, dynamic>;
-            final data   = _firestoreDocToMap(docMap);
-            final name   = docMap['name'] as String? ?? '';
+            final data = _firestoreDocToMap(docMap);
+            final name = docMap['name'] as String? ?? '';
             // name = "projects/.../documents/users/{uid}"
-            final uid    = name.split('/').last;
+            final uid = name.split('/').last;
             if (uid.isEmpty) continue;
-            data['uid']  = uid;
-            final u      = UserModel.fromMap(data);
+            data['uid'] = uid;
+            final u = UserModel.fromMap(data);
             users.add(u);
           } catch (_) {
             // doc malformado — ignora e continua
@@ -1121,14 +1448,14 @@ class AuthService {
   static Future<void> approveUser(String uid, String adminUid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {
-        'status':     UserStatus.approved.name,
+        'status': UserStatus.approved.name,
         'approvedAt': DateTime.now().toUtc().toIso8601String(),
         'approvedBy': adminUid,
       });
       return;
     }
     await _db.collection('users').doc(uid).update({
-      'status':     UserStatus.approved.name,
+      'status': UserStatus.approved.name,
       'approvedAt': Timestamp.fromDate(DateTime.now()),
       'approvedBy': adminUid,
     });
@@ -1140,21 +1467,24 @@ class AuthService {
       await _patchUserRest(uid, {'status': UserStatus.blocked.name});
       return;
     }
-    await _db.collection('users').doc(uid).update({'status': UserStatus.blocked.name});
+    await _db
+        .collection('users')
+        .doc(uid)
+        .update({'status': UserStatus.blocked.name});
   }
 
   /// Desbloqueia um usuário. Lança [Exception] em caso de falha.
   static Future<void> unblockUser(String uid, String adminUid) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {
-        'status':     UserStatus.approved.name,
+        'status': UserStatus.approved.name,
         'approvedAt': DateTime.now().toUtc().toIso8601String(),
         'approvedBy': adminUid,
       });
       return;
     }
     await _db.collection('users').doc(uid).update({
-      'status':     UserStatus.approved.name,
+      'status': UserStatus.approved.name,
       'approvedAt': Timestamp.fromDate(DateTime.now()),
       'approvedBy': adminUid,
     });
@@ -1166,7 +1496,10 @@ class AuthService {
       await _patchUserRest(uid, {'role': UserRole.admin.name});
       return;
     }
-    await _db.collection('users').doc(uid).update({'role': UserRole.admin.name});
+    await _db
+        .collection('users')
+        .doc(uid)
+        .update({'role': UserRole.admin.name});
   }
 
   /// Promove usuário a supervisor. Lança [Exception] em caso de falha.
@@ -1175,7 +1508,10 @@ class AuthService {
       await _patchUserRest(uid, {'role': UserRole.supervisor.name});
       return;
     }
-    await _db.collection('users').doc(uid).update({'role': UserRole.supervisor.name});
+    await _db
+        .collection('users')
+        .doc(uid)
+        .update({'role': UserRole.supervisor.name});
   }
 
   /// Rebaixa usuário para role comum. Lança [Exception] em caso de falha.
@@ -1203,6 +1539,7 @@ class AuthService {
 
   static Future<DeleteAccountResult> deleteAccount({
     required String uid,
+
     /// Senha atual — necessária para re-autenticação nativa antes de delete().
     /// Em Web (REST-only), não é necessária pois usamos o idToken em cache.
     String? password,
@@ -1237,7 +1574,8 @@ class AuthService {
               final body = jsonDecode(listResp.body) as Map<String, dynamic>;
               final docs = body['documents'] as List<dynamic>? ?? [];
               for (final doc in docs) {
-                final docName = (doc as Map<String, dynamic>)['name'] as String? ?? '';
+                final docName =
+                    (doc as Map<String, dynamic>)['name'] as String? ?? '';
                 if (docName.isEmpty) continue;
                 // name = "projects/.../documents/users/{uid}/notes/{docId}"
                 // Extrai o path relativo após "/documents/"
@@ -1276,13 +1614,15 @@ class AuthService {
         final idToken = _cachedIdToken;
         if (idToken.isNotEmpty) {
           try {
-            await http.post(
-              Uri.parse(
-                'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=$_webApiKey',
-              ),
-              headers: {'Content-Type': 'application/json'},
-              body: jsonEncode({'idToken': idToken}),
-            ).timeout(const Duration(seconds: 8));
+            await http
+                .post(
+                  Uri.parse(
+                    'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=$_webApiKey',
+                  ),
+                  headers: {'Content-Type': 'application/json'},
+                  body: jsonEncode({'idToken': idToken}),
+                )
+                .timeout(const Duration(seconds: 8));
           } catch (_) {
             // Auth delete falhou — Firestore já foi limpo; logs para suporte
           }
@@ -1340,9 +1680,9 @@ class AuthService {
       }
 
       // ── PASSO 4: Limpar sessão local ─────────────────────────────────────
-      _cachedIdToken   = '';
+      _cachedIdToken = '';
       _cachedRefreshTk = '';
-      _tokenExpiresAt  = DateTime(2000);
+      _tokenExpiresAt = DateTime(2000);
       await clearSession();
       if (kIsWeb) webUser.value = null;
 
@@ -1362,7 +1702,8 @@ class AuthService {
     if (kIsWeb) {
       final token = await _getAdminToken();
       if (token.isEmpty) {
-        throw Exception('Token de autenticação não disponível. Faça login novamente.');
+        throw Exception(
+            'Token de autenticação não disponível. Faça login novamente.');
       }
       final resp = await http.delete(
         Uri.parse('$_fsBase/users/$uid'),
@@ -1401,7 +1742,8 @@ class AuthService {
   ) async {
     final token = await _getAdminToken();
     if (token.isEmpty) {
-      throw Exception('Token de autenticação não disponível. Faça login novamente.');
+      throw Exception(
+          'Token de autenticação não disponível. Faça login novamente.');
     }
 
     // Monta os campos no formato Firestore REST
@@ -1458,25 +1800,25 @@ class AuthService {
     required String uid,
     required String professionalCategory,
     String declarationVersion = '',
-    String declarationLang    = 'pt',
+    String declarationLang = 'pt',
   }) async {
     if (kIsWeb) {
       await _patchUserRest(uid, {
-        'acceptedTerms':        true,
-        'acceptedTermsAt':      DateTime.now().toUtc().toIso8601String(),
+        'acceptedTerms': true,
+        'acceptedTermsAt': DateTime.now().toUtc().toIso8601String(),
         'professionalCategory': professionalCategory,
         if (declarationVersion.isNotEmpty)
           'declarationVersion': declarationVersion,
-        'declarationLang':      declarationLang,
+        'declarationLang': declarationLang,
       });
     } else {
       await _db.collection('users').doc(uid).update({
-        'acceptedTerms':        true,
-        'acceptedTermsAt':      FieldValue.serverTimestamp(),
+        'acceptedTerms': true,
+        'acceptedTermsAt': FieldValue.serverTimestamp(),
         'professionalCategory': professionalCategory,
         if (declarationVersion.isNotEmpty)
           'declarationVersion': declarationVersion,
-        'declarationLang':      declarationLang,
+        'declarationLang': declarationLang,
       });
     }
   }
@@ -1532,9 +1874,11 @@ class AuthService {
       if (patchResp.statusCode < 200 || patchResp.statusCode >= 300) {
         // fix(auth): loga falha de criação sem lançar exceção — não bloqueia cadastro,
         // mas deixa rastro para diagnóstico de problemas de regra Firestore.
-        debugPrint('[Auth] _createUserDocRest FALHOU HTTP ${patchResp.statusCode}: ${patchResp.body}');
+        debugPrint(
+            '[Auth] _createUserDocRest FALHOU HTTP ${patchResp.statusCode}: ${patchResp.body}');
       } else {
-        debugPrint('[Auth] _createUserDocRest OK — uid=${user.uid} status=${user.status.name}');
+        debugPrint(
+            '[Auth] _createUserDocRest OK — uid=${user.uid} status=${user.status.name}');
       }
 
       // ── Notifica usuários MASTER sobre novo cadastro ──────────────────────
@@ -1551,9 +1895,10 @@ class AuthService {
       final masterUids = await FirestoreService.getMasterUids();
       for (final masterUid in masterUids) {
         await FirestoreService.writeInAppNotification(
-          uid:     masterUid,
-          title:   '👤 Novo usuário cadastrado',
-          body:    '${user.displayName.isNotEmpty ? user.displayName : user.email} acabou de se cadastrar no app.',
+          uid: masterUid,
+          title: '👤 Novo usuário cadastrado',
+          body:
+              '${user.displayName.isNotEmpty ? user.displayName : user.email} acabou de se cadastrar no app.',
           payload: 'new_user:${user.uid}',
         );
       }
@@ -1571,7 +1916,13 @@ class AuthService {
     final result = <String, dynamic>{};
 
     // Campos que devem sempre ser tratados como Timestamp
-    const dateFields = {'createdAt', 'approvedAt', 'updatedAt', 'deletedAt', 'acceptedTermsAt'};
+    const dateFields = {
+      'createdAt',
+      'approvedAt',
+      'updatedAt',
+      'deletedAt',
+      'acceptedTermsAt'
+    };
 
     fields.forEach((key, value) {
       final v = value as Map<String, dynamic>;
@@ -1590,10 +1941,14 @@ class AuthService {
         if (dateFields.contains(key)) {
           DateTime? parsed;
           // Tentativa 1: parse direto
-          try { parsed = DateTime.parse(str); } catch (_) {}
+          try {
+            parsed = DateTime.parse(str);
+          } catch (_) {}
           // Tentativa 2: substitui espaço por T (formato alternativo do Firestore)
           if (parsed == null) {
-            try { parsed = DateTime.parse(str.replaceFirst(' ', 'T')); } catch (_) {}
+            try {
+              parsed = DateTime.parse(str.replaceFirst(' ', 'T'));
+            } catch (_) {}
           }
           // Tentativa 3: remove milissegundos e tenta de novo
           if (parsed == null) {
@@ -1645,9 +2000,9 @@ class AuthService {
     String? referredBy,
     String platform = 'ios',
   }) async {
-    final uid   = firebaseUser.uid;
+    final uid = firebaseUser.uid;
     final email = firebaseUser.email ?? '';
-    final name  = displayName?.trim().isNotEmpty == true
+    final name = displayName?.trim().isNotEmpty == true
         ? displayName!.trim()
         : (firebaseUser.displayName?.trim().isNotEmpty == true
             ? firebaseUser.displayName!.trim()
@@ -1662,31 +2017,31 @@ class AuthService {
       if (!doc.exists || (doc.data()?.isEmpty ?? true)) {
         // ── Documento ausente: cria completo com todos os campos mínimos ──
         final newUser = UserModel(
-          uid:         uid,
-          email:       email.trim().toLowerCase(),
+          uid: uid,
+          email: email.trim().toLowerCase(),
           displayName: name,
-          role:        email.trim().toLowerCase() == adminEmail.toLowerCase()
-                         ? UserRole.admin
-                         : UserRole.user,
-          status:      UserStatus.approved,   // ← aprovado imediatamente
-          createdAt:   now,
-          approvedAt:  now,
-          approvedBy:  'system',
-          profession:  profession,
+          role: email.trim().toLowerCase() == adminEmail.toLowerCase()
+              ? UserRole.admin
+              : UserRole.user,
+          status: UserStatus.approved, // ← aprovado imediatamente
+          createdAt: now,
+          approvedAt: now,
+          approvedBy: 'system',
+          profession: profession,
           institution: institution,
-          referredBy:  (referredBy?.isNotEmpty == true) ? referredBy : null,
+          referredBy: (referredBy?.isNotEmpty == true) ? referredBy : null,
           acceptedTerms: false,
         );
 
         // Campos extras além do UserModel (plan, trial, onboarding, platform)
         final extraFields = <String, dynamic>{
-          'plan':                   'free',
-          'subscriptionStatus':     'trial',
-          'onboardingCompleted':    false,
-          'preferredLanguage':      'es',
-          'platformCreated':        platform,
-          'accountStatus':          'active',
-          'updatedAt':              Timestamp.fromDate(now),
+          'plan': 'free',
+          'subscriptionStatus': 'trial',
+          'onboardingCompleted': false,
+          'preferredLanguage': 'es',
+          'platformCreated': platform,
+          'accountStatus': 'active',
+          'updatedAt': Timestamp.fromDate(now),
         };
 
         final docData = <String, dynamic>{
@@ -1695,31 +2050,38 @@ class AuthService {
         };
 
         await ref.set(docData);
-        debugPrint('[Auth] Perfil criado no Firestore — uid=$uid status=approved');
+        debugPrint(
+            '[Auth] Perfil criado no Firestore — uid=$uid status=approved');
         return newUser;
       }
 
       // ── Documento existe: verifica campos críticos e repara se necessário ─
-      final data    = doc.data()!;
-      var   user    = UserModel.fromMap({...data, 'uid': uid});
+      final data = doc.data()!;
+      var user = UserModel.fromMap({...data, 'uid': uid});
       final repairs = <String, dynamic>{};
 
       // Repara status pending → approved (legados ou criados incompletos)
       if (user.isPending) {
-        repairs['status']     = UserStatus.approved.name;
+        repairs['status'] = UserStatus.approved.name;
         repairs['approvedAt'] = Timestamp.fromDate(now);
         repairs['approvedBy'] = 'system-auto';
         user = user.copyWith(
-          status: UserStatus.approved, approvedAt: now, approvedBy: 'system-auto');
-        debugPrint('[Auth] Perfil reparado: status pending→approved — uid=$uid');
+            status: UserStatus.approved,
+            approvedAt: now,
+            approvedBy: 'system-auto');
+        debugPrint(
+            '[Auth] Perfil reparado: status pending→approved — uid=$uid');
       }
 
       // Repara campos extras ausentes (plan, subscriptionStatus, etc.)
-      if (data['plan'] == null)                repairs['plan']                = 'free';
-      if (data['subscriptionStatus'] == null)  repairs['subscriptionStatus']  = 'trial';
-      if (data['onboardingCompleted'] == null) repairs['onboardingCompleted'] = false;
-      if (data['platformCreated'] == null)     repairs['platformCreated']     = platform;
-      if (data['accountStatus'] == null)       repairs['accountStatus']       = 'active';
+      if (data['plan'] == null) repairs['plan'] = 'free';
+      if (data['subscriptionStatus'] == null)
+        repairs['subscriptionStatus'] = 'trial';
+      if (data['onboardingCompleted'] == null)
+        repairs['onboardingCompleted'] = false;
+      if (data['platformCreated'] == null)
+        repairs['platformCreated'] = platform;
+      if (data['accountStatus'] == null) repairs['accountStatus'] = 'active';
 
       if (repairs.isNotEmpty) {
         repairs['updatedAt'] = Timestamp.fromDate(now);
@@ -1728,7 +2090,8 @@ class AuthService {
         // bloqueasse updates de usuários não-aprovados. set+merge é equivalente
         // ao update mas não falha se o doc foi recriado entre o get e o set.
         await ref.set(repairs, SetOptions(merge: true));
-        debugPrint('[Auth] Perfil reparado — campos: ${repairs.keys.join(', ')}');
+        debugPrint(
+            '[Auth] Perfil reparado — campos: ${repairs.keys.join(', ')}');
       } else {
         debugPrint('[Auth] Perfil OK, sem reparos necessários — uid=$uid');
       }
@@ -1738,16 +2101,16 @@ class AuthService {
       debugPrint('[Auth] ensureUserProfileExists falhou (usando fallback): $e');
       // Fallback: retorna modelo em memória aprovado para não bloquear o app
       return UserModel(
-        uid:         uid,
-        email:       email.trim().toLowerCase(),
+        uid: uid,
+        email: email.trim().toLowerCase(),
         displayName: name,
-        role:        email.trim().toLowerCase() == adminEmail.toLowerCase()
-                       ? UserRole.admin
-                       : UserRole.user,
-        status:      UserStatus.approved,
-        createdAt:   now,
-        approvedAt:  now,
-        approvedBy:  'system-fallback',
+        role: email.trim().toLowerCase() == adminEmail.toLowerCase()
+            ? UserRole.admin
+            : UserRole.user,
+        status: UserStatus.approved,
+        createdAt: now,
+        approvedAt: now,
+        approvedBy: 'system-fallback',
       );
     }
   }
@@ -1772,13 +2135,14 @@ class AuthService {
       role: email.trim().toLowerCase() == adminEmail.toLowerCase()
           ? UserRole.admin
           : UserRole.user,
-      status: UserStatus.approved,      // ← sempre aprovado imediatamente
+      status: UserStatus.approved, // ← sempre aprovado imediatamente
       createdAt: DateTime.now(),
-      approvedAt: DateTime.now(),        // ← data de aprovação = data de cadastro
-      approvedBy: 'system',             // ← sistema aprova automaticamente
+      approvedAt: DateTime.now(), // ← data de aprovação = data de cadastro
+      approvedBy: 'system', // ← sistema aprova automaticamente
       profession: profession,
       institution: institution,
-      referredBy: (referredBy != null && referredBy.isNotEmpty) ? referredBy : null,
+      referredBy:
+          (referredBy != null && referredBy.isNotEmpty) ? referredBy : null,
     );
   }
 
@@ -1815,14 +2179,14 @@ class AuthService {
       try {
         if (kIsWeb) {
           await _patchUserRest(uid, {
-            'status':     UserStatus.approved.name,
+            'status': UserStatus.approved.name,
             'approvedAt': DateTime.now().toUtc().toIso8601String(),
             'approvedBy': 'system-auto',
           });
           debugPrint('[Auth] _autoApproveInBackground OK (web) — uid=$uid');
         } else {
           await _db.collection('users').doc(uid).update({
-            'status':     UserStatus.approved.name,
+            'status': UserStatus.approved.name,
             'approvedAt': Timestamp.fromDate(DateTime.now()),
             'approvedBy': 'system-auto',
           });
@@ -1831,7 +2195,8 @@ class AuthService {
       } catch (e) {
         // Não bloqueia o fluxo — usuário já foi aprovado em memória no _buildResultFromDoc.
         // Com a correção da rule allow update, este catch raramente será atingido.
-        debugPrint('[Auth] _autoApproveInBackground falhou (usuário já aprovado em memória): $e');
+        debugPrint(
+            '[Auth] _autoApproveInBackground falhou (usuário já aprovado em memória): $e');
       }
     });
   }
@@ -1839,17 +2204,27 @@ class AuthService {
   // ── Mensagens de erro amigáveis ───────────────────────────────────────────
   static String _authErrorMessage(String code) {
     switch (code) {
-      case 'user-not-found':         return 'Nenhuma conta encontrada com este e-mail.';
+      case 'user-not-found':
+        return 'Nenhuma conta encontrada com este e-mail.';
       case 'wrong-password':
-      case 'invalid-credential':     return 'E-mail ou senha incorretos.';
-      case 'email-already-in-use':   return 'Este e-mail já está cadastrado.';
-      case 'weak-password':          return 'Senha fraca. Use ao menos 6 caracteres.';
-      case 'invalid-email':          return 'Endereço de e-mail inválido.';
-      case 'too-many-requests':      return 'Muitas tentativas. Aguarde alguns minutos.';
-      case 'network-request-failed': return 'Sem conexão. Verifique sua internet.';
-      case 'operation-not-allowed':  return 'Login por e-mail desabilitado. Contate o admin.';
-      case 'user-disabled':          return 'Conta desativada. Entre em contato com o administrador.';
-      default:                       return 'Erro de autenticação. Tente novamente.';
+      case 'invalid-credential':
+        return 'E-mail ou senha incorretos.';
+      case 'email-already-in-use':
+        return 'Este e-mail já está cadastrado.';
+      case 'weak-password':
+        return 'Senha fraca. Use ao menos 6 caracteres.';
+      case 'invalid-email':
+        return 'Endereço de e-mail inválido.';
+      case 'too-many-requests':
+        return 'Muitas tentativas. Aguarde alguns minutos.';
+      case 'network-request-failed':
+        return 'Sem conexão. Verifique sua internet.';
+      case 'operation-not-allowed':
+        return 'Login por e-mail desabilitado. Contate o admin.';
+      case 'user-disabled':
+        return 'Conta desativada. Entre em contato com o administrador.';
+      default:
+        return 'Erro de autenticação. Tente novamente.';
     }
   }
 }

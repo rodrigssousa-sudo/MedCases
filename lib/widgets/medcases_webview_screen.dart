@@ -14,7 +14,9 @@
 // • Em Flutter Web: usa iframe fullscreen (comportamento idêntico, sem address bar).
 // ══════════════════════════════════════════════════════════════════════════════
 
-import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
+import 'dart:ui' show ImageFilter;
+import 'package:flutter/foundation.dart'
+    show kIsWeb, debugPrint, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -36,10 +38,7 @@ void openAcademicSourceSecurely(
   Navigator.of(context, rootNavigator: true).push(
     MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (context) => MedCasesWebViewScreen(
-        title: title,
-        url: secureUrl,
-      ),
+      builder: (context) => MedCasesWebViewScreen(title: title, url: secureUrl),
     ),
   );
 }
@@ -83,11 +82,15 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
     if (uri == null || uri.scheme != 'https') {
       _httpsError = 'URL inválida ou não segura (HTTPS obrigatório).';
       _controller = null;
-      debugPrint('[MedCasesWebView][MANDATO4] BLOCKED non-HTTPS url=${widget.url}');
+      debugPrint(
+        '[MedCasesWebView][MANDATO4] BLOCKED non-HTTPS url=${widget.url}',
+      );
       return;
     }
 
-    debugPrint('[MedCasesWebView][BUILD323] Opening in-app: title="${widget.title}" url=${widget.url}');
+    debugPrint(
+      '[MedCasesWebView][BUILD323] Opening in-app: title="${widget.title}" url=${widget.url}',
+    );
 
     // Fix#6: lê dark mode inicial e registra listener para mudanças em runtime
     final p = context.read<AppProvider>();
@@ -120,17 +123,18 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
         'AppleWebKit/605.1.15 MedCasesApp/6.5.30 Mobile/15E148',
       )
       ..setBackgroundColor(Colors.white)
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (_) {
-          if (!mounted) return;
-          setState(() => _isLoading = true);
-        },
-        onPageFinished: (_) async {
-          if (!mounted) return;
-          setState(() => _isLoading = false);
-          // MANDATO 3: Injeta CSS para ocultar qualquer barra de endereço nativa
-          // e desabilitar seleção de texto que expõe URLs
-          await _controller?.runJavaScript(r"""
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (_) {
+            if (!mounted) return;
+            setState(() => _isLoading = true);
+          },
+          onPageFinished: (_) async {
+            if (!mounted) return;
+            setState(() => _isLoading = false);
+            // MANDATO 3: Injeta CSS para ocultar qualquer barra de endereço nativa
+            // e desabilitar seleção de texto que expõe URLs
+            await _controller?.runJavaScript(r"""
 (function() {
   var s = document.createElement('style');
   s.textContent = 'a[href]:after { content: none !important; }';
@@ -142,29 +146,31 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
   document.documentElement.style.userSelect = 'none';
 })();
 """);
-          // Fix#6: injeta tema assim que a página termina de carregar
-          _webviewReady = true;
-          await _injectTheme();
-        },
-        onWebResourceError: (error) {
-          debugPrint('[MedCasesWebView] WebResourceError: ${error.description}');
-        },
-        // MANDATO 3: Bloqueia navegação para domínios externos não relacionados
-        // (mantém o usuário dentro da fonte selecionada)
-        onNavigationRequest: (request) {
-          final dest = Uri.tryParse(request.url);
-          if (dest == null || dest.scheme == 'javascript') {
-            return NavigationDecision.prevent;
-          }
-          // Permite navegação dentro do mesmo domínio ou subdomínios
-          return NavigationDecision.navigate;
-        },
-      ))
+            // Fix#6: injeta tema assim que a página termina de carregar
+            _webviewReady = true;
+            await _injectTheme();
+          },
+          onWebResourceError: (error) {
+            debugPrint(
+              '[MedCasesWebView] WebResourceError: ${error.description}',
+            );
+          },
+          // MANDATO 3: Bloqueia navegação para domínios externos não relacionados
+          // (mantém o usuário dentro da fonte selecionada)
+          onNavigationRequest: (request) {
+            final dest = Uri.tryParse(request.url);
+            if (dest == null || dest.scheme == 'javascript') {
+              return NavigationDecision.prevent;
+            }
+            // Permite navegação dentro do mesmo domínio ou subdomínios
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
       ..loadRequest(uri);
   }
 
-  bool _detectIOS() =>
-      Theme.of(context).platform == TargetPlatform.iOS;
+  bool _detectIOS() => defaultTargetPlatform == TargetPlatform.iOS;
 
   // Fix#6: chamado pelo listener do AppProvider quando darkMode muda
   void _onProviderChanged() {
@@ -192,102 +198,138 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
   Widget build(BuildContext context) {
     // Fix#6: _dark é a fonte de verdade (listener do AppProvider) — não usa Theme.of()
     final dark = _dark;
+    final isEs = context.watch<AppProvider>().lang == 'es';
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: dark ? const Color(0xFF0F091E) : Colors.white,
+        backgroundColor: dark
+            ? const Color(0xFF1A1D23)
+            : const Color(0xFFE0E6E9),
 
         // ── AppBar MedCases Pro — MANDATO 1+3: sem URL exposta, sem address bar ──
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF3B0764), // roxo profundo
-                  Color(0xFF7E22CE), // roxo vibrante
-                  Color(0xFFA855F7), // roxo claro
-                ],
-              ),
-              border: Border(
-                bottom: BorderSide(color: Color(0xFF4C1D95), width: 0.5),
-              ),
+          preferredSize: const Size.fromHeight(48),
+          child: DecoratedBox(
+            // MEDCASES_WEBVIEW_CANONICAL_HOME_TOPBAR_V1_B_R1
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: dark ? 0.16 : 0.07),
+                  blurRadius: 14,
+                  spreadRadius: -8,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // CENTER — título semântico da fonte (MANDATO 1: sem URL exposta)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 56),
-                      child: Text(
-                        widget.title,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: -0.2,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: dark
+                        ? const Color(0xFF161B22).withValues(alpha: 0.58)
+                        : Colors.white.withValues(alpha: 0.56),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        dark
+                            ? Colors.white.withValues(alpha: 0.10)
+                            : Colors.white.withValues(alpha: 0.46),
+                        dark
+                            ? Colors.white.withValues(alpha: 0.025)
+                            : Colors.white.withValues(alpha: 0.12),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.42, 1.0],
+                    ),
+                    border: Border(
+                      bottom: BorderSide(
+                        color: dark
+                            ? Colors.white.withValues(alpha: 0.13)
+                            : Colors.white.withValues(alpha: 0.78),
+                        width: 0.7,
                       ),
                     ),
-                    // LEFT — botão fechar X (MANDATO 3: única ação disponível)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => Navigator.of(context).pop(),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.close_rounded,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ),
-                      ),
-                    ),
-                    // RIGHT — indicador de fonte verificada (identidade visual)
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 14),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 24,
+                        right: 24,
+                        bottom: 0.7,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 3),
+                          height: 0.7,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.lock_rounded,
-                                  size: 10, color: Colors.white70),
-                              SizedBox(width: 3),
-                              Text(
-                                'HTTPS',
-                                style: TextStyle(
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white70,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                dark
+                                    ? Colors.white.withValues(alpha: 0.18)
+                                    : Colors.white.withValues(alpha: 0.86),
+                                Colors.transparent,
+                              ],
+                              stops: const [0.0, 0.5, 1.0],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      SafeArea(
+                        bottom: false,
+                        child: SizedBox(
+                          height: 48,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 48,
+                                  ),
+                                  child: Text(
+                                    isEs ? 'GUÍA CLÍNICA' : 'GUIA CLÍNICO',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 1.2,
+                                      color: dark
+                                          ? Colors.white
+                                          : const Color(0xFF05070A),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: SizedBox(
+                                    width: 36,
+                                    height: 36,
+                                    child: IconButton(
+                                      tooltip: 'Fechar',
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      icon: Icon(
+                                        Icons.close_rounded,
+                                        color: dark
+                                            ? Colors.white
+                                            : const Color(0xFF05070A),
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -308,8 +350,11 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.lock_open_rounded,
-                  size: 48, color: Color(0xFFEF4444)),
+              const Icon(
+                Icons.lock_open_rounded,
+                size: 48,
+                color: Color(0xFFEF4444),
+              ),
               const SizedBox(height: 16),
               Text(
                 _httpsError!,
