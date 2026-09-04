@@ -22,8 +22,12 @@ import '../data/cases_database.dart';
 import '../services/firestore_service.dart';
 import '../services/drug_interaction_service.dart';
 import '../services/ai_service.dart';
+import '../services/tep_2026_plantao_response_guard.dart';
+import '../services/plantao_iamcest_killip_classification_guard.dart';
 import '../services/clinical_session_memory.dart';
 import '../services/clinical_thread_manager.dart'; // BUILD 249: cross-case contamination fix
+import '../services/well_formed_utf16.dart'; // GLOBAL_CONTEXT_BUILD1
+import '../services/clinical_crosscutting_evidence_resolver.dart'; // RICH_EVIDENCE_DB_V1
 import '../services/gemini_service.dart';
 import '../services/gemini_service_v2.dart';
 import '../services/ai_gateway_service.dart';
@@ -84,6 +88,10 @@ import '../services/ai_pipeline/plantao/plantao_qa_cutover_support.dart';
 import '../services/ai_pipeline/app_provider_ai_response_pipeline.dart';
 
 import '../services/dkahhs/dkahhs_runtime_safety_contract.dart';
+
+import '../services/clinical_identity_transport_envelope.dart';
+import '../services/plantao_machine_native_context_prefetch.dart';
+import '../services/clinical_crosscutting_evidence_compliance_guard.dart';
 
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
@@ -288,10 +296,7 @@ final class ToolPayloadReady extends ToolResolution {
   const ToolPayloadReady({required this.intent, required this.parentRequestId});
 }
 
-enum AiProviderEffectPolicy {
-  legacy,
-  bufferedPipeline,
-}
+enum AiProviderEffectPolicy { legacy, bufferedPipeline }
 
 class AppProvider extends ChangeNotifier {
   // PHASE3K-A: typed buffered cutover seam. The production default is
@@ -367,7 +372,7 @@ class AppProvider extends ChangeNotifier {
       AppAuthBarrierState.authPending;
 
   // ── Estado local ──────────────────────────────────────────────────────────
-  String _lang = _systemLang();
+  String _lang = 'es'; // CALCULATOR_PERF_V1: first-install/first-frame default
   bool _darkMode = true; // DARK-FIRST: inicializa sempre em modo escuro
   bool _hapticEnabled = true; // feedback tátil — ligado por padrão
 
@@ -758,6 +763,11 @@ class AppProvider extends ChangeNotifier {
 
   /// BUILD 249: expõe tópico ativo do thread clínico para EXT_TOOL guard
   String get activeThreadTopic => _threadManager.activeTopic;
+
+  /// Canonical request-busy projection used by the Study UI before it
+  /// mutates visible/session state or allocates a new provider lifecycle.
+  bool get aiRequestBusy =>
+      _aiCallInFlight || _aiAnswerInProgress || _aiStreamActive;
   PatientData get patient => _patient;
   HemoData get hemo => _hemo;
   String get activeDrugId => _activeDrugId;
@@ -2034,15 +2044,18 @@ class AppProvider extends ChangeNotifier {
 
   DkahhsFluidRouteDecision get dkahhsFluidRouteDecision =>
       DkahhsRuntimeSafetyContract.evaluateFluidRoute(
-          pregnancyStatus: _dkahhsPregnancyStatus,
-          highRiskStatus: _dkahhsHighRiskStatus);
+        pregnancyStatus: _dkahhsPregnancyStatus,
+        highRiskStatus: _dkahhsHighRiskStatus,
+      );
   DkahhsPotassiumGateDecision get dkahhsPotassiumGateDecision =>
       DkahhsRuntimeSafetyContract.evaluatePotassiumGate(
-          _dkahhsPotassiumObservation);
+        _dkahhsPotassiumObservation,
+      );
   DkahhsGlucoseDeclineAssessment get dkahhsGlucoseDeclineAssessment =>
       DkahhsRuntimeSafetyContract.assessGlucoseDecline(
-          previous: _dkahhsPreviousGlucoseSample,
-          current: _dkahhsCurrentGlucoseSample);
+        previous: _dkahhsPreviousGlucoseSample,
+        current: _dkahhsCurrentGlucoseSample,
+      );
   void updateDkahhsPregnancyStatus(DkahhsPregnancyStatus v) {
     _dkahhsPregnancyStatus = v;
     notifyListeners();
@@ -2078,16 +2091,20 @@ class AppProvider extends ChangeNotifier {
   }
 
   String _dkahhsFluidRouteText(bool es) =>
-      DkahhsRuntimeSafetyContract.fluidRouteMessage(dkahhsFluidRouteDecision,
-          spanish: es);
+      DkahhsRuntimeSafetyContract.fluidRouteMessage(
+        dkahhsFluidRouteDecision,
+        spanish: es,
+      );
   String _dkahhsPotassiumGateText(bool es) =>
       DkahhsRuntimeSafetyContract.potassiumGateMessage(
-          dkahhsPotassiumGateDecision,
-          spanish: es);
+        dkahhsPotassiumGateDecision,
+        spanish: es,
+      );
   String _dkahhsGlucoseDeclineText(bool es) =>
       DkahhsRuntimeSafetyContract.glucoseDeclineMessage(
-          dkahhsGlucoseDeclineAssessment,
-          spanish: es);
+        dkahhsGlucoseDeclineAssessment,
+        spanish: es,
+      );
 
   void updatePatient(String key, String value) {
     switch (key) {
@@ -3183,7 +3200,7 @@ class AppProvider extends ChangeNotifier {
       return true;
     }).toList();
     // Pega as últimas 10 entradas (5 pares) para não exceder o limite da janela
-    final window = valid.length > 10 ? valid.sublist(valid.length - 10) : valid;
+    final window = valid.length > 60 ? valid.sublist(valid.length - 60) : valid;
     _aiHistory.addAll(window);
     if (kDebugMode) {
       final removedCount = messages.length - valid.length;
@@ -3807,6 +3824,268 @@ class AppProvider extends ChangeNotifier {
   /// (não-stopword, length > 3). Usado para evitar match em queries genéricas.
   bool _hasSubstantiveWord(List<String> words) {
     return words.any((w) => w.length > 3 && !_clinicalStopwords.contains(w));
+  }
+
+  // PLANTAO_GLOBAL_CLASSIFICATION_TRANSPORT_V1
+  //
+  // classification/severityCriteria ja existem no ProtocolModel.
+  // Transporta esses campos apenas quando a pergunta realmente pede
+  // classificacao/gravidade, evitando inflar o prompt em todas as consultas.
+  String _flattenProtocolClassificationField(Object? raw) {
+    if (raw == null) return '';
+    if (raw is String) return raw.trim();
+
+    if (raw is Iterable) {
+      return raw
+          .map(_flattenProtocolClassificationField)
+          .where((value) => value.isNotEmpty)
+          .join(' | ');
+    }
+
+    if (raw is Map) {
+      final localized = raw[_lang] ?? raw['pt'] ?? raw['es'];
+      if (localized != null) {
+        return _flattenProtocolClassificationField(localized);
+      }
+
+      return raw.values
+          .map(_flattenProtocolClassificationField)
+          .where((value) => value.isNotEmpty)
+          .join(' | ');
+    }
+
+    return raw.toString().trim();
+  }
+
+  bool _isProtocolClassificationRequest(String input) {
+    final q = _normalize(input);
+
+    return <String>[
+      'classificacao',
+      'clasificacion',
+      'classification',
+      'categoria',
+      'category',
+      'gravidade',
+      'gravedad',
+      'severity',
+      'severidade',
+      'estagio',
+      'estadio',
+      'stage',
+      'estratific',
+      'score',
+      'escore',
+      'risco',
+      'riesgo',
+      'risk',
+    ].any(q.contains);
+  }
+
+  // PLANTAO_DEPENDENT_MANAGEMENT_CONTEXT_RAG_V1
+  bool _isProtocolDependentManagementRequest(String input) {
+    final q = _normalize(input);
+
+    final hasManagementTerm = <String>[
+      'tratamiento',
+      'tratamento',
+      'manejo',
+      'conducta',
+      'conduta',
+      'prescripcion',
+      'prescricao',
+      'medicacion',
+      'medicacao',
+      'farmacologico',
+      'farmacologica',
+    ].any(q.contains);
+
+    if (!hasManagementTerm) return false;
+
+    return q.startsWith('y ') ||
+        q.startsWith('e ') ||
+        q.contains(' ahora') ||
+        q.endsWith('ahora') ||
+        q.contains(' agora') ||
+        q.endsWith('agora') ||
+        q.contains('indicarias') ||
+        q.contains('indicaria') ||
+        q.contains('harias') ||
+        q.contains('haria') ||
+        q.contains('farias') ||
+        q.contains('faria') ||
+        q.contains('completo') ||
+        q == 'tratamiento' ||
+        q == 'tratamiento farmacologico' ||
+        q == 'tratamento' ||
+        q == 'tratamento farmacologico' ||
+        q == 'manejo' ||
+        q == 'conducta' ||
+        q == 'conduta';
+  }
+
+  String _boundProtocolClassificationText(
+    String value,
+    int maxChars,
+  ) {
+    final clean = value.trim();
+    if (clean.length <= maxChars) return clean;
+
+    return '${clean.substring(0, maxChars).trimRight()}…';
+  }
+
+  List<String> _appendProtocolClassificationContext({
+    required List<String> summaries,
+    required List<ProtocolModel> protocols,
+    required String currentInput,
+  }) {
+    final isClassificationRequest =
+        _isProtocolClassificationRequest(currentInput);
+    final isDependentManagementRequest =
+        _isProtocolDependentManagementRequest(currentInput);
+
+    if (!isClassificationRequest && !isDependentManagementRequest) {
+      return summaries;
+    }
+
+    // PLANTAO_CONTEXT_RAG_INTENT_TELEMETRY_EXCLUSIVITY_V1
+    final contextRagTelemetryTag =
+        isDependentManagementRequest && !isClassificationRequest
+            ? '[PLANTAO_MANAGEMENT_CONTEXT_RAG]'
+            : '[PLANTAO_CLASSIFICATION_CONTEXT_RAG]';
+
+    final enriched = <String>[...summaries];
+    final seen = <String>{};
+    final effectiveProtocols = <ProtocolModel>[...protocols];
+
+    // PLANTAO_CLASSIFICATION_CONTEXTUAL_RAG_FALLBACK_V1
+    //
+    // Follow-ups como "¿Y cuál es la clasificación?" carregam o caso clínico
+    // no histórico, mas a query atual isolada não contém o nome da patologia.
+    // Se a recuperação do turno vier vazia, reutilizamos APENAS o tópico ativo
+    // do ThreadManager como chave de recuperação protocolar. Isso não muda a
+    // pergunta visível nem o histórico enviado ao modelo.
+    if (effectiveProtocols.isEmpty && _threadManager.activeTopic.isNotEmpty) {
+      final contextualMatches = <ProtocolModel>[];
+      final contextualQuery =
+          '${_threadManager.activeTopic.replaceAll('_', ' ')} $currentInput';
+
+      final contextualSummaries = _matchProtocols(
+        _normalize(contextualQuery),
+        matchedProtocols: contextualMatches,
+      );
+
+      if (contextualMatches.isNotEmpty) {
+        effectiveProtocols.addAll(contextualMatches);
+
+        // PLANTAO_CLASSIFICATION_CONTEXTUAL_RAG_SHADOW_PROPAGATION_V2
+        //
+        // `protocols` e a lista mutavel pertencente ao caller
+        // (qaMatchedProtocols / matchedProtocolModels). Propagar os matches
+        // contextuais garante que o mesmo conjunto usado para enriquecer o
+        // prompt tambem alimente retrieval shadow/provenance/reference.
+        var propagatedToCaller = 0;
+        for (final contextualProtocol in contextualMatches) {
+          final alreadyPresent = protocols.any(
+            (protocol) => protocol.id == contextualProtocol.id,
+          );
+          if (!alreadyPresent) {
+            protocols.add(contextualProtocol);
+            propagatedToCaller += 1;
+          }
+        }
+
+        for (final summary in contextualSummaries) {
+          if (!enriched.contains(summary)) {
+            enriched.add(summary);
+          }
+        }
+
+        if (kDebugMode) {
+          debugPrint(
+            '$contextRagTelemetryTag '
+            'source=active_topic '
+            'topic=${_threadManager.activeTopic} '
+            'protocols=${contextualMatches.length} '
+            'propagatedToCaller=$propagatedToCaller',
+          );
+        }
+      } else if (kDebugMode) {
+        debugPrint(
+          '$contextRagTelemetryTag '
+          'source=active_topic result=empty '
+          'topic=${_threadManager.activeTopic}',
+        );
+      }
+    }
+
+    // Dependent management needs verified protocol summaries plus the same
+    // caller/shadow propagation used by classification, but it must not receive
+    // a classification task merely because this shared helper was invoked.
+    if (isDependentManagementRequest && !isClassificationRequest) {
+      return enriched;
+    }
+
+    for (final protocol in effectiveProtocols) {
+      if (!seen.add(protocol.id)) continue;
+
+      final title = tDB(protocol.title);
+      final classification =
+          _flattenProtocolClassificationField(protocol.classification);
+      final severityCriteria =
+          _flattenProtocolClassificationField(protocol.severityCriteria);
+      final severity = tDB(protocol.severity);
+
+      if (classification.isEmpty &&
+          severityCriteria.isEmpty &&
+          severity.isEmpty) {
+        continue;
+      }
+
+      final buffer = StringBuffer()..writeln('PROTOCOLO_CLINICO_ATIVO: $title');
+
+      if (classification.isNotEmpty) {
+        buffer.writeln(
+          _lang == 'es'
+              ? 'CLASIFICACION_VERIFICADA: '
+                  '${_boundProtocolClassificationText(classification, 1800)}'
+              : 'CLASSIFICACAO_VERIFICADA: '
+                  '${_boundProtocolClassificationText(classification, 1800)}',
+        );
+      } else {
+        buffer.writeln(
+          _lang == 'es'
+              ? 'CLASIFICACION_VERIFICADA: este protocolo local no posee '
+                  'una clasificacion estructurada registrada; '
+                  'no inventar categoria.'
+              : 'CLASSIFICACAO_VERIFICADA: este protocolo local nao possui '
+                  'classificacao estruturada cadastrada; '
+                  'nao inventar categoria.',
+        );
+      }
+
+      if (severity.isNotEmpty) {
+        buffer.writeln(
+          _lang == 'es'
+              ? 'GRAVEDAD_DEL_PROTOCOLO: $severity'
+              : 'GRAVIDADE_DO_PROTOCOLO: $severity',
+        );
+      }
+
+      if (severityCriteria.isNotEmpty) {
+        buffer.writeln(
+          _lang == 'es'
+              ? 'CRITERIOS_DE_GRAVEDAD: '
+                  '${_boundProtocolClassificationText(severityCriteria, 1400)}'
+              : 'CRITERIOS_DE_GRAVIDADE: '
+                  '${_boundProtocolClassificationText(severityCriteria, 1400)}',
+        );
+      }
+
+      enriched.add(buffer.toString().trim());
+    }
+
+    return enriched;
   }
 
   /// Retorna sumários dos protocolos cujos títulos/reconhecer contenham keywords da query
@@ -4927,9 +5206,15 @@ class AppProvider extends ChangeNotifier {
 
   /// Constrói query expandida com contexto do histórico (últimas N msgs do usuário)
   /// Só expande se a pergunta for um follow-up clínico — nunca contamina queries novas
-  String _expandedQuery(String currentInput, {int lastN = 3}) {
+  String _expandedQuery(
+    String currentInput, {
+    int lastN = 3,
+    bool forceContext = false,
+  }) {
     // Perguntas diretas/novas: NÃO misturar histórico (evita resposta aleatória)
-    if (_isDirectQuery(currentInput)) return currentInput.trim();
+    if (!forceContext && _isDirectQuery(currentInput)) {
+      return currentInput.trim();
+    }
 
     // Follow-up clínico: expande com contexto recente
     final recentUserMsgs = _aiHistory
@@ -4944,7 +5229,8 @@ class AppProvider extends ChangeNotifier {
     // Só inclui histórico se a pergunta for realmente um follow-up
     // (muito curta e sem contexto próprio — ex: "qual a dose?", "tem FA?")
     // Threshold: 6 palavras (cobre "Tratamiento farmacologico", "qual a conduta", etc.)
-    final isFollowUp = currentInput.trim().split(' ').length <= 6;
+    final isFollowUp =
+        forceContext || currentInput.trim().split(RegExp(r'\s+')).length <= 6;
     if (!isFollowUp) return currentInput.trim();
 
     return '${tail.join(' ')} $currentInput'.trim();
@@ -5205,6 +5491,9 @@ class AppProvider extends ChangeNotifier {
             'legacyProtocolId': protocol.id,
             'sourcePath': 'lib/data/protocols_database.dart',
             'retrievalOwner': 'AppProvider._matchProtocols',
+            'classification': protocol.classification,
+            'severityCriteria': protocol.severityCriteria,
+            'severity': protocol.severity,
           },
         ),
       );
@@ -5314,7 +5603,16 @@ class AppProvider extends ChangeNotifier {
     );
     _lastPlantaoPersistenceShadow = persistenceSnapshot;
 
-    final drugEvidenceJoin =
+    // PLANTAO_FINALIZED_VISIBLE_MEDICATION_EVIDENCE_FALLBACK_V1
+    //
+    // The original-input evidence observer remains first choice. A dependent
+    // management turn can legitimately contain no drug names even though the
+    // finalized visible DTO contains explicit prescriptions. In that case only,
+    // perform a second SHADOW-ONLY lookup from the medication identities that
+    // were actually finalized for display. This never mutates prompt, provider
+    // output, rendering, productive persistence, dose validation or medication
+    // materialization.
+    var drugEvidenceJoin =
         await _plantaoDrugEvidenceFinalizationJoinShadowAdapter.join(
       request: request,
       finalization: snapshot,
@@ -5325,6 +5623,119 @@ class AppProvider extends ChangeNotifier {
     if (_lastPlantaoShadowRequest?.requestId != request.requestId) {
       return;
     }
+
+    final originalDrugEvidenceJoinStatus = drugEvidenceJoin.status.name;
+    final finalizedMedicationIdentities = clinicalOutput == null
+        ? const <String>[]
+        : clinicalOutput.prescricao
+            .map((item) => item.farmaco.trim())
+            .where((item) => item.isNotEmpty)
+            .toSet()
+            .toList(growable: false);
+
+    if (!drugEvidenceJoin.isReady && finalizedMedicationIdentities.isNotEmpty) {
+      // PLANTAO_FINALIZED_VISIBLE_MEDICATION_TYPED_TERMS_FALLBACK_V2
+      //
+      // The medication identities already exist as structured finalized DTO
+      // fields. Do not repackage them as a synthetic user question and send
+      // them back through the original-input free-text extractor. Resolve the
+      // same identities directly through the canonical typed-term adapter.
+      final typedEvidence =
+          await _plantaoDrugEvidenceRequestObserver.adapter.retrieveTypedTerms(
+        terms: finalizedMedicationIdentities,
+        languageCode: _lang,
+      );
+
+      if (_lastPlantaoShadowRequest?.requestId != request.requestId) {
+        return;
+      }
+
+      late PlantaoDrugEvidenceRequestStatus typedStatus;
+      switch (typedEvidence.status) {
+        case PlantaoDrugEvidenceShadowStatus.notEvaluated:
+          typedStatus = PlantaoDrugEvidenceRequestStatus.notEvaluated;
+          break;
+        case PlantaoDrugEvidenceShadowStatus.complete:
+        case PlantaoDrugEvidenceShadowStatus.partial:
+          typedStatus = PlantaoDrugEvidenceRequestStatus.ready;
+          break;
+        case PlantaoDrugEvidenceShadowStatus.empty:
+          typedStatus = PlantaoDrugEvidenceRequestStatus.empty;
+          break;
+        case PlantaoDrugEvidenceShadowStatus.ambiguous:
+          typedStatus = PlantaoDrugEvidenceRequestStatus.ambiguous;
+          break;
+        case PlantaoDrugEvidenceShadowStatus.failed:
+          typedStatus = PlantaoDrugEvidenceRequestStatus.failed;
+          break;
+      }
+
+      final fallbackIntent = drugEvidenceJoin.drugEvidence?.intent ??
+          _plantaoDrugEvidenceRequestObserver.intentResolver.resolve(
+            originalUserInput: _lang == 'es'
+                ? 'tratamiento farmacológico'
+                : 'tratamento farmacológico',
+            legacyQueryIntent: 'farmaco',
+            legacyDirectQuery: true,
+          );
+
+      final typedFallbackSnapshot = PlantaoDrugEvidenceRequestSnapshot(
+        requestId: request.requestId,
+        status: typedStatus,
+        intent: fallbackIntent,
+        evidence: typedEvidence,
+        reasons: <String>{
+          'finalized_visible_medication_identity_fallback',
+          'finalized_visible_medication_typed_terms_fallback',
+          ...typedEvidence.reasons,
+        },
+        observedAt: DateTime.now().toUtc(),
+      );
+
+      final fallbackFuture = Future<PlantaoDrugEvidenceRequestSnapshot>.value(
+        typedFallbackSnapshot,
+      );
+
+      final fallbackJoin =
+          await _plantaoDrugEvidenceFinalizationJoinShadowAdapter.join(
+        request: request,
+        finalization: snapshot,
+        drugEvidenceFuture: fallbackFuture,
+      );
+
+      // The fallback is observational and request-scoped. Never let a late
+      // lookup overwrite state from a newer productive request.
+      if (_lastPlantaoShadowRequest?.requestId != request.requestId) {
+        return;
+      }
+
+      final fallbackEvidence = fallbackJoin.drugEvidence;
+      if (fallbackEvidence != null) {
+        _lastPlantaoDrugEvidenceRequestShadow = fallbackEvidence;
+        _lastPlantaoDrugEvidenceShadow = fallbackEvidence.evidence;
+      }
+
+      assert(() {
+        final evidence = fallbackEvidence?.evidence;
+        debugPrint(
+          '[PLANTAO_DRUG_EVIDENCE_FINALIZED_RX_FALLBACK] '
+          'strategy=typed_terms '
+          'requestId=${request.requestId} '
+          'identities=${finalizedMedicationIdentities.length} '
+          'originalJoin=$originalDrugEvidenceJoinStatus '
+          'fallbackJoin=${fallbackJoin.status.name} '
+          'documents=${evidence?.documents.length ?? 0} '
+          'materializable=${evidence?.documents.where((item) => item.supportsMedicationMaterialization).length ?? 0} '
+          'chosen=${fallbackJoin.isReady ? "fallback" : "original"}',
+        );
+        return true;
+      }());
+
+      if (fallbackJoin.isReady) {
+        drugEvidenceJoin = fallbackJoin;
+      }
+    }
+
     _lastPlantaoDrugEvidenceFinalizationJoinShadow = drugEvidenceJoin;
     final drugIdentityProvenanceBinding =
         _plantaoDrugIdentityProvenanceBindingShadowAdapter.bind(
@@ -5407,13 +5818,14 @@ class AppProvider extends ChangeNotifier {
         drugExplicitTypedRegimenEvidenceProjection;
     final drugProjectedEvidenceBundleOverlay =
         _plantaoDrugProjectedEvidenceBundleOverlayShadowAdapter.prepare(
-            request: request,
-            baseEvidenceBundle: retrievalSnapshot?.evidenceBundle ??
-                (_lastPlantaoRetrievalShadow?.evidenceBundle.requestId ==
-                        request.requestId
-                    ? _lastPlantaoRetrievalShadow?.evidenceBundle
-                    : null),
-            projection: drugExplicitTypedRegimenEvidenceProjection);
+      request: request,
+      baseEvidenceBundle: retrievalSnapshot?.evidenceBundle ??
+          (_lastPlantaoRetrievalShadow?.evidenceBundle.requestId ==
+                  request.requestId
+              ? _lastPlantaoRetrievalShadow?.evidenceBundle
+              : null),
+      projection: drugExplicitTypedRegimenEvidenceProjection,
+    );
     _lastPlantaoDrugProjectedEvidenceBundleOverlayShadow =
         drugProjectedEvidenceBundleOverlay;
     final projectedEvidenceReplayValidation = drugProjectedEvidenceBundleOverlay
@@ -5742,6 +6154,34 @@ class AppProvider extends ChangeNotifier {
   // alongside _completedResolutions and _completedRequestIds.
   final Set<String> _persistedExchangeIds = {};
 
+  // GLOBAL_CONTEXT_BUILD2_PREPERSIST_PARITY_V1
+  // The UI builds the authoritative machine-native persistence decision once.
+  // AppProvider stores it by requestId so every productive provider route uses
+  // the same decision at the single canonical persistence owner.
+  final Map<String, bool Function(String candidateText)>
+      _plantaoPersistenceEligibilityByRequest = {};
+
+  bool _removeRejectedAiHistoryTail({
+    required String userInput,
+    required String assistantOutput,
+  }) {
+    if (_aiHistory.length < 2) return false;
+
+    final userIndex = _aiHistory.length - 2;
+    final assistantIndex = _aiHistory.length - 1;
+    final user = _aiHistory[userIndex];
+    final assistant = _aiHistory[assistantIndex];
+
+    final matches = user['role'] == 'user' &&
+        assistant['role'] == 'assistant' &&
+        (user['content'] ?? '') == userInput &&
+        (assistant['content'] ?? '') == assistantOutput;
+    if (!matches) return false;
+
+    _aiHistory.removeRange(userIndex, _aiHistory.length);
+    return true;
+  }
+
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: Stable conversation sessionId ─
   // A single sessionId covers ALL turns of one conversation. Generated once on
   // the first sendAiMessage() call after resetAiSessionFull() / screen mount.
@@ -5844,6 +6284,40 @@ class AppProvider extends ChangeNotifier {
     return changed;
   }
 
+  // R17 — terminal busy release for the request that still owns
+  // [_activeRequestId]. This intentionally does NOT clear the active id:
+  // the next request will replace it, and late callbacks can then prove stale.
+  bool _releaseAiBusyForRequest(String requestId, {required String source}) {
+    if (_activeRequestId != requestId) {
+      if (kDebugMode) {
+        debugPrint(
+          '[AI_BUSY_RELEASE][STALE_PRESERVED] '
+          'requestId=$requestId activeId=$_activeRequestId source=$source',
+        );
+      }
+      return false;
+    }
+
+    final beforeCall = _aiCallInFlight;
+    final beforeAnswer = _aiAnswerInProgress;
+    final beforeStream = _aiStreamActive;
+
+    _aiCallInFlight = false;
+    _aiAnswerInProgress = false;
+    _aiStreamActive = false;
+    aiChatProvider.setStreaming(false);
+
+    if (kDebugMode) {
+      debugPrint(
+        '[AI_BUSY_RELEASE][RELEASED] '
+        'requestId=$requestId source=$source '
+        'before=call:$beforeCall,answer:$beforeAnswer,stream:$beforeStream '
+        'afterBusy=$aiRequestBusy',
+      );
+    }
+    return true;
+  }
+
   void _completeAiRequestOnce(String requestId) {
     // MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 3]: Coordinator latch guard.
     // _completedRequestIds is the idempotency set — tryMarkCoordinatorCompleted()
@@ -5861,6 +6335,7 @@ class AppProvider extends ChangeNotifier {
       return; // Strictly abort — no coordinator trigger on duplicate.
     }
     _completedRequestIds.add(requestId);
+    _plantaoPersistenceEligibilityByRequest.remove(requestId);
 
     // ── ABRUPT PATH: Store CompletedToolResolution if not yet written ──────
     // If the happy path (canonical finalizer) already wrote a payload, this
@@ -5892,6 +6367,7 @@ class AppProvider extends ChangeNotifier {
       'callSite=canonical_finalizer '
       'ownershipAcquired=true',
     );
+    _releaseAiBusyForRequest(requestId, source: 'terminal_completion');
     AppResumeCoordinator.instance.completeAiRequest(requestId);
   }
 
@@ -5928,6 +6404,44 @@ class AppProvider extends ChangeNotifier {
       );
       return const SessionPersistSkipped('idempotency_key_already_seen');
     }
+
+    final evidenceCompliantAssistantOutput = context.mode == 'plantao'
+        ? _applyCrosscuttingEvidenceComplianceGuard(
+            userInput: userInput,
+            assistantOutput: assistantOutput,
+            longResponse: false,
+            requestId: context.requestId,
+          )
+        : assistantOutput;
+    final safeUserInput = WellFormedUtf16.normalize(userInput);
+    final safeAssistantOutput =
+        WellFormedUtf16.normalize(evidenceCompliantAssistantOutput);
+    final safeUserDisplayText =
+        WellFormedUtf16.normalize(userDisplayText?.trim() ?? '');
+
+    // GLOBAL_CONTEXT_BUILD2_PREPERSIST_PARITY_V1
+    // Every Plantão route converges here, including paid fallbacks and free
+    // retry/direct terminals. A critical machine-native candidate must not
+    // acquire persistence idempotency and must not remain in transport history.
+    final persistenceGate = context.mode == 'plantao'
+        ? _plantaoPersistenceEligibilityByRequest[context.requestId]
+        : null;
+    final persistenceEligible =
+        persistenceGate == null || persistenceGate(safeAssistantOutput);
+    if (!persistenceEligible) {
+      final historyTailRemoved = _removeRejectedAiHistoryTail(
+        userInput: userInput,
+        assistantOutput: assistantOutput,
+      );
+      debugPrint(
+        '[M77_PRE_PERSIST_MACHINE_GATE] '
+        'requestId=${context.requestId} eligible=false '
+        'persistence=skipped historyTailRemoved=$historyTailRemoved '
+        'reason=critical_machine_gate owner=persistAiExchangeOnce',
+      );
+      return const SessionPersistSkipped('critical_machine_gate');
+    }
+
     _persistedExchangeIds.add(context.requestId);
 
     // ── PILLAR 4 / MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 6]: ─────────────
@@ -5936,17 +6450,21 @@ class AppProvider extends ChangeNotifier {
     // _currentConversationTitle until the batch write is confirmed successful.
     final bool isFirst = _isFirstMessageOfSession;
     final String computedTitle = isFirst
-        ? _generateConversationTitle(userInput)
+        ? _generateConversationTitle(safeUserInput)
         : _currentConversationTitle;
     final String title = computedTitle;
 
     // ── Short previews for the session index document ────────────────────────
-    final String userPreview = userInput.length > 120
-        ? '${userInput.substring(0, 120)}\u2026'
-        : userInput;
-    final String assistantPreview = assistantOutput.length > 160
-        ? '${assistantOutput.substring(0, 160)}\u2026'
-        : assistantOutput;
+    final String userPreview = WellFormedUtf16.truncate(
+      safeUserInput,
+      120,
+      appendEllipsis: true,
+    );
+    final String assistantPreview = WellFormedUtf16.truncate(
+      safeAssistantOutput,
+      160,
+      appendEllipsis: true,
+    );
 
     // Pre-compute canonical Firestore paths for telemetry.
     final String parentPath =
@@ -5965,9 +6483,9 @@ class AppProvider extends ChangeNotifier {
         isFirstMessage: isFirst,
         userPreview: userPreview,
         assistantPreview: assistantPreview,
-        userInputFull: userInput,
-        assistantOutputFull: assistantOutput,
-        userDisplayTextFull: userDisplayText?.trim() ?? '',
+        userInputFull: safeUserInput,
+        assistantOutputFull: safeAssistantOutput,
+        userDisplayTextFull: safeUserDisplayText,
       );
 
       // ── PILLAR 2: Strict permission-denied isolation ───────────────────────
@@ -6033,8 +6551,8 @@ class AppProvider extends ChangeNotifier {
         'uid=${context.uid.isNotEmpty ? "${context.uid.substring(0, context.uid.length.clamp(0, 8))}..." : "anon"} '
         'sessionId=${context.sessionId} '
         'mode=${context.mode} '
-        'outputLen=${assistantOutput.length} '
-        'title="${title.substring(0, title.length.clamp(0, 40))}"',
+        'outputLen=${safeAssistantOutput.length} '
+        'title="${WellFormedUtf16.truncate(title, 40)}"',
       );
       return const SessionPersistSynced();
     } on Exception catch (e) {
@@ -6046,18 +6564,72 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
+  // M74B_POST_FINAL_PRESENTATION_RECONCILIATION_V1
+  Future<bool> reconcileAiExchangeFinalPresentation({
+    required String sessionId,
+    required String requestId,
+    required String finalAssistantText,
+    Map<String, dynamic>? clinicalOutputJson,
+  }) async {
+    final normalizedSessionId = sessionId.trim();
+    final normalizedRequestId = requestId.trim();
+    final normalizedText = finalAssistantText.trim();
+
+    if (normalizedSessionId.isEmpty ||
+        normalizedRequestId.isEmpty ||
+        normalizedText.isEmpty) {
+      return false;
+    }
+
+    if (_currentConversationSessionId != normalizedSessionId ||
+        !_persistedExchangeIds.contains(normalizedRequestId)) {
+      if (kDebugMode) {
+        debugPrint(
+          '[M74B_PRESENTATION_RECONCILE] '
+          'allowed=false reason=correlation_mismatch '
+          'requestId=$normalizedRequestId',
+        );
+      }
+      return false;
+    }
+
+    final uid = currentUser?.uid.trim() ?? '';
+    if (uid.isEmpty) {
+      return false;
+    }
+
+    final result = await FirestoreService.reconcileAiExchangeFinalPresentation(
+      uid: uid,
+      sessionId: normalizedSessionId,
+      requestId: normalizedRequestId,
+      assistantPresentation: normalizedText,
+      clinicalOutputJson: clinicalOutputJson,
+    );
+
+    if (kDebugMode) {
+      debugPrint(
+        '[M74B_PRESENTATION_RECONCILE] '
+        'allowed=true requestId=$normalizedRequestId '
+        'ok=${result.ok} dto=${clinicalOutputJson != null}',
+      );
+    }
+
+    return result.ok;
+  }
+
   // ── PILLAR 4: Title generation ─────────────────────────────────────────────
   // Extracts a short, meaningful title from the first user message.
   // Strips markdown symbols, takes the first meaningful segment (up to 60 chars).
   String _generateConversationTitle(String userInput) {
-    final cleaned = userInput
+    final safeInput = WellFormedUtf16.normalize(userInput);
+    final cleaned = safeInput
         .replaceAll(RegExp(r'[*_`#>~\[\]()]'), '')
         .replaceAll(RegExp(r'\s+'), ' ')
         .trim();
     if (cleaned.isEmpty)
       return _lang == 'es' ? 'Nueva consulta' : 'Nova consulta';
-    if (cleaned.length <= 60) return cleaned;
-    final truncated = cleaned.substring(0, 60);
+    if (cleaned.runes.length <= 60) return cleaned;
+    final truncated = WellFormedUtf16.truncate(cleaned, 60);
     final lastSpace = truncated.lastIndexOf(' ');
     return lastSpace > 30 ? truncated.substring(0, lastSpace) : truncated;
   }
@@ -6342,19 +6914,19 @@ class AppProvider extends ChangeNotifier {
   String _plantaoQuestionsExactTenFailClosed(bool isEs) {
     return isEs
         ? 'Preguntas clave:\n\n'
-              '1. ¿Cuándo comenzaron los síntomas y cómo han evolucionado hasta ahora?\n'
-              '2. ¿Cuál es el síntoma principal, qué intensidad tiene y qué lo empeora o alivia?\n'
-              '3. ¿Qué síntomas asociados relevantes aparecieron, como disnea, fiebre, síncope, sangrado o vómitos?\n'
-              '4. ¿Hubo un desencadenante reciente, trauma, procedimiento, infección, inmovilización, viaje o exposición relevante?\n'
-              '5. ¿Qué antecedentes, episodios previos, cirugías o comorbilidades pueden modificar este cuadro?\n'
-              '6. ¿Qué medicamentos usa actualmente y tiene alergias, anticoagulantes, antiagregantes o corticoides?'
+            '1. ¿Cuándo comenzaron los síntomas y cómo han evolucionado hasta ahora?\n'
+            '2. ¿Cuál es el síntoma principal, qué intensidad tiene y qué lo empeora o alivia?\n'
+            '3. ¿Qué síntomas asociados relevantes aparecieron, como disnea, fiebre, síncope, sangrado o vómitos?\n'
+            '4. ¿Hubo un desencadenante reciente, trauma, procedimiento, infección, inmovilización, viaje o exposición relevante?\n'
+            '5. ¿Qué antecedentes, episodios previos, cirugías o comorbilidades pueden modificar este cuadro?\n'
+            '6. ¿Qué medicamentos usa actualmente y tiene alergias, anticoagulantes, antiagregantes o corticoides?'
         : 'Perguntas-chave:\n\n'
-              '1. Quando os sintomas começaram e como evoluíram até agora?\n'
-              '2. Qual é o sintoma principal, qual a intensidade e o que piora ou melhora?\n'
-              '3. Quais sintomas associados relevantes surgiram, como dispneia, febre, síncope, sangramento ou vômitos?\n'
-              '4. Houve desencadeante recente, trauma, procedimento, infecção, imobilização, viagem ou exposição relevante?\n'
-              '5. Quais antecedentes, episódios prévios, cirurgias ou comorbidades podem modificar este quadro?\n'
-              '6. Quais medicamentos usa atualmente e há alergias, anticoagulantes, antiagregantes ou corticoides?';
+            '1. Quando os sintomas começaram e como evoluíram até agora?\n'
+            '2. Qual é o sintoma principal, qual a intensidade e o que piora ou melhora?\n'
+            '3. Quais sintomas associados relevantes surgiram, como dispneia, febre, síncope, sangramento ou vômitos?\n'
+            '4. Houve desencadeante recente, trauma, procedimento, infecção, imobilização, viagem ou exposição relevante?\n'
+            '5. Quais antecedentes, episódios prévios, cirurgias ou comorbidades podem modificar este quadro?\n'
+            '6. Quais medicamentos usa atualmente e há alergias, anticoagulantes, antiagregantes ou corticoides?';
   }
 
   Future<String> _enforcePlantaoQuestionsExactTen({
@@ -6390,16 +6962,16 @@ class AppProvider extends ChangeNotifier {
             'una por línea y cada una terminada en ?. No incluyas diagnóstico, '
             'conducta inmediata, tratamiento, dosis, recomendaciones terapéuticas, '
             'red flags ni conclusión. No inventes respuestas del paciente. '
-              'Cada pregunta debe estar vinculada al cuadro de la SOLICITUD ORIGINAL y cubrir una dimensión clínica distinta; '
-              'evita preguntas genéricas que podrían aplicarse a cualquier paciente.'
+            'Cada pregunta debe estar vinculada al cuadro de la SOLICITUD ORIGINAL y cubrir una dimensión clínica distinta; '
+            'evita preguntas genéricas que podrían aplicarse a cualquier paciente.'
         : 'REPARADOR DETERMINÍSTICO DE FORMATO — PERGUNTAS-CHAVE. '
             'Retorne somente o cabeçalho "Perguntas-chave:" seguido de '
             'EXATAMENTE 10 perguntas clínicas ao paciente, numeradas de 1 a 10, '
             'uma por linha e cada uma terminada em ?. Não inclua diagnóstico, '
             'conduta imediata, tratamento, doses, recomendações terapêuticas, '
             'red flags nem conclusão. Não invente respostas do paciente. '
-              'Cada pergunta deve estar vinculada ao quadro da SOLICITAÇÃO ORIGINAL e cobrir uma dimensão clínica distinta; '
-              'evite perguntas genéricas que poderiam servir para qualquer paciente.';
+            'Cada pergunta deve estar vinculada ao quadro da SOLICITAÇÃO ORIGINAL e cobrir uma dimensão clínica distinta; '
+            'evite perguntas genéricas que poderiam servir para qualquer paciente.';
 
     final repairInput = isEs
         ? 'SOLICITUD ORIGINAL:\n$input\n\nRESPUESTA A REPARAR:\n$candidateOutput'
@@ -6464,6 +7036,8 @@ class AppProvider extends ChangeNotifier {
     required String assistantOutput,
     required bool longResponse,
     required String requestId,
+    bool canonicalPlantaoAuthority = false,
+    String? canonicalPlantaoPathologyKey,
   }) {
     if (longResponse || assistantOutput.isEmpty) return assistantOutput;
 
@@ -6537,7 +7111,103 @@ class AppProvider extends ChangeNotifier {
       );
     }
 
-    return consistencyGuardedText;
+    // TEP_2026_PLANTAO_PHYSICAL_RUNTIME_COMPLIANCE_GUARD_V1
+    //
+    // O modelo continua produzindo a resposta clínica, porém TEP confirmado com
+    // dados suficientes para uma categoria AHA/ACC 2026 não pode chegar à UI
+    // com categoria omitida/errada ou conduta incompatível. O guard é puro,
+    // provider-agnostic e só materializa quando a categoria é resolvível sem
+    // inferir dados ausentes. Modo Estudo não passa por este método.
+    // TEP_2026_PLANTAO_FOLLOWUP_CLASSIFICATION_INTENT_V1
+    //
+    // Entrega ao guard apenas contexto escrito pelo usuário. O texto da IA
+    // anterior nunca é usado para determinar categoria. Mantém no máximo os
+    // seis turnos de usuário mais recentes e deixa o próprio guard escolher o
+    // último caso de TEP confirmado que seja objetivamente classificável.
+    final tep2026AllRecentUserTurns = _sanitizedHistory
+        .where((m) => m['role'] == 'user')
+        .map((m) => (m['content'] ?? '').toString())
+        .where((text) => text.trim().isNotEmpty)
+        .toList(growable: false);
+
+    final tep2026RecentUserTurns = tep2026AllRecentUserTurns.length > 6
+        ? tep2026AllRecentUserTurns.sublist(
+            tep2026AllRecentUserTurns.length - 6,
+          )
+        : tep2026AllRecentUserTurns;
+
+    final tep2026GuardedText = Tep2026PlantaoResponseGuard.materialize(
+      userInput: userInput,
+      assistantOutput: consistencyGuardedText,
+      languageCode: _lang,
+      recentUserTurns: tep2026RecentUserTurns,
+    );
+
+    if (tep2026GuardedText != consistencyGuardedText) {
+      // ignore: avoid_print
+      print(
+        '[TEP_2026_PLANTAO_RUNTIME_GUARD][MATERIALIZED] '
+        'requestId=$requestId '
+        'beforeLen=${consistencyGuardedText.length} '
+        'afterLen=${tep2026GuardedText.length} '
+        'recentUserTurns=${tep2026RecentUserTurns.length}',
+      );
+    }
+
+    // PLANTAO_IAMCEST_KILLIP_CLASSIFICATION_GUARD_WIRING_V1
+    // M77_R8_CANONICAL_AUTHORITY_SPECIALTY_GUARD_LOCK_V1
+    // Under authoritative machine-native context, an IAM-specific historical
+    // guard may not introduce IAM identity unless the CURRENT canonical key,
+    // current user turn, or current candidate already carries IAM identity.
+    // This prevents stale-history promotion across pathology boundaries.
+    final m77CanonicalKey =
+        (canonicalPlantaoPathologyKey ?? '').trim().toLowerCase();
+    final m77CurrentIamSurface =
+        '$userInput\n$tep2026GuardedText'.toLowerCase();
+    const m77IamIdentityTokens = <String>[
+      'iamcest',
+      'iamcsst',
+      'stemi',
+      'infarto agudo do mioc',
+      'infarto agudo del mioc',
+      'sindrome coron',
+      'síndrome coron',
+    ];
+    final m77CanonicalKeyCarriesIam = m77CanonicalKey == 'iam' ||
+        m77IamIdentityTokens.any(m77CanonicalKey.contains);
+    final m77CurrentTurnCarriesIam =
+        m77IamIdentityTokens.any(m77CurrentIamSurface.contains);
+    final m77BlockIamHistoryPromotion = canonicalPlantaoAuthority &&
+        !m77CanonicalKeyCarriesIam &&
+        !m77CurrentTurnCarriesIam;
+
+    final iamcestKillipGuardedText = m77BlockIamHistoryPromotion
+        ? tep2026GuardedText
+        : PlantaoIamcestKillipClassificationGuard.materialize(
+            userInput: userInput,
+            assistantOutput: tep2026GuardedText,
+            languageCode: _lang,
+            recentUserTurns: tep2026RecentUserTurns,
+          );
+
+    if (m77BlockIamHistoryPromotion) {
+      debugPrint(
+        '[M77_CANONICAL_AUTHORITY_SPECIALTY_GUARD] '
+        'requestId=$requestId allowed=false guard=iamcest_killip '
+        'authority=true pathology=${canonicalPlantaoPathologyKey ?? "none"} '
+        'reason=current_turn_identity_mismatch',
+      );
+    } else if (iamcestKillipGuardedText != tep2026GuardedText) {
+      // ignore: avoid_print
+      print(
+        '[PLANTAO_IAMCEST_KILLIP_CLASSIFICATION_GUARD][MATERIALIZED] '
+        'requestId=$requestId '
+        'beforeLen=${tep2026GuardedText.length} '
+        'afterLen=${iamcestKillipGuardedText.length}',
+      );
+    }
+
+    return iamcestKillipGuardedText;
   }
 
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.3 [PILLAR 2/3]: GPT happy-path finalizer ──
@@ -6558,6 +7228,58 @@ class AppProvider extends ChangeNotifier {
   //
   // COORDINATOR DOUBLE-TRIGGER PROTECTION:
   //   _completeAiRequestOnce() is idempotent via _completedRequestIds.
+  // RICH_EVIDENCE_FINAL_COMPLIANCE_UTF16_CLOSURE_V1
+  // Generic post-provider authority: the existing resolver selects the
+  // evidence pack; clinical compliance semantics live in data profiles.
+  //
+  // R3: IMPORTANT — do NOT call enrich() here. The three productive prompt
+  // bindings remain the only enrich() call sites. Post-provider compliance
+  // only resolves the already-curated evidence ID.
+  String _applyCrosscuttingEvidenceComplianceGuard({
+    required String userInput,
+    required String assistantOutput,
+    required bool longResponse,
+    required String requestId,
+  }) {
+    if (longResponse || assistantOutput.trim().isEmpty) return assistantOutput;
+
+    var evidenceEntry = ClinicalCrosscuttingEvidenceResolver.resolve(userInput);
+
+    if (evidenceEntry == null) {
+      final contextualQuery = _expandedQuery(userInput, forceContext: true);
+      if (contextualQuery.trim().isNotEmpty &&
+          contextualQuery.trim() != userInput.trim()) {
+        evidenceEntry =
+            ClinicalCrosscuttingEvidenceResolver.resolve(contextualQuery);
+      }
+    }
+
+    if (evidenceEntry == null) return assistantOutput;
+
+    final result =
+        ClinicalCrosscuttingEvidenceComplianceGuard.enforceByEvidenceId(
+      query: userInput,
+      assistantOutput: assistantOutput,
+      lang: _lang,
+      evidenceId: evidenceEntry.id,
+    );
+
+    // Profile-visible telemetry: proves physical matching/compliance without
+    // exposing patient text or adding any network/provider call.
+    print(
+      '[CROSSCUTTING_COMPLIANCE] '
+      'requestId=$requestId '
+      'id=${result.evidenceId ?? "none"} '
+      'matched=${result.evidenceId != null} '
+      'modified=${result.modified} '
+      'violations=${result.violations.join("|")} '
+      'beforeLen=${assistantOutput.length} '
+      'afterLen=${result.text.length}',
+    );
+
+    return result.text;
+  }
+
   Future<void> _finalizeGptSuccessfulRequest({
     required String requestId,
     required String validatedOutput,
@@ -6565,6 +7287,8 @@ class AppProvider extends ChangeNotifier {
     required String visibleUserInput,
     String? userDisplayText,
     required bool longResponse,
+    PlantaoCanonicalRuntimeAttestation? canonicalPlantaoAttestation,
+    bool Function(String candidateText)? plantaoPersistenceEligibilityGate,
     required ExternalToolDecision? canonicalDecision,
     required void Function(String, [ClinicalStructuredOutput?]) wrappedOnDone,
     required ActiveAiSessionContext sessionCtx,
@@ -6601,6 +7325,10 @@ class AppProvider extends ChangeNotifier {
       assistantOutput: safeOutput,
       longResponse: longResponse,
       requestId: requestId,
+      canonicalPlantaoAuthority:
+          canonicalPlantaoAttestation?.authoritative == true,
+      canonicalPlantaoPathologyKey:
+          canonicalPlantaoAttestation?.canonicalPathologyKey,
     );
     final regimenOutputGuardModified = safeOutput != preRegimenSafeOutput;
 
@@ -6619,6 +7347,20 @@ class AppProvider extends ChangeNotifier {
       );
     }
 
+    final preEvidenceComplianceOutput = safeOutput;
+    safeOutput = _applyCrosscuttingEvidenceComplianceGuard(
+      userInput: input,
+      assistantOutput: safeOutput,
+      longResponse: longResponse,
+      requestId: requestId,
+    );
+    if (!longResponse) {
+      // Final scalar-safe boundary after regimen + consistency + evidence.
+      safeOutput = WellFormedUtf16.normalize(safeOutput);
+    }
+    final evidenceComplianceModified =
+        safeOutput != preEvidenceComplianceOutput;
+
     // O objeto estruturado descreve exatamente o displayText validado pelo
     // backend. Quando a rota GPT paga do Plantão não entrega DTO, reutilizamos
     // o adapter local conservador já adotado pelas rotas Gemini. O provider
@@ -6634,14 +7376,13 @@ class AppProvider extends ChangeNotifier {
     // deixam de formar uma unidade atômica e o objeto deve ser descartado.
     final questionsRepairedToValidContract = !longResponse &&
         _isPlantaoQuestionsExactTenTask(input) &&
-        _isValidPlantaoQuestionsExactTen(
-          safeOutput,
-          isEs: _lang == 'es',
-        );
+        _isValidPlantaoQuestionsExactTen(safeOutput, isEs: _lang == 'es');
     final ClinicalStructuredOutput? safeClinicalOutput = safeOutput ==
             validatedOutput
         ? productiveClinicalOutput
-        : (regimenOutputGuardModified || questionsRepairedToValidContract)
+        : (regimenOutputGuardModified ||
+              questionsRepairedToValidContract ||
+              evidenceComplianceModified)
             ? PlantaoLocalClinicalOutputAdapter.fromValidatedText(safeOutput)
             : null;
 
@@ -6655,20 +7396,36 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Step B: Atomic Persistence ────────────────────────────────────────
-    // Persists the AI exchange BEFORE tool resolution and UI emit.
-    // Uses requestId-scoped idempotency — safe against retry/double-call.
-    // Phase remains [finalizing] — coordinator NOT yet triggered.
-    final persistStatus = await persistAiExchangeOnce(
-      context: sessionCtx,
-      userInput: input,
-      userDisplayText: userDisplayText,
-      assistantOutput: safeOutput,
-    );
-    // ignore: avoid_print
-    print(
-      '[SESSION_PERSIST][STATUS] requestId=$requestId '
-      'status=${persistStatus.runtimeType}',
-    );
+    // M77_R8_PRE_PERSIST_MACHINE_GATE_V1
+    // A Plantão response that the authoritative machine-native gate would
+    // fail-close in the UI must never be persisted as clinical content first.
+    final m77PersistenceEligible = longResponse ||
+        plantaoPersistenceEligibilityGate == null ||
+        plantaoPersistenceEligibilityGate(safeOutput);
+    if (m77PersistenceEligible) {
+      final persistStatus = await persistAiExchangeOnce(
+        context: sessionCtx,
+        userInput: input,
+        userDisplayText: userDisplayText,
+        assistantOutput: safeOutput,
+      );
+      // ignore: avoid_print
+      print(
+        '[SESSION_PERSIST][STATUS] requestId=$requestId '
+        'status=${persistStatus.runtimeType}',
+      );
+    } else {
+      final historyTailRemoved = _removeRejectedAiHistoryTail(
+        userInput: visibleUserInput,
+        assistantOutput: validatedOutput,
+      );
+      debugPrint(
+        '[M77_PRE_PERSIST_MACHINE_GATE] requestId=$requestId '
+        'eligible=false persistence=skipped '
+        'historyTailRemoved=$historyTailRemoved '
+        'reason=critical_machine_gate owner=gpt_happy_path_finalizer',
+      );
+    }
 
     // ── Step C: Tool Resolution Gate (exactly once per requestId) ─────────
     // Uses _completedResolutions presence-gate — skips if key already written.
@@ -6767,10 +7524,7 @@ class AppProvider extends ChangeNotifier {
             ? normalizedActiveSessionId
             : 'session_${DateTime.now().millisecondsSinceEpoch}';
 
-    return (
-      requestId: resolvedRequestId,
-      sessionId: resolvedSessionId,
-    );
+    return (requestId: resolvedRequestId, sessionId: resolvedSessionId);
   }
 
   Future<bool> sendAiMessage(
@@ -6783,6 +7537,9 @@ class AppProvider extends ChangeNotifier {
     String? visibleUserInput,
     String? userDisplayText,
     bool longResponse = false, // Motor de Partida (Build 149)
+    bool canonicalPlantaoWiring = false,
+    PlantaoCanonicalRuntimeAttestation? canonicalPlantaoAttestation,
+    bool Function(String candidateText)? plantaoPersistenceEligibilityGate,
     bool fromButton =
         false, // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
     String? pipelineRequestId,
@@ -6791,6 +7548,44 @@ class AppProvider extends ChangeNotifier {
         PlantaoContinuationType.freeFollowUp,
     Iterable<PlantaoSection> shadowRequestedSections = const <PlantaoSection>[],
   }) async {
+    // M71_PLANTAO_CANONICAL_SINGLE_ENTRYPOINT_GUARD_V1
+    // Public selector fail-closed boundary for Plantão. The private
+    // legacy core owns single-flight/terminal mechanics downstream.
+    // Study remains available to explicitly longResponse=true callers.
+    if (!longResponse) {
+      if (!canonicalPlantaoWiring) {
+        debugPrint('[M71_PLANTAO_CANONICAL_ENTRY_GUARD] allowed=false '
+            'reason=canonical_wiring_missing');
+        onError('PLANTAO_CANONICAL_WIRING_REQUIRED');
+        return false;
+      }
+      // M71D_RUNTIME_ATTESTATION_PROVIDER_GATE_V1
+      final m71dRuntimeAttestationValid =
+          canonicalPlantaoAttestation?.consumeForProviderInput(
+                input,
+                language: _lang,
+              ) ==
+              true;
+      if (!m71dRuntimeAttestationValid) {
+        debugPrint(
+          '[M71D_RUNTIME_ATTESTATION] allowed=false '
+          'reason=missing_invalid_stale_or_reused_attestation '
+          'wiring=$canonicalPlantaoWiring '
+          'attestationPresent=${canonicalPlantaoAttestation != null}',
+        );
+        onError('PLANTAO_CANONICAL_RUNTIME_ATTESTATION_REQUIRED');
+        return false;
+      }
+      debugPrint(
+        '[M71D_RUNTIME_ATTESTATION] allowed=true '
+        'authority=${canonicalPlantaoAttestation!.authoritative} '
+        'pathology=${canonicalPlantaoAttestation.canonicalPathologyKey ?? "none"} '
+        'reason=${canonicalPlantaoAttestation.prefetchReason}',
+      );
+      debugPrint('[M71_PLANTAO_CANONICAL_ENTRY_GUARD] allowed=true '
+          'owner=ai_screen_m56c');
+    }
+
     // Phase3K-C5A-R3C: method-scope correlation owner.
     String? phase3kNormalizeCorrelationId(Object? value) {
       if (value is! String) return null;
@@ -6798,10 +7593,12 @@ class AppProvider extends ChangeNotifier {
       return normalized.isEmpty ? null : normalized;
     }
 
-    String? phase3kResolvedRequestId =
-        phase3kNormalizeCorrelationId(pipelineRequestId);
-    String? phase3kResolvedSessionId =
-        phase3kNormalizeCorrelationId(pipelineSessionId);
+    String? phase3kResolvedRequestId = phase3kNormalizeCorrelationId(
+      pipelineRequestId,
+    );
+    String? phase3kResolvedSessionId = phase3kNormalizeCorrelationId(
+      pipelineSessionId,
+    );
 
     final phase3kQaIsPlantao = !longResponse;
     final phase3kQaAuthenticatedUid = FirebaseAuth.instance.currentUser?.uid;
@@ -6871,6 +7668,16 @@ class AppProvider extends ChangeNotifier {
     if (phase3kBufferedCutoverBusy) {
       onError('PIPELINE_CUTOVER_ALREADY_ACTIVE');
       return false;
+    }
+
+    // GLOBAL_CONTEXT_BUILD2_PREPERSIST_PARITY_V1
+    // Register only after busy rejection and after canonical correlation.
+    if (!longResponse &&
+        plantaoPersistenceEligibilityGate != null &&
+        phase3kResolvedRequestId != null &&
+        phase3kResolvedRequestId!.isNotEmpty) {
+      _plantaoPersistenceEligibilityByRequest[phase3kResolvedRequestId!] =
+          plantaoPersistenceEligibilityGate;
     }
 
     final phase3kShouldAttemptBufferedCutover =
@@ -6964,10 +7771,7 @@ class AppProvider extends ChangeNotifier {
 
           if (onStructuredDone != null &&
               phase3kStructuredOutput is ClinicalStructuredOutput) {
-            onStructuredDone(
-              phase3kResult.finalText,
-              phase3kStructuredOutput,
-            );
+            onStructuredDone(phase3kResult.finalText, phase3kStructuredOutput);
 
             assert(() {
               debugPrint(
@@ -7016,6 +7820,8 @@ class AppProvider extends ChangeNotifier {
       visibleUserInput: visibleUserInput,
       userDisplayText: userDisplayText,
       longResponse: longResponse,
+      canonicalPlantaoAttestation: canonicalPlantaoAttestation,
+      plantaoPersistenceEligibilityGate: plantaoPersistenceEligibilityGate,
       fromButton: fromButton,
       pipelineRequestId: phase3kResolvedRequestId,
       pipelineSessionId: phase3kResolvedSessionId,
@@ -7092,10 +7898,7 @@ class AppProvider extends ChangeNotifier {
             ? null
             : (finalText, clinicalOutput) {
                 clearCancellationOwner();
-                bufferedOnStructuredDone.call(
-                  finalText,
-                  clinicalOutput,
-                );
+                bufferedOnStructuredDone.call(finalText, clinicalOutput);
               },
         onError: (errorMsg) {
           clearCancellationOwner();
@@ -7131,6 +7934,8 @@ class AppProvider extends ChangeNotifier {
     String? visibleUserInput,
     String? userDisplayText,
     bool longResponse = false, // Motor de Partida (Build 149)
+    PlantaoCanonicalRuntimeAttestation? canonicalPlantaoAttestation,
+    bool Function(String candidateText)? plantaoPersistenceEligibilityGate,
     bool fromButton =
         false, // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
     String? pipelineRequestId,
@@ -7169,7 +7974,7 @@ class AppProvider extends ChangeNotifier {
     // Bloqueia qualquer chamada enquanto um voo já está em curso.
     // Liberação garantida pelo bloco finally abaixo — cobre todos os caminhos:
     // stream completo, erro de rede, timeout, cancelamento e exceção interna.
-    if (_aiCallInFlight) {
+    if (_aiCallInFlight || _aiAnswerInProgress || _aiStreamActive) {
       debugPrint(
         '[sendAiMessage] Build 134: single-flight drop — voo em andamento',
       );
@@ -7192,6 +7997,12 @@ class AppProvider extends ChangeNotifier {
     final thisRequestId = normalizedPipelineRequestId?.isNotEmpty == true
         ? normalizedPipelineRequestId!
         : ProviderRouterService.generateRequestId();
+
+    // GLOBAL_CONTEXT_BUILD2_PREPERSIST_PARITY_V1
+    if (!longResponse && plantaoPersistenceEligibilityGate != null) {
+      _plantaoPersistenceEligibilityByRequest[thisRequestId] =
+          plantaoPersistenceEligibilityGate;
+    }
 
     var guardiaTraceProviderChunkIndex = 0;
     var guardiaTraceProviderAccumulatedLen = 0;
@@ -7248,7 +8059,7 @@ class AppProvider extends ChangeNotifier {
         'sessionId=$_currentConversationSessionId',
       );
     }
-    final activeSessionCtx = ActiveAiSessionContext(
+    var activeSessionCtx = ActiveAiSessionContext(
       uid: _currentUser?.uid ?? '',
       sessionId: phase3kLegacyCorrelation.sessionId,
       requestId: phase3kLegacyCorrelation.requestId,
@@ -7256,6 +8067,48 @@ class AppProvider extends ChangeNotifier {
       locale: _lang,
       createdAt: DateTime.now(),
     );
+
+    // M77_CLINICAL_NEW_THREAD_SESSION_ROTATION_V1
+    // The thread manager already owns topic-boundary classification. This seam
+    // only rotates persistence identity after a proven new clinical thread.
+    bool m77ConversationIdentityRotated = false;
+    void m77RotateConversationIdentityOnClinicalBoundary(
+      ClinicalThreadStatus status,
+      String stage,
+    ) {
+      final shouldRotate = !m77ConversationIdentityRotated &&
+          !longResponse &&
+          phase3kHadActiveSession &&
+          status.action == ThreadAction.newThread &&
+          status.reason != 'first_message';
+      if (!shouldRotate) return;
+
+      final previousSessionIdHash = activeSessionCtx.sessionId.hashCode;
+      _currentConversationSessionId = '';
+      _currentConversationTitle = '';
+      _isFirstMessageOfSession = true;
+
+      final rotatedCorrelation = _resolveCanonicalAiCorrelation(
+        requestId: activeSessionCtx.requestId,
+        sessionId: null,
+      );
+      _currentConversationSessionId = rotatedCorrelation.sessionId;
+      activeSessionCtx = ActiveAiSessionContext(
+        uid: _currentUser?.uid ?? '',
+        sessionId: rotatedCorrelation.sessionId,
+        requestId: rotatedCorrelation.requestId,
+        mode: longResponse ? 'estudo' : 'plantao',
+        locale: _lang,
+        createdAt: DateTime.now(),
+      );
+      m77ConversationIdentityRotated = true;
+
+      debugPrint(
+        '[M77_SESSION_ROTATION] stage=$stage reason=${status.reason} '
+        'rotated=true previousSessionIdHash=$previousSessionIdHash '
+        'sessionIdHash=${rotatedCorrelation.sessionId.hashCode}',
+      );
+    }
 
     // PHASE 3C — construct and validate a typed Plantão request in shadow mode.
     // This does not call the public pipeline entrypoint, providers, Firestore,
@@ -7378,12 +8231,6 @@ class AppProvider extends ChangeNotifier {
     );
 
     try {
-      // ── Guard de concorrência (legado — mantido para compatibilidade) ─────
-      if (_aiAnswerInProgress || _aiStreamActive) {
-        debugPrint('[sendAiMessage] ignorado — resposta em andamento');
-        return false;
-      }
-
       // ── MICRO-BUILD 462E-A.5.1: canonicalDecision — SINGLE EXECUTION PER requestId ──
       //
       // Computa a decisão de roteamento de ferramenta externa UMA ÚNICA VEZ
@@ -7400,7 +8247,9 @@ class AppProvider extends ChangeNotifier {
       // ─────────────────────────────────────────────────────────────────────────
       final ExternalToolDecision? canonicalDecision =
           ExternalToolLinkEngine.resolveDecision(
-              thisRequestId, persistedUserInput);
+        thisRequestId,
+        persistedUserInput,
+      );
       // ignore: avoid_print
       print(
         '[CANONICAL_DECISION] requestId=$thisRequestId '
@@ -7462,19 +8311,38 @@ class AppProvider extends ChangeNotifier {
         }
         _wrapperFired = true;
 
+        final utf16SafeProviderText =
+            !longResponse ? WellFormedUtf16.normalize(text) : text;
+
         final regimenGuardedText = _applyPlantaoClinicalRegimenOutputGuard(
           userInput: input,
-          assistantOutput: text,
+          assistantOutput: utf16SafeProviderText,
           longResponse: longResponse,
           requestId: thisRequestId,
+          canonicalPlantaoAuthority:
+              canonicalPlantaoAttestation?.authoritative == true,
+          canonicalPlantaoPathologyKey:
+              canonicalPlantaoAttestation?.canonicalPathologyKey,
         );
-        final guardedText = !longResponse
+        var guardedText = !longResponse
             ? PlantaoClinicalResponseConsistencyGuard.enforce(
                 userInput: input,
                 assistantOutput: regimenGuardedText,
               )
             : regimenGuardedText;
-        final guardedClinicalOutput = guardedText == text
+
+        guardedText = _applyCrosscuttingEvidenceComplianceGuard(
+          userInput: input,
+          assistantOutput: guardedText,
+          longResponse: longResponse,
+          requestId: thisRequestId,
+        );
+        if (!longResponse) {
+          // LAST AppProvider boundary after all local text transformers.
+          guardedText = WellFormedUtf16.normalize(guardedText);
+        }
+
+        final guardedClinicalOutput = guardedText == utf16SafeProviderText
             ? clinicalOutput
             : PlantaoLocalClinicalOutputAdapter.fromValidatedText(guardedText);
 
@@ -7668,7 +8536,9 @@ class AppProvider extends ChangeNotifier {
         // Reutiliza o mesmo pipeline de contexto (RAG, sessionLang, intent)
         final qaSessionLang = _resolveSessionLang(input);
         final qaIntent = _classifyIntent(input);
-        final qaTopicReset = _sessionMemory.resetIfTopicChanged(input);
+        // GLOBAL_CONTEXT_BUILD1: ClinicalThreadManager is the only productive
+        // continue/switch decision owner. SessionMemory is reset only after
+        // a proven ThreadAction.newThread below.
         // PHASE3I-J2B2: rehydrate button continuation context before
         // ClinicalThreadManager can classify an in-memory topic gap as first_message.
         // _aiHistory remains the canonical productive conversation history.
@@ -7691,6 +8561,10 @@ class AppProvider extends ChangeNotifier {
           isPlantaoMode: !longResponse,
           cameFromButton: fromButton,
         );
+        m77RotateConversationIdentityOnClinicalBoundary(
+          qaThreadStatus,
+          'qa',
+        );
         if (qaThreadStatus.action == ThreadAction.newThread && !longResponse) {
           final removed = _aiHistory.length;
           _aiHistory.clear();
@@ -7700,20 +8574,35 @@ class AppProvider extends ChangeNotifier {
             'removed=$removed reason=${qaThreadStatus.reason}',
           );
         }
-        final qaExpandedInput = qaTopicReset ? input : _expandedQuery(input);
+        final qaExpandedInput = qaThreadStatus.isContinuation
+            ? _expandedQuery(input, forceContext: true)
+            : input;
         final qaNormalized = _normalize(qaExpandedInput);
         final qaMatchedProtocols = <ProtocolModel>[];
         final qaProtos = _matchProtocolsExtended(
           qaNormalized,
           matchedProtocols: qaMatchedProtocols,
         );
-        final qaFinalProtos = qaProtos.isNotEmpty
+        var qaFinalProtos = qaProtos.isNotEmpty
             ? qaProtos
             : _matchProtocols(
                 qaNormalized,
                 matchedProtocols: qaMatchedProtocols,
               );
-        final qaLocalCtx = _buildLocalAnswer(input);
+        if (!longResponse) {
+          qaFinalProtos = _appendProtocolClassificationContext(
+            summaries: qaFinalProtos,
+            protocols: qaMatchedProtocols,
+            currentInput: input,
+          );
+        }
+        final qaLocalCtx = _buildLocalAnswer(qaExpandedInput);
+        final qaCrosscuttingEvidenceContext =
+            ClinicalCrosscuttingEvidenceResolver.enrich(
+          query: qaExpandedInput,
+          baseContext: '',
+          lang: _lang,
+        );
         final qaShadowRequest = _lastPlantaoShadowRequest;
         if (!longResponse && qaShadowRequest != null) {
           _capturePlantaoRetrievalShadow(
@@ -7727,6 +8616,7 @@ class AppProvider extends ChangeNotifier {
           matchedProtocolSummaries: qaFinalProtos,
           matchedDrugSummaries: const [],
           localAnswerContext: qaLocalCtx,
+          crosscuttingEvidenceContext: qaCrosscuttingEvidenceContext,
           queryIntent: qaIntent,
           patientAge: _patient.age.isNotEmpty ? _patient.age : null,
           patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
@@ -7734,7 +8624,7 @@ class AppProvider extends ChangeNotifier {
           patientClcr: clcr,
           patientMedications:
               _patient.medications.isNotEmpty ? _patient.medications : null,
-          userQuery: input,
+          userQuery: qaExpandedInput,
           memory: _sessionMemory,
           isFirstMessage: _aiHistory.isEmpty,
           isPlantaoMode: !longResponse,
@@ -7855,6 +8745,10 @@ class AppProvider extends ChangeNotifier {
                 assistantOutput: finalizationResult.finalText,
                 longResponse: longResponse,
                 requestId: thisRequestId,
+                canonicalPlantaoAuthority:
+                    canonicalPlantaoAttestation?.authoritative == true,
+                canonicalPlantaoPathologyKey:
+                    canonicalPlantaoAttestation?.canonicalPathologyKey,
               );
 
               if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
@@ -7876,6 +8770,9 @@ class AppProvider extends ChangeNotifier {
                 visibleUserInput: persistedUserInput,
                 userDisplayText: persistedUserDisplayText,
                 longResponse: longResponse,
+                canonicalPlantaoAttestation: canonicalPlantaoAttestation,
+                plantaoPersistenceEligibilityGate:
+                    plantaoPersistenceEligibilityGate,
                 canonicalDecision: canonicalDecision,
                 wrappedOnDone: wrappedOnDone,
                 sessionCtx: activeSessionCtx,
@@ -8104,6 +9001,10 @@ class AppProvider extends ChangeNotifier {
                     assistantOutput: qaFinalizationResult.finalText,
                     longResponse: longResponse,
                     requestId: thisRequestId,
+                    canonicalPlantaoAuthority:
+                        canonicalPlantaoAttestation?.authoritative == true,
+                    canonicalPlantaoPathologyKey:
+                        canonicalPlantaoAttestation?.canonicalPathologyKey,
                   );
 
                   // Validar requestId pós-sanitize (guard de stale state)
@@ -8129,7 +9030,7 @@ class AppProvider extends ChangeNotifier {
                     _aiHistory
                       ..add({'role': 'user', 'content': persistedUserInput})
                       ..add({'role': 'assistant', 'content': qaFinalText});
-                    while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+                    while (_aiHistory.length > 60) _aiHistory.removeAt(0);
                   }
 
                   _gptStreamSub = null;
@@ -8162,6 +9063,9 @@ class AppProvider extends ChangeNotifier {
                     visibleUserInput: persistedUserInput,
                     userDisplayText: persistedUserDisplayText,
                     longResponse: longResponse,
+                    canonicalPlantaoAttestation: canonicalPlantaoAttestation,
+                    plantaoPersistenceEligibilityGate:
+                        plantaoPersistenceEligibilityGate,
                     canonicalDecision: canonicalDecision,
                     wrappedOnDone: wrappedOnDone,
                     sessionCtx: activeSessionCtx,
@@ -8360,7 +9264,8 @@ class AppProvider extends ChangeNotifier {
       // de _aiHistory (turnos da API). Resetar _aiHistory ao mudar de tema causava
       // amnésia — o Gemini perdia o contexto conversacional. O system_instruction
       // já tem todo o contexto clínico via RAG; o histórico de turnos só ajuda.
-      final topicReset = _sessionMemory.resetIfTopicChanged(input);
+      // GLOBAL_CONTEXT_BUILD1: ClinicalThreadManager is the only productive
+      // continue/switch decision owner.
       // BUILD 249: ClinicalThreadManager — decide continuar ou iniciar novo thread.
       // Se novo thread (novo caso clínico) → limpa _aiHistory para evitar
       // contaminação cruzada entre casos (ex: amiodarona → gastroenterite).
@@ -8387,6 +9292,10 @@ class AppProvider extends ChangeNotifier {
         isPlantaoMode: !longResponse,
         cameFromButton:
             fromButton, // BUILD 262: bypasses HARD RESET on follow-up button taps
+      );
+      m77RotateConversationIdentityOnClinicalBoundary(
+        threadStatus,
+        'main',
       );
       // BUILD 300: MODO ESTUDO — bypass absoluto de HARD RESET.
       // ClinicalThreadManager.evaluate() já retorna continueThread no Modo Estudo,
@@ -8416,7 +9325,9 @@ class AppProvider extends ChangeNotifier {
       final intent = _classifyIntent(input);
       // BUILD 249/250: após HARD RESET, _expandedQuery() lê histórico já vazio →
       // zero contaminação de contexto anterior no payload enviado.
-      final expandedInput = topicReset ? input : _expandedQuery(input);
+      final expandedInput = threadStatus.isContinuation
+          ? _expandedQuery(input, forceContext: true)
+          : input;
       final normalized = _normalize(expandedInput);
 
       // BUILD 325: drug RAG removed — Google Search Grounding + system prompt directives.
@@ -8425,13 +9336,26 @@ class AppProvider extends ChangeNotifier {
         normalized,
         matchedProtocols: matchedProtocolModels,
       );
-      final finalProtocols = _extProtos.isNotEmpty
+      var finalProtocols = _extProtos.isNotEmpty
           ? _extProtos
           : _matchProtocols(
               normalized,
               matchedProtocols: matchedProtocolModels,
             );
-      final localContext = _buildLocalAnswer(input);
+      if (!longResponse) {
+        finalProtocols = _appendProtocolClassificationContext(
+          summaries: finalProtocols,
+          protocols: matchedProtocolModels,
+          currentInput: input,
+        );
+      }
+      final localContext = _buildLocalAnswer(expandedInput);
+      final crosscuttingEvidenceContext =
+          ClinicalCrosscuttingEvidenceResolver.enrich(
+        query: expandedInput,
+        baseContext: '',
+        lang: _lang,
+      );
       final retrievalShadowRequest = _lastPlantaoShadowRequest;
       if (!longResponse && retrievalShadowRequest != null) {
         _capturePlantaoRetrievalShadow(
@@ -8453,6 +9377,7 @@ class AppProvider extends ChangeNotifier {
         matchedProtocolSummaries: finalProtocols,
         matchedDrugSummaries: const [],
         localAnswerContext: localContext,
+        crosscuttingEvidenceContext: crosscuttingEvidenceContext,
         queryIntent: intent,
         patientAge: _patient.age.isNotEmpty ? _patient.age : null,
         patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
@@ -8460,7 +9385,7 @@ class AppProvider extends ChangeNotifier {
         patientClcr: clcr,
         patientMedications:
             _patient.medications.isNotEmpty ? _patient.medications : null,
-        userQuery: input,
+        userQuery: expandedInput,
         memory: _sessionMemory,
         isFirstMessage: _aiHistory.isEmpty,
         isPlantaoMode: !longResponse,
@@ -8777,12 +9702,16 @@ class AppProvider extends ChangeNotifier {
               assistantOutput: gptSanitized.text,
               longResponse: longResponse,
               requestId: thisRequestId,
+              canonicalPlantaoAuthority:
+                  canonicalPlantaoAttestation?.authoritative == true,
+              canonicalPlantaoPathologyKey:
+                  canonicalPlantaoAttestation?.canonicalPathologyKey,
             );
             if (!_isFallbackText(gptText)) {
               _aiHistory
                 ..add({'role': 'user', 'content': persistedUserInput})
                 ..add({'role': 'assistant', 'content': gptText});
-              while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+              while (_aiHistory.length > 60) _aiHistory.removeAt(0);
               // AI-RECONSTRUCTION-R18.6Q:
               // O vencedor GPT pago / Layer 2 persiste pelo proprietário canônico.
               // Safe-card, erro e texto fallback permanecem fora.
@@ -8921,13 +9850,17 @@ class AppProvider extends ChangeNotifier {
             assistantOutput: paidSanitized.text,
             longResponse: longResponse,
             requestId: thisRequestId,
+            canonicalPlantaoAuthority:
+                canonicalPlantaoAttestation?.authoritative == true,
+            canonicalPlantaoPathologyKey:
+                canonicalPlantaoAttestation?.canonicalPathologyKey,
           );
           // HOTFIX 247D: nunca adicionar fallback ao histórico da API
           if (!_isFallbackText(paidText)) {
             _aiHistory
               ..add({'role': 'user', 'content': persistedUserInput})
               ..add({'role': 'assistant', 'content': paidText});
-            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            while (_aiHistory.length > 60) _aiHistory.removeAt(0);
             // AI-RECONSTRUCTION-R18.6Q:
             // O vencedor Gemini Paid / Layer 3 persiste pelo proprietário canônico.
             // Safe-card, erro e texto fallback permanecem fora.
@@ -9119,13 +10052,17 @@ class AppProvider extends ChangeNotifier {
               assistantOutput: paidSanitized.text,
               longResponse: longResponse,
               requestId: thisRequestId,
+              canonicalPlantaoAuthority:
+                  canonicalPlantaoAttestation?.authoritative == true,
+              canonicalPlantaoPathologyKey:
+                  canonicalPlantaoAttestation?.canonicalPathologyKey,
             );
             // HOTFIX 247D: nunca adicionar fallback ao histórico da API
             if (!_isFallbackText(paidText)) {
               _aiHistory
                 ..add({'role': 'user', 'content': persistedUserInput})
                 ..add({'role': 'assistant', 'content': paidText});
-              while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+              while (_aiHistory.length > 60) _aiHistory.removeAt(0);
               // AI-RECONSTRUCTION-R18.6S:
               // O vencedor crítico pago persiste no Firebase canônico.
               // Vazio, fallback, timeout, safe-card e falha ficam fora.
@@ -9434,13 +10371,17 @@ class AppProvider extends ChangeNotifier {
                 assistantOutput: partialSanitized.text,
                 longResponse: longResponse,
                 requestId: thisRequestId,
+                canonicalPlantaoAuthority:
+                    canonicalPlantaoAttestation?.authoritative == true,
+                canonicalPlantaoPathologyKey:
+                    canonicalPlantaoAttestation?.canonicalPathologyKey,
               );
               // HOTFIX 247D: nunca adicionar fallback ao histórico da API
               if (!_isFallbackText(partialText)) {
                 _aiHistory
                   ..add({'role': 'user', 'content': persistedUserInput})
                   ..add({'role': 'assistant', 'content': partialText});
-                while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+                while (_aiHistory.length > 60) _aiHistory.removeAt(0);
               } else if (kDebugMode) {
                 debugPrint(
                   '[HISTORY_SANITIZER] partial_fallback_blocked reason=isFallbackText',
@@ -9567,13 +10508,17 @@ class AppProvider extends ChangeNotifier {
                 assistantOutput: sanitized?.text ?? barrierText,
                 longResponse: longResponse,
                 requestId: thisRequestId,
+                canonicalPlantaoAuthority:
+                    canonicalPlantaoAttestation?.authoritative == true,
+                canonicalPlantaoPathologyKey:
+                    canonicalPlantaoAttestation?.canonicalPathologyKey,
               );
               // HOTFIX 247D: nunca adicionar fallback ao histórico da API
               if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
                 _aiHistory
                   ..add({'role': 'user', 'content': persistedUserInput})
                   ..add({'role': 'assistant', 'content': finalText});
-                while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+                while (_aiHistory.length > 60) _aiHistory.removeAt(0);
                 // MICRO-BUILD 462E-A.5.3.7: SESSION_PERSIST dedup key telemetry.
                 // AI-RECONSTRUCTION-R18.6N:
                 // Firebase/Firestore é a fonte canônica do histórico.
@@ -9797,10 +10742,17 @@ class AppProvider extends ChangeNotifier {
           // onDone do StreamController — garante limpeza mesmo sem chunk isDone
           // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
           if (!tryAcquireTerminalOwnership('stream_onDone')) {
-            // Já tratado pelo listener — apenas limpeza silenciosa
-            _aiStreamActive = false;
-            aiChatProvider.setStreaming(false); // BUILD 326
-            _aiStreamSub = null;
+            if (_activeRequestId == thisRequestId) {
+              _aiStreamActive = false;
+              aiChatProvider.setStreaming(false);
+              _aiStreamSub = null;
+            } else if (kDebugMode) {
+              debugPrint(
+                '[AI_BUSY_RELEASE][STALE_CALLBACK_PRESERVED] '
+                'source=stream_onDone requestId=$thisRequestId '
+                'activeId=$_activeRequestId',
+              );
+            }
             return;
           }
           _globalTimeoutTimer?.cancel(); // BUILD 241
@@ -9809,13 +10761,17 @@ class AppProvider extends ChangeNotifier {
             assistantOutput: accumulator.toString().trim(),
             longResponse: longResponse,
             requestId: thisRequestId,
+            canonicalPlantaoAuthority:
+                canonicalPlantaoAttestation?.authoritative == true,
+            canonicalPlantaoPathologyKey:
+                canonicalPlantaoAttestation?.canonicalPathologyKey,
           );
           // HOTFIX 247D: nunca adicionar fallback ao histórico da API
           if (finalText.isNotEmpty && !_isFallbackText(finalText)) {
             _aiHistory
               ..add({'role': 'user', 'content': persistedUserInput})
               ..add({'role': 'assistant', 'content': finalText});
-            while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+            while (_aiHistory.length > 60) _aiHistory.removeAt(0);
             _aiStreamActive = false;
             aiChatProvider.setStreaming(false); // BUILD 326
             _aiStreamSub = null;
@@ -9897,7 +10853,17 @@ class AppProvider extends ChangeNotifier {
                   userMessage: input,
                   systemPrompt: systemPrompt,
                   apiKey: geminiApiKey,
-                  history: List<Map<String, String>>.from(_sanitizedHistory),
+                  history: List<Map<String, String>>.from(
+                    ClinicalThreadManager.buildThreadHistory(
+                      fullHistory: _sanitizedHistory,
+                      status: threadStatus,
+                      isPlantaoMode: !longResponse,
+                      currentTaskLabel: AiSmartRouter.detectTaskLabel(
+                        input,
+                        canonicalOverride: _canonicalTaskOverride,
+                      ),
+                    ),
+                  ),
                   useGrounding: true,
                   longResponse: longResponse,
                   appLanguage: _lang,
@@ -10006,6 +10972,10 @@ class AppProvider extends ChangeNotifier {
                         assistantOutput: retryFinalText,
                         longResponse: longResponse,
                         requestId: thisRequestId,
+                        canonicalPlantaoAuthority:
+                            canonicalPlantaoAttestation?.authoritative == true,
+                        canonicalPlantaoPathologyKey:
+                            canonicalPlantaoAttestation?.canonicalPathologyKey,
                       );
 
                       if (retryFinalText.isNotEmpty &&
@@ -10016,7 +10986,7 @@ class AppProvider extends ChangeNotifier {
                             'role': 'assistant',
                             'content': retryFinalText,
                           });
-                        while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+                        while (_aiHistory.length > 60) _aiHistory.removeAt(0);
                         // AI-RECONSTRUCTION-R18.6P:
                         // O auto-retry vencedor persiste no repositório canônico.
                         // O ramo vazio continua escalando aos provedores pagos.
@@ -10131,9 +11101,17 @@ class AppProvider extends ChangeNotifier {
                   onDone: () {
                     // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate for retry onDone.
                     if (!tryAcquireTerminalOwnership('retry_onDone')) {
-                      _aiStreamActive = false;
-                      aiChatProvider.setStreaming(false);
-                      _aiStreamSub = null;
+                      if (_activeRequestId == thisRequestId) {
+                        _aiStreamActive = false;
+                        aiChatProvider.setStreaming(false);
+                        _aiStreamSub = null;
+                      } else if (kDebugMode) {
+                        debugPrint(
+                          '[AI_BUSY_RELEASE][STALE_CALLBACK_PRESERVED] '
+                          'source=retry_onDone requestId=$thisRequestId '
+                          'activeId=$_activeRequestId',
+                        );
+                      }
                       return;
                     }
                     // Retry onDone sem isDone chunk → paid fallback
@@ -10251,7 +11229,8 @@ class AppProvider extends ChangeNotifier {
     //   Isso previne que blocos farmacológicos/clínicos de respostas anteriores
     //   contaminem o novo caso (ex: "Betametasona" aparecendo num caso de TEP).
     // Build 111: igual sendAiMessage — preserva _aiHistory em topicReset.
-    final topicReset = _sessionMemory.resetIfTopicChanged(input);
+    // GLOBAL_CONTEXT_BUILD1: ClinicalThreadManager is the only productive
+    // continue/switch decision owner.
     // BUILD 249: ClinicalThreadManager — decide continuar ou iniciar novo thread.
     // buildAIAnswer é sempre Modo Plantão (isPlantaoMode=true).
     final threadStatusAnswer = _threadManager.evaluate(
@@ -10283,7 +11262,9 @@ class AppProvider extends ChangeNotifier {
     // Se houve mudança de tema, usa SOMENTE a query pura para o retrieval
     // (sem _expandedQuery que usa histórico do tema anterior e polui RAG).
     // Se mesmo tema, mantém expansão para melhor recall.
-    final expandedInput = topicReset ? input : _expandedQuery(input);
+    final expandedInput = threadStatusAnswer.isContinuation
+        ? _expandedQuery(input, forceContext: true)
+        : input;
     final normalized = _normalize(expandedInput);
 
     // ── Passo 2: Retrieval de protocolos (BUILD 325: drug RAG removido) ──────
@@ -10301,7 +11282,13 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Passo 3: Análise local estruturada ────────────────────────────────
-    final localContext = _buildLocalAnswer(input);
+    final localContext = _buildLocalAnswer(expandedInput);
+    final crosscuttingEvidenceContext =
+        ClinicalCrosscuttingEvidenceResolver.enrich(
+      query: expandedInput,
+      baseContext: '',
+      lang: _lang,
+    );
 
     const String? proprietaryContextAnswer = null;
 
@@ -10317,6 +11304,7 @@ class AppProvider extends ChangeNotifier {
       matchedProtocolSummaries: finalProtocols,
       matchedDrugSummaries: const [],
       localAnswerContext: localContext,
+      crosscuttingEvidenceContext: crosscuttingEvidenceContext,
       queryIntent: intent,
       patientAge: _patient.age.isNotEmpty ? _patient.age : null,
       patientSex: _patient.sex.isNotEmpty ? _patient.sex : null,
@@ -10324,7 +11312,7 @@ class AppProvider extends ChangeNotifier {
       patientClcr: clcr,
       patientMedications:
           _patient.medications.isNotEmpty ? _patient.medications : null,
-      userQuery: input,
+      userQuery: expandedInput,
       memory: _sessionMemory,
       isFirstMessage: _aiHistory.isEmpty,
       isPlantaoMode: true,
@@ -10408,7 +11396,7 @@ class AppProvider extends ChangeNotifier {
           _aiHistory
             ..add({'role': 'user', 'content': input})
             ..add({'role': 'assistant', 'content': geminiResult.text});
-          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          while (_aiHistory.length > 60) _aiHistory.removeAt(0);
         } else if (kDebugMode) {
           debugPrint(
             '[HISTORY_SANITIZER] buildAIAnswer_fallback_blocked reason=isFallbackText',
@@ -10441,7 +11429,7 @@ class AppProvider extends ChangeNotifier {
           _aiHistory
             ..add({'role': 'user', 'content': input})
             ..add({'role': 'assistant', 'content': rawContent});
-          while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+          while (_aiHistory.length > 60) _aiHistory.removeAt(0);
         } else if (kDebugMode) {
           debugPrint(
             '[HISTORY_SANITIZER] buildAIAnswer_rawContent_blocked reason=isFallbackText',
@@ -10556,7 +11544,7 @@ class AppProvider extends ChangeNotifier {
       _aiHistory
         ..add({'role': 'user', 'content': input})
         ..add({'role': 'assistant', 'content': result.text});
-      while (_aiHistory.length > 20) _aiHistory.removeAt(0);
+      while (_aiHistory.length > 60) _aiHistory.removeAt(0);
     } else if (kDebugMode) {
       debugPrint(
         '[HISTORY_SANITIZER] openai_result_blocked reason=isFallbackText',
@@ -10785,7 +11773,7 @@ class AppProvider extends ChangeNotifier {
                 'Choque cardiogênico (IC, IAM)',
                 'Choque hipovolêmico (hemorragia, desidratação)',
                 'Choque distributivo (anafilaxia, neurogênico)',
-                'Choque obstrutivo (TEP maciço, tamponamento)',
+                'Choque obstrutivo (TEP com falência cardiopulmonar — AHA/ACC D/E, tamponamento)',
               ],
         treatment: es
             ? [
@@ -10910,12 +11898,23 @@ class AppProvider extends ChangeNotifier {
           es ? 'AngioTC tórax' : 'AngioTC tórax',
           'ECG (S1Q3T3)',
           'Troponina',
-          'Score de Wells',
+          es
+              ? 'Wells (solo probabilidad pretest; no gravedad post-TEP)'
+              : 'Wells (somente probabilidade pré-teste; não gravidade pós-TEP)',
         ],
         flags: [
           es
-              ? 'Choque/hipotensión → trombolítico sistémico urgente'
-              : 'Choque/hipotensão → trombolítico sistêmico urgente',
+              ? 'TEP sospechado: Wells/Geneva/PERC/YEARS solo para probabilidad pretest/diagnóstico cuando correspondan'
+              : 'TEP suspeito: Wells/Geneva/PERC/YEARS somente para probabilidade pré-teste/diagnóstico quando aplicáveis',
+          es
+              ? 'TEP confirmado: clasificar A, B1/B2, C1/C2/C3, D1/D2, E1/E2 + modificador R según AHA/ACC 2026'
+              : 'TEP confirmado: classificar A, B1/B2, C1/C2/C3, D1/D2, E1/E2 + modificador R segundo AHA/ACC 2026',
+          es
+              ? 'D2 = shock normotensivo/hipoperfusión; una PAS normal no excluye gravedad'
+              : 'D2 = choque normotensivo/hipoperfusão; PAS normal não exclui gravidade',
+          es
+              ? 'C-E: hospitalización y evaluación multidisciplinaria/PERT cuando disponible; E2 puede requerir soporte circulatorio avanzado'
+              : 'C-E: hospitalização e avaliação multidisciplinar/PERT quando disponível; E2 pode exigir suporte circulatório avançado',
         ],
         differentials: es
             ? [
@@ -10936,22 +11935,29 @@ class AppProvider extends ChangeNotifier {
               ],
         treatment: es
             ? [
-                '1. TEP masivo (choque): trombólisis alteplase 100 mg IV en 2h (o 0,6 mg/kg em 15 min en PCR)',
-                '2. TEP submasivo (disfunción VD): anticoagulación enoxaparina 1 mg/kg SC c/12h o rivaroxabán 15 mg 2×/día ×21 días',
-                '3. TEP leve: rivaroxabán 15 mg 2×/día ×21 días → 20 mg/día, o apixabán 10 mg 2×/día ×7 días → 5 mg 2×/día',
-                '4. Contraindicación DOAC: heparina + warfarina (INR 2-3)',
-                '5. O2 si SpO2 <94%, vasopresores si hipotensión',
-                '6. Filtro VCI solo si anticoagulación contraindicada',
+                '1. TEP confirmado: dejar de usar Wells para gravedad/tratamiento y asignar categoría AHA/ACC 2026 A-E + R con los datos disponibles',
+                '2. Anticoagulación terapéutica si está indicada: preferir HBPM sobre HNF cuando se necesita fase parenteral y no hay razón específica para HNF; preferir DOAC sobre antagonista de vitamina K si es elegible y no hay contraindicación',
+                '3. A/B: evaluar elegibilidad para manejo ambulatorio/alta precoz con Hestia/PESI/sPESI y seguimiento confiable; C-E: hospitalizar',
+                '4. C2: no usar trombólisis sistémica de rutina sobre anticoagulación sola; C3: beneficio de reperfusión avanzada incierto, vigilancia estrecha/PERT',
+                '5. D1-D2: considerar reperfusión avanzada de forma individualizada según deterioro, sangrado, contraindicaciones y recursos',
+                '6. E1: si se considera terapia avanzada, trombólisis sistémica, CDL, trombectomía mecánica o embolectomía quirúrgica son opciones razonables según contexto',
+                '7. E2: shock refractario/paro — reanimación inmediata; trombólisis sistémica puede ser razonable cuando apropiada y VA-ECMO es razonable en centros con recursos/experiencia',
               ]
             : [
-                '1. TEP maciço (choque): trombolítico alteplase 100 mg IV em 2h (ou 0,6 mg/kg em 15 min em PCR)',
-                '2. TEP submaciço (disfunção VD): anticoagulação enoxaparina 1 mg/kg SC 12/12h ou rivaroxabana 15 mg 2×/dia ×21 dias',
-                '3. TEP leve: rivaroxabana 15 mg 2×/dia ×21 dias → 20 mg/dia, ou apixabana 10 mg 2×/dia ×7 dias → 5 mg 2×/dia',
-                '4. Contraindicação DOAC: heparina + warfarina (INR 2-3)',
-                '5. O2 se SpO2 <94%, vasopressores se hipotensão',
-                '6. Filtro de VCI só se anticoagulação contraindicada',
+                '1. TEP confirmado: deixar de usar Wells para gravidade/tratamento e atribuir categoria AHA/ACC 2026 A-E + R com os dados disponíveis',
+                '2. Anticoagulação terapêutica se indicada: preferir HBPM a HNF quando fase parenteral for necessária e não houver razão específica para HNF; preferir DOAC a antagonista de vitamina K se elegível e sem contraindicação',
+                '3. A/B: avaliar elegibilidade para manejo ambulatorial/alta precoce com Hestia/PESI/sPESI e seguimento confiável; C-E: hospitalizar',
+                '4. C2: não usar trombólise sistêmica rotineiramente sobre anticoagulação isolada; C3: benefício de reperfusão avançada incerto, vigilância estreita/PERT',
+                '5. D1-D2: considerar reperfusão avançada individualmente conforme deterioração, sangramento, contraindicações e recursos',
+                '6. E1: se terapia avançada estiver sendo considerada, trombólise sistêmica, CDL, trombectomia mecânica ou embolectomia cirúrgica são opções razoáveis conforme contexto',
+                '7. E2: choque refratário/parada — reanimação imediata; trombólise sistêmica pode ser razoável quando apropriada e VA-ECMO é razoável em centros com recursos/experiência',
               ],
-        guidelines: ['ESC TEP 2019', 'ACCP VTE 2021', 'AHA PE 2023'],
+        guidelines: [
+          'AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN Acute PE Guideline 2026',
+          'Circulation DOI 10.1161/CIR.0000000000001415',
+          'JACC DOI 10.1016/j.jacc.2025.11.005',
+          'JACC Correction 2026 DOI 10.1016/j.jacc.2026.06.033',
+        ],
       ),
 
       // ── FA / Flutter ──────────────────────────────────────────────────────
@@ -11128,7 +12134,7 @@ class AppProvider extends ChangeNotifier {
               ]
             : [
                 'IAM (ECG + troponina, mas dissecção pode mimetizar IAM)',
-                'TEP maciço',
+                'TEP com falência cardiopulmonar (AHA/ACC D/E)',
                 'Pericardite/derrame pericárdico',
                 'Estenose aórtica grave',
                 'Dor musculoesquelética intercostal',
@@ -11722,9 +12728,7 @@ class AppProvider extends ChangeNotifier {
           es ? 'Electrolitos (K+ urgente)' : 'Eletrólitos (K+ urgente)',
           'BUN/Cr',
         ],
-        flags: [
-          _dkahhsPotassiumGateText(es),
-        ],
+        flags: [_dkahhsPotassiumGateText(es)],
         differentials: es
             ? [
                 'Estado Hiperosmolar Hiperglucémico (EHH): glucemia >600, osmolaridad >320, sin cetonuria',

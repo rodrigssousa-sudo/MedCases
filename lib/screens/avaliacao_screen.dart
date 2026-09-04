@@ -1,9 +1,9 @@
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../models/clinical_history_model.dart';
-
 // ─────────────────────────────────────────────────────────────────────────────
 // AVALIAÇÃO FÍSICA — perguntas estruturadas por sistema
 // ─────────────────────────────────────────────────────────────────────────────
@@ -700,8 +700,32 @@ const _kSections = <_Section>[
 // ─────────────────────────────────────────────────────────────────────────────
 // TELA PRINCIPAL
 // ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_PHYSICAL_EXAM_VISUAL_DENSITY_REBALANCE_V1_B_R0_R3
+// Escala visual LOCAL da Avaliação Física. Não altera tokens globais.
+class _AssessmentVisualScale {
+  const _AssessmentVisualScale._();
+
+  static const double screenTitle = 16.0;
+  static const double tabLabel = 11.0;
+  static const double fieldHint = 11.0;
+  static const double sectionLabel = 10.0;
+  static const double clinicalOption = 12.5;
+  static const double inputFree = 12.5;
+  static const double inputComplement = 11.5;
+  static const double navPrimary = 11.0;
+  static const double navSecondary = 10.0;
+  static const double progress = 8.5;
+}
+
 class AvaliacaoScreen extends StatefulWidget {
-  const AvaliacaoScreen({super.key});
+  const AvaliacaoScreen({
+    super.key,
+    this.embeddedInMainShell = false,
+    this.onBack,
+  });
+
+  final bool embeddedInMainShell;
+  final VoidCallback? onBack;
   @override
   State<AvaliacaoScreen> createState() => _AvaliacaoScreenState();
 }
@@ -853,12 +877,17 @@ class _AvaliacaoScreenState extends State<AvaliacaoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final p    = context.watch<AppProvider>();
+    final p = context.watch<AppProvider>();
     final isEs = p.lang == 'es';
-    final sec  = _kSections[_sectionIdx];
+    final sec = _kSections[_sectionIdx];
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final pageBackground =
+        dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: pageBackground,
+      // MainShell owns keyboard resize when Avaliação is embedded.
+      resizeToAvoidBottomInset: !widget.embeddedInMainShell,
       body: Column(children: [
         // ── Header ──────────────────────────────────────────────────────────
         // SUPER ORDEM MASTER 14 M11: Cupertino TopBar
@@ -923,13 +952,29 @@ class _AvaliacaoScreenState extends State<AvaliacaoScreen> {
           onClear: () => _clearAll(context, p),
           section: sec,
           isLastSection: _sectionIdx == _kSections.length - 1,
+
+          reserveGlobalActionBar: widget.embeddedInMainShell &&
+              MediaQuery.sizeOf(context).width < 768 &&
+              MediaQuery.viewInsetsOf(context).bottom == 0,
         ),
       ]),
     );
   }
 
+  // AVALIACAO_MAIN_SHELL_FOOTER_V1_B_R0_EXIT
+  void _exitAvaliacao(BuildContext ctx) {
+    if (widget.embeddedInMainShell && widget.onBack != null) {
+      widget.onBack!();
+      return;
+    }
+    Navigator.of(ctx).pop();
+  }
+
   void _confirmBack(BuildContext ctx, AppProvider p) {
-    if (!_hasData) { Navigator.of(ctx).pop(); return; }
+    if (!_hasData) {
+      _exitAvaliacao(ctx);
+      return;
+    }
     final isEs = p.lang == 'es';
     showDialog(
       context: ctx,
@@ -948,7 +993,10 @@ class _AvaliacaoScreenState extends State<AvaliacaoScreen> {
             child: Text(isEs ? 'Continuar' : 'Continuar'),
           ),
           TextButton(
-            onPressed: () { Navigator.pop(ctx); Navigator.of(ctx).pop(); },
+            onPressed: () {
+              Navigator.pop(ctx);
+              _exitAvaliacao(ctx);
+            },
             child: Text(
               isEs ? 'Salir' : 'Sair',
               style: const TextStyle(color: Color(0xFFDC2626), fontWeight: FontWeight.w900),
@@ -968,6 +1016,7 @@ class _AvaliacaoScreenState extends State<AvaliacaoScreen> {
 class _AvalHeader extends StatelessWidget {
   final bool isEs;
   final VoidCallback onBack;
+
   const _AvalHeader({
     required this.isEs,
     required this.onBack,
@@ -975,44 +1024,63 @@ class _AvalHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF0F1116), Color(0xFF1B3D2A), Color(0xFF10B981)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: SizedBox(
-          height: 52,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Back button — left
-              Positioned(
-                left: 4,
-                child: IconButton(
-                  onPressed: onBack,
-                  icon: const Icon(Icons.arrow_back_rounded, size: 22, color: Colors.white),
-                  splashRadius: 22,
-                  padding: EdgeInsets.zero,
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final topbarGlass = dark
+        ? const Color(0xFF252930).withValues(alpha: 0.70)
+        : Colors.white.withValues(alpha: 0.70);
+    final divider =
+        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final text = dark ? Colors.white : const Color(0xFF05070A);
+
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          decoration: BoxDecoration(
+            color: topbarGlass,
+            border: Border(
+              bottom: BorderSide(color: divider, width: 0.7),
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: SizedBox(
+              height: 48,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Text(
+                      isEs ? 'EVALUACIÓN FÍSICA' : 'AVALIAÇÃO FÍSICA',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: text,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: onBack,
+                        child: SizedBox(
+                          width: 36,
+                          height: 36,
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 20,
+                            color: text,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              // Title — centered
-              Center(
-                child: Text(
-                  isEs ? 'EVALUACIÓN FÍSICA' : 'AVALIAÇÃO FÍSICA',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -1020,7 +1088,6 @@ class _AvalHeader extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // NAVEGAÇÃO DE SEÇÕES (scroll horizontal)
 // ─────────────────────────────────────────────────────────────────────────────
 class _SectionNav extends StatelessWidget {
@@ -1041,86 +1108,109 @@ class _SectionNav extends StatelessWidget {
     required this.onSelect,
   });
 
-  bool _sectionHasData(_Section s) {
-    for (final q in s.questions) {
-      if ((ctrls[q.id]?.text.trim().isNotEmpty ?? false)) return true;
-      if ((chips[q.id] ?? {}).isNotEmpty) return true;
+  bool _sectionHasData(_Section section) {
+    for (final question in section.questions) {
+      if ((ctrls[question.id]?.text.trim().isNotEmpty ?? false)) {
+        return true;
+      }
+      if ((chips[question.id] ?? {}).isNotEmpty) return true;
     }
     return false;
   }
 
-  // SUPER ORDEM MASTER 14 M11 — flat underline tabs with Cyan active indicator
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final surface =
+        dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final divider =
+        dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
+    final inactiveColor =
+        dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeColor =
+        dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final activeBackground = dark
+        ? const Color(0xFF0D6B57).withValues(alpha: 0.10)
+        : const Color(0xFF0D6B57).withValues(alpha: 0.08);
+
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF0F1116),
-            Color(0xFF1B3D2A),
-            Color(0xFF10B981),
-          ],
+      height: 40,
+      decoration: BoxDecoration(
+        color: surface,
+        border: Border(
+          bottom: BorderSide(color: divider, width: 0.7),
         ),
-        border: Border(bottom: BorderSide(color: Color(0xFF1E2330), width: 0.5)),
       ),
-      height: 44,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.zero,
         itemCount: sections.length,
-        itemBuilder: (_, i) {
-          final sec    = sections[i];
-          final active = currentIdx == i;
-          final filled = _sectionHasData(sec);
-          return GestureDetector(
-            onTap: () => onSelect(i),
-            behavior: HitTestBehavior.opaque,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              margin: const EdgeInsets.only(right: 4),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border(
-                  bottom: active
-                      ? const BorderSide(color: Color(0xFF00E5FF), width: 2)
-                      : BorderSide.none,
+        itemBuilder: (_, index) {
+          final section = sections[index];
+          final active = currentIdx == index;
+          _sectionHasData(section);
+
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () => onSelect(index),
+                behavior: HitTestBehavior.opaque,
+                child: IntrinsicWidth(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 160),
+                    height: 40,
+                    constraints: const BoxConstraints(minWidth: 92),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: active ? activeBackground : Colors.transparent,
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Center(
+                          child: Text(
+                            isEs ? section.titleEs : section.title,
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1,
+                              fontWeight: FontWeight.w700,
+                              color: active ? activeColor : inactiveColor,
+                              letterSpacing: 0.05,
+                            ),
+                          ),
+                        ),
+                        if (active)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 9,
+                            child: Container(
+                              height: 2,
+                              color: const Color(0xFF0D6B57),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    sec.icon,
-                    size: 12,
-                    color: active
-                        ? const Color(0xFF00E5FF)
-                        : (filled ? sec.color : Colors.white54),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    isEs ? sec.titleEs : sec.title,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-                      color: active
-                          ? const Color(0xFF00E5FF)
-                          : (filled ? sec.color : Colors.white54),
+              if (index < sections.length - 1)
+                SizedBox(
+                  width: 0.7,
+                  height: 40,
+                  child: Center(
+                    child: Container(
+                      width: 0.7,
+                      height: 20,
+                      color: divider,
                     ),
                   ),
-                  if (filled && !active) ...[
-                    const SizedBox(width: 4),
-                    Container(
-                      width: 5, height: 5,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: sec.color),
-                    ),
-                  ],
-                ],
-              ),
-            ),
+                ),
+            ],
           );
         },
       ),
@@ -1128,9 +1218,6 @@ class _SectionNav extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CONTEÚDO DA SEÇÃO — perguntas com chips + texto livre
-// ─────────────────────────────────────────────────────────────────────────────
 class _SectionContent extends StatelessWidget {
   final _Section section;
   final List<_Question> questions;
@@ -1150,44 +1237,73 @@ class _SectionContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-      itemCount: questions.length + 1, // +1 header
-      itemBuilder: (_, i) {
-        if (i == 0) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: Row(children: [
-              Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: section.color,
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final border =
+        dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        _SectionSurface.build(
+          dark: dark,
+          border: border,
+          child: Column(
+            children: [
+              for (var index = 0;
+                  index < questions.length;
+                  index++) ...[
+                _QuestionCard(
+                  question: questions[index],
+                  ctrl: ctrls[questions[index].id]!,
+                  selectedChips:
+                      chips[questions[index].id] ?? {},
+                  sectionColor: section.color,
+                  isEs: isEs,
+                  onChipChanged: (value, selected) {
+                    onChipChanged(
+                      questions[index].id,
+                      value,
+                      selected,
+                    );
+                  },
                 ),
-                child: Icon(section.icon, size: 18, color: Colors.white),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                isEs ? section.titleEs : section.title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: section.color,
-                ),
-              ),
-            ]),
-          );
-        }
-        final q = questions[i - 1];
-        return _QuestionCard(
-          question: q,
-          ctrl: ctrls[q.id]!,
-          selectedChips: chips[q.id] ?? {},
-          sectionColor: section.color,
-          isEs: isEs,
-          onChipChanged: (val, sel) => onChipChanged(q.id, val, sel),
-        );
-      },
+                if (index < questions.length - 1)
+                  Divider(
+                    height: 1,
+                    thickness: 0.7,
+                    color: border,
+                  ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionSurface {
+  // Superfície clínica contínua, sem recuo ou bordas laterais.
+  // ignore: unused_element
+  const _SectionSurface();
+
+  static Widget build({
+    required bool dark,
+    required Color border,
+    required Widget child,
+  }) {
+    final surface =
+        dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: surface,
+        border: Border(
+          top: BorderSide(color: border, width: 0.7),
+          bottom: BorderSide(color: border, width: 0.7),
+        ),
+      ),
+      child: child,
     );
   }
 }
@@ -1214,153 +1330,143 @@ class _QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Seleciona os dados corretos conforme idioma
-    final label   = isEs ? question.labelEs   : question.label;
-    final hint    = isEs ? question.hintEs    : question.hint;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final label = isEs ? question.labelEs : question.label;
+    final hint = isEs ? question.hintEs : question.hint;
     final options = isEs ? question.optionsEs : question.options;
 
+    final surface =
+        dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final surfaceStrong =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
+    final border =
+        dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final text =
+        dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
+    final secondary =
+        dark ? const Color(0xFFB2C0D0) : const Color(0xFF6B7280);
     final hasSelection = selectedChips.isNotEmpty;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.white,
-        border: Border.all(
-          color: hasSelection ? sectionColor.withOpacity(0.35) : _kBorder,
-          width: hasSelection ? 1.5 : 1,
+
+    InputDecoration fieldDecoration({
+      required String fieldHint,
+      required double radius,
+      required EdgeInsetsGeometry contentPadding,
+    }) {
+      return InputDecoration(
+        hintText: fieldHint,
+        hintStyle: TextStyle(
+          fontSize: _AssessmentVisualScale.fieldHint,
+          color: secondary,
+          fontWeight: FontWeight.w500,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Label
-        Text(
-          label.toUpperCase(),
-          style: TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.3,
-            color: hasSelection ? sectionColor : const Color(0xFF6B7280),
-          ),
+        filled: true,
+        fillColor: options.isEmpty ? surface : surfaceStrong,
+        isDense: true,
+        contentPadding: contentPadding,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(color: border, width: 0.7),
         ),
-        // Chips de seleção rápida
-        if (options.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: options.map((opt) {
-              final sel = selectedChips.contains(opt);
-              return GestureDetector(
-                onTap: () => onChipChanged(opt, !sel),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: sel ? sectionColor : const Color(0xFFF3F4F6),
-                    border: Border.all(
-                      color: sel ? sectionColor : const Color(0xFFD1D5DB),
-                    ),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    if (sel) ...[
-                      const Icon(Icons.check_rounded, size: 11, color: Colors.white),
-                      const SizedBox(width: 4),
-                    ],
-                    Text(
-                      opt,
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w700,
-                        color: sel ? Colors.white : const Color(0xFF444444),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(color: border, width: 0.7),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(color: sectionColor, width: 1.2),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: TextStyle(
+              fontSize: _AssessmentVisualScale.sectionLabel,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.4,
+              color: hasSelection ? sectionColor : secondary,
+            ),
+          ),
+          if (options.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 10,
+              runSpacing: 7,
+              children: options.map((option) {
+                final selected = selectedChips.contains(option);
+
+                return GestureDetector(
+                  onTap: () => onChipChanged(option, !selected),
+                  behavior: HitTestBehavior.opaque,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    padding: const EdgeInsets.fromLTRB(7, 5, 7, 5),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: selected
+                              ? sectionColor
+                              : border.withOpacity(
+                                  dark ? 0.75 : 1.0,
+                                ),
+                          width: selected ? 2 : 0.7,
+                        ),
                       ),
                     ),
-                  ]),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-        // Campo de texto livre (para complementar ou quando sem chips)
-        if (options.isEmpty || question.multiline) ...[
-          const SizedBox(height: 8),
+                    child: Text(
+                      option,
+                      style: TextStyle(
+                        fontSize: _AssessmentVisualScale.clinicalOption,
+                        fontWeight: selected
+                            ? FontWeight.w800
+                            : FontWeight.w500,
+                        color: selected ? sectionColor : text,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+          const SizedBox(height: 6),
           TextField(
             controller: ctrl,
             minLines: question.multiline ? question.lines : 1,
-            maxLines: question.multiline ? null : 2,
-            keyboardType: question.multiline ? TextInputType.multiline : TextInputType.text,
-            // ── Sugestões nativas + autocorreção pelo idioma do teclado ──────
+            maxLines: question.multiline
+                ? null
+                : (options.isEmpty ? 2 : 1),
+            keyboardType: question.multiline
+                ? TextInputType.multiline
+                : TextInputType.text,
             enableSuggestions: true,
             autocorrect: true,
             textCapitalization: TextCapitalization.sentences,
-            // ─────────────────────────────────────────────────────
-            style: const TextStyle(
-              fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xFF222222),
+            style: TextStyle(
+              fontSize: options.isEmpty
+                  ? _AssessmentVisualScale.inputFree
+                  : _AssessmentVisualScale.inputComplement,
+              fontWeight: FontWeight.w500,
+              color: text,
             ),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: const TextStyle(fontSize: 12, color: Color(0xFFBBBBBB)),
-              filled: true,
-              fillColor: const Color(0xFFF9FAFB),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: _kBorder),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: _kBorder),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(color: sectionColor, width: 1.5),
-              ),
-            ),
-          ),
-        ] else if (options.isNotEmpty && !question.multiline) ...[
-          // Campo complementar compacto
-          const SizedBox(height: 8),
-          TextField(
-            controller: ctrl,
-            maxLines: 1,
-            // ── Sugestões nativas + autocorreção pelo idioma do teclado ──────
-            enableSuggestions: true,
-            autocorrect: true,
-            textCapitalization: TextCapitalization.sentences,
-            // ─────────────────────────────────────────────────────
-            style: const TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF555555),
-            ),
-            decoration: InputDecoration(
-              hintText: isEs ? 'Complementar...' : 'Complementar...',
-              hintStyle: const TextStyle(fontSize: 11, color: Color(0xFFA8B2C1)),
-              filled: true,
-              fillColor: const Color(0xFFF9FAFB),
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: _kBorder),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: _kBorder),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: sectionColor),
+            decoration: fieldDecoration(
+              fieldHint: options.isEmpty
+                  ? hint
+                  : 'Complementar...',
+              radius: options.isEmpty ? 10 : 8,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: options.isEmpty ? 10 : 9,
+                vertical: options.isEmpty ? 8 : 7,
               ),
             ),
           ),
         ],
-      ]),
+      ),
     );
   }
 }
@@ -1371,6 +1477,7 @@ class _QuestionCard extends StatelessWidget {
 class _BottomBar extends StatelessWidget {
   final int sectionIdx, total;
   final bool isEs, hasData, isLastSection;
+  final bool reserveGlobalActionBar;
   final VoidCallback? onPrev, onNext;
   final VoidCallback onSaveHistory, onCopy, onClear;
   final _Section section;
@@ -1381,6 +1488,7 @@ class _BottomBar extends StatelessWidget {
     required this.isEs,
     required this.hasData,
     required this.isLastSection,
+    required this.reserveGlobalActionBar,
     required this.onPrev,
     required this.onNext,
     required this.onSaveHistory,
@@ -1391,192 +1499,225 @@ class _BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: _kBorder)),
-      ),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        // Linha 1: Anterior / Progresso / Próximo
-        Row(children: [
-          // Anterior
-          GestureDetector(
-            onTap: onPrev,
-            child: AnimatedOpacity(
-              opacity: onPrev != null ? 1.0 : 0.3,
-              duration: const Duration(milliseconds: 150),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: _kBorder),
-                  color: Colors.white,
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.chevron_left_rounded, size: 18, color: _kDark),
-                  Text(
-                    isEs ? 'Anterior' : 'Anterior',
-                    style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w800, color: _kDark,
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          // Indicador de progresso
-          Expanded(
-            child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(total, (i) {
-                  final active = i == sectionIdx;
-                  final done   = i < sectionIdx;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
-                    width: active ? 18 : 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: active
-                          ? section.color
-                          : (done
-                              ? section.color.withOpacity(0.4)
-                              : _kBorder),
-                    ),
-                  );
-                }),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '${sectionIdx + 1} / $total',
-                style: const TextStyle(
-                  fontSize: 9, color: Color(0xFFAAAAAA), fontWeight: FontWeight.w700,
-                ),
-              ),
-            ]),
-          ),
-          const SizedBox(width: 10),
-          // Próximo / Siguiente
-          GestureDetector(
-            onTap: onNext,
-            child: AnimatedOpacity(
-              opacity: onNext != null ? 1.0 : 0.3,
-              duration: const Duration(milliseconds: 150),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: onNext != null ? section.color : Colors.grey.shade200,
-                ),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(
-                    isEs ? 'Siguiente' : 'Próximo',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: onNext != null ? Colors.white : const Color(0xFFAAAAAA),
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    size: 18,
-                    color: onNext != null ? Colors.white : const Color(0xFFAAAAAA),
-                  ),
-                ]),
-              ),
-            ),
-          ),
-        ]),
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final surface =
+        dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final surfaceStrong =
+        dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
+    final border =
+        dark ? const Color(0xFF374151) : _kBorder;
+    final text = dark ? const Color(0xFFF8FAFC) : _kDark;
+    final secondary =
+        dark ? const Color(0xFFB2C0D0) : const Color(0xFF6B7280);
 
-        // Linha 2: Ações finais (visíveis ao chegar na última seção ou quando há dados)
-        if (isLastSection || hasData) ...[
-          const SizedBox(height: 10),
-          Row(children: [
-            // Apagar / Eliminar
-            Expanded(
-              child: GestureDetector(
-                onTap: onClear,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: const Color(0xFFDC2626).withOpacity(0.3),
-                    ),
-                    color: const Color(0xFFDC2626).withOpacity(0.05),
+    final compactButtonStyle = TextButton.styleFrom(
+      foregroundColor: text,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 6,
+        vertical: 6,
+      ),
+      minimumSize: const Size(40, 40),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+
+    Color progressColor({
+      required bool active,
+      required bool done,
+    }) {
+      if (active) return section.color;
+      if (done) return section.color.withOpacity(0.40);
+      return border;
+    }
+
+    final primaryButtonStyle = FilledButton.styleFrom(
+      backgroundColor: _kGreen,
+      disabledBackgroundColor: surfaceStrong,
+      foregroundColor: Colors.white,
+      disabledForegroundColor: secondary,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 11,
+        vertical: 8,
+      ),
+      minimumSize: const Size(40, 40),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+
+    return Container(
+      // MEDCASES_PHYSICAL_EXAM_BOTTOM_BAR_TOTAL_LIFT_20PX_V1_B_R0
+      padding: reserveGlobalActionBar
+          ? EdgeInsets.fromLTRB(8, 5, 8, 112.0 + safeBottom)
+          : const EdgeInsets.fromLTRB(8, 5, 8, 28),
+      decoration: BoxDecoration(
+        color: surface,
+        border: Border(
+          top: BorderSide(color: border, width: 0.7),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              TextButton.icon(
+                onPressed: onPrev,
+                style: compactButtonStyle,
+                icon: const Icon(
+                  Icons.chevron_left_rounded,
+                  size: 19,
+                ),
+                label: Text(
+                  isEs ? 'Anterior' : 'Anterior',
+                  style: const TextStyle(
+                    fontSize: _AssessmentVisualScale.navPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.delete_outline_rounded, size: 15, color: Color(0xFFDC2626)),
-                    const SizedBox(width: 5),
+                ),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(total, (index) {
+                        final active = index == sectionIdx;
+                        final done = index < sectionIdx;
+
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 2,
+                          ),
+                          width: active ? 14 : 5,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: progressColor(
+                              active: active,
+                              done: done,
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 3),
                     Text(
+                      '${sectionIdx + 1} / $total',
+                      style: TextStyle(
+                        fontSize: _AssessmentVisualScale.progress,
+                        color: secondary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 6),
+              FilledButton.icon(
+                onPressed: onNext,
+                style: primaryButtonStyle,
+                iconAlignment: IconAlignment.end,
+                icon: const Icon(
+                  Icons.chevron_right_rounded,
+                  size: 19,
+                ),
+                label: Text(
+                  isEs ? 'Siguiente' : 'Próximo',
+                  style: const TextStyle(
+                    fontSize: _AssessmentVisualScale.navPrimary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (isLastSection || hasData) ...[
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton.icon(
+                    onPressed: onClear,
+                    style: compactButtonStyle.copyWith(
+                      foregroundColor:
+                          const WidgetStatePropertyAll(
+                        Color(0xFFDC2626),
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.delete_outline_rounded,
+                      size: 16,
+                    ),
+                    label: Text(
                       isEs ? 'Eliminar' : 'Apagar',
                       style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w800, color: Color(0xFFDC2626),
+                        fontSize: _AssessmentVisualScale.navSecondary,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ]),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            // Copiar
-            Expanded(
-              child: GestureDetector(
-                onTap: onCopy,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: _kBorder),
-                    color: Colors.white,
                   ),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.copy_rounded, size: 15, color: _kDark),
-                    const SizedBox(width: 5),
-                    Text(
-                      isEs ? 'Copiar' : 'Copiar',
-                      style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w800, color: _kDark,
+                ),
+                Expanded(
+                  child: TextButton.icon(
+                    onPressed: onCopy,
+                    style: compactButtonStyle,
+                    icon: const Icon(
+                      Icons.copy_rounded,
+                      size: 15,
+                    ),
+                    label: const Text(
+                      'Copiar',
+                      style: TextStyle(
+                        fontSize: _AssessmentVisualScale.navSecondary,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ]),
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            // Salvar na HC / Guardar en HC
-            Expanded(
-              flex: 2,
-              child: GestureDetector(
-                onTap: onSaveHistory,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF0F1116), Color(0xFF10B981)],
-                    ),
                   ),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Icon(Icons.save_alt_rounded, size: 15, color: _kGold),
-                    const SizedBox(width: 6),
-                    Text(
+                ),
+                const SizedBox(width: 5),
+                Expanded(
+                  flex: 2,
+                  child: FilledButton.icon(
+                    onPressed: onSaveHistory,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: _kGreen,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 8,
+                      ),
+                      minimumSize: const Size(40, 40),
+                      tapTargetSize:
+                          MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.save_alt_rounded,
+                      size: 15,
+                      color: _kGold,
+                    ),
+                    label: Text(
                       isEs ? 'Guardar en HC' : 'Salvar na HC',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white,
+                        fontSize: _AssessmentVisualScale.navSecondary,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
-                  ]),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ]),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }

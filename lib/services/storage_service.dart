@@ -14,10 +14,10 @@ class StorageService {
   }) async {
     // Sanitiza nome do arquivo
     final safe = fileName.replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
-    final ts   = DateTime.now().millisecondsSinceEpoch;
+    final ts = DateTime.now().millisecondsSinceEpoch;
     final path = 'clinical_guides/${ts}_$safe';
 
-    final ref  = _storage.ref().child(path);
+    final ref = _storage.ref().child(path);
     final meta = SettableMetadata(contentType: 'application/pdf');
     final task = ref.putData(bytes, meta);
 
@@ -40,5 +40,38 @@ class StorageService {
       if (storagePath.isEmpty) return;
       await _storage.ref().child(storagePath).delete();
     } catch (_) {}
+  }
+
+  /// Upload da capa editorial (JPG/PNG/WebP) para Firebase Storage.
+  static Future<({String url, String path})> uploadGuideImage({
+    required Uint8List bytes,
+    required String fileName,
+    void Function(double progress)? onProgress,
+  }) async {
+    final safe = fileName.replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final path = 'clinical_guides/covers/${ts}_$safe';
+
+    final lower = safe.toLowerCase();
+    final contentType = lower.endsWith('.png')
+        ? 'image/png'
+        : lower.endsWith('.webp')
+        ? 'image/webp'
+        : 'image/jpeg';
+
+    final ref = _storage.ref().child(path);
+    final task = ref.putData(bytes, SettableMetadata(contentType: contentType));
+
+    if (onProgress != null) {
+      task.snapshotEvents.listen((snapshot) {
+        if (snapshot.totalBytes > 0) {
+          onProgress(snapshot.bytesTransferred / snapshot.totalBytes);
+        }
+      });
+    }
+
+    await task;
+    final url = await ref.getDownloadURL();
+    return (url: url, path: path);
   }
 }

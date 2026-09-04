@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_4A_V2_B_R1_AI_WIDGETS
 import 'package:flutter/material.dart';
 
 import '../../../services/ai/ai_finalization_transaction.dart' show AiSessionSummary;
@@ -66,10 +67,10 @@ class ChatHistorySheet extends StatelessWidget {
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF10B981).withOpacity(0.15),
+                color: const Color(0xFF0D6B57).withOpacity(0.15),
               ),
               child: const Icon(Icons.history_rounded,
-                  size: 16, color: Color(0xFF10B981)),
+                  size: 16, color: Color(0xFF0D6B57)),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -130,7 +131,7 @@ class ChatHistorySheet extends StatelessWidget {
                   itemBuilder: (context, i) {
                     final s = sessions[i];
                     // Identidade visual única do histórico MedCases.
-                    const brandColor = Color(0xFF10B981);
+                    const brandColor = Color(0xFF0D6B57);
                     // Date from millisecond epoch.
                     final updatedDt =
                         DateTime.fromMillisecondsSinceEpoch(s.updatedAt)

@@ -38,6 +38,7 @@ import '../../models/clinical_structured_output.dart';
 import 'ai_event.dart';
 import 'sse_parser.dart';
 
+import '../clinical_identity_transport_envelope.dart';
 typedef GptHttpClientFactory = http.Client Function();
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -66,6 +67,7 @@ class GptSsePayload {
   Map<String, dynamic> toJson() => {
         'userMessage': userMessage,
         'systemPrompt': systemPrompt,
+        ...ClinicalIdentityTransportEnvelope.fromStructuredSystemPrompt(systemPrompt),
         'history': history,
         'mode': mode,
         'lang': lang,

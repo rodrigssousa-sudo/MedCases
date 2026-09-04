@@ -7,7 +7,7 @@ import '../common/home_v2_press_surface.dart';
 
 Color _homeAccent(HomeV2Palette palette) {
   return identical(palette, HomeV2Palette.dark)
-      ? const Color(0xFF00E59B)
+      ? const Color(0xFF0D6B57)
       : palette.accent;
 }
 
@@ -442,7 +442,8 @@ class _InlineGreetingLine extends StatelessWidget {
           TextSpan(
             text: greeting,
             style: TextStyle(
-              color: _homeAccent(palette),
+              // MEDCASES_HOME_IA_GREETING_CANONICAL_009C3B_ALL_DAYPARTS_V1_B_R1
+              color: const Color(0xFF009C3B),
             ),
           ),
           if (normalizedName.isNotEmpty)
@@ -996,7 +997,7 @@ class _InlineComposer extends StatelessWidget {
                     Icons.arrow_upward_rounded,
                     size: 19,
                     color:
-                        thinking ? palette.textSecondary : _homeAccent(palette),
+                        thinking ? palette.textSecondary : const Color(0xFF009C3B),
                   ),
                 ),
               ),

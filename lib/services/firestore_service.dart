@@ -36,16 +36,16 @@ abstract class FirestoreLoadResult<T> {
   const FirestoreLoadResult();
 
   factory FirestoreLoadResult.success(T data) = _FsSuccess<T>;
-  factory FirestoreLoadResult.empty()         = _FsEmpty<T>;
-  factory FirestoreLoadResult.authDenied()    = _FsAuthDenied<T>;
-  factory FirestoreLoadResult.offline()       = _FsOffline<T>;
+  factory FirestoreLoadResult.empty() = _FsEmpty<T>;
+  factory FirestoreLoadResult.authDenied() = _FsAuthDenied<T>;
+  factory FirestoreLoadResult.offline() = _FsOffline<T>;
   factory FirestoreLoadResult.failure(dynamic error) = _FsFailure<T>;
 
-  bool get isSuccess  => this is _FsSuccess<T>;
-  bool get isEmpty    => this is _FsEmpty<T>;
+  bool get isSuccess => this is _FsSuccess<T>;
+  bool get isEmpty => this is _FsEmpty<T>;
   bool get isAuthDenied => this is _FsAuthDenied<T>;
-  bool get isOffline  => this is _FsOffline<T>;
-  bool get isFailure  => this is _FsFailure<T>;
+  bool get isOffline => this is _FsOffline<T>;
+  bool get isFailure => this is _FsFailure<T>;
 
   /// true se o resultado indica que o cache local deve ser PRESERVADO
   /// (não sobrescrever dados existentes com null/vazio).
@@ -181,7 +181,9 @@ class FirestoreService {
       final result = <String, dynamic>{};
       try {
         v.forEach((k, val) {
-          try { result[k.toString()] = val; } catch (_) {}
+          try {
+            result[k.toString()] = val;
+          } catch (_) {}
         });
       } catch (_) {}
       return result;
@@ -247,7 +249,9 @@ class FirestoreService {
         try {
           result.add(_sanitizeSdkValue(item));
         } catch (_) {
-          try { result.add(item?.toString() ?? ''); } catch (_) {}
+          try {
+            result.add(item?.toString() ?? '');
+          } catch (_) {}
         }
       }
       return result;
@@ -269,7 +273,11 @@ class FirestoreService {
       if (date is DateTime) return date.toIso8601String();
     } catch (_) {}
     // Último recurso: toString() — nunca lança
-    try { return v.toString(); } catch (_) { return ''; }
+    try {
+      return v.toString();
+    } catch (_) {
+      return '';
+    }
   }
 
   /// Versão que aceita qualquer Map — necessário em dart2js release onde
@@ -341,11 +349,13 @@ class FirestoreService {
           result.add(ClinicalHistoryModel.fromJson(data));
         } catch (e) {
           // Documento malformado — descarta sem propagar erro
-          if (kDebugMode) debugPrint('[safeDocsToHistoryList] doc ignorado: $e');
+          if (kDebugMode)
+            debugPrint('[safeDocsToHistoryList] doc ignorado: $e');
         }
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('[safeDocsToHistoryList] falha ao iterar docs: $e');
+      if (kDebugMode)
+        debugPrint('[safeDocsToHistoryList] falha ao iterar docs: $e');
     }
     return result;
   }
@@ -380,7 +390,8 @@ class FirestoreService {
         }
       }
     } catch (e) {
-      if (kDebugMode) debugPrint('[safeDocsToGuideList] falha ao iterar docs: $e');
+      if (kDebugMode)
+        debugPrint('[safeDocsToGuideList] falha ao iterar docs: $e');
     }
     return result;
   }
@@ -393,16 +404,21 @@ class FirestoreService {
   // Getter lazy — só acessa Firestore APÓS Firebase.initializeApp() completar
   static FirebaseFirestore get _db {
     if (!_isFirebaseReady) {
-      throw StateError('[FirestoreService] Firebase não inicializado. '
-          'Verifique Firebase.initializeApp() no boot.');
+      throw StateError(
+        '[FirestoreService] Firebase não inicializado. '
+        'Verifique Firebase.initializeApp() no boot.',
+      );
     }
     return FirebaseFirestore.instance;
   }
 
   static const _projectId = 'medcases-pro';
-  static const _fsBase    = 'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
-  static String get _firebaseApiKey => DefaultFirebaseOptions.currentPlatform.apiKey;
-  static bool get _isIosWeb => kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+  static const _fsBase =
+      'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
+  static String get _firebaseApiKey =>
+      DefaultFirebaseOptions.currentPlatform.apiKey;
+  static bool get _isIosWeb =>
+      kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
   // Cooldown por endpoint após 403 — evita retry storm
   static DateTime? _guidesRestRetryAfter;
@@ -456,7 +472,8 @@ class FirestoreService {
   static bool get _isUserAuthenticated => _hasAnyAuthCredential;
 
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
-  static const _guidesCacheFirstOpenResetKey = 'clinical_guides_cache_first_open_reset_v2';
+  static const _guidesCacheFirstOpenResetKey =
+      'clinical_guides_cache_first_open_reset_v2';
   static const _publicHistoriesCacheKey = 'public_histories_cache_v1';
   static const _restRetryCooldown = Duration(minutes: 2);
   static String _lastGuidesErrorMessage = '';
@@ -499,7 +516,8 @@ class FirestoreService {
   }
 
   // ── Atualizar perfil do usuário ───────────────────────────────────────────
-  static Future<void> updateUserProfile(String uid, {
+  static Future<void> updateUserProfile(
+    String uid, {
     String? lang,
     bool? darkMode,
     String? profession,
@@ -546,9 +564,9 @@ class FirestoreService {
   /// USA APENAS safe helpers — zero casts diretos — imune a TypeError em release.
   static Map<String, dynamic> _decodeFirestoreFields(String bodyText) {
     try {
-      final body   = safeMap(jsonDecode(bodyText));
+      final body = safeMap(jsonDecode(bodyText));
       final fields = safeMap(body['fields']);
-      final data   = <String, dynamic>{};
+      final data = <String, dynamic>{};
 
       fields.forEach((key, rawValue) {
         try {
@@ -564,17 +582,20 @@ class FirestoreService {
             data[key] = raw is double
                 ? raw
                 : (raw is num
-                    ? raw.toDouble()
-                    : double.tryParse(raw?.toString() ?? '') ?? 0.0);
+                      ? raw.toDouble()
+                      : double.tryParse(raw?.toString() ?? '') ?? 0.0);
           } else if (value.containsKey('arrayValue')) {
-            final arrRaw  = safeMap(value['arrayValue']);
+            final arrRaw = safeMap(value['arrayValue']);
             final valsList = arrRaw['values'];
-            final items   = valsList is List ? valsList : const <dynamic>[];
+            final items = valsList is List ? valsList : const <dynamic>[];
             data[key] = items.map((item) {
               final m = safeMap(item);
-              if (m.containsKey('stringValue'))  return safeString(m['stringValue']);
-              if (m.containsKey('integerValue')) return safeString(m['integerValue']);
-              if (m.containsKey('booleanValue')) return safeBool(m['booleanValue']).toString();
+              if (m.containsKey('stringValue'))
+                return safeString(m['stringValue']);
+              if (m.containsKey('integerValue'))
+                return safeString(m['integerValue']);
+              if (m.containsKey('booleanValue'))
+                return safeBool(m['booleanValue']).toString();
               return safeString(m.isNotEmpty ? m.values.first : '');
             }).toList();
           } else if (value.containsKey('mapValue')) {
@@ -599,7 +620,9 @@ class FirestoreService {
       return Map<String, dynamic>.from(_cachedAppConfigGlobal);
     }
     if (_isRestCoolingDown(_appConfigGlobalRetryAfter)) {
-      debugPrint('[FirestoreService] app_config/global em cooldown — retornando cache');
+      debugPrint(
+        '[FirestoreService] app_config/global em cooldown — retornando cache',
+      );
       return Map<String, dynamic>.from(_cachedAppConfigGlobal);
     }
     final inFlight = _appConfigGlobalInFlight;
@@ -618,32 +641,46 @@ class FirestoreService {
           // 403 falso que congela o app por 15s. Aguardamos até 4s pelo token
           // antes de disparar o request, com polling a cada 500ms.
           if (!AuthService.hasCachedToken) {
-            debugPrint('[BUILD288][TokenGate] app_config/global — token não disponível, aguardando restoreSession()...');
+            debugPrint(
+              '[BUILD288][TokenGate] app_config/global — token não disponível, aguardando restoreSession()...',
+            );
             for (var _tg = 0; _tg < 8; _tg++) {
               await Future.delayed(const Duration(milliseconds: 500));
               if (AuthService.hasCachedToken) {
-                debugPrint('[BUILD288][TokenGate] token disponível após ${(_tg + 1) * 500}ms ✓');
+                debugPrint(
+                  '[BUILD288][TokenGate] token disponível após ${(_tg + 1) * 500}ms ✓',
+                );
                 break;
               }
             }
             if (!AuthService.hasCachedToken) {
-              debugPrint('[BUILD288][TokenGate] token ainda vazio após 4s — abortando REST, usando cache local');
+              debugPrint(
+                '[BUILD288][TokenGate] token ainda vazio após 4s — abortando REST, usando cache local',
+              );
               return <String, dynamic>{};
             }
           }
 
           final token = await AuthService.getAdminToken();
-          debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global');
+          debugPrint(
+            '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global',
+          );
           if (token.isEmpty) {
-            debugPrint('[FirestoreService] app_config/global REST skipped — token vazio');
+            debugPrint(
+              '[FirestoreService] app_config/global REST skipped — token vazio',
+            );
             return <String, dynamic>{};
           }
           try {
-            final resp = await http.get(
-              Uri.parse('$_fsBase/app_config/global?key=$_firebaseApiKey'),
-              headers: _restGetHeaders(token),
-            ).timeout(const Duration(seconds: 4));
-            debugPrint('[FirestoreService] app_config/global REST status=${resp.statusCode}');
+            final resp = await http
+                .get(
+                  Uri.parse('$_fsBase/app_config/global?key=$_firebaseApiKey'),
+                  headers: _restGetHeaders(token),
+                )
+                .timeout(const Duration(seconds: 4));
+            debugPrint(
+              '[FirestoreService] app_config/global REST status=${resp.statusCode}',
+            );
             if (resp.statusCode == 200) {
               final data = _decodeFirestoreFields(resp.body);
               if (data.isNotEmpty) {
@@ -653,12 +690,18 @@ class FirestoreService {
               return Map<String, dynamic>.from(data);
             }
             if (resp.statusCode == 403 || resp.statusCode == 401) {
-              debugPrint('[FirestoreService] app_config/global REST ${resp.statusCode} — sem permissão (não-admin)');
+              debugPrint(
+                '[FirestoreService] app_config/global REST ${resp.statusCode} — sem permissão (não-admin)',
+              );
               // NÃO aplica cooldown — próxima tentativa deve retentar
               return <String, dynamic>{};
             }
-            debugPrint('[FirestoreService] app_config/global REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
-            _appConfigGlobalRetryAfter = DateTime.now().add(const Duration(seconds: 30));
+            debugPrint(
+              '[FirestoreService] app_config/global REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+            );
+            _appConfigGlobalRetryAfter = DateTime.now().add(
+              const Duration(seconds: 30),
+            );
             return <String, dynamic>{};
           } catch (e) {
             debugPrint('[FirestoreService] app_config/global REST ERRO: $e');
@@ -667,11 +710,18 @@ class FirestoreService {
         }
 
         // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ─────
-        debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=app_config/global');
+        debugPrint(
+          '[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=app_config/global',
+        );
         try {
-          final doc = await _db.collection('app_config').doc('global').get()
+          final doc = await _db
+              .collection('app_config')
+              .doc('global')
+              .get()
               .timeout(const Duration(seconds: 4));
-          debugPrint('[FirestoreService] app_config/global SDK exists=${doc.exists}');
+          debugPrint(
+            '[FirestoreService] app_config/global SDK exists=${doc.exists}',
+          );
           // safeMap: protege contra tipos inesperados do SDK em dart2js release
           final data = doc.exists ? safeMap(doc.data()) : <String, dynamic>{};
           if (data.isNotEmpty) {
@@ -684,10 +734,16 @@ class FirestoreService {
             // permission-denied ocorre para usuários não-admin (esperado).
             // NÃO aplica cooldown — NÃO guarda em cache.
             final uid = FirebaseAuth.instance.currentUser?.uid ?? 'null';
-            debugPrint('[FirestoreService] app_config/global permission-denied uid=$uid (não-admin ou token não propagado)');
+            debugPrint(
+              '[FirestoreService] app_config/global permission-denied uid=$uid (não-admin ou token não propagado)',
+            );
           } else {
-            debugPrint('[FirestoreService] app_config/global SDK erro: ${e.code}');
-            _appConfigGlobalRetryAfter = DateTime.now().add(const Duration(seconds: 30));
+            debugPrint(
+              '[FirestoreService] app_config/global SDK erro: ${e.code}',
+            );
+            _appConfigGlobalRetryAfter = DateTime.now().add(
+              const Duration(seconds: 30),
+            );
           }
           return <String, dynamic>{};
         }
@@ -711,7 +767,9 @@ class FirestoreService {
     try {
       final data = await _loadAppConfigGlobalData();
       final key = safeString(data['openAiKey']).trim();
-      debugPrint('[FirestoreService] loadAppAiKey key.isNotEmpty=${key.isNotEmpty}');
+      debugPrint(
+        '[FirestoreService] loadAppAiKey key.isNotEmpty=${key.isNotEmpty}',
+      );
       return key;
     } catch (e) {
       debugPrint('[FirestoreService] loadAppAiKey ERRO: $e');
@@ -729,7 +787,9 @@ class FirestoreService {
       final key = safeString(data['apiKey']).trim().isNotEmpty
           ? safeString(data['apiKey']).trim()
           : safeString(data['geminiApiKey']).trim();
-      debugPrint('[FirestoreService] loadGeminiApiKey key.isNotEmpty=${key.isNotEmpty}');
+      debugPrint(
+        '[FirestoreService] loadGeminiApiKey key.isNotEmpty=${key.isNotEmpty}',
+      );
       return key;
     } catch (e) {
       debugPrint('[FirestoreService] loadGeminiApiKey ERRO: $e');
@@ -748,30 +808,40 @@ class FirestoreService {
 
     if (kIsWeb) {
       final token = await AuthService.getAdminToken();
-      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveGeminiApiKey)');
+      debugPrint(
+        '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveGeminiApiKey)',
+      );
       if (token.isEmpty) {
-        debugPrint('[FirestoreService] saveGeminiApiKey ERRO Web — token REST vazio');
+        debugPrint(
+          '[FirestoreService] saveGeminiApiKey ERRO Web — token REST vazio',
+        );
         throw Exception('saveGeminiApiKey: token REST vazio');
       }
       try {
         const mask = 'updateMask.fieldPaths=apiKey';
-        final resp = await http.patch(
-          Uri.parse('$_fsBase/app_config/global?$mask'),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type':  'application/json',
-          },
-          body: jsonEncode({
-            'fields': {
-              'apiKey': {'stringValue': key.trim()},
-            },
-          }),
-        ).timeout(const Duration(seconds: 8));
+        final resp = await http
+            .patch(
+              Uri.parse('$_fsBase/app_config/global?$mask'),
+              headers: {
+                'Authorization': 'Bearer $token',
+                'Content-Type': 'application/json',
+              },
+              body: jsonEncode({
+                'fields': {
+                  'apiKey': {'stringValue': key.trim()},
+                },
+              }),
+            )
+            .timeout(const Duration(seconds: 8));
         if (resp.statusCode == 200) {
-          debugPrint('[FirestoreService] saveGeminiApiKey OK → app_config/global (REST Web)');
+          debugPrint(
+            '[FirestoreService] saveGeminiApiKey OK → app_config/global (REST Web)',
+          );
         } else {
-          debugPrint('[FirestoreService] saveGeminiApiKey ERRO REST ${resp.statusCode}: '
-              '${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+          debugPrint(
+            '[FirestoreService] saveGeminiApiKey ERRO REST ${resp.statusCode}: '
+            '${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+          );
           throw Exception('saveGeminiApiKey REST ${resp.statusCode}');
         }
       } catch (e) {
@@ -783,10 +853,9 @@ class FirestoreService {
 
     // ── NATIVO: SDK ─────────────────────────────────────────────────────────
     try {
-      await _db.collection('app_config').doc('global').set(
-        {'apiKey': key.trim()},
-        SetOptions(merge: true),
-      );
+      await _db.collection('app_config').doc('global').set({
+        'apiKey': key.trim(),
+      }, SetOptions(merge: true));
       debugPrint('[FirestoreService] saveGeminiApiKey OK');
     } catch (e) {
       debugPrint('[FirestoreService] saveGeminiApiKey ERRO: $e');
@@ -824,33 +893,45 @@ class FirestoreService {
       // REST Identity Toolkit não injeta token no Firebase Auth SDK).
       // getAdminToken() retorna o token REST correto (auto-refresh incluído).
       final token = await AuthService.getAdminToken();
-      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveAppAiKey)');
+      debugPrint(
+        '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveAppAiKey)',
+      );
       if (token.isEmpty) {
-        debugPrint('[FirestoreService] saveAppAiKey ERRO Web — token REST vazio');
+        debugPrint(
+          '[FirestoreService] saveAppAiKey ERRO Web — token REST vazio',
+        );
         throw Exception('saveAppAiKey: token REST vazio');
       }
       try {
         // updateMask garante que apenas o campo 'openAiKey' é alterado (merge
         // seguro no REST — não sobrescreve outros campos do documento).
         const mask = 'updateMask.fieldPaths=openAiKey';
-        final resp = await http.patch(
-          Uri.parse('$_fsBase/app_config/global?$mask'),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type':  'application/json',
-          },
-          body: jsonEncode({
-            'fields': {
-              'openAiKey': {'stringValue': key.trim()},
-            },
-          }),
-        ).timeout(const Duration(seconds: 8));
+        final resp = await http
+            .patch(
+              Uri.parse('$_fsBase/app_config/global?$mask'),
+              headers: {
+                'Authorization': 'Bearer $token',
+                'Content-Type': 'application/json',
+              },
+              body: jsonEncode({
+                'fields': {
+                  'openAiKey': {'stringValue': key.trim()},
+                },
+              }),
+            )
+            .timeout(const Duration(seconds: 8));
         if (resp.statusCode == 200) {
-          debugPrint('[FirestoreService] saveAppAiKey OK → app_config/global (REST Web)');
-          debugPrint('[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}');
+          debugPrint(
+            '[FirestoreService] saveAppAiKey OK → app_config/global (REST Web)',
+          );
+          debugPrint(
+            '[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}',
+          );
         } else {
-          debugPrint('[FirestoreService] saveAppAiKey ERRO REST ${resp.statusCode}: '
-              '${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+          debugPrint(
+            '[FirestoreService] saveAppAiKey ERRO REST ${resp.statusCode}: '
+            '${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+          );
           throw Exception('saveAppAiKey REST ${resp.statusCode}');
         }
       } catch (e) {
@@ -862,14 +943,17 @@ class FirestoreService {
 
     // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ──────────
     final fbUser = FirebaseAuth.instance.currentUser;
-    debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${fbUser?.uid ?? 'null'} endpoint=app_config/global (saveAppAiKey)');
+    debugPrint(
+      '[NATIVE_AUTH] source=FirebaseSDK uid=${fbUser?.uid ?? 'null'} endpoint=app_config/global (saveAppAiKey)',
+    );
     try {
-      await _db.collection('app_config').doc('global').set(
-        {'openAiKey': key.trim()},
-        SetOptions(merge: true),
-      );
+      await _db.collection('app_config').doc('global').set({
+        'openAiKey': key.trim(),
+      }, SetOptions(merge: true));
       debugPrint('[FirestoreService] saveAppAiKey OK → app_config/global');
-      debugPrint('[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}');
+      debugPrint(
+        '[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}',
+      );
     } catch (e) {
       debugPrint('[FirestoreService] saveAppAiKey ERRO: $e');
       rethrow;
@@ -900,9 +984,13 @@ class FirestoreService {
       // FirebaseAuth.instance.currentUser é sempre null no Web.
       // getAdminToken() retorna o token REST correto (auto-refresh incluído).
       final token = await AuthService.getAdminToken();
-      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveGeminiPaidEnabled)');
+      debugPrint(
+        '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveGeminiPaidEnabled)',
+      );
       if (token.isEmpty) {
-        debugPrint('[ADMIN_AI_TOGGLE] ERRO Web — token vazio, não é possível salvar');
+        debugPrint(
+          '[ADMIN_AI_TOGGLE] ERRO Web — token vazio, não é possível salvar',
+        );
         throw Exception('saveGeminiPaidEnabled: token REST vazio');
       }
       debugPrint(
@@ -913,23 +1001,31 @@ class FirestoreService {
       );
       try {
         const mask = 'updateMask.fieldPaths=geminiPaidEnabled';
-        final resp = await http.patch(
-          Uri.parse('$_fsBase/app_config/global?$mask'),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'fields': {
-              'geminiPaidEnabled': {'booleanValue': enabled},
-            },
-          }),
-        ).timeout(const Duration(seconds: 8));
+        final resp = await http
+            .patch(
+              Uri.parse('$_fsBase/app_config/global?$mask'),
+              headers: {
+                'Authorization': 'Bearer $token',
+                'Content-Type': 'application/json',
+              },
+              body: jsonEncode({
+                'fields': {
+                  'geminiPaidEnabled': {'booleanValue': enabled},
+                },
+              }),
+            )
+            .timeout(const Duration(seconds: 8));
         if (resp.statusCode == 200) {
-          debugPrint('[ADMIN_AI_TOGGLE] OK → app_config/global.geminiPaidEnabled=$enabled');
-          debugPrint('[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}');
+          debugPrint(
+            '[ADMIN_AI_TOGGLE] OK → app_config/global.geminiPaidEnabled=$enabled',
+          );
+          debugPrint(
+            '[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}',
+          );
         } else {
-          debugPrint('[ADMIN_AI_TOGGLE] ERRO REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+          debugPrint(
+            '[ADMIN_AI_TOGGLE] ERRO REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+          );
           throw Exception('saveGeminiPaidEnabled REST ${resp.statusCode}');
         }
       } catch (e) {
@@ -941,7 +1037,9 @@ class FirestoreService {
 
     // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ──────────
     final fbUser = FirebaseAuth.instance.currentUser;
-    debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${fbUser?.uid ?? 'null'} endpoint=app_config/global (saveGeminiPaidEnabled)');
+    debugPrint(
+      '[NATIVE_AUTH] source=FirebaseSDK uid=${fbUser?.uid ?? 'null'} endpoint=app_config/global (saveGeminiPaidEnabled)',
+    );
     // Força token fresco antes do write
     try {
       await fbUser?.getIdToken(true);
@@ -958,14 +1056,19 @@ class FirestoreService {
       'isAnon=${fbUser?.isAnonymous ?? true}',
     );
     try {
-      await _db.collection('app_config').doc('global').set(
-        {'geminiPaidEnabled': enabled},
-        SetOptions(merge: true),
+      await _db.collection('app_config').doc('global').set({
+        'geminiPaidEnabled': enabled,
+      }, SetOptions(merge: true));
+      debugPrint(
+        '[ADMIN_AI_TOGGLE] OK → app_config/global.geminiPaidEnabled=$enabled',
       );
-      debugPrint('[ADMIN_AI_TOGGLE] OK → app_config/global.geminiPaidEnabled=$enabled');
-      debugPrint('[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}');
+      debugPrint(
+        '[ADMIN_AI_KEY] saved=true provider=gemini_paid status=${enabled ? "online" : "offline"}',
+      );
     } catch (e) {
-      debugPrint('[ADMIN_AI_TOGGLE] ERRO path=app_config/global uid=${fbUser?.uid ?? "null"} erro=$e');
+      debugPrint(
+        '[ADMIN_AI_TOGGLE] ERRO path=app_config/global uid=${fbUser?.uid ?? "null"} erro=$e',
+      );
       debugPrint('[FirestoreService] saveGeminiPaidEnabled ERRO: $e');
       rethrow;
     }
@@ -992,33 +1095,49 @@ class FirestoreService {
     if (kIsWeb) {
       // ── WEB: REST GET com AuthService.getAdminToken() ───────────────────
       final token = await AuthService.getAdminToken();
-      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/paid_budget (loadPaidBudgetCounters)');
+      debugPrint(
+        '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/paid_budget (loadPaidBudgetCounters)',
+      );
       if (token.isEmpty) {
-        debugPrint('[FirestoreService] loadPaidBudgetCounters Web — token vazio');
+        debugPrint(
+          '[FirestoreService] loadPaidBudgetCounters Web — token vazio',
+        );
         return {};
       }
       try {
-        final resp = await http.get(
-          Uri.parse('$_fsBase/app_config/paid_budget?key=$_firebaseApiKey'),
-          headers: _restGetHeaders(token),
-        ).timeout(const Duration(seconds: 4));
-        debugPrint('[FirestoreService] loadPaidBudgetCounters REST status=${resp.statusCode}');
+        final resp = await http
+            .get(
+              Uri.parse('$_fsBase/app_config/paid_budget?key=$_firebaseApiKey'),
+              headers: _restGetHeaders(token),
+            )
+            .timeout(const Duration(seconds: 4));
+        debugPrint(
+          '[FirestoreService] loadPaidBudgetCounters REST status=${resp.statusCode}',
+        );
         if (resp.statusCode == 200) {
           final data = _decodeFirestoreFields(resp.body);
-          debugPrint('[FirestoreService] loadPaidBudgetCounters OK — ${data.length} campos');
+          debugPrint(
+            '[FirestoreService] loadPaidBudgetCounters OK — ${data.length} campos',
+          );
           return data;
         }
         if (resp.statusCode == 404) {
           // Documento ainda não existe (nenhuma requisição paga feita ainda)
-          debugPrint('[FirestoreService] loadPaidBudgetCounters — documento não existe (404)');
+          debugPrint(
+            '[FirestoreService] loadPaidBudgetCounters — documento não existe (404)',
+          );
           return {};
         }
         if (resp.statusCode == 403 || resp.statusCode == 401) {
-          debugPrint('[FirestoreService] loadPaidBudgetCounters — sem permissão (não-admin) ${resp.statusCode}');
+          debugPrint(
+            '[FirestoreService] loadPaidBudgetCounters — sem permissão (não-admin) ${resp.statusCode}',
+          );
           return {};
         }
-        debugPrint('[FirestoreService] loadPaidBudgetCounters ERRO REST ${resp.statusCode}: '
-            '${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+        debugPrint(
+          '[FirestoreService] loadPaidBudgetCounters ERRO REST ${resp.statusCode}: '
+          '${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+        );
         return {};
       } catch (e) {
         debugPrint('[FirestoreService] loadPaidBudgetCounters ERRO REST: $e');
@@ -1027,7 +1146,9 @@ class FirestoreService {
     }
 
     // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ──────────
-    debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=app_config/paid_budget');
+    debugPrint(
+      '[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=app_config/paid_budget',
+    );
     try {
       final doc = await _db
           .collection('app_config')
@@ -1046,10 +1167,7 @@ class FirestoreService {
   /// Passa [key] vazio para remover a chave (modo local).
   static Future<void> saveAiKey(String uid, String key) async {
     try {
-      await _userPrefs(uid).set(
-        {'openAiKey': key},
-        SetOptions(merge: true),
-      );
+      await _userPrefs(uid).set({'openAiKey': key}, SetOptions(merge: true));
     } catch (_) {}
   }
 
@@ -1068,15 +1186,19 @@ class FirestoreService {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return {};
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return {};
     }
     try {
@@ -1085,9 +1207,11 @@ class FirestoreService {
       return safeStringList(doc.data()?['ids']).toSet();
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-            'allowed=false reason=permission_denied uid=$uid '
-            'sdkRequestDispatched=true → authDenied (cache preservado)');
+        debugPrint(
+          '[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
+          'allowed=false reason=permission_denied uid=$uid '
+          'sdkRequestDispatched=true → authDenied (cache preservado)',
+        );
       }
       return {};
     } catch (_) {
@@ -1109,15 +1233,19 @@ class FirestoreService {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return {};
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return {};
     }
     try {
@@ -1126,9 +1254,11 @@ class FirestoreService {
       return safeStringList(doc.data()?['ids']).toSet();
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-            'allowed=false reason=permission_denied uid=$uid '
-            'sdkRequestDispatched=true → authDenied (cache preservado)');
+        debugPrint(
+          '[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
+          'allowed=false reason=permission_denied uid=$uid '
+          'sdkRequestDispatched=true → authDenied (cache preservado)',
+        );
       }
       return {};
     } catch (_) {
@@ -1150,15 +1280,19 @@ class FirestoreService {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return {};
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return {};
     }
     try {
@@ -1167,9 +1301,11 @@ class FirestoreService {
       return safeStringList(doc.data()?['ids']).toSet();
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-            'allowed=false reason=permission_denied uid=$uid '
-            'sdkRequestDispatched=true → authDenied (cache preservado)');
+        debugPrint(
+          '[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
+          'allowed=false reason=permission_denied uid=$uid '
+          'sdkRequestDispatched=true → authDenied (cache preservado)',
+        );
       }
       return {};
     } catch (_) {
@@ -1190,13 +1326,17 @@ class FirestoreService {
   // ── MICRO-BUILD 462E-A.5.3.7.3.2.5: Canonical AI session index ───────────
   // Parent path: users/{uid}/ai_sessions — schema v2, queryable by isDeleted +
   // updatedAt. Exchange sub-path: …/ai_sessions/{sessionId}/exchanges/{requestId}.
-  static CollectionReference<Map<String, dynamic>> _userAiSessions(String uid) =>
-      _db.collection('users').doc(uid).collection('ai_sessions');
+  static CollectionReference<Map<String, dynamic>> _userAiSessions(
+    String uid,
+  ) => _db.collection('users').doc(uid).collection('ai_sessions');
 
   /// Salva UMA sessão de chat no Firestore (upsert por session.id).
   /// Injeta sempre `updatedAt` como server timestamp para que a query
   /// orderBy('updatedAt') funcione em todos os dispositivos.
-  static Future<void> saveAiSession(String uid, Map<String, dynamic> session) async {
+  static Future<void> saveAiSession(
+    String uid,
+    Map<String, dynamic> session,
+  ) async {
     try {
       final id = safeString(session['id']);
       if (id.isEmpty) return;
@@ -1222,9 +1362,7 @@ class FirestoreService {
   ) async {
     final firebaseUser = FirebaseAuth.instance.currentUser;
 
-    if (!_isFirebaseReady ||
-        firebaseUser == null ||
-        firebaseUser.uid != uid) {
+    if (!_isFirebaseReady || firebaseUser == null || firebaseUser.uid != uid) {
       debugPrint(
         '[AI_HISTORY_DELETE][LEGACY] allowed=false '
         'reason=auth_guard uid=$uid',
@@ -1258,9 +1396,7 @@ class FirestoreService {
   ) async {
     final firebaseUser = FirebaseAuth.instance.currentUser;
 
-    if (!_isFirebaseReady ||
-        firebaseUser == null ||
-        firebaseUser.uid != uid) {
+    if (!_isFirebaseReady || firebaseUser == null || firebaseUser.uid != uid) {
       debugPrint(
         '[AI_HISTORY_DELETE][CANONICAL] allowed=false '
         'reason=auth_guard uid=$uid',
@@ -1314,7 +1450,7 @@ class FirestoreService {
   // [permissionDenied] flag. When true, the caller MUST map to
   // [SessionPersistAuthDenied] and MUST NOT enqueue into the offline queue.
   static Future<({bool ok, bool permissionDenied, Object? error})>
-      batchWriteAiExchange({
+  batchWriteAiExchange({
     required String uid,
     required String sessionId,
     required String requestId,
@@ -1331,7 +1467,7 @@ class FirestoreService {
     try {
       final batch = _db.batch();
 
-      final sessionRef  = _userAiSessions(uid).doc(sessionId);
+      final sessionRef = _userAiSessions(uid).doc(sessionId);
       final exchangeRef = sessionRef.collection('exchanges').doc(requestId);
 
       // ── MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 7]: Server idempotency ──
@@ -1355,25 +1491,27 @@ class FirestoreService {
       if (exchangeAlreadyExists) {
         // Exchange already committed — skip batch entirely, emit telemetry.
         // TELEMETRY: never log raw user content. requestId is safe.
-        debugPrint('[LEGACY_WRITE][SKIPPED] reason=canonical_session_owned '
-            'requestId=$requestId');
+        debugPrint(
+          '[LEGACY_WRITE][SKIPPED] reason=canonical_session_owned '
+          'requestId=$requestId',
+        );
         return (ok: true, permissionDenied: false, error: null);
       }
 
       // ── Operation A: Parent session document (upsert with merge) ──────────
       final parentData = <String, Object>{
-        'sessionId':             sessionId,
-        'uid':                   uid,
-        'title':                 title,
-        'mode':                  mode,
-        'locale':                locale,
-        'updatedAt':             FieldValue.serverTimestamp(),
-        'lastRequestId':         requestId,
-        'lastUserPreview':       userPreview,
-        'lastAssistantPreview':  assistantPreview,
-        'messageCount':          FieldValue.increment(1),
-        'isDeleted':             false,
-        'schemaVersion':         2,
+        'sessionId': sessionId,
+        'uid': uid,
+        'title': title,
+        'mode': mode,
+        'locale': locale,
+        'updatedAt': FieldValue.serverTimestamp(),
+        'lastRequestId': requestId,
+        'lastUserPreview': userPreview,
+        'lastAssistantPreview': assistantPreview,
+        'messageCount': FieldValue.increment(1),
+        'isDeleted': false,
+        'schemaVersion': 2,
       };
       if (isFirstMessage) {
         // createdAt is set only once — on the very first exchange.
@@ -1453,7 +1591,9 @@ class FirestoreService {
   /// Salva a lista de recentes no Firestore (lista de strings "type|id|title").
   static Future<void> saveRecents(String uid, List<String> recents) async {
     try {
-      await _userRecents(uid).set({'items': recents, 'updatedAt': FieldValue.serverTimestamp()});
+      await _userRecents(
+        uid,
+      ).set({'items': recents, 'updatedAt': FieldValue.serverTimestamp()});
     } catch (_) {}
   }
 
@@ -1476,15 +1616,19 @@ class FirestoreService {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return {};
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return {};
     }
     try {
@@ -1493,9 +1637,11 @@ class FirestoreService {
       return safeStringList(doc.data()?['ids']).toSet();
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-            'allowed=false reason=permission_denied uid=$uid '
-            'sdkRequestDispatched=true → authDenied (cache preservado)');
+        debugPrint(
+          '[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
+          'allowed=false reason=permission_denied uid=$uid '
+          'sdkRequestDispatched=true → authDenied (cache preservado)',
+        );
       }
       return {};
     } catch (_) {
@@ -1517,21 +1663,25 @@ class FirestoreService {
     // BUILD 463-A.1.2: Dual-check barrier — (1) null check, (2) uid mismatch
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadCases '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return [];
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadCases '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return [];
     }
     try {
-      final snap = await _userCases(uid)
-          .where('isCustom', isEqualTo: true)
-          .get();
+      final snap = await _userCases(
+        uid,
+      ).where('isCustom', isEqualTo: true).get();
       final cases = <ClinicalCaseModel>[];
       for (final d in snap.docs) {
         try {
@@ -1542,9 +1692,11 @@ class FirestoreService {
       return cases;
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-            'allowed=false reason=permission_denied uid=$uid '
-            'sdkRequestDispatched=true → authDenied (cache preservado)');
+        debugPrint(
+          '[FIRESTORE_AUTH_BARRIER] operation=loadCases '
+          'allowed=false reason=permission_denied uid=$uid '
+          'sdkRequestDispatched=true → authDenied (cache preservado)',
+        );
       }
       return [];
     } catch (_) {
@@ -1566,10 +1718,9 @@ class FirestoreService {
 
   // ── Stream em tempo real dos casos ───────────────────────────────────────
   static Stream<List<ClinicalCaseModel>> casesStream(String uid) {
-    return _userCases(uid)
-        .where('isCustom', isEqualTo: true)
-        .snapshots()
-        .map((snap) {
+    return _userCases(uid).where('isCustom', isEqualTo: true).snapshots().map((
+      snap,
+    ) {
       final cases = <ClinicalCaseModel>[];
       for (final d in snap.docs) {
         try {
@@ -1598,13 +1749,15 @@ class FirestoreService {
   /// to a UID ≠ [uid] between snapshot emissions, the stream emits a
   /// done signal synchronously and closes.
   static Stream<List<ClinicalCaseModel>> streamActiveCases(String uid) async* {
-    await for (final snap in _userCases(uid)
-        .where('isCustom', isEqualTo: true)
-        .snapshots()) {
+    await for (final snap in _userCases(
+      uid,
+    ).where('isCustom', isEqualTo: true).snapshots()) {
       final activeUid = FirebaseAuth.instance.currentUser?.uid;
       if (activeUid != uid) {
-        debugPrint('[SECURE_STREAM][AUTO_CLOSE] stream=streamActiveCases '
-            'parentUid=$uid activeUid=$activeUid');
+        debugPrint(
+          '[SECURE_STREAM][AUTO_CLOSE] stream=streamActiveCases '
+          'parentUid=$uid activeUid=$activeUid',
+        );
         yield* Stream.empty();
         return;
       }
@@ -1635,16 +1788,20 @@ class FirestoreService {
   static FirestoreWriteResult? _writeAuthCheck(String uid, String operation) {
     final fbUser = FirebaseAuth.instance.currentUser;
     if (fbUser == null) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=$operation '
-          'allowed=false reason=uid_mismatch_or_null uid=$uid '
-          'sdkWriteDispatched=false');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=$operation '
+        'allowed=false reason=uid_mismatch_or_null uid=$uid '
+        'sdkWriteDispatched=false',
+      );
       return const FsWriteAuthDenied('uid_mismatch_or_null');
     }
     if (fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=$operation '
-          'allowed=false reason=uid_mismatch_or_null '
-          'expectedUid=$uid firebaseUid=${fbUser.uid} '
-          'sdkWriteDispatched=false');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=$operation '
+        'allowed=false reason=uid_mismatch_or_null '
+        'expectedUid=$uid firebaseUid=${fbUser.uid} '
+        'sdkWriteDispatched=false',
+      );
       return const FsWriteAuthDenied('uid_mismatch_or_null');
     }
     return null; // pass — caller may dispatch I/O
@@ -1654,7 +1811,7 @@ class FirestoreService {
   /// mirrors it to public_histories. Returns the write outcome.
   /// [uploadedAt] is only non-null in the success path when h.isPublic.
   static Future<({FirestoreWriteResult result, String? uploadedAt})>
-      saveHistoryTyped(String uid, ClinicalHistoryModel h) async {
+  saveHistoryTyped(String uid, ClinicalHistoryModel h) async {
     final denial = _writeAuthCheck(uid, 'saveHistoryTyped');
     if (denial != null) return (result: denial, uploadedAt: null);
 
@@ -1679,17 +1836,23 @@ class FirestoreService {
         if (kIsWeb) {
           await _deletePublicHistoryRest(h.id);
         } else {
-          try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
+          try {
+            await _publicHistories.doc(h.id).delete();
+          } catch (_) {}
         }
       }
       return (result: const FsWriteSuccess(), uploadedAt: uploadedAt);
     } on FirebaseException catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
-          'uid=$uid error=${e.code} sdkWriteDispatched=true → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
+        'uid=$uid error=${e.code} sdkWriteDispatched=true → FsWriteFailure',
+      );
       return (result: FsWriteFailure(e, st), uploadedAt: null);
     } catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
-          'uid=$uid error=$e sdkWriteDispatched=true → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
+        'uid=$uid error=$e sdkWriteDispatched=true → FsWriteFailure',
+      );
       return (result: FsWriteFailure(e, st), uploadedAt: null);
     }
   }
@@ -1697,23 +1860,32 @@ class FirestoreService {
   /// Deletes [hid] from the user's history sub-collection and, if it was
   /// public, from public_histories. Returns the write outcome.
   static Future<FirestoreWriteResult> deleteHistoryTyped(
-      String uid, String hid, {bool wasPublic = false}) async {
+    String uid,
+    String hid, {
+    bool wasPublic = false,
+  }) async {
     final denial = _writeAuthCheck(uid, 'deleteHistoryTyped');
     if (denial != null) return denial;
 
     try {
       await _userHistories(uid).doc(hid).delete();
       if (wasPublic) {
-        try { await _publicHistories.doc(hid).delete(); } catch (_) {}
+        try {
+          await _publicHistories.doc(hid).delete();
+        } catch (_) {}
       }
       return const FsWriteSuccess();
     } on FirebaseException catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
-          'uid=$uid hid=$hid error=${e.code} → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
+        'uid=$uid hid=$hid error=${e.code} → FsWriteFailure',
+      );
       return FsWriteFailure(e, st);
     } catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
-          'uid=$uid hid=$hid error=$e → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
+        'uid=$uid hid=$hid error=$e → FsWriteFailure',
+      );
       return FsWriteFailure(e, st);
     }
   }
@@ -1721,7 +1893,10 @@ class FirestoreService {
   /// Saves [ids] as the user's favourites set for [type]
   /// ('drugs', 'protocols', 'prescriptions', 'fav_cases').
   static Future<FirestoreWriteResult> saveFavoritesTyped(
-      String uid, String type, Set<String> ids) async {
+    String uid,
+    String type,
+    Set<String> ids,
+  ) async {
     final denial = _writeAuthCheck(uid, 'saveFavoritesTyped');
     if (denial != null) return denial;
 
@@ -1729,19 +1904,25 @@ class FirestoreService {
       await _userFavs(uid).doc(type).set({'ids': ids.toList()});
       return const FsWriteSuccess();
     } on FirebaseException catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
-          'uid=$uid type=$type error=${e.code} → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
+        'uid=$uid type=$type error=${e.code} → FsWriteFailure',
+      );
       return FsWriteFailure(e, st);
     } catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
-          'uid=$uid type=$type error=$e → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
+        'uid=$uid type=$type error=$e → FsWriteFailure',
+      );
       return FsWriteFailure(e, st);
     }
   }
 
   /// Saves a single [ClinicalCaseModel] to the user's cases sub-collection.
   static Future<FirestoreWriteResult> saveCaseProgressTyped(
-      String uid, ClinicalCaseModel c) async {
+    String uid,
+    ClinicalCaseModel c,
+  ) async {
     final denial = _writeAuthCheck(uid, 'saveCaseProgressTyped');
     if (denial != null) return denial;
 
@@ -1749,12 +1930,16 @@ class FirestoreService {
       await _userCases(uid).doc(c.id).set(c.toJson());
       return const FsWriteSuccess();
     } on FirebaseException catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
-          'uid=$uid caseId=${c.id} error=${e.code} → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
+        'uid=$uid caseId=${c.id} error=${e.code} → FsWriteFailure',
+      );
       return FsWriteFailure(e, st);
     } catch (e, st) {
-      debugPrint('[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
-          'uid=$uid caseId=${c.id} error=$e → FsWriteFailure');
+      debugPrint(
+        '[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
+        'uid=$uid caseId=${c.id} error=$e → FsWriteFailure',
+      );
       return FsWriteFailure(e, st);
     }
   }
@@ -1770,7 +1955,8 @@ class FirestoreService {
     if (kDebugMode) debugPrint('[FirestoreService.publicHistories] $message');
   }
 
-  static String get lastPublicHistoriesErrorMessage => _lastPublicHistoriesErrorMessage;
+  static String get lastPublicHistoriesErrorMessage =>
+      _lastPublicHistoriesErrorMessage;
 
   static void _setPublicHistoriesError(String message) {
     _lastPublicHistoriesErrorMessage = message.trim();
@@ -1786,9 +1972,7 @@ class FirestoreService {
   static List<ClinicalHistoryModel> _normalizePublicHistories(
     Iterable<ClinicalHistoryModel> histories,
   ) {
-    final list = histories
-        .where((h) => h.id.trim().isNotEmpty)
-        .toList();
+    final list = histories.where((h) => h.id.trim().isNotEmpty).toList();
     list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
     return list.take(50).toList();
   }
@@ -1808,9 +1992,8 @@ class FirestoreService {
 
       final cached = _normalizePublicHistories(
         decoded.whereType<Map>().map(
-          (item) => ClinicalHistoryModel.fromJson(
-            Map<String, dynamic>.from(item),
-          ),
+          (item) =>
+              ClinicalHistoryModel.fromJson(Map<String, dynamic>.from(item)),
         ),
       );
       _debugPublicHistories('cache read count=${cached.length}');
@@ -1865,7 +2048,7 @@ class FirestoreService {
   }
 
   static dynamic _decodeValue(Map<String, dynamic> v) {
-    if (v.containsKey('stringValue'))  return v['stringValue'];
+    if (v.containsKey('stringValue')) return v['stringValue'];
     if (v.containsKey('booleanValue')) return v['booleanValue'] == true;
     if (v.containsKey('integerValue')) {
       final raw = v['integerValue'];
@@ -1873,15 +2056,21 @@ class FirestoreService {
     }
     if (v.containsKey('doubleValue')) {
       final raw = v['doubleValue'];
-      return raw is double ? raw : (raw is num ? raw.toDouble() : double.tryParse(raw?.toString() ?? '') ?? 0.0);
+      return raw is double
+          ? raw
+          : (raw is num
+                ? raw.toDouble()
+                : double.tryParse(raw?.toString() ?? '') ?? 0.0);
     }
-    if (v.containsKey('nullValue'))    return null;
+    if (v.containsKey('nullValue')) return null;
     if (v.containsKey('mapValue')) {
       try {
         final mapVal = v['mapValue'];
         final f = safeMap(mapVal is Map ? mapVal['fields'] : null);
         return _decodeFields(f);
-      } catch (_) { return <String, dynamic>{}; }
+      } catch (_) {
+        return <String, dynamic>{};
+      }
     }
     if (v.containsKey('arrayValue')) {
       try {
@@ -1890,11 +2079,15 @@ class FirestoreService {
         final vals = rawVals is List ? rawVals : const <dynamic>[];
         return vals
             .whereType<Map>()
-            .map((e) => _decodeValue(
-                  e is Map<String, dynamic> ? e : Map<String, dynamic>.from(e),
-                ))
+            .map(
+              (e) => _decodeValue(
+                e is Map<String, dynamic> ? e : Map<String, dynamic>.from(e),
+              ),
+            )
             .toList();
-      } catch (_) { return <dynamic>[]; }
+      } catch (_) {
+        return <dynamic>[];
+      }
     }
     return null;
   }
@@ -1909,16 +2102,20 @@ class FirestoreService {
   }
 
   static Map<String, dynamic> _encodeValue(dynamic val) {
-    if (val == null)          return {'nullValue': null};
-    if (val is bool)          return {'booleanValue': val};
-    if (val is int)           return {'integerValue': val.toString()};
-    if (val is double)        return {'doubleValue': val};
-    if (val is String)        return {'stringValue': val};
+    if (val == null) return {'nullValue': null};
+    if (val is bool) return {'booleanValue': val};
+    if (val is int) return {'integerValue': val.toString()};
+    if (val is double) return {'doubleValue': val};
+    if (val is String) return {'stringValue': val};
     if (val is List) {
-      return {'arrayValue': {'values': val.map(_encodeValue).toList()}};
+      return {
+        'arrayValue': {'values': val.map(_encodeValue).toList()},
+      };
     }
     if (val is Map<String, dynamic>) {
-      return {'mapValue': {'fields': _encodeFields(val)}};
+      return {
+        'mapValue': {'fields': _encodeFields(val)},
+      };
     }
     return {'stringValue': val.toString()};
   }
@@ -1934,9 +2131,11 @@ class FirestoreService {
   /// call-sites that cannot immediately adopt the algebraic return type
   /// (e.g. legacy screen hooks that require a plain List). New code MUST
   /// use [loadHistoriesTyped] and unwrap the sealed variants explicitly.
-  @Deprecated('Use loadHistoriesTyped() — returns FirestoreLoadResult<T> '
-      'that correctly exposes authDenied/offline states. '
-      'Removed in BUILD 463-A.1.2 internal consumer migration.')
+  @Deprecated(
+    'Use loadHistoriesTyped() — returns FirestoreLoadResult<T> '
+    'that correctly exposes authDenied/offline states. '
+    'Removed in BUILD 463-A.1.2 internal consumer migration.',
+  )
   static Future<List<ClinicalHistoryModel>> loadHistories(String uid) async {
     // ORDEM SYNC-FIX: iOS usa cache Firestore por padrão — histórias criadas
     // na Web não aparecem no mobile na primeira abertura.
@@ -1959,15 +2158,19 @@ class FirestoreService {
     // AND uid must match the requested uid to prevent cross-uid leaks.
     final _fbUserH = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUserH == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return [];
     }
     if (_fbUserH.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
-          'expectedUid=$uid firebaseUid=${_fbUserH.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
+        'expectedUid=$uid firebaseUid=${_fbUserH.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return [];
     }
     try {
@@ -1986,12 +2189,16 @@ class FirestoreService {
           // BUILD 463-A.1 SECTOR 4: permission-denied → authDenied (não escreve "novo usuário").
           // Retorna [] antes de qualquer tentativa de cache para não acumular
           // latência e disparar o watchdog de 8 s (BUILD 313).
-          debugPrint('[BUILD427][FIRESTORE] loadHistories permission-denied '
-              'uid=$uid — fast-fail instantâneo (sem cache retry)');
-          debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
-              'allowed=false reason=permission_denied uid=$uid '
-              'sdkRequestDispatched=true '
-              'result=authDenied — cache local preservado, escrita proibida');
+          debugPrint(
+            '[BUILD427][FIRESTORE] loadHistories permission-denied '
+            'uid=$uid — fast-fail instantâneo (sem cache retry)',
+          );
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true '
+            'result=authDenied — cache local preservado, escrita proibida',
+          );
           // Retorna [] para compatibilidade de interface mas sem disparar escrita
           // de "novo usuário" — o chamador não recebe FirestoreLoadResult diretamente
           // mas o log acima indica ao operador que o cache foi preservado.
@@ -2023,8 +2230,10 @@ class FirestoreService {
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return list;
     } on FirebaseException catch (e) {
-      debugPrint('[BUILD427][FIRESTORE] loadHistories FirebaseException '
-          'code=${e.code} uid=$uid — retornando []');
+      debugPrint(
+        '[BUILD427][FIRESTORE] loadHistories FirebaseException '
+        'code=${e.code} uid=$uid — retornando []',
+      );
       return [];
     } catch (_) {
       return [];
@@ -2034,20 +2243,23 @@ class FirestoreService {
   // ── BUILD 463-A.1 / 463-A.1.2: Typed loadHistories returning FirestoreLoadResult
   // Canonical typed variant. All internal callers must use this method.
   // Dual-check barrier: (1) null SDK user, (2) uid mismatch — both block dispatch.
-  static Future<FirestoreLoadResult<List<ClinicalHistoryModel>>> loadHistoriesTyped(
-    String uid,
-  ) async {
+  static Future<FirestoreLoadResult<List<ClinicalHistoryModel>>>
+  loadHistoriesTyped(String uid) async {
     final _fbUserT = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUserT == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUserT.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-          'expectedUid=$uid firebaseUid=${_fbUserT.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
+        'expectedUid=$uid firebaseUid=${_fbUserT.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -2059,9 +2271,11 @@ class FirestoreService {
             .timeout(const Duration(seconds: 10));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-              'allowed=false reason=permission_denied uid=$uid '
-              'sdkRequestDispatched=true → authDenied');
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true → authDenied',
+          );
           return FirestoreLoadResult.authDenied();
         }
         // Network/unavailable FirebaseException → cache fallback.
@@ -2075,7 +2289,9 @@ class FirestoreService {
         }
         if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
         final listCached = snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
+            .map(
+              (d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())),
+            )
             .toList();
         listCached.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
         return FirestoreLoadResult.success(listCached);
@@ -2091,7 +2307,9 @@ class FirestoreService {
         }
         if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
         final listCached = snap.docs
-            .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
+            .map(
+              (d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())),
+            )
             .toList();
         listCached.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
         return FirestoreLoadResult.success(listCached);
@@ -2104,9 +2322,12 @@ class FirestoreService {
       list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return FirestoreLoadResult.success(list);
     } on FirebaseException catch (e) {
-      debugPrint('[FirestoreService] loadHistoriesTyped FirebaseException '
-          'code=${e.code} uid=$uid');
-      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      debugPrint(
+        '[FirestoreService] loadHistoriesTyped FirebaseException '
+        'code=${e.code} uid=$uid',
+      );
+      if (e.code == 'permission-denied')
+        return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);
@@ -2141,15 +2362,19 @@ class FirestoreService {
   ) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -2161,20 +2386,23 @@ class FirestoreService {
             .timeout(const Duration(seconds: 10));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
-              'allowed=false reason=permission_denied uid=$uid '
-              'sdkRequestDispatched=true → authDenied');
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
+            'allowed=false reason=permission_denied uid=$uid '
+            'sdkRequestDispatched=true → authDenied',
+          );
           return FirestoreLoadResult.authDenied();
         }
         // Network/unavailable error → try local cache before returning offline()
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('drugs')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('drugs').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
@@ -2182,21 +2410,24 @@ class FirestoreService {
         // Timeout or other error → cache fallback
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('drugs')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('drugs').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       }
       if (!doc.exists) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          safeStringList(doc.data()?['ids']).toSet());
+        safeStringList(doc.data()?['ids']).toSet(),
+      );
     } on FirebaseException catch (e) {
-      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      if (e.code == 'permission-denied')
+        return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);
@@ -2210,15 +2441,19 @@ class FirestoreService {
   ) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -2230,39 +2465,45 @@ class FirestoreService {
             .timeout(const Duration(seconds: 10));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
-              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
+            'allowed=false reason=permission_denied uid=$uid → authDenied',
+          );
           return FirestoreLoadResult.authDenied();
         }
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('protocols')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('protocols').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       } catch (_) {
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('protocols')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('protocols').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       }
       if (!doc.exists) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          safeStringList(doc.data()?['ids']).toSet());
+        safeStringList(doc.data()?['ids']).toSet(),
+      );
     } on FirebaseException catch (e) {
-      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      if (e.code == 'permission-denied')
+        return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);
@@ -2276,15 +2517,19 @@ class FirestoreService {
   ) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -2296,39 +2541,45 @@ class FirestoreService {
             .timeout(const Duration(seconds: 10));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
-              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
+            'allowed=false reason=permission_denied uid=$uid → authDenied',
+          );
           return FirestoreLoadResult.authDenied();
         }
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('prescriptions')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('prescriptions').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       } catch (_) {
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('prescriptions')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('prescriptions').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       }
       if (!doc.exists) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          safeStringList(doc.data()?['ids']).toSet());
+        safeStringList(doc.data()?['ids']).toSet(),
+      );
     } on FirebaseException catch (e) {
-      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      if (e.code == 'permission-denied')
+        return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);
@@ -2342,15 +2593,19 @@ class FirestoreService {
   ) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -2362,39 +2617,45 @@ class FirestoreService {
             .timeout(const Duration(seconds: 10));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
-              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
+            'allowed=false reason=permission_denied uid=$uid → authDenied',
+          );
           return FirestoreLoadResult.authDenied();
         }
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('fav_cases')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('fav_cases').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       } catch (_) {
         // ALGEBRAIC RULE: server failed → doc missing in cache = offline(), not empty().
         try {
-          doc = await _userFavs(uid)
-              .doc('fav_cases')
-              .get(const GetOptions(source: Source.cache));
+          doc = await _userFavs(
+            uid,
+          ).doc('fav_cases').get(const GetOptions(source: Source.cache));
           if (!doc.exists) return FirestoreLoadResult.offline();
           return FirestoreLoadResult.success(
-              safeStringList(doc.data()?['ids']).toSet());
+            safeStringList(doc.data()?['ids']).toSet(),
+          );
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
       }
       if (!doc.exists) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          safeStringList(doc.data()?['ids']).toSet());
+        safeStringList(doc.data()?['ids']).toSet(),
+      );
     } on FirebaseException catch (e) {
-      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      if (e.code == 'permission-denied')
+        return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);
@@ -2409,15 +2670,19 @@ class FirestoreService {
   ) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -2429,8 +2694,10 @@ class FirestoreService {
             .timeout(const Duration(seconds: 10));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
-              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
+            'allowed=false reason=permission_denied uid=$uid → authDenied',
+          );
           return FirestoreLoadResult.authDenied();
         }
         // Network/unavailable → try cache.
@@ -2445,9 +2712,13 @@ class FirestoreService {
         if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
         final casesCached = <ClinicalCaseModel>[];
         for (final d in snap.docs) {
-          try { casesCached.add(ClinicalCaseModel.fromJson(sdkDocWithId(d))); } catch (_) {}
+          try {
+            casesCached.add(ClinicalCaseModel.fromJson(sdkDocWithId(d)));
+          } catch (_) {}
         }
-        casesCached.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
+        casesCached.sort(
+          (a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''),
+        );
         return FirestoreLoadResult.success(casesCached);
       } catch (_) {
         // Timeout or unknown → try cache.
@@ -2462,21 +2733,28 @@ class FirestoreService {
         if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
         final casesCached = <ClinicalCaseModel>[];
         for (final d in snap.docs) {
-          try { casesCached.add(ClinicalCaseModel.fromJson(sdkDocWithId(d))); } catch (_) {}
+          try {
+            casesCached.add(ClinicalCaseModel.fromJson(sdkDocWithId(d)));
+          } catch (_) {}
         }
-        casesCached.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
+        casesCached.sort(
+          (a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''),
+        );
         return FirestoreLoadResult.success(casesCached);
       }
       // Server succeeded — authoritative empty is valid here.
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       final cases = <ClinicalCaseModel>[];
       for (final d in snap.docs) {
-        try { cases.add(ClinicalCaseModel.fromJson(sdkDocWithId(d))); } catch (_) {}
+        try {
+          cases.add(ClinicalCaseModel.fromJson(sdkDocWithId(d)));
+        } catch (_) {}
       }
       cases.sort((a, b) => (b.createdAt ?? '').compareTo(a.createdAt ?? ''));
       return FirestoreLoadResult.success(cases);
     } on FirebaseException catch (e) {
-      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      if (e.code == 'permission-denied')
+        return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);
@@ -2495,21 +2773,25 @@ class FirestoreService {
   /// Targets [_userAiHistory] — schema v1 inline documents.
   /// Same auth-barrier and cache-fallback contract as loadAiSessionsTyped.
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
-      loadLegacyAiSessionsTyped(String uid) async {
+  loadLegacyAiSessionsTyped(String uid) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE][loadLegacyAiSessionsTyped] '
-          'allowed=false reason=firebase_user_null uid=$uid');
+      debugPrint(
+        '[FIRESTORE][loadLegacyAiSessionsTyped] '
+        'allowed=false reason=firebase_user_null uid=$uid',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE][loadLegacyAiSessionsTyped] '
-          'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}');
+      debugPrint(
+        '[FIRESTORE][loadLegacyAiSessionsTyped] '
+        'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}',
+      );
       return FirestoreLoadResult.authDenied();
     }
-    final query = _userAiHistory(uid)
-        .orderBy('updatedAt', descending: true)
-        .limit(20);
+    final query = _userAiHistory(
+      uid,
+    ).orderBy('updatedAt', descending: true).limit(20);
     try {
       QuerySnapshot<Map<String, dynamic>> snap;
       try {
@@ -2518,13 +2800,17 @@ class FirestoreService {
             .timeout(const Duration(seconds: 8));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE][loadLegacyAiSessionsTyped] '
-              'allowed=false reason=permission_denied uid=$uid');
+          debugPrint(
+            '[FIRESTORE][loadLegacyAiSessionsTyped] '
+            'allowed=false reason=permission_denied uid=$uid',
+          );
           return FirestoreLoadResult.authDenied();
         }
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          final cached = snap.docs
+              .map((d) => sdkDocToSafeMap(d.data()))
+              .toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2534,7 +2820,9 @@ class FirestoreService {
       } catch (_) {
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          final cached = snap.docs
+              .map((d) => sdkDocToSafeMap(d.data()))
+              .toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2544,7 +2832,8 @@ class FirestoreService {
       }
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+        snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList(),
+      );
     } catch (e) {
       return FirestoreLoadResult.failure(e);
     }
@@ -2554,16 +2843,20 @@ class FirestoreService {
   /// Targets [_userAiSessions] — schema v2 with isDeleted + updatedAt index.
   /// Filter: isDeleted==false, ordered descending by updatedAt, limit 10.
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
-      loadCanonicalAiSessionSummariesTyped(String uid) async {
+  loadCanonicalAiSessionSummariesTyped(String uid) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
-          'allowed=false reason=firebase_user_null uid=$uid');
+      debugPrint(
+        '[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
+        'allowed=false reason=firebase_user_null uid=$uid',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
-          'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}');
+      debugPrint(
+        '[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
+        'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}',
+      );
       return FirestoreLoadResult.authDenied();
     }
     final query = _userAiSessions(uid)
@@ -2578,13 +2871,17 @@ class FirestoreService {
             .timeout(const Duration(seconds: 8));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
-              'allowed=false reason=permission_denied uid=$uid');
+          debugPrint(
+            '[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
+            'allowed=false reason=permission_denied uid=$uid',
+          );
           return FirestoreLoadResult.authDenied();
         }
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          final cached = snap.docs
+              .map((d) => sdkDocToSafeMap(d.data()))
+              .toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2594,7 +2891,9 @@ class FirestoreService {
       } catch (_) {
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
+          final cached = snap.docs
+              .map((d) => sdkDocToSafeMap(d.data()))
+              .toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2604,7 +2903,8 @@ class FirestoreService {
       }
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+        snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList(),
+      );
     } catch (e) {
       return FirestoreLoadResult.failure(e);
     }
@@ -2612,18 +2912,125 @@ class FirestoreService {
 
   /// Loads exchange sub-documents for a canonical v2 session.
   /// Path: users/{uid}/ai_sessions/{sessionId}/exchanges
+
+  // M74B_POST_FINAL_PRESENTATION_RECONCILIATION_V1
+  static Future<({bool ok, bool permissionDenied, Object? error})>
+      reconcileAiExchangeFinalPresentation({
+    required String uid,
+    required String sessionId,
+    required String requestId,
+    required String assistantPresentation,
+    Map<String, dynamic>? clinicalOutputJson,
+  }) async {
+    final normalizedUid = uid.trim();
+    final normalizedSessionId = sessionId.trim();
+    final normalizedRequestId = requestId.trim();
+    final normalizedPresentation = assistantPresentation.trim();
+
+    if (normalizedUid.isEmpty ||
+        normalizedSessionId.isEmpty ||
+        normalizedRequestId.isEmpty ||
+        normalizedPresentation.isEmpty) {
+      return (
+        ok: false,
+        permissionDenied: false,
+        error: ArgumentError('invalid_final_presentation_reconciliation'),
+      );
+    }
+
+    final fbUser = FirebaseAuth.instance.currentUser;
+    if (!_isFirebaseReady ||
+        fbUser == null ||
+        fbUser.uid != normalizedUid) {
+      return (
+        ok: false,
+        permissionDenied: true,
+        error: null,
+      );
+    }
+
+    try {
+      final sessionRef =
+          _userAiSessions(normalizedUid).doc(normalizedSessionId);
+      final exchangeRef =
+          sessionRef.collection('exchanges').doc(normalizedRequestId);
+
+      final preview = normalizedPresentation.length > 160
+          ? '${normalizedPresentation.substring(0, 160)}\u2026'
+          : normalizedPresentation;
+
+      final exchangeData = <String, dynamic>{
+        'assistantPresentation': normalizedPresentation,
+        'presentationSchemaVersion': 1,
+        'presentationUpdatedAt': FieldValue.serverTimestamp(),
+      };
+
+      if (clinicalOutputJson != null) {
+        exchangeData['clinicalOutput'] =
+            Map<String, dynamic>.from(clinicalOutputJson);
+      }
+
+      final batch = _db.batch();
+
+      // The canonical provider exchange must already exist.
+      // update() fails closed instead of creating a second exchange.
+      batch.update(exchangeRef, exchangeData);
+
+      batch.set(
+        sessionRef,
+        <String, dynamic>{
+          'lastRequestId': normalizedRequestId,
+          'lastAssistantPreview': preview,
+          'updatedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
+
+      await batch.commit();
+
+      return (
+        ok: true,
+        permissionDenied: false,
+        error: null,
+      );
+    } on FirebaseException catch (error) {
+      if (error.code == 'permission-denied') {
+        return (
+          ok: false,
+          permissionDenied: true,
+          error: error,
+        );
+      }
+      return (
+        ok: false,
+        permissionDenied: false,
+        error: error,
+      );
+    } catch (error) {
+      return (
+        ok: false,
+        permissionDenied: false,
+        error: error,
+      );
+    }
+  }
+
   /// Ordered ascending by createdAt (chronological turn order).
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
-      loadAiSessionExchangesTyped(String uid, String sessionId) async {
+  loadAiSessionExchangesTyped(String uid, String sessionId) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE][loadAiSessionExchangesTyped] '
-          'allowed=false reason=firebase_user_null uid=$uid');
+      debugPrint(
+        '[FIRESTORE][loadAiSessionExchangesTyped] '
+        'allowed=false reason=firebase_user_null uid=$uid',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE][loadAiSessionExchangesTyped] '
-          'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}');
+      debugPrint(
+        '[FIRESTORE][loadAiSessionExchangesTyped] '
+        'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}',
+      );
       return FirestoreLoadResult.authDenied();
     }
     try {
@@ -2635,11 +3042,14 @@ class FirestoreService {
           .timeout(const Duration(seconds: 10));
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+        snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList(),
+      );
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        debugPrint('[FIRESTORE][loadAiSessionExchangesTyped] '
-            'allowed=false reason=permission_denied uid=$uid sessionId=$sessionId');
+        debugPrint(
+          '[FIRESTORE][loadAiSessionExchangesTyped] '
+          'allowed=false reason=permission_denied uid=$uid sessionId=$sessionId',
+        );
         return FirestoreLoadResult.authDenied();
       }
       return FirestoreLoadResult.failure(e);
@@ -2657,25 +3067,28 @@ class FirestoreService {
   ///
   /// Cache preservation: a network failure returns success(cachedData) when
   /// valid cache entries exist. It never collapses to empty() silently.
-  static Future<FirestoreLoadResult<List<Map<String, dynamic>>>> loadAiSessionsTyped(
-    String uid,
-  ) async {
+  static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
+  loadAiSessionsTyped(String uid) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-          'allowed=false reason=firebase_user_null uid=$uid '
-          'sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+        'allowed=false reason=firebase_user_null uid=$uid '
+        'sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
-      debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-          'expectedUid=$uid firebaseUid=${_fbUser.uid} '
-          'allowed=false reason=uid_mismatch sdkRequestDispatched=false');
+      debugPrint(
+        '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
+      );
       return FirestoreLoadResult.authDenied();
     }
-    final query = _userAiHistory(uid)
-        .orderBy('updatedAt', descending: true)
-        .limit(20);
+    final query = _userAiHistory(
+      uid,
+    ).orderBy('updatedAt', descending: true).limit(20);
     try {
       QuerySnapshot<Map<String, dynamic>> snap;
       try {
@@ -2684,17 +3097,23 @@ class FirestoreService {
             .timeout(const Duration(seconds: 8));
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-              'allowed=false reason=permission_denied uid=$uid → authDenied');
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+            'allowed=false reason=permission_denied uid=$uid → authDenied',
+          );
           return FirestoreLoadResult.authDenied();
         }
         // Network error → try cache.
         // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-              'source=cache count=${cached.length} uid=$uid');
+          final cached = snap.docs
+              .map((d) => sdkDocToSafeMap(d.data()))
+              .toList();
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+            'source=cache count=${cached.length} uid=$uid',
+          );
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2706,9 +3125,13 @@ class FirestoreService {
         // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
-          debugPrint('[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-              'source=cache(timeout_fallback) count=${cached.length} uid=$uid');
+          final cached = snap.docs
+              .map((d) => sdkDocToSafeMap(d.data()))
+              .toList();
+          debugPrint(
+            '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
+            'source=cache(timeout_fallback) count=${cached.length} uid=$uid',
+          );
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2718,9 +3141,11 @@ class FirestoreService {
       }
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
-          snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList());
+        snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList(),
+      );
     } on FirebaseException catch (e) {
-      if (e.code == 'permission-denied') return FirestoreLoadResult.authDenied();
+      if (e.code == 'permission-denied')
+        return FirestoreLoadResult.authDenied();
       return FirestoreLoadResult.failure(e);
     } catch (e) {
       return FirestoreLoadResult.failure(e);
@@ -2740,8 +3165,10 @@ class FirestoreService {
     await for (final snap in _userHistories(uid).snapshots()) {
       final activeUid = FirebaseAuth.instance.currentUser?.uid;
       if (activeUid != uid) {
-        debugPrint('[SECURE_STREAM][AUTO_CLOSE] stream=streamHistories '
-            'parentUid=$uid activeUid=$activeUid');
+        debugPrint(
+          '[SECURE_STREAM][AUTO_CLOSE] stream=streamHistories '
+          'parentUid=$uid activeUid=$activeUid',
+        );
         yield* Stream.empty();
         return;
       }
@@ -2767,7 +3194,7 @@ class FirestoreService {
 
       final publicData = h.toJson();
       publicData['uploadedAt'] = uploadedAt;
-      publicData['isHidden']   = publicData['isHidden'] ?? false;
+      publicData['isHidden'] = publicData['isHidden'] ?? false;
 
       if (kIsWeb) {
         // Web: REST PATCH (não depende de WebSocket do SDK)
@@ -2781,7 +3208,9 @@ class FirestoreService {
       if (kIsWeb) {
         await _deletePublicHistoryRest(h.id);
       } else {
-        try { await _publicHistories.doc(h.id).delete(); } catch (_) {}
+        try {
+          await _publicHistories.doc(h.id).delete();
+        } catch (_) {}
       }
       return null;
     }
@@ -2789,7 +3218,9 @@ class FirestoreService {
 
   /// Grava/atualiza um documento em public_histories via REST (web).
   static Future<void> _savePublicHistoryRest(
-      String docId, Map<String, dynamic> data) async {
+    String docId,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final token = await AuthService.getAdminToken();
       if (token.isEmpty) return;
@@ -2821,11 +3252,17 @@ class FirestoreService {
     } catch (_) {}
   }
 
-  static Future<void> deleteHistory(String uid, String hid, {bool wasPublic = false}) async {
+  static Future<void> deleteHistory(
+    String uid,
+    String hid, {
+    bool wasPublic = false,
+  }) async {
     try {
       await _userHistories(uid).doc(hid).delete();
       if (wasPublic) {
-        try { await _publicHistories.doc(hid).delete(); } catch (_) {}
+        try {
+          await _publicHistories.doc(hid).delete();
+        } catch (_) {}
       }
     } catch (_) {}
   }
@@ -2860,7 +3297,9 @@ class FirestoreService {
     } catch (_) {}
   }
 
-  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesSdk({Source? source}) async {
+  static Future<List<ClinicalHistoryModel>> _loadPublicHistoriesSdk({
+    Source? source,
+  }) async {
     try {
       // Filtra isPublic=true via query SDK — reduz transferência e respeita rules.
       // isHidden é filtrado em memória (campo opcional, pode estar ausente).
@@ -2870,8 +3309,8 @@ class FirestoreService {
       final snap = source == null
           ? await query.get().timeout(const Duration(seconds: 8))
           : await query
-              .get(GetOptions(source: source))
-              .timeout(const Duration(seconds: 8));
+                .get(GetOptions(source: source))
+                .timeout(const Duration(seconds: 8));
 
       // ── CAMADA DUPLA DE PROTEÇÃO contra TypeError em dart2js release ─────
       // Mesmo que _safeDocsToHistoryList já tenha try/catch individual por doc,
@@ -2882,7 +3321,10 @@ class FirestoreService {
       try {
         rawList = _safeDocsToHistoryList(snap.docs);
       } catch (parseError) {
-        if (kDebugMode) debugPrint('[_loadPublicHistoriesSdk] parse error silenciado: $parseError');
+        if (kDebugMode)
+          debugPrint(
+            '[_loadPublicHistoriesSdk] parse error silenciado: $parseError',
+          );
         rawList = const [];
       }
 
@@ -2894,10 +3336,14 @@ class FirestoreService {
       }
 
       if (list.isNotEmpty) {
-        try { await _saveCachedPublicHistories(list); } catch (_) {}
+        try {
+          await _saveCachedPublicHistories(list);
+        } catch (_) {}
         _clearPublicHistoriesError();
       }
-      _debugPublicHistories('sdk load count=${list.length} source=${source ?? 'default'}');
+      _debugPublicHistories(
+        'sdk load count=${list.length} source=${source ?? 'default'}',
+      );
       return list;
     } on FirebaseException catch (e) {
       // permission-denied: regras do Firestore bloquearam a leitura.
@@ -2913,24 +3359,35 @@ class FirestoreService {
           'firebase deploy --only firestore:rules | source=${source ?? 'default'}',
         );
       } else {
-        _setPublicHistoriesError('Erro ao carregar histórias públicas. Tente novamente.');
-        _debugPublicHistories('sdk firebase error ${e.code} source=${source ?? 'default'}');
+        _setPublicHistoriesError(
+          'Erro ao carregar histórias públicas. Tente novamente.',
+        );
+        _debugPublicHistories(
+          'sdk firebase error ${e.code} source=${source ?? 'default'}',
+        );
       }
       return [];
     } catch (e) {
       // NUNCA exibe TypeError de dart2js como erro visível ao usuário —
       // trata como lista vazia e continua para fallback/cache.
-      if (kDebugMode) debugPrint('[_loadPublicHistoriesSdk] erro silenciado: $e');
-      _debugPublicHistories('sdk load failed (silenced) source=${source ?? 'default'} error=$e');
+      if (kDebugMode)
+        debugPrint('[_loadPublicHistoriesSdk] erro silenciado: $e');
+      _debugPublicHistories(
+        'sdk load failed (silenced) source=${source ?? 'default'} error=$e',
+      );
       return [];
     }
   }
 
-  static Future<List<ClinicalHistoryModel>> loadPublicHistories({bool forceRemote = false}) async {
+  static Future<List<ClinicalHistoryModel>> loadPublicHistories({
+    bool forceRemote = false,
+  }) async {
     // ORDEM 50 M3: Auth guard — suprime requests Firestore antes da barreira
     // de auth transposta, eliminando spam de 403 "permission-denied" no console.
     if (!_hasAnyAuthCredential) {
-      _debugPublicHistories('ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier');
+      _debugPublicHistories(
+        'ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier',
+      );
       return const <ClinicalHistoryModel>[];
     }
 
@@ -2960,7 +3417,9 @@ class FirestoreService {
       final restError = lastPublicHistoriesErrorMessage;
       if (restError.contains('HTTP 403') || restError.contains('403')) {
         _publicHistoriesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
-        _debugPublicHistories('REST 403 — cooldown até $_publicHistoriesRestRetryAfter');
+        _debugPublicHistories(
+          'REST 403 — cooldown até $_publicHistoriesRestRetryAfter',
+        );
       }
     } else {
       _debugPublicHistories('REST em cooldown — pulando');
@@ -2972,7 +3431,9 @@ class FirestoreService {
       return cached;
     }
 
-    _debugPublicHistories('returning empty error=${lastPublicHistoriesErrorMessage.isNotEmpty}');
+    _debugPublicHistories(
+      'returning empty error=${lastPublicHistoriesErrorMessage.isNotEmpty}',
+    );
     return const <ClinicalHistoryModel>[];
   }
 
@@ -2989,14 +3450,20 @@ class FirestoreService {
     String token;
     if (kIsWeb) {
       token = await AuthService.getAdminToken();
-      debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=public_histories');
+      debugPrint(
+        '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=public_histories',
+      );
       if (token.isEmpty) {
-        _debugPublicHistories('rest skipped — token REST vazio (não autenticado)');
+        _debugPublicHistories(
+          'rest skipped — token REST vazio (não autenticado)',
+        );
         return const <ClinicalHistoryModel>[];
       }
     } else {
       final currentUser = FirebaseAuth.instance.currentUser;
-      debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=public_histories');
+      debugPrint(
+        '[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=public_histories',
+      );
       if (currentUser == null) {
         _debugPublicHistories('rest skipped — no authenticated user (nativo)');
         return const <ClinicalHistoryModel>[];
@@ -3048,7 +3515,9 @@ class FirestoreService {
           parsed.add(ClinicalHistoryModel.fromJson(data));
         } catch (e, st) {
           // Documento malformado — loga e pula; não quebra os demais
-          _debugPublicHistories('REST parse: documento ignorado por erro — $e\n$st');
+          _debugPublicHistories(
+            'REST parse: documento ignorado por erro — $e\n$st',
+          );
         }
       }
       return _normalizePublicHistories(parsed);
@@ -3067,32 +3536,52 @@ class FirestoreService {
         try {
           if (kIsWeb) {
             refreshed = await AuthService.getAdminToken();
-            debugPrint('[WEB_AUTH] source=REST token=${(refreshed).isNotEmpty} endpoint=public_histories (retry)');
+            debugPrint(
+              '[WEB_AUTH] source=REST token=${(refreshed).isNotEmpty} endpoint=public_histories (retry)',
+            );
           } else {
-            refreshed = await FirebaseAuth.instance.currentUser?.getIdToken(true);
-            debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=public_histories (retry)');
+            refreshed = await FirebaseAuth.instance.currentUser?.getIdToken(
+              true,
+            );
+            debugPrint(
+              '[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=public_histories (retry)',
+            );
           }
         } catch (_) {}
         if (refreshed != null && refreshed.isNotEmpty) {
           _debugPublicHistories('rest auth retry with refreshed token');
-          resp = await doGet(extraHeaders: {'Authorization': 'Bearer $refreshed'});
+          resp = await doGet(
+            extraHeaders: {'Authorization': 'Bearer $refreshed'},
+          );
           _debugPublicHistories('rest load retry status=${resp.statusCode}');
         } else {
           // Token refresh falhou — aplica cooldown imediatamente
-          _publicHistoriesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
-          _setPublicHistoriesError('REST public_histories HTTP ${resp.statusCode}: sem token após refresh');
-          _debugPublicHistories('rest 403 e refresh falhou — cooldown aplicado');
+          _publicHistoriesRestRetryAfter = DateTime.now().add(
+            _restRetryCooldown,
+          );
+          _setPublicHistoriesError(
+            'REST public_histories HTTP ${resp.statusCode}: sem token após refresh',
+          );
+          _debugPublicHistories(
+            'rest 403 e refresh falhou — cooldown aplicado',
+          );
           return const <ClinicalHistoryModel>[];
         }
       }
 
       if (resp.statusCode != 200) {
-        final snippet = resp.body.length > 220 ? resp.body.substring(0, 220) : resp.body;
-        _setPublicHistoriesError('REST public_histories HTTP ${resp.statusCode}: $snippet');
+        final snippet = resp.body.length > 220
+            ? resp.body.substring(0, 220)
+            : resp.body;
+        _setPublicHistoriesError(
+          'REST public_histories HTTP ${resp.statusCode}: $snippet',
+        );
         // Aplica cooldown em qualquer erro HTTP (403, 401, 500...) para evitar retry storm.
         // O cooldown de 2 minutos garante que não haverá loop infinito de tentativas.
         _publicHistoriesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
-        _debugPublicHistories('REST ${resp.statusCode} — cooldown 2min aplicado');
+        _debugPublicHistories(
+          'REST ${resp.statusCode} — cooldown 2min aplicado',
+        );
         return const <ClinicalHistoryModel>[];
       }
 
@@ -3115,29 +3604,29 @@ class FirestoreService {
   }
 
   static Stream<List<ClinicalHistoryModel>> historiesStream(String uid) {
-    return _userHistories(uid)
-        .orderBy('updatedAt', descending: true)
-        .snapshots()
-        // CAMADA DUPLA: _safeDocsToHistoryList já tem try/catch por doc,
-        // mas envolvemos em try/catch extra para garantir que TypeError de
-        // dart2js não escapa e não quebra o stream inteiro.
-        .map((snap) {
-          try {
-            return _safeDocsToHistoryList(snap.docs);
-          } catch (e) {
-            if (kDebugMode) debugPrint('[historiesStream] parse error silenciado: $e');
-            return const <ClinicalHistoryModel>[];
-          }
-        });
+    return _userHistories(
+      uid,
+    ).orderBy('updatedAt', descending: true).snapshots()
+    // CAMADA DUPLA: _safeDocsToHistoryList já tem try/catch por doc,
+    // mas envolvemos em try/catch extra para garantir que TypeError de
+    // dart2js não escapa e não quebra o stream inteiro.
+    .map((snap) {
+      try {
+        return _safeDocsToHistoryList(snap.docs);
+      } catch (e) {
+        if (kDebugMode)
+          debugPrint('[historiesStream] parse error silenciado: $e');
+        return const <ClinicalHistoryModel>[];
+      }
+    });
   }
 
   // ── Último paciente (cockpit) ─────────────────────────────────────────────
   static Future<Map<String, dynamic>?> loadLastPatient(String uid) async {
     try {
-      final doc = await _userDoc(uid)
-          .collection('prefs')
-          .doc('last_patient')
-          .get();
+      final doc = await _userDoc(
+        uid,
+      ).collection('prefs').doc('last_patient').get();
       if (!doc.exists) return null;
       return doc.data();
     } catch (_) {
@@ -3145,7 +3634,10 @@ class FirestoreService {
     }
   }
 
-  static Future<void> saveLastPatient(String uid, Map<String, dynamic> data) async {
+  static Future<void> saveLastPatient(
+    String uid,
+    Map<String, dynamic> data,
+  ) async {
     try {
       await _userDoc(uid)
           .collection('prefs')
@@ -3197,9 +3689,9 @@ class FirestoreService {
         if (resp.statusCode != 200) return;
 
         // safeMap: sem casts diretos — imune a TypeError em dart2js release
-        final body   = safeMap(jsonDecode(resp.body));
+        final body = safeMap(jsonDecode(resp.body));
         final fields = safeMap(body['fields']);
-        final data   = <String, dynamic>{};
+        final data = <String, dynamic>{};
 
         fields.forEach((key, value) {
           final v = safeMap(value);
@@ -3269,7 +3761,9 @@ class FirestoreService {
       return safeMap(_cachedAppUpdate); // BUILD 258: safeMap em vez de .from()
     }
     if (_isRestCoolingDown(_appUpdateRetryAfter)) {
-      debugPrint('[FirestoreService] app_updates/current em cooldown — retornando cache');
+      debugPrint(
+        '[FirestoreService] app_updates/current em cooldown — retornando cache',
+      );
       return safeMap(_cachedAppUpdate); // BUILD 258
     }
     // BUILD 277 FIX: Skip Firestore read entirely when the user is not yet
@@ -3281,7 +3775,9 @@ class FirestoreService {
     if (!_hasAnyAuthCredential) {
       if (_appUpdateRetryAfter == null) {
         _appUpdateRetryAfter = DateTime.now().add(const Duration(seconds: 5));
-        debugPrint('[FirestoreService] app_updates/current — usuário não autenticado, aguardando (5s)');
+        debugPrint(
+          '[FirestoreService] app_updates/current — usuário não autenticado, aguardando (5s)',
+        );
       }
       return safeMap(_cachedAppUpdate);
     }
@@ -3295,27 +3791,40 @@ class FirestoreService {
         // Usar SDK evita o 403 do REST que aparecia nos logs quando as rules
         // exigiam autenticação mas o REST não enviava token corretamente.
         try {
-          final doc = await _db.collection('app_updates').doc('current').get()
+          final doc = await _db
+              .collection('app_updates')
+              .doc('current')
+              .get()
               .timeout(const Duration(seconds: 4));
           // BUILD 258: sdkDocToSafeMapAny — converte doc.data() (Map<String,Object?>)
           // para Map<String,dynamic> seguro sem TypeError em dart2js release mode.
-          final data = doc.exists ? sdkDocToSafeMapAny(doc.data()) : <String, dynamic>{};
+          final data = doc.exists
+              ? sdkDocToSafeMapAny(doc.data())
+              : <String, dynamic>{};
           if (data.isNotEmpty) {
             _cachedAppUpdate = data; // já é Map<String,dynamic> seguro
             _appUpdateRetryAfter = null;
           }
-          debugPrint('[FirestoreService] app_updates/current SDK ok data.isNotEmpty=${data.isNotEmpty}');
+          debugPrint(
+            '[FirestoreService] app_updates/current SDK ok data.isNotEmpty=${data.isNotEmpty}',
+          );
           return safeMap(data); // BUILD 258
         } on FirebaseException catch (e) {
           if (e.code == 'permission-denied') {
             // permission-denied: token autenticado mas sem permissão (rules).
             // Aplica cooldown CURTO (15s) para aguardar consolidação do token.
             // Não usar 2min: prejudica usuários que fazem login logo em seguida.
-            _appUpdateRetryAfter = DateTime.now().add(const Duration(seconds: 15));
-            debugPrint('[FirestoreService] app_updates/current permission-denied — aguardando consolidação do token (15s)');
+            _appUpdateRetryAfter = DateTime.now().add(
+              const Duration(seconds: 15),
+            );
+            debugPrint(
+              '[FirestoreService] app_updates/current permission-denied — aguardando consolidação do token (15s)',
+            );
             return safeMap(_cachedAppUpdate); // BUILD 258
           }
-          debugPrint('[FirestoreService] app_updates/current SDK erro: ${e.code} — tentando REST');
+          debugPrint(
+            '[FirestoreService] app_updates/current SDK erro: ${e.code} — tentando REST',
+          );
           // Outros erros SDK: tenta REST como fallback
           return await _loadAppUpdateRest();
         }
@@ -3335,15 +3844,19 @@ class FirestoreService {
     try {
       final token = await AuthService.getAdminToken();
       // GET: usa _restGetHeaders (sem Content-Type nem X-Firebase-API-Key)
-      final resp = await http.get(
-        Uri.parse('$_fsBase/app_updates/current?key=$_firebaseApiKey'),
-        headers: _restGetHeaders(token),
-      ).timeout(const Duration(seconds: 2));
+      final resp = await http
+          .get(
+            Uri.parse('$_fsBase/app_updates/current?key=$_firebaseApiKey'),
+            headers: _restGetHeaders(token),
+          )
+          .timeout(const Duration(seconds: 2));
       if (resp.statusCode != 200) {
         if (resp.statusCode == 401 || resp.statusCode == 403) {
           _appUpdateRetryAfter = DateTime.now().add(_restRetryCooldown);
         }
-        debugPrint('[FirestoreService] app_updates/current REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}');
+        debugPrint(
+          '[FirestoreService] app_updates/current REST ${resp.statusCode}: ${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
+        );
         return safeMap(_cachedAppUpdate); // BUILD 258
       }
       _appUpdateRetryAfter = null;
@@ -3368,38 +3881,55 @@ class FirestoreService {
   }) async {
     if (kIsWeb) {
       await _saveAppUpdateRest(
-        version: version, title: title,
-        date: date, items: items, active: active,
+        version: version,
+        title: title,
+        date: date,
+        items: items,
+        active: active,
       );
       return;
     }
     await _db.collection('app_updates').doc('current').set({
-      'version': version, 'title': title,
-      'date': date, 'items': items, 'active': active,
+      'version': version,
+      'title': title,
+      'date': date,
+      'items': items,
+      'active': active,
     });
   }
 
   static Future<void> _saveAppUpdateRest({
-    required String version, required String title,
-    required String date, required List<String> items, required bool active,
+    required String version,
+    required String title,
+    required String date,
+    required List<String> items,
+    required bool active,
   }) async {
     final token = await AuthService.getAdminToken();
     if (token.isEmpty) return;
     final fields = {
       'version': {'stringValue': version},
-      'title':   {'stringValue': title},
-      'date':    {'stringValue': date},
-      'active':  {'booleanValue': active},
-      'items':   {'arrayValue': {'values': items.map((e) => {'stringValue': e}).toList()}},
+      'title': {'stringValue': title},
+      'date': {'stringValue': date},
+      'active': {'booleanValue': active},
+      'items': {
+        'arrayValue': {
+          'values': items.map((e) => {'stringValue': e}).toList(),
+        },
+      },
     };
-    const mask = 'updateMask.fieldPaths=version'
+    const mask =
+        'updateMask.fieldPaths=version'
         '&updateMask.fieldPaths=title'
         '&updateMask.fieldPaths=date'
         '&updateMask.fieldPaths=active'
         '&updateMask.fieldPaths=items';
     await http.patch(
       Uri.parse('$_fsBase/app_updates/current?$mask'),
-      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
       body: jsonEncode({'fields': fields}),
     );
   }
@@ -3455,10 +3985,10 @@ class FirestoreService {
     if (uid.isEmpty) return;
     try {
       await _db.collection('notifications').doc(uid).collection('items').add({
-        'title':     title,
-        'body':      body,
-        'payload':   payload,
-        'read':      false,
+        'title': title,
+        'body': body,
+        'payload': payload,
+        'read': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (_) {}
@@ -3481,18 +4011,18 @@ class FirestoreService {
     required String sentBy,
     required String recipients, // 'all' | 'approved'
     required int recipientCount,
-    required String status,     // 'sent' | 'error'
+    required String status, // 'sent' | 'error'
     String? errorMsg,
   }) async {
     await _db.collection('email_campaigns').add({
-      'subject':        subject,
-      'body':           body,
-      'sentBy':         sentBy,
-      'recipients':     recipients,
+      'subject': subject,
+      'body': body,
+      'sentBy': sentBy,
+      'recipients': recipients,
       'recipientCount': recipientCount,
-      'status':         status,
-      'errorMsg':       errorMsg ?? '',
-      'sentAt':         FieldValue.serverTimestamp(),
+      'status': status,
+      'errorMsg': errorMsg ?? '',
+      'sentAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -3533,12 +4063,14 @@ class FirestoreService {
     }
     // Nativo — SDK funciona normalmente
     await _db.collection('app_config').doc('emailjs').set({
-      'serviceId':   serviceId,
-      'templateId':  templateId,
-      'publicKey':   publicKey,
-      'updatedAt':   FieldValue.serverTimestamp(),
+      'serviceId': serviceId,
+      'templateId': templateId,
+      'publicKey': publicKey,
+      'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
-    debugPrint('[FirestoreService] saveEmailJsConfig OK → app_config/emailjs (SDK)');
+    debugPrint(
+      '[FirestoreService] saveEmailJsConfig OK → app_config/emailjs (SDK)',
+    );
   }
 
   /// Salva EmailJS config via REST PATCH (web — evita SDK permission-denied).
@@ -3549,16 +4081,19 @@ class FirestoreService {
   }) async {
     final token = await AuthService.getAdminToken();
     if (token.isEmpty) {
-      debugPrint('[FirestoreService] _saveEmailJsConfigRest: token vazio — abortando');
+      debugPrint(
+        '[FirestoreService] _saveEmailJsConfigRest: token vazio — abortando',
+      );
       throw Exception('Não autenticado — token de admin ausente');
     }
     final fields = {
-      'serviceId':  {'stringValue': serviceId},
+      'serviceId': {'stringValue': serviceId},
       'templateId': {'stringValue': templateId},
-      'publicKey':  {'stringValue': publicKey},
-      'updatedAt':  {'stringValue': DateTime.now().toUtc().toIso8601String()},
+      'publicKey': {'stringValue': publicKey},
+      'updatedAt': {'stringValue': DateTime.now().toUtc().toIso8601String()},
     };
-    const mask = 'updateMask.fieldPaths=serviceId'
+    const mask =
+        'updateMask.fieldPaths=serviceId'
         '&updateMask.fieldPaths=templateId'
         '&updateMask.fieldPaths=publicKey'
         '&updateMask.fieldPaths=updatedAt';
@@ -3570,11 +4105,17 @@ class FirestoreService {
       },
       body: jsonEncode({'fields': fields}),
     );
-    debugPrint('[FirestoreService] _saveEmailJsConfigRest status=${resp.statusCode}');
+    debugPrint(
+      '[FirestoreService] _saveEmailJsConfigRest status=${resp.statusCode}',
+    );
     if (resp.statusCode != 200) {
-      throw Exception('REST EmailJS save: HTTP ${resp.statusCode} — ${resp.body}');
+      throw Exception(
+        'REST EmailJS save: HTTP ${resp.statusCode} — ${resp.body}',
+      );
     }
-    debugPrint('[FirestoreService] saveEmailJsConfig OK → app_config/emailjs (REST)');
+    debugPrint(
+      '[FirestoreService] saveEmailJsConfig OK → app_config/emailjs (REST)',
+    );
   }
 
   /// Carrega a configuração do EmailJS.
@@ -3588,9 +4129,9 @@ class FirestoreService {
       if (doc.exists) {
         final d = safeMap(doc.data());
         return {
-          'serviceId':  safeString(d['serviceId']),
+          'serviceId': safeString(d['serviceId']),
           'templateId': safeString(d['templateId']),
-          'publicKey':  safeString(d['publicKey']),
+          'publicKey': safeString(d['publicKey']),
         };
       }
     } catch (_) {}
@@ -3600,9 +4141,9 @@ class FirestoreService {
       if (!doc.exists) return {};
       final d = safeMap(doc.data());
       return {
-        'serviceId':  safeString(d['serviceId']),
+        'serviceId': safeString(d['serviceId']),
         'templateId': safeString(d['templateId']),
-        'publicKey':  safeString(d['publicKey']),
+        'publicKey': safeString(d['publicKey']),
       };
     } catch (_) {
       return {};
@@ -3616,19 +4157,18 @@ class FirestoreService {
       final headers = token.isNotEmpty
           ? {'Authorization': 'Bearer $token'}
           : <String, String>{};
-      final resp = await http.get(
-        Uri.parse('$_fsBase/app_config/emailjs'),
-        headers: headers,
-      ).timeout(const Duration(seconds: 8));
+      final resp = await http
+          .get(Uri.parse('$_fsBase/app_config/emailjs'), headers: headers)
+          .timeout(const Duration(seconds: 8));
       if (resp.statusCode == 404) return {};
       if (resp.statusCode != 200) return {};
       // safeMap: sem casts diretos — imune a TypeError em dart2js release
-      final body   = safeMap(jsonDecode(resp.body));
+      final body = safeMap(jsonDecode(resp.body));
       final fields = safeMap(body['fields']);
       return {
-        'serviceId':  safeString(safeMap(fields['serviceId'])['stringValue']),
+        'serviceId': safeString(safeMap(fields['serviceId'])['stringValue']),
         'templateId': safeString(safeMap(fields['templateId'])['stringValue']),
-        'publicKey':  safeString(safeMap(fields['publicKey'])['stringValue']),
+        'publicKey': safeString(safeMap(fields['publicKey'])['stringValue']),
       };
     } catch (_) {
       return {};
@@ -3650,14 +4190,14 @@ class FirestoreService {
       Uri.parse('https://api.emailjs.com/api/v1.0/email/send'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'service_id':  serviceId,
+        'service_id': serviceId,
         'template_id': templateId,
-        'user_id':     publicKey,
+        'user_id': publicKey,
         'template_params': {
-          'to_email':  toEmail,
-          'to_name':   toName,
-          'subject':   subject,
-          'message':   message,
+          'to_email': toEmail,
+          'to_name': toName,
+          'subject': subject,
+          'message': message,
           'from_name': fromName,
         },
       }),
@@ -3678,14 +4218,14 @@ class FirestoreService {
     String? noteId, // null = nova nota
     required String title,
     required String content,
-    required String color,  // hex string ex: '#1F6B48'
+    required String color, // hex string ex: '#1F6B48'
     List<String> tags = const [],
   }) async {
     final data = {
-      'title':     title,
-      'content':   content,
-      'color':     color,
-      'tags':      tags,
+      'title': title,
+      'content': content,
+      'color': color,
+      'tags': tags,
       'updatedAt': FieldValue.serverTimestamp(),
     };
     if (noteId == null) {
@@ -3700,21 +4240,24 @@ class FirestoreService {
 
   /// Carrega todas as anotações do usuário, ordenadas por updatedAt desc.
   static Stream<List<Map<String, dynamic>>> notesStream(String uid) {
-    return _userNotes(uid)
-        .orderBy('updatedAt', descending: true)
-        .snapshots()
-        // Cada doc em try/catch individual via helper — imune a TypeError dart2js
-        .map((snap) {
-          final result = <Map<String, dynamic>>[];
-          for (final doc in snap.docs) {
-            try { result.add(sdkDocWithId(doc)); } catch (_) {}
-          }
-          return result;
-        });
+    return _userNotes(uid).orderBy('updatedAt', descending: true).snapshots()
+    // Cada doc em try/catch individual via helper — imune a TypeError dart2js
+    .map((snap) {
+      final result = <Map<String, dynamic>>[];
+      for (final doc in snap.docs) {
+        try {
+          result.add(sdkDocWithId(doc));
+        } catch (_) {}
+      }
+      return result;
+    });
   }
 
   /// Deleta uma anotação.
-  static Future<void> deleteNote({required String uid, required String noteId}) async {
+  static Future<void> deleteNote({
+    required String uid,
+    required String noteId,
+  }) async {
     await _userNotes(uid).doc(noteId).delete();
   }
 
@@ -3722,6 +4265,202 @@ class FirestoreService {
 
   static CollectionReference<Map<String, dynamic>> get _guides =>
       _db.collection('clinical_guides');
+
+  static const int guidesPortalPageSize = 10;
+  static const int _guidesSearchTokenLimit = 32;
+  static const int _guidesSearchIndexVersion = 1;
+
+  static String _normalizeGuideSearchText(String input) {
+    var value = input.trim().toLowerCase();
+    const from = 'áàãâäéèêëíìîïóòõôöúùûüçñ';
+    const to = 'aaaaaeeeeiiiiooooouuuucn';
+    for (var i = 0; i < from.length; i++) {
+      value = value.replaceAll(from[i], to[i]);
+    }
+    return value
+        .replaceAll(RegExp(r'[^a-z0-9]+'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
+  static List<String> _buildGuideSearchPrefixes(GuideModel guide) {
+    const stopWords = <String>{
+      'para',
+      'com',
+      'sem',
+      'uma',
+      'uns',
+      'das',
+      'dos',
+      'por',
+      'que',
+      'como',
+      'mais',
+      'menos',
+      'del',
+      'con',
+      'sin',
+      'una',
+      'unos',
+      'las',
+      'los',
+      'and',
+      'the',
+      'for',
+      'with',
+      'from',
+    };
+
+    final sources = <String>[guide.title, guide.category, guide.description];
+    final terms = <String>{};
+
+    for (final source in sources) {
+      final normalized = _normalizeGuideSearchText(source);
+      if (normalized.isEmpty) continue;
+
+      for (final word in normalized.split(' ')) {
+        if (word.length < 3 || stopWords.contains(word)) continue;
+        final maxPrefix = word.length < 20 ? word.length : 20;
+        for (var end = 3; end <= maxPrefix; end++) {
+          terms.add(word.substring(0, end));
+          if (terms.length >= 420) break;
+        }
+        terms.add(word);
+        if (terms.length >= 420) break;
+      }
+      if (terms.length >= 420) break;
+    }
+
+    return terms.take(420).toList(growable: false);
+  }
+
+  static List<String> _expandGuideSearchVariants(String normalizedQuery) {
+    final tokens = normalizedQuery
+        .split(' ')
+        .where((token) => token.length >= 3)
+        .take(4)
+        .toList(growable: false);
+
+    final variants = <String>{...tokens};
+
+    for (final token in tokens) {
+      if (token.startsWith('renal')) {
+        variants.addAll(const ['nefro', 'nefrolog']);
+      }
+      if (token.startsWith('nefro')) {
+        variants.add('renal');
+      }
+      if (token.startsWith('pneumo')) {
+        variants.addAll(const ['pulmonar', 'respirat']);
+      }
+      if (token.startsWith('pulmon')) {
+        variants.addAll(const ['pneumo', 'respirat']);
+      }
+      if (token.startsWith('respirat')) {
+        variants.addAll(const ['pneumo', 'pulmonar']);
+      }
+      if (token.startsWith('cardio')) {
+        variants.addAll(const [
+          'cardiac',
+          'cardiovascular',
+          'coracao',
+          'corazon',
+        ]);
+      }
+      if (token.startsWith('cardiac')) {
+        variants.addAll(const ['cardio', 'cardiovascular']);
+      }
+      if (token.startsWith('neuro')) {
+        variants.add('neurolog');
+      }
+      if (token.startsWith('gastro')) {
+        variants.addAll(const ['digest', 'gastroenter']);
+      }
+    }
+
+    return variants.take(8).toList(growable: false);
+  }
+
+  static bool _guidePublishedValue(dynamic value) =>
+      value == true || value?.toString().toLowerCase() == 'true';
+
+  static Future<List<GuideModel>> loadNextPublishedGuidesPage({
+    required String afterUploadedAt,
+  }) async {
+    final cursor = afterUploadedAt.trim();
+    if (cursor.isEmpty) return const <GuideModel>[];
+
+    final snap = await _guides
+        .where('isPublished', isEqualTo: true)
+        .orderBy('uploadedAt', descending: true)
+        .startAfter(<Object?>[cursor])
+        .limit(guidesPortalPageSize)
+        .get()
+        .timeout(const Duration(seconds: 12));
+
+    final page = <GuideModel>[];
+    for (final doc in snap.docs) {
+      try {
+        page.add(GuideModel.fromJson({...doc.data(), 'id': doc.id}));
+      } catch (_) {}
+    }
+
+    final normalized = _normalizeGuides(page);
+    _debugGuides('next page after="$cursor" count=${normalized.length}');
+    return normalized;
+  }
+
+  static Future<List<GuideModel>> searchPublishedGuides(
+    String rawQuery, {
+    int limit = 60,
+  }) async {
+    final normalized = _normalizeGuideSearchText(rawQuery);
+    if (normalized.length < 3) return const <GuideModel>[];
+
+    final variants = _expandGuideSearchVariants(normalized);
+    final byId = <String, GuideModel>{};
+
+    for (final term in variants) {
+      try {
+        final snap = await _guides
+            .where('searchPrefixes', arrayContains: term)
+            .limit(_guidesSearchTokenLimit)
+            .get()
+            .timeout(const Duration(seconds: 8));
+
+        for (final doc in snap.docs) {
+          final data = doc.data();
+          if (!_guidePublishedValue(data['isPublished'])) continue;
+          try {
+            final guide = GuideModel.fromJson({...data, 'id': doc.id});
+            if (guide.title.trim().isEmpty) continue;
+            byId[guide.id] = guide;
+          } catch (_) {}
+        }
+      } catch (e) {
+        _debugGuides('search term="$term" fallback reason=$e');
+      }
+    }
+
+    // Compatibilidade com os guias antigos ainda sem searchPrefixes.
+    if (byId.isEmpty) {
+      final recent = await loadPublishedGuides();
+      final queryTokens = normalized.split(' ').where((e) => e.length >= 3);
+      for (final guide in recent) {
+        final haystack = _normalizeGuideSearchText(
+          '${guide.title} ${guide.category} ${guide.description}',
+        );
+        if (queryTokens.any(haystack.contains)) {
+          byId[guide.id] = guide;
+        }
+      }
+    }
+
+    final results = byId.values.toList(growable: false)
+      ..sort((a, b) => b.uploadedAt.compareTo(a.uploadedAt));
+
+    return results.take(limit).toList(growable: false);
+  }
 
   static void _debugGuides(String message) {
     if (kDebugMode) debugPrint('[FirestoreService.guides] $message');
@@ -3741,15 +4480,18 @@ class FirestoreService {
   }
 
   static List<GuideModel> _normalizeGuides(Iterable<GuideModel> guides) {
-    final all   = guides.toList();
+    final all = guides.toList();
     final valid = <GuideModel>[];
 
     for (final g in all) {
-      final missingId    = g.id.trim().isEmpty;
+      final missingId = g.id.trim().isEmpty;
       final missingTitle = g.title.trim().isEmpty;
-      final missingPdf   = g.pdfUrl.trim().isEmpty;
+      final missingPdf = g.pdfUrl.trim().isEmpty;
+   final missingEditorial = !g.hasEditorialContent;
 
-      if (missingId || missingTitle || missingPdf) {
+   if (missingId ||
+       missingTitle ||
+       (missingPdf && missingEditorial)) {
         if (kDebugMode) {
           // ORDEM 50 M3: normalize probe gated to kDebugMode
           debugPrint(
@@ -3766,7 +4508,9 @@ class FirestoreService {
 
     if (kDebugMode) {
       // ORDEM 50 M3: normalizeGuides count probe gated to kDebugMode
-      debugPrint('[clinical_guides DEBUG] _normalizeGuides: total=${all.length} valid=${valid.length}');
+      debugPrint(
+        '[clinical_guides DEBUG] _normalizeGuides: total=${all.length} valid=${valid.length}',
+      );
     }
     valid.sort((a, b) => b.uploadedAt.compareTo(a.uploadedAt));
     return valid;
@@ -3784,7 +4528,9 @@ class FirestoreService {
     }
   }
 
-  static Future<void> clearPublishedGuidesCache({String reason = 'manual'}) async {
+  static Future<void> clearPublishedGuidesCache({
+    String reason = 'manual',
+  }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_guidesCacheKey);
@@ -3797,7 +4543,8 @@ class FirestoreService {
   static Future<bool> clearPublishedGuidesCacheOnFirstOpen() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final alreadyReset = prefs.getBool(_guidesCacheFirstOpenResetKey) ?? false;
+      final alreadyReset =
+          prefs.getBool(_guidesCacheFirstOpenResetKey) ?? false;
       if (alreadyReset) {
         _debugGuides('first-open cache reset already done');
         return false;
@@ -3820,19 +4567,24 @@ class FirestoreService {
       final rawDecoded = jsonDecode(raw);
       final decoded = rawDecoded is List ? rawDecoded : const <dynamic>[];
       final guides = _normalizeGuides(
-        decoded.whereType<Map>().map((item) => GuideModel.fromJson(
-              Map<String, dynamic>.from(item),
-            )),
+        decoded.whereType<Map>().map(
+          (item) => GuideModel.fromJson(Map<String, dynamic>.from(item)),
+        ),
       );
-      _debugGuides('cache hit count=${guides.length}');
-      return guides;
+      final bounded = guides.take(guidesPortalPageSize).toList(growable: false);
+      _debugGuides(
+        'cache hit count=${guides.length} bounded=${bounded.length}',
+      );
+      return bounded;
     } catch (e) {
       _debugGuides('cache read failed: $e');
       return [];
     }
   }
 
-  static Future<List<GuideModel>> _loadPublishedGuidesSdk({Source? source}) async {
+  static Future<List<GuideModel>> _loadPublishedGuidesSdk({
+    Source? source,
+  }) async {
     // ── LOG: projeto Firebase em uso (SDK) ──────────────────────────────────
     // ORDEM 50 M3: probe logs gated to kDebugMode — suprimidos em release.
     if (kDebugMode) {
@@ -3840,7 +4592,9 @@ class FirestoreService {
         final opts = Firebase.app().options;
         debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
         debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
-        debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
+        debugPrint(
+          '[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...',
+        );
       } catch (e) {
         debugPrint('[clinical_guides DEBUG] Firebase.app().options erro=$e');
       }
@@ -3860,11 +4614,14 @@ class FirestoreService {
       ];
       for (final col in probeCollections) {
         try {
-          final snap = await _db.collection(col)
+          final snap = await _db
+              .collection(col)
               .limit(5)
               .get()
               .timeout(const Duration(seconds: 6));
-          debugPrint('[clinical_guides DEBUG] collection=$col docs=${snap.docs.length}');
+          debugPrint(
+            '[clinical_guides DEBUG] collection=$col docs=${snap.docs.length}',
+          );
         } catch (e) {
           debugPrint('[clinical_guides DEBUG] collection=$col erro=$e');
         }
@@ -3875,12 +4632,13 @@ class FirestoreService {
     try {
       final query = _guides
           .where('isPublished', isEqualTo: true)
-          .orderBy('uploadedAt', descending: true);
+          .orderBy('uploadedAt', descending: true)
+          .limit(guidesPortalPageSize);
       final snap = source == null
           ? await query.get().timeout(const Duration(seconds: 8))
           : await query
-              .get(GetOptions(source: source))
-              .timeout(const Duration(seconds: 8));
+                .get(GetOptions(source: source))
+                .timeout(const Duration(seconds: 8));
       // CAMADA DUPLA: _safeDocsToGuideList já tem try/catch por doc,
       // mas envolvemos em try/catch extra para garantir que TypeError de
       // dart2js não escapa e não aparece como erro visível ao usuário.
@@ -3888,26 +4646,39 @@ class FirestoreService {
       try {
         guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
       } catch (parseErr) {
-        if (kDebugMode) debugPrint('[_loadPublishedGuidesSdk orderBy] parse silenciado: $parseErr');
+        if (kDebugMode)
+          debugPrint(
+            '[_loadPublishedGuidesSdk orderBy] parse silenciado: $parseErr',
+          );
         guides = const [];
       }
       if (guides.isNotEmpty) {
         _clearGuidesError();
-        try { await _saveGuidesCache(guides); } catch (_) {}
+        try {
+          await _saveGuidesCache(guides);
+        } catch (_) {}
       }
-      _debugGuides('sdk load (orderBy) count=${guides.length} source=${source ?? 'default'}');
+      _debugGuides(
+        'sdk load (orderBy) count=${guides.length} source=${source ?? 'default'}',
+      );
       return guides;
     } on FirebaseException catch (e) {
       // failed-precondition = índice composto não existe → fallback sem orderBy
       if (e.code == 'failed-precondition' || e.code == 'unimplemented') {
-        _debugGuides('sdk orderBy falhou (sem índice) — tentando sem orderBy: ${e.code}');
+        _debugGuides(
+          'sdk orderBy falhou (sem índice) — tentando sem orderBy: ${e.code}',
+        );
       } else if (e.code == 'permission-denied') {
-        _setGuidesError('Acesso negado (verifique Firestore Rules para clinical_guides)');
+        _setGuidesError(
+          'Acesso negado (verifique Firestore Rules para clinical_guides)',
+        );
         _debugGuides('sdk permission-denied source=${source ?? 'default'}');
         return [];
       } else {
         _setGuidesError('SDK clinical_guides erro: ${e.code}');
-        _debugGuides('sdk firebase error ${e.code} source=${source ?? 'default'}');
+        _debugGuides(
+          'sdk firebase error ${e.code} source=${source ?? 'default'}',
+        );
         return [];
       }
     } catch (e) {
@@ -3917,38 +4688,54 @@ class FirestoreService {
     // Tentativa 2: query SEM orderBy — não requer índice composto.
     // Ordenação é feita localmente em _normalizeGuides().
     try {
-      final query = _guides.where('isPublished', isEqualTo: true);
+      final query = _guides
+          .where('isPublished', isEqualTo: true)
+          .limit(guidesPortalPageSize);
       final snap = source == null
           ? await query.get().timeout(const Duration(seconds: 8))
           : await query
-              .get(GetOptions(source: source))
-              .timeout(const Duration(seconds: 8));
+                .get(GetOptions(source: source))
+                .timeout(const Duration(seconds: 8));
       // CAMADA DUPLA: mesma proteção da tentativa 1
       List<GuideModel> guides;
       try {
         guides = _normalizeGuides(_safeDocsToGuideList(snap.docs));
       } catch (parseErr) {
-        if (kDebugMode) debugPrint('[_loadPublishedGuidesSdk noOrderBy] parse silenciado: $parseErr');
+        if (kDebugMode)
+          debugPrint(
+            '[_loadPublishedGuidesSdk noOrderBy] parse silenciado: $parseErr',
+          );
         guides = const [];
       }
       if (guides.isNotEmpty) {
         _clearGuidesError();
-        try { await _saveGuidesCache(guides); } catch (_) {}
+        try {
+          await _saveGuidesCache(guides);
+        } catch (_) {}
       }
-      _debugGuides('sdk load (sem orderBy) count=${guides.length} source=${source ?? 'default'}');
+      _debugGuides(
+        'sdk load (sem orderBy) count=${guides.length} source=${source ?? 'default'}',
+      );
       return guides;
     } on FirebaseException catch (e) {
       if (e.code == 'permission-denied') {
-        _setGuidesError('Acesso negado (verifique Firestore Rules para clinical_guides)');
+        _setGuidesError(
+          'Acesso negado (verifique Firestore Rules para clinical_guides)',
+        );
       } else {
         _setGuidesError('SDK clinical_guides erro (sem orderBy): ${e.code}');
       }
-      _debugGuides('sdk sem orderBy error ${e.code} source=${source ?? 'default'}');
+      _debugGuides(
+        'sdk sem orderBy error ${e.code} source=${source ?? 'default'}',
+      );
       return [];
     } catch (e) {
       // NUNCA exibe TypeError de dart2js como erro visível — trata como lista vazia
-      if (kDebugMode) debugPrint('[_loadPublishedGuidesSdk noOrderBy] erro silenciado: $e');
-      _debugGuides('sdk sem orderBy failed (silenced) source=${source ?? 'default'} error=$e');
+      if (kDebugMode)
+        debugPrint('[_loadPublishedGuidesSdk noOrderBy] erro silenciado: $e');
+      _debugGuides(
+        'sdk sem orderBy failed (silenced) source=${source ?? 'default'} error=$e',
+      );
       return [];
     }
   }
@@ -3961,9 +4748,13 @@ class FirestoreService {
         final opts = Firebase.app().options;
         debugPrint('[clinical_guides DEBUG] projectId=${opts.projectId}');
         debugPrint('[clinical_guides DEBUG] appId=${opts.appId}');
-        debugPrint('[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...');
+        debugPrint(
+          '[clinical_guides DEBUG] apiKey=${opts.apiKey.substring(0, opts.apiKey.length.clamp(0, 10))}...',
+        );
       } catch (e) {
-        debugPrint('[clinical_guides DEBUG] projectId=$_projectId (fallback — Firebase.app() erro=$e)');
+        debugPrint(
+          '[clinical_guides DEBUG] projectId=$_projectId (fallback — Firebase.app() erro=$e)',
+        );
       }
       debugPrint('[clinical_guides DEBUG] fsBase=$_fsBase');
     }
@@ -3977,16 +4768,26 @@ class FirestoreService {
       token = await AuthService.getAdminToken();
       if (kDebugMode) {
         // ORDEM 50 M3: auth probe gated to kDebugMode
-        debugPrint('[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=clinical_guides');
-        debugPrint('[clinical_guides DEBUG] currentUser=WEB_REST_AUTH (getAdminToken)');
+        debugPrint(
+          '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=clinical_guides',
+        );
+        debugPrint(
+          '[clinical_guides DEBUG] currentUser=WEB_REST_AUTH (getAdminToken)',
+        );
       }
     } else {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (kDebugMode) {
         // ORDEM 50 M3: auth probe gated to kDebugMode
-        debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=clinical_guides');
-        debugPrint('[clinical_guides DEBUG] currentUser=${currentUser?.uid ?? 'null (não logado)'}');
-        debugPrint('[clinical_guides DEBUG] currentUser.email=${currentUser?.email ?? 'null'}');
+        debugPrint(
+          '[NATIVE_AUTH] source=FirebaseSDK uid=${currentUser?.uid ?? 'null'} endpoint=clinical_guides',
+        );
+        debugPrint(
+          '[clinical_guides DEBUG] currentUser=${currentUser?.uid ?? 'null (não logado)'}',
+        );
+        debugPrint(
+          '[clinical_guides DEBUG] currentUser.email=${currentUser?.email ?? 'null'}',
+        );
       }
       token = await currentUser?.getIdToken() ?? '';
     }
@@ -4001,7 +4802,9 @@ class FirestoreService {
         : <String, String>{};
     if (kDebugMode) {
       // ORDEM 50 M3: header probe gated to kDebugMode
-      debugPrint('[clinical_guides DEBUG] authHeader=${authHeaders.containsKey('Authorization')}');
+      debugPrint(
+        '[clinical_guides DEBUG] authHeader=${authHeaders.containsKey('Authorization')}',
+      );
     }
 
     // ── SDK DIRETO: teste isolado sem REST ───────────────────────────────────
@@ -4014,10 +4817,14 @@ class FirestoreService {
             .limit(1)
             .get()
             .timeout(const Duration(seconds: 6));
-        debugPrint('[clinical_guides DEBUG] SDK direto docs=${sdkSnap.docs.length}');
+        debugPrint(
+          '[clinical_guides DEBUG] SDK direto docs=${sdkSnap.docs.length}',
+        );
         if (sdkSnap.docs.isNotEmpty) {
           final d = sdkSnap.docs.first;
-          debugPrint('[clinical_guides DEBUG] SDK primeiro doc id=${d.id} fields=${d.data().keys.toList()}');
+          debugPrint(
+            '[clinical_guides DEBUG] SDK primeiro doc id=${d.id} fields=${d.data().keys.toList()}',
+          );
         }
       } catch (e) {
         debugPrint('[clinical_guides DEBUG] SDK direto ERRO=$e');
@@ -4027,18 +4834,25 @@ class FirestoreService {
     final apiKey = _firebaseApiKey;
     if (kDebugMode) {
       // ORDEM 50 M3: apiKey probe gated to kDebugMode
-      debugPrint('[clinical_guides DEBUG] apiKey(10)=${apiKey.substring(0, apiKey.length.clamp(0, 10))}...');
+      debugPrint(
+        '[clinical_guides DEBUG] apiKey(10)=${apiKey.substring(0, apiKey.length.clamp(0, 10))}...',
+      );
     }
 
     // ── TAREFA 4: confirmar nome exato da coleção usada ──────────────────────
     const targetCollection = 'clinical_guides';
     if (kDebugMode) {
       // ORDEM 50 M3: collection name probe gated to kDebugMode
-      debugPrint('[clinical_guides DEBUG] coleção alvo=$targetCollection '
-          '(NÃO é: clinicalGuides, guides, medical_guides, biblioteca_clinica, clinical_library)');
+      debugPrint(
+        '[clinical_guides DEBUG] coleção alvo=$targetCollection '
+        '(NÃO é: clinicalGuides, guides, medical_guides, biblioteca_clinica, clinical_library)',
+      );
     }
 
-    Future<http.Response> doGet({Map<String, String>? headers, String collection = targetCollection}) {
+    Future<http.Response> doGet({
+      Map<String, String>? headers,
+      String collection = targetCollection,
+    }) {
       // GET: SOMENTE Authorization — nunca Content-Type nem X-Firebase-API-Key
       // (headers customizados causam preflight CORS que Firestore rejeita)
       final hdrs = <String, String>{...authHeaders, ...?headers};
@@ -4046,7 +4860,9 @@ class FirestoreService {
       if (kDebugMode) {
         // ORDEM 50 M3: URL + headers probe gated to kDebugMode
         debugPrint('[clinical_guides DEBUG] REST URL=$url');
-        debugPrint('[clinical_guides DEBUG] REST headers keys=${hdrs.keys.toList()}');
+        debugPrint(
+          '[clinical_guides DEBUG] REST headers keys=${hdrs.keys.toList()}',
+        );
       }
       return http
           .get(Uri.parse(url), headers: hdrs)
@@ -4058,12 +4874,14 @@ class FirestoreService {
         // ORDEM 50 M3: response body probe gated to kDebugMode
         // ── TAREFA 3: logar status e body bruto ────────────────────────────
         debugPrint('[clinical_guides DEBUG] REST status=${resp.statusCode}');
-        debugPrint('[clinical_guides DEBUG] REST body=${resp.body.length > 1500 ? resp.body.substring(0, 1500) : resp.body}');
+        debugPrint(
+          '[clinical_guides DEBUG] REST body=${resp.body.length > 1500 ? resp.body.substring(0, 1500) : resp.body}',
+        );
       }
 
       // safeMap: sem casts diretos — imune a TypeError em dart2js release
-      final body      = safeMap(jsonDecode(resp.body));
-      final docsList  = body['documents'];
+      final body = safeMap(jsonDecode(resp.body));
+      final docsList = body['documents'];
       final documents = docsList is List ? docsList : const <dynamic>[];
       final totalDocs = documents.length;
 
@@ -4072,13 +4890,13 @@ class FirestoreService {
         debugPrint('[clinical_guides DEBUG] totalDocs=$totalDocs');
       }
 
-      final allParsed    = <GuideModel>[];
-      final unpublished  = <String>[];
+      final allParsed = <GuideModel>[];
+      final unpublished = <String>[];
 
       for (final doc in documents) {
         try {
           final rawDoc = safeMap(doc);
-          final data   = _restDocToMap(rawDoc);
+          final data = _restDocToMap(rawDoc);
 
           // Garante que o id está preenchido a partir do campo 'name' do REST
           if (data['id'] == null || safeString(data['id']).isEmpty) {
@@ -4115,7 +4933,9 @@ class FirestoreService {
       if (kDebugMode) {
         // ORDEM 50 M3: final counts probe gated to kDebugMode
         debugPrint('[clinical_guides DEBUG] parsed=${allParsed.length}');
-        debugPrint('[clinical_guides DEBUG] published=${publishedGuides.length}');
+        debugPrint(
+          '[clinical_guides DEBUG] published=${publishedGuides.length}',
+        );
         if (unpublished.isNotEmpty) {
           debugPrint('[clinical_guides DEBUG] unpublished: $unpublished');
         }
@@ -4124,13 +4944,17 @@ class FirestoreService {
       final normalized = _normalizeGuides(publishedGuides);
       if (kDebugMode) {
         // ORDEM 50 M3: normalized count probe gated to kDebugMode
-        debugPrint('[clinical_guides DEBUG] validPdfTitle=${normalized.length}');
+        debugPrint(
+          '[clinical_guides DEBUG] validPdfTitle=${normalized.length}',
+        );
       }
       return normalized;
     }
 
     try {
-      _debugGuides('rest load start kIsWeb=$kIsWeb tokenPresent=${authHeaders.isNotEmpty}');
+      _debugGuides(
+        'rest load start kIsWeb=$kIsWeb tokenPresent=${authHeaders.isNotEmpty}',
+      );
       var resp = await doGet();
       _debugGuides('rest load initial status=${resp.statusCode}');
 
@@ -4143,17 +4967,23 @@ class FirestoreService {
             refreshedToken = await AuthService.getAdminToken();
             if (kDebugMode) {
               // ORDEM 50 M3: retry auth probe gated to kDebugMode
-              debugPrint('[WEB_AUTH] source=REST token=${(refreshedToken).isNotEmpty} endpoint=clinical_guides (retry)');
+              debugPrint(
+                '[WEB_AUTH] source=REST token=${(refreshedToken).isNotEmpty} endpoint=clinical_guides (retry)',
+              );
             }
           } else {
-            refreshedToken = await FirebaseAuth.instance.currentUser?.getIdToken(true);
+            refreshedToken = await FirebaseAuth.instance.currentUser
+                ?.getIdToken(true);
             if (kDebugMode) {
               // ORDEM 50 M3: retry auth probe gated to kDebugMode
-              debugPrint('[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=clinical_guides (retry)');
+              debugPrint(
+                '[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=clinical_guides (retry)',
+              );
             }
           }
         } catch (_) {}
-        final retryHeaders = (refreshedToken != null && refreshedToken.isNotEmpty)
+        final retryHeaders =
+            (refreshedToken != null && refreshedToken.isNotEmpty)
             ? <String, String>{'Authorization': 'Bearer $refreshedToken'}
             : <String, String>{};
         _debugGuides('rest auth retry tokenPresent=${retryHeaders.isNotEmpty}');
@@ -4167,8 +4997,12 @@ class FirestoreService {
         // ── LOG COMPLETO DO ERRO ─────────────────────────────────────────────
         if (kDebugMode) {
           // ORDEM 50 M3: error detail probes gated to kDebugMode
-          debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR status=${resp.statusCode}');
-          debugPrint('[clinical_guides DEBUG] FIRESTORE ERROR BODY: ${resp.body}');
+          debugPrint(
+            '[clinical_guides DEBUG] FIRESTORE ERROR status=${resp.statusCode}',
+          );
+          debugPrint(
+            '[clinical_guides DEBUG] FIRESTORE ERROR BODY: ${resp.body}',
+          );
         }
         // Diagnóstico do tipo de 403:
         // - "Missing or insufficient permissions" → Firestore Rules negando acesso
@@ -4177,7 +5011,9 @@ class FirestoreService {
         // - "Firebase App Check"                 → App Check ativado sem attestation
         // - "Requests to this API ... disabled"  → Firestore API desabilitada no GCP
         final snippet = resp.body.substring(0, resp.body.length.clamp(0, 400));
-        _setGuidesError('REST clinical_guides HTTP ${resp.statusCode}: $snippet');
+        _setGuidesError(
+          'REST clinical_guides HTTP ${resp.statusCode}: $snippet',
+        );
         // Cooldown 2min em qualquer HTTP != 200 — evita retry storm
         _guidesRestRetryAfter = DateTime.now().add(_restRetryCooldown);
         _debugGuides('REST ${resp.statusCode} — cooldown 2min aplicado');
@@ -4197,7 +5033,9 @@ class FirestoreService {
       // ORDEM 50 M3: alt-collection probe block gated to kDebugMode —
       // evita 4 queries Firestore extras em release/produção.
       if (kDebugMode) {
-        debugPrint('[clinical_guides DEBUG] clinical_guides vazia — iniciando probe de coleções alternativas');
+        debugPrint(
+          '[clinical_guides DEBUG] clinical_guides vazia — iniciando probe de coleções alternativas',
+        );
         const altCollections = [
           'guides',
           'medical_guides',
@@ -4206,19 +5044,28 @@ class FirestoreService {
         ];
         for (final altCol in altCollections) {
           try {
-            debugPrint('[clinical_guides DEBUG] probe: tentando coleção=$altCol');
-            final altResp = await doGet(collection: altCol)
-                .timeout(const Duration(seconds: 8));
-            debugPrint('[clinical_guides DEBUG] probe: $altCol status=${altResp.statusCode}');
+            debugPrint(
+              '[clinical_guides DEBUG] probe: tentando coleção=$altCol',
+            );
+            final altResp = await doGet(
+              collection: altCol,
+            ).timeout(const Duration(seconds: 8));
+            debugPrint(
+              '[clinical_guides DEBUG] probe: $altCol status=${altResp.statusCode}',
+            );
             if (altResp.statusCode == 200) {
               final altBody = safeMap(jsonDecode(altResp.body));
               final altDocs = altBody['documents'];
               final altCount = altDocs is List ? altDocs.length : 0;
               if (altCount > 0) {
                 // ── TAREFA 6: logar coleção encontrada ────────────────────
-                debugPrint('[clinical_guides DEBUG] coleção encontrada: $altCol totalDocs=$altCount');
+                debugPrint(
+                  '[clinical_guides DEBUG] coleção encontrada: $altCol totalDocs=$altCount',
+                );
               } else {
-                debugPrint('[clinical_guides DEBUG] probe: $altCol retornou 0 docs');
+                debugPrint(
+                  '[clinical_guides DEBUG] probe: $altCol retornou 0 docs',
+                );
               }
             }
           } catch (e) {
@@ -4230,8 +5077,8 @@ class FirestoreService {
       // Mensagem diagnóstica final (zero guias na coleção principal)
       try {
         final bodyParsed = safeMap(jsonDecode(resp.body));
-        final docsList2  = bodyParsed['documents'];
-        final totalDocs  = docsList2 is List ? docsList2.length : 0;
+        final docsList2 = bodyParsed['documents'];
+        final totalDocs = docsList2 is List ? docsList2.length : 0;
         _setGuidesError(
           totalDocs > 0
               ? 'Nenhuma guia publicada ($totalDocs docs sem isPublished=true ou pdfUrl vazio)'
@@ -4254,11 +5101,15 @@ class FirestoreService {
     }
   }
 
-  static Future<List<GuideModel>> loadPublishedGuides({bool forceRemote = false}) async {
+  static Future<List<GuideModel>> loadPublishedGuides({
+    bool forceRemote = false,
+  }) async {
     // ORDEM 50 M3: Auth guard — suprime requests Firestore antes da barreira
     // de auth transposta, eliminando spam de 403 "permission-denied" no console.
     if (!_hasAnyAuthCredential) {
-      _debugGuides('ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier');
+      _debugGuides(
+        'ORDEM50 M3: skip — unauthenticated, awaiting GoogleAuthBarrier',
+      );
       return const <GuideModel>[];
     }
 
@@ -4277,7 +5128,9 @@ class FirestoreService {
     // ── ETAPA 0: Cache imediato (quando não é forceRemote e há cache) ─────────
     // Retorna cache imediatamente para evitar tela em branco, atualiza em bg.
     if (!forceRemote && cached.isNotEmpty) {
-      _debugGuides('cache hit etapa 0 count=${cached.length} — retornando cache e atualizando em bg');
+      _debugGuides(
+        'cache hit etapa 0 count=${cached.length} — retornando cache e atualizando em bg',
+      );
       Future.microtask(() async {
         try {
           final fresh = await _loadPublishedGuidesSdk(source: Source.server);
@@ -4319,12 +5172,16 @@ class FirestoreService {
     // ── ETAPA 3: Cache local (fallback final) ────────────────────────────────
     if (cached.isNotEmpty) {
       _clearGuidesError(); // dados em cache — não exibe erro para o usuário
-      _debugGuides('remote failed/empty, returning cache count=${cached.length}');
+      _debugGuides(
+        'remote failed/empty, returning cache count=${cached.length}',
+      );
       return cached;
     }
 
     if (lastGuidesErrorMessage.isEmpty) {
-      _setGuidesError('clinical_guides: SDK e REST falharam — sem cache disponível.');
+      _setGuidesError(
+        'clinical_guides: SDK e REST falharam — sem cache disponível.',
+      );
     }
     _debugGuides('remote empty and cache empty');
     return const <GuideModel>[];
@@ -4341,6 +5198,7 @@ class FirestoreService {
     return _guides
         .where('isPublished', isEqualTo: true)
         .orderBy('uploadedAt', descending: true)
+        .limit(guidesPortalPageSize)
         .snapshots()
         // CAMADA DUPLA: protege contra TypeError de dart2js que pode escapar
         // mesmo com _safeDocsToGuideList tendo try/catch interno por documento.
@@ -4348,7 +5206,8 @@ class FirestoreService {
           try {
             return _normalizeGuides(_safeDocsToGuideList(snap.docs));
           } catch (e) {
-            if (kDebugMode) debugPrint('[guidesStream] parse error silenciado: $e');
+            if (kDebugMode)
+              debugPrint('[guidesStream] parse error silenciado: $e');
             return const <GuideModel>[];
           }
         });
@@ -4364,7 +5223,9 @@ class FirestoreService {
         final remote = await loadPublishedGuides(forceRemote: true).timeout(
           const Duration(seconds: 15),
           onTimeout: () {
-            _setGuidesError('Stream REST clinical_guides timeout: nenhuma resposta em 15s.');
+            _setGuidesError(
+              'Stream REST clinical_guides timeout: nenhuma resposta em 15s.',
+            );
             return const <GuideModel>[];
           },
         );
@@ -4405,7 +5266,10 @@ class FirestoreService {
           }
         });
         unawaited(fetch());
-        timer = Timer.periodic(const Duration(seconds: 20), (_) => unawaited(fetch()));
+        timer = Timer.periodic(
+          const Duration(seconds: 20),
+          (_) => unawaited(fetch()),
+        );
       },
       onCancel: () {
         timer?.cancel();
@@ -4419,33 +5283,56 @@ class FirestoreService {
 
   /// Stream de TODAS as guias para o admin (incluindo não publicadas).
   static Stream<List<GuideModel>> guidesAdminStream() {
-    return _guides
-        .orderBy('uploadedAt', descending: true)
-        .snapshots()
-        .map((snap) {
-          try {
-            return _safeDocsToGuideList(snap.docs);
-          } catch (e) {
-            if (kDebugMode) debugPrint('[guidesAdminStream] parse error silenciado: $e');
-            return const <GuideModel>[];
-          }
-        });
+    return _guides.orderBy('uploadedAt', descending: true).snapshots().map((
+      snap,
+    ) {
+      try {
+        return _safeDocsToGuideList(snap.docs);
+      } catch (e) {
+        if (kDebugMode)
+          debugPrint('[guidesAdminStream] parse error silenciado: $e');
+        return const <GuideModel>[];
+      }
+    });
   }
 
   /// Salva metadados de uma guia no Firestore.
+  ///
+  /// searchPrefixes é derivado automaticamente de título, categoria e
+  /// descrição para permitir busca remota sem carregar todo o catálogo.
   static Future<String> saveGuide(GuideModel guide) async {
+    final now = DateTime.now().toUtc().toIso8601String();
+    final data = <String, dynamic>{
+      ...guide.toJson(),
+      'uploadedAt': guide.uploadedAt.trim().isEmpty
+          ? now
+          : guide.uploadedAt.trim(),
+      'searchPrefixes': _buildGuideSearchPrefixes(guide),
+      'searchIndexVersion': _guidesSearchIndexVersion,
+    };
+
     if (guide.id.isEmpty) {
-      final ref = await _guides.add(guide.toJson());
+      final ref = await _guides.add(data);
       return ref.id;
     } else {
-      await _guides.doc(guide.id).set(guide.toJson(), SetOptions(merge: true));
+      await _guides.doc(guide.id).set(data, SetOptions(merge: true));
       return guide.id;
     }
   }
 
   /// Atualiza campo isPublished de uma guia.
-  static Future<void> toggleGuidePublished(String guideId, bool published) async {
-    await _guides.doc(guideId).update({'isPublished': published});
+  ///
+  /// Ao publicar, uploadedAt recebe o instante da publicação. Assim portal e
+  /// pesquisa mantêm sempre o conteúdo recém-publicado primeiro.
+  static Future<void> toggleGuidePublished(
+    String guideId,
+    bool published,
+  ) async {
+    final data = <String, dynamic>{
+      'isPublished': published,
+      if (published) 'uploadedAt': DateTime.now().toUtc().toIso8601String(),
+    };
+    await _guides.doc(guideId).update(data);
   }
 
   /// Deleta uma guia do Firestore.
@@ -4472,14 +5359,15 @@ class FirestoreService {
     if (token.isEmpty) return;
 
     final fields = {
-      'enabled':   {'booleanValue': enabled},
-      'message':   {'stringValue': message.trim()},
+      'enabled': {'booleanValue': enabled},
+      'message': {'stringValue': message.trim()},
       'updatedBy': {'stringValue': updatedBy},
       'updatedAt': {'stringValue': DateTime.now().toUtc().toIso8601String()},
     };
 
     // updateMask: atualiza apenas os 4 campos (não sobrescreve outros)
-    const mask = 'updateMask.fieldPaths=enabled'
+    const mask =
+        'updateMask.fieldPaths=enabled'
         '&updateMask.fieldPaths=message'
         '&updateMask.fieldPaths=updatedBy'
         '&updateMask.fieldPaths=updatedAt';
@@ -4514,11 +5402,15 @@ class FirestoreService {
   /// Busca documento proprietário da coleção 'clinical_library' para RAG do Gemini.
   /// Tenta SDK nativo primeiro; em caso de permission-denied, usa REST com admin token.
   /// docId deve ser o nome normalizado do fármaco (ex: 'sertralina', 'amiodarona').
-  static Future<Map<String, dynamic>?> fetchProprietaryDrugDoc(String docId) async {
+  static Future<Map<String, dynamic>?> fetchProprietaryDrugDoc(
+    String docId,
+  ) async {
     if (docId.trim().isEmpty) return null;
     final normalized = docId.trim().toLowerCase();
 
-    debugPrint('[BUILD272][RAG] fetchProprietaryDrugDoc: tentando SDK para clinical_library/$normalized');
+    debugPrint(
+      '[BUILD272][RAG] fetchProprietaryDrugDoc: tentando SDK para clinical_library/$normalized',
+    );
 
     // ── TENTATIVA 1: SDK nativo ───────────────────────────────────────────
     try {
@@ -4529,15 +5421,23 @@ class FirestoreService {
           .timeout(const Duration(seconds: 6));
       if (snap.exists && snap.data() != null) {
         final data = safeMap(snap.data());
-        debugPrint('[BUILD272][RAG] SDK clinical_library/$normalized OK fields=${data.keys.toList()}');
+        debugPrint(
+          '[BUILD272][RAG] SDK clinical_library/$normalized OK fields=${data.keys.toList()}',
+        );
         return data;
       }
-      debugPrint('[BUILD272][RAG] SDK clinical_library/$normalized doc não encontrado — tentando REST');
+      debugPrint(
+        '[BUILD272][RAG] SDK clinical_library/$normalized doc não encontrado — tentando REST',
+      );
     } on FirebaseException catch (e) {
-      debugPrint('[BUILD272][RAG] SDK clinical_library/$normalized FirebaseException code=${e.code} — disparando REST bypass imediato');
+      debugPrint(
+        '[BUILD272][RAG] SDK clinical_library/$normalized FirebaseException code=${e.code} — disparando REST bypass imediato',
+      );
       // permission-denied ou qualquer erro SDK → cai direto no REST bypass abaixo
     } catch (e) {
-      debugPrint('[BUILD272][RAG] SDK clinical_library/$normalized erro genérico=$e — disparando REST bypass imediato');
+      debugPrint(
+        '[BUILD272][RAG] SDK clinical_library/$normalized erro genérico=$e — disparando REST bypass imediato',
+      );
     }
 
     // ── TENTATIVA 2: REST bypass com admin token ──────────────────────────
@@ -4547,7 +5447,9 @@ class FirestoreService {
     try {
       final token = await AuthService.getAdminToken();
       if (token.isEmpty) {
-        debugPrint('[BUILD272][RAG] REST bypass: token vazio — sem autenticação disponível');
+        debugPrint(
+          '[BUILD272][RAG] REST bypass: token vazio — sem autenticação disponível',
+        );
         return null;
       }
       final apiKey = _firebaseApiKey;
@@ -4555,10 +5457,7 @@ class FirestoreService {
       debugPrint('[BUILD272][RAG] REST GET $url tokenPresent=true');
 
       final resp = await http
-          .get(
-            Uri.parse(url),
-            headers: {'Authorization': 'Bearer $token'},
-          )
+          .get(Uri.parse(url), headers: {'Authorization': 'Bearer $token'})
           .timeout(const Duration(seconds: 8));
 
       debugPrint('[BUILD272][RAG] REST status=${resp.statusCode}');
@@ -4566,7 +5465,9 @@ class FirestoreService {
       if (resp.statusCode == 200) {
         final data = _decodeFirestoreFields(resp.body);
         if (data.isNotEmpty) {
-          debugPrint('[BUILD272][RAG] REST clinical_library/$normalized OK fields=${data.keys.toList()}');
+          debugPrint(
+            '[BUILD272][RAG] REST clinical_library/$normalized OK fields=${data.keys.toList()}',
+          );
           return data;
         }
         debugPrint('[BUILD272][RAG] REST OK mas documento vazio');
@@ -4574,11 +5475,15 @@ class FirestoreService {
       }
 
       if (resp.statusCode == 404) {
-        debugPrint('[BUILD272][RAG] clinical_library/$normalized não existe no Firestore (404)');
+        debugPrint(
+          '[BUILD272][RAG] clinical_library/$normalized não existe no Firestore (404)',
+        );
         return null;
       }
 
-      debugPrint('[BUILD272][RAG] REST HTTP ${resp.statusCode}: ${resp.body.length > 300 ? resp.body.substring(0, 300) : resp.body}');
+      debugPrint(
+        '[BUILD272][RAG] REST HTTP ${resp.statusCode}: ${resp.body.length > 300 ? resp.body.substring(0, 300) : resp.body}',
+      );
       return null;
     } catch (e) {
       debugPrint('[BUILD272][RAG] REST bypass falhou: $e');
@@ -4594,16 +5499,52 @@ class FirestoreService {
 
     // Campos prioritários reconhecidos
     final priorityFields = [
-      'nome', 'name', 'indicacoes', 'indicacoes_pt', 'indicações', 'indication',
-      'dose', 'dosagem', 'posologia', 'dosis', 'mecanismo', 'mechanism', 'mecanismo_acao',
-      'contraindicacoes', 'contraindicações', 'contraindicacion', 'contraindicaciones',
-      'efeitos_adversos', 'adverse_effects', 'efectos_adversos', 'toxicidade',
-      'interacoes', 'interações', 'interacciones', 'interactions',
-      'alerta', 'alertas', 'warning', 'warnings',
-      'ajuste_renal', 'renal_adjustment', 'ajuste_hepatico',
-      'monitoramento', 'monitorización', 'monitoring',
-      'observacoes', 'observações', 'notes', 'resumo', 'summary',
-      'texto', 'text', 'content', 'conteudo', 'conteúdo', 'body',
+      'nome',
+      'name',
+      'indicacoes',
+      'indicacoes_pt',
+      'indicações',
+      'indication',
+      'dose',
+      'dosagem',
+      'posologia',
+      'dosis',
+      'mecanismo',
+      'mechanism',
+      'mecanismo_acao',
+      'contraindicacoes',
+      'contraindicações',
+      'contraindicacion',
+      'contraindicaciones',
+      'efeitos_adversos',
+      'adverse_effects',
+      'efectos_adversos',
+      'toxicidade',
+      'interacoes',
+      'interações',
+      'interacciones',
+      'interactions',
+      'alerta',
+      'alertas',
+      'warning',
+      'warnings',
+      'ajuste_renal',
+      'renal_adjustment',
+      'ajuste_hepatico',
+      'monitoramento',
+      'monitorización',
+      'monitoring',
+      'observacoes',
+      'observações',
+      'notes',
+      'resumo',
+      'summary',
+      'texto',
+      'text',
+      'content',
+      'conteudo',
+      'conteúdo',
+      'body',
     ];
 
     // Primeiro: campos prioritários na ordem definida
@@ -4619,8 +5560,15 @@ class FirestoreService {
 
     // Depois: campos restantes (exceto metadados de sistema)
     const skipFields = {
-      'id', 'createdAt', 'updatedAt', 'uploadedAt', 'isPublished',
-      'downloadCount', 'version', 'uid', 'userId',
+      'id',
+      'createdAt',
+      'updatedAt',
+      'uploadedAt',
+      'isPublished',
+      'downloadCount',
+      'version',
+      'uid',
+      'userId',
     };
     for (final entry in doc.entries) {
       if (skipFields.contains(entry.key)) continue;

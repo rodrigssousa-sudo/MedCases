@@ -1,7 +1,11 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_STUDY_HISTORY
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 
 import '../models/study_workspace_model.dart';
 import '../services/study/study_library_service.dart';
+import 'study_workspace_screen.dart';
 
 class StudyHistoryScreen extends StatefulWidget {
   const StudyHistoryScreen({super.key, required this.isEs});
@@ -31,6 +35,19 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
     });
   }
 
+  Future<void> _openStudy(Study study) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => _SavedStudyWorkspaceRoute(
+          isEs: widget.isEs,
+          study: study,
+        ),
+      ),
+    );
+    if (!mounted) return;
+    await _load();
+  }
+
   Future<void> _delete(Study study) async {
     if (_deleting) return;
     final dark = Theme.of(context).brightness == Brightness.dark;
@@ -38,8 +55,7 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
     final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
     final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF52606D);
     const destructive = Color(0xFFDC2626);
-    final ok =
-        await showDialog<bool>(
+    final ok = await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
             backgroundColor: surface,
@@ -103,7 +119,7 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
     final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
     final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
     final sub = dark ? const Color(0xFFC6CED9) : const Color(0xFF59636E);
-    const accent = Color(0xFF10B981);
+    const accent = Color(0xFF0D6B57);
     const destructive = Color(0xFFDC2626);
     return ColoredBox(
       color: page,
@@ -138,8 +154,8 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
                       const SizedBox(height: 1),
                       Text(
                         widget.isEs
-                            ? 'Acceso cronológico a tus estudios guardados.'
-                            : 'Acesso cronológico aos seus estudos salvos.',
+                            ? 'Toca un estudio para continuar y generar nuevos productos.'
+                            : 'Toque em um estudo para continuar e gerar novos produtos.',
                         style: TextStyle(color: sub, fontSize: 10.2),
                       ),
                     ],
@@ -210,51 +226,56 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
                 child: Column(
                   children: [
                     for (var i = 0; i < _studies.length; i++) ...[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(11, 9, 5, 9),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.auto_stories_outlined,
-                              size: 17,
-                              color: accent,
-                            ),
-                            const SizedBox(width: 9),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _studies[i].title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: text,
-                                      fontSize: 11.3,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    '${_date(_studies[i].createdAtUtc)} · ${_studies[i].sources.length} ${widget.isEs ? "fuentes" : "fontes"} · ${_studies[i].artifacts.length} ${widget.isEs ? "productos" : "produtos"}',
-                                    style: TextStyle(color: sub, fontSize: 9.4),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: widget.isEs ? 'Eliminar' : 'Excluir',
-                              onPressed: _deleting
-                                  ? null
-                                  : () => _delete(_studies[i]),
-                              visualDensity: VisualDensity.compact,
-                              icon: Icon(
-                                Icons.delete_outline_rounded,
+                      InkWell(
+                        onTap: _deleting ? null : () => _openStudy(_studies[i]),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(11, 9, 5, 9),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.auto_stories_outlined,
                                 size: 17,
-                                color: _deleting ? sub : destructive,
+                                color: accent,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 9),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _studies[i].title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: text,
+                                        fontSize: 11.3,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      '${_date(_studies[i].createdAtUtc)} · ${_studies[i].sources.length} ${widget.isEs ? "fuentes" : "fontes"} · ${_studies[i].artifacts.length} ${widget.isEs ? "productos" : "produtos"}',
+                                      style:
+                                          TextStyle(color: sub, fontSize: 9.4),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                tooltip: widget.isEs ? 'Eliminar' : 'Excluir',
+                                onPressed: _deleting
+                                    ? null
+                                    : () => _delete(_studies[i]),
+                                visualDensity: VisualDensity.compact,
+                                icon: Icon(
+                                  Icons.delete_outline_rounded,
+                                  size: 17,
+                                  color: _deleting ? sub : destructive,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       if (i < _studies.length - 1)
@@ -269,6 +290,97 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
                   ],
                 ),
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SavedStudyWorkspaceRoute extends StatelessWidget {
+  const _SavedStudyWorkspaceRoute({
+    required this.isEs,
+    required this.study,
+  });
+
+  final bool isEs;
+  final Study study;
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final topPad = MediaQuery.viewPaddingOf(context).top;
+    final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111318);
+    final topbarSurface = dark
+        ? const Color(0xFF252930).withValues(alpha: 0.70)
+        : Colors.white.withValues(alpha: 0.70);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+    return Scaffold(
+      backgroundColor: page,
+      body: SafeArea(
+        top: false,
+        bottom: false,
+        child: Column(
+          children: [
+            ClipRect(
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(
+                  sigmaX: 14,
+                  sigmaY: 14,
+                ),
+                child: Container(
+                  height: topPad + 48,
+                  padding: EdgeInsets.only(top: topPad),
+                  decoration: BoxDecoration(
+                    color: topbarSurface,
+                    border: Border(
+                      bottom: BorderSide(
+                        color: divider,
+                        width: 0.7,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 48,
+                        child: IconButton(
+                          tooltip: isEs ? 'Volver' : 'Voltar',
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 17,
+                            color: text,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          isEs ? 'Estudio guardado' : 'Estudo salvo',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: text,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 48),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: StudyWorkspaceScreen(
+                isEs: isEs,
+                initialStudy: study,
+              ),
+            ),
           ],
         ),
       ),

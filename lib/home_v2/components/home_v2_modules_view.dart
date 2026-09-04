@@ -367,8 +367,8 @@ class HomeV2UtilityRow extends StatelessWidget {
           palette: palette,
           left: _HomeV2MobilePairButton(
             palette: palette,
-            label: 'NOTAS',
-            svgAsset: 'assets/icons/home_v2/ic_notas.svg',
+            label: isEs ? 'CREAR RESUMEN' : 'CRIAR RESUMO',
+            svgAsset: 'assets/icons/home_v2/resumo.svg',
             iconColor: _kHomeProductiveIconGreen,
             onTap: onNotes,
           ),

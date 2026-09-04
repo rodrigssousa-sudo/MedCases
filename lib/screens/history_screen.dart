@@ -1,3 +1,5 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_2C_V2_B_R1_R1_LINE_SCOPED_ALLOWLIST
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_2A_V2_B_R1_GENERIC_OWNER_PATCH
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
@@ -967,6 +969,15 @@ class HistoryScreen extends StatefulWidget {
   /// Padrão idêntico ao AiScreen.chatKeyboardOpen.
   static final editorActive = ValueNotifier<bool>(false);
 
+  // MEDCASES_HC_DIRECT_NOVA_ENTRY_V1_B_R0_SIGNAL
+  // MainShell only requests the existing +NUEVA/+NOVA flow. The route itself
+  // remains owned by _HistoryScreenState/_startNewHistory.
+  static final newWorkspaceRequest = ValueNotifier<int>(0);
+
+  static void requestNewWorkspace() {
+    newWorkspaceRequest.value++;
+  }
+
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
@@ -989,12 +1000,38 @@ class _HistoryScreenState extends State<HistoryScreen>
   // Filtro por intervalo de datas (null = sem filtro)
   DateTimeRange? _dateFilter;
 
+  // MEDCASES_HC_DIRECT_NOVA_ENTRY_V1_B_R0
+  int _handledNewWorkspaceRequest = HistoryScreen.newWorkspaceRequest.value;
+  bool _newWorkspaceRequestScheduled = false;
+
+  void _onNewWorkspaceRequest() {
+    // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_ENTRY
+    final request = HistoryScreen.newWorkspaceRequest.value;
+    if (request == _handledNewWorkspaceRequest) return;
+    _handledNewWorkspaceRequest = request;
+
+    if (_newWorkspaceRequestScheduled) return;
+    _newWorkspaceRequestScheduled = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _newWorkspaceRequestScheduled = false;
+      if (!mounted) return;
+      if (_tabCtrl.index != 2) {
+        _tabCtrl.animateTo(2);
+      }
+    });
+  }
+
   // MEMLEAK-FIX: listener nomeado em vez de lambda anônima — permite
   // removeListener() determinístico no dispose().
   void _onTabChange() {
-    if (_tabCtrl.index == 1 && mounted) {
+    if (!mounted) return;
+
+    if (_tabCtrl.index == 1) {
       context.read<AppProvider>().loadPublicHistories();
     }
+
+    setState(() {});
   }
 
   // PERF-FIX: debounce de busca — evita rebuild por cada letra.
@@ -1011,7 +1048,13 @@ class _HistoryScreenState extends State<HistoryScreen>
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 2, vsync: this);
+    HistoryScreen.newWorkspaceRequest.addListener(_onNewWorkspaceRequest);
+    // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_CONTROLLER
+    _tabCtrl = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: 2,
+    );
     // PERF-FIX: listener de busca com debounce — substitui onChanged: setState
     _searchQuery.addListener(_onSearchQueryChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1041,6 +1084,7 @@ class _HistoryScreenState extends State<HistoryScreen>
     _tabCtrl.dispose();
     _searchCtrl.dispose();
     _searchQuery.dispose(); // PERF-FIX: dispõe o ValueNotifier de busca
+    HistoryScreen.newWorkspaceRequest.removeListener(_onNewWorkspaceRequest);
     super.dispose();
   }
 
@@ -1172,16 +1216,11 @@ class _HistoryScreenState extends State<HistoryScreen>
   }
 
   void _startNewHistory(AppProvider p, String lang) {
-    // BUILD 331+ — Intercepção com Gravador Clínico Multimodal
-    // Exibe modal de seleção (gravar / digitar / blocos SOAP) antes do formulário
-    ClinicalRecorderSheet.showFlowSelection(
-      context,
-      onManual: () => _startBlankHistory(p, lang),
-      onSoapData: (soapData) {
-        // Cria modelo pré-populado com dados SOAP da IA e abre o editor
-        _startHistoryFromSoap(p, lang, soapData);
-      },
-    );
+    // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_NEW_ACTION
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (_tabCtrl.index != 2) {
+      _tabCtrl.animateTo(2);
+    }
   }
 
   /// Cria e ativa um rascunho em branco (fluxo manual original)
@@ -1367,7 +1406,6 @@ class _HistoryScreenState extends State<HistoryScreen>
             slivers: _buildStateSlivers(
               _EmptyHistoryState(
                 lang: lang,
-                onNew: () => _startNewHistory(p, lang),
               ),
             ),
           )
@@ -1489,6 +1527,12 @@ class _HistoryScreenState extends State<HistoryScreen>
     // para trás da status bar física. topPad via View.of() — imune ao
     // MediaQuery.removePadding do MainShell.
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    final newHistoryTab = _NewHistoryWorkspace(
+      lang: lang,
+      onManual: () => _startBlankHistory(p, lang),
+      onSoapData: (soapData) => _startHistoryFromSoap(p, lang, soapData),
+    );
+
     final double topPad =
         View.of(context).padding.top / View.of(context).devicePixelRatio;
 
@@ -1504,7 +1548,6 @@ class _HistoryScreenState extends State<HistoryScreen>
               const SizedBox(height: 48),
               // MEDCASES_HISTORIA_CLINICA_CANONICAL_SUBTOPBAR_NAV_V1_B_R0
               // MEDCASES_HISTORIA_CLINICA_SUBTOPBAR_GAP_0_2PX_V1_B_R0_R1
-              const SizedBox(height: 0.2),
               // BUILD 331: Seletor triplo desacoplado — posicionado no corpo
               _HcTabRow(
                 dark: p.darkMode,
@@ -1512,110 +1555,113 @@ class _HistoryScreenState extends State<HistoryScreen>
                 tabCtrl: _tabCtrl,
                 onNew: () => _startNewHistory(p, lang),
               ),
-              // ── Barra de busca ────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: // HISTORY_CLINICAL_V1_C_R8_SEARCH_OWNER
-                          SizedBox(
-                        height: 44,
-                        child: MedInput(
-                          controller: _searchCtrl,
-                          hintText: _hcT(lang, 'search_hint'),
-                          clinicalCompact: true,
-                          prefixIcon: Icons.search_rounded,
-                          // PERF-FIX: atualiza o ValueNotifier sem setState() global —
-                          // apenas o ValueListenableBuilder abaixo rebuilda.
-                          onChanged: (v) => _searchQuery.value = v,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: _showDateFilter,
-                      child: Container(
-                        height: 44,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: _dateFilter != null
-                              ? AppColors.of(context).darkBtn
-                              : AppColors.of(context).cardBg,
-                          border: Border.all(
-                            color: _dateFilter != null
-                                ? AppColors.of(context).darkBtn
-                                : AppColors.of(context).border,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.date_range_rounded,
-                              size: 15,
-                              color: _dateFilter != null
-                                  ? const Color(0xFFFFE8A6)
-                                  : const Color(0xFF6B7280),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (_dateFilter != null)
+              // MEDCASES_HC_INLINE_NOVA_SEARCH_HIDE_V1_B_R0
+              if (_tabCtrl.index != 2) ...[
+                // ── Barra de busca ────────────────────────────────────────
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: AppColors.of(context).surface,
-                          border: Border.all(
-                            color: AppColors.of(context).border,
+                      Expanded(
+                        child: // HISTORY_CLINICAL_V1_C_R8_SEARCH_OWNER
+                            SizedBox(
+                          height: 44,
+                          child: MedInput(
+                            controller: _searchCtrl,
+                            hintText: _hcT(lang, 'search_hint'),
+                            clinicalCompact: true,
+                            prefixIcon: Icons.search_rounded,
+                            // PERF-FIX: atualiza o ValueNotifier sem setState() global —
+                            // apenas o ValueListenableBuilder abaixo rebuilda.
+                            onChanged: (v) => _searchQuery.value = v,
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.date_range_rounded,
-                              size: 12,
-                              color: AppColors.of(context).textPrimary,
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: _showDateFilter,
+                        child: Container(
+                          height: 44,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: _dateFilter != null
+                                ? AppColors.of(context).darkBtn
+                                : AppColors.of(context).cardBg,
+                            border: Border.all(
+                              color: _dateFilter != null
+                                  ? AppColors.of(context).darkBtn
+                                  : AppColors.of(context).border,
                             ),
-                            const SizedBox(width: 6),
-                            Text(
-                              _dateFilterLabel,
-                              style: TextStyle(
-                                fontSize: MedTypography.microTextSize,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.of(context).textPrimary,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.date_range_rounded,
+                                size: 15,
+                                color: _dateFilter != null
+                                    ? const Color(0xFF0D6B57)
+                                    : const Color(0xFF6B7280),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: _clearDateFilter,
-                              child: const Icon(
-                                Icons.close_rounded,
-                                size: 13,
-                                color: Color(0xFF555555),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              const SizedBox(height: 4),
+                if (_dateFilter != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: AppColors.of(context).surface,
+                            border: Border.all(
+                              color: AppColors.of(context).border,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.date_range_rounded,
+                                size: 12,
+                                color: AppColors.of(context).textPrimary,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _dateFilterLabel,
+                                style: TextStyle(
+                                  fontSize: MedTypography.microTextSize,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.of(context).textPrimary,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              GestureDetector(
+                                onTap: _clearDateFilter,
+                                child: const Icon(
+                                  Icons.close_rounded,
+                                  size: 13,
+                                  color: Color(0xFF555555),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 4),
+              ],
               // PERF-FIX: RepaintBoundary isola a TabBarView do bloco da topbar.
               // Quando o usuário digita na busca ou alterna abas, apenas esta
               // camada é redesenhada — a topbar (Positioned acima) mantém
@@ -1624,7 +1670,11 @@ class _HistoryScreenState extends State<HistoryScreen>
                 child: RepaintBoundary(
                   child: TabBarView(
                     controller: _tabCtrl,
-                    children: [mineTab, communityTab],
+                    children: [
+                      mineTab,
+                      communityTab,
+                      newHistoryTab,
+                    ],
                   ),
                 ),
               ),
@@ -1662,6 +1712,7 @@ class _HistoryScreenState extends State<HistoryScreen>
     final lang = context.read<AppProvider>().lang;
     return await showDialog<bool>(
           context: context,
+          useRootNavigator: !kIsWeb,
           builder: (_) => AlertDialog(
             title: Text(_hcT(lang, 'del_title')),
             content: Text(_hcT(lang, 'del_content')),
@@ -1687,6 +1738,7 @@ class _HistoryScreenState extends State<HistoryScreen>
     final lang = context.read<AppProvider>().lang;
     return await showDialog<bool>(
           context: context,
+          useRootNavigator: !kIsWeb,
           builder: (_) => AlertDialog(
             backgroundColor: const Color(0xFFFFFDF8),
             shape: RoundedRectangleBorder(
@@ -1702,7 +1754,9 @@ class _HistoryScreenState extends State<HistoryScreen>
             ),
             content: Text(
               _hcT(lang, 'del_mod_content'),
-              style: const TextStyle(fontSize: MedTypography.clinicalBodySize, color: Color(0xFF444444)),
+              style: const TextStyle(
+                  fontSize: MedTypography.clinicalBodySize,
+                  color: Color(0xFF444444)),
             ),
             actions: [
               TextButton(
@@ -1739,6 +1793,303 @@ class _HistoryScreenState extends State<HistoryScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_HC_NEW_HISTORY_WORKSPACE_V1_B_R0
+// Tela dedicada de criação: sem bottom sheet e sem duplicar motores clínicos.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDCASES_HC_NEW_HISTORY_WORKSPACE_V1_B_R0
+// MEDCASES_HC_PREMIUM_NOVA_WORKSPACE_V1_B_R0
+// Tela dedicada de criação. Introdução sem falso card; três ações reais abaixo.
+// ─────────────────────────────────────────────────────────────────────────────
+class _NewHistoryWorkspace extends StatelessWidget {
+  // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0
+  // Conteúdo da terceira subaba. Não cria Scaffold, topbar ou rota duplicada.
+  final String lang;
+  final VoidCallback onManual;
+  final void Function(SoapData) onSoapData;
+
+  const _NewHistoryWorkspace({
+    required this.lang,
+    required this.onManual,
+    required this.onSoapData,
+  });
+
+  void _openManual() {
+    onManual();
+  }
+
+  void _finishSoap(SoapData soapData) {
+    onSoapData(soapData);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final text = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFFA8B2C1) : const Color(0xFF64748B);
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+
+    return ColoredBox(
+      color: bg,
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+          16,
+          14,
+          16,
+          112 + safeBottom,
+        ),
+        children: [
+          // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_INTRO
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  lang == 'es' ? 'NUEVA HISTORIA' : 'NOVA HISTÓRIA',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w800,
+                    color: secondary,
+                    letterSpacing: 0.9,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  lang == 'es'
+                      ? 'Seleccione cómo registrar esta consulta'
+                      : 'Escolha como registrar esta consulta',
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w800,
+                    color: text,
+                    height: 1.18,
+                    letterSpacing: -0.16,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  lang == 'es'
+                      ? 'Podrá revisar y editar la información antes de guardarla.'
+                      : 'Você poderá revisar e editar as informações antes de salvar.',
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w400,
+                    color: secondary,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          _NewHistoryFlowCard(
+            icon: Icons.mic_rounded,
+            title: lang == 'es'
+                ? 'Grabar consulta y transcribir todo'
+                : 'Gravar consulta e transcrever tudo',
+            subtitle: lang == 'es'
+                ? 'IA organiza automáticamente la consulta en estructura SOAP.'
+                : 'A IA organiza automaticamente a consulta em estrutura SOAP.',
+            showIaBadge: true,
+            onTap: () {
+              ClinicalRecorderSheet.openContinuousRecorder(
+                context,
+                onSoapData: (soapData) {
+                  if (!context.mounted) return;
+                  _finishSoap(soapData);
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+          _NewHistoryFlowCard(
+            icon: Icons.edit_note_rounded,
+            title: lang == 'es'
+                ? 'Completar manualmente'
+                : 'Preencher manualmente',
+            subtitle: lang == 'es'
+                ? 'Formulario clínico tradicional con campos SOAP.'
+                : 'Formulário clínico tradicional com campos SOAP.',
+            showIaBadge: false,
+            onTap: _openManual,
+          ),
+          const SizedBox(height: 8),
+          _NewHistoryFlowCard(
+            icon: Icons.view_agenda_outlined,
+            title: lang == 'es'
+                ? 'Grabar por bloques SOAP'
+                : 'Gravar por blocos SOAP',
+            subtitle: lang == 'es'
+                ? 'Dictado segmentado por cada categoría clínica.'
+                : 'Ditado segmentado por cada categoria clínica.',
+            showIaBadge: false,
+            onTap: () {
+              ClinicalRecorderSheet.openSoapBlocksRecorder(
+                context,
+                onSoapData: (soapData) {
+                  if (!context.mounted) return;
+                  _finishSoap(soapData);
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NewHistoryFlowCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool showIaBadge;
+  final VoidCallback onTap;
+
+  const _NewHistoryFlowCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.showIaBadge,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final text = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final secondary = dark ? const Color(0xFFA8B2C1) : const Color(0xFF64748B);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
+    final surface = dark ? const Color(0xFF23272E) : const Color(0xFFFFFFFF);
+    final accent = const Color(0xFF10B981);
+    final iconColor = showIaBadge
+        ? accent
+        : (dark ? const Color(0xFFD7DCE3) : const Color(0xFF475569));
+    final iconSurface = showIaBadge
+        ? accent.withValues(alpha: dark ? 0.10 : 0.07)
+        : (dark ? const Color(0xFF30353D) : const Color(0xFFF1F4F7));
+
+    return Semantics(
+      button: true,
+      label: title,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(12, 12, 11, 12),
+            decoration: BoxDecoration(
+              color: surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: border, width: 0.7),
+            ),
+            child: Row(
+              children: [
+                if (showIaBadge) ...[
+                  Container(
+                    width: 2,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: accent,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: iconSurface,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(icon, size: 21, color: iconColor),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w700,
+                                color: text,
+                                height: 1.2,
+                                letterSpacing: -0.05,
+                              ),
+                            ),
+                          ),
+                          if (showIaBadge) ...[
+                            const SizedBox(width: 7),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: accent.withValues(
+                                  alpha: dark ? 0.08 : 0.05,
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: accent.withValues(alpha: 0.48),
+                                  width: 0.7,
+                                ),
+                              ),
+                              child: const Text(
+                                'IA',
+                                style: TextStyle(
+                                  fontSize: 9.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF10B981),
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 12.2,
+                          fontWeight: FontWeight.w400,
+                          color: secondary,
+                          height: 1.34,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: secondary.withValues(alpha: 0.68),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // LAYER 1 — Plano de fundo da topbar História Clínica
 // Ocupa topPad+56 px, transladado top:-topPad para sangrar atrás da status bar.
 // SEM conteúdo interativo — apenas decoração visual.
@@ -1799,7 +2150,10 @@ class _HcTopbarContent extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
-              color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */ Theme.of(context).brightness == Brightness.dark ? (Colors.white) : (const Color(0xFF05070A)),
+              color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */
+                  Theme.of(context).brightness == Brightness.dark
+                      ? (Colors.white)
+                      : (const Color(0xFF05070A)),
             ),
           ),
           // ── LEFT: botão de voltar — SizedBox 36×36 clicável ──────────────
@@ -1821,7 +2175,10 @@ class _HcTopbarContent extends StatelessWidget {
                 child: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 20,
-                  color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */ Theme.of(context).brightness == Brightness.dark ? (Colors.white) : (const Color(0xFF05070A)),
+                  color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */
+                      Theme.of(context).brightness == Brightness.dark
+                          ? (Colors.white)
+                          : (const Color(0xFF05070A)),
                 ),
               ),
             ),
@@ -1838,9 +2195,6 @@ class _HcTopbarContent extends StatelessWidget {
 // Cores adaptativas: dark → branco; light → preto.
 // ─────────────────────────────────────────────────────────────────────────────
 class _HcTabRow extends StatelessWidget {
-  // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_TABROW_LIGHT
-  // HISTORY_CLINICAL_V1_C_R8_TABROW
-  // MEDCASES_HISTORIA_CLINICA_SUBTOPBAR_STRUCTURAL_PARITY_AVALIACAO_V1_B_R0_R1
   final bool dark;
   final String lang;
   final TabController tabCtrl;
@@ -1855,88 +2209,77 @@ class _HcTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Mesma gramatica visual da _SectionNav homologada da Avaliacao Fisica:
-    // surface propria + 44px + padding 8 + segmentos + divisores + baseline.
-    final surface =
-        dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
-    final border =
-        dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
+
+    Widget separator() => SizedBox(
+          width: 0.7,
+          height: 40,
+          child: Center(
+            child: Container(
+              width: 0.7,
+              height: 20,
+              color: divider,
+            ),
+          ),
+        );
 
     return Container(
-      height: 44,
-      color: surface,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          children: [
-            Expanded(
-              child: _HcFlatTab(
-                label: lang == 'es' ? 'MIS HCs' : 'MINHAS',
-                index: 0,
-                tabCtrl: tabCtrl,
-                dark: dark,
-              ),
-            ),
-            Expanded(
-              child: _HcFlatTab(
-                label: 'PÚBLICAS',
-                index: 1,
-                tabCtrl: tabCtrl,
-                dark: dark,
-              ),
-            ),
-            Expanded(
-              child: GestureDetector(
-                onTap: onNew,
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  height: 44,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: border.withOpacity(dark ? 0.55 : 0.85),
-                        width: 0.7,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    lang == 'es' ? '+ NUEVA' : '+ NOVA',
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.visible,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      height: 1,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF10B981),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+      height: 40,
+      decoration: BoxDecoration(
+        color: surface,
+        border: Border(
+          bottom: BorderSide(color: divider, width: 0.7),
         ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _HcFlatTab(
+              label: lang == 'es' ? 'MIS HCs' : 'MINHAS',
+              index: 0,
+              tabCtrl: tabCtrl,
+              dark: dark,
+            ),
+          ),
+          separator(),
+          Expanded(
+            child: _HcFlatTab(
+              label: 'PÚBLICAS',
+              index: 1,
+              tabCtrl: tabCtrl,
+              dark: dark,
+            ),
+          ),
+          separator(),
+          Expanded(
+            child: _HcFlatTab(
+              // MEDCASES_HC_INLINE_NOVA_SUBTAB_V1_B_R0_THIRD_SEGMENT
+              label: lang == 'es' ? '+ NUEVA' : '+ NOVA',
+              index: 2,
+              tabCtrl: tabCtrl,
+              dark: dark,
+              onTap: onNew,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HELPER: Tab flat minimalista para Historia Clínica — BUILD 331
-// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
-// ─────────────────────────────────────────────────────────────────────────────
 class _HcFlatTab extends StatefulWidget {
   final String label;
   final int index;
   final TabController tabCtrl;
   final bool dark;
+  final VoidCallback? onTap;
   const _HcFlatTab({
     required this.label,
     required this.index,
     required this.tabCtrl,
     this.dark = true,
+    this.onTap,
   });
   @override
   State<_HcFlatTab> createState() => _HcFlatTabState();
@@ -1961,55 +2304,58 @@ class _HcFlatTabState extends State<_HcFlatTab> {
 
   @override
   Widget build(BuildContext context) {
-    // HISTORY_CLINICAL_V1_C_R8_ACTIVE_UNDERLINE
-    // Estrutura visual espelhada da _SectionNav da Avaliacao Fisica.
     final isActive = widget.tabCtrl.index == widget.index;
-    final activeColor =
-        widget.dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
     final inactiveColor =
-        widget.dark ? const Color(0xFFB2C0D0) : const Color(0xFF6B7280);
-    final dividerColor =
-        widget.dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+        widget.dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeColor =
+        widget.dark ? const Color(0xFF0E8000) : const Color(0xFF0E8000);
+    final activeBackground = widget.dark
+        ? const Color(0xFF0E8000).withValues(alpha: 0.10)
+        : const Color(0xFFECFDF5);
 
     return GestureDetector(
-      onTap: () => widget.tabCtrl.animateTo(widget.index),
+      onTap: widget.onTap ?? () => widget.tabCtrl.animateTo(widget.index),
       behavior: HitTestBehavior.opaque,
-      child: Container(
-        height: 44,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        height: 40,
         decoration: BoxDecoration(
-          border: Border(
-            right: BorderSide(
-              color: dividerColor.withOpacity(widget.dark ? 0.70 : 1.0),
-              width: 0.7,
-            ),
-            bottom: BorderSide(
-              color: isActive ? const Color(0xFF10B981) : dividerColor,
-              width: isActive ? 2 : 0.7,
-            ),
-          ),
+          color: isActive ? activeBackground : Colors.transparent,
         ),
-        child: Text(
-          widget.label,
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.visible,
-          style: TextStyle(
-            fontSize: 11,
-            height: 1,
-            fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-            color: isActive ? activeColor : inactiveColor,
-          ),
+        child: Stack(
+          children: [
+            Center(
+              child: Text(
+                widget.label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  height: 1,
+                  fontWeight: FontWeight.w700,
+                  color: isActive ? activeColor : inactiveColor,
+                  letterSpacing: 0.05,
+                ),
+              ),
+            ),
+            if (isActive)
+              Positioned(
+                left: 12,
+                right: 12,
+                bottom: 9,
+                child: Container(
+                  height: 2,
+                  color: const Color(0xFF0E8000),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CARD DA LISTA
-// ─────────────────────────────────────────────────────────────────────────────
 class _HistoryCard extends StatelessWidget {
   // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_HISTORY_CARD_LIGHT
   final ClinicalHistoryModel h;
@@ -2084,11 +2430,11 @@ class _HistoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
         decoration: // HISTORY_CLINICAL_V1_C_R8_LIST_SURFACE_BEGIN
             BoxDecoration(
           color: isDark ? const Color(0xFF252930) : const Color(0xFFFFFFFF),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isDark ? const Color(0xFF374151) : const Color(0xFFD8DEE7),
             width: 0.7,
@@ -2102,7 +2448,7 @@ class _HistoryCard extends StatelessWidget {
               // ── Barra colorida lateral (accent do outcome) ──────────────
               Container(
                 width: 3,
-                margin: const EdgeInsets.symmetric(vertical: 8),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(99),
                   color: accent,
@@ -2111,7 +2457,7 @@ class _HistoryCard extends StatelessWidget {
               // ── Conteúdo principal ───────────────────────────────────────
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -2169,8 +2515,8 @@ class _HistoryCard extends StatelessWidget {
                               ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
-                                color: const Color(0xFF3B82F6)
-                                    .withOpacity(0.10),
+                                color:
+                                    const Color(0xFF3B82F6).withOpacity(0.10),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -2271,7 +2617,7 @@ class _HistoryCard extends StatelessWidget {
                               const Icon(
                                 Icons.check_circle_outline_rounded,
                                 size: 13,
-                                color: Color(0xFF10B981),
+                                color: Color(0xFF0D6B57),
                               ),
                               const SizedBox(width: 6),
                               Expanded(
@@ -3469,7 +3815,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                       RepaintBoundary(
                         key: _printKey,
                         child: Container(
-                          color: (isDarkR10 ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3)),
+                          color: (isDarkR10
+                              ? const Color(0xFF1A1D23)
+                              : const Color(0xFFECF1F3)),
                           padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -3484,7 +3832,8 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                     child: Text(
                                       'M+',
                                       style: TextStyle(
-                                        fontSize: MedTypography.internalTitleSize,
+                                        fontSize:
+                                            MedTypography.internalTitleSize,
                                         fontWeight: FontWeight.w800,
                                         color: Color(0xFFC5A365),
                                         letterSpacing: 0.2,
@@ -3501,14 +3850,18 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                         style: TextStyle(
                                           fontSize: MedTypography.auxiliarySize,
                                           fontWeight: FontWeight.w800,
-                                          color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                                          color: (isDarkR10
+                                              ? Color(0xFFE8F0EC)
+                                              : const Color(0xFF05070A)),
                                         ),
                                       ),
                                       Text(
                                         'Historia Clínica Oficial',
                                         style: TextStyle(
                                           fontSize: MedTypography.microTextSize,
-                                          color: (isDarkR10 ? Colors.white54 : const Color(0xFF4B5563)),
+                                          color: (isDarkR10
+                                              ? Colors.white54
+                                              : const Color(0xFF4B5563)),
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -3522,9 +3875,12 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                         Text(
                                           history.authorName,
                                           style: TextStyle(
-                                            fontSize: MedTypography.microTextSize,
+                                            fontSize:
+                                                MedTypography.microTextSize,
                                             fontWeight: FontWeight.w700,
-                                            color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                                            color: (isDarkR10
+                                                ? Color(0xFFE8F0EC)
+                                                : const Color(0xFF05070A)),
                                           ),
                                         ),
                                       Text(
@@ -3533,14 +3889,18 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                             : 'Clínica General',
                                         style: TextStyle(
                                           fontSize: MedTypography.microTextSize,
-                                          color: (isDarkR10 ? Colors.white54 : const Color(0xFF4B5563)),
+                                          color: (isDarkR10
+                                              ? Colors.white54
+                                              : const Color(0xFF4B5563)),
                                         ),
                                       ),
                                       Text(
                                         history.formattedDate,
                                         style: TextStyle(
                                           fontSize: MedTypography.microTextSize,
-                                          color: (isDarkR10 ? Colors.white54 : const Color(0xFF4B5563)),
+                                          color: (isDarkR10
+                                              ? Colors.white54
+                                              : const Color(0xFF4B5563)),
                                         ),
                                       ),
                                     ],
@@ -3563,7 +3923,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                 style: TextStyle(
                                   fontSize: MedTypography.internalTitleSize,
                                   fontWeight: FontWeight.w800,
-                                  color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                                  color: (isDarkR10
+                                      ? Color(0xFFE8F0EC)
+                                      : const Color(0xFF05070A)),
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -3809,7 +4171,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: MedTypography.microTextSize,
-                                  color: (isDarkR10 ? Colors.white38 : const Color(0xFF4B5563)),
+                                  color: (isDarkR10
+                                      ? Colors.white38
+                                      : const Color(0xFF4B5563)),
                                 ),
                               ),
                             ],
@@ -3832,7 +4196,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                   color: Colors.transparent,
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                                    color: (isDarkR10
+                                        ? Color(0xFF374151)
+                                        : const Color(0xFFD8E0E7)),
                                     width: 0.65,
                                   ),
                                 ),
@@ -3870,7 +4236,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                 color: Colors.transparent,
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                                  color: (isDarkR10
+                                      ? Color(0xFF374151)
+                                      : const Color(0xFFD8E0E7)),
                                   width: 0.65,
                                 ),
                               ),
@@ -3878,7 +4246,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                 child: Icon(
                                   Icons.picture_as_pdf_rounded,
                                   size: 17,
-                                  color: (isDarkR10 ? Colors.white : const Color(0xFF05070A)),
+                                  color: (isDarkR10
+                                      ? Colors.white
+                                      : const Color(0xFF05070A)),
                                 ),
                               ),
                             ),
@@ -3893,7 +4263,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                 color: Colors.transparent,
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                                  color: (isDarkR10
+                                      ? Color(0xFF374151)
+                                      : const Color(0xFFD8E0E7)),
                                   width: 0.65,
                                 ),
                               ),
@@ -3904,13 +4276,17 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                         height: 18,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          color: (isDarkR10 ? Colors.white : const Color(0xFF05070A)),
+                                          color: (isDarkR10
+                                              ? Colors.white
+                                              : const Color(0xFF05070A)),
                                         ),
                                       )
                                     : Icon(
                                         Icons.image_rounded,
                                         size: 17,
-                                        color: (isDarkR10 ? Colors.white : const Color(0xFF05070A)),
+                                        color: (isDarkR10
+                                            ? Colors.white
+                                            : const Color(0xFF05070A)),
                                       ),
                               ),
                             ),
@@ -3926,7 +4302,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                   color: Colors.transparent,
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                                    color: (isDarkR10
+                                        ? Color(0xFF374151)
+                                        : const Color(0xFFD8E0E7)),
                                     width: 0.65,
                                   ),
                                 ),
@@ -3988,7 +4366,9 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                         color: Colors.transparent,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: (isDarkR10 ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                          color: (isDarkR10
+                              ? Color(0xFF374151)
+                              : const Color(0xFFD8E0E7)),
                           width: 0.65,
                         ),
                       ),
@@ -3996,7 +4376,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                         child: Icon(
                           Icons.edit_rounded,
                           size: 22,
-                          color: Color(0xFFFFE8A6),
+                          color: Color(0xFF0D6B57),
                         ),
                       ),
                     ),
@@ -4081,7 +4461,8 @@ class _HistoryHeroHeader extends StatelessWidget {
         _PatientBadge(
           icon: Icons.badge_outlined,
           text: patientIdentity,
-          accent: (isDarkR10 ? const Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+          accent:
+              (isDarkR10 ? const Color(0xFFE8F0EC) : const Color(0xFF05070A)),
         ),
       );
     }
@@ -4142,7 +4523,9 @@ class _HistoryHeroHeader extends StatelessWidget {
                         icon: Icon(
                           Icons.arrow_back_ios_new_rounded,
                           size: 18,
-                          color: (isDarkR10 ? Colors.white70 : const Color(0xFF4B5563)),
+                          color: (isDarkR10
+                              ? Colors.white70
+                              : const Color(0xFF4B5563)),
                         ),
                       ),
                     ),
@@ -4156,7 +4539,9 @@ class _HistoryHeroHeader extends StatelessWidget {
                           fontSize: MedTypography.clinicalBodySize,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.4,
-                          color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                          color: (isDarkR10
+                              ? Color(0xFFE8F0EC)
+                              : const Color(0xFF05070A)),
                         ),
                       ),
                     ),
@@ -4175,7 +4560,7 @@ class _HistoryHeroHeader extends StatelessWidget {
                           icon: const Icon(
                             Icons.edit_outlined,
                             size: 18,
-                            color: Color(0xFF10B981),
+                            color: Color(0xFF0D6B57),
                           ),
                         ),
                       ),
@@ -4189,7 +4574,7 @@ class _HistoryHeroHeader extends StatelessWidget {
                   fontSize: MedTypography.microTextSize,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.4,
-                  color: Color(0xFF10B981),
+                  color: Color(0xFF0D6B57),
                 ),
               ),
               const SizedBox(height: 4),
@@ -4201,7 +4586,8 @@ class _HistoryHeroHeader extends StatelessWidget {
                   fontSize: MedTypography.internalTitleSize,
                   height: 1.12,
                   fontWeight: FontWeight.w700,
-                  color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                  color:
+                      (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
                 ),
               ),
               if (patientSummary.isNotEmpty) ...[
@@ -4600,6 +4986,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       if (!webPlatform.webHasSpeechRecognition()) {
         showDialog(
           context: context,
+          useRootNavigator: !kIsWeb,
           builder: (_) => AlertDialog(
             title: Text(widget.p.t('dictation_not_supported')),
             content: Text(widget.p.t('dictation_browser_msg')),
@@ -4785,6 +5172,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       if (!webPlatform.webHasSpeechRecognition()) {
         showDialog(
           context: context,
+          useRootNavigator: !kIsWeb,
           builder: (_) => AlertDialog(
             title: Text(_hcT(widget.p.lang, 'dict_not_supported')),
             content: Text(_hcT(widget.p.lang, 'dict_browser_msg')),
@@ -5017,7 +5405,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               color: Colors.white,
             ),
             const SizedBox(width: 8),
-            Expanded(child: Text(msg, style: const TextStyle(fontSize: MedTypography.auxiliarySize))),
+            Expanded(
+                child: Text(msg,
+                    style: const TextStyle(
+                        fontSize: MedTypography.auxiliarySize))),
           ],
         ),
         backgroundColor:
@@ -5081,6 +5472,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
         if (!mounted) return;
         showDialog(
           context: context,
+          useRootNavigator: !kIsWeb,
           builder: (_) => AlertDialog(
             title: Text(widget.p.t('dictation_not_supported')),
             content: Text(widget.p.t('dictation_browser_msg')),
@@ -5302,20 +5694,15 @@ class _HistoryEditorState extends State<_HistoryEditor> {
     final completion = _draft.completionRatio;
     final bp = MedBreakpoints.of(context);
     // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R11_R2_MANUAL_LIGHT_SHELL
-    final manualShellDark =
-        Theme.of(context).brightness == Brightness.dark;
-    final manualShellBackground = manualShellDark
-        ? const Color(0xFF1A1D23)
-        : const Color(0xFFECF1F3);
-    final manualShellPrimary = manualShellDark
-        ? Colors.white
-        : const Color(0xFF05070A);
-    final manualShellSecondary = manualShellDark
-        ? Colors.white70
-        : const Color(0xFF4B5563);
-    final manualShellDivider = manualShellDark
-        ? const Color(0xFF374151)
-        : const Color(0xFFD8E0E7);
+    final manualShellDark = Theme.of(context).brightness == Brightness.dark;
+    final manualShellBackground =
+        manualShellDark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final manualShellPrimary =
+        manualShellDark ? Colors.white : const Color(0xFF05070A);
+    final manualShellSecondary =
+        manualShellDark ? Colors.white70 : const Color(0xFF4B5563);
+    final manualShellDivider =
+        manualShellDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
     // Desktop: header gradiente completo (sem shell AppBar).
     // Mobile/tablet: shell AppBar já visível → header compacto sem gradiente
     // (apenas barra de ações + progresso + tabs — sem duplicar o título).
@@ -5330,7 +5717,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: EdgeInsets.all(8),
-            child: Icon(Icons.close_rounded, size: 18, color: manualShellSecondary),
+            child: Icon(Icons.close_rounded,
+                size: 18, color: manualShellSecondary),
           ),
         ),
         const SizedBox(width: 6),
@@ -5380,7 +5768,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: const Color(0xFF10B981),
+              color: const Color(0xFF0E8000),
             ),
             child: Text(
               _hcT(widget.p.lang, 'save_btn'),
@@ -5475,7 +5863,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                                     fontWeight: active
                                         ? FontWeight.w600
                                         : FontWeight.w500,
-                                    color: active ? manualShellPrimary : manualShellSecondary,
+                                    color: active
+                                        ? manualShellPrimary
+                                        : manualShellSecondary,
                                   ),
                                 ),
                               ),
@@ -5484,7 +5874,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                                 height: 1.2,
                                 width: active ? 30 : 0,
                                 color: active
-                                    ? const Color(0xFF10B981)
+                                    ? const Color(0xFF0E8000)
                                     : Colors.transparent,
                               ),
                             ],
@@ -5555,7 +5945,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                                     fontWeight: active
                                         ? FontWeight.w600
                                         : FontWeight.w500,
-                                    color: active ? manualShellPrimary : manualShellSecondary,
+                                    color: active
+                                        ? manualShellPrimary
+                                        : manualShellSecondary,
                                     letterSpacing: 0.3,
                                   ),
                                 ),
@@ -5566,7 +5958,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                                 height: 1.2,
                                 width: active ? 30 : 0,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF10B981),
+                                  color: const Color(0xFF0E8000),
                                   borderRadius: BorderRadius.circular(2),
                                 ),
                               ),
@@ -5723,10 +6115,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                     ),
                     const SizedBox(height: 5),
                     // HISTORY_CLINICAL_V1_D_R14_SEX_SOLID_SEGMENTED
-          // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_SEX_SELECTOR_LIGHT
+                    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_SEX_SELECTOR_LIGHT
                     Builder(
                       builder: (ctx) {
-                        final isDarkSex = Theme.of(ctx).brightness == Brightness.dark;
+                        final isDarkSex =
+                            Theme.of(ctx).brightness == Brightness.dark;
                         final male = _hcT(widget.p.lang, 'sex_male');
                         final female = _hcT(widget.p.lang, 'sex_female');
                         final selected = _draft.patientSex;
@@ -5763,10 +6156,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                                     fontWeight: active
                                         ? FontWeight.w600
                                         : FontWeight.w500,
-                                    color:
-                                        active ? Colors.white : isDarkSex
-                                        ? Colors.white70
-                                        : const Color(0xFF4B5563),
+                                    color: active
+                                        ? Colors.white
+                                        : isDarkSex
+                                            ? Colors.white70
+                                            : const Color(0xFF4B5563),
                                   ),
                                 ),
                               ),
@@ -5875,8 +6269,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     height: 44,
                     decoration: BoxDecoration(
-                      color:
-                          isDarkDrop ? const Color(0xFF2D3340) : const Color(0xFFECF1F3),
+                      color: isDarkDrop
+                          ? const Color(0xFF2D3340)
+                          : const Color(0xFFECF1F3),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: isDarkDrop ? const Color(0xFF374151) : kBorder,
@@ -5887,8 +6282,9 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                       child: DropdownButton<String>(
                         value: _draft.category,
                         isExpanded: true,
-                        dropdownColor:
-                            isDarkDrop ? const Color(0xFF252930) : const Color(0xFFECF1F3),
+                        dropdownColor: isDarkDrop
+                            ? const Color(0xFF252930)
+                            : const Color(0xFFECF1F3),
                         style: TextStyle(
                           fontSize: MedTypography.auxiliarySize,
                           fontWeight: FontWeight.w600,
@@ -5932,7 +6328,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _draft.isPublic
-                      ? const Color(0xFF10B981).withOpacity(0.52)
+                      ? const Color(0xFF0E8000).withOpacity(0.52)
                       : Theme.of(context).brightness == Brightness.dark
                           ? const Color(0xFF374151)
                           : const Color(0xFFD8E0E7),
@@ -5950,10 +6346,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                         : Icons.lock_outline_rounded,
                     size: 19,
                     color: _draft.isPublic
-                        ? const Color(0xFF10B981)
+                        ? const Color(0xFF0E8000)
                         : Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white60
-                          : const Color(0xFF4B5563),
+                            ? Colors.white60
+                            : const Color(0xFF4B5563),
                   ),
                   const SizedBox(width: 11),
                   Expanded(
@@ -5968,10 +6364,11 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                             fontSize: MedTypography.auxiliarySize,
                             fontWeight: FontWeight.w600,
                             color: _draft.isPublic
-                                ? const Color(0xFF10B981)
-                                : Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white70
-                                  : const Color(0xFF05070A),
+                                ? const Color(0xFF0E8000)
+                                : Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white70
+                                    : const Color(0xFF05070A),
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -5979,9 +6376,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                           _hcT(widget.p.lang, 'public_hint'),
                           style: TextStyle(
                             fontSize: MedTypography.auxiliarySize,
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white54
-                                : const Color(0xFF4B5563),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white54
+                                    : const Color(0xFF4B5563),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -5994,7 +6392,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                         setState(() => _draft = _draft.copyWith(isPublic: v)),
                     thumbColor: WidgetStateProperty.resolveWith(
                       (states) => states.contains(WidgetState.selected)
-                          ? const Color(0xFF10B981)
+                          ? const Color(0xFF0E8000)
                           : null,
                     ),
                   ),
@@ -6197,7 +6595,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   // ── Seção 5: Evolução ─────────────────────────────────────────────────────
   Widget _buildEvolutionSection() {
     // HISTORY_CLINICAL_V1_D_R6_EVOLUTION_METHOD_OWNER
-          // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_EVOLUTION_SECTION_LIGHT
+    // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_EVOLUTION_SECTION_LIGHT
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -6272,7 +6670,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                   const Icon(
                     Icons.add_circle_outline_rounded,
                     size: 16,
-                    color: Color(0xFF10B981),
+                    color: Color(0xFF0E8000),
                   ),
                   const SizedBox(width: 7),
                   Text(
@@ -6295,7 +6693,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   }
 
   // ── Seção 6: Desfecho
-          // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_OUTCOME_SELECTOR_LIGHT ──────────────────────────────────────────────────────
+  // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R7_OUTCOME_SELECTOR_LIGHT ──────────────────────────────────────────────────────
   Widget _buildOutcomeSection() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -6335,8 +6733,7 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                             : Theme.of(context).brightness == Brightness.dark
                                 ? Colors.white
                                 : const Color(0xFFECF1F3),
-                        border:
-                            Border.all(
+                        border: Border.all(
                           color: selected
                               ? colors[i]
                               : Theme.of(context).brightness == Brightness.dark
@@ -6357,7 +6754,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                             size: 16,
                             color: selected
                                 ? Colors.white
-                                : Theme.of(context).brightness == Brightness.dark
+                                : Theme.of(context).brightness ==
+                                        Brightness.dark
                                     ? const Color(0xFF6B7280)
                                     : const Color(0xFF4B5563),
                           ),
@@ -6369,7 +6767,8 @@ class _HistoryEditorState extends State<_HistoryEditor> {
                               fontWeight: FontWeight.w900,
                               color: selected
                                   ? Colors.white
-                                  : Theme.of(context).brightness == Brightness.dark
+                                  : Theme.of(context).brightness ==
+                                          Brightness.dark
                                       ? const Color(0xFF6B7280)
                                       : const Color(0xFF4B5563),
                             ),
@@ -6800,20 +7199,20 @@ class _SmartDictaphoneButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           gradient: active
               ? const LinearGradient(
-                  colors: [Color(0xFF0F1116), Color(0xFF10B981)],
+                  colors: [Color(0xFF0F1116), Color(0xFF0D6B57)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 )
               : null,
           color: active ? null : const Color(0xFFF0F7F4),
           border: Border.all(
-            color: active ? const Color(0xFF10B981) : const Color(0xFFBBD6C8),
+            color: active ? const Color(0xFF0D6B57) : const Color(0xFFBBD6C8),
             width: active ? 1.5 : 1,
           ),
           boxShadow: active
               ? [
                   BoxShadow(
-                    color: const Color(0xFF10B981).withOpacity(0.25),
+                    color: const Color(0xFF0D6B57).withOpacity(0.25),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -6831,18 +7230,18 @@ class _SmartDictaphoneButton extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: active
                     ? Colors.white.withOpacity(0.15)
-                    : const Color(0xFF10B981).withOpacity(0.12),
+                    : const Color(0xFF0D6B57).withOpacity(0.12),
                 border: Border.all(
                   color: active
                       ? Colors.white.withOpacity(0.3)
-                      : const Color(0xFF10B981).withOpacity(0.3),
+                      : const Color(0xFF0D6B57).withOpacity(0.3),
                 ),
               ),
               child: Center(
                 child: Icon(
                   active ? Icons.mic_rounded : Icons.mic_none_rounded,
                   size: 22,
-                  color: active ? Colors.white : const Color(0xFF10B981),
+                  color: active ? Colors.white : const Color(0xFF0D6B57),
                 ),
               ),
             ),
@@ -6858,7 +7257,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w900,
-                      color: active ? Colors.white : const Color(0xFF10B981),
+                      color: active ? Colors.white : const Color(0xFF0D6B57),
                       letterSpacing: 0.2,
                     ),
                   ),
@@ -6889,7 +7288,7 @@ class _SmartDictaphoneButton extends StatelessWidget {
               Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: const Color(0xFF10B981).withOpacity(0.5),
+                color: const Color(0xFF0D6B57).withOpacity(0.5),
               ),
           ],
         ),
@@ -6958,30 +7357,19 @@ class _MicControlBar extends StatelessWidget {
     final busy = smartActive || sttListening || relatoActive || aiProcessing;
     // HISTORY_CLINICAL_V1_C_R14_R4_MIC_DOCK_LIGHT_CLOSURE
     final micDockDark = Theme.of(context).brightness == Brightness.dark;
-    final micDockBackground = micDockDark
-        ? const Color(0xFF1A1D23)
-        : const Color(0xFFECF1F3);
-    final micPanelBackground = micDockDark
-        ? const Color(0xFF14213D)
-        : Colors.white;
-    final micPrimary = micDockDark
-        ? Colors.white
-        : const Color(0xFF05070A);
-    final micSecondary = micDockDark
-        ? Colors.white70
-        : const Color(0xFF4B5563);
-    final micMuted = micDockDark
-        ? Colors.white54
-        : const Color(0xFF6B7280);
-    final micPanelBorder = micDockDark
-        ? const Color(0xFF147D64)
-        : const Color(0xFF10B981);
-    final micActionIdleBackground = micDockDark
-        ? const Color(0xFF252930)
-        : Colors.white;
-    final micActionBorder = micDockDark
-        ? const Color(0xFF374151)
-        : const Color(0xFFD8E0E7);
+    final micDockBackground =
+        micDockDark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final micPanelBackground =
+        micDockDark ? const Color(0xFF14213D) : Colors.white;
+    final micPrimary = micDockDark ? Colors.white : const Color(0xFF05070A);
+    final micSecondary = micDockDark ? Colors.white70 : const Color(0xFF4B5563);
+    final micMuted = micDockDark ? Colors.white54 : const Color(0xFF6B7280);
+    final micPanelBorder =
+        micDockDark ? const Color(0xFF147D64) : const Color(0xFF0D6B57);
+    final micActionIdleBackground =
+        micDockDark ? const Color(0xFF252930) : Colors.white;
+    final micActionBorder =
+        micDockDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
 
     final focusedWidget = FocusManager.instance.primaryFocus?.context?.widget;
     final keyboardType =
@@ -7026,7 +7414,7 @@ class _MicControlBar extends StatelessWidget {
             TextButton(
               onPressed: () => FocusScope.of(context).unfocus(),
               style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFF10B981),
+                foregroundColor: const Color(0xFF0D6B57),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 7,
@@ -7085,7 +7473,7 @@ class _MicControlBar extends StatelessWidget {
                 Icon(
                   icon,
                   size: 16,
-                  color: active ? const Color(0xFF10B981) : micSecondary,
+                  color: active ? const Color(0xFF0D6B57) : micSecondary,
                 ),
                 const SizedBox(width: 5),
                 Flexible(
@@ -7138,7 +7526,7 @@ class _MicControlBar extends StatelessWidget {
                     Icon(
                       busy ? Icons.mic_rounded : Icons.mic_none_rounded,
                       size: 17,
-                      color: const Color(0xFF10B981),
+                      color: const Color(0xFF0D6B57),
                     ),
                     const SizedBox(width: 7),
                     Flexible(
@@ -7179,7 +7567,7 @@ class _MicControlBar extends StatelessWidget {
               const Icon(
                 Icons.mic_none_rounded,
                 size: 17,
-                color: Color(0xFF10B981),
+                color: Color(0xFF0D6B57),
               ),
               const SizedBox(width: 7),
               Expanded(
@@ -7564,7 +7952,7 @@ class _CentralMicButtonState extends State<_CentralMicButton>
   @override
   Widget build(BuildContext context) {
     final active = widget.active;
-    const kGreen = Color(0xFF10B981);
+    const kGreen = Color(0xFF0E8000);
     const kGreenL = Color(0xFF34A870);
     final btnColor = active ? kGreen : const Color(0xFFF0F7F4);
     final iconColor = active ? Colors.white : kGreen;
@@ -7813,7 +8201,8 @@ class _HistoryPreviewSheet extends StatelessWidget {
       maxChildSize: 0.97,
       builder: (_, ctrl) => Container(
         decoration: BoxDecoration(
-          color: (isDarkR10 ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3)),
+          color:
+              (isDarkR10 ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3)),
           borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         ),
         child: Column(
@@ -7834,9 +8223,13 @@ class _HistoryPreviewSheet extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+                color: (isDarkR10
+                    ? const Color(0xFF252930)
+                    : const Color(0xFFECF1F3)),
                 border: Border.all(
-                  color: (isDarkR10 ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                  color: (isDarkR10
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFD8E0E7)),
                   width: 0.7,
                 ),
               ),
@@ -7866,7 +8259,9 @@ class _HistoryPreviewSheet extends StatelessWidget {
                           style: TextStyle(
                             fontSize: MedTypography.internalTitleSize,
                             fontWeight: FontWeight.w900,
-                            color: (isDarkR10 ? Colors.white : const Color(0xFF05070A)),
+                            color: (isDarkR10
+                                ? Colors.white
+                                : const Color(0xFF05070A)),
                           ),
                         ),
                       ],
@@ -7878,12 +8273,16 @@ class _HistoryPreviewSheet extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: (isDarkR10 ? const Color(0xFF2D3340) : const Color(0xFFECF1F3)),
+                        color: (isDarkR10
+                            ? const Color(0xFF2D3340)
+                            : const Color(0xFFECF1F3)),
                       ),
                       child: Icon(
                         Icons.close_rounded,
                         size: 16,
-                        color: (isDarkR10 ? Colors.white : const Color(0xFF05070A)),
+                        color: (isDarkR10
+                            ? Colors.white
+                            : const Color(0xFF05070A)),
                       ),
                     ),
                   ),
@@ -8105,7 +8504,9 @@ class _HistoryPreviewSheet extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+                      color: (isDarkR10
+                          ? const Color(0xFF252930)
+                          : const Color(0xFFECF1F3)),
                     ),
                     child: Text(
                       isEs
@@ -8113,7 +8514,9 @@ class _HistoryPreviewSheet extends StatelessWidget {
                           : 'Documento gerado em $dateStr pelo MedCases Pro. Para uso exclusivamente educacional.',
                       style: TextStyle(
                         fontSize: MedTypography.microTextSize,
-                        color: (isDarkR10 ? Colors.white38 : const Color(0xFF4B5563)),
+                        color: (isDarkR10
+                            ? Colors.white38
+                            : const Color(0xFF4B5563)),
                         fontWeight: FontWeight.w600,
                         fontStyle: FontStyle.italic,
                       ),
@@ -8188,9 +8591,13 @@ class _PreviewDocHeader extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+                  color: (isDarkR10
+                      ? const Color(0xFF252930)
+                      : const Color(0xFFECF1F3)),
                   border: Border.all(
-                    color: (isDarkR10 ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                    color: (isDarkR10
+                        ? const Color(0xFF374151)
+                        : const Color(0xFFD8E0E7)),
                     width: 0.7,
                   ),
                 ),
@@ -8211,7 +8618,9 @@ class _PreviewDocHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: MedTypography.sectionLabelSize,
                     fontWeight: FontWeight.w700,
-                    color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                    color: (isDarkR10
+                        ? Color(0xFFE8F0EC)
+                        : const Color(0xFF05070A)),
                     letterSpacing: 0.4,
                   ),
                 ),
@@ -8347,7 +8756,9 @@ class _PreviewSection extends StatelessWidget {
                     fontSize: MedTypography.microTextSize,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.4,
-                    color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                    color: (isDarkR10
+                        ? Color(0xFFE8F0EC)
+                        : const Color(0xFF05070A)),
                   ),
                 ),
               ),
@@ -8424,7 +8835,8 @@ class _PreviewItemHighlight extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
         decoration: BoxDecoration(
-          color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+          color:
+              (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
           border: Border(
             left: BorderSide(
               color: color,
@@ -8450,7 +8862,8 @@ class _PreviewItemHighlight extends StatelessWidget {
               style: TextStyle(
                 fontSize: MedTypography.auxiliarySize,
                 fontWeight: FontWeight.w600,
-                color: (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                color:
+                    (isDarkR10 ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
                 height: 1.45,
               ),
             ),
@@ -8523,7 +8936,7 @@ class _DetailCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 15, color: const Color(0xFF10B981)),
+              Icon(icon, size: 15, color: const Color(0xFF0D6B57)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -8569,7 +8982,7 @@ class _SectionBlock extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 14,
-                color: const Color(0xFF10B981),
+                color: const Color(0xFF0D6B57),
               ),
             ),
             const SizedBox(width: 9),
@@ -8883,10 +9296,14 @@ class _DrugChips extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
               decoration: BoxDecoration(
-                color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+                color: (isDarkR10
+                    ? const Color(0xFF252930)
+                    : const Color(0xFFECF1F3)),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: (isDarkR10 ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                  color: (isDarkR10
+                      ? const Color(0xFF374151)
+                      : const Color(0xFFD8E0E7)),
                   width: 0.7,
                 ),
               ),
@@ -9130,7 +9547,7 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
           borderSide: const BorderSide(
-            color: Color(0xFF10B981),
+            color: Color(0xFF0D6B57),
             width: 1.0,
           ),
         ),
@@ -9197,7 +9614,7 @@ class _EvolutionEditorCardState extends State<_EvolutionEditorCard> {
                       border: Border(
                         bottom: BorderSide(
                           color: selected
-                              ? const Color(0xFF10B981)
+                              ? const Color(0xFF0D6B57)
                               : Colors.transparent,
                           width: 2,
                         ),
@@ -9293,100 +9710,74 @@ class _CommunityLoadingState extends StatelessWidget {
 }
 
 class _EmptyHistoryState extends StatelessWidget {
-  final VoidCallback onNew;
+  // MEDCASES_HC_NEW_HISTORY_WORKSPACE_V1_B_R0_EMPTY_STATE
   final String lang;
-  const _EmptyHistoryState({required this.onNew, this.lang = 'pt'});
+  const _EmptyHistoryState({this.lang = 'pt'});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary =
+        isDark ? const Color(0xFFDCE3EA) : const Color(0xFF334155);
+    final textSecondary =
+        isDark ? const Color(0xFF8F9AA8) : const Color(0xFF64748B);
+    final border = isDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
+    final iconBg = isDark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 36),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ── Ícone discreto com opacidade suave ──────────────────────
-            Icon(
-              Icons.description_outlined,
-              size: 38,
-              color: isDark
-                  ? Colors.white.withOpacity(0.18)
-                  : Colors.black.withOpacity(0.13),
+            Container(
+              width: 54,
+              height: 54,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: border, width: 0.7),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.description_outlined,
+                size: 25,
+                color: textSecondary,
+              ),
             ),
-            const SizedBox(height: 18),
-
-            // ── Título ───────────────────────────────────────────────────
+            const SizedBox(height: 16),
             Text(
               _hcT(lang, 'empty_title'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: MedTypography.internalTitleSize,
                 fontWeight: FontWeight.w800,
-                color:
-                    isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+                color: textPrimary,
                 letterSpacing: -0.1,
               ),
             ),
-            const SizedBox(height: 8),
-
-            // ── Subtítulo ────────────────────────────────────────────────
+            const SizedBox(height: 7),
             Text(
               _hcT(lang, 'empty_sub'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: MedTypography.auxiliarySize,
                 fontWeight: FontWeight.w500,
-                color:
-                    isDark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF),
-                height: 1.55,
+                color: textSecondary,
+                height: 1.45,
               ),
             ),
-            const SizedBox(height: 28),
-
-            // ── Botão elegante centralizado — outlined sutil ─────────────
-            GestureDetector(
-              onTap: onNew,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 22,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: const Color(0xFFF27405).withOpacity(0.65),
-                    width: 1.4,
-                  ),
-                  color: const Color(
-                    0xFFF27405,
-                  ).withOpacity(isDark ? 0.10 : 0.07),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.add_rounded,
-                      size: 15,
-                      color: isDark
-                          ? const Color(0xFFFF9A3C)
-                          : const Color(0xFFD46500),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      _hcT(lang, 'new_history_btn'),
-                      style: TextStyle(
-                        fontSize: MedTypography.microTextSize,
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? const Color(0xFFFF9A3C)
-                            : const Color(0xFFD46500),
-                        letterSpacing: 0.1,
-                      ),
-                    ),
-                  ],
-                ),
+            const SizedBox(height: 12),
+            Text(
+              lang == 'es'
+                  ? 'Use + NUEVA para comenzar.'
+                  : 'Use + NOVA para começar.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: MedTypography.microTextSize,
+                fontWeight: FontWeight.w600,
+                color: textSecondary,
+                letterSpacing: 0.1,
               ),
             ),
           ],
@@ -9696,9 +10087,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
                 fontSize: MedTypography.microTextSize,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.45,
-                color: dark
-                    ? const Color(0xFFE8F0EC)
-                    : const Color(0xFF05070A),
+                color: dark ? const Color(0xFFE8F0EC) : const Color(0xFF05070A),
               ),
             ),
             TextSpan(
@@ -9706,9 +10095,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
               style: TextStyle(
                 fontSize: MedTypography.auxiliarySize,
                 fontWeight: FontWeight.w500,
-                color: dark
-                    ? const Color(0xFF7F8C86)
-                    : const Color(0xFF4B5563),
+                color: dark ? const Color(0xFF7F8C86) : const Color(0xFF4B5563),
               ),
             ),
           ],
@@ -9751,31 +10138,23 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
         style: TextStyle(
           fontSize: MedTypography.sectionLabelSize,
           fontWeight: FontWeight.w600,
-          color: dark
-              ? const Color(0xFFE8F0EC)
-              : const Color(0xFF05070A),
+          color: dark ? const Color(0xFFE8F0EC) : const Color(0xFF05070A),
         ),
         decoration: InputDecoration(
           isDense: true,
           hintText: hint,
           hintStyle: TextStyle(
             fontSize: MedTypography.auxiliarySize,
-            color: dark
-                ? Colors.white30
-                : const Color(0xFF4B5563),
+            color: dark ? Colors.white30 : const Color(0xFF4B5563),
           ),
           suffixText: unit,
           suffixStyle: TextStyle(
             fontSize: MedTypography.microTextSize,
             fontWeight: FontWeight.w600,
-            color: dark
-                ? const Color(0xFF8B9992)
-                : const Color(0xFF4B5563),
+            color: dark ? const Color(0xFF8B9992) : const Color(0xFF4B5563),
           ),
           filled: true,
-          fillColor: dark
-              ? const Color(0xFF2D3340)
-              : const Color(0xFFECF1F3),
+          fillColor: dark ? const Color(0xFF2D3340) : const Color(0xFFECF1F3),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 10,
             vertical: 9,
@@ -9783,25 +10162,21 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              color: dark
-                  ? const Color(0xFF374151)
-                  : const Color(0xFFD8E0E7),
+              color: dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
               width: 0.8,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              color: dark
-                  ? const Color(0xFF374151)
-                  : const Color(0xFFD8E0E7),
+              color: dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
               width: 0.8,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(
-              color: Color(0xFF10B981),
+              color: Color(0xFF0D6B57),
               width: 1,
             ),
           ),
@@ -9857,23 +10232,18 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
             style: TextStyle(
               fontSize: MedTypography.sectionLabelSize,
               fontWeight: FontWeight.w600,
-              color: dark
-                  ? const Color(0xFFE8F0EC)
-                  : const Color(0xFF05070A),
+              color: dark ? const Color(0xFFE8F0EC) : const Color(0xFF05070A),
             ),
             decoration: InputDecoration(
               isDense: true,
               hintText: hint,
               hintStyle: TextStyle(
                 fontSize: MedTypography.auxiliarySize,
-                color: dark
-                    ? Colors.white30
-                    : const Color(0xFF4B5563),
+                color: dark ? Colors.white30 : const Color(0xFF4B5563),
               ),
               filled: true,
-              fillColor: dark
-                  ? const Color(0xFF2D3340)
-                  : const Color(0xFFECF1F3),
+              fillColor:
+                  dark ? const Color(0xFF2D3340) : const Color(0xFFECF1F3),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 9,
                 vertical: 9,
@@ -9881,25 +10251,23 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
-                  color: dark
-                      ? const Color(0xFF374151)
-                      : const Color(0xFFD8E0E7),
+                  color:
+                      dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
                   width: 0.8,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(
-                  color: dark
-                      ? const Color(0xFF374151)
-                      : const Color(0xFFD8E0E7),
+                  color:
+                      dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7),
                   width: 0.8,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(
-                  color: Color(0xFF10B981),
+                  color: Color(0xFF0D6B57),
                   width: 1,
                 ),
               ),
@@ -9923,9 +10291,8 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
                 style: TextStyle(
                   fontSize: MedTypography.sectionLabelSize,
                   fontWeight: FontWeight.w300,
-                  color: dark
-                      ? const Color(0xFF8B9992)
-                      : const Color(0xFF4B5563),
+                  color:
+                      dark ? const Color(0xFF8B9992) : const Color(0xFF4B5563),
                 ),
               ),
             ),
@@ -9971,9 +10338,7 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
               Icon(
                 Icons.monitor_heart_outlined,
                 size: 15,
-                color: dark
-                    ? Colors.white60
-                    : const Color(0xFF4B5563),
+                color: dark ? Colors.white60 : const Color(0xFF4B5563),
               ),
               const SizedBox(width: 7),
               Text(
@@ -9985,9 +10350,8 @@ class _VitalSignsWidgetState extends State<_VitalSignsWidget> {
                   fontSize: MedTypography.microTextSize,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.4,
-                  color: dark
-                      ? const Color(0xFFE8F0EC)
-                      : const Color(0xFF475569),
+                  color:
+                      dark ? const Color(0xFFE8F0EC) : const Color(0xFF475569),
                 ),
               ),
             ],
@@ -10184,7 +10548,9 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
                     : const Color(0xFF6B7280),
               ),
               filled: true,
-              fillColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF2D3340) : const Color(0xFFF8FAFC),
+              fillColor: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF2D3340)
+                  : const Color(0xFFF8FAFC),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(9),
                 borderSide: BorderSide(
@@ -10206,7 +10572,7 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(9),
                 borderSide: const BorderSide(
-                  color: Color(0xFF10B981),
+                  color: Color(0xFF0D6B57),
                   width: 1,
                 ),
               ),
@@ -10234,25 +10600,28 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
             color: (r15ExamDark ? Colors.white30 : const Color(0xFF4B5563)),
           ),
           filled: true,
-          fillColor: (r15ExamDark ? const Color(0xFF2D3340) : const Color(0xFFF8FAFC)),
+          fillColor:
+              (r15ExamDark ? const Color(0xFF2D3340) : const Color(0xFFF8FAFC)),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(9),
             borderSide: BorderSide(
-              color: (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
               width: 0.8,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(9),
             borderSide: BorderSide(
-              color: (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
               width: 0.8,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(9),
             borderSide: const BorderSide(
-              color: Color(0xFF10B981),
+              color: Color(0xFF0D6B57),
               width: 1,
             ),
           ),
@@ -10272,7 +10641,8 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: (r15ExamDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+          color:
+              (r15ExamDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
           width: 0.7,
         ),
         color: (r15ExamDark ? const Color(0xFF252930) : Colors.white),
@@ -10290,7 +10660,9 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
                   Icon(
                     Icons.monitor_heart_outlined,
                     size: 15,
-                    color: (r15ExamDark ? Colors.white60 : const Color(0xFF4B5563)),
+                    color: (r15ExamDark
+                        ? Colors.white60
+                        : const Color(0xFF4B5563)),
                   ),
                   const SizedBox(width: 7),
                   Text(
@@ -10299,7 +10671,9 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
                       fontSize: MedTypography.microTextSize,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.4,
-                      color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
                     ),
                   ),
                   const SizedBox(width: 9),
@@ -10311,7 +10685,9 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: MedTypography.microTextSize,
-                          color: (r15ExamDark ? Color(0xFF8EA099) : const Color(0xFF4B5563)),
+                          color: (r15ExamDark
+                              ? Color(0xFF8EA099)
+                              : const Color(0xFF4B5563)),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -10323,7 +10699,9 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
                     size: 19,
-                    color: (r15ExamDark ? Colors.white54 : const Color(0xFF4B5563)),
+                    color: (r15ExamDark
+                        ? Colors.white54
+                        : const Color(0xFF4B5563)),
                   ),
                 ],
               ),
@@ -10333,7 +10711,8 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
             Divider(
               height: 1,
               thickness: 0.7,
-              color: (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
             ),
             Padding(
               padding: const EdgeInsets.all(12),
@@ -10412,7 +10791,9 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
                     textCapitalization: TextCapitalization.sentences,
                     style: TextStyle(
                       fontSize: MedTypography.sectionLabelSize,
-                      color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
                     ),
                     decoration: textDecoration(
                       'Supra V1-V4, infra lateral, invertida...',
@@ -10431,7 +10812,9 @@ class _EcgStructuredWidgetState extends State<_EcgStructuredWidget> {
                     textCapitalization: TextCapitalization.sentences,
                     style: TextStyle(
                       fontSize: MedTypography.sectionLabelSize,
-                      color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
                     ),
                     decoration: textDecoration(
                       'BRD, BRE, HVE, ESSV, ondas Q...',
@@ -10605,7 +10988,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     // Mostra bottom sheet de seleção: câmera ou galeria
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
-      backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1A1D23) : const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF1A1D23)
+          : const Color(0xFFF8FAFC),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -10641,7 +11026,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                 isEs
                     ? 'Fotografíe o seleccione el examen de laboratorio'
                     : 'Fotografe ou selecione o exame laboratorial',
-                style: const TextStyle(color: Color(0xFF7A9486), fontSize: MedTypography.sectionLabelSize),
+                style: const TextStyle(
+                    color: Color(0xFF7A9486),
+                    fontSize: MedTypography.sectionLabelSize),
               ),
               const SizedBox(height: 16),
               // Câmera
@@ -10813,8 +11200,11 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     if (!mounted) return;
     showDialog(
       context: context,
+      useRootNavigator: !kIsWeb,
       builder: (ctx) => AlertDialog(
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1A1D23) : const Color(0xFFF8FAFC),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF1A1D23)
+            : const Color(0xFFF8FAFC),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
@@ -10914,7 +11304,7 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
     String hint, {
     Color? flagColor,
   }) {
-    final focusColor = flagColor ?? const Color(0xFF10B981);
+    final focusColor = flagColor ?? const Color(0xFF0D6B57);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -10966,7 +11356,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                     : const Color(0xFF6B7280),
               ),
               filled: true,
-              fillColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF2D3340) : const Color(0xFFF8FAFC),
+              fillColor: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF2D3340)
+                  : const Color(0xFFF8FAFC),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(9),
                 borderSide: BorderSide(
@@ -11024,7 +11416,8 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: (r15ExamDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+          color:
+              (r15ExamDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
           width: 0.7,
         ),
         color: (r15ExamDark ? const Color(0xFF252930) : Colors.white),
@@ -11042,7 +11435,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                   Icon(
                     Icons.science_outlined,
                     size: 15,
-                    color: (r15ExamDark ? Colors.white60 : const Color(0xFF4B5563)),
+                    color: (r15ExamDark
+                        ? Colors.white60
+                        : const Color(0xFF4B5563)),
                   ),
                   const SizedBox(width: 7),
                   Text(
@@ -11051,7 +11446,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                       fontSize: MedTypography.microTextSize,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.4,
-                      color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -11062,7 +11459,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: MedTypography.microTextSize,
-                          color: (r15ExamDark ? Color(0xFF8EA099) : const Color(0xFF4B5563)),
+                          color: (r15ExamDark
+                              ? Color(0xFF8EA099)
+                              : const Color(0xFF4B5563)),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -11079,7 +11478,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: (r15ExamDark ? const Color(0xFF2D3340) : const Color(0xFFF8FAFC)),
+                        color: (r15ExamDark
+                            ? const Color(0xFF2D3340)
+                            : const Color(0xFFF8FAFC)),
                         border: Border.all(
                           color: const Color(0xFF147D64),
                           width: 0.7,
@@ -11094,14 +11495,14 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                               height: 11,
                               child: CircularProgressIndicator(
                                 strokeWidth: 1.5,
-                                color: Color(0xFF10B981),
+                                color: Color(0xFF0D6B57),
                               ),
                             )
                           else
                             const Icon(
                               Icons.document_scanner_outlined,
                               size: 12,
-                              color: Color(0xFF10B981),
+                              color: Color(0xFF0D6B57),
                             ),
                           const SizedBox(width: 4),
                           Text(
@@ -11111,7 +11512,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                             style: TextStyle(
                               fontSize: MedTypography.microTextSize,
                               fontWeight: FontWeight.w600,
-                              color: (r15ExamDark ? Color(0xFFB8C7C0) : const Color(0xFF4B5563)),
+                              color: (r15ExamDark
+                                  ? Color(0xFFB8C7C0)
+                                  : const Color(0xFF4B5563)),
                             ),
                           ),
                         ],
@@ -11124,7 +11527,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
                     size: 19,
-                    color: (r15ExamDark ? Colors.white54 : const Color(0xFF4B5563)),
+                    color: (r15ExamDark
+                        ? Colors.white54
+                        : const Color(0xFF4B5563)),
                   ),
                 ],
               ),
@@ -11148,7 +11553,8 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
             Divider(
               height: 1,
               thickness: 0.7,
-              color: (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+              color:
+                  (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
             ),
             Padding(
               padding: const EdgeInsets.all(12),
@@ -11204,7 +11610,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                       fontSize: MedTypography.microTextSize,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.4,
-                      color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -11218,7 +11626,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                     textCapitalization: TextCapitalization.sentences,
                     style: TextStyle(
                       fontSize: MedTypography.sectionLabelSize,
-                      color: (r15ExamDark ? Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+                      color: (r15ExamDark
+                          ? Color(0xFFE8F0EC)
+                          : const Color(0xFF05070A)),
                     ),
                     decoration: InputDecoration(
                       isDense: true,
@@ -11229,28 +11639,36 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                       hintText: _hcT(lang, 'lab_others_hint'),
                       hintStyle: TextStyle(
                         fontSize: MedTypography.auxiliarySize,
-                        color: (r15ExamDark ? Colors.white30 : const Color(0xFF4B5563)),
+                        color: (r15ExamDark
+                            ? Colors.white30
+                            : const Color(0xFF4B5563)),
                       ),
                       filled: true,
-                      fillColor: (r15ExamDark ? const Color(0xFF2D3340) : const Color(0xFFF8FAFC)),
+                      fillColor: (r15ExamDark
+                          ? const Color(0xFF2D3340)
+                          : const Color(0xFFF8FAFC)),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
                         borderSide: BorderSide(
-                          color: (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                          color: (r15ExamDark
+                              ? Color(0xFF374151)
+                              : const Color(0xFFD8E0E7)),
                           width: 0.8,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
                         borderSide: BorderSide(
-                          color: (r15ExamDark ? Color(0xFF374151) : const Color(0xFFD8E0E7)),
+                          color: (r15ExamDark
+                              ? Color(0xFF374151)
+                              : const Color(0xFFD8E0E7)),
                           width: 0.8,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(9),
                         borderSide: const BorderSide(
-                          color: Color(0xFF10B981),
+                          color: Color(0xFF0D6B57),
                           width: 1,
                         ),
                       ),
@@ -11271,7 +11689,9 @@ class _LabStructuredWidgetState extends State<_LabStructuredWidget> {
                   fontSize: MedTypography.microTextSize,
                   height: 1.45,
                   fontWeight: FontWeight.w500,
-                  color: (r15ExamDark ? Color(0xFF9AA7A1) : const Color(0xFF4B5563)),
+                  color: (r15ExamDark
+                      ? Color(0xFF9AA7A1)
+                      : const Color(0xFF4B5563)),
                 ),
               ),
             ),
@@ -11295,10 +11715,10 @@ class _PngDivider extends StatelessWidget {
     // HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R10_R4_PNGDIVIDER_LIGHT_CLOSURE
     final isDarkR10 = Theme.of(context).brightness == Brightness.dark;
     return Container(
-        height: 0.75,
-        margin: const EdgeInsets.symmetric(vertical: 7),
-        color: (isDarkR10 ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
-      );
+      height: 0.75,
+      margin: const EdgeInsets.symmetric(vertical: 7),
+      color: (isDarkR10 ? const Color(0xFF374151) : const Color(0xFFD8E0E7)),
+    );
   }
 }
 
@@ -11376,7 +11796,9 @@ class _PngField extends StatelessWidget {
             style: TextStyle(
               fontSize: large ? 16 : 13,
               fontWeight: large ? FontWeight.w700 : FontWeight.w400,
-              color: (isDarkR10 ? const Color(0xFFE8F0EC) : const Color(0xFF05070A)),
+              color: (isDarkR10
+                  ? const Color(0xFFE8F0EC)
+                  : const Color(0xFF05070A)),
               fontFamily: mono ? 'monospace' : null,
               height: 1.5,
             ),
@@ -11476,7 +11898,8 @@ class _PngDxSection extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
           decoration: BoxDecoration(
-            color: (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
+            color:
+                (isDarkR10 ? const Color(0xFF252930) : const Color(0xFFECF1F3)),
             border: Border(
               left: BorderSide(color: const Color(0xFF16A34A), width: 2.5),
             ),
@@ -11760,7 +12183,7 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
   String _voiceBuffer = '';
   webPlatform.WebSpeechRecognizer? _voiceRecog;
 
-  static const _kGreen = Color(0xFF10B981);
+  static const _kGreen = Color(0xFF0D6B57);
   static const _kPurple = Color(0xFF7C3AED);
 
   String get _lang => widget.lang;
@@ -12317,20 +12740,23 @@ class _OcrExamButton extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFF10B981).withOpacity(0.72),
+            color: const Color(0xFF0D6B57).withOpacity(0.72),
             width: 0.9,
           ),
         ),
         child: Row(
           children: [
-            const Icon(Icons.biotech_rounded, color: Color(0xFFE2E8F0), size: 24),
+            const Icon(Icons.biotech_rounded,
+                color: Color(0xFFE2E8F0), size: 24),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    lang == 'es' ? 'Escanear Examen con IA' : 'Escanear Exame com IA',
+                    lang == 'es'
+                        ? 'Escanear Examen con IA'
+                        : 'Escanear Exame com IA',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: MedTypography.sectionLabelSize,
@@ -12354,7 +12780,8 @@ class _OcrExamButton extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            const Icon(Icons.camera_alt_rounded, color: Color(0xFF10B981), size: 25),
+            const Icon(Icons.camera_alt_rounded,
+                color: Color(0xFF0D6B57), size: 25),
           ],
         ),
       ),

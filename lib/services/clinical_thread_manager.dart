@@ -37,14 +37,14 @@ import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 // ─────────────────────────────────────────────────────────────────────────────
 enum ThreadAction {
   continueThread, // follow-up do caso ativo → enviar histórico mínimo
-  newThread,      // novo caso / tema diferente → limpar histórico
+  newThread, // novo caso / tema diferente → limpar histórico
 }
 
 class ClinicalThreadStatus {
   final ThreadAction action;
-  final String reason;      // para log
-  final String topic;       // tópico ativo (novo ou mantido)
-  final bool fromButton;    // veio de botão clínico
+  final String reason; // para log
+  final String topic; // tópico ativo (novo ou mantido)
+  final bool fromButton; // veio de botão clínico
 
   const ClinicalThreadStatus({
     required this.action,
@@ -62,12 +62,11 @@ class ClinicalThreadStatus {
 // 100% LOCAL — RAM-only — Zero rede — Zero IA
 // ─────────────────────────────────────────────────────────────────────────────
 class ClinicalThreadManager {
-
   // ── Estado do thread ativo ─────────────────────────────────────────────────
   String _activeTopic = '';
   String _activeThreadId = '';
-  int    _turnCount = 0;
-  int    _lastActivityMs = 0;
+  int _turnCount = 0;
+  int _lastActivityMs = 0;
 
   // Última pergunta do usuário que INICIOU o thread ativo
   String _threadStartQuery = '';
@@ -76,7 +75,8 @@ class ClinicalThreadManager {
   // ORDEM 19: reduzido para 2 pares (= 4 entradas) — payload enxuto, máxima velocidade.
   // Lógica: 1 par anterior (user+assistant) + query atual = contexto mínimo eficaz.
   // Evita avalanche de tokens redundantes sem perder continuidade do turno imediato.
-  static const int kMaxContinuationTurns = 2; // 2 pares user/assistant = 4 entradas
+  static const int kMaxContinuationTurns =
+      2; // 2 pares user/assistant = 4 entradas
 
   // Timeout de inatividade: 10 minutos sem mensagem → novo thread automaticamente (Plantão)
   static const int kThreadTimeoutMs = 10 * 60 * 1000;
@@ -86,14 +86,14 @@ class ClinicalThreadManager {
   // sessão de Estudo é descartado — evita continuidade pedagógica incoerente
   // (médico esqueceu o contexto; nova sessão começa limpa).
   // O histórico LOCAL no dispositivo é PRESERVADO para exibição visual.
-  static const int kStudySessionTtlMs = 6 * 60 * 60 * 1000; // 6 horas
+  // Study transport memory is bounded by 30 exchanges, not TTL-cleared inside an active chat.
 
   // BUILD 304 [G1]: Janela micro-deslizante para Modo Estudo.
   // Médicos em Estudo realizam no máximo 4-5 interações por tema.
   // Enviar histórico completo (10+ turnos) é desperdício crítico de tokens.
   // Máx 4 turnos (2 pares user+assistant = 4 entradas) no payload da API.
   // O histórico completo permanece intacto no dispositivo para exibição.
-  static const int kMaxStudyTurns = 2; // 2 pares = 4 entradas
+  static const int kMaxStudyTurns = 30; // 30 pares = 60 entradas
 
   // ── Frases que sempre indicam follow-up (nunca iniciam novo thread) ────────
   static const _kFollowUpPhrases = <String>{
@@ -149,12 +149,251 @@ class ClinicalThreadManager {
         .toList(growable: false);
 
     final explicitNewCase = <String>[
-      'novo caso', 'nova paciente', 'novo paciente', 'outro paciente',
-      'outra paciente', 'mudar de caso', 'trocar de caso',
-      'nuevo caso', 'nuevo paciente', 'nueva paciente', 'otro paciente',
-      'otra paciente', 'cambiar de caso',
+      'novo caso',
+      'nova paciente',
+      'novo paciente',
+      'outro paciente',
+      'outra paciente',
+      'mudar de caso',
+      'trocar de caso',
+      'nuevo caso',
+      'nuevo paciente',
+      'nueva paciente',
+      'otro paciente',
+      'otra paciente',
+      'cambiar de caso',
     ].any(qFolded.contains);
     if (explicitNewCase) return false;
+
+    // PLANTAO_DEPENDENT_MANAGEMENT_FOLLOWUP_V1
+    //
+    // Perguntas de manejo que dependem do paciente ativo frequentemente nao
+    // repetem a patologia: "¿Y qué tratamiento farmacológico completo
+    // indicarías ahora?". Elas devem carregar o caso atual. A decisao final
+    // continua protegida pelas fronteiras canonicas: novo paciente/caso,
+    // patologia explicitamente diferente e troca inequivoca de farmaco.
+    final hasManagementTerm = <String>[
+      'tratamiento',
+      'tratamento',
+      'manejo',
+      'conducta',
+      'conduta',
+      'prescripcion',
+      'prescricao',
+      'medicacion',
+      'medicacao',
+    ].any(qFolded.contains);
+
+    final hasDependentManagementCue =
+        qFolded.startsWith('y ') ||
+        qFolded.startsWith('e ') ||
+        qFolded.contains(' ahora') ||
+        qFolded.endsWith('ahora') ||
+        qFolded.contains(' agora') ||
+        qFolded.endsWith('agora') ||
+        qFolded.contains('indicarias') ||
+        qFolded.contains('indicaria') ||
+        qFolded.contains('harias') ||
+        qFolded.contains('haria') ||
+        qFolded.contains('farias') ||
+        qFolded.contains('faria') ||
+        qFolded.contains('completo') ||
+        qFolded == 'tratamiento' ||
+        qFolded == 'tratamiento farmacologico' ||
+        qFolded == 'tratamento' ||
+        qFolded == 'tratamento farmacologico' ||
+        qFolded == 'manejo' ||
+        qFolded == 'conducta' ||
+        qFolded == 'conduta';
+
+    if (hasManagementTerm && hasDependentManagementCue) {
+      return true;
+    }
+
+    // PLANTAO_DEPENDENT_CLINICAL_FOLLOWUP_AND_CASE_ANCHOR_V1
+    //
+    // Follow-up clinico dependente nao e sinonimo de "classificacao".
+    // Perguntas curtas como "por que essa categoria?", "precisa internar?",
+    // "y trombolisis?" ou "en este paciente..." dependem do caso ativo.
+    //
+    // Fail-closed:
+    // - explicitNewCase continua tendo precedencia e ja retornou false acima;
+    // - frases exatas dependentes sao aceitas;
+    // - expansao semantica so ocorre quando existe referencia deitica explicita
+    //   ao caso anterior (este/ese/essa/eso/isso etc.).
+    final dependentClinicalQuery = qFolded
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('ä', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('è', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('ë', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ì', 'i')
+        .replaceAll('î', 'i')
+        .replaceAll('ï', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ò', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ö', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ù', 'u')
+        .replaceAll('û', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c')
+        .replaceAll('ñ', 'n')
+        .replaceFirst(RegExp(r'^[^a-z0-9]+'), '')
+        .replaceFirst(RegExp(r'[^a-z0-9]+$'), '')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    const dependentClinicalFollowUps = <String>{
+      // Classificacao / categoria / risco — PT
+      'classificacao',
+      'a classificacao',
+      'e a classificacao',
+      'qual a classificacao',
+      'qual e a classificacao',
+      'e qual a classificacao',
+      'e qual e a classificacao',
+      'categoria',
+      'a categoria',
+      'e a categoria',
+      'qual a categoria',
+      'qual e a categoria',
+      'e qual a categoria',
+      'e qual e a categoria',
+      'qual o risco',
+      'e qual o risco',
+      'por que corresponde a essa categoria',
+      'por que corresponde a esta categoria',
+      'porque corresponde a essa categoria',
+      'porque corresponde a esta categoria',
+      'por que e essa categoria',
+      'por que essa categoria',
+
+      // Conduta dependente — PT
+      'precisa internar',
+      'precisa internacao',
+      'necessita internacao',
+      'requer internacao',
+      'e trombolise',
+      'trombolise',
+      'e reperfusao',
+      'reperfusao',
+      'e a anticoagulacao',
+      'e anticoagulacao',
+      'o que fazer com a anticoagulacao',
+      'e o manejo ambulatorial',
+      'manejo ambulatorial',
+      'pode ter alta',
+      'pode receber alta',
+
+      // Clasificacion / categoria / riesgo — ES
+      'clasificacion',
+      'la clasificacion',
+      'y la clasificacion',
+      'cual es la clasificacion',
+      'y cual es la clasificacion',
+      'que clasificacion',
+      'la categoria',
+      'y la categoria',
+      'cual es la categoria',
+      'y cual es la categoria',
+      'que categoria',
+      'que riesgo',
+      'cual es el riesgo',
+      'y cual es el riesgo',
+      'por que corresponde a esa categoria',
+      'porque corresponde a esa categoria',
+      'por que es esa categoria',
+      'por que esa categoria',
+
+      // Conducta dependiente — ES
+      'necesita internacion',
+      'requiere internacion',
+      'necesita hospitalizacion',
+      'requiere hospitalizacion',
+      'y trombolisis',
+      'trombolisis',
+      'y reperfusion',
+      'reperfusion',
+      'y que harias con la anticoagulacion',
+      'que harias con la anticoagulacion',
+      'y anticoagulacion',
+      'anticoagulacion',
+      'y manejo ambulatorio',
+      'manejo ambulatorio',
+      'puede darse de alta',
+      'puede tener alta',
+
+      // EN fallback
+      'classification',
+      'what is the classification',
+      'what is the category',
+      'why this category',
+      'does this patient need admission',
+      'and thrombolysis',
+      'and anticoagulation',
+      'e o tratamento',
+      'qual o tratamento',
+      'qual e o tratamento',
+      'e a conduta',
+      'qual a conduta',
+      'qual e a conduta',
+      'e o manejo',
+      'qual o manejo',
+      'qual e o manejo',
+      'e os exames',
+      'quais exames',
+      'e o diagnostico',
+      'qual o diagnostico',
+      'e o prognostico',
+      'qual o prognostico',
+      'y el tratamiento',
+      'cual es el tratamiento',
+      'y la conducta',
+      'cual es la conducta',
+      'y el manejo',
+      'cual es el manejo',
+      'y los estudios',
+      'que estudios',
+      'y el diagnostico',
+      'cual es el diagnostico',
+      'y el pronostico',
+      'cual es el pronostico',
+      'and treatment',
+      'what is the treatment',
+      'and management',
+      'what is the management',
+    };
+    final dependentWordCount = dependentClinicalQuery
+        .split(' ')
+        .where((w) => w.isNotEmpty)
+        .length;
+
+    final hasExplicitBackwardReference = RegExp(
+      r'\b(este paciente|ese paciente|esta paciente|'
+      r'neste paciente|nesse paciente|essa categoria|esta categoria|'
+      r'esa categoria|esta categoria|essa classificacao|esta classificacao|'
+      r'esa clasificacion|esta clasificacion|isso|eso|this patient|that category)\b',
+    ).hasMatch(dependentClinicalQuery);
+
+    final hasDependentIntent = RegExp(
+      r'\b(classific|clasific|categoria|category|risco|riesgo|risk|'
+      r'intern|hospital|alta|ambulator|trombol|reperfus|anticoag|'
+      r'conduta|conducta|manejo|management|tratamento|tratamiento|treatment)\w*',
+    ).hasMatch(dependentClinicalQuery);
+
+    final isDependentClinicalFollowUp =
+        dependentClinicalFollowUps.contains(dependentClinicalQuery) ||
+        (dependentWordCount <= 16 &&
+            hasExplicitBackwardReference &&
+            hasDependentIntent);
 
     final hasWeight = RegExp(
       r'(^|[^a-z0-9])\d+(?:[.,]\d+)?\s*kg([^a-z0-9]|$)',
@@ -165,20 +404,30 @@ class ClinicalThreadManager {
           token != 'calculadora' &&
           token != 'calculadoras',
     );
-    final hasCalculationCue = hasCalculationVerb ||
+    final hasCalculationCue =
+        hasCalculationVerb ||
         <String>[
-          'dose', 'doses', 'dosis', 'dosagem', 'dosificacion',
+          'dose',
+          'doses',
+          'dosis',
+          'dosagem',
+          'dosificacion',
         ].any(qFolded.contains);
-    final isWeightCarryForward = hasWeight &&
+    final isWeightCarryForward =
+        hasWeight &&
         (hasCalculationCue ||
             qFolded.startsWith('e para ') ||
             qFolded.startsWith('y para ') ||
             qFolded.startsWith('para '));
 
     final hasRenalMarker = <String>[
-      'creatinina', 'clcr', 'clearance',
-      'funcao renal', 'funcion renal',
-      'depuracao', 'depuracion',
+      'creatinina',
+      'clcr',
+      'clearance',
+      'funcao renal',
+      'funcion renal',
+      'depuracao',
+      'depuracion',
     ].any(qFolded.contains);
     final hasAdjustmentCue = lexicalTokens.any(
       (token) =>
@@ -189,20 +438,49 @@ class ClinicalThreadManager {
     );
 
     final hasVitalOrExamMarker = <String>[
-      'pressao arterial', 'presion arterial', 'spo2', 'saturacao', 'saturacion',
-      'temperatura', 'leucoc', 'neutrofil', 'plaquet', 'hemoglob', 'hematoc',
-      'pcr elevada', 'crp ', 'tropon', 'lactato', 'gasometr',
-      'ureia', 'urea', 'sodio', 'potassio', 'potasio',
-      'ecg', 'eletrocard', 'electrocard', 'usg', 'ultrass', 'ecograf',
-      'tomografia', 'ressonancia', 'resonancia', 'raio x', 'rayos x',
-      'imagem', 'imagen', 'inconclus',
+      'pressao arterial',
+      'presion arterial',
+      'spo2',
+      'saturacao',
+      'saturacion',
+      'temperatura',
+      'leucoc',
+      'neutrofil',
+      'plaquet',
+      'hemoglob',
+      'hematoc',
+      'pcr elevada',
+      'crp ',
+      'tropon',
+      'lactato',
+      'gasometr',
+      'ureia',
+      'urea',
+      'sodio',
+      'potassio',
+      'potasio',
+      'ecg',
+      'eletrocard',
+      'electrocard',
+      'usg',
+      'ultrass',
+      'ecograf',
+      'tomografia',
+      'ressonancia',
+      'resonancia',
+      'raio x',
+      'rayos x',
+      'imagem',
+      'imagen',
+      'inconclus',
     ].any(qFolded.contains);
 
     final hasObjectiveNumber = RegExp(
       r'\b\d+(?:[.,]\d+)?\s*(?:c|mmhg|bpm|x10|mil|mg/dl|mmol|meq|%)\b',
     ).hasMatch(qFolded);
 
-    return isWeightCarryForward ||
+    return isDependentClinicalFollowUp ||
+        isWeightCarryForward ||
         (hasRenalMarker && hasAdjustmentCue) ||
         _isRichClinicalNarrativeFollowUp(qFolded) ||
         hasVitalOrExamMarker ||
@@ -238,7 +516,61 @@ class ClinicalThreadManager {
   // via q.contains(s) — o split de pontuação em evaluate() já usa
   // replaceAll(RegExp(r'[^\w\s]'), ' '), logo 'iam' casa corretamente.
   // Cobertura completa mantida via _kIsolatedNewCaseTerms (Set exato).
-  static const _kNewCaseSignals = <String>[
+
+  // PLANTAO_GLOBAL_CONTEXT_SEMANTIC_SWITCH_V1
+  //
+  // Canonicaliza aliases clinicos apenas para decidir continuidade do thread.
+  // A pergunta visivel e o texto enviado ao modelo permanecem inalterados.
+  static String _canonicalizePlantaoTopicAliases(String input) {
+    var q = input
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('ä', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('è', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('ë', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ì', 'i')
+        .replaceAll('î', 'i')
+        .replaceAll('ï', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ò', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ö', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ù', 'u')
+        .replaceAll('û', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c')
+        .replaceAll('ñ', 'n')
+        .replaceAll('_', ' ');
+
+    q = q
+        .replaceAll(
+          RegExp(r'\b(?:dbt|dm1|dm2|t1dm|t2dm)\b'),
+          ' diabetes ',
+        )
+        .replaceAll(RegExp(r'\bdiabetes\s+mellitus\b'), ' diabetes ')
+        .replaceAll(
+          RegExp(
+            r'\b(?:iam|iamcest|iamcsst|iamssst|iamsest|stemi|nstemi)\b',
+          ),
+          ' infarto miocardio ',
+        )
+        .replaceAll(RegExp(r'\btep\b'), ' tromboembolismo pulmonar ')
+        .replaceAll(RegExp(r'\b(?:dpoc|copd)\b'), ' epoc ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    return q;
+  }
+
+static const _kNewCaseSignals = <String>[
     // Sintomas gastrointestinais / gerais
     'náusea', 'nausea', 'vômito', 'vomito', 'diarreia', 'diarrea',
     'dor abdominal', 'abdome', 'abdomen', 'dor de barriga',
@@ -268,7 +600,13 @@ class ClinicalThreadManager {
     'sepse', 'sepsis', 'choque',
     'anafilaxia', 'anafilaxis',
     'intoxicação', 'intoxicacion',
-  ];
+
+    'dbt',
+    'dm1',
+    'dm2',
+    't1dm',
+    't2dm',
+    'diabetes',];
 
   // ── ORDEM 33 — MANDATO 2: Termos clínicos isolados que SEMPRE iniciam novo thread ─
   //
@@ -316,7 +654,7 @@ class ClinicalThreadManager {
     'hemorragia', 'hemotórax', 'hemotorax',
     // Digestivo / hepático
     'cirrosis', 'cirrose',
-    'psa', 'psa.',  // pancreatite aguda severa
+    'psa', 'psa.', // pancreatite aguda severa
     'hemorragia digestiva', 'hdab', 'hdai',
     // Obstétrico
     'eclampsia', 'preeclampsia',
@@ -327,32 +665,62 @@ class ClinicalThreadManager {
   // completas, mas não devem apagar o thread quando aparecem dentro de um pedido
   // contextual como "calcule para um paciente de 18 kg".
   static const _kDemographicNewCaseSignals = <String>{
-    'paciente com', 'paciente de', 'paciente apresenta',
-    'paciente con', 'paciente presenta',
-    'homem de', 'mulher de', 'hombre de', 'mujer de',
-    'anos com', 'años con', 'anos de', 'años de',
+    'paciente com',
+    'paciente de',
+    'paciente apresenta',
+    'paciente con',
+    'paciente presenta',
+    'homem de',
+    'mulher de',
+    'hombre de',
+    'mujer de',
+    'anos com',
+    'años con',
+    'anos de',
+    'años de',
   };
 
   // ── Fármacos de alta especificidade (detectar mudança de fármaco-alvo) ─────
   static const _kHighSpecificityDrugs = <String>[
-    'amiodarona', 'amiodarone',
-    'vancomicina', 'vancomycin',
-    'noradrenalina', 'norepinefrina',
-    'heparina', 'heparin',
-    'insulina', 'insulin',
-    'warfarina', 'varfarina',
-    'metformina', 'metformin',
-    'prednisona', 'prednisolona',
-    'furosemida', 'furosemide',
-    'metoprolol', 'propranolol',
-    'enalapril', 'captopril', 'losartana',
-    'ceftriaxona', 'meropenem', 'piperacilina',
-    'midazolam', 'propofol', 'fentanil',
-    'ketamina', 'etomidato',
-    'succinilcolina', 'rocurônio',
-    'adrenalina', 'epinefrina',
-    'dopamina', 'dobutamina',
-    'nitroprussiato', 'nitroglicerina',
+    'amiodarona',
+    'amiodarone',
+    'vancomicina',
+    'vancomycin',
+    'noradrenalina',
+    'norepinefrina',
+    'heparina',
+    'heparin',
+    'insulina',
+    'insulin',
+    'warfarina',
+    'varfarina',
+    'metformina',
+    'metformin',
+    'prednisona',
+    'prednisolona',
+    'furosemida',
+    'furosemide',
+    'metoprolol',
+    'propranolol',
+    'enalapril',
+    'captopril',
+    'losartana',
+    'ceftriaxona',
+    'meropenem',
+    'piperacilina',
+    'midazolam',
+    'propofol',
+    'fentanil',
+    'ketamina',
+    'etomidato',
+    'succinilcolina',
+    'rocurônio',
+    'adrenalina',
+    'epinefrina',
+    'dopamina',
+    'dobutamina',
+    'nitroprussiato',
+    'nitroglicerina',
   ];
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -370,7 +738,8 @@ class ClinicalThreadManager {
     final wordCount = q.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
 
     // ── Timeout de inatividade → novo thread ───────────────────────────────
-    if (_activeTopic.isNotEmpty &&
+    if (isPlantaoMode &&
+        _activeTopic.isNotEmpty &&
         _lastActivityMs > 0 &&
         (now - _lastActivityMs) > kThreadTimeoutMs) {
       final oldTopic = _activeTopic;
@@ -397,9 +766,11 @@ class ClinicalThreadManager {
       _turnCount++;
       _lastActivityMs = now;
       if (kDebugMode) {
-        debugPrint('[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
-            'action=continue_thread reason=button_action '
-            'topic=$_activeTopic turnCount=$_turnCount');
+        debugPrint(
+          '[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
+          'action=continue_thread reason=button_action '
+          'topic=$_activeTopic turnCount=$_turnCount',
+        );
       }
       return ClinicalThreadStatus(
         action: ThreadAction.continueThread,
@@ -431,33 +802,66 @@ class ClinicalThreadManager {
     final shortQueryDrugSwitch = (() {
       if (!isPlantaoMode) return false;
       final currentDrugShort = _detectPrimaryDrug(qNorm);
-      final activeDrugShort  = _detectPrimaryDrug(_activeTopic.toLowerCase());
+      final activeDrugShort = _detectPrimaryDrug(_activeTopic.toLowerCase());
       // Fármaco diferente do ativo → switch, mesmo query curta
       return currentDrugShort != null &&
-             activeDrugShort  != null &&
-             currentDrugShort != activeDrugShort;
+          activeDrugShort != null &&
+          currentDrugShort != activeDrugShort;
     })();
+
+    // R20 — repetir a MESMA patologia isolada no Modo Estudo não muda de tema.
+    // Corrige a sequência física: "Explicarme asma" -> "asma".
+    final incomingStudyTopic = !isPlantaoMode ? _extractTopicSignature(q) : '';
+    final sameStudyIsolatedTopic =
+        !isPlantaoMode &&
+        isIsolatedNewCase &&
+        incomingStudyTopic.isNotEmpty &&
+        incomingStudyTopic == _activeTopic;
+
+    if (sameStudyIsolatedTopic) {
+      _turnCount++;
+      _lastActivityMs = now;
+      if (kDebugMode) {
+        debugPrint(
+          '[R20][THREAD_MANAGER] mode=estudo '
+          'action=continue_thread reason=study_same_topic_isolated_term '
+          'topic=$_activeTopic turnCount=$_turnCount',
+        );
+      }
+      return ClinicalThreadStatus(
+        action: ThreadAction.continueThread,
+        reason: 'study_same_topic_isolated_term',
+        topic: _activeTopic,
+      );
+    }
 
     if (isIsolatedNewCase || shortQueryDrugSwitch) {
       final oldTopic = _activeTopic;
       _startNewThread(q, now);
-      debugPrint('[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
-          'action=new_thread '
-          'reason=${isIsolatedNewCase ? "isolated_new_case_term" : "short_drug_switch"} '
-          'oldTopic=$oldTopic newTopic=$_activeTopic '
-          'query="$q"');
+      debugPrint(
+        '[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
+        'action=new_thread '
+        'reason=${isIsolatedNewCase ? "isolated_new_case_term" : "short_drug_switch"} '
+        'oldTopic=$oldTopic newTopic=$_activeTopic '
+        'query="$q"',
+      );
       return ClinicalThreadStatus(
         action: ThreadAction.newThread,
-        reason: isIsolatedNewCase ? 'isolated_new_case_term' : 'short_drug_switch',
+        reason: isIsolatedNewCase
+            ? 'isolated_new_case_term'
+            : 'short_drug_switch',
         topic: _activeTopic,
       );
     }
 
     // ── Query muito curta / follow-up phrase → continuation ───────────────
-    final isFollowUpPhrase = _kFollowUpPhrases.any((p) => q == p || q.startsWith('$p ') || q.endsWith(' $p'));
+    final isFollowUpPhrase = _kFollowUpPhrases.any(
+      (p) => q == p || q.startsWith('$p ') || q.endsWith(' $p'),
+    );
     final isTooShort = wordCount <= 3;
-    final shortContextualFollowUp =
-        isContextualClinicalFollowUp(currentUserText);
+    final shortContextualFollowUp = isContextualClinicalFollowUp(
+      currentUserText,
+    );
     final shortFolded = q
         .replaceAll('á', 'a')
         .replaceAll('é', 'e')
@@ -466,10 +870,9 @@ class ClinicalThreadManager {
         .replaceAll('ú', 'u')
         .replaceAll('ü', 'u')
         .replaceAll('ç', 'c');
-    final shortTokens = RegExp(r'[a-z0-9]+')
-        .allMatches(shortFolded)
-        .map((match) => match.group(0)!)
-        .toSet();
+    final shortTokens = RegExp(
+      r'[a-z0-9]+',
+    ).allMatches(shortFolded).map((match) => match.group(0)!).toSet();
     final shortStrongCardiacAlias = const <String>{
       'iamcsst',
       'iamcest',
@@ -487,7 +890,8 @@ class ClinicalThreadManager {
         .replaceAll('ú', 'u')
         .replaceAll('ü', 'u')
         .replaceAll('ç', 'c');
-    final shortCardiacCompatible = shortStrongCardiacAlias &&
+    final shortCardiacCompatible =
+        shortStrongCardiacAlias &&
         <String>[
           'torac',
           'peito',
@@ -498,7 +902,8 @@ class ClinicalThreadManager {
           'iam',
           'sca',
         ].any(shortThreadStartFolded.contains);
-    final shortQueryClinicalSwitch = isPlantaoMode &&
+    final shortQueryClinicalSwitch =
+        isPlantaoMode &&
         isTooShort &&
         !isFollowUpPhrase &&
         !shortContextualFollowUp &&
@@ -524,9 +929,11 @@ class ClinicalThreadManager {
       final oldTopic = _activeTopic;
       _startNewThread(q, now);
       if (kDebugMode) {
-        debugPrint('[THREAD_MANAGER] mode=plantao '
-            'action=new_thread reason=short_clinical_switch '
-            'oldTopic=$oldTopic newTopic=$_activeTopic');
+        debugPrint(
+          '[THREAD_MANAGER] mode=plantao '
+          'action=new_thread reason=short_clinical_switch '
+          'oldTopic=$oldTopic newTopic=$_activeTopic',
+        );
       }
       return ClinicalThreadStatus(
         action: ThreadAction.newThread,
@@ -539,9 +946,11 @@ class ClinicalThreadManager {
       _turnCount++;
       _lastActivityMs = now;
       if (kDebugMode) {
-        debugPrint('[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
-            'action=continue_thread reason=${isFollowUpPhrase ? "followup_phrase" : "short_query"} '
-            'topic=$_activeTopic turnCount=$_turnCount');
+        debugPrint(
+          '[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
+          'action=continue_thread reason=${isFollowUpPhrase ? "followup_phrase" : "short_query"} '
+          'topic=$_activeTopic turnCount=$_turnCount',
+        );
       }
       return ClinicalThreadStatus(
         action: ThreadAction.continueThread,
@@ -560,9 +969,11 @@ class ClinicalThreadManager {
       _turnCount++;
       _lastActivityMs = now;
       if (kDebugMode) {
-        debugPrint('[BUILD300][THREAD_MANAGER] mode=estudo '
-            'action=continue_thread reason=study_mode_memory_preserved '
-            'topic=$_activeTopic turnCount=$_turnCount');
+        debugPrint(
+          '[BUILD300][THREAD_MANAGER] mode=estudo '
+          'action=continue_thread reason=study_mode_memory_preserved '
+          'topic=$_activeTopic turnCount=$_turnCount',
+        );
       }
       return ClinicalThreadStatus(
         action: ThreadAction.continueThread,
@@ -599,10 +1010,9 @@ class ClinicalThreadManager {
 
     // Detecta fármaco novo diferente do thread ativo
     final currentDrug = _detectPrimaryDrug(q);
-    final activeDrug  = _detectPrimaryDrug(_activeTopic.toLowerCase());
-    final hasDrugSwitch = currentDrug != null &&
-        activeDrug != null &&
-        currentDrug != activeDrug;
+    final activeDrug = _detectPrimaryDrug(_activeTopic.toLowerCase());
+    final hasDrugSwitch =
+        currentDrug != null && activeDrug != null && currentDrug != activeDrug;
 
     // Verifica overlap temático com o thread ativo
     final topicOverlap = _topicsOverlap(_activeTopic, q);
@@ -615,7 +1025,9 @@ class ClinicalThreadManager {
         .replaceAll('ú', 'u')
         .replaceAll('ü', 'u')
         .replaceAll('ç', 'c');
-    final richNarrativeFollowUp = _isRichClinicalNarrativeFollowUp(foldedCurrent);
+    final richNarrativeFollowUp = _isRichClinicalNarrativeFollowUp(
+      foldedCurrent,
+    );
     final hasAcuteCoronaryAlias = RegExp(
       r'(^|[^a-z0-9])(?:iamcsst|iamcest|iamssst|iamsest|stemi|nstemi)([^a-z0-9]|$)',
     ).hasMatch(foldedCurrent);
@@ -628,7 +1040,8 @@ class ClinicalThreadManager {
         .replaceAll('ú', 'u')
         .replaceAll('ü', 'u')
         .replaceAll('ç', 'c');
-    final compatibleAcuteCoronaryProgression = hasAcuteCoronaryAlias &&
+    final compatibleAcuteCoronaryProgression =
+        hasAcuteCoronaryAlias &&
         <String>[
           'torac',
           'peito',
@@ -640,19 +1053,61 @@ class ClinicalThreadManager {
           'sca',
         ].any(threadStartFolded.contains);
 
+    // PLANTAO_EXPLICIT_CASE_BOUNDARY_PRECEDENCE_V1
+    //
+    // Fronteiras explícitas de caso/paciente são absolutas e precisam ser
+    // avaliadas antes de qualquer continuação por progressão diagnóstica
+    // compatível (ex.: IAMCEST -> IAMCEST em outro paciente).
+    final explicitCaseBoundaryEarly = <String>[
+      'novo caso',
+      'nova paciente',
+      'novo paciente',
+      'outro paciente',
+      'outra paciente',
+      'mudar de caso',
+      'trocar de caso',
+      'nuevo caso',
+      'nuevo paciente',
+      'nueva paciente',
+      'otro paciente',
+      'otra paciente',
+      'cambiar de caso',
+      'new case',
+      'new patient',
+      'another patient',
+    ].any(q.contains);
+
+    if (explicitCaseBoundaryEarly) {
+      final oldTopic = _activeTopic;
+      _startNewThread(q, now);
+
+      if (kDebugMode) {
+        debugPrint('[THREAD_MANAGER] mode=plantao '
+            'action=new_thread '
+            'reason=new_case_signal '
+            'oldTopic=$oldTopic newTopic=$_activeTopic');
+      }
+
+      return ClinicalThreadStatus(
+        action: ThreadAction.newThread,
+        reason: 'new_case_signal',
+        topic: _activeTopic,
+      );
+    }
+
     // Uma confirmação de IAM/STEMI pode ser a progressão natural de uma queixa
     // torácica já ativa. Nesse caso preservamos o contexto; em qualquer tópico
     // incompatível (por exemplo, fossa ilíaca) o alias forte continua abaixo
     // para a regra canônica de newThread.
-    if (isPlantaoMode &&
-        compatibleAcuteCoronaryProgression &&
-        !hasDrugSwitch) {
+    if (isPlantaoMode && compatibleAcuteCoronaryProgression && !hasDrugSwitch) {
       _turnCount++;
       _lastActivityMs = now;
       if (kDebugMode) {
-        debugPrint('[THREAD_MANAGER] mode=plantao '
-            'action=continue_thread reason=compatible_diagnostic_progression '
-            'topic=$_activeTopic turnCount=$_turnCount');
+        debugPrint(
+          '[THREAD_MANAGER] mode=plantao '
+          'action=continue_thread reason=compatible_diagnostic_progression '
+          'topic=$_activeTopic turnCount=$_turnCount',
+        );
       }
       return ClinicalThreadStatus(
         action: ThreadAction.continueThread,
@@ -671,9 +1126,11 @@ class ClinicalThreadManager {
       _turnCount++;
       _lastActivityMs = now;
       if (kDebugMode) {
-        debugPrint('[THREAD_MANAGER] mode=plantao '
-            'action=continue_thread reason=contextual_clinical_followup '
-            'topic=$_activeTopic turnCount=$_turnCount');
+        debugPrint(
+          '[THREAD_MANAGER] mode=plantao '
+          'action=continue_thread reason=contextual_clinical_followup '
+          'topic=$_activeTopic turnCount=$_turnCount',
+        );
       }
       return ClinicalThreadStatus(
         action: ThreadAction.continueThread,
@@ -682,21 +1139,51 @@ class ClinicalThreadManager {
       );
     }
 
-    if (hasNewCaseSignal || hasDrugSwitch || !topicOverlap) {
+    // PLANTAO_GLOBAL_SAME_TOPIC_SIGNAL_PRECEDENCE_V1
+    //
+    // Mencionar uma patologia/alias conhecido nao significa automaticamente
+    // "novo caso". O overlap semantico do tema ativo vence o sinal generico.
+    // Fronteiras explicitas de caso/paciente continuam absolutas.
+    final explicitCaseBoundary = <String>[
+      'novo caso',
+      'nova paciente',
+      'novo paciente',
+      'outro paciente',
+      'outra paciente',
+      'mudar de caso',
+      'trocar de caso',
+      'nuevo caso',
+      'nuevo paciente',
+      'nueva paciente',
+      'otro paciente',
+      'otra paciente',
+      'cambiar de caso',
+      'new case',
+      'new patient',
+      'another patient',
+    ].any(q.contains);
+
+    final shouldStartNewThread =
+        explicitCaseBoundary || hasDrugSwitch || !topicOverlap;
+
+    if (shouldStartNewThread) {
       final oldTopic = _activeTopic;
       _startNewThread(q, now);
+
+      final newThreadReason = explicitCaseBoundary ||
+              (hasNewCaseSignal && !topicOverlap)
+          ? 'new_case_signal'
+          : (hasDrugSwitch ? 'drug_switch' : 'no_topic_overlap');
 
       if (kDebugMode) {
         debugPrint('[THREAD_MANAGER] mode=plantao '
             'action=new_thread '
-            'reason=${hasNewCaseSignal ? "new_case_signal" : (hasDrugSwitch ? "drug_switch" : "no_topic_overlap")} '
+            'reason=$newThreadReason '
             'oldTopic=$oldTopic newTopic=$_activeTopic');
       }
       return ClinicalThreadStatus(
         action: ThreadAction.newThread,
-        reason: hasNewCaseSignal
-            ? 'new_case_signal'
-            : (hasDrugSwitch ? 'drug_switch' : 'no_topic_overlap'),
+        reason: newThreadReason,
         topic: _activeTopic,
       );
     }
@@ -705,9 +1192,11 @@ class ClinicalThreadManager {
     _turnCount++;
     _lastActivityMs = now;
     if (kDebugMode) {
-      debugPrint('[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
-          'action=continue_thread reason=same_topic '
-          'topic=$_activeTopic turnCount=$_turnCount');
+      debugPrint(
+        '[THREAD_MANAGER] mode=${isPlantaoMode ? "plantao" : "estudo"} '
+        'action=continue_thread reason=same_topic '
+        'topic=$_activeTopic turnCount=$_turnCount',
+      );
     }
     return ClinicalThreadStatus(
       action: ThreadAction.continueThread,
@@ -722,13 +1211,6 @@ class ClinicalThreadManager {
   // isContinuation=true  → últimas kMaxContinuationTurns pares (máx 6 entradas)
   // isContinuation=false → lista vazia (contexto limpo)
   // ─────────────────────────────────────────────────────────────────────────
-  // BUILD 304 [G3]: timestamp da última mensagem de Estudo (RAM-only).
-  // Rastreia inatividade para aplicar TTL de 6h no histórico de transporte.
-  static int _lastStudyActivityMs = 0;
-
-  // BUILD 304 [G1b]: taskLabel da última mensagem (Plantão ou Estudo).
-  // Usado para detectar mudança de intent e disparar reset silencioso.
-  static String _lastTaskLabel = '';
 
   // BUILD 307 [AMNESIA_COOLDOWN]: fármaco-alvo primário da última mensagem.
   // Preserva histórico de transporte quando o médico muda de intent mas
@@ -742,144 +1224,23 @@ class ClinicalThreadManager {
     String currentTaskLabel = '', // BUILD 304 [G1b]: label do intent atual
   }) {
     if (!isPlantaoMode) {
-      // ── BUILD 304 [G3]: TTL de 6h para Modo Estudo ────────────────────────
-      // Se o médico ficou inativo por mais de 6h, descarta o histórico de
-      // transporte — nova sessão começa limpa sem contaminação de contexto antigo.
-      // O histórico LOCAL permanece intacto para exibição visual.
-      final nowMs = DateTime.now().millisecondsSinceEpoch;
-      // ── PURIF-3b BUILD 304: Defesa contra clock-drift (web/Safari) ───────
-      // Abas em suspensão profunda podem sofrer skew de relógio: ao acordar,
-      // DateTime.now() pode retornar um valor ligeiramente MENOR que o registrado
-      // em _lastStudyActivityMs (delta negativo). Isso nunca expiraria o TTL.
-      // Tratamento: se delta < 0 (clock retroativo detectado), resetamos o
-      // baseline silenciosamente — a sessão reinicia sem quebra de runtime.
-      final rawDelta = _lastStudyActivityMs > 0 ? nowMs - _lastStudyActivityMs : 0;
-      if (rawDelta < 0) {
-        // Clock retroativo: realinha baseline sem descartar histórico.
-        _lastStudyActivityMs = nowMs;
-        debugPrint('[BUILD304][CLOCK_DRIFT] delta_negativo=$rawDelta ms '
-            '— baseline realinhado silenciosamente (web tab wakeup)');
-      }
-      final studyInactiveMs = rawDelta < 0 ? 0 : rawDelta;
-      final studySessionExpired = studyInactiveMs > kStudySessionTtlMs;
-
-      if (studySessionExpired && fullHistory.isNotEmpty) {
-        _lastStudyActivityMs = nowMs;
-        _lastTaskLabel = currentTaskLabel;
-        debugPrint('[BUILD304][STUDY_TTL] session_expired inactiveMs=$studyInactiveMs '
-            'ttlMs=$kStudySessionTtlMs → transport_history_cleared '
-            'localHistory=${fullHistory.length} preserved');
-        return <Map<String, String>>[];
-      }
-
-      // ── BUILD 304 [G1b]: Reset silencioso por mudança de intent ───────────
-      // Se o taskLabel mudou (ex: 'geral' → 'dose'), o médico trocou de assunto.
-      // Descarta histórico de transporte — novo tema começa com contexto limpo.
-      final intentChanged = _lastTaskLabel.isNotEmpty &&
-          currentTaskLabel.isNotEmpty &&
-          currentTaskLabel != _lastTaskLabel;
-
-      if (intentChanged && fullHistory.isNotEmpty) {
-        // ── BUILD 432 [PASSO 3]: TRAVA DE SEGURANÇA DE INTENT DO TÓPICO ────────
-        // Palavras polissêmicas que dependem do contexto ativo (ex: 'fórmulas'
-        // pode significar nutrição enteral OU magistral dependendo do tópico
-        // em andamento). Se _lastTaskLabel não está vazio, há tópico ativo
-        // → preservar histórico de transporte SEM wipe, mesmo com taskLabel mudado.
-        //
-        // Bug original [BUILD304][INTENT_RESET]: 'transport_history_cleared'
-        // disparava ao detectar mudança 'geral'→'gotas' quando o médico digitava
-        // "fórmulas" em contexto de nutrição enteral — apagando o histórico que
-        // contextualizava a dieta por sonda, levando o modelo a responder com
-        // farmacologia magistral (alucinação semântica por quebra de histórico).
-        //
-        // PALAVRAS AMBÍGUAS PROTEGIDAS: qualquer uma delas na query atual, com
-        // tópico ativo (_lastTaskLabel não vazio), trava o wipe de histórico.
-        const _kAmbiguousContextWords = <String>[
-          // PT-BR
-          'fórmula', 'formula', 'fórmulas', 'formulas',
-          'gotejo', 'gotejamento', 'gota', 'gotas',
-          'infusão', 'infusao', 'infundir',
-          'dose', 'dosis',
-          'dieta', 'nutrição', 'nutricao', 'enteral', 'parenteral',
-          'sonda', 'nasoentérica', 'nasogástrica',
-          // ES
-          'goteo', 'infusión', 'infusion',
-          'nutrición', 'nutricion', 'dietética', 'dietetica',
-          'sonda nasogástrica', 'sonda nasoentérica',
-        ];
-        // Recupera a última mensagem do usuário do histórico para verificação
-        final lastUserMsg = fullHistory
-            .lastWhere((m) => m['role'] == 'user', orElse: () => {})['content']
-            ?.toLowerCase() ?? '';
-        final hasAmbiguousInQuery = _kAmbiguousContextWords.any(
-          (w) => lastUserMsg.contains(w),
-        );
-
-        if (hasAmbiguousInQuery && _lastTaskLabel.isNotEmpty) {
-          // TRAVA ATIVA: palavra ambígua detectada com tópico em andamento.
-          // Preserva histórico de transporte — o modelo receberá contexto completo
-          // da sessão ativa, impedindo desvio semântico.
-          final prevLabel = _lastTaskLabel;
-          _lastStudyActivityMs = nowMs;
-          _lastTaskLabel = currentTaskLabel;
-          debugPrint('[BUILD432][TOPIC_LOCK] intentChanged BLOQUEADO: '
-              'palavra ambígua detectada em "$lastUserMsg" '
-              '($prevLabel → $currentTaskLabel) '
-              '→ transport_history_PRESERVED (trava de contexto ativa)');
-          // Continua para a janela micro-deslizante abaixo (não retorna vazio)
-        } else {
-          // Sem palavra ambígua: aplica BUILD 307 [AMNESIA_COOLDOWN] normalmente
-          // BUILD 307 [AMNESIA_COOLDOWN]: Defesa contra apagamento cognitivo em
-          // perguntas compostas sequenciais no mesmo fármaco-alvo.
-          // Ex: "Qual a dose da amiodarona?" (dose) → "E o mecanismo?" (farmaco)
-          // Apesar da mudança de intent, o fármaco-alvo é o mesmo — preservar thread.
-          final currentDrugTarget = _extractDrugFromHistory(fullHistory);
-          final sameDrugTarget = _lastDrugTarget.isNotEmpty &&
-              currentDrugTarget != null &&
-              currentDrugTarget == _lastDrugTarget;
-
-          if (sameDrugTarget) {
-            // Cooldown: mesma droga detectada após mudança de intent — não apagar.
-            final prevLabel = _lastTaskLabel;
-            _lastStudyActivityMs = nowMs;
-            _lastTaskLabel = currentTaskLabel;
-            // _lastDrugTarget permanece inalterado (mesma droga)
-            debugPrint('[BUILD307][AMNESIA_COOLDOWN] intentChanged but sameDrug='
-                '$currentDrugTarget ($prevLabel → $currentTaskLabel) '
-                '→ transport_history_PRESERVED (cooldown ativo)');
-          } else {
-            // Fármaco-alvo diferente ou ausente: wipe normal permitido.
-            final prevLabel = _lastTaskLabel;
-            _lastStudyActivityMs = nowMs;
-            _lastTaskLabel = currentTaskLabel;
-            _lastDrugTarget = currentDrugTarget ?? '';
-            debugPrint('[BUILD304][INTENT_RESET] taskLabel changed: '
-                '$prevLabel → $currentTaskLabel '
-                '→ transport_history_cleared (local preserved)');
-            return <Map<String, String>>[];
-          }
-        }
-      }
-
-      // ── BUILD 304 [G1]: Janela micro-deslizante — Modo Estudo ─────────────
-      // Retém apenas as últimas kMaxStudyTurns trocas (4 entradas).
-      // Elimina desperdício de tokens em threads longos de Estudo.
-      // Histórico local no dispositivo NÃO é modificado.
-      _lastStudyActivityMs = nowMs;
-      _lastTaskLabel = currentTaskLabel;
-      // BUILD 307: Atualiza fármaco-alvo no fluxo normal (sem wipe).
+      // BUILD STUDY-30TURN: same active Study chat keeps verbatim transport
+      // memory across task/subtask changes. The UI/local history stays intact;
+      // provider transport is bounded to the last 30 exchanges (60 entries).
       _lastDrugTarget = _extractDrugFromHistory(fullHistory) ?? _lastDrugTarget;
 
       final maxEntries = kMaxStudyTurns * 2;
       final limited = fullHistory.length > maxEntries
           ? fullHistory.sublist(fullHistory.length - maxEntries)
-          : fullHistory;
+          : List<Map<String, String>>.from(fullHistory);
 
       if (kDebugMode) {
-        debugPrint('[BUILD304][HISTORY_SANITIZER] mode=estudo '
-            'strategy=micro_window_4turns '
-            'sent=${limited.length}/${fullHistory.length} '
-            'ttlOk=true intentLabel=$currentTaskLabel');
+        debugPrint(
+          '[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo '
+          'strategy=verbatim_30_exchanges '
+          'sent=${limited.length}/${fullHistory.length} '
+          'taskLabel=$currentTaskLabel',
+        );
       }
       return limited;
     }
@@ -887,27 +1248,68 @@ class ClinicalThreadManager {
     if (!status.isContinuation) {
       // Novo thread → histórico vazio
       if (kDebugMode) {
-        debugPrint('[HISTORY_SANITIZER] mode=plantao strategy=empty '
-            'sent=0 removed=${fullHistory.length} '
-            'reason=${status.reason}');
+        debugPrint(
+          '[HISTORY_SANITIZER] mode=plantao strategy=empty '
+          'sent=0 removed=${fullHistory.length} '
+          'reason=${status.reason}',
+        );
       }
       return <Map<String, String>>[];
     }
 
-    // Continuation → mínimo: últimos kMaxContinuationTurns pares
-    // Cada par = 1 user + 1 assistant = 2 entradas
-    final maxEntries = kMaxContinuationTurns * 2;
-    final limited = fullHistory.length > maxEntries
-        ? fullHistory.sublist(fullHistory.length - maxEntries)
-        : fullHistory;
+    // PLANTAO_DEPENDENT_CLINICAL_FOLLOWUP_AND_CASE_ANCHOR_V1
+    //
+    // Continuation: manter a ancora do caso (primeiro par user+assistant)
+    // + os kMaxContinuationTurns pares mais recentes.
+    //
+    // Motivo: somente "ultimos pares" perde o caso-base depois de varias
+    // perguntas curtas ("por que?", "internacao?", "trombolise?" etc.).
+    // A ancora preserva os dados clinicos originais sem reabrir cross-case:
+    // newThread continua limpando todo o historico antes deste bloco.
+    final maxRecentEntries = kMaxContinuationTurns * 2;
+    final recent = fullHistory.length > maxRecentEntries
+        ? fullHistory.sublist(fullHistory.length - maxRecentEntries)
+        : List<Map<String, String>>.from(fullHistory);
+
+    final anchor = <Map<String, String>>[];
+    for (final entry in fullHistory) {
+      final role = entry['role'];
+      if (anchor.isEmpty && role == 'user') {
+        anchor.add(entry);
+        continue;
+      }
+      if (anchor.length == 1 && role == 'assistant') {
+        anchor.add(entry);
+        break;
+      }
+    }
+
+    final anchored = <Map<String, String>>[];
+    final seen = <String>{};
+
+    void addUnique(Map<String, String> entry) {
+      final key = '${entry['role']}\u0000${entry['content']}';
+      if (seen.add(key)) anchored.add(entry);
+    }
+
+    for (final entry in anchor) {
+      addUnique(entry);
+    }
+    for (final entry in recent) {
+      addUnique(entry);
+    }
 
     if (kDebugMode) {
-      debugPrint('[HISTORY_SANITIZER] mode=plantao strategy=thread_minimal '
-          'sent=${limited.length} '
-          'topic=${status.topic} '
-          'reason=${status.reason}');
+      debugPrint(
+        '[HISTORY_SANITIZER] mode=plantao '
+        'strategy=case_anchor_plus_recent '
+        'sent=${anchored.length} '
+        'anchor=${anchor.length} recent=${recent.length} '
+        'topic=${status.topic} '
+        'reason=${status.reason}',
+      );
     }
-    return limited;
+    return anchored;
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -924,25 +1326,17 @@ class ClinicalThreadManager {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // resetStaticState() — BUILD 304 PURIF-1: limpa campos estáticos de sessão.
+  // resetStaticState() — Study/Plantao lifecycle cleanup.
   //
-  // PROBLEMA RESOLVIDO — GAP DE HOT-RESTART / TROCA DE CONTA:
-  //   _lastStudyActivityMs e _lastTaskLabel são static — sobrevivem ao dispose()
-  //   do AppProvider e ao logout. Num hot-restart ou troca de conta sem reinício
-  //   completo do processo, esses valores ficam "fantasmas" da sessão anterior:
-  //   • _lastTaskLabel stale → intent-reset falso positivo na primeira mensagem
-  //   • _lastStudyActivityMs stale → TTL de 6h calculado incorretamente
-  //
-  // SOLUÇÃO: chamar resetStaticState() JUNTO com reset() em todo ponto de logout
-  // ou limpeza de conversa, garantindo que a próxima sessão sempre comece do zero.
+  // R9: TTL/taskLabel transport-reset state was removed. The remaining
+  // static helper is _lastDrugTarget, cleared on logout/new conversation.
   // ─────────────────────────────────────────────────────────────────────────
   static void resetStaticState() {
-    _lastStudyActivityMs = 0;
-    _lastTaskLabel = '';
     _lastDrugTarget = ''; // BUILD 307 [AMNESIA_COOLDOWN]: reset junto com label
-    debugPrint('[BUILD304][STATIC_RESET] _lastStudyActivityMs=0 _lastTaskLabel="" '
-        '_lastDrugTarget="" '
-        '— static session state cleared (logout/new-conversation/hot-restart)');
+    debugPrint(
+      '[STUDY_30TURN][STATIC_RESET] _lastDrugTarget="" '
+      '— static session state cleared (logout/new-conversation/hot-restart)',
+    );
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -1011,17 +1405,19 @@ class ClinicalThreadManager {
     _threadStartQuery = lastUserText;
 
     if (kDebugMode) {
-      debugPrint('[THREAD_MANAGER] primeFromHistory: topic=$_activeTopic '
-          'turnCount=$_turnCount restoredPairs=$pairCount '
-          '— blindado contra first_message reset');
+      debugPrint(
+        '[THREAD_MANAGER] primeFromHistory: topic=$_activeTopic '
+        'turnCount=$_turnCount restoredPairs=$pairCount '
+        '— blindado contra first_message reset',
+      );
     }
   }
 
   // ── Getters públicos ──────────────────────────────────────────────────────
   String get activeTopic => _activeTopic;
   String get activeThreadId => _activeThreadId;
-  int    get turnCount => _turnCount;
-  bool   get hasActiveThread => _activeTopic.isNotEmpty;
+  int get turnCount => _turnCount;
+  bool get hasActiveThread => _activeTopic.isNotEmpty;
 
   // ── Helpers privados ──────────────────────────────────────────────────────
 
@@ -1054,14 +1450,87 @@ class ClinicalThreadManager {
   ///
   /// SOLUÇÃO: take(6) amplia a janela de captura, aumentando a probabilidade
   /// de sobreposição de palavras-chave clínicas em reformulações naturais.
-  String _extractTopicSignature(String query) {
-    final words = query
+  // R20 — a intenção pedagógica não faz parte do nome do tema clínico.
+  static String _foldStudyPedagogicalText(String value) {
+    return value
+        .trim()
         .toLowerCase()
-        .replaceAll(RegExp(r'[^\w\s]'), ' ')
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c')
+        .replaceAll(RegExp(r'[^a-z0-9\s]+'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
+  static String _stripStudyPedagogicalLead(String value) {
+    var folded = _foldStudyPedagogicalText(value);
+    if (folded.isEmpty) return '';
+
+    // Wrapper de esclarecimento do R20 nunca pode virar identidade clínica.
+    if (folded.startsWith('modo estudio aclaracion minima') ||
+        folded.startsWith('modo estudo esclarecimento minimo')) {
+      return '';
+    }
+
+    folded = folded
+        .replaceFirst(
+          RegExp(
+            r'^(?:por favor\s+)?(?:'
+            r'explicame|explicarme|explica me|explica|'
+            r'me explica|me explique|pode me explicar|poderia me explicar|'
+            r'puede explicarme|puedes explicarme|'
+            r'fale sobre|hablame|cuentame|'
+            r'quero entender|quiero entender|ensiname|ensename'
+            r')(?:\s+(?:sobre|de|del|da|do|el|la|o|a))?(?:\s+|$)',
+          ),
+          '',
+        )
+        .trim();
+
+    return folded;
+  }
+
+  String _extractTopicSignature(String query) {
+    final canonicalQuery = _stripStudyPedagogicalLead(query);
+    if (canonicalQuery.isEmpty) return '';
+
+    final words = canonicalQuery
         .split(RegExp(r'\s+'))
-        .where((w) => w.length > 3 && !_kStopwords.contains(w))
-        .take(6)    // BUILD 305 [C1]: 4 → 6 palavras significativas
+        // M77_CLINICAL_TOPIC_GENERIC_PATIENT_TOKEN_FILTER_V1
+        .where(
+          (w) =>
+              w.length > 3 &&
+              !_kStopwords.contains(w) &&
+              !const <String>{
+                'paciente',
+                'pacientes',
+                'patient',
+                'patients',
+                // M77_SHORT_PROMPT_GENERIC_TASK_TOKEN_FILTER_V1
+                'conduta',
+                'conducta',
+                'imediata',
+                'imediato',
+                'inmediata',
+                'inmediato',
+                'immediate',
+                'management',
+              }.contains(w),
+        )
+        .take(6)
         .toList();
+
     return words.join('_');
   }
 
@@ -1078,6 +1547,9 @@ class ClinicalThreadManager {
   ///              no tópico ativo. Impede amnésia por inversão de ordem das
   ///              palavras ("congestão pulmonar" ↔ "congestao_pulmonar_ic").
   bool _topicsOverlap(String activeTopic, String newQuery) {
+    activeTopic = _canonicalizePlantaoTopicAliases(activeTopic);
+    newQuery = _canonicalizePlantaoTopicAliases(newQuery);
+
     if (activeTopic.isEmpty) return false;
     final topicWords = Set<String>.from(activeTopic.split('_'));
     final qLower = newQuery.toLowerCase().replaceAll(RegExp(r'[^\w\s]'), ' ');
@@ -1123,13 +1595,17 @@ class ClinicalThreadAudit {
   /// Chamado uma vez na inicialização do AppProvider.
   static void logFoundComponents() {
     if (!kDebugMode) return;
-    debugPrint('[THREAD_AUDIT] foundExisting=true '
-        'components=ClinicalSessionMemory,_aiHistory,_sanitizedHistory,'
-        'resetIfTopicChanged,_expandedQuery,ExternalToolLinkEngine,'
-        'PlantaoIntentEngine,NextActionEngine');
-    debugPrint('[THREAD_AUDIT] new_component=ClinicalThreadManager '
-        'build=249 '
-        'strategy=plantao:empty_on_new_thread,continuation:thread_minimal(3pairs) '
-        'estudo:full_history_unchanged');
+    debugPrint(
+      '[THREAD_AUDIT] foundExisting=true '
+      'components=ClinicalSessionMemory,_aiHistory,_sanitizedHistory,'
+      'resetIfTopicChanged,_expandedQuery,ExternalToolLinkEngine,'
+      'PlantaoIntentEngine,NextActionEngine',
+    );
+    debugPrint(
+      '[THREAD_AUDIT] new_component=ClinicalThreadManager '
+      'build=249 '
+      'strategy=plantao:empty_on_new_thread,continuation:case_anchor_plus_recent(2pairs) '
+      'estudo:full_history_unchanged',
+    );
   }
 }

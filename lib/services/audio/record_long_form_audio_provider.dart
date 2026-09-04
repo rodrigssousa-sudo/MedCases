@@ -1,8 +1,14 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:record/record.dart';
 
 import 'clinical_long_form_audio_contract.dart';
 
 final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
+  static const MethodChannel _backgroundGuardChannel =
+      MethodChannel('medcases/recording_background_guard_v1');
+
   RecordLongFormAudioProvider({
     AudioRecorder? recorder,
   }) : _recorder = recorder ?? AudioRecorder();
@@ -35,6 +41,19 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
   Future<bool> isAacLcSupported() =>
       _recorder.isEncoderSupported(AudioEncoder.aacLc);
 
+  /// Read-only microphone level for the long-form recorder visual layer.
+  ///
+  /// This does not start, stop, pause, resume, rotate, persist, upload, or
+  /// otherwise mutate the recording state.
+  Future<double> currentAmplitudeDbfs() async {
+    _guardNotDisposed();
+    if (!_active) {
+      return -160.0;
+    }
+    final amplitude = await _recorder.getAmplitude();
+    return amplitude.current;
+  }
+
   @override
   Future<void> startSegment({
     required String path,
@@ -54,23 +73,36 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       throw StateError('AAC-LC is not supported on this platform.');
     }
 
-    await _recorder.start(
-      buildRecordConfig(config),
-      path: path,
-    );
-    _active = true;
+    await _beginPlatformBackgroundGuard();
+    try {
+      await _recorder.start(
+        buildRecordConfig(config),
+        path: path,
+      );
+      _active = true;
+    } catch (_) {
+      await _endPlatformBackgroundGuard();
+      rethrow;
+    }
   }
 
   @override
   Future<void> pause() async {
     _guardActive();
     await _recorder.pause();
+    await _endPlatformBackgroundGuard();
   }
 
   @override
   Future<void> resume() async {
     _guardActive();
-    await _recorder.resume();
+    await _beginPlatformBackgroundGuard();
+    try {
+      await _recorder.resume();
+    } catch (_) {
+      await _endPlatformBackgroundGuard();
+      rethrow;
+    }
   }
 
   @override
@@ -80,9 +112,12 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       return null;
     }
 
-    final path = await _recorder.stop();
-    _active = false;
-    return path;
+    try {
+      return await _recorder.stop();
+    } finally {
+      _active = false;
+      await _endPlatformBackgroundGuard();
+    }
   }
 
   @override
@@ -92,8 +127,12 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       return;
     }
 
-    await _recorder.cancel();
-    _active = false;
+    try {
+      await _recorder.cancel();
+    } finally {
+      _active = false;
+      await _endPlatformBackgroundGuard();
+    }
   }
 
   @override
@@ -103,12 +142,43 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     }
 
     if (_active) {
-      await _recorder.stop();
-      _active = false;
+      try {
+        await _recorder.stop();
+      } finally {
+        _active = false;
+        await _endPlatformBackgroundGuard();
+      }
+    } else {
+      await _endPlatformBackgroundGuard();
     }
 
     await _recorder.dispose();
     _disposed = true;
+  }
+
+  Future<void> _beginPlatformBackgroundGuard() async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
+    final started = await _backgroundGuardChannel.invokeMethod<bool>('begin');
+    if (started != true) {
+      throw StateError('android_recording_background_guard_unavailable');
+    }
+  }
+
+  Future<void> _endPlatformBackgroundGuard() async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
+    try {
+      await _backgroundGuardChannel.invokeMethod<bool>('end');
+    } on MissingPluginException {
+      if (_active) {
+        rethrow;
+      }
+    }
   }
 
   void _guardNotDisposed() {

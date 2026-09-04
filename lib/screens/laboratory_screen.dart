@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_LAB
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -62,9 +63,7 @@ class LaboratoryScreen extends StatefulWidget {
 }
 
 class _LaboratoryScreenState extends State<LaboratoryScreen> {
-  final TextEditingController _searchController = TextEditingController();
-
-  String _query = '';
+  bool _filtersExpanded = false;
   String _age = 'all';
   String _sex = 'all';
   String _pregnancy = 'all';
@@ -81,16 +80,10 @@ class _LaboratoryScreenState extends State<LaboratoryScreen> {
       widget.dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
   Color get _secondary =>
       widget.dark ? const Color(0xFFCBD5E1) : const Color(0xFF475569);
-  static const Color _accent = Color(0xFF10B981);
+  static const Color _accent = Color(0xFF0D6B57);
 
   bool get _hasFilter =>
       _age != 'all' || _sex != 'all' || _pregnancy != 'all' || _method != 'all';
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
 
   void _clearFilters() {
     setState(() {
@@ -286,37 +279,7 @@ class _LaboratoryScreenState extends State<LaboratoryScreen> {
     setState(() => _method = value);
   }
 
-  String _fold(String value) {
-    return value
-        .toLowerCase()
-        .replaceAll('á', 'a')
-        .replaceAll('à', 'a')
-        .replaceAll('â', 'a')
-        .replaceAll('ã', 'a')
-        .replaceAll('ä', 'a')
-        .replaceAll('é', 'e')
-        .replaceAll('è', 'e')
-        .replaceAll('ê', 'e')
-        .replaceAll('ë', 'e')
-        .replaceAll('í', 'i')
-        .replaceAll('ì', 'i')
-        .replaceAll('î', 'i')
-        .replaceAll('ï', 'i')
-        .replaceAll('ó', 'o')
-        .replaceAll('ò', 'o')
-        .replaceAll('ô', 'o')
-        .replaceAll('õ', 'o')
-        .replaceAll('ö', 'o')
-        .replaceAll('ú', 'u')
-        .replaceAll('ù', 'u')
-        .replaceAll('û', 'u')
-        .replaceAll('ü', 'u')
-        .replaceAll('ç', 'c')
-        .replaceAll('ñ', 'n');
-  }
-
   List<LabReferenceCategory> get _categories {
-    final query = _fold(_query.trim());
     return LabReferenceCatalog.categories.where((category) {
       final records = LabReferenceCatalog.recordsForCategory(category.id)
           .where(
@@ -332,12 +295,7 @@ class _LaboratoryScreenState extends State<LaboratoryScreen> {
           )
           .toList(growable: false);
 
-      if (records.isEmpty) return false;
-      if (query.isEmpty) return true;
-      if (_fold(category.label(widget.isEs)).contains(query)) return true;
-      return records.any(
-        (record) => _fold(record.name(widget.isEs)).contains(query),
-      );
+      return records.isNotEmpty;
     }).toList(growable: false);
   }
 
@@ -358,7 +316,7 @@ class _LaboratoryScreenState extends State<LaboratoryScreen> {
         sex: _sex,
         pregnancy: _pregnancy,
         method: _method,
-        query: _query,
+        query: '',
         embeddedInMainShell: widget.embeddedInMainShell,
         onBack: () => setState(() => _selectedCategory = null),
       );
@@ -390,40 +348,79 @@ class _LaboratoryScreenState extends State<LaboratoryScreen> {
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: EdgeInsets.fromLTRB(4, 8, 4, bottomClearance),
               children: [
-                _SearchField(
-                  controller: _searchController,
-                  isEs: widget.isEs,
-                  surface: _surface,
-                  divider: _divider,
-                  primary: _primary,
-                  secondary: _secondary,
-                  onChanged: (value) => setState(() => _query = value),
-                ),
-                const SizedBox(height: 8),
                 Row(
                   children: [
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 6),
-                        child: Text(
-                          'FILTRO',
-                          style: TextStyle(
-                            color: _secondary,
-                            fontSize: 10.5,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.9,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () => setState(
+                          () => _filtersExpanded = !_filtersExpanded,
+                        ),
+                        child: Container(
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: _surface,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: _hasFilter
+                                  ? _accent.withOpacity(0.55)
+                                  : _divider,
+                              width: _hasFilter ? 0.8 : 0.55,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.tune_rounded,
+                                size: 16,
+                                color: _hasFilter ? _accent : _secondary,
+                              ),
+                              const SizedBox(width: 7),
+                              Expanded(
+                                child: Text(
+                                  'FILTRO',
+                                  style: TextStyle(
+                                    color:
+                                        _hasFilter ? _accent : _secondary,
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.9,
+                                  ),
+                                ),
+                              ),
+                              AnimatedRotation(
+                                turns: _filtersExpanded ? 0.5 : 0,
+                                duration: const Duration(milliseconds: 160),
+                                curve: Curves.easeOutCubic,
+                                child: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  size: 18,
+                                  color:
+                                      _hasFilter ? _accent : _secondary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                    if (_hasFilter)
+                    if (_hasFilter) ...[
+                      const SizedBox(width: 5),
                       InkWell(
-                        borderRadius: BorderRadius.circular(7),
+                        borderRadius: BorderRadius.circular(9),
                         onTap: _clearFilters,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 5,
+                        child: Container(
+                          height: 40,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: _surface,
+                            borderRadius: BorderRadius.circular(9),
+                            border: Border.all(
+                              color: _accent.withOpacity(0.38),
+                              width: 0.65,
+                            ),
                           ),
                           child: Text(
                             widget.isEs ? 'Limpiar' : 'Limpar',
@@ -435,65 +432,78 @@ class _LaboratoryScreenState extends State<LaboratoryScreen> {
                           ),
                         ),
                       ),
+                    ],
                   ],
                 ),
-                const SizedBox(height: 3),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _FilterButton(
-                        label: _ageLabel(_age),
-                        active: _age != 'all',
-                        surface: _surface,
-                        divider: _divider,
-                        secondary: _secondary,
-                        accent: _accent,
-                        onTap: _pickAge,
-                      ),
-                    ),
-                    const SizedBox(width: 3),
-                    Expanded(
-                      child: _FilterButton(
-                        label: _sexLabel(_sex),
-                        active: _sex != 'all',
-                        surface: _surface,
-                        divider: _divider,
-                        secondary: _secondary,
-                        accent: _accent,
-                        onTap: _pickSex,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 4),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 180),
+                  curve: Curves.easeOutCubic,
+                  alignment: Alignment.topCenter,
+                  child: _filtersExpanded
+                      ? Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _FilterButton(
+                                    label: _ageLabel(_age),
+                                    active: _age != 'all',
+                                    surface: _surface,
+                                    divider: _divider,
+                                    secondary: _secondary,
+                                    accent: _accent,
+                                    onTap: _pickAge,
+                                  ),
+                                ),
+                                const SizedBox(width: 3),
+                                Expanded(
+                                  child: _FilterButton(
+                                    label: _sexLabel(_sex),
+                                    active: _sex != 'all',
+                                    surface: _surface,
+                                    divider: _divider,
+                                    secondary: _secondary,
+                                    accent: _accent,
+                                    onTap: _pickSex,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 3),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _FilterButton(
+                                    label: _pregnancyLabel(_pregnancy),
+                                    active: _pregnancy != 'all',
+                                    surface: _surface,
+                                    divider: _divider,
+                                    secondary: _secondary,
+                                    accent: _accent,
+                                    onTap: _pickPregnancy,
+                                  ),
+                                ),
+                                const SizedBox(width: 3),
+                                Expanded(
+                                  child: _FilterButton(
+                                    label: _methodLabel(_method),
+                                    active: _method != 'all',
+                                    surface: _surface,
+                                    divider: _divider,
+                                    secondary: _secondary,
+                                    accent: _accent,
+                                    onTap: _pickMethod,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                 ),
-                const SizedBox(height: 3),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _FilterButton(
-                        label: _pregnancyLabel(_pregnancy),
-                        active: _pregnancy != 'all',
-                        surface: _surface,
-                        divider: _divider,
-                        secondary: _secondary,
-                        accent: _accent,
-                        onTap: _pickPregnancy,
-                      ),
-                    ),
-                    const SizedBox(width: 3),
-                    Expanded(
-                      child: _FilterButton(
-                        label: _methodLabel(_method),
-                        active: _method != 'all',
-                        surface: _surface,
-                        divider: _divider,
-                        secondary: _secondary,
-                        accent: _accent,
-                        onTap: _pickMethod,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 9),
+                const SizedBox(height: 4),
                 Padding(
                   padding: const EdgeInsets.only(left: 6),
                   child: Text(
@@ -604,7 +614,7 @@ class LaboratoryCategoryScreen extends StatelessWidget {
       dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
   Color get _secondary =>
       dark ? const Color(0xFFCBD5E1) : const Color(0xFF475569);
-  static const Color _accent = Color(0xFF10B981);
+  static const Color _accent = Color(0xFF0D6B57);
 
   String _fold(String value) {
     return value
@@ -1157,12 +1167,19 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
         critical.isNotEmpty ||
         qualitative.isNotEmpty;
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 160),
+      curve: Curves.easeOutCubic,
       margin: const EdgeInsets.only(bottom: 3),
       decoration: BoxDecoration(
         color: widget.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: widget.divider, width: 0.55),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: _expanded
+              ? widget.accent.withOpacity(0.42)
+              : widget.divider,
+          width: _expanded ? 0.8 : 0.55,
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -1170,53 +1187,69 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+              padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
               child: Row(
                 children: [
                   Container(
-                    width: 4,
-                    height: 54,
-                    color: widget.accent,
+                    width: 2.5,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: widget.accent,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 9),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 9),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.record.name(widget.isEs),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: widget.primary,
+                            fontSize: 13.8,
+                            fontWeight: FontWeight.w800,
+                            height: 1.08,
+                          ),
+                        ),
+                        if (widget.record.unit.isNotEmpty) ...[
+                          const SizedBox(height: 2),
                           Text(
-                            widget.record.name(widget.isEs),
-                            maxLines: 2,
+                            widget.record.unit,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: widget.primary,
-                              fontSize: 14.5,
-                              fontWeight: FontWeight.w800,
-                              height: 1.1,
+                              color: widget.secondary,
+                              fontSize: 9.6,
+                              fontWeight: FontWeight.w600,
+                              height: 1.05,
                             ),
                           ),
-                          if (widget.record.unit.isNotEmpty) ...[
-                            const SizedBox(height: 3),
-                            Text(
-                              widget.record.unit,
-                              style: TextStyle(
-                                color: widget.secondary,
-                                fontSize: 10.5,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
                         ],
-                      ),
+                      ],
                     ),
                   ),
                   const SizedBox(width: 8),
                   ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 130),
+                    constraints: const BoxConstraints(maxWidth: 122),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        Text(
+                          preview.value,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: widget.primary,
+                            fontSize: 14.8,
+                            fontWeight: FontWeight.w800,
+                            height: 1.02,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
                         Text(
                           preview.detail.toUpperCase(),
                           maxLines: 1,
@@ -1226,34 +1259,25 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
                             color: preview.explicit
                                 ? widget.accent
                                 : widget.secondary,
-                            fontSize: 9.5,
+                            fontSize: 8.8,
                             fontWeight: FontWeight.w900,
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          preview.value,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: widget.primary,
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w800,
-                            height: 1.05,
+                            letterSpacing: 0.25,
+                            height: 1.0,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 7),
-                  Icon(
-                    _expanded
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    color: widget.secondary,
-                    size: 20,
+                  const SizedBox(width: 6),
+                  AnimatedRotation(
+                    turns: _expanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 160),
+                    curve: Curves.easeOutCubic,
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: widget.secondary,
+                      size: 18,
+                    ),
                   ),
                 ],
               ),
@@ -1262,7 +1286,7 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
           if (_expanded) ...[
             Container(height: 0.55, color: widget.divider),
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -1277,6 +1301,8 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
                       secondary: widget.secondary,
                       divider: widget.divider,
                     ),
+                  if (refs.isNotEmpty && decisions.isNotEmpty)
+                    const SizedBox(height: 8),
                   if (decisions.isNotEmpty)
                     _ClinicalTableSection(
                       title: widget.isEs
@@ -1288,6 +1314,9 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
                       secondary: widget.secondary,
                       divider: widget.divider,
                     ),
+                  if ((refs.isNotEmpty || decisions.isNotEmpty) &&
+                      critical.isNotEmpty)
+                    const SizedBox(height: 8),
                   if (critical.isNotEmpty)
                     _ClinicalTableSection(
                       title: widget.isEs ? 'VALOR CRÍTICO' : 'VALOR CRÍTICO',
@@ -1297,6 +1326,10 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
                       secondary: widget.secondary,
                       divider: widget.divider,
                     ),
+                  if ((refs.isNotEmpty || decisions.isNotEmpty ||
+                          critical.isNotEmpty) &&
+                      qualitative.isNotEmpty)
+                    const SizedBox(height: 8),
                   if (qualitative.isNotEmpty)
                     _CompactTextSection(
                       title: widget.isEs
@@ -1321,17 +1354,36 @@ class _AnalyteBlockState extends State<_AnalyteBlock> {
                         ),
                       ),
                     ),
-                  if (widget.record.notes(widget.isEs).isNotEmpty)
-                    _CompactMetaRow(
-                      label: 'OBS.',
-                      text: widget.record.notes(widget.isEs),
-                      color: widget.secondary,
+                  if (hasAny) const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 7, 10, 9),
+                    decoration: BoxDecoration(
+                      color: widget.secondary.withOpacity(0.045),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: widget.divider,
+                        width: 0.45,
+                      ),
                     ),
-                  _CompactMetaRow(
-                    label: 'REF.',
-                    text: widget.record.sourceTitle,
-                    color: widget.secondary,
-                    italic: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (widget.record.notes(widget.isEs).isNotEmpty)
+                          _CompactMetaRow(
+                            label: 'OBS.',
+                            text: widget.record.notes(widget.isEs),
+                            color: widget.secondary,
+                          ),
+                        if (widget.record.notes(widget.isEs).isNotEmpty)
+                          const SizedBox(height: 3),
+                        _CompactMetaRow(
+                          label: 'REF.',
+                          text: widget.record.sourceTitle,
+                          color: widget.secondary,
+                          italic: true,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -1375,61 +1427,79 @@ class _ClinicalTableSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 11),
+      padding: const EdgeInsets.only(bottom: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _Label(text: title, color: secondary),
-          const SizedBox(height: 5),
-          Table(
-            columnWidths: const {
-              0: FlexColumnWidth(1.35),
-              1: FlexColumnWidth(1),
-            },
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              TableRow(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: divider, width: 0.65),
-                  ),
-                ),
-                children: [
-                  _TableCellText(
-                    text: isEs ? 'FRANJA / CONTEXTO' : 'FAIXA / CONTEXTO',
-                    color: secondary,
-                    bold: true,
-                  ),
-                  _TableCellText(
-                    text: 'VALOR',
-                    color: secondary,
-                    bold: true,
-                    alignRight: true,
-                  ),
-                ],
-              ),
-              ...lines.map(
-                (line) => TableRow(
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Table(
+              columnWidths: const {
+                0: FlexColumnWidth(1.45),
+                1: FlexColumnWidth(0.85),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                TableRow(
                   decoration: BoxDecoration(
+                    color: divider.withOpacity(0.14),
                     border: Border(
-                      bottom: BorderSide(color: divider, width: 0.4),
+                      bottom: BorderSide(color: divider, width: 0.7),
                     ),
                   ),
                   children: [
-                    _TableCellText(
-                      text: line.label(isEs),
-                      color: secondary,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+                      child: _TableCellText(
+                        text: isEs
+                            ? 'FRANJA / CONTEXTO'
+                            : 'FAIXA / CONTEXTO',
+                        color: secondary,
+                        bold: true,
+                      ),
                     ),
-                    _TableCellText(
-                      text: line.value,
-                      color: primary,
-                      bold: true,
-                      alignRight: true,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 10, 8),
+                      child: _TableCellText(
+                        text: 'VALOR',
+                        color: secondary,
+                        bold: true,
+                        alignRight: true,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                ...lines.map(
+                  (line) => TableRow(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: divider, width: 0.4),
+                      ),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 11, 8, 11),
+                        child: _TableCellText(
+                          text: line.label(isEs),
+                          color: secondary,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 11, 10, 11),
+                        child: _TableCellText(
+                          text: line.value,
+                          color: primary,
+                          bold: true,
+                          alignRight: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -1494,7 +1564,7 @@ class _CompactTextSection extends StatelessWidget {
           const SizedBox(height: 5),
           ...values.map(
             (value) => Container(
-              padding: const EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(color: divider, width: 0.4),
@@ -1661,55 +1731,6 @@ class _LaboratoryRootTopbar extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SearchField extends StatelessWidget {
-  const _SearchField({
-    required this.controller,
-    required this.isEs,
-    required this.surface,
-    required this.divider,
-    required this.primary,
-    required this.secondary,
-    required this.onChanged,
-  });
-
-  final TextEditingController controller;
-  final bool isEs;
-  final Color surface;
-  final Color divider;
-  final Color primary;
-  final Color secondary;
-  final ValueChanged<String> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 42,
-      decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(9),
-        border: Border.all(color: divider, width: 0.55),
-      ),
-      child: TextField(
-        controller: controller,
-        onChanged: onChanged,
-        textInputAction: TextInputAction.search,
-        scrollPadding: const EdgeInsets.only(bottom: 16),
-        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-        style: TextStyle(color: primary, fontSize: 13),
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          prefixIcon: Icon(Icons.search_rounded, size: 19, color: secondary),
-          hintText:
-              isEs ? 'Buscar examen o categoría' : 'Buscar exame ou categoria',
-          hintStyle: TextStyle(color: secondary, fontSize: 12.5),
-          contentPadding: const EdgeInsets.symmetric(vertical: 11),
-        ),
       ),
     );
   }

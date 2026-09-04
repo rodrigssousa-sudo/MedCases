@@ -1,3 +1,5 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_2C_V2_B_R1_R1_LINE_SCOPED_ALLOWLIST
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_2A_V2_B_R1_GENERIC_OWNER_PATCH
 import 'dart:ui' show ImageFilter;
 
 import 'dart:math';
@@ -32,7 +34,7 @@ import 'electrolytes_tools_screen.dart' show ElectrolytesToolsScreen;
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
 // ──────────────────────────────────────────────────────────────────
 // kDark, kGold, kGoldLight, kGreen, kBorder importados de common_widgets
-const kToolGreen = Color(0xFF075f45); // verde padrão do app (mesmo kGreen)
+const kToolGreen = Color(0xFF0E8000); // verde padrão do app (mesmo kGreen)
 const kToolBorder = Color(0xFFE2E6EA); // mesmo kBorder
 // kToolDark removido — usar AppColors.of(context).textPrimary / .darkBtn
 const kToolGold = kGoldLight; // alias para kGoldLight
@@ -143,8 +145,7 @@ class _ToolsScreenState extends State<ToolsScreen>
     final showHeader = !widget.hideHeader;
 
     final dark = p.darkMode;
-    final pageBg =
-        dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final pageBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
     final double topPad =
         View.of(context).padding.top / View.of(context).devicePixelRatio;
 
@@ -369,10 +370,8 @@ class _ToolsTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MEDCASES_FERRAMENTAS_CANONICAL_FLAT_SURFACE_CONVERGENCE_V1_B_R0_SUBNAV
-    final divider = dark
-        ? const Color(0xFF374151)
-        : const Color(0xFFD8E0E7);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
 
     final labels = isEs
         ? const ['Nefrología', 'Cardio', 'Electrolitos', 'Hepatología']
@@ -386,11 +385,9 @@ class _ToolsTabRow extends StatelessWidget {
     ];
 
     return Container(
-      height: 44,
+      height: 40,
       decoration: BoxDecoration(
-        color: dark
-            ? const Color(0xFF2D3340)
-            : const Color(0xFFEFF2F5),
+        color: surface,
         border: Border(
           bottom: BorderSide(color: divider, width: 0.7),
         ),
@@ -408,10 +405,16 @@ class _ToolsTabRow extends StatelessWidget {
               ),
             ),
             if (i < labels.length - 1)
-              Container(
+              SizedBox(
                 width: 0.7,
-                height: double.infinity,
-                color: divider,
+                height: 40,
+                child: Center(
+                  child: Container(
+                    width: 0.7,
+                    height: 20,
+                    color: divider,
+                  ),
+                ),
               ),
           ],
         ],
@@ -420,12 +423,6 @@ class _ToolsTabRow extends StatelessWidget {
   }
 }
 
-// ──────────────────────────────────────────────────────────────────
-// HELPERS: tab minimalista flat — BUILD 331
-// Cores adaptativas: dark → branco/branco60; light → preto/preto45.
-// ──────────────────────────────────────────────────────────────────
-
-/// Tab flat minimalista — underline ciano quando ativa, texto dark/light.
 class _ToolsFlatTab extends StatefulWidget {
   final String label;
   final IconData icon;
@@ -464,40 +461,28 @@ class _ToolsFlatTabState extends State<_ToolsFlatTab> {
 
   @override
   Widget build(BuildContext context) {
-    // MEDCASES_FERRAMENTAS_CANONICAL_FLAT_SURFACE_CONVERGENCE_V1_B_R0_TAB
     final isActive = widget.tabCtrl.index == widget.index;
+
     final inactiveColor =
-        widget.dark ? const Color(0xFFA8B2C1) : const Color(0xFF64748B);
+        widget.dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeColor =
+        widget.dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
+    final activeBackground = widget.dark
+        ? const Color(0xFF0D6B57).withValues(alpha: 0.10)
+        : const Color(0xFF0D6B57).withValues(alpha: 0.06);
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => widget.tabCtrl.animateTo(widget.index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
-        height: 44,
-        alignment: Alignment.center,
+        height: 40,
         decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border(
-            bottom: BorderSide(
-              color: isActive
-                  ? const Color(0xFF10B981)
-                  : Colors.transparent,
-              width: 2,
-            ),
-          ),
+          color: isActive ? activeBackground : Colors.transparent,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: [
-            Icon(
-              widget.icon,
-              size: 15,
-              color: isActive ? const Color(0xFF10B981) : inactiveColor,
-            ),
-            const SizedBox(width: 5),
-            Flexible(
+            Center(
               child: Text(
                 widget.label,
                 maxLines: 1,
@@ -505,16 +490,24 @@ class _ToolsFlatTabState extends State<_ToolsFlatTab> {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: 12,
                   height: 1,
-                  fontWeight:
-                      isActive ? FontWeight.w700 : FontWeight.w600,
-                  color:
-                      isActive ? const Color(0xFF10B981) : inactiveColor,
-                  letterSpacing: 0.1,
+                  fontWeight: FontWeight.w700,
+                  color: isActive ? activeColor : inactiveColor,
+                  letterSpacing: 0.05,
                 ),
               ),
             ),
+            if (isActive)
+              Positioned(
+                left: 12,
+                right: 12,
+                bottom: 9,
+                child: Container(
+                  height: 2,
+                  color: const Color(0xFF0D6B57),
+                ),
+              ),
           ],
         ),
       ),
@@ -522,11 +515,6 @@ class _ToolsFlatTabState extends State<_ToolsFlatTab> {
   }
 }
 
-// (Note: _ToolsTabDivider removed — inline Container used in _ToolsTabRow)
-
-// ══════════════════════════════════════════════════════════════════
-//  TAB 1 — BIOMETRIA
-// ══════════════════════════════════════════════════════════════════
 class _BiometricsTab extends StatefulWidget {
   @override
   State<_BiometricsTab> createState() => _BiometricsTabState();
@@ -2733,7 +2721,7 @@ class _LabImportCard extends StatelessWidget {
               offset: const Offset(0, 4),
             ),
             BoxShadow(
-              color: const Color(0xFF10B981).withOpacity(0.12),
+              color: const Color(0xFF0D6B57).withOpacity(0.12),
               blurRadius: 20,
               offset: const Offset(0, 2),
             ),
@@ -3819,7 +3807,7 @@ class _InfusionResultCard extends StatelessWidget {
           ),
         ],
         border: Border.all(
-          color: const Color(0xFF10B981).withOpacity(0.6),
+          color: const Color(0xFF0D6B57).withOpacity(0.6),
           width: 1,
         ),
       ),
@@ -4153,16 +4141,16 @@ class _VasoRefRow extends StatelessWidget {
                 Icon(Icons.touch_app_rounded,
                     size: 9,
                     color: dark
-                        ? const Color(0xFF10B981)
-                        : const Color(0xFF16A34A)),
+                        ? const Color(0xFF0D6B57)
+                        : const Color(0xFF0D6B57)),
                 const SizedBox(width: 3),
                 Text('calcular',
                     style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w600,
                         color: dark
-                            ? const Color(0xFF10B981)
-                            : const Color(0xFF16A34A))),
+                            ? const Color(0xFF0D6B57)
+                            : const Color(0xFF0D6B57))),
               ]),
             ],
           ]),
@@ -4465,7 +4453,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
                     border: Border(
                         bottom: BorderSide(
                       color:
-                          active ? const Color(0xFF10B981) : Colors.transparent,
+                          active ? const Color(0xFF0D6B57) : Colors.transparent,
                       width: 2.5,
                     )),
                   ),
@@ -4473,7 +4461,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
                     Icon(_catIcons[i],
                         size: 13,
                         color: active
-                            ? const Color(0xFF10B981)
+                            ? const Color(0xFF0D6B57)
                             : Colors.white.withOpacity(0.40)),
                     const SizedBox(width: 5),
                     Text(categories[i],
@@ -4482,7 +4470,7 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
                           fontWeight:
                               active ? FontWeight.w800 : FontWeight.w500,
                           color: active
-                              ? const Color(0xFF10B981)
+                              ? const Color(0xFF0D6B57)
                               : Colors.white.withOpacity(0.45),
                           letterSpacing: 0.5,
                         )),
@@ -5800,7 +5788,7 @@ class _LabeledInput extends StatelessWidget {
 class _PediatricsVisualScaleR3 {
   const _PediatricsVisualScaleR3._();
 
-  static const double tabLabel = 11.0;
+  static const double tabLabel = 12.0;
 
   // Premium hierarchy: card title > clinical result/input > body/options >
   // field label > PEWS subgroup > source/micro.
@@ -5830,67 +5818,95 @@ class _PediatTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface =
-        dark ? const Color(0xFF2D3340) : const Color(0xFFFFFFFF);
-    final divider =
-        dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
+    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
     final activeColor =
-        dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
+        dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
     final inactiveColor =
-        dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
+        dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeBackground = dark
+        ? const Color(0xFF0D6B57).withValues(alpha: 0.10)
+        : const Color(0xFF0D6B57).withValues(alpha: 0.06);
 
     return Container(
-      height: 44,
-      color: surface,
+      height: 40,
+      decoration: BoxDecoration(
+        color: surface,
+        border: Border(
+          bottom: BorderSide(color: divider, width: 0.7),
+        ),
+      ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.zero,
         child: Row(
-          children: List.generate(sections.length, (i) {
-            final active = activeIndex == i;
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => onSelect(i),
-              child: Container(
-                height: 44,
-                constraints: const BoxConstraints(minWidth: 112),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border(
-                    right: i < sections.length - 1
-                        ? BorderSide(
-                            color: divider,
-                            width: 0.7,
-                          )
-                        : BorderSide.none,
-                    bottom: BorderSide(
-                      color: active ? const Color(0xFF10B981) : divider,
-                      width: active ? 2 : 0.7,
-                    ),
+          children: [
+            for (var i = 0; i < sections.length; i++) ...[
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => onSelect(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  height: 40,
+                  constraints: const BoxConstraints(minWidth: 112),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: activeIndex == i
+                        ? activeBackground
+                        : Colors.transparent,
                   ),
-                ),
-                child: Text(
-                  sections[i],
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: _PediatricsVisualScaleR3.tabLabel,
-                    height: 1,
-                    fontWeight:
-                        active ? FontWeight.w800 : FontWeight.w600,
-                    color: active ? activeColor : inactiveColor,
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Text(
+                          sections[i],
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: _PediatricsVisualScaleR3.tabLabel,
+                            height: 1,
+                            fontWeight: FontWeight.w700,
+                            color:
+                                activeIndex == i ? activeColor : inactiveColor,
+                            letterSpacing: 0.05,
+                          ),
+                        ),
+                      ),
+                      if (activeIndex == i)
+                        Positioned(
+                          left: 12,
+                          right: 12,
+                          bottom: 9,
+                          child: Container(
+                            height: 2,
+                            color: const Color(0xFF0D6B57),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
-            );
-          }),
+              if (i < sections.length - 1)
+                SizedBox(
+                  width: 0.7,
+                  height: 40,
+                  child: Center(
+                    child: Container(
+                      width: 0.7,
+                      height: 20,
+                      color: divider,
+                    ),
+                  ),
+                ),
+            ],
+          ],
         ),
       ),
     );
   }
 }
-
 
 // ══════════════════════════════════════════════════════════════════
 //  TAB 8 — PEDIATRIA
@@ -6117,7 +6133,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
         child: Column(
           children: [
             const SizedBox(height: 0),
-          _PediatTabRow(
+            _PediatTabRow(
               dark: p.darkMode,
               sections: sections,
               activeIndex: _section,
@@ -6131,7 +6147,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(19.2, 0.1, 19.2, 100),
+                padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100),
                 child: _buildSection(isEs, c),
               ),
             ),
@@ -7933,10 +7949,9 @@ class _PedCompactInput extends StatelessWidget {
           height: 40,
           child: TextField(
             controller: ctrl,
-            keyboardType:
-                const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             onChanged: onChanged,
-            cursorColor: const Color(0xFF10B981),
+            cursorColor: const Color(0xFF0D6B57),
             style: TextStyle(
               fontSize: _PediatricsVisualScaleR3.inputText,
               height: 1.05,
@@ -7963,7 +7978,7 @@ class _PedCompactInput extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide:
-                    const BorderSide(color: Color(0xFF10B981), width: 1.1),
+                    const BorderSide(color: Color(0xFF0D6B57), width: 1.1),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -7977,12 +7992,11 @@ class _PedCompactInput extends StatelessWidget {
   }
 }
 
-
 class _PedSectionGap extends StatelessWidget {
   const _PedSectionGap();
 
   @override
-  Widget build(BuildContext context) => const SizedBox(height: 1);
+  Widget build(BuildContext context) => const SizedBox(height: 3);
 }
 
 class _PedFlatSection extends StatelessWidget {
@@ -8003,13 +8017,9 @@ class _PedFlatSection extends StatelessWidget {
     final c = AppColors.of(context);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(13, 10, 13, 10),
+      padding: const EdgeInsets.fromLTRB(17, 10, 17, 10),
       decoration: BoxDecoration(
         color: c.dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF),
-        border: Border.all(
-          color: c.dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7),
-          width: 0.7,
-        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -8020,7 +8030,7 @@ class _PedFlatSection extends StatelessWidget {
               Icon(
                 icon,
                 size: quietHeader ? 14 : 15,
-                color: const Color(0xFF10B981),
+                color: const Color(0xFF0D6B57),
               ),
               const SizedBox(width: 5),
               Expanded(
@@ -8028,8 +8038,7 @@ class _PedFlatSection extends StatelessWidget {
                   quietHeader ? title : title.toUpperCase(),
                   style: TextStyle(
                     fontSize: _PediatricsVisualScaleR3.sectionTitle,
-                    fontWeight:
-                        quietHeader ? FontWeight.w700 : FontWeight.w900,
+                    fontWeight: quietHeader ? FontWeight.w700 : FontWeight.w900,
                     letterSpacing: quietHeader ? 0.0 : 0.4,
                     color: c.textPrimary,
                   ),
@@ -8091,8 +8100,7 @@ class _PedMetricRow extends StatelessWidget {
               style: TextStyle(
                 fontSize: valueSmall ? 13.5 : _PediatricsVisualScaleR3.result,
                 height: valueSmall ? 1.3 : 1.1,
-                fontWeight:
-                    valueSmall ? FontWeight.w600 : FontWeight.w700,
+                fontWeight: valueSmall ? FontWeight.w600 : FontWeight.w700,
                 color: value == '—' ? c.textHint : accent,
               ),
             ),
@@ -8257,7 +8265,7 @@ class _PedSexSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final border = dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
-    const active = Color(0xFF10B981);
+    const active = Color(0xFF0D6B57);
 
     Widget option(
       String label,
@@ -8279,8 +8287,7 @@ class _PedSexSelector extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: _PediatricsVisualScaleR3.option,
-                fontWeight:
-                    selected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: selected ? active : c.textSecondary,
               ),
             ),
@@ -8343,7 +8350,7 @@ class _PedGrowthIndicatorToggle extends StatelessWidget {
       ),
     ];
 
-    const activeColor = Color(0xFF10B981);
+    const activeColor = Color(0xFF0D6B57);
 
     return Container(
       height: 38,
@@ -8386,10 +8393,8 @@ class _PedGrowthIndicatorToggle extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: _PediatricsVisualScaleR3.option,
-                      fontWeight:
-                          selected ? FontWeight.w700 : FontWeight.w500,
-                      color:
-                          selected ? activeColor : c.textSecondary,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                      color: selected ? activeColor : c.textSecondary,
                     ),
                   ),
                 ),
@@ -8427,7 +8432,7 @@ class _PedPewsSelectorFlat extends StatelessWidget {
               width: 3,
               height: 14,
               decoration: BoxDecoration(
-                color: const Color(0xFF10B981),
+                color: const Color(0xFF0D6B57),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -8457,7 +8462,7 @@ class _PedPewsSelectorFlat extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: BoxDecoration(
                 color: active
-                    ? const Color(0xFF10B981).withValues(alpha: 0.055)
+                    ? const Color(0xFF0D6B57).withValues(alpha: 0.055)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -8477,12 +8482,11 @@ class _PedPewsSelectorFlat extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: active
-                                ? const Color(0xFF10B981)
+                                ? const Color(0xFF0D6B57)
                                 : Colors.transparent,
                             border: Border.all(
-                              color: active
-                                  ? const Color(0xFF10B981)
-                                  : c.border,
+                              color:
+                                  active ? const Color(0xFF0D6B57) : c.border,
                               width: 1,
                             ),
                           ),
@@ -8492,8 +8496,7 @@ class _PedPewsSelectorFlat extends StatelessWidget {
                               fontSize: 13,
                               height: 1,
                               fontWeight: FontWeight.w800,
-                              color:
-                                  active ? Colors.white : c.textSecondary,
+                              color: active ? Colors.white : c.textSecondary,
                             ),
                           ),
                         ),
@@ -8506,8 +8509,7 @@ class _PedPewsSelectorFlat extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13.5,
                         height: 1.28,
-                        fontWeight:
-                            active ? FontWeight.w700 : FontWeight.w500,
+                        fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                         color: c.textPrimary,
                       ),
                     ),
@@ -8549,7 +8551,7 @@ class _PedCheckRow extends StatelessWidget {
                   ? Icons.check_box_rounded
                   : Icons.check_box_outline_blank_rounded,
               size: 20,
-              color: value ? const Color(0xFF10B981) : c.textHint,
+              color: value ? const Color(0xFF0D6B57) : c.textHint,
             ),
             const SizedBox(width: 9),
             Expanded(
@@ -9175,8 +9177,9 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                                 color: c.textSecondary)),
                         if (widget.maxDose != null) ...[
                           Text('  ·  máx: ${widget.maxDose}',
-                              style:
-                                  TextStyle(fontSize: MedTypography.auxiliarySize, color: c.textHint)),
+                              style: TextStyle(
+                                  fontSize: MedTypography.auxiliarySize,
+                                  color: c.textHint)),
                         ],
                       ]),
                       if (widget.indication != null) ...[
@@ -9209,7 +9212,9 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                     ),
                     const SizedBox(height: 3),
                     Text('dose calc.',
-                        style: TextStyle(fontSize: MedTypography.auxiliarySize, color: c.textHint)),
+                        style: TextStyle(
+                            fontSize: MedTypography.auxiliarySize,
+                            color: c.textHint)),
                   ]),
                 ],
               ]),
@@ -9295,7 +9300,8 @@ class _PedDoseRowState extends State<_PedDoseRow> {
                                       Expanded(
                                           child: Text(ci,
                                               style: const TextStyle(
-                                                  fontSize: MedTypography.microTextSize,
+                                                  fontSize: MedTypography
+                                                      .microTextSize,
                                                   color: Color(0xFFDC2626),
                                                   fontWeight: FontWeight.w500,
                                                   height: 1.4))),
@@ -9423,7 +9429,9 @@ class _PedRefCitation extends StatelessWidget {
           const SizedBox(height: 4),
           Text(ref.detail,
               style: TextStyle(
-                  fontSize: MedTypography.sectionLabelSize, color: c.textSecondary, height: 1.35)),
+                  fontSize: MedTypography.sectionLabelSize,
+                  color: c.textSecondary,
+                  height: 1.35)),
           if (ref.doi != null) ...[
             const SizedBox(height: 3),
             Text('DOI: ${ref.doi}',
@@ -9882,9 +9890,9 @@ class _SourcesButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
         decoration: BoxDecoration(
-          color: const Color(0xFF10B981).withOpacity(0.07),
+          color: const Color(0xFF0D6B57).withOpacity(0.07),
           border: Border.all(
-            color: const Color(0xFF10B981).withOpacity(0.22),
+            color: const Color(0xFF0D6B57).withOpacity(0.22),
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -9898,7 +9906,7 @@ class _SourcesButton extends StatelessWidget {
                 const Icon(
                   Icons.menu_book_rounded,
                   size: 15,
-                  color: Color(0xFF10B981),
+                  color: Color(0xFF0D6B57),
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -9906,7 +9914,7 @@ class _SourcesButton extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF10B981),
+                    color: Color(0xFF0D6B57),
                     letterSpacing: 0.2,
                   ),
                 ),
@@ -9917,7 +9925,7 @@ class _SourcesButton extends StatelessWidget {
               'AHA · ACC · WHO · PubMed · UpToDate · KDIGO',
               style: TextStyle(
                 fontSize: 10,
-                color: const Color(0xFF10B981).withOpacity(0.6),
+                color: const Color(0xFF0D6B57).withOpacity(0.6),
                 letterSpacing: 0.4,
               ),
             ),
@@ -9942,7 +9950,7 @@ class _SourcesButton extends StatelessWidget {
 // Paleta local do dialog
 const _kDlgBg = Color(0xFF1A1D23);
 const _kDlgBorder = Color(0xFF2D3340);
-const _kDlgCyan = Color(0xFF00E5FF);
+const _kDlgCyan = Color(0xFF0D6B57);
 const _kDlgRed = Color(0xFFEF4444);
 const _kDlgSub = Color(0xFF8B9BB4);
 

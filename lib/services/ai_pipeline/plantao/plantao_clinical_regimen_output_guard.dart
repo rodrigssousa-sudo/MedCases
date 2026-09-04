@@ -56,6 +56,17 @@ abstract final class PlantaoClinicalRegimenOutputGuard {
         replacements++;
       }
     }
+    // M77_STEMI_INVASIVE_TIMING_OUTPUT_SAFETY_V1
+    final stemiTimingSafe = _sanitizeExplicitStemiInvasiveTiming(
+      guarded,
+      userInput,
+      languageCode,
+    );
+    if (stemiTimingSafe != guarded) {
+      guarded = stemiTimingSafe;
+      replacements++;
+    }
+
     guarded = _normalizeClopidogrel(
       guarded,
       contract,
@@ -69,6 +80,68 @@ abstract final class PlantaoClinicalRegimenOutputGuard {
       scenario: contract.scenario,
       numericClopidogrelDeferred: contract.deferNumericClopidogrel,
     );
+  }
+
+  // M77_STEMI_INVASIVE_TIMING_OUTPUT_SAFETY_V1
+  static String _sanitizeExplicitStemiInvasiveTiming(
+    String text,
+    String userInput,
+    String languageCode,
+  ) {
+    final q = _fold(userInput);
+    final explicitStemi = const <String>[
+      'iamcest',
+      'iamcsst',
+      'stemi',
+      'iam com supra',
+      'iam con supra',
+      'elevacao do st',
+      'elevacion del st',
+      'supradesnivel',
+      'st elevation',
+    ].any(q.contains);
+    final explicitNste = const <String>[
+      'nstemi',
+      'scassst',
+      'scasest',
+      'iam sem supra',
+      'iam sin supra',
+      'sem elevacao do st',
+      'sin elevacion del st',
+      'without st elevation',
+      'non st elevation',
+    ].any(q.contains);
+
+    if (!explicitStemi || explicitNste) return text;
+
+    final isEs = languageCode == 'es';
+    final canonical = isEs
+        ? '• IAMCEST confirmado: activar hemodinamia y estrategia de reperfusión urgente según disponibilidad y tiempos de reperfusión; no diferir el manejo como SCASEST.'
+        : '• IAMCEST confirmado: ativar hemodinâmica e estratégia de reperfusão urgente conforme disponibilidade e tempos de reperfusão; não diferir o manejo como SCA sem supra.';
+    final timing24 = RegExp(r'\b24\s*(?:h|hora|horas)\b');
+    final lines = text.replaceAll('\r\n', '\n').replaceAll('\r', '\n').split('\n');
+    var changed = false;
+    final out = <String>[];
+
+    for (final line in lines) {
+      final folded = _fold(line);
+      final invasiveContext = const <String>[
+        'cateter',
+        'cath',
+        'coronariograf',
+        'angiograf',
+        'estrategia invas',
+        'invasive strateg',
+      ].any(folded.contains);
+      if (timing24.hasMatch(folded) && invasiveContext) {
+        if (line.trim() != canonical.trim()) changed = true;
+        out.add(canonical);
+        continue;
+      }
+      out.add(line);
+    }
+
+    return changed ? out.join('\n') : text;
   }
 
   static String _materializeGenericSection(

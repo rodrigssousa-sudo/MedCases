@@ -360,6 +360,197 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     CalculadoraScreen._webViewCacheClearedGeneration = generation;
   }
 
+  // MEDCASES_FARMACOS_WEBVIEW_CACHE_FIRST_SINGLE_NAV_IOS_READ_ACCESS_V1_B_R0
+  //
+  // One tap = one navigation:
+  //   cache ready -> local immediately
+  //   cache absent -> online immediately
+  //
+  // iOS WKWebView must load the local file with an explicit read-access
+  // directory so sibling css/js/data files can be read by the page.
+  Future<void> _loadCalculatorTarget(
+    String targetUrl, {
+    required String reason,
+  }) async {
+    final targetUri = Uri.tryParse(targetUrl);
+
+    if (!kIsWeb &&
+        _detectIOS() &&
+        targetUri != null &&
+        targetUri.scheme == 'file') {
+      final platform = _controller.platform;
+
+      if (platform is WebKitWebViewController) {
+        final fileOnlyUri = targetUri.replace(
+          query: null,
+          fragment: null,
+        );
+        final localPath = fileOnlyUri.toFilePath();
+        final slash = localPath.lastIndexOf('/');
+        final readAccessPath =
+            slash > 0 ? localPath.substring(0, slash) : localPath;
+
+        debugPrint(
+          '[CalculadoraWebView][CACHE_FIRST] '
+          'source=local platform=ios reason=$reason '
+          'readAccessPath=$readAccessPath '
+          'absoluteFilePath=$localPath '
+          'routeQuery=${targetUri.query}',
+        );
+
+        await platform.loadFileWithParams(
+          WebKitLoadFileParams(
+            absoluteFilePath: localPath,
+            readAccessPath: readAccessPath,
+          ),
+        );
+        return;
+      }
+    }
+
+    debugPrint(
+      '[CalculadoraWebView][CACHE_FIRST] '
+      'source=${targetUri?.scheme == "file" ? "local" : "online"} '
+      'platform=${_detectIOS() ? "ios" : "android"} '
+      'reason=$reason url=$targetUrl',
+    );
+
+    await _controller.loadRequest(Uri.parse(targetUrl));
+  }
+
+  // MEDCASES_FARMACOS_WEBVIEW_CACHE_FIRST_SINGLE_NAV_IOS_READ_ACCESS_V1_B_R1
+  Future<void> _restoreLocalRouteFromWebUrl() async {
+    if (kIsWeb || !_detectIOS()) return;
+
+    final currentUrl = await _controller.currentUrl();
+    final currentUri = Uri.tryParse(currentUrl ?? '');
+    if (currentUri == null || currentUri.scheme != 'file') return;
+
+    final sourceUri = Uri.tryParse(_webUrl);
+    if (sourceUri == null || sourceUri.queryParameters.isEmpty) return;
+
+    final params = sourceUri.queryParameters;
+    final routePayload = <String, String>{
+      if ((params['lang'] ?? '').isNotEmpty) 'lang': params['lang']!,
+      if ((params['tab'] ?? '').isNotEmpty) 'tab': params['tab']!,
+      if ((params['q'] ?? '').isNotEmpty) 'q': params['q']!,
+      if ((params['drug1'] ?? '').isNotEmpty) 'drug1': params['drug1']!,
+      if ((params['drug2'] ?? '').isNotEmpty) 'drug2': params['drug2']!,
+      if ((params['modulo'] ?? '').isNotEmpty) 'modulo': params['modulo']!,
+    };
+
+    final routeJson = jsonEncode(routePayload);
+    final queryJson = jsonEncode(sourceUri.query);
+
+    debugPrint(
+      '[CalculadoraWebView][CACHE_FIRST] '
+      'restoreLocalRoute=true query=${sourceUri.query}',
+    );
+
+    try {
+      await _controller.runJavaScript(
+        r"""
+(function(payload, queryString) {
+  try {
+    if (queryString) {
+      var nextUrl =
+        window.location.pathname +
+        '?' +
+        queryString +
+        (window.location.hash || '');
+
+      if (window.location.search !== '?' + queryString) {
+        history.replaceState(null, '', nextUrl);
+      }
+    }
+
+    var attempts = 0;
+
+    function applyRoute() {
+      var routed = false;
+
+      if (payload.lang &&
+          window.MedCasesRouter &&
+          typeof window.MedCasesRouter.setLang === 'function') {
+        window.MedCasesRouter.setLang(payload.lang);
+      }
+
+      if (payload.tab &&
+          window.MedCasesRouter &&
+          typeof window.MedCasesRouter.go === 'function') {
+        window.MedCasesRouter.go(payload.tab, {
+          lang: payload.lang || '',
+          q: payload.q || '',
+          drug1: payload.drug1 || '',
+          drug2: payload.drug2 || ''
+        });
+        routed = true;
+      }
+
+      if (payload.modulo &&
+          window.ClinicalSupportRouter &&
+          typeof window.ClinicalSupportRouter.open === 'function') {
+        window.ClinicalSupportRouter.open(payload.modulo);
+        routed = true;
+      }
+
+      if (routed || attempts >= 30) return;
+      attempts += 1;
+      setTimeout(applyRoute, 50);
+    }
+
+    applyRoute();
+  } catch (e) {
+    console.warn('[FlutterCacheFirstRoute] restore failed', e);
+  }
+})(ROUTE_PAYLOAD_JSON, ROUTE_QUERY_JSON);
+"""
+            .replaceFirst('ROUTE_PAYLOAD_JSON', routeJson)
+            .replaceFirst('ROUTE_QUERY_JSON', queryJson),
+      );
+    } catch (e) {
+      debugPrint(
+        '[CalculadoraWebView][CACHE_FIRST] '
+        'restoreLocalRouteError=$e',
+      );
+    }
+  }
+
+  Future<void> _loadPreferredCalculatorSource({
+    required String reason,
+  }) async {
+    if (!mounted) return;
+
+    try {
+      final localUrl =
+          await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
+
+      if (!mounted) return;
+
+      final targetUrl = localUrl ?? _webUrl;
+      _webviewReady = false;
+
+      await _loadCalculatorTarget(
+        targetUrl,
+        reason: reason,
+      );
+    } catch (e) {
+      debugPrint(
+        '[CalculadoraWebView][CACHE_FIRST] '
+        'resolveFailed=true reason=$reason error=$e fallback=$_webUrl',
+      );
+
+      if (!mounted) return;
+
+      _webviewReady = false;
+
+      await _loadCalculatorTarget(
+        _webUrl,
+        reason: '$reason-online-fallback',
+      );
+    }
+  }
+
   void _onCalculatorCacheRefreshRequested() {
     if (!mounted) return;
     unawaited(_reloadAfterExternalCacheRefresh());
@@ -384,12 +575,19 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           _withCacheRefreshToken(localUrl ?? _webUrl, generation);
       if (!mounted) return;
       _webviewReady = false;
-      await _controller.loadRequest(Uri.parse(targetUrl));
+      await _loadCalculatorTarget(
+        targetUrl,
+        reason: 'cache-refresh',
+      );
     } catch (e) {
       debugPrint('[CalculadoraScreen][cache-refresh] reload error: $e');
       if (!mounted) return;
       final fallback = _withCacheRefreshToken(_webUrl, generation);
-      await _controller.loadRequest(Uri.parse(fallback));
+      _webviewReady = false;
+      await _loadCalculatorTarget(
+        fallback,
+        reason: 'cache-refresh-online-fallback',
+      );
     }
   }
 
@@ -453,10 +651,16 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           },
           onPageFinished: (_) async {
             await _controller.runJavaScript(_kInjectJs);
-            // Fix#6: injeta tema assim que a página termina de carregar
             _webviewReady = true;
+
+            // Local iOS: replay route intent without a second native page load.
+            await _restoreLocalRouteFromWebUrl();
+
+            // Fix#6: injeta tema assim que a página termina de carregar
             await _injectTheme();
             await _injectPatientContext();
+            await _applyInitialDeepLinkBridge();
+            await _installFarmacosLandingVisibilityGuard();
           },
           onWebResourceError: (WebResourceError error) {
             // BUILD 283: loga erros de WebView no Logcat com código e URL exatos.
@@ -478,10 +682,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               _controller.loadRequest(Uri.parse(_webUrl));
             }
           },
-        ))
-        // BUILD 240: carrega online primeiro; addPostFrameCallback resolve cache local
-        // e redireciona se disponível (evita async em initState).
-        ..loadRequest(Uri.parse(_webUrl));
+        ));
 
       // BUILD 283: allowFileAccess — Android WebView bloqueia file:// por padrão
       // em API ≥ 30 (Android 11+). A API correta é AndroidWebViewController.setAllowFileAccess()
@@ -502,26 +703,14 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         }
       }
 
-      // BUILD 240: resolve URL do cache local de forma assíncrona.
-      // Roda no primeiro frame após o widget ser montado para evitar setState
-      // em initState(). Se cache válido existir, recarrega com file://.
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // CACHE-FIRST: no online-first and no online->local reload.
+      // The WebView mounts immediately, then a single source is selected:
+      // valid local cache first; online only when no usable cache exists.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        try {
-          await _clearNativeWebViewCacheIfNeeded(
-            CalculadoraScreen.cacheRefreshGeneration.value,
-          );
-          final localUrl = await OfflineCalculatorCacheService.instance
-              .buildLocalUrl(_webUrl);
-          if (localUrl != null && mounted) {
-            debugPrint('[OFFLINE_CACHE] openSource=local url=$localUrl');
-            _controller.loadRequest(Uri.parse(localUrl));
-          } else {
-            debugPrint('[OFFLINE_CACHE] openSource=online url=$_webUrl');
-          }
-        } catch (e) {
-          debugPrint('[OFFLINE_CACHE] fallbackOnline=true error=$e');
-        }
+        unawaited(
+          _loadPreferredCalculatorSource(reason: 'initial-open'),
+        );
       });
     }
   }
@@ -536,9 +725,161 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     if (!kIsWeb && _webviewReady) _injectTheme();
   }
 
+  // MEDCASES_FARMACOS_LANDING_VISIBLE_SHELL_GUARD_V1_B_R0
+  // Visual-only recovery for Fármacos landing; detail modal remains untouched.
+  Future<void> _installFarmacosLandingVisibilityGuard() async {
+    if (kIsWeb || !_webviewReady) return;
+
+    final parsed = Uri.tryParse(_webUrl);
+    if (parsed == null) return;
+
+    final tab = (parsed.queryParameters['tab'] ?? '').trim().toLowerCase();
+
+    if (tab != 'farmacos') {
+      try {
+        await _controller.runJavaScript(
+          "document.body && document.body.removeAttribute('data-mc-flutter-farmacos-landing');",
+        );
+      } catch (_) {}
+      return;
+    }
+
+    try {
+      await _controller.runJavaScript(
+        r"""
+(function() {
+  try {
+    var body = document.body;
+    if (!body) return;
+
+    body.setAttribute('data-mc-flutter-farmacos-landing', 'true');
+
+    var styleId = 'mc-flutter-farmacos-landing-visible-shell-guard-v1-b-r0';
+    var style = document.getElementById(styleId);
+
+    if (!style) {
+      style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmacos-v2-shell {
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  height:auto!important;
+  min-height:120px!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmacos-v2-shell .farmacos-v2-tabs,
+body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmacos-v2-shell [data-farmacos-v2-search-wrapper],
+body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmacos-v2-shell .hm-search-wrap {
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmacos-v2-shell [data-farmacos-panel].is-active {
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmacos-v2-shell :is(
+  [data-mc-farm-canonical-drug],
+  .mc-fnav-drug-row,
+  #hm-drug-list .hm-drug-item,
+  .farmacos-v2-context-row,
+  .farmacos-v2-group-row
+) {
+  visibility:visible!important;
+  opacity:1!important;
+}
+body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmacos-v2-shell :is(
+  .hm-drug-name,
+  .mc-fnav-drug-name,
+  .farmacos-v2-row-title,
+  .mc-farm-render-only-title
+) {
+  visibility:visible!important;
+  opacity:1!important;
+  color:var(--farm-v2-text,#F8FAFC)!important;
+  -webkit-text-fill-color:var(--farm-v2-text,#F8FAFC)!important;
+}
+`;
+      document.head.appendChild(style);
+    }
+
+    var shell = document.getElementById('farmacos-v2-shell');
+    var rows = shell ? shell.querySelectorAll('[data-mc-farm-canonical-drug],.mc-fnav-drug-row,#hm-drug-list .hm-drug-item,.farmacos-v2-context-row,.farmacos-v2-group-row').length : 0;
+
+    console.log('[FlutterFarmacosLandingGuard] installed=true shell=' + !!shell + ' rows=' + rows + ' detailOpen=' + !!document.querySelector('#fd-modal.open'));
+  } catch (e) {
+    console.warn('[FlutterFarmacosLandingGuard] install failed', e);
+  }
+})();
+""",
+      );
+
+      debugPrint(
+        '[CalculadoraWebView][FARMACOS_LANDING] visibilityGuardInstalled=true tab=farmacos',
+      );
+    } catch (e) {
+      debugPrint(
+        '[CalculadoraWebView][FARMACOS_LANDING] visibilityGuardError=$e',
+      );
+    }
+  }
+
   // MEDCASES_CALCULATOR_THEME_BRIDGE_V1_B_R0
   // Receiver produtivo da calculadora: window.MedCasesBridge.setTheme('dark'|'light').
   // Mantém fallback para updateMedCasesTheme durante compatibilidade retroativa.
+  // PHYSICAL_DEEPLINK_BRIDGE_V1
+  Future<void> _applyInitialDeepLinkBridge() async {
+    if (kIsWeb || !_webviewReady) return;
+
+    final parsed = Uri.tryParse(_webUrl);
+    if (parsed == null) return;
+
+    final params = parsed.queryParameters;
+    final tab = (params['tab'] ?? '').trim();
+    if (tab.isEmpty) return;
+
+    final options = <String, String>{};
+    for (final key in const <String>['lang', 'q', 'drug1', 'drug2']) {
+      final value = (params[key] ?? '').trim();
+      if (value.isNotEmpty) options[key] = value;
+    }
+
+    final tabJson = jsonEncode(tab);
+    final optionsJson = jsonEncode(options);
+
+    try {
+      await _controller.runJavaScript(
+        """
+(function(tab, opts) {
+  var attempts = 0;
+  function route() {
+    if (window.MedCasesRouter &&
+        typeof window.MedCasesRouter.go === 'function') {
+      window.MedCasesRouter.go(tab, opts || {});
+      return;
+    }
+    attempts += 1;
+    if (attempts <= 24) setTimeout(route, 100);
+  }
+  route();
+})($tabJson, $optionsJson);
+""",
+      );
+      debugPrint('[CALCULATOR_DEEPLINK_BRIDGE] applied=true tab=$tab');
+    } catch (e) {
+      debugPrint('[CALCULATOR_DEEPLINK_BRIDGE] error=$e');
+    }
+  }
+
   Future<void> _injectTheme() async {
     if (kIsWeb) return;
     final theme = _dark ? 'dark' : 'light';

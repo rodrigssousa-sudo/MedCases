@@ -132,8 +132,8 @@ class MobileAiActionBar extends StatelessWidget {
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.2,
                           color: dark
-                              ? const Color(0xFF00C781)
-                              : const Color(0xFF059669),
+                              ? const Color(0xFF009C3B)
+                              : const Color(0xFF009C3B),
                         ),
                       ),
                     ],

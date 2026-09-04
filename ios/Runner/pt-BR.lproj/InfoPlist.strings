@@ -9,10 +9,10 @@
 "NSCameraUsageDescription" = "O MedCases Pro usa a câmera exclusivamente para que profissionais de saúde possam fotografar laudos laboratoriais e resultados de exames clínicos para extração automática de dados com auxílio de IA. As imagens são processadas apenas dentro do app e nunca são armazenadas ou compartilhadas com terceiros.";
 
 /* ── Microfone ─────────────────────────────────────────────────────────── */
-"NSMicrophoneUsageDescription" = "O MedCases Pro usa o microfone exclusivamente para permitir que profissionais de saúde ditem evoluções clínicas e anotações de prontuário por voz. O áudio é processado apenas localmente pelo sistema de reconhecimento de voz do iOS e nunca é armazenado, transmitido ou compartilhado com servidores externos.";
+"NSMicrophoneUsageDescription" = "O MedCases Pro usa o microfone para ditado clínico e recursos de gravação de áudio. O ditado pode utilizar o reconhecimento de voz do iOS. A transcrição remota opcional exige consentimento explícito separado e permanece desativada até que os controles exigidos de privacidade e retenção sejam atendidos.";
 
 /* ── Reconhecimento de Voz ─────────────────────────────────────────────── */
-"NSSpeechRecognitionUsageDescription" = "O MedCases Pro utiliza o reconhecimento de voz do iOS para transcrever ditados clínicos de profissionais de saúde — como evoluções de pacientes e anotações de plantão — convertendo a fala em texto dentro do prontuário. Nenhum áudio é enviado a servidores externos nem armazenado após a transcrição. O recurso é ativado apenas quando o profissional aciona manualmente o ditafone.";
+"NSSpeechRecognitionUsageDescription" = "O MedCases Pro utiliza o reconhecimento de voz do iOS para converter ditado clínico em texto quando o profissional ativa manualmente o ditado. A transcrição remota opcional de áudio longo é um recurso separado e exige consentimento explícito específico antes de qualquer processamento remoto.";
 
 /* ── Biblioteca de Fotos (leitura) ────────────────────────────────────── */
 "NSPhotoLibraryUsageDescription" = "O MedCases Pro solicita acesso à sua biblioteca de fotos para que o profissional de saúde possa anexar imagens clínicas — como fotografias de lesões, resultados de exames ou documentos médicos — diretamente às anotações e fichas de pacientes. As imagens são usadas exclusivamente dentro do app e não são compartilhadas com terceiros.";

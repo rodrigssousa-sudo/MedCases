@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // file_picker e firebase_storage usados via StorageService — sem import direto aqui
 import '../models/user_model.dart';
 import '../models/guide_model.dart';
+import 'admin_clinical_guide_editor_screen.dart';
 import '../models/influencer_model.dart';
 import '../services/auth_service.dart';
 import '../services/firestore_service.dart';
@@ -30,21 +31,22 @@ class AdminScreen extends StatefulWidget {
   State<AdminScreen> createState() => _AdminScreenState();
 }
 
-class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStateMixin {
+class _AdminScreenState extends State<AdminScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabs;
   String _search = '';
 
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
   bool get _isMaster => widget.currentAdmin.isMaster;
 
   // ── Stream único compartilhado — evita N polls paralelos por tab ──────────
   StreamSubscription<List<UserModel>>? _usersSub;
-  List<UserModel> _allUsers  = [];
-  bool            _usersLoading = true;
+  List<UserModel> _allUsers = [];
+  bool _usersLoading = true;
 
   // ── Estado do tab Sistema ────────────────────────────────────────────────
   bool _maintEnabled = false;
@@ -84,8 +86,11 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       await FirebaseFirestore.instance
           .collection('admin_notifications')
           .doc(notifId)
-          .update({'readBy': FieldValue.arrayUnion([adminUid])});
-      debugPrint('[ADMIN_NOTIF] marcado lido: notifId=$notifId adminUid=$adminUid');
+          .update({
+        'readBy': FieldValue.arrayUnion([adminUid])
+      });
+      debugPrint(
+          '[ADMIN_NOTIF] marcado lido: notifId=$notifId adminUid=$adminUid');
     } catch (e) {
       debugPrint('[ADMIN_NOTIF] erro mark-read: $e');
     }
@@ -109,7 +114,11 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   void _subscribeUsers() {
     _usersSub = AuthService.allUsersStream().listen(
       (users) {
-        if (mounted) setState(() { _allUsers = users; _usersLoading = false; });
+        if (mounted)
+          setState(() {
+            _allUsers = users;
+            _usersLoading = false;
+          });
       },
       onError: (_) {
         if (mounted) setState(() => _usersLoading = false);
@@ -131,15 +140,42 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     return Scaffold(
       backgroundColor: AppColors.of(context).surface,
       appBar: AppBar(
-        backgroundColor: kDark,
-        foregroundColor: Colors.white,
-        elevation: 0,
+        // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R5
+        surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+            ? null
+            : Colors.transparent,
+        shadowColor: Theme.of(context).brightness == Brightness.dark
+            ? null
+            : Colors.transparent,
+        scrolledUnderElevation:
+            Theme.of(context).brightness == Brightness.dark ? null : 0,
+        iconTheme: Theme.of(context).brightness == Brightness.dark
+            ? null
+            : const IconThemeData(color: Color(0xFF05070A)),
+        actionsIconTheme: Theme.of(context).brightness == Brightness.dark
+            ? null
+            : const IconThemeData(color: Color(0xFF05070A)),
+        titleTextStyle: Theme.of(context).brightness == Brightness.dark
+            ? null
+            : Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: const Color(0xFF05070A), fontWeight: FontWeight.w700),
+        centerTitle:
+            Theme.of(context).brightness == Brightness.dark ? null : true,
+
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? (kDark)
+            : const Color(0xFFECF1F3),
+        foregroundColor: Theme.of(context).brightness == Brightness.dark
+            ? (Colors.white)
+            : const Color(0xFF05070A),
+        elevation: Theme.of(context).brightness == Brightness.dark ? (0) : 0,
         title: Row(children: [
           Icon(Icons.admin_panel_settings_rounded, color: kGoldL, size: 20),
           const SizedBox(width: 8),
           Text(
             _isMaster ? _masterPanelLabel : _adminPanelLabel,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
           ),
           if (_isMaster) ...[
             const SizedBox(width: 8),
@@ -150,14 +186,22 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                 color: Colors.amber.withOpacity(0.2),
                 border: Border.all(color: Colors.amber.withOpacity(0.5)),
               ),
-              child: const Text('MASTER', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Colors.amber)),
+              child: const Text('MASTER',
+                  style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.amber)),
             ),
           ],
         ]),
         actions: [
           IconButton(
             icon: _usersLoading
-                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                        color: Colors.white, strokeWidth: 2))
                 : const Icon(Icons.refresh_rounded, color: Colors.white),
             tooltip: 'Atualizar lista',
             onPressed: _usersLoading ? null : _refreshUsers,
@@ -168,19 +212,37 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           indicatorColor: kGoldL,
           labelColor: kGoldL,
           unselectedLabelColor: Colors.white,
-          labelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
+          labelStyle:
+              const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
           tabs: [
-            Tab(icon: const Icon(Icons.pending_actions_rounded, size: 16), text: _pendingLabel),
-            Tab(icon: const Icon(Icons.people_rounded, size: 16), text: _approvedLabel),
-            Tab(icon: const Icon(Icons.block_rounded, size: 16), text: _blockedLabel),
-            Tab(icon: const Icon(Icons.settings_rounded, size: 16), text: _systemLabel),
-            const Tab(icon: Icon(Icons.auto_awesome_rounded, size: 16), text: 'Novidades'),
-            const Tab(icon: Icon(Icons.bar_chart_rounded, size: 16), text: 'Stats'),
-            const Tab(icon: Icon(Icons.mark_email_unread_rounded, size: 16), text: 'E-mail'),
-            const Tab(icon: Icon(Icons.menu_book_rounded, size: 16), text: 'Biblioteca'),
-            const Tab(icon: Icon(Icons.people_alt_rounded, size: 16), text: 'Indicações'),
+            Tab(
+                icon: const Icon(Icons.pending_actions_rounded, size: 16),
+                text: _pendingLabel),
+            Tab(
+                icon: const Icon(Icons.people_rounded, size: 16),
+                text: _approvedLabel),
+            Tab(
+                icon: const Icon(Icons.block_rounded, size: 16),
+                text: _blockedLabel),
+            Tab(
+                icon: const Icon(Icons.settings_rounded, size: 16),
+                text: _systemLabel),
+            const Tab(
+                icon: Icon(Icons.auto_awesome_rounded, size: 16),
+                text: 'Novidades'),
+            const Tab(
+                icon: Icon(Icons.bar_chart_rounded, size: 16), text: 'Stats'),
+            const Tab(
+                icon: Icon(Icons.mark_email_unread_rounded, size: 16),
+                text: 'E-mail'),
+            const Tab(
+                icon: Icon(Icons.menu_book_rounded, size: 16),
+                text: 'Biblioteca'),
+            const Tab(
+                icon: Icon(Icons.people_alt_rounded, size: 16),
+                text: 'Indicações'),
             // PARTE 4 BUILD 238 — Tab Notificações com badge de não-lidos
             Tab(
               icon: Stack(
@@ -189,17 +251,22 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                   const Icon(Icons.notifications_rounded, size: 16),
                   if (_unreadNotifCount > 0)
                     Positioned(
-                      right: -6, top: -4,
+                      right: -6,
+                      top: -4,
                       child: Container(
                         padding: const EdgeInsets.all(2),
                         decoration: const BoxDecoration(
                           color: Colors.redAccent,
                           shape: BoxShape.circle,
                         ),
-                        constraints: const BoxConstraints(minWidth: 14, minHeight: 14),
+                        constraints:
+                            const BoxConstraints(minWidth: 14, minHeight: 14),
                         child: Text(
                           '$_unreadNotifCount',
-                          style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w900),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                              fontWeight: FontWeight.w900),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -209,7 +276,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
               text: 'Notificações',
             ),
             // ── Tab 10: Push Global (BUILD 311b) ─────────────────────────
-            const Tab(icon: Icon(Icons.campaign_rounded, size: 16), text: 'Push'),
+            const Tab(
+                icon: Icon(Icons.campaign_rounded, size: 16), text: 'Push'),
           ],
         ),
       ),
@@ -228,23 +296,30 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                   child: TextField(
                     onChanged: (v) => setState(() => _search = v.toLowerCase()),
-                    spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
+                    spellCheckConfiguration:
+                        const SpellCheckConfiguration.disabled(),
                     autocorrect: false,
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                     decoration: InputDecoration(
                       hintText: _searchHint,
-                      hintStyle: const TextStyle(color: Colors.white54, fontSize: 13),
-                      prefixIcon: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
+                      hintStyle:
+                          const TextStyle(color: Colors.white54, fontSize: 13),
+                      prefixIcon: const Icon(Icons.search_rounded,
+                          color: Colors.white38, size: 18),
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.08),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
                     ),
                   ),
                 ),
               // Indicador de carregamento inicial (só na primeira carga)
               if (_usersLoading && _allUsers.isEmpty && !isSystemTab)
-                const LinearProgressIndicator(color: kGreen, backgroundColor: Colors.transparent),
+                const LinearProgressIndicator(
+                    color: kGreen, backgroundColor: Colors.transparent),
               // Conteúdo das tabs
               Expanded(
                 child: TabBarView(
@@ -271,7 +346,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       isMaster: _isMaster,
                       onBlock: _block,
                       onPromote: _promote,
-                      onPromoteSupervisor: _isMaster ? _promoteSupervisor : null,
+                      onPromoteSupervisor:
+                          _isMaster ? _promoteSupervisor : null,
                       onDemote: _isMaster ? _demote : null,
                       onDelete: _delete,
                       showBlock: true,
@@ -304,7 +380,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                     // ── Tab 5: Stats ──────────────────────────────────────
                     _StatsTab(allUsers: _allUsers, loading: _usersLoading),
                     // ── Tab 6: E-mail ─────────────────────────────────────
-                    _EmailTab(allUsers: _allUsers, currentAdmin: widget.currentAdmin),
+                    _EmailTab(
+                        allUsers: _allUsers, currentAdmin: widget.currentAdmin),
                     // ── Tab 7: Biblioteca ─────────────────────────────────
                     _BibliotecaAdminTab(currentAdmin: widget.currentAdmin),
                     // ── Tab 8: Indicações ─────────────────────────────────
@@ -316,7 +393,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
                       onMarkRead: _markNotifRead,
                     ),
                     // ── Tab 10: Push Global (BUILD 311b) ─────────────────
-                    _GlobalPushTab(isEs: _isEs, currentAdmin: widget.currentAdmin),
+                    _GlobalPushTab(
+                        isEs: _isEs, currentAdmin: widget.currentAdmin),
                   ],
                 ),
               ),
@@ -331,9 +409,11 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         return FloatingActionButton.extended(
           onPressed: () => _tabs.animateTo(0),
           backgroundColor: Colors.orange,
-          icon: const Icon(Icons.notification_important_rounded, color: Colors.white),
+          icon: const Icon(Icons.notification_important_rounded,
+              color: Colors.white),
           label: Text('$pendingCount ${_pendingCountLabel(pendingCount)}',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w800)),
         );
       }),
     );
@@ -342,7 +422,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
   List<UserModel> _filter(List<UserModel> all, UserStatus status) {
     return all
         .where((u) => u.status == status)
-        .where((u) => _search.isEmpty ||
+        .where((u) =>
+            _search.isEmpty ||
             u.displayName.toLowerCase().contains(_search) ||
             u.email.toLowerCase().contains(_search))
         .toList();
@@ -402,28 +483,42 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: const Color(0xFF0F1A12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           title: Text(
-            _isEs ? 'Nivel de Elite — ${u.displayName}' : 'Nível de Elite — ${u.displayName}',
-            style: const TextStyle(color: Color(0xFFFFE8A6), fontWeight: FontWeight.w900, fontSize: 16),
+            _isEs
+                ? 'Nivel de Elite — ${u.displayName}'
+                : 'Nível de Elite — ${u.displayName}',
+            style: const TextStyle(
+                color: Color(0xFFFFE8A6),
+                fontWeight: FontWeight.w900,
+                fontSize: 16),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                _isEs ? 'Selecciona el tipo de promoción:' : 'Selecione o tipo de promoção:',
+                _isEs
+                    ? 'Selecciona el tipo de promoción:'
+                    : 'Selecione o tipo de promoção:',
                 style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),
               const SizedBox(height: 16),
               // Opção A — Master/Admin
               ListTile(
-                leading: const Icon(Icons.admin_panel_settings_rounded, color: Color(0xFFC5A365)),
+                leading: const Icon(Icons.admin_panel_settings_rounded,
+                    color: Color(0xFFC5A365)),
                 title: Text(
                   _isEs ? 'Promover a Master/Admin' : 'Promover a Master/Admin',
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14),
                 ),
                 subtitle: Text(
-                  _isEs ? 'Acceso completo al panel de administración' : 'Acesso completo ao painel de administração',
+                  _isEs
+                      ? 'Acceso completo al panel de administración'
+                      : 'Acesso completo ao painel de administração',
                   style: const TextStyle(color: Colors.white54, fontSize: 11),
                 ),
                 onTap: () => Navigator.pop(ctx, 1),
@@ -431,13 +526,21 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
               const Divider(color: Color(0xFF2A3A2A)),
               // Opção B — Ambassador/Partner
               ListTile(
-                leading: const Icon(Icons.workspace_premium_rounded, color: Color(0xFFD4AF37)),
+                leading: const Icon(Icons.workspace_premium_rounded,
+                    color: Color(0xFFD4AF37)),
                 title: Text(
-                  _isEs ? 'Activar Embajador/Socio' : 'Ativar Embaixador/Parceiro',
-                  style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.w700, fontSize: 14),
+                  _isEs
+                      ? 'Activar Embajador/Socio'
+                      : 'Ativar Embaixador/Parceiro',
+                  style: const TextStyle(
+                      color: Color(0xFFD4AF37),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14),
                 ),
                 subtitle: Text(
-                  _isEs ? 'Acceso VIP, link exclusivo y rastreo de red' : 'Acesso VIP, link exclusivo e rastreio de rede',
+                  _isEs
+                      ? 'Acceso VIP, link exclusivo y rastreo de red'
+                      : 'Acesso VIP, link exclusivo e rastreio de rede',
                   style: const TextStyle(color: Colors.white54, fontSize: 11),
                 ),
                 onTap: () => Navigator.pop(ctx, 2),
@@ -447,7 +550,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, 0),
-              child: Text(_isEs ? 'Cancelar' : 'Cancelar', style: const TextStyle(color: Colors.white54)),
+              child: Text(_isEs ? 'Cancelar' : 'Cancelar',
+                  style: const TextStyle(color: Colors.white54)),
             ),
           ],
         ),
@@ -458,8 +562,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       if (choice == 1) {
         // Promoção clássica a Admin
         final confirm = await _confirmDialog(
-          _isEs ? '¿Promover a ${u.displayName} a Admin?' : 'Promover ${u.displayName} a Admin?',
-          _isEs ? 'Tendrá acceso al panel de administración.' : 'Ele terá acesso ao painel de administração.',
+          _isEs
+              ? '¿Promover a ${u.displayName} a Admin?'
+              : 'Promover ${u.displayName} a Admin?',
+          _isEs
+              ? 'Tendrá acceso al panel de administración.'
+              : 'Ele terá acesso ao painel de administração.',
         );
         if (!confirm) return;
         try {
@@ -480,18 +588,24 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
 
   // BUILD 310 — Formulário de ativação de Embaixador
   Future<void> _activateAmbassador(UserModel u) async {
-    final titleCtrl = TextEditingController(text: _isEs ? 'Socio Oficial' : 'Parceiro Oficial');
+    final titleCtrl = TextEditingController(
+        text: _isEs ? 'Socio Oficial' : 'Parceiro Oficial');
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF0F1A12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         title: Row(children: [
-          const Icon(Icons.workspace_premium_rounded, color: Color(0xFFD4AF37), size: 22),
+          const Icon(Icons.workspace_premium_rounded,
+              color: Color(0xFFD4AF37), size: 22),
           const SizedBox(width: 8),
-          Expanded(child: Text(
+          Expanded(
+              child: Text(
             _isEs ? 'Activar Embajador' : 'Ativar Embaixador',
-            style: const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.w900, fontSize: 16),
+            style: const TextStyle(
+                color: Color(0xFFD4AF37),
+                fontWeight: FontWeight.w900,
+                fontSize: 16),
           )),
         ]),
         content: Column(
@@ -499,7 +613,9 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _isEs ? 'Título de élite del socio:' : 'Título de elite do parceiro:',
+              _isEs
+                  ? 'Título de élite del socio:'
+                  : 'Título de elite do parceiro:',
               style: const TextStyle(color: Colors.white70, fontSize: 12),
             ),
             const SizedBox(height: 8),
@@ -507,17 +623,20 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
               controller: titleCtrl,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: _isEs ? 'ej: Miembro Fundador' : 'ex: Membro Fundador',
+                hintText:
+                    _isEs ? 'ej: Miembro Fundador' : 'ex: Membro Fundador',
                 hintStyle: const TextStyle(color: Colors.white38),
                 filled: true,
                 fillColor: const Color(0xFF1A2A1A),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 0.8),
+                  borderSide:
+                      const BorderSide(color: Color(0xFFD4AF37), width: 0.8),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 0.8),
+                  borderSide:
+                      const BorderSide(color: Color(0xFFD4AF37), width: 0.8),
                 ),
               ),
             ),
@@ -533,7 +652,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(_isEs ? 'Cancelar' : 'Cancelar', style: const TextStyle(color: Colors.white54)),
+            child: Text(_isEs ? 'Cancelar' : 'Cancelar',
+                style: const TextStyle(color: Colors.white54)),
           ),
           ElevatedButton.icon(
             icon: const Icon(Icons.workspace_premium_rounded, size: 16),
@@ -550,22 +670,24 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     titleCtrl.dispose();
     if (confirm != true) return;
 
-    final slug   = ReferralService.generateSlug(u.displayName);
+    final slug = ReferralService.generateSlug(u.displayName);
     final refLink = 'medcasespro.com/ref/$slug';
-    final title  = titleCtrl.text.trim().isEmpty
+    final title = titleCtrl.text.trim().isEmpty
         ? (_isEs ? 'Embajador' : 'Embaixador')
         : titleCtrl.text.trim();
 
     try {
       // Escrita direta via SDK — campos partner não existem em updateUserProfile
       await FirebaseFirestore.instance.collection('users').doc(u.uid).update({
-        'isPartner':    true,
+        'isPartner': true,
         'partnerTitle': title,
         'referralLink': refLink,
       });
       if (mounted) {
         _snack(
-          _isEs ? '${u.displayName} activado como Embajador 👑' : '${u.displayName} ativado como Embaixador 👑',
+          _isEs
+              ? '${u.displayName} activado como Embajador 👑'
+              : '${u.displayName} ativado como Embaixador 👑',
           const Color(0xFFD4AF37),
         );
       }
@@ -582,7 +704,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     if (!confirm) return;
     try {
       await AuthService.promoteToSupervisor(u.uid);
-      if (mounted) _snack('${u.displayName} $_promotedSupervisorSnack', Colors.blue);
+      if (mounted)
+        _snack('${u.displayName} $_promotedSupervisorSnack', Colors.blue);
     } catch (e) {
       if (mounted) _snack('$_errorPrefix: $e', Colors.red);
     }
@@ -607,17 +730,23 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
           context: context,
           builder: (_) => AlertDialog(
             backgroundColor: const Color(0xFFFFFDF8),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            title: Text(title, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: kDark)),
-            content: Text(body, style: TextStyle(fontSize: 13, color: kDark.withOpacity(0.7))),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Text(title,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w900, fontSize: 16, color: kDark)),
+            content: Text(body,
+                style: TextStyle(fontSize: 13, color: kDark.withOpacity(0.7))),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar / Cancel', style: TextStyle(color: Colors.grey)),
+                child: const Text('Cancelar / Cancel',
+                    style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
-                style: ElevatedButton.styleFrom(backgroundColor: kDark, foregroundColor: kGoldL),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: kDark, foregroundColor: kGoldL),
                 child: const Text('Confirmar / Confirm'),
               ),
             ],
@@ -625,7 +754,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
         ) ??
         false;
   }
-
 
   // ── Helpers de idioma ──────────────────────────────────────────────────────
   // AdminScreen não tem AppProvider; usa preferência salva localmente.
@@ -637,7 +765,8 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     try {
       SharedPreferences.getInstance().then((prefs) {
         final lang = prefs.getString('lang') ?? 'pt';
-        if (mounted && lang != _currentLang) setState(() => _currentLang = lang);
+        if (mounted && lang != _currentLang)
+          setState(() => _currentLang = lang);
       });
     } catch (_) {}
   }
@@ -655,8 +784,12 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
       if (mounted) {
         _snack(
           value
-              ? (_isEs ? 'Modo mantenimiento activado' : 'Modo manutenção ativado')
-              : (_isEs ? 'Sistema en línea nuevamente' : 'Sistema online novamente'),
+              ? (_isEs
+                  ? 'Modo mantenimiento activado'
+                  : 'Modo manutenção ativado')
+              : (_isEs
+                  ? 'Sistema en línea nuevamente'
+                  : 'Sistema online novamente'),
           value ? Colors.orange : kGreen,
         );
       }
@@ -667,25 +800,35 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     }
   }
 
-  String get _errorPrefix            => _isEs ? 'Error al ejecutar acción'      : 'Erro ao executar ação';
-  String get _masterPanelLabel       => _isEs ? 'Panel Master'                 : 'Painel Master';
-  String get _adminPanelLabel        => _isEs ? 'Panel Admin'                  : 'Painel Admin';
-  String get _pendingLabel           => _isEs ? 'Pendientes'                   : 'Pendentes';
-  String get _approvedLabel          => _isEs ? 'Aprobados'                    : 'Aprovados';
-  String get _blockedLabel           => _isEs ? 'Bloqueados'                   : 'Bloqueados';
-  String get _systemLabel            => _isEs ? 'Sistema'                      : 'Sistema';
-  String get _searchHint             => _isEs ? 'Buscar por nombre o correo...' : 'Buscar por nome ou e-mail...';
-  String get _emptyPendingMsg        => _isEs ? 'Ningún usuario pendiente'     : 'Nenhum usuário pendente';
-  String get _emptyApprovedMsg       => _isEs ? 'Ningún usuario aprobado'      : 'Nenhum usuário aprovado';
-  String get _emptyBlockedMsg        => _isEs ? 'Ningún usuario bloqueado'     : 'Nenhum usuário bloqueado';
-  String get _unblockLabel           => _isEs ? 'Desbloquear'                  : 'Desbloquear';
-  String get _approvedSnack          => _isEs ? 'aprobado!'                    : 'aprovado!';
-  String get _unblockedSnack         => _isEs ? 'desbloqueado!'                : 'desbloqueado!';
-  String get _blockedSnack           => _isEs ? 'bloqueado.'                   : 'bloqueado.';
-  String get _promotedAdminSnack     => _isEs ? 'promovido a Admin!'           : 'promovido a Admin!';
-  String get _promotedSupervisorSnack=> _isEs ? 'promovido a Supervisor!'      : 'promovido a Supervisor!';
-  String get _demotedSnack           => _isEs ? 'rebajado a Usuario.'          : 'rebaixado para Usuário.';
-  String _pendingCountLabel(int n)   => _isEs ? (n > 1 ? 'pendientes' : 'pendiente') : (n > 1 ? 'pendentes' : 'pendente');
+  String get _errorPrefix =>
+      _isEs ? 'Error al ejecutar acción' : 'Erro ao executar ação';
+  String get _masterPanelLabel => _isEs ? 'Panel Master' : 'Painel Master';
+  String get _adminPanelLabel => _isEs ? 'Panel Admin' : 'Painel Admin';
+  String get _pendingLabel => _isEs ? 'Pendientes' : 'Pendentes';
+  String get _approvedLabel => _isEs ? 'Aprobados' : 'Aprovados';
+  String get _blockedLabel => _isEs ? 'Bloqueados' : 'Bloqueados';
+  String get _systemLabel => _isEs ? 'Sistema' : 'Sistema';
+  String get _searchHint =>
+      _isEs ? 'Buscar por nombre o correo...' : 'Buscar por nome ou e-mail...';
+  String get _emptyPendingMsg =>
+      _isEs ? 'Ningún usuario pendiente' : 'Nenhum usuário pendente';
+  String get _emptyApprovedMsg =>
+      _isEs ? 'Ningún usuario aprobado' : 'Nenhum usuário aprovado';
+  String get _emptyBlockedMsg =>
+      _isEs ? 'Ningún usuario bloqueado' : 'Nenhum usuário bloqueado';
+  String get _unblockLabel => _isEs ? 'Desbloquear' : 'Desbloquear';
+  String get _approvedSnack => _isEs ? 'aprobado!' : 'aprovado!';
+  String get _unblockedSnack => _isEs ? 'desbloqueado!' : 'desbloqueado!';
+  String get _blockedSnack => _isEs ? 'bloqueado.' : 'bloqueado.';
+  String get _promotedAdminSnack =>
+      _isEs ? 'promovido a Admin!' : 'promovido a Admin!';
+  String get _promotedSupervisorSnack =>
+      _isEs ? 'promovido a Supervisor!' : 'promovido a Supervisor!';
+  String get _demotedSnack =>
+      _isEs ? 'rebajado a Usuario.' : 'rebaixado para Usuário.';
+  String _pendingCountLabel(int n) => _isEs
+      ? (n > 1 ? 'pendientes' : 'pendiente')
+      : (n > 1 ? 'pendentes' : 'pendente');
 
   void _snack(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -697,8 +840,6 @@ class _AdminScreenState extends State<AdminScreen> with SingleTickerProviderStat
     ));
   }
 }
-
-
 
 // ── Tab Sistema — toggle de manutenção ────────────────────────────────────────
 class _SystemTab extends StatefulWidget {
@@ -725,9 +866,9 @@ class _SystemTab extends StatefulWidget {
 }
 
 class _SystemTabState extends State<_SystemTab> {
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
   AppColors get _c => AppColors.of(context);
@@ -735,8 +876,8 @@ class _SystemTabState extends State<_SystemTab> {
   // ── OpenAI key state ───────────────────────────────────────────────────────
   final _aiKeyCtrl = TextEditingController();
   bool _aiKeyLoading = false;
-  bool _aiKeySaved   = false;
-  bool _aiKeyHidden  = true;
+  bool _aiKeySaved = false;
+  bool _aiKeyHidden = true;
   String _aiKeyOriginal = '';
 
   // ── Gemini Paid Proxy state — Build 226 ────────────────────────────────────
@@ -744,19 +885,19 @@ class _SystemTabState extends State<_SystemTab> {
   // O painel apenas controla o FLAG de ativação (geminiPaidEnabled).
   // A chave real fica no Firebase Secret (GEMINI_PAID_API_KEY), configurada
   // via terminal: firebase functions:secrets:set GEMINI_PAID_API_KEY
-  bool _paidEnabled        = false;
-  bool _paidLoading        = false;
-  bool _paidTesting        = false;
-  bool _paidTestDone       = false;
-  bool _paidTestOnline     = false;
-  String _paidTestDetail   = '';
+  bool _paidEnabled = false;
+  bool _paidLoading = false;
+  bool _paidTesting = false;
+  bool _paidTestDone = false;
+  bool _paidTestOnline = false;
+  String _paidTestDetail = '';
   Map<String, dynamic> _paidBudgetCounters = {};
 
   @override
   void initState() {
     super.initState();
     _loadCurrentAiKey();
-    _loadPaidConfig();   // Build 226
+    _loadPaidConfig(); // Build 226
   }
 
   @override
@@ -776,17 +917,19 @@ class _SystemTabState extends State<_SystemTab> {
 
   // ── Build 226: carrega config do Gemini Paid ───────────────────────────────
   Future<void> _loadPaidConfig() async {
-    final enabled  = await FirestoreService.loadGeminiPaidEnabled();
+    final enabled = await FirestoreService.loadGeminiPaidEnabled();
     final counters = await FirestoreService.loadPaidBudgetCounters();
     if (!mounted) return;
     setState(() {
-      _paidEnabled        = enabled;
+      _paidEnabled = enabled;
       _paidBudgetCounters = counters;
     });
   }
 
   Future<void> _savePaidEnabled(bool value) async {
-    setState(() { _paidLoading = true; });
+    setState(() {
+      _paidLoading = true;
+    });
     try {
       await FirestoreService.saveGeminiPaidEnabled(value);
       if (mounted) {
@@ -796,18 +939,24 @@ class _SystemTabState extends State<_SystemTab> {
         });
       }
     } catch (_) {
-      if (mounted) setState(() { _paidLoading = false; });
+      if (mounted)
+        setState(() {
+          _paidLoading = false;
+        });
     }
   }
 
   Future<void> _testPaidProxy() async {
-    setState(() { _paidTesting = true; _paidTestDone = false; });
+    setState(() {
+      _paidTesting = true;
+      _paidTestDone = false;
+    });
     try {
       final result = await ProviderRouterService.testPaidProxy();
       if (mounted) {
         setState(() {
-          _paidTesting    = false;
-          _paidTestDone   = true;
+          _paidTesting = false;
+          _paidTestDone = true;
           _paidTestOnline = result.online;
           _paidTestDetail = result.detail;
         });
@@ -815,64 +964,87 @@ class _SystemTabState extends State<_SystemTab> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _paidTesting    = false;
-          _paidTestDone   = true;
+          _paidTesting = false;
+          _paidTestDone = true;
           _paidTestOnline = false;
           _paidTestDetail = e.toString();
         });
       }
     }
     await Future.delayed(const Duration(seconds: 5));
-    if (mounted) setState(() { _paidTestDone = false; });
+    if (mounted)
+      setState(() {
+        _paidTestDone = false;
+      });
   }
 
   Future<void> _saveAiKey() async {
     final key = _aiKeyCtrl.text.trim();
     if (key.isEmpty) return;
-    setState(() { _aiKeyLoading = true; _aiKeySaved = false; });
+    setState(() {
+      _aiKeyLoading = true;
+      _aiKeySaved = false;
+    });
     try {
       await FirestoreService.saveAppAiKey(key);
       _aiKeyOriginal = key;
-      if (mounted) setState(() { _aiKeyLoading = false; _aiKeySaved = true; });
+      if (mounted)
+        setState(() {
+          _aiKeyLoading = false;
+          _aiKeySaved = true;
+        });
       await Future.delayed(const Duration(seconds: 2));
-      if (mounted) setState(() { _aiKeySaved = false; });
+      if (mounted)
+        setState(() {
+          _aiKeySaved = false;
+        });
     } catch (_) {
-      if (mounted) setState(() { _aiKeyLoading = false; });
+      if (mounted)
+        setState(() {
+          _aiKeyLoading = false;
+        });
     }
   }
 
   Future<void> _removeAiKey() async {
-    setState(() { _aiKeyLoading = true; });
+    setState(() {
+      _aiKeyLoading = true;
+    });
     try {
       await FirestoreService.saveAppAiKey('');
       _aiKeyOriginal = '';
       _aiKeyCtrl.clear();
-      if (mounted) setState(() { _aiKeyLoading = false; });
+      if (mounted)
+        setState(() {
+          _aiKeyLoading = false;
+        });
     } catch (_) {
-      if (mounted) setState(() { _aiKeyLoading = false; });
+      if (mounted)
+        setState(() {
+          _aiKeyLoading = false;
+        });
     }
   }
 
   // ── Build 226: Widget do card IA Paga / Gemini Fallback ───────────────────
   Widget _buildGeminiPaidCard() {
-    const kGeminiBlue  = Color(0xFF4285F4);
+    const kGeminiBlue = Color(0xFF4285F4);
     const kGeminiBlueBg = Color(0xFF4285F4);
     final isActive = _paidEnabled;
-    final dailyDate     = _paidBudgetCounters['dailyDate'] as String? ?? '';
-    final todayKey      = DateTime.now().toIso8601String().substring(0, 10);
-    final dailyCount    = dailyDate == todayKey
+    final dailyDate = _paidBudgetCounters['dailyDate'] as String? ?? '';
+    final todayKey = DateTime.now().toIso8601String().substring(0, 10);
+    final dailyCount = dailyDate == todayKey
         ? (_paidBudgetCounters['dailyCount'] as num?)?.toInt() ?? 0
         : 0;
-    final estimatedCost = _paidBudgetCounters['estimatedPaidCostUsd']?.toString() ?? '0.000000';
+    final estimatedCost =
+        _paidBudgetCounters['estimatedPaidCostUsd']?.toString() ?? '0.000000';
 
     return Container(
       decoration: BoxDecoration(
         color: _c.cardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isActive
-              ? kGeminiBlue.withOpacity(0.4)
-              : _c.border,
+          color: isActive ? kGeminiBlue.withOpacity(0.4) : _c.border,
         ),
         boxShadow: [
           BoxShadow(
@@ -889,23 +1061,18 @@ class _SystemTabState extends State<_SystemTab> {
           Container(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              color: isActive
-                  ? kGeminiBlue.withOpacity(0.07)
-                  : _c.surface,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(16)),
+              color: isActive ? kGeminiBlue.withOpacity(0.07) : _c.surface,
             ),
             child: Row(children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: isActive
-                      ? kGeminiBlue.withOpacity(0.12)
-                      : _c.surface,
+                  color: isActive ? kGeminiBlue.withOpacity(0.12) : _c.surface,
                   border: Border.all(
-                    color: isActive
-                        ? kGeminiBlue.withOpacity(0.4)
-                        : _c.border,
+                    color: isActive ? kGeminiBlue.withOpacity(0.4) : _c.border,
                   ),
                 ),
                 child: Icon(
@@ -920,7 +1087,9 @@ class _SystemTabState extends State<_SystemTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.isEs ? 'IA Paga / Gemini Fallback' : 'IA Paga / Gemini Fallback',
+                      widget.isEs
+                          ? 'IA Paga / Gemini Fallback'
+                          : 'IA Paga / Gemini Fallback',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w900,
@@ -976,7 +1145,8 @@ class _SystemTabState extends State<_SystemTab> {
               children: [
                 // Toggle de ativação
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: _c.inputBg,
@@ -1014,7 +1184,8 @@ class _SystemTabState extends State<_SystemTab> {
                     const SizedBox(width: 12),
                     _paidLoading
                         ? const SizedBox(
-                            width: 24, height: 24,
+                            width: 24,
+                            height: 24,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : Switch(
@@ -1029,9 +1200,11 @@ class _SystemTabState extends State<_SystemTab> {
 
                 // Botão Testar
                 GestureDetector(
-                  onTap: (_paidTesting || !_paidEnabled) ? null : _testPaidProxy,
+                  onTap:
+                      (_paidTesting || !_paidEnabled) ? null : _testPaidProxy,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
                       color: _paidTestDone
@@ -1056,17 +1229,22 @@ class _SystemTabState extends State<_SystemTab> {
                       children: [
                         if (_paidTesting)
                           const SizedBox(
-                            width: 12, height: 12,
+                            width: 12,
+                            height: 12,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         else
                           Icon(
                             _paidTestDone
-                                ? (_paidTestOnline ? Icons.check_circle_rounded : Icons.error_outline_rounded)
+                                ? (_paidTestOnline
+                                    ? Icons.check_circle_rounded
+                                    : Icons.error_outline_rounded)
                                 : Icons.wifi_tethering_rounded,
                             size: 14,
                             color: _paidTestDone
-                                ? (_paidTestOnline ? const Color(0xFF10A37F) : Colors.red.shade400)
+                                ? (_paidTestOnline
+                                    ? const Color(0xFF10A37F)
+                                    : Colors.red.shade400)
                                 : (_paidEnabled ? kGeminiBlue : _c.textHint),
                           ),
                         const SizedBox(width: 6),
@@ -1076,13 +1254,19 @@ class _SystemTabState extends State<_SystemTab> {
                               : _paidTestDone
                                   ? (_paidTestOnline
                                       ? (widget.isEs ? 'Online ✓' : 'Online ✓')
-                                      : (widget.isEs ? 'Offline ✗' : 'Offline ✗'))
-                                  : (widget.isEs ? 'Testar conexión' : 'Testar conexão'),
+                                      : (widget.isEs
+                                          ? 'Offline ✗'
+                                          : 'Offline ✗'))
+                                  : (widget.isEs
+                                      ? 'Testar conexión'
+                                      : 'Testar conexão'),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
                             color: _paidTestDone
-                                ? (_paidTestOnline ? const Color(0xFF10A37F) : Colors.red.shade400)
+                                ? (_paidTestOnline
+                                    ? const Color(0xFF10A37F)
+                                    : Colors.red.shade400)
                                 : (_paidEnabled ? kGeminiBlue : _c.textHint),
                           ),
                         ),
@@ -1097,7 +1281,9 @@ class _SystemTabState extends State<_SystemTab> {
                     _paidTestDetail,
                     style: TextStyle(
                       fontSize: 10,
-                      color: _paidTestOnline ? const Color(0xFF10A37F) : Colors.red.shade400,
+                      color: _paidTestOnline
+                          ? const Color(0xFF10A37F)
+                          : Colors.red.shade400,
                       fontFamily: 'monospace',
                     ),
                   ),
@@ -1108,7 +1294,8 @@ class _SystemTabState extends State<_SystemTab> {
                 // Contadores de budget
                 if (isActive) ...[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(9),
                       color: _c.surface,
@@ -1162,7 +1349,8 @@ class _SystemTabState extends State<_SystemTab> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.lock_outline_rounded, size: 12, color: kGeminiBlue),
+                  Icon(Icons.lock_outline_rounded,
+                      size: 12, color: kGeminiBlue),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
@@ -1198,12 +1386,20 @@ class _SystemTabState extends State<_SystemTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: TextStyle(fontSize: 9, color: _c.textHint, fontWeight: FontWeight.w600)),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 9,
+                    color: _c.textHint,
+                    fontWeight: FontWeight.w600)),
             const SizedBox(height: 3),
             Row(children: [
               Icon(icon, size: 11, color: _c.textSecondary),
               const SizedBox(width: 4),
-              Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: _c.textPrimary)),
+              Text(value,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: _c.textPrimary)),
             ]),
           ],
         ),
@@ -1304,8 +1500,12 @@ class _SystemTabState extends State<_SystemTab> {
                             const SizedBox(height: 2),
                             Text(
                               isEnabled
-                                  ? (widget.isEs ? 'Sistema fuera de línea para usuarios' : 'Sistema offline para usuários')
-                                  : (widget.isEs ? 'Sistema en línea — acceso normal' : 'Sistema online — acesso normal'),
+                                  ? (widget.isEs
+                                      ? 'Sistema fuera de línea para usuarios'
+                                      : 'Sistema offline para usuários')
+                                  : (widget.isEs
+                                      ? 'Sistema en línea — acceso normal'
+                                      : 'Sistema online — acesso normal'),
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
@@ -1318,7 +1518,8 @@ class _SystemTabState extends State<_SystemTab> {
                       // ── Toggle ────────────────────────────────────────────
                       widget.maintLoading
                           ? const SizedBox(
-                              width: 24, height: 24,
+                              width: 24,
+                              height: 24,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
                                 color: Colors.orange,
@@ -1327,12 +1528,16 @@ class _SystemTabState extends State<_SystemTab> {
                           : Switch(
                               value: isEnabled,
                               onChanged: widget.onToggle,
-                              thumbColor: WidgetStateProperty.resolveWith((states) =>
-                                states.contains(WidgetState.selected) ? Colors.orange : kGreen),
-                              trackColor: WidgetStateProperty.resolveWith((states) =>
-                                states.contains(WidgetState.selected)
-                                  ? Colors.orange.withOpacity(0.25)
-                                  : kGreen.withOpacity(0.2)),
+                              thumbColor: WidgetStateProperty.resolveWith(
+                                  (states) =>
+                                      states.contains(WidgetState.selected)
+                                          ? Colors.orange
+                                          : kGreen),
+                              trackColor: WidgetStateProperty.resolveWith(
+                                  (states) =>
+                                      states.contains(WidgetState.selected)
+                                          ? Colors.orange.withOpacity(0.25)
+                                          : kGreen.withOpacity(0.2)),
                             ),
                     ]),
                   ),
@@ -1411,7 +1616,8 @@ class _SystemTabState extends State<_SystemTab> {
                                 : () => widget.onToggle(isEnabled),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 9,
+                                horizontal: 16,
+                                vertical: 9,
                               ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),
@@ -1424,22 +1630,26 @@ class _SystemTabState extends State<_SystemTab> {
                                   ),
                                 ],
                               ),
-                              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                const Icon(
-                                  Icons.save_rounded,
-                                  size: 14,
-                                  color: kGoldL,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  widget.isEs ? 'Guardar mensaje' : 'Salvar mensagem',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                    color: kGoldL,
-                                  ),
-                                ),
-                              ]),
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.save_rounded,
+                                      size: 14,
+                                      color: kGoldL,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      widget.isEs
+                                          ? 'Guardar mensaje'
+                                          : 'Salvar mensagem',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w800,
+                                        color: kGoldL,
+                                      ),
+                                    ),
+                                  ]),
                             ),
                           ),
                         ),
@@ -1454,7 +1664,8 @@ class _SystemTabState extends State<_SystemTab> {
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 7,
+                          horizontal: 10,
+                          vertical: 7,
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
@@ -1576,7 +1787,8 @@ class _SystemTabState extends State<_SystemTab> {
                       // Badge de status
                       Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4,
+                          horizontal: 8,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -1649,7 +1861,8 @@ class _SystemTabState extends State<_SystemTab> {
                                 width: 1.5,
                               ),
                             ),
-                            contentPadding: const EdgeInsets.fromLTRB(12, 12, 4, 12),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(12, 12, 4, 12),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _aiKeyHidden
@@ -1658,8 +1871,9 @@ class _SystemTabState extends State<_SystemTab> {
                                 size: 18,
                                 color: _c.textHint,
                               ),
-                              onPressed: () =>
-                                  setState(() { _aiKeyHidden = !_aiKeyHidden; }),
+                              onPressed: () => setState(() {
+                                _aiKeyHidden = !_aiKeyHidden;
+                              }),
                             ),
                           ),
                         ),
@@ -1667,49 +1881,49 @@ class _SystemTabState extends State<_SystemTab> {
                         // Botões Salvar + Remover
                         Row(children: [
                           // Remover (só aparece quando há chave)
-                          if (_aiKeyOriginal.isNotEmpty) ...
-                            [
-                              GestureDetector(
-                                onTap: _aiKeyLoading ? null : _removeAiKey,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 9,
+                          if (_aiKeyOriginal.isNotEmpty) ...[
+                            GestureDetector(
+                              onTap: _aiKeyLoading ? null : _removeAiKey,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 9,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(9),
+                                  border: Border.all(
+                                    color: Colors.red.withOpacity(0.35),
                                   ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(9),
-                                    border: Border.all(
-                                      color: Colors.red.withOpacity(0.35),
-                                    ),
-                                    color: Colors.red.withOpacity(0.07),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.delete_outline_rounded,
-                                          size: 14,
-                                          color: Colors.red.shade400),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        'Remover',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.red.shade400,
-                                        ),
+                                  color: Colors.red.withOpacity(0.07),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.delete_outline_rounded,
+                                        size: 14, color: Colors.red.shade400),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      'Remover',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.red.shade400,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                            ],
+                            ),
+                            const SizedBox(width: 8),
+                          ],
                           const Spacer(),
                           // Salvar
                           GestureDetector(
                             onTap: _aiKeyLoading ? null : _saveAiKey,
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 9,
+                                horizontal: 16,
+                                vertical: 9,
                               ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(9),
@@ -1726,7 +1940,8 @@ class _SystemTabState extends State<_SystemTab> {
                               ),
                               child: _aiKeyLoading
                                   ? const SizedBox(
-                                      width: 14, height: 14,
+                                      width: 14,
+                                      height: 14,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                         color: Colors.white,
@@ -1768,7 +1983,8 @@ class _SystemTabState extends State<_SystemTab> {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 8,
+                        horizontal: 10,
+                        vertical: 8,
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
@@ -1817,7 +2033,8 @@ class _SystemTabState extends State<_SystemTab> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline_rounded, size: 14, color: kGold),
+                  const Icon(Icons.info_outline_rounded,
+                      size: 14, color: kGold),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -1861,8 +2078,8 @@ class _UserList extends StatelessWidget {
   final bool isPendingTab;
   final String approveBtnLabel;
 
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
 
   const _UserList({
     required this.users,
@@ -1891,7 +2108,8 @@ class _UserList extends StatelessWidget {
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(emptyIcon, size: 48, color: kGreen.withOpacity(0.3)),
           const SizedBox(height: 12),
-          Text(emptyMsg, style: TextStyle(color: c.textHint, fontWeight: FontWeight.w600)),
+          Text(emptyMsg,
+              style: TextStyle(color: c.textHint, fontWeight: FontWeight.w600)),
         ]),
       );
     }
@@ -1903,15 +2121,22 @@ class _UserList extends StatelessWidget {
         final u = users[i];
         final isMe = u.uid == currentAdmin.uid;
         // Não pode promover a si mesmo ou ao master
-        final canPromote = showPromote && onPromote != null
-            && !isMe && !u.isMaster
-            && u.role != UserRole.admin; // já é admin, não precisa promover novamente
-        final canPromoteSupervisor = isMaster && onPromoteSupervisor != null
-            && !isMe && !u.isMaster
-            && u.role == UserRole.user;
-        final canDemote = isMaster && onDemote != null
-            && !isMe && !u.isMaster
-            && (u.role == UserRole.admin || u.role == UserRole.supervisor);
+        final canPromote = showPromote &&
+            onPromote != null &&
+            !isMe &&
+            !u.isMaster &&
+            u.role !=
+                UserRole.admin; // já é admin, não precisa promover novamente
+        final canPromoteSupervisor = isMaster &&
+            onPromoteSupervisor != null &&
+            !isMe &&
+            !u.isMaster &&
+            u.role == UserRole.user;
+        final canDemote = isMaster &&
+            onDemote != null &&
+            !isMe &&
+            !u.isMaster &&
+            (u.role == UserRole.admin || u.role == UserRole.supervisor);
 
         // Botão excluir: disponível para todos exceto o próprio admin e master
         final canDelete = onDelete != null && !isMe && !u.isMaster;
@@ -1920,10 +2145,14 @@ class _UserList extends StatelessWidget {
           user: u,
           currentAdmin: currentAdmin,
           isMaster: isMaster,
-          onApprove: showApprove && onApprove != null ? () => onApprove!(u) : null,
-          onBlock: showBlock && onBlock != null && !isMe && !u.isMaster ? () => onBlock!(u) : null,
+          onApprove:
+              showApprove && onApprove != null ? () => onApprove!(u) : null,
+          onBlock: showBlock && onBlock != null && !isMe && !u.isMaster
+              ? () => onBlock!(u)
+              : null,
           onPromote: canPromote ? () => onPromote!(u) : null,
-          onPromoteSupervisor: canPromoteSupervisor ? () => onPromoteSupervisor!(u) : null,
+          onPromoteSupervisor:
+              canPromoteSupervisor ? () => onPromoteSupervisor!(u) : null,
           onDemote: canDemote ? () => onDemote!(u) : null,
           onDelete: canDelete ? () => onDelete!(u) : null,
           isPendingTab: isPendingTab,
@@ -1947,9 +2176,9 @@ class _UserCard extends StatelessWidget {
   final bool isPendingTab;
   final String approveBtnLabel;
 
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
   const _UserCard({
@@ -1977,7 +2206,12 @@ class _UserCard extends StatelessWidget {
         color: c.cardBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: isMe ? kGold.withOpacity(0.5) : c.border),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2))
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -1986,7 +2220,8 @@ class _UserCard extends StatelessWidget {
           Row(children: [
             // Avatar
             Container(
-              width: 40, height: 40,
+              width: 40,
+              height: 40,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -1995,33 +2230,54 @@ class _UserCard extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  user.displayName.isNotEmpty ? user.displayName[0].toUpperCase() : '?',
-                  style: const TextStyle(color: kGoldL, fontWeight: FontWeight.w900, fontSize: 16),
+                  user.displayName.isNotEmpty
+                      ? user.displayName[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(
+                      color: kGoldL, fontWeight: FontWeight.w900, fontSize: 16),
                 ),
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  Expanded(
-                    child: Text(user.displayName,
-                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: c.textPrimary),
-                      overflow: TextOverflow.ellipsis),
-                  ),
-                  if (isMe)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: kGold.withOpacity(0.15), border: Border.all(color: kGold.withOpacity(0.4))),
-                      child: const Text('Você / You', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: kGold)),
-                    ),
-                  const SizedBox(width: 4),
-                  _StatusBadge(user.status),
-                  const SizedBox(width: 4),
-                  _RoleBadge(user),
-                ]),
-                Text(user.email, style: TextStyle(fontSize: 11, color: c.textSecondary, fontWeight: FontWeight.w500)),
-              ]),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      Expanded(
+                        child: Text(user.displayName,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 14,
+                                color: c.textPrimary),
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                      if (isMe)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: kGold.withOpacity(0.15),
+                              border:
+                                  Border.all(color: kGold.withOpacity(0.4))),
+                          child: const Text('Você / You',
+                              style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w900,
+                                  color: kGold)),
+                        ),
+                      const SizedBox(width: 4),
+                      _StatusBadge(user.status),
+                      const SizedBox(width: 4),
+                      _RoleBadge(user),
+                    ]),
+                    Text(user.email,
+                        style: TextStyle(
+                            fontSize: 11,
+                            color: c.textSecondary,
+                            fontWeight: FontWeight.w500)),
+                  ]),
             ),
           ]),
 
@@ -2040,33 +2296,67 @@ class _UserCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             'Solicitado: ${_formatDateTime(user.createdAt)}${user.approvedAt != null ? '  •  Aprov: ${_formatDate(user.approvedAt!)}' : ''}',
-            style: TextStyle(fontSize: 10, color: c.textHint, fontWeight: FontWeight.w500),
+            style: TextStyle(
+                fontSize: 10, color: c.textHint, fontWeight: FontWeight.w500),
           ),
 
           // Botões de ação
-          if (onApprove != null || onBlock != null || onPromote != null || onPromoteSupervisor != null || onDemote != null || onDelete != null) ...[
+          if (onApprove != null ||
+              onBlock != null ||
+              onPromote != null ||
+              onPromoteSupervisor != null ||
+              onDemote != null ||
+              onDelete != null) ...[
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children: [
                 if (onApprove != null)
-                  _ActionBtn(label: approveBtnLabel, icon: Icons.check_circle_outline_rounded, color: kGreen, onTap: onApprove!),
+                  _ActionBtn(
+                      label: approveBtnLabel,
+                      icon: Icons.check_circle_outline_rounded,
+                      color: kGreen,
+                      onTap: onApprove!),
                 if (onPromote != null)
-                  _ActionBtn(label: isMaster ? 'Admin' : 'Supervisor', icon: Icons.star_outline_rounded, color: kGold, onTap: onPromote!),
+                  _ActionBtn(
+                      label: isMaster ? 'Admin' : 'Supervisor',
+                      icon: Icons.star_outline_rounded,
+                      color: kGold,
+                      onTap: onPromote!),
                 if (onPromoteSupervisor != null && onPromote == null)
-                  _ActionBtn(label: 'Supervisor', icon: Icons.shield_outlined, color: Colors.blue, onTap: onPromoteSupervisor!),
+                  _ActionBtn(
+                      label: 'Supervisor',
+                      icon: Icons.shield_outlined,
+                      color: Colors.blue,
+                      onTap: onPromoteSupervisor!),
                 if (onDemote != null)
-                  _ActionBtn(label: 'Rebaixar', icon: Icons.arrow_downward_rounded, color: Colors.orange, onTap: onDemote!),
+                  _ActionBtn(
+                      label: 'Rebaixar',
+                      icon: Icons.arrow_downward_rounded,
+                      color: Colors.orange,
+                      onTap: onDemote!),
                 // Tab Pendentes: "Recusar" deleta o documento; demais tabs: "Bloquear"
                 if (isPendingTab && onDelete != null)
-                  _ActionBtn(label: 'Recusar', icon: Icons.person_remove_outlined, color: Colors.red, onTap: onDelete!)
+                  _ActionBtn(
+                      label: 'Recusar',
+                      icon: Icons.person_remove_outlined,
+                      color: Colors.red,
+                      onTap: onDelete!)
                 else if (!isPendingTab && onBlock != null)
-                  _ActionBtn(label: '✕', icon: Icons.block_rounded, color: Colors.red.shade700, onTap: onBlock!),
+                  _ActionBtn(
+                      label: '✕',
+                      icon: Icons.block_rounded,
+                      color: Colors.red.shade700,
+                      onTap: onBlock!),
                 // Botão Excluir (lixeira) — visível em todas as tabs exceto Pendentes
                 // (no Pendentes o "Recusar" já faz a deleção)
                 if (!isPendingTab && onDelete != null)
-                  _ActionBtn(label: 'Excluir', icon: Icons.delete_outline_rounded, color: Colors.red, onTap: onDelete!),
+                  _ActionBtn(
+                      label: 'Excluir',
+                      icon: Icons.delete_outline_rounded,
+                      color: Colors.red,
+                      onTap: onDelete!),
               ],
             ),
           ],
@@ -2076,10 +2366,10 @@ class _UserCard extends StatelessWidget {
   }
 
   static String _formatDate(DateTime d) =>
-      '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year}';
+      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
   static String _formatDateTime(DateTime d) =>
-      '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year} ${d.hour.toString().padLeft(2,'0')}:${d.minute.toString().padLeft(2,'0')}';
+      '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year} ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 }
 
 class _StatusBadge extends StatelessWidget {
@@ -2088,33 +2378,53 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bg; Color fg; String label;
+    Color bg;
+    Color fg;
+    String label;
     switch (status) {
       case UserStatus.approved:
-        bg = Colors.green.withOpacity(0.1); fg = Colors.green; label = 'Aprobado/Aprovado'; break;
+        bg = Colors.green.withOpacity(0.1);
+        fg = Colors.green;
+        label = 'Aprobado/Aprovado';
+        break;
       case UserStatus.pending:
-        bg = Colors.orange.withOpacity(0.12); fg = Colors.orange; label = 'Pendente'; break;
+        bg = Colors.orange.withOpacity(0.12);
+        fg = Colors.orange;
+        label = 'Pendente';
+        break;
       case UserStatus.blocked:
-        bg = Colors.red.withOpacity(0.1); fg = Colors.red; label = 'Bloqueado'; break;
+        bg = Colors.red.withOpacity(0.1);
+        fg = Colors.red;
+        label = 'Bloqueado';
+        break;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: bg, border: Border.all(color: fg.withOpacity(0.3))),
-      child: Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: fg)),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: bg,
+          border: Border.all(color: fg.withOpacity(0.3))),
+      child: Text(label,
+          style:
+              TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: fg)),
     );
   }
 }
 
 class _RoleBadge extends StatelessWidget {
   final UserModel user;
-  static const kGold  = Color(0xFFC5A365);
+  static const kGold = Color(0xFFC5A365);
   const _RoleBadge(this.user);
 
   @override
   Widget build(BuildContext context) {
     if (user.role == UserRole.user) return const SizedBox.shrink();
 
-    Color bg; Color fg; Color border; String label; IconData icon;
+    Color bg;
+    Color fg;
+    Color border;
+    String label;
+    IconData icon;
     if (user.isMaster) {
       bg = Colors.amber.withOpacity(0.15);
       fg = Colors.amber.shade700;
@@ -2146,7 +2456,9 @@ class _RoleBadge extends StatelessWidget {
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 9, color: fg),
         const SizedBox(width: 3),
-        Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: fg)),
+        Text(label,
+            style:
+                TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: fg)),
       ]),
     );
   }
@@ -2170,7 +2482,11 @@ class _InfoChip extends StatelessWidget {
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 11, color: c.textSecondary),
         const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: c.textSecondary)),
+        Text(label,
+            style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: c.textSecondary)),
       ]),
     );
   }
@@ -2181,7 +2497,11 @@ class _ActionBtn extends StatelessWidget {
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
-  const _ActionBtn({required this.label, required this.icon, required this.color, required this.onTap});
+  const _ActionBtn(
+      {required this.label,
+      required this.icon,
+      required this.color,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -2197,7 +2517,9 @@ class _ActionBtn extends StatelessWidget {
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, size: 14, color: color),
           const SizedBox(width: 5),
-          Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color)),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 11, fontWeight: FontWeight.w800, color: color)),
         ]),
       ),
     );
@@ -2215,21 +2537,21 @@ class _AppUpdatesTab extends StatefulWidget {
 }
 
 class _AppUpdatesTabState extends State<_AppUpdatesTab> {
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
   AppColors get _c => AppColors.of(context);
 
   final _versionCtrl = TextEditingController();
-  final _titleCtrl   = TextEditingController();
-  final _dateCtrl    = TextEditingController();
+  final _titleCtrl = TextEditingController();
+  final _dateCtrl = TextEditingController();
   final List<TextEditingController> _itemCtrls = [TextEditingController()];
 
-  bool _active   = true;
-  bool _loading  = false;
-  bool _saving   = false;
+  bool _active = true;
+  bool _loading = false;
+  bool _saving = false;
   String? _savedMsg;
 
   @override
@@ -2253,9 +2575,9 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
       final data = await FirestoreService.loadAppUpdate();
       if (data.isNotEmpty) {
         _versionCtrl.text = data['version'] as String? ?? '';
-        _titleCtrl.text   = data['title']   as String? ?? '';
-        _dateCtrl.text    = data['date']     as String? ?? '';
-        _active           = data['active']   as bool?   ?? true;
+        _titleCtrl.text = data['title'] as String? ?? '';
+        _dateCtrl.text = data['date'] as String? ?? '';
+        _active = data['active'] as bool? ?? true;
         final items = (data['items'] as List<dynamic>? ?? []).cast<String>();
         for (final c in _itemCtrls) c.dispose();
         _itemCtrls.clear();
@@ -2270,21 +2592,25 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
 
   Future<void> _save() async {
     final version = _versionCtrl.text.trim();
-    final title   = _titleCtrl.text.trim();
-    final date    = _dateCtrl.text.trim();
-    final items   = _itemCtrls
+    final title = _titleCtrl.text.trim();
+    final date = _dateCtrl.text.trim();
+    final items = _itemCtrls
         .map((c) => c.text.trim())
         .where((s) => s.isNotEmpty)
         .toList();
 
     if (version.isEmpty || title.isEmpty || items.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha versão, título e ao menos uma novidade.')),
+        const SnackBar(
+            content: Text('Preencha versão, título e ao menos uma novidade.')),
       );
       return;
     }
 
-    setState(() { _saving = true; _savedMsg = null; });
+    setState(() {
+      _saving = true;
+      _savedMsg = null;
+    });
     try {
       await FirestoreService.saveAppUpdate(
         version: version,
@@ -2293,15 +2619,23 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
         items: items,
         active: _active,
       );
-      if (mounted) setState(() { _savedMsg = 'Publicado com sucesso!'; _saving = false; });
+      if (mounted)
+        setState(() {
+          _savedMsg = 'Publicado com sucesso!';
+          _saving = false;
+        });
     } catch (e) {
-      if (mounted) setState(() { _savedMsg = 'Erro ao salvar: $e'; _saving = false; });
+      if (mounted)
+        setState(() {
+          _savedMsg = 'Erro ao salvar: $e';
+          _saving = false;
+        });
     }
   }
 
   String _today() {
     final now = DateTime.now();
-    return '${now.day.toString().padLeft(2,'0')}/${now.month.toString().padLeft(2,'0')}/${now.year}';
+    return '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
   }
 
   void _addItem() => setState(() => _itemCtrls.add(TextEditingController()));
@@ -2330,19 +2664,25 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
             borderRadius: BorderRadius.circular(14),
             gradient: const LinearGradient(
               colors: [kDark, Color(0xFF123326)],
-              begin: Alignment.topLeft, end: Alignment.bottomRight,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
               const Icon(Icons.auto_awesome_rounded, color: kGoldL, size: 18),
               const SizedBox(width: 8),
-              const Text('Publicar Novidades', style: TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white)),
+              const Text('Publicar Novidades',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white)),
             ]),
             const SizedBox(height: 4),
             Text('Os usuários verão o modal ao abrir o app',
-              style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.55))),
+                style: TextStyle(
+                    fontSize: 11, color: Colors.white.withOpacity(0.55))),
           ]),
         ),
         const SizedBox(height: 16),
@@ -2358,7 +2698,12 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
           child: Row(children: [
             const Icon(Icons.visibility_rounded, size: 16, color: kGreen),
             const SizedBox(width: 8),
-            Expanded(child: Text('Notificação ativa', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: _c.textPrimary))),
+            Expanded(
+                child: Text('Notificação ativa',
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: _c.textPrimary))),
             Switch.adaptive(
               value: _active,
               activeColor: kGreen,
@@ -2370,19 +2715,28 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
 
         // Versão + Data
         Row(children: [
-          Expanded(child: _field(_versionCtrl, 'Versão', '1.2.0', Icons.tag_rounded)),
+          Expanded(
+              child:
+                  _field(_versionCtrl, 'Versão', '1.2.0', Icons.tag_rounded)),
           const SizedBox(width: 10),
-          Expanded(child: _field(_dateCtrl, 'Data', _today(), Icons.calendar_today_rounded)),
+          Expanded(
+              child: _field(
+                  _dateCtrl, 'Data', _today(), Icons.calendar_today_rounded)),
         ]),
         const SizedBox(height: 10),
 
         // Título
-        _field(_titleCtrl, 'Título do aviso', 'Novidades da versão 1.2.0', Icons.title_rounded),
+        _field(_titleCtrl, 'Título do aviso', 'Novidades da versão 1.2.0',
+            Icons.title_rounded),
         const SizedBox(height: 16),
 
         // Lista de novidades
         Row(children: [
-          Text('Novidades', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: _c.textPrimary)),
+          Text('Novidades',
+              style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                  color: _c.textPrimary)),
           const Spacer(),
           GestureDetector(
             onTap: _addItem,
@@ -2396,48 +2750,65 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
               child: const Row(mainAxisSize: MainAxisSize.min, children: [
                 Icon(Icons.add_rounded, size: 14, color: kGreen),
                 SizedBox(width: 4),
-                Text('Adicionar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kGreen)),
+                Text('Adicionar',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: kGreen)),
               ]),
             ),
           ),
         ]),
         const SizedBox(height: 8),
 
-        ...List.generate(_itemCtrls.length, (i) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Row(children: [
-            Container(
-              margin: const EdgeInsets.only(right: 8, top: 14),
-              width: 6, height: 6,
-              decoration: const BoxDecoration(color: kGreen, shape: BoxShape.circle),
-            ),
-            Expanded(
-              child: TextField(
-                controller: _itemCtrls[i],
-                maxLines: 2, minLines: 1,
-                style: TextStyle(fontSize: 13, color: _c.textPrimary),
-                decoration: InputDecoration(
-                  hintText: 'Ex: Login corrigido — maior estabilidade',
-                  hintStyle: TextStyle(fontSize: 12, color: _c.textHint),
-                  filled: true, fillColor: _c.inputBg,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: _c.border)),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: _c.border)),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: kGold, width: 1.5)),
-                ),
-              ),
-            ),
-            if (_itemCtrls.length > 1)
-              IconButton(
-                icon: const Icon(Icons.remove_circle_outline_rounded, color: Colors.red, size: 18),
-                onPressed: () => _removeItem(i),
-              ),
-          ]),
-        )),
+        ...List.generate(
+            _itemCtrls.length,
+            (i) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 8, top: 14),
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                          color: kGreen, shape: BoxShape.circle),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _itemCtrls[i],
+                        maxLines: 2,
+                        minLines: 1,
+                        style: TextStyle(fontSize: 13, color: _c.textPrimary),
+                        decoration: InputDecoration(
+                          hintText: 'Ex: Login corrigido — maior estabilidade',
+                          hintStyle:
+                              TextStyle(fontSize: 12, color: _c.textHint),
+                          filled: true,
+                          fillColor: _c.inputBg,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: _c.border)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: _c.border)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide:
+                                  const BorderSide(color: kGold, width: 1.5)),
+                        ),
+                      ),
+                    ),
+                    if (_itemCtrls.length > 1)
+                      IconButton(
+                        icon: const Icon(Icons.remove_circle_outline_rounded,
+                            color: Colors.red, size: 18),
+                        onPressed: () => _removeItem(i),
+                      ),
+                  ]),
+                )),
 
         const SizedBox(height: 16),
 
@@ -2452,20 +2823,28 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
               color: _savedMsg!.startsWith('Erro')
                   ? const Color(0xFFFFEDED)
                   : const Color(0xFFE8F5EE),
-              border: Border.all(color: _savedMsg!.startsWith('Erro')
-                  ? Colors.red.withOpacity(0.3)
-                  : kGreen.withOpacity(0.3)),
+              border: Border.all(
+                  color: _savedMsg!.startsWith('Erro')
+                      ? Colors.red.withOpacity(0.3)
+                      : kGreen.withOpacity(0.3)),
             ),
             child: Row(children: [
               Icon(
-                _savedMsg!.startsWith('Erro') ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded,
+                _savedMsg!.startsWith('Erro')
+                    ? Icons.error_outline_rounded
+                    : Icons.check_circle_outline_rounded,
                 size: 16,
                 color: _savedMsg!.startsWith('Erro') ? Colors.red : kGreen,
               ),
               const SizedBox(width: 8),
-              Expanded(child: Text(_savedMsg!,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                  color: _savedMsg!.startsWith('Erro') ? Colors.red : kGreen))),
+              Expanded(
+                  child: Text(_savedMsg!,
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: _savedMsg!.startsWith('Erro')
+                              ? Colors.red
+                              : kGreen))),
             ]),
           ),
 
@@ -2475,15 +2854,22 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
           child: ElevatedButton.icon(
             onPressed: _saving ? null : _save,
             icon: _saving
-                ? const SizedBox(width: 16, height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white))
                 : const Icon(Icons.rocket_launch_rounded, size: 16),
-            label: Text(_saving ? 'Publicando...' : 'Publicar para todos os usuários',
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
+            label: Text(
+                _saving ? 'Publicando...' : 'Publicar para todos os usuários',
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
             style: ElevatedButton.styleFrom(
-              backgroundColor: kDark, foregroundColor: kGoldL,
+              backgroundColor: kDark,
+              foregroundColor: kGoldL,
               padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
           ),
@@ -2493,7 +2879,8 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
     );
   }
 
-  Widget _field(TextEditingController ctrl, String label, String hint, IconData icon) {
+  Widget _field(
+      TextEditingController ctrl, String label, String hint, IconData icon) {
     final c = _c;
     return TextField(
       controller: ctrl,
@@ -2504,15 +2891,20 @@ class _AppUpdatesTabState extends State<_AppUpdatesTab> {
         hintText: hint,
         hintStyle: TextStyle(fontSize: 12, color: c.textHint),
         prefixIcon: Icon(icon, size: 16, color: kGold),
-        filled: true, fillColor: c.inputBg,
+        filled: true,
+        fillColor: c.inputBg,
         isDense: true,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: c.border)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: c.border)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: kGold, width: 1.5)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: c.border)),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: c.border)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: kGold, width: 1.5)),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
     );
   }
@@ -2527,20 +2919,19 @@ class _StatsTab extends StatelessWidget {
 
   const _StatsTab({required this.allUsers, required this.loading});
 
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
-  int get _totalUsers    => allUsers.length;
-  int get _approved      => allUsers.where((u) => u.isApproved).length;
-  int get _pending       => allUsers.where((u) => u.isPending).length;
+  int get _totalUsers => allUsers.length;
+  int get _approved => allUsers.where((u) => u.isApproved).length;
+  int get _pending => allUsers.where((u) => u.isPending).length;
 
-  int get _totalSeconds  =>
+  int get _totalSeconds =>
       allUsers.fold(0, (sum, u) => sum + u.totalUsageSeconds);
 
-  int get _totalLogins   =>
-      allUsers.fold(0, (sum, u) => sum + u.loginCount);
+  int get _totalLogins => allUsers.fold(0, (sum, u) => sum + u.loginCount);
 
   String _fmt(int s) {
     if (s <= 0) return '—';
@@ -2553,7 +2944,7 @@ class _StatsTab extends StatelessWidget {
 
   String _lastSeenLabel(DateTime? dt) {
     if (dt == null) return 'Nunca acessou';
-    return 'Último acesso: ${dt.day.toString().padLeft(2,'0')}/${dt.month.toString().padLeft(2,'0')}/${dt.year} ${dt.hour.toString().padLeft(2,'0')}:${dt.minute.toString().padLeft(2,'0')}';
+    return 'Último acesso: ${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -2565,17 +2956,18 @@ class _StatsTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
       children: [
-
         // ── Cards de resumo ─────────────────────────────────────────────────
         Row(children: [
-          Expanded(child: _SummaryCard(
+          Expanded(
+              child: _SummaryCard(
             icon: Icons.people_rounded,
             color: kGreen,
             value: '$_totalUsers',
             label: 'Total de usuários',
           )),
           const SizedBox(width: 10),
-          Expanded(child: _SummaryCard(
+          Expanded(
+              child: _SummaryCard(
             icon: Icons.check_circle_rounded,
             color: Colors.green,
             value: '$_approved',
@@ -2584,14 +2976,16 @@ class _StatsTab extends StatelessWidget {
         ]),
         const SizedBox(height: 10),
         Row(children: [
-          Expanded(child: _SummaryCard(
+          Expanded(
+              child: _SummaryCard(
             icon: Icons.timer_rounded,
             color: const Color(0xFF7C3AED),
             value: _fmt(_totalSeconds),
             label: 'Tempo total de uso',
           )),
           const SizedBox(width: 10),
-          Expanded(child: _SummaryCard(
+          Expanded(
+              child: _SummaryCard(
             icon: Icons.pending_actions_rounded,
             color: Colors.orange,
             value: '$_pending',
@@ -2600,14 +2994,16 @@ class _StatsTab extends StatelessWidget {
         ]),
         const SizedBox(height: 10),
         Row(children: [
-          Expanded(child: _SummaryCard(
+          Expanded(
+              child: _SummaryCard(
             icon: Icons.login_rounded,
             color: const Color(0xFF7C3AED),
             value: '$_totalLogins',
             label: 'Acessos registados',
           )),
           const SizedBox(width: 10),
-          Expanded(child: _SummaryCard(
+          Expanded(
+              child: _SummaryCard(
             icon: Icons.person_search_rounded,
             color: kGreen,
             value: allUsers.where((u) => u.loginCount > 0).length.toString(),
@@ -2627,17 +3023,21 @@ class _StatsTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 color: kGold.withOpacity(0.12),
               ),
-              child: const Icon(Icons.bar_chart_rounded, size: 16, color: kGold),
+              child:
+                  const Icon(Icons.bar_chart_rounded, size: 16, color: kGold),
             ),
             const SizedBox(width: 10),
             Text('Tempo por usuário',
-              style: TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w900, color: c.textPrimary)),
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    color: c.textPrimary)),
             const Spacer(),
             Text('${allUsers.length} usuários',
-              style: TextStyle(
-                fontSize: 11, color: c.textHint,
-                fontWeight: FontWeight.w600)),
+                style: TextStyle(
+                    fontSize: 11,
+                    color: c.textHint,
+                    fontWeight: FontWeight.w600)),
           ]);
         }),
         const SizedBox(height: 12),
@@ -2651,20 +3051,22 @@ class _StatsTab extends StatelessWidget {
             ),
           )
         else if (allUsers.isEmpty)
-          Builder(builder: (context) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(40),
-              child: Text('Nenhum usuário ainda.',
-                style: TextStyle(color: AppColors.of(context).textHint)),
-            ),
-          ))
+          Builder(
+              builder: (context) => Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(40),
+                      child: Text('Nenhum usuário ainda.',
+                          style:
+                              TextStyle(color: AppColors.of(context).textHint)),
+                    ),
+                  ))
         else
           // ── Lista de usuários com tempo ─────────────────────────────────
           ...sorted.map((u) => _UserUsageRow(
-            user: u,
-            maxSeconds: sorted.first.totalUsageSeconds,
-            lastSeenLabel: _lastSeenLabel(u.lastSeenAt),
-          )),
+                user: u,
+                maxSeconds: sorted.first.totalUsageSeconds,
+                lastSeenLabel: _lastSeenLabel(u.lastSeenAt),
+              )),
       ],
     );
   }
@@ -2677,8 +3079,10 @@ class _SummaryCard extends StatelessWidget {
   final String value;
   final String label;
   const _SummaryCard({
-    required this.icon, required this.color,
-    required this.value, required this.label,
+    required this.icon,
+    required this.color,
+    required this.value,
+    required this.label,
   });
 
   @override
@@ -2691,8 +3095,9 @@ class _SummaryCard extends StatelessWidget {
         border: Border.all(color: color.withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8, offset: const Offset(0, 2)),
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2)),
         ],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -2706,14 +3111,17 @@ class _SummaryCard extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(value,
-          style: TextStyle(
-            fontSize: 22, fontWeight: FontWeight.w900, color: color,
-            letterSpacing: -0.5)),
+            style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: color,
+                letterSpacing: -0.5)),
         const SizedBox(height: 2),
         Text(label,
-          style: const TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w600,
-            color: Color(0xFF6B7280))),
+            style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF6B7280))),
       ]),
     );
   }
@@ -2730,14 +3138,14 @@ class _UserUsageRow extends StatelessWidget {
     required this.lastSeenLabel,
   });
 
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
 
   Color get _barColor {
     if (user.totalUsageSeconds == 0) return const Color(0xFFE5E7EB);
     if (user.totalUsageSeconds >= 3600) return kGreen;
-    if (user.totalUsageSeconds >= 600)  return kGold;
+    if (user.totalUsageSeconds >= 600) return kGold;
     return const Color(0xFF93C5FD);
   }
 
@@ -2757,17 +3165,18 @@ class _UserUsageRow extends StatelessWidget {
         border: Border.all(color: c.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 6, offset: const Offset(0, 2)),
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 6,
+              offset: const Offset(0, 2)),
         ],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Linha superior: nome + tempo ──────────────────────────────────
         Row(children: [
           // Avatar inicial
           Container(
-            width: 34, height: 34,
+            width: 34,
+            height: 34,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: kGreen.withOpacity(0.1),
@@ -2775,39 +3184,44 @@ class _UserUsageRow extends StatelessWidget {
             child: Center(
               child: Text(
                 user.displayName.isNotEmpty
-                    ? user.displayName[0].toUpperCase() : '?',
+                    ? user.displayName[0].toUpperCase()
+                    : '?',
                 style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w900,
-                  color: kGreen),
+                    fontSize: 14, fontWeight: FontWeight.w900, color: kGreen),
               ),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(user.displayName,
-                style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w800,
-                  color: kDark),
-                overflow: TextOverflow.ellipsis),
+                  style: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w800, color: kDark),
+                  overflow: TextOverflow.ellipsis),
               Text(user.email,
-                style: const TextStyle(
-                  fontSize: 10, fontWeight: FontWeight.w500,
-                  color: Color(0xFF9CA3AF)),
-                overflow: TextOverflow.ellipsis),
+                  style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF9CA3AF)),
+                  overflow: TextOverflow.ellipsis),
             ]),
           ),
           const SizedBox(width: 8),
           // Tempo total
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Text(user.usageFormatted,
-              style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w900,
-                color: user.totalUsageSeconds > 0 ? kGreen : const Color(0xFFD1D5DB))),
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: user.totalUsageSeconds > 0
+                        ? kGreen
+                        : const Color(0xFFD1D5DB))),
             Text(lastSeenLabel,
-              style: const TextStyle(
-                fontSize: 10, color: Color(0xFF9CA3AF),
-                fontWeight: FontWeight.w500)),
+                style: const TextStyle(
+                    fontSize: 10,
+                    color: Color(0xFF9CA3AF),
+                    fontWeight: FontWeight.w500)),
           ]),
         ]),
 
@@ -2845,7 +3259,7 @@ class _UserUsageRow extends StatelessWidget {
                     ? kGold
                     : const Color(0xFF9CA3AF),
           ),
-          if (user.loginCount > 0) ...[  
+          if (user.loginCount > 0) ...[
             const SizedBox(width: 6),
             _MiniChip(
               label: '${user.loginCount}× acessos',
@@ -2854,12 +3268,11 @@ class _UserUsageRow extends StatelessWidget {
           ],
           const Spacer(),
           Text(
-            'Entrou: ${user.createdAt.day.toString().padLeft(2,'0')}/'
-            '${user.createdAt.month.toString().padLeft(2,'0')}/'
-            '${user.createdAt.year}',
-            style: TextStyle(
-              fontSize: 9, color: c.textHint,
-              fontWeight: FontWeight.w600)),
+              'Entrou: ${user.createdAt.day.toString().padLeft(2, '0')}/'
+              '${user.createdAt.month.toString().padLeft(2, '0')}/'
+              '${user.createdAt.year}',
+              style: TextStyle(
+                  fontSize: 9, color: c.textHint, fontWeight: FontWeight.w600)),
         ]),
       ]),
     );
@@ -2882,8 +3295,8 @@ class _MiniChip extends StatelessWidget {
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(label,
-        style: TextStyle(
-          fontSize: 9, fontWeight: FontWeight.w800, color: color)),
+          style: TextStyle(
+              fontSize: 9, fontWeight: FontWeight.w800, color: color)),
     );
   }
 }
@@ -2901,39 +3314,39 @@ class _EmailTab extends StatefulWidget {
 }
 
 class _EmailTabState extends State<_EmailTab> {
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
-  static const kBlue  = Color(0xFF1A56DB);
+  static const kBlue = Color(0xFF1A56DB);
 
   AppColors get _c => AppColors.of(context);
 
   // ── Campos do formulário ──────────────────────────────────────────────────
   final _subjectCtrl = TextEditingController();
-  final _bodyCtrl    = TextEditingController();
+  final _bodyCtrl = TextEditingController();
 
   // ── Config EmailJS ────────────────────────────────────────────────────────
-  final _serviceCtrl  = TextEditingController();
+  final _serviceCtrl = TextEditingController();
   final _templateCtrl = TextEditingController();
-  final _pubKeyCtrl   = TextEditingController();
-  bool _configHidden  = true;
-  bool _configSaving  = false;
-  bool _configSaved   = false;
-  bool _configLoaded  = false;
+  final _pubKeyCtrl = TextEditingController();
+  bool _configHidden = true;
+  bool _configSaving = false;
+  bool _configSaved = false;
+  bool _configLoaded = false;
 
   // ── Estado de envio ───────────────────────────────────────────────────────
-  String _recipients    = 'approved'; // 'approved' | 'all'
-  bool   _sending       = false;
-  int    _sentCount     = 0;
-  int    _totalCount    = 0;
-  String?_sendResult;
-  bool   _sendSuccess   = false;
+  String _recipients = 'approved'; // 'approved' | 'all'
+  bool _sending = false;
+  int _sentCount = 0;
+  int _totalCount = 0;
+  String? _sendResult;
+  bool _sendSuccess = false;
 
   // ── Histórico ─────────────────────────────────────────────────────────────
   List<Map<String, dynamic>> _history = [];
   bool _historyLoading = false;
-  bool _showHistory    = false;
+  bool _showHistory = false;
 
   @override
   void initState() {
@@ -2956,27 +3369,36 @@ class _EmailTabState extends State<_EmailTab> {
     final cfg = await FirestoreService.loadEmailJsConfig();
     if (!mounted) return;
     setState(() {
-      _serviceCtrl.text  = cfg['serviceId']  ?? '';
+      _serviceCtrl.text = cfg['serviceId'] ?? '';
       _templateCtrl.text = cfg['templateId'] ?? '';
-      _pubKeyCtrl.text   = cfg['publicKey']  ?? '';
-      _configLoaded      = true;
+      _pubKeyCtrl.text = cfg['publicKey'] ?? '';
+      _configLoaded = true;
     });
   }
 
   Future<void> _saveConfig() async {
     final sid = _serviceCtrl.text.trim();
     final tid = _templateCtrl.text.trim();
-    final pk  = _pubKeyCtrl.text.trim();
+    final pk = _pubKeyCtrl.text.trim();
     if (sid.isEmpty || tid.isEmpty || pk.isEmpty) {
       _snack('Preencha todos os campos da configuração.', Colors.red);
       return;
     }
-    setState(() { _configSaving = true; _configSaved = false; });
+    setState(() {
+      _configSaving = true;
+      _configSaved = false;
+    });
     try {
       await FirestoreService.saveEmailJsConfig(
-        serviceId: sid, templateId: tid, publicKey: pk,
+        serviceId: sid,
+        templateId: tid,
+        publicKey: pk,
       );
-      if (mounted) setState(() { _configSaving = false; _configSaved = true; });
+      if (mounted)
+        setState(() {
+          _configSaving = false;
+          _configSaved = true;
+        });
       await Future.delayed(const Duration(seconds: 3));
       if (mounted) setState(() => _configSaved = false);
     } catch (e) {
@@ -3002,10 +3424,10 @@ class _EmailTabState extends State<_EmailTab> {
 
   Future<void> _send() async {
     final subject = _subjectCtrl.text.trim();
-    final body    = _bodyCtrl.text.trim();
-    final sid     = _serviceCtrl.text.trim();
-    final tid     = _templateCtrl.text.trim();
-    final pk      = _pubKeyCtrl.text.trim();
+    final body = _bodyCtrl.text.trim();
+    final sid = _serviceCtrl.text.trim();
+    final tid = _templateCtrl.text.trim();
+    final pk = _pubKeyCtrl.text.trim();
 
     if (subject.isEmpty || body.isEmpty) {
       _snack('Preencha o assunto e o corpo do e-mail.', Colors.orange);
@@ -3028,8 +3450,8 @@ class _EmailTabState extends State<_EmailTab> {
     if (!confirm) return;
 
     setState(() {
-      _sending    = true;
-      _sentCount  = 0;
+      _sending = true;
+      _sentCount = 0;
       _totalCount = targets.length;
       _sendResult = null;
     });
@@ -3040,14 +3462,14 @@ class _EmailTabState extends State<_EmailTab> {
     for (final user in targets) {
       try {
         await FirestoreService.sendEmailViaEmailJs(
-          serviceId:   sid,
-          templateId:  tid,
-          publicKey:   pk,
-          toEmail:     user.email,
-          toName:      user.displayName.isNotEmpty ? user.displayName : user.email,
-          subject:     subject,
-          message:     body,
-          fromName:    'MedCases Pro',
+          serviceId: sid,
+          templateId: tid,
+          publicKey: pk,
+          toEmail: user.email,
+          toName: user.displayName.isNotEmpty ? user.displayName : user.email,
+          subject: subject,
+          message: body,
+          fromName: 'MedCases Pro',
         );
         successCount++;
       } catch (e) {
@@ -3061,20 +3483,20 @@ class _EmailTabState extends State<_EmailTab> {
     // Salva no histórico
     final hasErrors = errors.isNotEmpty;
     await FirestoreService.saveEmailCampaign(
-      subject:        subject,
-      body:           body,
-      sentBy:         widget.currentAdmin.email,
-      recipients:     _recipients,
+      subject: subject,
+      body: body,
+      sentBy: widget.currentAdmin.email,
+      recipients: _recipients,
       recipientCount: successCount,
-      status:         hasErrors && successCount == 0 ? 'error' : 'sent',
-      errorMsg:       errors.take(3).join(' | '),
+      status: hasErrors && successCount == 0 ? 'error' : 'sent',
+      errorMsg: errors.take(3).join(' | '),
     );
 
     if (mounted) {
       setState(() {
-        _sending     = false;
+        _sending = false;
         _sendSuccess = successCount > 0;
-        _sendResult  = successCount > 0
+        _sendResult = successCount > 0
             ? '✓ $successCount e-mail${successCount > 1 ? 's' : ''} enviado${successCount > 1 ? 's' : ''} com sucesso!'
             : 'Falha ao enviar. Verifique a configuração do EmailJS.';
         if (hasErrors && successCount > 0) {
@@ -3090,7 +3512,8 @@ class _EmailTabState extends State<_EmailTab> {
           context: context,
           builder: (_) => AlertDialog(
             backgroundColor: const Color(0xFFFFFDF8),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: Row(children: [
               Container(
                 padding: const EdgeInsets.all(8),
@@ -3102,53 +3525,66 @@ class _EmailTabState extends State<_EmailTab> {
               ),
               const SizedBox(width: 10),
               const Text('Confirmar envio',
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: kDark)),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900, fontSize: 16, color: kDark)),
             ]),
-            content: Column(mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                'Você está prestes a enviar um e-mail para',
-                style: TextStyle(fontSize: 13, color: kDark.withOpacity(0.7)),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: kBlue.withOpacity(0.06),
-                  border: Border.all(color: kBlue.withOpacity(0.2)),
-                ),
-                child: Row(children: [
-                  const Icon(Icons.people_rounded, size: 18, color: kBlue),
-                  const SizedBox(width: 8),
-                  Text('$count destinatário${count > 1 ? 's' : ''}',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: kBlue)),
+            content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Você está prestes a enviar um e-mail para',
+                    style:
+                        TextStyle(fontSize: 13, color: kDark.withOpacity(0.7)),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: kBlue.withOpacity(0.06),
+                      border: Border.all(color: kBlue.withOpacity(0.2)),
+                    ),
+                    child: Row(children: [
+                      const Icon(Icons.people_rounded, size: 18, color: kBlue),
+                      const SizedBox(width: 8),
+                      Text('$count destinatário${count > 1 ? 's' : ''}',
+                          style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
+                              color: kBlue)),
+                    ]),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Assunto: "${_subjectCtrl.text.trim()}"',
+                    style:
+                        TextStyle(fontSize: 12, color: kDark.withOpacity(0.6)),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Esta ação não pode ser desfeita.',
+                    style: TextStyle(fontSize: 11, color: Colors.red.shade400),
+                  ),
                 ]),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Assunto: "${_subjectCtrl.text.trim()}"',
-                style: TextStyle(fontSize: 12, color: kDark.withOpacity(0.6)),
-                maxLines: 2, overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Esta ação não pode ser desfeita.',
-                style: TextStyle(fontSize: 11, color: Colors.red.shade400),
-              ),
-            ]),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+                child: const Text('Cancelar',
+                    style: TextStyle(color: Colors.grey)),
               ),
               ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context, true),
                 icon: const Icon(Icons.send_rounded, size: 14),
                 label: const Text('Enviar agora'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: kBlue, foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  backgroundColor: kBlue,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
             ],
@@ -3164,7 +3600,6 @@ class _EmailTabState extends State<_EmailTab> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Header ────────────────────────────────────────────────────────
         Container(
           width: double.infinity,
@@ -3173,7 +3608,8 @@ class _EmailTabState extends State<_EmailTab> {
             borderRadius: BorderRadius.circular(14),
             gradient: const LinearGradient(
               colors: [Color(0xFF0F1E4A), Color(0xFF1A3A8F), kBlue],
-              begin: Alignment.topLeft, end: Alignment.bottomRight,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
           child: Row(children: [
@@ -3183,17 +3619,25 @@ class _EmailTabState extends State<_EmailTab> {
                 borderRadius: BorderRadius.circular(12),
                 color: Colors.white.withOpacity(0.12),
               ),
-              child: const Icon(Icons.mark_email_unread_rounded, color: Colors.white, size: 22),
+              child: const Icon(Icons.mark_email_unread_rounded,
+                  color: Colors.white, size: 22),
             ),
             const SizedBox(width: 12),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('E-mail para Usuários',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
-              Text(
-                '${widget.allUsers.length} registrados  ·  ${widget.allUsers.where((u) => u.isApproved).length} aprovados',
-                style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.65)),
-              ),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  const Text('E-mail para Usuários',
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white)),
+                  Text(
+                    '${widget.allUsers.length} registrados  ·  ${widget.allUsers.where((u) => u.isApproved).length} aprovados',
+                    style: TextStyle(
+                        fontSize: 11, color: Colors.white.withOpacity(0.65)),
+                  ),
+                ])),
           ]),
         ),
         const SizedBox(height: 16),
@@ -3202,16 +3646,19 @@ class _EmailTabState extends State<_EmailTab> {
         _sectionLabel('DESTINATÁRIOS', Icons.people_rounded),
         const SizedBox(height: 8),
         Row(children: [
-          Expanded(child: _RecipientChip(
+          Expanded(
+              child: _RecipientChip(
             label: 'Aprovados',
-            subtitle: '${widget.allUsers.where((u) => u.isApproved).length} usuários',
+            subtitle:
+                '${widget.allUsers.where((u) => u.isApproved).length} usuários',
             icon: Icons.verified_user_rounded,
             color: kGreen,
             selected: _recipients == 'approved',
             onTap: () => setState(() => _recipients = 'approved'),
           )),
           const SizedBox(width: 10),
-          Expanded(child: _RecipientChip(
+          Expanded(
+              child: _RecipientChip(
             label: 'Todos',
             subtitle: '${widget.allUsers.length} usuários',
             icon: Icons.group_rounded,
@@ -3225,7 +3672,8 @@ class _EmailTabState extends State<_EmailTab> {
           padding: const EdgeInsets.only(left: 2),
           child: Text(
             '${targets.length} e-mail${targets.length != 1 ? 's' : ''} serão enviados',
-            style: TextStyle(fontSize: 11, color: _c.textHint, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                fontSize: 11, color: _c.textHint, fontWeight: FontWeight.w600),
           ),
         ),
         const SizedBox(height: 16),
@@ -3244,7 +3692,8 @@ class _EmailTabState extends State<_EmailTab> {
         _buildField(
           controller: _bodyCtrl,
           label: 'Corpo do e-mail',
-          hint: 'Escreva a mensagem que os usuários receberão...\n\nEx: Olá {{to_name}},\nTemos novidades para você no MedCases Pro!\n\nAtenciosamente,\nEquipe MedCases',
+          hint:
+              'Escreva a mensagem que os usuários receberão...\n\nEx: Olá {{to_name}},\nTemos novidades para você no MedCases Pro!\n\nAtenciosamente,\nEquipe MedCases',
           icon: Icons.article_rounded,
           maxLines: 8,
         ),
@@ -3270,13 +3719,16 @@ class _EmailTabState extends State<_EmailTab> {
             child: Column(children: [
               Row(children: [
                 const SizedBox(
-                  width: 16, height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: kBlue),
+                  width: 16,
+                  height: 16,
+                  child:
+                      CircularProgressIndicator(strokeWidth: 2, color: kBlue),
                 ),
                 const SizedBox(width: 10),
                 Text(
                   'Enviando $_sentCount de $_totalCount...',
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kBlue),
+                  style: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w700, color: kBlue),
                 ),
               ]),
               const SizedBox(height: 8),
@@ -3317,11 +3769,13 @@ class _EmailTabState extends State<_EmailTab> {
                 color: _sendSuccess ? kGreen : Colors.red,
               ),
               const SizedBox(width: 10),
-              Expanded(child: Text(_sendResult!,
-                style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700,
-                  color: _sendSuccess ? kGreen : Colors.red,
-                ))),
+              Expanded(
+                  child: Text(_sendResult!,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: _sendSuccess ? kGreen : Colors.red,
+                      ))),
             ]),
           ),
           const SizedBox(height: 12),
@@ -3333,8 +3787,11 @@ class _EmailTabState extends State<_EmailTab> {
           child: ElevatedButton.icon(
             onPressed: _sending ? null : _send,
             icon: _sending
-                ? const SizedBox(width: 16, height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white))
                 : const Icon(Icons.send_rounded, size: 16),
             label: Text(
               _sending
@@ -3343,9 +3800,11 @@ class _EmailTabState extends State<_EmailTab> {
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: kBlue, foregroundColor: Colors.white,
+              backgroundColor: kBlue,
+              foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
           ),
@@ -3362,7 +3821,8 @@ class _EmailTabState extends State<_EmailTab> {
               borderRadius: BorderRadius.circular(12),
               color: _c.cardBg,
               border: Border.all(
-                color: (_serviceCtrl.text.isNotEmpty && _templateCtrl.text.isNotEmpty)
+                color: (_serviceCtrl.text.isNotEmpty &&
+                        _templateCtrl.text.isNotEmpty)
                     ? kGreen.withOpacity(0.3)
                     : _c.border,
               ),
@@ -3377,27 +3837,42 @@ class _EmailTabState extends State<_EmailTab> {
                       : Colors.orange.withOpacity(0.1),
                 ),
                 child: Icon(
-                  Icons.settings_rounded, size: 16,
-                  color: (_serviceCtrl.text.isNotEmpty) ? kGreen : Colors.orange,
+                  Icons.settings_rounded,
+                  size: 16,
+                  color:
+                      (_serviceCtrl.text.isNotEmpty) ? kGreen : Colors.orange,
                 ),
               ),
               const SizedBox(width: 10),
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('Configuração EmailJS',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: _c.textPrimary)),
-                Text(
-                  (_serviceCtrl.text.isNotEmpty && _templateCtrl.text.isNotEmpty)
-                      ? '✓ Configurado — pronto para envio'
-                      : '⚠ Configure para enviar e-mails',
-                  style: TextStyle(
-                    fontSize: 10, fontWeight: FontWeight.w600,
-                    color: (_serviceCtrl.text.isNotEmpty) ? kGreen : Colors.orange,
-                  ),
-                ),
-              ])),
+              Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text('Configuração EmailJS',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: _c.textPrimary)),
+                    Text(
+                      (_serviceCtrl.text.isNotEmpty &&
+                              _templateCtrl.text.isNotEmpty)
+                          ? '✓ Configurado — pronto para envio'
+                          : '⚠ Configure para enviar e-mails',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: (_serviceCtrl.text.isNotEmpty)
+                            ? kGreen
+                            : Colors.orange,
+                      ),
+                    ),
+                  ])),
               Icon(
-                _configHidden ? Icons.expand_more_rounded : Icons.expand_less_rounded,
-                size: 18, color: _c.textHint,
+                _configHidden
+                    ? Icons.expand_more_rounded
+                    : Icons.expand_less_rounded,
+                size: 18,
+                color: _c.textHint,
               ),
             ]),
           ),
@@ -3412,7 +3887,8 @@ class _EmailTabState extends State<_EmailTab> {
               color: _c.cardBg,
               border: Border.all(color: _c.border),
             ),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               // Instruções
               Container(
                 padding: const EdgeInsets.all(12),
@@ -3421,44 +3897,81 @@ class _EmailTabState extends State<_EmailTab> {
                   color: kBlue.withOpacity(0.05),
                   border: Border.all(color: kBlue.withOpacity(0.15)),
                 ),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Row(children: [
-                    Icon(Icons.info_outline_rounded, size: 14, color: kBlue),
-                    SizedBox(width: 6),
-                    Text('Como configurar o EmailJS',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: kBlue)),
-                  ]),
-                  const SizedBox(height: 6),
-                  _instrLine('1.', 'Crie conta gratuita em emailjs.com'),
-                  _instrLine('2.', 'Conecte seu Gmail/Outlook em "Email Services"'),
-                  _instrLine('3.', 'Crie um template com variáveis: {{to_name}}, {{subject}}, {{message}}, {{from_name}}'),
-                  _instrLine('4.', 'Copie Service ID, Template ID e Public Key abaixo'),
-                ]),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(children: [
+                        Icon(Icons.info_outline_rounded,
+                            size: 14, color: kBlue),
+                        SizedBox(width: 6),
+                        Text('Como configurar o EmailJS',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                color: kBlue)),
+                      ]),
+                      const SizedBox(height: 6),
+                      _instrLine('1.', 'Crie conta gratuita em emailjs.com'),
+                      _instrLine('2.',
+                          'Conecte seu Gmail/Outlook em "Email Services"'),
+                      _instrLine('3.',
+                          'Crie um template com variáveis: {{to_name}}, {{subject}}, {{message}}, {{from_name}}'),
+                      _instrLine('4.',
+                          'Copie Service ID, Template ID e Public Key abaixo'),
+                    ]),
               ),
               const SizedBox(height: 12),
-              _buildField(controller: _serviceCtrl,  label: 'Service ID',  hint: 'service_xxxxxxx',  icon: Icons.dns_rounded,    maxLines: 1),
+              _buildField(
+                  controller: _serviceCtrl,
+                  label: 'Service ID',
+                  hint: 'service_xxxxxxx',
+                  icon: Icons.dns_rounded,
+                  maxLines: 1),
               const SizedBox(height: 8),
-              _buildField(controller: _templateCtrl, label: 'Template ID', hint: 'template_xxxxxxx', icon: Icons.description_rounded, maxLines: 1),
+              _buildField(
+                  controller: _templateCtrl,
+                  label: 'Template ID',
+                  hint: 'template_xxxxxxx',
+                  icon: Icons.description_rounded,
+                  maxLines: 1),
               const SizedBox(height: 8),
-              _buildField(controller: _pubKeyCtrl,   label: 'Public Key',  hint: 'xxxxxxxxxxxx',     icon: Icons.vpn_key_rounded,    maxLines: 1),
+              _buildField(
+                  controller: _pubKeyCtrl,
+                  label: 'Public Key',
+                  hint: 'xxxxxxxxxxxx',
+                  icon: Icons.vpn_key_rounded,
+                  maxLines: 1),
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: _configSaving ? null : _saveConfig,
                   icon: _configSaving
-                      ? const SizedBox(width: 14, height: 14,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : Icon(_configSaved ? Icons.check_rounded : Icons.save_rounded, size: 14),
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white))
+                      : Icon(
+                          _configSaved
+                              ? Icons.check_rounded
+                              : Icons.save_rounded,
+                          size: 14),
                   label: Text(
-                    _configSaving ? 'Salvando...' : _configSaved ? 'Salvo!' : 'Salvar configuração',
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                    _configSaving
+                        ? 'Salvando...'
+                        : _configSaved
+                            ? 'Salvo!'
+                            : 'Salvar configuração',
+                    style: const TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w800),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _configSaved ? kGreen : kDark,
                     foregroundColor: kGoldL,
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     elevation: 0,
                   ),
                 ),
@@ -3489,25 +4002,37 @@ class _EmailTabState extends State<_EmailTab> {
                   borderRadius: BorderRadius.circular(8),
                   color: kGold.withOpacity(0.1),
                 ),
-                child: const Icon(Icons.history_rounded, size: 16, color: kGold),
+                child:
+                    const Icon(Icons.history_rounded, size: 16, color: kGold),
               ),
               const SizedBox(width: 10),
-              Expanded(child: Text('Histórico de envios',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: _c.textPrimary))),
+              Expanded(
+                  child: Text('Histórico de envios',
+                      style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: _c.textPrimary))),
               if (_history.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: kGold.withOpacity(0.12),
                   ),
                   child: Text('${_history.length}',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kGold)),
+                      style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: kGold)),
                 ),
               const SizedBox(width: 6),
               Icon(
-                _showHistory ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                size: 18, color: _c.textHint,
+                _showHistory
+                    ? Icons.expand_less_rounded
+                    : Icons.expand_more_rounded,
+                size: 18,
+                color: _c.textHint,
               ),
             ]),
           ),
@@ -3516,7 +4041,8 @@ class _EmailTabState extends State<_EmailTab> {
         if (_showHistory) ...[
           const SizedBox(height: 10),
           if (_historyLoading)
-            const Center(child: Padding(
+            const Center(
+                child: Padding(
               padding: EdgeInsets.all(20),
               child: CircularProgressIndicator(color: kGreen),
             ))
@@ -3528,8 +4054,9 @@ class _EmailTabState extends State<_EmailTab> {
                 color: _c.cardBg,
                 border: Border.all(color: _c.border),
               ),
-              child: Center(child: Text('Nenhum e-mail enviado ainda.',
-                style: TextStyle(color: _c.textHint, fontSize: 13))),
+              child: Center(
+                  child: Text('Nenhum e-mail enviado ainda.',
+                      style: TextStyle(color: _c.textHint, fontSize: 13))),
             )
           else
             ...(_history.map((h) => _HistoryCard(data: h))),
@@ -3545,10 +4072,12 @@ class _EmailTabState extends State<_EmailTab> {
       Icon(icon, size: 13, color: _c.textHint),
       const SizedBox(width: 6),
       Text(text,
-        style: TextStyle(
-          fontSize: 10, fontWeight: FontWeight.w900,
-          letterSpacing: 1.2, color: _c.textHint,
-        )),
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.2,
+            color: _c.textHint,
+          )),
     ]);
   }
 
@@ -3573,7 +4102,8 @@ class _EmailTabState extends State<_EmailTab> {
         hintStyle: TextStyle(fontSize: 12, color: _c.textHint),
         prefixIcon: Icon(icon, size: 16, color: kGold),
         prefixIconConstraints: const BoxConstraints(minWidth: 40),
-        filled: true, fillColor: _c.inputBg,
+        filled: true,
+        fillColor: _c.inputBg,
         isDense: true,
         alignLabelWithHint: maxLines > 1,
         border: OutlineInputBorder(
@@ -3588,7 +4118,8 @@ class _EmailTabState extends State<_EmailTab> {
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: kBlue, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       ),
     );
   }
@@ -3597,10 +4128,13 @@ class _EmailTabState extends State<_EmailTab> {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(num, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kBlue)),
+        Text(num,
+            style: const TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w800, color: kBlue)),
         const SizedBox(width: 6),
-        Expanded(child: Text(text,
-          style: TextStyle(fontSize: 11, color: _c.textSecondary))),
+        Expanded(
+            child: Text(text,
+                style: TextStyle(fontSize: 11, color: _c.textSecondary))),
       ]),
     );
   }
@@ -3625,8 +4159,12 @@ class _RecipientChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
   const _RecipientChip({
-    required this.label, required this.subtitle, required this.icon,
-    required this.color, required this.selected, required this.onTap,
+    required this.label,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.selected,
+    required this.onTap,
   });
 
   @override
@@ -3655,15 +4193,19 @@ class _RecipientChip extends StatelessWidget {
             child: Icon(icon, size: 16, color: color),
           ),
           const SizedBox(width: 10),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(label,
-              style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w800,
-                color: selected ? color : c.textPrimary,
-              )),
-            Text(subtitle,
-              style: TextStyle(fontSize: 10, color: c.textHint)),
-          ])),
+          Expanded(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: selected ? color : c.textPrimary,
+                    )),
+                Text(subtitle,
+                    style: TextStyle(fontSize: 10, color: c.textHint)),
+              ])),
           if (selected)
             Icon(Icons.check_circle_rounded, size: 16, color: color),
         ]),
@@ -3675,8 +4217,8 @@ class _RecipientChip extends StatelessWidget {
 // ── Card de histórico de campanha ─────────────────────────────────────────────
 class _HistoryCard extends StatelessWidget {
   final Map<String, dynamic> data;
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
 
   const _HistoryCard({required this.data});
 
@@ -3684,14 +4226,14 @@ class _HistoryCard extends StatelessWidget {
     if (ts == null) return '—';
     if (ts is DateTime) {
       final d = ts.toLocal();
-      return '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year} '
-             '${d.hour.toString().padLeft(2,'0')}:${d.minute.toString().padLeft(2,'0')}';
+      return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year} '
+          '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
     }
     // Firestore Timestamp — converte via runtimeType para evitar import direto
     try {
       final d = (ts as dynamic).toDate() as DateTime;
-      return '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year} '
-             '${d.hour.toString().padLeft(2,'0')}:${d.minute.toString().padLeft(2,'0')}';
+      return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year} '
+          '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
     } catch (_) {}
     if (false) {
       return '';
@@ -3701,13 +4243,13 @@ class _HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c       = AppColors.of(context);
-    final ok      = (data['status'] as String?) == 'sent';
-    final count   = (data['recipientCount'] as int?) ?? 0;
+    final c = AppColors.of(context);
+    final ok = (data['status'] as String?) == 'sent';
+    final count = (data['recipientCount'] as int?) ?? 0;
     final subject = (data['subject'] as String?) ?? '';
-    final sentBy  = (data['sentBy'] as String?) ?? '';
-    final recip   = (data['recipients'] as String?) ?? '';
-    final ts      = data['sentAt'];
+    final sentBy = (data['sentBy'] as String?) ?? '';
+    final recip = (data['recipients'] as String?) ?? '';
+    final ts = data['sentAt'];
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -3716,9 +4258,7 @@ class _HistoryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         color: c.cardBg,
         border: Border.all(
-          color: ok
-              ? kGreen.withOpacity(0.2)
-              : Colors.red.withOpacity(0.2),
+          color: ok ? kGreen.withOpacity(0.2) : Colors.red.withOpacity(0.2),
         ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -3729,21 +4269,25 @@ class _HistoryCard extends StatelessWidget {
             color: ok ? kGreen : Colors.red,
           ),
           const SizedBox(width: 6),
-          Expanded(child: Text(subject,
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: c.textPrimary),
-            maxLines: 1, overflow: TextOverflow.ellipsis)),
+          Expanded(
+              child: Text(subject,
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: c.textPrimary),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis)),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: ok
-                  ? kGreen.withOpacity(0.1)
-                  : Colors.red.withOpacity(0.1),
+              color: ok ? kGreen.withOpacity(0.1) : Colors.red.withOpacity(0.1),
             ),
             child: Text(
               ok ? '$count enviados' : 'Falha',
               style: TextStyle(
-                fontSize: 10, fontWeight: FontWeight.w800,
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
                 color: ok ? kGreen : Colors.red,
               ),
             ),
@@ -3760,11 +4304,15 @@ class _HistoryCard extends StatelessWidget {
           const SizedBox(width: 12),
           Icon(Icons.person_outline_rounded, size: 11, color: c.textHint),
           const SizedBox(width: 4),
-          Expanded(child: Text(sentBy,
-            style: TextStyle(fontSize: 10, color: c.textHint),
-            overflow: TextOverflow.ellipsis)),
+          Expanded(
+              child: Text(sentBy,
+                  style: TextStyle(fontSize: 10, color: c.textHint),
+                  overflow: TextOverflow.ellipsis)),
           Text(_formatTs(ts),
-            style: TextStyle(fontSize: 10, color: c.textHint, fontWeight: FontWeight.w600)),
+              style: TextStyle(
+                  fontSize: 10,
+                  color: c.textHint,
+                  fontWeight: FontWeight.w600)),
         ]),
       ]),
     );
@@ -3796,25 +4344,29 @@ class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 14),
         decoration: BoxDecoration(
           color: _kGreen,
-          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
+          borderRadius:
+              const BorderRadius.vertical(bottom: Radius.circular(16)),
         ),
         child: Row(children: [
           const Icon(Icons.menu_book_rounded, color: Colors.white, size: 22),
           const SizedBox(width: 10),
           const Expanded(
             child: Text('Biblioteca Clínica',
-              style: TextStyle(color: Colors.white, fontSize: 16,
-                  fontWeight: FontWeight.w800)),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800)),
           ),
           FilledButton.icon(
             onPressed: () => _openUploadDialog(context),
             icon: const Icon(Icons.upload_file_rounded, size: 16),
-            label: const Text('Novo PDF', style: TextStyle(fontSize: 13)),
+            label: const Text('Novo guia', style: TextStyle(fontSize: 13)),
             style: FilledButton.styleFrom(
               backgroundColor: Colors.white.withOpacity(0.18),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
           ),
         ]),
@@ -3826,22 +4378,26 @@ class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
           stream: FirestoreService.guidesAdminStream(),
           builder: (context, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(
-                  color: _kGreen, strokeWidth: 2));
+              return const Center(
+                  child: CircularProgressIndicator(
+                      color: _kGreen, strokeWidth: 2));
             }
             final guides = snap.data ?? [];
             if (guides.isEmpty) {
-              return Center(child: Column(
+              return Center(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.library_books_rounded, size: 52,
-                      color: c.textHint.withOpacity(0.4)),
+                  Icon(Icons.library_books_rounded,
+                      size: 52, color: c.textHint.withOpacity(0.4)),
                   const SizedBox(height: 14),
                   Text('Nenhum guia publicado ainda',
-                      style: TextStyle(color: c.textHint, fontSize: 14,
+                      style: TextStyle(
+                          color: c.textHint,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600)),
                   const SizedBox(height: 6),
-                  Text('Toque em "Novo PDF" para adicionar',
+                  Text('Crie uma guia editorial em PT + ES',
                       style: TextStyle(color: c.textHint, fontSize: 12)),
                 ],
               ));
@@ -3865,12 +4421,12 @@ class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
   }
 
   void _openUploadDialog(BuildContext context, {GuideModel? guide}) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => _GuideUploadDialog(
-        guide: guide,
-        adminName: widget.currentAdmin?.displayName as String? ?? 'Admin',
+    Navigator.of(context).push(
+      MaterialPageRoute<bool>(
+        builder: (_) => AdminClinicalGuideEditorScreen(
+          guide: guide,
+          adminName: widget.currentAdmin?.displayName as String? ?? 'Admin',
+        ),
       ),
     );
   }
@@ -3882,15 +4438,15 @@ class _BibliotecaAdminTabState extends State<_BibliotecaAdminTab> {
         title: const Text('Excluir guia?'),
         content: Text('Isso removerá "${guide.title}" permanentemente.'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context),
+          TextButton(
+              onPressed: () => Navigator.pop(context),
               child: const Text('Cancelar')),
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
               await FirestoreService.deleteGuide(guide.id);
             },
-            child: const Text('Excluir',
-                style: TextStyle(color: Colors.red)),
+            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -3934,7 +4490,8 @@ class _AdminGuideCard extends StatelessWidget {
         Row(children: [
           // ícone PDF
           Container(
-            width: 38, height: 38,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: _kGreen.withOpacity(0.10),
               borderRadius: BorderRadius.circular(8),
@@ -3943,18 +4500,23 @@ class _AdminGuideCard extends StatelessWidget {
                 color: _kGreen, size: 20),
           ),
           const SizedBox(width: 10),
-          Expanded(child: Column(
+          Expanded(
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(guide.title,
-                style: TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w700,
-                  color: c.textPrimary),
-                maxLines: 2, overflow: TextOverflow.ellipsis),
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: c.textPrimary),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
               const SizedBox(height: 2),
               Text(guide.category,
-                style: TextStyle(fontSize: 11, color: _kGreen,
-                    fontWeight: FontWeight.w600)),
+                  style: TextStyle(
+                      fontSize: 11,
+                      color: _kGreen,
+                      fontWeight: FontWeight.w600)),
             ],
           )),
           // badge publicado
@@ -3969,16 +4531,18 @@ class _AdminGuideCard extends StatelessWidget {
             child: Text(
               published ? 'Publicado' : 'Rascunho',
               style: TextStyle(
-                fontSize: 10, fontWeight: FontWeight.w700,
-                color: published ? _kGreen : c.textHint),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: published ? _kGreen : c.textHint),
             ),
           ),
         ]),
         const SizedBox(height: 8),
         if (guide.description.isNotEmpty) ...[
           Text(guide.description,
-            style: TextStyle(fontSize: 12, color: c.textHint, height: 1.4),
-            maxLines: 2, overflow: TextOverflow.ellipsis),
+              style: TextStyle(fontSize: 12, color: c.textHint, height: 1.4),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis),
           const SizedBox(height: 8),
         ],
         // meta info
@@ -3986,19 +4550,18 @@ class _AdminGuideCard extends StatelessWidget {
           if (guide.year.isNotEmpty) ...[
             Icon(Icons.calendar_today_rounded, size: 11, color: c.textHint),
             const SizedBox(width: 3),
-            Text(guide.year,
-              style: TextStyle(fontSize: 11, color: c.textHint)),
+            Text(guide.year, style: TextStyle(fontSize: 11, color: c.textHint)),
             const SizedBox(width: 10),
           ],
           Icon(Icons.download_rounded, size: 11, color: c.textHint),
           const SizedBox(width: 3),
           Text('${guide.downloadCount} downloads',
-            style: TextStyle(fontSize: 11, color: c.textHint)),
+              style: TextStyle(fontSize: 11, color: c.textHint)),
           const SizedBox(width: 10),
           Icon(Icons.storage_rounded, size: 11, color: c.textHint),
           const SizedBox(width: 3),
           Text(guide.fileSizeLabel,
-            style: TextStyle(fontSize: 11, color: c.textHint)),
+              style: TextStyle(fontSize: 11, color: c.textHint)),
         ]),
         const SizedBox(height: 10),
         // ações
@@ -4044,17 +4607,17 @@ class _GuideUploadDialog extends StatefulWidget {
 class _GuideUploadDialogState extends State<_GuideUploadDialog> {
   static const _kGreen = Color(0xFF075f45);
 
-  final _titleCtrl       = TextEditingController();
-  final _descCtrl        = TextEditingController();
-  final _authorsCtrl     = TextEditingController();
-  final _yearCtrl        = TextEditingController();
+  final _titleCtrl = TextEditingController();
+  final _descCtrl = TextEditingController();
+  final _authorsCtrl = TextEditingController();
+  final _yearCtrl = TextEditingController();
 
-  String _category       = GuideModel.categories.first;
+  String _category = GuideModel.categories.first;
   Uint8List? _pdfBytes;
-  String?    _pdfFileName;
-  int?       _pdfFileSize;
+  String? _pdfFileName;
+  int? _pdfFileSize;
 
-  bool   _uploading      = false;
+  bool _uploading = false;
   double _uploadProgress = 0;
   String? _error;
 
@@ -4065,11 +4628,11 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
     super.initState();
     final g = widget.guide;
     if (g != null) {
-      _titleCtrl.text   = g.title;
-      _descCtrl.text    = g.description;
+      _titleCtrl.text = g.title;
+      _descCtrl.text = g.description;
       _authorsCtrl.text = g.authors;
-      _yearCtrl.text    = g.year;
-      _category         = g.category;
+      _yearCtrl.text = g.year;
+      _category = g.category;
     }
   }
 
@@ -4087,10 +4650,10 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
     webPickPdf().then((result) {
       if (result == null) return;
       setState(() {
-        _pdfBytes    = result.bytes;
+        _pdfBytes = result.bytes;
         _pdfFileName = result.name;
         _pdfFileSize = result.size;
-        _error       = null;
+        _error = null;
       });
     });
   }
@@ -4106,12 +4669,15 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
       return;
     }
 
-    setState(() { _uploading = true; _error = null; });
+    setState(() {
+      _uploading = true;
+      _error = null;
+    });
 
     try {
-      String pdfUrl      = widget.guide?.pdfUrl ?? '';
-      String fileName    = widget.guide?.fileName ?? '';
-      int    fileSize    = widget.guide?.fileSize ?? 0;
+      String pdfUrl = widget.guide?.pdfUrl ?? '';
+      String fileName = widget.guide?.fileName ?? '';
+      int fileSize = widget.guide?.fileSize ?? 0;
 
       // Upload novo PDF se selecionado
       if (_pdfBytes != null && _pdfFileName != null) {
@@ -4120,23 +4686,23 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
           fileName: _pdfFileName!,
           onProgress: (p) => setState(() => _uploadProgress = p),
         );
-        pdfUrl   = result.url;
+        pdfUrl = result.url;
         fileName = _pdfFileName!;
         fileSize = _pdfFileSize ?? 0;
       }
 
       final guide = GuideModel(
-        id:          widget.guide?.id ?? '',
-        title:       title,
+        id: widget.guide?.id ?? '',
+        title: title,
         description: _descCtrl.text.trim(),
-        category:    _category,
-        authors:     _authorsCtrl.text.trim(),
-        year:        _yearCtrl.text.trim(),
-        pdfUrl:      pdfUrl,
-        fileName:    fileName,
-        fileSize:    fileSize,
-        uploadedAt:  widget.guide?.uploadedAt ?? '',
-        uploadedBy:  widget.guide?.uploadedBy ?? widget.adminName,
+        category: _category,
+        authors: _authorsCtrl.text.trim(),
+        year: _yearCtrl.text.trim(),
+        pdfUrl: pdfUrl,
+        fileName: fileName,
+        fileSize: fileSize,
+        uploadedAt: widget.guide?.uploadedAt ?? '',
+        uploadedBy: widget.guide?.uploadedBy ?? widget.adminName,
         isPublished: widget.guide?.isPublished ?? false,
         downloadCount: widget.guide?.downloadCount ?? 0,
       );
@@ -4174,7 +4740,9 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
               Expanded(
                 child: Text(
                   _isEditing ? 'Editar Guia' : 'Novo Guia Clínico',
-                  style: const TextStyle(color: Colors.white, fontSize: 15,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
                       fontWeight: FontWeight.w800),
                 ),
               ),
@@ -4193,16 +4761,22 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _Field(label: 'Título *', controller: _titleCtrl,
+                  _Field(
+                      label: 'Título *',
+                      controller: _titleCtrl,
                       hint: 'ex: Protocolo Sepse 2024'),
                   const SizedBox(height: 12),
-                  _Field(label: 'Descrição', controller: _descCtrl,
-                      hint: 'Breve resumo do conteúdo', maxLines: 3),
+                  _Field(
+                      label: 'Descrição',
+                      controller: _descCtrl,
+                      hint: 'Breve resumo do conteúdo',
+                      maxLines: 3),
                   const SizedBox(height: 12),
 
                   // Categoria
                   const Text('Categoria *',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
                     value: _category,
@@ -4214,26 +4788,38 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
                       isDense: true,
                     ),
                     items: GuideModel.categories
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c,
-                            style: const TextStyle(fontSize: 13))))
+                        .map((c) => DropdownMenuItem(
+                            value: c,
+                            child:
+                                Text(c, style: const TextStyle(fontSize: 13))))
                         .toList(),
-                    onChanged: (v) { if (v != null) setState(() => _category = v); },
+                    onChanged: (v) {
+                      if (v != null) setState(() => _category = v);
+                    },
                   ),
                   const SizedBox(height: 12),
 
                   Row(children: [
-                    Expanded(child: _Field(label: 'Autores', controller: _authorsCtrl,
-                        hint: 'ex: Silva JA, Santos MR')),
+                    Expanded(
+                        child: _Field(
+                            label: 'Autores',
+                            controller: _authorsCtrl,
+                            hint: 'ex: Silva JA, Santos MR')),
                     const SizedBox(width: 12),
-                    SizedBox(width: 100, child: _Field(label: 'Ano',
-                        controller: _yearCtrl, hint: '2024',
-                        keyboardType: TextInputType.number)),
+                    SizedBox(
+                        width: 100,
+                        child: _Field(
+                            label: 'Ano',
+                            controller: _yearCtrl,
+                            hint: '2024',
+                            keyboardType: TextInputType.number)),
                   ]),
                   const SizedBox(height: 16),
 
                   // Seleção de PDF
                   const Text('Arquivo PDF',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
                   // Botão explícito — GestureDetector não dispara FilePicker no web/Dialog
                   SizedBox(
@@ -4249,14 +4835,13 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
                       ),
                       label: Text(
                         _pdfFileName ??
-                            (_isEditing
-                                ? 'Substituir PDF'
-                                : 'Selecionar PDF'),
+                            (_isEditing ? 'Substituir PDF' : 'Selecionar PDF'),
                         style: TextStyle(
                           fontSize: 13,
                           color: _pdfBytes != null ? _kGreen : Colors.grey[700],
                           fontWeight: _pdfBytes != null
-                              ? FontWeight.w600 : FontWeight.w500,
+                              ? FontWeight.w600
+                              : FontWeight.w500,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -4317,9 +4902,10 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
                         const Icon(Icons.error_outline_rounded,
                             color: Colors.red, size: 16),
                         const SizedBox(width: 8),
-                        Expanded(child: Text(_error!,
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.red))),
+                        Expanded(
+                            child: Text(_error!,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.red))),
                       ]),
                     ),
                   ],
@@ -4332,8 +4918,8 @@ class _GuideUploadDialogState extends State<_GuideUploadDialog> {
           Container(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
             decoration: BoxDecoration(
-              border: Border(
-                  top: BorderSide(color: Colors.grey.withOpacity(0.15))),
+              border:
+                  Border(top: BorderSide(color: Colors.grey.withOpacity(0.15))),
             ),
             child: Row(children: [
               Expanded(
@@ -4389,28 +4975,28 @@ class _InfluencersTab extends StatefulWidget {
 }
 
 class _InfluencersTabState extends State<_InfluencersTab> {
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
   static const kAmbassadorGold = Color(0xFFD4AF37); // BUILD 310
 
   // ── Formulário ──────────────────────────────────────────────────────────
-  final _nameCtrl     = TextEditingController();
-  final _couponCtrl   = TextEditingController();
-  final _discCtrl     = TextEditingController();
-  final _slugPreview  = ValueNotifier<String>('');
-  bool  _saving       = false;
+  final _nameCtrl = TextEditingController();
+  final _couponCtrl = TextEditingController();
+  final _discCtrl = TextEditingController();
+  final _slugPreview = ValueNotifier<String>('');
+  bool _saving = false;
   String? _formError;
 
   // ── Lista + contagens ────────────────────────────────────────────────────
   List<InfluencerModel> _influencers = [];
-  Map<String, int>      _counts      = {};
+  Map<String, int> _counts = {};
   bool _listLoading = true;
 
   // BUILD 310 — Partner/Ambassador Dashboard
   List<Map<String, dynamic>> _partners = [];
-  Map<String, int>           _partnerCounts = {};
+  Map<String, int> _partnerCounts = {};
   bool _partnersLoading = true;
 
   // URL base do app para gerar o link de indicação
@@ -4447,24 +5033,28 @@ class _InfluencersTabState extends State<_InfluencersTab> {
       if (kIsWeb) {
         // ── Web: Firestore REST runQuery com idToken ──────────────────────
         const projectId = 'medcases-pro';
-        const fsBase    = 'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents';
+        const fsBase =
+            'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents';
         final token = await AuthService.getAdminToken();
-        if (token.isEmpty) throw Exception('Token admin vazio — faça login novamente.');
+        if (token.isEmpty)
+          throw Exception('Token admin vazio — faça login novamente.');
 
-        final url  = Uri.parse('$fsBase:runQuery');
+        final url = Uri.parse('$fsBase:runQuery');
         final resp = await http.post(
           url,
           headers: {
             'Authorization': 'Bearer $token',
-            'Content-Type':  'application/json',
+            'Content-Type': 'application/json',
           },
           body: jsonEncode({
             'structuredQuery': {
-              'from': [{'collectionId': 'users'}],
+              'from': [
+                {'collectionId': 'users'}
+              ],
               'where': {
                 'fieldFilter': {
                   'field': {'fieldPath': 'isPartner'},
-                  'op':    'EQUAL',
+                  'op': 'EQUAL',
                   'value': {'booleanValue': true},
                 },
               },
@@ -4480,32 +5070,36 @@ class _InfluencersTabState extends State<_InfluencersTab> {
         );
 
         if (resp.statusCode == 401 || resp.statusCode == 403) {
-          throw Exception('[permission-denied] REST partners: HTTP ${resp.statusCode}');
+          throw Exception(
+              '[permission-denied] REST partners: HTTP ${resp.statusCode}');
         }
         if (resp.statusCode != 200) {
-          throw Exception('Erro ao carregar parceiros: HTTP ${resp.statusCode}');
+          throw Exception(
+              'Erro ao carregar parceiros: HTTP ${resp.statusCode}');
         }
 
         final results = jsonDecode(resp.body) as List<dynamic>;
         list = results
             .where((r) => (r as Map<String, dynamic>).containsKey('document'))
             .map((r) {
-              final doc      = (r as Map<String, dynamic>)['document'] as Map<String, dynamic>;
-              final namePath = doc['name'] as String? ?? '';
-              final uid      = namePath.split('/').last;
-              final fields   = doc['fields'] as Map<String, dynamic>? ?? {};
+          final doc =
+              (r as Map<String, dynamic>)['document'] as Map<String, dynamic>;
+          final namePath = doc['name'] as String? ?? '';
+          final uid = namePath.split('/').last;
+          final fields = doc['fields'] as Map<String, dynamic>? ?? {};
 
-              String _str(String key) =>
-                  (fields[key] as Map<String, dynamic>?)?['stringValue'] as String? ?? '';
+          String _str(String key) =>
+              (fields[key] as Map<String, dynamic>?)?['stringValue']
+                  as String? ??
+              '';
 
-              return <String, dynamic>{
-                'uid':          uid,
-                'displayName':  _str('displayName'),
-                'partnerTitle': _str('partnerTitle'),
-                'referralLink': _str('referralLink'),
-              };
-            })
-            .toList();
+          return <String, dynamic>{
+            'uid': uid,
+            'displayName': _str('displayName'),
+            'partnerTitle': _str('partnerTitle'),
+            'referralLink': _str('referralLink'),
+          };
+        }).toList();
       } else {
         // ── Nativo: SDK Firestore com auth propagada normalmente ──────────
         final snap = await FirebaseFirestore.instance
@@ -4515,10 +5109,10 @@ class _InfluencersTabState extends State<_InfluencersTab> {
         list = snap.docs.map((d) {
           final data = d.data();
           return <String, dynamic>{
-            'uid':          d.id,
-            'displayName':  (data['displayName']  ?? '').toString(),
-            'partnerTitle': (data['partnerTitle']  ?? '').toString(),
-            'referralLink': (data['referralLink']  ?? '').toString(),
+            'uid': d.id,
+            'displayName': (data['displayName'] ?? '').toString(),
+            'partnerTitle': (data['partnerTitle'] ?? '').toString(),
+            'referralLink': (data['referralLink'] ?? '').toString(),
           };
         }).toList();
       }
@@ -4526,7 +5120,8 @@ class _InfluencersTabState extends State<_InfluencersTab> {
       // Conta referrals para cada parceiro (shared Web+nativo via ReferralService)
       final countFutures = list.map((p) async {
         final refLink = p['referralLink'] as String;
-        final slug = refLink.isNotEmpty ? refLink.split('/').last : p['uid'] as String;
+        final slug =
+            refLink.isNotEmpty ? refLink.split('/').last : p['uid'] as String;
         try {
           final c = await ReferralService.getConversionCount(slug);
           return MapEntry(p['uid'] as String, c);
@@ -4537,8 +5132,8 @@ class _InfluencersTabState extends State<_InfluencersTab> {
       final entries = await Future.wait(countFutures);
       if (!mounted) return;
       setState(() {
-        _partners        = list;
-        _partnerCounts   = Map.fromEntries(entries);
+        _partners = list;
+        _partnerCounts = Map.fromEntries(entries);
         _partnersLoading = false;
       });
     } catch (e) {
@@ -4557,15 +5152,15 @@ class _InfluencersTabState extends State<_InfluencersTab> {
     setState(() => _listLoading = true);
     try {
       final list = await ReferralService.getInfluencers();
-      final ids  = list.map((i) => i.id).toList();
+      final ids = list.map((i) => i.id).toList();
       final counts = ids.isEmpty
           ? <String, int>{}
           : await ReferralService.getBatchConversionCounts(ids);
       if (!mounted) return;
       setState(() {
-        _influencers  = list;
-        _counts       = counts;
-        _listLoading  = false;
+        _influencers = list;
+        _counts = counts;
+        _listLoading = false;
       });
     } catch (e) {
       if (!mounted) return;
@@ -4582,17 +5177,21 @@ class _InfluencersTabState extends State<_InfluencersTab> {
     }
     final coupon = _couponCtrl.text.trim();
     final discStr = _discCtrl.text.trim();
-    final disc    = discStr.isNotEmpty ? int.tryParse(discStr) : null;
+    final disc = discStr.isNotEmpty ? int.tryParse(discStr) : null;
     if (discStr.isNotEmpty && disc == null) {
-      setState(() => _formError = 'Desconto deve ser um número inteiro (ex: 20).');
+      setState(
+          () => _formError = 'Desconto deve ser um número inteiro (ex: 20).');
       return;
     }
-    setState(() { _saving = true; _formError = null; });
+    setState(() {
+      _saving = true;
+      _formError = null;
+    });
 
     try {
       await ReferralService.createInfluencer(
-        name:            name,
-        couponCode:      coupon.isNotEmpty ? coupon : null,
+        name: name,
+        couponCode: coupon.isNotEmpty ? coupon : null,
         discountPercent: disc,
       );
       _nameCtrl.clear();
@@ -4622,11 +5221,13 @@ class _InfluencersTabState extends State<_InfluencersTab> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar', style: TextStyle(color: Colors.white54)),
+            child:
+                const Text('Cancelar', style: TextStyle(color: Colors.white54)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Remover', style: TextStyle(color: Colors.redAccent)),
+            child: const Text('Remover',
+                style: TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),
@@ -4666,16 +5267,20 @@ class _InfluencersTabState extends State<_InfluencersTab> {
         children: [
           // ── BUILD 310: Dashboard de Embaixadores/Parceiros VIP ─────────
           Row(children: [
-            const Icon(Icons.workspace_premium_rounded, color: kAmbassadorGold, size: 22),
+            const Icon(Icons.workspace_premium_rounded,
+                color: kAmbassadorGold, size: 22),
             const SizedBox(width: 8),
             const Text('Embaixadores & Parceiros VIP',
-                style: TextStyle(color: kAmbassadorGold, fontSize: 16,
+                style: TextStyle(
+                    color: kAmbassadorGold,
+                    fontSize: 16,
                     fontWeight: FontWeight.w900)),
             const Spacer(),
             IconButton(
               tooltip: 'Atualizar parceiros',
               onPressed: _loadPartners,
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white54, size: 18),
+              icon: const Icon(Icons.refresh_rounded,
+                  color: Colors.white54, size: 18),
             ),
           ]),
           const SizedBox(height: 4),
@@ -4687,7 +5292,8 @@ class _InfluencersTabState extends State<_InfluencersTab> {
 
           // Partner list
           if (_partnersLoading)
-            const Center(child: Padding(
+            const Center(
+                child: Padding(
               padding: EdgeInsets.all(20),
               child: CircularProgressIndicator(color: kAmbassadorGold),
             ))
@@ -4700,7 +5306,8 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                 border: Border.all(color: kAmbassadorGold.withOpacity(0.15)),
               ),
               child: const Row(children: [
-                Icon(Icons.person_search_rounded, color: Colors.white24, size: 28),
+                Icon(Icons.person_search_rounded,
+                    color: Colors.white24, size: 28),
                 SizedBox(width: 12),
                 Text('Nenhum embaixador ativo ainda.',
                     style: TextStyle(color: Colors.white38, fontSize: 13)),
@@ -4709,43 +5316,52 @@ class _InfluencersTabState extends State<_InfluencersTab> {
           else
             Column(
               children: _partners.map((p) {
-                final uid         = p['uid'] as String;
-                final name        = p['displayName'] as String;
-                final title       = p['partnerTitle'] as String;
-                final link        = p['referralLink'] as String;
-                final count       = _partnerCounts[uid] ?? 0;
+                final uid = p['uid'] as String;
+                final name = p['displayName'] as String;
+                final title = p['partnerTitle'] as String;
+                final link = p['referralLink'] as String;
+                final count = _partnerCounts[uid] ?? 0;
                 return Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.04),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: kAmbassadorGold.withOpacity(0.35)),
+                    border:
+                        Border.all(color: kAmbassadorGold.withOpacity(0.35)),
                   ),
                   child: Row(children: [
                     Container(
-                      width: 40, height: 40,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: kAmbassadorGold.withOpacity(0.15),
-                        border: Border.all(color: kAmbassadorGold.withOpacity(0.4)),
+                        border:
+                            Border.all(color: kAmbassadorGold.withOpacity(0.4)),
                       ),
-                      child: const Center(child: Text('👑',
-                          style: TextStyle(fontSize: 18))),
+                      child: const Center(
+                          child: Text('👑', style: TextStyle(fontSize: 18))),
                     ),
                     const SizedBox(width: 12),
-                    Expanded(child: Column(
+                    Expanded(
+                        child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(name,
-                            style: const TextStyle(color: Colors.white,
-                                fontSize: 13, fontWeight: FontWeight.w700)),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700)),
                         Text(title.isNotEmpty ? title : '—',
-                            style: const TextStyle(color: kAmbassadorGold,
-                                fontSize: 11, fontWeight: FontWeight.w600)),
+                            style: const TextStyle(
+                                color: kAmbassadorGold,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600)),
                         const SizedBox(height: 2),
                         Text(link.isNotEmpty ? link : '—',
-                            style: const TextStyle(color: Colors.white38, fontSize: 10),
+                            style: const TextStyle(
+                                color: Colors.white38, fontSize: 10),
                             overflow: TextOverflow.ellipsis),
                       ],
                     )),
@@ -4754,7 +5370,8 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
                             color: count > 0
                                 ? kAmbassadorGold.withOpacity(0.20)
@@ -4763,8 +5380,11 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                           ),
                           child: Text('$count médicos',
                               style: TextStyle(
-                                  fontSize: 11, fontWeight: FontWeight.w800,
-                                  color: count > 0 ? kAmbassadorGold : Colors.white38)),
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  color: count > 0
+                                      ? kAmbassadorGold
+                                      : Colors.white38)),
                         ),
                         const SizedBox(height: 6),
                         InkWell(
@@ -4774,18 +5394,26 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                           },
                           borderRadius: BorderRadius.circular(6),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: kAmbassadorGold.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: kAmbassadorGold.withOpacity(0.3)),
+                              border: Border.all(
+                                  color: kAmbassadorGold.withOpacity(0.3)),
                             ),
-                            child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                              Icon(Icons.copy_rounded, size: 11, color: kAmbassadorGold),
-                              SizedBox(width: 4),
-                              Text('Copiar', style: TextStyle(fontSize: 10,
-                                  color: kAmbassadorGold, fontWeight: FontWeight.w700)),
-                            ]),
+                            child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.copy_rounded,
+                                      size: 11, color: kAmbassadorGold),
+                                  SizedBox(width: 4),
+                                  Text('Copiar',
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color: kAmbassadorGold,
+                                          fontWeight: FontWeight.w700)),
+                                ]),
                           ),
                         ),
                       ],
@@ -4804,13 +5432,14 @@ class _InfluencersTabState extends State<_InfluencersTab> {
             const Icon(Icons.people_alt_rounded, color: kGold, size: 20),
             const SizedBox(width: 8),
             const Text('Sistema de Indicações',
-                style: TextStyle(color: kGoldL, fontSize: 16,
-                    fontWeight: FontWeight.w800)),
+                style: TextStyle(
+                    color: kGoldL, fontSize: 16, fontWeight: FontWeight.w800)),
             const Spacer(),
             IconButton(
               tooltip: 'Atualizar lista',
               onPressed: _loadInfluencers,
-              icon: const Icon(Icons.refresh_rounded, color: Colors.white54, size: 18),
+              icon: const Icon(Icons.refresh_rounded,
+                  color: Colors.white54, size: 18),
             ),
           ]),
           const SizedBox(height: 4),
@@ -4833,7 +5462,9 @@ class _InfluencersTabState extends State<_InfluencersTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Cadastrar novo influenciador',
-                    style: TextStyle(color: kGoldL, fontSize: 13,
+                    style: TextStyle(
+                        color: kGoldL,
+                        fontSize: 13,
                         fontWeight: FontWeight.w700)),
                 const SizedBox(height: 12),
 
@@ -4906,11 +5537,13 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                     onPressed: _saving ? null : _save,
                     icon: _saving
                         ? const SizedBox(
-                            width: 14, height: 14,
+                            width: 14,
+                            height: 14,
                             child: CircularProgressIndicator(
                                 strokeWidth: 2, color: Colors.white))
                         : const Icon(Icons.add_rounded, size: 16),
-                    label: Text(_saving ? 'Cadastrando...' : 'Cadastrar Influenciador'),
+                    label: Text(
+                        _saving ? 'Cadastrando...' : 'Cadastrar Influenciador'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kGreen,
                       foregroundColor: Colors.white,
@@ -4930,8 +5563,10 @@ class _InfluencersTabState extends State<_InfluencersTab> {
           // ── Tabela de influenciadores ───────────────────────────────────
           Row(children: [
             const Text('Influenciadores Cadastrados',
-                style: TextStyle(color: Colors.white,
-                    fontSize: 13, fontWeight: FontWeight.w700)),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700)),
             const SizedBox(width: 8),
             if (!_listLoading)
               Container(
@@ -4942,13 +5577,16 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                 ),
                 child: Text('${_influencers.length}',
                     style: const TextStyle(
-                        color: kGoldL, fontSize: 11, fontWeight: FontWeight.w800)),
+                        color: kGoldL,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800)),
               ),
           ]),
           const SizedBox(height: 10),
 
           if (_listLoading)
-            const Center(child: Padding(
+            const Center(
+                child: Padding(
               padding: EdgeInsets.all(32),
               child: CircularProgressIndicator(color: kGreen),
             ))
@@ -4977,15 +5615,14 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                   return Column(
                     children: _influencers.map((inf) {
                       final count = _counts[inf.id] ?? 0;
-                      final link  = '$_baseUrl?ref=${inf.id}';
+                      final link = '$_baseUrl?ref=${inf.id}';
                       return Container(
                         margin: const EdgeInsets.only(bottom: 10),
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                              color: kGreen.withOpacity(0.3)),
+                          border: Border.all(color: kGreen.withOpacity(0.3)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -5052,11 +5689,10 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                                   style: OutlinedButton.styleFrom(
                                     side: BorderSide(
                                         color: kGold.withOpacity(0.4)),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 6),
                                     shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8)),
+                                        borderRadius: BorderRadius.circular(8)),
                                   ),
                                 ),
                               ),
@@ -5079,11 +5715,10 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        minWidth: constraints.maxWidth),
+                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
                     child: DataTable(
-                      headingRowColor: WidgetStateProperty.all(
-                          kGreen.withOpacity(0.25)),
+                      headingRowColor:
+                          WidgetStateProperty.all(kGreen.withOpacity(0.25)),
                       dataRowColor: WidgetStateProperty.resolveWith(
                         (states) => states.contains(WidgetState.selected)
                             ? kGreen.withOpacity(0.15)
@@ -5091,9 +5726,11 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                       ),
                       columnSpacing: 20,
                       headingTextStyle: const TextStyle(
-                          color: kGoldL, fontSize: 11, fontWeight: FontWeight.w800),
-                      dataTextStyle: const TextStyle(
-                          color: Colors.white, fontSize: 12),
+                          color: kGoldL,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800),
+                      dataTextStyle:
+                          const TextStyle(color: Colors.white, fontSize: 12),
                       columns: const [
                         DataColumn(label: Text('Nome do Influenciador')),
                         DataColumn(label: Text('Cupom')),
@@ -5103,48 +5740,62 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                       ],
                       rows: _influencers.map((inf) {
                         final count = _counts[inf.id] ?? 0;
-                        final link  = '$_baseUrl?ref=${inf.id}';
+                        final link = '$_baseUrl?ref=${inf.id}';
                         return DataRow(cells: [
                           DataCell(ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 180),
                             child: Text(inf.name,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                style: const TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w600)),
                           )),
                           DataCell(Text(inf.couponLabel,
                               style: TextStyle(
                                   fontSize: 11,
-                                  color: inf.couponCode != null ? kGoldL : Colors.white38))),
+                                  color: inf.couponCode != null
+                                      ? kGoldL
+                                      : Colors.white38))),
                           DataCell(Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               ConstrainedBox(
-                                constraints: const BoxConstraints(maxWidth: 180),
+                                constraints:
+                                    const BoxConstraints(maxWidth: 180),
                                 child: Text(link,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 10, color: Colors.white54)),
+                                    style: const TextStyle(
+                                        fontSize: 10, color: Colors.white54)),
                               ),
                               const SizedBox(width: 6),
                               InkWell(
                                 onTap: () => _copyLink(inf.id),
                                 borderRadius: BorderRadius.circular(6),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: kGreen.withOpacity(0.3),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                                    Icon(Icons.copy_rounded, size: 11, color: kGoldL),
-                                    SizedBox(width: 4),
-                                    Text('Copiar', style: TextStyle(fontSize: 10, color: kGoldL, fontWeight: FontWeight.w700)),
-                                  ]),
+                                  child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.copy_rounded,
+                                            size: 11, color: kGoldL),
+                                        SizedBox(width: 4),
+                                        Text('Copiar',
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: kGoldL,
+                                                fontWeight: FontWeight.w700)),
+                                      ]),
                                 ),
                               ),
                             ],
                           )),
                           DataCell(Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: count > 0
                                   ? kGreen.withOpacity(0.35)
@@ -5152,8 +5803,11 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text('$count',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800,
-                                    color: count > 0 ? kGoldL : Colors.white38)),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color:
+                                        count > 0 ? kGoldL : Colors.white38)),
                           )),
                           DataCell(IconButton(
                             tooltip: 'Remover influenciador',
@@ -5176,8 +5830,7 @@ class _InfluencersTabState extends State<_InfluencersTab> {
             decoration: BoxDecoration(
               color: Colors.amber.withOpacity(0.07),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                  color: Colors.amber.withOpacity(0.25)),
+              border: Border.all(color: Colors.amber.withOpacity(0.25)),
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -5187,19 +5840,22 @@ class _InfluencersTabState extends State<_InfluencersTab> {
                       size: 14, color: Colors.amber),
                   SizedBox(width: 6),
                   Text('Como funciona',
-                      style: TextStyle(color: Colors.amber,
-                          fontSize: 12, fontWeight: FontWeight.w700)),
+                      style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700)),
                 ]),
                 SizedBox(height: 8),
                 Text(
                   '1. Cadastre o influenciador — o slug é gerado automaticamente pelo nome.\n'
                   '2. Compartilhe o link gerado (ex: medcasespro.com?ref=dr_marcos).\n'
                   '3. Quando um médico acessa via esse link e se cadastra, '
-                     'ele é vinculado automaticamente ao influenciador.\n'
+                  'ele é vinculado automaticamente ao influenciador.\n'
                   '4. "Conversões" = médicos que completaram o cadastro pelo link.\n'
                   '5. Cupom e desconto ficam prontos para aplicação automática '
-                     'no checkout assim que a monetização for ativada.',
-                  style: TextStyle(color: Colors.white54, fontSize: 11, height: 1.6),
+                  'no checkout assim que a monetização for ativada.',
+                  style: TextStyle(
+                      color: Colors.white54, fontSize: 11, height: 1.6),
                 ),
               ],
             ),
@@ -5232,7 +5888,8 @@ class _InfluField extends StatelessWidget {
       children: [
         Text(label,
             style: const TextStyle(
-                color: Colors.white70, fontSize: 11,
+                color: Colors.white70,
+                fontSize: 11,
                 fontWeight: FontWeight.w600)),
         const SizedBox(height: 4),
         TextField(
@@ -5248,13 +5905,12 @@ class _InfluField extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                  color: const Color(0xFF075f45).withOpacity(0.4)),
+              borderSide:
+                  BorderSide(color: const Color(0xFF075f45).withOpacity(0.4)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                  color: Colors.white.withOpacity(0.12)),
+              borderSide: BorderSide(color: Colors.white.withOpacity(0.12)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -5298,10 +5954,9 @@ class _Field extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: TextStyle(fontSize: 13, color: Colors.grey[400]),
-          contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12, vertical: 10),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10)),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           isDense: true,
         ),
       ),
@@ -5328,9 +5983,9 @@ class _NotificationsTab extends StatelessWidget {
     required this.onMarkRead,
   });
 
-  static const kDark  = Color(0xFF07110d);
-  static const kGreen = Color(0xFF075f45);
-  static const kGold  = Color(0xFFC5A365);
+  static const kDark = Color(0xFF07110d);
+  static const kGreen = Color(0xFF0E8000);
+  static const kGold = Color(0xFFC5A365);
   static const kGoldL = Color(0xFFFFE8A6);
 
   bool _isRead(Map<String, dynamic> notif) {
@@ -5352,7 +6007,8 @@ class _NotificationsTab extends StatelessWidget {
     if (notifications.isEmpty) {
       return Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(Icons.notifications_none_rounded, size: 48, color: Colors.white24),
+          Icon(Icons.notifications_none_rounded,
+              size: 48, color: Colors.white24),
           const SizedBox(height: 12),
           const Text('Nenhuma notificação ainda.',
               style: TextStyle(color: Colors.white38, fontSize: 14)),
@@ -5390,14 +6046,14 @@ class _NotificationsTab extends StatelessWidget {
           itemCount: notifications.length,
           itemBuilder: (_, i) {
             final n = notifications[i];
-            final notifId   = n['id'] as String;
-            final read      = _isRead(n);
-            final userName  = (n['userName']  as String?) ?? 'Usuário';
+            final notifId = n['id'] as String;
+            final read = _isRead(n);
+            final userName = (n['userName'] as String?) ?? 'Usuário';
             final userEmail = (n['userEmail'] as String?) ?? '—';
-            final profession= (n['userProfession'] as String?) ?? '—';
-            final institution=(n['userInstitution'] as String?) ?? '—';
-            final status    = (n['userStatus'] as String?) ?? 'approved';
-            final tsLabel   = _formatTs(n['createdAt']);
+            final profession = (n['userProfession'] as String?) ?? '—';
+            final institution = (n['userInstitution'] as String?) ?? '—';
+            final status = (n['userStatus'] as String?) ?? 'approved';
+            final tsLabel = _formatTs(n['createdAt']);
 
             return Container(
               margin: const EdgeInsets.only(bottom: 10),
@@ -5405,86 +6061,101 @@ class _NotificationsTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 color: const Color(0xFF111a14),
                 border: Border.all(
-                  color: read
-                      ? Colors.white12
-                      : kGold.withOpacity(0.6),
+                  color: read ? Colors.white12 : kGold.withOpacity(0.6),
                   width: read ? 0.5 : 1.5,
                 ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(14),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  // ── Linha de cabeçalho ──────────────────────────────────
-                  Row(children: [
-                    Icon(
-                      Icons.person_add_rounded,
-                      size: 16,
-                      color: read ? Colors.white38 : kGoldL,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        '🆕  $userName',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: read ? FontWeight.w500 : FontWeight.w800,
-                          color: read ? Colors.white60 : Colors.white,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ── Linha de cabeçalho ──────────────────────────────────
+                      Row(children: [
+                        Icon(
+                          Icons.person_add_rounded,
+                          size: 16,
+                          color: read ? Colors.white38 : kGoldL,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (!read)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.redAccent.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.redAccent.withOpacity(0.5)),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '🆕  $userName',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight:
+                                  read ? FontWeight.w500 : FontWeight.w800,
+                              color: read ? Colors.white60 : Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        child: const Text('NOVA',
-                            style: TextStyle(color: Colors.redAccent, fontSize: 9, fontWeight: FontWeight.w900)),
-                      ),
-                  ]),
-                  const SizedBox(height: 6),
-                  // ── Detalhes ────────────────────────────────────────────
-                  _notifRow(Icons.email_rounded, userEmail, read),
-                  _notifRow(Icons.work_rounded, profession, read),
-                  _notifRow(Icons.location_city_rounded, institution, read),
-                  Row(children: [
-                    Icon(Icons.circle, size: 6,
-                        color: status == 'approved' ? Colors.greenAccent : Colors.orange),
-                    const SizedBox(width: 6),
-                    Text(status,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: status == 'approved'
-                              ? Colors.greenAccent.withOpacity(0.8)
-                              : Colors.orange,
-                          fontWeight: FontWeight.w600,
-                        )),
-                    const Spacer(),
-                    Text(tsLabel,
-                        style: const TextStyle(fontSize: 10, color: Colors.white24)),
-                  ]),
-                  // ── Botão marcar como lida ──────────────────────────────
-                  if (!read) ...[
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: TextButton.icon(
-                        onPressed: () => onMarkRead(notifId),
-                        icon: const Icon(Icons.done_all_rounded, size: 15, color: Color(0xFFFFE8A6)),
-                        label: const Text('Marcar como lida',
-                            style: TextStyle(color: Color(0xFFFFE8A6), fontSize: 12, fontWeight: FontWeight.w700)),
-                        style: TextButton.styleFrom(
-                          backgroundColor: kGold.withOpacity(0.1),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(vertical: 8),
+                        if (!read)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.redAccent.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: Colors.redAccent.withOpacity(0.5)),
+                            ),
+                            child: const Text('NOVA',
+                                style: TextStyle(
+                                    color: Colors.redAccent,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w900)),
+                          ),
+                      ]),
+                      const SizedBox(height: 6),
+                      // ── Detalhes ────────────────────────────────────────────
+                      _notifRow(Icons.email_rounded, userEmail, read),
+                      _notifRow(Icons.work_rounded, profession, read),
+                      _notifRow(Icons.location_city_rounded, institution, read),
+                      Row(children: [
+                        Icon(Icons.circle,
+                            size: 6,
+                            color: status == 'approved'
+                                ? Colors.greenAccent
+                                : Colors.orange),
+                        const SizedBox(width: 6),
+                        Text(status,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: status == 'approved'
+                                  ? Colors.greenAccent.withOpacity(0.8)
+                                  : Colors.orange,
+                              fontWeight: FontWeight.w600,
+                            )),
+                        const Spacer(),
+                        Text(tsLabel,
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.white24)),
+                      ]),
+                      // ── Botão marcar como lida ──────────────────────────────
+                      if (!read) ...[
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton.icon(
+                            onPressed: () => onMarkRead(notifId),
+                            icon: const Icon(Icons.done_all_rounded,
+                                size: 15, color: Color(0xFFFFE8A6)),
+                            label: const Text('Marcar como lida',
+                                style: TextStyle(
+                                    color: Color(0xFFFFE8A6),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700)),
+                            style: TextButton.styleFrom(
+                              backgroundColor: kGold.withOpacity(0.1),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
-                ]),
+                      ],
+                    ]),
               ),
             );
           },
@@ -5531,14 +6202,14 @@ class _GlobalPushTab extends StatefulWidget {
 }
 
 class _GlobalPushTabState extends State<_GlobalPushTab> {
-  static const _kDark  = Color(0xFF07110d);
+  static const _kDark = Color(0xFF07110d);
   static const _kGreen = Color(0xFF075f45);
-  static const _kGold  = Color(0xFFC5A365);
+  static const _kGold = Color(0xFFC5A365);
   static const _kGoldL = Color(0xFFFFE8A6);
 
   final _titleCtrl = TextEditingController();
-  final _bodyCtrl  = TextEditingController();
-  bool  _sending   = false;
+  final _bodyCtrl = TextEditingController();
+  bool _sending = false;
 
   @override
   void dispose() {
@@ -5550,25 +6221,31 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
   // ── Strings bilíngues ─────────────────────────────────────────────────────
   bool get _isEs => widget.isEs;
 
-  String get _headerTitle  => _isEs ? 'Notificación Push Global'  : 'Notificação Push Global';
-  String get _headerSub    => _isEs
+  String get _headerTitle =>
+      _isEs ? 'Notificación Push Global' : 'Notificação Push Global';
+  String get _headerSub => _isEs
       ? 'Envía un mensaje directo a todos los usuarios registrados.'
       : 'Envie uma mensagem direta para todos os usuários cadastrados.';
-  String get _titleLabel   => _isEs ? 'Título'       : 'Título';
-  String get _bodyLabel    => _isEs ? 'Mensaje'      : 'Mensagem';
-  String get _titleHint    => _isEs ? 'Buen día Doc, ¿cómo te ayudamos hoy?'
-                                    : 'Bom dia Doc, como podemos te ajudar hoje?';
-  String get _bodyHint     => _isEs
+  String get _titleLabel => _isEs ? 'Título' : 'Título';
+  String get _bodyLabel => _isEs ? 'Mensaje' : 'Mensagem';
+  String get _titleHint => _isEs
+      ? 'Buen día Doc, ¿cómo te ayudamos hoy?'
+      : 'Bom dia Doc, como podemos te ajudar hoje?';
+  String get _bodyHint => _isEs
       ? 'Tenemos nuevos casos clínicos disponibles para ti. ¡Revísalos ahora!'
       : 'Temos novos casos clínicos disponíveis para você. Confira agora!';
-  String get _btnLabel     => _isEs ? 'Disparar para todos los usuarios'
-                                    : 'Disparar para todos os usuários';
-  String get _validErr     => _isEs ? 'Completa título y mensaje antes de enviar.'
-                                    : 'Preencha título e mensagem antes de enviar.';
-  String get _successMsg   => _isEs ? '¡Campaña enviada! La función procesará el envío masivo.'
-                                    : 'Campanha disparada! A função processará o envio em massa.';
-  String get _errorMsg     => _isEs ? 'Error al disparar la campaña. Intenta de nuevo.'
-                                    : 'Erro ao disparar a campanha. Tente novamente.';
+  String get _btnLabel => _isEs
+      ? 'Disparar para todos los usuarios'
+      : 'Disparar para todos os usuários';
+  String get _validErr => _isEs
+      ? 'Completa título y mensaje antes de enviar.'
+      : 'Preencha título e mensagem antes de enviar.';
+  String get _successMsg => _isEs
+      ? '¡Campaña enviada! La función procesará el envío masivo.'
+      : 'Campanha disparada! A função processará o envio em massa.';
+  String get _errorMsg => _isEs
+      ? 'Error al disparar la campaña. Intenta de nuevo.'
+      : 'Erro ao disparar a campanha. Tente novamente.';
 
   // ── Disparo da campanha ───────────────────────────────────────────────────
   // BUILD 319: modal de confirmação antes do disparo + doc completo no Firestore.
@@ -5579,7 +6256,7 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
   //   • processedAt/result   → preenchidos pela CF ao concluir o envio
   Future<void> _fireGlobalPush() async {
     final title = _titleCtrl.text.trim();
-    final body  = _bodyCtrl.text.trim();
+    final body = _bodyCtrl.text.trim();
 
     if (title.isEmpty || body.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -5600,12 +6277,16 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
         backgroundColor: const Color(0xFF0F1C14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(children: [
-          const Icon(Icons.warning_amber_rounded, color: Color(0xFFFFE8A6), size: 22),
+          const Icon(Icons.warning_amber_rounded,
+              color: Color(0xFFFFE8A6), size: 22),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               _isEs ? 'Confirmar envío masivo' : 'Confirmar disparo em massa',
-              style: const TextStyle(color: Color(0xFFFFE8A6), fontSize: 16, fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                  color: Color(0xFFFFE8A6),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700),
             ),
           ),
         ]),
@@ -5615,9 +6296,10 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
           children: [
             Text(
               _isEs
-                ? 'Esto enviará una notificación push a TODOS los usuarios registrados.\n\nTítulo: "$title"'
-                : 'Isso enviará uma notificação push para TODOS os usuários cadastrados.\n\nTítulo: "$title"',
-              style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
+                  ? 'Esto enviará una notificación push a TODOS los usuarios registrados.\n\nTítulo: "$title"'
+                  : 'Isso enviará uma notificação push para TODOS os usuários cadastrados.\n\nTítulo: "$title"',
+              style: const TextStyle(
+                  color: Colors.white70, fontSize: 13, height: 1.5),
             ),
             const SizedBox(height: 12),
             Container(
@@ -5629,9 +6311,12 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
               ),
               child: Text(
                 _isEs
-                  ? '⚠️ Esta acción no puede deshacerse.'
-                  : '⚠️ Esta ação não pode ser desfeita.',
-                style: const TextStyle(color: Colors.redAccent, fontSize: 12, fontWeight: FontWeight.w600),
+                    ? '⚠️ Esta acción no puede deshacerse.'
+                    : '⚠️ Esta ação não pode ser desfeita.',
+                style: const TextStyle(
+                    color: Colors.redAccent,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -5648,11 +6333,13 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
             onPressed: () => Navigator.of(ctx).pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF075f45),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
             child: Text(
               _isEs ? 'Confirmar envío' : 'Confirmar disparo',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -5673,12 +6360,12 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
       //   createdAt          → timestamp do servidor (rastreamento e ordenação)
       //   sentBy             → uid do admin que disparou (auditoria)
       await FirebaseFirestore.instance.collection('global_push_campaigns').add({
-        'title':      title,
-        'body':       body,
-        'targetRole': 'all',              // BUILD 319: segmentação futura
-        'status':     'pending',          // BUILD 319: idempotência da CF
-        'createdAt':  FieldValue.serverTimestamp(),
-        'sentBy':     widget.currentAdmin.uid,
+        'title': title,
+        'body': body,
+        'targetRole': 'all', // BUILD 319: segmentação futura
+        'status': 'pending', // BUILD 319: idempotência da CF
+        'createdAt': FieldValue.serverTimestamp(),
+        'sentBy': widget.currentAdmin.uid,
         'sentByEmail': widget.currentAdmin.email ?? '',
       });
 
@@ -5688,9 +6375,12 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(children: [
-            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 16),
+            const Icon(Icons.check_circle_rounded,
+                color: Colors.white, size: 16),
             const SizedBox(width: 8),
-            Expanded(child: Text(_successMsg, style: const TextStyle(color: Colors.white))),
+            Expanded(
+                child: Text(_successMsg,
+                    style: const TextStyle(color: Colors.white))),
           ]),
           backgroundColor: _kGreen,
           behavior: SnackBarBehavior.floating,
@@ -5736,7 +6426,8 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
                     color: _kGold.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.campaign_rounded, color: _kGoldL, size: 24),
+                  child: const Icon(Icons.campaign_rounded,
+                      color: _kGoldL, size: 24),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -5752,7 +6443,8 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
                           )),
                       const SizedBox(height: 3),
                       Text(_headerSub,
-                          style: const TextStyle(color: Colors.white54, fontSize: 12)),
+                          style: const TextStyle(
+                              color: Colors.white54, fontSize: 12)),
                     ],
                   ),
                 ),
@@ -5776,7 +6468,8 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
               decoration: InputDecoration(
                 hintText: _titleHint,
                 hintStyle: const TextStyle(color: Colors.white30, fontSize: 13),
-                counterStyle: const TextStyle(color: Colors.white30, fontSize: 10),
+                counterStyle:
+                    const TextStyle(color: Colors.white30, fontSize: 10),
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.07),
                 border: OutlineInputBorder(
@@ -5791,8 +6484,10 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(color: _kGold, width: 1.5),
                 ),
-                prefixIcon: const Icon(Icons.title_rounded, color: Colors.white38, size: 18),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                prefixIcon: const Icon(Icons.title_rounded,
+                    color: Colors.white38, size: 18),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               ),
             ),
 
@@ -5806,7 +6501,8 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
             TextField(
               controller: _bodyCtrl,
               enabled: !_sending,
-              style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5),
+              style: const TextStyle(
+                  color: Colors.white, fontSize: 14, height: 1.5),
               maxLength: 500,
               maxLines: 5,
               minLines: 3,
@@ -5814,8 +6510,10 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
               autocorrect: false,
               decoration: InputDecoration(
                 hintText: _bodyHint,
-                hintStyle: const TextStyle(color: Colors.white30, fontSize: 13, height: 1.5),
-                counterStyle: const TextStyle(color: Colors.white30, fontSize: 10),
+                hintStyle: const TextStyle(
+                    color: Colors.white30, fontSize: 13, height: 1.5),
+                counterStyle:
+                    const TextStyle(color: Colors.white30, fontSize: 10),
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.07),
                 alignLabelWithHint: true,
@@ -5833,9 +6531,11 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
                 ),
                 prefixIcon: const Padding(
                   padding: EdgeInsets.only(bottom: 60),
-                  child: Icon(Icons.message_rounded, color: Colors.white38, size: 18),
+                  child: Icon(Icons.message_rounded,
+                      color: Colors.white38, size: 18),
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
               ),
             ),
 
@@ -5865,11 +6565,14 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
                             height: 18,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           ),
                           SizedBox(width: 12),
-                          Text('Enviando...', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                          Text('Enviando...',
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w700)),
                         ],
                       )
                     : Row(
@@ -5898,16 +6601,18 @@ class _GlobalPushTabState extends State<_GlobalPushTab> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline_rounded, color: Colors.white38, size: 14),
+                  const Icon(Icons.info_outline_rounded,
+                      color: Colors.white38, size: 14),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       _isEs
                           ? 'La notificación se entregará a todos los dispositivos con tokens FCM válidos. '
-                            'Los tokens inválidos serán eliminados automáticamente.'
+                              'Los tokens inválidos serán eliminados automáticamente.'
                           : 'A notificação será entregue a todos os dispositivos com tokens FCM válidos. '
-                            'Tokens inválidos serão removidos automaticamente.',
-                      style: const TextStyle(color: Colors.white38, fontSize: 11, height: 1.5),
+                              'Tokens inválidos serão removidos automaticamente.',
+                      style: const TextStyle(
+                          color: Colors.white38, fontSize: 11, height: 1.5),
                     ),
                   ),
                 ],

@@ -3091,7 +3091,7 @@ class _SoapCopySheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border.all(color: const Color(0xFF059669).withOpacity(0.25)),
+        border: Border.all(color: const Color(0xFF0D6B57).withOpacity(0.25)),
       ),
       padding: EdgeInsets.fromLTRB(
         20,
@@ -3123,7 +3123,7 @@ class _SoapCopySheet extends StatelessWidget {
                 height: 34,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF059669), Color(0xFF047857)],
+                    colors: [Color(0xFF0D6B57), Color(0xFF0D6B57)],
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -3179,7 +3179,7 @@ class _SoapCopySheet extends StatelessWidget {
           _SoapCopyTile(
             dark: dark,
             icon: Icons.compress_rounded,
-            iconColor: const Color(0xFF059669),
+            iconColor: const Color(0xFF0D6B57),
             cardBg: cardBg,
             borderColor: borderColor,
             textPrimary: textPrimary,
@@ -3189,7 +3189,7 @@ class _SoapCopySheet extends StatelessWidget {
                 ? 'Formato horizontal denso — ideal para sistemas legados'
                 : 'Formato horizontal denso — ideal para sistemas legados',
             badgeLabel: 'INLINE',
-            badgeColor: const Color(0xFF059669),
+            badgeColor: const Color(0xFF0D6B57),
             onTap: onCopyResumida,
           ),
           const SizedBox(height: 8),

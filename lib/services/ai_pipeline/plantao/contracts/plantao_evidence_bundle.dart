@@ -229,7 +229,7 @@ class PlantaoEvidenceBundle {
     required this.coverage,
     required Iterable<String> missingRequirements,
     required this.retrievalStatus,
-  
+
     this.requestId = '',
     this.sessionIdHash = '',
     this.locale = 'pt',

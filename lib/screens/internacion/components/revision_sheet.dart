@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../services/soap_copilot_service.dart';
 import 'internacion_theme.dart';
 
+import '../../../design_system/foundation/med_typography.dart';
 class RevisionSheet extends StatelessWidget {
   final SoapDraftResult draft;
   final bool dark;
@@ -99,7 +100,7 @@ class RevisionSheet extends StatelessWidget {
                     width: 36, height: 36,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF059669), Color(0xFF047857)],
+                        colors: [Color(0xFF0D6B57), Color(0xFF0D6B57)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -116,7 +117,7 @@ class RevisionSheet extends StatelessWidget {
                         Text(
                           isEs ? 'Revisión Inteligente' : 'Revisão Inteligente',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: MedTypography.clinicalBodySize,
                             fontWeight: FontWeight.w800,
                             color: theme.textPrimary,
                           ),
@@ -126,7 +127,7 @@ class RevisionSheet extends StatelessWidget {
                               ? '$filled campo${filled != 1 ? 's' : ''} extraído${filled != 1 ? 's' : ''} por la IA'
                               : '$filled campo${filled != 1 ? 's' : ''} extraído${filled != 1 ? 's' : ''} pela IA',
                           style: TextStyle(
-                            fontSize: 11.5,
+                            fontSize: MedTypography.microTextSize,
                             color: InternacionTheme.cyan,
                           ),
                         ),
@@ -161,7 +162,7 @@ class RevisionSheet extends StatelessWidget {
                             ? 'Revisa los datos antes de aprobar. Solo tú decides qué se rellena.'
                             : 'Revise os dados antes de aprovar. Só você decide o que é preenchido.',
                         style: TextStyle(
-                          fontSize: 11.5,
+                          fontSize: MedTypography.microTextSize,
                           color: InternacionTheme.amber,
                           height: 1.4,
                         ),
@@ -216,7 +217,7 @@ class RevisionSheet extends StatelessWidget {
                             Text(
                               isEs ? 'Descartar' : 'Descartar',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MedTypography.auxiliarySize,
                                 fontWeight: FontWeight.w600,
                                 color: theme.textSecondary,
                               ),
@@ -239,7 +240,7 @@ class RevisionSheet extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF059669), Color(0xFF047857)],
+                            colors: [Color(0xFF0D6B57), Color(0xFF0D6B57)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -261,7 +262,7 @@ class RevisionSheet extends StatelessWidget {
                             Text(
                               isEs ? 'Aprobar y Rellenar' : 'Aprovar e Preencher',
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: MedTypography.microTextSize,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                               ),
@@ -558,7 +559,7 @@ class RevisionSheet extends StatelessWidget {
                 Text(
                   isEs ? 'DATOS DEL PACIENTE' : 'DADOS DO PACIENTE',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: MedTypography.microTextSize,
                     fontWeight: FontWeight.w700,
                     color: InternacionTheme.cyan,
                   ),
@@ -593,7 +594,7 @@ class RevisionSheet extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: MedTypography.microTextSize,
                 fontWeight: FontWeight.w700,
                 color: theme.soapTagFg(section),
               ),
@@ -633,12 +634,12 @@ class RevisionSheet extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(label, style: TextStyle(
-                    fontSize: 10.5, fontWeight: FontWeight.w600,
+                    fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w600,
                     color: theme.textSecondary,
                   )),
                   const SizedBox(height: 3),
                   Text(value, style: TextStyle(
-                    fontSize: 13, fontWeight: FontWeight.w500,
+                    fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w500,
                     color: theme.textPrimary, height: 1.4,
                   )),
                 ],
@@ -677,7 +678,7 @@ class RevisionSheet extends StatelessWidget {
               Icon(icon, size: 16, color: fg.withOpacity(0.8)),
               const SizedBox(width: 8),
               Text(label, style: TextStyle(
-                fontSize: 10.5, fontWeight: FontWeight.w600,
+                fontSize: MedTypography.auxiliarySize, fontWeight: FontWeight.w600,
                 color: theme.textSecondary,
               )),
             ]),
@@ -691,7 +692,7 @@ class RevisionSheet extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(c, style: TextStyle(
-                  fontSize: 11.5, fontWeight: FontWeight.w600, color: fg,
+                  fontSize: MedTypography.microTextSize, fontWeight: FontWeight.w600, color: fg,
                 )),
               )).toList(),
             ),
@@ -734,12 +735,12 @@ class RevisionSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(e.key, style: TextStyle(
-                  fontSize: 10, fontWeight: FontWeight.w700,
+                  fontSize: MedTypography.microTextSize, fontWeight: FontWeight.w700,
                   color: theme.soapTagFg(SoapSection.o),
                 )),
                 const SizedBox(height: 2),
                 Text(e.value, style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w800,
+                  fontSize: MedTypography.clinicalBodySize, fontWeight: FontWeight.w800,
                   color: theme.textPrimary,
                 )),
               ],
@@ -765,7 +766,7 @@ class RevisionSheet extends StatelessWidget {
         border: Border.all(color: color.withOpacity(0.4), width: 0.8),
       ),
       child: Text('$eva/10', style: TextStyle(
-        fontSize: 12, fontWeight: FontWeight.w800, color: color,
+        fontSize: MedTypography.microTextSize, fontWeight: FontWeight.w800, color: color,
       )),
     );
   }
@@ -784,7 +785,7 @@ class RevisionSheet extends StatelessWidget {
                   ? 'La IA no encontró datos suficientes.\nIntenta con más información.'
                   : 'A IA não encontrou dados suficientes.\nTente com mais informações.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: theme.textSecondary, height: 1.5),
+              style: TextStyle(fontSize: MedTypography.microTextSize, color: theme.textSecondary, height: 1.5),
             ),
           ],
         ),

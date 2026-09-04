@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../screens/home_screen.dart';
 import 'components/chat/inline_chat.dart';
+import 'components/home_web_latest_guides_grid.dart';
 import 'components/common/home_v2_press_surface.dart';
 import 'components/home_v2_modules_view.dart';
 
@@ -55,16 +56,19 @@ class HomeScreenV2 extends StatelessWidget {
 
     final mediaQuery = MediaQuery.of(context);
     final viewportWidth = mediaQuery.size.width;
+    // MEDCASES_WEB_HOME_40_GUIDES_2X2_ROTATING_LATEST10_V1_B_R1
+    // On Web >=1024 the persistent 60% AiScreen is already fully visible.
+    // The Home's former inline-AI slot therefore becomes the latest-guides
+    // showcase only in this wide-Web composition. Native and narrow Web keep
+    // the canonical InlineChat unchanged.
+    final useWebWideGuidesShowcase = kIsWeb && viewportWidth >= 1024;
     final systemTopInset = mediaQuery.padding.top;
     final systemBottomInset = mediaQuery.padding.bottom;
 
     // Status bar/Dynamic Island + topbar de 48 px + respiro oficial de 6 px.
     // O padding pertence ao scroll: o estado inicial permanece protegido,
     // enquanto o conteúdo pode passar atrás do vidro durante a rolagem.
-    // MEDCASES_WEB_HOME_40_TOPBAR_TO_INLINE_AI_GAP_5PX_V1_B_R0
-    // Web já possui topbar real externa de 48 px; não duplicar compensação.
-    // Native preserva exatamente o contrato anterior com status bar + topbar.
-    final double topContentPadding = kIsWeb ? 5.0 : systemTopInset + 54.0;
+    final topContentPadding = systemTopInset + 54.0;
     final bottomContentPadding = kIsWeb ? 32.0 : systemBottomInset + 152.0;
     const horizontalPadding = 0.0;
     final contentMaxWidth = viewportWidth >= 600 ? 860.0 : double.infinity;
@@ -79,7 +83,9 @@ class HomeScreenV2 extends StatelessWidget {
         child: Align(
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: contentMaxWidth),
+            constraints: BoxConstraints(
+              maxWidth: contentMaxWidth,
+            ),
             child: SingleChildScrollView(
               key: const PageStorageKey<String>('home-v2-scroll'),
               physics: const BouncingScrollPhysics(),
@@ -95,7 +101,16 @@ class HomeScreenV2 extends StatelessWidget {
                 isEs,
                 onOpenClinicalGuide,
                 onOpenSimulation,
-                InlineChat(dark: dark, isEs: isEs, onNavigateToAi: onTabChange),
+                useWebWideGuidesShowcase
+                    ? HomeWebLatestGuidesGrid(
+                        dark: dark,
+                        isEs: isEs,
+                      )
+                    : InlineChat(
+                        dark: dark,
+                        isEs: isEs,
+                        onNavigateToAi: onTabChange,
+                      ),
                 HomeCalculatorDrugsCard(
                   dark: dark,
                   isEs: isEs,
@@ -187,7 +202,9 @@ class _HomeV2VisualShell extends StatelessWidget {
         ),
         SizedBox(
           height: 0.55,
-          child: ColoredBox(color: HomeV2Palette.resolve(dark).border),
+          child: ColoredBox(
+            color: HomeV2Palette.resolve(dark).border,
+          ),
         ),
         _HomeV2ClinicalCluster(
           dark,
@@ -197,9 +214,14 @@ class _HomeV2VisualShell extends StatelessWidget {
         ),
         SizedBox(
           height: 0.55,
-          child: ColoredBox(color: HomeV2Palette.resolve(dark).border),
+          child: ColoredBox(
+            color: HomeV2Palette.resolve(dark).border,
+          ),
         ),
-        _HomeV2UtilityCluster(utilityModule, guardiaModule),
+        _HomeV2UtilityCluster(
+          utilityModule,
+          guardiaModule,
+        ),
         const SizedBox(height: 10),
       ],
     );
@@ -227,13 +249,20 @@ class _HomeV2ClinicalCluster extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [primaryModule, patientModule, libraryModule],
+      children: [
+        primaryModule,
+        patientModule,
+        libraryModule,
+      ],
     );
   }
 }
 
 class _HomeV2UtilityCluster extends StatelessWidget {
-  const _HomeV2UtilityCluster(this.utilityModule, this.guardiaModule);
+  const _HomeV2UtilityCluster(
+    this.utilityModule,
+    this.guardiaModule,
+  );
 
   final Widget utilityModule;
   final Widget guardiaModule;
@@ -242,7 +271,11 @@ class _HomeV2UtilityCluster extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [utilityModule, const SizedBox(height: 5), guardiaModule],
+      children: [
+        utilityModule,
+        const SizedBox(height: 5),
+        guardiaModule,
+      ],
     );
   }
 }

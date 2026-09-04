@@ -1,6 +1,71 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents {
+  match /databases/{database
+    // MEDCASES_SUPPORT_TICKET_RULES_V2_B_R1
+    match /support_tickets/{ticketId} {
+      allow create: if isAuthed()
+        && request.resource.data.keys().hasOnly([
+          'ticketId',
+          'userId',
+          'userEmail',
+          'userName',
+          'category',
+          'categoryLabel',
+          'rating',
+          'message',
+          'locale',
+          'status',
+          'priority',
+          'platform',
+          'sourceModule',
+          'createdAt',
+          'updatedAt',
+          'assignedTo',
+          'assignedToEmail',
+          'adminReply',
+          'adminReplyAt',
+          'privacyNoticeVersion'
+        ])
+        && request.resource.data.ticketId == ticketId
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'new'
+        && request.resource.data.priority == 'normal'
+        && request.resource.data.sourceModule == 'settings_support'
+        && request.resource.data.privacyNoticeVersion == 'support-privacy-v1'
+        && request.resource.data.assignedTo == ''
+        && request.resource.data.assignedToEmail == ''
+        && request.resource.data.adminReply == ''
+        && request.resource.data.adminReplyAt == null
+        && request.resource.data.locale in ['pt', 'es']
+        && request.resource.data.category in [
+          'support_help',
+          'app_error',
+          'suggestion',
+          'drug_protocol',
+          'subscription_account',
+          'praise',
+          'other'
+        ]
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 0
+        && request.resource.data.rating <= 5
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 500
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      // User sees only own requests. Supervisor has triage read-only.
+      allow read: if (
+        isAuthed() && resource.data.userId == request.auth.uid
+      ) || isAdmin() || isSupervisor();
+
+      // Admin/Master can handle; Supervisor never mutates.
+      allow update: if isAdmin();
+      allow delete: if isMaster();
+    }
+
+}/documents {
 
     // ══════════════════════════════════════════════════════════════════════════
     // HELPERS DE AUTENTICAÇÃO — AUDIT 453 (Apple Pre-Submission Hardening)
@@ -85,6 +150,19 @@ service cloud.firestore {
       );
     }
 
+    // ADMIN_V2_ERRORS_FINAL_OPERATIONAL_CLOSURE_V1_RULES
+    // Supervisor: leitura operacional limitada; nunca recebe permissão de mutação.
+    function isSupervisor() {
+      return isAuthed() && (
+        request.auth.token.get('role', '') == 'supervisor'
+        ||
+        (
+          exists(userPath()) &&
+          get(userPath()).data.get('role', '') == 'supervisor'
+        )
+      );
+    }
+
     // BUILD 310 — Guard específico para campos do Ambassador Track.
     // Apenas master/admin podem escrever isPartner, partnerTitle, referralLink.
     function isWritingPartnerFields() {
@@ -105,20 +183,89 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // ADMIN_V2_COMMUNICATION_FINAL_OPERATIONAL_CLOSURE_V1_RULES
     match /app_config/emailjs {
-      allow read, write: if isAdmin();
+      allow read: if isAdmin() || isSupervisor();
+      allow write: if isMaster();
     }
 
+    // ADMIN_V2_SETTINGS_MASTER_RULE_HARDENING_V1
+    // Estado global de manutenção: leitura preservada; mutação somente Master.
     match /app_config/maintenance {
       allow read: if isAuthed();
-      allow write: if isAdmin();
+      allow write: if isMaster();
     }
 
     // ── Atualizações do app (changelog público) ──────────────────────────────
+    // Novidades do app são públicas para leitura, mas publicação é Master-only.
     match /app_updates/{document=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isMaster();
     }
+
+
+    // ADMIN_AUDIT_LOG_V1
+    // Escrita exclusivamente server-side via Admin SDK.
+    match /admin_audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+
+    // ADMIN_V2_AI_COSTS_V2_RULES — Erros & Saúde
+    match /admin_incidents/{document=**} {
+      allow read: if isAdmin() || isSupervisor();
+      allow create, update, delete: if isAdmin();
+    }
+
+
+    // ADMIN_V2_AI_COSTS_V2_RULES — Comunicação
+    match /email_campaigns/{document=**} {
+      allow read: if isAdmin() || isSupervisor();
+      allow create, update, delete: if isAdmin();
+    }
+
+
+    // ADMIN_V2_AI_COSTS_V2_RULES — telemetria server-side.
+
+    // ADMIN_V2_403_METRICS_RULES_CLOSURE_V1
+    // Executive/Admin dashboard aggregate metrics: read-only for Admin/Master.
+    match /admin_metrics/{document=**} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    // Error-center aggregates: read-only for Admin/Master.
+    match /admin_error_metrics/{document=**} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    // Billing/revenue aggregates are restricted to Master.
+    match /admin_billing_metrics/{document=**} {
+      allow read: if isMaster();
+      allow create, update, delete: if false;
+    }
+
+    match /admin_ai_metrics/{document=**} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+
+    // ADMIN_AI_TELEMETRY_PRODUCER_V1
+    match /admin_ai_usage_events/{document=**} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+
+    // ADMIN_V2_AI_COSTS_V2_RULES — controle GPT server-side.
+    match /app_config/ai_control {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
 
     // ══════════════════════════════════════════════════════════════════════════
     // GUIAS CLÍNICAS E BIBLIOTECA
@@ -366,7 +513,7 @@ service cloud.firestore {
     // NOTA: a Cloud Function que grava admin_notifications usa Admin SDK e
     // bypassa estas rules — portanto o 'create' do Admin SDK nunca bate aqui.
     match /admin_notifications/{notificationId} {
-      allow read:   if isAdmin();
+      allow read:   if isAdmin() || isSupervisor();
       allow create: if isAuthed();
       allow update: if isAdmin();
       allow delete: if isAdmin();
@@ -407,7 +554,7 @@ service cloud.firestore {
     // A Cloud Function onGlobalPushCampaignCreated usa Admin SDK e bypassa
     // estas rules completamente (pending→processing→done/error).
     match /global_push_campaigns/{campaignId} {
-      allow read:   if isAdmin();
+      allow read:   if isAdmin() || isSupervisor();
 
       allow create: if isAdmin()
                     && request.resource.data.get('status', '') == 'pending'

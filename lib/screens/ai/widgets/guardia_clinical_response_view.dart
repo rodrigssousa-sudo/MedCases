@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medcases/home_v2/theme/home_v2_palette.dart';
 import 'package:medcases/models/clinical_structured_output.dart';
+import 'package:medcases/services/well_formed_utf16.dart';
 import 'package:medcases/screens/ai/widgets/clinical_treatment_presentation_shadow_view.dart';
 
 /// PHASE3I-J2F10B: controlled productive visual integration.
@@ -8,6 +9,9 @@ const bool _typedTreatmentVisualEnabledByDefault = bool.fromEnvironment(
   'MEDCASES_TYPED_TREATMENT_VISUAL',
   defaultValue: true,
 );
+
+// MEDCASES_TRUE_LAST_UTF16_RENDER_BOUNDARY_V1
+String _guardiaUtf16Safe(String value) => WellFormedUtf16.normalize(value);
 
 class GuardiaClinicalResponseView extends StatefulWidget {
   final String rawText;
@@ -75,15 +79,17 @@ class _GuardiaClinicalResponseViewState
       _attachNotifier(widget.streamingTextNotifier);
     }
 
-    final notifierText = widget.streamingTextNotifier?.value.trim() ?? '';
+    final notifierText = _guardiaUtf16Safe(
+      widget.streamingTextNotifier?.value ?? '',
+    ).trim();
 
     if (!widget.isStreaming && widget.rawText.trim().isNotEmpty) {
-      _displayText = widget.rawText;
+      _displayText = _guardiaUtf16Safe(widget.rawText);
     } else if (notifierText.isNotEmpty) {
       _displayText = notifierText;
     } else if (oldWidget.rawText != widget.rawText ||
         oldWidget.isStreaming != widget.isStreaming) {
-      _displayText = widget.rawText;
+      _displayText = _guardiaUtf16Safe(widget.rawText);
     }
   }
 
@@ -94,20 +100,24 @@ class _GuardiaClinicalResponseViewState
   }
 
   String _initialText() {
-    final notifierText = widget.streamingTextNotifier?.value.trim() ?? '';
+    final notifierText = _guardiaUtf16Safe(
+      widget.streamingTextNotifier?.value ?? '',
+    ).trim();
 
     if (!widget.isStreaming && widget.rawText.trim().isNotEmpty) {
       return widget.rawText;
     }
 
-    return notifierText.isNotEmpty ? notifierText : widget.rawText;
+    return notifierText.isNotEmpty
+        ? notifierText
+        : _guardiaUtf16Safe(widget.rawText);
   }
 
   void _attachNotifier(ValueNotifier<String>? notifier) {
     _attachedNotifier = notifier;
     notifier?.addListener(_handleStreamingSnapshot);
 
-    final snapshot = notifier?.value ?? '';
+    final snapshot = _guardiaUtf16Safe(notifier?.value ?? '');
 
     if (snapshot.trim().isNotEmpty) {
       _displayText = snapshot;
@@ -122,7 +132,7 @@ class _GuardiaClinicalResponseViewState
   void _handleStreamingSnapshot() {
     if (!mounted) return;
 
-    final snapshot = _attachedNotifier?.value ?? '';
+    final snapshot = _guardiaUtf16Safe(_attachedNotifier?.value ?? '');
 
     assert(() {
       if (widget.isStreaming) {
@@ -181,37 +191,164 @@ class _GuardiaClinicalResponseViewState
     final palette = HomeV2Palette.resolve(widget.dark);
     final effectiveText =
         !widget.isStreaming && widget.rawText.trim().isNotEmpty
-        ? widget.rawText
-        : (_displayText.trim().isNotEmpty ? _displayText : widget.rawText);
-    final stablePresentationText =
-        GuardiaStreamingPresentation.stableBeforeHardStop(
-          rawText: effectiveText,
-          isStreaming: widget.isStreaming,
-        );
+        ? _guardiaUtf16Safe(widget.rawText)
+        : (_displayText.trim().isNotEmpty
+              ? _guardiaUtf16Safe(_displayText)
+              : _guardiaUtf16Safe(widget.rawText));
+    final stablePresentationText = _guardiaUtf16Safe(
+      GuardiaStreamingPresentation.stableBeforeHardStop(
+        rawText: _guardiaUtf16Safe(effectiveText),
+        isStreaming: widget.isStreaming,
+      ),
+    );
+    // PLANTAO_VISIBLE_NO_EMOJI_PRESENTATION_V1
+    // O parser recebe o RAW canônico intacto; emojis são removidos somente da projeção visual.
+    final visiblePresentationText = _guardiaUtf16Safe(
+      GuardiaNoEmojiPresentation.clean(
+        _guardiaUtf16Safe(stablePresentationText),
+      ),
+    );
+    // MEDCASES_PLANTAO_MARKDOWN_TABLE_TRUE_RENDER_V1
+    // MEDCASES_PLANTAO_STREAMING_MARKDOWN_TABLE_NO_RAW_FLASH_V1
+    final tableSourceText = widget.isStreaming
+        ? GuardiaMarkdownTableProjection.sanitizeStreamingText(
+            stablePresentationText,
+          )
+        : stablePresentationText;
+    final tableProjection = GuardiaMarkdownTableProjection.parse(
+      tableSourceText,
+    );
     final content = _GuardiaDisplayContent.from(
-      rawText: stablePresentationText,
+      rawText: tableProjection.textWithoutTables,
       output: widget.output,
     );
-    final titleProjection = _GuardiaTitleProjection.resolve(
+    final m67DestinationTable = tableProjection.tables.any(
+      _guardiaM67IsDestinationTable,
+    );
+    final m67Limitations = _guardiaM67ExtractLimitations(
+      tableProjection.textWithoutTables,
+    );
+    final m67LimitationNorms = m67Limitations
+        .map(_normalizeClinicalText)
+        .toSet();
+    final m67HardStops = content.hardStops
+        .where((item) {
+          final normalized = _normalizeClinicalText(item);
+          return !_guardiaM67IsLimitationsHeading(item) &&
+              !m67LimitationNorms.contains(normalized);
+        })
+        .toList(growable: false);
+
+    final m67PriorBaseTitleProjection = _GuardiaTitleProjection.resolve(
       diagnosis: content.diagnosis,
       userText: widget.userText,
       isContinuation: widget.userInitiatedByAction,
       isSpanish: _isSpanish,
     );
+    final baseTitleProjection = m67DestinationTable
+        ? _GuardiaTitleProjection(
+            headerTitle: _isSpanish
+                ? 'Destino del paciente'
+                : 'Destino do paciente',
+            diagnosisCore: m67PriorBaseTitleProjection.diagnosisCore,
+            demoteDiagnosisToHypothesis: false,
+          )
+        : m67PriorBaseTitleProjection;
+    // M77_R10_R3: preserve the existing generic direct-topic authority through
+    // later M54/M55E canonicalization. This does not add a pathology-specific
+    // branch: it reuses the same semantic owner already used by title resolve.
+    final m77DirectExplicitTopicTitle = !widget.userInitiatedByAction
+        ? _guardiaExplicitDirectTopicTitle(
+            userText: widget.userText,
+            userNorm: _normalizeClinicalText(widget.userText),
+            isSpanish: _isSpanish,
+          )
+        : null;
+    final m54RawConcreteDiseaseTitle = !widget.userInitiatedByAction
+        ? _guardiaM54RawConcreteDiseaseTitle(stablePresentationText)
+        : null;
+    final m54DiagnosisCore = baseTitleProjection.diagnosisCore.trim();
+    final m54CanonicalDiseaseTitle =
+        _guardiaConcreteClinicalIdentity(
+          _normalizeClinicalText(m54DiagnosisCore),
+        )
+        ? m54DiagnosisCore
+        : null;
+    final m54DiseaseTitle =
+        m54RawConcreteDiseaseTitle ?? m54CanonicalDiseaseTitle;
+    final m54GenericBaseTitle = _guardiaM54GenericTopLevelTitle(
+      baseTitleProjection.headerTitle,
+    );
+    var titleProjection =
+        !widget.userInitiatedByAction &&
+            !baseTitleProjection.demoteDiagnosisToHypothesis &&
+            m54GenericBaseTitle &&
+            m54DiseaseTitle != null
+        ? _GuardiaTitleProjection(
+            headerTitle: m54DiseaseTitle,
+            diagnosisCore: m54DiseaseTitle,
+            demoteDiagnosisToHypothesis: false,
+          )
+        : baseTitleProjection;
+    final m55eDiseaseTitle = widget.userInitiatedByAction
+        ? titleProjection.headerTitle
+        : GuardiaM55ePresentationPolicy.canonicalDiseaseTitle(
+            parsedDiagnosis: titleProjection.diagnosisCore,
+            rawText: stablePresentationText,
+            isSpanish: _isSpanish,
+          );
+    if (!widget.userInitiatedByAction &&
+        !titleProjection.demoteDiagnosisToHypothesis &&
+        m55eDiseaseTitle.isNotEmpty) {
+      final m55eUserNorm = _normalizeClinicalText(widget.userText);
+      final m55eDependentTaskTitle =
+          _guardiaDependentTaskOnlyFollowup(m55eUserNorm)
+          ? _guardiaTaskAwareTitle(
+              userNorm: m55eUserNorm,
+              isSpanish: _isSpanish,
+            )
+          : null;
+      final m55eHeaderTitle = m55eDependentTaskTitle != null
+          ? '$m55eDependentTaskTitle — $m55eDiseaseTitle'
+          : m55eDiseaseTitle;
+      titleProjection = _GuardiaTitleProjection(
+        headerTitle: m55eHeaderTitle,
+        diagnosisCore: m55eDiseaseTitle,
+        demoteDiagnosisToHypothesis: false,
+      );
+    }
+    if (!widget.userInitiatedByAction &&
+        m77DirectExplicitTopicTitle != null &&
+        m77DirectExplicitTopicTitle.trim().isNotEmpty) {
+      titleProjection = _GuardiaTitleProjection(
+        headerTitle: m77DirectExplicitTopicTitle,
+        diagnosisCore: m77DirectExplicitTopicTitle,
+        demoteDiagnosisToHypothesis: false,
+      );
+    }
+    final displayDiagnosis = titleProjection.headerTitle.trim();
+    final displayImmediate =
+        GuardiaM55ePresentationPolicy.withoutDuplicatedDiseaseTitle(
+          items: content.immediate,
+          title: displayDiagnosis,
+        );
     final keyPointsAreHypotheses =
         titleProjection.demoteDiagnosisToHypothesis &&
         _guardiaKeyPointsContainHypothesis(content.keyPoints);
     final hasUserCertaintyContext = widget.userText.trim().isNotEmpty;
+    final hasExplicitConfirmedDiagnosis =
+        _guardiaUserTextHasExplicitConfirmedDiagnosis(widget.userText);
     final allowMedicationPresentation =
         !content.isDifferential &&
-        (!hasUserCertaintyContext ||
+        (hasExplicitConfirmedDiagnosis ||
+            !hasUserCertaintyContext ||
             !titleProjection.demoteDiagnosisToHypothesis);
     final usesRedFlagsLabel = RegExp(
       r'^[ \t]*(?:[-*•][ \t]*)?(?:🚩[ \t]*)?'
       r'(?:[*_`#]+[ \t]*)*red[ \t]+flags?[ \t]*(?::|$)',
       caseSensitive: false,
       multiLine: true,
-    ).hasMatch(stablePresentationText);
+    ).hasMatch(visiblePresentationText);
 
     final output = widget.output;
     final useTypedTreatmentVisual =
@@ -276,14 +413,14 @@ class _GuardiaClinicalResponseViewState
         key: const ValueKey('guardia_clinical_response'),
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (content.diagnosis.isNotEmpty) ...[
+          if (displayDiagnosis.isNotEmpty) ...[
             _DiagnosisHeader(
               diagnosis: titleProjection.headerTitle,
               palette: palette,
             ),
           ],
-          if (content.immediate.isNotEmpty) ...[
-            if (content.diagnosis.isNotEmpty)
+          if (displayImmediate.isNotEmpty) ...[
+            if (displayDiagnosis.isNotEmpty)
               _GuardiaSectionDivider(
                 key: const ValueKey('guardia_divider_before_immediate'),
                 palette: palette,
@@ -304,15 +441,11 @@ class _GuardiaClinicalResponseViewState
               ),
               const SizedBox(height: 5),
             ],
-            for (final item in content.immediate)
+            for (final item in displayImmediate)
               _BulletLine(text: item, palette: palette),
           ],
           if (allowMedicationPresentation && useTypedTreatmentVisual) ...[
-            if (content.hasContentBeforeMedication)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_medication'),
-                palette: palette,
-              ),
+            if (content.hasContentBeforeMedication) const SizedBox(height: 20),
             ClinicalTreatmentPresentationShadowView(
               key: const ValueKey('guardia_typed_treatment_section'),
               presentation: output.treatmentPresentation,
@@ -323,11 +456,7 @@ class _GuardiaClinicalResponseViewState
           if (allowMedicationPresentation &&
               !useTypedTreatmentVisual &&
               content.hasMedication) ...[
-            if (content.hasContentBeforeMedication)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_medication'),
-                palette: palette,
-              ),
+            if (content.hasContentBeforeMedication) const SizedBox(height: 20),
             _SectionTitle(
               key: const ValueKey('guardia_pharmacologic_section'),
               title: _isSpanish
@@ -361,12 +490,40 @@ class _GuardiaClinicalResponseViewState
                 _MedicationLine(text: item, palette: palette),
             ],
           ],
+          if (GuardiaMarkdownTableProjection.hasClassificationTables(
+            tableProjection.tables,
+          )) ...[
+            // M55E_R4_CLASSIFICATION_HEADING_FROM_SUPER_AUDIT
+            _SectionTitle(
+              key: const ValueKey('guardia_classification_section'),
+              title: _isSpanish ? 'Clasificación' : 'Classificação',
+              palette: palette,
+            ),
+            const SizedBox(height: 5),
+            const SizedBox(height: 10),
+            for (
+              var tableIndex = 0;
+              tableIndex < tableProjection.tables.length;
+              tableIndex++
+            )
+              if (GuardiaMarkdownTableProjection.isClassificationTable(
+                tableProjection.tables[tableIndex],
+              ))
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: tableIndex == tableProjection.tables.length - 1
+                        ? 0
+                        : 10,
+                  ),
+                  child: _GuardiaMarkdownTable(
+                    key: ValueKey('guardia_markdown_table_$tableIndex'),
+                    table: tableProjection.tables[tableIndex],
+                    fitToViewport: true,
+                  ),
+                ),
+          ],
           if (content.exams.isNotEmpty) ...[
-            if (content.hasContentBeforeExams)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_exams'),
-                palette: palette,
-              ),
+            if (content.hasContentBeforeExams) const SizedBox(height: 20),
             _SectionTitle(
               key: const ValueKey('guardia_exams_section'),
               title: _isSpanish
@@ -379,16 +536,12 @@ class _GuardiaClinicalResponseViewState
               _BulletLine(text: item, palette: palette),
           ],
           if (content.evolution.isNotEmpty) ...[
-            if (content.hasContentBeforeEvolution)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_evolution'),
-                palette: palette,
-              ),
+            if (content.hasContentBeforeEvolution) const SizedBox(height: 20),
             _SectionTitle(
               key: const ValueKey('guardia_evolution_section'),
               title: _isSpanish
-                  ? 'Monitorización de la evolución'
-                  : 'Monitorização da evolução',
+                  ? 'Monitorización y reevaluación'
+                  : 'Monitorização e reavaliação',
               palette: palette,
             ),
             const SizedBox(height: 5),
@@ -396,11 +549,7 @@ class _GuardiaClinicalResponseViewState
               _BulletLine(text: item, palette: palette),
           ],
           if (content.questions.isNotEmpty) ...[
-            if (content.hasContentBeforeQuestions)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_questions'),
-                palette: palette,
-              ),
+            if (content.hasContentBeforeQuestions) const SizedBox(height: 20),
             _SectionTitle(
               key: const ValueKey('guardia_questions_section'),
               title: _isSpanish ? 'Preguntas clave' : 'Perguntas-chave',
@@ -411,11 +560,7 @@ class _GuardiaClinicalResponseViewState
               _BulletLine(text: item, palette: palette),
           ],
           if (content.keyPoints.isNotEmpty) ...[
-            if (content.hasContentBeforeKeyPoints)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_key_points'),
-                palette: palette,
-              ),
+            if (content.hasContentBeforeKeyPoints) const SizedBox(height: 20),
             _SectionTitle(
               key: const ValueKey('guardia_key_points_section'),
               title: keyPointsAreHypotheses
@@ -430,11 +575,7 @@ class _GuardiaClinicalResponseViewState
               _BulletLine(text: item, palette: palette),
           ],
           if (!useTypedTreatmentVisual && content.alerts.isNotEmpty) ...[
-            if (content.hasContentBeforeAlerts)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_alert'),
-                palette: palette,
-              ),
+            if (content.hasContentBeforeAlerts) const SizedBox(height: 20),
             _SectionTitle(
               key: const ValueKey('guardia_alert_section'),
               title: _isSpanish ? 'Alerta clínica' : 'Alerta clínico',
@@ -445,40 +586,83 @@ class _GuardiaClinicalResponseViewState
             for (final item in content.alerts)
               _BulletLine(text: item, palette: palette, warning: true),
           ],
-          if (!useTypedTreatmentVisual && content.hardStops.isNotEmpty) ...[
-            if (content.hasContentBeforeHardStops)
-              _GuardiaSectionDivider(
-                key: const ValueKey('guardia_divider_before_hard_stop'),
-                palette: palette,
-              ),
+          if (!useTypedTreatmentVisual && m67HardStops.isNotEmpty) ...[
+            if (content.hasContentBeforeHardStops) const SizedBox(height: 20),
             if (usesRedFlagsLabel)
               _SectionTitle(
                 key: const ValueKey('guardia_hard_stop_section'),
-                title: _isSpanish ? 'Red flags' : 'Sinais de alerta',
+                title: _isSpanish
+                    ? 'Red flags/escalamiento'
+                    : 'Red flags/escalonamento',
                 palette: palette,
                 warning: true,
               )
             else
               _SectionTitle(
                 key: const ValueKey('guardia_hard_stop_section'),
-                title: _isSpanish ? 'Red flags' : 'Sinais de alerta',
+                title: _isSpanish
+                    ? 'Red flags/escalamiento'
+                    : 'Red flags/escalonamento',
                 palette: palette,
                 warning: true,
               ),
             const SizedBox(height: 5),
-            for (final item in content.hardStops)
+            for (final item in m67HardStops)
               _BulletLine(text: item, palette: palette, warning: true),
           ],
+          if (m67Limitations.isNotEmpty) ...[
+            if (m67HardStops.isNotEmpty) const SizedBox(height: 12),
+            _SectionTitle(
+              key: const ValueKey('guardia_limitations_section'),
+              title: _isSpanish
+                  ? 'Limitaciones / datos faltantes'
+                  : 'Limitações / dados faltantes',
+              palette: palette,
+            ),
+            const SizedBox(height: 5),
+            for (final item in m67Limitations)
+              _BulletLine(text: item, palette: palette),
+          ],
           if (content.notes.isNotEmpty) ...[
-            if (content.hasContentBeforeNotes) const SizedBox(height: 12),
+            if (content.hasContentBeforeNotes) const SizedBox(height: 20),
             for (final item in content.notes)
               _PinnedLine(text: item, palette: palette),
+          ],
+          if (GuardiaMarkdownTableProjection.hasNonClassificationTables(
+            tableProjection.tables,
+          )) ...[
+            const SizedBox(height: 10),
+            for (
+              var tableIndex = 0;
+              tableIndex < tableProjection.tables.length;
+              tableIndex++
+            )
+              if (!GuardiaMarkdownTableProjection.isClassificationTable(
+                tableProjection.tables[tableIndex],
+              ))
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: tableIndex == tableProjection.tables.length - 1
+                        ? 0
+                        : 10,
+                  ),
+                  child: _GuardiaMarkdownTable(
+                    key: ValueKey('guardia_markdown_table_$tableIndex'),
+                    table: tableProjection.tables[tableIndex],
+                  ),
+                ),
           ],
           if (content.fallbackLines.isNotEmpty &&
               (widget.isStreaming || !content.hasStructuredContent)) ...[
             if (content.hasStructuredContent) const SizedBox(height: 5),
+            if (widget.userInitiatedByAction) const SizedBox(height: 14),
             for (final item in content.fallbackLines)
-              _PartialLine(text: item, palette: palette),
+              widget.userInitiatedByAction
+                  ? _ContinuationRefinedLine(text: item, palette: palette)
+                  : _PartialLine(
+                      text: GuardiaM55ePresentationPolicy.visibleText(item),
+                      palette: palette,
+                    ),
           ],
           if (widget.isStreaming) ...[
             const SizedBox(height: 2),
@@ -498,6 +682,45 @@ class _GuardiaClinicalResponseViewState
       ),
     );
   }
+}
+
+// M54_PHYSICAL_GLOBAL_DISEASE_TITLE_CONTRACT_V2
+//
+// Initial Plantão responses must not lose a concrete pathology/topic heading.
+// IMPORTANT: dependent follow-up task titles remain authoritative. M54 only
+// overrides a forbidden GENERIC top-level title.
+String? _guardiaM54RawConcreteDiseaseTitle(String rawText) {
+  for (final rawLine
+      in rawText.replaceAll('\r\n', '\n').replaceAll('\r', '\n').split('\n')) {
+    final line = rawLine.trim();
+    if (line.isEmpty) continue;
+
+    final match = RegExp(
+      r'^[🟥🔴]\s*(.+?)\s*$',
+      unicode: true,
+    ).firstMatch(line);
+    if (match == null) return null;
+
+    final core = _guardiaDiagnosisCore(match.group(1) ?? '');
+    final normalized = _normalizeClinicalText(core);
+    if (!_guardiaConcreteClinicalIdentity(normalized)) return null;
+    return core;
+  }
+  return null;
+}
+
+bool _guardiaM54GenericTopLevelTitle(String title) {
+  final normalized = _normalizeClinicalText(_guardiaDiagnosisCore(title));
+  return <String>{
+    'conducta clinica',
+    'conduta clinica',
+    'conducta inmediata',
+    'conduta imediata',
+    'clasificacion del paciente',
+    'classificacao do paciente',
+    'orientacion clinica',
+    'orientacao clinica',
+  }.contains(normalized);
 }
 
 class _GuardiaTitleProjection {
@@ -534,21 +757,60 @@ class _GuardiaTitleProjection {
       diagnosisNorm: diagnosisNorm,
       diagnosisBaseNorm: diagnosisBaseNorm,
     );
-    final directTopicOverride = !explicit ? directTopicTitle : null;
+
+    // PLANTAO_PRESENTATION_IDENTITY_LONG_FORM_TASK_TITLE_V1
+    final longFormIdentitySupport =
+        _guardiaLongFormUserSupportsDiagnosisIdentity(
+          userNorm: userNorm,
+          diagnosisNorm: diagnosisNorm,
+          diagnosisBaseNorm: diagnosisBaseNorm,
+        );
+    final taskAwareTitle = _guardiaTaskAwareTitle(
+      userNorm: userNorm,
+      isSpanish: isSpanish,
+    );
+    // M65_CONTINUATION_REFINED_PRESENTATION_V1
+    final continuationActionTitle = isContinuation
+        ? _guardiaContinuationActionTitle(
+            userNorm: userNorm,
+            isSpanish: isSpanish,
+          )
+        : null;
+
+    final directTopicOverride = !explicit && !longFormIdentitySupport
+        ? directTopicTitle
+        : null;
+    final dependentTaskIdentityTitle =
+        !longFormIdentitySupport &&
+            taskAwareTitle != null &&
+            _guardiaDependentTaskOnlyFollowup(userNorm) &&
+            _guardiaConcreteClinicalIdentity(diagnosisNorm)
+        ? '$taskAwareTitle — $core'
+        : null;
     final hasUserCertaintyContext = userNorm.isNotEmpty;
     final keep =
         core.isNotEmpty &&
         (isContinuation ||
             !hasUserCertaintyContext ||
-            (!differential && explicit));
+            (!differential && (explicit || longFormIdentitySupport)));
     return _GuardiaTitleProjection(
-      headerTitle: directTopicOverride ??
+      headerTitle:
+          continuationActionTitle ??
+          directTopicOverride ??
           (keep
               ? core
-              : (isSpanish ? 'Orientación clínica' : 'Orientação clínica')),
+              : (dependentTaskIdentityTitle ??
+                    taskAwareTitle ??
+                    (isSpanish
+                        ? 'Orientación clínica'
+                        : 'Orientação clínica'))),
       diagnosisCore: core.isEmpty ? diagnosis.trim() : core,
       demoteDiagnosisToHypothesis:
-          directTopicOverride == null && core.isNotEmpty && !keep,
+          directTopicOverride == null &&
+          continuationActionTitle == null &&
+          taskAwareTitle == null &&
+          core.isNotEmpty &&
+          !keep,
     );
   }
 }
@@ -624,7 +886,8 @@ bool _guardiaCrossLanguageDiverticulitisIdentityMatch({
 }) {
   final userHas =
       userNorm.contains('diverticulite') || userNorm.contains('diverticulitis');
-  final diagnosisHas = diagnosisNorm.contains('diverticulitis') ||
+  final diagnosisHas =
+      diagnosisNorm.contains('diverticulitis') ||
       diagnosisNorm.contains('diverticulite');
   if (!userHas || !diagnosisHas) return false;
 
@@ -669,6 +932,260 @@ bool _guardiaCrossLanguageDiverticulitisIdentityMatch({
   return true;
 }
 
+bool _guardiaLongFormUserSupportsDiagnosisIdentity({
+  required String userNorm,
+  required String diagnosisNorm,
+  required String diagnosisBaseNorm,
+}) {
+  if (userNorm.isEmpty || diagnosisNorm.isEmpty) return false;
+
+  const aliasGroups = <Set<String>>[
+    <String>{'iamcest', 'iamcsst', 'stemi'},
+    <String>{'iamest', 'iamsst', 'iamssst', 'nstemi'},
+    <String>{'tep', 'tromboembolismo pulmonar', 'embolia pulmonar'},
+    <String>{'epoc', 'dpoc'},
+  ];
+
+  for (final group in aliasGroups) {
+    final userHas = group.any(userNorm.contains);
+    final diagnosisHas =
+        group.any(diagnosisNorm.contains) ||
+        group.any(diagnosisBaseNorm.contains);
+    if (userHas && diagnosisHas) return true;
+  }
+
+  // PLANTAO_PRESENTATION_STEMI_LONG_FORM_EQUIVALENCE_V2
+  //
+  // The provider may emit the same confirmed STEMI phenotype without the
+  // IAMCEST/STEMI acronym. Treat those forms as the same presentation identity
+  // only when ST elevation is affirmative. Explicit NSTE/negated elevation
+  // remains a hard mismatch.
+  bool isStemiAlias(String value) =>
+      <String>['iamcest', 'iamcsst', 'stemi'].any(value.contains);
+
+  bool isLongFormStemi(String value) {
+    final myocardialInfarction = <String>[
+      'infarto agudo de miocardio',
+      'infarto agudo do miocardio',
+      'infarto agudo de miocardio',
+      'acute myocardial infarction',
+    ].any(value.contains);
+
+    final negatedElevation = <String>[
+      'sin elevacion del st',
+      'sin elevacion del segmento st',
+      'sin supradesnivel',
+      'sem elevacao do st',
+      'sem elevacao do segmento st',
+      'sem supradesnivel',
+      'sem supradesnivelamento',
+      'without st elevation',
+      'non st elevation',
+    ].any(value.contains);
+
+    if (!myocardialInfarction || negatedElevation) return false;
+
+    final affirmativeElevation = <String>[
+      'con elevacion del st',
+      'con elevacion del segmento st',
+      'con segmento st elevado',
+      'con st elevado',
+      'con aumento del st',
+      'con aumento del segmento st',
+      'com elevacao do st',
+      'com elevacao do segmento st',
+      'com segmento st elevado',
+      'com st elevado',
+      'com aumento do st',
+      'supradesnivel de st',
+      'supradesnivelamento de st',
+      'supra de st',
+      'st elevation',
+    ].any(value.contains);
+
+    return affirmativeElevation;
+  }
+
+  final diagnosisCorpus = '$diagnosisNorm $diagnosisBaseNorm';
+  if ((isStemiAlias(userNorm) && isLongFormStemi(diagnosisCorpus)) ||
+      (isLongFormStemi(userNorm) && isStemiAlias(diagnosisCorpus))) {
+    return true;
+  }
+
+  const weak = <String>{
+    'agudo',
+    'aguda',
+    'grave',
+    'clinico',
+    'clinica',
+    'paciente',
+    'dolor',
+    'sindrome',
+    'diagnostico',
+    'tratamiento',
+    'tratamento',
+    'manejo',
+    'conducta',
+    'conduta',
+    'confirmado',
+    'confirmada',
+  };
+
+  Set<String> strongTokens(String value) => value
+      .split(RegExp(r'\s+'))
+      .where((token) => token.length >= 5)
+      .where((token) => !weak.contains(token))
+      .toSet();
+
+  final userTokens = strongTokens(userNorm);
+  final diagnosisTokens = <String>{
+    ...strongTokens(diagnosisNorm),
+    ...strongTokens(diagnosisBaseNorm),
+  };
+  final overlap = userTokens.intersection(diagnosisTokens);
+
+  return overlap.length >= 2 || overlap.any((token) => token.length >= 7);
+}
+
+bool _guardiaDependentTaskOnlyFollowup(String userNorm) {
+  if (userNorm.isEmpty || userNorm.length > 180) return false;
+
+  final hasDependentLead = <String>[
+    'y ',
+    'e ',
+    'y cual ',
+    'y que ',
+    'e qual ',
+    'e que ',
+    'ahora ',
+    'agora ',
+  ].any(userNorm.startsWith);
+
+  final hasTask = <String>[
+    'clasificacion',
+    'classificacao',
+    'tratamiento',
+    'tratamento',
+    'farmacologico',
+    'farmacologica',
+    'manejo',
+    'conducta',
+    'conduta',
+  ].any(userNorm.contains);
+
+  return hasDependentLead && hasTask;
+}
+
+bool _guardiaConcreteClinicalIdentity(String diagnosisNorm) {
+  if (diagnosisNorm.isEmpty) return false;
+  return !<String>[
+    'clasificacion',
+    'classificacao',
+    'conducta',
+    'conduta',
+    'tratamiento',
+    'tratamento',
+    'orientacion',
+    'orientacao',
+  ].any(diagnosisNorm.startsWith);
+}
+
+String? _guardiaTaskAwareTitle({
+  required String userNorm,
+  required bool isSpanish,
+}) {
+  if (userNorm.isEmpty) return null;
+
+  if (<String>[
+    'classificacao',
+    'clasificacion',
+    'classification',
+    'gravidade',
+    'gravedad',
+    'severity',
+    'estratific',
+    'risco',
+    'riesgo',
+    'risk',
+  ].any(userNorm.contains)) {
+    return isSpanish ? 'Clasificación' : 'Classificação';
+  }
+
+  if (<String>[
+    'tratamiento farmacologico',
+    'tratamento farmacologico',
+    'prescripcion',
+    'prescricao',
+    'medicacion',
+    'medicacao',
+    'farmacologico',
+    'farmacologica',
+  ].any(userNorm.contains)) {
+    return isSpanish ? 'Tratamiento farmacológico' : 'Tratamento farmacológico';
+  }
+
+  if (<String>[
+    'tratamiento',
+    'tratamento',
+    'manejo',
+    'conducta',
+    'conduta',
+  ].any(userNorm.contains)) {
+    return isSpanish ? 'Conducta clínica' : 'Conduta clínica';
+  }
+
+  return null;
+}
+
+String? _guardiaContinuationActionTitle({
+  required String userNorm,
+  required bool isSpanish,
+}) {
+  if (userNorm.isEmpty) return null;
+
+  bool hasAny(List<String> tokens) =>
+      tokens.any((token) => userNorm.contains(token));
+
+  if (hasAny(const <String>[
+    'definir destino',
+    'destino del paciente',
+    'destino do paciente',
+  ])) {
+    return isSpanish ? 'Destino del paciente' : 'Destino do paciente';
+  }
+
+  if (hasAny(const <String>[
+    'completar estudios',
+    'estudios y evolucion',
+    'estudios e evolucion',
+    'completar exames',
+    'exames e evolucao',
+  ])) {
+    return isSpanish ? 'Estudios complementarios' : 'Exames complementares';
+  }
+
+  if (hasAny(const <String>[
+    'vigilar evolucion',
+    'acompanhar evolucao',
+    'monitorizar evolucion',
+    'monitorar evolucao',
+  ])) {
+    return isSpanish
+        ? 'Monitorización y reevaluación'
+        : 'Monitorização e reavaliação';
+  }
+
+  if (hasAny(const <String>['reevaluar respuesta', 'reavaliar resposta'])) {
+    return isSpanish ? 'Reevaluación clínica' : 'Reavaliação clínica';
+  }
+
+  if (hasAny(const <String>['si no responde', 'se nao responder'])) {
+    return isSpanish ? 'Si no responde' : 'Se não responder';
+  }
+
+  return null;
+}
+
 String? _guardiaExplicitDirectTopicTitle({
   required String userText,
   required String userNorm,
@@ -711,8 +1228,10 @@ String? _guardiaExplicitDirectTopicTitle({
     }
   }
 
-  final tokenCount =
-      normalized.split(RegExp(r'\s+')).where((e) => e.isNotEmpty).length;
+  final tokenCount = normalized
+      .split(RegExp(r'\s+'))
+      .where((e) => e.isNotEmpty)
+      .length;
   if (tokenCount == 0 || tokenCount > 7) return null;
 
   const symptomSignals = <String>[
@@ -871,6 +1390,8 @@ String _normalizeGuardiaNoteLabel(String text) {
   return value;
 }
 
+// M70B_AIRY_MAJOR_SECTION_RHYTHM_V1
+// M69_SINGLE_TITLE_DIVIDER_CLEAN_SECTION_RHYTHM_V1
 class _GuardiaSectionDivider extends StatelessWidget {
   final HomeV2Palette palette;
 
@@ -969,7 +1490,7 @@ class _MedicationLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final parts = _MedicationTextParts.from(text);
+    final parts = _MedicationTextParts.from(_guardiaUtf16Safe(text));
 
     return Padding(
       key: ValueKey('guardia_medication_${text.hashCode}'),
@@ -983,7 +1504,8 @@ class _MedicationLine extends StatelessWidget {
                 color: palette.textSecondary,
                 fontSize: 14.4,
                 height: 1.24,
-                fontWeight: FontWeight.w400,
+                fontWeight:
+                    FontWeight.w400 /* M78_MEDICATION_BODY_HIERARCHY_ONLY_V1 */,
               ),
             ),
             if (parts.drug.isNotEmpty)
@@ -993,7 +1515,7 @@ class _MedicationLine extends StatelessWidget {
                   color: palette.textPrimary,
                   fontSize: 14.4,
                   height: 1.24,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400, // M78 medication body regular
                 ),
               ),
             if (parts.dose.isNotEmpty)
@@ -1003,12 +1525,16 @@ class _MedicationLine extends StatelessWidget {
                   color: palette.textPrimary,
                   fontSize: 14.4,
                   height: 1.24,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: parts.drug.isEmpty
+                      ? FontWeight.w700
+                      : FontWeight.w400, // M79_STANDALONE_DOSE_LIST_EMPHASIS_V1
                 ),
               ),
             if (parts.qualifier.isNotEmpty)
               TextSpan(
-                text: ' ${parts.qualifier}',
+                text: parts.qualifier.startsWith(';')
+                    ? parts.qualifier
+                    : ' ${parts.qualifier}',
                 style: TextStyle(
                   color: palette.textSecondary,
                   fontSize: 13.4,
@@ -1035,7 +1561,16 @@ class _MedicationTextParts {
   });
 
   factory _MedicationTextParts.from(String value) {
-    final trimmed = value.trim();
+    // M68_PHARMA_NATURAL_SEPARATOR_V1 behavioral-owner
+    // M67_GLOBAL_TREATMENT_PRESENTATION_V1
+    final originalTrimmed = value.trim();
+    final semicolonIndex = originalTrimmed.indexOf(';');
+    final trimmed = semicolonIndex < 0
+        ? originalTrimmed
+        : originalTrimmed.substring(0, semicolonIndex).trim();
+    final semicolonQualifier = semicolonIndex < 0
+        ? ''
+        : originalTrimmed.substring(semicolonIndex).trim();
     final bracketQualifierMatch = RegExp(
       r'\s*\[([^\[\]]+)\]\s*$',
     ).firstMatch(trimmed);
@@ -1060,6 +1595,7 @@ class _MedicationTextParts {
     final qualifier = <String>[
       inlineQualifier,
       bracketQualifier,
+      semicolonQualifier,
     ].where((part) => part.isNotEmpty).join(' ');
 
     final doseMatch = RegExp(r'\b\d+(?:[.,]\d+)?').firstMatch(main);
@@ -1108,7 +1644,7 @@ class _BulletLine extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: text,
+              text: _guardiaUtf16Safe(text),
               style: TextStyle(
                 color: color,
                 fontSize: 13.5,
@@ -1171,6 +1707,745 @@ class _PinnedLine extends StatelessWidget {
                 ),
               ],
             ),
+    );
+  }
+}
+
+class _GuardiaMarkdownTableData {
+  const _GuardiaMarkdownTableData({required this.headers, required this.rows});
+
+  final List<String> headers;
+  final List<List<String>> rows;
+}
+
+class _GuardiaMarkdownTableProjectionResult {
+  const _GuardiaMarkdownTableProjectionResult({
+    required this.textWithoutTables,
+    required this.tables,
+  });
+
+  final String textWithoutTables;
+  final List<_GuardiaMarkdownTableData> tables;
+}
+
+/// Detecta tabelas Markdown GFM no texto final do Plantão e as separa do
+/// parser clínico linha-a-linha. Assim as linhas `| ... |` nunca viram uma
+/// lista/fallback visual e são materializadas por um Table Flutter verdadeiro.
+// M55E_FINAL_PHYSICAL_SURFACE_V1
+abstract final class GuardiaM55ePresentationPolicy {
+  static String visibleText(String value) {
+    if (value.isEmpty) return value;
+    final out = StringBuffer();
+    for (final rune in value.runes) {
+      final pictographic =
+          (rune >= 0x1F000 && rune <= 0x1FAFF) ||
+          (rune >= 0x2600 && rune <= 0x27BF) ||
+          rune == 0xFE0F ||
+          rune == 0x200D ||
+          rune == 0x20E3;
+      if (!pictographic) out.writeCharCode(rune);
+    }
+    return out.toString().replaceAll(RegExp(r'[ \t]+\n'), '\n').trimRight();
+  }
+
+  static String canonicalDiseaseTitle({
+    required String parsedDiagnosis,
+    required String rawText,
+    required bool isSpanish,
+  }) {
+    var candidate = visibleText(parsedDiagnosis).trim();
+    if (!_isConcreteTitle(candidate)) candidate = _firstConcreteTitle(rawText);
+    if (candidate.isEmpty) return '';
+    final folded = _fold(candidate);
+    final explicitStemi =
+        folded.contains('iamcest') ||
+        folded.contains('iamcsst') ||
+        folded.contains('stemi') ||
+        (folded.contains('infarto') &&
+            folded.contains('elev') &&
+            folded.contains('st'));
+    if (explicitStemi) {
+      return isSpanish
+          ? 'INFARTO AGUDO DE MIOCARDIO CON ELEVACIÓN DEL ST (IAMCEST)'
+          : 'INFARTO AGUDO DO MIOCÁRDIO COM ELEVAÇÃO DO ST (IAMCSST)';
+    }
+    return candidate;
+  }
+
+  static List<String> withoutDuplicatedDiseaseTitle({
+    required List<String> items,
+    required String title,
+  }) => items
+      .where((item) => !sameClinicalIdentity(item, title))
+      .toList(growable: false);
+
+  static bool sameClinicalIdentity(String left, String right) {
+    final a = _fold(visibleText(left));
+    final b = _fold(visibleText(right));
+    if (a.isEmpty || b.isEmpty) return false;
+    if (a == b) return true;
+    final aStemi =
+        a.contains('iamcest') || a.contains('iamcsst') || a.contains('stemi');
+    final bStemi =
+        b.contains('iamcest') || b.contains('iamcsst') || b.contains('stemi');
+    return aStemi && bStemi;
+  }
+
+  static String _firstConcreteTitle(String rawText) {
+    for (final raw in rawText.split('\n')) {
+      final line = visibleText(raw)
+          .trim()
+          .replaceAll(RegExp(r'^[*_`#\s]+'), '')
+          .replaceAll(RegExp(r'[*_`#\s]+$'), '')
+          .trim();
+      if (_isConcreteTitle(line)) return line;
+    }
+    return '';
+  }
+
+  static bool _isConcreteTitle(String value) {
+    final line = value.trim();
+    if (line.isEmpty ||
+        line.length > 180 ||
+        line.startsWith('|') ||
+        line.startsWith('-') ||
+        line.startsWith('•') ||
+        RegExp(r'^[0-9]+[.)]\s').hasMatch(line)) {
+      return false;
+    }
+    return !RegExp(
+      // M55E_R6_GENERIC_CLINICAL_TASK_TITLE_NEGATION_V1
+      r'^(conducta clinica inmediata|conduta clinica imediata|conducta clinica|conduta clinica|conducta inmediata|conduta imediata|tratamiento farmacologico|tratamento farmacologico|clasificacion|classificacao|clasificacion del paciente|classificacao do paciente|puntos clave|pontos chave|red flags|sinais de alerta|hard stop)(:|$)',
+    ).hasMatch(_fold(line));
+  }
+
+  static String _fold(String value) => value
+      .toLowerCase()
+      .replaceAll('á', 'a')
+      .replaceAll('à', 'a')
+      .replaceAll('â', 'a')
+      .replaceAll('ã', 'a')
+      .replaceAll('ä', 'a')
+      .replaceAll('é', 'e')
+      .replaceAll('è', 'e')
+      .replaceAll('ê', 'e')
+      .replaceAll('ë', 'e')
+      .replaceAll('í', 'i')
+      .replaceAll('ì', 'i')
+      .replaceAll('î', 'i')
+      .replaceAll('ï', 'i')
+      .replaceAll('ó', 'o')
+      .replaceAll('ò', 'o')
+      .replaceAll('ô', 'o')
+      .replaceAll('õ', 'o')
+      .replaceAll('ö', 'o')
+      .replaceAll('ú', 'u')
+      .replaceAll('ù', 'u')
+      .replaceAll('û', 'u')
+      .replaceAll('ü', 'u')
+      .replaceAll('ç', 'c')
+      .replaceAll('ñ', 'n')
+      .replaceAll(RegExp(r'[*_`#]+'), '')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+}
+
+abstract final class GuardiaMarkdownTableProjection {
+  // M55D_CLASSIFICATION_TABLE_SEMANTIC_SLOT_V1
+  static bool isClassificationTable(_GuardiaMarkdownTableData table) {
+    final header = _foldSemanticHeader(table.headers.join(' '));
+    if (header.contains('clasificacion') ||
+        header.contains('classificacao') ||
+        header.contains('classification')) {
+      return true;
+    }
+    final categoryLike =
+        header.contains('categoria') || header.contains('category');
+    final resultLike =
+        header.contains('resultado') ||
+        header.contains('result') ||
+        header.contains('final');
+    return categoryLike && resultLike;
+  }
+
+  static bool hasClassificationTables(List<_GuardiaMarkdownTableData> tables) =>
+      tables.any(isClassificationTable);
+
+  static bool hasNonClassificationTables(
+    List<_GuardiaMarkdownTableData> tables,
+  ) => tables.any((table) => !isClassificationTable(table));
+
+  static String _foldSemanticHeader(String value) => value
+      .toLowerCase()
+      .replaceAll('á', 'a')
+      .replaceAll('à', 'a')
+      .replaceAll('â', 'a')
+      .replaceAll('ã', 'a')
+      .replaceAll('ä', 'a')
+      .replaceAll('é', 'e')
+      .replaceAll('è', 'e')
+      .replaceAll('ê', 'e')
+      .replaceAll('ë', 'e')
+      .replaceAll('í', 'i')
+      .replaceAll('ì', 'i')
+      .replaceAll('î', 'i')
+      .replaceAll('ï', 'i')
+      .replaceAll('ó', 'o')
+      .replaceAll('ò', 'o')
+      .replaceAll('ô', 'o')
+      .replaceAll('õ', 'o')
+      .replaceAll('ö', 'o')
+      .replaceAll('ú', 'u')
+      .replaceAll('ù', 'u')
+      .replaceAll('û', 'u')
+      .replaceAll('ü', 'u')
+      .replaceAll('ç', 'c')
+      .replaceAll('ñ', 'n');
+
+  // Streaming table fragments are not valid GFM yet. Hide the incomplete
+  // trailing fragment while preserving the largest complete table prefix.
+  static String sanitizeStreamingText(String rawText) {
+    if (rawText.trim().isEmpty) return rawText;
+
+    final normalized = rawText.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+
+    final lines = normalized.split('\n');
+    if (lines.isEmpty) return rawText;
+
+    var end = lines.length - 1;
+    while (end >= 0 && lines[end].trim().isEmpty) {
+      end--;
+    }
+    if (end < 0) return rawText;
+
+    var start = end;
+    while (start >= 0 && lines[start].trimLeft().startsWith('|')) {
+      start--;
+    }
+    start++;
+
+    if (start > end || !lines[start].trimLeft().startsWith('|')) {
+      return rawText;
+    }
+
+    final prefix = lines.sublist(0, start);
+    final candidate = lines.sublist(start, end + 1);
+
+    String rebuild(List<String> visibleCandidate) {
+      return <String>[...prefix, ...visibleCandidate].join('\n').trimRight();
+    }
+
+    if (candidate.length < 2) {
+      return rebuild(const <String>[]);
+    }
+
+    final header = _splitRow(candidate[0]);
+    if (header.length < 2) {
+      return rebuild(const <String>[]);
+    }
+
+    final separator = _splitRow(candidate[1]);
+    if (separator.length != header.length ||
+        !separator.every(_isSeparatorCell)) {
+      return rebuild(const <String>[]);
+    }
+
+    var completeLineCount = 2;
+
+    for (var index = 2; index < candidate.length; index++) {
+      final row = _splitRow(candidate[index]);
+      if (row.length != header.length) {
+        break;
+      }
+      completeLineCount = index + 1;
+    }
+
+    if (completeLineCount < 3) {
+      return rebuild(const <String>[]);
+    }
+
+    return rebuild(candidate.sublist(0, completeLineCount));
+  }
+
+  static final RegExp _separatorCell = RegExp(r'^:?-{3,}:?$');
+
+  static _GuardiaMarkdownTableProjectionResult parse(String rawText) {
+    if (rawText.trim().isEmpty) {
+      return _GuardiaMarkdownTableProjectionResult(
+        textWithoutTables: rawText,
+        tables: const <_GuardiaMarkdownTableData>[],
+      );
+    }
+
+    final normalized = rawText.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+    final lines = normalized.split('\n');
+    final remaining = <String>[];
+    final tables = <_GuardiaMarkdownTableData>[];
+
+    var index = 0;
+    while (index < lines.length) {
+      if (index + 1 < lines.length) {
+        final header = _splitRow(lines[index]);
+        final separator = _splitRow(lines[index + 1]);
+
+        final isTableStart =
+            header.length >= 2 &&
+            separator.length == header.length &&
+            separator.every(_isSeparatorCell);
+
+        if (isTableStart) {
+          final rows = <List<String>>[];
+          var cursor = index + 2;
+
+          while (cursor < lines.length) {
+            final row = _splitRow(lines[cursor]);
+            if (row.length < 2) break;
+
+            rows.add(
+              List<String>.generate(
+                header.length,
+                (cellIndex) => cellIndex < row.length ? row[cellIndex] : '',
+                growable: false,
+              ),
+            );
+            cursor++;
+          }
+
+          tables.add(
+            _GuardiaMarkdownTableData(
+              headers: List<String>.unmodifiable(header),
+              rows: List<List<String>>.unmodifiable(rows),
+            ),
+          );
+
+          // Mantém uma fronteira textual para não colar semanticamente as
+          // seções que estavam antes/depois da tabela.
+          if (remaining.isNotEmpty && remaining.last.trim().isNotEmpty) {
+            remaining.add('');
+          }
+          index = cursor;
+          continue;
+        }
+      }
+
+      remaining.add(lines[index]);
+      index++;
+    }
+
+    return _GuardiaMarkdownTableProjectionResult(
+      textWithoutTables: remaining.join('\n'),
+      tables: List<_GuardiaMarkdownTableData>.unmodifiable(tables),
+    );
+  }
+
+  static bool _isSeparatorCell(String value) {
+    return _separatorCell.hasMatch(value.trim());
+  }
+
+  static List<String> _splitRow(String line) {
+    var value = line.trim();
+    if (!value.contains('|')) return const <String>[];
+
+    if (value.startsWith('|')) value = value.substring(1);
+    if (value.endsWith('|')) value = value.substring(0, value.length - 1);
+    if (!value.contains('|')) return const <String>[];
+
+    final cells = <String>[];
+    var buffer = StringBuffer();
+    var escaped = false;
+
+    for (var i = 0; i < value.length; i++) {
+      final char = value[i];
+
+      if (escaped) {
+        if (char != '|') buffer.write('\\');
+        buffer.write(char);
+        escaped = false;
+        continue;
+      }
+
+      if (char == '\\') {
+        escaped = true;
+        continue;
+      }
+
+      if (char == '|') {
+        cells.add(_cleanCell(buffer.toString()));
+        buffer = StringBuffer();
+        continue;
+      }
+
+      buffer.write(char);
+    }
+
+    if (escaped) buffer.write('\\');
+    cells.add(_cleanCell(buffer.toString()));
+    return cells;
+  }
+
+  static String _cleanCell(String value) {
+    return value
+        .trim()
+        .replaceAll(RegExp(r'<br\s*/?>', caseSensitive: false), '\n')
+        .replaceAll(RegExp(r'\*\*|__|`'), '')
+        .trim();
+  }
+}
+
+// M67_DIFF_SCOPED_GENERICITY_GATE
+bool _guardiaM67IsLimitationsHeading(String value) {
+  final normalized = _normalizeClinicalText(value)
+      .replaceAll(RegExp(r'[^a-z0-9áéíóúüñãõâêôç]+'), ' ')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+
+  final isSpanish =
+      normalized.contains('limitaciones') &&
+      normalized.contains('datos') &&
+      (normalized.contains('faltantes') || normalized.contains('ausentes'));
+  final isPortuguese =
+      normalized.contains('limitacoes') &&
+      normalized.contains('dados') &&
+      (normalized.contains('faltantes') || normalized.contains('ausentes'));
+
+  return isSpanish || isPortuguese;
+}
+
+bool _guardiaM67IsMajorSectionHeading(String value) {
+  final n = _normalizeClinicalText(value);
+  return <String>{
+    'conducta inmediata',
+    'conduta imediata',
+    'tratamiento farmacologico',
+    'tratamento farmacologico',
+    'clasificacion',
+    'classificacao',
+    'monitorizacion y reevaluacion',
+    'monitorizacao e reavaliacao',
+    'monitorizacion de la evolucion',
+    'monitorizacao da evolucao',
+    'puntos clave',
+    'pontos chave',
+    'red flags',
+    'red flags escalamiento',
+    'red flags escalonamento',
+    'examenes complementarios',
+    'exames complementares',
+    'preguntas clave',
+    'perguntas chave',
+  }.contains(n);
+}
+
+String _guardiaM67CleanBullet(String value) {
+  return value
+      .trim()
+      .replaceAll(RegExp(r'^[\-\*•]\s*'), '')
+      .replaceAll(RegExp(r'^\d+[.)]\s*'), '')
+      .replaceAll(RegExp(r'[*_`#]+'), '')
+      .trim();
+}
+
+List<String> _guardiaM67ExtractLimitations(String rawText) {
+  final out = <String>[];
+  var active = false;
+
+  for (final raw
+      in rawText.replaceAll('\r\n', '\n').replaceAll('\r', '\n').split('\n')) {
+    final line = raw.trim();
+    if (line.isEmpty) continue;
+
+    final withoutColon = line.replaceFirst(RegExp(r':\s*$'), '');
+    if (_guardiaM67IsLimitationsHeading(withoutColon)) {
+      active = true;
+      continue;
+    }
+    if (!active) continue;
+
+    if (_guardiaM67IsMajorSectionHeading(withoutColon) ||
+        line.startsWith('|')) {
+      break;
+    }
+
+    final cleaned = _guardiaM67CleanBullet(line);
+    if (cleaned.isNotEmpty && !out.contains(cleaned)) {
+      out.add(cleaned);
+    }
+  }
+
+  return List<String>.unmodifiable(out);
+}
+
+bool _guardiaM67IsDestinationTable(_GuardiaMarkdownTableData table) {
+  if (table.headers.length != 2 || table.rows.length < 4) return false;
+
+  final labels = table.rows
+      .where((row) => row.isNotEmpty)
+      .map((row) => _normalizeClinicalText(row.first))
+      .toList(growable: false);
+
+  bool hasAny(bool Function(String value) test) => labels.any(test);
+
+  final observation = hasAny(
+    (value) => value == 'observacion' || value == 'observacao',
+  );
+  final admission = hasAny(
+    (value) =>
+        value == 'ingreso' ||
+        value == 'internacion' ||
+        value == 'internacao' ||
+        value == 'admissao',
+  );
+  final critical = hasAny(
+    (value) =>
+        value == 'uci' ||
+        value == 'uti' ||
+        value.contains('cuidados intensivos'),
+  );
+  final discharge = hasAny(
+    (value) =>
+        value == 'alta' ||
+        value == 'alta hospitalaria' ||
+        value == 'alta hospitalar',
+  );
+
+  return observation && admission && critical && discharge;
+}
+
+class _GuardiaM67DestinationTableVertical extends StatelessWidget {
+  const _GuardiaM67DestinationTableVertical({required this.table});
+
+  final _GuardiaMarkdownTableData table;
+
+  @override
+  Widget build(BuildContext context) {
+    final base = DefaultTextStyle.of(context).style;
+
+    return Column(
+      key: const ValueKey('guardia_destination_table_vertical'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        for (var index = 0; index < table.rows.length; index++)
+          if (table.rows[index].length >= 2)
+            Padding(
+              padding: EdgeInsets.only(top: index == 0 ? 2 : 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    table.rows[index][0],
+                    style: base.copyWith(
+                      fontSize: 16.0,
+                      height: 1.28,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    table.rows[index][1],
+                    style: base.copyWith(
+                      fontSize: 14.4,
+                      height: 1.48,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+      ],
+    );
+  }
+}
+
+class _GuardiaMarkdownTable extends StatelessWidget {
+  const _GuardiaMarkdownTable({
+    super.key,
+    required this.table,
+    this.fitToViewport = false,
+  });
+
+  final _GuardiaMarkdownTableData table;
+  final bool fitToViewport;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_guardiaM67IsDestinationTable(table)) {
+      return _GuardiaM67DestinationTableVertical(table: table);
+    }
+
+    final theme = Theme.of(context);
+    final divider = theme.dividerColor.withOpacity(0.58);
+    final headerBackground = theme.colorScheme.primary.withOpacity(
+      theme.brightness == Brightness.dark ? 0.12 : 0.07,
+    );
+
+    Widget buildTable({Map<int, TableColumnWidth>? columnWidths}) => Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: divider, width: 0.7),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Table(
+        columnWidths: columnWidths,
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        border: TableBorder(
+          horizontalInside: BorderSide(color: divider, width: 0.6),
+          verticalInside: BorderSide(color: divider, width: 0.6),
+        ),
+        children: <TableRow>[
+          TableRow(
+            decoration: BoxDecoration(color: headerBackground),
+            children: <Widget>[
+              for (final header in table.headers)
+                _GuardiaMarkdownTableCell(text: header, header: true),
+            ],
+          ),
+          for (final row in table.rows)
+            TableRow(
+              children: <Widget>[
+                for (final cell in row)
+                  _GuardiaMarkdownTableCell(text: cell, header: false),
+              ],
+            ),
+        ],
+      ),
+    );
+
+    if (fitToViewport && table.headers.length == 2) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.hasBoundedWidth
+              ? constraints.maxWidth
+              : MediaQuery.of(context).size.width - 32;
+          return SizedBox(
+            width: width,
+            child: buildTable(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FractionColumnWidth(0.38),
+                1: FractionColumnWidth(0.62),
+              },
+            ),
+          );
+        },
+      );
+    }
+
+    final viewportWidth = MediaQuery.of(context).size.width;
+    final minWidth = viewportWidth > 314 ? viewportWidth - 34 : 280.0;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minWidth: minWidth),
+        child: buildTable(),
+      ),
+    );
+  }
+}
+
+class _GuardiaMarkdownTableCell extends StatelessWidget {
+  const _GuardiaMarkdownTableCell({required this.text, required this.header});
+
+  final String text;
+  final bool header;
+
+  @override
+  Widget build(BuildContext context) {
+    final base = DefaultTextStyle.of(context).style;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+      child: Text(
+        text,
+        softWrap: true,
+        style: base.copyWith(
+          fontSize: header ? 12.5 : 12.3,
+          height: 1.34,
+          fontWeight: header ? FontWeight.w700 : FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+// M66_CONTINUATION_TYPOGRAPHY_VERTICAL_RHYTHM_V1
+class _ContinuationRefinedLine extends StatelessWidget {
+  final String text;
+  final HomeV2Palette palette;
+
+  const _ContinuationRefinedLine({required this.text, required this.palette});
+
+  static final RegExp _standaloneHeading = RegExp(
+    r'^(?:\d+[.)]\s*)?(?:observaci[oó]n|observa[cç][aã]o|ingreso|'
+    r'internaci[oó]n|interna[cç][aã]o|uci|uti|alta)\s*:?\s*$',
+    caseSensitive: false,
+  );
+
+  static final RegExp _labelBody = RegExp(
+    r'^((?:\d+[.)]\s*)?[^:]{2,58}:)\s*(.+)$',
+    caseSensitive: false,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final value = _guardiaUtf16Safe(text).trim();
+    if (value.isEmpty) {
+      return const SizedBox(height: 4);
+    }
+
+    if (_standaloneHeading.hasMatch(value)) {
+      final title = value.replaceFirst(RegExp(r':\s*$'), '');
+      return Padding(
+        key: ValueKey('guardia_continuation_heading_${text.hashCode}'),
+        padding: const EdgeInsets.only(top: 18, bottom: 4),
+        child: Text(
+          title,
+          style: TextStyle(
+            color: palette.textPrimary,
+            fontSize: 16.0,
+            height: 1.28,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      );
+    }
+
+    final labeled = _labelBody.firstMatch(value);
+    if (labeled != null) {
+      return Padding(
+        key: ValueKey('guardia_continuation_labeled_${text.hashCode}'),
+        padding: const EdgeInsets.only(top: 12),
+        child: RichText(
+          text: TextSpan(
+            style: TextStyle(
+              color: palette.textPrimary,
+              fontSize: 14.4,
+              height: 1.48,
+              fontWeight: FontWeight.w400,
+            ),
+            children: <InlineSpan>[
+              TextSpan(
+                text: '${labeled.group(1)} ',
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              TextSpan(text: _guardiaUtf16Safe(labeled.group(2) ?? '')),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      key: ValueKey('guardia_continuation_body_${text.hashCode}'),
+      padding: const EdgeInsets.only(top: 10),
+      child: Text(
+        value,
+        style: TextStyle(
+          color: palette.textPrimary,
+          fontSize: 14.4,
+          height: 1.48,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
     );
   }
 }
@@ -1407,6 +2682,36 @@ class _RawGuardiaSections {
         continue;
       }
 
+      final exactPhysicalTail = _exactPhysicalTailSectionFor(trimmed);
+      if (exactPhysicalTail != null) {
+        section = exactPhysicalTail.section;
+        if (exactPhysicalTail.content.isNotEmpty) {
+          switch (exactPhysicalTail.section) {
+            case _RawSection.evolution:
+              _addText(evolution, exactPhysicalTail.content);
+              break;
+            case _RawSection.keyPoints:
+              _addText(keyPoints, exactPhysicalTail.content);
+              break;
+            case _RawSection.hardStop:
+              _addText(hardStops, exactPhysicalTail.content);
+              break;
+            case _RawSection.none:
+            case _RawSection.immediate:
+            case _RawSection.pharmacologic:
+            case _RawSection.firstLine:
+            case _RawSection.secondLine:
+            case _RawSection.exams:
+            case _RawSection.questions:
+            case _RawSection.alert:
+            case _RawSection.note:
+            case _RawSection.ignored:
+              break;
+          }
+        }
+        continue;
+      }
+
       final inline = _inlineSectionFor(trimmed);
 
       if (inline != null) {
@@ -1530,6 +2835,43 @@ class _RawGuardiaSections {
       notes: notes,
       fallbackLines: fallbackLines,
     );
+  }
+
+  // MEDCASES_GUARDIA_EXACT_PHYSICAL_TAIL_ROUTER_V1_B_R0
+  // Somente aliases já emitidos pelo contrato clínico físico. O raw usado por
+  // Copiar/TTS/histórico não é alterado; apenas o bucket visual é recuperado.
+  static ({_RawSection section, String content})? _exactPhysicalTailSectionFor(
+    String rawLine,
+  ) {
+    final prepared = rawLine
+        .trim()
+        .replaceAll(RegExp(r'[*_`#]+'), '')
+        .replaceFirst(RegExp(r'^[📖🔑📌⚠️🟥🔴💊🔄⛔🚨🚩\-\*•\s]+'), '')
+        .trim();
+
+    final match = RegExp(
+      r'^(monitorizaci[oó]n\s+y\s+reevaluaci[oó]n|'
+      r'monitoriza[cç][aã]o\s+e\s+reavalia[cç][aã]o|'
+      r'monitoramento\s+e\s+reavalia[cç][aã]o|'
+      r'puntos?\s*[-–—]?\s*clave|'
+      r'pontos?\s*[-–—]?\s*chaves?|'
+      r'red\s+flags?\s*(?:/|y|e)\s*(?:escalamiento|escalonamento))'
+      r'\s*:?\s*(.*)$',
+      caseSensitive: false,
+    ).firstMatch(prepared);
+
+    if (match == null) return null;
+
+    final heading = _normalize(match.group(1) ?? '');
+    final content = _cleanLine(match.group(2) ?? '');
+
+    if (heading.startsWith('monitor')) {
+      return (section: _RawSection.evolution, content: content);
+    }
+    if (heading.startsWith('punto') || heading.startsWith('ponto')) {
+      return (section: _RawSection.keyPoints, content: content);
+    }
+    return (section: _RawSection.hardStop, content: content);
   }
 
   static ({_RawSection section, String content})? _inlineSectionFor(
@@ -1740,13 +3082,16 @@ class _RawGuardiaSections {
   }
 
   static void _addText(List<String> target, String value) {
-    final normalized = _normalize(value);
+    final safeValue = _guardiaUtf16Safe(value);
+    final normalized = _normalize(safeValue);
 
     if (normalized.isEmpty) return;
 
-    final exists = target.any((item) => _normalize(item) == normalized);
+    final exists = target.any(
+      (item) => _normalize(_guardiaUtf16Safe(item)) == normalized,
+    );
 
-    if (!exists) target.add(value);
+    if (!exists) target.add(safeValue);
   }
 
   static String _normalize(String value) {
@@ -1783,6 +3128,85 @@ abstract final class GuardiaStreamingPresentation {
     final boundary = _hardStopBoundary.firstMatch(rawText);
     if (boundary == null) return rawText;
     return rawText.substring(0, boundary.start).trimRight();
+  }
+}
+
+/// Projeção visual sem emojis do Plantão.
+///
+/// Não altera palavras, números, doses, vias, intervalos, classificação ou
+/// qualquer conteúdo clínico. Os marcadores continuam disponíveis no raw
+/// canônico para parser, persistência e auditoria.
+// PLANTAO_CONFIRMED_CASE_RX_SURFACE_V1
+//
+// A confirmação explícita no texto do médico é evidência de certeza clínica
+// suficiente para permitir a superfície de medicação já estruturada no DTO.
+// Isso NÃO cria fármacos/doses e NÃO vence um verdadeiro diferencial.
+bool _guardiaUserTextHasExplicitConfirmedDiagnosis(String value) {
+  var q = value
+      .toLowerCase()
+      .replaceAll('á', 'a')
+      .replaceAll('à', 'a')
+      .replaceAll('â', 'a')
+      .replaceAll('ã', 'a')
+      .replaceAll('ä', 'a')
+      .replaceAll('é', 'e')
+      .replaceAll('è', 'e')
+      .replaceAll('ê', 'e')
+      .replaceAll('ë', 'e')
+      .replaceAll('í', 'i')
+      .replaceAll('ì', 'i')
+      .replaceAll('î', 'i')
+      .replaceAll('ï', 'i')
+      .replaceAll('ó', 'o')
+      .replaceAll('ò', 'o')
+      .replaceAll('ô', 'o')
+      .replaceAll('õ', 'o')
+      .replaceAll('ö', 'o')
+      .replaceAll('ú', 'u')
+      .replaceAll('ù', 'u')
+      .replaceAll('û', 'u')
+      .replaceAll('ü', 'u')
+      .replaceAll('ç', 'c')
+      .replaceAll('ñ', 'n');
+
+  q = q.replaceAll(RegExp(r'\s+'), ' ').trim();
+  if (q.isEmpty) return false;
+
+  final negatedConfirmation = RegExp(
+    r'\b(?:no|sin|nao|sem)\s+(?:esta\s+)?'
+    r'(?:confirmado|confirmada|diagnosticado|diagnosticada|confirmed)\b',
+  ).hasMatch(q);
+  if (negatedConfirmation) return false;
+
+  return RegExp(
+    r'\b(?:confirmado|confirmada|diagnostico confirmado|'
+    r'diagnosticado|diagnosticada|confirmed)\b',
+  ).hasMatch(q);
+}
+
+abstract final class GuardiaNoEmojiPresentation {
+  static const List<String> _markers = <String>[
+    '🟥',
+    '🚨',
+    '💊',
+    '🔑',
+    '🚩',
+    '📌',
+    '⛔',
+    '🔴',
+    '⚠️',
+    '⚠',
+    '🚫',
+    '🛑',
+  ];
+
+  static String clean(String value) {
+    if (value.isEmpty) return value;
+    var out = value;
+    for (final marker in _markers) {
+      out = out.replaceAll(marker, '');
+    }
+    return out.split('\n').map((line) => line.trimRight()).join('\n');
   }
 }
 
@@ -1903,7 +3327,7 @@ class _GuardiaDisplayContent {
               .map(_medicationText)
               .toList(growable: false);
 
-    final unclassified = _mergeClinicalText(
+    final unclassified = _mergeMedicationTextSemantically(
       typedUnclassified,
       parsed.unclassified,
     );
@@ -2122,6 +3546,55 @@ class _GuardiaDisplayContent {
     }
 
     return result;
+  }
+
+  // PLANTAO_SEMANTIC_MEDICATION_DEDUPE_V1
+  static List<String> _mergeMedicationTextSemantically(
+    Iterable<String> primary,
+    Iterable<String> fallback,
+  ) {
+    final result = <String>[];
+    final seen = <String>{};
+
+    for (final item in <String>[...primary, ...fallback]) {
+      final value = item.trim();
+      final identity = _medicationSemanticIdentity(value);
+      if (identity.isEmpty || !seen.add(identity)) continue;
+      result.add(value);
+    }
+    return result;
+  }
+
+  static String _medicationSemanticIdentity(String value) {
+    var normalized = _normalizeClinicalText(value);
+    if (normalized.isEmpty) return '';
+
+    normalized = normalized
+        .replaceAll(
+          RegExp(
+            r'^(?:administrar|administre|iniciar|inicie|continuar|continua|'
+            r'mantener|manter|seguir|infusion|infusao)\s+',
+          ),
+          '',
+        )
+        .replaceAll(
+          RegExp(
+            r'\b(?:infusion|infusao|continua|continuo|continuar|'
+            r'mantener|manter)\b',
+          ),
+          ' ',
+        )
+        .replaceAll(
+          RegExp(
+            r'\b(?:para|como)\s+(?:mantener|manter)?\s*'
+            r'(?:la\s+|a\s+)?(?:anticoagulacion|anticoagulacao)\b.*$',
+          ),
+          '',
+        )
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    return normalized;
   }
 
   static List<String> _withoutSummaryLines(Iterable<String> values) {

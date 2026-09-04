@@ -90,9 +90,10 @@ import '../../../services/firebase_runtime_guard.dart';
 const String kInternacionesCollection = 'internaciones';
 
 // ── Status semânticos do ciclo de vida do documento ──────────────────────────
-const String kStatusActive   = 'active';
-const String kStatusTrashed  = 'trashed';   // legado — mantido para docs antigos
-const String kStatusArchived = 'archived';  // Build 201: novo status de soft-delete
+const String kStatusActive = 'active';
+const String kStatusTrashed = 'trashed'; // legado — mantido para docs antigos
+const String kStatusArchived =
+    'archived'; // Build 201: novo status de soft-delete
 
 // ── Modelo leve para itens da lixeira ────────────────────────────────────────
 class DeletedSession {
@@ -116,7 +117,7 @@ class DeletedSession {
     if (diff.inDays < 1) return 'há ${diff.inHours}h';
     if (diff.inDays == 1) return 'ontem';
     if (diff.inDays < 30) return 'há ${diff.inDays} dias';
-    return '${d.day.toString().padLeft(2,'0')}/${d.month.toString().padLeft(2,'0')}/${d.year}';
+    return '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
   }
 }
 
@@ -125,7 +126,8 @@ class InternacionFirestoreService {
   // Firebase.apps getter pode lançar NullError no Safari (interop JS nulo).
   static FirebaseFirestore get _db {
     if (FirebaseRuntimeGuard.isUnavailable) {
-      throw StateError('[BUILD299][InternacionFirestoreService] Firebase runtime unavailable — cannot access Firestore');
+      throw StateError(
+          '[BUILD299][InternacionFirestoreService] Firebase runtime unavailable — cannot access Firestore');
     }
     return FirebaseFirestore.instance;
   }
@@ -164,7 +166,8 @@ class InternacionFirestoreService {
       final key = existingKey ?? sessionKey(paciente);
       final payload = _buildInsertPayload(key, paciente, historial);
       await _col(uid).doc(key).set(payload, SetOptions(merge: true));
-      debugPrint('[InternFire] saveSession (INSERT) OK → $key (${historial.length} evol.)');
+      debugPrint(
+          '[InternFire] saveSession (INSERT) OK → $key (${historial.length} evol.)');
     } catch (e) {
       debugPrint('[InternFire] saveSession ERRO: $e');
     }
@@ -188,10 +191,12 @@ class InternacionFirestoreService {
       // .update() preserva todos os campos não incluídos (ex: savedAt, sessionKey)
       // Garante que isDeleted:false + status:'active' estejam presentes
       await _col(uid).doc(existingKey).update(payload);
-      debugPrint('[InternFire] updateSession (UPDATE) OK → $existingKey (${historial.length} evol.)');
+      debugPrint(
+          '[InternFire] updateSession (UPDATE) OK → $existingKey (${historial.length} evol.)');
     } catch (e) {
       // .update() falha se o doc não existe ainda — cai no saveSession como fallback
-      debugPrint('[InternFire] updateSession WARN (doc não existe?): $e — tentando saveSession');
+      debugPrint(
+          '[InternFire] updateSession WARN (doc não existe?): $e — tentando saveSession');
       await saveSession(
         uid: uid,
         paciente: paciente,
@@ -213,15 +218,13 @@ class InternacionFirestoreService {
       // Build 203 FIX DT-002: removido .orderBy() para evitar FirebaseException
       // por índice composto ausente {status, savedAt}. A ordenação é feita
       // client-side logo abaixo, exatamente como na getDeletedSessions().
-      final snapActive = await _col(uid)
-          .where('status', isEqualTo: kStatusActive)
-          .get();
+      final snapActive =
+          await _col(uid).where('status', isEqualTo: kStatusActive).get();
       // Backward-compat query: documentos sem campo 'status' (criados antes do Build 186)
       // estes têm isDeleted==false mas não têm 'status' definido
       // Build 203 FIX DT-002: idem — removido .orderBy() de {isDeleted, savedAt}.
-      final snapLegacy = await _col(uid)
-          .where('isDeleted', isEqualTo: false)
-          .get();
+      final snapLegacy =
+          await _col(uid).where('isDeleted', isEqualTo: false).get();
       // Funde os resultados, evitando duplicatas por sessionKey
       final seen = <String>{};
       final all = <PacienteSession>[];
@@ -281,7 +284,8 @@ class InternacionFirestoreService {
     // está em estado nulo (ITP, modo privado, IndexedDB bloqueado).
     // O guard encapsula o try/catch — nunca lança, sempre retorna bool seguro.
     if (FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint('[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
+      debugPrint(
+          '[BUILD299][PLANTAO_STREAM] skipped reason=firebase_runtime_unavailable');
       return const Stream.empty();
     }
 
@@ -353,14 +357,14 @@ class InternacionFirestoreService {
           .where('status', isEqualTo: kStatusActive)
           .snapshots()
           .listen(
-            (snap) {
-              if (!controller.isClosed) controller.add(_mapSnap(snap));
-            },
-            onError: (e) {
-              if (!controller.isClosed) controller.addError(e);
-            },
-            cancelOnError: false,
-          );
+        (snap) {
+          if (!controller.isClosed) controller.add(_mapSnap(snap));
+        },
+        onError: (e) {
+          if (!controller.isClosed) controller.addError(e);
+        },
+        cancelOnError: false,
+      );
     });
 
     controller.onCancel = () {
@@ -439,29 +443,30 @@ class InternacionFirestoreService {
   static Future<List<DeletedSession>> getDeletedSessions(String uid) async {
     try {
       // Query 1: status=='archived' (Build 201 — novo padrão, SEM .orderBy)
-      final snapArchived = await _col(uid)
-          .where('status', isEqualTo: kStatusArchived)
-          .get();
+      final snapArchived =
+          await _col(uid).where('status', isEqualTo: kStatusArchived).get();
 
       // Query 2: status=='trashed' (legado — docs criados antes do Build 201)
-      final snapTrashed = await _col(uid)
-          .where('status', isEqualTo: kStatusTrashed)
-          .get();
+      final snapTrashed =
+          await _col(uid).where('status', isEqualTo: kStatusTrashed).get();
 
       // Query 3: isDeleted==true (backward-compat — docs sem campo 'status')
-      final snapLegacy = await _col(uid)
-          .where('isDeleted', isEqualTo: true)
-          .get();
+      final snapLegacy =
+          await _col(uid).where('isDeleted', isEqualTo: true).get();
 
       final seen = <String>{};
       final all = <DeletedSession>[];
       // Processa archived + trashed + legacy, deduplicando por doc.id
-      for (final doc in [...snapArchived.docs, ...snapTrashed.docs, ...snapLegacy.docs]) {
+      for (final doc in [
+        ...snapArchived.docs,
+        ...snapTrashed.docs,
+        ...snapLegacy.docs
+      ]) {
         if (seen.contains(doc.id)) continue;
         // Exclui docs ativos que possam aparecer na query legacy (isDeleted:true legado)
         final docData = doc.data();
         // Build 207: usa _toStr() — imune a type erasure em dart2js.
-      final docStatus = _toStr(docData['status']);
+        final docStatus = _toStr(docData['status']);
         if (docStatus == kStatusActive) continue;
         seen.add(doc.id);
         final ds = _deletedFromDoc(doc);
@@ -469,7 +474,8 @@ class InternacionFirestoreService {
       }
       // Ordena client-side por deletedAt desc (sem depender de índice Firestore)
       all.sort((a, b) => b.deletedAt.compareTo(a.deletedAt));
-      debugPrint('[InternFire] getDeletedSessions OK → ${all.length} itens na lixeira');
+      debugPrint(
+          '[InternFire] getDeletedSessions OK → ${all.length} itens na lixeira');
       return all;
     } catch (e) {
       debugPrint('[InternFire] getDeletedSessions ERRO: $e');
@@ -507,10 +513,10 @@ class InternacionFirestoreService {
 
     void emit() {
       final seen = <String>{};
-      final all  = <DeletedSession>[];
+      final all = <DeletedSession>[];
       for (final doc in [
         ...(snapArchived?.docs ?? []),
-        ...(snapTrashed?.docs  ?? []),
+        ...(snapTrashed?.docs ?? []),
       ]) {
         if (seen.contains(doc.id)) continue;
         // Build 207: usa _toStr() — imune a type erasure em dart2js.
@@ -529,22 +535,26 @@ class InternacionFirestoreService {
         .where('status', isEqualTo: kStatusArchived)
         .snapshots()
         .listen(
-          (snap) { snapArchived = snap; emit(); },
-          onError: (Object e) {
-            debugPrint('[InternFire] deletedStream(archived) err: $e');
-          },
-        );
+      (snap) {
+        snapArchived = snap;
+        emit();
+      },
+      onError: (Object e) {
+        debugPrint('[InternFire] deletedStream(archived) err: $e');
+      },
+    );
 
     // Query 2 — status=='trashed' (legado)
-    final subT = _col(uid)
-        .where('status', isEqualTo: kStatusTrashed)
-        .snapshots()
-        .listen(
-          (snap) { snapTrashed = snap; emit(); },
-          onError: (Object e) {
-            debugPrint('[InternFire] deletedStream(trashed) err: $e');
-          },
-        );
+    final subT =
+        _col(uid).where('status', isEqualTo: kStatusTrashed).snapshots().listen(
+      (snap) {
+        snapTrashed = snap;
+        emit();
+      },
+      onError: (Object e) {
+        debugPrint('[InternFire] deletedStream(trashed) err: $e');
+      },
+    );
 
     controller.onCancel = () {
       subA.cancel();
@@ -566,21 +576,59 @@ class InternacionFirestoreService {
   // Fire-and-forget: chamado sem await nas telas — falhas de rede jamais
   // bloqueiam a exibição do resultado clínico na tela do médico.
   // ─────────────────────────────────────────────────────────────────────────
+  /// V1-K-R1 — gate fechado da escrita Ferramentas → Pacientes.
+  /// Exige seleção importada real, nome válido e igualdade exata entre a chave
+  /// da sessão importada e a chave solicitada para escrita.
+  static bool canWriteToolsResults({
+    required bool hasImportedPatient,
+    required String patientName,
+    required String importedPatientKey,
+    required String patientKey,
+  }) {
+    final canonicalKey = patientKey.trim();
+    final selectedKey = importedPatientKey.trim();
+
+    return hasImportedPatient &&
+        patientName.trim().isNotEmpty &&
+        canonicalKey.isNotEmpty &&
+        selectedKey.isNotEmpty &&
+        selectedKey == canonicalKey;
+  }
+
   static Future<void> updatePatientLaboratories({
     required String uid,
     required String patientKey,
+    required PacienteSession? importedSession,
     required Map<String, dynamic> labData,
     Map<String, dynamic>? scores,
     String? scoresText,
   }) async {
-    // Guards estritos
-    if (uid.isEmpty || patientKey.isEmpty) {
-      debugPrint('[BUILD428][InternFire] updatePatientLaboratories SKIP — uid/key vazio');
+    final importedPatientName = importedSession?.paciente.nome ?? '';
+    final importedPatientKey = importedSession?.sessionKey ?? '';
+    if (!canWriteToolsResults(
+      hasImportedPatient: importedSession != null,
+      patientName: importedPatientName,
+      importedPatientKey: importedPatientKey,
+      patientKey: patientKey,
+    )) {
+      debugPrint(
+        '[V1-K-R1][InternFire] updatePatientLaboratories SKIP — '
+        'paciente importado/nome/patientKey inválido',
+      );
       return;
     }
-    if (labData.isEmpty && (scores == null || scores.isEmpty) &&
+
+    // Guards estritos
+    if (uid.isEmpty || patientKey.isEmpty) {
+      debugPrint(
+          '[BUILD428][InternFire] updatePatientLaboratories SKIP — uid/key vazio');
+      return;
+    }
+    if (labData.isEmpty &&
+        (scores == null || scores.isEmpty) &&
         (scoresText == null || scoresText.isEmpty)) {
-      debugPrint('[BUILD428][InternFire] updatePatientLaboratories SKIP — payload vazio');
+      debugPrint(
+          '[BUILD428][InternFire] updatePatientLaboratories SKIP — payload vazio');
       return;
     }
     try {
@@ -600,16 +648,18 @@ class InternacionFirestoreService {
 
       // String legível para injeção no campo de evolução / SOAP
       if (scoresText != null && scoresText.trim().isNotEmpty) {
-        payload['scoresToolsTexto']    = scoresText.trim();
+        payload['scoresToolsTexto'] = scoresText.trim();
         payload['scoresToolsLastUpdate'] = FieldValue.serverTimestamp();
       }
 
-      await _col(uid).doc(patientKey).set(payload, SetOptions(merge: true));
-      debugPrint('[BUILD428][InternFire] updatePatientLaboratories OK → $patientKey '
+      await _col(uid).doc(patientKey.trim()).update(payload);
+      debugPrint(
+          '[BUILD428][InternFire] updatePatientLaboratories OK → $patientKey '
           '(${cleanLab.length} labs, ${scores?.length ?? 0} scores)');
     } catch (e) {
       // Silencioso — falhas de rede nunca interrompem o fluxo clínico
-      debugPrint('[BUILD428][InternFire] updatePatientLaboratories ERRO (silencioso): $e');
+      debugPrint(
+          '[BUILD428][InternFire] updatePatientLaboratories ERRO (silencioso): $e');
     }
   }
 
@@ -638,8 +688,8 @@ class InternacionFirestoreService {
   ) {
     return {
       'sessionKey': key,
-      'status': kStatusActive,               // campo semântico primário
-      'isDeleted': false,                    // backward-compat (queries legadas)
+      'status': kStatusActive, // campo semântico primário
+      'isDeleted': false, // backward-compat (queries legadas)
       'savedAt': FieldValue.serverTimestamp(), // timestamp de CRIAÇÃO
       'updatedAt': FieldValue.serverTimestamp(), // também preenche no insert
       'paciente': _pacienteToJson(paciente),
@@ -660,8 +710,8 @@ class InternacionFirestoreService {
   ) {
     return {
       'sessionKey': key,
-      'status': kStatusActive,                // reforça — doc volta ao stream
-      'isDeleted': false,                     // reforça — backward-compat
+      'status': kStatusActive, // reforça — doc volta ao stream
+      'isDeleted': false, // reforça — backward-compat
       'updatedAt': FieldValue.serverTimestamp(), // timestamp de MODIFICAÇÃO
       // savedAt NÃO incluído — preserva timestamp de criação original
       'paciente': _pacienteToJson(paciente),
@@ -843,7 +893,8 @@ class InternacionFirestoreService {
       }
       final paciente = _pacienteFromJson(pacienteJson);
       final rawHistorial2 = data['historial'];
-      final historialCount2 = (rawHistorial2 is List) ? rawHistorial2.length : 0;
+      final historialCount2 =
+          (rawHistorial2 is List) ? rawHistorial2.length : 0;
       return DeletedSession(
         sessionKey: doc.id,
         paciente: paciente,
@@ -860,8 +911,15 @@ class InternacionFirestoreService {
   // Quaisquer chaves presentes no JSON da IA que não sejam mapeadas abaixo
   // são automaticamente capturadas em metadadosAdicionais — perda ZERO.
   static const _kKnownEvolKeys = {
-    'id', 'fecha', 'autorNombre', 'subjetivo', 'objetivo',
-    'evaluacion', 'plan', 'farmacos', 'metadadosAdicionais',
+    'id',
+    'fecha',
+    'autorNombre',
+    'subjetivo',
+    'objetivo',
+    'evaluacion',
+    'plan',
+    'farmacos',
+    'metadadosAdicionais',
   };
 
   // ── Build 199: Helpers de coerção numérica/booleana ──────────────────────
@@ -897,13 +955,13 @@ class InternacionFirestoreService {
     Map<String, dynamic> safe(dynamic v) =>
         (v is Map) ? Map<String, dynamic>.from(v as Map) : {};
 
-    final s  = safe(j['subjetivo']);
-    final o  = safe(j['objetivo']);
+    final s = safe(j['subjetivo']);
+    final o = safe(j['objetivo']);
     final sv = safe(o['signosVitales']);
     final ef = safe(o['examenFisico']);
     final ex = safe(o['examenes']);
-    final a  = safe(j['evaluacion']);
-    final p  = safe(j['plan']);
+    final a = safe(j['evaluacion']);
+    final p = safe(j['plan']);
 
     // Build 207: log de diagnóstico para confirmar leitura dos sub-mapas em release.
     debugPrint('[InternFire] _evolFromJson BUILD-207 → '
@@ -924,7 +982,10 @@ class InternacionFirestoreService {
     final estadoStr = a['estado'];
     if (estadoStr is String) {
       for (final e in EstadoClinical.values) {
-        if (e.name == estadoStr) { estado = e; break; }
+        if (e.name == estadoStr) {
+          estado = e;
+          break;
+        }
       }
     }
 
@@ -942,18 +1003,20 @@ class InternacionFirestoreService {
       final result = <FarmacoEntry>[];
       for (final f in raw) {
         try {
-          final fm = f is Map ? Map<String, dynamic>.from(f) : <String, dynamic>{};
+          final fm =
+              f is Map ? Map<String, dynamic>.from(f) : <String, dynamic>{};
           result.add(FarmacoEntry(
             medicamento: _toStr(fm['medicamento']),
             dosagem: _toStr(fm['dosagem']),
           ));
-        } catch (_) { /* pula entrada corrompida sem perder as restantes */ }
+        } catch (_) {/* pula entrada corrompida sem perder as restantes */}
       }
       return result;
     }
 
     return EvolucionModel(
-      id: _toStr(j['id'], fallback: DateTime.now().millisecondsSinceEpoch.toString()),
+      id: _toStr(j['id'],
+          fallback: DateTime.now().millisecondsSinceEpoch.toString()),
       fecha: DateTime.tryParse(_toStr(j['fecha'])) ?? DateTime.now(),
       autorNombre: _toStr(j['autorNombre'], fallback: 'Dr.'),
       subjetivo: SubjetivoData(
@@ -961,47 +1024,47 @@ class InternacionFirestoreService {
         // Build 199: dolorEscala é int? — null = não informado, 0 = sem dor.
         // Firestore pode gravar int como double(0.0); convertemos e preservamos null.
         dolorEscala: s['dolorEscala'] == null ? null : _toInt(s['dolorEscala']),
-        fiebre:       _toBool(s['fiebre']),
-        disnea:       _toBool(s['disnea']),
-        nauseas:      _toBool(s['nauseas']),
-        tos:          _toBool(s['tos']),
+        fiebre: _toBool(s['fiebre']),
+        disnea: _toBool(s['disnea']),
+        nauseas: _toBool(s['nauseas']),
+        tos: _toBool(s['tos']),
         alimentacion: _toStr(s['alimentacion']),
-        diuresis:     _toStr(s['diuresis']),
-        evacuacion:   _toStr(s['evacuacion']),
+        diuresis: _toStr(s['diuresis']),
+        evacuacion: _toStr(s['evacuacion']),
         suenoRestado: _toBool(s['suenoRestado']),
-        notasLibres:  _toStr(s['notasLibres']),
+        notasLibres: _toStr(s['notasLibres']),
       ),
       objetivo: ObjetivoData(
         signosVitales: SignosVitales(
-          pa:          _toStr(sv['pa']),
-          fc:          _toStr(sv['fc']),
-          fr:          _toStr(sv['fr']),
-          satO2:       _toStr(sv['satO2']),
+          pa: _toStr(sv['pa']),
+          fc: _toStr(sv['fc']),
+          fr: _toStr(sv['fr']),
+          satO2: _toStr(sv['satO2']),
           temperatura: _toStr(sv['temperatura']),
         ),
         examenFisico: ExamenFisico(
           estadoGeneral: _toStr(ef['estadoGeneral']),
-          acv:           _toStr(ef['acv']),
-          ar:            _toStr(ef['ar']),
-          abdomen:       _toStr(ef['abdomen']),
-          extremidades:  _toStr(ef['extremidades']),
+          acv: _toStr(ef['acv']),
+          ar: _toStr(ef['ar']),
+          abdomen: _toStr(ef['abdomen']),
+          extremidades: _toStr(ef['extremidades']),
         ),
         examenes: ExamenesComplementarios(
           laboratorio: _toStr(ex['laboratorio']),
-          imagenes:    _toStr(ex['imagenes']),
-          culturas:    _toStr(ex['culturas']),
-          ecg:         _toStr(ex['ecg']),
+          imagenes: _toStr(ex['imagenes']),
+          culturas: _toStr(ex['culturas']),
+          ecg: _toStr(ex['ecg']),
         ),
         tratamientoActual: _toStr(o['tratamientoActual']),
       ),
       evaluacion: EvaluacionData(
         estado: estado,
         problemasActivos: safeStrList(a['problemasActivos']),
-        notasEvaluacion:  _toStr(a['notasEvaluacion']),
+        notasEvaluacion: _toStr(a['notasEvaluacion']),
       ),
       plan: PlanData(
         planTerapeutico: _toStr(p['planTerapeutico']),
-        criteriosAlta:   _toStr(p['criteriosAlta']),
+        criteriosAlta: _toStr(p['criteriosAlta']),
       ),
       farmacos: parseFarmacos(j['farmacos']),
       metadadosAdicionais: metadados,

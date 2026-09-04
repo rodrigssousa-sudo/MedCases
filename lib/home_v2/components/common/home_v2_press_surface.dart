@@ -10,7 +10,7 @@ class HomeV2SurfaceTokens {
   static const int idleBorderAlpha = 20;
 
   static const Color darkPageBackground = Color(0xFF1A1D23);
-  static const Color lightPageBackground = Color(0xFFECF1F3);
+  static const Color lightPageBackground = Color(0xFFE0E6E9);
 
   static Color pageBackground(bool dark) {
     return dark ? darkPageBackground : lightPageBackground;

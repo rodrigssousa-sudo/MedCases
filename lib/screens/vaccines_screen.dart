@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_VACCINES
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
@@ -218,7 +219,7 @@ class _VaccinesScreenState extends State<VaccinesScreen> {
     return ListView(
       key: ValueKey('vaccines-root-${catalog.jurisdiction.name}'),
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 150),
+      padding: const EdgeInsets.fromLTRB(0, 6, 0, 150),
       children: [
         _JurisdictionHeader(catalog: catalog, dark: dark, isEs: isEs),
         const SizedBox(height: 8),
@@ -240,7 +241,7 @@ class _VaccinesScreenState extends State<VaccinesScreen> {
     return ListView(
       key: ValueKey('vaccines-routine-${catalog.jurisdiction.name}'),
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 150),
+      padding: const EdgeInsets.fromLTRB(0, 6, 0, 150),
       children: [
         _PageHeading(
           dark: dark,
@@ -275,7 +276,7 @@ class _VaccinesScreenState extends State<VaccinesScreen> {
     return ListView(
       key: ValueKey('vaccines-${parent.name}-${catalog.jurisdiction.name}'),
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 150),
+      padding: const EdgeInsets.fromLTRB(0, 6, 0, 150),
       children: [
         _PageHeading(dark: dark, title: title, subtitle: subtitle),
         for (var i = 0; i < records.length; i++)
@@ -378,7 +379,7 @@ class _JurisdictionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF05070A);
     final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
-    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF059669);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(18, 10, 18, 12),
@@ -530,7 +531,7 @@ class _ClinicalNavigationRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF05070A);
     final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
-    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF059669);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
     final surface = _vaccineCardSurface(dark);
     final border = _vaccineCardBorder(dark);
 
@@ -617,7 +618,7 @@ class _AgeGroupBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF05070A);
     final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
-    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF059669);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
     final divider = _vaccineCardBorder(dark);
 
     return Container(
@@ -1060,7 +1061,7 @@ class _DetailSection extends StatelessWidget {
     final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
     final secondary = dark ? const Color(0xFFB3BDC9) : const Color(0xFF475569);
     final iconColor =
-        accent ?? (dark ? const Color(0xFF00C781) : const Color(0xFF059669));
+        accent ?? (dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57));
 
     return Container(
       margin: const EdgeInsets.only(bottom: 3),
@@ -1119,7 +1120,7 @@ class _BulletSection extends StatelessWidget {
     final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
     final secondary = dark ? const Color(0xFFB3BDC9) : const Color(0xFF475569);
     final iconColor =
-        accent ?? (dark ? const Color(0xFF00C781) : const Color(0xFF059669));
+        accent ?? (dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57));
 
     return Container(
       margin: const EdgeInsets.only(bottom: 3),
@@ -1267,7 +1268,7 @@ Color _statusColor(VaccineProgramStatus status, bool dark) {
     case VaccineProgramStatus.routineAge:
     case VaccineProgramStatus.seasonal:
     case VaccineProgramStatus.pregnancy:
-      return dark ? const Color(0xFF00C781) : const Color(0xFF059669);
+      return dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
     case VaccineProgramStatus.riskGroup:
     case VaccineProgramStatus.focalizedStrategy:
     case VaccineProgramStatus.travelExposure:

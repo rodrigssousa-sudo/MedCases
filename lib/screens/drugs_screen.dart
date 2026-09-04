@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_3A_V2_B_R1_GENERIC_CONTEXTS
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
@@ -2016,7 +2017,7 @@ class _ClinicalTabCard extends StatelessWidget {
             controller: tabCtrl,
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            indicatorColor: const Color(0xFF10B981),
+            indicatorColor: const Color(0xFF0D6B57),
             indicatorWeight: 2.5,
             indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
             dividerColor: c.border,
@@ -3405,7 +3406,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
               // Realça parte que bate com o query no nome
               return InkWell(
                 onTap: () { AppHaptics.light(context); onSelect(drug); },
-                splashColor: const Color(0xFFECFDF5),
+                splashColor: const Color(0x140D6B57),
                 highlightColor: const Color(0xFFF0FFF8),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -3416,7 +3417,7 @@ class _DrugSuggestionDropdown extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFECFDF5),
+                        color: const Color(0x140D6B57),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(

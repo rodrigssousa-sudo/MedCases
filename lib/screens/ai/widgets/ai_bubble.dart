@@ -400,6 +400,7 @@ class AiBubble extends StatefulWidget {
   final VoidCallback onCopy;
   final bool animate;
   final String lang; // globalLanguageLock — propagado para AiBlockBubble
+  final bool studyMode;
   // TTS
   final bool ttsPlaying;
   final bool ttsReady;
@@ -433,6 +434,7 @@ class AiBubble extends StatefulWidget {
     required this.onCopy,
     this.animate = false,
     this.lang = 'pt',
+    this.studyMode = false,
     this.ttsPlaying = false,
     this.ttsReady = false,
     this.onTts,
@@ -1054,6 +1056,7 @@ class AiBubbleState extends State<AiBubble> {
         ttsPlaying: widget.ttsPlaying,
         ttsReady: widget.ttsReady,
         lang: widget.lang,
+        studyMode: widget.studyMode,
         onChipTap: widget.onChipTap,
       ),
     );

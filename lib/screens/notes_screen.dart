@@ -190,7 +190,7 @@ class _NotesScreenState extends State<NotesScreen> {
                 end: Alignment.bottomRight,
                 colors: dark
                     ? [const Color(0xFF0F1116), const Color(0xFF2D3340), const Color(0xFF1F3A28)]
-                    : [const Color(0xFF0F1116), const Color(0xFF1B3D2A), const Color(0xFF10B981)],
+                    : [const Color(0xFF0F1116), const Color(0xFF1B3D2A), const Color(0xFF0D6B57)],
               ),
             ),
             child: SafeArea(
@@ -250,7 +250,7 @@ class _NotesScreenState extends State<NotesScreen> {
                         child: const Icon(
                           Icons.add,
                           size: 22,
-                          color: Color(0xFF00E5FF), // Cyan Elétrico Neon
+                          color: Color(0xFF0D6B57), // Accent canônico MedCases
                         ),
                       ),
                     ]),
@@ -338,7 +338,7 @@ class _NotesScreenState extends State<NotesScreen> {
       floatingActionButton: _allNotes.isNotEmpty
           ? FloatingActionButton(
               onPressed: () => _openEditor(),
-              backgroundColor: const Color(0xFF10B981),
+              backgroundColor: const Color(0xFF0D6B57),
               foregroundColor: Colors.white,
               elevation: 4,
               child: const Icon(Icons.add_rounded, size: 24),
@@ -599,7 +599,7 @@ class _EmptyState extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: dark
                     ? Colors.white.withOpacity(0.06)
-                    : const Color(0xFF10B981).withOpacity(0.08),
+                    : const Color(0xFF0D6B57).withOpacity(0.08),
               ),
               child: Center(
                 child: Icon(
@@ -609,7 +609,7 @@ class _EmptyState extends StatelessWidget {
                   size: 34,
                   color: dark
                       ? Colors.white24
-                      : const Color(0xFF10B981).withOpacity(0.4),
+                      : const Color(0xFF0D6B57).withOpacity(0.4),
                 ),
               ),
             ),
@@ -644,10 +644,10 @@ class _EmptyState extends StatelessWidget {
                     horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: const Color(0xFF10B981),
+                    color: const Color(0xFF0D6B57),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF10B981).withOpacity(0.35),
+                        color: const Color(0xFF0D6B57).withOpacity(0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -835,7 +835,7 @@ class NoteEditorSheetState extends State<NoteEditorSheet> {
     final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
     final surfaceStrong = dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
     final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
-    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
     final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
     final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
     final deleteCol = dark ? const Color(0xFFF28B82) : const Color(0xFFB42318);
@@ -1129,7 +1129,7 @@ class _NoteAlertPicker extends StatelessWidget {
     final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
     final surfaceStrong = dark ? const Color(0xFF2D3340) : const Color(0xFFEFF2F5);
     final borderCol = dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7);
-    final accent = dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
+    final accent = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
     final textCol = dark ? const Color(0xFFF3F4F6) : const Color(0xFF111318);
     final subCol = dark ? const Color(0xFF9CA3AF) : const Color(0xFF64748B);
 

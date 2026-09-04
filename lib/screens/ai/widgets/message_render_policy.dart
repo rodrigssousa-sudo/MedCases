@@ -48,6 +48,26 @@ class MessageRenderPolicy {
     return normalized.replaceFirst(_orphanStudyPinPattern, '').trimRight();
   }
 
+  // STUDY-PREMIUM-V1-B-R6: defesa final exclusiva do texto Study visível.
+  // O parser permanece semanticamente estável; o resolver chama este método
+  // apenas no caminho isStudyMode=true.
+  static bool _isStudyEmojiRune(int rune) {
+    return (rune >= 0x1F000 && rune <= 0x1FAFF) ||
+        (rune >= 0x2600 && rune <= 0x27BF) ||
+        rune == 0xFE0F ||
+        rune == 0x200D ||
+        rune == 0x20E3;
+  }
+
+  static String sanitizeStudyVisibleText(String text) {
+    final withoutEmoji = String.fromCharCodes(
+      text.runes.where((rune) => !_isStudyEmojiRune(rune)),
+    );
+    return withoutEmoji
+        .replaceAll(RegExp(r'[ \t]+$', multiLine: true), '')
+        .trimRight();
+  }
+
   static const List<String> _legacyStudyContinuationMarkers = [
     'me gustaría',
     'me gustaria',

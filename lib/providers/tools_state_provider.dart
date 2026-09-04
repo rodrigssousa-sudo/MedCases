@@ -101,12 +101,31 @@ class ToolsStateProvider extends ChangeNotifier {
   bool get hasPendingData => _hasPendingData;
 
   // Controladores "primários" verificados para hasPendingData
+  // MEDCASES_FERRAMENTAS_SHARED_CLINICAL_STATE_V2
   late final List<TextEditingController> _primaryCtrls = [
-    ageCtrl, weightCtrl,
-    naCtrl, crCtrl, hco3Ctrl,
-    albCtrl, biliCtrl, inrCtrl,
-    phCtrl, pco2Ctrl,
-    pasCtrl, colCtrl,
+    ageCtrl,
+    weightCtrl,
+    heightCtrl,
+    naCtrl,
+    crCtrl,
+    clCtrl,
+    hco3Ctrl,
+    glucCtrl,
+    caCtrl,
+    bunCtrl,
+    phCtrl,
+    pco2Ctrl,
+    beCtrl,
+    albCtrl,
+    biliCtrl,
+    inrCtrl,
+    astCtrl,
+    altCtrl,
+    platCtrl,
+    pasCtrl,
+    colCtrl,
+    qtCtrl,
+    fcCtrl,
   ];
 
   /// Recalcula _hasPendingData e notifica se mudou.
@@ -148,6 +167,7 @@ class ToolsStateProvider extends ChangeNotifier {
     }
     _set(ageCtrl,    'edad');
     _set(weightCtrl, 'peso');
+    _set(heightCtrl, 'altura');
     _set(naCtrl,     'sodio');
     _set(crCtrl,     'creatinina');
     _set(clCtrl,     'cloro');
@@ -155,6 +175,9 @@ class ToolsStateProvider extends ChangeNotifier {
     _set(glucCtrl,   'glicose');
     _set(caCtrl,     'calcio');
     _set(bunCtrl,    'bun');
+    _set(phCtrl,     'ph');
+    _set(pco2Ctrl,   'pco2');
+    _set(beCtrl,     'be');
     _set(albCtrl,    'albumina');
     _set(biliCtrl,   'bilirrubina');
     _set(inrCtrl,    'inr');
@@ -177,6 +200,7 @@ class ToolsStateProvider extends ChangeNotifier {
   Map<String, String> exportToCache() => {
     'edad':        ageCtrl.text,
     'peso':        weightCtrl.text,
+    'altura':      heightCtrl.text,
     'sodio':       naCtrl.text,
     'creatinina':  crCtrl.text,
     'cloro':       clCtrl.text,
@@ -184,6 +208,9 @@ class ToolsStateProvider extends ChangeNotifier {
     'glicose':     glucCtrl.text,
     'calcio':      caCtrl.text,
     'bun':         bunCtrl.text,
+    'ph':          phCtrl.text,
+    'pco2':        pco2Ctrl.text,
+    'be':          beCtrl.text,
     'albumina':    albCtrl.text,
     'bilirrubina': biliCtrl.text,
     'inr':         inrCtrl.text,

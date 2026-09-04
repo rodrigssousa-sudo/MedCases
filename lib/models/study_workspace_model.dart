@@ -210,13 +210,12 @@ final class Study {
       }
       buffer.writeln(source.text.trim());
       buffer.writeln();
-
-      if (buffer.length >= maxCharacters) break;
     }
 
     final value = buffer.toString();
-    return value.length <= maxCharacters
-        ? value
-        : value.substring(0, maxCharacters);
+    if (value.length > maxCharacters) {
+      throw StateError('study_context_requires_hierarchical_generation');
+    }
+    return value;
   }
 }

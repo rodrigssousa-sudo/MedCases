@@ -183,6 +183,9 @@ abstract final class PlantaoLocalClinicalOutputAdapter {
   }) {
     if (!_hasMedicationContext(rawLine, cleaned)) return null;
 
+    // PLANTAO_SUPPORTIVE_OXYGEN_NOT_DRUG_RX_V1
+    if (_isSupportiveOxygenLine(cleaned)) return null;
+
     final doseMatch = _dosePattern.firstMatch(cleaned);
     if (doseMatch == null) return null;
 
@@ -376,6 +379,29 @@ abstract final class PlantaoLocalClinicalOutputAdapter {
     );
 
     return line.replaceFirst(RegExp(r'^[\-\*•\s]+'), '').trim();
+  }
+
+  static bool _isSupportiveOxygenLine(String value) {
+    final normalized = _normalize(value);
+    if (normalized.isEmpty) return false;
+
+    final hasOxygenIdentity =
+        RegExp(r'(?:^|\s)o2(?:\s|$)').hasMatch(normalized) ||
+        normalized.contains('oxigeno') ||
+        normalized.contains('oxigenio') ||
+        normalized.contains('oxygen');
+
+    if (!hasOxygenIdentity) return false;
+
+    return normalized.contains('spo2') ||
+        normalized.contains('satur') ||
+        normalized.contains('l/min') ||
+        normalized.contains('mascar') ||
+        normalized.contains('canula') ||
+        normalized.contains('cannula') ||
+        normalized.contains('vni') ||
+        normalized.contains('cpap') ||
+        normalized.contains('bipap');
   }
 
   static bool _hasMedicationContext(

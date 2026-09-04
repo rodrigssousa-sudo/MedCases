@@ -352,7 +352,7 @@ class _ProfessionalDeclarationModalState
   // ── BUILD 431 — Canvas Premium dark palette ────────────────────────────────
   static const _bg        = Color(0xFF121418);
   static const _surface   = Color(0xFF1E2128);
-  static const _cyan      = Color(0xFF00E5FF);
+  static const _accentBrand      = Color(0xFF0D6B57);
   static const _border    = Color(0x1AFFFFFF);   // 10% white
   static const _borderSub = Color(0x26FFFFFF);   // 15% white
   static const _textPri   = Colors.white;
@@ -461,9 +461,9 @@ class _ProfessionalDeclarationModalState
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: selected ? _cyan.withOpacity(0.15) : Colors.transparent,
+                color: selected ? _accentBrand.withOpacity(0.15) : Colors.transparent,
                 border: Border.all(
-                  color: selected ? _cyan.withOpacity(0.70) : _border,
+                  color: selected ? _accentBrand.withOpacity(0.70) : _border,
                   width: 1,
                 ),
               ),
@@ -472,7 +472,7 @@ class _ProfessionalDeclarationModalState
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
-                  color: selected ? _cyan : _textHint,
+                  color: selected ? _accentBrand : _textHint,
                   letterSpacing: 0.8,
                   decoration: TextDecoration.none,
                 ),
@@ -503,16 +503,16 @@ class _ProfessionalDeclarationModalState
               Container(
                 padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                  color: _cyan.withOpacity(0.10),
+                  color: _accentBrand.withOpacity(0.10),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: _cyan.withOpacity(0.25),
+                    color: _accentBrand.withOpacity(0.25),
                     width: 1,
                   ),
                 ),
                 child: const Icon(
                   Icons.verified_user_outlined,
-                  color: _cyan,
+                  color: _accentBrand,
                   size: 20,
                 ),
               ),
@@ -587,21 +587,21 @@ class _ProfessionalDeclarationModalState
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
             decoration: BoxDecoration(
-              color: _cyan.withOpacity(0.06),
+              color: _accentBrand.withOpacity(0.06),
               borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(11)),
             ),
             child: Row(
               children: [
                 const Icon(Icons.info_outline_rounded,
-                    size: 14, color: _cyan),
+                    size: 14, color: _accentBrand),
                 const SizedBox(width: 8),
                 Text(
                   _localLang == 'es'
                       ? 'AVISO IMPORTANTE — LEA ANTES DE CONTINUAR'
                       : 'AVISO IMPORTANTE — LEIA ANTES DE CONTINUAR',
                   style: const TextStyle(
-                    color: _cyan,
+                    color: _accentBrand,
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
@@ -647,7 +647,7 @@ class _ProfessionalDeclarationModalState
                       const Padding(
                         padding: EdgeInsets.only(top: 3),
                         child: Icon(Icons.chevron_right_rounded,
-                            size: 15, color: _cyan),
+                            size: 15, color: _accentBrand),
                       ),
                       const SizedBox(width: 6),
                       Expanded(
@@ -708,12 +708,12 @@ class _ProfessionalDeclarationModalState
                     horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   color: selected
-                      ? _cyan.withOpacity(0.08)
+                      ? _accentBrand.withOpacity(0.08)
                       : _surface,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: selected
-                        ? _cyan.withOpacity(0.50)
+                        ? _accentBrand.withOpacity(0.50)
                         : _border,
                     width: selected ? 1.5 : 1,
                   ),
@@ -727,9 +727,9 @@ class _ProfessionalDeclarationModalState
                       height: 20,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: selected ? _cyan : Colors.transparent,
+                        color: selected ? _accentBrand : Colors.transparent,
                         border: Border.all(
-                          color: selected ? _cyan : _textHint,
+                          color: selected ? _accentBrand : _textHint,
                           width: 1.5,
                         ),
                       ),
@@ -770,12 +770,12 @@ class _ProfessionalDeclarationModalState
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: _checked
-                    ? _cyan.withOpacity(0.08)
+                    ? _accentBrand.withOpacity(0.08)
                     : _surface,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _checked
-                      ? _cyan.withOpacity(0.50)
+                      ? _accentBrand.withOpacity(0.50)
                       : _border,
                   width: _checked ? 1.5 : 1,
                 ),
@@ -789,10 +789,10 @@ class _ProfessionalDeclarationModalState
                     width: 22,
                     height: 22,
                     decoration: BoxDecoration(
-                      color: _checked ? _cyan : Colors.transparent,
+                      color: _checked ? _accentBrand : Colors.transparent,
                       borderRadius: BorderRadius.circular(5),
                       border: Border.all(
-                        color: _checked ? _cyan : _textHint,
+                        color: _checked ? _accentBrand : _textHint,
                         width: 1.5,
                       ),
                     ),
@@ -885,12 +885,12 @@ class _ProfessionalDeclarationModalState
             width: double.infinity,
             height: 52,
             decoration: BoxDecoration(
-              color: enabled ? _cyan : _disabled,
+              color: enabled ? _accentBrand : _disabled,
               borderRadius: BorderRadius.circular(12),
               boxShadow: enabled
                   ? [
                       BoxShadow(
-                        color: _cyan.withOpacity(0.25),
+                        color: _accentBrand.withOpacity(0.25),
                         blurRadius: 14,
                         offset: const Offset(0, 4),
                       ),

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'internacion_theme.dart';
 
+import '../../../design_system/foundation/med_typography.dart';
 // Model local simples para os dados do paciente internado
 class PacienteInternacaoData {
   final String nome;
@@ -24,16 +25,21 @@ class PacienteInternacaoData {
   });
 
   PacienteInternacaoData copyWith({
-    String? nome, String? cama, String? idade, String? sexo,
-    String? diagnostico, int? diaInternacao,
-  }) => PacienteInternacaoData(
-    nome:          nome ?? this.nome,
-    cama:          cama ?? this.cama,
-    idade:         idade ?? this.idade,
-    sexo:          sexo ?? this.sexo,
-    diagnostico:   diagnostico ?? this.diagnostico,
-    diaInternacao: diaInternacao ?? this.diaInternacao,
-  );
+    String? nome,
+    String? cama,
+    String? idade,
+    String? sexo,
+    String? diagnostico,
+    int? diaInternacao,
+  }) =>
+      PacienteInternacaoData(
+        nome: nome ?? this.nome,
+        cama: cama ?? this.cama,
+        idade: idade ?? this.idade,
+        sexo: sexo ?? this.sexo,
+        diagnostico: diagnostico ?? this.diagnostico,
+        diaInternacao: diaInternacao ?? this.diaInternacao,
+      );
 }
 
 class PatientAccordion extends StatefulWidget {
@@ -68,10 +74,10 @@ class _PatientAccordionState extends State<PatientAccordion> {
   void initState() {
     super.initState();
     final d = widget.data;
-    _nomeCtrl  = TextEditingController(text: d.nome);
-    _camaCtrl  = TextEditingController(text: d.cama);
+    _nomeCtrl = TextEditingController(text: d.nome);
+    _camaCtrl = TextEditingController(text: d.cama);
     _idadeCtrl = TextEditingController(text: d.idade);
-    _diagCtrl  = TextEditingController(text: d.diagnostico);
+    _diagCtrl = TextEditingController(text: d.diagnostico);
   }
 
   @override
@@ -84,17 +90,17 @@ class _PatientAccordionState extends State<PatientAccordion> {
   }
 
   void _emit() => widget.onChanged(widget.data.copyWith(
-    nome:        _nomeCtrl.text,
-    cama:        _camaCtrl.text,
-    idade:       _idadeCtrl.text,
-    diagnostico: _diagCtrl.text,
-  ));
+        nome: _nomeCtrl.text,
+        cama: _camaCtrl.text,
+        idade: _idadeCtrl.text,
+        diagnostico: _diagCtrl.text,
+      ));
 
   @override
   Widget build(BuildContext context) {
-    final theme  = InternacionTheme(widget.dark);
-    final dark   = widget.dark;
-    final d      = widget.data;
+    final theme = InternacionTheme(widget.dark);
+    final dark = widget.dark;
+    final d = widget.data;
 
     final subtitle = [
       if (d.nome.isNotEmpty) d.nome,
@@ -102,99 +108,121 @@ class _PatientAccordionState extends State<PatientAccordion> {
       if (d.cama.isNotEmpty) '${isEs ? 'Cama' : 'Leito'} ${d.cama}',
     ].join(' · ');
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 180),
+    return Container(
       decoration: BoxDecoration(
         color: theme.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: _open
-              ? InternacionTheme.cyan.withOpacity(0.35)
-              : theme.border,
-          width: 0.8,
-        ),
-        boxShadow: [theme.softShadow],
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ── Header colapsável ──────────────────────────────────────────
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => setState(() => _open = !_open),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              child: Row(
-                children: [
-                  Container(
-                    width: 36, height: 36,
-                    decoration: BoxDecoration(
-                      color: InternacionTheme.cyan.withOpacity(dark ? 0.12 : 0.08),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.person_outline_rounded,
-                        size: 18, color: InternacionTheme.cyan),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          isEs ? 'Datos del Paciente' : 'Dados do Paciente',
-                          style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w700,
-                            color: theme.textPrimary,
-                          ),
-                        ),
-                        Text(
-                          subtitle.isEmpty
-                              ? (isEs ? 'Toca para completar' : 'Toque para preencher')
-                              : subtitle,
-                          style: TextStyle(
-                            fontSize: 11, color: theme.textSecondary,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => setState(() => _open = !_open),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12.5, 12, 12.5),
+            child: Row(
+              children: [
+                const SizedBox(
+                  width: 28,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Icon(
+                      Icons.person_outline_rounded,
+                      size: 18,
+                      color: InternacionTheme.cyan,
                     ),
                   ),
-                  AnimatedRotation(
-                    turns: _open ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                        size: 20, color: theme.textSecondary),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isEs ? 'Datos del Paciente' : 'Dados do Paciente',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: theme.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle.isEmpty
+                            ? (isEs
+                                ? 'Toca para completar'
+                                : 'Toque para preencher')
+                            : subtitle,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: theme.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                AnimatedRotation(
+                  turns: _open ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 18,
+                    color: theme.textSecondary,
+                  ),
+                ),
+              ],
             ),
           ),
-
-          // ── Body ────────────────────────────────────────────────────────
-          AnimatedSize(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeInOut,
-            child: _open
-                ? Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Divider(color: theme.divider, height: 1, thickness: 0.8),
-                        const SizedBox(height: 12),
-
-                        // Nome / ID
-                        _Row(
-                          label: isEs ? 'Paciente / ID' : 'Paciente / ID',
-                          ctrl: _nomeCtrl,
-                          hint: isEs ? 'García López, Juan' : 'Silva, João',
-                          dark: dark,
-                          onChanged: (_) => _emit(),
-                        ),
-                        const SizedBox(height: 8),
-
-                        // Cama + Idade
-                        Row(children: [
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeInOut,
+          child: _open
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Divider(
+                        color: theme.divider,
+                        height: 1,
+                        thickness: 0.7,
+                      ),
+                      const SizedBox(height: 8),
+                      // MEDICAL_REFINEMENT_V1_PATIENT_SHEET
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.badge_outlined,
+                            size: 13,
+                            color: theme.accent.withOpacity(0.88),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'FICHA CLÍNICA',
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.85,
+                              color: theme.accent.withOpacity(0.88),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      _Row(
+                        label: isEs ? 'Paciente / ID' : 'Paciente / ID',
+                        ctrl: _nomeCtrl,
+                        hint: isEs ? 'García López, Juan' : 'Silva, João',
+                        dark: dark,
+                        onChanged: (_) => _emit(),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
                           Expanded(
                             child: _Row(
                               label: isEs ? 'Cama' : 'Leito',
@@ -204,7 +232,7 @@ class _PatientAccordionState extends State<PatientAccordion> {
                               onChanged: (_) => _emit(),
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 6),
                           Expanded(
                             child: _Row(
                               label: isEs ? 'Edad' : 'Idade',
@@ -215,93 +243,93 @@ class _PatientAccordionState extends State<PatientAccordion> {
                               onChanged: (_) => _emit(),
                             ),
                           ),
-                        ]),
-                        const SizedBox(height: 8),
-
-                        // Sexo
-                        Text(isEs ? 'Sexo' : 'Sexo', style: TextStyle(
-                          fontSize: 10, fontWeight: FontWeight.w600,
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      _PatientSexToggle(
+                        isEs: isEs,
+                        selected: d.sexo,
+                        onChanged: (sexo) =>
+                            widget.onChanged(d.copyWith(sexo: sexo)),
+                      ),
+                      const SizedBox(height: 6),
+                      _Row(
+                        label: isEs
+                            ? 'Diagnóstico Principal'
+                            : 'Diagnóstico Principal',
+                        ctrl: _diagCtrl,
+                        hint: isEs
+                            ? 'ICC Descompensada CF-III (CID I50.0)'
+                            : 'ICC Descompensada CF-III (CID I50.0)',
+                        dark: dark,
+                        onChanged: (_) => _emit(),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        isEs ? 'Día de Internación' : 'Dia de Internação',
+                        style: TextStyle(
+                          fontSize: MedTypography.microTextSize,
+                          fontWeight: FontWeight.w600,
                           color: theme.labelColor,
-                        )),
-                        const SizedBox(height: 5),
-                        Row(children: [
-                          _SexChip(
-                            label: isEs ? 'Masculino' : 'Masculino',
-                            value: 'M',
-                            selected: d.sexo,
-                            dark: dark,
-                            onTap: () => widget.onChanged(d.copyWith(sexo: 'M')),
-                          ),
-                          const SizedBox(width: 8),
-                          _SexChip(
-                            label: isEs ? 'Femenino' : 'Feminino',
-                            value: 'F',
-                            selected: d.sexo,
-                            dark: dark,
-                            onTap: () => widget.onChanged(d.copyWith(sexo: 'F')),
-                          ),
-                        ]),
-                        const SizedBox(height: 8),
-
-                        // Diagnóstico Principal
-                        _Row(
-                          label: isEs ? 'Diagnóstico Principal' : 'Diagnóstico Principal',
-                          ctrl: _diagCtrl,
-                          hint: isEs ? 'ICC Descompensada CF-III (CID I50.0)' : 'ICC Descompensada CF-III (CID I50.0)',
-                          dark: dark,
-                          onChanged: (_) => _emit(),
                         ),
-                        const SizedBox(height: 8),
-
-                        // Dia de Internação
-                        Text(isEs ? 'Día de Internación' : 'Dia de Internação',
-                            style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w600,
-                              color: theme.labelColor,
-                            )),
-                        const SizedBox(height: 6),
-                        Row(children: List.generate(7, (i) {
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: List.generate(7, (i) {
                           final dia = i + 1;
                           final isSel = d.diaInternacao == dia;
                           return Expanded(
                             child: GestureDetector(
-                              onTap: () => widget.onChanged(d.copyWith(diaInternacao: dia)),
+                              onTap: () => widget.onChanged(
+                                d.copyWith(diaInternacao: dia),
+                              ),
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 130),
                                 margin: EdgeInsets.only(right: i < 6 ? 4 : 0),
-                                height: 32,
+                                height: 28,
                                 decoration: BoxDecoration(
                                   color: isSel
-                                      ? InternacionTheme.cyan.withOpacity(dark ? 0.20 : 0.12)
-                                      : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
-                                  borderRadius: BorderRadius.circular(8),
+                                      ? InternacionTheme.cyan
+                                          .withOpacity(dark ? 0.20 : 0.12)
+                                      : (dark
+                                          ? const Color(0xFF1E2330)
+                                          : const Color(0xFFF3F4F6)),
+                                  borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
-                                    color: isSel ? InternacionTheme.cyan : Colors.transparent,
-                                    width: 1.2,
+                                    color: isSel
+                                        ? InternacionTheme.cyan
+                                        : Colors.transparent,
+                                    width: 0.8,
                                   ),
                                 ),
                                 child: Center(
-                                  child: Text('$dia°', style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: isSel ? FontWeight.w700 : FontWeight.w400,
-                                    color: isSel
-                                        ? InternacionTheme.cyan
-                                        : theme.textSecondary,
-                                  )),
+                                  child: Text(
+                                    '$dia°',
+                                    style: TextStyle(
+                                      fontSize: MedTypography.microTextSize,
+                                      fontWeight: isSel
+                                          ? FontWeight.w700
+                                          : FontWeight.w400,
+                                      color: isSel
+                                          ? InternacionTheme.cyan
+                                          : theme.textSecondary,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           );
-                        })),
-                      ],
-                    ),
-                  )
-                : const SizedBox.shrink(),
-          ),
+                        }),
+                      ),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
         ],
       ),
     );
-  }
+}
 }
 
 // ── Row field helper ──────────────────────────────────────────────────────────
@@ -314,93 +342,191 @@ class _Row extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   const _Row({
-    required this.label, required this.ctrl, required this.hint,
-    required this.dark, required this.onChanged,
+    required this.label,
+    required this.ctrl,
+    required this.hint,
+    required this.dark,
+    required this.onChanged,
     this.keyboard = TextInputType.text,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = InternacionTheme(dark);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: TextStyle(
-          fontSize: 10, fontWeight: FontWeight.w600, color: theme.labelColor,
-        )),
-        const SizedBox(height: 4),
-        Container(
-          decoration: BoxDecoration(
-            color: dark ? const Color(0xFF1A1D23) : const Color(0xFFF8F9FA),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6),
-              width: 0.8,
-            ),
-          ),
-          child: TextField(
-            controller: ctrl,
-            onChanged: onChanged,
-            keyboardType: keyboard,
-            style: TextStyle(
-              fontSize: 13,
-              color: dark ? Colors.white : const Color(0xFF1A1D23),
-            ),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: TextStyle(
-                fontSize: 12,
-                color: dark ? Colors.white24 : Colors.black26,
-              ),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              isDense: true,
-            ),
-          ),
+    final divider = dark ? const Color(0xFF3B4350) : const Color(0xFFD6DDE6);
+    final valueColor = dark ? const Color(0xFFF1F5F9) : const Color(0xFF17202A);
+
+    return Container(
+      padding: const EdgeInsets.only(left: 10, right: 2, bottom: 6),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: divider.withOpacity(0.82), width: 0.7),
         ),
-      ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            width: 2,
+            height: 34,
+            margin: const EdgeInsets.only(bottom: 1),
+            decoration: BoxDecoration(
+              color: theme.accent.withOpacity(dark ? 0.74 : 0.62),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label.toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.55,
+                    color: theme.labelColor.withOpacity(0.90),
+                  ),
+                ),
+                const SizedBox(height: 1),
+                TextField(
+                  controller: ctrl,
+                  onChanged: onChanged,
+                  keyboardType: keyboard,
+                  style: TextStyle(
+                    fontSize: 14.5,
+                    height: 1.18,
+                    fontWeight: FontWeight.w600,
+                    color: valueColor,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w400,
+                      color: dark ? Colors.white24 : Colors.black26,
+                    ),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 // ── Chip de sexo ──────────────────────────────────────────────────────────────
-class _SexChip extends StatelessWidget {
-  final String label;
-  final String value;
+class _PatientSexToggle extends StatelessWidget {
+  final bool isEs;
   final String selected;
-  final bool dark;
-  final VoidCallback onTap;
+  final ValueChanged<String> onChanged;
 
-  const _SexChip({
-    required this.label, required this.value, required this.selected,
-    required this.dark, required this.onTap,
+  const _PatientSexToggle({
+    required this.isEs,
+    required this.selected,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isSelected = selected == value;
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 140),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? InternacionTheme.cyan.withOpacity(InternacionTheme(dark).dark ? 0.18 : 0.10)
-              : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? InternacionTheme.cyan : Colors.transparent,
-            width: 1.2,
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final accent = InternacionTheme.cyan;
+    final border = dark ? const Color(0xFF3A4350) : const Color(0xFFD8DEE7);
+    final idleText = dark ? const Color(0xFFB9C2D0) : const Color(0xFF566273);
+
+    Widget option({
+      required String value,
+      required String text,
+      required IconData icon,
+    }) {
+      final active = selected == value;
+      return Expanded(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(7),
+          onTap: () => onChanged(value),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            height: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: active
+                  ? accent.withOpacity(dark ? 0.16 : 0.10)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(7),
+              border: Border.all(
+                color: active
+                    ? accent.withOpacity(dark ? 0.74 : 0.62)
+                    : Colors.transparent,
+                width: 0.8,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 14,
+                  color: active ? accent : idleText.withOpacity(0.76),
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: Text(
+                    text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                      color: active ? accent : idleText,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        child: Text(label, style: TextStyle(
-          fontSize: 12,
-          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-          color: isSelected
-              ? InternacionTheme.cyan
-              : InternacionTheme(dark).textSecondary,
-        )),
+      );
+    }
+
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 300),
+        child: Container(
+          height: 34,
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: dark
+                ? const Color(0xFF1C2129).withOpacity(0.72)
+                : const Color(0xFFF5F7F9),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: border.withOpacity(0.72), width: 0.6),
+          ),
+          child: Row(
+            children: [
+              option(
+                value: 'M',
+                text: 'Masculino',
+                icon: Icons.male_rounded,
+              ),
+              const SizedBox(width: 2),
+              option(
+                value: 'F',
+                text: isEs ? 'Femenino' : 'Feminino',
+                icon: Icons.female_rounded,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

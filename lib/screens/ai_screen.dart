@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_AI
 import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ import '../providers/app_provider.dart';
 
 import '../services/stt_helper.dart';
 import '../services/firestore_service.dart';
+import '../services/ai_session_exchange_hydrator.dart';
 import '../services/ai/ai_finalization_transaction.dart'
     show AiSessionSummary, AiSessionSource;
 import '../services/activity_service.dart';
@@ -50,7 +52,11 @@ import '../services/ai_smart_router.dart';
 import '../services/study_continuation_resolver.dart'; // BUILD 247: AiSmartRouter.shouldFallback()
 import '../services/app_resume_coordinator.dart'; // ORDEM 53 M2/M3: backgroundSaveSignal + contextTimeoutSignal
 import '../services/auth_service.dart'; // BUILD 338: contingency UID when currentUser==null
+import '../services/plantao_global_clinical_response_gate.dart';
+import '../services/plantao_machine_native_context_prefetch.dart';
 
+import '../services/plantao_machine_native_rich_phase_completion.dart';
+import '../services/well_formed_utf16.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 /// Alias privado temporário para preservar os call sites do monólito durante a extração.
 typedef _ChatMsg = ChatMessage;
@@ -312,6 +318,9 @@ class _AiScreenState extends State<AiScreen> {
   // Usado para detectar loop de Fisiopatologia: se o prompt enviado contém
   // o mesmo quadrante da IA anterior, o botão é substituído por avanço linear.
   String _lastSentStudyPrompt = '';
+  // R10 — tuple label+prompt imutável por mensagem AI final durante rebuilds.
+  final Map<String, StudyContinuationResolution>
+  _stableStudyContinuationByMessageId = <String, StudyContinuationResolution>{};
   // Anti-jump: token gerado a cada nova resposta da IA — bloqueia callbacks
   // de reveals de bolhas antigas que ficaram pendentes.
   int _scrollGeneration = 0;
@@ -1301,7 +1310,7 @@ class _AiScreenState extends State<AiScreen> {
         if (userMsgs.isNotEmpty) {
           final summary = userMsgs.first.text;
           final msgsToSave = msgsSnapshot.length > 20
-              ? msgsSnapshot.sublist(msgsSnapshot.length - 20)
+              ? msgsSnapshot.sublist(msgsSnapshot.length - 60)
               : msgsSnapshot;
           // BUILD 274: usa o mesmo ID já fixado em _activeSessionId/_restoredSessionId
           final String disposeSessionId;
@@ -1678,7 +1687,7 @@ class _AiScreenState extends State<AiScreen> {
     final summary = userMsgs.first.text;
     // Salva até 20 mensagens na sessão
     final msgsToSave = _messages.length > 20
-        ? _messages.sublist(_messages.length - 20)
+        ? _messages.sublist(_messages.length - 60)
         : List<_ChatMsg>.from(_messages);
 
     // BUILD 274: resolução de ID com prioridade:
@@ -2070,29 +2079,33 @@ class _AiScreenState extends State<AiScreen> {
                 'messageCount=${exchanges.length * 2}',
               );
 
+              final hydratedExchanges = AiSessionExchangeHydrator.hydrate(
+                sessionId: summary.sessionId,
+                exchanges: exchanges,
+              );
+
               final chatMsgs = <_ChatMsg>[];
-
-              for (final exchange in exchanges) {
-                final userInput = (exchange['userInput'] as String?) ?? '';
-                final userDisplayText = (exchange['userDisplayText'] as String?)
-                    ?.trim();
-
-                final aiOutput = (exchange['assistantOutput'] as String?) ?? '';
-
-                if (userInput.isNotEmpty) {
+              for (final exchange in hydratedExchanges) {
+                if (exchange.userInput.isNotEmpty) {
                   chatMsgs.add(
-                    _ChatMsg(
+                    _ChatMsg.withId(
+                      id: exchange.userMessageId,
                       role: 'user',
-                      text: userInput,
-                      userDisplayText: userDisplayText?.isNotEmpty == true
-                          ? userDisplayText
-                          : null,
+                      text: exchange.userInput,
+                      userDisplayText: exchange.userDisplayText,
                     ),
                   );
                 }
 
-                if (aiOutput.isNotEmpty) {
-                  chatMsgs.add(_ChatMsg(role: 'ai', text: aiOutput));
+                if (exchange.assistantText.isNotEmpty) {
+                  chatMsgs.add(
+                    _ChatMsg.withId(
+                      id: exchange.assistantMessageId,
+                      role: 'ai',
+                      text: exchange.assistantText,
+                      clinicalOutput: exchange.clinicalOutput,
+                    ),
+                  );
                 }
               }
 
@@ -2325,6 +2338,73 @@ class _AiScreenState extends State<AiScreen> {
   // Guard local de envio: complementa o guard no provider.
   // Evita que ENTER + click simultâneo no botão dispare 2 envios.
   bool _sendGuard = false;
+  // STUDY-30TURN single pending action queue.
+  // It is Study-only and stores at most one user action while terminal release
+  // is converging. Plantão keeps the pre-existing immediate busy-drop behavior.
+  Future<void> Function()? _pendingStudySend;
+  bool _studyPendingDrainScheduled = false;
+  int _pendingStudySendGeneration = 0;
+
+  void _queueStudySend(AppProvider p, Future<void> Function() action) {
+    if (_pendingStudySend != null) {
+      if (kDebugMode) {
+        debugPrint(
+          '[STUDY_SINGLE_FLIGHT][PENDING_ALREADY_SET] action=dropped_duplicate',
+        );
+      }
+      return;
+    }
+
+    final generation = _aiUiRequestGeneration;
+    _pendingStudySend = action;
+    _pendingStudySendGeneration = generation;
+
+    if (kDebugMode) {
+      debugPrint(
+        '[STUDY_SINGLE_FLIGHT][QUEUED] generation=$generation '
+        'providerBusy=${p.aiRequestBusy}',
+      );
+    }
+
+    if (_studyPendingDrainScheduled) return;
+    _studyPendingDrainScheduled = true;
+
+    unawaited(() async {
+      try {
+        for (var i = 0; i < 240; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+          if (!mounted) return;
+          if (generation != _aiUiRequestGeneration ||
+              _pendingStudySendGeneration != generation) {
+            _pendingStudySend = null;
+            return;
+          }
+          if (_thinking || _isStreaming || _sendGuard || p.aiRequestBusy) {
+            continue;
+          }
+
+          final pending = _pendingStudySend;
+          _pendingStudySend = null;
+          if (pending != null) {
+            if (kDebugMode) {
+              debugPrint('[STUDY_SINGLE_FLIGHT][DRAIN] generation=$generation');
+            }
+            await pending();
+          }
+          return;
+        }
+
+        if (kDebugMode) {
+          debugPrint(
+            '[STUDY_SINGLE_FLIGHT][PENDING_TIMEOUT] generation=$generation',
+          );
+        }
+        _pendingStudySend = null;
+      } finally {
+        _studyPendingDrainScheduled = false;
+      }
+    }());
+  }
 
   // Streaming V2: true enquanto chunks chegam (controla cursor ▌ na bolha ativa)
   bool _isStreaming = false;
@@ -2366,6 +2446,7 @@ class _AiScreenState extends State<AiScreen> {
     AppProvider p, {
     bool fromButton = false,
     String? userDisplayText,
+    String? providerInputOverride,
     PlantaoContinuationType continuationType =
         PlantaoContinuationType.freeFollowUp,
     List<PlantaoSection> requestedSections = const <PlantaoSection>[],
@@ -2377,6 +2458,7 @@ class _AiScreenState extends State<AiScreen> {
         p,
         fromButton: fromButton,
         userDisplayText: userDisplayText,
+        providerInputOverride: providerInputOverride,
         continuationType: continuationType,
         requestedSections: requestedSections,
       );
@@ -2421,11 +2503,171 @@ class _AiScreenState extends State<AiScreen> {
         'clínicos acima. Não substitua o caso por uma orientação genérica.';
   }
 
+  // R10 — wrapper somente de transporte. O prompt bruto continua no histórico.
+  String _foldStudyTypedPedagogicalInput(String value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c')
+        .replaceAll(RegExp(r'[^a-z0-9\s]+'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
+  String? _buildStudyTypedPedagogicalDispatchPrompt(
+    String rawInput,
+    AppProvider provider,
+  ) {
+    final folded = _foldStudyTypedPedagogicalInput(rawInput);
+    final pedagogicalLead = RegExp(
+      r'^(?:por favor\s+)?(?:'
+      r'explicame|explicarme|explica me|explica|'
+      r'me explica|me explique|pode me explicar|poderia me explicar|'
+      r'puede explicarme|puedes explicarme|'
+      r'fale sobre|hablame|cuentame|'
+      r'quero entender|quiero entender|ensiname|ensename'
+      r')(?:\s+(?:sobre|de|del|da|do|el|la|o|a))?(?:\s+|$)',
+    );
+
+    if (!pedagogicalLead.hasMatch(folded)) return null;
+
+    final explicitTopic = folded.replaceFirst(pedagogicalLead, '').trim();
+    final activeTopic = provider.activeThreadTopic.replaceAll('_', ' ').trim();
+    final isEs = provider.lang.trim().toLowerCase().startsWith('es');
+
+    if (kDebugMode) {
+      debugPrint(
+        '[R20][STUDY_TYPED_PEDAGOGICAL][DISPATCH] '
+        'explicitTopic=${explicitTopic.isNotEmpty} '
+        'activeTopic=${activeTopic.isNotEmpty} '
+        'topicChars=${explicitTopic.isNotEmpty ? explicitTopic.length : activeTopic.length}',
+      );
+    }
+
+    // Se o usuário já escreveu o tema, envie o tema canônico. O texto visível
+    // continua exatamente como digitado via visibleUserInput.
+    if (explicitTopic.isNotEmpty) {
+      return explicitTopic;
+    }
+
+    if (activeTopic.isNotEmpty) {
+      return isEs
+          ? '[MODO ESTUDIO — EXPLICACIÓN DIRECTA]\n'
+                'Tema clínico activo: $activeTopic\n'
+                'El usuario pidió que se lo expliques. Explica ahora el tema '
+                'de forma clara, progresiva y clínicamente útil, preservando '
+                'el contexto ya discutido. No pidas que repita la patología.'
+          : '[MODO ESTUDO — EXPLICAÇÃO DIRETA]\n'
+                'Tema clínico ativo: $activeTopic\n'
+                'O usuário pediu que você explique o tema. Explique agora de '
+                'forma clara, progressiva e clinicamente útil, preservando o '
+                'contexto já discutido. Não peça para repetir a patologia.';
+    }
+
+    return isEs
+        ? '[MODO ESTUDIO — ACLARACIÓN MÍNIMA]\n'
+              'El usuario pidió una explicación sin indicar todavía el tema. '
+              'Haz una sola pregunta breve solicitando únicamente el tema '
+              'clínico que desea estudiar. No inventes una patología.'
+        : '[MODO ESTUDO — ESCLARECIMENTO MÍNIMO]\n'
+              'O usuário pediu uma explicação sem indicar ainda o tema. Faça '
+              'uma única pergunta breve solicitando somente o tema clínico '
+              'que deseja estudar. Não invente uma patologia.';
+  }
+
+  String _buildStudyContinuationDispatchPrompt({
+    required String rawPrompt,
+    required String visibleLabel,
+    required AppProvider provider,
+  }) {
+    final prompt = rawPrompt.trim();
+    final label = visibleLabel.trim();
+    final topic = provider.activeThreadTopic.trim();
+    final isEs = provider.lang.trim().toLowerCase().startsWith('es');
+    final safeTopic = topic.isEmpty
+        ? (isEs ? 'tema clínico actual' : 'tema clínico atual')
+        : topic;
+    final safeLabel = label.isEmpty
+        ? (isEs ? 'Siguiente punto' : 'Próximo ponto')
+        : label;
+    if (kDebugMode) {
+      debugPrint(
+        '[STUDY_CONTINUATION][DISPATCH] topic=$safeTopic labelChars=${safeLabel.length} promptChars=${prompt.length} guard=generic_no_choice_terms',
+      );
+    }
+    if (isEs) {
+      return '[CONTINUACIÓN DE ESTUDIO — EJECUTAR AHORA]\n'
+          'Tema activo: $safeTopic\n'
+          'Acción seleccionada por el usuario: $safeLabel\n'
+          'Instrucción clínica de apoyo: $prompt\n\n'
+          'EJECUTA AHORA la acción seleccionada y desarrolla la respuesta educativa de forma directa y completa dentro del mismo tema. '
+          'No hagas preguntas de confirmación, no ofrezcas alternativas ni menús y no solicites una nueva elección. '
+          'Si la instrucción de apoyo contiene una elección o pregunta meta, toma la acción seleccionada como autoridad y resuélvela. Conserva el contexto clínico ya discutido y no cambies de tema.';
+    }
+    return '[CONTINUAÇÃO DE ESTUDO — EXECUTAR AGORA]\n'
+        'Tema ativo: $safeTopic\n'
+        'Ação selecionada pelo usuário: $safeLabel\n'
+        'Instrução clínica de apoio: $prompt\n\n'
+        'EXECUTE AGORA a ação selecionada e desenvolva a resposta educativa de forma direta e completa dentro do mesmo tema. '
+        'Não faça perguntas de confirmação, não ofereça alternativas nem menus e não solicite uma nova escolha. '
+        'Se a instrução de apoio contiver uma escolha ou pergunta meta, trate a ação selecionada como autoridade e execute-a. Preserve o contexto clínico já discutido e não mude de tema.';
+  }
+
+  StudyContinuationResolution _resolveStableStudyContinuationForMessage({
+    required _ChatMsg message,
+    required bool isSafeCard,
+    required bool isStreaming,
+    required String precedingUserText,
+    required String languageCode,
+  }) {
+    final liveIds = _messages.map((item) => item.id).toSet();
+    _stableStudyContinuationByMessageId.removeWhere(
+      (messageId, _) => !liveIds.contains(messageId),
+    );
+    final mayFreeze = _longResponse && !isSafeCard && !isStreaming;
+    if (mayFreeze) {
+      final cached = _stableStudyContinuationByMessageId[message.id];
+      if (cached != null) return cached;
+    }
+    final resolved = StudyContinuationResolver.resolve(
+      rawText: message.text,
+      isStudyMode: _longResponse,
+      isSafeCard: isSafeCard,
+      isStreaming: isStreaming,
+      lastUserMessage: precedingUserText,
+      languageCode: languageCode,
+      chatHistory: _messages.map((item) => item.text).toList(growable: false),
+      lastSentPrompt: _lastSentStudyPrompt,
+    );
+    if (mayFreeze && resolved.hasContinuation) {
+      _stableStudyContinuationByMessageId[message.id] = resolved;
+      if (kDebugMode) {
+        debugPrint(
+          '[STUDY_CONTINUATION][FROZEN] msgId=${message.id} source=${resolved.source.name} label=${resolved.label} promptChars=${resolved.question.length}',
+        );
+      }
+    }
+    return resolved;
+  }
+
   Future<void> _send(
     String text,
     AppProvider p, {
     bool fromButton = false,
     String? userDisplayText,
+    String? providerInputOverride,
     PlantaoContinuationType continuationType =
         PlantaoContinuationType.freeFollowUp,
     List<PlantaoSection> requestedSections = const <PlantaoSection>[],
@@ -2452,7 +2694,27 @@ class _AiScreenState extends State<AiScreen> {
     final trimmed = text.trim();
     final normalizedUserDisplayText = userDisplayText?.trim() ?? '';
     // Bloqueia: texto vazio, IA pensando/streaming, ou guard ativo (duplo envio)
-    if (trimmed.isEmpty || _thinking || _isStreaming || _sendGuard) return;
+    if (trimmed.isEmpty) return;
+
+    final studyRequestBusy =
+        _thinking || _isStreaming || _sendGuard || p.aiRequestBusy;
+    if (studyRequestBusy) {
+      if (_longResponse) {
+        _queueStudySend(
+          p,
+          () => _send(
+            text,
+            p,
+            fromButton: fromButton,
+            userDisplayText: userDisplayText,
+            providerInputOverride: providerInputOverride,
+            continuationType: continuationType,
+            requestedSections: requestedSections,
+          ),
+        );
+      }
+      return;
+    }
 
     // ── ADENDO SEGURANÇA Factor 2: HARD BLOCKER ABSOLUTO — verificação ESTRITA ─
     // REGRA DE NEGÓCIO SOBERANA: nenhuma query pode chegar ao backend sem
@@ -2553,6 +2815,10 @@ class _AiScreenState extends State<AiScreen> {
 
     // ── Índice da bolha de streaming (-1 = não iniciada ainda) ──────────────
     int streamingMsgIdx = -1;
+    // M56B_BUFFERED_FINAL_COMMIT
+    // Provider SSE remains real-time internally. Plantão exposes no
+    // provisional clinical tokens; terminal validated text owns first render.
+    String m56bBufferedPlantaoText = '';
 
     // ── AUDIT 4.1 — StreamingTextNotifier lifecycle ────────────────────────
     // Inicializa o ValueNotifier<String> ANTES de sendAiMessage() para garantir
@@ -2646,12 +2912,156 @@ class _AiScreenState extends State<AiScreen> {
     try {
       // ── Streaming V2 via sendAiMessage ────────────────────────────────────
       // Retorna true se usou streaming (Gemini conectado), false se usou fallback.
-      final providerInput = fromButton && !_longResponse
+      final typedStudyOverride =
+          providerInputOverride == null && _longResponse && !fromButton
+          ? _buildStudyTypedPedagogicalDispatchPrompt(trimmed, p)
+          : null;
+      final transportOverride = providerInputOverride?.trim();
+      final effectiveTransportOverride =
+          transportOverride != null && transportOverride.isNotEmpty
+          ? transportOverride
+          : typedStudyOverride?.trim();
+      final providerInput =
+          effectiveTransportOverride != null &&
+              effectiveTransportOverride.isNotEmpty
+          ? effectiveTransportOverride
+          : fromButton && !_longResponse
           ? _bindPlantaoCaseAnchorForButton(trimmed)
           : trimmed;
 
+      // M56C_MACHINE_NATIVE_REGISTRY_PREFETCH — Plantão only.
+      // Existing provider argument captured structurally; no variable-name dependency.
+      final m56cBaseProviderInput = providerInput;
+      // M71D_RUNTIME_ATTESTATION_BINDING_V1
+      final m71dAttestedPrefetch = !_longResponse
+          ? await PlantaoMachineNativeContextPrefetch.instance.prefetchAttested(
+              userText: m56cBaseProviderInput,
+              language: p.lang,
+            )
+          : null;
+      final m56cMachineContext =
+          m71dAttestedPrefetch?.result ??
+          PlantaoMachineNativePrefetchResult.empty;
+      final m56cProviderInput =
+          m71dAttestedPrefetch?.providerInput ?? m56cBaseProviderInput;
+      final m71dRuntimeAttestation = m71dAttestedPrefetch?.attestation;
+
+      if (!_longResponse) {
+        debugPrint(
+          '[M71D_RUNTIME_ATTESTATION] stage=prefetch_complete '
+          'attested=${m71dRuntimeAttestation != null} '
+          'authority=${m56cMachineContext.authoritative} '
+          'pathology=${m56cMachineContext.canonicalPathologyKey ?? "none"} '
+          'reason=${m56cMachineContext.reason}',
+        );
+      }
+      assert(() {
+        if (!_longResponse) {
+          debugPrint(
+            '[M56C_MACHINE_NATIVE_PREFETCH] '
+            'authority=${m56cMachineContext.authoritative} '
+            'pathology=${m56cMachineContext.canonicalPathologyKey ?? "none"} '
+            'protocol=${m56cMachineContext.protocolKey ?? "none"} '
+            'reason=${m56cMachineContext.reason}',
+          );
+        }
+        return true;
+      }());
+
+      // M59_MACHINE_NATIVE_REGISTRY_FAIL_CLOSED_BEFORE_PROVIDER
+      // A recognized high-specificity clinical phenotype must never fall back
+      // to the historical Plantão authority merely because a registry read
+      // failed. This is a non-clinical availability message, not a treatment.
+      if (!_longResponse &&
+          m56cMachineContext.registryReadFailed &&
+          m56cMachineContext.canonicalPathologyKey != null) {
+        final m59RegistryFailureText = p.lang == 'es'
+            ? 'VALIDACIÓN CLÍNICA\n\n'
+                  'No fue posible cargar la base clínica machine-native necesaria para validar esta respuesta. Para evitar mostrar una conducta incompleta o no validada, MedCases bloqueó la generación clínica de este turno. Intenta nuevamente cuando la base esté disponible.'
+            : 'VALIDAÇÃO CLÍNICA\n\n'
+                  'Não foi possível carregar a base clínica machine-native necessária para validar esta resposta. Para evitar exibir uma conduta incompleta ou não validada, o MedCases bloqueou a geração clínica deste turno. Tente novamente quando a base estiver disponível.';
+
+        assert(() {
+          debugPrint(
+            '[M59_REGISTRY_FAIL_CLOSED] '
+            'beforeProvider=true '
+            'pathology=${m56cMachineContext.canonicalPathologyKey} '
+            'reason=${m56cMachineContext.reason}',
+          );
+          return true;
+        }());
+
+        if (mounted && uiRequestGeneration == _aiUiRequestGeneration) {
+          _streamingTextNotifier?.dispose();
+          _streamingTextNotifier = null;
+          setState(() {
+            _thinking = false;
+            _isStreaming = false;
+            _scrollGeneration++;
+            _lastAiIndex = _messages.length;
+            _messages.add(_ChatMsg(role: 'ai', text: m59RegistryFailureText));
+          });
+          _scrollDown(force: true);
+        }
+        return;
+      }
+
+      // M77_R8_PRE_PERSIST_MACHINE_GATE_V1
+      // Pure eligibility mirror of the final machine-native commit gate.
+      // It performs no provider/network call and prevents critical output from
+      // being persisted before the UI fail-closed decision is applied.
+      bool m77PlantaoPersistenceEligibilityGate(String candidateText) {
+        if (_longResponse || !m56cMachineContext.authoritative) return true;
+
+        const nonTreatmentFocusedSections = <PlantaoSection>{
+          PlantaoSection.exams,
+          PlantaoSection.monitoring,
+          PlantaoSection.evolution,
+          PlantaoSection.responseCriteria,
+          PlantaoSection.worseningCriteria,
+          PlantaoSection.disposition,
+        };
+        final focusedContinuation = requestedSections.isNotEmpty &&
+            requestedSections.every(nonTreatmentFocusedSections.contains);
+        final enforceRequiredActions = !focusedContinuation;
+
+        final pass1 = PlantaoGlobalClinicalResponseGate.finalizeForPresentation(
+          userText: trimmed,
+          rawText: candidateText,
+          language: p.lang,
+          contextPack: m56cMachineContext.contextPack,
+          enforceRequiredActions: enforceRequiredActions,
+        );
+        var effective = pass1;
+        if (pass1.hasCriticalIssue) {
+          effective = PlantaoGlobalClinicalResponseGate
+              .repairEvidenceBackedRequiredActionsForPresentation(
+            userText: trimmed,
+            language: p.lang,
+            pass1: pass1,
+            contextPack: m56cMachineContext.contextPack,
+          );
+        }
+        final eligible = !effective.hasCriticalIssue;
+        debugPrint(
+          '[M77_PRE_PERSIST_MACHINE_GATE] '
+          'authority=true '
+          'pathology=${m56cMachineContext.canonicalPathologyKey ?? "none"} '
+          'issues=${effective.issues.length} '
+          'critical=${effective.hasCriticalIssue} '
+          'eligible=$eligible',
+        );
+        return eligible;
+      }
+
       await p.sendAiMessage(
-        providerInput,
+        m56cProviderInput,
+        // M71_CANONICAL_PLANTAO_CALL_AUTHORIZATION_V1
+        canonicalPlantaoWiring: true,
+        canonicalPlantaoAttestation: m71dRuntimeAttestation,
+        plantaoPersistenceEligibilityGate: !_longResponse
+            ? m77PlantaoPersistenceEligibilityGate
+            : null,
         visibleUserInput: trimmed,
         userDisplayText: normalizedUserDisplayText.isNotEmpty
             ? normalizedUserDisplayText
@@ -2662,6 +3072,22 @@ class _AiScreenState extends State<AiScreen> {
         shadowRequestedSections: requestedSections,
         onChunk: (accumulated) {
           if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
+
+          // M56B_BUFFERED_FINAL_COMMIT - Plantão only.
+          // Keep loading/shimmer visible until onDone. Study continues through
+          // the original progressive onChunk path below.
+          if (!_longResponse) {
+            m56bBufferedPlantaoText = accumulated;
+            assert(() {
+              debugPrint(
+                '[M56B_BUFFERED_FINAL_COMMIT] '
+                'stage=chunk_buffered visible=false '
+                'bufferLen=${m56bBufferedPlantaoText.length}',
+              );
+              return true;
+            }());
+            return;
+          }
 
           clearTerminalGapIndicator(reason: 'next_chunk');
           armTerminalGapIndicator();
@@ -2866,7 +3292,27 @@ class _AiScreenState extends State<AiScreen> {
         },
         onDone: (finalText) {
           clearTerminalGapIndicator(reason: 'done', rebuild: false);
+          if (!_longResponse) {
+            debugPrint(
+              '[M71D_RUNTIME_CHAIN] stage=on_done_callback '
+              'mounted=$mounted '
+              'generationMatch=${uiRequestGeneration == _aiUiRequestGeneration} '
+              'attestationBound=${m71dRuntimeAttestation != null}',
+            );
+          }
           if (!mounted || uiRequestGeneration != _aiUiRequestGeneration) return;
+
+          assert(() {
+            if (!_longResponse) {
+              debugPrint(
+                '[M56B_BUFFERED_FINAL_COMMIT] '
+                'stage=terminal_received visibleCommitPending=true '
+                'bufferLen=${m56bBufferedPlantaoText.length} '
+                'finalLen=${finalText.length}',
+              );
+            }
+            return true;
+          }());
 
           // PHASE3I-J2B1: terminal ownership reached the active UI request.
           // Release the synchronous double-submit latch on terminal delivery.
@@ -3057,6 +3503,188 @@ class _AiScreenState extends State<AiScreen> {
             if (!_longResponse) {
               safeFinalText = _applyPlantaoAestheticGuard(safeFinalText);
 
+              // M64_FOCUSED_CONTINUATION_GATE_SCOPE_RUNTIME_V1
+              // Only non-treatment focused CTA continuations may omit the
+              // historical machine-pack requiredActions. Treatment expansion
+              // continues to require them. Empty requestedSections (including
+              // normal user-input paths) remain full-validation by default.
+              const m64NonTreatmentFocusedSections = <PlantaoSection>{
+                PlantaoSection.exams,
+                PlantaoSection.monitoring,
+                PlantaoSection.evolution,
+                PlantaoSection.responseCriteria,
+                PlantaoSection.worseningCriteria,
+                PlantaoSection.disposition,
+              };
+              final m64FocusedContinuation =
+                  requestedSections.isNotEmpty &&
+                  requestedSections.every(
+                    m64NonTreatmentFocusedSections.contains,
+                  );
+              final m64EnforceHistoricalRequiredActions =
+                  !m64FocusedContinuation;
+              assert(() {
+                debugPrint(
+                  '[M64_CONTINUATION_GATE_SCOPE] '
+                  'continuationType=${continuationType.name} '
+                  'sections=${requestedSections.map((e) => e.name).join(",")} '
+                  'focusedNonTreatment=$m64FocusedContinuation '
+                  'enforceRequiredActions='
+                  '$m64EnforceHistoricalRequiredActions',
+                );
+                return true;
+              }());
+
+              final m56bGlobalGate =
+                  PlantaoGlobalClinicalResponseGate.finalizeForPresentation(
+                    userText: trimmed,
+                    rawText: safeFinalText,
+                    language: p.lang,
+                    contextPack: m56cMachineContext.contextPack,
+                    enforceRequiredActions:
+                        m64EnforceHistoricalRequiredActions,
+                  );
+              // M62_MACHINE_NATIVE_EVIDENCE_BACKED_REQUIRED_PROJECTOR_RUNTIME_V1
+              // Gate pass 1 remains the canonical M56B result. If and only if
+              // its sole failures are evidence-backed missing required actions,
+              // materialize exact text from the same authoritative machine pack
+              // and run the full gate a second time. No second provider call.
+              final m62GatePass1 = m56bGlobalGate;
+              var m62EffectiveGate = m56bGlobalGate;
+              if (!_longResponse &&
+                  m56cMachineContext.authoritative &&
+                  m56bGlobalGate.hasCriticalIssue) {
+                m62EffectiveGate =
+                    PlantaoGlobalClinicalResponseGate.repairEvidenceBackedRequiredActionsForPresentation(
+                      userText: trimmed,
+                      language: p.lang,
+                      pass1: m56bGlobalGate,
+                      contextPack: m56cMachineContext.contextPack,
+                    );
+              }
+              final m62MachineProjectionApplied = !identical(
+                m62EffectiveGate,
+                m62GatePass1,
+              );
+              assert(() {
+                debugPrint(
+                  '[M62_MACHINE_GATE] pass=1 '
+                  'issues=${m62GatePass1.issues.length} '
+                  'critical=${m62GatePass1.hasCriticalIssue}',
+                );
+                debugPrint(
+                  '[M62_MACHINE_PROJECTOR] '
+                  'attempted=${m62GatePass1.hasCriticalIssue} '
+                  'applied=$m62MachineProjectionApplied '
+                  'source=authoritative_machine_pack',
+                );
+                if (m62MachineProjectionApplied) {
+                  debugPrint(
+                    '[M62_MACHINE_GATE] pass=2 '
+                    'issues=${m62EffectiveGate.issues.length} '
+                    'critical=${m62EffectiveGate.hasCriticalIssue}',
+                  );
+                }
+                return true;
+              }());
+
+              // M73B_TYPED_RICH_PHASES_FINAL_COMPLETENESS_RUNTIME_V1
+              // Complete only exact authored phases from the same authoritative
+              // prefetch result. No second provider/network call.
+              final m73bBaseText = m62MachineProjectionApplied
+                  ? m62EffectiveGate.finalText
+                  : m56bGlobalGate.finalText;
+              final m73bRichPhaseCompletion =
+                  PlantaoMachineNativeRichPhaseCompletion.complete(
+                text: m73bBaseText,
+                userText: trimmed,
+                language: p.lang,
+                enabled: !_longResponse &&
+                    m56cMachineContext.authoritative &&
+                    !m56bGlobalGate.hasCriticalIssue &&
+                    !m62EffectiveGate.hasCriticalIssue &&
+                    (m56cMachineContext.contextPack
+                            ?.requiredActions.isNotEmpty ??
+                        false),
+                monitoring: m56cMachineContext.monitoring,
+                reassessment: m56cMachineContext.reassessment,
+                escalationCriteria: m56cMachineContext.escalationCriteria,
+              );
+              assert(() {
+                debugPrint(
+                  '[M73B_RICH_PHASE_COMPLETION] '
+                  'applied=${m73bRichPhaseCompletion.applied} '
+                  'monitoring=${m73bRichPhaseCompletion.addedMonitoring} '
+                  'reassessment=${m73bRichPhaseCompletion.addedReassessment} '
+                  'escalation=${m73bRichPhaseCompletion.addedEscalation} '
+                  'source=typed_authoritative_prefetch',
+                );
+                return true;
+              }());
+
+              // M58_MACHINE_NATIVE_FINAL_COMMIT_FAIL_CLOSED
+              // Never commit a provider proposal that violates a critical
+              // authoritative machine-native clinical rule.
+              final m58BlockUnsafeClinicalCommit =
+                  !_longResponse &&
+                  m56cMachineContext.authoritative &&
+                  (m62MachineProjectionApplied
+                      ? m62EffectiveGate.hasCriticalIssue
+                      : m56bGlobalGate.hasCriticalIssue);
+              if (m58BlockUnsafeClinicalCommit) {
+                safeFinalText = p.lang == 'es'
+                    ? 'VALIDACIÓN CLÍNICA\n\n'
+                          'La respuesta generada fue bloqueada porque no cumplió una regla clínica obligatoria del contexto MedCases. No se mostrará una conducta clínica incompleta o contradictoria. Vuelve a enviar la consulta para regenerar una respuesta validable.'
+                    : 'VALIDAÇÃO CLÍNICA\n\n'
+                          'A resposta gerada foi bloqueada porque não cumpriu uma regra clínica obrigatória do contexto MedCases. Uma conduta clínica incompleta ou contraditória não será exibida. Envie novamente a consulta para gerar uma resposta validável.';
+                assert(() {
+                  debugPrint(
+                    '[M58_FINAL_COMMIT_GUARD] '
+                    'blocked=true reason=critical_machine_gate',
+                  );
+                  return true;
+                }());
+              } else {
+                safeFinalText = m62MachineProjectionApplied
+                    ? m62EffectiveGate.finalText
+                    : m56bGlobalGate.finalText;
+                // M73B_M62_SAFE_FINAL_CONTRACT_PRESERVATION_V1
+                if (m73bRichPhaseCompletion.applied) {
+                  safeFinalText = m73bRichPhaseCompletion.text;
+                }
+                assert(() {
+                  debugPrint(
+                    '[M58_FINAL_COMMIT_GUARD] '
+                    'blocked=false reason=machine_gate_pass',
+                  );
+                  return true;
+                }());
+              }
+              final m71dEffectiveGlobalGate =
+                  m62MachineProjectionApplied
+                      ? m62EffectiveGate
+                      : m56bGlobalGate;
+              debugPrint(
+                '[M71D_RUNTIME_CHAIN] stage=global_gate_applied '
+                'machineAuthority=${m71dEffectiveGlobalGate.machineAuthorityEvaluated} '
+                'issues=${m71dEffectiveGlobalGate.issues.length} '
+                'critical=${m71dEffectiveGlobalGate.hasCriticalIssue} '
+                'projected=${m71dEffectiveGlobalGate.projected} '
+                'projectorApplied=$m62MachineProjectionApplied '
+                'blocked=$m58BlockUnsafeClinicalCommit',
+              );
+              assert(() {
+                debugPrint(
+                  '[M56B_GLOBAL_CLINICAL_RESPONSE_GATE] '
+                  'projected=${m56bGlobalGate.projected} '
+                  'issues=${m56bGlobalGate.issues.length} '
+                  'critical=${m56bGlobalGate.hasCriticalIssue} '
+                  'machineAuthority='
+                  '${m56bGlobalGate.machineAuthorityEvaluated}',
+                );
+                return true;
+              }());
+
               // V1-B-R0-R1 — terminal continuity hardening.
               //
               // Problema físico reproduzido no iPhone:
@@ -3152,6 +3780,13 @@ class _AiScreenState extends State<AiScreen> {
             }
 
             // ÚNICO setState de fechamento: texto final + fim de stream em um frame.
+            // M77_FINAL_UI_UTF16_BOUNDARY_V1
+            // M62/M73B/M58 and all presentation transforms have completed.
+            // Normalize immediately before the final visible message commit.
+            if (!_longResponse) {
+              safeFinalText = WellFormedUtf16.normalize(safeFinalText);
+            }
+
             setState(() {
               _thinking = false;
               _isStreaming =
@@ -3189,6 +3824,28 @@ class _AiScreenState extends State<AiScreen> {
               // o streaming não recebe uma segunda animação ao concluir.
               _fadingInMsgId = streamingMsgIdx >= 0 ? null : newBubbleMsgId;
             });
+
+            // M74B_POST_FINAL_PRESENTATION_RECONCILIATION_V1
+            // Capture correlation while AppProvider is still executing
+            // the terminal UI callback and before request release.
+            final m74bSessionId = p.currentConversationSessionId.trim();
+            final m74bRequestId = p.currentRequestId.trim();
+            final m74bCommittedText =
+                committedAiMessageText?.trim() ?? '';
+
+            if (!_longResponse &&
+                m74bSessionId.isNotEmpty &&
+                m74bRequestId.isNotEmpty &&
+                m74bCommittedText.isNotEmpty &&
+                m74bCommittedText == safeFinalText.trim()) {
+              unawaited(
+                p.reconcileAiExchangeFinalPresentation(
+                  sessionId: m74bSessionId,
+                  requestId: m74bRequestId,
+                  finalAssistantText: m74bCommittedText,
+                ),
+              );
+            }
 
             // BUILD 276: auto-clear _fadingInMsgId after animation completes (400ms)
             // so the AnimatedOpacity wrapper is removed on the next rebuild.
@@ -3331,6 +3988,29 @@ class _AiScreenState extends State<AiScreen> {
               clinicalOutput: clinicalOutput,
             );
           });
+
+          // M74B_STRUCTURED_PRESENTATION_RECONCILIATION_V1
+          // This runs only after the pre-existing fail-closed identity/text
+          // checks accepted and attached this exact DTO to the live message.
+          final m74bStructuredSessionId =
+              p.currentConversationSessionId.trim();
+          final m74bStructuredRequestId = p.currentRequestId.trim();
+
+          if (!_longResponse &&
+              m74bStructuredSessionId.isNotEmpty &&
+              m74bStructuredRequestId.isNotEmpty &&
+              committedText.isNotEmpty &&
+              currentMessage.text == committedText) {
+            unawaited(
+              p.reconcileAiExchangeFinalPresentation(
+                sessionId: m74bStructuredSessionId,
+                requestId: m74bStructuredRequestId,
+                finalAssistantText: committedText,
+                clinicalOutputJson: clinicalOutput.toJson(),
+              ),
+            );
+          }
+
 
           if (kDebugMode) {
             debugPrint(
@@ -3694,15 +4374,6 @@ class _AiScreenState extends State<AiScreen> {
         user: user,
         lang: p.lang,
         messages: List.of(_messages),
-        onSecondOpinion: (prompt) async {
-          // Delegated via callback — streaming happens inside modal
-          return p.sendAiMessage(
-            prompt,
-            onChunk: (_) {},
-            onDone: (_) {},
-            onError: (_) {},
-          );
-        },
         provider: p,
       ),
     );
@@ -3717,7 +4388,9 @@ class _AiScreenState extends State<AiScreen> {
     // Dark: grafite noturno ultra-profundo 0xFF121418
     // Light: branco gelo ultra-limpo 0xFFFCFDFD
     final palette = dark ? HomeV2Palette.dark : HomeV2Palette.light;
-    final chatBg = palette.background;
+    // R13_AI_LIGHT_WHITE_CHATBG: source-of-truth visual da timeline IA.
+    // Light = branco puro; Dark = palette.background sem alteração semântica.
+    final chatBg = dark ? palette.background : const Color(0xFFFFFFFF);
 
     // Fix #5: detecta teclado via viewInsets (cobre Web Mobile onde focus events
     // podem não ser confiáveis). Propaga ao ValueNotifier para o FAB em main.dart.
@@ -3794,7 +4467,7 @@ class _AiScreenState extends State<AiScreen> {
       // da viewport. Elimina o re-layout de MarkdownBody que causava o
       // "scroll stutter" ao subir no histórico durante o streaming.
       // Impacto de memória negligenciável: ~5 bolhas fora da viewport.
-      scrollCacheExtent: const ScrollCacheExtent.pixels(2500),
+      cacheExtent: 2500.0,
       physics: const ClampingScrollPhysics(),
       // Fecha o teclado ao arrastar o chat (comportamento nativo mobile)
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -3813,24 +4486,24 @@ class _AiScreenState extends State<AiScreen> {
           // trigger full-list repaints on every animation frame.
           return RepaintBoundary(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 52, 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _AiResponseIdentityHeader(
-                    dark: dark,
-                    isEs: p.lang.trim().toLowerCase().startsWith('es'),
-                    isStreaming: true,
-                  ),
-                  const SizedBox(height: 8),
-                  AiShimmerDots(dark: dark),
-                ],
+              padding: const EdgeInsets.fromLTRB(12, 10, 20, 10),
+              child: _AiClinicalGenerationStages(
+                dark: dark,
+                isEs: p.lang.trim().toLowerCase().startsWith('es'),
               ),
             ),
           );
         }
         final msg = _messages[i];
         if (msg.role == 'user') {
+          // STUDY-PREMIUM-V1-B-R6: o turn permanece canônico no modelo/histórico,
+          // mas não é repetido visualmente acima da resposta no Modo Estudo.
+          if (_longResponse) {
+            return SizedBox.shrink(
+              key: ValueKey('msg_${msg.id}_study_user_hidden'),
+            );
+          }
+
           // MEDCASES_IA_PLANTAO_BUTTON_USER_BUBBLE_COMPACT_V1_B_R0
           // Somente a projeção visual pode ser compactada. msg.text continua
           // canônico para histórico, thread, dedup, case-anchor e provider.
@@ -3848,18 +4521,17 @@ class _AiScreenState extends State<AiScreen> {
           // Questions button is a continuation trigger, not clinical content.
           // Keep canonical prompt/history/provenance, but do not render a user
           // bubble before the generated questions.
-          final normalizedDisplayCandidate =
-              displayCandidate.toLowerCase().replaceAll('-', ' ');
+          final normalizedDisplayCandidate = displayCandidate
+              .toLowerCase()
+              .replaceAll('-', ' ');
           final isQuestionsButtonProjection =
               normalizedDisplayCandidate == 'preguntas clave' ||
-                  normalizedDisplayCandidate == 'preguntas importantes' ||
-                  normalizedDisplayCandidate == 'perguntas chave' ||
-                  normalizedDisplayCandidate == 'perguntas importantes';
+              normalizedDisplayCandidate == 'preguntas importantes' ||
+              normalizedDisplayCandidate == 'perguntas chave' ||
+              normalizedDisplayCandidate == 'perguntas importantes';
           if (!_longResponse && isQuestionsButtonProjection) {
             return SizedBox.shrink(
-              key: ValueKey(
-                'msg_${msg.id}_plantao_questions_button_hidden',
-              ),
+              key: ValueKey('msg_${msg.id}_plantao_questions_button_hidden'),
             );
           }
 
@@ -3869,9 +4541,7 @@ class _AiScreenState extends State<AiScreen> {
           // "Conductas y dosis"; Estudo keeps normal user-message rendering.
           if (!_longResponse && hasAutomaticVisibleProjection) {
             return SizedBox.shrink(
-              key: ValueKey(
-                'msg_${msg.id}_plantao_automatic_user_hidden',
-              ),
+              key: ValueKey('msg_${msg.id}_plantao_automatic_user_hidden'),
             );
           }
 
@@ -3962,20 +4632,16 @@ class _AiScreenState extends State<AiScreen> {
         // AI-RECONSTRUCTION-R18.6AA-R1F-R3:
         // Um único proprietário resolve texto e continuação pedagógica.
         // Gemini Free, GPT e Gemini pago convergem nesta fronteira.
-        final studyContinuation = StudyContinuationResolver.resolve(
-          rawText: msg.text,
-          isStudyMode: _longResponse,
+        final studyContinuation = _resolveStableStudyContinuationForMessage(
+          message: msg,
           isSafeCard: isSafeCard,
           isStreaming: isActiveStreamingBubble,
-          lastUserMessage: precedingUserText,
+          precedingUserText: precedingUserText,
           languageCode: p.lang,
-          chatHistory: _messages
-              .map((message) => message.text)
-              .toList(growable: false),
-          lastSentPrompt: _lastSentStudyPrompt,
         );
 
         final String nextActionPrompt = studyContinuation.question;
+        final String studyButtonLabel = studyContinuation.label;
 
         final String cleanDisplayText = studyContinuation.displayText;
 
@@ -4001,7 +4667,9 @@ class _AiScreenState extends State<AiScreen> {
         // Elimina duplicação de cards pós-refresh e alivia o rebuild do histórico.
         if (kDebugMode) {
           debugPrint(
-            '[RENDER_56] msgId=${msg.id} → AiBubble unificado '
+            '[RENDER_56] msgId=${msg.id} → '
+            '${useGuardiaPresentation ? "GuardiaClinicalResponseView" : "AiBubble"} '
+            'rx=${msg.clinicalOutput?.prescricao.length ?? 0} '
             'continuation=${studyContinuation.source.name}',
           );
         }
@@ -4021,10 +4689,13 @@ class _AiScreenState extends State<AiScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (_longResponse || isActiveStreamingBubble) ...[
-                  _AiResponseIdentityHeader(
-                    dark: dark,
-                    isEs: p.lang.trim().toLowerCase().startsWith('es'),
-                    isStreaming: isActiveStreamingBubble,
+                  Visibility(
+                    visible: !_longResponse,
+                    child: _AiResponseIdentityHeader(
+                      dark: dark,
+                      isEs: p.lang.trim().toLowerCase().startsWith('es'),
+                      isStreaming: isActiveStreamingBubble,
+                    ),
                   ),
                   const SizedBox(height: 10),
                 ],
@@ -4058,6 +4729,7 @@ class _AiScreenState extends State<AiScreen> {
                     key: ValueKey('ai_${msg.id}'),
                     text: cleanDisplayText,
                     dark: dark,
+                    studyMode: _longResponse,
                     animate: i == _lastAiIndex,
                     lang: p.lang,
                     onCopy: () => _copyMsg(cleanDisplayText),
@@ -4207,7 +4879,7 @@ class _AiScreenState extends State<AiScreen> {
                         children: [
                           if (showStudyContinuation)
                             StudyContinuationButton(
-                              question: nextActionPrompt.trim(),
+                              label: studyButtonLabel.trim(),
                               dark: dark,
                               onTap: () {
                                 if (_isStreaming) return;
@@ -4219,10 +4891,21 @@ class _AiScreenState extends State<AiScreen> {
                                 _lastSentStudyPrompt = prompt;
                                 _userScrolledUp = false;
                                 _scrollDown(force: true);
+
+                                final provider = context.read<AppProvider>();
+                                final dispatchPrompt =
+                                    _buildStudyContinuationDispatchPrompt(
+                                      rawPrompt: prompt,
+                                      visibleLabel: studyButtonLabel.trim(),
+                                      provider: provider,
+                                    );
+
                                 _sendDebounced(
                                   prompt,
-                                  context.read<AppProvider>(),
+                                  provider,
                                   fromButton: true,
+                                  userDisplayText: studyButtonLabel.trim(),
+                                  providerInputOverride: dispatchPrompt,
                                 );
                               },
                             ),
@@ -4475,12 +5158,12 @@ class _AiScreenState extends State<AiScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: dark
-                              ? const Color(0xFF00E5FF).withOpacity(0.15)
-                              : const Color(0xFF008CA4).withOpacity(0.12),
+                              ? const Color(0xFF0D6B57).withOpacity(0.15)
+                              : const Color(0xFF0D6B57).withOpacity(0.12),
                           border: Border.all(
                             color: dark
-                                ? const Color(0xFF00E5FF).withOpacity(0.45)
-                                : const Color(0xFF008CA4).withOpacity(0.35),
+                                ? const Color(0xFF0D6B57).withOpacity(0.45)
+                                : const Color(0xFF0D6B57).withOpacity(0.35),
                             width: 1.0,
                           ),
                           boxShadow: [
@@ -4500,8 +5183,8 @@ class _AiScreenState extends State<AiScreen> {
                               Icons.arrow_downward_rounded,
                               size: 14,
                               color: dark
-                                  ? const Color(0xFF00E5FF)
-                                  : const Color(0xFF008CA4),
+                                  ? const Color(0xFF0D6B57)
+                                  : const Color(0xFF0D6B57),
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -4512,8 +5195,8 @@ class _AiScreenState extends State<AiScreen> {
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w600,
                                 color: dark
-                                    ? const Color(0xFF00E5FF)
-                                    : const Color(0xFF008CA4),
+                                    ? const Color(0xFF0D6B57)
+                                    : const Color(0xFF0D6B57),
                               ),
                             ),
                           ],
@@ -5088,7 +5771,6 @@ String _stripCodeFencesAndExtractJson(String text) {
 //     organiza, repara, detecta sinais clínicos — NUNCA bloqueia
 //   Camada 2 — ResponseValidator (AiSmartRouter.shouldFallback()):
 //     ÚNICA fonte de decisão de bloqueio/fallback clínico
-//   Camada 2.5 — ResponseReformatter (BUILD 248B):
 //     quando !fallback e resposta é prosa → aplica template emoji canônico
 //     preserva conteúdo, reorganiza forma. Modo Estudo → pass-through.
 //   Camada 3 — SafetyFallback:
@@ -5097,7 +5779,6 @@ String _stripCodeFencesAndExtractJson(String text) {
 // REGRA PRINCIPAL:
 //   Se a resposta contém conteúdo clínico útil → PRESERVAR.
 //   Se estiver mal formatada → REORGANIZAR via PlantaoRepair.
-//   Se for prosa → REFORMATAR via ResponseReformatter (BUILD 248B).
 //   NUNCA substituir por fallback para conteúdo útil.
 //
 // PARÂMETROS:
@@ -5201,76 +5882,17 @@ String _plantaoTruncationGuard(
 
   // ── Caminho PRESERVE: ResponseValidator decidiu manter resposta ───────────
   if (!fallback) {
-    // ── BUILD 248B — ResponseReformatter ─────────────────────────────────────
-    // Se a resposta é prosa (sem emojis âncora) e temos a query do usuário,
-    // aplicar o template canônico para a intenção detectada.
-    // Modo Estudo (longResponse=true) é protegido na chamada — não chega aqui.
-    final alreadyStructured = ResponseReformatter.isAlreadyStructured(text);
-
-    if (!alreadyStructured && userQuery.isNotEmpty && hasClinical) {
-      // BUILD 277-PATCH — GUARD hasInlineBold:
-      // Se a IA já emitiu marcadores de negrito ** no texto, significa que
-      // o RAW_AI_OUTPUT já possui formatação Markdown inline intacta.
-      // Nesse caso, NÃO aplicar ResponseReformatter.applyTemplate() — ele
-      // reconstrói a resposta do zero e pode perder os ** markers.
-      // Só reformatar quando o texto é prosa pura sem nenhum ** bold marker.
-      final hasInlineBold = text.contains('**');
-      if (hasInlineBold) {
-        debugPrint(
-          '[PLANTAO_ORGANIZER] action=preserve '
-          'reason=has_inline_bold_bypass '
-          'hiddenFields=${pipelineResult.hiddenFields}',
-        );
-        return text;
-      }
-
-      // Detecta intenção localmente a partir da query do usuário
-      final analysis = PlantaoIntentEngine.analyze(userQuery);
-      final intent = analysis.primaryIntent;
-
-      // Aplica template preservando conteúdo clínico
-      final reformatted = ResponseReformatter.applyTemplate(
-        text,
-        lang,
-        intent,
-        userQuery,
-      );
-
-      // Verifica se o reformatter produziu estrutura válida (sanidade)
-      final isReformattedStructured = ResponseReformatter.isAlreadyStructured(
-        reformatted,
-      );
-
-      if (isReformattedStructured && reformatted.length >= text.length * 0.6) {
-        debugPrint(
-          '[PLANTAO_ORGANIZER] intent=${intent.name} '
-          'action=template_applied '
-          'preserved=true '
-          'reason=$reason '
-          'hiddenFields=${pipelineResult.hiddenFields}',
-        );
-        return reformatted;
-      }
-      // Se reformatter falhou na sanidade → preserva original com log
-      debugPrint(
-        '[PLANTAO_ORGANIZER] intent=${intent.name} '
-        'action=preserve '
-        'reason=reformatter_sanity_failed '
-        'hiddenFields=${pipelineResult.hiddenFields}',
-      );
-      return text;
-    }
-
-    final organizeAction =
-        (pipelineResult.repaired || pipelineResult.orderFixed)
-        ? 'organize'
-        : 'preserve';
+    // M72C_GLOBAL_LEGACY_PRESENTATION_AUTHORITY_PURGE_V1
+    // Current canonical Plantao presentation is owned by the buffered global
+    // gate + renderer. A valid provider response is never rebuilt into the
+    // historical emoji template here.
     debugPrint(
-      '[PLANTAO_ORGANIZER] action=$organizeAction '
+      '[M72C_PRESENTATION_AUTHORITY] action=preserve '
+      'owner=global_gate_renderer '
       'reason=$reason '
       'hiddenFields=${pipelineResult.hiddenFields}',
     );
-    return text; // pass-through — renderer estruturado ou texto plano
+    return text;
   }
 
   // ── Caminho FALLBACK: ResponseValidator decidiu bloquear ─────────────────
@@ -5666,6 +6288,218 @@ String _stripMetadataHeaders(String accumulated) {
 // Apple Safe: rendered only when isPartner==true. Zero exposure to App Review.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// AI_CLINICAL_GENERATION_STAGES_V1
+// Visual-only sequencing for the existing in-flight request.
+// These labels are presentation cues, not backend telemetry, percentages,
+// source-validation guarantees, ETA, or completion acknowledgements.
+class _AiClinicalGenerationStages extends StatefulWidget {
+  const _AiClinicalGenerationStages({
+    required this.dark,
+    required this.isEs,
+  });
+
+  final bool dark;
+  final bool isEs;
+
+  @override
+  State<_AiClinicalGenerationStages> createState() =>
+      _AiClinicalGenerationStagesState();
+}
+
+class _AiClinicalGenerationStagesState
+    extends State<_AiClinicalGenerationStages>
+    with TickerProviderStateMixin {
+  late final AnimationController _stageController;
+  late final AnimationController _pulseController;
+
+  @override
+  void initState() {
+    super.initState();
+    _stageController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 6000),
+    )..forward();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _stageController.dispose();
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  int _activeStage(double value) {
+    if (value < 0.25) return 0;
+    if (value < 0.50) return 1;
+    if (value < 0.75) return 2;
+    return 3;
+  }
+
+  List<String> get _stages => widget.isEs
+      ? const <String>[
+          'Construyendo tu respuesta',
+          'Revisando referencias científicas relevantes',
+          'Organizando la respuesta',
+          'Repasando detalles clínicos',
+        ]
+      : const <String>[
+          'Construindo sua resposta',
+          'Revisando referências científicas relevantes',
+          'Organizando a resposta',
+          'Repassando detalhes clínicos',
+        ];
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = HomeV2Palette.resolve(widget.dark);
+    const brandGreen = Color(0xFF009C3B);
+
+    return Semantics(
+      liveRegion: true,
+      label: widget.isEs
+          ? 'Generando respuesta clínica'
+          : 'Gerando resposta clínica',
+      child: Padding(
+        key: const ValueKey('ai-clinical-generation-stages'),
+        padding: const EdgeInsets.fromLTRB(1, 1, 0, 1),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AnimatedBuilder(
+              animation: _pulseController,
+              builder: (context, child) {
+                final triangle = _pulseController.value <= 0.5
+                    ? _pulseController.value * 2
+                    : (1 - _pulseController.value) * 2;
+
+                return Container(
+                  width: 3,
+                  height: 128,
+                  margin: const EdgeInsets.only(top: 2, bottom: 2),
+                  decoration: BoxDecoration(
+                    color: brandGreen.withValues(
+                      alpha: 0.46 + (0.34 * triangle),
+                    ),
+                    borderRadius: BorderRadius.circular(99),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 13),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AnimatedBuilder(
+                    animation: _stageController,
+                    builder: (context, child) {
+                      final active = _activeStage(_stageController.value);
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (var index = 0; index < _stages.length; index++)
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: index == _stages.length - 1 ? 0 : 8,
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    key: ValueKey(
+                                      'ai-clinical-generation-stage-dot-$index',
+                                    ),
+                                    width: index == active ? 7 : 5,
+                                    height: index == active ? 7 : 5,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: index == active
+                                          ? brandGreen
+                                          : palette.textMuted.withValues(
+                                              alpha: index < active
+                                                  ? 0.44
+                                                  : 0.24,
+                                            ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 9),
+                                  Expanded(
+                                    child: Text(
+                                      _stages[index],
+                                      key: ValueKey(
+                                        'ai-clinical-generation-stage-$index',
+                                      ),
+                                      style: TextStyle(
+                                        color: index == active
+                                            ? palette.textPrimary
+                                            : palette.textSecondary.withValues(
+                                                alpha: index < active
+                                                    ? 0.64
+                                                    : 0.42,
+                                              ),
+                                        fontSize: index == active ? 13.8 : 12.5,
+                                        height: 1.22,
+                                        fontWeight: index == active
+                                            ? FontWeight.w700
+                                            : FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 13),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(99),
+                    child: Container(
+                      key: const ValueKey('ai-clinical-generation-activity-rail'),
+                      height: 2,
+                      color: palette.textMuted.withValues(alpha: 0.16),
+                      child: AnimatedBuilder(
+                        animation: _pulseController,
+                        builder: (context, child) {
+                          final position = -1.0 + (2.0 * _pulseController.value);
+
+                          return Align(
+                            alignment: Alignment(position, 0),
+                            child: FractionallySizedBox(
+                              widthFactor: 0.30,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.transparent,
+                                      brandGreen.withValues(alpha: 0.90),
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _AiResponseIdentityHeader extends StatelessWidget {
   const _AiResponseIdentityHeader({
     required this.dark,
@@ -5680,7 +6514,7 @@ class _AiResponseIdentityHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = HomeV2Palette.resolve(dark);
-    final accent = dark ? const Color(0xFF00E59B) : palette.accent;
+    final accent = palette.accent;
     final title = isStreaming
         ? (isEs ? 'GENERANDO RESPUESTA' : 'GERANDO RESPOSTA')
         : (isEs ? 'RESPUESTA COMPLETADA' : 'RESPOSTA CONCLUÍDA');
@@ -5765,7 +6599,7 @@ class _AiHomeGreeting extends StatelessWidget {
           children: [
             TextSpan(
               text: greetingLead,
-              style: TextStyle(color: palette.accent),
+              style: const TextStyle(color: Color(0xFF009C3B)),
             ),
             TextSpan(
               text: greetingName,

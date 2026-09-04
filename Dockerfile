@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 # em pub.dev resolve para 2.3.1 (requer sdk ^3.6.0). Dart 3.5.4 não satisfaz
 # esse constraint, causando "Failed to compile application for the Web".
 # Flutter 3.27.4 é o primeiro release stable com Dart 3.6.2 — compatível.
-RUN git clone https://github.com/flutter/flutter.git -b 3.44.5 /flutter
+RUN git clone https://github.com/flutter/flutter.git -b 3.27.4 /flutter
 
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 

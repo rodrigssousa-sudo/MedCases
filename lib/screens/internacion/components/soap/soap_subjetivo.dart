@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
 
+import '../../../../design_system/foundation/med_typography.dart';
 class SoapSubjetivo extends StatefulWidget {
   final SubjetivoData data;
   final ValueChanged<SubjetivoData> onChanged;
@@ -115,7 +116,7 @@ class _SoapSubjetivoState extends State<SoapSubjetivo> {
           maxLines: 2,
           onChanged: (v) => _emit(d.copyWith(notePasaNoche: v)),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 8),
 
         // ── Dolor (EVA) ──────────────────────────────────────────────────────
         _SoapLabel(isEs ? 'Dolor (EVA 0–10)' : 'Dor (EVA 0–10)', theme),
@@ -125,14 +126,14 @@ class _SoapSubjetivoState extends State<SoapSubjetivo> {
           dark: dark,
           onChanged: (v) => _emit(d.copyWith(dolorEscala: v)),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 8),
 
         // ── Síntomas rápidos (chips) ─────────────────────────────────────────
         _SoapLabel(isEs ? 'Síntomas referidos' : 'Sintomas referidos', theme),
         const SizedBox(height: 8),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: 6,
+          runSpacing: 6,
           children: [
             _SymptomChip(
               label: isEs ? 'Fiebre' : 'Febre',
@@ -166,7 +167,7 @@ class _SoapSubjetivoState extends State<SoapSubjetivo> {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 8),
 
         // ── Alimentación / Diuresis / Evacuación ─────────────────────────────
         Row(children: [
@@ -206,7 +207,7 @@ class _SoapSubjetivoState extends State<SoapSubjetivo> {
             ),
           ),
         ]),
-        const SizedBox(height: 14),
+        const SizedBox(height: 8),
 
         // ── Notas libres ─────────────────────────────────────────────────────
         _SoapLabel(isEs ? 'Notas adicionales' : 'Notas adicionais', theme),
@@ -226,74 +227,74 @@ class _SoapSubjetivoState extends State<SoapSubjetivo> {
 
 // ── Dolor Slider ──────────────────────────────────────────────────────────────
 class _DolorSlider extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_EVA_RAIL_V1
   final int? value;
   final bool dark;
   final ValueChanged<int?> onChanged;
 
   const _DolorSlider({
-    required this.value, required this.dark, required this.onChanged,
+    required this.value,
+    required this.dark,
+    required this.onChanged,
   });
 
   Color _colorForVal(int v) {
-    if (v <= 3) return const Color(0xFF22C55E);
+    if (v <= 3) return const Color(0xFF10B981);
     if (v <= 6) return const Color(0xFFF59E0B);
     return const Color(0xFFEF4444);
   }
 
   @override
   Widget build(BuildContext context) {
-    final current = value ?? 0;
+    final border = dark ? const Color(0xFF3B4350) : const Color(0xFFD6DDE6);
+    final idle = dark ? const Color(0xFF9AA5B4) : const Color(0xFF667085);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: List.generate(11, (i) {
-            final active = i == current && value != null;
-            final col = _colorForVal(i);
-            return Expanded(
-              child: GestureDetector(
-                onTap: () => onChanged(value == i ? null : i),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  margin: const EdgeInsets.symmetric(horizontal: 1.5),
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: active
-                        ? col
-                        : (dark
-                            ? col.withOpacity(0.18)
-                            : col.withOpacity(0.12)),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: active ? col : Colors.transparent,
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Center(
+        Container(
+          height: 30,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(color: border, width: 0.7),
+          ),
+          child: Row(
+            children: List.generate(21, (index) {
+              if (index.isOdd) {
+                return Container(width: 0.55, color: border.withOpacity(0.78));
+              }
+              final v = index ~/ 2;
+              final active = value == v;
+              final color = _colorForVal(v);
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => onChanged(active ? null : v),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 130),
+                    alignment: Alignment.center,
+                    color: active ? color.withOpacity(dark ? 0.28 : 0.14) : Colors.transparent,
                     child: Text(
-                      '$i',
+                      '$v',
                       style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: active ? FontWeight.w800 : FontWeight.w400,
-                        color: active
-                            ? Colors.white
-                            : (dark ? Colors.white54 : Colors.black45),
+                        fontSize: 11.2,
+                        fontWeight: active ? FontWeight.w800 : FontWeight.w500,
+                        color: active ? color : idle,
                       ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
         const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Sin dolor', style: TextStyle(
-              fontSize: 9, color: dark ? Colors.white38 : Colors.black38)),
-            Text('Máximo', style: TextStyle(
-              fontSize: 9, color: dark ? Colors.white38 : Colors.black38)),
+            Text('Sin dolor', style: TextStyle(fontSize: 9.5, color: idle.withOpacity(0.72))),
+            Text('Máximo', style: TextStyle(fontSize: 9.5, color: idle.withOpacity(0.72))),
           ],
         ),
       ],
@@ -303,6 +304,7 @@ class _DolorSlider extends StatelessWidget {
 
 // ── Chip de síntoma ───────────────────────────────────────────────────────────
 class _SymptomChip extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_OUTLINE_SYMPTOM_V1
   final String label;
   final IconData icon;
   final bool active;
@@ -310,39 +312,38 @@ class _SymptomChip extends StatelessWidget {
   final VoidCallback onTap;
 
   const _SymptomChip({
-    required this.label, required this.icon,
-    required this.active, required this.dark, required this.onTap,
+    required this.label,
+    required this.icon,
+    required this.active,
+    required this.dark,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    const cyan = Color(0xFF059669);
+    const accent = Color(0xFF0D6B57);
+    final border = dark ? const Color(0xFF3A4350) : const Color(0xFFD5DCE5);
+    final idle = dark ? const Color(0xFFAEB7C4) : const Color(0xFF5F6B7A);
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        duration: const Duration(milliseconds: 130),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
         decoration: BoxDecoration(
-          color: active
-              ? cyan.withOpacity(dark ? 0.18 : 0.12)
-              : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: active ? cyan : Colors.transparent,
-            width: 1.2,
-          ),
+          color: active ? accent.withOpacity(dark ? 0.13 : 0.08) : Colors.transparent,
+          borderRadius: BorderRadius.circular(7),
+          border: Border.all(color: active ? accent.withOpacity(0.78) : border, width: 0.7),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 13,
-                color: active ? cyan : (dark ? Colors.white38 : Colors.black38)),
+            Icon(icon, size: 13, color: active ? accent : idle.withOpacity(0.72)),
             const SizedBox(width: 5),
-            Text(label, style: TextStyle(
-              fontSize: 11.5,
-              fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-              color: active ? cyan : (dark ? Colors.white54 : Colors.black54),
-            )),
+            Text(
+              label,
+              style: TextStyle(fontSize: 11.5, fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? accent : idle),
+            ),
           ],
         ),
       ),
@@ -352,6 +353,7 @@ class _SymptomChip extends StatelessWidget {
 
 // ── Quick 3-opções selector ───────────────────────────────────────────────────
 class _QuickSelector extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_CONTIGUOUS_SELECTOR_V1
   final String label;
   final List<String> options;
   final String selected;
@@ -359,52 +361,54 @@ class _QuickSelector extends StatelessWidget {
   final ValueChanged<String> onSelected;
 
   const _QuickSelector({
-    required this.label, required this.options, required this.selected,
-    required this.dark, required this.onSelected,
+    required this.label,
+    required this.options,
+    required this.selected,
+    required this.dark,
+    required this.onSelected,
   });
 
   @override
   Widget build(BuildContext context) {
+    const accent = Color(0xFF0D6B57);
+    final border = dark ? const Color(0xFF3A4350) : const Color(0xFFD5DCE5);
+    final idle = dark ? const Color(0xFFAEB7C4) : const Color(0xFF5F6B7A);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(
-          fontSize: 10, fontWeight: FontWeight.w600,
-          color: dark ? Colors.white38 : Colors.black38,
-          letterSpacing: 0.3,
-        )),
+        Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 10.3, fontWeight: FontWeight.w700, color: idle.withOpacity(0.88))),
         const SizedBox(height: 5),
-        ...options.map((opt) {
-          final isSelected = selected == opt;
-          return GestureDetector(
-            onTap: () => onSelected(opt),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 140),
-              width: double.infinity,
-              margin: const EdgeInsets.only(bottom: 4),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? const Color(0xFF059669).withOpacity(dark ? 0.15 : 0.10)
-                    : (dark ? const Color(0xFF1E2330) : const Color(0xFFF3F4F6)),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: isSelected
-                      ? const Color(0xFF059669)
-                      : Colors.transparent,
-                  width: 1.2,
+        Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(color: border, width: 0.7),
+          ),
+          child: Column(
+            children: List.generate(options.length * 2 - 1, (index) {
+              if (index.isOdd) return Container(height: 0.55, color: border.withOpacity(0.82));
+              final option = options[index ~/ 2];
+              final active = selected == option;
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => onSelected(option),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 130),
+                  height: 31,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.symmetric(horizontal: 9),
+                  color: active ? accent.withOpacity(dark ? 0.13 : 0.08) : Colors.transparent,
+                  child: Text(option,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 11.5, fontWeight: active ? FontWeight.w700 : FontWeight.w500, color: active ? accent : idle)),
                 ),
-              ),
-              child: Text(opt, style: TextStyle(
-                fontSize: 11,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-                color: isSelected
-                    ? const Color(0xFF059669)
-                    : (dark ? Colors.white60 : Colors.black54),
-              )),
-            ),
-          );
-        }),
+              );
+            }),
+          ),
+        ),
       ],
     );
   }
@@ -412,23 +416,36 @@ class _QuickSelector extends StatelessWidget {
 
 // ── Shared subwidgets ─────────────────────────────────────────────────────────
 class _SoapLabel extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_EDITORIAL_LABEL_V1
   final String text;
   final InternacionTheme theme;
+
   const _SoapLabel(this.text, this.theme);
 
   @override
-  Widget build(BuildContext context) => Text(
-    text.toUpperCase(),
-    style: TextStyle(
-      fontSize: 10,
-      fontWeight: FontWeight.w700,
-      letterSpacing: 0.8,
-      color: theme.labelColor,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final line = dark ? const Color(0xFF3A424D) : const Color(0xFFD9DEE6);
+    return Row(
+      children: [
+        Text(
+          text.toUpperCase(),
+          style: TextStyle(
+            fontSize: 10.5,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.78,
+            color: theme.labelColor,
+          ),
+        ),
+        const SizedBox(width: 9),
+        Expanded(child: Container(height: 0.7, color: line.withOpacity(0.82))),
+      ],
+    );
+  }
 }
 
 class _SoapTextField extends StatelessWidget {
+  // MEDCASES_SOAP4_TRUE_INNER_FLAT_TEXT_V1
   final TextEditingController controller;
   final String hint;
   final bool dark;
@@ -436,39 +453,38 @@ class _SoapTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
   const _SoapTextField({
-    required this.controller, required this.hint,
-    required this.dark, required this.maxLines, required this.onChanged,
+    required this.controller,
+    required this.hint,
+    required this.dark,
+    required this.maxLines,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final divider = dark ? const Color(0xFF3B4350) : const Color(0xFFD6DDE6);
+    final value = dark ? const Color(0xFFE8EDF3) : const Color(0xFF1F2937);
+    final hintColor = dark ? const Color(0xFF7D8795) : const Color(0xFF7B8491);
     return Container(
+      padding: const EdgeInsets.fromLTRB(2, 1, 2, 2),
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1A1D23) : const Color(0xFFF8F9FA),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: dark ? const Color(0xFF2D3340) : const Color(0xFFDDE1E6),
-          width: 0.8,
-        ),
+        border: Border(bottom: BorderSide(color: divider.withOpacity(0.82), width: 0.7)),
       ),
       child: TextField(
         controller: controller,
         maxLines: maxLines,
         minLines: 1,
         onChanged: onChanged,
-        style: TextStyle(
-          fontSize: 13,
-          color: dark ? Colors.white : const Color(0xFF1A1D23),
-          height: 1.5,
-        ),
+        style: TextStyle(fontSize: 13.5, height: 1.34, fontWeight: FontWeight.w500, color: value),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: 13,
-            color: dark ? Colors.white24 : Colors.black26,
-          ),
+          hintStyle: TextStyle(fontSize: 12.6, height: 1.3, fontWeight: FontWeight.w400, color: hintColor),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          filled: false,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 7),
         ),
       ),
     );

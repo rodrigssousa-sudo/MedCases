@@ -60,8 +60,8 @@ class HomeV2Palette {
     textPrimary: Color(0xFFFFFFFF),
     textSecondary: Color(0xFFFFFFFF),
     textMuted: Color(0xFFFFFFFF),
-    accent: Color(0xFF00C781),
-    accentSoft: Color(0x1F00C781),
+    accent: Color(0xFF0D6B57),
+    accentSoft: Color(0x1F0D6B57),
     pressedOverlayColor: Color(0x40374151),
   );
 
@@ -79,8 +79,8 @@ class HomeV2Palette {
     textPrimary: Color(0xFF05070A),
     textSecondary: Color(0xFF59636E),
     textMuted: Color(0xFF8A939D),
-    accent: Color(0xFF008F66),
-    accentSoft: Color(0xFFE5F4EE),
+    accent: Color(0xFF0D6B57),
+    accentSoft: Color(0x140D6B57),
     pressedOverlayColor: Color(0x1459636E),
   );
 

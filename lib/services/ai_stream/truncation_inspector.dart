@@ -157,9 +157,7 @@ class TruncationInspector {
   //
   // Regex: \d+\s*[–\-—>]\s*$
   // ─────────────────────────────────────────────────────────────────────────
-  static final RegExp _numericRangeAbruptEnd = RegExp(
-    r'\d+\s*[–\-—>]\s*$',
-  );
+  static final RegExp _numericRangeAbruptEnd = RegExp(r'\d+\s*[–\-—>]\s*$');
 
   static bool _hasNumericRangeAbruptEnd(String text) {
     return _numericRangeAbruptEnd.hasMatch(text.trimRight());
@@ -178,20 +176,14 @@ class TruncationInspector {
   // ─────────────────────────────────────────────────────────────────────────
 
   // Bold-range incompleto: **\d+[–-]\d* ao EOF (número aberto dentro de bold)
-  static final RegExp _boldRangeCut = RegExp(
-    r'\*\*\d+[–\-—]\d*\s*$',
-  );
+  static final RegExp _boldRangeCut = RegExp(r'\*\*\d+[–\-—]\d*\s*$');
 
   // Range numerico terminando em dígito sem unidade clínica
   // "55–7" "0.1–3" ao EOF sem sufixo de unidade (mg/h, mL/h, mcg, etc.)
-  static final RegExp _numericRangeNoUnit = RegExp(
-    r'\d+[–\-—]\d+\s*$',
-  );
+  static final RegExp _numericRangeNoUnit = RegExp(r'\d+[–\-—]\d+\s*$');
 
   // Linha terminando em dígito imediatamente (sem pontuação ou unidade)
-  static final RegExp _trailingDigit = RegExp(
-    r'\d\s*$',
-  );
+  static final RegExp _trailingDigit = RegExp(r'\d\s*$');
 
   static bool _hasMidNumericCut(String text) {
     final trimmed = text.trimRight();
@@ -231,9 +223,118 @@ class TruncationInspector {
     '…',
   };
 
+  // PLANTAO_MARKDOWN_TABLE_TRUNCATION_FALSE_POSITIVE_FIX_V1
+  // A valid GFM table ends with |, which is not sentence punctuation.
+  // Bypass H4 only for a structurally complete table at EOF.
+  static bool _endsWithCompleteMarkdownTable(String text) {
+    final normalized = text
+        .replaceAll('\r\n', '\n')
+        .replaceAll('\r', '\n')
+        .trimRight();
+    if (normalized.isEmpty) return false;
+
+    final allLines = normalized.split('\n');
+    var end = allLines.length - 1;
+    while (end >= 0 && allLines[end].trim().isEmpty) {
+      end--;
+    }
+    if (end < 0) return false;
+
+    final last = allLines[end].trim();
+    if (!last.startsWith('|') || !last.endsWith('|')) return false;
+
+    var start = end;
+    while (start >= 0) {
+      final line = allLines[start].trim();
+      if (!line.startsWith('|') || !line.endsWith('|')) break;
+      start--;
+    }
+    start++;
+
+    final block = allLines
+        .sublist(start, end + 1)
+        .map((line) => line.trim())
+        .toList(growable: false);
+    if (block.length < 3) return false;
+
+    final header = _splitMarkdownTableRow(block.first);
+    final separator = _splitMarkdownTableRow(block[1]);
+    if (header.length < 2 || separator.length != header.length) {
+      return false;
+    }
+
+    final separatorCell = RegExp(r'^:?-{3,}:?$');
+    if (!separator.every(separatorCell.hasMatch)) return false;
+
+    for (final row in block.skip(2)) {
+      final cells = _splitMarkdownTableRow(row);
+      if (cells.length != header.length) return false;
+      for (final cell in cells) {
+        final value = cell.trimRight();
+        if (value.isEmpty) continue;
+        final lastChar = value[value.length - 1];
+        if (lastChar == '-' ||
+            lastChar == '–' ||
+            lastChar == '—' ||
+            lastChar == '>' ||
+            lastChar == '<' ||
+            lastChar == '/') {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  static List<String> _splitMarkdownTableRow(String row) {
+    final trimmed = row.trim();
+    if (trimmed.length < 2 ||
+        !trimmed.startsWith('|') ||
+        !trimmed.endsWith('|')) {
+      return const <String>[];
+    }
+
+    final body = trimmed.substring(1, trimmed.length - 1);
+    final cells = <String>[];
+    final buffer = StringBuffer();
+    var escaped = false;
+
+    for (var index = 0; index < body.length; index++) {
+      final char = body[index];
+      if (escaped) {
+        if (char == '|') {
+          buffer.write('|');
+        } else {
+          buffer.writeCharCode(92);
+          buffer.write(char);
+        }
+        escaped = false;
+        continue;
+      }
+      if (char.codeUnitAt(0) == 92) {
+        escaped = true;
+        continue;
+      }
+      if (char == '|') {
+        cells.add(buffer.toString().trim());
+        buffer.clear();
+        continue;
+      }
+      buffer.write(char);
+    }
+    if (escaped) buffer.writeCharCode(92);
+    cells.add(buffer.toString().trim());
+    return cells;
+  }
+
   static bool _hasAbruptNonPunctuationEnd(String text) {
     final trimmed = text.trimRight();
     if (trimmed.isEmpty) return false;
+
+    if (_endsWithCompleteMarkdownTable(text)) {
+      return false;
+    }
+
     final lastChar = trimmed[trimmed.length - 1];
     // Dígito ao EOF (sem unidade/pontuação) é sinal de truncamento
     if (RegExp(r'\d').hasMatch(lastChar)) return true;
@@ -251,11 +352,7 @@ class TruncationInspector {
         .replaceAll(RegExp(r'`[^`\n]*`'), '');
 
     final stack = <String>[];
-    const openerForCloser = {
-      ')': '(',
-      ']': '[',
-      '}': '{',
-    };
+    const openerForCloser = {')': '(', ']': '[', '}': '{'};
 
     for (var index = 0; index < inspectable.length; index++) {
       final char = inspectable[index];
@@ -360,13 +457,15 @@ class TruncationInspector {
     required TruncationCheckResult result,
   }) {
     // ignore: avoid_print
-    print('[TRUNCATION_CHECK] '
-        'requestId=$requestId '
-        'truncated=${result.isTruncated} '
-        'confidence=${result.confidenceLevel.name} '
-        'reason=${result.violationReason ?? "none"} '
-        'repairAttempted=${result.didRetry} '
-        'repairSucceeded=${result.didFix}');
+    print(
+      '[TRUNCATION_CHECK] '
+      'requestId=$requestId '
+      'truncated=${result.isTruncated} '
+      'confidence=${result.confidenceLevel.name} '
+      'reason=${result.violationReason ?? "none"} '
+      'repairAttempted=${result.didRetry} '
+      'repairSucceeded=${result.didFix}',
+    );
   }
 }
 
@@ -455,10 +554,7 @@ class AiSafeOutputException implements Exception {
   /// The requestId associated with this failure (for coordinator release).
   final String requestId;
 
-  const AiSafeOutputException({
-    required this.message,
-    required this.requestId,
-  });
+  const AiSafeOutputException({required this.message, required this.requestId});
 
   @override
   String toString() =>

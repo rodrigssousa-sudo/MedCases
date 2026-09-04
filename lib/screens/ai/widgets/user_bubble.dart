@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_4A_V2_B_R1_AI_WIDGETS
 import 'package:flutter/material.dart';
 
 import '../../../home_v2/theme/home_v2_palette.dart';
@@ -370,7 +371,7 @@ class _UserBubbleActionsSheet extends StatelessWidget {
                 : 'Copia o texto para a área de transferência',
             textCol: textCol,
             subCol: subCol,
-            iconColor: const Color(0xFF008CA4),
+            iconColor: const Color(0xFF0D6B57),
             onTap: onCopy,
           ),
           Divider(height: 1, color: dark ? Colors.white12 : Colors.black12),

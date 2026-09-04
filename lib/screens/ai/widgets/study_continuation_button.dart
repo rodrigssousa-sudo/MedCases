@@ -4,17 +4,15 @@ import 'package:flutter/material.dart';
 
 /// Continuação pedagógica linear do Modo Estudo.
 ///
-/// A pergunta vem de NEXT_ACTION_PROMPT, permanece fora do Markdown e é
-/// enviada automaticamente ao toque. Não utiliza a identidade visual azul
-/// dos botões de ação clínica.
+/// STUDY-PREMIUM-V1-B-R6: este widget conhece SOMENTE o rótulo humano visível.
 class StudyContinuationButton extends StatefulWidget {
-  final String question;
+  final String label;
   final bool dark;
   final VoidCallback onTap;
 
   const StudyContinuationButton({
     super.key,
-    required this.question,
+    required this.label,
     required this.dark,
     required this.onTap,
   });
@@ -28,26 +26,29 @@ class _StudyContinuationButtonState extends State<StudyContinuationButton> {
   Timer? _unlockTimer;
   bool _tapLocked = false;
 
+  static bool _isEmojiRune(int rune) {
+    return (rune >= 0x1F000 && rune <= 0x1FAFF) ||
+        (rune >= 0x2600 && rune <= 0x27BF) ||
+        rune == 0xFE0F ||
+        rune == 0x200D ||
+        rune == 0x20E3;
+  }
+
+  static String _cleanLabel(String value) {
+    return String.fromCharCodes(
+      value.runes.where((rune) => !_isEmojiRune(rune)),
+    ).replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
   void _handleTap() {
     if (_tapLocked) return;
-
-    setState(() {
-      _tapLocked = true;
-    });
-
+    setState(() => _tapLocked = true);
     widget.onTap();
-
     _unlockTimer?.cancel();
-    _unlockTimer = Timer(
-      const Duration(milliseconds: 600),
-      () {
-        if (!mounted) return;
-
-        setState(() {
-          _tapLocked = false;
-        });
-      },
-    );
+    _unlockTimer = Timer(const Duration(milliseconds: 600), () {
+      if (!mounted) return;
+      setState(() => _tapLocked = false);
+    });
   }
 
   @override
@@ -58,86 +59,58 @@ class _StudyContinuationButtonState extends State<StudyContinuationButton> {
 
   @override
   Widget build(BuildContext context) {
-    final question = widget.question
-        .replaceFirst(
-          RegExp(r'^\s*📌\s*'),
-          '',
-        )
-        .trim();
-
-    if (question.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    final label = _cleanLabel(widget.label);
+    if (label.isEmpty) return const SizedBox.shrink();
 
     final background =
         widget.dark ? const Color(0xFF1A1D23) : const Color(0xFFF8FAFC);
-
     final border =
         widget.dark ? const Color(0xFF374151) : const Color(0xFFD6DEE8);
-
     final textColor =
         widget.dark ? const Color(0xFFE5E7EB) : const Color(0xFF1F2937);
-
     final arrowColor =
-        widget.dark ? const Color(0xFF34D399) : const Color(0xFF0F8F6A);
+        widget.dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        12,
-        10,
-        12,
-        0,
-      ),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       child: Semantics(
         button: true,
-        label: question,
+        label: label,
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: _tapLocked ? null : _handleTap,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             child: AnimatedOpacity(
               opacity: _tapLocked ? 0.62 : 1,
-              duration: const Duration(
-                milliseconds: 120,
-              ),
+              duration: const Duration(milliseconds: 120),
               child: Container(
-                constraints: const BoxConstraints(
-                  minHeight: 48,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 11,
-                ),
+                constraints: const BoxConstraints(minHeight: 44),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
                   color: background,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: border,
-                    width: 0.8,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: border, width: 0.8),
                 ),
                 child: Row(
                   children: [
                     Expanded(
                       child: Text(
-                        question,
+                        label,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: textColor,
-                          fontSize: 13.5,
-                          height: 1.3,
+                          fontSize: 13.0,
+                          height: 1.25,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 20,
-                      color: arrowColor,
-                    ),
+                    const SizedBox(width: 8),
+                    Icon(Icons.arrow_forward_rounded,
+                        size: 18, color: arrowColor),
                   ],
                 ),
               ),

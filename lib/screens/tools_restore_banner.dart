@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 const _kSurface = Color(0xFF1A1D23);
 const _kAmber   = Color(0xFFF59E0B);
-const _kCyan    = Color(0xFF00E5FF);
+const _kAccentBrand    = Color(0xFF0D6B57);
 const _kRed     = Color(0xFFEF4444);
 const _kTextSub = Color(0xFF8B9BB4);
 
@@ -175,8 +175,8 @@ class _ToolsRestoreBannerState extends State<ToolsRestoreBanner>
                     // [Sí]
                     _BannerBtn(
                       label: isEs ? 'Sí' : 'Sim',
-                      color: _kCyan.withOpacity(0.16),
-                      textColor: _kCyan,
+                      color: _kAccentBrand.withOpacity(0.16),
+                      textColor: _kAccentBrand,
                       onTap: () => _dismiss(widget.onRestore),
                     ),
                   ],

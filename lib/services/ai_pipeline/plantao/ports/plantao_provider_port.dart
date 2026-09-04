@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import '../contracts/plantao_evidence_bundle.dart';
 import '../contracts/plantao_request.dart';
 
@@ -80,12 +78,4 @@ class PlantaoProviderPortEvent {
   final int sequence;
   final String? textDelta;
   final bool isTerminal;
-}
-
-abstract interface class PlantaoProviderPort {
-  PlantaoProviderKind get kind;
-
-  Stream<PlantaoProviderPortEvent> stream(
-    PlantaoProviderInvocation invocation,
-  );
 }

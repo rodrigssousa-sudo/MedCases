@@ -28,7 +28,118 @@ abstract final class PlantaoClinicalResponseConsistencyGuard {
       );
     }
 
+    // M77_MASSIVE_HEMOTHORAX_POST_PROVIDER_AUTHORITY_V1
+    if (_isExplicitMassiveHemothorax(userInput)) {
+      result = _correctMassiveHemothoraxThresholdDrift(
+        userInput: userInput,
+        assistantOutput: result,
+      );
+    }
+
     return result;
+  }
+
+  // M77_MASSIVE_HEMOTHORAX_POST_PROVIDER_AUTHORITY_V1
+  static bool _isExplicitMassiveHemothorax(String input) {
+    final value = _fold(input);
+    return const <String>[
+      'hemotorax macico',
+      'hemotorax masivo',
+      'massive hemothorax',
+    ].any(value.contains);
+  }
+
+  static String _correctMassiveHemothoraxThresholdDrift({
+    required String userInput,
+    required String assistantOutput,
+  }) {
+    final query = _fold(userInput);
+    final outputFolded = _fold(assistantOutput);
+    final isEs = query.contains('hemotorax masivo') ||
+        outputFolded.contains('exploracion quirurgica') ||
+        outputFolded.contains('toracotomia') && outputFolded.contains('sangrado');
+
+    final operativeCanonical = isEs
+        ? '• Considerar exploración quirúrgica/toracotomía si hay >1500 mL iniciales o >200 mL/h durante 3 horas consecutivas, integrando fisiología, necesidad transfusional, respuesta a reanimación y sangrado activo.'
+        : '• Considerar exploração cirúrgica/toracotomia se houver >1500 mL iniciais ou >200 mL/h por 3 horas consecutivas, integrando fisiologia, necessidade transfusional, resposta à ressuscitação e sangramento ativo.';
+
+    final transfusionCanonical = isEs
+        ? '• Transfundir hemoderivados según choque hemorrágico, pérdida sanguínea, necesidad transfusional y respuesta a reanimación; no usar un volumen aislado como único gatillo transfusional.'
+        : '• Transfundir hemocomponentes conforme choque hemorrágico, perda sanguínea, necessidade transfusional e resposta à ressuscitação; não usar um volume isolado como único gatilho transfusional.';
+
+    final lines = assistantOutput
+        .replaceAll('\r\n', '\n')
+        .replaceAll('\r', '\n')
+        .split('\n');
+
+    var changed = false;
+    var operativeInserted = false;
+    final out = <String>[];
+
+    for (final line in lines) {
+      final folded = _fold(line);
+
+      // R7_R1_HEMOTHORAX_IDEMPOTENCY_ORDER_V1:
+      // classify operative/surgical threshold lines BEFORE transfusion lines.
+      // The canonical operative sentence itself contains "necessidade transfusional";
+      // transfusion-first classification therefore corrupted the second pass.
+      final surgicalContext = const <String>[
+        'cirurg',
+        'toracotom',
+        'exploracao',
+        'exploracion',
+      ].any(folded.contains);
+
+      final hasBothThresholds = folded.contains('1500') &&
+          folded.contains('200') &&
+          (folded.contains('ml/h') ||
+              folded.contains('ml / h') ||
+              folded.contains('ml por hora'));
+
+      if (surgicalContext || hasBothThresholds) {
+        if (!operativeInserted) {
+          if (line.trim() != operativeCanonical.trim()) changed = true;
+          out.add(operativeCanonical);
+          operativeInserted = true;
+        } else {
+          changed = true;
+        }
+        continue;
+      }
+
+      final transfusionContext = const <String>[
+        'transfus',
+        'hemoderiv',
+        'hemocomponent',
+      ].any(folded.contains);
+
+      if (transfusionContext && folded.contains('1500')) {
+        if (line.trim() != transfusionCanonical.trim()) changed = true;
+        out.add(transfusionCanonical);
+        continue;
+      }
+
+      out.add(line);
+    }
+
+    if (!operativeInserted) {
+      final redFlagIndex = out.indexWhere((line) {
+        final folded = _fold(line);
+        return folded.contains('red flags') ||
+            folded.contains('red flag') ||
+            folded.contains('sinais de alarme') ||
+            folded.contains('senales de alarma');
+      });
+      if (redFlagIndex >= 0) {
+        out.insert(redFlagIndex, operativeCanonical);
+      } else {
+        out.add(operativeCanonical);
+      }
+      changed = true;
+    }
+
+    final result = out.join('\n');
+    return changed ? result : assistantOutput;
   }
 
   static String _neutralizeLegacyRankHeadings(String text) {

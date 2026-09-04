@@ -1250,6 +1250,9 @@ app.use(cors({
 }));
 
 // Rotas de áudio têm autenticação/parser próprios e PRECISAM ser registradas
+const { registerStudyBackgroundTranscriptionRoutes } = require('./study_background_transcription_routes');
+registerStudyBackgroundTranscriptionRoutes(app);
+
 // antes do Firebase global: /audio/transcriptions recebe grant MedCases no
 // Authorization, enquanto /audio/grant aplica Firebase explicitamente.
 registerAudioTranscriptionRoutes({

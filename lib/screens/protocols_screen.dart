@@ -1,3 +1,4 @@
+// MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_3A_V2_B_R1_GENERIC_CONTEXTS
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ Future<void> _registerRecentIfStayed(BuildContext ctx, String type, String id,
 // ─────────────────────────────────────────────────────────────────────────────
 // MEDCASES_SIMULATION_DETAIL_SHELL_V1_R2
 // MEDCASES_SIMULATION_DETAIL_INTERNAL_SECTIONS_V1_R3_R1
+// MEDCASES_SIMULATION_DETAIL_FLAT_CLINICAL_READING_V1_B_R9
 // FUNÇÃO GLOBAL — abre detalhe de protocolo como bottom sheet
 // Pode ser chamada de qualquer tela do app (cockpit, chips, lista)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -252,82 +254,136 @@ class _SimulationProtocolDetailPage extends StatelessWidget {
           ),
         ),
         body: SingleChildScrollView(
-          // MEDCASES_SIMULATION_CASE_MARGIN_16_V1_B_R1
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
-          child: Container(
-            // MEDCASES_SIMULATION_CASE_SINGLE_SURFACE_CARD_V1_B_R0
-            decoration: BoxDecoration(
-              color: dark ? const Color(0xFF252930) : Colors.white,
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: dark
-                    ? const Color(0xFF374151)
-                    : const Color(0xFFE7EBEF),
-                width: 0.6,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(0, 2, 0, 14),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: divider, width: 0.55),
-                  ),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+          // MEDCASES_SIMULATION_DETAIL_FLAT_CANVAS_V1_B_R9
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // MEDCASES_SIMULATION_DETAIL_READING_HEADER_V1_B_R9
+              Semantics(
+                container: true,
+                label: severityText.isEmpty
+                    ? (isEs
+                        ? 'Lectura clínica completa. Reconoce, decide y revisa.'
+                        : 'Leitura clínica completa. Reconheça, decida e revise.')
+                    : '$severityText. ${isEs ? 'Lectura clínica completa. Reconoce, decide y revisa.' : 'Leitura clínica completa. Reconheça, decida e revise.'}',
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 4, 0, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          if (severityText.isNotEmpty)
-                            Text(
-                              severityText.toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                color: severityColor,
-                                letterSpacing: 0.7,
-                              ),
+                          Container(
+                            width: 3,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: severityColor,
+                              borderRadius: BorderRadius.circular(2),
                             ),
-                          if (severityText.isNotEmpty)
-                            const SizedBox(height: 5),
-                          Text(
-                            pageTitle,
-                            style: TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.w800,
-                              color: primary,
-                              letterSpacing: -0.3,
-                              height: 1.2,
+                          ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (severityText.isNotEmpty)
+                                  Text(
+                                    severityText.toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w800,
+                                      color: severityColor,
+                                      letterSpacing: 0.7,
+                                    ),
+                                  ),
+                                if (severityText.isNotEmpty)
+                                  const SizedBox(height: 3),
+                                Text(
+                                  isEs
+                                      ? 'LECTURA CLÍNICA COMPLETA'
+                                      : 'LEITURA CLÍNICA COMPLETA',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.25,
+                                    color: primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Tooltip(
+                            message: isFav
+                                ? (isEs
+                                    ? 'Quitar de favoritos'
+                                    : 'Remover dos favoritos')
+                                : (isEs
+                                    ? 'Agregar a favoritos'
+                                    : 'Adicionar aos favoritos'),
+                            child: Semantics(
+                              button: true,
+                              label: isFav
+                                  ? (isEs
+                                      ? 'Quitar de favoritos'
+                                      : 'Remover dos favoritos')
+                                  : (isEs
+                                      ? 'Agregar a favoritos'
+                                      : 'Adicionar aos favoritos'),
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () => p.toggleFavProtocol(protocol.id),
+                                child: SizedBox(
+                                  width: 44,
+                                  height: 44,
+                                  child: Icon(
+                                    isFav
+                                        ? Icons.star_rounded
+                                        : Icons.star_border_rounded,
+                                    size: 21,
+                                    color: isFav
+                                        ? const Color(0xFFF4B942)
+                                        : secondary,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () => p.toggleFavProtocol(protocol.id),
-                      child: SizedBox(
-                        width: 36,
-                        height: 36,
-                        child: Icon(
-                          isFav ? Icons.star_rounded : Icons.star_border_rounded,
-                          size: 21,
-                          color: isFav ? const Color(0xFFF4B942) : secondary,
-                        ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.route_outlined,
+                            size: 14,
+                            color: secondary,
+                          ),
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: Text(
+                              isEs
+                                  ? 'Reconoce • Decide • Revisa'
+                                  : 'Reconheça • Decida • Revise',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.15,
+                                color: secondary,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 12),
+                      Container(height: 0.55, color: divider),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 4),
               ...visibleClinicalContent,
               if (protocolReferences.isNotEmpty || evidenceRecords.isNotEmpty)
                 _SimulationReferencesEvidenceDisclosure(
@@ -337,10 +393,8 @@ class _SimulationProtocolDetailPage extends StatelessWidget {
                   evidenceRecords: evidenceRecords,
                 ),
               const PharmacologicalDisclaimer(),
-                  const SizedBox(height: 14),
-                ],
-              ),
-            ),
+              const SizedBox(height: 14),
+            ],
           ),
         ),
       ),
@@ -481,7 +535,7 @@ class _SimulationReferencesEvidenceDisclosureState
         dark ? const Color(0xFF94A3B8) : const Color(0xFF59636E);
     final divider =
         dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
-    const accent = Color(0xFF10B981);
+    const accent = Color(0xFF0D6B57);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2220,6 +2274,91 @@ class _ProtocolDetailSheet extends StatelessWidget {
   }
 }
 
+
+// MEDCASES_SIMULACOES_TOXICOLOGIA_EXPERIENCE_2026_V1_B_R5
+const Set<String> _toxicologySimulationIds2026 = <String>{
+  'intoxicacao_exogena',
+  'intox_paracetamol',
+  'intox_opioides',
+  'intox_benzodiazepinas',
+  'intox_organofosforados',
+  'intox_triciclicos',
+  'intox_betabloqueadores',
+  'intox_monoxido_carbono',
+  'intox_metanol_etilenoglicol',
+  'intoxicacao_overdose',
+};
+
+class _ToxicologyLearningStageHeader extends StatelessWidget {
+  final bool dark; final int index; final String title; final String subtitle;
+  const _ToxicologyLearningStageHeader({required this.dark,required this.index,required this.title,required this.subtitle});
+  @override Widget build(BuildContext context) {
+    final primary=dark?const Color(0xFFE2E8F0):const Color(0xFF1F2937);
+    final secondary=dark?const Color(0xFF94A3B8):const Color(0xFF64748B);
+    final divider=dark?const Color(0xFF374151):const Color(0xFFE2E7EC);
+    const accent=Color(0xFF0D6B57);
+    return Container(width:double.infinity,margin:const EdgeInsets.only(top:12),padding:const EdgeInsets.fromLTRB(0,13,0,11),decoration:BoxDecoration(border:Border(top:BorderSide(color:divider,width:.7),bottom:BorderSide(color:divider,width:.7))),child:Row(crossAxisAlignment:CrossAxisAlignment.start,children:[Container(width:24,height:24,alignment:Alignment.center,decoration:BoxDecoration(border:Border.all(color:accent,width:1.2),shape:BoxShape.circle),child:Text('$index',style:const TextStyle(fontSize:10,height:1,fontWeight:FontWeight.w900,color:accent))),const SizedBox(width:10),Expanded(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:TextStyle(fontSize:11,height:1.2,fontWeight:FontWeight.w900,letterSpacing:.8,color:primary)),if(subtitle.trim().isNotEmpty)...[const SizedBox(height:3),Text(subtitle,style:TextStyle(fontSize:11.5,height:1.35,fontWeight:FontWeight.w500,color:secondary))]]))]));
+  }
+}
+
+class _ToxicologyMechanismSignatureSection extends StatelessWidget {
+  final bool dark; final bool isEs; final String text;
+  const _ToxicologyMechanismSignatureSection({required this.dark,required this.isEs,required this.text});
+  @override Widget build(BuildContext context) {
+    final primary=dark?const Color(0xFFE2E8F0):const Color(0xFF1F2937);
+    final secondary=dark?const Color(0xFFAAB5C4):const Color(0xFF526172);
+    final divider=dark?const Color(0xFF374151):const Color(0xFFE2E7EC); const accent=Color(0xFF0D6B57);
+    final parts=text.split(RegExp(r'\n{2,}')).map((e)=>e.trim()).where((e)=>e.isNotEmpty).toList(growable:false);
+    return Container(width:double.infinity,padding:const EdgeInsets.fromLTRB(0,16,0,17),decoration:BoxDecoration(border:Border(bottom:BorderSide(color:divider,width:.7))),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[const Text('DA TOXINA À CONDUTA',style:TextStyle(fontSize:11,height:1.2,fontWeight:FontWeight.w900,letterSpacing:.9,color:accent)),const SizedBox(height:4),Text(isEs?'TOXINA → DIANA → FISIOLOGÍA → CLÍNICA → EXAMEN → RIESGO → TRATAMIENTO':'TOXINA → ALVO → FISIOLOGIA → CLÍNICA → EXAME → RISCO → TRATAMENTO',style:TextStyle(fontSize:10.5,height:1.35,fontWeight:FontWeight.w700,color:secondary)),const SizedBox(height:12),...List.generate(parts.length,(i)=>Row(crossAxisAlignment:CrossAxisAlignment.start,children:[SizedBox(width:16,child:Column(children:[Container(width:7,height:7,margin:const EdgeInsets.only(top:5),decoration:const BoxDecoration(color:accent,shape:BoxShape.circle)),if(i!=parts.length-1)Container(width:1,height:38,color:divider)])),const SizedBox(width:8),Expanded(child:Padding(padding:const EdgeInsets.only(bottom:10),child:Text(parts[i],style:TextStyle(fontSize:12.5,height:1.5,fontWeight:FontWeight.w600,color:primary))))]))]));
+  }
+}
+
+List<Widget> _buildToxicology2026SimulationClinicalContent({required ProtocolModel protocol,required AppProvider p,required List<String> actions,required String avoidTxt,required List<String> drugs}) {
+  final dark=p.darkMode; final isEs=p.lang=='es'; final w=<Widget>[];
+  void add(Widget x){if(w.isNotEmpty)w.add(const SizedBox(height:2));w.add(x);}
+  void stage(int i,String pt,String es,String spt,String ses)=>add(_ToxicologyLearningStageHeader(dark:dark,index:i,title:isEs?es:pt,subtitle:isEs?ses:spt));
+  final scenarios=protocol.getList(protocol.scenarios,p.lang), red=protocol.getList(protocol.redFlags,p.lang), diff=protocol.getList(protocol.differentialDiagnosis,p.lang), exams=protocol.getList(protocol.exams,p.lang), obj=protocol.getList(protocol.objectives,p.lang), first=protocol.getList(protocol.drugsFirstLine,p.lang), second=protocol.getList(protocol.drugsSecondLine,p.lang), cond=protocol.getList(protocol.drugsConditional,p.lang), contra=protocol.getList(protocol.drugsContraindicated,p.lang), mon=protocol.getList(protocol.monitoring,p.lang), comp=protocol.getList(protocol.complications,p.lang), donot=protocol.getList(protocol.doNotDo,p.lang), pearls=protocol.getList(protocol.pearls,p.lang);
+  final definition=protocol.getString(protocol.definition,p.lang), mechanism=protocol.getString(protocol.physiopathology,p.lang), recognize=p.tDB(protocol.recognize);
+  stage(1,'CASO','CASO','Comece pelos dados do paciente antes de abrir a solução.','Empiece por los datos del paciente antes de abrir la solución.');
+  if(scenarios.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.person_outline_rounded,label:isEs?'PRESENTACIÓN DEL CASO':'APRESENTAÇÃO DO CASO',accent:const Color(0xFF0D6B57),items:<String>[scenarios.first],strong:true));
+  if(recognize.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.visibility_outlined,label:isEs?'QUÉ RECONOCER':'O QUE RECONHECER',accent:const Color(0xFFC5A365),text:recognize,strong:true));
+  stage(2,'DECISÕES','DECISIONES','Identifique o risco que muda a próxima conduta.','Identifique el riesgo que cambia la siguiente conducta.');
+  if(red.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.warning_amber_rounded,label:'RED FLAGS',accent:const Color(0xFFDC2626),items:red,strong:true));
+  if(exams.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.biotech_outlined,label:isEs?'DATOS QUE CAMBIAN CONDUCTA':'DADOS QUE MUDAM CONDUTA',accent:const Color(0xFF0284C7),items:exams));
+  if(diff.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.alt_route_rounded,label:isEs?'DIFERENCIALES CRÍTICOS':'DIFERENCIAIS CRÍTICOS',accent:dark?const Color(0xFFAAB5C4):const Color(0xFF526172),items:diff));
+  if(obj.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.gps_fixed,label:isEs?'OBJETIVOS DE LA DECISIÓN':'OBJETIVOS DA DECISÃO',accent:const Color(0xFF0D6B57),items:obj,numbered:true));
+  stage(3,'EVOLUÇÃO','EVOLUCIÓN','Reveja o caso como sequência, não como fotografia.','Revise el caso como secuencia, no como fotografía.');
+  if(scenarios.length>1)add(_SimulationFlatListSection(dark:dark,icon:Icons.timeline,label:isEs?'EVOLUCIÓN POR ETAPAS':'EVOLUÇÃO POR ETAPAS',accent:const Color(0xFFD97706),items:scenarios.sublist(1),numbered:true));
+  if(comp.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.warning_amber_rounded,label:isEs?'SI EMPEORA, PENSAR EN':'SE PIORAR, PENSAR EM',accent:const Color(0xFFDC2626),items:comp));
+  stage(4,'CONDUTA','CONDUCTA','Execute por prioridade e saiba qual endpoint procura.','Ejecute por prioridad y sepa qué endpoint busca.');
+  if(actions.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.playlist_add_check,label:isEs?'SECUENCIA PRÁCTICA':'SEQUÊNCIA PRÁTICA',accent:const Color(0xFF0D6B57),items:actions,numbered:true,strong:true));
+  if(first.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.medication_rounded,label:isEs?'PRIMERA LÍNEA / ANTÍDOTO':'PRIMEIRA LINHA / ANTÍDOTO',accent:const Color(0xFF0D6B57),items:first,strong:true));
+  if(second.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.medical_services_outlined,label:isEs?'SEGUNDA LÍNEA':'SEGUNDA LINHA',accent:const Color(0xFF0284C7),items:second));
+  if(cond.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.call_split,label:isEs?'CONDICIONAL / ESCALADA':'CONDICIONAL / ESCALADA',accent:const Color(0xFFD97706),items:cond));
+  if(contra.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.block_rounded,label:isEs?'EVITAR / CONTRAINDICADO':'EVITAR / CONTRAINDICADO',accent:const Color(0xFFDC2626),items:contra,strong:true));
+  if(mon.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.monitor_heart_outlined,label:isEs?'MONITORIZACIÓN Y ENDPOINTS':'MONITORIZAÇÃO E ENDPOINTS',accent:const Color(0xFF0284C7),items:mon));
+  if(donot.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.report_problem_outlined,label:isEs?'ERRORES CRÍTICOS':'ERROS CRÍTICOS',accent:const Color(0xFFDC2626),items:donot,strong:true));
+  if(avoidTxt.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.do_not_disturb_alt_rounded,label:isEs?'NO HACER':'NÃO FAZER',accent:const Color(0xFFDC2626),text:avoidTxt,strong:true));
+  stage(5,'REPASSO','REPASO','Entenda o porquê da clínica e consolide o que lembrar.','Entienda el porqué de la clínica y consolide lo que recordar.');
+  if(definition.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.info_outline_rounded,label:isEs?'QUÉ ERA ESTE CASO':'O QUE ERA ESTE CASO',accent:const Color(0xFF0284C7),text:definition));
+  if(protocol.classification!=null)add(_SimulationFlatClassificationSection(dark:dark,isEs:isEs,data:protocol.getDynamic(protocol.classification,p.lang)));
+  final sevRaw=protocol.getDynamic(protocol.severityCriteria,p.lang);
+  final sev=sevRaw==null
+      ? ''
+      : sevRaw is String
+          ? sevRaw
+          : sevRaw is Iterable
+              ? sevRaw.map((e)=>e.toString()).where((e)=>e.trim().isNotEmpty).join(' • ')
+              : sevRaw is Map
+                  ? sevRaw.entries.map((e)=>'${e.key}: ${e.value}').join(' • ')
+                  : sevRaw.toString();
+  if(sev.trim().isNotEmpty)add(_SimulationFlatTextSection(dark:dark,icon:Icons.speed_rounded,label:isEs?'QUÉ DEFINE GRAVEDAD':'O QUE DEFINE GRAVIDADE',accent:const Color(0xFFD97706),text:sev));
+  if(mechanism.trim().isNotEmpty)add(_ToxicologyMechanismSignatureSection(dark:dark,isEs:isEs,text:mechanism));
+  if(pearls.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.school_outlined,label:isEs?'RESUMEN 30 S / TAKE-HOME POINTS':'RESUMO 30 S / TAKE-HOME POINTS',accent:const Color(0xFFC5A365),items:pearls,strong:true));
+  if(drugs.isNotEmpty)add(_SimulationFlatListSection(dark:dark,icon:Icons.medication_rounded,label:isEs?'FÁRMACOS CLAVE DEL CASO':'FÁRMACOS CHAVE DO CASO',accent:const Color(0xFF0D6B57),items:drugs));
+  return w;
+}
+
 List<Widget> _buildSimulationClinicalContent({
   required ProtocolModel protocol,
   required AppProvider p,
@@ -2227,6 +2366,12 @@ List<Widget> _buildSimulationClinicalContent({
   required String avoidTxt,
   required List<String> drugs,
 }) {
+  if (_toxicologySimulationIds2026.contains(protocol.id)) {
+    return _buildToxicology2026SimulationClinicalContent(
+      protocol: protocol, p: p, actions: actions, avoidTxt: avoidTxt, drugs: drugs,
+    );
+  }
+
   final dark = p.darkMode;
   final isEs = p.lang == 'es';
   final widgets = <Widget>[];
@@ -2362,7 +2507,7 @@ List<Widget> _buildSimulationClinicalContent({
         dark: dark,
         icon: Icons.medication_rounded,
         label: isEs ? 'FÁRMACOS CLAVE' : 'FÁRMACOS CHAVE',
-        accent: const Color(0xFF10B981),
+        accent: const Color(0xFF0D6B57),
         items: drugs,
       ));
     }
@@ -2429,7 +2574,7 @@ List<Widget> _buildSimulationClinicalContent({
         dark: dark,
         icon: Icons.lightbulb_rounded,
         label: isEs ? 'PERLAS CLÍNICAS' : 'PÉROLAS CLÍNICAS',
-        accent: const Color(0xFF10B981),
+        accent: const Color(0xFF0D6B57),
         items: pearls,
       ));
     }
@@ -2489,7 +2634,7 @@ List<Widget> _buildSimulationClinicalContent({
         dark: dark,
         icon: Icons.medication_rounded,
         label: isEs ? 'FÁRMACOS CLAVE' : 'FÁRMACOS CHAVE',
-        accent: const Color(0xFF10B981),
+        accent: const Color(0xFF0D6B57),
         items: drugs,
       ));
     }
@@ -2516,9 +2661,11 @@ class _SimulationFlatSectionShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final divider = dark ? const Color(0xFF2D3340) : const Color(0xFFD8E0E7);
+    final sectionTitle =
+        dark ? const Color(0xFFE2E8F0) : const Color(0xFF334155);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(0, 14, 0, 16),
+      padding: const EdgeInsets.fromLTRB(0, 12, 0, 14),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: divider, width: 0.55),
@@ -2527,29 +2674,34 @@ class _SimulationFlatSectionShell extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Icon(icon, size: 14, color: accent),
-            const SizedBox(width: 7),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.9,
-                  color: accent,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(icon, size: 15, color: accent),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.85,
+                      color: sectionTitle,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ]),
-          const SizedBox(height: 10),
+            ],
+          ),
+          const SizedBox(height: 9),
           child,
         ],
       ),
     );
   }
 }
-
 class _SimulationFlatTextSection extends StatelessWidget {
   final bool dark;
   final IconData icon;
@@ -2812,7 +2964,7 @@ class _SimulationFlatDrugsLinesSection extends StatelessWidget {
       dark: dark,
       icon: Icons.medication_liquid_rounded,
       label: isEs ? 'FARMACOTERAPIA POR LÍNEAS' : 'FARMACOTERAPIA POR LINHAS',
-      accent: const Color(0xFF10B981),
+      accent: const Color(0xFF0D6B57),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -4278,14 +4430,14 @@ class _PearlsCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           const Icon(Icons.lightbulb_rounded,
-              size: 13, color: Color(0xFF10B981)),
+              size: 13, color: Color(0xFF0D6B57)),
           const SizedBox(width: 6),
           Text(p.lang == 'es' ? '💎 PERLAS CLÍNICAS' : '💎 PÉROLAS CLÍNICAS',
               style: const TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.8,
-                  color: Color(0xFF10B981))),
+                  color: Color(0xFF0D6B57))),
         ]),
         const SizedBox(height: 10),
         ...items.map((item) => Padding(
@@ -4295,7 +4447,7 @@ class _PearlsCard extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(top: 2),
                   child: Icon(Icons.star_rounded,
-                      size: 11, color: Color(0xFF10B981)),
+                      size: 11, color: Color(0xFF0D6B57)),
                 ),
                 const SizedBox(width: 9),
                 Expanded(

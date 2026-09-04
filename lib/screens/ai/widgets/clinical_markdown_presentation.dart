@@ -75,7 +75,10 @@ abstract final class ClinicalMarkdownPresentation {
     r')',
   );
 
-  static String format(String input) {
+  static String format(
+    String input, {
+    bool indentParagraphs = true,
+  }) {
     if (input.isEmpty) return input;
 
     final lines =
@@ -114,7 +117,9 @@ abstract final class ClinicalMarkdownPresentation {
         continue;
       }
 
-      if (atParagraphStart && _shouldIndent(originalLine)) {
+      if (indentParagraphs &&
+          atParagraphStart &&
+          _shouldIndent(originalLine)) {
         output.add('$firstLineIndent$originalLine');
       } else {
         output.add(originalLine);

@@ -16,6 +16,7 @@ class AiBlockBubble extends StatelessWidget {
   final bool ttsPlaying;
   final bool ttsReady;
   final String lang; // globalLanguageLock — controla textos da UI
+  final bool studyMode;
   /// Build 120 — ActionChip: ao clicar, injeta texto no input e dispara _send()
   final void Function(String chipText)? onChipTap;
 
@@ -29,6 +30,7 @@ class AiBlockBubble extends StatelessWidget {
     this.ttsPlaying = false,
     this.ttsReady = false,
     this.lang = 'pt',
+    this.studyMode = false,
     this.onChipTap,
   });
 
@@ -125,8 +127,14 @@ class AiBlockBubble extends StatelessWidget {
         );
 
     // R18.6AC-R1B-H4B-R3 — transformação somente visual.
-    final presentationText =
-        ClinicalMarkdownPresentation.format(normalizedText);
+    // Study premium: remove somente o recuo editorial de primeira linha.
+    // O caminho não-Study mantém a chamada canônica literal abaixo.
+    final presentationText = studyMode
+        ? ClinicalMarkdownPresentation.format(
+            normalizedText,
+            indentParagraphs: false,
+          )
+        : ClinicalMarkdownPresentation.format(normalizedText);
 
     final lines = presentationText.split('\n');
     final (bodyLines, refLines) = _splitRefLines(lines);
@@ -139,26 +147,26 @@ class AiBlockBubble extends StatelessWidget {
     final sheet = MarkdownStyleSheet(
       p: TextStyle(
         color: textColor,
-        fontSize: 13.5,
-        height: 1.55,
+        fontSize: studyMode ? 13.2 : 13.5,
+        height: studyMode ? 1.42 : 1.55,
         fontWeight: FontWeight.w400,
       ),
       strong: TextStyle(
         color: palette.textPrimary,
-        fontSize: 13.5,
-        height: 1.55,
+        fontSize: studyMode ? 13.2 : 13.5,
+        height: studyMode ? 1.42 : 1.55,
         fontWeight: FontWeight.w700,
       ),
       em: TextStyle(
         color: palette.textPrimary,
-        fontSize: 13.5,
-        height: 1.55,
+        fontSize: studyMode ? 13.2 : 13.5,
+        height: studyMode ? 1.42 : 1.55,
         fontStyle: FontStyle.italic,
       ),
       listBullet: TextStyle(
         color: palette.textPrimary,
-        fontSize: 13.5,
-        height: 1.55,
+        fontSize: studyMode ? 13.2 : 13.5,
+        height: studyMode ? 1.42 : 1.55,
       ),
       h1: TextStyle(
         color: palette.textPrimary,
@@ -168,14 +176,14 @@ class AiBlockBubble extends StatelessWidget {
       ),
       h2: TextStyle(
         color: palette.textPrimary,
-        fontSize: 13.9,
-        height: 1.35,
+        fontSize: studyMode ? 13.7 : 13.9,
+        height: studyMode ? 1.30 : 1.35,
         fontWeight: FontWeight.w800,
       ),
       h3: TextStyle(
         color: palette.textPrimary,
-        fontSize: 13.6,
-        height: 1.4,
+        fontSize: studyMode ? 13.4 : 13.6,
+        height: studyMode ? 1.32 : 1.4,
         fontWeight: FontWeight.w700,
       ),
       blockquote: TextStyle(
@@ -215,8 +223,8 @@ class AiBlockBubble extends StatelessWidget {
           ),
         ),
       ),
-      blockSpacing: 12,
-      listIndent: 20,
+      blockSpacing: studyMode ? 8 : 12,
+      listIndent: studyMode ? 16 : 20,
       tableHead: TextStyle(
         color: palette.textPrimary,
         fontSize: 12.3,

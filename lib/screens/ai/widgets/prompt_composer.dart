@@ -118,24 +118,25 @@ class _PromptComposerState extends State<PromptComposer> {
     final palette = HomeV2Palette.resolve(dark);
 
     // MEDCASES_AI_LIGHT_COMPOSER_UNIFIED_SURFACE_V1_B_R0
-    // MEDCASES_WEB_LIGHT_MOBILE_PARITY_COMPOSER_V1_B_R0
-    // Mantém a geometria unificada, mas Light e Dark voltam a consumir os
-    // próprios tokens da Home V2, exatamente como no mobile.
-    final composerSurface = palette.surfaceSoft;
-    final composerText = palette.textPrimary;
-    final composerSecondary = palette.textSecondary;
-    final composerBorder =
-        widget.hasFocus ? palette.borderActive : palette.border;
+    // MEDCASES_AI_LIGHT_COMPOSER_SOFT_GRAY_V1_B_R16
+    // Light: superfície cinza muito clara sobre timeline branca.
+    // Dark: mantém semanticamente os mesmos tokens anteriores.
+    final composerSurface =
+        dark ? palette.surfaceSoft : const Color(0xFFF1F5F9);
+    final composerText = dark ? palette.textPrimary : const Color(0xFF1F2937);
+    final composerSecondary =
+        dark ? palette.textSecondary : const Color(0xFF64748B);
+    final composerBorder = dark
+        ? (widget.hasFocus ? palette.borderActive : palette.border)
+        : (widget.hasFocus ? palette.accent : palette.border);
 
-    final disabledColor = palette.textSecondary.withValues(
-      alpha: 0.42,
-    );
+    final disabledColor = dark
+        ? palette.textSecondary.withValues(alpha: 0.42)
+        : const Color(0xFF94A3B8);
 
-    final micColor =
-        isListening ? const Color(0xFFEF4444) : composerSecondary;
+    final micColor = isListening ? const Color(0xFFEF4444) : composerSecondary;
 
-    final waveColor =
-        isListening ? const Color(0xFFEF4444) : composerSecondary;
+    final waveColor = isListening ? const Color(0xFFEF4444) : composerSecondary;
 
     final micTip = isListening
         ? (isEs ? 'Detener dictado' : 'Parar ditado')

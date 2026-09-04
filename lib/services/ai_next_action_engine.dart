@@ -255,16 +255,48 @@ class NextActionEngine {
 
   static String _topicFromUserQuery(String value) {
     final compact = value.replaceAll('\n', ' ').trim();
+    if (compact.isEmpty) return '';
 
-    if (compact.isEmpty) {
-      return '';
-    }
+    var folded = compact
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
 
-    final stripped = compact
+    final normalizedCompact = folded;
+
+    folded = folded
+        .replaceFirst(
+          RegExp(
+            r'^(?:por favor\s+)?(?:'
+            r'explicame|explicarme|explica me|explica|'
+            r'me explica|me explique|pode me explicar|poderia me explicar|'
+            r'puede explicarme|puedes explicarme|'
+            r'fale sobre|hablame|cuentame|'
+            r'quero entender|quiero entender|ensiname|ensename'
+            r')(?:\s+(?:sobre|de|del|da|do|el|la|o|a))?(?:\s+|$)',
+          ),
+          '',
+        )
+        .trim();
+
+    final stripped = folded
         .replaceFirst(
           RegExp(
             r'^(?:tratamento|tratamiento|conduta|conducta|manejo|terapia|'
-            r'como tratar|cómo tratar|qual o tratamento|cuál es el tratamiento)'
+            r'como tratar|como manejar|qual o tratamento|cual es el tratamiento)'
             r'\s*(?:de|do|da|del|para)?\s*[:\-—–]?\s*',
             caseSensitive: false,
           ),
@@ -272,11 +304,17 @@ class NextActionEngine {
         )
         .trim();
 
-    final candidate = stripped.isNotEmpty ? stripped : compact;
-
-    if (_isLayoutTerm(candidate)) {
+    final normalizedCandidate = stripped.isNotEmpty ? stripped : folded;
+    if (normalizedCandidate.isEmpty || _isLayoutTerm(normalizedCandidate)) {
       return '';
     }
+
+    // Plain user clinical anchors preserve user casing/provenance. If a Study
+    // pedagogical lead or treatment-intent prefix was stripped, retain the
+    // existing normalized R20/R21 behavior.
+    final candidate = normalizedCandidate == normalizedCompact
+        ? compact
+        : normalizedCandidate;
 
     return candidate.length > 80 ? '${candidate.substring(0, 80)}…' : candidate;
   }
@@ -350,6 +388,336 @@ class NextActionEngine {
     return ''; // prompt genérico will be used (hasTopicName = false)
   }
 
+  static const SmartNextAction _emptyStudyAction = SmartNextAction(
+    label: '',
+    promptToSend: '',
+  );
+
+  static String _foldStudyProgressionText(String value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replaceAll('á', 'a')
+        .replaceAll('à', 'a')
+        .replaceAll('ã', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ô', 'o')
+        .replaceAll('õ', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('ü', 'u')
+        .replaceAll('ç', 'c')
+        .replaceAll(RegExp(r'[^a-z0-9\s]+'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
+  static bool _studyTextHasAny(String value, List<String> terms) {
+    final folded = _foldStudyProgressionText(value);
+    return terms.any(folded.contains);
+  }
+
+  static String _studyFocus(String value) {
+    if (_studyTextHasAny(value, const [
+      'fisiopat',
+      'pathophys',
+      'mecanismo molecular',
+      'mecanismos moleculares',
+      'patogenese',
+      'patogenesis',
+    ])) {
+      return 'pathophysiology';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'diagnostico diferencial',
+      'diferencial',
+      'diferenciales',
+      'diferenciais',
+    ])) {
+      return 'differential';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'criterio diagnost',
+      'criterios diagnost',
+      'diagnostico',
+      'diagnosis',
+      'prueba diagnost',
+      'teste diagnost',
+    ])) {
+      return 'diagnosis';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'gravidade',
+      'gravedad',
+      'severidade',
+      'severidad',
+      'classificacao',
+      'clasificacion',
+      'estadiamento',
+      'estratificacao',
+      'estratificacion',
+    ])) {
+      return 'severity';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'farmacologia',
+      'farmacologico',
+      'dosis',
+      'dose',
+      'doses',
+      'dosagem',
+      'posologia',
+      'dosificacion',
+    ])) {
+      return 'pharmacology';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'tratamento',
+      'tratamiento',
+      'manejo',
+      'terapia',
+      'conduta',
+      'conducta',
+    ])) {
+      return 'treatment';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'complicacao',
+      'complicacoes',
+      'complicacion',
+      'complicaciones',
+      'red flag',
+      'alerta',
+      'alertas',
+    ])) {
+      return 'complications';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'seguimento',
+      'seguimiento',
+      'follow up',
+      'prognostico',
+      'pronostico',
+      'prognosis',
+      'evolucao',
+      'evolucion',
+    ])) {
+      return 'followup';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'etiologia',
+      'causas',
+      'fatores de risco',
+      'factores de riesgo',
+      'epidemiologia',
+    ])) {
+      return 'etiology';
+    }
+
+    if (_studyTextHasAny(value, const [
+      'aplicacao clinica',
+      'aplicacion clinica',
+      'caso clinico',
+      'integrar',
+      'sintese',
+      'sintesis',
+    ])) {
+      return 'application';
+    }
+
+    return '';
+  }
+
+  static bool _studyTextCoversFocus(String focus, String value) {
+    switch (focus) {
+      case 'pathophysiology':
+        return _studyTextHasAny(value, const [
+          'fisiopat',
+          'pathophys',
+          'mecanismo molecular',
+          'mecanismos moleculares',
+          'patogenese',
+          'patogenesis',
+        ]);
+      case 'differential':
+        return _studyTextHasAny(value, const [
+          'diagnostico diferencial',
+          'diferencial',
+          'diferenciales',
+          'diferenciais',
+        ]);
+      case 'diagnosis':
+        return _studyTextHasAny(value, const [
+          'criterio diagnost',
+          'criterios diagnost',
+          'diagnostico',
+          'diagnosis',
+          'prueba diagnost',
+          'teste diagnost',
+        ]);
+      case 'severity':
+        return _studyTextHasAny(value, const [
+          'gravidade',
+          'gravedad',
+          'severidade',
+          'severidad',
+          'classificacao',
+          'clasificacion',
+          'estadiamento',
+          'estratificacao',
+          'estratificacion',
+        ]);
+      case 'pharmacology':
+        return _studyTextHasAny(value, const [
+          'farmacologia',
+          'farmacologico',
+          'dosis',
+          'dose',
+          'doses',
+          'dosagem',
+          'posologia',
+          'dosificacion',
+        ]);
+      case 'treatment':
+        return _studyTextHasAny(value, const [
+          'tratamento',
+          'tratamiento',
+          'manejo',
+          'terapia',
+          'conduta',
+          'conducta',
+        ]);
+      case 'complications':
+        return _studyTextHasAny(value, const [
+          'complicacao',
+          'complicacoes',
+          'complicacion',
+          'complicaciones',
+          'red flag',
+          'alerta',
+          'alertas',
+        ]);
+      case 'followup':
+        return _studyTextHasAny(value, const [
+          'seguimento',
+          'seguimiento',
+          'follow up',
+          'prognostico',
+          'pronostico',
+          'prognosis',
+          'evolucao',
+          'evolucion',
+        ]);
+      case 'etiology':
+        return _studyTextHasAny(value, const [
+          'etiologia',
+          'causas',
+          'fatores de risco',
+          'factores de riesgo',
+          'epidemiologia',
+        ]);
+      case 'application':
+        return _studyTextHasAny(value, const [
+          'aplicacao clinica',
+          'aplicacion clinica',
+          'caso clinico',
+          'integrar',
+          'sintese',
+          'sintesis',
+        ]);
+      default:
+        return false;
+    }
+  }
+
+  static bool isStudyContinuationFocusCovered({
+    required String label,
+    required String prompt,
+    required String lastUserMessage,
+    required String lastAiResponse,
+    List<String> history = const <String>[],
+    String lastSentPrompt = '',
+  }) {
+    final focus = _studyFocus('$label $prompt');
+    if (focus.isEmpty) return false;
+
+    if (_studyTextCoversFocus(focus, lastUserMessage)) return true;
+    if (_studyTextCoversFocus(focus, lastSentPrompt)) return true;
+    if (_studyTextCoversFocus(focus, lastAiResponse)) return true;
+
+    for (final item in history) {
+      if (_studyTextCoversFocus(focus, item)) return true;
+    }
+
+    return false;
+  }
+
+  static bool _studyActionExactAlreadyUsed(
+    SmartNextAction option,
+    List<String> history,
+    String lastUserMessage,
+  ) {
+    final prompt = _foldStudyProgressionText(option.promptToSend);
+    final label = _foldStudyProgressionText(option.label);
+    final user = _foldStudyProgressionText(lastUserMessage);
+
+    if (prompt.isNotEmpty && prompt == user) return true;
+    if (label.isNotEmpty && label == user) return true;
+
+    for (final item in history) {
+      final folded = _foldStudyProgressionText(item);
+      if (prompt.isNotEmpty && folded == prompt) return true;
+      if (label.isNotEmpty && folded == label) return true;
+    }
+
+    return false;
+  }
+
+  static SmartNextAction _pickStudyAction({
+    required List<SmartNextAction> options,
+    required List<String> history,
+    required String lastUserMessage,
+    required String lastAiResponse,
+  }) {
+    for (final option in options) {
+      if (option.label.trim().isEmpty || option.promptToSend.trim().isEmpty) {
+        continue;
+      }
+
+      if (_studyActionExactAlreadyUsed(option, history, lastUserMessage)) {
+        continue;
+      }
+
+      if (isStudyContinuationFocusCovered(
+        label: option.label,
+        prompt: option.promptToSend,
+        lastUserMessage: lastUserMessage,
+        lastAiResponse: lastAiResponse,
+        history: history,
+      )) {
+        continue;
+      }
+
+      return option;
+    }
+
+    // Fail-closed: nunca força options.last para manter um botão artificial.
+    return _emptyStudyAction;
+  }
+
+  // R23 — legado preservado para compatibilidade histórica; não é usado pelo fluxo produtivo do Estudo.
+  // ignore: unused_element
   static SmartNextAction _pickAction(
     List<SmartNextAction> options,
     List<String> history,
@@ -1879,14 +2247,7 @@ class NextActionEngine {
               ? 'Dosis y titulación de Noradrenalina IV en el shock séptico; cuándo asociar Vasopresina.'
               : 'Dose e titulação de Noradrenalina IV no choque séptico; quando associar Vasopressina.',
         ),
-        SmartNextAction(
-          label: es
-              ? 'Paquete de la primera hora: estudios'
-              : 'Bundle da hora 1: exames',
-          promptToSend: es
-              ? 'Paquete de la primera hora: cultivos, lactato sérico y cristaloides según peso en la sepsis.'
-              : 'Bundle hora 1: culturas, lactato sérico e cristaloides por peso na sepse.',
-        ),
+        // M79_INVALID_SEPSIS_BUNDLE_CTA_REMOVED_V1
       ],
       ClinicalTopic.pcr: [
         SmartNextAction(
@@ -1976,7 +2337,12 @@ class NextActionEngine {
         );
       }
 
-      return _pickAction(targetList, chatHistory);
+      return _pickStudyAction(
+        options: targetList,
+        history: chatHistory,
+        lastUserMessage: lastUserMessage,
+        lastAiResponse: lastAiResponse,
+      );
     }
 
     // ── Fallback Master: Plantão vs Estudo ─────────────────────────────────────
@@ -2039,46 +2405,111 @@ class NextActionEngine {
         lastAiResponse: lastAiResponse,
       );
     } else {
-      // BUILD 313 — Estudo: prompts humanizados para fins acadêmicos,
-      // soam como perguntas naturais de um médico em contexto educacional.
-      return _pickAction([
-        SmartNextAction(
-          label: es
-              ? '✨ Profundizar Fisiopatología >'
-              : '✨ Aprofundar Fisiopatologia >',
-          promptToSend: es
-              ? (hasTopicName
-                    ? '¿Puede explicarme la fisiopatología de $topicName de forma detallada, con los mecanismos moleculares y celulares relevantes?'
-                    : '¿Puede explicarme la fisiopatología de esta condición de forma detallada para fines académicos?')
-              : (hasTopicName
-                    ? 'Pode me explicar a fisiopatologia de $topicName de forma detalhada, com os mecanismos moleculares e celulares relevantes?'
-                    : 'Pode me explicar a fisiopatologia desta condição de forma detalhada para fins acadêmicos?'),
-        ),
-        SmartNextAction(
-          label: es
-              ? '✨ Alternativas de 2ª Línea >'
-              : '✨ Alternativas de 2ª Linha >',
-          promptToSend: es
-              ? (hasTopicName
-                    ? '¿Cuáles son las alternativas terapéuticas de segunda línea para $topicName cuando el tratamiento inicial no es suficiente?'
-                    : '¿Cuáles son las alternativas terapéuticas de segunda línea en este caso?')
-              : (hasTopicName
-                    ? 'Quais são as alternativas terapêuticas de segunda linha para $topicName quando o tratamento inicial não é suficiente?'
-                    : 'Quais são as alternativas terapêuticas de segunda linha neste caso?'),
-        ),
-        SmartNextAction(
-          label: es
-              ? '✨ Comorbilidades y Alertas >'
-              : '✨ Comorbidades e Alertas >',
-          promptToSend: es
-              ? (hasTopicName
-                    ? '¿Qué comorbilidades y alertas clínicos debo considerar en el manejo de $topicName?'
-                    : '¿Qué comorbilidades y alertas clínicos son relevantes en este caso?')
-              : (hasTopicName
-                    ? 'Quais comorbidades e alertas clínicos devo considerar no manejo de $topicName?'
-                    : 'Quais comorbidades e alertas clínicos são relevantes neste caso?'),
-        ),
-      ], chatHistory);
+      // R20 — progressão pedagógica baseada no que já foi realmente coberto.
+      // Remote tag continua preferencial no resolver quando for útil e inédita.
+      return _pickStudyAction(
+        options: [
+          SmartNextAction(
+            label: es
+                ? 'Profundizar fisiopatología'
+                : 'Aprofundar fisiopatologia',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Explica la fisiopatología de $topicName de forma progresiva, relacionando mecanismos con manifestaciones clínicas.'
+                      : 'Explica la fisiopatología del tema actual de forma progresiva y clínicamente conectada.')
+                : (hasTopicName
+                      ? 'Explique a fisiopatologia de $topicName de forma progressiva, relacionando mecanismos com manifestações clínicas.'
+                      : 'Explique a fisiopatologia do tema atual de forma progressiva e clinicamente conectada.'),
+          ),
+          SmartNextAction(
+            label: es ? 'Criterios diagnósticos' : 'Critérios diagnósticos',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Desarrolla los criterios diagnósticos y las pruebas más útiles para confirmar o descartar $topicName.'
+                      : 'Desarrolla los criterios diagnósticos y las pruebas más útiles del tema actual.')
+                : (hasTopicName
+                      ? 'Desenvolva os critérios diagnósticos e os exames mais úteis para confirmar ou afastar $topicName.'
+                      : 'Desenvolva os critérios diagnósticos e os exames mais úteis do tema atual.'),
+          ),
+          SmartNextAction(
+            label: 'Diagnóstico diferencial',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Compara los principales diagnósticos diferenciales de $topicName y explica cómo distinguirlos en la práctica.'
+                      : 'Compara los principales diagnósticos diferenciales del tema actual y cómo distinguirlos.')
+                : (hasTopicName
+                      ? 'Compare os principais diagnósticos diferenciais de $topicName e explique como distingui-los na prática.'
+                      : 'Compare os principais diagnósticos diferenciais do tema atual e como distingui-los.'),
+          ),
+          SmartNextAction(
+            label: es
+                ? 'Gravedad y clasificación'
+                : 'Gravidade e classificação',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Explica cómo se clasifica la gravedad de $topicName, qué criterios cambian conducta y qué escalas son realmente útiles.'
+                      : 'Explica cómo se clasifica la gravedad del tema actual y qué criterios cambian conducta.')
+                : (hasTopicName
+                      ? 'Explique como classificar a gravidade de $topicName, quais critérios mudam a conduta e quais escalas são realmente úteis.'
+                      : 'Explique como classificar a gravidade do tema atual e quais critérios mudam a conduta.'),
+          ),
+          SmartNextAction(
+            label: es
+                ? 'Estrategia de tratamiento'
+                : 'Estratégia de tratamento',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Organiza el tratamiento de $topicName por objetivos, primera línea, alternativas y situaciones que cambian la estrategia.'
+                      : 'Organiza el tratamiento del tema actual por objetivos, primera línea y alternativas.')
+                : (hasTopicName
+                      ? 'Organize o tratamento de $topicName por objetivos, primeira linha, alternativas e situações que mudam a estratégia.'
+                      : 'Organize o tratamento do tema atual por objetivos, primeira linha e alternativas.'),
+          ),
+          SmartNextAction(
+            label: es ? 'Farmacología y dosis' : 'Farmacologia e doses',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Profundiza la farmacología aplicada a $topicName: fármacos principales, dosis cuando corresponda, mecanismo, seguridad e interacciones relevantes.'
+                      : 'Profundiza la farmacología aplicada al tema actual, incluyendo dosis cuando corresponda y seguridad.')
+                : (hasTopicName
+                      ? 'Aprofunde a farmacologia aplicada a $topicName: principais fármacos, doses quando pertinente, mecanismo, segurança e interações relevantes.'
+                      : 'Aprofunde a farmacologia aplicada ao tema atual, incluindo doses quando pertinente e segurança.'),
+          ),
+          SmartNextAction(
+            label: es ? 'Complicaciones y alertas' : 'Complicações e alertas',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Explica las complicaciones de $topicName, señales de alarma y errores clínicos que no debo pasar por alto.'
+                      : 'Explica las complicaciones, señales de alarma y errores clínicos del tema actual.')
+                : (hasTopicName
+                      ? 'Explique as complicações de $topicName, sinais de alerta e erros clínicos que não devo deixar passar.'
+                      : 'Explique as complicações, sinais de alerta e erros clínicos do tema atual.'),
+          ),
+          SmartNextAction(
+            label: es ? 'Seguimiento y pronóstico' : 'Seguimento e prognóstico',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Explica el seguimiento de $topicName, criterios de respuesta, pronóstico y cuándo reevaluar o escalar manejo.'
+                      : 'Explica el seguimiento, criterios de respuesta y pronóstico del tema actual.')
+                : (hasTopicName
+                      ? 'Explique o seguimento de $topicName, critérios de resposta, prognóstico e quando reavaliar ou escalar o manejo.'
+                      : 'Explique o seguimento, critérios de resposta e prognóstico do tema atual.'),
+          ),
+          SmartNextAction(
+            label: es ? 'Aplicación clínica' : 'Aplicação clínica',
+            promptToSend: es
+                ? (hasTopicName
+                      ? 'Integra $topicName en un caso clínico breve y muestra paso a paso cómo aplicar lo estudiado sin repetir la teoría ya cubierta.'
+                      : 'Integra el tema actual en un caso clínico breve y aplica lo estudiado paso a paso.')
+                : (hasTopicName
+                      ? 'Integre $topicName em um caso clínico breve e mostre passo a passo como aplicar o que foi estudado sem repetir a teoria já coberta.'
+                      : 'Integre o tema atual em um caso clínico breve e aplique o que foi estudado passo a passo.'),
+          ),
+        ],
+        history: chatHistory,
+        lastUserMessage: lastUserMessage,
+        lastAiResponse: lastAiResponse,
+      );
     }
   }
 }

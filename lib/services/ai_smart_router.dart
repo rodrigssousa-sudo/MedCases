@@ -474,17 +474,27 @@ class AiSmartRouter {
       '</response_template>\n';
 
   // ══ CONTRATO ESTUDO ════════════════════════════════════════════════════════
-  // BUILD 323 [OPT-2]: _contractEstudo compactado −28% (2881→2075 chars).
-  // Instruções narrativas redundantes removidas; matrizes A-D preservadas integralmente.
+  // STUDY-PREMIUM-V1-B-R6:
+  // Mantém as matrizes acadêmicas A-D e altera somente o contrato de apresentação.
   static const String _contractEstudo = '<instructions id="estudo_rules">\n'
       'MODO ESTUDO — encyclopedia_v1 — BUILD 323\n'
       'Identifique A/B/C/D e aplique a matriz. Prosa acadêmica densa. Sem 🟥/🔄/⛔/💊.\n'
       'REGRAS: Negrito em fármacos, doses e critérios guideline. 18–35 linhas. Sem emoji 📌 de fechamento no texto visível.\n'
-      'Tratamento/Conduta/Doses: ausentes em A e B (exceto D-seção4).\n'
+      'STUDY-PREMIUM-V1-B-R6 — apresentação editorial canônica.\n'
+      'APRESENTAÇÃO VISÍVEL — REGRAS ABSOLUTAS:\n'
+      '1. Comece DIRETAMENTE com ## [título específico do tema]. O título deve identificar a entidade estudada.\n'
+      '2. NÃO repita, cite nem parafraseie a pergunta do usuário antes da resposta.\n'
+      '3. ZERO emojis, pictogramas ou ícones decorativos no texto visível.\n'
+      '4. ZERO preâmbulo/meta-fala: proibido "Claro", "Com prazer", "Por supuesto", "A seguir", "A continuación", "Vou explicar" ou equivalentes.\n'
+      '5. Negrito inline SOMENTE para informação clinicamente importante: conceito-chave, fármaco, dose, limiar, critério, diagnóstico ou conduta crítica. NUNCA parágrafo/frase inteira em negrito e NUNCA negrito decorativo.\n'
+      '6. Use Markdown limpo: um título ##; seções compactas e legíveis; sem separadores decorativos.\n'
+      '7. 18–35 linhas quando a complexidade justificar. Não encurte o Estudo ao padrão executivo do Plantão.\n'
+      '8. NÃO finalize com convite textual, pergunta ao usuário ou "quer que eu continue?". A continuidade pertence SOMENTE ao botão.\n'
+      'Tratamento/Conduta/Doses: ausentes em A e B (exceto D-seção4), preservando o contrato clínico atual.\n'
       'Sintoma geral (tipo A) → expandir 3 causas de alta mortalidade comparadas — NUNCA focar em 1.\n'
-      'TAGS FINAIS OBRIGATÓRIAS (metadados ocultos; não repetir no texto visível):\n'
-      '[NEXT_ACTION_LABEL: ≤5 palavras contextuais — proibido "Doses e Conduta" genérico]\n'
-      '[NEXT_ACTION_PROMPT: pergunta direta de continuação, 6–14 palavras, no idioma ativo e terminada em ?]\n'
+      'TAGS FINAIS OBRIGATÓRIAS — METADADOS OCULTOS, nunca repetir no texto visível:\n'
+      '[NEXT_ACTION_LABEL: rótulo contextual curto, máximo 5 palavras, sem emoji e sem ponto de interrogação]\n'
+      '[NEXT_ACTION_PROMPT: pergunta direta de continuação produtiva, 6–14 palavras, no idioma ativo e terminada em ?]\n'
       '</instructions>\n'
       '<response_template>\n'
       'OUTPUT_STARTS_HERE\n'

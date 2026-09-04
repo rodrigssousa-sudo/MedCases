@@ -31,14 +31,14 @@ const kBorderSoft   = Color(0xFF2D3340);
 /// Bordas de cards, containers
 const kBorderCard   = Color(0xFF374151);
 /// Borda de input focado, elemento ativo
-const kBorderActive = Color(0xFF00E5FF);
+const kBorderActive = Color(0xFF0D6B57);
 
 // ── CORES DE DESTAQUE (accent) ────────────────────────────────────────────────
 /// IA, botões principais, elementos ativos
-const kAccentCyan    = Color(0xFF00E5FF);
+const kAccentBrand = Color(0xFF0D6B57);
 /// PEDIATRÍA, links, ações secundárias
 const kAccentBlue    = Color(0xFF3B82F6);
-/// ADULTO, sucesso, nav ativo
+/// ADULTO, sucesso
 const kAccentGreen   = Color(0xFF10B981);
 /// FÁRMACOS, avisos
 const kAccentOrange  = Color(0xFFF59E0B);
@@ -78,7 +78,7 @@ const kShadowModal = [
 
 const kShadowFloating = [
   BoxShadow(
-    color: Color(0x4D00E5FF),
+    color: Color(0x4D0D6B57),
     offset: Offset(0, 4),
     blurRadius: 12,
     spreadRadius: 0,
@@ -93,10 +93,10 @@ ThemeData buildDarkTheme() {
     cardColor: kBgSecondary,
     dividerColor: kBorderSoft,
     colorScheme: const ColorScheme.dark(
-      primary:                 kAccentCyan,
-      onPrimary:               Colors.black,
-      secondary:               kAccentGreen,
-      onSecondary:             Colors.black,
+      primary:                 kAccentBrand,
+      onPrimary:               Colors.white,
+      secondary:               kAccentBrand,
+      onSecondary:             Colors.white,
       surface:                 kBgSecondary,
       onSurface:               kTextPrimary,
       surfaceContainerHighest: kBgSecondary,

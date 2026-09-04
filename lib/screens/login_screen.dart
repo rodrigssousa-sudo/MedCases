@@ -1,7 +1,10 @@
-import 'dart:math' as math;
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
+import '../services/social_auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback? onBack;
@@ -13,69 +16,67 @@ class LoginScreen extends StatefulWidget {
 
 enum _Mode { login, register, reset }
 
-class _LoginScreenState extends State<LoginScreen>
-    with TickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> {
+  // MEDCASES_LOGIN_V3_CANONICAL_DARK_VISUAL_CUTOVER_V1_B_R3
+  // Canonical MedCases dark auth palette — no legacy green background.
+  static const kAuthBg = Color(0xFF0F1116);
+  static const kAuthBgTop = Color(0xFF151A22);
+  static const kAuthSurface = Color(0xFF181D25);
+  static const kAuthSurfaceSoft = Color(0xFF141920);
+  static const kAuthBorder = Color(0xFF374151);
+  static const kAuthAccent = Color(0xFF0E8000);
+  static const kAuthAccentDeep = Color(0xFF0E8000);
+  static const kAuthText = Color(0xFFF8FAFC);
+  static const kAuthMuted = Color(0xFF94A3B8);
+
   _Mode _mode = _Mode.login;
   bool _loading = false;
+  String? _socialLoadingProvider;
   bool _obscure = true;
-  bool _rememberEmail = true;  // SUPER ORDEM MASTER 14 M4: ativo por padrão
-  bool _keepLoggedIn  = true;  // SUPER ORDEM MASTER 14 M4: "Conectar Automaticamente" pré-marcado
+  bool _rememberEmail = true; // SUPER ORDEM MASTER 14 M4: ativo por padrão
+  bool _keepLoggedIn =
+      true; // SUPER ORDEM MASTER 14 M4: "Conectar Automaticamente" pré-marcado
   String? _error;
   String? _success;
 
   // ── Task 3: Disclaimer médico obrigatório ─────────────────────────────────
-  // Deve ser aceito na etapa de perfil (regStep==1) do cadastro.
+  // Deve ser aceito no cadastro unificado em tela única.
   bool _disclaimerAccepted = false;
-  bool _disclaimerError    = false;
+  bool _disclaimerError = false;
 
   final _emailCtrl = TextEditingController();
-  final _passCtrl  = TextEditingController();
-  final _nameCtrl  = TextEditingController();
-  final _profCtrl  = TextEditingController();
-  final _instCtrl  = TextEditingController();
-  final _formKey   = GlobalKey<FormState>();
+  final _passCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _profCtrl = TextEditingController();
+  final _instCtrl = TextEditingController();
+  final _confirmPassCtrl = TextEditingController();
+  final _studyCtrl = TextEditingController();
 
-  late AnimationController _slideCtrl;
-  late AnimationController _heroCtrl;
-  late Animation<Offset>   _slideAnim;
-  late Animation<double>   _heroRot;
+  String? _registerAvatarBase64;
+  bool _registerPhotoLoading = false;
+  final _formKey = GlobalKey<FormState>();
 
   // ── Nova paleta ────────────────────────────────────────────────────────────
   // Verde profundo diferente do anterior (#0F1C14 → #061A12)
-  static const kBg        = Color(0xFF0F1116);   // fundo hero — verde bem escuro
+  static const kBg = Color(0xFF1A1D23); // fundo hero — verde bem escuro
   // MEDCASES_AUTH_FLAT_SINGLE_SURFACE_CREATE_ACCOUNT_V1_B_R0_R4
-  static const kForest    = Color(0xFF0D3324);   // camada intermediária
-  static const kGreen     = Color(0xFF10B981);   // verde clínico canônico
-  static const kGreenMid  = Color(0xFF10B981);   // mesmo acento: superfície flat
-  static const kPanel     = Color(0x00000000);   // transparente: sem painel/sheet
-  static const kText      = Color(0xFFF1F5F9);   // texto primário sobre dark
-  static const kTextMid   = Color(0xFFA8B2C1);   // texto secundário canônico
-  static const kGold      = Color(0xFFC5A365);   // dourado MedCases
-  static const kGoldL     = Color(0xFFFFE8A6);   // dourado claro
+  // MEDCASES_LOGIN_SIGNUP_AUTH_UI_V2_B_R1
+  static const kForest = Color(0xFF17382D); // camada intermediária
+  static const kGreen = Color(0xFF0E8000); // verde clínico canônico
+  static const kGreenMid = Color(0xFF0E8000); // mesmo acento: superfície flat
+  static const kPanel = Color(0x00000000); // transparente: sem painel/sheet
+  static const kText = Color(0xFFF1F5F9); // texto primário sobre dark
+  static const kTextMid = Color(0xFF94A3B8); // texto secundário canônico
+  static const kGold = Color(0xFFC5A365); // dourado MedCases
+  static const kGoldL = Color(0xFFFFE8A6); // dourado claro
 
-  static const _kPrefEmail    = 'login_saved_email';
+  static const _kPrefEmail = 'login_saved_email';
   static const _kPrefRemember = 'login_remember_email';
   static const _kKeepLoggedIn = 'session_keep_logged_in';
-
-  // ── Onboarding steps (modo registro) ────────────────────────────────────
-  int _regStep = 0; // 0=conta, 1=perfil
 
   @override
   void initState() {
     super.initState();
-    _slideCtrl = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 480));
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.35), end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _slideCtrl, curve: Curves.easeOutCubic));
-
-    _heroCtrl = AnimationController(
-      vsync: this, duration: const Duration(seconds: 18))
-      ..repeat();
-    _heroRot = Tween<double>(begin: 0, end: 2 * math.pi)
-        .animate(_heroCtrl);
-
-    _slideCtrl.forward();
     _loadSavedEmail();
   }
 
@@ -83,14 +84,15 @@ class _LoginScreenState extends State<LoginScreen>
     try {
       final p = await SharedPreferences.getInstance();
       // SUPER ORDEM MASTER 14 M4: default true — primeiro uso já vem marcado
-      final remember     = p.getBool(_kPrefRemember) ?? true;
+      final remember = p.getBool(_kPrefRemember) ?? true;
       final keepLoggedIn = p.getBool(_kKeepLoggedIn) ?? true;
-      final email        = p.getString(_kPrefEmail)  ?? '';
-      if (mounted) setState(() {
-        _keepLoggedIn  = keepLoggedIn;
-        _rememberEmail = remember || keepLoggedIn;
-        if (_rememberEmail && email.isNotEmpty) _emailCtrl.text = email;
-      });
+      final email = p.getString(_kPrefEmail) ?? '';
+      if (mounted)
+        setState(() {
+          _keepLoggedIn = keepLoggedIn;
+          _rememberEmail = remember || keepLoggedIn;
+          if (_rememberEmail && email.isNotEmpty) _emailCtrl.text = email;
+        });
     } catch (_) {}
   }
 
@@ -116,43 +118,121 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
-    _slideCtrl.dispose();
-    _heroCtrl.dispose();
-    _emailCtrl.dispose(); _passCtrl.dispose(); _nameCtrl.dispose();
-    _profCtrl.dispose();  _instCtrl.dispose();
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    _nameCtrl.dispose();
+    _profCtrl.dispose();
+    _instCtrl.dispose();
+    _confirmPassCtrl.dispose();
+    _studyCtrl.dispose();
     super.dispose();
   }
 
   void _switchMode(_Mode m) {
-    setState(() { _mode = m; _error = null; _success = null; _regStep = 0; _disclaimerAccepted = false; _disclaimerError = false; });
-    _slideCtrl.forward(from: 0);
+    setState(() {
+      _mode = m;
+      _error = null;
+      _success = null;
+      _disclaimerAccepted = false;
+      _disclaimerError = false;
+
+      if (m != _Mode.register) {
+        _confirmPassCtrl.clear();
+        _studyCtrl.clear();
+        _registerAvatarBase64 = null;
+      }
+    });
+  }
+
+  Future<void> _pickRegisterPhoto() async {
+    if (_registerPhotoLoading) return;
+
+    setState(() {
+      _registerPhotoLoading = true;
+      _error = null;
+    });
+
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 82,
+        maxWidth: 512,
+        maxHeight: 512,
+      );
+      if (picked == null) return;
+
+      final bytes = await picked.readAsBytes();
+      if (!mounted) return;
+      setState(() => _registerAvatarBase64 = base64Encode(bytes));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = _isEs
+            ? 'No fue posible seleccionar la foto.'
+            : 'Não foi possível selecionar a foto.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _registerPhotoLoading = false);
+      }
+    }
+  }
+
+  Future<void> _persistPendingRegistrationExtras() async {
+    // UI/UX phase only.
+    // Firebase/profile synchronization for these two new fields is intentionally
+    // deferred to the next phase, after physical visual homologation.
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final normalizedEmail = _emailCtrl.text.trim().toLowerCase();
+      final safeKey = normalizedEmail.replaceAll(RegExp(r'[^a-z0-9@._-]'), '_');
+
+      final study = _studyCtrl.text.trim();
+      if (study.isNotEmpty) {
+        await prefs.setString(
+          'medcases_registration_study_pending_$safeKey',
+          study,
+        );
+      }
+
+      final avatar = _registerAvatarBase64;
+      if (avatar != null && avatar.isNotEmpty) {
+        await prefs.setString(
+          'medcases_registration_avatar_pending_$safeKey',
+          avatar,
+        );
+      }
+    } catch (_) {
+      // These extras never block canonical Firebase account creation.
+    }
   }
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    if (_mode == _Mode.register && _regStep < 1) {
-      setState(() => _regStep++);
-      _slideCtrl.forward(from: 0);
-      return;
-    }
-
-    // ── Task 3: bloqueia envio se disclaimer não foi aceito ────────────────
     if (_mode == _Mode.register && !_disclaimerAccepted) {
       setState(() => _disclaimerError = true);
       return;
     }
 
-    setState(() { _loading = true; _error = null; _success = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+      _success = null;
+    });
+
     AuthResult result;
 
     if (_mode == _Mode.login) {
       await _persistEmail(_emailCtrl.text.trim());
       result = await AuthService.login(
-        email: _emailCtrl.text, password: _passCtrl.text);
-      if (result.success) await _saveSessionIfRequested(result);
+        email: _emailCtrl.text,
+        password: _passCtrl.text,
+      );
+      if (result.success) {
+        await _saveSessionIfRequested(result);
+      }
     } else if (_mode == _Mode.register) {
-      // Captura referral_code salvo na boot (capturado de ?ref= na URL)
       String? referredBy;
       try {
         final prefs = await SharedPreferences.getInstance();
@@ -169,24 +249,15 @@ class _LoginScreenState extends State<LoginScreen>
         referredBy: referredBy,
       );
 
-      // ── Pós-cadastro iOS/Android (Build 102 Fix) ────────────────────────
-      // ensureUserProfileExists() já criou o doc Firestore com status=approved
-      // DENTRO de _registerNative/_registerWeb — sem segundo login necessário.
-      //
-      // O AuthGate (currentUserStream / authStateChanges) detecta o Firebase
-      // Auth já autenticado + doc aprovado e navega direto para MainShell.
-      //
-      // Não fazemos approveUser separado (race condition com currentUserStream).
-      // Não fazemos segundo login (causa loop + falha silenciosa em iOS lento).
       if (result.success) {
-        // Persiste sessão se o usuário pediu "manter conectado"
+        await _persistPendingRegistrationExtras();
+
         if (_keepLoggedIn && result.user != null) {
           await AuthService.saveSession(result.user!);
         }
-        // AuthGate já detectou authStateChanges → navega automaticamente.
-        // Apenas remove o loading — NÃO navegamos manualmente aqui.
+
         if (!mounted) return;
-        setState(() { _loading = false; });
+        setState(() => _loading = false);
         return;
       }
     } else {
@@ -208,6 +279,49 @@ class _LoginScreenState extends State<LoginScreen>
     });
   }
 
+  // MEDCASES_LOGIN_V3_GOOGLE_APPLE_PERSISTENT_SESSION_MODERN_UI_V1_B_R0
+  Future<void> _submitSocial(String provider) async {
+    if (_loading) return;
+
+    setState(() {
+      _loading = true;
+      _socialLoadingProvider = provider;
+      _error = null;
+      _success = null;
+    });
+
+    final AuthResult result = provider == 'google'
+        ? await SocialAuthService.signInWithGoogle(isEs: _isEs)
+        : await SocialAuthService.signInWithApple(isEs: _isEs);
+
+    if (!mounted) return;
+
+    if (!result.success &&
+        result.error == SocialAuthService.cancelledResultCode) {
+      setState(() {
+        _loading = false;
+        _socialLoadingProvider = null;
+      });
+      return;
+    }
+
+    if (result.success) {
+      // AuthService.completeSocialSignIn() already persisted the session and
+      // the canonical AuthGate owns navigation.
+      setState(() {
+        _loading = false;
+        _socialLoadingProvider = null;
+      });
+      return;
+    }
+
+    setState(() {
+      _loading = false;
+      _socialLoadingProvider = null;
+      _error = result.error;
+    });
+  }
+
   // ── idioma ────────────────────────────────────────────────────────────────
   String _currentLang = 'es';
 
@@ -225,241 +339,604 @@ class _LoginScreenState extends State<LoginScreen>
   // ─────────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
-    final size   = MediaQuery.of(context).size;
-    // Em tablets/iPad limita a largura para evitar layout de smartphone esticado.
-    // Em phones usa a largura total.
-    final isTablet  = size.width >= 600;
-    final panelW    = isTablet ? 460.0 : size.width;
-    // Proporção: 42% hero topo / 58% painel inferior
-    final heroH  = size.height * 0.42;
+    // MEDCASES_LOGIN_V3_UIUX_SUPER_CORRECTION_SINGLE_SCREEN_REGISTER_V1_B_R2
+    // MEDCASES_LOGIN_V3_CANONICAL_DARK_VISUAL_CUTOVER_V1_B_R3
+    final media = MediaQuery.of(context);
+    final isLogin = _mode == _Mode.login;
+    final keyboardOpen = media.viewInsets.bottom > 0;
 
     return Scaffold(
-      backgroundColor: kBg,
-      body: Stack(children: [
-        // ── Hero ocupa sempre a tela inteira (fundo) ──────────────────────
-        Positioned.fill(
-          child: _HeroGeometric(rotAnim: _heroRot, lang: _currentLang),
-        ),
-
-        // ── Botão voltar — sempre no canto esquerdo da tela ───────────────
-        if (widget.onBack != null)
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 12,
-            left: 14,
-            child: SafeArea(
-              bottom: false,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: widget.onBack,
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white.withOpacity(0.12),
-                      border: Border.all(color: Colors.white.withOpacity(0.20)),
-                    ),
-                    child: const Icon(Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white70, size: 18),
-                  ),
+      backgroundColor: kAuthBg,
+      resizeToAvoidBottomInset: true,
+      body: Stack(
+        children: [
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    kAuthBgTop,
+                    kAuthBg,
+                    Color(0xFF0B0E13),
+                  ],
+                  stops: [0.0, 0.42, 1.0],
                 ),
               ),
             ),
           ),
+          if (widget.onBack != null)
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8, top: 2),
+                child: IconButton(
+                  tooltip: _isEs ? 'Volver' : 'Voltar',
+                  onPressed: widget.onBack,
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  color: kAuthMuted,
+                ),
+              ),
+            ),
+          SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final horizontal = constraints.maxWidth >= 700 ? 34.0 : 24.0;
+                final top = isLogin ? (keyboardOpen ? 10.0 : 26.0) : 16.0;
+                final bottom = keyboardOpen ? 18.0 : (isLogin ? 104.0 : 16.0);
 
-        // ── Painel inferior centralizado (tablet: largura limitada) ───────
-        Positioned(
-          top: heroH - 20,
-          left: 0, right: 0, bottom: 0,
-          child: Center(
-            child: SizedBox(
-              width: panelW,
-              child: SlideTransition(
-                position: _slideAnim,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: kPanel,
-                    borderRadius: BorderRadius.zero,
+                return SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: EdgeInsets.fromLTRB(
+                    horizontal,
+                    top,
+                    horizontal,
+                    bottom,
                   ),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.only(
-                      left: 28, right: 28,
-                      top: 28, bottom: MediaQuery.of(context).padding.bottom + 24),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                      // ── Handle visual ───────────────────────────────────
-                      Center(
-                        child: Container(
-                          width: 40, height: 4,
-                          margin: const EdgeInsets.only(bottom: 24),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildModeHeader(),
+                            SizedBox(height: isLogin ? 26 : 16),
+                            if (_success != null) ...[
+                              _banner(_success!, isError: false),
+                              const SizedBox(height: 10),
+                            ],
+                            if (isLogin) ...[
+                              _buildSocialLoginSection(),
+                              const SizedBox(height: 18),
+                              ..._loginFields(),
+                            ],
+                            if (_mode == _Mode.register) ..._registerFields(),
+                            if (_mode == _Mode.reset) ..._resetFields(),
+                            if (_error != null) ...[
+                              const SizedBox(height: 10),
+                              _banner(_error!, isError: true),
+                            ],
+                            SizedBox(height: isLogin ? 18 : 16),
+                            _submitBtn(),
+                            SizedBox(height: isLogin ? 10 : 10),
+                            _buildLinks(),
+                            if (!isLogin) ...[
+                              const SizedBox(height: 18),
+                              _buildDisclaimer(),
+                            ],
+                          ],
                         ),
                       ),
-
-                      // ── Cabeçalho do modo ───────────────────────────────
-                      _buildModeHeader(),
-                      const SizedBox(height: 20),
-
-                      // ── Step indicator (registro) ───────────────────────
-                      if (_mode == _Mode.register) ...[
-                        _buildStepIndicator(),
-                        const SizedBox(height: 18),
-                      ],
-
-                      // ── Banner sucesso ──────────────────────────────────
-                      if (_success != null) ...[
-                        _banner(_success!, isError: false),
-                        const SizedBox(height: 14),
-                      ],
-
-                      // ── Campos ──────────────────────────────────────────
-                      if (_mode == _Mode.login)    ..._loginFields(),
-                      if (_mode == _Mode.register) ..._registerFields(),
-                      if (_mode == _Mode.reset)    ..._resetFields(),
-
-                      // ── Banner erro ─────────────────────────────────────
-                      if (_error != null) ...[
-                        const SizedBox(height: 10),
-                        _banner(_error!, isError: true),
-                      ],
-
-                      const SizedBox(height: 20),
-                      _submitBtn(),
-                      const SizedBox(height: 16),
-                      _buildLinks(),
-                      const SizedBox(height: 20),
-                      _buildDisclaimer(),
-                        ],
-                      ),
                     ),
                   ),
+                );
+              },
+            ),
+          ),
+          if (isLogin && !keyboardOpen)
+            Positioned(
+              left: 24,
+              right: 24,
+              bottom: 10,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: _buildDisclaimer(),
                 ),
               ),
             ),
-          ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
   // ── Cabeçalho do modo ─────────────────────────────────────────────────────
   Widget _buildModeHeader() {
+    // MEDCASES_LOGIN_V4_BREATHING_BRANDED_SOCIAL_KEYBOARD_FLOW_V1_B_R13A
+    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+
+    if (_mode == _Mode.login) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: keyboardOpen ? 0 : 8),
+          Image.asset(
+            'assets/icon/splash_mplus_premium.png',
+            width: keyboardOpen ? 64 : 78,
+            height: keyboardOpen ? 64 : 78,
+            fit: BoxFit.contain,
+          ),
+          SizedBox(height: keyboardOpen ? 8 : 14),
+          Text(
+            'MedCases Pro',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: keyboardOpen ? 24 : 28,
+              fontWeight: FontWeight.w800,
+              color: kText,
+              letterSpacing: -0.8,
+              height: 1.05,
+            ),
+          ),
+          SizedBox(height: keyboardOpen ? 5 : 8),
+          Text(
+            _isEs
+                ? 'Tu práctica clínica, más simple y conectada'
+                : 'Sua prática clínica, mais simples e conectada',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 13.5,
+              color: kTextMid,
+              fontWeight: FontWeight.w500,
+              height: 1.40,
+              letterSpacing: 0.05,
+            ),
+          ),
+          SizedBox(height: keyboardOpen ? 18 : 28),
+        ],
+      );
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 52, height: 52,
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
             color: kGreen,
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
-              BoxShadow(color: kGreen.withOpacity(0.30),
-                blurRadius: 12, offset: const Offset(0, 5)),
+              BoxShadow(
+                color: kGreen.withOpacity(0.30),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
+              ),
             ],
           ),
           child: Icon(_modeIcon, size: 24, color: Colors.white),
         ),
-        const SizedBox(height: 12),
-        Text(_modeTitle, textAlign: TextAlign.center,
+        const SizedBox(height: 16),
+        Text(
+          _modeTitle,
+          textAlign: TextAlign.center,
           style: const TextStyle(
-            fontSize: 22, fontWeight: FontWeight.w700,
-            color: kText, letterSpacing: -0.4, height: 1.1)),
-        const SizedBox(height: 4),
-        Text(_modeSubtitle, textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12, color: kTextMid,
-            fontWeight: FontWeight.w500)),
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: kText,
+            letterSpacing: -0.4,
+            height: 1.1,
+          ),
+        ),
+        const SizedBox(height: 7),
+        Text(
+          _modeSubtitle,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 12.5,
+            color: kTextMid,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }
 
+  Widget _buildSocialLoginSection() {
+    Widget socialButton({
+      required String provider,
+      required String label,
+    }) {
+      final isGoogle = provider == 'google';
+      final background = isGoogle ? Colors.white : const Color(0xFF000000);
+      final foreground = isGoogle ? const Color(0xFF202124) : Colors.white;
+      final border =
+          isGoogle ? const Color(0xFFDADCE0) : const Color(0xFF2A2A2A);
+
+      return SizedBox(
+        height: 46,
+        child: FilledButton(
+          onPressed: _loading ? null : () => _submitSocial(provider),
+          style: FilledButton.styleFrom(
+            backgroundColor: background,
+            disabledBackgroundColor: background.withOpacity(0.62),
+            foregroundColor: foreground,
+            disabledForegroundColor: foreground.withOpacity(0.62),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: border, width: 1),
+            ),
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: isGoogle
+                    ? SvgPicture.asset(
+                        'assets/icons/home_v2/auth_google_g.svg',
+                        width: 23,
+                        height: 23,
+                      )
+                    : const Icon(
+                        Icons.apple,
+                        size: 27,
+                        color: Colors.white,
+                      ),
+              ),
+              Text(
+                label,
+                style: TextStyle(
+                  color: foreground,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: socialButton(
+                provider: 'google',
+                label: 'Google',
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: socialButton(
+                provider: 'apple',
+                label: 'Apple',
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Row(
+          children: [
+            Expanded(
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.white.withOpacity(0.14),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                _isEs ? 'o' : 'ou',
+                style: const TextStyle(
+                  color: kTextMid,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: Colors.white.withOpacity(0.14),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
+
+  Widget _socialAuthButton({
+    required String provider,
+    required String label,
+    required Widget leading,
+  }) {
+    final busy = _loading && _socialLoadingProvider == provider;
+
+    return SizedBox(
+      height: 39,
+      child: FilledButton(
+        onPressed: _loading ? null : () => _submitSocial(provider),
+        style: FilledButton.styleFrom(
+          backgroundColor: kAuthSurface,
+          disabledBackgroundColor: kAuthSurface.withValues(alpha: 0.58),
+          foregroundColor: kAuthText,
+          disabledForegroundColor: kAuthMuted,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: const BorderSide(
+              color: kAuthBorder,
+              width: 0.8,
+            ),
+          ),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: busy
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: kAuthText,
+                      ),
+                    )
+                  : leading,
+            ),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.1,
+                color: kAuthText,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Step indicator ────────────────────────────────────────────────────────
-  Widget _buildStepIndicator() {
-    final steps = _isEs ? ['Cuenta', 'Perfil'] : ['Conta', 'Perfil'];
-    return Row(children: List.generate(steps.length, (i) {
-      final done   = i < _regStep;
-      final active = i == _regStep;
-      return Expanded(child: Row(children: [
-        Expanded(child: Column(children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            height: 3,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(1.5),
-              color: done || active ? kGreen : kTextMid.withOpacity(0.20),
+  // ── Campos login ──────────────────────────────────────────────────────────
+  List<Widget> _loginFields() => [
+        _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
+            keyboard: TextInputType.emailAddress, validator: (v) {
+          if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
+          if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim()))
+            return _emailInvalidMsg;
+          return null;
+        }),
+        const SizedBox(height: 12),
+        _fieldPassword(),
+        const SizedBox(height: 12),
+        _checkRow(
+          value: _keepLoggedIn,
+          label: _keepLoggedInLabel,
+          onChanged: (v) => setState(() {
+            _keepLoggedIn = v ?? false;
+            if (_keepLoggedIn) _rememberEmail = true;
+          }),
+        ),
+      ];
+
+  // ── Campos registro ───────────────────────────────────────────────────────
+  Widget _registerPhotoPicker() {
+    final avatar = _registerAvatarBase64;
+
+    return Center(
+      child: Column(
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(34),
+            onTap: _registerPhotoLoading ? null : _pickRegisterPhoto,
+            child: Container(
+              width: 62,
+              height: 62,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: kAuthSurfaceSoft,
+                border: Border.all(
+                  color: kAuthAccentDeep,
+                  width: 1,
+                ),
+              ),
+              child: _registerPhotoLoading
+                  ? const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: kAuthAccent,
+                      ),
+                    )
+                  : avatar != null
+                      ? Image.memory(
+                          base64Decode(avatar),
+                          fit: BoxFit.cover,
+                        )
+                      : const Icon(
+                          Icons.add_a_photo_outlined,
+                          color: kAuthAccentDeep,
+                          size: 23,
+                        ),
             ),
           ),
           const SizedBox(height: 5),
-          Text(steps[i], style: TextStyle(
-            fontSize: 10, fontWeight: active ? FontWeight.w800 : FontWeight.w500,
-            color: active ? kGreen : (done ? kGreenMid : kTextMid))),
-        ])),
-        if (i < steps.length - 1) const SizedBox(width: 8),
-      ]));
-    }));
+          Text(
+            _isEs ? 'Foto de perfil · opcional' : 'Foto de perfil · opcional',
+            style: const TextStyle(
+              color: kAuthMuted,
+              fontSize: 10.5,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  // ── Campos login ──────────────────────────────────────────────────────────
-  List<Widget> _loginFields() => [
-    _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
-      keyboard: TextInputType.emailAddress,
+  Widget _confirmPasswordField() {
+    return TextFormField(
+      scrollPadding: const EdgeInsets.only(bottom: 96),
+      controller: _confirmPassCtrl,
+      obscureText: _obscure,
+      textInputAction: TextInputAction.next,
+      enableSuggestions: false,
+      autocorrect: false,
       validator: (v) {
-        if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
-        if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) return _emailInvalidMsg;
+        if (v?.isEmpty ?? true) {
+          return _isEs ? 'Confirma tu contraseña' : 'Confirme sua senha';
+        }
+        if (v != _passCtrl.text) {
+          return _isEs
+              ? 'Las contraseñas no coinciden'
+              : 'As senhas não coincidem';
+        }
         return null;
-      }),
-    const SizedBox(height: 12),
-    _fieldPassword(),
-    const SizedBox(height: 12),
-    _checkRow(
-      value: _keepLoggedIn,
-      label: _keepLoggedInLabel,
-      onChanged: (v) => setState(() {
-        _keepLoggedIn  = v ?? false;
-        if (_keepLoggedIn) _rememberEmail = true;
-      }),
-    ),
-  ];
+      },
+      style: const TextStyle(
+        fontSize: 13.5,
+        color: kAuthText,
+        fontWeight: FontWeight.w600,
+      ),
+      decoration: InputDecoration(
+        labelText: _isEs ? 'Confirmar contraseña' : 'Confirmar senha',
+        labelStyle: const TextStyle(
+          fontSize: 11.5,
+          color: kAuthMuted,
+          fontWeight: FontWeight.w500,
+        ),
+        floatingLabelStyle: const TextStyle(
+          fontSize: 11.5,
+          color: kAuthMuted,
+          fontWeight: FontWeight.w600,
+        ),
+        prefixIcon: const Icon(
+          Icons.lock_reset_rounded,
+          size: 18,
+          color: kAuthAccentDeep,
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscure
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+            size: 18,
+            color: kAuthMuted,
+          ),
+          onPressed: () => setState(() => _obscure = !_obscure),
+        ),
+        filled: true,
+        fillColor: kAuthSurfaceSoft,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthBorder, width: 0.9),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthBorder, width: 0.9),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthAccent, width: 1.3),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.3),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 12,
+        ),
+      ),
+    );
+  }
 
-  // ── Campos registro ───────────────────────────────────────────────────────
+  // REGISTER_V3_SINGLE_SCREEN
   List<Widget> _registerFields() {
-    if (_regStep == 0) {
-      return [
-        _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
-          keyboard: TextInputType.emailAddress,
-          validator: (v) {
-            if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
-            if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) return _emailInvalidMsg;
-            return null;
-          }),
-        const SizedBox(height: 12),
-        _fieldPassword(),
-      ];
-    }
     return [
-      _field(_fullNameLabel, _nameCtrl, Icons.badge_outlined,
-        validator: (v) => (v?.trim().isEmpty ?? true) ? _nameRequiredMsg : null),
+      _registerPhotoPicker(),
+      const SizedBox(height: 11),
+      _field(
+        _fullNameLabel,
+        _nameCtrl,
+        Icons.badge_outlined,
+        validator: (v) => (v?.trim().isEmpty ?? true) ? _nameRequiredMsg : null,
+      ),
+      const SizedBox(height: 9),
+      _field(
+        _emailLabel,
+        _emailCtrl,
+        Icons.alternate_email_rounded,
+        keyboard: TextInputType.emailAddress,
+        validator: (v) {
+          if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
+          if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) {
+            return _emailInvalidMsg;
+          }
+          return null;
+        },
+      ),
+      const SizedBox(height: 9),
+      _fieldPassword(),
+      const SizedBox(height: 9),
+      _confirmPasswordField(),
+      const SizedBox(height: 9),
+      _field(
+        _professionLabel,
+        _profCtrl,
+        Icons.medical_services_outlined,
+      ),
+      const SizedBox(height: 9),
+      _field(
+        _institutionLabel,
+        _instCtrl,
+        Icons.apartment_rounded,
+      ),
+      const SizedBox(height: 9),
+      _field(
+        _isEs
+            ? 'Estudios / formación · opcional'
+            : 'Estudos / formação · opcional',
+        _studyCtrl,
+        Icons.school_outlined,
+      ),
       const SizedBox(height: 12),
-      _field(_professionLabel, _profCtrl, Icons.medical_services_outlined),
-      const SizedBox(height: 12),
-      _field(_institutionLabel, _instCtrl, Icons.apartment_rounded),
-      const SizedBox(height: 18),
-      // ── Task 3: Disclaimer médico obrigatório ──────────────────────────────
       _MedicalDisclaimerCheckbox(
         isEs: _isEs,
         accepted: _disclaimerAccepted,
         hasError: _disclaimerError,
         onChanged: (v) => setState(() {
           _disclaimerAccepted = v ?? false;
-          if (_disclaimerAccepted) _disclaimerError = false;
+          if (_disclaimerAccepted) {
+            _disclaimerError = false;
+          }
         }),
       ),
     ];
@@ -467,21 +944,25 @@ class _LoginScreenState extends State<LoginScreen>
 
   // ── Campos reset ──────────────────────────────────────────────────────────
   List<Widget> _resetFields() => [
-    _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
-      keyboard: TextInputType.emailAddress,
-      validator: (v) {
-        if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
-        if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim())) return _emailInvalidMsg;
-        return null;
-      }),
-  ];
+        _field(_emailLabel, _emailCtrl, Icons.alternate_email_rounded,
+            keyboard: TextInputType.emailAddress, validator: (v) {
+          if (v?.trim().isEmpty ?? true) return _emailRequiredMsg;
+          if (!RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(v!.trim()))
+            return _emailInvalidMsg;
+          return null;
+        }),
+      ];
 
   // ── Campo genérico — borda 8px (sharp, diferente do 12px anterior) ─────
-  Widget _field(String label, TextEditingController ctrl, IconData icon, {
+  Widget _field(
+    String label,
+    TextEditingController ctrl,
+    IconData icon, {
     TextInputType keyboard = TextInputType.text,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
+      scrollPadding: const EdgeInsets.only(bottom: 96),
       controller: ctrl,
       keyboardType: keyboard,
       textInputAction: TextInputAction.next,
@@ -489,73 +970,129 @@ class _LoginScreenState extends State<LoginScreen>
       enableSuggestions: false,
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       autocorrect: false,
-      style: const TextStyle(fontSize: 14, color: kText, fontWeight: FontWeight.w600),
+      style: const TextStyle(
+        fontSize: 13.5,
+        color: kAuthText,
+        fontWeight: FontWeight.w600,
+      ),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(
-          fontSize: 12, color: kTextMid, fontWeight: FontWeight.w500),
-        prefixIcon: Icon(icon, size: 18, color: kGreenMid),
+        labelStyle: const TextStyle(
+          fontSize: 11.5,
+          color: kAuthMuted,
+          fontWeight: FontWeight.w500,
+        ),
+        floatingLabelStyle: const TextStyle(
+          fontSize: 11.5,
+          color: kAuthMuted,
+          fontWeight: FontWeight.w600,
+        ),
+        prefixIcon: Icon(
+          icon,
+          size: 18,
+          color: kAuthAccentDeep,
+        ),
         filled: true,
-        fillColor: Colors.transparent,
+        fillColor: kAuthSurfaceSoft,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthBorder, width: 0.9),
+        ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthBorder, width: 0.9),
+        ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthAccent, width: 1.3),
+        ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red)),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1),
+        ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red, width: 1.5)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.3),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 12,
+        ),
       ),
     );
   }
 
   Widget _fieldPassword() {
     return TextFormField(
+      scrollPadding: const EdgeInsets.only(bottom: 96),
       controller: _passCtrl,
       obscureText: _obscure,
-      textInputAction: TextInputAction.done,
+      textInputAction:
+          _mode == _Mode.register ? TextInputAction.next : TextInputAction.done,
       enableSuggestions: false,
       spellCheckConfiguration: const SpellCheckConfiguration.disabled(),
       autocorrect: false,
       validator: _mode == _Mode.register
           ? (v) => (v?.length ?? 0) < 6 ? _passwordMinMsg : null
           : (v) => (v?.isEmpty ?? true) ? _passwordRequiredMsg : null,
-      style: const TextStyle(fontSize: 14, color: kText, fontWeight: FontWeight.w600),
+      style: const TextStyle(
+        fontSize: 13.5,
+        color: kAuthText,
+        fontWeight: FontWeight.w600,
+      ),
       decoration: InputDecoration(
         labelText: _passwordLabel,
-        labelStyle: TextStyle(
-          fontSize: 12, color: kTextMid, fontWeight: FontWeight.w500),
-        prefixIcon: const Icon(Icons.lock_outline_rounded, size: 18, color: kGreenMid),
+        labelStyle: const TextStyle(
+          fontSize: 11.5,
+          color: kAuthMuted,
+          fontWeight: FontWeight.w500,
+        ),
+        floatingLabelStyle: const TextStyle(
+          fontSize: 11.5,
+          color: kAuthMuted,
+          fontWeight: FontWeight.w600,
+        ),
+        prefixIcon: const Icon(
+          Icons.lock_outline_rounded,
+          size: 18,
+          color: kAuthAccentDeep,
+        ),
         suffixIcon: IconButton(
           icon: Icon(
-            _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-            size: 18, color: kTextMid),
+            _obscure
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+            size: 18,
+            color: kAuthMuted,
+          ),
           onPressed: () => setState(() => _obscure = !_obscure),
         ),
         filled: true,
-        fillColor: Colors.transparent,
+        fillColor: kAuthSurfaceSoft,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthBorder, width: 0.9),
+        ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthBorder, width: 0.9),
+        ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: kAuthAccent, width: 1.3),
+        ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red)),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1),
+        ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red, width: 1.5)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          borderRadius: BorderRadius.circular(13),
+          borderSide: const BorderSide(color: Color(0xFFEF4444), width: 1.3),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 12,
+        ),
       ),
     );
   }
@@ -566,20 +1103,44 @@ class _LoginScreenState extends State<LoginScreen>
     required ValueChanged<bool?> onChanged,
   }) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => onChanged(!value),
-      child: Row(children: [
-        SizedBox(width: 20, height: 20,
-          child: Checkbox(
-            value: value, onChanged: onChanged,
-            activeColor: kGreen,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            side: BorderSide(color: kTextMid.withOpacity(0.35), width: 1.5),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          )),
-        const SizedBox(width: 8),
-        Text(label, style: TextStyle(
-          fontSize: 12, color: kTextMid, fontWeight: FontWeight.w500)),
-      ]),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 21,
+              height: 21,
+              child: Checkbox(
+                value: value,
+                onChanged: onChanged,
+                activeColor: kAuthAccentDeep,
+                checkColor: kAuthText,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                side: const BorderSide(
+                  color: kAuthBorder,
+                  width: 1.2,
+                ),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: kAuthText,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -594,54 +1155,83 @@ class _LoginScreenState extends State<LoginScreen>
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Icon(
-          isError ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded,
-          size: 16, color: color),
+            isError
+                ? Icons.warning_amber_rounded
+                : Icons.check_circle_outline_rounded,
+            size: 16,
+            color: color),
         const SizedBox(width: 8),
-        Expanded(child: Text(msg, style: TextStyle(
-          fontSize: 12, color: color, fontWeight: FontWeight.w600, height: 1.4))),
+        Expanded(
+            child: Text(msg,
+                style: TextStyle(
+                    fontSize: 12,
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4))),
       ]),
     );
   }
 
   // ── Botão principal — borda 10px, gradiente verde direto (não preto) ────
   Widget _submitBtn() {
-    String btnLabel = _modeBtn;
-    if (_mode == _Mode.register && _regStep == 0) {
-      btnLabel = _isEs ? 'Continuar' : 'Continuar';
-    }
+    final btnLabel = _modeBtn;
+    final isLogin = _mode == _Mode.login;
+    final widthFactor = isLogin ? 0.60 : 0.82;
+    final height = isLogin ? 42.0 : 45.0;
 
-    return SizedBox(
-      height: 52,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          gradient: _loading ? null : LinearGradient(
-            begin: Alignment.topLeft, end: Alignment.bottomRight,
-            colors: [kGreen, kGreen, kGreen],
+    return Align(
+      alignment: Alignment.center,
+      child: FractionallySizedBox(
+        widthFactor: widthFactor,
+        child: SizedBox(
+          height: height,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: _loading
+                  ? null
+                  : const LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        kAuthAccentDeep,
+                        Color(0xFF0E8000),
+                      ],
+                    ),
+            ),
+            child: ElevatedButton(
+              onPressed: _loading ? null : _submit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                disabledBackgroundColor: kAuthSurface,
+                foregroundColor: kAuthText,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: _loading
+                  ? const SizedBox(
+                      width: 19,
+                      height: 19,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        color: kAuthText,
+                      ),
+                    )
+                  : Text(
+                      btnLabel,
+                      style: TextStyle(
+                        fontSize: isLogin ? 13.5 : 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
+                        color: kAuthText,
+                      ),
+                    ),
+            ),
           ),
-          boxShadow: _loading ? null : [
-            BoxShadow(
-              color: Colors.transparent,
-              blurRadius: 12, offset: const Offset(0, 5)),
-          ],
-        ),
-        child: ElevatedButton(
-          onPressed: _loading ? null : _submit,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)),
-            elevation: 0,
-          ),
-          child: _loading
-              ? const SizedBox(width: 22, height: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5, color: Colors.white))
-              : Text(btnLabel, style: const TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w700,
-                  letterSpacing: 0.2, color: Colors.white)),
         ),
       ),
     );
@@ -649,109 +1239,189 @@ class _LoginScreenState extends State<LoginScreen>
 
   // ── Links ─────────────────────────────────────────────────────────────────
   Widget _buildLinks() {
-    if (_mode == _Mode.register && _regStep > 0) {
-      return TextButton(
-        onPressed: () { setState(() => _regStep--); _slideCtrl.forward(from: 0); },
-        child: Text(_isEs ? '← Volver' : '← Voltar',
-          style: const TextStyle(
-            fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
+    if (_mode == _Mode.login) {
+      return Column(
+        children: [
+          SizedBox(
+            height: 30,
+            child: TextButton(
+              onPressed: () => _switchMode(_Mode.reset),
+              child: Text(
+                _forgotPasswordLabel,
+                style: const TextStyle(
+                  fontSize: 11.2,
+                  color: kGreenMid,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 1),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _noAccountLabel,
+                style: const TextStyle(
+                  fontSize: 11.2,
+                  color: kTextMid,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => _switchMode(_Mode.register),
+                child: Text(
+                  _signUpLabel,
+                  style: const TextStyle(
+                    fontSize: 11.2,
+                    color: kGreen,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       );
     }
-    if (_mode == _Mode.login) {
-      return Column(children: [
-        TextButton(
-          onPressed: () => _switchMode(_Mode.reset),
-          child: Text(_forgotPasswordLabel,
-            style: const TextStyle(
-              fontSize: 12, color: kGreenMid, fontWeight: FontWeight.w600)),
-        ),
-        Divider(height: 1, color: kTextMid.withOpacity(0.15)),
-        const SizedBox(height: 10),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(_noAccountLabel,
-            style: TextStyle(fontSize: 12, color: kTextMid)),
-          GestureDetector(
-            onTap: () => _switchMode(_Mode.register),
-            child: Text(_signUpLabel,
-              style: const TextStyle(
-                fontSize: 12, color: kGreen, fontWeight: FontWeight.w800)),
+
+    if (_mode == _Mode.register) {
+      return TextButton(
+        onPressed: () => _switchMode(_Mode.login),
+        child: Text(
+          _isEs
+              ? '¿Ya tienes cuenta? Iniciar sesión'
+              : 'Já tem uma conta? Entrar',
+          style: const TextStyle(
+            fontSize: 11.2,
+            color: kGreen,
+            fontWeight: FontWeight.w700,
           ),
-        ]),
-      ]);
+        ),
+      );
     }
+
     return TextButton(
       onPressed: () => _switchMode(_Mode.login),
-      child: Text(_backToLoginLabel,
+      child: Text(
+        _backToLoginLabel,
         style: const TextStyle(
-          fontSize: 12, color: kGreen, fontWeight: FontWeight.w700)),
+          fontSize: 11.2,
+          color: kGreen,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 
   Widget _buildDisclaimer() {
-    return Text(
-      _legalDisclaimer,
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 9.5, color: kTextMid.withOpacity(0.55),
-        fontWeight: FontWeight.w400, height: 1.5),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.health_and_safety_outlined,
+            size: 18,
+            color: kAuthAccentDeep,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            _legalDisclaimer,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 9.8,
+              color: kAuthMuted,
+              fontWeight: FontWeight.w400,
+              height: 1.35,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   // ── Strings i18n ──────────────────────────────────────────────────────────
   IconData get _modeIcon {
     switch (_mode) {
-      case _Mode.login:    return Icons.fingerprint_rounded;
-      case _Mode.register: return Icons.person_add_outlined;
-      case _Mode.reset:    return Icons.lock_reset_rounded;
+      case _Mode.login:
+        return Icons.fingerprint_rounded;
+      case _Mode.register:
+        return Icons.person_add_outlined;
+      case _Mode.reset:
+        return Icons.lock_reset_rounded;
     }
   }
 
   String get _modeTitle {
     switch (_mode) {
-      case _Mode.login:    return _isEs ? 'Acceder a mi cuenta'        : 'Acessar minha conta';
-      case _Mode.register: return _isEs ? 'Crear cuenta' : 'Criar conta';
-      case _Mode.reset:    return _isEs ? 'Recuperar contraseña'       : 'Recuperar senha';
+      case _Mode.login:
+        return _isEs ? 'Acceder a mi cuenta' : 'Acessar minha conta';
+      case _Mode.register:
+        return _isEs ? 'Crear cuenta' : 'Criar conta';
+      case _Mode.reset:
+        return _isEs ? 'Recuperar contraseña' : 'Recuperar senha';
     }
   }
 
   String get _modeSubtitle {
     switch (_mode) {
-      case _Mode.login:    return _isEs ? 'Plataforma exclusiva para profesionales'         : 'Plataforma exclusiva para profissionais';
-      case _Mode.register: return _isEs ? 'Crea tu cuenta para acceder a MedCases Pro' : 'Crie sua conta para acessar o MedCases Pro';
-      case _Mode.reset:    return _isEs ? 'Te enviamos un enlace de recuperación por email' : 'Enviaremos um link de recuperação por e-mail';
+      case _Mode.login:
+        return _isEs
+            ? 'Plataforma exclusiva para profesionales'
+            : 'Plataforma exclusiva para profissionais';
+      case _Mode.register:
+        return _isEs
+            ? 'Crea tu cuenta para acceder a MedCases Pro'
+            : 'Crie sua conta para acessar o MedCases Pro';
+      case _Mode.reset:
+        return _isEs
+            ? 'Te enviamos un enlace de recuperación por email'
+            : 'Enviaremos um link de recuperação por e-mail';
     }
   }
 
   String get _modeBtn {
     switch (_mode) {
-      case _Mode.login:    return _isEs ? 'Iniciar sesión'    : 'Entrar';
-      case _Mode.register: return _isEs ? 'Crear cuenta' : 'Criar conta';
-      case _Mode.reset:    return _isEs ? 'Enviar enlace'     : 'Enviar link';
+      case _Mode.login:
+        return _isEs ? 'Iniciar sesión' : 'Entrar';
+      case _Mode.register:
+        return _isEs ? 'Crear cuenta' : 'Criar conta';
+      case _Mode.reset:
+        return _isEs ? 'Enviar enlace' : 'Enviar link';
     }
   }
 
-  String get _keepLoggedInLabel   => _isEs ? 'Mantener sesión activa' : 'Manter sessão ativa';
-  String get _fullNameLabel       => _isEs ? 'Nombre completo'                         : 'Nome completo';
-  String get _nameRequiredMsg     => _isEs ? 'Ingresa tu nombre'                       : 'Informe seu nome';
-  String get _emailLabel          => _isEs ? 'E-mail institucional'                    : 'E-mail institucional';
-  String get _emailRequiredMsg    => _isEs ? 'Ingresa el correo'                       : 'Informe o e-mail';
-  String get _emailInvalidMsg     => _isEs ? 'Correo inválido'                         : 'E-mail inválido';
-  String get _professionLabel     => _isEs ? 'Especialidad / Cargo'                    : 'Especialidade / Cargo';
-  String get _institutionLabel    => _isEs ? 'Hospital / Institución'                  : 'Hospital / Instituição';
-  String get _forgotPasswordLabel => _isEs ? '¿Olvidaste tu contraseña?'               : 'Esqueceu a senha?';
-  String get _noAccountLabel      => _isEs ? '¿Sin cuenta?  '                          : 'Sem conta?  ';
-  String get _signUpLabel         => _isEs ? 'Crear cuenta' : 'Criar conta';
-  String get _backToLoginLabel    => _isEs ? '← Volver al inicio'                      : '← Voltar ao início';
-  String get _passwordLabel       => _isEs ? 'Contraseña'                               : 'Senha';
-  String get _passwordMinMsg      => _isEs ? 'Mínimo 6 caracteres'                      : 'Mínimo 6 caracteres';
-  String get _passwordRequiredMsg => _isEs ? 'Ingresa la contraseña'                    : 'Informe a senha';
-  String get _legalDisclaimer     => _isEs
+  String get _keepLoggedInLabel =>
+      _isEs ? 'Mantener sesión activa' : 'Manter sessão ativa';
+  String get _fullNameLabel => _isEs ? 'Nombre completo' : 'Nome completo';
+  String get _nameRequiredMsg =>
+      _isEs ? 'Ingresa tu nombre' : 'Informe seu nome';
+  String get _emailLabel =>
+      _isEs ? 'E-mail institucional' : 'E-mail institucional';
+  String get _emailRequiredMsg =>
+      _isEs ? 'Ingresa el correo' : 'Informe o e-mail';
+  String get _emailInvalidMsg => _isEs ? 'Correo inválido' : 'E-mail inválido';
+  String get _professionLabel =>
+      _isEs ? 'Especialidad / Cargo' : 'Especialidade / Cargo';
+  String get _institutionLabel =>
+      _isEs ? 'Hospital / Institución' : 'Hospital / Instituição';
+  String get _forgotPasswordLabel =>
+      _isEs ? '¿Olvidaste tu contraseña?' : 'Esqueceu a senha?';
+  String get _noAccountLabel => _isEs ? '¿Sin cuenta?  ' : 'Sem conta?  ';
+  String get _signUpLabel => _isEs ? 'Crear cuenta' : 'Criar conta';
+  String get _backToLoginLabel =>
+      _isEs ? '← Volver al inicio' : '← Voltar ao início';
+  String get _passwordLabel => _isEs ? 'Contraseña' : 'Senha';
+  String get _passwordMinMsg =>
+      _isEs ? 'Mínimo 6 caracteres' : 'Mínimo 6 caracteres';
+  String get _passwordRequiredMsg =>
+      _isEs ? 'Ingresa la contraseña' : 'Informe a senha';
+  String get _legalDisclaimer => _isEs
       ? 'Herramienta de apoyo clínico educativo. No sustituye el juicio clínico individual ni las guías institucionales vigentes.'
       : 'Ferramenta de apoio clínico educacional. Não substitui o julgamento clínico individual nem as diretrizes institucionais vigentes.';
 
-  String _registerSuccessMsg() => _isEs
-      ? 'Cuenta creada correctamente.'
-      : 'Conta criada com sucesso.';
+  String _registerSuccessMsg() =>
+      _isEs ? 'Cuenta creada correctamente.' : 'Conta criada com sucesso.';
 
   String _resetSuccessMsg(String email) => _isEs
       ? 'Enlace de recuperación enviado a $email. Revisa tu bandeja de entrada.'
@@ -761,205 +1431,6 @@ class _LoginScreenState extends State<LoginScreen>
 // ══════════════════════════════════════════════════════════════════════════════
 // HERO GEOMÉTRICO ANIMADO — formas vazadas (sem preenchimento sólido)
 // ══════════════════════════════════════════════════════════════════════════════
-class _HeroGeometric extends StatelessWidget {
-  final Animation<double> rotAnim;
-  final String lang;
-  const _HeroGeometric({required this.rotAnim, required this.lang});
-
-  bool get _isEs => lang == 'es';
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF0F1116),  // verde muito escuro
-            Color(0xFF0D3324),  // verde floresta
-            Color(0xFF0A2218),  // intermediário
-          ],
-          stops: [0.0, 0.60, 1.0],
-        ),
-      ),
-      child: Stack(children: [
-        // ── Formas geométricas vazadas (stroke apenas) ─────────────────
-        AnimatedBuilder(
-          animation: rotAnim,
-          builder: (_, __) => CustomPaint(
-            painter: _GeoPainter(rotAnim.value),
-            size: Size.infinite,
-          ),
-        ),
-
-        // ── Logo + texto hero — centralizado na tela ──────────────────
-        Positioned.fill(
-          child: SafeArea(
-            bottom: false,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Empurra para a metade superior (hero ocupa 42%)
-                Expanded(
-                  flex: 42,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Badge topo — centralizado
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: const Color(0xFF0E7C52).withOpacity(0.45)),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Container(
-                            width: 6, height: 6,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xFF13A06A),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            _isEs ? 'Para profesionales de salud' : 'Para profissionais de saúde',
-                            style: const TextStyle(
-                              fontSize: 11, fontWeight: FontWeight.w600,
-                              color: Color(0xFF13A06A), letterSpacing: 0.3),
-                          ),
-                        ]),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Logo — centralizado com ícone maior
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/icon/app_icon.png',
-                            width: 56, height: 56,
-                            fit: BoxFit.contain,
-                          ),
-                          const SizedBox(width: 14),
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            const Text('MedCases Pro',
-                              style: TextStyle(
-                                fontSize: 26, fontWeight: FontWeight.w800,
-                                color: Colors.white, letterSpacing: -0.5, height: 1.0)),
-                            const SizedBox(height: 4),
-                            Text(
-                              _isEs ? 'Apoyo clínico educacional' : 'Apoio clínico educacional',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: const Color(0xFF13A06A).withOpacity(0.90),
-                                fontWeight: FontWeight.w600, letterSpacing: 0.3)),
-                          ]),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                // Espaço reservado para o painel inferior (58%)
-                const Expanded(flex: 58, child: SizedBox()),
-              ],
-            ),
-          ),
-        ),
-      ]),
-    );
-  }
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// PAINTER — formas geométricas vazadas rotacionando lentamente
-// ══════════════════════════════════════════════════════════════════════════════
-class _GeoPainter extends CustomPainter {
-  final double rotation;
-  const _GeoPainter(this.rotation);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paintStroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    // Hexágono grande direito superior — stroke verde claro
-    paintStroke.color = const Color(0xFF0E7C52).withOpacity(0.22);
-    _drawHexagon(canvas, Offset(size.width * 0.85, size.height * 0.15),
-      size.width * 0.38, rotation * 0.3, paintStroke);
-
-    // Hexágono médio esquerdo — stroke verde médio
-    paintStroke.color = const Color(0xFF13A06A).withOpacity(0.15);
-    _drawHexagon(canvas, Offset(size.width * 0.10, size.height * 0.68),
-      size.width * 0.22, rotation * 0.5, paintStroke);
-
-    // Círculo grande — stroke fino muito suave
-    paintStroke.color = Colors.white.withOpacity(0.04);
-    paintStroke.strokeWidth = 0.8;
-    canvas.drawCircle(
-      Offset(size.width * 0.72, size.height * 0.78),
-      size.width * 0.30, paintStroke);
-
-    // Losango pequeno — stroke verde
-    paintStroke.color = const Color(0xFF0E7C52).withOpacity(0.18);
-    paintStroke.strokeWidth = 1.0;
-    _drawDiamond(canvas, Offset(size.width * 0.22, size.height * 0.25),
-      size.width * 0.09, rotation * 0.8, paintStroke);
-
-    // Cruz/plus geométrico
-    paintStroke.color = const Color(0xFF13A06A).withOpacity(0.12);
-    _drawPlus(canvas, Offset(size.width * 0.60, size.height * 0.50),
-      size.width * 0.05, rotation, paintStroke);
-  }
-
-  void _drawHexagon(Canvas canvas, Offset center, double radius,
-      double rot, Paint paint) {
-    final path = Path();
-    for (int i = 0; i < 6; i++) {
-      final angle = rot + (i * math.pi / 3);
-      final x = center.dx + radius * math.cos(angle);
-      final y = center.dy + radius * math.sin(angle);
-      i == 0 ? path.moveTo(x, y) : path.lineTo(x, y);
-    }
-    path.close();
-    canvas.drawPath(path, paint);
-  }
-
-  void _drawDiamond(Canvas canvas, Offset center, double r,
-      double rot, Paint paint) {
-    final path = Path();
-    for (int i = 0; i < 4; i++) {
-      final angle = rot + (i * math.pi / 2) + math.pi / 4;
-      final x = center.dx + r * math.cos(angle);
-      final y = center.dy + r * math.sin(angle);
-      i == 0 ? path.moveTo(x, y) : path.lineTo(x, y);
-    }
-    path.close();
-    canvas.drawPath(path, paint);
-  }
-
-  void _drawPlus(Canvas canvas, Offset center, double r,
-      double rot, Paint paint) {
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    canvas.rotate(rot);
-    canvas.drawLine(Offset(-r, 0), Offset(r, 0), paint);
-    canvas.drawLine(Offset(0, -r), Offset(0, r), paint);
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(_GeoPainter oldDelegate) =>
-      oldDelegate.rotation != rotation;
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// TASK 3 — Widget de Disclaimer Médico Obrigatório
-// Aceito via checkbox no momento do cadastro (regStep==1 — etapa Perfil).
 // Exigência Apple Guideline 1.4.1 — ferramenta educacional, não substitui médico.
 // ══════════════════════════════════════════════════════════════════════════════
 class _MedicalDisclaimerCheckbox extends StatelessWidget {
@@ -987,159 +1458,131 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
       'individualizada.';
 
   // BUILD 431: palette constants — Canvas Premium dark
-  static const _kCyan     = Color(0xFF00E5FF);
-  static const _kSurface  = Color(0xFF1E2128);
-  static const _kBorder   = Color(0x1AFFFFFF);  // 10% white
-  static const _kTextSec  = Color(0xB3FFFFFF);  // white70
+  static const _kAccent = Color(0xFF0D6B57);
+  static const _kSurface = Color(0xFF252930);
+  static const _kBorder = Color(0x1AFFFFFF); // 10% white
+  static const _kTextSec = Color(0xB3FFFFFF); // white70
   static const _kTextHint = Color(0xFF8B9BB4);
 
   @override
   Widget build(BuildContext context) {
     final disclaimerText = isEs ? _textEs : _textPt;
-    final labelAccept = isEs
-        ? 'Acepto los términos anteriores'
-        : 'Li e aceito os termos acima';
+    final labelAccept =
+        isEs ? 'Acepto los términos anteriores' : 'Li e aceito os termos acima';
     final errorMsg = isEs
         ? 'Es necesario aceptar el término para continuar.'
         : 'É necessário aceitar o termo para continuar.';
 
+    const accent = Color(0xFF0E8000);
+    const surface = Color(0xFF181D25);
+    const border = Color(0xFF374151);
+    const text = Color(0xFFF8FAFC);
+    const muted = Color(0xFF94A3B8);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // ── Caixa de texto do disclaimer ───────────────────────────────────
         Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 11),
           decoration: BoxDecoration(
-            color: _kSurface,
-            borderRadius: BorderRadius.circular(10),
+            color: surface,
+            borderRadius: BorderRadius.circular(13),
             border: Border.all(
-              color: hasError
-                  ? Colors.red.withOpacity(0.55)
-                  : _kBorder,
-              width: 1,
+              color: hasError ? const Color(0xFFEF4444) : border,
+              width: hasError ? 1.1 : 0.8,
             ),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Escudo centralizado
-              Icon(
-                Icons.health_and_safety_rounded,
-                size: 22,
-                color: hasError ? Colors.red.shade400 : _kCyan,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 1),
+                    child: Icon(
+                      Icons.health_and_safety_outlined,
+                      color: accent,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isEs
+                              ? 'Declaración de uso profesional'
+                              : 'Declaração de uso profissional',
+                          style: const TextStyle(
+                            color: accent,
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          disclaimerText,
+                          style: const TextStyle(
+                            color: muted,
+                            fontSize: 10.2,
+                            fontWeight: FontWeight.w400,
+                            height: 1.32,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 7),
-              Text(
-                isEs ? 'Declaración de uso profesional' : 'Declaração de uso profissional',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  color: hasError ? Colors.red.shade400 : _kCyan,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                disclaimerText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: _kTextSec,
-                  height: 1.5,
-                  fontWeight: FontWeight.w400,
-                  decoration: TextDecoration.none,
+              const SizedBox(height: 9),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => onChanged(!accepted),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Checkbox(
+                        value: accepted,
+                        onChanged: onChanged,
+                        activeColor: accent,
+                        checkColor: text,
+                        side: const BorderSide(color: border, width: 1.1),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        labelAccept,
+                        style: const TextStyle(
+                          color: text,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-
-        const SizedBox(height: 10),
-
-        // ── Checkbox de aceite ──────────────────────────────────────────
-        GestureDetector(
-          onTap: () => onChanged(!accepted),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 160),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: accepted
-                  ? _kCyan.withOpacity(0.08)
-                  : _kSurface,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: hasError
-                    ? Colors.red.withOpacity(0.55)
-                    : accepted
-                        ? _kCyan.withOpacity(0.50)
-                        : _kBorder,
-                width: 1,
-              ),
-            ),
-            child: Row(
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 160),
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: accepted ? _kCyan : Colors.transparent,
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: hasError
-                          ? Colors.red.withOpacity(0.70)
-                          : accepted
-                              ? _kCyan
-                              : _kTextHint,
-                      width: 1.5,
-                    ),
-                  ),
-                  child: accepted
-                      ? const Icon(Icons.check_rounded,
-                          size: 13, color: Color(0xFF121418))
-                      : null,
-                ),
-                const SizedBox(width: 9),
-                Expanded(
-                  child: Text(
-                    labelAccept,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: hasError
-                          ? Colors.red.shade400
-                          : accepted
-                              ? _kCyan
-                              : _kTextSec,
-                      decoration: TextDecoration.none,
-                    ),
-                  ),
-                ),
-              ],
+        if (hasError) ...[
+          const SizedBox(height: 5),
+          Text(
+            errorMsg,
+            style: const TextStyle(
+              color: Color(0xFFEF4444),
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
             ),
           ),
-        ),
-
-        // ── Mensagem de erro se não aceito ─────────────────────────────────
-        if (hasError) ...[
-          const SizedBox(height: 6),
-          Row(children: [
-            Icon(Icons.warning_amber_rounded,
-                size: 13, color: Colors.red.shade400),
-            const SizedBox(width: 5),
-            Expanded(
-              child: Text(
-                errorMsg,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.red.shade400,
-                  fontWeight: FontWeight.w600,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ),
-          ]),
         ],
       ],
     );
