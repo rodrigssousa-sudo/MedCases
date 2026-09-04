@@ -12,12 +12,11 @@ RUN apt-get update && apt-get install -y \
     curl git unzip xz-utils zip libglu1-mesa ca-certificates fontconfig fonts-dejavu-core \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# BUILD 282: Atualizado de 3.24.5 (Dart 3.5.4) → 3.27.4 (Dart 3.6.2)
-# Motivo: flutter_native_splash ^2.4.0 depende de universal_io ^2.2.2, que
-# em pub.dev resolve para 2.3.1 (requer sdk ^3.6.0). Dart 3.5.4 não satisfaz
-# esse constraint, causando "Failed to compile application for the Web".
-# Flutter 3.27.4 é o primeiro release stable com Dart 3.6.2 — compatível.
-RUN git clone https://github.com/flutter/flutter.git -b 3.27.4 /flutter
+# DigitalOcean web build compatibility:
+# Flutter 3.44.5 is required by the current dependency graph.
+# In particular, the app pins characters 1.4.1; Flutter 3.27.4 pins
+# flutter_test to characters 1.3.0 and causes pub version solving to fail.
+RUN git clone https://github.com/flutter/flutter.git -b 3.44.5 /flutter
 
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
