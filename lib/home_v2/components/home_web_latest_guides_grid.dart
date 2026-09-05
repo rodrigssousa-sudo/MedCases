@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +38,7 @@ class HomeWebLatestGuidesGrid extends StatefulWidget {
 class _HomeWebLatestGuidesGridState extends State<HomeWebLatestGuidesGrid> {
   static const int _poolLimit = 10;
   static const int _visibleCount = 4;
-  static const Duration _rotationInterval = Duration(seconds: 8);
+  static const Duration _rotationInterval = Duration(seconds: 20);
   static const Duration _transitionDuration = Duration(milliseconds: 320);
 
   List<GuideModel> _guides = const <GuideModel>[];
@@ -213,7 +212,7 @@ class _HomeWebLatestGuidesGridState extends State<HomeWebLatestGuidesGrid> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
-                childAspectRatio: 0.86,
+                childAspectRatio: 1.08,
               ),
               itemBuilder: (context, index) {
                 final guide = visible[index];
@@ -283,24 +282,23 @@ class _LatestGuideCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                flex: 53,
+                flex: 60,
                 child: ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(13)),
                   child: imageUrl.isEmpty
                       ? _GuideCoverFallback(dark: dark)
-                      : CachedNetworkImage(
-                          imageUrl: imageUrl,
+                      : Image.network(
+                          imageUrl,
                           fit: BoxFit.cover,
-                          placeholder: (_, __) =>
-                              _GuideCoverFallback(dark: dark),
-                          errorWidget: (_, __, ___) =>
+                          webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+                          errorBuilder: (_, __, ___) =>
                               _GuideCoverFallback(dark: dark),
                         ),
                 ),
               ),
               Expanded(
-                flex: 47,
+                flex: 40,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(11, 9, 11, 10),
                   child: Column(
@@ -398,7 +396,7 @@ class _LatestGuidesLoadingGrid extends StatelessWidget {
           crossAxisCount: 2,
           crossAxisSpacing: 5,
           mainAxisSpacing: 5,
-          childAspectRatio: 0.86,
+          childAspectRatio: 1.08,
         ),
         itemBuilder: (_, __) => DecoratedBox(
           decoration: BoxDecoration(

@@ -94,42 +94,42 @@ class GuideModel {
   }
 
   GuideModel localizedCopy(bool isEs) => GuideModel(
-    id: id,
-    title: localizedTitle(isEs),
-    description: localizedDescription(isEs),
-    category: category,
-    authors: authors,
-    year: year,
-    pdfUrl: localizedPdfUrl(isEs),
-    fileName: fileName,
-    fileSize: fileSize,
-    uploadedAt: uploadedAt,
-    uploadedBy: uploadedBy,
-    isPublished: isPublished,
-    downloadCount: downloadCount,
-    coverUrl: coverUrl,
-    localizations: localizations,
-    hasEditorialContent: hasEditorialContent,
-  );
+        id: id,
+        title: localizedTitle(isEs),
+        description: localizedDescription(isEs),
+        category: category,
+        authors: authors,
+        year: year,
+        pdfUrl: localizedPdfUrl(isEs),
+        fileName: fileName,
+        fileSize: fileSize,
+        uploadedAt: uploadedAt,
+        uploadedBy: uploadedBy,
+        isPublished: isPublished,
+        downloadCount: downloadCount,
+        coverUrl: coverUrl,
+        localizations: localizations,
+        hasEditorialContent: hasEditorialContent,
+      );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'description': description,
-    'category': category,
-    'authors': authors,
-    'year': year,
-    'pdfUrl': pdfUrl,
-    'fileName': fileName,
-    'fileSize': fileSize,
-    'uploadedAt': uploadedAt,
-    'uploadedBy': uploadedBy,
-    'isPublished': isPublished,
-    'downloadCount': downloadCount,
-    'coverUrl': coverUrl,
-    if (localizations.isNotEmpty) 'localizations': localizations,
-    'hasEditorialContent': hasEditorialContent,
-  };
+        'id': id,
+        'title': title,
+        'description': description,
+        'category': category,
+        'authors': authors,
+        'year': year,
+        'pdfUrl': pdfUrl,
+        'fileName': fileName,
+        'fileSize': fileSize,
+        'uploadedAt': uploadedAt,
+        'uploadedBy': uploadedBy,
+        'isPublished': isPublished,
+        'downloadCount': downloadCount,
+        'coverUrl': coverUrl,
+        if (localizations.isNotEmpty) 'localizations': localizations,
+        'hasEditorialContent': hasEditorialContent,
+      };
 
   /// Parse seguro: aceita campos alternativos de URL e título.
   /// Nunca usa casts diretos (as T) — imune a TypeError em dart2js release.
@@ -148,8 +148,7 @@ class GuideModel {
     // ── isPublished: aceita bool true ou string "true" ─────────────────────
     // SEGURO: sem cast — testa igualdade antes
     final rawPublished = json['isPublished'];
-    final isPublished =
-        rawPublished == true ||
+    final isPublished = rawPublished == true ||
         rawPublished?.toString().toLowerCase() == 'true';
 
     // ── fileSize e downloadCount: aceita num ou string ─────────────────────
@@ -170,12 +169,13 @@ class GuideModel {
       'isPublished=$isPublished rawPublished=$rawPublished',
     );
 
-    // ── coverUrl: aceita coverUrl, imageUrl, thumbnailUrl, coverImageUrl ─────
+    // ── coverUrl: aceita coverUrl, imageUrl, thumbnailUrl, coverImageUrl, heroImageUrl ─────
     final coverUrl = _firstNonEmpty(json, [
       'coverUrl',
       'imageUrl',
       'thumbnailUrl',
       'coverImageUrl',
+      'heroImageUrl',
     ]);
 
     final rawLocalizations = json['localizations'];
@@ -189,8 +189,7 @@ class GuideModel {
     }
 
     final rawEditorial = json['hasEditorialContent'];
-    final hasEditorialContent =
-        rawEditorial == true ||
+    final hasEditorialContent = rawEditorial == true ||
         rawEditorial?.toString().toLowerCase() == 'true' ||
         localizations.values.any((value) {
           if (value is! Map) return false;
@@ -244,22 +243,23 @@ class GuideModel {
     String? coverUrl,
     Map<String, dynamic>? localizations,
     bool? hasEditorialContent,
-  }) => GuideModel(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    description: description ?? this.description,
-    category: category ?? this.category,
-    authors: authors ?? this.authors,
-    year: year ?? this.year,
-    pdfUrl: pdfUrl ?? this.pdfUrl,
-    fileName: fileName ?? this.fileName,
-    fileSize: fileSize ?? this.fileSize,
-    uploadedAt: uploadedAt ?? this.uploadedAt,
-    uploadedBy: uploadedBy ?? this.uploadedBy,
-    isPublished: isPublished ?? this.isPublished,
-    downloadCount: downloadCount ?? this.downloadCount,
-    coverUrl: coverUrl ?? this.coverUrl,
-    localizations: localizations ?? this.localizations,
-    hasEditorialContent: hasEditorialContent ?? this.hasEditorialContent,
-  );
+  }) =>
+      GuideModel(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        category: category ?? this.category,
+        authors: authors ?? this.authors,
+        year: year ?? this.year,
+        pdfUrl: pdfUrl ?? this.pdfUrl,
+        fileName: fileName ?? this.fileName,
+        fileSize: fileSize ?? this.fileSize,
+        uploadedAt: uploadedAt ?? this.uploadedAt,
+        uploadedBy: uploadedBy ?? this.uploadedBy,
+        isPublished: isPublished ?? this.isPublished,
+        downloadCount: downloadCount ?? this.downloadCount,
+        coverUrl: coverUrl ?? this.coverUrl,
+        localizations: localizations ?? this.localizations,
+        hasEditorialContent: hasEditorialContent ?? this.hasEditorialContent,
+      );
 }
