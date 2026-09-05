@@ -758,6 +758,7 @@ class _AuthGateState extends State<_AuthGate> {
         // Sem usuário → preview pré-login com histórias públicas
         if (user == null) {
           _onLogout();
+          _signalSplashReady(context);
           return _wrapAuth(const PreLoginPreview());
         }
 
@@ -765,11 +766,13 @@ class _AuthGateState extends State<_AuthGate> {
         if (user.isBlocked) {
           AuthService.logout();
           _onLogout();
+          _signalSplashReady(context);
           return _wrapAuth(_BlockedScreen(user: user));
         }
 
         // Usuário pendente
         if (user.isPending) {
+          _signalSplashReady(context);
           return _wrapAuth(_PendingScreen(user: user));
         }
 
@@ -2720,12 +2723,12 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                             : MediaQuery.of(context).padding.top,
                       ),
                       child: HomeCardWorkspaceTransition(
-                          transitionKey: stackIdx,
-                          child: IndexedStack(
-                            index: stackIdx,
-                            children: _staticScreens,
-                          ),
+                        transitionKey: stackIdx,
+                        child: IndexedStack(
+                          index: stackIdx,
+                          children: _staticScreens,
                         ),
+                      ),
                     ),
                     builder: (_, historyEditorOpen, child) => ColoredBox(
                       color: dark
