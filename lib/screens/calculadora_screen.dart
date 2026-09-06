@@ -7,7 +7,7 @@ import 'dart:convert';
 // BUILD 283: allowFileAccess + allowFileAccessFromFileURLs via AndroidWebViewController
 //            para resolver net::ERR_ACCESS_DENIED ao carregar file:// offline cache.
 import 'package:flutter/foundation.dart'
-    show ValueNotifier, debugPrint, kIsWeb;
+    show ValueNotifier, debugPrint, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -522,8 +522,21 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     if (!mounted) return;
 
     try {
-      final localUrl =
-          await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
+      // MEDCASES_IOS_CALCULADORA_GLOBAL_TABS_ONLINE_ONLY_COUNTERFACTUAL_V1_B_R0
+      // Causal proof only: on native iOS, bypass the app-managed file://
+      // calculator cache without deleting or mutating that offline cache.
+      final bypassLocalCalculatorCacheForIOS = !kIsWeb && _detectIOS();
+      final String? localUrl = bypassLocalCalculatorCacheForIOS
+          ? null
+          : await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
+
+      debugPrint(
+        '[CalculadoraWebView][GLOBAL_TABS_COUNTERFACTUAL] '
+        'reason=$reason '
+        'platform=${_detectIOS() ? "ios" : "other"} '
+        'bypassLocal=$bypassLocalCalculatorCacheForIOS '
+        'selected=${localUrl == null ? "online" : "local"}',
+      );
 
       if (!mounted) return;
 
@@ -569,8 +582,23 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
     try {
       await _clearNativeWebViewCacheIfNeeded(generation);
-      final localUrl =
-          await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
+
+      // MEDCASES_IOS_CALCULADORA_GLOBAL_TABS_ONLINE_ONLY_COUNTERFACTUAL_V1_B_R0
+      // Keep the counterfactual valid even if an external calculator refresh
+      // occurs during the same physical iOS test session.
+      final bypassLocalCalculatorCacheForIOS = !kIsWeb && _detectIOS();
+      final String? localUrl = bypassLocalCalculatorCacheForIOS
+          ? null
+          : await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
+
+      debugPrint(
+        '[CalculadoraWebView][GLOBAL_TABS_COUNTERFACTUAL] '
+        'reason=cache-refresh '
+        'platform=${_detectIOS() ? "ios" : "other"} '
+        'bypassLocal=$bypassLocalCalculatorCacheForIOS '
+        'selected=${localUrl == null ? "online" : "local"}',
+      );
+
       final targetUrl =
           _withCacheRefreshToken(localUrl ?? _webUrl, generation);
       if (!mounted) return;
@@ -645,22 +673,2085 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         // Colors.transparent → scrollView.backgroundColor = UIColor.clear
         // Scaffold.backgroundColor(0xFF0F091E) aparece atrás, sem layer sólido.
         ..setBackgroundColor(Colors.transparent)
+        // MEDCASES_IOS_CALCULADORA_WKWEBVIEW_DOM_PROJECTION_DIAGNOSTIC_V1_B_R2
+        ..addJavaScriptChannel(
+          'MCCalcDiag',
+          onMessageReceived: (message) {
+            debugPrint(
+              '[CalculadoraWebView][WK_DOM_DIAG] ${message.message}',
+            );
+          },
+        )
         ..setNavigationDelegate(NavigationDelegate(
           onPageStarted: (_) async {
-            await _controller.runJavaScript(_kEarlyInjectJs);
+            // MEDCASES_IOS_CALCULADORA_GLOBAL_TABS_FLUTTER_INJECTION_BYPASS_COUNTERFACTUAL_V1_B_R0
+            // Causal proof only: production page runs without Flutter-injected
+            // CSS/JS on iOS. Non-iOS behavior remains unchanged.
+            final bypassFlutterPageInjectionForIOS = !kIsWeb && _detectIOS();
+
+            if (bypassFlutterPageInjectionForIOS) {
+              debugPrint(
+                '[CalculadoraWebView][GLOBAL_TABS_INJECTION_COUNTERFACTUAL] '
+                'phase=page-started platform=ios bypass=true',
+              );
+            } else {
+              await _controller.runJavaScript(_kEarlyInjectJs);
+            }
           },
           onPageFinished: (_) async {
-            await _controller.runJavaScript(_kInjectJs);
-            _webviewReady = true;
+            final bypassFlutterPageInjectionForIOS = !kIsWeb && _detectIOS();
 
-            // Local iOS: replay route intent without a second native page load.
-            await _restoreLocalRouteFromWebUrl();
+            if (bypassFlutterPageInjectionForIOS) {
+              _webviewReady = true;
+              debugPrint(
+                '[CalculadoraWebView][GLOBAL_TABS_INJECTION_COUNTERFACTUAL] '
+                'phase=page-finished platform=ios bypass=true '
+                'skipped=main-reset,route-replay,theme,patient,deeplink,farmacos-guard',
+              );
 
-            // Fix#6: injeta tema assim que a página termina de carregar
-            await _injectTheme();
-            await _injectPatientContext();
-            await _applyInitialDeepLinkBridge();
-            await _installFarmacosLandingVisibilityGuard();
+              // MEDCASES_IOS_CALCULADORA_FALSE_KEYBOARD_OPEN_PROJECTION_COUNTERFACTUAL_V1_B_R0
+              // Causal proof for embedded iOS WKWebView false keyboard state.
+              await _controller.runJavaScript(r'''
+(function () {
+  'use strict';
+  if (window.__MC_FALSE_KEYBOARD_OPEN_CF_BOUND) return;
+  window.__MC_FALSE_KEYBOARD_OPEN_CF_BOUND = true;
+
+  function editable(el) {
+    if (!el) return false;
+    var tag = String(el.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' ||
+           tag === 'SELECT' || el.isContentEditable === true;
+  }
+
+  function viewportNotShrunk() {
+    if (!window.visualViewport) return true;
+    return Math.abs(window.visualViewport.height - window.innerHeight) < 2;
+  }
+
+  function normalizeFalseKeyboard(reason) {
+    var body = document.body;
+    if (!body || !body.classList.contains('keyboard-open')) return;
+    if (editable(document.activeElement)) return;
+    if (!viewportNotShrunk()) return;
+
+    try {
+      if (window._mobileKeyboard &&
+          typeof window._mobileKeyboard.forceClose === 'function') {
+        window._mobileKeyboard.forceClose();
+      }
+    } catch (_) {}
+
+    body.classList.remove('keyboard-open');
+    var sc = document.getElementById('scroll-content');
+    if (sc) sc.style.removeProperty('padding-bottom');
+    document.documentElement.style.removeProperty('--keyboard-safe-bottom');
+
+    try {
+      MCCalcDiag.postMessage(JSON.stringify({
+        e:'false-kb-normalized',
+        r:reason,
+        vv:window.visualViewport ? window.visualViewport.height : null,
+        ih:window.innerHeight,
+        ae:document.activeElement ? document.activeElement.tagName : null
+      }));
+    } catch (_) {}
+  }
+
+  var observer = new MutationObserver(function () {
+    normalizeFalseKeyboard('body-class-mutation');
+  });
+  if (document.body) {
+    observer.observe(document.body, {attributes:true, attributeFilter:['class']});
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      normalizeFalseKeyboard('visual-viewport-resize');
+    }, {passive:true});
+    window.visualViewport.addEventListener('scroll', function () {
+      normalizeFalseKeyboard('visual-viewport-scroll');
+    }, {passive:true});
+  }
+
+  document.addEventListener('click', function () {
+    setTimeout(function () { normalizeFalseKeyboard('post-click'); }, 0);
+    setTimeout(function () { normalizeFalseKeyboard('post-click-120'); }, 120);
+    setTimeout(function () { normalizeFalseKeyboard('post-click-400'); }, 400);
+  }, false);
+
+  normalizeFalseKeyboard('install');
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FALSE_KEYBOARD_COUNTERFACTUAL] '
+                'installed=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_TOPBARLESS_SWIPE_DOWN_CLOSE_PHYSICAL_V1_B_R0
+              await _controller.runJavaScript(r'''
+(function () {
+  'use strict';
+  if (window.__MC_FARMACOS_TOPBARLESS_SWIPE_BOUND) return;
+  window.__MC_FARMACOS_TOPBARLESS_SWIPE_BOUND = true;
+
+  var STYLE_ID='mc-farmacos-topbarless-swipe-style-v1';
+  var ACTIVE='mc-farmacos-topbarless-active';
+
+  function ensureStyle(){
+    if(document.getElementById(STYLE_ID))return;
+    var st=document.createElement('style');
+    st.id=STYLE_ID;
+    st.textContent=`
+      body.${ACTIVE} #calculator-overlay-header{
+        display:none!important;
+        visibility:hidden!important;
+        height:0!important;
+        min-height:0!important;
+        max-height:0!important;
+        padding:0!important;
+        margin:0!important;
+        border:0!important;
+        overflow:hidden!important;
+        pointer-events:none!important;
+      }
+      body.${ACTIVE} #hub-card-farmacos.mc-overlay-projected-card{
+        top:0!important;
+        height:100dvh!important;
+        min-height:100dvh!important;
+        max-height:100dvh!important;
+      }
+      body.${ACTIVE} #hub-card-farmacos.mc-overlay-projected-card > .hub-card-body{
+        top:0!important;
+        max-height:100dvh!important;
+      }
+      body.${ACTIVE} #fd-modal.open > .fd-header{
+        display:none!important;
+        visibility:hidden!important;
+        height:0!important;
+        min-height:0!important;
+        max-height:0!important;
+        padding:0!important;
+        margin:0!important;
+        border:0!important;
+        overflow:hidden!important;
+        pointer-events:none!important;
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  function farmCard(){
+    return document.getElementById('hub-card-farmacos');
+  }
+  function detail(){
+    return document.getElementById('fd-modal');
+  }
+  function farmProjected(){
+    var c=farmCard();
+    return !!(c && c.classList.contains('mc-overlay-projected-card') &&
+      c.classList.contains('is-open'));
+  }
+  function detailOpen(){
+    var d=detail();
+    return !!(d && d.classList.contains('open'));
+  }
+  function reconcile(){
+    ensureStyle();
+    var active=farmProjected() || detailOpen();
+    if(document.body){
+      document.body.classList.toggle(ACTIVE,active);
+    }
+  }
+
+  function editable(el){
+    if(!el)return false;
+    var t=String(el.tagName||'').toUpperCase();
+    return t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||el.isContentEditable===true;
+  }
+
+  function scrollTopFor(mode){
+    var nodes=mode==='detail'
+      ? [
+          document.getElementById('fd-body'),
+          document.querySelector('#fd-modal.open .fd-body'),
+          document.querySelector('#fd-modal.open [data-fd-scroll]')
+        ]
+      : [
+          document.getElementById('hub-body-farmacos'),
+          document.getElementById('scroll-content'),
+          farmCard()
+        ];
+    var top=0;
+    for(var i=0;i<nodes.length;i++){
+      var n=nodes[i];
+      if(!n)continue;
+      top=Math.max(top,Number(n.scrollTop||0));
+    }
+    return top;
+  }
+
+  function closeDetail(){
+    var d=detail();
+    if(!d)return false;
+    var btn=d.querySelector('.fd-close,#fd-close,[data-fd-close],button[aria-label*=Fechar],button[aria-label*=Cerrar],button[aria-label*=Close]');
+    if(btn && typeof btn.click==='function'){btn.click();return true;}
+    return false;
+  }
+
+  function closeFarmacos(){
+    var btn=document.getElementById('calculator-overlay-close');
+    if(btn && typeof btn.click==='function'){btn.click();return true;}
+    if(window.__MC_OVERLAY_PROJECTION_V1 &&
+       typeof window.__MC_OVERLAY_PROJECTION_V1.close==='function'){
+      window.__MC_OVERLAY_PROJECTION_V1.close();
+      return true;
+    }
+    return false;
+  }
+
+  var gesture=null;
+  document.addEventListener('touchstart',function(e){
+    if(!e.touches || e.touches.length!==1)return;
+    var mode=farmProjected() && !detailOpen() ? 'farmacos' : null;
+    if(!mode)return;
+    if(editable(e.target) || editable(document.activeElement))return;
+    if(scrollTopFor(mode)>2)return;
+    var t=e.touches[0];
+    gesture={mode:mode,x:t.clientX,y:t.clientY,lastX:t.clientX,lastY:t.clientY,ts:Date.now()};
+  },{passive:true});
+
+  document.addEventListener('touchmove',function(e){
+    if(!gesture || !e.touches || e.touches.length!==1)return;
+    var t=e.touches[0];
+    gesture.lastX=t.clientX;
+    gesture.lastY=t.clientY;
+  },{passive:true});
+
+  document.addEventListener('touchend',function(){
+    if(!gesture)return;
+    var g=gesture; gesture=null;
+    var dy=g.lastY-g.y;
+    var dx=Math.abs(g.lastX-g.x);
+    var dt=Date.now()-g.ts;
+    var minDy=Math.max(180,Math.min(220,window.innerHeight*0.24));
+    if(dy<minDy || dx>dy*0.55 || dt<320 || dt>2200)return;
+    if(scrollTopFor(g.mode)>2)return;
+    var mode=g.mode;
+    setTimeout(function(){
+      var closed=mode==='detail'?closeDetail():closeFarmacos();
+      try{
+        MCCalcDiag.postMessage(JSON.stringify({
+          e:'farmacos-swipe-close-natural',mode:mode,dy:Math.round(dy),dt:dt,closed:closed
+        }));
+      }catch(_){}
+      setTimeout(reconcile,0);
+      setTimeout(reconcile,180);
+    },220);
+  },{passive:true});
+
+  document.addEventListener('touchcancel',function(){gesture=null;},{passive:true});
+  document.addEventListener('click',function(){
+    setTimeout(reconcile,0);
+    setTimeout(reconcile,160);
+  },false);
+
+  var mo=new MutationObserver(function(){reconcile();});
+  var c=farmCard(); if(c)mo.observe(c,{attributes:true,attributeFilter:['class']});
+  var d=detail(); if(d)mo.observe(d,{attributes:true,attributeFilter:['class']});
+
+  ensureStyle();
+  reconcile();
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_TOPBARLESS_SWIPE] '
+                'installed=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_REAL_KEYBOARD_SAFE_VIEWPORT_V1_B_R0
+              await _controller.runJavaScript(r'''
+(function () {
+  'use strict';
+  if (window.__MC_FARMACOS_REAL_KEYBOARD_SAFE_BOUND) return;
+  window.__MC_FARMACOS_REAL_KEYBOARD_SAFE_BOUND = true;
+
+  var ACTIVE='mc-farmacos-topbarless-active';
+  var STYLE_ID='mc-farmacos-real-keyboard-safe-v1';
+  var closedVV = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  var originalScrollIntoView = Element.prototype.scrollIntoView;
+
+  function editable(el){
+    if(!el)return false;
+    var t=String(el.tagName||'').toUpperCase();
+    return t==='INPUT'||t==='TEXTAREA'||t==='SELECT'||el.isContentEditable===true;
+  }
+
+  function farmActive(){
+    return !!(document.body && document.body.classList.contains(ACTIVE));
+  }
+
+  function insideFarmacos(el){
+    if(!el || !el.closest)return false;
+    return !!(el.closest('#hub-card-farmacos') || el.closest('#fd-modal'));
+  }
+
+  function isFarmSearch(el){
+    if(!el)return false;
+    return el.id==='hm-drug-search' ||
+           el.id==='farmacos-search-input' ||
+           !!(el.matches && el.matches('[data-farmacos-v2-search-wrapper] input'));
+  }
+
+  function ensureStyle(){
+    if(document.getElementById(STYLE_ID))return;
+    var st=document.createElement('style');
+    st.id=STYLE_ID;
+    st.textContent=`
+      body.${ACTIVE}.keyboard-open #hub-card-farmacos.mc-overlay-projected-card{
+        height:var(--mc-farmacos-visible-vh,100dvh)!important;
+        min-height:var(--mc-farmacos-visible-vh,100dvh)!important;
+        max-height:var(--mc-farmacos-visible-vh,100dvh)!important;
+        overflow:hidden!important;
+      }
+      body.${ACTIVE}.keyboard-open #hub-card-farmacos.mc-overlay-projected-card > #hub-body-farmacos{
+        height:var(--mc-farmacos-visible-vh,100dvh)!important;
+        min-height:0!important;
+        max-height:var(--mc-farmacos-visible-vh,100dvh)!important;
+        overflow-y:auto!important;
+        overflow-x:hidden!important;
+        -webkit-overflow-scrolling:touch!important;
+        padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))!important;
+        box-sizing:border-box!important;
+      }
+    `;
+    document.head.appendChild(st);
+  }
+
+  Element.prototype.scrollIntoView=function(){
+    if(farmActive() && editable(this) && insideFarmacos(this)){
+      try{
+        if(window.MCCalcDiag){
+          MCCalcDiag.postMessage(JSON.stringify({e:'farmacos-scrollintoview-blocked',id:this.id||null}));
+        }
+      }catch(_){}
+      return;
+    }
+    return originalScrollIntoView.apply(this,arguments);
+  };
+
+  function setClosedBaseline(){
+    if(!window.visualViewport)return;
+    var ae=document.activeElement;
+    if(editable(ae) && insideFarmacos(ae))return;
+    var h=window.visualViewport.height;
+    if(h>closedVV)closedVV=h;
+  }
+
+  function correct(reason){
+    ensureStyle();
+    if(!farmActive())return;
+    var ae=document.activeElement;
+    if(!editable(ae) || !insideFarmacos(ae)){
+      setClosedBaseline();
+      document.documentElement.style.removeProperty('--mc-farmacos-visible-vh');
+      return;
+    }
+
+    var vv=window.visualViewport;
+    if(!vv)return;
+    var visible=Math.max(180,Math.floor(vv.height));
+    var shrink=Math.max(0,Math.round(closedVV-vv.height));
+
+    document.documentElement.style.setProperty('--mc-farmacos-visible-vh',visible+'px');
+    document.documentElement.style.setProperty('--keyboard-safe-bottom','0px');
+
+    var sc=document.getElementById('scroll-content');
+    if(sc)sc.style.paddingBottom='0px';
+
+    if(isFarmSearch(ae)){
+      var hb=document.getElementById('hub-body-farmacos');
+      if(hb)hb.scrollTop=0;
+    }
+
+    try{
+      if(window.MCCalcDiag){
+        MCCalcDiag.postMessage(JSON.stringify({
+          e:'farmacos-real-kb-safe',r:reason,vv:Math.round(vv.height),
+          base:Math.round(closedVV),shrink:shrink,id:ae.id||null
+        }));
+      }
+    }catch(_){}
+  }
+
+  document.addEventListener('focusin',function(e){
+    if(!editable(e.target) || !insideFarmacos(e.target))return;
+    setTimeout(function(){correct('focus-0');},0);
+    setTimeout(function(){correct('focus-120');},120);
+    setTimeout(function(){correct('focus-320');},320);
+    setTimeout(function(){correct('focus-520');},520);
+  },true);
+
+  document.addEventListener('focusout',function(){
+    setTimeout(function(){
+      setClosedBaseline();
+      if(!editable(document.activeElement)){
+        document.documentElement.style.removeProperty('--mc-farmacos-visible-vh');
+      }
+    },320);
+  },true);
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',function(){
+      setTimeout(function(){correct('vv-resize');},90);
+    },{passive:true});
+    window.visualViewport.addEventListener('scroll',function(){
+      setTimeout(function(){correct('vv-scroll');},40);
+    },{passive:true});
+  }
+
+  ensureStyle();
+  setClosedBaseline();
+
+
+  /* MEDCASES iOS Fármacos physical correction R1:
+     - strong owner for remaining projected/detail topbars
+     - collapse hidden-header projection seam to 1px
+     - real keyboard follows visualViewport without legacy keyboard-open layout
+     - native Flutter topbar is intentionally untouched
+  */
+  (function(){
+    'use strict';
+    var CORR_BUILD='MEDCASES_IOS_FARMACOS_TOPBAR_GAP_REAL_KEYBOARD_PHYSICAL_CORRECTION_V1_B_R1';
+    if(window.__MC_FARMACOS_TOPBAR_GAP_REAL_KEYBOARD_PHYSICAL_CORRECTION_V1_B_R1)return;
+    window.__MC_FARMACOS_TOPBAR_GAP_REAL_KEYBOARD_PHYSICAL_CORRECTION_V1_B_R1=true;
+
+    var ROOT=document.documentElement;
+    var BODY=document.body;
+    var ACTIVE_CLASS='mc-farmacos-physical-r1-active';
+    var STYLE_ID='mc-farmacos-physical-r1-style';
+    var timers=[];
+
+    function card(){return document.getElementById('hub-card-farmacos')}
+    function detail(){return document.getElementById('fd-modal')}
+    function overlay(){return document.getElementById('calculator-overlay-container')}
+    function hubBody(){return document.getElementById('hub-body-farmacos')}
+    function scrollContent(){return document.getElementById('scroll-content')}
+
+    function farmOpen(){
+      var c=card(), d=detail();
+      return !!(
+        (c&&c.classList.contains('mc-overlay-projected-card')&&c.classList.contains('is-open')) ||
+        (d&&d.classList.contains('open'))
+      );
+    }
+
+    function farmEditable(el){
+      if(!el||!el.matches||!el.matches('input,textarea,select,[contenteditable="true"]'))return false;
+      try{
+        return !!(
+          el.closest('#hub-card-farmacos.mc-overlay-projected-card') ||
+          el.closest('#fd-modal.open')
+        );
+      }catch(_){return false}
+    }
+
+    function rootSearchFocused(){
+      var el=document.activeElement;
+      if(!farmEditable(el))return false;
+      try{
+        return el.id==='hm-drug-search' ||
+          el.matches('[data-mc-farm-browser-r6-search-input="true"]') ||
+          !!el.closest('[data-mc-farm-browser-r6-search-shell="true"],.hm-search-wrap');
+      }catch(_){return false}
+    }
+
+    function ensureStyle(){
+      if(document.getElementById(STYLE_ID))return;
+      var s=document.createElement('style');
+      s.id=STYLE_ID;
+      s.textContent=[
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #calculator-overlay-container[data-mc-owner="NO_REPARENT_PROJECTION_V1"] #calculator-overlay-header,',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #calculator-overlay-container[data-mc-owner="NO_REPARENT_PROJECTION_V1"].mc-farmacos-app-subpage-active #calculator-overlay-header{',
+        'display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;',
+        'height:0!important;min-height:0!important;max-height:0!important;padding:0!important;margin:0!important;border:0!important;overflow:hidden!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #fd-modal-overlay #fd-modal.open > .fd-header,',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #fd-modal-overlay #fd-modal.open .fd-header{',
+        'display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;',
+        'height:0!important;min-height:0!important;max-height:0!important;padding:0!important;margin:0!important;border:0!important;overflow:hidden!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #page-home #hub-card-farmacos.mc-overlay-projected-card{',
+        '--mc-overlay-projection-top:calc(var(--mc-farm-r1-vv-top,0px) + 1px)!important;',
+        'top:calc(var(--mc-farm-r1-vv-top,0px) + 1px)!important;bottom:auto!important;',
+        'height:calc(var(--mc-farm-r1-vv-height,100vh) - 1px)!important;',
+        'min-height:0!important;max-height:calc(var(--mc-farm-r1-vv-height,100vh) - 1px)!important;',
+        'margin-top:0!important;transform:none!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #page-home #hub-card-farmacos.mc-overlay-projected-card > .hub-card-trigger{',
+        'display:none!important;height:0!important;min-height:0!important;max-height:0!important;padding:0!important;margin:0!important;border:0!important;overflow:hidden!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #page-home #hub-card-farmacos.mc-overlay-projected-card > #hub-body-farmacos{',
+        'top:0!important;margin-top:0!important;padding-top:0!important;',
+        'height:100%!important;min-height:0!important;max-height:100%!important;',
+        'overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #page-home #hub-card-farmacos.mc-overlay-projected-card > #hub-body-farmacos > .hub-card-inner{',
+        'margin-top:0!important;padding-top:1px!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #page-home #hub-card-farmacos.mc-overlay-projected-card #farmacos-v2-shell{',
+        'margin-top:0!important;padding-top:0!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #page-home #hub-card-farmacos.mc-overlay-projected-card [data-mc-farm-browser-r6-search-shell="true"],',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #page-home #hub-card-farmacos.mc-overlay-projected-card .hm-search-wrap{',
+        'margin-top:1px!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #fd-modal-overlay #fd-modal.open{',
+        'margin-top:0!important;padding-top:0!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.calc-overlay-open #fd-modal-overlay #fd-modal.open #fd-body{',
+        'margin-top:0!important;padding-top:1px!important;',
+        '}',
+        'html body.'+ACTIVE_CLASS+'.keyboard-open #scroll-content{',
+        'padding-bottom:0!important;',
+        '}'
+      ].join('');
+      (document.head||ROOT).appendChild(s);
+    }
+
+    function setViewportVars(){
+      var vv=window.visualViewport;
+      var top=vv?Math.max(0,Number(vv.offsetTop)||0):0;
+      var h=vv?Number(vv.height)||window.innerHeight:window.innerHeight;
+      h=Math.max(120,h||0);
+      ROOT.style.setProperty('--mc-farm-r1-vv-top',top+'px');
+      ROOT.style.setProperty('--mc-farm-r1-vv-height',h+'px');
+      ROOT.style.setProperty('--keyboard-safe-bottom','0px','important');
+    }
+
+    function neutralizeLegacyKeyboard(){
+      var ae=document.activeElement;
+      if(!farmEditable(ae))return;
+      try{
+        if(BODY.classList.contains('keyboard-open') && window._mobileKeyboard &&
+           typeof window._mobileKeyboard.forceClose==='function'){
+          window._mobileKeyboard.forceClose();
+        }
+      }catch(_){}
+      BODY.classList.remove('keyboard-open');
+      ROOT.style.setProperty('--keyboard-safe-bottom','0px','important');
+      var sc=scrollContent();
+      if(sc)sc.style.setProperty('padding-bottom','0px','important');
+    }
+
+    function resetRootSearchPan(){
+      if(!rootSearchFocused())return;
+      try{window.scrollTo(0,0)}catch(_){}
+      try{ROOT.scrollTop=0}catch(_){}
+      try{BODY.scrollTop=0}catch(_){}
+      var sc=scrollContent(), hb=hubBody();
+      try{if(sc)sc.scrollTop=0}catch(_){}
+      try{if(hb)hb.scrollTop=0}catch(_){}
+    }
+
+    function apply(){
+      ensureStyle();
+      var open=farmOpen();
+      BODY.classList.toggle(ACTIVE_CLASS,open);
+      if(!open)return;
+      setViewportVars();
+      neutralizeLegacyKeyboard();
+      resetRootSearchPan();
+    }
+
+    function schedule(){
+      timers.forEach(function(id){clearTimeout(id)});
+      timers=[];
+      apply();
+      [40,100,180,300,500].forEach(function(ms){
+        timers.push(setTimeout(apply,ms));
+      });
+    }
+
+    document.addEventListener('focusin',function(e){
+      if(farmEditable(e.target))schedule();
+    },true);
+    document.addEventListener('focusout',function(e){
+      if(farmEditable(e.target))setTimeout(schedule,90);
+    },true);
+
+    if(window.visualViewport){
+      window.visualViewport.addEventListener('resize',schedule,{passive:true});
+      window.visualViewport.addEventListener('scroll',schedule,{passive:true});
+    }
+    window.addEventListener('resize',schedule,{passive:true});
+
+    [BODY,overlay(),card(),detail()].filter(Boolean).forEach(function(node){
+      try{
+        new MutationObserver(schedule).observe(node,{attributes:true,attributeFilter:['class','style']});
+      }catch(_){}
+    });
+
+    schedule();
+    console.info('['+CORR_BUILD+'] installed');
+  })();
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_REAL_KEYBOARD_SAFE] '
+                'installed=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_DETAIL_TOPBAR_NATURAL_SWIPE_TAP_FLASH_CLOSURE_V1_B_R2
+              await _controller.runJavaScript(r'''
+(function(){
+  'use strict';
+  if(window.__MC_FARMACOS_R2_SESSION_BOUND)return;
+  window.__MC_FARMACOS_R2_SESSION_BOUND=true;
+
+  var SESSION='mc-farmacos-r2-session';
+  var STYLE_ID='mc-farmacos-r2-session-style';
+  var farmSession=false;
+  var sessionCloseTimer=0;
+
+  function overlay(){ return document.getElementById('calculator-overlay-container'); }
+  function header(){ return document.getElementById('calculator-overlay-header'); }
+  function card(){ return document.getElementById('hub-card-farmacos'); }
+  function detail(){ return document.getElementById('fd-modal'); }
+  function projectedRoot(){
+    var c=card();
+    return !!(c && c.classList.contains('mc-overlay-projected-card') && c.classList.contains('is-open'));
+  }
+  function overlayOpen(){
+    var o=overlay();
+    return !!(o && o.classList.contains('is-active'));
+  }
+
+  function ensureStyle(){
+    if(document.getElementById(STYLE_ID))return;
+    var s=document.createElement('style');
+    s.id=STYLE_ID;
+    s.textContent=`
+      html body.${SESSION} #calculator-overlay-container[data-mc-owner="NO_REPARENT_PROJECTION_V1"] #calculator-overlay-header{
+        display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+        position:fixed!important;top:0!important;height:0!important;min-height:0!important;max-height:0!important;
+        padding:0!important;margin:0!important;border:0!important;overflow:hidden!important;
+      }
+      html body.${SESSION} #fd-modal.open > .fd-header,
+      html body.${SESSION} #fd-modal.open .fd-header,
+      html body.${SESSION} #fd-modal-overlay .fd-header,
+      html body.${SESSION} #fd-modal-header,
+      html body.${SESSION} [data-fd-header]{
+        display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+        height:0!important;min-height:0!important;max-height:0!important;padding:0!important;margin:0!important;
+        border:0!important;overflow:hidden!important;
+      }
+      html body.${SESSION} #page-home #hub-card-farmacos.mc-overlay-projected-card{
+        top:1px!important;--mc-overlay-projection-top:1px!important;margin-top:0!important;transform:none!important;
+      }
+      html body.${SESSION} #page-home #hub-card-farmacos.mc-overlay-projected-card > #hub-body-farmacos,
+      html body.${SESSION} #page-home #hub-card-farmacos.mc-overlay-projected-card > #hub-body-farmacos > .hub-card-inner,
+      html body.${SESSION} #page-home #hub-card-farmacos.mc-overlay-projected-card #farmacos-v2-shell{margin-top:0!important;}
+      html body.${SESSION} #page-home #hub-card-farmacos.mc-overlay-projected-card > #hub-body-farmacos > .hub-card-inner{padding-top:1px!important;}
+      html body.${SESSION} #fd-modal.open{top:1px!important;margin-top:0!important;padding-top:0!important;}
+      html body.${SESSION} #fd-modal.open #fd-body{margin-top:0!important;padding-top:1px!important;}
+      html body.${SESSION} #fd-modal,
+      html body.${SESSION} #fd-modal *,
+      html body.${SESSION} #hub-card-farmacos,
+      html body.${SESSION} #hub-card-farmacos *{-webkit-tap-highlight-color:rgba(0,0,0,0)!important;}
+    `;
+    (document.head||document.documentElement).appendChild(s);
+  }
+
+  function hardHideWebTopbars(){
+    if(!farmSession)return;
+    var nodes=[
+      header(),
+      document.querySelector('#fd-modal.open > .fd-header'),
+      document.querySelector('#fd-modal.open .fd-header'),
+      document.getElementById('fd-modal-header'),
+      document.querySelector('[data-fd-header]')
+    ].filter(Boolean);
+    nodes.forEach(function(n){
+      try{
+        n.style.setProperty('display','none','important');
+        n.style.setProperty('visibility','hidden','important');
+        n.style.setProperty('opacity','0','important');
+        n.style.setProperty('pointer-events','none','important');
+        n.style.setProperty('height','0','important');
+        n.style.setProperty('min-height','0','important');
+        n.style.setProperty('max-height','0','important');
+        n.style.setProperty('padding','0','important');
+        n.style.setProperty('margin','0','important');
+        n.style.setProperty('border','0','important');
+        n.style.setProperty('overflow','hidden','important');
+      }catch(_){}
+    });
+  }
+
+  function syncSession(reason){
+    ensureStyle();
+    if(projectedRoot()){
+      farmSession=true;
+      if(sessionCloseTimer){clearTimeout(sessionCloseTimer);sessionCloseTimer=0;}
+    }
+    if(farmSession && !overlayOpen()){
+      if(!sessionCloseTimer){
+        sessionCloseTimer=setTimeout(function(){
+          if(!overlayOpen() && !projectedRoot()){
+            farmSession=false;
+            if(document.body)document.body.classList.remove(SESSION);
+          }
+          sessionCloseTimer=0;
+        },180);
+      }
+    } else if(farmSession && sessionCloseTimer){
+      clearTimeout(sessionCloseTimer);sessionCloseTimer=0;
+    }
+    if(document.body)document.body.classList.toggle(SESSION,farmSession);
+    if(farmSession){
+      hardHideWebTopbars();
+      setTimeout(hardHideWebTopbars,0);
+      setTimeout(hardHideWebTopbars,80);
+      setTimeout(hardHideWebTopbars,180);
+      setTimeout(hardHideWebTopbars,360);
+    }
+  }
+
+  document.addEventListener('click',function(){syncSession('click');},true);
+  document.addEventListener('focusin',function(){syncSession('focusin');},true);
+  document.addEventListener('focusout',function(){setTimeout(function(){syncSession('focusout');},40);},true);
+
+  [document.body,overlay(),card(),detail()].filter(Boolean).forEach(function(n){
+    try{
+      new MutationObserver(function(){syncSession('mutation');})
+        .observe(n,{attributes:true,childList:true,subtree:false,attributeFilter:['class','style']});
+    }catch(_){}
+  });
+
+  ensureStyle();
+  syncSession('install');
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_R2_SESSION] '
+                'installed=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_FINAL_DETAIL_TOPBAR_SMOOTH_SHEET_V1_B_R3
+              await _controller.runJavaScript(r'''
+(function() {
+  'use strict';
+  if (window.__MC_FARMACOS_R3_SMOOTH_BOUND) return;
+  window.__MC_FARMACOS_R3_SMOOTH_BOUND = true;
+
+  var ACTIVE = 'mc-farmacos-r3-active';
+  var STYLE_ID = 'mc-farmacos-r3-smooth-style';
+  var gesture = null;
+  var guardRaf = 0;
+
+  function card() {
+    return document.getElementById('hub-card-farmacos');
+  }
+
+  function detail() {
+    return document.getElementById('fd-modal');
+  }
+
+  function farmProjected() {
+    var c = card();
+    return !!(c &&
+      c.classList.contains('mc-overlay-projected-card') &&
+      c.classList.contains('is-open'));
+  }
+
+  function detailOpen() {
+    var d = detail();
+    return !!(d && d.classList.contains('open'));
+  }
+
+  function reconcileActive() {
+    var active = farmProjected() || detailOpen();
+    if (document.body) document.body.classList.toggle(ACTIVE, active);
+    return active;
+  }
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    var st = document.createElement('style');
+    st.id = STYLE_ID;
+    st.textContent = `
+      @keyframes mcFarmDrugOpenR3 {
+        from { opacity:.72; transform:translate3d(0,18px,0); }
+        to   { opacity:1; transform:translate3d(0,0,0); }
+      }
+
+      html body.${ACTIVE} #calculator-overlay-header,
+      html body.${ACTIVE} #calculator-overlay-container #calculator-overlay-header,
+      html body.${ACTIVE} #fd-modal.open > .fd-header,
+      html body.${ACTIVE} #fd-modal.open .fd-header,
+      html body.${ACTIVE} #fd-modal-header,
+      html body.${ACTIVE} [data-fd-header] {
+        display:none!important;
+        visibility:hidden!important;
+        opacity:0!important;
+        pointer-events:none!important;
+        height:0!important;
+        min-height:0!important;
+        max-height:0!important;
+        padding:0!important;
+        margin:0!important;
+        border:0!important;
+        overflow:hidden!important;
+      }
+
+      html body.${ACTIVE} #hub-card-farmacos.mc-overlay-projected-card {
+        top:1px!important;
+        margin-top:0!important;
+        --mc-overlay-projection-top:1px!important;
+      }
+
+      html body.${ACTIVE} #fd-modal.open {
+        top:1px!important;
+        margin-top:0!important;
+        padding-top:0!important;
+        animation:mcFarmDrugOpenR3 280ms cubic-bezier(.22,.72,.22,1) both;
+        transform-origin:50% 0%;
+        will-change:transform,opacity;
+      }
+
+      html body.${ACTIVE} #fd-modal.open #fd-body {
+        margin-top:0!important;
+        padding-top:1px!important;
+      }
+
+      html body.${ACTIVE} #fd-modal,
+      html body.${ACTIVE} #fd-modal *,
+      html body.${ACTIVE} #hub-card-farmacos,
+      html body.${ACTIVE} #hub-card-farmacos * {
+        -webkit-tap-highlight-color:rgba(0,0,0,0)!important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  function hardHideTopbars() {
+    if (!reconcileActive()) return;
+
+    [
+      '#calculator-overlay-header',
+      '#fd-modal.open > .fd-header',
+      '#fd-modal.open .fd-header',
+      '#fd-modal-header',
+      '[data-fd-header]'
+    ].forEach(function(sel) {
+      document.querySelectorAll(sel).forEach(function(n) {
+        try {
+          n.style.setProperty('display','none','important');
+          n.style.setProperty('visibility','hidden','important');
+          n.style.setProperty('opacity','0','important');
+          n.style.setProperty('pointer-events','none','important');
+          n.style.setProperty('height','0','important');
+          n.style.setProperty('min-height','0','important');
+          n.style.setProperty('max-height','0','important');
+          n.style.setProperty('padding','0','important');
+          n.style.setProperty('margin','0','important');
+          n.style.setProperty('border','0','important');
+          n.style.setProperty('overflow','hidden','important');
+        } catch (_) {}
+      });
+    });
+  }
+
+  function guardLoop() {
+    hardHideTopbars();
+    if (reconcileActive()) {
+      guardRaf = requestAnimationFrame(guardLoop);
+    } else {
+      guardRaf = 0;
+    }
+  }
+
+  function ensureGuard() {
+    if (!guardRaf && reconcileActive()) {
+      guardRaf = requestAnimationFrame(guardLoop);
+    }
+  }
+
+  function editable(el) {
+    if (!el) return false;
+    var tag = String(el.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' ||
+           tag === 'SELECT' || el.isContentEditable === true;
+  }
+
+  function detailScrollTop() {
+    var top = 0;
+    [
+      document.getElementById('fd-body'),
+      document.querySelector('#fd-modal.open .fd-body'),
+      document.querySelector('#fd-modal.open [data-fd-scroll]')
+    ].filter(Boolean).forEach(function(n) {
+      top = Math.max(top, Number(n.scrollTop || 0));
+    });
+    return top;
+  }
+
+  function resetDetailVisual(d) {
+    if (!d) return;
+    d.style.removeProperty('transition');
+    d.style.removeProperty('transform');
+    d.style.removeProperty('opacity');
+    d.style.removeProperty('will-change');
+  }
+
+  function closeDetail() {
+    var d = detail();
+    if (!d) return false;
+
+    var btn = d.querySelector(
+      '.fd-close,#fd-close,[data-fd-close],' +
+      'button[aria-label*=Fechar],button[aria-label*=Cerrar],button[aria-label*=Close]'
+    );
+
+    if (btn && typeof btn.click === 'function') {
+      btn.click();
+      return true;
+    }
+    return false;
+  }
+
+  document.addEventListener('touchstart', function(e) {
+    var canonicalMcd = document.getElementById('mc-drug-detail-page-v21');
+    if (canonicalMcd && String(canonicalMcd.dataset.open || '') === 'true') return;
+    if (!detailOpen()) return;
+    if (!e.touches || e.touches.length !== 1) return;
+    if (editable(e.target) || editable(document.activeElement)) return;
+    if (detailScrollTop() > 2) return;
+
+    var t = e.touches[0];
+    gesture = {
+      x:t.clientX,
+      y:t.clientY,
+      lastX:t.clientX,
+      lastY:t.clientY,
+      ts:Date.now()
+    };
+
+    var d = detail();
+    if (d) {
+      d.style.setProperty('animation','none','important');
+      d.style.setProperty('transition','none','important');
+      d.style.setProperty('will-change','transform,opacity','important');
+    }
+  }, {passive:true, capture:true});
+
+  document.addEventListener('touchmove', function(e) {
+    if (!gesture || !e.touches || e.touches.length !== 1) return;
+
+    var t = e.touches[0];
+    gesture.lastX = t.clientX;
+    gesture.lastY = t.clientY;
+
+    var dy = Math.max(0, t.clientY - gesture.y);
+    var dx = Math.abs(t.clientX - gesture.x);
+
+    if (dx > Math.max(24, dy * .8)) return;
+
+    var d = detail();
+    if (!d) return;
+
+    var tracked = Math.min(dy, window.innerHeight * .46);
+    var opacity = Math.max(.80, 1 - tracked / Math.max(1,window.innerHeight) * .38);
+
+    d.style.setProperty(
+      'transform',
+      'translate3d(0,' + tracked + 'px,0)',
+      'important'
+    );
+    d.style.setProperty('opacity', String(opacity), 'important');
+  }, {passive:true, capture:true});
+
+  document.addEventListener('touchend', function() {
+    if (!gesture) return;
+
+    var g = gesture;
+    gesture = null;
+
+    var dy = Math.max(0, g.lastY - g.y);
+    var dx = Math.abs(g.lastX - g.x);
+    var dt = Date.now() - g.ts;
+    var threshold = Math.max(150, Math.min(210, window.innerHeight * .22));
+    var commit = dy >= threshold &&
+                 dx <= dy * .62 &&
+                 dt >= 260 &&
+                 dt <= 2400;
+
+    var d = detail();
+    if (!d) return;
+
+    if (!commit) {
+      d.style.setProperty(
+        'transition',
+        'transform 180ms cubic-bezier(.22,.72,.22,1), opacity 160ms ease-out',
+        'important'
+      );
+      d.style.setProperty('transform','translate3d(0,0,0)','important');
+      d.style.setProperty('opacity','1','important');
+
+      setTimeout(function() {
+        resetDetailVisual(d);
+      }, 210);
+      return;
+    }
+
+    d.style.setProperty(
+      'transition',
+      'transform 240ms cubic-bezier(.22,.72,.22,1), opacity 220ms ease-out',
+      'important'
+    );
+    d.style.setProperty('transform','translate3d(0,100vh,0)','important');
+    d.style.setProperty('opacity','.88','important');
+
+    setTimeout(function() {
+      closeDetail();
+      resetDetailVisual(d);
+      reconcileActive();
+      hardHideTopbars();
+    }, 240);
+  }, {passive:true, capture:true});
+
+  document.addEventListener('touchcancel', function() {
+    var d = detail();
+    gesture = null;
+    if (!d) return;
+
+    d.style.setProperty(
+      'transition',
+      'transform 180ms cubic-bezier(.22,.72,.22,1), opacity 160ms ease-out',
+      'important'
+    );
+    d.style.setProperty('transform','translate3d(0,0,0)','important');
+    d.style.setProperty('opacity','1','important');
+
+    setTimeout(function() {
+      resetDetailVisual(d);
+    }, 210);
+  }, {passive:true, capture:true});
+
+  document.addEventListener('click', function() {
+    setTimeout(function() {
+      reconcileActive();
+      hardHideTopbars();
+      ensureGuard();
+    }, 0);
+    setTimeout(function() {
+      reconcileActive();
+      hardHideTopbars();
+      ensureGuard();
+    }, 100);
+  }, true);
+
+  try {
+    new MutationObserver(function() {
+      reconcileActive();
+      hardHideTopbars();
+      ensureGuard();
+    }).observe(document.body || document.documentElement, {
+      subtree:true,
+      childList:true,
+      attributes:true,
+      attributeFilter:['class','style']
+    });
+  } catch (_) {}
+
+  ensureStyle();
+  reconcileActive();
+  hardHideTopbars();
+  ensureGuard();
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_R3_SMOOTH_SHEET] '
+                'installed=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_CANONICAL_MCD_TOPBARLESS_SMOOTH_DETAIL_V1_B_R8
+              await _controller.runJavaScript(r'''
+(function() {
+  'use strict';
+  if (window.__MC_MCD_TOPBARLESS_SMOOTH_R8_BOUND) return;
+  window.__MC_MCD_TOPBARLESS_SMOOTH_R8_BOUND = true;
+
+  var PAGE_ID = 'mc-drug-detail-page-v21';
+  var STYLE_ID = 'mc-mcd-topbarless-smooth-r8-style';
+  var gesture = null;
+  var pageObserver = null;
+  var creationObserver = null;
+
+  function page() {
+    return document.getElementById(PAGE_ID);
+  }
+
+  function isOpen(p) {
+    p = p || page();
+    return !!(p && String(p.dataset.open || '') === 'true');
+  }
+
+  function editable(el) {
+    if (!el) return false;
+    var tag = String(el.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' ||
+           tag === 'SELECT' || el.isContentEditable === true;
+  }
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+
+    var st = document.createElement('style');
+    st.id = STYLE_ID;
+    st.textContent = `
+      @keyframes mcMcdOpenR8 {
+        from { opacity:.70; transform:translate3d(0,18px,0); }
+        to { opacity:1; transform:translate3d(0,0,0); }
+      }
+
+      html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] {
+        grid-template-rows:minmax(0,1fr)!important;
+      }
+
+      html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] > .mcd-top {
+        display:none!important;
+        visibility:hidden!important;
+        opacity:0!important;
+        pointer-events:none!important;
+        width:0!important;
+        min-width:0!important;
+        max-width:0!important;
+        height:0!important;
+        min-height:0!important;
+        max-height:0!important;
+        margin:0!important;
+        padding:0!important;
+        border:0!important;
+        overflow:hidden!important;
+      }
+
+      html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] > .mcd-scroll {
+        grid-row:1!important;
+        margin:0!important;
+        padding-top:0!important;
+        top:0!important;
+      }
+
+      html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] .mcd-shell {
+        margin-top:0!important;
+        padding-top:1px!important;
+      }
+
+      html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] {
+        animation:mcMcdOpenR8 280ms cubic-bezier(.22,.72,.22,1) both;
+        transform-origin:50% 0%;
+        will-change:transform,opacity;
+      }
+
+      html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"],
+      html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] * {
+        -webkit-tap-highlight-color:rgba(0,0,0,0)!important;
+      }
+    `;
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  function hardApply(p) {
+    p = p || page();
+    if (!p || !isOpen(p)) return;
+
+    try {
+      p.style.setProperty('grid-template-rows','minmax(0,1fr)','important');
+
+      var top = p.querySelector(':scope > .mcd-top');
+      if (top) {
+        top.style.setProperty('display','none','important');
+        top.style.setProperty('visibility','hidden','important');
+        top.style.setProperty('opacity','0','important');
+        top.style.setProperty('pointer-events','none','important');
+        top.style.setProperty('height','0','important');
+        top.style.setProperty('min-height','0','important');
+        top.style.setProperty('max-height','0','important');
+        top.style.setProperty('margin','0','important');
+        top.style.setProperty('padding','0','important');
+        top.style.setProperty('border','0','important');
+        top.style.setProperty('overflow','hidden','important');
+      }
+
+      var scroll = p.querySelector(':scope > .mcd-scroll');
+      if (scroll) {
+        scroll.style.setProperty('grid-row','1','important');
+        scroll.style.setProperty('margin','0','important');
+        scroll.style.setProperty('padding-top','0','important');
+        scroll.style.setProperty('top','0','important');
+      }
+
+      var shell = p.querySelector('.mcd-shell');
+      if (shell) {
+        shell.style.setProperty('margin-top','0','important');
+        shell.style.setProperty('padding-top','1px','important');
+      }
+    } catch (_) {}
+  }
+
+  function bindPage(p) {
+    if (!p || p.__mcMcdR8Observed) return;
+    p.__mcMcdR8Observed = true;
+
+    try {
+      pageObserver = new MutationObserver(function() {
+        if (isOpen(p)) {
+          ensureStyle();
+          hardApply(p);
+        } else {
+          gesture = null;
+          resetVisual(p);
+        }
+      });
+
+      pageObserver.observe(p, {
+        attributes:true,
+        attributeFilter:['data-open','class'],
+        childList:true,
+        subtree:false
+      });
+    } catch (_) {}
+
+    hardApply(p);
+  }
+
+  function ensurePage() {
+    ensureStyle();
+    var p = page();
+    if (p) {
+      bindPage(p);
+      hardApply(p);
+      if (creationObserver) {
+        try { creationObserver.disconnect(); } catch (_) {}
+        creationObserver = null;
+      }
+      return p;
+    }
+
+    if (!creationObserver) {
+      try {
+        creationObserver = new MutationObserver(function() {
+          var found = page();
+          if (found) {
+            bindPage(found);
+            hardApply(found);
+            try { creationObserver.disconnect(); } catch (_) {}
+            creationObserver = null;
+          }
+        });
+
+        creationObserver.observe(
+          document.body || document.documentElement,
+          {childList:true, subtree:true}
+        );
+      } catch (_) {}
+    }
+
+    return null;
+  }
+
+  function detailScrollTop(p) {
+    if (!p) return 0;
+    var sc = p.querySelector(':scope > .mcd-scroll');
+    return Number(sc && sc.scrollTop || 0);
+  }
+
+  function resetVisual(p) {
+    if (!p) return;
+    p.style.removeProperty('transition');
+    p.style.removeProperty('transform');
+    p.style.removeProperty('opacity');
+    p.style.removeProperty('will-change');
+    p.style.removeProperty('animation');
+  }
+
+  function closeCanonical(p) {
+    if (!p) return false;
+    var btn = p.querySelector('.mcd-close') || p.querySelector('.mcd-back');
+    if (btn && typeof btn.click === 'function') {
+      btn.click();
+      return true;
+    }
+    return false;
+  }
+
+  document.addEventListener('touchstart', function(e) {
+    var p = page();
+    if (!isOpen(p)) return;
+    if (!e.touches || e.touches.length !== 1) return;
+    if (editable(e.target) || editable(document.activeElement)) return;
+    if (detailScrollTop(p) > 2) return;
+
+    var t = e.touches[0];
+    gesture = {
+      x:t.clientX,
+      y:t.clientY,
+      lastX:t.clientX,
+      lastY:t.clientY,
+      ts:Date.now()
+    };
+
+    p.style.setProperty('animation','none','important');
+    p.style.setProperty('transition','none','important');
+    p.style.setProperty('will-change','transform,opacity','important');
+  }, {passive:true, capture:true});
+
+  document.addEventListener('touchmove', function(e) {
+    if (!gesture || !e.touches || e.touches.length !== 1) return;
+
+    var p = page();
+    if (!isOpen(p)) {
+      gesture = null;
+      return;
+    }
+
+    var t = e.touches[0];
+    gesture.lastX = t.clientX;
+    gesture.lastY = t.clientY;
+
+    var dy = Math.max(0, t.clientY - gesture.y);
+    var dx = Math.abs(t.clientX - gesture.x);
+    if (dx > Math.max(24, dy * .80)) return;
+
+    var tracked = Math.min(dy, window.innerHeight * .48);
+    var opacity = Math.max(
+      .80,
+      1 - tracked / Math.max(1,window.innerHeight) * .38
+    );
+
+    p.style.setProperty(
+      'transform',
+      'translate3d(0,' + tracked + 'px,0)',
+      'important'
+    );
+    p.style.setProperty('opacity',String(opacity),'important');
+  }, {passive:true, capture:true});
+
+  document.addEventListener('touchend', function() {
+    if (!gesture) return;
+
+    var g = gesture;
+    gesture = null;
+
+    var p = page();
+    if (!isOpen(p)) return;
+
+    var dy = Math.max(0, g.lastY - g.y);
+    var dx = Math.abs(g.lastX - g.x);
+    var dt = Date.now() - g.ts;
+    var threshold = Math.max(150, Math.min(210, window.innerHeight * .22));
+
+    var commit =
+      dy >= threshold &&
+      dx <= dy * .62 &&
+      dt >= 260 &&
+      dt <= 2400;
+
+    if (!commit) {
+      p.style.setProperty(
+        'transition',
+        'transform 180ms cubic-bezier(.22,.72,.22,1), opacity 160ms ease-out',
+        'important'
+      );
+      p.style.setProperty('transform','translate3d(0,0,0)','important');
+      p.style.setProperty('opacity','1','important');
+
+      setTimeout(function() {
+        resetVisual(p);
+        hardApply(p);
+      }, 210);
+      return;
+    }
+
+    p.style.setProperty(
+      'transition',
+      'transform 240ms cubic-bezier(.22,.72,.22,1), opacity 220ms ease-out',
+      'important'
+    );
+    p.style.setProperty('transform','translate3d(0,100vh,0)','important');
+    p.style.setProperty('opacity','.88','important');
+
+    setTimeout(function() {
+      closeCanonical(p);
+      resetVisual(p);
+    }, 240);
+  }, {passive:true, capture:true});
+
+  document.addEventListener('touchcancel', function() {
+    var p = page();
+    gesture = null;
+    if (!isOpen(p)) return;
+
+    p.style.setProperty(
+      'transition',
+      'transform 180ms cubic-bezier(.22,.72,.22,1), opacity 160ms ease-out',
+      'important'
+    );
+    p.style.setProperty('transform','translate3d(0,0,0)','important');
+    p.style.setProperty('opacity','1','important');
+
+    setTimeout(function() {
+      resetVisual(p);
+      hardApply(p);
+    }, 210);
+  }, {passive:true, capture:true});
+
+  document.addEventListener('click', function() {
+    setTimeout(function() {
+      var p = ensurePage();
+      if (isOpen(p)) hardApply(p);
+    }, 0);
+
+    setTimeout(function() {
+      var p = ensurePage();
+      if (isOpen(p)) hardApply(p);
+    }, 80);
+
+    setTimeout(function() {
+      var p = ensurePage();
+      if (isOpen(p)) hardApply(p);
+    }, 180);
+  }, true);
+
+  ensurePage();
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_MCD_R8] '
+                'topbarless=true smoothDetail=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_NAME_RIGHT_X_ONE_CLICK_CLOSE_V1_B_R9
+              await _controller.runJavaScript(r'''
+(function(){
+'use strict';
+if(window.__MC_MCD_NAME_RIGHT_CLOSE_R9_BOUND)return;
+window.__MC_MCD_NAME_RIGHT_CLOSE_R9_BOUND=true;
+
+var PAGE_ID='mc-drug-detail-page-v21';
+var STYLE_ID='mc-mcd-name-right-close-r9-style';
+var boundName=null,pageObserver=null,creationObserver=null;
+
+function page(){return document.getElementById(PAGE_ID);}
+function isOpen(p){p=p||page();return !!(p&&String(p.dataset.open||'')==='true');}
+function closeButton(p){p=p||page();return p?p.querySelector(':scope > .mcd-top .mcd-close'):null;}
+function nameNode(p){p=p||page();return p?p.querySelector('.mcd-id .mcd-name'):null;}
+
+function ensureStyle(){
+  if(document.getElementById(STYLE_ID))return;
+  var st=document.createElement('style');
+  st.id=STYLE_ID;
+  st.textContent=`
+html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] .mcd-id .mcd-name{
+  position:relative!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  padding-right:42px!important;
+}
+html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] .mcd-id .mcd-name::after{
+  content:"×";
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:var(--mcd-text,#F3F4F6);
+  opacity:.88;
+  font:500 29px/1 -apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  cursor:pointer;
+  pointer-events:auto;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+  touch-action:manipulation;
+}
+html body > #${PAGE_ID}#${PAGE_ID}[data-open="true"] .mcd-id .mcd-name:active::after{
+  opacity:.58;
+}`;
+  (document.head||document.documentElement).appendChild(st);
+}
+
+function hitRightClose(ev,name){
+  if(!ev||!name)return false;
+  var r=name.getBoundingClientRect();
+  var x=Number(ev.clientX),y=Number(ev.clientY);
+  if(!Number.isFinite(x)||!Number.isFinite(y))return false;
+  var localX=x-r.left,localY=y-r.top;
+  return localX>=Math.max(0,r.width-36)&&localX<=r.width&&localY>=0&&localY<=r.height;
+}
+
+function onNameClick(ev){
+  var p=page(),name=ev.currentTarget;
+  if(!isOpen(p)||!hitRightClose(ev,name))return;
+  ev.preventDefault();
+  ev.stopPropagation();
+
+  var close=closeButton(p);
+  if(close&&typeof close.click==='function'){
+    close.click();
+  }
+}
+
+function bindName(p){
+  if(!isOpen(p))return;
+  var name=nameNode(p);
+  if(!name)return;
+
+  if(boundName===name&&name.__mcNameRightCloseR9Bound)return;
+
+  if(boundName&&boundName.__mcNameRightCloseR9Bound){
+    try{boundName.removeEventListener('click',onNameClick,true);}catch(_){}
+  }
+
+  boundName=name;
+  name.__mcNameRightCloseR9Bound=true;
+  name.addEventListener('click',onNameClick,true);
+}
+
+function apply(){
+  ensureStyle();
+  var p=page();
+  if(p&&isOpen(p))bindName(p);
+}
+
+function observePage(p){
+  if(!p||p.__mcNameRightCloseR9Observed)return;
+  p.__mcNameRightCloseR9Observed=true;
+
+  try{
+    pageObserver=new MutationObserver(function(){apply();});
+    pageObserver.observe(p,{
+      attributes:true,
+      attributeFilter:['data-open'],
+      childList:true,
+      subtree:true
+    });
+  }catch(_){}
+}
+
+function ensurePage(){
+  ensureStyle();
+  var p=page();
+
+  if(p){
+    observePage(p);
+    apply();
+
+    if(creationObserver){
+      try{creationObserver.disconnect();}catch(_){}
+      creationObserver=null;
+    }
+    return;
+  }
+
+  if(!creationObserver){
+    try{
+      creationObserver=new MutationObserver(function(){
+        var found=page();
+        if(!found)return;
+
+        observePage(found);
+        apply();
+
+        try{creationObserver.disconnect();}catch(_){}
+        creationObserver=null;
+      });
+
+      creationObserver.observe(
+        document.body||document.documentElement,
+        {childList:true,subtree:true}
+      );
+    }catch(_){}
+  }
+}
+
+document.addEventListener('click',function(){
+  setTimeout(apply,0);
+  setTimeout(apply,80);
+  setTimeout(apply,180);
+},true);
+
+ensurePage();
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_R9] '
+                'nameRightClose=true oneClick=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_SEARCH_AND_REOPEN_LIFECYCLE_CLOSURE_V1_B_R11
+              await _controller.runJavaScript(r'''
+(function(){
+  'use strict';
+  if(window.__MC_FARMACOS_SEARCH_REOPEN_R11_BOUND)return;
+  window.__MC_FARMACOS_SEARCH_REOPEN_R11_BOUND=true;
+
+  var INPUT_IDS=['hm-drug-search','farmacos-search-input'];
+  var timers=[];
+
+  function queryInput(){
+    for(var i=0;i<INPUT_IDS.length;i++){
+      var el=document.getElementById(INPUT_IDS[i]);
+      if(el&&el.isConnected)return el;
+    }
+    return null;
+  }
+
+  function revealSearchResults(input){
+    if(!input)return;
+    var q=String(input.value||'').trim();
+
+    var list=document.getElementById('hm-drug-list');
+    if(list&&q){
+      list.style.setProperty('display','block','important');
+      list.style.setProperty('visibility','visible','important');
+      list.style.setProperty('opacity','1','important');
+      list.style.setProperty('pointer-events','auto','important');
+    }
+
+    var host=document.querySelector('[data-mc-farm-browser-r6-results-host="true"]');
+    if(host&&q){
+      host.setAttribute('data-active','true');
+      host.style.setProperty('display','block','important');
+      host.style.setProperty('visibility','visible','important');
+      host.style.setProperty('opacity','1','important');
+    }
+
+    var az=document.querySelector('#farmacos-v2-shell [data-farmacos-panel="az"]');
+    if(az&&q){
+      az.style.setProperty('display','block','important');
+      az.style.setProperty('visibility','visible','important');
+      az.style.setProperty('opacity','1','important');
+    }
+
+    if(list&&q){ void list.offsetHeight; }
+  }
+
+  function runNativeSearch(input){
+    if(!input)return;
+    var q=String(input.value||'');
+
+    try{
+      if(input.id==='hm-drug-search' &&
+         typeof window.hmFilterDrugs==='function'){
+        window.hmFilterDrugs(q);
+      }else if(input.id==='farmacos-search-input'){
+        if(typeof window._renderFarmacosListDebounced==='function'){
+          window._renderFarmacosListDebounced(q);
+        }else if(typeof window.renderFarmacosList==='function'){
+          window.renderFarmacosList(q);
+        }
+      }
+    }catch(_){}
+
+    revealSearchResults(input);
+  }
+
+  function schedule(input){
+    for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);
+    timers=[];
+    [0,180,320].forEach(function(ms){
+      timers.push(setTimeout(function(){
+        if(!input||!input.isConnected)return;
+        runNativeSearch(input);
+      },ms));
+    });
+  }
+
+  document.addEventListener('input',function(ev){
+    var input=ev.target;
+    if(!input||INPUT_IDS.indexOf(input.id)===-1)return;
+    schedule(input);
+  },true);
+
+  document.addEventListener('focusin',function(ev){
+    var input=ev.target;
+    if(!input||INPUT_IDS.indexOf(input.id)===-1)return;
+    if(String(input.value||'').trim())schedule(input);
+  },true);
+
+  document.addEventListener('click',function(){
+    setTimeout(function(){
+      var input=queryInput();
+      if(input&&String(input.value||'').trim()){
+        revealSearchResults(input);
+      }
+    },80);
+  },true);
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_R11] '
+                'searchRender=true reopenLifecycle=true platform=ios',
+              );
+
+              // MEDCASES_IOS_FARMACOS_DETAIL_TOPBAR_PHYSICAL_OWNER_PROBE_V1_B_R4
+              await _controller.runJavaScript(r'''
+(function() {
+  'use strict';
+  if (window.__MC_FARMACOS_TOPBAR_OWNER_PROBE_BOUND) return;
+  window.__MC_FARMACOS_TOPBAR_OWNER_PROBE_BOUND = true;
+
+  function slim(el) {
+    if (!el) return null;
+    var r = el.getBoundingClientRect();
+    var s = getComputedStyle(el);
+    return {
+      tag: el.tagName || null,
+      id: el.id || null,
+      cls: typeof el.className === 'string' ? el.className : null,
+      txt: String(el.innerText || el.textContent || '').trim().slice(0,120),
+      x: Math.round(r.x), y: Math.round(r.y),
+      w: Math.round(r.width), h: Math.round(r.height),
+      d: s.display, v: s.visibility, o: s.opacity,
+      p: s.position, z: s.zIndex
+    };
+  }
+
+  function chain(el) {
+    var out = [], n = el, guard = 0;
+    while (n && guard < 7) {
+      out.push(slim(n));
+      n = n.parentElement;
+      guard++;
+    }
+    return out;
+  }
+
+  function sample(reason) {
+    try {
+      var xs = [
+        Math.max(8, Math.round(innerWidth * .08)),
+        Math.round(innerWidth * .50),
+        Math.min(innerWidth - 8, Math.round(innerWidth * .92))
+      ];
+      var ys = [8,20,32,44,56,68,80,96,112];
+      var hits = [];
+
+      ys.forEach(function(y) {
+        xs.forEach(function(x) {
+          hits.push({
+            x:x, y:y,
+            els:document.elementsFromPoint(x,y).slice(0,6).map(slim)
+          });
+        });
+      });
+
+      var center = document.elementFromPoint(Math.round(innerWidth/2),44);
+
+      MCCalcDiag.postMessage(JSON.stringify({
+        e:'farmacos-topbar-owner-probe',
+        r:reason,
+        vw:innerWidth,
+        vh:innerHeight,
+        body:document.body ? document.body.className : null,
+        centerChain:chain(center),
+        named:{
+          overlay:slim(document.getElementById('calculator-overlay-container')),
+          overlayHeader:slim(document.getElementById('calculator-overlay-header')),
+          overlayTitle:slim(document.getElementById('calculator-overlay-title')),
+          overlayBack:slim(document.getElementById('calculator-overlay-back')),
+          overlayClose:slim(document.getElementById('calculator-overlay-close')),
+          fdModal:slim(document.getElementById('fd-modal')),
+          fdHeader:slim(document.querySelector('#fd-modal .fd-header')),
+          fdModalHeader:slim(document.getElementById('fd-modal-header'))
+        },
+        hits:hits
+      }));
+    } catch (err) {
+      try {
+        MCCalcDiag.postMessage(JSON.stringify({
+          e:'farmacos-topbar-owner-probe-error',
+          m:String(err && err.message || err)
+        }));
+      } catch (_) {}
+    }
+  }
+
+  document.addEventListener('click', function() {
+    setTimeout(function(){ sample('click-0'); },0);
+    setTimeout(function(){ sample('click-120'); },120);
+    setTimeout(function(){ sample('click-400'); },400);
+    setTimeout(function(){ sample('click-1000'); },1000);
+  }, true);
+
+  setTimeout(function(){ sample('install-300'); },300);
+})();
+''');
+
+              debugPrint(
+                '[CalculadoraWebView][FARMACOS_TOPBAR_OWNER_PROBE] '
+                'installed=true platform=ios',
+              );
+
+              // MEDCASES_IOS_CALCULADORA_WKWEBVIEW_DOM_PROJECTION_DIAGNOSTIC_V1_B_R2
+              // Runtime telemetry only: no class/style/router mutation.
+              await _controller.runJavaScript(r'''
+(function () {
+  'use strict';
+
+  if (window.__MC_WK_DOM_DIAG_BOUND) {
+    try {
+      MCCalcDiag.postMessage(JSON.stringify({
+        event: 'diag-already-bound',
+        href: location.href,
+        ts: Date.now()
+      }));
+    } catch (_) {}
+    return;
+  }
+
+  window.__MC_WK_DOM_DIAG_BOUND = true;
+
+  function rect(el) {
+    if (!el) return null;
+    var r = el.getBoundingClientRect();
+    return {
+      x: r.x, y: r.y, w: r.width, h: r.height,
+      top: r.top, right: r.right, bottom: r.bottom, left: r.left
+    };
+  }
+
+  function style(el) {
+    if (!el) return null;
+    var s = getComputedStyle(el);
+    return {
+      display: s.display,
+      visibility: s.visibility,
+      opacity: s.opacity,
+      position: s.position,
+      overflow: s.overflow,
+      overflowX: s.overflowX,
+      overflowY: s.overflowY,
+      height: s.height,
+      maxHeight: s.maxHeight,
+      minHeight: s.minHeight,
+      contentVisibility: s.contentVisibility || null,
+      pointerEvents: s.pointerEvents,
+      zIndex: s.zIndex
+    };
+  }
+
+  function nodeInfo(el) {
+    if (!el) return null;
+    return {
+      tag: el.tagName || null,
+      id: el.id || null,
+      className: typeof el.className === 'string' ? el.className : null,
+      rect: rect(el),
+      style: style(el),
+      childCount: el.children ? el.children.length : null,
+      textLen: (el.innerText || '').length,
+      htmlLen: (el.innerHTML || '').length
+    };
+  }
+
+  function snapshot(eventName, cardId, delayMs) {
+    var overlay = document.getElementById('calculator-overlay-container');
+    var card = cardId ? document.getElementById(cardId) : null;
+    var projected = document.querySelector('.mc-overlay-projected-card');
+    var open = document.querySelector('.hub-card.is-open');
+    var body = card ? card.querySelector('.hub-card-body') : null;
+    var inner = body ? body.querySelector('.hub-card-inner') : null;
+    var farmShell = document.getElementById('farmacos-v2-shell');
+    var legacyFarm = document.getElementById('page-farmacos');
+    var center = null;
+
+    try {
+      center = nodeInfo(
+        document.elementFromPoint(
+          Math.max(0, Math.floor(innerWidth / 2)),
+          Math.max(0, Math.floor(innerHeight / 2))
+        )
+      );
+    } catch (_) {}
+
+    var payload = {
+      event: eventName,
+      delayMs: delayMs,
+      ts: Date.now(),
+      href: location.href,
+      readyState: document.readyState,
+      ua: navigator.userAgent,
+      viewport: {
+        innerWidth: innerWidth,
+        innerHeight: innerHeight,
+        dpr: devicePixelRatio
+      },
+      bodyClass: document.body ? document.body.className : null,
+      bodyStyle: style(document.body),
+      documentElementStyle: style(document.documentElement),
+      overlay: nodeInfo(overlay),
+      card: nodeInfo(card),
+      cardOpen: !!(card && card.classList.contains('is-open')),
+      projected: nodeInfo(projected),
+      projectedId: projected ? projected.id : null,
+      openCard: nodeInfo(open),
+      openCardId: open ? open.id : null,
+      hubBody: nodeInfo(body),
+      hubInner: nodeInfo(inner),
+      farmShell: nodeInfo(farmShell),
+      legacyFarm: nodeInfo(legacyFarm),
+      activeElement: nodeInfo(document.activeElement),
+      centerElement: center
+    };
+
+    // MEDCASES_IOS_CALCULADORA_WKWEBVIEW_DOM_PROJECTION_DIAGNOSTIC_V1_B_R3
+    // Compact packet to stay below Flutter debugPrint truncation.
+    function pack(el) {
+      if (!el) return null;
+      var r = el.getBoundingClientRect();
+      var s = getComputedStyle(el);
+      return [
+        el.id || null,
+        typeof el.className === 'string' ? el.className : null,
+        Math.round(r.x * 10) / 10,
+        Math.round(r.y * 10) / 10,
+        Math.round(r.width * 10) / 10,
+        Math.round(r.height * 10) / 10,
+        s.display,
+        s.visibility,
+        s.opacity,
+        s.height,
+        el.children ? el.children.length : null,
+        (el.innerText || '').length
+      ];
+    }
+
+    var compact = {
+      e: eventName,
+      d: delayMs,
+      bc: document.body ? document.body.className : null,
+      vv: window.visualViewport
+        ? [
+            Math.round(window.visualViewport.width * 10) / 10,
+            Math.round(window.visualViewport.height * 10) / 10,
+            Math.round(window.visualViewport.offsetTop * 10) / 10
+          ]
+        : null,
+      ov: pack(overlay),
+      oo: overlay ? overlay.getAttribute('data-mc-owner') : null,
+      ca: pack(card),
+      co: !!(card && card.classList.contains('is-open')),
+      hb: pack(body),
+      hi: pack(inner),
+      pr: pack(projected),
+      pi: projected ? projected.id : null,
+      oc: open ? open.id : null,
+      fs: pack(farmShell),
+      lf: pack(legacyFarm),
+      ae: document.activeElement
+        ? [
+            document.activeElement.tagName || null,
+            document.activeElement.id || null,
+            typeof document.activeElement.className === 'string'
+              ? document.activeElement.className
+              : null
+          ]
+        : null,
+      ce: center
+        ? [center.tag, center.id, center.className]
+        : null
+    };
+
+    try {
+      MCCalcDiag.postMessage(JSON.stringify(compact));
+    } catch (_) {}
+  }
+
+  window.addEventListener('error', function (event) {
+    try {
+      MCCalcDiag.postMessage(JSON.stringify({
+        event: 'window-error',
+        message: String(event.message || ''),
+        source: String(event.filename || ''),
+        line: event.lineno || null,
+        column: event.colno || null,
+        ts: Date.now()
+      }));
+    } catch (_) {}
+  });
+
+  window.addEventListener('unhandledrejection', function (event) {
+    try {
+      var reason = event.reason;
+      MCCalcDiag.postMessage(JSON.stringify({
+        e: 'rej',
+        n: reason && reason.name ? String(reason.name) : null,
+        m: reason && reason.message
+          ? String(reason.message)
+          : String(reason || ''),
+        s: reason && reason.stack
+          ? String(reason.stack).slice(0, 700)
+          : null,
+        ts: Date.now()
+      }));
+    } catch (_) {}
+  });
+
+  snapshot('diag-installed', null, 0);
+
+  document.addEventListener('click', function (event) {
+    var target = event && event.target;
+    var trigger = target && target.closest
+      ? target.closest('.hub-card-trigger')
+      : null;
+
+    if (!trigger) return;
+
+    var card = trigger.closest('.hub-card');
+    if (!card || !card.id) return;
+
+    [0, 80, 300, 1000, 3000].forEach(function (delayMs) {
+      setTimeout(function () {
+        snapshot('hub-click-sample', card.id, delayMs);
+      }, delayMs);
+    });
+  }, false);
+})();
+''');
+            } else {
+              await _controller.runJavaScript(_kInjectJs);
+              _webviewReady = true;
+
+              // Local iOS: replay route intent without a second native page load.
+              await _restoreLocalRouteFromWebUrl();
+
+              // Fix#6: injeta tema assim que a página termina de carregar
+              await _injectTheme();
+              await _injectPatientContext();
+              await _applyInitialDeepLinkBridge();
+              await _installFarmacosLandingVisibilityGuard();
+            }
           },
           onWebResourceError: (WebResourceError error) {
             // BUILD 283: loga erros de WebView no Logcat com código e URL exatos.
@@ -1010,10 +3101,11 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
     _calculatorExitInProgress = false;
   }
 
-  /// Detecta iOS sem usar dart:io Platform (compatível com Flutter Web).
+  /// Detecta iOS sem depender de InheritedWidget durante initState().
+  // MEDCASES_IOS_CALCULADORA_INITSTATE_INHERITED_THEME_FIX_V1_B_R7
   bool _detectIOS() {
-    // defaultTargetPlatform é seguro em todas as plataformas.
-    return Theme.of(context).platform == TargetPlatform.iOS;
+    // Seguro em initState(): não consulta Theme.of(context).
+    return defaultTargetPlatform == TargetPlatform.iOS;
   }
 
   @override
