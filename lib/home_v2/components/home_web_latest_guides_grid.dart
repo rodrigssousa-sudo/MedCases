@@ -167,39 +167,6 @@ class _HomeWebLatestGuidesGridState extends State<HomeWebLatestGuidesGrid> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.isEs ? 'GUÍAS CLÍNICAS' : 'GUIAS CLÍNICAS',
-                    style: TextStyle(
-                      color: widget.dark
-                          ? const Color(0xFFF8FAFC)
-                          : const Color(0xFF18202A),
-                      fontSize: 12,
-                      height: 1.2,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.7,
-                    ),
-                  ),
-                ),
-                Text(
-                  widget.isEs ? 'RECIENTES' : 'RECENTES',
-                  style: TextStyle(
-                    color: widget.dark
-                        ? const Color(0xFF9AA7B7)
-                        : const Color(0xFF667085),
-                    fontSize: 9.5,
-                    height: 1.2,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.55,
-                  ),
-                ),
-              ],
-            ),
-          ),
           _LatestGuidesHorizontalRail(
             guides: visible,
             dark: widget.dark,

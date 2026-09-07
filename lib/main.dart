@@ -3814,9 +3814,9 @@ class _MobileAppBar extends StatelessWidget {
 // DESKTOP SIDEBAR — navegação vertical estilo rail
 // ─────────────────────────────────────────────────────────────────────────────
 class _DesktopSidebar extends StatelessWidget {
-  // MEDCASES_DESKTOP_LIQUID_GLASS_SCROLL_SIDEBAR_FULL_FUNCTION_V1_B_R4
-  // Fixed: profile -> Home. Scrollable: all app workspaces/functions.
-  // Fixed bottom: Menu. Optical material mirrors the canonical action bar.
+  // MEDCASES_WEB_HOME_CLEAN_ICON_SIDEBAR_GUIDES_5PX_TOPBAR_V1_B_R0
+  // Desktop rail: profile + Home fixed, icon-only functions in the middle,
+  // Menu fixed at the bottom. Labels live only in tooltips.
   final int currentTab;
   final int currentRxSubTab;
   final bool dark;
@@ -3839,43 +3839,31 @@ class _DesktopSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inactiveColor = dark ? Colors.white : const Color(0xFF4B5563);
     final navBg = dark
-        ? const Color(0xFF161B22).withValues(alpha: 0.58)
-        : Colors.white.withValues(alpha: 0.56);
+        ? const Color(0xFF161B22).withValues(alpha: 0.42)
+        : Colors.white.withValues(alpha: 0.40);
     final liquidTop = dark
-        ? Colors.white.withValues(alpha: 0.11)
-        : Colors.white.withValues(alpha: 0.52);
-    final liquidMid = dark
-        ? Colors.white.withValues(alpha: 0.035)
-        : Colors.white.withValues(alpha: 0.16);
+        ? Colors.white.withValues(alpha: 0.075)
+        : Colors.white.withValues(alpha: 0.36);
     final liquidBorder = dark
-        ? Colors.white.withValues(alpha: 0.14)
-        : Colors.white.withValues(alpha: 0.82);
+        ? Colors.white.withValues(alpha: 0.085)
+        : Colors.white.withValues(alpha: 0.62);
     final liquidSpecular = dark
-        ? Colors.white.withValues(alpha: 0.22)
-        : Colors.white.withValues(alpha: 0.92);
+        ? Colors.white.withValues(alpha: 0.16)
+        : Colors.white.withValues(alpha: 0.72);
     final isEs = p.lang == 'es';
 
-    Widget divider() => Container(
-          height: 1,
-          margin: const EdgeInsets.symmetric(horizontal: 14),
-          color: dark
-              ? Colors.white.withValues(alpha: 0.08)
-              : Colors.black.withValues(alpha: 0.06),
-        );
-
-    Widget item({
+    Widget nav({
       required IconData icon,
-      required String label,
+      required String tooltip,
       required bool active,
       required VoidCallback onTap,
       IconData? iconActive,
     }) =>
-        _SidebarItem(
+        _DesktopSidebarIconButton(
           icon: icon,
           iconActive: iconActive,
-          label: label,
+          tooltip: tooltip,
           active: active,
           dark: dark,
           onTap: onTap,
@@ -3883,10 +3871,10 @@ class _DesktopSidebar extends StatelessWidget {
 
     return RepaintBoundary(
       child: SizedBox(
-        width: 88,
+        width: 72,
         child: ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: navBg,
@@ -3895,23 +3883,24 @@ class _DesktopSidebar extends StatelessWidget {
                   end: Alignment.bottomRight,
                   colors: [
                     liquidTop,
-                    liquidMid,
                     Colors.transparent,
                   ],
-                  stops: const [0.0, 0.36, 1.0],
                 ),
                 border: Border(
-                  right: BorderSide(color: liquidBorder, width: 0.8),
+                  right: BorderSide(
+                    color: liquidBorder,
+                    width: 0.6,
+                  ),
                 ),
               ),
               child: Stack(
                 children: [
                   Positioned(
                     top: 0,
-                    left: 12,
-                    right: 12,
+                    left: 10,
+                    right: 10,
                     child: Container(
-                      height: 0.8,
+                      height: 0.7,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(99),
                         gradient: LinearGradient(
@@ -3928,100 +3917,105 @@ class _DesktopSidebar extends StatelessWidget {
                   Column(
                     children: [
                       const SizedBox(height: 10),
+
+                      // Fixed profile.
                       _DesktopSidebarProfileButton(
                         p: p,
                         dark: dark,
                       ),
+
                       const SizedBox(height: 8),
-                      divider(),
-                      const SizedBox(height: 4),
-                      item(
+
+                      // Fixed Home.
+                      nav(
                         icon: Icons.home_outlined,
                         iconActive: Icons.home_rounded,
-                        label: isEs ? 'Inicio' : 'Início',
+                        tooltip: isEs ? 'Inicio' : 'Início',
                         active: currentTab == 0,
                         onTap: onLogoTap,
                       ),
-                      const SizedBox(height: 4),
-                      divider(),
+
+                      const SizedBox(height: 6),
+
+                      // Only the center is vertically scrollable.
                       Expanded(
                         child: SingleChildScrollView(
                           primary: false,
                           physics: const BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics(),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          padding: const EdgeInsets.symmetric(vertical: 2),
                           child: Column(
                             children: [
-                              item(
+                              nav(
                                 icon: Icons.psychology_rounded,
-                                label: 'IA',
+                                tooltip: 'IA',
                                 active: currentTab == 2,
                                 onTap: () => onTabChange(2),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.medication_rounded,
-                                label: 'Fármacos',
+                                tooltip: 'Fármacos',
                                 active: currentTab == 1 && currentRxSubTab == 1,
                                 onTap: onOpenDrugs,
                               ),
-                              item(
+                              nav(
                                 icon: Icons.folder_shared_rounded,
-                                label: 'H. Clínica',
+                                tooltip: 'H. Clínica',
                                 active: currentTab == 3,
                                 onTap: () => onTabChange(3),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.calculate_rounded,
-                                label: isEs ? 'Herram.' : 'Ferram.',
+                                tooltip: isEs ? 'Herramientas' : 'Ferramentas',
                                 active: currentTab == 4,
                                 onTap: () => onTabChange(4),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.menu_book_rounded,
-                                label: isEs ? 'Guías' : 'Guias',
+                                tooltip: isEs ? 'Guías' : 'Guias',
                                 active: currentTab == 5,
                                 onTap: () => onTabChange(5),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.medical_services_rounded,
-                                label: isEs ? 'Vacunas' : 'Vacinas',
+                                tooltip: isEs ? 'Vacunas' : 'Vacinas',
                                 active: currentTab == 6,
                                 onTap: () => onTabChange(6),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.play_circle_outline_rounded,
-                                label: isEs ? 'Simulación' : 'Simulação',
+                                tooltip: isEs ? 'Simulación' : 'Simulação',
                                 active: currentTab == 7,
                                 onTap: () => onTabChange(7),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.child_care_rounded,
-                                label: isEs ? 'Pediatría' : 'Pediatria',
+                                tooltip: isEs ? 'Pediatría' : 'Pediatria',
                                 active: currentTab == 8,
                                 onTap: () => onTabChange(8),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.science_rounded,
-                                label: isEs ? 'Laboratorio' : 'Laboratório',
+                                tooltip: isEs ? 'Laboratorio' : 'Laboratório',
                                 active: currentTab == 9,
                                 onTap: () => onTabChange(9),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.edit_note_rounded,
-                                label: 'Notas',
+                                tooltip: 'Notas',
                                 active: currentTab == 10,
                                 onTap: () => onTabChange(10),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.groups_rounded,
-                                label: 'Pacientes',
+                                tooltip: 'Pacientes',
                                 active: currentTab == 11,
                                 onTap: () => onTabChange(11),
                               ),
-                              item(
+                              nav(
                                 icon: Icons.fitness_center_rounded,
-                                label: isEs ? 'Evaluación' : 'Avaliação',
+                                tooltip: isEs ? 'Evaluación' : 'Avaliação',
                                 active: currentTab == 12,
                                 onTap: () => onTabChange(12),
                               ),
@@ -4029,49 +4023,19 @@ class _DesktopSidebar extends StatelessWidget {
                           ),
                         ),
                       ),
-                      divider(),
-                      const SizedBox(height: 4),
-                      Tooltip(
-                        message: p.userName.isNotEmpty
-                            ? p.userName
-                            : (isEs ? 'Menú' : 'Menu'),
-                        preferBelow: false,
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(14),
-                            onTap: onOpenDrawer,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 8,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.menu_rounded,
-                                    size: 24,
-                                    color: inactiveColor,
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Text(
-                                    isEs ? 'Menú' : 'Menu',
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w500,
-                                      height: 1,
-                                      color: inactiveColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+
+                      const SizedBox(height: 6),
+
+                      // Fixed bottom Menu.
+                      _DesktopSidebarIconButton(
+                        icon: Icons.menu_rounded,
+                        tooltip: isEs ? 'Menú' : 'Menu',
+                        active: false,
+                        dark: dark,
+                        onTap: onOpenDrawer,
                       ),
-                      const SizedBox(height: 8),
+
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ],
@@ -4133,8 +4097,8 @@ class _DesktopSidebarProfileButtonState
   }
 
   Widget _fallback(Color bg, Color border) => Container(
-        width: 44,
-        height: 44,
+        width: 40,
+        height: 40,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -4143,26 +4107,26 @@ class _DesktopSidebarProfileButtonState
         ),
         child: const Icon(
           Icons.person_rounded,
-          size: 23,
+          size: 21,
           color: Color(0xFF009C3B),
         ),
       );
 
   Widget _avatar() {
     final border = widget.dark
-        ? Colors.white.withValues(alpha: 0.16)
-        : Colors.black.withValues(alpha: 0.10);
+        ? Colors.white.withValues(alpha: 0.13)
+        : Colors.black.withValues(alpha: 0.08);
     final fallbackBg = widget.dark
-        ? Colors.white.withValues(alpha: 0.07)
-        : Colors.black.withValues(alpha: 0.035);
+        ? Colors.white.withValues(alpha: 0.045)
+        : Colors.black.withValues(alpha: 0.025);
 
     final encoded = _avatarBase64;
     if (encoded != null && encoded.isNotEmpty) {
       try {
         final bytes = base64Decode(encoded);
         return Container(
-          width: 44,
-          height: 44,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(color: border, width: 0.8),
@@ -4170,8 +4134,8 @@ class _DesktopSidebarProfileButtonState
           child: ClipOval(
             child: Image.memory(
               bytes,
-              width: 44,
-              height: 44,
+              width: 40,
+              height: 40,
               fit: BoxFit.cover,
               gaplessPlayback: true,
               errorBuilder: (_, __, ___) => _fallback(fallbackBg, border),
@@ -4187,31 +4151,17 @@ class _DesktopSidebarProfileButtonState
 
   @override
   Widget build(BuildContext context) {
-    final inactive = widget.dark ? Colors.white : const Color(0xFF4B5563);
-
     return Tooltip(
       message: widget.p.userName.isNotEmpty ? widget.p.userName : 'Perfil',
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: _openProfile,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _avatar(),
-              const SizedBox(height: 4),
-              Text(
-                'Perfil',
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 9.5,
-                  fontWeight: FontWeight.w500,
-                  height: 1,
-                  color: inactive,
-                ),
-              ),
-            ],
+      waitDuration: const Duration(milliseconds: 350),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: _openProfile,
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: _avatar(),
           ),
         ),
       ),
@@ -4219,17 +4169,17 @@ class _DesktopSidebarProfileButtonState
   }
 }
 
-class _SidebarItem extends StatelessWidget {
+class _DesktopSidebarIconButton extends StatelessWidget {
   final IconData icon;
   final IconData? iconActive;
-  final String label;
+  final String tooltip;
   final bool active;
   final bool dark;
   final VoidCallback onTap;
 
-  const _SidebarItem({
+  const _DesktopSidebarIconButton({
     required this.icon,
-    required this.label,
+    required this.tooltip,
     required this.active,
     required this.dark,
     required this.onTap,
@@ -4239,40 +4189,46 @@ class _SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const activeColor = Color(0xFF009C3B);
-    final inactiveColor = dark ? Colors.white : const Color(0xFF4B5563);
-    final color = active ? activeColor : inactiveColor;
+    final inactiveColor =
+        dark ? Colors.white.withValues(alpha: 0.88) : const Color(0xFF4B5563);
     final resolvedIcon = active && iconActive != null ? iconActive! : icon;
 
     return Tooltip(
-      message: label,
+      message: tooltip,
       preferBelow: false,
-      waitDuration: const Duration(milliseconds: 500),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutCubic,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(resolvedIcon, size: 22, color: color),
-              const SizedBox(height: 3),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-                  height: 1,
-                  color: color,
-                ),
+      waitDuration: const Duration(milliseconds: 350),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(14),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: onTap,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 170),
+              curve: Curves.easeOutCubic,
+              width: 44,
+              height: 44,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: active
+                    ? activeColor.withValues(alpha: dark ? 0.13 : 0.10)
+                    : Colors.transparent,
+                border: active
+                    ? Border.all(
+                        color: activeColor.withValues(alpha: 0.18),
+                        width: 0.7,
+                      )
+                    : null,
               ),
-            ],
+              child: Icon(
+                resolvedIcon,
+                size: 22,
+                color: active ? activeColor : inactiveColor,
+              ),
+            ),
           ),
         ),
       ),

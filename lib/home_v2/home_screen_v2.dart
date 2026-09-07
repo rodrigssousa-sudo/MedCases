@@ -68,7 +68,9 @@ class HomeScreenV2 extends StatelessWidget {
     // Status bar/Dynamic Island + topbar de 48 px + respiro oficial de 6 px.
     // O padding pertence ao scroll: o estado inicial permanece protegido,
     // enquanto o conteúdo pode passar atrás do vidro durante a rolagem.
-    final topContentPadding = systemTopInset + 54.0;
+    // MEDCASES_WEB_HOME_GUIDES_CARDS_5PX_BELOW_TOPBAR_V1_B_R0
+    final topContentPadding =
+        useWebWideGuidesShowcase ? 5.0 : systemTopInset + 54.0;
     final bottomContentPadding = kIsWeb ? 32.0 : systemBottomInset + 152.0;
     const horizontalPadding = 0.0;
     final contentMaxWidth = viewportWidth >= 600 ? 860.0 : double.infinity;
@@ -144,7 +146,6 @@ class HomeScreenV2 extends StatelessWidget {
                     embedded: true,
                     section: HomeV2ClinicalGridSection.patientPediatrics,
                   ),
-
                   onTabChange: onTabChange,
                 ),
                 HomeMiGuardiaSection(
