@@ -158,72 +158,21 @@ class _HomeWebLatestGuidesGridState extends State<HomeWebLatestGuidesGrid> {
       return const SizedBox.shrink();
     }
 
-    final visible = _visibleGuides;
+    final visible = _guides.length <= 4
+        ? _visibleGuides
+        : _guides.take(10).toList(growable: false);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.isEs ? 'GUÍAS CLÍNICAS' : 'GUIAS CLÍNICAS',
-                    style: TextStyle(
-                      color: widget.dark
-                          ? const Color(0xFFF8FAFC)
-                          : const Color(0xFF18202A),
-                      fontSize: 12,
-                      height: 1.2,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.7,
-                    ),
-                  ),
-                ),
-                Text(
-                  widget.isEs ? 'RECIENTES' : 'RECENTES',
-                  style: TextStyle(
-                    color: widget.dark
-                        ? const Color(0xFF9AA7B7)
-                        : const Color(0xFF667085),
-                    fontSize: 9.5,
-                    height: 1.2,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.55,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          AnimatedSwitcher(
+          _LatestGuidesHorizontalRail(
+            guides: visible,
+            dark: widget.dark,
+            isEs: widget.isEs,
             duration: _transitionDuration,
-            switchInCurve: Curves.easeOutCubic,
-            switchOutCurve: Curves.easeInCubic,
-            child: GridView.builder(
-              key: ValueKey<int>(_offset),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: visible.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: 1.08,
-              ),
-              itemBuilder: (context, index) {
-                final guide = visible[index];
-                return _LatestGuideCard(
-                  guide: guide,
-                  dark: widget.dark,
-                  isEs: widget.isEs,
-                  onTap: () => _openGuide(guide),
-                );
-              },
-            ),
+            onOpen: (guide) => _openGuide(guide),
           ),
         ],
       ),
@@ -377,6 +326,153 @@ class _GuideCoverFallback extends StatelessWidget {
   }
 }
 
+class _LatestGuidesHorizontalRail extends StatefulWidget {
+  const _LatestGuidesHorizontalRail({
+    required this.guides,
+    required this.dark,
+    required this.isEs,
+    required this.duration,
+    required this.onOpen,
+  });
+
+  final List<dynamic> guides;
+  final bool dark;
+  final bool isEs;
+  final Duration duration;
+  final void Function(dynamic guide) onOpen;
+
+  @override
+  State<_LatestGuidesHorizontalRail> createState() =>
+      _LatestGuidesHorizontalRailState();
+}
+
+class _LatestGuidesHorizontalRailState
+    extends State<_LatestGuidesHorizontalRail> {
+  final ScrollController _controller = ScrollController();
+  bool _moving = false;
+
+  static const double _gap = 5;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _goNext() async {
+    if (_moving || !_controller.hasClients) return;
+
+    final position = _controller.position;
+    if (position.maxScrollExtent <= 0) return;
+
+    setState(() => _moving = true);
+    try {
+      final current = position.pixels;
+      final max = position.maxScrollExtent;
+      final viewport = position.viewportDimension;
+      final target = current >= max - 2
+          ? 0.0
+          : (current + viewport).clamp(0.0, max).toDouble();
+
+      await _controller.animateTo(
+        target,
+        duration: widget.duration,
+        curve: Curves.easeOutCubic,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _moving = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.guides.isEmpty) return const SizedBox.shrink();
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cardWidth = (constraints.maxWidth - _gap) / 2;
+        final cardHeight = cardWidth / 1.08;
+
+        return SizedBox(
+          height: cardHeight,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ListView.separated(
+                controller: _controller,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.zero,
+                itemCount: widget.guides.length,
+                separatorBuilder: (_, __) => const SizedBox(width: _gap),
+                itemBuilder: (context, index) {
+                  final guide = widget.guides[index];
+                  return SizedBox(
+                    width: cardWidth,
+                    child: _LatestGuideCard(
+                      guide: guide,
+                      dark: widget.dark,
+                      isEs: widget.isEs,
+                      onTap: () => widget.onOpen(guide),
+                    ),
+                  );
+                },
+              ),
+              if (widget.guides.length > 2)
+                Positioned(
+                  right: 7,
+                  top: (cardHeight - 36) / 2,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _moving ? null : _goNext,
+                      borderRadius: BorderRadius.circular(18),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: widget.dark
+                              ? const Color(0xE61B1F24)
+                              : const Color(0xF2FFFFFF),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: widget.dark
+                                ? const Color(0xFF3A414B)
+                                : const Color(0xFFD7DEE7),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(
+                                alpha: widget.dark ? 0.28 : 0.12,
+                              ),
+                              blurRadius: 12,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 16,
+                          color: widget.dark
+                              ? const Color(0xFFF4F7FA)
+                              : const Color(0xFF26313D),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _LatestGuidesLoadingGrid extends StatelessWidget {
   const _LatestGuidesLoadingGrid();
 
@@ -387,23 +483,32 @@ class _LatestGuidesLoadingGrid extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 5),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        itemCount: 4,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 5,
-          mainAxisSpacing: 5,
-          childAspectRatio: 1.08,
-        ),
-        itemBuilder: (_, __) => DecoratedBox(
-          decoration: BoxDecoration(
-            color: fill,
-            borderRadius: BorderRadius.circular(14),
+      child: Row(
+        children: [
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: 1.08,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: fill,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
           ),
-        ),
+          const SizedBox(width: 5),
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: 1.08,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: fill,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
