@@ -70,7 +70,7 @@ import 'services/offline_calculator_cache_service.dart'; // BUILD 240: smart off
 import 'services/calculator_webview_prewarm_service.dart';
 import 'services/app_resume_coordinator.dart'; // BUILD 241: background/resume safety
 import 'widgets/brand_mark.dart';
-import 'widgets/common_widgets.dart' show MedBreakpoints, AppHaptics;
+import 'widgets/common_widgets.dart' show AppHaptics;
 import 'screens/study_workspace_screen.dart';
 import 'screens/study_history_screen.dart';
 import 'home_v2/components/navigation/home_card_transition.dart';
@@ -2539,17 +2539,16 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
             child: Builder(
               builder: (scaffoldCtx) => _DesktopSidebar(
                 currentTab: _tab,
+                currentRxSubTab: _rxProtoSub,
                 dark: dark,
                 p: p,
+                onOpenDrugs: () {
+                  _RxProtoCombo.externalSubTab.value = 1;
+                  _onTabChange(1);
+                },
                 // Volta para Home (tab 0) e scrolla para o topo
-                onLogoTap: () {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  setState(() => _tab = 0);
-                },
-                onTabChange: (t) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  setState(() => _tab = t);
-                },
+                onLogoTap: () => _onTabChange(0),
+                onTabChange: _onTabChange,
                 // Builder garante que scaffoldCtx está DENTRO do Scaffold
                 // → Scaffold.of() encontra o endDrawer corretamente
                 onOpenDrawer: () => Scaffold.of(scaffoldCtx).openEndDrawer(),
@@ -2569,7 +2568,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
                   Expanded(
                     child: showPersistentAiSplit
                         // ── SPLIT-VIEW: HomeDashboard 40% | AiScreen 60% ──────
-                        ? _buildSplitView(dark, divColor, leftPaneIndex)
+                        ? _buildSplitView(dark, divColor, leftPaneIndex, p.lang)
                         // ── IndexedStack normal para todas as outras tabs ──────
                         : HomeCardWorkspaceTransition(
                             transitionKey: stackIdx,
@@ -2604,7 +2603,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   /// Build 136-B — Split-View para iPad 13" / desktop largo na tab IA.
   /// HomeDashboard (40%) + divisor + AiScreen (60%).
   /// Ambos os painéis ficam vivos — sem remontar ao alternar.
-  Widget _buildSplitView(bool dark, Color divColor, int leftPaneIndex) {
+  Widget _buildSplitView(
+      bool dark, Color divColor, int leftPaneIndex, String lang) {
     return Row(
       children: [
         // ── Painel esquerdo: HomeDashboard (40%) ──────────────────────────────
@@ -2614,18 +2614,38 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
           // Desktop Web >=1024: the 40% workspace owns an isolated Navigator.
           // Descendant push/search/sheet routes remain inside this pane and can
           // never replace the persistent 60% AiScreen on the right.
-          child: ClipRect(
-            // MEDCASES_HOME_CARD_OPEN_TRANSITION_UNIFICATION_WEB_MOBILE_V1_B_R3
-            child: HomeCardWorkspaceTransition(
-              transitionKey: leftPaneIndex,
-              child: Navigator(
-                key: ValueKey<String>('web-left-pane-$leftPaneIndex'),
-                onGenerateRoute: (settings) => MaterialPageRoute<void>(
-                  settings: settings,
-                  builder: (_) => _staticScreens[leftPaneIndex],
+          child: Column(
+            children: [
+              // MEDCASES_HOME_WEB_40_PANE_CANONICAL_TOPBAR_RESTORE_V1_B_R0
+              // Restore the same 48 px canonical Home topbar used by the
+              // mobile shell, only while the persistent 40% pane owns Home.
+              if (leftPaneIndex == 0)
+                SizedBox(
+                  height: 48,
+                  child: _MobileAppBar(
+                    dark: dark,
+                    currentTab: 0,
+                    lang: lang,
+                    isHome: true,
+                    onLogoTap: () {},
+                  ),
+                ),
+              Expanded(
+                child: ClipRect(
+                  // MEDCASES_HOME_CARD_OPEN_TRANSITION_UNIFICATION_WEB_MOBILE_V1_B_R3
+                  child: HomeCardWorkspaceTransition(
+                    transitionKey: leftPaneIndex,
+                    child: Navigator(
+                      key: ValueKey<String>('web-left-pane-$leftPaneIndex'),
+                      onGenerateRoute: (settings) => MaterialPageRoute<void>(
+                        settings: settings,
+                        builder: (_) => _staticScreens[leftPaneIndex],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
 
@@ -3794,276 +3814,403 @@ class _MobileAppBar extends StatelessWidget {
 // DESKTOP SIDEBAR — navegação vertical estilo rail
 // ─────────────────────────────────────────────────────────────────────────────
 class _DesktopSidebar extends StatelessWidget {
-  // MEDCASES_GLOBAL_DARK_THEME_SECOND_BRAND_V2_B_R1_SIDEBAR
+  // MEDCASES_DESKTOP_LIQUID_GLASS_SCROLL_SIDEBAR_FULL_FUNCTION_V1_B_R4
+  // Fixed: profile -> Home. Scrollable: all app workspaces/functions.
+  // Fixed bottom: Menu. Optical material mirrors the canonical action bar.
   final int currentTab;
+  final int currentRxSubTab;
   final bool dark;
   final AppProvider p;
   final ValueChanged<int> onTabChange;
+  final VoidCallback onOpenDrugs;
   final VoidCallback onOpenDrawer;
-  final VoidCallback onLogoTap; // navega para Home (tab 0)
+  final VoidCallback onLogoTap;
 
   const _DesktopSidebar({
     required this.currentTab,
+    required this.currentRxSubTab,
     required this.dark,
     required this.p,
     required this.onTabChange,
+    required this.onOpenDrugs,
     required this.onOpenDrawer,
     required this.onLogoTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bg = dark ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF);
-    final activeCol = dark ? const Color(0xFF0D6B57) : const Color(0xFF0A7C4E);
-    final inactiveCol =
-        dark ? const Color(0xFF6B7280) : const Color(0xFFADB5BD);
-    final activeBg = dark
-        ? const Color(0xFF0D6B57).withOpacity(0.12)
-        : const Color(0xFF0A7C4E).withOpacity(0.08);
+    final inactiveColor = dark ? Colors.white : const Color(0xFF4B5563);
+    final navBg = dark
+        ? const Color(0xFF161B22).withValues(alpha: 0.58)
+        : Colors.white.withValues(alpha: 0.56);
+    final liquidTop = dark
+        ? Colors.white.withValues(alpha: 0.11)
+        : Colors.white.withValues(alpha: 0.52);
+    final liquidMid = dark
+        ? Colors.white.withValues(alpha: 0.035)
+        : Colors.white.withValues(alpha: 0.16);
+    final liquidBorder = dark
+        ? Colors.white.withValues(alpha: 0.14)
+        : Colors.white.withValues(alpha: 0.82);
+    final liquidSpecular = dark
+        ? Colors.white.withValues(alpha: 0.22)
+        : Colors.white.withValues(alpha: 0.92);
     final isEs = p.lang == 'es';
 
+    Widget divider() => Container(
+          height: 1,
+          margin: const EdgeInsets.symmetric(horizontal: 14),
+          color: dark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.black.withValues(alpha: 0.06),
+        );
+
+    Widget item({
+      required IconData icon,
+      required String label,
+      required bool active,
+      required VoidCallback onTap,
+      IconData? iconActive,
+    }) =>
+        _SidebarItem(
+          icon: icon,
+          iconActive: iconActive,
+          label: label,
+          active: active,
+          dark: dark,
+          onTap: onTap,
+        );
+
     return RepaintBoundary(
-      child: Container(
-        width: MedBreakpoints.sidebarWidth,
-        color: bg,
-        child: Column(
-          children: [
-            // ── Logo M+ no TOPO — clicável → volta para Home ────────────
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Tooltip(
-                message: 'Início',
-                preferBelow: true,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onLogoTap,
-                  child: Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFF0E7C52), Color(0xFF064D32)],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF0E7C52).withOpacity(0.35),
-                          blurRadius: 10,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        'assets/icon/app_icon.png',
-                        width: 46,
-                        height: 46,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Center(
-                          child: Text('M+',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w900,
-                                  color: Color(0xFFFFE8A6))),
+      child: SizedBox(
+        width: 88,
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: navBg,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    liquidTop,
+                    liquidMid,
+                    Colors.transparent,
+                  ],
+                  stops: const [0.0, 0.36, 1.0],
+                ),
+                border: Border(
+                  right: BorderSide(color: liquidBorder, width: 0.8),
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 12,
+                    right: 12,
+                    child: Container(
+                      height: 0.8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(99),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.transparent,
+                            liquidSpecular,
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.5, 1.0],
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 18),
-
-            // ── Divisor sutil ─────────────────────────────────────────────
-            Container(
-              height: 1,
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-              color: dark
-                  ? Colors.white.withOpacity(0.06)
-                  : Colors.black.withOpacity(0.05),
-            ),
-
-            const SizedBox(height: 10),
-
-            // ── Itens de navegação ────────────────────────────────────────
-            _SidebarItem(
-              icon: Icons.home_rounded,
-              label: isEs ? 'Inicio' : 'Início',
-              active: currentTab == 0,
-              dark: dark,
-              activeCol: activeCol,
-              inactiveCol: inactiveCol,
-              activeBg: activeBg,
-              onTap: () => onTabChange(0),
-            ),
-            _SidebarItem(
-              icon: Icons.psychology_rounded,
-              label: 'IA',
-              active: currentTab == 2,
-              dark: dark,
-              activeCol:
-                  dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57),
-              inactiveCol: inactiveCol,
-              activeBg: const Color(0xFF0D6B57).withOpacity(0.10),
-              onTap: () => onTabChange(2),
-            ),
-            _SidebarItem(
-              icon: Icons.folder_shared_rounded,
-              label: isEs ? 'H. Clínica' : 'H. Clínica',
-              active: currentTab == 3,
-              dark: dark,
-              activeCol: activeCol,
-              inactiveCol: inactiveCol,
-              activeBg: activeBg,
-              onTap: () => onTabChange(3),
-            ),
-            _SidebarItem(
-              icon: Icons.menu_book_rounded,
-              label: isEs ? 'Biblio.' : 'Biblio.',
-              active: currentTab == 5,
-              dark: dark,
-              activeCol: activeCol,
-              inactiveCol: inactiveCol,
-              activeBg: activeBg,
-              onTap: () => onTabChange(5),
-            ),
-            _SidebarItem(
-              icon: Icons.calculate_rounded,
-              label: isEs ? 'Calc.' : 'Calc.',
-              active: currentTab == 4,
-              dark: dark,
-              activeCol: activeCol,
-              inactiveCol: inactiveCol,
-              activeBg: activeBg,
-              onTap: () => onTabChange(4),
-            ),
-
-            const Spacer(),
-
-            // ── Divisor antes do rodapé ───────────────────────────────────
-            Container(
-              height: 1,
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-              color: dark
-                  ? Colors.white.withOpacity(0.06)
-                  : Colors.black.withOpacity(0.05),
-            ),
-            const SizedBox(height: 8),
-
-            // ── Botão hambúrguer na BASE — abre drawer de perfil/menu ─────
-            Tooltip(
-              message: p.userName.isNotEmpty ? p.userName : 'Menu',
-              preferBelow: false,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: onOpenDrawer,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 160),
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.transparent,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Ícone hambúrguer (3 linhas) — claramente indica "menu"
-                        Icon(
-                          Icons.menu_rounded,
-                          size: 26,
-                          color: inactiveCol,
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          'Menu',
-                          style: TextStyle(
-                            fontSize: 7.0,
-                            fontWeight: FontWeight.w500,
-                            color: inactiveCol,
+                  Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      _DesktopSidebarProfileButton(
+                        p: p,
+                        dark: dark,
+                      ),
+                      const SizedBox(height: 8),
+                      divider(),
+                      const SizedBox(height: 4),
+                      item(
+                        icon: Icons.home_outlined,
+                        iconActive: Icons.home_rounded,
+                        label: isEs ? 'Inicio' : 'Início',
+                        active: currentTab == 0,
+                        onTap: onLogoTap,
+                      ),
+                      const SizedBox(height: 4),
+                      divider(),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          primary: false,
+                          physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Column(
+                            children: [
+                              item(
+                                icon: Icons.psychology_rounded,
+                                label: 'IA',
+                                active: currentTab == 2,
+                                onTap: () => onTabChange(2),
+                              ),
+                              item(
+                                icon: Icons.medication_rounded,
+                                label: 'Fármacos',
+                                active: currentTab == 1 && currentRxSubTab == 1,
+                                onTap: onOpenDrugs,
+                              ),
+                              item(
+                                icon: Icons.folder_shared_rounded,
+                                label: 'H. Clínica',
+                                active: currentTab == 3,
+                                onTap: () => onTabChange(3),
+                              ),
+                              item(
+                                icon: Icons.calculate_rounded,
+                                label: isEs ? 'Herram.' : 'Ferram.',
+                                active: currentTab == 4,
+                                onTap: () => onTabChange(4),
+                              ),
+                              item(
+                                icon: Icons.menu_book_rounded,
+                                label: isEs ? 'Guías' : 'Guias',
+                                active: currentTab == 5,
+                                onTap: () => onTabChange(5),
+                              ),
+                              item(
+                                icon: Icons.medical_services_rounded,
+                                label: isEs ? 'Vacunas' : 'Vacinas',
+                                active: currentTab == 6,
+                                onTap: () => onTabChange(6),
+                              ),
+                              item(
+                                icon: Icons.play_circle_outline_rounded,
+                                label: isEs ? 'Simulación' : 'Simulação',
+                                active: currentTab == 7,
+                                onTap: () => onTabChange(7),
+                              ),
+                              item(
+                                icon: Icons.child_care_rounded,
+                                label: isEs ? 'Pediatría' : 'Pediatria',
+                                active: currentTab == 8,
+                                onTap: () => onTabChange(8),
+                              ),
+                              item(
+                                icon: Icons.science_rounded,
+                                label: isEs ? 'Laboratorio' : 'Laboratório',
+                                active: currentTab == 9,
+                                onTap: () => onTabChange(9),
+                              ),
+                              item(
+                                icon: Icons.edit_note_rounded,
+                                label: 'Notas',
+                                active: currentTab == 10,
+                                onTap: () => onTabChange(10),
+                              ),
+                              item(
+                                icon: Icons.groups_rounded,
+                                label: 'Pacientes',
+                                active: currentTab == 11,
+                                onTap: () => onTabChange(11),
+                              ),
+                              item(
+                                icon: Icons.fitness_center_rounded,
+                                label: isEs ? 'Evaluación' : 'Avaliação',
+                                active: currentTab == 12,
+                                onTap: () => onTabChange(12),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      divider(),
+                      const SizedBox(height: 4),
+                      Tooltip(
+                        message: p.userName.isNotEmpty
+                            ? p.userName
+                            : (isEs ? 'Menú' : 'Menu'),
+                        preferBelow: false,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(14),
+                            onTap: onOpenDrawer,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 8,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.menu_rounded,
+                                    size: 24,
+                                    color: inactiveColor,
+                                  ),
+                                  const SizedBox(height: 3),
+                                  Text(
+                                    isEs ? 'Menú' : 'Menu',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1,
+                                      color: inactiveColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
                   ),
-                ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _SidebarItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool active;
+class _DesktopSidebarProfileButton extends StatefulWidget {
+  final AppProvider p;
   final bool dark;
-  final Color activeCol;
-  final Color inactiveCol;
-  final Color activeBg;
-  final VoidCallback onTap;
 
-  const _SidebarItem({
-    required this.icon,
-    required this.label,
-    required this.active,
+  const _DesktopSidebarProfileButton({
+    required this.p,
     required this.dark,
-    required this.activeCol,
-    required this.inactiveCol,
-    required this.activeBg,
-    required this.onTap,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final iconColor = active ? activeCol : inactiveCol;
-    return Tooltip(
-      message: label,
-      preferBelow: false,
-      waitDuration: const Duration(milliseconds: 600),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          curve: Curves.easeOut,
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+  State<_DesktopSidebarProfileButton> createState() =>
+      _DesktopSidebarProfileButtonState();
+}
+
+class _DesktopSidebarProfileButtonState
+    extends State<_DesktopSidebarProfileButton> {
+  String? _avatarBase64;
+
+  String get _avatarPrefsKey {
+    final uid = widget.p.currentUser?.uid.trim();
+    return 'medcases_profile_avatar_${(uid != null && uid.isNotEmpty) ? uid : 'local'}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAvatar();
+  }
+
+  Future<void> _loadAvatar() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final encoded = prefs.getString(_avatarPrefsKey);
+      if (mounted) setState(() => _avatarBase64 = encoded);
+    } catch (_) {
+      if (mounted) setState(() => _avatarBase64 = null);
+    }
+  }
+
+  Future<void> _openProfile() async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => ProfileAccountScreen(p: widget.p),
+      ),
+    );
+    if (mounted) await _loadAvatar();
+  }
+
+  Widget _fallback(Color bg, Color border) => Container(
+        width: 44,
+        height: 44,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: bg,
+          border: Border.all(color: border, width: 0.8),
+        ),
+        child: const Icon(
+          Icons.person_rounded,
+          size: 23,
+          color: Color(0xFF009C3B),
+        ),
+      );
+
+  Widget _avatar() {
+    final border = widget.dark
+        ? Colors.white.withValues(alpha: 0.16)
+        : Colors.black.withValues(alpha: 0.10);
+    final fallbackBg = widget.dark
+        ? Colors.white.withValues(alpha: 0.07)
+        : Colors.black.withValues(alpha: 0.035);
+
+    final encoded = _avatarBase64;
+    if (encoded != null && encoded.isNotEmpty) {
+      try {
+        final bytes = base64Decode(encoded);
+        return Container(
+          width: 44,
+          height: 44,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: active ? activeBg : Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(color: border, width: 0.8),
           ),
+          child: ClipOval(
+            child: Image.memory(
+              bytes,
+              width: 44,
+              height: 44,
+              fit: BoxFit.cover,
+              gaplessPlayback: true,
+              errorBuilder: (_, __, ___) => _fallback(fallbackBg, border),
+            ),
+          ),
+        );
+      } catch (_) {
+        return _fallback(fallbackBg, border);
+      }
+    }
+    return _fallback(fallbackBg, border);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final inactive = widget.dark ? Colors.white : const Color(0xFF4B5563);
+
+    return Tooltip(
+      message: widget.p.userName.isNotEmpty ? widget.p.userName : 'Perfil',
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: _openProfile,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 20, color: iconColor),
-              if (label.isNotEmpty) ...[
-                const SizedBox(height: 3),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 7.5,
-                    fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                    color: iconColor,
-                    letterSpacing: 0.1,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
+              _avatar(),
+              const SizedBox(height: 4),
+              Text(
+                'Perfil',
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w500,
+                  height: 1,
+                  color: inactive,
                 ),
-              ],
+              ),
             ],
           ),
         ),
@@ -4072,15 +4219,74 @@ class _SidebarItem extends StatelessWidget {
   }
 }
 
-// ── Combo Rx + Protocolos ─────────────────────────────────────────────────────
-// _RxProtoCombo — StatefulWidget com sub-tab interno.
-// CRÍTICO: mora em _staticScreens (criado no initState do MainShell) para que
-// notifyListeners() do AppProvider não o recrie a cada rebuild do pai.
-// O sub-tab é estado interno (_sub) — independente de rebuild externo.
-// onSubTabChange notifica o MainShell apenas para sincronismo (ex: deep links).
+class _SidebarItem extends StatelessWidget {
+  final IconData icon;
+  final IconData? iconActive;
+  final String label;
+  final bool active;
+  final bool dark;
+  final VoidCallback onTap;
+
+  const _SidebarItem({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.dark,
+    required this.onTap,
+    this.iconActive,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const activeColor = Color(0xFF009C3B);
+    final inactiveColor = dark ? Colors.white : const Color(0xFF4B5563);
+    final color = active ? activeColor : inactiveColor;
+    final resolvedIcon = active && iconActive != null ? iconActive! : icon;
+
+    return Tooltip(
+      message: label,
+      preferBelow: false,
+      waitDuration: const Duration(milliseconds: 500),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOutCubic,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(resolvedIcon, size: 22, color: color),
+              const SizedBox(height: 3),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+                  height: 1,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _RxProtoCombo extends StatefulWidget {
   final int subTab;
   final ValueChanged<int> onSubTabChange;
+
+  // Desktop sidebar direct-entry bridge for the only exposed sub-function:
+  // 1=Fármacos.
+  static final ValueNotifier<int> externalSubTab = ValueNotifier<int>(0);
 
   const _RxProtoCombo({
     required this.subTab,
@@ -4098,11 +4304,27 @@ class _RxProtoComboState extends State<_RxProtoCombo> {
   void initState() {
     super.initState();
     _sub = widget.subTab;
+    _RxProtoCombo.externalSubTab.value = _sub;
+    _RxProtoCombo.externalSubTab.addListener(_onExternalSubTab);
+  }
+
+  @override
+  void dispose() {
+    _RxProtoCombo.externalSubTab.removeListener(_onExternalSubTab);
+    super.dispose();
+  }
+
+  void _onExternalSubTab() {
+    final i = _RxProtoCombo.externalSubTab.value;
+    if (i < 0 || i > 3 || i == _sub) return;
+    setState(() => _sub = i);
+    widget.onSubTabChange(i);
   }
 
   void _select(int i) {
     if (_sub == i) return;
     setState(() => _sub = i);
+    _RxProtoCombo.externalSubTab.value = i;
     widget.onSubTabChange(i);
   }
 

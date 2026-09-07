@@ -1031,7 +1031,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   }
 
   Element.prototype.scrollIntoView=function(){
-    if(farmActive() && editable(this) && insideFarmacos(this)){
+    if(farmActive() && editable(this) && insideFarmacos(this) && !isFarmSearch(this)){
       try{
         if(window.MCCalcDiag){
           MCCalcDiag.postMessage(JSON.stringify({e:'farmacos-scrollintoview-blocked',id:this.id||null}));
@@ -1054,6 +1054,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     ensureStyle();
     if(!farmActive())return;
     var ae=document.activeElement;
+    if(isFarmSearch(ae)){
+      try{if(document.body)document.body.classList.remove('keyboard-open')}catch(_){}
+      document.documentElement.style.removeProperty('--mc-farmacos-visible-vh');
+      document.documentElement.style.removeProperty('--keyboard-safe-bottom');
+      return;
+    }
+
     if(!editable(ae) || !insideFarmacos(ae)){
       setClosedBaseline();
       document.documentElement.style.removeProperty('--mc-farmacos-visible-vh');
@@ -1087,7 +1094,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   }
 
   document.addEventListener('focusin',function(e){
-    if(!editable(e.target) || !insideFarmacos(e.target))return;
+    if(!editable(e.target) || !insideFarmacos(e.target) || isFarmSearch(e.target))return;
     setTimeout(function(){correct('focus-0');},0);
     setTimeout(function(){correct('focus-120');},120);
     setTimeout(function(){correct('focus-320');},320);
@@ -1257,6 +1264,17 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     }
 
     function apply(){
+      if(rootSearchFocused()){
+        try{BODY.classList.remove('keyboard-open')}catch(_){}
+        ROOT.style.removeProperty('--mc-farm-r1-vv-top');
+        ROOT.style.removeProperty('--mc-farm-r1-vv-height');
+        ROOT.style.removeProperty('--keyboard-safe-bottom');
+        var sc0=scrollContent();
+        if(sc0){
+          try{sc0.style.removeProperty('padding-bottom')}catch(_){}
+        }
+        return;
+      }
       ensureStyle();
       var open=farmOpen();
       BODY.classList.toggle(ACTIVE_CLASS,open);
@@ -1269,6 +1287,12 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     function schedule(){
       timers.forEach(function(id){clearTimeout(id)});
       timers=[];
+
+      if(rootSearchFocused()){
+        apply();
+        return;
+      }
+
       apply();
       [40,100,180,300,500].forEach(function(ms){
         timers.push(setTimeout(apply,ms));
@@ -1311,6 +1335,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   'use strict';
   if(window.__MC_FARMACOS_R2_SESSION_BOUND)return;
   window.__MC_FARMACOS_R2_SESSION_BOUND=true;
+  // R12-R1: legacy R2 detail owner superseded by canonical MCD R8.
+  return;
 
   var SESSION='mc-farmacos-r2-session';
   var STYLE_ID='mc-farmacos-r2-session-style';
@@ -1448,6 +1474,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   'use strict';
   if (window.__MC_FARMACOS_R3_SMOOTH_BOUND) return;
   window.__MC_FARMACOS_R3_SMOOTH_BOUND = true;
+  // R12-R1: legacy R3 fd-modal owner superseded by canonical MCD R8.
+  return;
 
   var ACTIVE = 'mc-farmacos-r3-active';
   var STYLE_ID = 'mc-farmacos-r3-smooth-style';
@@ -2307,17 +2335,17 @@ ensurePage();
                 'nameRightClose=true oneClick=true platform=ios',
               );
 
-              // MEDCASES_IOS_FARMACOS_SEARCH_AND_REOPEN_LIFECYCLE_CLOSURE_V1_B_R11
+              // MEDCASES_IOS_FARMACOS_ROOT_SEARCH_NATIVE_KEYBOARD_ISOLATION_V1_B_R15_R1
               await _controller.runJavaScript(r'''
 (function(){
   'use strict';
-  if(window.__MC_FARMACOS_SEARCH_REOPEN_R11_BOUND)return;
-  window.__MC_FARMACOS_SEARCH_REOPEN_R11_BOUND=true;
+  if(window.__MC_FARMACOS_ROOT_SEARCH_NATIVE_KB_R15_R1_BOUND)return;
+  window.__MC_FARMACOS_ROOT_SEARCH_NATIVE_KB_R15_R1_BOUND=true;
 
+  var raf=0;
   var INPUT_IDS=['hm-drug-search','farmacos-search-input'];
-  var timers=[];
 
-  function queryInput(){
+  function inputNode(){
     for(var i=0;i<INPUT_IDS.length;i++){
       var el=document.getElementById(INPUT_IDS[i]);
       if(el&&el.isConnected)return el;
@@ -2325,93 +2353,77 @@ ensurePage();
     return null;
   }
 
-  function revealSearchResults(input){
+  function reconcile(){
+    raf=0;
+
+    var input=inputNode();
     if(!input)return;
+
     var q=String(input.value||'').trim();
+    var shell=document.getElementById('farmacos-v2-shell');
+    var r6Host=document.querySelector(
+      '[data-mc-farm-browser-r6-results-host="true"]'
+    );
 
-    var list=document.getElementById('hm-drug-list');
-    if(list&&q){
-      list.style.setProperty('display','block','important');
-      list.style.setProperty('visibility','visible','important');
-      list.style.setProperty('opacity','1','important');
-      list.style.setProperty('pointer-events','auto','important');
+    if(!r6Host)return;
+
+    var canonicalResultsActive=!!(
+      shell &&
+      shell.getAttribute('data-mc-fnav-results-active')==='true'
+    );
+
+    if(canonicalResultsActive || !q){
+      r6Host.removeAttribute('data-active');
+      return;
     }
 
-    var host=document.querySelector('[data-mc-farm-browser-r6-results-host="true"]');
-    if(host&&q){
-      host.setAttribute('data-active','true');
-      host.style.setProperty('display','block','important');
-      host.style.setProperty('visibility','visible','important');
-      host.style.setProperty('opacity','1','important');
-    }
-
-    var az=document.querySelector('#farmacos-v2-shell [data-farmacos-panel="az"]');
-    if(az&&q){
-      az.style.setProperty('display','block','important');
-      az.style.setProperty('visibility','visible','important');
-      az.style.setProperty('opacity','1','important');
-    }
-
-    if(list&&q){ void list.offsetHeight; }
+    r6Host.setAttribute('data-active','true');
   }
 
-  function runNativeSearch(input){
-    if(!input)return;
-    var q=String(input.value||'');
-
-    try{
-      if(input.id==='hm-drug-search' &&
-         typeof window.hmFilterDrugs==='function'){
-        window.hmFilterDrugs(q);
-      }else if(input.id==='farmacos-search-input'){
-        if(typeof window._renderFarmacosListDebounced==='function'){
-          window._renderFarmacosListDebounced(q);
-        }else if(typeof window.renderFarmacosList==='function'){
-          window.renderFarmacosList(q);
-        }
-      }
-    }catch(_){}
-
-    revealSearchResults(input);
-  }
-
-  function schedule(input){
-    for(var i=0;i<timers.length;i++)clearTimeout(timers[i]);
-    timers=[];
-    [0,180,320].forEach(function(ms){
-      timers.push(setTimeout(function(){
-        if(!input||!input.isConnected)return;
-        runNativeSearch(input);
-      },ms));
-    });
+  function schedule(){
+    if(raf)return;
+    raf=requestAnimationFrame(reconcile);
   }
 
   document.addEventListener('input',function(ev){
-    var input=ev.target;
-    if(!input||INPUT_IDS.indexOf(input.id)===-1)return;
-    schedule(input);
+    var t=ev.target;
+    if(!t||INPUT_IDS.indexOf(t.id)===-1)return;
+
+    // R15-R1: canonical HTML oninput owns hmFilterDrugs.
+    // This bridge only clears stale custom keyboard geometry and reconciles
+    // the existing results host; it never calls the search engine.
+    if(t.id==='hm-drug-search'){
+      try{if(document.body)document.body.classList.remove('keyboard-open')}catch(_){}
+      try{
+        document.documentElement.style.removeProperty('--mc-farmacos-visible-vh');
+        document.documentElement.style.removeProperty('--mc-farm-r1-vv-top');
+        document.documentElement.style.removeProperty('--mc-farm-r1-vv-height');
+        document.documentElement.style.removeProperty('--keyboard-safe-bottom');
+      }catch(_){}
+    }
+
+    schedule();
   },true);
 
-  document.addEventListener('focusin',function(ev){
-    var input=ev.target;
-    if(!input||INPUT_IDS.indexOf(input.id)===-1)return;
-    if(String(input.value||'').trim())schedule(input);
+  document.addEventListener('click',function(ev){
+    var t=ev.target;
+    if(!t||!t.closest)return;
+    if(
+      t.closest('#hub-card-farmacos') ||
+      t.closest('#farmacos-v2-shell') ||
+      t.closest('#mc-drug-detail-page-v21')
+    ){
+      schedule();
+    }
   },true);
 
-  document.addEventListener('click',function(){
-    setTimeout(function(){
-      var input=queryInput();
-      if(input&&String(input.value||'').trim()){
-        revealSearchResults(input);
-      }
-    },80);
-  },true);
+  schedule();
 })();
 ''');
 
               debugPrint(
-                '[CalculadoraWebView][FARMACOS_R11] '
-                'searchRender=true reopenLifecycle=true platform=ios',
+                '[CalculadoraWebView][FARMACOS_R15_R1] '
+                'rootSearchNativeKeyboard=true canonicalInlineSearch=true platform=ios',
               );
 
               // MEDCASES_IOS_FARMACOS_DETAIL_TOPBAR_PHYSICAL_OWNER_PROBE_V1_B_R4
@@ -2420,6 +2432,10 @@ ensurePage();
   'use strict';
   if (window.__MC_FARMACOS_TOPBAR_OWNER_PROBE_BOUND) return;
   window.__MC_FARMACOS_TOPBAR_OWNER_PROBE_BOUND = true;
+
+  // MEDCASES_IOS_CALCULADORA_WKCONTENT_PRESSURE_DIAGNOSTIC_EXTERMINATION_V1_B_R16
+  // Obsolete forensic owner: do not install layout/text probes or click timers.
+  return;
 
   function slim(el) {
     if (!el) return null;
@@ -2531,6 +2547,10 @@ ensurePage();
   }
 
   window.__MC_WK_DOM_DIAG_BOUND = true;
+
+  // R16: obsolete full-DOM snapshot producer disabled.
+  // Preserve MCCalcDiag channel for lightweight functional telemetry only.
+  return;
 
   function rect(el) {
     if (!el) return null;
