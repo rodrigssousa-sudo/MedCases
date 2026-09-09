@@ -16,6 +16,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
 import '../services/offline_calculator_cache_service.dart';
+import '../services/calculator_webview_prewarm_service.dart';
 // Conditional import: calcu_web.dart (Web) vs calcu_stub.dart (iOS/Android).
 // Em iOS/Android buildCalculadoraWebView() é stub — o WebViewWidget é usado diretamente.
 import '../platform/calcu_stub.dart'
@@ -197,6 +198,9 @@ class CalculadoraScreen extends StatefulWidget {
 
   static void requestCacheRefresh() {
     cacheRefreshGeneration.value += 1;
+    // MEDCASES_CALCULADORA_PREWARM_CONSUME_EXISTING_SERVICE_V1_B_R0
+    // Any controller warmed before an explicit cache refresh is stale.
+    CalculatorWebViewPrewarmService.instance.invalidate();
   }
 
   @override
@@ -307,13 +311,44 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     };
 
     const accepted = <String>{
-      'lang', 'idioma', 'modulo',
-      'peso', 'altura', 'idade', 'creatinina', 'clcr', 'sexo',
-      'tfg', 'pregnant', 'hemodialysis',
-      'ph', 'pco2', 'hco3', 'be', 'na', 'cl', 'gluc', 'ca', 'bun', 'alb',
-      'pas', 'col', 'qt', 'fc',
-      'bili', 'inr', 'ast', 'alt', 'plat',
-      'k', 'mg', 'kdigo', 'child_pugh', 'chads_vasc', 'has_bled', 'ascvd',
+      'lang',
+      'idioma',
+      'modulo',
+      'peso',
+      'altura',
+      'idade',
+      'creatinina',
+      'clcr',
+      'sexo',
+      'tfg',
+      'pregnant',
+      'hemodialysis',
+      'ph',
+      'pco2',
+      'hco3',
+      'be',
+      'na',
+      'cl',
+      'gluc',
+      'ca',
+      'bun',
+      'alb',
+      'pas',
+      'col',
+      'qt',
+      'fc',
+      'bili',
+      'inr',
+      'ast',
+      'alt',
+      'plat',
+      'k',
+      'mg',
+      'kdigo',
+      'child_pugh',
+      'chads_vasc',
+      'has_bled',
+      'ascvd',
     };
 
     final payload = <String, String>{};
@@ -326,7 +361,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     }
     return payload;
   }
-
 
   // MEDCASES_CALCULATOR_THEME_SYNC_V2_B_R0
   String _withCalculatorTheme(String rawUrl, String theme) {
@@ -599,8 +633,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         'selected=${localUrl == null ? "online" : "local"}',
       );
 
-      final targetUrl =
-          _withCacheRefreshToken(localUrl ?? _webUrl, generation);
+      final targetUrl = _withCacheRefreshToken(localUrl ?? _webUrl, generation);
       if (!mounted) return;
       _webviewReady = false;
       await _loadCalculatorTarget(
@@ -619,15 +652,14 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
 
-    final p         = context.read<AppProvider>();
-    final lang      = p.lang;
+    final p = context.read<AppProvider>();
+    final lang = p.lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
-    _dark           = p.darkMode;
+    _dark = p.darkMode;
     // Build 189: initialUrl tem prioridade sobre URL padrão do provider.
     // ExternalToolLinkEngine já injeta lang+tab+q — não sobrescrever.
     final themeParam = _dark ? 'dark' : 'light';
@@ -666,7 +698,34 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         params = const PlatformWebViewControllerCreationParams();
       }
 
-      _controller = WebViewController.fromPlatformCreationParams(params)
+      // MEDCASES_CALCULADORA_PREWARM_CONSUME_EXISTING_SERVICE_V1_B_R0
+      // Ordinary Home entry reuses the existing warm controller. Explicit
+      // initialUrl/deep links keep the current cold/direct semantics.
+      final prewarmLease = widget.initialUrl == null
+          ? CalculatorWebViewPrewarmService.instance.takeWarmController(
+              lang: langParam,
+              dark: _dark,
+            )
+          : null;
+
+      if (prewarmLease == null) {
+        // Prevent a delayed hidden prewarm from racing the cold visible owner.
+        CalculatorWebViewPrewarmService.instance.invalidate();
+      }
+
+      _controller = prewarmLease?.controller ??
+          WebViewController.fromPlatformCreationParams(params);
+
+      debugPrint(
+        '[CALCULATOR_PREWARM] screen_claim=${prewarmLease != null} '
+        'ready=${prewarmLease?.ready ?? false} '
+        'source=${prewarmLease?.source ?? "cold"}',
+      );
+
+      // Canonical visible-screen configuration is deliberately re-applied.
+      // Existing initial-open navigation below is preserved so all JS/theme/
+      // patient/R6 behavior still executes exactly through this State owner.
+      _controller
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..setUserAgent(
             'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) MedCasesApp/6.1.0')
@@ -2787,9 +2846,11 @@ ensurePage();
             // Isso garante que o usuário vê a calculadora mesmo sem cache local.
             if ((error.description.contains('ERR_ACCESS_DENIED') ||
                     error.description.contains('ERR_FILE_NOT_FOUND') ||
-                    error.errorCode == -13 ) && // -13 = ERR_ACCESS_DENIED no Chromium
+                    error.errorCode ==
+                        -13) && // -13 = ERR_ACCESS_DENIED no Chromium
                 mounted) {
-              debugPrint('[CalculadoraWebView] file→online fallback ativado url=$_webUrl');
+              debugPrint(
+                  '[CalculadoraWebView] file→online fallback ativado url=$_webUrl');
               _controller.loadRequest(Uri.parse(_webUrl));
             }
           },
@@ -2810,7 +2871,8 @@ ensurePage();
         final platform = _controller.platform;
         if (platform is AndroidWebViewController) {
           platform.setAllowFileAccess(true);
-          debugPrint('[CalculadoraWebView][BUILD283] AndroidWebView.setAllowFileAccess(true) — file:// desbloqueado');
+          debugPrint(
+              '[CalculadoraWebView][BUILD283] AndroidWebView.setAllowFileAccess(true) — file:// desbloqueado');
         }
       }
 
@@ -3051,7 +3113,6 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
     }
   }
 
-
   Future<void> _injectPatientContext() async {
     if (kIsWeb || _calculatorPatientPayload.isEmpty) return;
 
@@ -3074,7 +3135,8 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
   }
   apply();
 })(PAYLOAD_JSON);
-""".replaceFirst('PAYLOAD_JSON', payloadJson),
+"""
+            .replaceFirst('PAYLOAD_JSON', payloadJson),
       );
     } catch (e) {
       debugPrint('[CalculadoraScreen][patient-context] inject error: $e');
@@ -3138,6 +3200,19 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
     }
     CalculadoraScreen.cacheRefreshGeneration
         .removeListener(_onCalculatorCacheRefreshRequested);
+
+    // MEDCASES_CALCULADORA_PREWARM_CONSUME_EXISTING_SERVICE_V1_B_R0
+    // Re-arm in background so a later Home -> Calculadora open can be warm too.
+    if (!kIsWeb) {
+      final lang = Uri.tryParse(_webUrl)?.queryParameters['lang'] ?? 'es';
+      unawaited(
+        CalculatorWebViewPrewarmService.instance.prewarm(
+          lang: lang == 'pt' ? 'pt' : 'es',
+          dark: _dark,
+        ),
+      );
+    }
+
     super.dispose();
   }
 
@@ -3147,7 +3222,8 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
     // SUPER ORDEM VISUAL 09: barBg/borderCol/textPrimary/textSecondary removidos
     // — o AppBar agora usa gradiente roxo const; só scaffoldBg permanece.
     // Fix#6: _dark agora é mutável — atualizado pelo listener do AppProvider.
-    final Color scaffoldBg  = _dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final Color scaffoldBg =
+        _dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -3161,7 +3237,7 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Container(
-      // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R8
+            // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R8
             // MEDCASES_FARMACOS_WEBVIEW_TOPBAR_V1_B_R0
             decoration: Theme.of(context).brightness == Brightness.dark
                 ? const BoxDecoration(
@@ -3195,7 +3271,9 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).brightness == Brightness.dark ? (Colors.white) : const Color(0xFF05070A),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? (Colors.white)
+                            : const Color(0xFF05070A),
                         letterSpacing: 0.4,
                       ),
                     ),
@@ -3211,7 +3289,10 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
                           padding: EdgeInsets.all(8.0),
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            color: Theme.of(context).brightness == Brightness.dark ? (Colors.white) : const Color(0xFF05070A),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? (Colors.white)
+                                    : const Color(0xFF05070A),
                             size: 20,
                           ),
                         ),
@@ -3247,7 +3328,6 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
       ),
     );
   }
-
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
