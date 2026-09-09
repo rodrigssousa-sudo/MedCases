@@ -52,35 +52,23 @@ void main() {
       },
     );
 
-    test('prewarm controller is consumable before calculator tap', () {
+    test('prewarm is a real native WebView load but local-only', () {
       for (final token in const <String>[
         'class CalculatorWebViewPrewarmService',
-        'class CalculatorWebViewPrewarmLease',
-        'takeWarmController({',
-        'Duration(milliseconds: 350)',
-        'WebKitWebViewControllerCreationParams(',
-        'localUrl ?? onlineShape',
-        'await controller.loadRequest(Uri.parse(targetUrl));',
-        'platform.setAllowFileAccess(true)',
+        'WebViewController()',
+        'await controller.loadRequest(Uri.parse(localUrl));',
+        'buildLocalUrl(',
+        'Duration(milliseconds: 4500)',
+        'Duration(seconds: 7)',
       ]) {
         expect(prewarm, contains(token), reason: token);
       }
 
+      expect(prewarm, isNot(contains('loadRequest(Uri.parse(onlineShape))')));
       expect(
         mainSource,
         contains('CalculatorWebViewPrewarmService.instance.prewarm('),
       );
-
-      for (final token in const <String>[
-        "import '../services/calculator_webview_prewarm_service.dart';",
-        'widget.initialUrl == null',
-        'CalculatorWebViewPrewarmService.instance.takeWarmController(',
-        '_controller = prewarmLease?.controller ??',
-        "reason: 'initial-open'",
-        'CalculatorWebViewPrewarmService.instance.invalidate();',
-      ]) {
-        expect(calculator, contains(token), reason: token);
-      }
     });
 
     test('calculator preserves deeplinks, theme and patient bridge', () {
@@ -101,10 +89,11 @@ void main() {
       final hasDirectFallback = calculator.contains(
         '_controller.loadRequest(Uri.parse(_webUrl))',
       );
-      final hasCoalescedFallback = calculator.contains('localUrl ?? _webUrl') &&
+      final hasCoalescedFallback =
+          calculator.contains('localUrl ?? _webUrl') &&
           calculator.contains('_controller.loadRequest(Uri.parse(targetUrl))');
-      final hasFileErrorFallback = (calculator
-                  .contains('file→online fallback') ||
+      final hasFileErrorFallback =
+          (calculator.contains('file→online fallback') ||
               calculator.contains('file->online fallback') ||
               calculator.contains('fallbackOnline=true')) &&
           calculator.contains('_controller.loadRequest(Uri.parse(_webUrl))');
