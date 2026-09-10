@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../services/audio/clinical_long_form_audio_contract.dart';
 import '../services/audio/clinical_long_form_recording_manifest.dart';
+import '../services/audio/clinical_long_form_durable_store.dart';
 import '../services/audio/clinical_long_form_recording_session.dart';
 import '../services/audio/clinical_long_form_session_directory_layout.dart';
 import '../services/audio/record_long_form_audio_provider.dart';
@@ -14,6 +15,7 @@ import '../services/clinical_recorder_service.dart';
 import '../models/study_long_form_audio_handoff.dart';
 
 import 'dart:math' as math;
+
 final class _AudioRuntimePalette {
   const _AudioRuntimePalette({
     required this.page,
@@ -199,8 +201,8 @@ class _NotesAudioConsultationLocalRuntimeScreenState
             child: Text(
               _transcript.trim().isEmpty
                   ? (isEs
-                        ? 'La transcripción aparecerá aquí durante la captura.'
-                        : 'A transcrição aparecerá aqui durante a captura.')
+                      ? 'La transcripción aparecerá aquí durante la captura.'
+                      : 'A transcrição aparecerá aqui durante a captura.')
                   : _transcript,
               style: TextStyle(
                 color: palette.secondary,
@@ -226,12 +228,11 @@ class _NotesAudioConsultationLocalRuntimeScreenState
                   icon: !_recording
                       ? Icons.mic_rounded
                       : (_paused
-                            ? Icons.play_arrow_rounded
-                            : Icons.pause_rounded),
+                          ? Icons.play_arrow_rounded
+                          : Icons.pause_rounded),
                   enabled: !_busy,
-                  onPressed: !_recording
-                      ? _start
-                      : (_paused ? _resume : _pause),
+                  onPressed:
+                      !_recording ? _start : (_paused ? _resume : _pause),
                 ),
               ),
               const SizedBox(width: 8),
@@ -252,9 +253,9 @@ class _NotesAudioConsultationLocalRuntimeScreenState
             palette: palette,
             text: isEs
                 ? 'Esta etapa no conecta este workspace al backend remoto de '
-                      'transcripción de audio de MedCases.'
+                    'transcripción de audio de MedCases.'
                 : 'Esta etapa não conecta este workspace ao backend remoto de '
-                      'transcrição de áudio do MedCases.',
+                    'transcrição de áudio do MedCases.',
           ),
         ],
       ),
@@ -282,12 +283,14 @@ class _NotesAudioLongFormLocalRuntimeScreenState
   RecordLongFormAudioProvider? _visualAudioProvider;
   ClinicalLongFormRecordingSession? _session;
   ClinicalLongFormSessionDirectoryLayout? _layout;
+  ClinicalLongFormDurableStore? _durableStore;
   ClinicalLongFormRecordingManifest? _stoppedManifest;
   Timer? _ticker;
 
   bool _busy = false;
+  bool _rotationInFlight = false;
+  bool _stopRequested = false;
   int _segmentIndex = 0;
-  int _rotations = 0;
   String? _error;
 
   bool get _recording =>
@@ -295,12 +298,10 @@ class _NotesAudioLongFormLocalRuntimeScreenState
 
   bool get _paused => _session?.state == ClinicalLongFormRecordingState.paused;
 
-  bool get _stopped =>
-      _session?.state == ClinicalLongFormRecordingState.stopped;
-
   @override
   void dispose() {
     _ticker?.cancel();
+    _stopRequested = true;
     unawaited(_disposeRuntime());
     super.dispose();
   }
@@ -308,15 +309,30 @@ class _NotesAudioLongFormLocalRuntimeScreenState
   Future<void> _disposeRuntime() async {
     final session = _session;
 
-    if (session != null && !_stopped) {
-      try {
-        await session.stop(DateTime.now().toUtc());
-      } catch (_) {}
+    while (_busy || _rotationInFlight) {
+      await Future<void>.delayed(const Duration(milliseconds: 20));
     }
 
+    _busy = true;
     try {
-      await session?.dispose();
-    } catch (_) {}
+      if (session != null && _stoppedManifest == null) {
+        final now = DateTime.now().toUtc();
+
+        if (session.state != ClinicalLongFormRecordingState.stopped) {
+          await session.stop(now);
+        }
+
+        try {
+          await _persistManifest(session.snapshot(now));
+        } catch (_) {}
+      }
+
+      try {
+        await session?.dispose();
+      } catch (_) {}
+    } finally {
+      _busy = false;
+    }
   }
 
   Future<void> _start() async {
@@ -324,9 +340,9 @@ class _NotesAudioLongFormLocalRuntimeScreenState
 
     setState(() {
       _busy = true;
+      _stopRequested = false;
       _error = null;
       _segmentIndex = 0;
-      _rotations = 0;
       _stoppedManifest = null;
     });
 
@@ -343,10 +359,10 @@ class _NotesAudioLongFormLocalRuntimeScreenState
         throw StateError('AAC-LC unsupported on this device.');
       }
 
-      final temp = await getTemporaryDirectory();
+      final support = await getApplicationSupportDirectory();
       final root = Directory(
-        '${temp.path}${Platform.pathSeparator}'
-        'medcases_notes_audio_long_form',
+        '${support.path}${Platform.pathSeparator}'
+        'medcases_study_recorded_audio_state',
       );
 
       if (!await root.exists()) {
@@ -368,12 +384,19 @@ class _NotesAudioLongFormLocalRuntimeScreenState
         capture: provider,
       );
 
+      final startedAtUtc = DateTime.now().toUtc();
       await session.start(
         firstSegmentPath: layout.segmentFile(0).path,
-        nowUtc: DateTime.now().toUtc(),
+        nowUtc: startedAtUtc,
       );
 
+      final durableStore = FileClinicalLongFormDurableStore(
+        rootDirectory: root,
+      );
+      await durableStore.saveManifest(session.snapshot(startedAtUtc));
+
       _layout = layout;
+      _durableStore = durableStore;
       _session = session;
       provider = null;
 
@@ -397,8 +420,9 @@ class _NotesAudioLongFormLocalRuntimeScreenState
         setState(() => _error = '$error');
       }
     } finally {
+      _busy = false;
       if (mounted) {
-        setState(() => _busy = false);
+        setState(() {});
       }
     }
   }
@@ -410,6 +434,11 @@ class _NotesAudioLongFormLocalRuntimeScreenState
     if (!mounted || session == null || layout == null) return;
 
     final now = DateTime.now().toUtc();
+
+    if (_stopRequested && !_busy && _stoppedManifest == null) {
+      await _stop();
+      return;
+    }
 
     if (_recording && !_busy) {
       if (session.reachedMaxDuration(now)) {
@@ -432,9 +461,18 @@ class _NotesAudioLongFormLocalRuntimeScreenState
     final session = _session;
     final layout = _layout;
 
-    if (_busy || !_recording || session == null || layout == null) return;
+    if (_busy ||
+        _rotationInFlight ||
+        !_recording ||
+        session == null ||
+        layout == null) {
+      return;
+    }
 
-    setState(() => _busy = true);
+    _rotationInFlight = true;
+    if (mounted) {
+      setState(() {});
+    }
 
     try {
       final nextIndex = _segmentIndex + 1;
@@ -442,37 +480,59 @@ class _NotesAudioLongFormLocalRuntimeScreenState
       await session.rotate(
         nextSegmentPath: layout.segmentFile(nextIndex).path,
         nowUtc: nowUtc,
+        shouldStopAfterCurrentSegment: () => _stopRequested,
       );
 
-      _segmentIndex = nextIndex;
-      _rotations += 1;
+      if (session.state == ClinicalLongFormRecordingState.recording) {
+        _segmentIndex = nextIndex;
+      } else {
+        _ticker?.cancel();
+      }
+
+      try {
+        await _persistSessionSnapshot(DateTime.now().toUtc());
+      } catch (error) {
+        _error = 'recording_manifest_checkpoint_failed:$error';
+      }
     } catch (error) {
-      if (mounted) {
-        setState(() => _error = '$error');
-      }
+      _error = '$error';
     } finally {
+      _rotationInFlight = false;
       if (mounted) {
-        setState(() => _busy = false);
+        setState(() {});
       }
+    }
+
+    if (_stopRequested && _stoppedManifest == null) {
+      await _stop();
     }
   }
 
   Future<void> _pause() async {
     final session = _session;
 
-    if (_busy || !_recording || session == null) return;
+    if (_busy || _rotationInFlight || !_recording || session == null) return;
 
-    setState(() => _busy = true);
+    _busy = true;
+    if (mounted) {
+      setState(() {});
+    }
 
     try {
-      await session.pause(DateTime.now().toUtc());
-    } catch (error) {
-      if (mounted) {
-        setState(() => _error = '$error');
+      final now = DateTime.now().toUtc();
+      await session.pause(now);
+
+      try {
+        await _persistSessionSnapshot(now);
+      } catch (error) {
+        _error = 'recording_manifest_checkpoint_failed:$error';
       }
+    } catch (error) {
+      _error = '$error';
     } finally {
+      _busy = false;
       if (mounted) {
-        setState(() => _busy = false);
+        setState(() {});
       }
     }
   }
@@ -480,36 +540,86 @@ class _NotesAudioLongFormLocalRuntimeScreenState
   Future<void> _resume() async {
     final session = _session;
 
-    if (_busy || !_paused || session == null) return;
+    if (_busy || _rotationInFlight || !_paused || session == null) return;
 
-    setState(() => _busy = true);
+    _busy = true;
+    if (mounted) {
+      setState(() {});
+    }
 
     try {
-      await session.resume(DateTime.now().toUtc());
-    } catch (error) {
-      if (mounted) {
-        setState(() => _error = '$error');
+      final now = DateTime.now().toUtc();
+      await session.resume(now);
+
+      try {
+        await _persistSessionSnapshot(now);
+      } catch (error) {
+        _error = 'recording_manifest_checkpoint_failed:$error';
       }
+    } catch (error) {
+      _error = '$error';
     } finally {
+      _busy = false;
       if (mounted) {
-        setState(() => _busy = false);
+        setState(() {});
       }
     }
+  }
+
+  Future<void> _persistManifest(
+    ClinicalLongFormRecordingManifest manifest,
+  ) async {
+    final store = _durableStore;
+    if (store == null) return;
+    await store.saveManifest(manifest);
+  }
+
+  Future<void> _persistSessionSnapshot(DateTime nowUtc) async {
+    final session = _session;
+    if (session == null ||
+        session.state == ClinicalLongFormRecordingState.idle) {
+      return;
+    }
+
+    await _persistManifest(session.snapshot(nowUtc));
   }
 
   Future<void> _stop() async {
     final session = _session;
 
-    if (_busy || session == null || _stopped) return;
+    if (session == null || _stoppedManifest != null) return;
 
-    setState(() => _busy = true);
+    if (_busy || _rotationInFlight) {
+      _stopRequested = true;
+      if (mounted) {
+        setState(() {});
+      }
+      return;
+    }
+
+    _busy = true;
+    _stopRequested = false;
+    if (mounted) {
+      setState(() {});
+    }
 
     try {
       final now = DateTime.now().toUtc();
 
-      await session.stop(now);
+      if (session.state != ClinicalLongFormRecordingState.stopped) {
+        await session.stop(now);
+      }
+
       _ticker?.cancel();
       final manifest = session.snapshot(now);
+
+      Object? persistenceError;
+      try {
+        await _persistManifest(manifest);
+      } catch (error) {
+        persistenceError = error;
+      }
+
       _stoppedManifest = manifest;
 
       final segments = manifest.segments
@@ -533,24 +643,27 @@ class _NotesAudioLongFormLocalRuntimeScreenState
           ),
         );
       }
-    } catch (error) {
-      if (mounted) {
-        setState(() => _error = '$error');
+
+      if (persistenceError != null) {
+        _error = 'recording_manifest_persistence_failed:$persistenceError';
       }
+    } catch (error) {
+      _error = '$error';
     } finally {
+      _busy = false;
       if (mounted) {
-        setState(() => _busy = false);
+        setState(() {});
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final palette = _AudioRuntimePalette.of(context);
     final isEs = widget.isEs;
     final now = DateTime.now().toUtc();
-    final activeDuration = _session == null
-        ? Duration.zero
-        : _session!.activeDurationAt(now);
+    final activeDuration =
+        _session == null ? Duration.zero : _session!.activeDurationAt(now);
 
     final status = _stoppedManifest != null
         ? 'Finalizado'
@@ -613,13 +726,13 @@ class _NotesAudioLongFormLocalRuntimeScreenState
               ),
               const Spacer(),
               _PremiumRecorderOrb(
-              levelReader: () async {
-                final provider = _visualAudioProvider;
-                if (provider == null || !_recording || _paused) {
-                  return -160.0;
-                }
-                return provider.currentAmplitudeDbfs();
-              },
+                levelReader: () async {
+                  final provider = _visualAudioProvider;
+                  if (provider == null || !_recording || _paused) {
+                    return -160.0;
+                  }
+                  return provider.currentAmplitudeDbfs();
+                },
                 active: _recording,
                 paused: _paused,
                 palette: palette,
@@ -768,7 +881,6 @@ class _NotesAudioLongFormLocalRuntimeScreenState
   }
 }
 
-
 class _PremiumRecorderOrb extends StatefulWidget {
   final Future<double> Function()? levelReader;
   const _PremiumRecorderOrb({
@@ -786,7 +898,8 @@ class _PremiumRecorderOrb extends StatefulWidget {
   State<_PremiumRecorderOrb> createState() => _PremiumRecorderOrbState();
 }
 
-class _PremiumRecorderOrbState extends State<_PremiumRecorderOrb> with TickerProviderStateMixin {
+class _PremiumRecorderOrbState extends State<_PremiumRecorderOrb>
+    with TickerProviderStateMixin {
   late final AnimationController _orbitController;
   late final AnimationController _breathController;
   late final AnimationController _waveController;
@@ -799,9 +912,15 @@ class _PremiumRecorderOrbState extends State<_PremiumRecorderOrb> with TickerPro
   @override
   void initState() {
     super.initState();
-    _orbitController = AnimationController(vsync: this, duration: const Duration(seconds: 18))..repeat();
-    _breathController = AnimationController(vsync: this, duration: const Duration(milliseconds: 4200))..repeat(reverse: true);
-    _waveController = AnimationController(vsync: this, duration: const Duration(milliseconds: 3600))..repeat();
+    _orbitController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 18))
+          ..repeat();
+    _breathController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 4200))
+      ..repeat(reverse: true);
+    _waveController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 3600))
+      ..repeat();
     _syncMeter();
   }
 
@@ -827,7 +946,8 @@ class _PremiumRecorderOrbState extends State<_PremiumRecorderOrb> with TickerPro
         final db = await reader();
         if (!mounted) return;
         final level = ((db + 58.0) / 58.0).clamp(0.0, 1.0);
-        setState(() => _smoothedLevel = (_smoothedLevel * 0.72) + (level * 0.28));
+        setState(
+            () => _smoothedLevel = (_smoothedLevel * 0.72) + (level * 0.28));
       } catch (_) {}
     });
   }
@@ -850,10 +970,12 @@ class _PremiumRecorderOrbState extends State<_PremiumRecorderOrb> with TickerPro
       child: SizedBox.square(
         dimension: canvasSize,
         child: AnimatedBuilder(
-          animation: Listenable.merge([_orbitController, _breathController, _waveController]),
+          animation: Listenable.merge(
+              [_orbitController, _breathController, _waveController]),
           builder: (context, _) {
             final active = _isActive && !_isPaused;
-            final breath = 0.5 - 0.5 * math.cos(_breathController.value * math.pi);
+            final breath =
+                0.5 - 0.5 * math.cos(_breathController.value * math.pi);
             final floor = active ? 0.08 + breath * 0.06 : 0.025;
             final reactive = active ? math.max(floor, _smoothedLevel) : 0.025;
             return CustomPaint(
@@ -881,94 +1003,220 @@ class _AudioReactiveOrbPainter extends CustomPainter {
   final double activity;
   final bool active;
   final bool paused;
-  const _AudioReactiveOrbPainter({required this.orbitT, required this.waveT, required this.breath, required this.activity, required this.active, required this.paused});
+  const _AudioReactiveOrbPainter(
+      {required this.orbitT,
+      required this.waveT,
+      required this.breath,
+      required this.activity,
+      required this.active,
+      required this.paused});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center=size.center(Offset.zero);
-    final shortest=math.min(size.width,size.height);
-    final orbRadius=shortest*0.355;
-    final ringBase=orbRadius*1.17;
-    final phase=waveT*math.pi*2.0;
-    final orbit=orbitT*math.pi*2.0;
-    final live=active?activity.clamp(0.0,1.0):0.03;
-    final pulse=1.0+(active?(0.010+live*0.018):0.004)*breath;
+    final center = size.center(Offset.zero);
+    final shortest = math.min(size.width, size.height);
+    final orbRadius = shortest * 0.355;
+    final ringBase = orbRadius * 1.17;
+    final phase = waveT * math.pi * 2.0;
+    final orbit = orbitT * math.pi * 2.0;
+    final live = active ? activity.clamp(0.0, 1.0) : 0.03;
+    final pulse = 1.0 + (active ? (0.010 + live * 0.018) : 0.004) * breath;
     canvas.save();
-    canvas.translate(center.dx,center.dy);
-    _paintAmbientGlow(canvas,orbRadius,live);
-    _paintOrbitRings(canvas,ringBase,orbit,live);
-    _paintOrb(canvas,orbRadius*pulse,live);
-    _paintStars(canvas,orbRadius,orbit,live);
-    _paintWave(canvas,orbRadius*0.88,phase,live);
+    canvas.translate(center.dx, center.dy);
+    _paintAmbientGlow(canvas, orbRadius, live);
+    _paintOrbitRings(canvas, ringBase, orbit, live);
+    _paintOrb(canvas, orbRadius * pulse, live);
+    _paintStars(canvas, orbRadius, orbit, live);
+    _paintWave(canvas, orbRadius * 0.88, phase, live);
     canvas.restore();
   }
 
-  void _paintAmbientGlow(Canvas canvas,double r,double live) {
-    final p=Paint()..shader=RadialGradient(colors:[const Color(0xFF55F6EA).withValues(alpha: 0.10+live*0.08),const Color(0xFF6196FF).withValues(alpha: 0.07+live*0.07),const Color(0xFFA855F7).withValues(alpha: 0.04+live*0.06),Colors.transparent],stops:const[0.0,0.42,0.72,1.0]).createShader(Rect.fromCircle(center:Offset.zero,radius:r*1.62));
-    canvas.drawCircle(Offset.zero,r*1.62,p);
+  void _paintAmbientGlow(Canvas canvas, double r, double live) {
+    final p = Paint()
+      ..shader = RadialGradient(colors: [
+        const Color(0xFF55F6EA).withValues(alpha: 0.10 + live * 0.08),
+        const Color(0xFF6196FF).withValues(alpha: 0.07 + live * 0.07),
+        const Color(0xFFA855F7).withValues(alpha: 0.04 + live * 0.06),
+        Colors.transparent
+      ], stops: const [
+        0.0,
+        0.42,
+        0.72,
+        1.0
+      ]).createShader(Rect.fromCircle(center: Offset.zero, radius: r * 1.62));
+    canvas.drawCircle(Offset.zero, r * 1.62, p);
   }
 
-  void _paintOrbitRings(Canvas canvas,double r,double orbit,double live) {
-    const colors=[Color(0xFF38E8E1),Color(0xFF60A5FA),Color(0xFFA78BFA),Color(0xFF7DD3FC)];
-    for(var i=0;i<5;i++){
-      final rr=r+i*9.5;
-      canvas.drawCircle(Offset.zero,rr,Paint()..style=PaintingStyle.stroke..strokeWidth=i==1?1.15:0.75..color=colors[i%colors.length].withValues(alpha: 0.11+(4-i)*0.018+live*0.045));
-      final seg=Paint()..style=PaintingStyle.stroke..strokeCap=StrokeCap.round..strokeWidth=i==0?1.65:1.0..color=colors[i%colors.length].withValues(alpha: 0.34+live*0.22);
-      final shift=orbit*(i.isEven?1.0:-0.72)+i*0.91;
-      for(var j=0;j<3;j++){
-        canvas.drawArc(Rect.fromCircle(center:Offset.zero,radius:rr),shift+j*2.08,0.18+j*0.055,false,seg);
+  void _paintOrbitRings(Canvas canvas, double r, double orbit, double live) {
+    const colors = [
+      Color(0xFF38E8E1),
+      Color(0xFF60A5FA),
+      Color(0xFFA78BFA),
+      Color(0xFF7DD3FC)
+    ];
+    for (var i = 0; i < 5; i++) {
+      final rr = r + i * 9.5;
+      canvas.drawCircle(
+          Offset.zero,
+          rr,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = i == 1 ? 1.15 : 0.75
+            ..color = colors[i % colors.length]
+                .withValues(alpha: 0.11 + (4 - i) * 0.018 + live * 0.045));
+      final seg = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = i == 0 ? 1.65 : 1.0
+        ..color =
+            colors[i % colors.length].withValues(alpha: 0.34 + live * 0.22);
+      final shift = orbit * (i.isEven ? 1.0 : -0.72) + i * 0.91;
+      for (var j = 0; j < 3; j++) {
+        canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: rr),
+            shift + j * 2.08, 0.18 + j * 0.055, false, seg);
       }
     }
-    for(var i=0;i<7;i++){
-      final rr=r+(i%4)*9.5; final a=orbit*(0.55+i*0.08)+i*0.93; final pt=Offset(math.cos(a)*rr,math.sin(a)*rr); final col=colors[i%colors.length];
-      canvas.drawCircle(pt,i%3==0?2.4:1.35,Paint()..color=col.withValues(alpha: 0.70));
-      canvas.drawCircle(pt,5.0,Paint()..color=col.withValues(alpha: 0.14)..maskFilter=const MaskFilter.blur(BlurStyle.normal,5));
+    for (var i = 0; i < 7; i++) {
+      final rr = r + (i % 4) * 9.5;
+      final a = orbit * (0.55 + i * 0.08) + i * 0.93;
+      final pt = Offset(math.cos(a) * rr, math.sin(a) * rr);
+      final col = colors[i % colors.length];
+      canvas.drawCircle(pt, i % 3 == 0 ? 2.4 : 1.35,
+          Paint()..color = col.withValues(alpha: 0.70));
+      canvas.drawCircle(
+          pt,
+          5.0,
+          Paint()
+            ..color = col.withValues(alpha: 0.14)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));
     }
   }
 
-  void _paintOrb(Canvas canvas,double r,double live) {
-    canvas.drawCircle(Offset.zero,r+4,Paint()..color=const Color(0xFF38E8E1).withValues(alpha: 0.10+live*0.08)..maskFilter=MaskFilter.blur(BlurStyle.normal,22+live*16));
-    final fill=Paint()..shader=RadialGradient(center:const Alignment(-0.30,-0.38),radius:1.12,colors:[const Color(0xFF183D52).withValues(alpha: 0.96),const Color(0xFF10283C).withValues(alpha: 0.98),const Color(0xFF101C35),const Color(0xFF151936)],stops:const[0.0,0.40,0.72,1.0]).createShader(Rect.fromCircle(center:Offset.zero,radius:r));
-    canvas.drawCircle(Offset.zero,r,fill);
-    final rim=Paint()..style=PaintingStyle.stroke..strokeWidth=3.0..shader=SweepGradient(colors:const[Color(0xFF54F5E6),Color(0xFF55C8FF),Color(0xFF7A9BFF),Color(0xFFC260FF),Color(0xFF8B5CF6),Color(0xFF54F5E6)]).createShader(Rect.fromCircle(center:Offset.zero,radius:r));
-    canvas.drawCircle(Offset.zero,r-1.5,rim);
-    canvas.drawCircle(Offset.zero,r-5.5,Paint()..style=PaintingStyle.stroke..strokeWidth=0.7..color=Colors.white.withValues(alpha: 0.20));
-    final sheen=Paint()..shader=RadialGradient(center:const Alignment(-0.48,-0.55),radius:0.72,colors:[Colors.white.withValues(alpha: 0.13+live*0.04),const Color(0xFF4BE8E0).withValues(alpha: 0.055),Colors.transparent]).createShader(Rect.fromCircle(center:Offset.zero,radius:r));
-    canvas.drawCircle(Offset.zero,r-7,sheen);
+  void _paintOrb(Canvas canvas, double r, double live) {
+    canvas.drawCircle(
+        Offset.zero,
+        r + 4,
+        Paint()
+          ..color =
+              const Color(0xFF38E8E1).withValues(alpha: 0.10 + live * 0.08)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 22 + live * 16));
+    final fill = Paint()
+      ..shader = RadialGradient(
+          center: const Alignment(-0.30, -0.38),
+          radius: 1.12,
+          colors: [
+            const Color(0xFF183D52).withValues(alpha: 0.96),
+            const Color(0xFF10283C).withValues(alpha: 0.98),
+            const Color(0xFF101C35),
+            const Color(0xFF151936)
+          ],
+          stops: const [
+            0.0,
+            0.40,
+            0.72,
+            1.0
+          ]).createShader(Rect.fromCircle(center: Offset.zero, radius: r));
+    canvas.drawCircle(Offset.zero, r, fill);
+    final rim = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0
+      ..shader = SweepGradient(colors: const [
+        Color(0xFF54F5E6),
+        Color(0xFF55C8FF),
+        Color(0xFF7A9BFF),
+        Color(0xFFC260FF),
+        Color(0xFF8B5CF6),
+        Color(0xFF54F5E6)
+      ]).createShader(Rect.fromCircle(center: Offset.zero, radius: r));
+    canvas.drawCircle(Offset.zero, r - 1.5, rim);
+    canvas.drawCircle(
+        Offset.zero,
+        r - 5.5,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.7
+          ..color = Colors.white.withValues(alpha: 0.20));
+    final sheen = Paint()
+      ..shader = RadialGradient(
+          center: const Alignment(-0.48, -0.55),
+          radius: 0.72,
+          colors: [
+            Colors.white.withValues(alpha: 0.13 + live * 0.04),
+            const Color(0xFF4BE8E0).withValues(alpha: 0.055),
+            Colors.transparent
+          ]).createShader(Rect.fromCircle(center: Offset.zero, radius: r));
+    canvas.drawCircle(Offset.zero, r - 7, sheen);
   }
 
-  void _paintWave(Canvas canvas,double r,double phase,double live) {
-    canvas.save(); canvas.clipPath(Path()..addOval(Rect.fromCircle(center:Offset.zero,radius:r)));
-    final amp=r*(0.08+live*0.18); final width=r*1.78;
-    for(var layer=0;layer<7;layer++){
-      final path=Path(); final off=(layer-3)*2.4; final lp=phase*(0.55+layer*0.035)+layer*0.44; final la=amp*(1.0-(layer-3).abs()*0.085);
-      for(var step=0;step<=120;step++){
-        final t=step/120.0; final x=-width/2+width*t; final env=math.pow(math.sin(math.pi*t),1.28).toDouble();
-        final y=math.sin(t*math.pi*4.0+lp)*la*env+math.sin(t*math.pi*7.0-phase*0.31+layer*0.21)*la*0.18*env+off;
-        if(step==0){
-          path.moveTo(x,y);
+  void _paintWave(Canvas canvas, double r, double phase, double live) {
+    canvas.save();
+    canvas.clipPath(
+        Path()..addOval(Rect.fromCircle(center: Offset.zero, radius: r)));
+    final amp = r * (0.08 + live * 0.18);
+    final width = r * 1.78;
+    for (var layer = 0; layer < 7; layer++) {
+      final path = Path();
+      final off = (layer - 3) * 2.4;
+      final lp = phase * (0.55 + layer * 0.035) + layer * 0.44;
+      final la = amp * (1.0 - (layer - 3).abs() * 0.085);
+      for (var step = 0; step <= 120; step++) {
+        final t = step / 120.0;
+        final x = -width / 2 + width * t;
+        final env = math.pow(math.sin(math.pi * t), 1.28).toDouble();
+        final y = math.sin(t * math.pi * 4.0 + lp) * la * env +
+            math.sin(t * math.pi * 7.0 - phase * 0.31 + layer * 0.21) *
+                la *
+                0.18 *
+                env +
+            off;
+        if (step == 0) {
+          path.moveTo(x, y);
         } else {
-          path.lineTo(x,y);
+          path.lineTo(x, y);
         }
       }
-      final col=Color.lerp(const Color(0xFF4DEDE1),const Color(0xFFA855F7),layer/6.0)!;
-      canvas.drawPath(path,Paint()..style=PaintingStyle.stroke..strokeCap=StrokeCap.round..strokeJoin=StrokeJoin.round..strokeWidth=layer==3?1.55:0.72..color=col.withValues(alpha: (layer==3?0.92:0.34)+live*0.06));
+      final col = Color.lerp(
+          const Color(0xFF4DEDE1), const Color(0xFFA855F7), layer / 6.0)!;
+      canvas.drawPath(
+          path,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeCap = StrokeCap.round
+            ..strokeJoin = StrokeJoin.round
+            ..strokeWidth = layer == 3 ? 1.55 : 0.72
+            ..color = col.withValues(
+                alpha: (layer == 3 ? 0.92 : 0.34) + live * 0.06));
     }
     canvas.restore();
   }
 
-  void _paintStars(Canvas canvas,double r,double orbit,double live) {
-    const stars=[Offset(-0.37,-0.40),Offset(0.31,-0.52),Offset(-0.55,0.13),Offset(0.56,0.20),Offset(-0.15,0.48),Offset(0.19,0.35)];
-    for(var i=0;i<stars.length;i++){
-      final tw=0.55+0.45*math.sin(orbit*2.0+i*1.1).abs(); final col=(i.isEven?const Color(0xFF67E8F9):const Color(0xFFC4B5FD)).withValues(alpha: 0.42+tw*0.42+live*0.08);
-      canvas.drawCircle(Offset(stars[i].dx*r,stars[i].dy*r),0.9+tw*0.8,Paint()..color=col);
+  void _paintStars(Canvas canvas, double r, double orbit, double live) {
+    const stars = [
+      Offset(-0.37, -0.40),
+      Offset(0.31, -0.52),
+      Offset(-0.55, 0.13),
+      Offset(0.56, 0.20),
+      Offset(-0.15, 0.48),
+      Offset(0.19, 0.35)
+    ];
+    for (var i = 0; i < stars.length; i++) {
+      final tw = 0.55 + 0.45 * math.sin(orbit * 2.0 + i * 1.1).abs();
+      final col = (i.isEven ? const Color(0xFF67E8F9) : const Color(0xFFC4B5FD))
+          .withValues(alpha: 0.42 + tw * 0.42 + live * 0.08);
+      canvas.drawCircle(Offset(stars[i].dx * r, stars[i].dy * r),
+          0.9 + tw * 0.8, Paint()..color = col);
     }
   }
 
   @override
-  bool shouldRepaint(covariant _AudioReactiveOrbPainter oldDelegate)=>oldDelegate.orbitT!=orbitT||oldDelegate.waveT!=waveT||oldDelegate.breath!=breath||oldDelegate.activity!=activity||oldDelegate.active!=active||oldDelegate.paused!=paused;
+  bool shouldRepaint(covariant _AudioReactiveOrbPainter oldDelegate) =>
+      oldDelegate.orbitT != orbitT ||
+      oldDelegate.waveT != waveT ||
+      oldDelegate.breath != breath ||
+      oldDelegate.activity != activity ||
+      oldDelegate.active != active ||
+      oldDelegate.paused != paused;
 }
-
 
 class _AudioRuntimeScaffold extends StatelessWidget {
   const _AudioRuntimeScaffold({

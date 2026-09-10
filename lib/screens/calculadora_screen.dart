@@ -978,6 +978,20 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   if (window.__MC_FARMACOS_REAL_KEYBOARD_SAFE_BOUND) return;
   window.__MC_FARMACOS_REAL_KEYBOARD_SAFE_BOUND = true;
 
+  /* MEDCASES_FARMACOS_IOS_NATIVE_ONLY_FOCUS_COUNTERFACTUAL_V1_B_R3_REAL_OWNER_BYPASS
+     Causal test only:
+     disable the App-side FARMACOS_REAL_KEYBOARD_SAFE event/geometry owner.
+     WKWebView native keyboard owns focus/viewport during this canary.
+     Search/filter behavior, routing and patient context remain untouched.
+  */
+  window.__MC_FARMACOS_NATIVE_ONLY_FOCUS_R3_REAL_OWNER = {
+    build:'MEDCASES_FARMACOS_IOS_NATIVE_ONLY_FOCUS_COUNTERFACTUAL_V1_B_R3',
+    realKeyboardSafeOwner:false,
+    nativeWKKeyboardOwner:true,
+    timestamp:Date.now()
+  };
+  return;
+
   var ACTIVE='mc-farmacos-topbarless-active';
   var STYLE_ID='mc-farmacos-real-keyboard-safe-v1';
   var closedVV = window.visualViewport ? window.visualViewport.height : window.innerHeight;
@@ -2341,6 +2355,19 @@ ensurePage();
   'use strict';
   if(window.__MC_FARMACOS_ROOT_SEARCH_NATIVE_KB_R15_R1_BOUND)return;
   window.__MC_FARMACOS_ROOT_SEARCH_NATIVE_KB_R15_R1_BOUND=true;
+
+  /* MEDCASES_FARMACOS_IOS_NATIVE_ONLY_FOCUS_COUNTERFACTUAL_V1_B_R3_R15_BYPASS
+     Preserve the R15 handshake flag so Calculadora R2 keeps yielding,
+     but install NO R15 click/input/rAF geometry reconciliation in this test.
+  */
+  window.__MC_FARMACOS_NATIVE_ONLY_FOCUS_R3_R15 = {
+    build:'MEDCASES_FARMACOS_IOS_NATIVE_ONLY_FOCUS_COUNTERFACTUAL_V1_B_R3',
+    r15HandshakePreserved:true,
+    r15EventOwner:false,
+    nativeWKKeyboardOwner:true,
+    timestamp:Date.now()
+  };
+  return;
 
   var raf=0;
   var INPUT_IDS=['hm-drug-search','farmacos-search-input'];
