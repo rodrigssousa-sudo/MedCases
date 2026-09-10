@@ -4,7 +4,6 @@ import 'dart:ui' show ImageFilter;
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +27,11 @@ import '../main.dart' show MainShell; // SUPER ORDEM 313: pendingTab fallback
 import 'nephrology_tools_screen.dart' show NephrologyToolsScreen;
 // BUILD 415-UX-HARMONY: substitui CardioHubView e _ElectrolytesTab por telas unificadas.
 import 'cardio_tools_screen.dart' show CardioToolsScreen;
+import 'cardio_premium_workspace_screen.dart' show CardioPremiumWorkspaceScreen;
+import 'nephro_premium_workspace_screen.dart' show NephroPremiumWorkspaceScreen;
+import 'hepato_premium_workspace_screen.dart' show HepatoPremiumWorkspaceScreen;
+import 'electrolytes_premium_workspace_screen.dart'
+    show ElectrolytesPremiumWorkspaceScreen;
 import 'electrolytes_tools_screen.dart' show ElectrolytesToolsScreen;
 
 // ──────────────────────────────────────────────────────────────────
@@ -85,13 +89,12 @@ class _ToolsScreenState extends State<ToolsScreen>
   void _onExternalTabRequest() {
     final idx = toolsScreenTabNotifier.value;
     if (idx == null) return;
-    // Usa addPostFrameCallback para garantir que o widget já está montado
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _tabCtrl.animateTo(
-          idx.clamp(0, 3)); // SUPER ORDEM VISUAL 10: 4 tabs visíveis (0-3)
-      // Reseta para null após consumir
+      final safeIndex = idx < 0 ? 0 : (idx > 3 ? 3 : idx);
+      _tabCtrl.animateTo(safeIndex);
       toolsScreenTabNotifier.value = null;
+      _openToolsSpecialtyRoute(context, safeIndex);
     });
   }
 
@@ -171,26 +174,12 @@ class _ToolsScreenState extends State<ToolsScreen>
     //                       └── SizedBox(56) + Stack(botão + título)
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if (!showHeader) {
-      return Column(children: [
-        Expanded(
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: TabBarView(
-              controller: _tabCtrl,
-              children: [
-                // BUILD 408-NATIVE: Biometria → Função Renal / Nefrología
-                const NephrologyToolsScreen(),
-                // BUILD 415-UX-HARMONY: Cardio unificado
-                const CardioToolsScreen(),
-                // BUILD 415-UX-HARMONY: Eletrólitos unificado
-                const ElectrolytesToolsScreen(),
-                const HepatologyToolsScreen(), // BUILD 420-HEPATOLOGY
-              ],
-            ),
-          ),
-        ),
-      ]);
+      return Column(
+        children: [
+          _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
+          const Expanded(child: _ToolsHubLanding()),
+        ],
+      );
     }
 
     // MEDCASES_HERRAMIENTAS_TOPBAR_UNIFIED_OWNER_CUTOVER_V1_B_R5_R1
@@ -215,18 +204,7 @@ class _ToolsScreenState extends State<ToolsScreen>
                 SizedBox(height: topPad + 48),
                 _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
                 Expanded(
-                  child: TabBarView(
-                    controller: _tabCtrl,
-                    children: [
-                      // BUILD 408-NATIVE: Biometria → Função Renal / Nefrología
-                      const NephrologyToolsScreen(),
-                      // BUILD 415-UX-HARMONY: Cardio unificado
-                      const CardioToolsScreen(),
-                      // BUILD 415-UX-HARMONY: Eletrólitos unificado
-                      const ElectrolytesToolsScreen(),
-                      const HepatologyToolsScreen(), // BUILD 420-HEPATOLOGY
-                    ],
-                  ),
+                  child: const _ToolsHubLanding(),
                 ),
               ],
             ),
@@ -357,6 +335,146 @@ class _ToolsTopbarContent extends StatelessWidget {
 // Desacoplado da topbar — sobre fundo nativo sólido do corpo.
 // Cores adaptativas: dark → branco/branco60; light → preto/preto45.
 // ─────────────────────────────────────────────────────────────────────────────
+
+void _openToolsSpecialtyRoute(BuildContext context, int index) {
+  if (index == 0) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const NephroPremiumWorkspaceScreen(),
+      ),
+    );
+    return;
+  }
+
+  if (index == 1) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const CardioPremiumWorkspaceScreen(),
+      ),
+    );
+    return;
+  }
+
+  if (index == 2) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const ElectrolytesPremiumWorkspaceScreen(),
+      ),
+    );
+    return;
+  }
+
+  if (index == 3) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const HepatoPremiumWorkspaceScreen(),
+      ),
+    );
+    return;
+  }
+
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => _ToolsDedicatedSpecialtyScreen(index: index),
+    ),
+  );
+}
+
+class _ToolsHubLanding extends StatelessWidget {
+  const _ToolsHubLanding();
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.watch<AppProvider>();
+    return ColoredBox(
+      color: p.darkMode ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4),
+      child: const SizedBox.expand(),
+    );
+  }
+}
+
+class _ToolsDedicatedSpecialtyScreen extends StatelessWidget {
+  final int index;
+
+  const _ToolsDedicatedSpecialtyScreen({required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.watch<AppProvider>();
+    final isEs = p.lang == 'es';
+    final dark = p.darkMode;
+    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4);
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);
+
+    late final String title;
+    late final Widget child;
+    if (index == 0) {
+      title = isEs ? 'NEFROLOGÍA' : 'NEFROLOGIA';
+      child = const NephrologyToolsScreen();
+    } else if (index == 1) {
+      title = isEs ? 'CARDIOLOGÍA' : 'CARDIOLOGIA';
+      child = const CardioToolsScreen();
+    } else if (index == 2) {
+      title = isEs ? 'ELECTROLITOS' : 'ELETRÓLITOS';
+      child = const ElectrolytesToolsScreen();
+    } else {
+      title = isEs ? 'HEPATOLOGÍA' : 'HEPATOLOGIA';
+      child = const HepatologyToolsScreen();
+    }
+
+    return Scaffold(
+      backgroundColor: bg,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Container(
+              height: 48,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: border, width: 0.7)),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => Navigator.of(context).maybePop(),
+                        icon: Icon(
+                          Icons.chevron_left_rounded,
+                          size: 30,
+                          color: text,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: text,
+                      fontSize: 16,
+                      height: 1,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(child: child),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ToolsTabRow extends StatelessWidget {
   final bool dark;
   final bool isEs;
@@ -370,147 +488,225 @@ class _ToolsTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
-    final divider = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
-
-    final labels = isEs
-        ? const ['Nefrología', 'Cardio', 'Electrolitos', 'Hepatología']
-        : const ['Nefrologia', 'Cardio', 'Eletrólitos', 'Hepatologia'];
-
-    const icons = <IconData>[
-      Icons.water_drop_outlined,
-      Icons.favorite_border,
-      Icons.science_outlined,
-      Icons.local_hospital_outlined,
+    final items = [
+      _ToolsSpecialtyItem(
+        title: isEs ? 'Nefrología' : 'Nefrologia',
+        subtitle: isEs
+            ? 'TFG · FENa · KDIGO · función renal'
+            : 'TFG · FENa · KDIGO · função renal',
+        icon: Icons.water_drop_outlined,
+      ),
+      _ToolsSpecialtyItem(
+        title: isEs ? 'Cardiología' : 'Cardiologia',
+        subtitle:
+            isEs ? 'FA · SCA · QTc · riesgo CV' : 'FA · SCA · QTc · risco CV',
+        icon: Icons.favorite_border_rounded,
+      ),
+      _ToolsSpecialtyItem(
+        title: isEs ? 'Electrolitos' : 'Eletrólitos',
+        subtitle: isEs
+            ? 'Na · Ca · osmolaridad · ácido-base'
+            : 'Na · Ca · osmolaridade · ácido-base',
+        icon: Icons.science_outlined,
+      ),
+      _ToolsSpecialtyItem(
+        title: isEs ? 'Hepatología' : 'Hepatologia',
+        subtitle: isEs
+            ? 'MELD · Child-Pugh · Maddrey · fibrosis'
+            : 'MELD · Child-Pugh · Maddrey · fibrose',
+        icon: Icons.monitor_heart_outlined,
+      ),
     ];
 
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: surface,
-        border: Border(
-          bottom: BorderSide(color: divider, width: 0.7),
-        ),
-      ),
-      child: Row(
-        children: [
-          for (var i = 0; i < labels.length; i++) ...[
-            Expanded(
-              child: _ToolsFlatTab(
-                label: labels[i],
-                icon: icons[i],
-                index: i,
-                tabCtrl: tabCtrl,
-                dark: dark,
+    final pageBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4);
+    final titleColor = dark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
+    final mutedColor = dark ? const Color(0xFFAEB9CC) : const Color(0xFF64748B);
+
+    return ColoredBox(
+      color: pageBg,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 9),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(2, 0, 2, 7),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      isEs
+                          ? 'Herramientas por especialidad'
+                          : 'Ferramentas por especialidade',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: titleColor,
+                        fontSize: 12.5,
+                        height: 1.15,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.15,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    isEs ? 'Seleccione un área' : 'Selecione uma área',
+                    style: TextStyle(
+                      color: mutedColor,
+                      fontSize: 9.5,
+                      height: 1.15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
-            if (i < labels.length - 1)
-              SizedBox(
-                width: 0.7,
-                height: 40,
-                child: Center(
-                  child: Container(
-                    width: 0.7,
-                    height: 20,
-                    color: divider,
-                  ),
-                ),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                childAspectRatio: 2.15,
               ),
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return _ToolsFlatTab(
+                  index: index,
+                  title: item.title,
+                  subtitle: item.subtitle,
+                  icon: item.icon,
+                  dark: dark,
+                  tabCtrl: tabCtrl,
+                );
+              },
+            ),
           ],
-        ],
+        ),
       ),
     );
   }
 }
 
-class _ToolsFlatTab extends StatefulWidget {
-  final String label;
+class _ToolsSpecialtyItem {
+  final String title;
+  final String subtitle;
   final IconData icon;
+
+  const _ToolsSpecialtyItem({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
+}
+
+class _ToolsFlatTab extends StatelessWidget {
   final int index;
-  final TabController tabCtrl;
+  final String title;
+  final String subtitle;
+  final IconData icon;
   final bool dark;
+  final TabController tabCtrl;
 
   const _ToolsFlatTab({
-    required this.label,
-    required this.icon,
     required this.index,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.dark,
     required this.tabCtrl,
-    this.dark = true,
   });
 
   @override
-  State<_ToolsFlatTab> createState() => _ToolsFlatTabState();
-}
-
-class _ToolsFlatTabState extends State<_ToolsFlatTab> {
-  @override
-  void initState() {
-    super.initState();
-    widget.tabCtrl.addListener(_onTabChange);
-  }
-
-  void _onTabChange() {
-    if (mounted) setState(() {});
-  }
-
-  @override
-  void dispose() {
-    widget.tabCtrl.removeListener(_onTabChange);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isActive = widget.tabCtrl.index == widget.index;
+    return AnimatedBuilder(
+      animation: tabCtrl,
+      builder: (context, _) {
+        final surface =
+            dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+        final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+        final titleColor =
+            dark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
+        final subColor =
+            dark ? const Color(0xFFAEB9CC) : const Color(0xFF64748B);
+        const accent = Color(0xFF009C3B);
 
-    final inactiveColor =
-        widget.dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    final activeColor =
-        widget.dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
-    final activeBackground = widget.dark
-        ? const Color(0xFF0D6B57).withValues(alpha: 0.10)
-        : const Color(0xFF0D6B57).withValues(alpha: 0.06);
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => widget.tabCtrl.animateTo(widget.index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        height: 40,
-        decoration: BoxDecoration(
-          color: isActive ? activeBackground : Colors.transparent,
-        ),
-        child: Stack(
-          children: [
-            Center(
-              child: Text(
-                widget.label,
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 1,
-                  fontWeight: FontWeight.w700,
-                  color: isActive ? activeColor : inactiveColor,
-                  letterSpacing: 0.05,
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              tabCtrl.animateTo(index);
+              _openToolsSpecialtyRoute(context, index);
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 140),
+              curve: Curves.easeOutCubic,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              decoration: BoxDecoration(
+                color: surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: border,
+                  width: 0.7,
                 ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 54,
+                    height: 54,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: accent.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(icon, size: 24, color: accent),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: titleColor,
+                            fontSize: 11.8,
+                            height: 1.1,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: subColor,
+                            fontSize: 8.8,
+                            height: 1.2,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 3),
+                  const Icon(Icons.chevron_right_rounded,
+                      size: 17, color: accent),
+                ],
               ),
             ),
-            if (isActive)
-              Positioned(
-                left: 12,
-                right: 12,
-                bottom: 9,
-                child: Container(
-                  height: 2,
-                  color: const Color(0xFF0D6B57),
-                ),
-              ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

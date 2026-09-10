@@ -1532,7 +1532,7 @@ class HomePatientPediatricsRow extends StatelessWidget {
       // MEDCASES_FERRAMENTAS_4_TABS_SUPER_PREMIUM_STRUCTURED_FOOTER_V1_B_R0_R5_PROOF_GATE_FIX_TRANSACTIONAL_HOME_MAIN_SHELL_ROUTE
       onTools: () {
         AppHaptics.light(context);
-        toolsScreenTabNotifier.value = 0;
+        toolsScreenTabNotifier.value = null;
         onTabChange(4);
       },
       // HISTORY_CLINICAL_V1_B_R4_ROUTE_BEGIN
@@ -1575,7 +1575,7 @@ class HomeLibraryHistoryRow extends StatelessWidget {
         onPediatrics: () {},
         onTools: () {
           AppHaptics.light(context);
-          toolsScreenTabNotifier.value = 0;
+          toolsScreenTabNotifier.value = null;
           onTabChange(4);
         },
         onClinicalHistory: () {
@@ -1650,10 +1650,10 @@ class HomeMiGuardiaSection extends StatelessWidget {
             rootNavigator: !kIsWeb,
           ).push(
             HomeCardTransition.route<void>(
-                  builder: (_) => _AdultoShell(
+              builder: (_) => _AdultoShell(
                 openProtocol: openProtocol,
               ),
-                ),
+            ),
           );
         },
         onOpenInternacion: (session) {
@@ -1662,11 +1662,11 @@ class HomeMiGuardiaSection extends StatelessWidget {
             rootNavigator: !kIsWeb,
           ).push(
             HomeCardTransition.route<void>(
-                  builder: (_) => _AdultoShell(
+              builder: (_) => _AdultoShell(
                 openProtocol: openProtocol,
                 initialSession: session,
               ),
-                ),
+            ),
           );
         },
       ),

@@ -112,6 +112,7 @@ final class ClinicalLongFormRecordingSession {
   Future<void> rotate({
     required String nextSegmentPath,
     required DateTime nowUtc,
+    bool Function()? shouldStopAfterCurrentSegment,
   }) async {
     if (_state != ClinicalLongFormRecordingState.recording) {
       throw StateError('Rotate requires active recording.');
@@ -123,7 +124,8 @@ final class ClinicalLongFormRecordingSession {
     await _capture.stopSegment();
     _completeCurrentSegment();
 
-    if (_completedActiveDuration >= _config.maxDuration) {
+    if (_completedActiveDuration >= _config.maxDuration ||
+        (shouldStopAfterCurrentSegment?.call() ?? false)) {
       _state = ClinicalLongFormRecordingState.stopped;
       return;
     }

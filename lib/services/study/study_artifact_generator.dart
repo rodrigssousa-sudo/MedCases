@@ -52,9 +52,18 @@ $context
       );
     }
 
-    final clean = _cleanResult(result.text, type: type);
+    var clean = _cleanResult(result.text, type: type);
     if (clean.isEmpty) {
       throw StateError('study_generation_failed:empty_after_cleanup');
+    }
+
+    if (type == StudyArtifactType.fullSummary && sourceCharacters >= 18000) {
+      clean = await _runFullSummaryCoveragePass(
+        context: context,
+        draft: clean,
+        sourceCharacters: sourceCharacters,
+        isEs: isEs,
+      );
     }
 
     return StudyArtifact(
@@ -67,6 +76,129 @@ $context
           .map((source) => source.id)
           .toList(growable: false),
     );
+  }
+
+  static Future<String> _runFullSummaryCoveragePass({
+    required String context,
+    required String draft,
+    required int sourceCharacters,
+    required bool isEs,
+  }) async {
+    final minimumWords = _fullSummaryMinimumWords(sourceCharacters);
+
+    final systemPrompt = isEs
+        ? <String>[
+            'Sos el auditor final de cobertura académica de MedCases.',
+            'Tu única fuente factual es el MATERIAL FUENTE entregado.',
+            'Compará el borrador con el material y devolvé el RESUMEN COMPLETO FINAL.',
+            'Restaurá temas sustantivos, mecanismos, relaciones causales, criterios,',
+            'clasificaciones, números, dosis, unidades, negaciones, excepciones,',
+            'contraindicaciones y ejemplos didácticos que hayan desaparecido.',
+            'NO inventes datos, NO uses conocimiento externo y NO agregues relleno.',
+            'No comentes la auditoría ni expliques cambios: devolvé solamente el producto final.',
+          ].join('\n')
+        : <String>[
+            'Você é o auditor final de cobertura acadêmica do MedCases.',
+            'Sua única fonte factual é o MATERIAL-FONTE fornecido.',
+            'Compare o rascunho com o material e devolva o RESUMO COMPLETO FINAL.',
+            'Restaure temas substantivos, mecanismos, relações causais, critérios,',
+            'classificações, números, doses, unidades, negações, exceções,',
+            'contraindicações e exemplos didáticos que tenham desaparecido.',
+            'NÃO invente dados, NÃO use conhecimento externo e NÃO use preenchimento.',
+            'Não descreva a auditoria nem explique alterações: devolva apenas o produto final.',
+          ].join('\n');
+
+    final userMessage = isEs
+        ? <String>[
+            'AUDITORÍA FINAL DE COBERTURA',
+            '',
+            'OBJETIVO DE EXTENSIÓN:',
+            'El producto final debe aspirar a por lo menos $minimumWords palabras cuando',
+            'el MATERIAL FUENTE tenga contenido suficiente para sostenerlas. Si el material',
+            'no las sostiene, priorizá fidelidad y cobertura; nunca rellenes para alcanzar una cifra.',
+            '',
+            'MATERIAL FUENTE:',
+            context,
+            '',
+            'BORRADOR DEL RESUMEN COMPLETO:',
+            draft,
+            '',
+            'TAREA:',
+            'Reescribí el Resumen completo final cubriendo todos los puntos sustantivos que',
+            'estén en el material fuente y falten o estén excesivamente comprimidos en el',
+            'borrador. Conservá la jerarquía didáctica y la lectura fluida.',
+          ].join('\n')
+        : <String>[
+            'AUDITORIA FINAL DE COBERTURA',
+            '',
+            'OBJETIVO DE EXTENSÃO:',
+            'O produto final deve buscar pelo menos $minimumWords palavras quando o',
+            'MATERIAL-FONTE tiver conteúdo suficiente para sustentá-las. Se o material não',
+            'sustentar essa extensão, priorize fidelidade e cobertura; nunca use',
+            'preenchimento para atingir uma quantidade.',
+            '',
+            'MATERIAL-FONTE:',
+            context,
+            '',
+            'RASCUNHO DO RESUMO COMPLETO:',
+            draft,
+            '',
+            'TAREFA:',
+            'Reescreva o Resumo completo final cobrindo todos os pontos substantivos que',
+            'estejam no material-fonte e tenham desaparecido ou ficado excessivamente',
+            'comprimidos no rascunho. Preserve hierarquia didática e leitura fluida.',
+          ].join('\n');
+
+    try {
+      final result = await AiService.chat(
+        apiKey: '',
+        userMessage: userMessage,
+        systemPrompt: systemPrompt,
+        history: const <Map<String, String>>[],
+        maxTokens: _maxTokens(
+          StudyArtifactType.fullSummary,
+          sourceCharacters: sourceCharacters,
+        ),
+        isPlantaoMode: false,
+      );
+
+      if (result.isError || result.text.trim().isEmpty) {
+        return draft;
+      }
+
+      final revised = _cleanResult(
+        result.text,
+        type: StudyArtifactType.fullSummary,
+      );
+      if (revised.isEmpty) {
+        return draft;
+      }
+
+      final draftWords = _wordCount(draft);
+      final revisedWords = _wordCount(revised);
+
+      if (revisedWords < draftWords) {
+        return draft;
+      }
+
+      return revised;
+    } catch (_) {
+      return draft;
+    }
+  }
+
+  static int _fullSummaryMinimumWords(int sourceCharacters) {
+    if (sourceCharacters >= 90000) return 4500;
+    if (sourceCharacters >= 50000) return 3200;
+    if (sourceCharacters >= 28000) return 2400;
+    if (sourceCharacters >= 18000) return 1800;
+    return 1200;
+  }
+
+  static int _wordCount(String value) {
+    final clean = value.trim();
+    if (clean.isEmpty) return 0;
+    return RegExp(r'\S+').allMatches(clean).length;
   }
 
   static Future<String> _buildHierarchicalContext(
@@ -395,7 +527,9 @@ Não atribua diagnóstico, conduta, causalidade ou conclusão não sustentada.
               ? (isEs ? '3.200 a 4.500 palabras' : '3.200 a 4.500 palavras')
               : sourceCharacters >= 28000
                   ? (isEs ? '2.200 a 3.400 palabras' : '2.200 a 3.400 palavras')
-                  : (isEs ? '1.400 a 2.400 palabras' : '1.400 a 2.400 palavras');
+                  : (isEs
+                      ? '1.400 a 2.400 palabras'
+                      : '1.400 a 2.400 palavras');
 
       return isEs
           ? """
