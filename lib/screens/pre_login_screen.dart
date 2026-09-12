@@ -19,7 +19,6 @@ const _kTextMid     = Color(0xFF94A3B8);   // texto secundário MedCases Pro
 const _kTextDim     = Color(0xFF7C8797);   // texto suave
 const _kBorder      = Color(0xFF374151);   // bordas MedCases Pro
 const _kRed         = Color(0xFFCC3333);   // vermelho acento
-const _kRedDark     = Color(0xFFB91C1C);
 
 // ══════════════════════════════════════════════════════════════════════════════
 class PreLoginPreview extends StatefulWidget {
@@ -747,128 +746,146 @@ class _IaBlockDark extends StatelessWidget {
 // ══════════════════════════════════════════════════════════════════════════════
 class _MetricsRow extends StatelessWidget {
   final bool isEs;
+
   const _MetricsRow({required this.isEs});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(children: [
-      // ── Card 1: +2.400 Condutas ─────────────────────────────────────────
-      Expanded(
-        child: _MetricCard(
-          icon: Icons.menu_book_rounded,
-          iconBg: const Color(0xFF20242B),
-          stat: '+2.400',
-          title: isEs ? 'Condutas Médicas' : 'Condutas Médicas',
-          subtitle: isEs ? 'Guiadas por IA' : 'Guiadas por IA',
-          trailingIcon: Icons.trending_up_rounded,
+  Widget _benefit({
+    required IconData icon,
+    required String label,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: _kNeon,
         ),
-      ),
-      const SizedBox(width: 10),
-      // ── Card 2: Atualização Contínua ─────────────────────────────────────
-      Expanded(
-        child: _MetricCard(
-          icon: Icons.verified_rounded,
-          iconBg: const Color(0xFF20242B),
-          stat: isEs ? '100%' : '100%',
-          title: isEs ? 'Actualización' : 'Atualização',
-          subtitle: isEs ? 'Por comité experto' : 'Contínua por experts',
-          trailingIcon: Icons.shield_rounded,
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w600,
+              color: _kText,
+              height: 1.25,
+            ),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
-}
-
-// ── Card de métrica individual — MedCases Pro style ──────────────────────────────
-class _MetricCard extends StatelessWidget {
-  final IconData icon;
-  final Color iconBg;
-  final String stat;
-  final String title;
-  final String subtitle;
-  final IconData trailingIcon;
-
-  const _MetricCard({
-    required this.icon,
-    required this.iconBg,
-    required this.stat,
-    required this.title,
-    required this.subtitle,
-    required this.trailingIcon,
-  });
 
   @override
   Widget build(BuildContext context) {
+    final items = <Widget>[
+      _benefit(
+        icon: Icons.menu_book_rounded,
+        label: isEs
+            ? 'Contenido clínico actualizado'
+            : 'Conteúdo clínico atualizado',
+      ),
+      _benefit(
+        icon: Icons.medication_outlined,
+        label: 'Fármacos',
+      ),
+      _benefit(
+        icon: Icons.calculate_outlined,
+        label: isEs
+            ? 'Calculadoras y scores'
+            : 'Calculadoras e scores',
+      ),
+      _benefit(
+        icon: Icons.psychology_outlined,
+        label: isEs
+            ? 'IA de apoyo médico'
+            : 'IA de apoio médico',
+      ),
+    ];
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(14, 14, 12, 14),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        vertical: 24,
+      ),
       decoration: BoxDecoration(
-        color: _kBgCard,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: _kNeonGlow.withOpacity(0.09), width: 0.9),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0A000000),
-            blurRadius: 14,
-            offset: Offset(0, 4),
+            blurRadius: 18,
+            offset: Offset(0, 6),
           ),
         ],
+        border: Border(
+          top: BorderSide(
+            color: _kTextDim.withValues(alpha: 0.16),
+            width: 1,
+          ),
+          bottom: BorderSide(
+            color: _kTextDim.withValues(alpha: 0.16),
+            width: 1,
+          ),
+        ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Ícone circular medallion ─────────────────────────────────────
-          Container(
-            width: 40, height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: iconBg,
-              border: Border.all(
-                color: _kNeonGlow.withOpacity(0.12), width: 1.0),
-              boxShadow: [
-                BoxShadow(
-                  color: _kNeonGlow.withOpacity(0.08),
-                  blurRadius: 8,
-                  spreadRadius: 0,
-                ),
-              ],
+          Text(
+            isEs
+                ? 'Todo lo que necesitas.'
+                : 'Tudo o que você precisa.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: _kText,
+              letterSpacing: -0.35,
+              height: 1.15,
             ),
-            child: Icon(icon, size: 18, color: _kNeon),
           ),
-          const SizedBox(height: 12),
-          // ── Número em destaque ───────────────────────────────────────
-          Text(stat,
+          const SizedBox(height: 22),
+
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final singleColumn = constraints.maxWidth < 340;
+              final itemWidth = singleColumn
+                  ? constraints.maxWidth
+                  : (constraints.maxWidth - 22) / 2;
+
+              return Wrap(
+                spacing: 22,
+                runSpacing: 18,
+                children: [
+                  for (final item in items)
+                    SizedBox(
+                      width: itemWidth,
+                      child: item,
+                    ),
+                ],
+              );
+            },
+          ),
+
+          const SizedBox(height: 20),
+
+          Text(
+            isEs ? 'ES · PT' : 'PT · ES',
+            textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 26, fontWeight: FontWeight.w800,
-              color: _kNeon, letterSpacing: -0.5,
-              height: 1.0,
-            )),
-          const SizedBox(height: 4),
-          // ── Título ───────────────────────────────────────────────────────
-          Text(title,
-            style: const TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w700,
-              color: _kText, height: 1.2),
-            maxLines: 1, overflow: TextOverflow.ellipsis),
-          const SizedBox(height: 2),
-          // ── Subtítulo + ícone trailing ────────────────────────────────────
-          Row(children: [
-            Expanded(
-              child: Text(subtitle,
-                style: const TextStyle(
-                  fontSize: 10, color: _kTextMid,
-                  fontWeight: FontWeight.w400, height: 1.3),
-                maxLines: 2, overflow: TextOverflow.ellipsis),
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: _kTextMid,
+              letterSpacing: 1.4,
             ),
-            const SizedBox(width: 4),
-            Icon(trailingIcon, size: 13,
-              color: _kNeonGlow.withOpacity(0.42)),
-          ]),
+          ),
         ],
       ),
     );
   }
 }
+
+// ── Card de métrica individual — MedCases Pro style ──────────────────────────────
+
 
 // ══════════════════════════════════════════════════════════════════════════════
 // CTA INFERIOR DARK — verde sólido + subtítulo (diferente do dourado pill)
