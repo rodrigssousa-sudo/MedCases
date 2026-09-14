@@ -72,6 +72,7 @@ const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const { registerAudioTranscriptionRoutes } = require('./audio_transcription_routes');
+const { registerCalculatorSessionRoutes } = require('./calculator_session_routes');
 const {
   initializeApp,
   cert,
@@ -1263,6 +1264,13 @@ registerAudioTranscriptionRoutes({
 });
 
 app.use(express.json({ limit: '512kb' }));
+
+// R3.2B1 — authenticated short-lived session for external calculator.
+registerCalculatorSessionRoutes({
+  app,
+  firebaseAdminApp,
+});
+
 
 // CORS já processou o preflight; somente as demais rotas de IA exigem Firebase Auth.
 app.use('/api/ai', authenticateFirebaseToken);
