@@ -21,6 +21,7 @@ import '../services/calculator_mcc1_bridge_service.dart';
 // Em iOS/Android buildCalculadoraWebView() é stub — o WebViewWidget é usado diretamente.
 import '../platform/calcu_stub.dart'
     if (dart.library.html) '../platform/calcu_web.dart';
+import 'upgrade_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // URL base — ?lang=pt ou ?lang=es injetado em initState() conforme AppProvider
@@ -831,6 +832,19 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
             debugPrint(
               '[CalculadoraWebView][WK_DOM_DIAG] ${message.message}',
             );
+          },
+        )
+          // MEDCASES_PREMIUM_R8_2_MCUPGRADE_NATIVE_CHANNEL_V1_B_R0
+        ..addJavaScriptChannel(
+          'MCUpgrade',
+          onMessageReceived: (message) {
+            if (!mounted) return;
+            final requestedLang = message.message.trim().toLowerCase();
+            final paywallLang = requestedLang == 'pt' ? 'pt' : 'es';
+            debugPrint(
+              '[CalculadoraWebView][MC_UPGRADE] source=drug-lock lang=$paywallLang',
+            );
+            showUpgradeScreen(context, lang: paywallLang);
           },
         )
         ..setNavigationDelegate(NavigationDelegate(
