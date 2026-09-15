@@ -1,6 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database
+  match /databases/{database}/documents {
+    // MEDCASES_FIRESTORE_ROOT_STRUCTURE_REPAIR_V1_B_R0
     // MEDCASES_SUPPORT_TICKET_RULES_V2_B_R1
     match /support_tickets/{ticketId} {
       allow create: if isAuthed()
@@ -65,7 +66,6 @@ service cloud.firestore {
       allow delete: if isMaster();
     }
 
-}/documents {
 
     // ══════════════════════════════════════════════════════════════════════════
     // HELPERS DE AUTENTICAÇÃO — AUDIT 453 (Apple Pre-Submission Hardening)
@@ -345,6 +345,73 @@ service cloud.firestore {
     // USUÁRIOS
     // ══════════════════════════════════════════════════════════════════════════
 
+
+    // MEDCASES_COMMERCE_F10_2_SERVER_MANAGED_ENTITLEMENT_RULES_V1_B_R0
+    //
+    // Canonical commerce authority:
+    //   Firebase UID -> server-managed subscription fields -> MCC1.
+    // Client writes may create/repair FREE/TRIAL defaults only.
+    // RevenueCat synchronization will use a trusted server/Admin SDK writer.
+    function isWritingCommerceEntitlementFields() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasAny([
+        'plan',
+        'subscriptionStatus',
+        'subscriptionProvider',
+        'subscriptionStore',
+        'subscriptionProductId',
+        'subscriptionEntitlementId',
+        'subscriptionExpiresAt',
+        'subscriptionUpdatedAt',
+        'subscriptionEventId',
+        'revenueCatAppUserId',
+        'revenueCatEnvironment'
+      ]);
+    }
+
+    function hasSafeInitialCommerceEntitlement() {
+      return request.resource.data.get('plan', 'free') == 'free'
+        && request.resource.data.get('subscriptionStatus', 'trial') == 'trial'
+        && !request.resource.data.keys().hasAny([
+          'subscriptionProvider',
+          'subscriptionStore',
+          'subscriptionProductId',
+          'subscriptionEntitlementId',
+          'subscriptionExpiresAt',
+          'subscriptionUpdatedAt',
+          'subscriptionEventId',
+          'revenueCatAppUserId',
+          'revenueCatEnvironment'
+        ]);
+    }
+
+    function isSafeClientCommerceEntitlementRepair() {
+      return (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['plan'])
+          || (
+            resource.data.get('plan', '__missing__') == '__missing__'
+            && request.resource.data.get('plan', '') == 'free'
+          )
+        )
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['subscriptionStatus'])
+          || (
+            resource.data.get('subscriptionStatus', '__missing__') == '__missing__'
+            && request.resource.data.get('subscriptionStatus', '') == 'trial'
+          )
+        )
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'subscriptionProvider',
+          'subscriptionStore',
+          'subscriptionProductId',
+          'subscriptionEntitlementId',
+          'subscriptionExpiresAt',
+          'subscriptionUpdatedAt',
+          'subscriptionEventId',
+          'revenueCatAppUserId',
+          'revenueCatEnvironment'
+        ]);
+    }
+
     match /users/{userId} {
       allow get: if isAuthed()
         && (request.auth.uid == userId || isAdmin());
@@ -352,12 +419,20 @@ service cloud.firestore {
       allow list: if isAdmin();
 
       allow create: if isAuthed()
-        && request.auth.uid == userId;
+        && request.auth.uid == userId
+        && hasSafeInitialCommerceEntitlement();
 
       allow update: if isAuthed() && (
         isAdmin()
         ||
-        (request.auth.uid == userId && !isWritingPartnerFields())
+        (
+          request.auth.uid == userId
+          && !isWritingPartnerFields()
+          && (
+            !isWritingCommerceEntitlementFields()
+            || isSafeClientCommerceEntitlementRepair()
+          )
+        )
       );
 
       allow delete: if isAdmin();
