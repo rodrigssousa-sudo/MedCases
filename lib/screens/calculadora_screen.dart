@@ -16,6 +16,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../providers/app_provider.dart';
 import '../services/offline_calculator_cache_service.dart';
+import '../services/calculator_mcc1_bridge_service.dart';
 // Conditional import: calcu_web.dart (Web) vs calcu_stub.dart (iOS/Android).
 // Em iOS/Android buildCalculadoraWebView() é stub — o WebViewWidget é usado diretamente.
 import '../platform/calcu_stub.dart'
@@ -213,6 +214,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Build 187: URL da calculadora — compartilhada entre Web (iframe) e native (WebView)
   // Build 189: pode ser sobrescrita por initialUrl (ExternalToolButton deep link)
   late String _webUrl;
+
+  // MEDCASES_PREMIUM_R7_1_WEBVIEW_FLUTTER_MCC1_BRIDGE
+  Timer? _mcc1RefreshTimer;
+  int _mcc1DocumentGeneration = 0;
 
   // MEDCASES_PATIENT_CONTEXT_SESSION_BRIDGE_V1_B_R0_R1
   // Snapshot efêmero por abertura da calculadora.
@@ -620,6 +625,152 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   }
 
 
+  bool _isMcc1EligibleCalculatorUrl(String? rawUrl) {
+    if (rawUrl == null || rawUrl.trim().isEmpty) return false;
+    final uri = Uri.tryParse(rawUrl);
+    if (uri == null || uri.scheme.toLowerCase() != 'https') return false;
+    final host = uri.host.toLowerCase();
+    return host == 'medcasescalcu.com' || host == 'www.medcasescalcu.com';
+  }
+
+  Future<void> _installMcc1BridgeForDocument({
+    required String? rawUrl,
+    required int generation,
+    bool forceFirebaseRefresh = false,
+  }) async {
+    if (!mounted ||
+        generation != _mcc1DocumentGeneration ||
+        !_isMcc1EligibleCalculatorUrl(rawUrl)) {
+      return;
+    }
+
+    try {
+      final session = await const CalculatorMcc1BridgeService().issueSession(
+        forceFirebaseRefresh: forceFirebaseRefresh,
+      );
+
+      if (!mounted || generation != _mcc1DocumentGeneration) return;
+
+      final tokenJson = jsonEncode(session.token);
+      final tierJson = jsonEncode(session.tier);
+      final capabilitiesJson = jsonEncode(session.capabilities);
+      final expiresAtJson = jsonEncode(
+        session.expiresAtUtc.toIso8601String(),
+      );
+
+      final source = """
+(() => {
+  const token = $tokenJson;
+  const tier = $tierJson;
+  const capabilities = Object.freeze($capabilitiesJson);
+  const expiresAtUtc = $expiresAtJson;
+  const allowedHosts = new Set(['medcasescalcu.com', 'www.medcasescalcu.com']);
+  const pageHost = String(window.location.hostname || '').toLowerCase();
+
+  if (window.location.protocol !== 'https:' || !allowedHosts.has(pageHost)) {
+    return { ok: false, code: 'MCC1_PAGE_ORIGIN_REJECTED' };
+  }
+
+  const protectedFetch = async (input, init = {}) => {
+    const target = new URL(String(input), window.location.origin);
+    const targetHost = String(target.hostname || '').toLowerCase();
+
+    if (
+      target.protocol !== 'https:' ||
+      !allowedHosts.has(targetHost) ||
+      !target.pathname.startsWith('/api/')
+    ) {
+      throw new Error('MCC1_FETCH_TARGET_REJECTED');
+    }
+
+    const options = (init && typeof init === 'object') ? { ...init } : {};
+    const headers = new Headers(options.headers || {});
+    headers.set('Authorization', 'Bearer ' + token);
+    headers.set('Accept', 'application/json');
+
+    options.headers = headers;
+    options.cache = 'no-store';
+    options.credentials = 'omit';
+
+    return fetch(target.href, options);
+  };
+
+  const bridge = Object.freeze({
+    version: 1,
+    tier,
+    capabilities,
+    expiresAtUtc,
+    fetch: protectedFetch,
+  });
+
+  try {
+    delete window.__medcasesMcc1Bridge;
+  } catch (_) {}
+
+  Object.defineProperty(window, '__medcasesMcc1Bridge', {
+    value: bridge,
+    configurable: true,
+    enumerable: false,
+    writable: false,
+  });
+
+  window.dispatchEvent(
+    new CustomEvent('medcases:mcc1-ready', {
+      detail: {
+        version: 1,
+        tier,
+        capabilities: [...capabilities],
+        expiresAtUtc,
+      },
+    }),
+  );
+
+  return {
+    ok: true,
+    version: 1,
+    tier,
+    capabilityCount: capabilities.length,
+    expiresAtUtc,
+  };
+})()
+""";
+
+      await _controller.runJavaScript(source);
+
+      if (!mounted || generation != _mcc1DocumentGeneration) return;
+
+      _mcc1RefreshTimer?.cancel();
+      final refreshAt = session.expiresAtUtc.subtract(
+        const Duration(seconds: 60),
+      );
+      var delay = refreshAt.difference(DateTime.now().toUtc());
+      if (delay < const Duration(seconds: 30)) {
+        delay = const Duration(seconds: 30);
+      }
+
+      _mcc1RefreshTimer = Timer(delay, () {
+        if (!mounted || generation != _mcc1DocumentGeneration) return;
+        unawaited(
+          _installMcc1BridgeForDocument(
+            rawUrl: rawUrl,
+            generation: generation,
+          ),
+        );
+      });
+
+      debugPrint(
+        '[CalculatorMcc1Bridge] ready '
+        'tier=${session.tier} '
+        'capabilities=${session.capabilities.length} '
+        'expiresAt=${session.expiresAtUtc.toIso8601String()}',
+      );
+    } catch (error) {
+      debugPrint(
+        '[CalculatorMcc1Bridge] unavailable type=${error.runtimeType}',
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -683,7 +834,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           },
         )
         ..setNavigationDelegate(NavigationDelegate(
-          onPageStarted: (_) async {
+          onPageStarted: (url) async {
+            _mcc1DocumentGeneration += 1;
+            _mcc1RefreshTimer?.cancel();
             // MEDCASES_IOS_CALCULADORA_GLOBAL_TABS_FLUTTER_INJECTION_BYPASS_COUNTERFACTUAL_V1_B_R0
             // Causal proof only: production page runs without Flutter-injected
             // CSS/JS on iOS. Non-iOS behavior remains unchanged.
@@ -698,7 +851,14 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
               await _controller.runJavaScript(_kEarlyInjectJs);
             }
           },
-          onPageFinished: (_) async {
+          onPageFinished: (url) async {
+            final mcc1Generation = _mcc1DocumentGeneration;
+            unawaited(
+              _installMcc1BridgeForDocument(
+                rawUrl: url,
+                generation: mcc1Generation,
+              ),
+            );
             final bypassFlutterPageInjectionForIOS = !kIsWeb && _detectIOS();
 
             if (bypassFlutterPageInjectionForIOS) {
@@ -3157,6 +3317,7 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
 
   @override
   void dispose() {
+    _mcc1RefreshTimer?.cancel();
     // MEDCASES_PATIENT_CONTEXT_SESSION_BRIDGE_V1_B_R0_R1: best-effort em gesto/back do SO.
     if (!kIsWeb) unawaited(_clearCalculatorSession());
     // Fix#6: remove listener para evitar memory leak
