@@ -104,6 +104,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
   flutter_svg: ^2.3.0
   cryptography: ^2.9.0
+  purchases_flutter: ^10.10.0
 
 dev_dependencies:
   flutter_test:
