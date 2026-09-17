@@ -5581,6 +5581,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                     children: [
                       _DrawerItemPremium(
                         dark: dark,
+                        isEs: p.lang == 'es',
                         onTap: () {
                           _close(context);
                           showUpgradeScreen(context, lang: p.lang);
@@ -6138,79 +6139,149 @@ class _DrawerBlock extends StatelessWidget {
 // ── Item Premium do Drawer ────────────────────────────────────────────────────
 class _DrawerItemPremium extends StatelessWidget {
   final bool dark;
+  final bool isEs;
   final VoidCallback onTap;
 
   const _DrawerItemPremium({
     required this.dark,
+    required this.isEs,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
-    final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    const accent = Color(0xFF009C3B);
+    const gold = Color(0xFFFFE8A6);
+    final border = dark
+        ? Colors.white.withValues(alpha: 0.14)
+        : Colors.black.withValues(alpha: 0.09);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        splashColor: accent.withValues(alpha: 0.05),
-        highlightColor: accent.withValues(alpha: 0.025),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 32,
-                child: Icon(
-                  Icons.workspace_premium_outlined,
-                  size: 19,
-                  color: accent,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(5, 7, 5, 12),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final bannerHeight =
+                  (constraints.maxWidth * 0.42).clamp(150.0, 188.0).toDouble();
+
+              return SizedBox(
+                height: bannerHeight,
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    Text(
-                      'Upgrade Premium',
-                      style: TextStyle(
-                        color: primary,
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w600,
+                    Image.asset(
+                      'assets/images/medcases-premium-banner.png',
+                      fit: BoxFit.cover,
+                      alignment: Alignment.centerRight,
+                    ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.78),
+                            Colors.black.withValues(alpha: 0.52),
+                            Colors.black.withValues(alpha: 0.12),
+                          ],
+                          stops: const [0.0, 0.58, 1.0],
+                        ),
+                        border: Border.all(color: border),
+                        borderRadius: BorderRadius.circular(18),
                       ),
                     ),
-                    const SizedBox(height: 1),
-                    Text(
-                      'Acesso completo · 500+ casos clínicos',
-                      style: TextStyle(
-                        color: secondary,
-                        fontSize: 9.2,
-                        fontWeight: FontWeight.w400,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(17, 15, 14, 14),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 72,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'MEDCASES PREMIUM',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: gold,
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.95,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  isEs ? '30 días gratis' : '30 dias grátis',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.5,
+                                    fontWeight: FontWeight.w900,
+                                    height: 1.0,
+                                  ),
+                                ),
+                                const SizedBox(height: 7),
+                                Text(
+                                  isEs ? 'US\$ 14,99/mes' : 'US\$ 14,99/mês',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11.0,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  isEs
+                                      ? 'Después US\$ 19,99/mes'
+                                      : 'Depois US\$ 19,99/mês',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.66),
+                                    fontSize: 9.2,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Spacer(flex: 28),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      right: 12,
+                      bottom: 12,
+                      child: Container(
+                        width: 31,
+                        height: 31,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withValues(alpha: 0.34),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.22),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 17,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const Text(
-                'VER',
-                style: TextStyle(
-                  color: accent,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.6,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 14.4,
-                color: secondary,
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

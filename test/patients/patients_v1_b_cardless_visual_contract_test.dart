@@ -38,7 +38,7 @@ void main() {
     expect(src, contains('_SessionCard168'));
     expect(
       src,
-      contains('MEDCASES_PACIENTES_HOME_COMPACT_SESSION_CARD_V1_B_R0'),
+      contains('MEDCASES_PACIENTES_SAVED_CARD_VISIBLE_OWNER_STRUCTURAL_V3'),
     );
   });
 
@@ -70,7 +70,7 @@ void main() {
     expect(screen, contains('MEDCASES_PACIENTES_PATIENT_DATA_BORDERLESS_V1'));
     expect(screen, contains('MEDCASES_PACIENTES_FARMACOS_BORDERLESS_V1'));
     expect(screen, contains('MEDCASES_PACIENTES_SOAP_BORDERLESS_V1'));
-    expect(screen, contains('MEDCASES_PACIENTES_SESSION_CARD_PHYSICAL_V1'));
+    expect(screen, contains('MEDCASES_PACIENTES_SAVED_CARD_VISIBLE_OWNER_STRUCTURAL_V3'));
   });
 
   test('Home visual parity preserves saved patients and actions', () {
@@ -82,7 +82,7 @@ void main() {
     expect(screen, contains('EdgeInsets.fromLTRB(16, 10, 16, 24)'));
     expect(screen, isNot(contains('left: -15.5')));
     expect(screen, isNot(contains('right: -15.5')));
-    expect(screen, contains('MEDCASES_PACIENTES_SESSION_CARD_PHYSICAL_V1'));
+    expect(screen, contains('MEDCASES_PACIENTES_SAVED_CARD_VISIBLE_OWNER_STRUCTURAL_V3'));
     expect(screen, contains('MEDCASES_PACIENTES_FINAL_ACTION_FIT_V2'));
   });
 

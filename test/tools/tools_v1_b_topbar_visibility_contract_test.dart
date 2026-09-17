@@ -30,21 +30,18 @@ void main() {
   );
 
   test('TOOLS V1-B GREEN — rota direta permanece única', () {
-    final directRoute = RegExp(
-      r'Navigator\.of\(context\)\.push\s*\(\s*'
-      r'_HomeScreenState\._slide\s*\(\s*'
-      r'(?:const\s+ToolsScreen\s*\(\s*\)|'
-      r'const\s+Material\s*\(\s*'
-      r'type\s*:\s*MaterialType\.transparency\s*,\s*'
-      r'child\s*:\s*ToolsScreen\s*\(\s*\)\s*,?\s*'
-      r'\))'
-      r'\s*,?\s*\)\s*,?\s*\)',
+    // O ponto de entrada público atual troca para o único ToolsScreen da
+    // MainShell, em vez de empilhar outra instância no Navigator.
+    final entry = RegExp(
+      r'onTools:\s*\(\)\s*\{\s*'
+      r'AppHaptics\.light\(context\);\s*'
+      r'toolsScreenTabNotifier\.value\s*=\s*null;\s*'
+      r'onTabChange\(4\);',
       multiLine: true,
-      dotAll: true,
     );
-
-    expect(directRoute.allMatches(homeSource).length, 1);
-    expect(homeSource, contains('toolsScreenTabNotifier.value = 0;'));
+    expect(entry.allMatches(homeSource).length, greaterThanOrEqualTo(1));
+    expect(mainSource, contains('const RepaintBoundary(child: ToolsScreen())'));
+    expect(homeSource, isNot(contains('ToolsScreen(hideHeader: false)')));
   });
 
   test(
@@ -86,55 +83,70 @@ void main() {
   test(
     'TOOLS V1-B GREEN — topbar preserva título, seta e retorno produtivo',
     () {
-      expect(toolsSource, contains("'FERRAMENTAS'"));
-      expect(
-        toolsSource,
-        contains('Icons.arrow_back_ios_new_rounded'),
-      );
-      expect(
-        toolsSource,
-        contains('final nav = Navigator.of(context);'),
-      );
+      // O título migrou de FERRAMENTAS para +SCORES; a navegação permanece
+      // no owner _ToolsTopbarContent, não na antiga TabRow.
+      expect(toolsSource, contains('class _ToolsTopbarContent extends StatelessWidget'));
+      expect(toolsSource, contains("'+SCORES'"));
+      expect(toolsSource, contains('Icons.arrow_back_ios_new_rounded'));
+      expect(toolsSource, contains('final nav = Navigator.of(context);'));
       expect(toolsSource, contains('nav.canPop()'));
       expect(toolsSource, contains('nav.pop()'));
-      expect(
-        toolsSource,
-        contains('MainShell.pendingTab.value = 0;'),
-      );
+      expect(toolsSource, contains('MainShell.pendingTab.value = 0;'));
+      expect(toolsSource, contains('height: 48'));
     },
   );
 
   test('TOOLS V1-B GREEN — seletores 0, 1, 2 e 3 são preservados', () {
-    for (final index in <int>[0, 1, 2, 3]) {
+    // Os quatro deeplinks usam workspaces dedicados e permanecem alcançáveis
+    // a partir do catálogo de especialidades (+SCORES).
+    final start = toolsSource.indexOf('void _openToolsSpecialtyRoute(');
+    final end = toolsSource.indexOf('class _ToolsHubLanding', start);
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final route = toolsSource.substring(start, end);
+    final branches = RegExp(r'if \(index == ([0-3])\) \{').allMatches(route).toList();
+    expect(branches.length, 4);
+    final destinations = <String>[
+      'NephroPremiumWorkspaceScreen',
+      'CardioPremiumWorkspaceScreen',
+      'ElectrolytesPremiumWorkspaceScreen',
+      'HepatoPremiumWorkspaceScreen',
+    ];
+    for (var index = 0; index < 4; index++) {
+      expect(branches[index].group(1), '$index');
+      final stop = index + 1 < branches.length
+          ? branches[index + 1].start
+          : route.length;
+      final block = route.substring(branches[index].start, stop);
+      expect(block, contains('const ${destinations[index]}()'));
       expect(
-        RegExp(r'index\s*:\s*' + index.toString())
-            .allMatches(toolsSource)
-            .length,
-        greaterThanOrEqualTo(1),
+        toolsSource,
+        contains('onTap: () => _openToolsSpecialtyRoute(context, $index)'),
       );
     }
-
-    expect(toolsSource, contains("'NEFROLOGÍA'"));
-    expect(toolsSource, contains("'NEFROLOGIA'"));
-    expect(toolsSource, contains("'CARDIO'"));
-    expect(toolsSource, contains("'ELECTROLITOS'"));
-    expect(toolsSource, contains("'ELETRÓLITOS'"));
-    expect(toolsSource, contains("'HEPATOLOGÍA'"));
   });
 
   test(
     'TOOLS V1-B GREEN — ordem clínica é idêntica nas duas TabBarView',
     () {
-      final orderedTabs = RegExp(
-        r'TabBarView\s*\([\s\S]*?'
-        r'NephrologyToolsScreen\s*\([\s\S]*?'
-        r'CardioToolsScreen\s*\([\s\S]*?'
-        r'ElectrolytesToolsScreen\s*\([\s\S]*?'
-        r'HepatologyToolsScreen\s*\(',
-        multiLine: true,
-      ).allMatches(toolsSource);
-
-      expect(orderedTabs.length, 2);
+      // As duas TabBarView foram substituídas por um catálogo único.
+      final start = toolsSource.indexOf('class _ToolsHubLanding extends StatelessWidget');
+      final end = toolsSource.indexOf('class _PlusScoresUnifiedSpecialtyItem', start);
+      expect(start, greaterThanOrEqualTo(0));
+      expect(end, greaterThan(start));
+      final hub = toolsSource.substring(start, end);
+      expect(hub, contains('final items = <_PlusScoresUnifiedSpecialtyItem>['));
+      expect(RegExp(r'_PlusScoresUnifiedSpecialtyItem\(').allMatches(hub).length, 22);
+      for (final title in <String>[
+        "titleEs: 'Cardiología'",
+        "titleEs: 'Electrolitos'",
+        "titleEs: 'Nefrología'",
+        "titleEs: 'Hepatología'",
+      ]) {
+        expect(hub, contains(title));
+      }
+      expect(toolsSource, contains('child: const _ToolsHubLanding()'));
+      expect(toolsSource, isNot(contains('TabBarView(')));
     },
   );
 

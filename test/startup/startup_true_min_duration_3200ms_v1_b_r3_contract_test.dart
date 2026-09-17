@@ -107,7 +107,7 @@ void main() {
     expect(source, contains('IA Clínica de bolso'));
     expect(
       source,
-      contains('duration: const Duration(milliseconds: 350)'),
+      contains('setState(() => _handoffDone = true)'),
     );
   });
 }

@@ -61,7 +61,7 @@ void main() {
     );
     expect(
       src,
-      contains('MEDCASES_PACIENTES_HOME_COMPACT_SESSION_CARD_V1_B_R0'),
+      contains('MEDCASES_PACIENTES_SAVED_CARD_VISIBLE_OWNER_STRUCTURAL_V3'),
     );
     expect(src, contains('ListView.separated('));
     expect(src, isNot(contains('mainAxisExtent: 176')));
@@ -148,7 +148,7 @@ void main() {
     expect(screen, contains('MEDCASES_PACIENTES_SOAP_BORDERLESS_V1'));
     expect(summary, contains('MEDCASES_PACIENTES_SUMMARY_BORDERLESS_V1'));
 
-    expect(screen, contains('MEDCASES_PACIENTES_SESSION_CARD_PHYSICAL_V1'));
+    expect(screen, contains('MEDCASES_PACIENTES_SAVED_CARD_VISIBLE_OWNER_STRUCTURAL_V3'));
     expect(screen, contains('MEDCASES_PACIENTES_FINAL_ACTION_FIT_V2'));
     expect(
       read(copilotPath),
@@ -178,11 +178,11 @@ void main() {
 
     expect(
       screen,
-      contains('MEDCASES_PACIENTES_HOME_COMPACT_SECTION_LABEL_V1_B_R0'),
+      contains('MEDCASES_PACIENTES_CENTERED_SECTION_DIVIDER_PLUS8_V1'),
     );
     expect(
       screen,
-      contains('MEDCASES_PACIENTES_HOME_COMPACT_SESSION_CARD_V1_B_R0'),
+      contains('MEDCASES_PACIENTES_SAVED_CARD_VISIBLE_OWNER_STRUCTURAL_V3'),
     );
   });
 

@@ -14,6 +14,8 @@ import '../services/clinical_recorder_service.dart';
 
 import '../models/study_long_form_audio_handoff.dart';
 
+import '../services/entitlement_service.dart';
+import 'upgrade_screen.dart';
 import 'dart:math' as math;
 
 final class _AudioRuntimePalette {
@@ -280,6 +282,21 @@ class NotesAudioLongFormLocalRuntimeScreen extends StatefulWidget {
 
 class _NotesAudioLongFormLocalRuntimeScreenState
     extends State<NotesAudioLongFormLocalRuntimeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _r25aEntitlement.addListener(_r25aEntitlementChanged);
+    _r25aEntitlement.refreshAuthoritativeTier();
+  }
+
+
+  // MEDCASES_R25A_ENTITLEMENT_LONGFORM_AUDIO_GATE_V1
+  final EntitlementService _r25aEntitlement = EntitlementService.instance;
+
+  void _r25aEntitlementChanged() {
+    if (mounted) setState(() {});
+  }
+
   RecordLongFormAudioProvider? _visualAudioProvider;
   ClinicalLongFormRecordingSession? _session;
   ClinicalLongFormSessionDirectoryLayout? _layout;
@@ -300,6 +317,8 @@ class _NotesAudioLongFormLocalRuntimeScreenState
 
   @override
   void dispose() {
+    _r25aEntitlement.removeListener(_r25aEntitlementChanged);
+
     _ticker?.cancel();
     _stopRequested = true;
     unawaited(_disposeRuntime());
@@ -659,6 +678,53 @@ class _NotesAudioLongFormLocalRuntimeScreenState
 
   @override
   Widget build(BuildContext context) {
+    if (!_r25aEntitlement.isResolvedForCurrentUser) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (!_r25aEntitlement.can(MedCasesCapability.audioLongForm)) {
+      return Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.workspace_premium_outlined, size: 40),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Gravação longa / Grabación larga',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Disponível no MedCases Premium / '
+                    'Disponible en MedCases Premium.',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 18),
+                  FilledButton(
+                    onPressed: () => showUpgradeScreen(
+                      context,
+                      lang:
+                          Localizations.localeOf(context).languageCode == 'pt'
+                              ? 'pt'
+                              : 'es',
+                    ),
+                    child: const Text('MedCases Premium'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     final palette = _AudioRuntimePalette.of(context);
     final isEs = widget.isEs;
     final now = DateTime.now().toUtc();

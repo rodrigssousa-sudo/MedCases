@@ -128,12 +128,22 @@ void main() {
         "const AssetImage('assets/icon/splash_mplus_premium.png')",
         'await WidgetsBinding.instance.endOfFrame;',
         'FlutterNativeSplash.remove();',
-        'duration: const Duration(milliseconds: 350)',
         'Future<void>.delayed(const Duration(milliseconds: 180))',
         'bool get _ready => _minTimeDone && _bootDone;',
       ]) {
         expect(timed, contains(token), reason: token);
       }
+
+      // R22H2 FIX R2: the current splash has an atomic, opaque handoff.
+      // A 350-ms crossfade was deliberately removed to avoid intermediate
+      // Home/Login frames; asserting it would enforce obsolete behavior.
+      expect(timed, contains('if (_authResolved && !_handoffScheduled)'));
+      expect(timed, contains('_releaseSplashAfterContentPaint();'));
+      expect(timed, contains('setState(() => _handoffDone = true);'));
+      expect(timed, contains('if (!_handoffDone)'));
+      expect(timed, contains("key: const ValueKey('ready-content-behind-splash')"));
+      expect(timed, contains("key: const ValueKey('splash-cover-until-rendered')"));
+      expect(timed, isNot(contains('duration: const Duration(milliseconds: 350)')));
     });
 
     test('auth wrapper still applies only the auth theme', () {

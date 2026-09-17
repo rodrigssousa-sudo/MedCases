@@ -108,7 +108,7 @@ void main() {
       );
       expect(
         timed,
-        contains('duration: const Duration(milliseconds: 350)'),
+        contains('setState(() => _handoffDone = true)'),
       );
     });
 

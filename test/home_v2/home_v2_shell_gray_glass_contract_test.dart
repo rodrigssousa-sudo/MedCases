@@ -62,97 +62,44 @@ void main() {
   });
 
   group('MainShell — topbar cinza esmerilada', () {
-    test('usa vidro cinza de alta opacidade no dark', () {
-      expect(
-        mobileAppBar,
-        contains(
-          'const Color(0xFF252930).withOpacity(0.70)',
-        ),
-      );
-
-      expect(
-        mobileAppBar,
-        contains('const Color(0xFF374151)'),
-      );
+    test('topbar usa liquid glass translucido no dark', () {
+      expect(mobileAppBar,
+        contains('const Color(0xFF161B22).withValues(alpha: 0.58)'));
+      expect(mobileAppBar,
+        contains('Colors.white.withValues(alpha: 0.13)'));
+      expect(mobileAppBar, contains('liquidTop'));
+      expect(mobileAppBar, contains('liquidMid'));
     });
-
-    test('permanece branca no modo light', () {
-      expect(
-        mobileAppBar,
-        contains(
-          'Colors.white.withOpacity(0.70)',
-        ),
-      );
-
-      expect(
-        mobileAppBar,
-        contains('const Color(0xFFE2E7EC)'),
-      );
+    test('topbar preserva vidro claro com borda translucida', () {
+      expect(mobileAppBar,
+        contains('Colors.white.withValues(alpha: 0.56)'));
+      expect(mobileAppBar,
+        contains('Colors.white.withValues(alpha: 0.78)'));
     });
-
-    test('mantém blur 14 e borda de 0.7 px', () {
-      expect(
-        mobileAppBar,
-        contains(
-          'ImageFilter.blur(sigmaX: 14, sigmaY: 14)',
-        ),
-      );
-
-      expect(
-        mobileAppBar,
-        contains(
-          'BorderSide(color: borderColor, width: 0.7)',
-        ),
-      );
+    test('topbar aplica blur 16 e borda de 0.7 px', () {
+      expect(mobileAppBar,
+        contains('ImageFilter.blur(sigmaX: 16, sigmaY: 16)'));
+      expect(mobileAppBar,
+        contains('BorderSide(color: borderColor, width: 0.7)'));
     });
-
-    test('não possui fundo opaco antes do BackdropFilter', () {
-      expect(
-        mobileAppBar,
-        isNot(contains('final baseColor')),
-      );
-
-      expect(
-        mobileAppBar,
-        isNot(contains('color: baseColor')),
-      );
-
-      expect(
-        mobileAppBar,
-        isNot(contains('return ColoredBox(')),
-      );
-
-      expect(
-        mobileAppBar,
-        contains('return ClipRect('),
-      );
-
-      expect(
-        mobileAppBar,
-        contains('BackdropFilter('),
-      );
+    test('topbar mantem BackdropFilter e superficies transparentes', () {
+      expect(mobileAppBar, contains('return DecoratedBox('));
+      expect(mobileAppBar, contains('child: ClipRect('));
+      expect(mobileAppBar, contains('BackdropFilter('));
+      expect(mobileAppBar, contains('color: glassColor'));
+      expect(mobileAppBar, contains('gradient: LinearGradient('));
+      expect(mobileAppBar, contains('Colors.transparent'));
+      expect(mobileAppBar, isNot(contains('color: baseColor')));
     });
-
-    test('remove sombra e tons azuis antigos', () {
-      expect(
-        mobileAppBar,
-        isNot(contains('boxShadow:')),
-      );
-
-      const forbidden = <String>[
-        '0xFF070D16',
-        '0xFF101C2C',
-        '0xFF263A55',
-        'withOpacity(0.62)',
-        'withOpacity(0.66)',
-      ];
-
-      for (final token in forbidden) {
-        expect(
-          mobileAppBar,
-          isNot(contains(token)),
-          reason: 'Token antigo na topbar: $token',
-        );
+    test('topbar usa sombra ambiente controlada sem tokens azuis legados', () {
+      expect(mobileAppBar, contains('boxShadow: ['));
+      expect(mobileAppBar, contains('Colors.black.withValues(alpha: dark ? 0.16 : 0.07)'));
+      expect(mobileAppBar, contains('liquidSpecular'));
+      for (final forbidden in const [
+        '0xFF070D16', '0xFF101C2C', '0xFF263A55',
+        'withOpacity(0.62)', 'withOpacity(0.66)',
+      ]) {
+        expect(mobileAppBar, isNot(contains(forbidden)), reason: forbidden);
       }
     });
   });

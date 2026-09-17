@@ -21,6 +21,8 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
 
   bool _active = false;
   bool _disposed = false;
+  bool _iosAudioSessionPrepared = false;
+  bool _androidBackgroundGuardActive = false;
 
   static RecordConfig buildRecordConfig(
     ClinicalLongFormRecordingConfig config,
@@ -73,6 +75,7 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       throw StateError('AAC-LC is not supported on this platform.');
     }
 
+    await _prepareIosAudioSession();
     await _beginPlatformBackgroundGuard();
     try {
       await _recorder.start(
@@ -81,6 +84,7 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       );
       _active = true;
     } catch (_) {
+      await _releaseIosAudioSession();
       await _endPlatformBackgroundGuard();
       rethrow;
     }
@@ -90,19 +94,12 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
   Future<void> pause() async {
     _guardActive();
     await _recorder.pause();
-    await _endPlatformBackgroundGuard();
   }
 
   @override
   Future<void> resume() async {
     _guardActive();
-    await _beginPlatformBackgroundGuard();
-    try {
-      await _recorder.resume();
-    } catch (_) {
-      await _endPlatformBackgroundGuard();
-      rethrow;
-    }
+    await _recorder.resume();
   }
 
   @override
@@ -116,7 +113,6 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       return await _recorder.stop();
     } finally {
       _active = false;
-      await _endPlatformBackgroundGuard();
     }
   }
 
@@ -131,7 +127,6 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       await _recorder.cancel();
     } finally {
       _active = false;
-      await _endPlatformBackgroundGuard();
     }
   }
 
@@ -141,23 +136,74 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       return;
     }
 
-    if (_active) {
-      try {
-        await _recorder.stop();
-      } finally {
-        _active = false;
-        await _endPlatformBackgroundGuard();
+    try {
+      if (_active) {
+        try {
+          await _recorder.stop();
+        } finally {
+          _active = false;
+        }
       }
-    } else {
+    } finally {
+      await _releaseIosAudioSession();
       await _endPlatformBackgroundGuard();
+      await _recorder.dispose();
+      _disposed = true;
+    }
+  }
+
+  Future<void> _prepareIosAudioSession() async {
+    if (!Platform.isIOS || _iosAudioSessionPrepared) {
+      return;
     }
 
-    await _recorder.dispose();
-    _disposed = true;
+    final ios = _recorder.ios;
+    if (ios == null) {
+      throw StateError('ios_record_audio_session_unavailable');
+    }
+
+    await ios.manageAudioSession(false);
+    try {
+      await ios.setAudioSessionCategory(
+        category: IosAudioCategory.playAndRecord,
+        options: const <IosAudioCategoryOptions>[
+          IosAudioCategoryOptions.mixWithOthers,
+          IosAudioCategoryOptions.defaultToSpeaker,
+          IosAudioCategoryOptions.allowBluetooth,
+          IosAudioCategoryOptions.allowBluetoothA2DP,
+        ],
+      );
+      await ios.setAudioSessionActive(true);
+      _iosAudioSessionPrepared = true;
+    } catch (_) {
+      try {
+        await ios.setAudioSessionActive(false);
+      } catch (_) {}
+      rethrow;
+    }
+  }
+
+  Future<void> _releaseIosAudioSession() async {
+    if (!Platform.isIOS || !_iosAudioSessionPrepared) {
+      return;
+    }
+
+    final ios = _recorder.ios;
+    _iosAudioSessionPrepared = false;
+
+    if (ios == null) {
+      return;
+    }
+
+    try {
+      await ios.setAudioSessionActive(false);
+    } catch (_) {
+      // Best-effort teardown. Recorder disposal follows immediately.
+    }
   }
 
   Future<void> _beginPlatformBackgroundGuard() async {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid || _androidBackgroundGuardActive) {
       return;
     }
 
@@ -165,10 +211,11 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     if (started != true) {
       throw StateError('android_recording_background_guard_unavailable');
     }
+    _androidBackgroundGuardActive = true;
   }
 
   Future<void> _endPlatformBackgroundGuard() async {
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid || !_androidBackgroundGuardActive) {
       return;
     }
 
@@ -178,6 +225,8 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       if (_active) {
         rethrow;
       }
+    } finally {
+      _androidBackgroundGuardActive = false;
     }
   }
 

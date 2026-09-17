@@ -63,190 +63,77 @@ void main() {
   });
 
   group('MainShell — barra inferior adaptativa', () {
-    test('itens comuns usam branco no dark e verde ativo', () {
+    test('itens comuns usam branco no dark e verde oficial ativo', () {
+      // O R21 utiliza verde #009C3B nos dois temas. A cor inativa
+      // permanece branca no dark e cinza #4B5563 no light.
       expect(
-        matches(
-          navItem,
+        matches(navItem,
           r'final activeColor\s*=\s*dark\s*\?'
-          r'\s*const Color\(0xFF00C781\)\s*:'
-          r'\s*const Color\(0xFF008F66\)\s*;',
-        ),
+          r'\s*const Color\(0xFF009C3B\)\s*:'
+          r'\s*const Color\(0xFF009C3B\)\s*;'),
         isTrue,
       );
-
       expect(
-        matches(
-          navItem,
+        matches(navItem,
           r'final inactiveColor\s*=\s*dark\s*\?'
           r'\s*Colors\.white\s*:'
-          r'\s*const Color\(0xFF4B5563\)\s*;',
-        ),
+          r'\s*const Color\(0xFF4B5563\)\s*;'),
         isTrue,
       );
-
-      expect(
-        navItem,
-        contains(
-          'final color = isActive ? activeColor : inactiveColor;',
-        ),
-      );
-
-      expect(
-        navItem,
-        contains(
-          'child: Icon(resolvedIcon, size: 22, color: color)',
-        ),
-      );
+      expect(navItem, contains('final color = isActive ? activeColor : inactiveColor;'));
+      expect(navItem, contains('child: Icon(resolvedIcon, size: 22, color: color)'));
     });
-
-    test('Início e Biblioteca preservam _NavItem e destinos', () {
-      expect(
-        footer,
-        contains('icon: Icons.home_outlined'),
-      );
-
-      expect(
-        footer,
-        contains('iconActive: Icons.home_rounded'),
-      );
-
-      expect(
-        footer,
-        contains('icon: Icons.menu_book_outlined'),
-      );
-
-      expect(
-        footer,
-        contains('iconActive: Icons.menu_book_rounded'),
-      );
-
-      expect(
-        footer,
-        contains('widget.onTabChange(0)'),
-      );
-
-      expect(
-        footer,
-        contains('widget.onTabChange(5)'),
-      );
+    test('Início e navegação IA contextual preservam os destinos', () {
+      // Biblioteca foi retirada do dock. O destino Home continua index 0;
+      // IA muda o conteúdo do dock para Histórico / Novo Chat / Menu.
+      expect(footer, contains('Widget _buildNavRow()'));
+      expect(footer, contains('Widget _buildAiRow()'));
+      expect(footer, contains('icon: Icons.home_outlined'));
+      expect(footer, contains('iconActive: Icons.home_rounded'));
+      expect(footer, contains('widget.onTabChange(0)'));
+      expect(footer, contains('AiScreen.openHistoryCallback'));
+      expect(footer, contains('widget.onFabDoubleTap'));
+      expect(footer, isNot(contains('icon: Icons.menu_book_outlined')));
     });
-
-    test('IA usa branco inativo e verde ativo', () {
-      expect(
-        matches(
-          footer,
-          r'Icons\.psychology_rounded\s*,'
-          r'[\s\S]*?color\s*:\s*widget\.isAiActive\s*\?'
-          r'\s*\(widget\.dark\s*\?'
-          r'\s*_medcasesGreen\s*:'
-          r'\s*_menuLightGreen\s*\)'
-          r'\s*:\s*Colors\.white\s*,',
-        ),
-        isTrue,
-      );
-
-      expect(
-        matches(
-          footer,
-          r"child\s*:\s*Text\('IA'"
-          r'[\s\S]*?color\s*:\s*widget\.isAiActive\s*\?'
-          r'\s*\(widget\.dark\s*\?'
-          r'\s*_medcasesGreen\s*:'
-          r'\s*_menuLightGreen\s*\)'
-          r'\s*:\s*\(widget\.dark\s*\?'
-          r'\s*Colors\.white\s*:'
-          r'\s*const Color\(0xFF4B5563\)\s*\)',
-        ),
-        isTrue,
-      );
+    test('IA utiliza SVG oficial, ação de abertura e rótulo adaptativo', () {
+      expect(footer, contains("'assets/icons/home_v2/ic_ia.svg'"));
+      expect(footer, contains('onTap: widget.onFabTap'));
+      expect(footer, contains('onDoubleTap: widget.onFabDoubleTap'));
+      expect(footer, contains("child: Text('IA',"));
+      expect(footer, contains('color: widget.isAiActive'));
+      expect(footer, contains('_medcasesGreen'));
+      expect(footer, contains('Colors.white'));
+      expect(footer, contains('const Color(0xFF4B5563)'));
     });
-
-    test('M+ usa branco e responde em verde ao toque', () {
-      expect(
-        footer,
-        contains('bool _menuPressed = false;'),
-      );
-
-      expect(
-        matches(
-          footer,
-          r'final menuColor\s*=\s*_menuPressed\s*\?'
-          r'\s*\(widget\.dark\s*\?'
-          r'\s*_medcasesGreen\s*:'
-          r'\s*_menuLightGreen\s*\)'
-          r'\s*:\s*\(widget\.dark\s*\?'
-          r'\s*Colors\.white\s*:'
-          r'\s*const Color\(0xFF4B5563\)\s*\)\s*;',
-        ),
-        isTrue,
-      );
-
-      expect(
-        footer,
-        contains('onTapDown: (_)'),
-      );
-
-      expect(
-        footer,
-        contains('onTapUp: (_)'),
-      );
-
-      expect(
-        footer,
-        contains('onTapCancel: ()'),
-      );
-
-      expect(
-        footer,
-        contains('onTap: widget.onMenuTap'),
-      );
-
-      expect(
-        footer,
-        isNot(contains('0xFFD4AF37')),
-      );
-
-      expect(
-        footer,
-        isNot(contains('color: _avatarGold')),
-      );
+    test('M+ mantém retorno tátil verde e contraste por tema', () {
+      expect(footer, contains('bool _menuPressed = false;'));
+      expect(footer, contains('final menuColor = _menuPressed'));
+      expect(footer, contains('const Color(0xFF009C3B)'));
+      expect(footer, contains('widget.dark ? Colors.white : const Color(0xFF4B5563)'));
+      for (final callback in const [
+        'onTapDown: (_)', 'onTapUp: (_)', 'onTapCancel: ()',
+        'onTap: widget.onMenuTap',
+      ]) {
+        expect(footer, contains(callback), reason: callback);
+      }
+      expect(footer, isNot(contains('0xFFD4AF37')));
+      expect(footer, isNot(contains('color: _avatarGold')));
     });
-
-    test('preserva vidro, alturas e recolhimento', () {
-      expect(
-        footer,
-        contains(
-          'const Color(0xFF0F1116).withOpacity(0.68)',
-        ),
-      );
-
-      expect(
-        footer,
-        contains(
-          'Colors.white.withOpacity(0.65)',
-        ),
-      );
-
-      expect(
-        footer,
-        contains(
-          'static const _barHeightFull = 50.0',
-        ),
-      );
-
-      expect(
-        footer,
-        contains(
-          'static const _barHeightShrunk = 38.0',
-        ),
-      );
-
-      expect(
-        footer,
-        contains('MainShell.navScrollingDown'),
-      );
+    test('preserva liquid glass, alturas, safe area e recolhimento', () {
+      for (final token in const [
+        'const Color(0xFF161B22).withValues(alpha: 0.58)',
+        'Colors.white.withValues(alpha: 0.56)',
+        'ImageFilter.blur(sigmaX: 16, sigmaY: 16)',
+        'liquidBorder',
+        'liquidSpecular',
+        'static const _barHeightFull = 50.0',
+        'static const _barHeightShrunk = 38.0',
+        'MainShell.navScrollingDown',
+        'final safeBottom = bottomInset > 0 ? bottomInset : 16.0',
+      ]) {
+        expect(footer, contains(token), reason: token);
+      }
     });
-
     test('preserva os callbacks oficiais', () {
       expect(
         footer,

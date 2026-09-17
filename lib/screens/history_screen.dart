@@ -27,6 +27,8 @@ import '../platform/web_impl.dart'
     if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
 import 'clinical_recorder_sheet.dart';
 import '../design_system/foundation/med_typography.dart';
+import '../services/entitlement_service.dart';
+import 'upgrade_screen.dart';
 import '../services/clinical_recorder_service.dart' show SoapData;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2259,7 +2261,22 @@ class _HcTabRow extends StatelessWidget {
               index: 2,
               tabCtrl: tabCtrl,
               dark: dark,
-              onTap: onNew,
+              onTap: () async {
+                // MEDCASES_R25A_ENTITLEMENT_HISTORY_CREATE_GATE_V1
+                final decision = await EntitlementService.instance
+                    .consumeClinicalHistoryCreationAllowance();
+                if (!context.mounted) return;
+                if (!decision.allowed) {
+                  showUpgradeScreen(
+                    context,
+                    lang: Localizations.localeOf(context).languageCode == 'pt'
+                        ? 'pt'
+                        : 'es',
+                  );
+                  return;
+                }
+                onNew();
+              },
             ),
           ),
         ],

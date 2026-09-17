@@ -41,7 +41,6 @@ class AuthService {
   static const _projectId = 'medcases-pro';
   static const _fsBase =
       'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
-  static const String adminEmail = 'rodrigssousa@gmail.com';
 
   // ── Estado de autenticação Web (ValueNotifier) ─────────────────────────────
   static final ValueNotifier<UserModel?> webUser =
@@ -410,11 +409,15 @@ class AuthService {
         }
       }
 
-      // Fallback: reconstrói a partir do JSON salvo se Firestore falhou
+      // R22B: cache offline jamais confere autorizacao administrativa nem
+      // converte perfil pendente/bloqueado em aprovado. O estado persistido
+      // so pode ser restaurado com confianca apos leitura remota bem-sucedida.
       final user = freshUser ??
-          UserModel.fromJson(
-            jsonDecode(userJson) as Map<String, dynamic>,
-          );
+          UserModel.fromJson({
+            ...(jsonDecode(userJson) as Map<String, dynamic>),
+            'role': UserRole.user.name,
+            'status': UserStatus.pending.name,
+          });
 
       // Seta webUser para que _AuthGate roteie direto ao MainShell
       if (kIsWeb) webUser.value = user;
@@ -860,20 +863,15 @@ class AuthService {
           webUser.value = user;
           return AuthResult.success(user);
         }
-        // Se ainda 403 após retry: retorna usuário aprovado em memória (não bloqueia login).
-        final fallbackUser = _buildNewUser(uid: uid, email: email);
-        webUser.value = fallbackUser;
-        _createUserDocRest(user: fallbackUser, idToken: bestToken).ignore();
-        return AuthResult.success(fallbackUser);
+        // R22B: nunca autorizar usando perfil sintético quando a leitura falhar.
+        return AuthResult.error(
+            'Não foi possível verificar o perfil. Tente novamente.');
       }
 
       if (fsResp.statusCode != 200) {
-        // Qualquer outro erro HTTP inesperado: fallback em memória com status=approved.
-        // Nunca retorna erro de "perfil" ao usuário — mantém fluxo de login estável.
-        final fallbackUser = _buildNewUser(uid: uid, email: email);
-        webUser.value = fallbackUser;
-        _createUserDocRest(user: fallbackUser, idToken: bestToken).ignore();
-        return AuthResult.success(fallbackUser);
+        // R22B: erro de rede/servidor nao comprova role nem status do perfil.
+        return AuthResult.error(
+            'Não foi possível verificar o perfil. Tente novamente.');
       }
 
       final fsBody = jsonDecode(fsResp.body) as Map<String, dynamic>;
@@ -1845,7 +1843,12 @@ class AuthService {
   }) async {
     try {
       final fields = <String, dynamic>{};
-      final m = user.toMap();
+      // Remove chaves privilegiadas default do UserModel. As regras R22A
+      // rejeitam a presenca de isPartner/partnerTitle/referralLink no create.
+      final m = Map<String, dynamic>.from(user.toMap())
+        ..remove('isPartner')
+        ..remove('partnerTitle')
+        ..remove('referralLink');
       m.forEach((k, v) {
         if (v == null) {
           fields[k] = {'nullValue': null};
@@ -1872,19 +1875,17 @@ class AuthService {
       );
 
       if (patchResp.statusCode < 200 || patchResp.statusCode >= 300) {
-        // fix(auth): loga falha de criação sem lançar exceção — não bloqueia cadastro,
-        // mas deixa rastro para diagnóstico de problemas de regra Firestore.
-        debugPrint(
-            '[Auth] _createUserDocRest FALHOU HTTP ${patchResp.statusCode}: ${patchResp.body}');
-      } else {
-        debugPrint(
-            '[Auth] _createUserDocRest OK — uid=${user.uid} status=${user.status.name}');
+        // R22B: nunca declarar cadastro/login concluido sem perfil persistido.
+        // Nao imprimir corpo HTTP nem credenciais em logs.
+        throw StateError('Falha ao persistir perfil (${patchResp.statusCode})');
       }
+      debugPrint('[Auth] _createUserDocRest OK — uid=${user.uid}');
 
       // ── Notifica usuários MASTER sobre novo cadastro ──────────────────────
       _notifyMastersNewUser(user).ignore();
     } catch (e) {
       debugPrint('[Auth] _createUserDocRest exception: $e');
+      rethrow;
     }
   }
 
@@ -2020,9 +2021,7 @@ class AuthService {
           uid: uid,
           email: email.trim().toLowerCase(),
           displayName: name,
-          role: email.trim().toLowerCase() == adminEmail.toLowerCase()
-              ? UserRole.admin
-              : UserRole.user,
+          role: UserRole.user,
           status: UserStatus.approved, // ← aprovado imediatamente
           createdAt: now,
           approvedAt: now,
@@ -2044,10 +2043,15 @@ class AuthService {
           'updatedAt': Timestamp.fromDate(now),
         };
 
+        // R22B: o modelo carrega flags de parceiros por compatibilidade,
+        // mas a regra R22A proibe ate mesmo a PRESENCA dessas chaves na criacao.
         final docData = <String, dynamic>{
           ...newUser.toMap(),
           ...extraFields,
-        };
+        }
+          ..remove('isPartner')
+          ..remove('partnerTitle')
+          ..remove('referralLink');
 
         await ref.set(docData);
         debugPrint(
@@ -2060,28 +2064,16 @@ class AuthService {
       var user = UserModel.fromMap({...data, 'uid': uid});
       final repairs = <String, dynamic>{};
 
-      // Repara status pending → approved (legados ou criados incompletos)
-      if (user.isPending) {
-        repairs['status'] = UserStatus.approved.name;
-        repairs['approvedAt'] = Timestamp.fromDate(now);
-        repairs['approvedBy'] = 'system-auto';
-        user = user.copyWith(
-            status: UserStatus.approved,
-            approvedAt: now,
-            approvedBy: 'system-auto');
-        debugPrint(
-            '[Auth] Perfil reparado: status pending→approved — uid=$uid');
-      }
+      // R22B: status pendente/bloqueado e aprovacoes existentes sao imutaveis
+      // neste caminho. Apenas um fluxo administrativo confiavel pode muda-los.
 
       // Repara campos extras ausentes (plan, subscriptionStatus, etc.)
-      if (data['plan'] == null) repairs['plan'] = 'free';
-      if (data['subscriptionStatus'] == null)
-        repairs['subscriptionStatus'] = 'trial';
+      // plan e subscriptionStatus sao campos protegidos pelas regras R22A.
+      // O cliente nao os preenche em documentos ja existentes.
       if (data['onboardingCompleted'] == null)
         repairs['onboardingCompleted'] = false;
       if (data['platformCreated'] == null)
         repairs['platformCreated'] = platform;
-      if (data['accountStatus'] == null) repairs['accountStatus'] = 'active';
 
       if (repairs.isNotEmpty) {
         repairs['updatedAt'] = Timestamp.fromDate(now);
@@ -2098,19 +2090,15 @@ class AuthService {
 
       return user;
     } catch (e) {
-      debugPrint('[Auth] ensureUserProfileExists falhou (usando fallback): $e');
-      // Fallback: retorna modelo em memória aprovado para não bloquear o app
+      debugPrint('[Auth] R22B: perfil indisponivel; acesso fica pendente: $e');
+      // Fallback em memoria NAO autentica role, aprovacao ou acesso premium.
       return UserModel(
         uid: uid,
         email: email.trim().toLowerCase(),
         displayName: name,
-        role: email.trim().toLowerCase() == adminEmail.toLowerCase()
-            ? UserRole.admin
-            : UserRole.user,
-        status: UserStatus.approved,
+        role: UserRole.user,
+        status: UserStatus.pending,
         createdAt: now,
-        approvedAt: now,
-        approvedBy: 'system-fallback',
       );
     }
   }
@@ -2132,9 +2120,9 @@ class AuthService {
       uid: uid,
       email: email.trim().toLowerCase(),
       displayName: displayName?.trim() ?? email.split('@').first,
-      role: email.trim().toLowerCase() == adminEmail.toLowerCase()
-          ? UserRole.admin
-          : UserRole.user,
+      // Perfil novo e sempre comum. role master/admin exige provisionamento
+      // privilegiado fora do cliente; perfis existentes sao preservados.
+      role: UserRole.user,
       status: UserStatus.approved, // ← sempre aprovado imediatamente
       createdAt: DateTime.now(),
       approvedAt: DateTime.now(), // ← data de aprovação = data de cadastro
@@ -2153,52 +2141,13 @@ class AuthService {
     required String email,
   }) {
     if (!exists || data.isEmpty) {
-      final user = _buildNewUser(uid: uid, email: email);
-      return AuthResult.success(user);
+      return AuthResult.error(
+          'Perfil não encontrado. Tente novamente ou contate o suporte.');
     }
-    var user = UserModel.fromMap(data);
-    // Auto-aprovação retroativa: se um usuário existente ainda está pending,
-    // aprova automaticamente ao fazer login (migração de usuários legados).
-    if (user.isPending) {
-      user = user.copyWith(
-        status: UserStatus.approved,
-        approvedAt: DateTime.now(),
-        approvedBy: 'system-auto',
-      );
-      // Persistir aprovação no Firestore de forma assíncrona (fire-and-forget)
-      _autoApproveInBackground(uid: uid);
-    }
+    // R22B: role/status sempre vem do documento obtido no servidor;
+    // nao usa o email de login para atribuir privilegios ou aprovar pending.
+    final user = UserModel.fromMap({...data, 'uid': uid});
     return AuthResult.success(user);
-  }
-
-  /// Persiste aprovação automática no Firestore sem bloquear o fluxo de login.
-  /// fix(auth): loga falhas para diagnóstico; a rule allow update agora aceita
-  /// o próprio usuário (pending ou approved), então não deve mais falhar com 403.
-  static void _autoApproveInBackground({required String uid}) {
-    Future.microtask(() async {
-      try {
-        if (kIsWeb) {
-          await _patchUserRest(uid, {
-            'status': UserStatus.approved.name,
-            'approvedAt': DateTime.now().toUtc().toIso8601String(),
-            'approvedBy': 'system-auto',
-          });
-          debugPrint('[Auth] _autoApproveInBackground OK (web) — uid=$uid');
-        } else {
-          await _db.collection('users').doc(uid).update({
-            'status': UserStatus.approved.name,
-            'approvedAt': Timestamp.fromDate(DateTime.now()),
-            'approvedBy': 'system-auto',
-          });
-          debugPrint('[Auth] _autoApproveInBackground OK (native) — uid=$uid');
-        }
-      } catch (e) {
-        // Não bloqueia o fluxo — usuário já foi aprovado em memória no _buildResultFromDoc.
-        // Com a correção da rule allow update, este catch raramente será atingido.
-        debugPrint(
-            '[Auth] _autoApproveInBackground falhou (usuário já aprovado em memória): $e');
-      }
-    });
   }
 
   // ── Mensagens de erro amigáveis ───────────────────────────────────────────

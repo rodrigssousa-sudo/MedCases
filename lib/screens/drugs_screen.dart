@@ -11,8 +11,12 @@ import '../services/drug_interaction_service.dart';
 import '../widgets/common_widgets.dart';
 import '../services/activity_service.dart';
 
+import 'calculadora_screen.dart';
+import '../services/entitlement_service.dart';
+
 // Recentes delegados ao AppProvider (chave prefixada por uid)
-Future<void> _registerDrugRecent(BuildContext ctx, String id, String name, DateTime openedAt) async {
+Future<void> _registerDrugRecent(
+    BuildContext ctx, String id, String name, DateTime openedAt) async {
   final elapsed = DateTime.now().difference(openedAt);
   if (elapsed.inSeconds < 5) return;
   try {
@@ -28,8 +32,8 @@ void showDrugDetailSheet(BuildContext context, DrugModel drug) {
   // Registra no histórico de atividades recentes
   final lang = p.lang;
   ActivityService.log(
-    type:     ActivityType.farmaco,
-    title:    drug.nameL10n(lang),
+    type: ActivityType.farmaco,
+    title: drug.nameL10n(lang),
     subtitle: drug.className[lang] ?? drug.group,
   );
   showModalBottomSheet(
@@ -37,7 +41,8 @@ void showDrugDetailSheet(BuildContext context, DrugModel drug) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => _DrugDetailSheetWrapper(drug: drug, p: p),
-  ).then((_) => _registerDrugRecent(context, drug.id, drug.nameL10n(lang), openedAt));
+  ).then((_) =>
+      _registerDrugRecent(context, drug.id, drug.nameL10n(lang), openedAt));
 }
 
 class _DrugDetailSheetWrapper extends StatelessWidget {
@@ -70,14 +75,67 @@ class _DrugDetailSheetWrapper extends StatelessWidget {
   }
 }
 
+// MEDCASES_R25A_ENTITLEMENT_DRUGS_WRAPPER_V1
+// Public owner: direct routes cannot bypass the sovereign entitlement service.
+// Free uses the server-signed MCC1 Farmacos surface; Premium uses native full UI.
 class DrugsScreen extends StatefulWidget {
+  const DrugsScreen({
+    super.key,
+    this.hideHeader = false,
+  });
+
   final bool hideHeader;
-  const DrugsScreen({super.key, this.hideHeader = false});
+
   @override
-  State<DrugsScreen> createState() => _DrugsScreenState();
+  State<DrugsScreen> createState() => _EntitledDrugsScreenState();
 }
 
-class _DrugsScreenState extends State<DrugsScreen> {
+class _EntitledDrugsScreenState extends State<DrugsScreen> {
+  final EntitlementService _entitlement = EntitlementService.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _entitlement.addListener(_onEntitlementChanged);
+    _entitlement.refreshAuthoritativeTier();
+  }
+
+  void _onEntitlementChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _entitlement.removeListener(_onEntitlementChanged);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_entitlement.isResolvedForCurrentUser) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (!_entitlement.can(MedCasesCapability.drugsFullLibrary)) {
+      return const CalculadoraScreen(
+        initialUrl: 'https://medcasescalcu.com/?tab=farmacos',
+      );
+    }
+
+    return _PremiumDrugsScreen(hideHeader: widget.hideHeader);
+  }
+}
+
+class _PremiumDrugsScreen extends StatefulWidget {
+  final bool hideHeader;
+  const _PremiumDrugsScreen({super.key, this.hideHeader = false});
+  @override
+  State<_PremiumDrugsScreen> createState() => _DrugsScreenState();
+}
+
+class _DrugsScreenState extends State<_PremiumDrugsScreen> {
   final _searchCtrl = TextEditingController();
   DrugModel? _selected;
   // Grupos expandidos — por padrão todos fechados
@@ -136,9 +194,9 @@ class _DrugsScreenState extends State<DrugsScreen> {
       return a.name.compareTo(b.name);
     });
 
-    _cachedUnique    = unique;
-    _cachedFavDrugs  = Set.from(p.favDrugs);
-    _cachedLang      = p.lang;
+    _cachedUnique = unique;
+    _cachedFavDrugs = Set.from(p.favDrugs);
+    _cachedLang = p.lang;
     return unique;
   }
 
@@ -163,7 +221,6 @@ class _DrugsScreenState extends State<DrugsScreen> {
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 100),
         child: Column(children: [
-
           // ── Header premium (oculto quando embutido em shell) ─────────────────
           if (!widget.hideHeader) ...[
             PremiumCard(
@@ -180,7 +237,8 @@ class _DrugsScreenState extends State<DrugsScreen> {
           // ── Busca com autocomplete ─────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               _DrugSearchAutocomplete(
                 controller: _searchCtrl,
                 hintText: p.t('drugs_search_hint'),
@@ -192,7 +250,9 @@ class _DrugsScreenState extends State<DrugsScreen> {
               Text(
                 '${unique.length} ${p.t('drugs_found')}',
                 style: const TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF6B7280),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF6B7280),
                 ),
               ),
             ]),
@@ -202,11 +262,11 @@ class _DrugsScreenState extends State<DrugsScreen> {
           // ── Modo busca: lista flat ────────────────────────────────────────────
           if (isSearching)
             ...unique.map((drug) => _DrugListTile(
-              drug: drug,
-              p: p,
-              dark: dark,
-              onTap: () => setState(() => _selected = drug),
-            ))
+                  drug: drug,
+                  p: p,
+                  dark: dark,
+                  onTap: () => setState(() => _selected = drug),
+                ))
 
           // ── Modo normal: acordeão por grupo ──────────────────────────────────
           else ...[
@@ -235,9 +295,8 @@ class _DrugsScreenState extends State<DrugsScreen> {
 
             // Grupos clínicos em ordem definida em DrugGroup.all
             ...DrugGroup.all.map((groupName) {
-              final drugsInGroup = unique
-                  .where((d) => d.group == groupName)
-                  .toList();
+              final drugsInGroup =
+                  unique.where((d) => d.group == groupName).toList();
               if (drugsInGroup.isEmpty) return const SizedBox.shrink();
               final isExp = _expanded.contains(groupName);
               return Column(children: [
@@ -309,7 +368,6 @@ class _GroupAccordion extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14),
         child: Column(children: [
-
           // ── Cabeçalho do grupo ──────────────────────────────────────────────
           Material(
             color: headerBg,
@@ -327,7 +385,8 @@ class _GroupAccordion extends StatelessWidget {
               splashColor: (iconColor ?? c.green).withOpacity(0.12),
               highlightColor: (iconColor ?? c.green).withOpacity(0.06),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   border: Border.all(color: headerBorder),
                   borderRadius: isExpanded
@@ -356,14 +415,15 @@ class _GroupAccordion extends StatelessWidget {
                     ),
                     child: Center(
                       child: iconData != null
-                          ? Icon(iconData, size: 20,
-                              color: iconColor ?? c.green)
+                          ? Icon(iconData,
+                              size: 20, color: iconColor ?? c.green)
                           : Text(icon, style: const TextStyle(fontSize: 20)),
                     ),
                   ),
                   const SizedBox(width: 12),
                   // Nome e contagem
-                  Expanded(child: Column(
+                  Expanded(
+                      child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -479,102 +539,106 @@ class _DrugListTile extends StatelessWidget {
         splashColor: c.green.withOpacity(0.10),
         highlightColor: c.green.withOpacity(0.05),
         child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          border: isLast
-              ? null
-              : Border(bottom: BorderSide(color: divColor, width: 0.8)),
-        ),
-        child: Row(children: [
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              if (isFav)
-                const Padding(
-                  padding: EdgeInsets.only(right: 5),
-                  child: Icon(Icons.star_rounded, size: 12, color: kGold),
-                ),
-              Flexible(
-                child: Builder(
-                  builder: (ctx) => Text(
-                    drug.nameL10n(ctx.read<AppProvider>().lang),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      color: nameColor,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            border: isLast
+                ? null
+                : Border(bottom: BorderSide(color: divColor, width: 0.8)),
+          ),
+          child: Row(children: [
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Row(children: [
+                    if (isFav)
+                      const Padding(
+                        padding: EdgeInsets.only(right: 5),
+                        child: Icon(Icons.star_rounded, size: 12, color: kGold),
+                      ),
+                    Flexible(
+                      child: Builder(
+                        builder: (ctx) => Text(
+                          drug.nameL10n(ctx.read<AppProvider>().lang),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: nameColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
+                  ]),
+                  const SizedBox(height: 3),
+                  Text(
+                    '${p.tDB(drug.className)} • ${drug.route}',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: subColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    p.tDB(drug.warning),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: warnColor,
+                      fontWeight: FontWeight.w500,
+                      height: 1.35,
+                    ),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                  ),
+                ])),
+            const SizedBox(width: 10),
+            Column(children: [
+              // Estrela favorito com touch target adequado
+              Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+                child: InkWell(
+                  onTap: () {
+                    AppHaptics.light(context);
+                    p.toggleFavDrug(drug.id);
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  splashColor: kGold.withOpacity(0.18),
+                  highlightColor: kGold.withOpacity(0.08),
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Center(
+                      child: Icon(
+                        isFav ? Icons.star_rounded : Icons.star_border_rounded,
+                        size: 18,
+                        color: isFav ? kGold : const Color(0xFFA8B2C1),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: c.darkBtn,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  p.t('open'),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: kGoldLight,
                   ),
                 ),
               ),
             ]),
-            const SizedBox(height: 3),
-            Text(
-              '${p.tDB(drug.className)} • ${drug.route}',
-              style: TextStyle(
-                fontSize: 11,
-                color: subColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              p.tDB(drug.warning),
-              style: TextStyle(
-                fontSize: 11,
-                color: warnColor,
-                fontWeight: FontWeight.w500,
-                height: 1.35,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ])),
-          const SizedBox(width: 10),
-          Column(children: [
-            // Estrela favorito com touch target adequado
-            Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(20),
-              child: InkWell(
-                onTap: () {
-                  AppHaptics.light(context);
-                  p.toggleFavDrug(drug.id);
-                },
-                borderRadius: BorderRadius.circular(20),
-                splashColor: kGold.withOpacity(0.18),
-                highlightColor: kGold.withOpacity(0.08),
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Center(
-                    child: Icon(
-                      isFav ? Icons.star_rounded : Icons.star_border_rounded,
-                      size: 18,
-                      color: isFav ? kGold : const Color(0xFFA8B2C1),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 2),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: c.darkBtn,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                p.t('open'),
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  color: kGoldLight,
-                ),
-              ),
-            ),
           ]),
-        ]),
-      ),
+        ),
       ),
     );
   }
@@ -585,8 +649,8 @@ class _DrugListTile extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 class _DrugEvidence {
   final String guidelineSource;
-  final String evidenceLevel;     // 'Classe I', 'Nível A', etc.
-  final String recommendation;    // 'Alta', 'Moderada', 'Baixa'
+  final String evidenceLevel; // 'Classe I', 'Nível A', etc.
+  final String recommendation; // 'Alta', 'Moderada', 'Baixa'
   final String lastReviewed;
   final List<_EvidenceRef> references;
   final List<_OfficialLink> links;
@@ -595,7 +659,7 @@ class _DrugEvidence {
   final List<String> interactions;
   final List<String> sideEffects;
   final List<_DosageTable> dosageTables;
-  final List<String> badges;      // ['Adulto','Pediatria','Emergência','UTI']
+  final List<String> badges; // ['Adulto','Pediatria','Emergência','UTI']
   final String atcCode;
   final String? pkOnset;
   final String? pkDuration;
@@ -637,8 +701,12 @@ class _EvidenceRef {
   final String type; // 'Diretriz' | 'Base de Dados' | 'Estudo' | 'Protocolo'
   final String? doi;
   const _EvidenceRef({
-    required this.num, required this.title, required this.source,
-    required this.year, required this.type, this.doi,
+    required this.num,
+    required this.title,
+    required this.source,
+    required this.year,
+    required this.type,
+    this.doi,
   });
 }
 
@@ -646,7 +714,8 @@ class _OfficialLink {
   final String label;
   final String url;
   final IconData icon;
-  const _OfficialLink({required this.label, required this.url, required this.icon});
+  const _OfficialLink(
+      {required this.label, required this.url, required this.icon});
 }
 
 class _DosageTable {
@@ -662,8 +731,11 @@ class _DosageRow {
   final String? maxDose;
   final String? note;
   const _DosageRow({
-    required this.label, required this.dose,
-    this.doseKg, this.maxDose, this.note,
+    required this.label,
+    required this.dose,
+    this.doseKg,
+    this.maxDose,
+    this.note,
   });
 }
 
@@ -671,7 +743,6 @@ class _DosageRow {
 // BASE DE EVIDÊNCIAS — referências específicas por fármaco
 // ─────────────────────────────────────────────────────────────────────────────
 const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
-
   'adenosina': _DrugEvidence(
     guidelineSource: 'AHA ACLS 2020 / ESC SVT 2019',
     evidenceLevel: 'Classe I',
@@ -701,34 +772,80 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
       'Digitálicos: risco aumentado de bloqueio AV',
     ],
     sideEffects: [
-      'Rubor facial', 'Dispneia transitória', 'Dor torácica',
-      'Broncoespasmo', 'Bradicardia / pausa sinusal',
+      'Rubor facial',
+      'Dispneia transitória',
+      'Dor torácica',
+      'Broncoespasmo',
+      'Bradicardia / pausa sinusal',
     ],
     dosageTables: [
       _DosageTable(population: 'Adulto', rows: [
-        _DosageRow(label: '1ª dose', dose: '6 mg IV', note: 'Bolus rápido + flush 20 mL SF'),
-        _DosageRow(label: '2ª dose', dose: '12 mg IV', note: 'Se sem resposta em 1–2 min'),
+        _DosageRow(
+            label: '1ª dose',
+            dose: '6 mg IV',
+            note: 'Bolus rápido + flush 20 mL SF'),
+        _DosageRow(
+            label: '2ª dose',
+            dose: '12 mg IV',
+            note: 'Se sem resposta em 1–2 min'),
         _DosageRow(label: 'Dose máx.', dose: '30 mg', note: 'Total acumulado'),
       ]),
       _DosageTable(population: 'Pediatria', rows: [
-        _DosageRow(label: '1ª dose', dose: '0,1 mg/kg', maxDose: 'máx. 6 mg', doseKg: 'mg/kg'),
-        _DosageRow(label: '2ª dose', dose: '0,2 mg/kg', maxDose: 'máx. 12 mg', doseKg: 'mg/kg'),
+        _DosageRow(
+            label: '1ª dose',
+            dose: '0,1 mg/kg',
+            maxDose: 'máx. 6 mg',
+            doseKg: 'mg/kg'),
+        _DosageRow(
+            label: '2ª dose',
+            dose: '0,2 mg/kg',
+            maxDose: 'máx. 12 mg',
+            doseKg: 'mg/kg'),
       ]),
     ],
     references: [
-      _EvidenceRef(num: 1, title: 'PALS Provider Manual', source: 'American Heart Association', year: '2020', type: 'Diretriz'),
-      _EvidenceRef(num: 2, title: 'Adenosine: Drug Information', source: 'UpToDate', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 3, title: 'Adenosine Injection', source: 'Micromedex®', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 4, title: 'SVT Guideline 2019', source: 'ESC — European Society of Cardiology', year: '2019', type: 'Diretriz'),
+      _EvidenceRef(
+          num: 1,
+          title: 'PALS Provider Manual',
+          source: 'American Heart Association',
+          year: '2020',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 2,
+          title: 'Adenosine: Drug Information',
+          source: 'UpToDate',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 3,
+          title: 'Adenosine Injection',
+          source: 'Micromedex®',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 4,
+          title: 'SVT Guideline 2019',
+          source: 'ESC — European Society of Cardiology',
+          year: '2019',
+          type: 'Diretriz'),
     ],
     links: [
-      _OfficialLink(label: 'AHA ACLS Guidelines', url: 'https://www.heart.org/en/cpr', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'ESC SVT Guideline', url: 'https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Supraventricular-Tachycardia', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'FDA Label', url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm', icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'AHA ACLS Guidelines',
+          url: 'https://www.heart.org/en/cpr',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'ESC SVT Guideline',
+          url:
+              'https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Supraventricular-Tachycardia',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'FDA Label',
+          url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm',
+          icon: Icons.open_in_new_rounded),
     ],
     renalAdjustment: 'Sem ajuste necessário — eliminação extrarrenal',
   ),
-
   'amiodarona': _DrugEvidence(
     guidelineSource: 'AHA ACLS 2020 / ESC Arrhythmia 2022',
     evidenceLevel: 'Classe IIb',
@@ -761,35 +878,72 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
       'QT-prolonging drugs: risco de Torsades de Pointes',
     ],
     sideEffects: [
-      'Fotossensibilidade', 'Hipotireoidismo/hipertireoidismo',
-      'Pneumonite intersticial', 'Hepatotoxicidade',
-      'Neuropatia periférica', 'Depósitos na córnea',
+      'Fotossensibilidade',
+      'Hipotireoidismo/hipertireoidismo',
+      'Pneumonite intersticial',
+      'Hepatotoxicidade',
+      'Neuropatia periférica',
+      'Depósitos na córnea',
     ],
     dosageTables: [
       _DosageTable(population: 'Adulto — PCR', rows: [
-        _DosageRow(label: 'Dose PCR', dose: '300 mg IV', note: 'Bolus em 1–2 min. Repetir 150 mg após 3–5 min'),
+        _DosageRow(
+            label: 'Dose PCR',
+            dose: '300 mg IV',
+            note: 'Bolus em 1–2 min. Repetir 150 mg após 3–5 min'),
         _DosageRow(label: 'Dose máx. PCR', dose: '2,2 g/24h'),
       ]),
       _DosageTable(population: 'Adulto — TV/FA estável', rows: [
         _DosageRow(label: 'Ataque', dose: '150 mg IV', note: 'Em 10 minutos'),
-        _DosageRow(label: 'Manutenção', dose: '1 mg/min × 6h', note: 'Depois 0,5 mg/min × 18h'),
+        _DosageRow(
+            label: 'Manutenção',
+            dose: '1 mg/min × 6h',
+            note: 'Depois 0,5 mg/min × 18h'),
         _DosageRow(label: 'Oral (fase crônica)', dose: '200–400 mg/dia'),
       ]),
     ],
     references: [
-      _EvidenceRef(num: 1, title: 'ACLS Provider Manual', source: 'American Heart Association', year: '2020', type: 'Diretriz'),
-      _EvidenceRef(num: 2, title: 'Ventricular Arrhythmias and SCD Prevention', source: 'ESC', year: '2022', type: 'Diretriz'),
-      _EvidenceRef(num: 3, title: 'Amiodarone: Drug Information', source: 'Lexicomp®', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 4, title: 'Amiodarone', source: 'Micromedex®', year: '2024', type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 1,
+          title: 'ACLS Provider Manual',
+          source: 'American Heart Association',
+          year: '2020',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 2,
+          title: 'Ventricular Arrhythmias and SCD Prevention',
+          source: 'ESC',
+          year: '2022',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 3,
+          title: 'Amiodarone: Drug Information',
+          source: 'Lexicomp®',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 4,
+          title: 'Amiodarone',
+          source: 'Micromedex®',
+          year: '2024',
+          type: 'Base de Dados'),
     ],
     links: [
-      _OfficialLink(label: 'AHA ACLS Guidelines', url: 'https://www.heart.org/en/cpr', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'ESC Arrhythmia Guideline', url: 'https://www.escardio.org', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'FDA Label', url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm', icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'AHA ACLS Guidelines',
+          url: 'https://www.heart.org/en/cpr',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'ESC Arrhythmia Guideline',
+          url: 'https://www.escardio.org',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'FDA Label',
+          url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm',
+          icon: Icons.open_in_new_rounded),
     ],
     renalAdjustment: 'Sem ajuste necessário',
   ),
-
   'noradrenalina': _DrugEvidence(
     guidelineSource: 'SSC 2021 / SCCM Guidelines',
     evidenceLevel: 'Forte',
@@ -817,30 +971,66 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
       'Halogenados: sensibilização miocárdica',
     ],
     sideEffects: [
-      'Hipertensão', 'Bradicardia reflexa', 'Isquemia periférica',
+      'Hipertensão',
+      'Bradicardia reflexa',
+      'Isquemia periférica',
       'Extravasamento: necrose tecidual',
     ],
     dosageTables: [
       _DosageTable(population: 'Adulto (sepse)', rows: [
-        _DosageRow(label: 'Início', dose: '0,01–0,1 mcg/kg/min', note: 'Titular por alvo de PAM ≥ 65 mmHg'),
+        _DosageRow(
+            label: 'Início',
+            dose: '0,01–0,1 mcg/kg/min',
+            note: 'Titular por alvo de PAM ≥ 65 mmHg'),
         _DosageRow(label: 'Usual', dose: '0,1–0,5 mcg/kg/min'),
-        _DosageRow(label: 'Refrátária', dose: 'até 3 mcg/kg/min', note: 'Com corticoides se necessário'),
+        _DosageRow(
+            label: 'Refrátária',
+            dose: 'até 3 mcg/kg/min',
+            note: 'Com corticoides se necessário'),
       ]),
     ],
     references: [
-      _EvidenceRef(num: 1, title: 'Surviving Sepsis Campaign 2021', source: 'SSC / SCCM', year: '2021', type: 'Diretriz'),
-      _EvidenceRef(num: 2, title: 'Norepinephrine: Drug Information', source: 'UpToDate', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 3, title: 'Norepinephrine', source: 'Micromedex®', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 4, title: 'Critical Care Vasopressors', source: 'Lexicomp®', year: '2024', type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 1,
+          title: 'Surviving Sepsis Campaign 2021',
+          source: 'SSC / SCCM',
+          year: '2021',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 2,
+          title: 'Norepinephrine: Drug Information',
+          source: 'UpToDate',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 3,
+          title: 'Norepinephrine',
+          source: 'Micromedex®',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 4,
+          title: 'Critical Care Vasopressors',
+          source: 'Lexicomp®',
+          year: '2024',
+          type: 'Base de Dados'),
     ],
     links: [
-      _OfficialLink(label: 'Surviving Sepsis Campaign', url: 'https://www.survivingsepsis.org', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'SCCM Guidelines', url: 'https://www.sccm.org', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'FDA Label', url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm', icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'Surviving Sepsis Campaign',
+          url: 'https://www.survivingsepsis.org',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'SCCM Guidelines',
+          url: 'https://www.sccm.org',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'FDA Label',
+          url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm',
+          icon: Icons.open_in_new_rounded),
     ],
     renalAdjustment: 'Sem dados clínicos relevantes — usar com cautela',
   ),
-
   'adrenalina': _DrugEvidence(
     guidelineSource: 'AHA ACLS 2020 / ERC 2021',
     evidenceLevel: 'Classe I',
@@ -869,36 +1059,84 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
       'Digitálicos: risco de arritmias ventriculares',
     ],
     sideEffects: [
-      'Taquicardia', 'Arritmias ventriculares', 'Hipertensão',
-      'Palidez cutânea', 'Cefaleia', 'Tremores',
+      'Taquicardia',
+      'Arritmias ventriculares',
+      'Hipertensão',
+      'Palidez cutânea',
+      'Cefaleia',
+      'Tremores',
     ],
     dosageTables: [
       _DosageTable(population: 'Adulto — PCR', rows: [
-        _DosageRow(label: 'Dose PCR', dose: '1 mg IV/IO', note: 'A cada 3–5 min. Bolus + flush 20 mL'),
+        _DosageRow(
+            label: 'Dose PCR',
+            dose: '1 mg IV/IO',
+            note: 'A cada 3–5 min. Bolus + flush 20 mL'),
       ]),
       _DosageTable(population: 'Adulto — Anafilaxia', rows: [
-        _DosageRow(label: '1ª linha', dose: '0,3–0,5 mg IM', note: 'Face anterolateral da coxa'),
-        _DosageRow(label: 'IV (grave)', dose: '0,1–0,5 mg IV', note: 'Diluído, monitorado'),
+        _DosageRow(
+            label: '1ª linha',
+            dose: '0,3–0,5 mg IM',
+            note: 'Face anterolateral da coxa'),
+        _DosageRow(
+            label: 'IV (grave)',
+            dose: '0,1–0,5 mg IV',
+            note: 'Diluído, monitorado'),
       ]),
       _DosageTable(population: 'Pediatria', rows: [
-        _DosageRow(label: 'PCR', dose: '0,01 mg/kg IV/IO', maxDose: 'máx. 1 mg', doseKg: 'mg/kg'),
-        _DosageRow(label: 'Anafilaxia IM', dose: '0,01 mg/kg IM', maxDose: 'máx. 0,5 mg'),
+        _DosageRow(
+            label: 'PCR',
+            dose: '0,01 mg/kg IV/IO',
+            maxDose: 'máx. 1 mg',
+            doseKg: 'mg/kg'),
+        _DosageRow(
+            label: 'Anafilaxia IM',
+            dose: '0,01 mg/kg IM',
+            maxDose: 'máx. 0,5 mg'),
       ]),
     ],
     references: [
-      _EvidenceRef(num: 1, title: 'ACLS Provider Manual', source: 'American Heart Association', year: '2020', type: 'Diretriz'),
-      _EvidenceRef(num: 2, title: 'European Resuscitation Council Guidelines', source: 'ERC', year: '2021', type: 'Diretriz'),
-      _EvidenceRef(num: 3, title: 'Epinephrine: Drug Information', source: 'UpToDate', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 4, title: 'Epinephrine Injection', source: 'Micromedex®', year: '2024', type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 1,
+          title: 'ACLS Provider Manual',
+          source: 'American Heart Association',
+          year: '2020',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 2,
+          title: 'European Resuscitation Council Guidelines',
+          source: 'ERC',
+          year: '2021',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 3,
+          title: 'Epinephrine: Drug Information',
+          source: 'UpToDate',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 4,
+          title: 'Epinephrine Injection',
+          source: 'Micromedex®',
+          year: '2024',
+          type: 'Base de Dados'),
     ],
     links: [
-      _OfficialLink(label: 'AHA ACLS Guidelines', url: 'https://www.heart.org/en/cpr', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'ERC Guidelines 2021', url: 'https://www.erc.edu/guidelines', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'FDA Label', url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm', icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'AHA ACLS Guidelines',
+          url: 'https://www.heart.org/en/cpr',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'ERC Guidelines 2021',
+          url: 'https://www.erc.edu/guidelines',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'FDA Label',
+          url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm',
+          icon: Icons.open_in_new_rounded),
     ],
     renalAdjustment: 'Sem ajuste na emergência',
   ),
-
   'atropina': _DrugEvidence(
     guidelineSource: 'AHA ACLS 2020',
     evidenceLevel: 'Classe IIa',
@@ -926,28 +1164,58 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
       'Fenotiazinas: redução da eficácia anticolinérgica',
     ],
     sideEffects: [
-      'Xerostomia', 'Taquicardia', 'Visão turva',
-      'Retenção urinária', 'Constipação', 'Confusão mental (idosos)',
+      'Xerostomia',
+      'Taquicardia',
+      'Visão turva',
+      'Retenção urinária',
+      'Constipação',
+      'Confusão mental (idosos)',
     ],
     dosageTables: [
       _DosageTable(population: 'Adulto', rows: [
-        _DosageRow(label: 'Bradicardia', dose: '0,5 mg IV', note: 'Repetir a cada 3–5 min. Máx. 3 mg'),
+        _DosageRow(
+            label: 'Bradicardia',
+            dose: '0,5 mg IV',
+            note: 'Repetir a cada 3–5 min. Máx. 3 mg'),
         _DosageRow(label: 'Dose máx.', dose: '3 mg IV total'),
-        _DosageRow(label: 'Organofosf.', dose: '2–4 mg IV', note: 'Repetir a cada 5–10 min até atropinização'),
+        _DosageRow(
+            label: 'Organofosf.',
+            dose: '2–4 mg IV',
+            note: 'Repetir a cada 5–10 min até atropinização'),
       ]),
     ],
     references: [
-      _EvidenceRef(num: 1, title: 'ACLS Provider Manual', source: 'American Heart Association', year: '2020', type: 'Diretriz'),
-      _EvidenceRef(num: 2, title: 'Atropine: Drug Information', source: 'Lexicomp®', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 3, title: 'Atropine Sulfate Injection', source: 'Micromedex®', year: '2024', type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 1,
+          title: 'ACLS Provider Manual',
+          source: 'American Heart Association',
+          year: '2020',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 2,
+          title: 'Atropine: Drug Information',
+          source: 'Lexicomp®',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 3,
+          title: 'Atropine Sulfate Injection',
+          source: 'Micromedex®',
+          year: '2024',
+          type: 'Base de Dados'),
     ],
     links: [
-      _OfficialLink(label: 'AHA ACLS Guidelines', url: 'https://www.heart.org/en/cpr', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'FDA Label', url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm', icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'AHA ACLS Guidelines',
+          url: 'https://www.heart.org/en/cpr',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'FDA Label',
+          url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm',
+          icon: Icons.open_in_new_rounded),
     ],
     renalAdjustment: 'Reduzir dose se ClCr < 30 mL/min (acumulação)',
   ),
-
   'morfina': _DrugEvidence(
     guidelineSource: 'WHO Pain Ladder / INCA 2022',
     evidenceLevel: 'Forte',
@@ -978,34 +1246,76 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
       'Naloxona: antagonismo — ter disponível',
     ],
     sideEffects: [
-      'Constipação', 'Náuseas/vômitos', 'Sedação',
+      'Constipação',
+      'Náuseas/vômitos',
+      'Sedação',
       'Depressão respiratória (dose-dependente)',
-      'Prurido (liberação histamina)', 'Retenção urinária',
+      'Prurido (liberação histamina)',
+      'Retenção urinária',
     ],
     dosageTables: [
       _DosageTable(population: 'Adulto (dor aguda)', rows: [
-        _DosageRow(label: 'IV', dose: '2–5 mg IV', note: 'Repetir a cada 5–15 min. Titular por resposta'),
+        _DosageRow(
+            label: 'IV',
+            dose: '2–5 mg IV',
+            note: 'Repetir a cada 5–15 min. Titular por resposta'),
         _DosageRow(label: 'SC/IM', dose: '5–10 mg', note: 'A cada 4 horas'),
-        _DosageRow(label: 'Infusão contínua', dose: '1–5 mg/h IV', note: 'UTI: titular conforme escala de dor'),
+        _DosageRow(
+            label: 'Infusão contínua',
+            dose: '1–5 mg/h IV',
+            note: 'UTI: titular conforme escala de dor'),
       ]),
       _DosageTable(population: 'Pediatria', rows: [
-        _DosageRow(label: 'IV', dose: '0,05–0,1 mg/kg', maxDose: 'máx. 5 mg/dose', note: 'A cada 4–6h; titular'),
+        _DosageRow(
+            label: 'IV',
+            dose: '0,05–0,1 mg/kg',
+            maxDose: 'máx. 5 mg/dose',
+            note: 'A cada 4–6h; titular'),
       ]),
     ],
     references: [
-      _EvidenceRef(num: 1, title: 'WHO Pain Ladder — Cancer Pain Relief', source: 'World Health Organization', year: '2019', type: 'Diretriz'),
-      _EvidenceRef(num: 2, title: 'Morphine: Drug Information', source: 'UpToDate', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 3, title: 'Morphine Sulfate', source: 'Micromedex®', year: '2024', type: 'Base de Dados'),
-      _EvidenceRef(num: 4, title: 'Manual de Cuidados Paliativos 2022', source: 'INCA — Instituto Nacional de Câncer', year: '2022', type: 'Protocolo'),
+      _EvidenceRef(
+          num: 1,
+          title: 'WHO Pain Ladder — Cancer Pain Relief',
+          source: 'World Health Organization',
+          year: '2019',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 2,
+          title: 'Morphine: Drug Information',
+          source: 'UpToDate',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 3,
+          title: 'Morphine Sulfate',
+          source: 'Micromedex®',
+          year: '2024',
+          type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 4,
+          title: 'Manual de Cuidados Paliativos 2022',
+          source: 'INCA — Instituto Nacional de Câncer',
+          year: '2022',
+          type: 'Protocolo'),
     ],
     links: [
-      _OfficialLink(label: 'WHO Pain Ladder', url: 'https://www.who.int/cancer/palliative/painladder/en/', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'INCA Cuidados Paliativos', url: 'https://www.inca.gov.br', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'FDA Label', url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm', icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'WHO Pain Ladder',
+          url: 'https://www.who.int/cancer/palliative/painladder/en/',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'INCA Cuidados Paliativos',
+          url: 'https://www.inca.gov.br',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'FDA Label',
+          url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm',
+          icon: Icons.open_in_new_rounded),
     ],
-    renalAdjustment: 'ClCr 10–50: reduzir 25–50%. ClCr < 10: evitar (acúmulo M6G)',
+    renalAdjustment:
+        'ClCr 10–50: reduzir 25–50%. ClCr < 10: evitar (acúmulo M6G)',
   ),
-
   'metoprolol': _DrugEvidence(
     guidelineSource: 'AHA/ACC HF 2022 / ESC HF 2021',
     evidenceLevel: 'Classe I',
@@ -1038,25 +1348,63 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
       'IMAO: potenciação adrenérgica',
     ],
     sideEffects: [
-      'Fadiga', 'Bradicardia', 'Broncoespasmo',
-      'Disfunção erétil', 'Hipotensão', 'Depressão',
+      'Fadiga',
+      'Bradicardia',
+      'Broncoespasmo',
+      'Disfunção erétil',
+      'Hipotensão',
+      'Depressão',
     ],
     dosageTables: [
       _DosageTable(population: 'Adulto', rows: [
-        _DosageRow(label: 'HAS (oral)', dose: '25–100 mg 2×/dia', note: 'Tartarato; titular lentamente'),
-        _DosageRow(label: 'ICC (oral)', dose: '12,5–200 mg/dia', note: 'Succinato (XL). Iniciar baixo, titular'),
-        _DosageRow(label: 'FA (IV)', dose: '2,5–5 mg IV', note: 'Repetir a cada 5 min. Máx. 15 mg'),
+        _DosageRow(
+            label: 'HAS (oral)',
+            dose: '25–100 mg 2×/dia',
+            note: 'Tartarato; titular lentamente'),
+        _DosageRow(
+            label: 'ICC (oral)',
+            dose: '12,5–200 mg/dia',
+            note: 'Succinato (XL). Iniciar baixo, titular'),
+        _DosageRow(
+            label: 'FA (IV)',
+            dose: '2,5–5 mg IV',
+            note: 'Repetir a cada 5 min. Máx. 15 mg'),
       ]),
     ],
     references: [
-      _EvidenceRef(num: 1, title: '2022 AHA/ACC HF Guideline', source: 'American Heart Association / ACC', year: '2022', type: 'Diretriz'),
-      _EvidenceRef(num: 2, title: 'ESC Heart Failure Guideline 2021', source: 'European Society of Cardiology', year: '2021', type: 'Diretriz'),
-      _EvidenceRef(num: 3, title: 'Metoprolol: Drug Information', source: 'Lexicomp®', year: '2024', type: 'Base de Dados'),
+      _EvidenceRef(
+          num: 1,
+          title: '2022 AHA/ACC HF Guideline',
+          source: 'American Heart Association / ACC',
+          year: '2022',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 2,
+          title: 'ESC Heart Failure Guideline 2021',
+          source: 'European Society of Cardiology',
+          year: '2021',
+          type: 'Diretriz'),
+      _EvidenceRef(
+          num: 3,
+          title: 'Metoprolol: Drug Information',
+          source: 'Lexicomp®',
+          year: '2024',
+          type: 'Base de Dados'),
     ],
     links: [
-      _OfficialLink(label: 'AHA/ACC HF 2022', url: 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'ESC HF Guideline', url: 'https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Acute-and-Chronic-Heart-Failure', icon: Icons.open_in_new_rounded),
-      _OfficialLink(label: 'FDA Label', url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm', icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'AHA/ACC HF 2022',
+          url: 'https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'ESC HF Guideline',
+          url:
+              'https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Acute-and-Chronic-Heart-Failure',
+          icon: Icons.open_in_new_rounded),
+      _OfficialLink(
+          label: 'FDA Label',
+          url: 'https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm',
+          icon: Icons.open_in_new_rounded),
     ],
     renalAdjustment: 'Sem ajuste necessário',
   ),
@@ -1064,12 +1412,17 @@ const Map<String, _DrugEvidence> _kDrugEvidenceDB = {
 
 /// Retorna evidência local (dosage tables, etc.) para um fármaco.
 _DrugEvidence? _getEvidence(String drugName) {
-  final key = drugName.toLowerCase()
-    .replaceAll('é', 'e').replaceAll('á', 'a').replaceAll('ó', 'o')
-    .replaceAll('í', 'i').replaceAll('ú', 'u').replaceAll('ñ', 'n')
-    .replaceAll('adrenalina (epinefrina)', 'adrenalina')
-    .replaceAll('noradrenalina (norepinefrina)', 'noradrenalina')
-    .split(' ')[0];
+  final key = drugName
+      .toLowerCase()
+      .replaceAll('é', 'e')
+      .replaceAll('á', 'a')
+      .replaceAll('ó', 'o')
+      .replaceAll('í', 'i')
+      .replaceAll('ú', 'u')
+      .replaceAll('ñ', 'n')
+      .replaceAll('adrenalina (epinefrina)', 'adrenalina')
+      .replaceAll('noradrenalina (norepinefrina)', 'noradrenalina')
+      .split(' ')[0];
   return _kDrugEvidenceDB[key];
 }
 
@@ -1094,7 +1447,6 @@ class _DrugDetailView extends StatefulWidget {
 
 class _DrugDetailViewState extends State<_DrugDetailView>
     with SingleTickerProviderStateMixin {
-
   // ── Calculadora ────────────────────────────────────────────────────────────
   late final TextEditingController _weightCtrl;
   late final TextEditingController _heightCtrl;
@@ -1107,12 +1459,12 @@ class _DrugDetailViewState extends State<_DrugDetailView>
 
   /// Returns the 5 clinical tab labels in the correct language.
   static List<String> _tabsFor(bool isEs) => [
-    isEs ? 'Información Clínica' : 'Informação Clínica',
-    isEs ? 'Uso Clínico'         : 'Uso Clínico',
-    isEs ? 'Efectos Adversos'    : 'Efeitos Adversos',
-    isEs ? 'Contraindicaciones'  : 'Contraindicações',
-    isEs ? 'Farmacocinética'     : 'Farmacocinética',
-  ];
+        isEs ? 'Información Clínica' : 'Informação Clínica',
+        isEs ? 'Uso Clínico' : 'Uso Clínico',
+        isEs ? 'Efectos Adversos' : 'Efeitos Adversos',
+        isEs ? 'Contraindicaciones' : 'Contraindicações',
+        isEs ? 'Farmacocinética' : 'Farmacocinética',
+      ];
 
   @override
   void initState() {
@@ -1120,10 +1472,10 @@ class _DrugDetailViewState extends State<_DrugDetailView>
     final pt = widget.p.patient;
     _weightCtrl = TextEditingController(text: pt.weight);
     _heightCtrl = TextEditingController(text: pt.height);
-    _ageCtrl    = TextEditingController(text: pt.age);
-    _creatCtrl  = TextEditingController(text: pt.creatinine);
-    _sex        = pt.sex.isNotEmpty ? pt.sex : 'M';
-    _tabCtrl    = TabController(length: 5, vsync: this);
+    _ageCtrl = TextEditingController(text: pt.age);
+    _creatCtrl = TextEditingController(text: pt.creatinine);
+    _sex = pt.sex.isNotEmpty ? pt.sex : 'M';
+    _tabCtrl = TabController(length: 5, vsync: this);
   }
 
   @override
@@ -1136,20 +1488,23 @@ class _DrugDetailViewState extends State<_DrugDetailView>
     super.dispose();
   }
 
-  double? get _w  => double.tryParse(_weightCtrl.text.replaceAll(',', '.'));
-  double? get _h  => double.tryParse(_heightCtrl.text.replaceAll(',', '.'));
-  double? get _a  => double.tryParse(_ageCtrl.text.replaceAll(',', '.'));
+  double? get _w => double.tryParse(_weightCtrl.text.replaceAll(',', '.'));
+  double? get _h => double.tryParse(_heightCtrl.text.replaceAll(',', '.'));
+  double? get _a => double.tryParse(_ageCtrl.text.replaceAll(',', '.'));
   double? get _cr => double.tryParse(_creatCtrl.text.replaceAll(',', '.'));
 
   String? get _bmiLocal {
-    final w = _w; final h = _h;
+    final w = _w;
+    final h = _h;
     if (w == null || h == null || h == 0) return null;
     final hm = h / 100;
     return (w / (hm * hm)).toStringAsFixed(1);
   }
 
   String? get _clcrLocal {
-    final cr = _cr; final a = _a; final w = _w;
+    final cr = _cr;
+    final a = _a;
+    final w = _w;
     if (cr == null || a == null || w == null || cr == 0) return null;
     double v = (140 - a) * w / (72 * cr);
     if (_sex == 'F') v *= 0.85;
@@ -1157,29 +1512,35 @@ class _DrugDetailViewState extends State<_DrugDetailView>
   }
 
   DoseInfo _calcDose() {
-    final drug  = widget.drug;
-    final lang  = widget.p.lang;
-    final w     = _w;
-    final a     = _a;
+    final drug = widget.drug;
+    final lang = widget.p.lang;
+    final w = _w;
+    final a = _a;
     final clcrV = double.tryParse(_clcrLocal ?? '');
     final alerts = <String>[];
 
-    if ((drug.doseType == 'weight' || drug.doseType == 'infusion') && w == null) {
+    if ((drug.doseType == 'weight' || drug.doseType == 'infusion') &&
+        w == null) {
       alerts.add(lang == 'es'
           ? 'Ingrese el peso del paciente para visualizar los parámetros académicos de referencia (mg/kg) de la literatura médica.'
           : 'Informe o peso do paciente para visualizar os parâmetros acadêmicos de referência (mg/kg) da literatura médica.');
     }
 
     final renalAlert = drug.getField(drug.renalAlert, lang);
-    if (clcrV != null && clcrV > 0 && clcrV < 50 && renalAlert.isNotEmpty &&
+    if (clcrV != null &&
+        clcrV > 0 &&
+        clcrV < 50 &&
+        renalAlert.isNotEmpty &&
         !renalAlert.toLowerCase().contains('sem ajuste') &&
         !renalAlert.toLowerCase().contains('sin ajuste')) {
-      alerts.add('⚠ ${lang == 'es' ? 'Ajuste renal' : 'Ajuste renal'}: ClCr ${_clcrLocal ?? '—'} mL/min. $renalAlert');
+      alerts.add(
+          '⚠ ${lang == 'es' ? 'Ajuste renal' : 'Ajuste renal'}: ClCr ${_clcrLocal ?? '—'} mL/min. $renalAlert');
     }
 
     final elderlyAlert = drug.getField(drug.elderlyAlert, lang);
     if (a != null && a >= 65 && elderlyAlert.isNotEmpty) {
-      alerts.add('⚠ ${lang == 'es' ? 'Paciente anciano: ' : 'Paciente idoso: '}$elderlyAlert');
+      alerts.add(
+          '⚠ ${lang == 'es' ? 'Paciente anciano: ' : 'Paciente idoso: '}$elderlyAlert');
     }
 
     if (drug.doseType == 'weight' && w != null && drug.mgKg != null) {
@@ -1193,14 +1554,16 @@ class _DrugDetailViewState extends State<_DrugDetailView>
         alerts: alerts,
       );
     }
-    if (drug.doseType == 'infusion' && w != null &&
-        drug.mcgKgMinStart != null && drug.mcgKgMinMax != null) {
+    if (drug.doseType == 'infusion' &&
+        w != null &&
+        drug.mcgKgMinStart != null &&
+        drug.mcgKgMinMax != null) {
       return DoseInfo(
         main: lang == 'es'
             ? 'Ref. literatura: ${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
-              '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min (simulación teórica)'
+                '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min (simulación teórica)'
             : 'Ref. literatura: ${(w * drug.mcgKgMinStart!).toStringAsFixed(1)}–'
-              '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min (simulação teórica)',
+                '${(w * drug.mcgKgMinMax!).toStringAsFixed(1)} mcg/min (simulação teórica)',
         detail: lang == 'es'
             ? 'Parámetro académico: ${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min en bomba. Titular por respuesta — decisión exclusiva del profesional.'
             : 'Parâmetro acadêmico: ${drug.mcgKgMinStart}–${drug.mcgKgMinMax} mcg/kg/min em bomba. Titular por resposta — decisão exclusiva do profissional.',
@@ -1212,13 +1575,13 @@ class _DrugDetailViewState extends State<_DrugDetailView>
 
   @override
   Widget build(BuildContext context) {
-    final p      = widget.p;
-    final drug   = widget.drug;
-    final dose   = _calcDose();
-    final isFav  = p.favDrugs.contains(drug.id);
-    final dark   = p.darkMode;
-    final c      = AppColors.of(context);
-    final ev     = _getEvidence(drug.name);
+    final p = widget.p;
+    final drug = widget.drug;
+    final dose = _calcDose();
+    final isFav = p.favDrugs.contains(drug.id);
+    final dark = p.darkMode;
+    final c = AppColors.of(context);
+    final ev = _getEvidence(drug.name);
     // Evidencia global (base de datos unificada — 30+ fármacos en Español)
     final globalEv = getGlobalEvidence(drug.name);
 
@@ -1226,16 +1589,26 @@ class _DrugDetailViewState extends State<_DrugDetailView>
       controller: widget.scrollController,
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ═══════════════════════════════════════════════════════════════════
         // 1. CLINICAL HEADER — gradient premium
         // ═══════════════════════════════════════════════════════════════════
         _ClinicalHeader(
-          drug: drug, p: p, isFav: isFav, c: c, dark: dark, ev: ev,
+          drug: drug,
+          p: p,
+          isFav: isFav,
+          c: c,
+          dark: dark,
+          ev: ev,
           globalEv: globalEv,
           onBack: widget.onBack,
-          onFav: () { AppHaptics.medium(context); p.toggleFavDrug(drug.id); },
-          onCockpit: () { AppHaptics.medium(context); p.setActiveDrug(drug.id); },
+          onFav: () {
+            AppHaptics.medium(context);
+            p.toggleFavDrug(drug.id);
+          },
+          onCockpit: () {
+            AppHaptics.medium(context);
+            p.setActiveDrug(drug.id);
+          },
         ),
 
         const SizedBox(height: 16),
@@ -1271,18 +1644,29 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.calculate_outlined,
-            label: p.lang == 'es' ? 'PARÁMETROS CLÍNICOS DE REFERENCIA' : 'PARÂMETROS CLÍNICOS DE REFERÊNCIA',
-            c: c, dark: dark,
+            label: p.lang == 'es'
+                ? 'PARÁMETROS CLÍNICOS DE REFERENCIA'
+                : 'PARÂMETROS CLÍNICOS DE REFERÊNCIA',
+            c: c,
+            dark: dark,
           ),
         ),
         const SizedBox(height: 8),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DoseCalculatorCard(
-            drug: drug, p: p, dose: dose, c: c, dark: dark,
-            weightCtrl: _weightCtrl, heightCtrl: _heightCtrl,
-            ageCtrl: _ageCtrl, creatCtrl: _creatCtrl,
-            sex: _sex, bmi: _bmiLocal, clcr: _clcrLocal,
+            drug: drug,
+            p: p,
+            dose: dose,
+            c: c,
+            dark: dark,
+            weightCtrl: _weightCtrl,
+            heightCtrl: _heightCtrl,
+            ageCtrl: _ageCtrl,
+            creatCtrl: _creatCtrl,
+            sex: _sex,
+            bmi: _bmiLocal,
+            clcr: _clcrLocal,
             onSexChange: (s) => setState(() => _sex = s),
             onFieldChange: () => setState(() {}),
           ),
@@ -1296,17 +1680,24 @@ class _DrugDetailViewState extends State<_DrugDetailView>
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _DrugSectionTitle(
             icon: Icons.fact_check_outlined,
-            label: p.lang == 'es' ? 'INFORMACIÓN CLÍNICA' : 'INFORMAÇÃO CLÍNICA',
-            c: c, dark: dark,
+            label:
+                p.lang == 'es' ? 'INFORMACIÓN CLÍNICA' : 'INFORMAÇÃO CLÍNICA',
+            c: c,
+            dark: dark,
           ),
         ),
         const SizedBox(height: 8),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: _ClinicalTabCard(
-            drug: drug, p: p, c: c, dark: dark, ev: ev,
+            drug: drug,
+            p: p,
+            c: c,
+            dark: dark,
+            ev: ev,
             globalEv: globalEv,
-            tabCtrl: _tabCtrl, tabs: _tabsFor(p.lang == 'es'),
+            tabCtrl: _tabCtrl,
+            tabs: _tabsFor(p.lang == 'es'),
           ),
         ),
         const SizedBox(height: 16),
@@ -1321,7 +1712,8 @@ class _DrugDetailViewState extends State<_DrugDetailView>
             label: p.lang == 'es'
                 ? 'EVIDENCIA Y REFERENCIAS CIENTÍFICAS'
                 : 'EVIDÊNCIA E REFERÊNCIAS CIENTÍFICAS',
-            c: c, dark: dark,
+            c: c,
+            dark: dark,
           ),
         ),
         const SizedBox(height: 8),
@@ -1369,10 +1761,16 @@ class _ClinicalHeader extends StatelessWidget {
   final VoidCallback onCockpit;
 
   const _ClinicalHeader({
-    required this.drug, required this.p, required this.isFav,
-    required this.c, required this.dark, required this.ev,
+    required this.drug,
+    required this.p,
+    required this.isFav,
+    required this.c,
+    required this.dark,
+    required this.ev,
     this.globalEv,
-    required this.onBack, required this.onFav, required this.onCockpit,
+    required this.onBack,
+    required this.onFav,
+    required this.onCockpit,
   });
 
   @override
@@ -1381,12 +1779,12 @@ class _ClinicalHeader extends StatelessWidget {
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topLeft, end: Alignment.bottomRight,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [Color(0xFF06100C), Color(0xFF0D2B1E), Color(0xFF075f45)],
         ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Barra de navegação ──────────────────────────────────────────────
         // Build 102: layout responsivo — Row n\u00e3o estoura em iPhones menores.
         // "Voltar" cresce flex\u00edvel; ações direitas são compactas (ícone + label curto).
@@ -1406,21 +1804,25 @@ class _ClinicalHeader extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     splashColor: Colors.white.withOpacity(0.15),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.white.withOpacity(0.12)),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.12)),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(Icons.arrow_back_ios_rounded, size: 12,
-                            color: Colors.white.withOpacity(0.85)),
+                        Icon(Icons.arrow_back_ios_rounded,
+                            size: 12, color: Colors.white.withOpacity(0.85)),
                         const SizedBox(width: 4),
                         Flexible(
                           child: Text(p.t('back_drugs'),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                              color: Colors.white.withOpacity(0.85))),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white.withOpacity(0.85))),
                         ),
                       ]),
                     ),
@@ -1458,19 +1860,23 @@ class _ClinicalHeader extends StatelessWidget {
                   onTap: onCockpit,
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: const Color(0xFFFFE8A6).withOpacity(0.25)),
+                      border: Border.all(
+                          color: const Color(0xFFFFE8A6).withOpacity(0.25)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      const Icon(Icons.science_rounded, size: 13,
-                          color: Color(0xFFFFE8A6)),
+                      const Icon(Icons.science_rounded,
+                          size: 13, color: Color(0xFFFFE8A6)),
                       const SizedBox(width: 5),
                       // "Usar" em vez do label completo — evita overflow em telas pequenas
                       Text(p.t('open'),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                          color: Color(0xFFFFE8A6))),
+                          style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFFFFE8A6))),
                     ]),
                   ),
                 ),
@@ -1487,60 +1893,77 @@ class _ClinicalHeader extends StatelessWidget {
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             // Ícone do grupo
             Container(
-              width: 52, height: 52,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: Colors.white.withOpacity(0.15)),
               ),
               child: Center(
-                child: Icon(DrugGroup.iconData(drug.group), size: 26,
-                  color: const Color(0xFFFFE8A6)),
+                child: Icon(DrugGroup.iconData(drug.group),
+                    size: 26, color: const Color(0xFFFFE8A6)),
               ),
             ),
             const SizedBox(width: 14),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              // Categoria + rota
-              Row(children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFE8A6).withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: const Color(0xFFFFE8A6).withOpacity(0.3)),
-                  ),
-                  child: Text(
-                    p.tDB(drug.category).toUpperCase(),
-                    style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-                      color: Color(0xFFFFE8A6), letterSpacing: 0.8),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    drug.route,
-                    style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w700,
-                      color: Colors.white.withOpacity(0.7)),
-                  ),
-                ),
-              ]),
-              const SizedBox(height: 6),
-              // Nome do fármaco
-              Text(drug.nameL10n(p.lang),
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900,
-                  color: Colors.white, letterSpacing: -0.5, height: 1.1)),
-              const SizedBox(height: 4),
-              // Classe farmacológica
-              Text(p.tDB(drug.className),
-                style: TextStyle(fontSize: 13,
-                  color: Colors.white.withOpacity(0.65),
-                  fontWeight: FontWeight.w500)),
-            ])),
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  // Categoria + rota
+                  Row(children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFE8A6).withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                            color: const Color(0xFFFFE8A6).withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        p.tDB(drug.category).toUpperCase(),
+                        style: const TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFFFFE8A6),
+                            letterSpacing: 0.8),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        drug.route,
+                        style: TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white.withOpacity(0.7)),
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(height: 6),
+                  // Nome do fármaco
+                  Text(drug.nameL10n(p.lang),
+                      style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          letterSpacing: -0.5,
+                          height: 1.1)),
+                  const SizedBox(height: 4),
+                  // Classe farmacológica
+                  Text(p.tDB(drug.className),
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withOpacity(0.65),
+                          fontWeight: FontWeight.w500)),
+                ])),
           ]),
         ),
 
@@ -1559,8 +1982,10 @@ class _ClinicalHeader extends StatelessWidget {
                   border: Border.all(color: Colors.white.withOpacity(0.1)),
                 ),
                 child: Text('ATC: ${globalEv?.atcCode ?? ev?.atcCode}',
-                  style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                    color: Colors.white.withOpacity(0.5))),
+                    style: TextStyle(
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white.withOpacity(0.5))),
               ),
               const SizedBox(width: 8),
             ],
@@ -1573,8 +1998,10 @@ class _ClinicalHeader extends StatelessWidget {
                 border: Border.all(color: Colors.white.withOpacity(0.1)),
               ),
               child: Text('${p.lang == 'es' ? 'Vía' : 'Via'}: ${drug.route}',
-                style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                  color: Colors.white.withOpacity(0.5))),
+                  style: TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white.withOpacity(0.5))),
             ),
           ]),
         ),
@@ -1582,13 +2009,14 @@ class _ClinicalHeader extends StatelessWidget {
         const SizedBox(height: 14),
 
         // ── Badges: Adulto / Pediatría / Emergencia / UCI ───────────────────
-        if ((globalEv?.contextBadges ?? ev?.badges ?? []).isNotEmpty) Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          child: Wrap(spacing: 6, runSpacing: 6, children: [
-            ...(globalEv?.contextBadges ?? ev?.badges ?? [])
-                .map((b) => _ContextBadge(label: b)),
-          ]),
-        ),
+        if ((globalEv?.contextBadges ?? ev?.badges ?? []).isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: Wrap(spacing: 6, runSpacing: 6, children: [
+              ...(globalEv?.contextBadges ?? ev?.badges ?? [])
+                  .map((b) => _ContextBadge(label: b)),
+            ]),
+          ),
 
         const SizedBox(height: 12),
 
@@ -1600,7 +2028,8 @@ class _ClinicalHeader extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xFF059669).withOpacity(0.15),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: const Color(0xFF34D399).withOpacity(0.28)),
+              border:
+                  Border.all(color: const Color(0xFF34D399).withOpacity(0.28)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1608,7 +2037,8 @@ class _ClinicalHeader extends StatelessWidget {
                 // Ícone — alinhado ao topo junto à primeira linha
                 const Padding(
                   padding: EdgeInsets.only(top: 1),
-                  child: Icon(Icons.verified_rounded, size: 14, color: Color(0xFF34D399)),
+                  child: Icon(Icons.verified_rounded,
+                      size: 14, color: Color(0xFF34D399)),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -1669,24 +2099,26 @@ class _ContextBadge extends StatelessWidget {
   const _ContextBadge({required this.label});
 
   bool get _isEmergency => label == 'Emergência' || label == 'Emergencia';
-  bool get _isPediatric  => label == 'Pediatria'  || label == 'Pediatría';
-  bool get _isICU        => label == 'UTI'         || label == 'UCI';
+  bool get _isPediatric => label == 'Pediatria' || label == 'Pediatría';
+  bool get _isICU => label == 'UTI' || label == 'UCI';
 
   Color get _bg {
     if (_isEmergency) return const Color(0xFFDC2626).withOpacity(0.25);
-    if (_isICU)       return const Color(0xFF9333EA).withOpacity(0.25);
+    if (_isICU) return const Color(0xFF9333EA).withOpacity(0.25);
     if (_isPediatric) return const Color(0xFF0EA5E9).withOpacity(0.25);
     return Colors.white.withOpacity(0.12);
   }
+
   Color get _fg {
     if (_isEmergency) return const Color(0xFFFCA5A5);
-    if (_isICU)       return const Color(0xFFD8B4FE);
+    if (_isICU) return const Color(0xFFD8B4FE);
     if (_isPediatric) return const Color(0xFF7DD3FC);
     return Colors.white.withOpacity(0.85);
   }
+
   Color get _border {
     if (_isEmergency) return const Color(0xFFEF4444).withOpacity(0.4);
-    if (_isICU)       return const Color(0xFFA855F7).withOpacity(0.4);
+    if (_isICU) return const Color(0xFFA855F7).withOpacity(0.4);
     if (_isPediatric) return const Color(0xFF38BDF8).withOpacity(0.4);
     return Colors.white.withOpacity(0.15);
   }
@@ -1696,11 +2128,13 @@ class _ContextBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: _bg, borderRadius: BorderRadius.circular(20),
+        color: _bg,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _border),
       ),
       child: Text(label,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: _fg)),
+          style:
+              TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: _fg)),
     );
   }
 }
@@ -1714,19 +2148,25 @@ class _DrugSectionTitle extends StatelessWidget {
   final AppColors c;
   final bool dark;
   const _DrugSectionTitle({
-    required this.icon, required this.label,
-    required this.c, required this.dark,
+    required this.icon,
+    required this.label,
+    required this.c,
+    required this.dark,
   });
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Icon(icon, size: 14,
-        color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
+      Icon(icon,
+          size: 14,
+          color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45)),
       const SizedBox(width: 7),
-      Text(label, style: TextStyle(
-        fontSize: 9.5, fontWeight: FontWeight.w900, letterSpacing: 1.6,
-        color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45),
-      )),
+      Text(label,
+          style: TextStyle(
+            fontSize: 9.5,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.6,
+            color: dark ? const Color(0xFFFFE8A6) : const Color(0xFF075f45),
+          )),
     ]);
   }
 }
@@ -1738,7 +2178,8 @@ class _DosageTableCard extends StatelessWidget {
   final _DosageTable table;
   final AppColors c;
   final bool dark;
-  const _DosageTableCard({required this.table, required this.c, required this.dark});
+  const _DosageTableCard(
+      {required this.table, required this.c, required this.dark});
 
   @override
   Widget build(BuildContext context) {
@@ -1759,50 +2200,72 @@ class _DosageTableCard extends StatelessWidget {
             border: Border(bottom: BorderSide(color: c.border)),
           ),
           child: Row(children: [
-            Container(width: 4, height: 14,
-              decoration: BoxDecoration(color: popColor, borderRadius: BorderRadius.circular(2))),
+            Container(
+                width: 4,
+                height: 14,
+                decoration: BoxDecoration(
+                    color: popColor, borderRadius: BorderRadius.circular(2))),
             const SizedBox(width: 8),
             Text(table.population.toUpperCase(),
-              style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-                letterSpacing: 1.4, color: popColor)),
+                style: TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.4,
+                    color: popColor)),
           ]),
         ),
         // Linhas
         ...table.rows.asMap().entries.map((e) {
-          final idx = e.key; final row = e.value;
+          final idx = e.key;
+          final row = e.value;
           final isLast = idx == table.rows.length - 1;
           return Container(
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
             decoration: BoxDecoration(
-              border: isLast ? null : Border(bottom: BorderSide(color: c.border.withOpacity(0.5))),
+              border: isLast
+                  ? null
+                  : Border(
+                      bottom: BorderSide(color: c.border.withOpacity(0.5))),
             ),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               // Label
               SizedBox(
                 width: 96,
                 child: Text(row.label,
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
-                    color: c.textSecondary)),
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: c.textSecondary)),
               ),
               const SizedBox(width: 8),
               // Dose
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(row.dose,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900,
-                    color: c.textPrimary)),
-                if (row.maxDose != null) ...[
-                  const SizedBox(height: 2),
-                  Text(row.maxDose!,
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
-                      color: Color(0xFFDC2626))),
-                ],
-                if (row.note != null) ...[
-                  const SizedBox(height: 3),
-                  Text(row.note!,
-                    style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w500,
-                      color: c.textHint, height: 1.35)),
-                ],
-              ])),
+              Expanded(
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(row.dose,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: c.textPrimary)),
+                    if (row.maxDose != null) ...[
+                      const SizedBox(height: 2),
+                      Text(row.maxDose!,
+                          style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFFDC2626))),
+                    ],
+                    if (row.note != null) ...[
+                      const SizedBox(height: 3),
+                      Text(row.note!,
+                          style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w500,
+                              color: c.textHint,
+                              height: 1.35)),
+                    ],
+                  ])),
             ]),
           );
         }),
@@ -1811,8 +2274,11 @@ class _DosageTableCard extends StatelessWidget {
   }
 
   Color _popColor(String pop) {
-    if (pop.contains('Pediatria') || pop.contains('Pediatría')) return const Color(0xFF0EA5E9);
-    if (pop.contains('PCR') || pop.contains('emergência') || pop.contains('emergencia')) return const Color(0xFFDC2626);
+    if (pop.contains('Pediatria') || pop.contains('Pediatría'))
+      return const Color(0xFF0EA5E9);
+    if (pop.contains('PCR') ||
+        pop.contains('emergência') ||
+        pop.contains('emergencia')) return const Color(0xFFDC2626);
     if (pop.contains('Renal')) return const Color(0xFFF59E0B);
     return const Color(0xFF059669);
   }
@@ -1834,12 +2300,20 @@ class _DoseCalculatorCard extends StatelessWidget {
   final VoidCallback onFieldChange;
 
   const _DoseCalculatorCard({
-    required this.drug, required this.p, required this.dose,
-    required this.c, required this.dark,
-    required this.weightCtrl, required this.heightCtrl,
-    required this.ageCtrl, required this.creatCtrl,
-    required this.sex, required this.bmi, required this.clcr,
-    required this.onSexChange, required this.onFieldChange,
+    required this.drug,
+    required this.p,
+    required this.dose,
+    required this.c,
+    required this.dark,
+    required this.weightCtrl,
+    required this.heightCtrl,
+    required this.ageCtrl,
+    required this.creatCtrl,
+    required this.sex,
+    required this.bmi,
+    required this.clcr,
+    required this.onSexChange,
+    required this.onFieldChange,
   });
 
   @override
@@ -1853,7 +2327,6 @@ class _DoseCalculatorCard extends StatelessWidget {
         border: Border.all(color: c.border),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Header ──────────────────────────────────────────────────────────
         Container(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
@@ -1863,53 +2336,82 @@ class _DoseCalculatorCard extends StatelessWidget {
             border: Border(bottom: BorderSide(color: c.border)),
           ),
           child: Row(children: [
-            const Icon(Icons.person_outline_rounded, size: 15, color: Color(0xFF075f45)),
+            const Icon(Icons.person_outline_rounded,
+                size: 15, color: Color(0xFF075f45)),
             const SizedBox(width: 8),
             Text(p.lang == 'es' ? 'DATOS DEL PACIENTE' : 'DADOS DO PACIENTE',
-              style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-                letterSpacing: 1.4, color: c.textPrimary)),
+                style: TextStyle(
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.4,
+                    color: c.textPrimary)),
           ]),
         ),
 
         Padding(
           padding: const EdgeInsets.all(14),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             // Sexo
             Text(p.lang == 'es' ? 'Sexo biológico' : 'Sexo biológico',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                color: c.textHint, letterSpacing: 0.3)),
+                style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: c.textHint,
+                    letterSpacing: 0.3)),
             const SizedBox(height: 6),
             Row(children: [
-              _SexToggleBtn(label: p.t('male'),   active: sex == 'M', dark: dark, onTap: () => onSexChange('M')),
+              _SexToggleBtn(
+                  label: p.t('male'),
+                  active: sex == 'M',
+                  dark: dark,
+                  onTap: () => onSexChange('M')),
               const SizedBox(width: 8),
-              _SexToggleBtn(label: p.t('female'), active: sex == 'F', dark: dark, onTap: () => onSexChange('F')),
+              _SexToggleBtn(
+                  label: p.t('female'),
+                  active: sex == 'F',
+                  dark: dark,
+                  onTap: () => onSexChange('F')),
             ]),
             const SizedBox(height: 12),
 
             // Peso e altura
             Row(children: [
-              Expanded(child: _LocalField(
-                label: 'Peso (kg)', hintText: 'ex: 70',
-                ctrl: weightCtrl, dark: dark, onChanged: (_) => onFieldChange())),
+              Expanded(
+                  child: _LocalField(
+                      label: 'Peso (kg)',
+                      hintText: 'ex: 70',
+                      ctrl: weightCtrl,
+                      dark: dark,
+                      onChanged: (_) => onFieldChange())),
               const SizedBox(width: 8),
-              Expanded(child: _LocalField(
-                label: p.lang == 'es' ? 'Talla (cm)' : 'Altura (cm)',
-                hintText: 'ex: 170',
-                ctrl: heightCtrl, dark: dark, onChanged: (_) => onFieldChange())),
+              Expanded(
+                  child: _LocalField(
+                      label: p.lang == 'es' ? 'Talla (cm)' : 'Altura (cm)',
+                      hintText: 'ex: 170',
+                      ctrl: heightCtrl,
+                      dark: dark,
+                      onChanged: (_) => onFieldChange())),
             ]),
             const SizedBox(height: 8),
 
             // Idade e creatinina
             Row(children: [
-              Expanded(child: _LocalField(
-                label: p.lang == 'es' ? 'Edad (años)' : 'Idade (anos)',
-                hintText: 'ex: 40',
-                ctrl: ageCtrl, dark: dark, onChanged: (_) => onFieldChange())),
+              Expanded(
+                  child: _LocalField(
+                      label: p.lang == 'es' ? 'Edad (años)' : 'Idade (anos)',
+                      hintText: 'ex: 40',
+                      ctrl: ageCtrl,
+                      dark: dark,
+                      onChanged: (_) => onFieldChange())),
               const SizedBox(width: 8),
-              Expanded(child: _LocalField(
-                label: 'Creatinina (mg/dL)', hintText: 'ex: 1,0',
-                ctrl: creatCtrl, dark: dark, onChanged: (_) => onFieldChange())),
+              Expanded(
+                  child: _LocalField(
+                      label: 'Creatinina (mg/dL)',
+                      hintText: 'ex: 1,0',
+                      ctrl: creatCtrl,
+                      dark: dark,
+                      onChanged: (_) => onFieldChange())),
             ]),
             const SizedBox(height: 10),
 
@@ -1922,9 +2424,16 @@ class _DoseCalculatorCard extends StatelessWidget {
                 border: Border.all(color: c.border),
               ),
               child: Row(children: [
-                Expanded(child: _DerivedChip(label: 'IMC',  value: bmi,  unit: 'kg/m²',  dark: dark)),
+                Expanded(
+                    child: _DerivedChip(
+                        label: 'IMC', value: bmi, unit: 'kg/m²', dark: dark)),
                 Container(width: 1, height: 28, color: c.border),
-                Expanded(child: _DerivedChip(label: 'ClCr', value: clcr, unit: 'mL/min', dark: dark)),
+                Expanded(
+                    child: _DerivedChip(
+                        label: 'ClCr',
+                        value: clcr,
+                        unit: 'mL/min',
+                        dark: dark)),
               ]),
             ),
           ]),
@@ -1934,36 +2443,47 @@ class _DoseCalculatorCard extends StatelessWidget {
         Container(
           margin: const EdgeInsets.fromLTRB(14, 0, 14, 14),
           child: Column(children: [
-
             // Header resultado
             Container(
               padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [Color(0xFF06100C), Color(0xFF0D2B1E), Color(0xFF075f45)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF06100C),
+                    Color(0xFF0D2B1E),
+                    Color(0xFF075f45)
+                  ],
                 ),
                 borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
               ),
               child: Row(children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFE8A6).withOpacity(0.18),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    p.lang == 'es'
-                        ? 'PARÁMETROS ACADÉMICOS DE REFERENCIA'
-                        : 'PARÂMETROS ACADÊMICOS DE REFERÊNCIA',
-                    style: const TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-                      color: Color(0xFFFFE8A6), letterSpacing: 1.8)),
+                      p.lang == 'es'
+                          ? 'PARÁMETROS ACADÉMICOS DE REFERENCIA'
+                          : 'PARÂMETROS ACADÊMICOS DE REFERÊNCIA',
+                      style: const TextStyle(
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFFFFE8A6),
+                          letterSpacing: 1.8)),
                 ),
                 const Spacer(),
                 if (w != null)
-                  Text('${p.lang == 'es' ? 'Paciente' : 'Paciente'}: ${weightCtrl.text} kg',
-                    style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600,
-                      color: Colors.white.withOpacity(0.55))),
+                  Text(
+                      '${p.lang == 'es' ? 'Paciente' : 'Paciente'}: ${weightCtrl.text} kg',
+                      style: TextStyle(
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white.withOpacity(0.55))),
               ]),
             ),
 
@@ -1993,10 +2513,14 @@ class _ClinicalTabCard extends StatelessWidget {
   final List<String> tabs;
 
   const _ClinicalTabCard({
-    required this.drug, required this.p, required this.c,
-    required this.dark, required this.ev,
+    required this.drug,
+    required this.p,
+    required this.c,
+    required this.dark,
+    required this.ev,
     this.globalEv,
-    required this.tabCtrl, required this.tabs,
+    required this.tabCtrl,
+    required this.tabs,
   });
 
   @override
@@ -2009,7 +2533,6 @@ class _ClinicalTabCard extends StatelessWidget {
         border: Border.all(color: c.border),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Sub-tab bar underline ───────────────────────────────────────────
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -2023,13 +2546,17 @@ class _ClinicalTabCard extends StatelessWidget {
             dividerColor: c.border,
             labelColor: c.textPrimary,
             unselectedLabelColor: c.textHint,
-            labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-            unselectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+            labelStyle:
+                const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+            unselectedLabelStyle:
+                const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            tabs: tabs.map((t) => Tab(
-              text: t,
-              height: 40,
-            )).toList(),
+            tabs: tabs
+                .map((t) => Tab(
+                      text: t,
+                      height: 40,
+                    ))
+                .toList(),
           ),
         ),
 
@@ -2040,21 +2567,24 @@ class _ClinicalTabCard extends StatelessWidget {
             controller: tabCtrl,
             physics: const ClampingScrollPhysics(),
             children: [
-
               // TAB 0: Información Clínica / Informação Clínica
               _TabContent(children: [
                 _ClinInfoBlock(
                   icon: Icons.memory_outlined,
-                  title: p.lang == 'es' ? 'MECANISMO DE ACCIÓN' : 'MECANISMO DE AÇÃO',
+                  title: p.lang == 'es'
+                      ? 'MECANISMO DE ACCIÓN'
+                      : 'MECANISMO DE AÇÃO',
                   content: p.tDB(drug.mechanism),
-                  color: const Color(0xFF059669), c: c,
+                  color: const Color(0xFF059669),
+                  c: c,
                 ),
                 const SizedBox(height: 10),
                 _ClinInfoBlock(
                   icon: Icons.warning_amber_rounded,
                   title: p.lang == 'es' ? 'ADVERTENCIAS' : 'ADVERTÊNCIAS',
                   content: p.tDB(drug.warning),
-                  color: const Color(0xFFF59E0B), c: c,
+                  color: const Color(0xFFF59E0B),
+                  c: c,
                 ),
                 const SizedBox(height: 10),
                 if (ev?.renalAdjustment != null)
@@ -2062,40 +2592,50 @@ class _ClinicalTabCard extends StatelessWidget {
                     icon: Icons.water_drop_outlined,
                     title: 'AJUSTE RENAL',
                     content: ev!.renalAdjustment!,
-                    color: const Color(0xFF0EA5E9), c: c,
+                    color: const Color(0xFF0EA5E9),
+                    c: c,
                   )
                 else
                   _ClinInfoBlock(
                     icon: Icons.water_drop_outlined,
                     title: 'AJUSTE RENAL',
                     content: p.tDB(drug.renalAlert),
-                    color: const Color(0xFF0EA5E9), c: c,
+                    color: const Color(0xFF0EA5E9),
+                    c: c,
                   ),
                 const SizedBox(height: 10),
                 _ClinInfoBlock(
                   icon: Icons.elderly_outlined,
                   title: p.lang == 'es' ? 'PACIENTE ANCIANO' : 'PACIENTE IDOSO',
                   content: p.tDB(drug.elderlyAlert),
-                  color: const Color(0xFF8B5CF6), c: c,
+                  color: const Color(0xFF8B5CF6),
+                  c: c,
                 ),
               ]),
 
               // TAB 1: Uso Clínico (indicaciones)
               _TabContent(children: [
-                if ((globalEv?.indications ?? ev?.indications ?? []).isNotEmpty) ...[
+                if ((globalEv?.indications ?? ev?.indications ?? [])
+                    .isNotEmpty) ...[
                   _ClinListBlock(
                     icon: Icons.check_circle_outline_rounded,
-                    title: p.lang == 'es' ? 'INDICACIONES PRINCIPALES' : 'INDICAÇÕES PRINCIPAIS',
+                    title: p.lang == 'es'
+                        ? 'INDICACIONES PRINCIPALES'
+                        : 'INDICAÇÕES PRINCIPAIS',
                     items: (globalEv?.indications ?? ev!.indications),
-                    color: const Color(0xFF059669), c: c,
+                    color: const Color(0xFF059669),
+                    c: c,
                   ),
                 ] else ...[
                   // Fallback: generar indicaciones desde el grupo farmacológico
                   _ClinListBlock(
                     icon: Icons.check_circle_outline_rounded,
-                    title: p.lang == 'es' ? 'INDICACIONES PRINCIPALES' : 'INDICAÇÕES PRINCIPAIS',
+                    title: p.lang == 'es'
+                        ? 'INDICACIONES PRINCIPALES'
+                        : 'INDICAÇÕES PRINCIPAIS',
                     items: _fallbackIndications(drug),
-                    color: const Color(0xFF059669), c: c,
+                    color: const Color(0xFF059669),
+                    c: c,
                   ),
                   const SizedBox(height: 8),
                   _FallbackNote(c: c),
@@ -2104,27 +2644,40 @@ class _ClinicalTabCard extends StatelessWidget {
 
               // TAB 2: Efectos Adversos
               _TabContent(children: [
-                if ((globalEv?.sideEffects ?? ev?.sideEffects ?? []).isNotEmpty) ...[
+                if ((globalEv?.sideEffects ?? ev?.sideEffects ?? [])
+                    .isNotEmpty) ...[
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: p.lang == 'es' ? 'EFECTOS ADVERSOS' : 'EFEITOS ADVERSOS',
+                    title: p.lang == 'es'
+                        ? 'EFECTOS ADVERSOS'
+                        : 'EFEITOS ADVERSOS',
                     items: (globalEv?.sideEffects ?? ev!.sideEffects),
-                    color: const Color(0xFFDC2626), c: c, dark: dark,
+                    color: const Color(0xFFDC2626),
+                    c: c,
+                    dark: dark,
                   ),
                 ] else if (adverse.isNotEmpty) ...[
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: p.lang == 'es' ? 'EFECTOS ADVERSOS' : 'EFEITOS ADVERSOS',
+                    title: p.lang == 'es'
+                        ? 'EFECTOS ADVERSOS'
+                        : 'EFEITOS ADVERSOS',
                     items: adverse,
-                    color: const Color(0xFFDC2626), c: c, dark: dark,
+                    color: const Color(0xFFDC2626),
+                    c: c,
+                    dark: dark,
                   ),
                 ] else ...[
                   // Fallback: efectos adversos de clase farmacológica
                   _ClinChipBlock(
                     icon: Icons.report_problem_outlined,
-                    title: p.lang == 'es' ? 'EFECTOS ADVERSOS DE CLASE' : 'EFEITOS ADVERSOS DE CLASSE',
+                    title: p.lang == 'es'
+                        ? 'EFECTOS ADVERSOS DE CLASE'
+                        : 'EFEITOS ADVERSOS DE CLASSE',
                     items: _fallbackSideEffects(drug),
-                    color: const Color(0xFFDC2626), c: c, dark: dark,
+                    color: const Color(0xFFDC2626),
+                    c: c,
+                    dark: dark,
                   ),
                   const SizedBox(height: 8),
                   _FallbackNote(c: c),
@@ -2133,29 +2686,41 @@ class _ClinicalTabCard extends StatelessWidget {
 
               // TAB 3: Contraindicaciones
               _TabContent(children: [
-                if ((globalEv?.contraindications ?? ev?.contraindications ?? []).isNotEmpty) ...[
+                if ((globalEv?.contraindications ?? ev?.contraindications ?? [])
+                    .isNotEmpty) ...[
                   _ClinListBlock(
                     icon: Icons.block_rounded,
-                    title: p.lang == 'es' ? 'CONTRAINDICACIONES' : 'CONTRAINDICAÇÕES',
-                    items: (globalEv?.contraindications ?? ev!.contraindications),
-                    color: const Color(0xFFDC2626), c: c,
+                    title: p.lang == 'es'
+                        ? 'CONTRAINDICACIONES'
+                        : 'CONTRAINDICAÇÕES',
+                    items:
+                        (globalEv?.contraindications ?? ev!.contraindications),
+                    color: const Color(0xFFDC2626),
+                    c: c,
                   ),
-                  if ((globalEv?.interactions ?? ev?.interactions ?? []).isNotEmpty) ...[
+                  if ((globalEv?.interactions ?? ev?.interactions ?? [])
+                      .isNotEmpty) ...[
                     const SizedBox(height: 14),
                     _ClinListBlock(
                       icon: Icons.swap_horiz_rounded,
-                      title: p.lang == 'es' ? 'INTERACCIONES IMPORTANTES' : 'INTERAÇÕES IMPORTANTES',
+                      title: p.lang == 'es'
+                          ? 'INTERACCIONES IMPORTANTES'
+                          : 'INTERAÇÕES IMPORTANTES',
                       items: (globalEv?.interactions ?? ev!.interactions),
-                      color: const Color(0xFFF59E0B), c: c,
+                      color: const Color(0xFFF59E0B),
+                      c: c,
                     ),
                   ],
                 ] else ...[
                   // Fallback: contraindicaciones de clase farmacológica
                   _ClinListBlock(
                     icon: Icons.block_rounded,
-                    title: p.lang == 'es' ? 'CONTRAINDICACIONES DE CLASE' : 'CONTRAINDICAÇÕES DE CLASSE',
+                    title: p.lang == 'es'
+                        ? 'CONTRAINDICACIONES DE CLASE'
+                        : 'CONTRAINDICAÇÕES DE CLASSE',
                     items: _fallbackContraindications(drug),
-                    color: const Color(0xFFDC2626), c: c,
+                    color: const Color(0xFFDC2626),
+                    c: c,
                   ),
                   const SizedBox(height: 8),
                   _FallbackNote(c: c),
@@ -2186,9 +2751,10 @@ class _TabContent extends StatelessWidget {
   const _TabContent({required this.children});
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-    padding: const EdgeInsets.all(14),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
-  );
+        padding: const EdgeInsets.all(14),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, children: children),
+      );
 }
 
 class _ClinInfoBlock extends StatelessWidget {
@@ -2197,8 +2763,11 @@ class _ClinInfoBlock extends StatelessWidget {
   final Color color;
   final AppColors c;
   const _ClinInfoBlock({
-    required this.icon, required this.title, required this.content,
-    required this.color, required this.c,
+    required this.icon,
+    required this.title,
+    required this.content,
+    required this.color,
+    required this.c,
   });
   @override
   Widget build(BuildContext context) {
@@ -2215,13 +2784,19 @@ class _ClinInfoBlock extends StatelessWidget {
           Icon(icon, size: 12, color: color),
           const SizedBox(width: 6),
           Text(title.toUpperCase(),
-            style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-              letterSpacing: 1.2, color: color)),
+              style: TextStyle(
+                  fontSize: 8.5,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
+                  color: color)),
         ]),
         const SizedBox(height: 6),
         Text(content,
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500,
-            color: c.textPrimary, height: 1.5)),
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: c.textPrimary,
+                height: 1.5)),
       ]),
     );
   }
@@ -2234,8 +2809,11 @@ class _ClinListBlock extends StatelessWidget {
   final Color color;
   final AppColors c;
   const _ClinListBlock({
-    required this.icon, required this.title, required this.items,
-    required this.color, required this.c,
+    required this.icon,
+    required this.title,
+    required this.items,
+    required this.color,
+    required this.c,
   });
   @override
   Widget build(BuildContext context) {
@@ -2244,25 +2822,32 @@ class _ClinListBlock extends StatelessWidget {
         Icon(icon, size: 12, color: color),
         const SizedBox(width: 6),
         Text(title.toUpperCase(),
-          style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-            letterSpacing: 1.2, color: color)),
+            style: TextStyle(
+                fontSize: 8.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+                color: color)),
       ]),
       const SizedBox(height: 8),
       ...items.map((item) => Padding(
-        padding: const EdgeInsets.only(bottom: 6),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            width: 6, height: 6,
-            margin: const EdgeInsets.only(top: 5, right: 10),
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          Expanded(
-            child: Text(item,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500,
-                color: c.textPrimary, height: 1.4)),
-          ),
-        ]),
-      )),
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                width: 6,
+                height: 6,
+                margin: const EdgeInsets.only(top: 5, right: 10),
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
+              Expanded(
+                child: Text(item,
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: c.textPrimary,
+                        height: 1.4)),
+              ),
+            ]),
+          )),
     ]);
   }
 }
@@ -2275,8 +2860,12 @@ class _ClinChipBlock extends StatelessWidget {
   final AppColors c;
   final bool dark;
   const _ClinChipBlock({
-    required this.icon, required this.title, required this.items,
-    required this.color, required this.c, required this.dark,
+    required this.icon,
+    required this.title,
+    required this.items,
+    required this.color,
+    required this.c,
+    required this.dark,
   });
   @override
   Widget build(BuildContext context) {
@@ -2285,22 +2874,34 @@ class _ClinChipBlock extends StatelessWidget {
         Icon(icon, size: 12, color: color),
         const SizedBox(width: 6),
         Text(title.toUpperCase(),
-          style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w900,
-            letterSpacing: 1.2, color: color)),
+            style: TextStyle(
+                fontSize: 8.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+                color: color)),
       ]),
       const SizedBox(height: 10),
-      Wrap(spacing: 6, runSpacing: 6, children: items.map((a) =>
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: color.withOpacity(0.2)),
-          ),
-          child: Text(a,
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
-        ),
-      ).toList()),
+      Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: items
+              .map(
+                (a) => Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: color.withOpacity(0.2)),
+                  ),
+                  child: Text(a,
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: color)),
+                ),
+              )
+              .toList()),
     ]);
   }
 }
@@ -2323,27 +2924,38 @@ class _PKGrid extends StatelessWidget {
     ].where((e) => e['value'] != null).toList();
 
     return Wrap(
-      spacing: 8, runSpacing: 8,
-      children: items.map((item) => SizedBox(
-        width: (MediaQuery.of(context).size.width - 64) / 2,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: c.border),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(item['label']!,
-              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
-                color: c.textHint, letterSpacing: 0.5)),
-            const SizedBox(height: 4),
-            Text(item['value']!,
-              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
-                color: c.textPrimary, height: 1.35)),
-          ]),
-        ),
-      )).toList(),
+      spacing: 8,
+      runSpacing: 8,
+      children: items
+          .map((item) => SizedBox(
+                width: (MediaQuery.of(context).size.width - 64) / 2,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: c.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item['label']!,
+                            style: TextStyle(
+                                fontSize: 8.5,
+                                fontWeight: FontWeight.w800,
+                                color: c.textHint,
+                                letterSpacing: 0.5)),
+                        const SizedBox(height: 4),
+                        Text(item['value']!,
+                            style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w700,
+                                color: c.textPrimary,
+                                height: 1.35)),
+                      ]),
+                ),
+              ))
+          .toList(),
     );
   }
 }
@@ -2359,39 +2971,51 @@ class _PKGridGlobal extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = <Map<String, String?>>[
       {'label': 'Inicio de Acción', 'value': ev.pkOnset},
-      {'label': 'Duración',         'value': ev.pkDuration},
-      {'label': 'Vida Media (t½)',  'value': ev.pkHalfLife},
-      {'label': 'Eliminación',      'value': ev.pkElimination},
-      {'label': 'Unión Proteica',   'value': ev.pkProteinBinding},
+      {'label': 'Duración', 'value': ev.pkDuration},
+      {'label': 'Vida Media (t½)', 'value': ev.pkHalfLife},
+      {'label': 'Eliminación', 'value': ev.pkElimination},
+      {'label': 'Unión Proteica', 'value': ev.pkProteinBinding},
     ].where((e) => e['value'] != null).toList();
 
     if (items.isEmpty) {
       return _EmptyTabMsg(
-        msg: 'Datos farmacocinéticos no disponibles para este fármaco.', c: c);
+          msg: 'Datos farmacocinéticos no disponibles para este fármaco.',
+          c: c);
     }
 
     return Wrap(
-      spacing: 8, runSpacing: 8,
-      children: items.map((item) => SizedBox(
-        width: (MediaQuery.of(context).size.width - 64) / 2,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: c.border),
-          ),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(item['label']!,
-              style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
-                color: c.textHint, letterSpacing: 0.5)),
-            const SizedBox(height: 4),
-            Text(item['value']!,
-              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
-                color: c.textPrimary, height: 1.35)),
-          ]),
-        ),
-      )).toList(),
+      spacing: 8,
+      runSpacing: 8,
+      children: items
+          .map((item) => SizedBox(
+                width: (MediaQuery.of(context).size.width - 64) / 2,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: c.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item['label']!,
+                            style: TextStyle(
+                                fontSize: 8.5,
+                                fontWeight: FontWeight.w800,
+                                color: c.textHint,
+                                letterSpacing: 0.5)),
+                        const SizedBox(height: 4),
+                        Text(item['value']!,
+                            style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w700,
+                                color: c.textPrimary,
+                                height: 1.35)),
+                      ]),
+                ),
+              ))
+          .toList(),
     );
   }
 }
@@ -2402,10 +3026,11 @@ class _EmptyTabMsg extends StatelessWidget {
   const _EmptyTabMsg({required this.msg, required this.c});
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 20),
-    child: Text(msg,
-      style: TextStyle(fontSize: 12, color: c.textHint, fontStyle: FontStyle.italic)),
-  );
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Text(msg,
+            style: TextStyle(
+                fontSize: 12, color: c.textHint, fontStyle: FontStyle.italic)),
+      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2424,7 +3049,8 @@ class _FallbackNote extends StatelessWidget {
         border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.2)),
       ),
       child: Row(children: [
-        const Icon(Icons.info_outline_rounded, size: 12, color: Color(0xFFF59E0B)),
+        const Icon(Icons.info_outline_rounded,
+            size: 12, color: Color(0xFFF59E0B)),
         const SizedBox(width: 7),
         Expanded(
           child: Text(
@@ -2444,79 +3070,291 @@ class _FallbackNote extends StatelessWidget {
 List<String> _fallbackIndications(DrugModel drug) {
   final g = drug.group;
   if (g.contains('Cardiovascular')) {
-    return ['Hipertensión arterial', 'Insuficiencia cardíaca', 'Angina de pecho', 'Arritmias cardíacas', 'Control de frecuencia cardíaca', 'Prevención de eventos cardiovasculares'];
+    return [
+      'Hipertensión arterial',
+      'Insuficiencia cardíaca',
+      'Angina de pecho',
+      'Arritmias cardíacas',
+      'Control de frecuencia cardíaca',
+      'Prevención de eventos cardiovasculares'
+    ];
   } else if (g.contains('Analgés') || g.contains('Antipirét')) {
-    return ['Dolor agudo leve a moderado', 'Cefalea', 'Fiebre', 'Dolor musculoesquelético', 'Dismenorrea', 'Dolor postoperatorio leve'];
+    return [
+      'Dolor agudo leve a moderado',
+      'Cefalea',
+      'Fiebre',
+      'Dolor musculoesquelético',
+      'Dismenorrea',
+      'Dolor postoperatorio leve'
+    ];
   } else if (g.contains('Antibiótico')) {
-    return ['Infecciones bacterianas sensibles', 'Neumonía adquirida en comunidad', 'Infecciones de piel y tejidos blandos', 'Infecciones del tracto urinario', 'Profilaxis quirúrgica'];
+    return [
+      'Infecciones bacterianas sensibles',
+      'Neumonía adquirida en comunidad',
+      'Infecciones de piel y tejidos blandos',
+      'Infecciones del tracto urinario',
+      'Profilaxis quirúrgica'
+    ];
   } else if (g.contains('Anticoagulante')) {
-    return ['Trombosis venosa profunda (TVP)', 'Tromboembolismo pulmonar (TEP)', 'Fibrilación auricular — prevención de ACV', 'Síndrome coronario agudo', 'Profilaxis de TVP postquirúrgica'];
+    return [
+      'Trombosis venosa profunda (TVP)',
+      'Tromboembolismo pulmonar (TEP)',
+      'Fibrilación auricular — prevención de ACV',
+      'Síndrome coronario agudo',
+      'Profilaxis de TVP postquirúrgica'
+    ];
   } else if (g.contains('Respiratorio')) {
-    return ['Asma bronquial', 'EPOC — broncoespasmo', 'Bronquitis aguda con componente obstructivo', 'Crisis asmática', 'Síntomas de obstrucción bronquial'];
+    return [
+      'Asma bronquial',
+      'EPOC — broncoespasmo',
+      'Bronquitis aguda con componente obstructivo',
+      'Crisis asmática',
+      'Síntomas de obstrucción bronquial'
+    ];
   } else if (g.contains('Neurolog') || g.contains('Psiquiat')) {
-    return ['Epilepsia / convulsiones', 'Trastornos del estado de ánimo', 'Trastornos de ansiedad', 'Dolor neuropático', 'Insomnio', 'Psicosis'];
+    return [
+      'Epilepsia / convulsiones',
+      'Trastornos del estado de ánimo',
+      'Trastornos de ansiedad',
+      'Dolor neuropático',
+      'Insomnio',
+      'Psicosis'
+    ];
   } else if (g.contains('Gastro')) {
-    return ['Enfermedad por reflujo gastroesofágico (ERGE)', 'Úlcera gástrica / duodenal', 'Náuseas y vómitos', 'Síndrome de intestino irritable', 'Gastroparesia'];
+    return [
+      'Enfermedad por reflujo gastroesofágico (ERGE)',
+      'Úlcera gástrica / duodenal',
+      'Náuseas y vómitos',
+      'Síndrome de intestino irritable',
+      'Gastroparesia'
+    ];
   } else if (g.contains('Endocrin') || g.contains('Metabol')) {
-    return ['Diabetes mellitus tipo 2', 'Hipoglucemia (antídotos)', 'Hipotiroidismo / hipertiroidismo', 'Osteoporosis', 'Síndrome metabólico'];
-  } else if (g.contains('UCI') || g.contains('Crítico') || g.contains('Sedoa')) {
-    return ['Sedación en UCI', 'Soporte hemodinámico en shock', 'Analgesia en paciente crítico', 'Intubación de secuencia rápida', 'Status epilepticus refractario'];
-  } else if (g.contains('Infectolog') || g.contains('Antifúng') || g.contains('Antivir')) {
-    return ['Infecciones fúngicas sistémicas', 'Infecciones virales', 'Tuberculosis', 'Infecciones por hongos oportunistas', 'Profilaxis en inmunosuprimidos'];
+    return [
+      'Diabetes mellitus tipo 2',
+      'Hipoglucemia (antídotos)',
+      'Hipotiroidismo / hipertiroidismo',
+      'Osteoporosis',
+      'Síndrome metabólico'
+    ];
+  } else if (g.contains('UCI') ||
+      g.contains('Crítico') ||
+      g.contains('Sedoa')) {
+    return [
+      'Sedación en UCI',
+      'Soporte hemodinámico en shock',
+      'Analgesia en paciente crítico',
+      'Intubación de secuencia rápida',
+      'Status epilepticus refractario'
+    ];
+  } else if (g.contains('Infectolog') ||
+      g.contains('Antifúng') ||
+      g.contains('Antivir')) {
+    return [
+      'Infecciones fúngicas sistémicas',
+      'Infecciones virales',
+      'Tuberculosis',
+      'Infecciones por hongos oportunistas',
+      'Profilaxis en inmunosuprimidos'
+    ];
   } else if (g.contains('Hematolog')) {
-    return ['Anemia por deficiencia', 'Trombocitopenia', 'Trastornos de la coagulación', 'Suplementación vitamínica', 'Profilaxis de sangrado'];
+    return [
+      'Anemia por deficiencia',
+      'Trombocitopenia',
+      'Trastornos de la coagulación',
+      'Suplementación vitamínica',
+      'Profilaxis de sangrado'
+    ];
   }
-  return ['Indicación según prescripción médica', 'Consultar ficha técnica para indicaciones específicas aprobadas'];
+  return [
+    'Indicación según prescripción médica',
+    'Consultar ficha técnica para indicaciones específicas aprobadas'
+  ];
 }
 
 List<String> _fallbackSideEffects(DrugModel drug) {
   final g = drug.group;
   if (g.contains('Cardiovascular')) {
-    return ['Hipotensión', 'Bradicardia', 'Mareos / vértigo', 'Edema periférico', 'Palpitaciones', 'Cefalea', 'Astenia', 'Efectos proarrítmicos'];
+    return [
+      'Hipotensión',
+      'Bradicardia',
+      'Mareos / vértigo',
+      'Edema periférico',
+      'Palpitaciones',
+      'Cefalea',
+      'Astenia',
+      'Efectos proarrítmicos'
+    ];
   } else if (g.contains('Analgés') || g.contains('Antipirét')) {
-    return ['Gastropatía (AINEs)', 'Hepatotoxicidad (paracetamol en sobredosis)', 'Nefrotoxicidad', 'Reacción alérgica', 'Sangrado gastrointestinal', 'Mareos'];
+    return [
+      'Gastropatía (AINEs)',
+      'Hepatotoxicidad (paracetamol en sobredosis)',
+      'Nefrotoxicidad',
+      'Reacción alérgica',
+      'Sangrado gastrointestinal',
+      'Mareos'
+    ];
   } else if (g.contains('Antibiótico')) {
-    return ['Diarrea', 'Náuseas / vómitos', 'Reacción alérgica (urticaria, anafilaxis)', 'Colitis por C. difficile', 'Fotosensibilidad (fluoroquinolonas)', 'Nefrotoxicidad (aminoglucósidos)'];
+    return [
+      'Diarrea',
+      'Náuseas / vómitos',
+      'Reacción alérgica (urticaria, anafilaxis)',
+      'Colitis por C. difficile',
+      'Fotosensibilidad (fluoroquinolonas)',
+      'Nefrotoxicidad (aminoglucósidos)'
+    ];
   } else if (g.contains('Anticoagulante')) {
-    return ['Hemorragia (riesgo principal)', 'Sangrado gastrointestinal', 'Hematomas', 'Trombocitopenia inducida por heparina (TIH)', 'Sangrado intracraneal'];
+    return [
+      'Hemorragia (riesgo principal)',
+      'Sangrado gastrointestinal',
+      'Hematomas',
+      'Trombocitopenia inducida por heparina (TIH)',
+      'Sangrado intracraneal'
+    ];
   } else if (g.contains('Respiratorio')) {
-    return ['Taquicardia', 'Temblor', 'Hipocalemia', 'Cefalea', 'Nerviosismo / insomnio (adrenérgicos)', 'Candidiasis oral (corticoides inhalados)', 'Disfonía'];
+    return [
+      'Taquicardia',
+      'Temblor',
+      'Hipocalemia',
+      'Cefalea',
+      'Nerviosismo / insomnio (adrenérgicos)',
+      'Candidiasis oral (corticoides inhalados)',
+      'Disfonía'
+    ];
   } else if (g.contains('Neurolog') || g.contains('Psiquiat')) {
-    return ['Sedación / somnolencia', 'Mareos / ataxia', 'Síntomas extrapiramidales', 'Prolongación del QT', 'Síndrome serotoninérgico', 'Ganancia de peso', 'Dependencia'];
+    return [
+      'Sedación / somnolencia',
+      'Mareos / ataxia',
+      'Síntomas extrapiramidales',
+      'Prolongación del QT',
+      'Síndrome serotoninérgico',
+      'Ganancia de peso',
+      'Dependencia'
+    ];
   } else if (g.contains('Gastro')) {
-    return ['Cefalea', 'Diarrea', 'Náuseas', 'Dolor abdominal', 'Hipomagnesemia (IBP prolongados)', 'Estreñimiento', 'Flatulencia'];
+    return [
+      'Cefalea',
+      'Diarrea',
+      'Náuseas',
+      'Dolor abdominal',
+      'Hipomagnesemia (IBP prolongados)',
+      'Estreñimiento',
+      'Flatulencia'
+    ];
   } else if (g.contains('Endocrin') || g.contains('Metabol')) {
-    return ['Hipoglucemia', 'Náuseas / vómitos (biguanidas)', 'Acidosis láctica (metformina — rara)', 'Edema', 'Ganancia de peso', 'Hipotiroidismo inducido'];
-  } else if (g.contains('UCI') || g.contains('Crítico') || g.contains('Sedoa')) {
-    return ['Hipotensión', 'Depresión respiratoria', 'Bradicardia', 'Dependencia / tolerancia (opioides)', 'Íleo paralítico', 'Delirium en UCI'];
-  } else if (g.contains('Infectolog') || g.contains('Antifúng') || g.contains('Antivir')) {
-    return ['Hepatotoxicidad', 'Nefrotoxicidad', 'Interacciones medicamentosas (CYP450)', 'Náuseas / vómitos', 'Neuropatía periférica', 'Fotosensibilidad'];
+    return [
+      'Hipoglucemia',
+      'Náuseas / vómitos (biguanidas)',
+      'Acidosis láctica (metformina — rara)',
+      'Edema',
+      'Ganancia de peso',
+      'Hipotiroidismo inducido'
+    ];
+  } else if (g.contains('UCI') ||
+      g.contains('Crítico') ||
+      g.contains('Sedoa')) {
+    return [
+      'Hipotensión',
+      'Depresión respiratoria',
+      'Bradicardia',
+      'Dependencia / tolerancia (opioides)',
+      'Íleo paralítico',
+      'Delirium en UCI'
+    ];
+  } else if (g.contains('Infectolog') ||
+      g.contains('Antifúng') ||
+      g.contains('Antivir')) {
+    return [
+      'Hepatotoxicidad',
+      'Nefrotoxicidad',
+      'Interacciones medicamentosas (CYP450)',
+      'Náuseas / vómitos',
+      'Neuropatía periférica',
+      'Fotosensibilidad'
+    ];
   }
-  return ['Consultar ficha técnica del fabricante', 'Reacciones adversas variables según paciente y dosis'];
+  return [
+    'Consultar ficha técnica del fabricante',
+    'Reacciones adversas variables según paciente y dosis'
+  ];
 }
 
 List<String> _fallbackContraindications(DrugModel drug) {
   final g = drug.group;
   if (g.contains('Cardiovascular')) {
-    return ['Hipotensión severa (PAS <90 mmHg)', 'BAV de alto grado sin marcapasos', 'Bradicardia sintomática (<40 lpm)', 'Insuficiencia cardíaca descompensada (betabloqueantes)', 'Shock cardiogénico', 'Hipersensibilidad al principio activo'];
+    return [
+      'Hipotensión severa (PAS <90 mmHg)',
+      'BAV de alto grado sin marcapasos',
+      'Bradicardia sintomática (<40 lpm)',
+      'Insuficiencia cardíaca descompensada (betabloqueantes)',
+      'Shock cardiogénico',
+      'Hipersensibilidad al principio activo'
+    ];
   } else if (g.contains('Analgés') || g.contains('Antipirét')) {
-    return ['Úlcera péptica activa (AINEs)', 'Insuficiencia renal severa (AINEs)', 'Tercer trimestre de embarazo (AINEs)', 'Hepatopatía severa (paracetamol > 2 g/día)', 'Alergia documentada al principio activo'];
+    return [
+      'Úlcera péptica activa (AINEs)',
+      'Insuficiencia renal severa (AINEs)',
+      'Tercer trimestre de embarazo (AINEs)',
+      'Hepatopatía severa (paracetamol > 2 g/día)',
+      'Alergia documentada al principio activo'
+    ];
   } else if (g.contains('Antibiótico')) {
-    return ['Hipersensibilidad documentada (alergia)', 'Insuficiencia renal severa (sin ajuste de dosis)', 'Embarazo (fluoroquinolonas, tetraciclinas)', 'Uso concomitante con fármacos que prolongan QT (macrólidos)'];
+    return [
+      'Hipersensibilidad documentada (alergia)',
+      'Insuficiencia renal severa (sin ajuste de dosis)',
+      'Embarazo (fluoroquinolonas, tetraciclinas)',
+      'Uso concomitante con fármacos que prolongan QT (macrólidos)'
+    ];
   } else if (g.contains('Anticoagulante')) {
-    return ['Hemorragia activa mayor', 'Trombocitopenia inducida por heparina (TIH)', 'Neurocirugía / cirugía oftálmica reciente', 'Embarazo (AVK contraindicados)', 'Insuficiencia renal severa (HBPM, ACODs)'];
+    return [
+      'Hemorragia activa mayor',
+      'Trombocitopenia inducida por heparina (TIH)',
+      'Neurocirugía / cirugía oftálmica reciente',
+      'Embarazo (AVK contraindicados)',
+      'Insuficiencia renal severa (HBPM, ACODs)'
+    ];
   } else if (g.contains('Respiratorio')) {
-    return ['Hipersensibilidad al principio activo', 'Taquiarritmias no controladas (beta-2 agonistas)', 'Tirotoxicosis (beta-2 agonistas)', 'Diabetes no controlada (corticoides sistémicos)'];
+    return [
+      'Hipersensibilidad al principio activo',
+      'Taquiarritmias no controladas (beta-2 agonistas)',
+      'Tirotoxicosis (beta-2 agonistas)',
+      'Diabetes no controlada (corticoides sistémicos)'
+    ];
   } else if (g.contains('Neurolog') || g.contains('Psiquiat')) {
-    return ['Depresión respiratoria severa (benzodiazepinas, opioides)', 'Hipersensibilidad documentada', 'Glaucoma de ángulo cerrado (anticolinérgicos)', 'Prolongación QTc grave (antipsicóticos)', 'Embarazo (valproato, carbamazepina — teratogénicos)'];
+    return [
+      'Depresión respiratoria severa (benzodiazepinas, opioides)',
+      'Hipersensibilidad documentada',
+      'Glaucoma de ángulo cerrado (anticolinérgicos)',
+      'Prolongación QTc grave (antipsicóticos)',
+      'Embarazo (valproato, carbamazepina — teratogénicos)'
+    ];
   } else if (g.contains('Gastro')) {
-    return ['Hipersensibilidad documentada', 'Gastrinoma (IBP — usar con precaución)', 'Obstrucción intestinal (procinéticos)', 'Embarazo (usar solo si beneficio supera riesgo)'];
+    return [
+      'Hipersensibilidad documentada',
+      'Gastrinoma (IBP — usar con precaución)',
+      'Obstrucción intestinal (procinéticos)',
+      'Embarazo (usar solo si beneficio supera riesgo)'
+    ];
   } else if (g.contains('Endocrin') || g.contains('Metabol')) {
-    return ['Insuficiencia renal severa (metformina — ClCr <30)', 'Cetoacidosis diabética', 'Hipersensibilidad documentada', 'Insuficiencia hepática severa (antidiabéticos orales)'];
-  } else if (g.contains('UCI') || g.contains('Crítico') || g.contains('Sedoa')) {
-    return ['Hipersensibilidad documentada', 'Shock no corregido (vasodilatadores)', 'Depresión respiratoria sin vía aérea asegurada', 'Porfiria aguda intermitente (propofol, barbitúricos)'];
+    return [
+      'Insuficiencia renal severa (metformina — ClCr <30)',
+      'Cetoacidosis diabética',
+      'Hipersensibilidad documentada',
+      'Insuficiencia hepática severa (antidiabéticos orales)'
+    ];
+  } else if (g.contains('UCI') ||
+      g.contains('Crítico') ||
+      g.contains('Sedoa')) {
+    return [
+      'Hipersensibilidad documentada',
+      'Shock no corregido (vasodilatadores)',
+      'Depresión respiratoria sin vía aérea asegurada',
+      'Porfiria aguda intermitente (propofol, barbitúricos)'
+    ];
   }
-  return ['Hipersensibilidad documentada al principio activo', 'Consultar ficha técnica para contraindicaciones específicas'];
+  return [
+    'Hipersensibilidad documentada al principio activo',
+    'Consultar ficha técnica para contraindicaciones específicas'
+  ];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2526,7 +3364,8 @@ class _PKFallbackGrid extends StatelessWidget {
   final DrugModel drug;
   final AppColors c;
   final bool dark;
-  const _PKFallbackGrid({required this.drug, required this.c, required this.dark});
+  const _PKFallbackGrid(
+      {required this.drug, required this.c, required this.dark});
 
   Map<String, String> _pkForGroup(String group) {
     if (group.contains('Cardiovascular')) {
@@ -2577,7 +3416,9 @@ class _PKFallbackGrid extends StatelessWidget {
         'Eliminación': 'Renal / Hepática',
         'Monitorización': 'Glucemia, HbA1c',
       };
-    } else if (group.contains('UCI') || group.contains('Crítico') || group.contains('Sedoa')) {
+    } else if (group.contains('UCI') ||
+        group.contains('Crítico') ||
+        group.contains('Sedoa')) {
       return {
         'Vía típica': 'IV / IM (urgencias)',
         'Inicio de Acción': 'Rápido (segundos–minutos)',
@@ -2599,34 +3440,44 @@ class _PKFallbackGrid extends StatelessWidget {
     final items = _pkForGroup(drug.group).entries.toList();
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Wrap(
-        spacing: 8, runSpacing: 8,
-        children: items.map((item) => SizedBox(
-          width: (MediaQuery.of(context).size.width - 64) / 2,
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: c.surface,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: c.border),
-            ),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(item.key,
-                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.w800,
-                  color: c.textHint, letterSpacing: 0.5)),
-              const SizedBox(height: 4),
-              Text(item.value,
-                style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700,
-                  color: c.textPrimary, height: 1.35)),
-            ]),
-          ),
-        )).toList(),
+        spacing: 8,
+        runSpacing: 8,
+        children: items
+            .map((item) => SizedBox(
+                  width: (MediaQuery.of(context).size.width - 64) / 2,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: c.surface,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: c.border),
+                    ),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(item.key,
+                              style: TextStyle(
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: c.textHint,
+                                  letterSpacing: 0.5)),
+                          const SizedBox(height: 4),
+                          Text(item.value,
+                              style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: c.textPrimary,
+                                  height: 1.35)),
+                        ]),
+                  ),
+                ))
+            .toList(),
       ),
       const SizedBox(height: 8),
       _FallbackNote(c: c),
     ]);
   }
 }
-
 
 // Fallback cuando no hay datos en la base de evidencias
 class _GenericReferencesCard extends StatelessWidget {
@@ -2644,11 +3495,15 @@ class _GenericReferencesCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         const Row(children: [
-          Icon(Icons.library_books_outlined, size: 13, color: Color(0xFF0EA5E9)),
+          Icon(Icons.library_books_outlined,
+              size: 13, color: Color(0xFF0EA5E9)),
           SizedBox(width: 7),
           Text('EVIDENCIA Y REFERENCIAS',
-            style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900,
-              letterSpacing: 1.3, color: Color(0xFF0EA5E9))),
+              style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.3,
+                  color: Color(0xFF0EA5E9))),
         ]),
         const SizedBox(height: 10),
         Text(
@@ -2672,30 +3527,37 @@ class _LocalField extends StatelessWidget {
   final bool dark;
   final ValueChanged<String> onChanged;
   const _LocalField({
-    required this.label, required this.ctrl,
-    required this.dark,  required this.onChanged,
+    required this.label,
+    required this.ctrl,
+    required this.dark,
+    required this.onChanged,
     this.hintText,
   });
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    final bg     = c.inputBg;
+    final bg = c.inputBg;
     final border = c.border;
-    final text   = c.textPrimary;
+    final text = c.textPrimary;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(label,
-        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-          color: Color(0xFF999999), letterSpacing: 0.4)),
+          style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF999999),
+              letterSpacing: 0.4)),
       const SizedBox(height: 4),
       TextField(
         controller: ctrl,
         onChanged: onChanged,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: text),
+        style:
+            TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: text),
         decoration: InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           filled: true,
           fillColor: bg,
           hintText: hintText,
@@ -2728,8 +3590,10 @@ class _SexToggleBtn extends StatelessWidget {
   final bool dark;
   final VoidCallback onTap;
   const _SexToggleBtn({
-    required this.label, required this.active,
-    required this.dark,  required this.onTap,
+    required this.label,
+    required this.active,
+    required this.dark,
+    required this.onTap,
   });
 
   @override
@@ -2756,8 +3620,10 @@ class _SexToggleBtn extends StatelessWidget {
             ),
             child: Center(
               child: Text(label,
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900,
-                  color: active ? kGoldLight : c.textHint)),
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                      color: active ? kGoldLight : c.textHint)),
             ),
           ),
         ),
@@ -2772,8 +3638,10 @@ class _DerivedChip extends StatelessWidget {
   final String unit;
   final bool dark;
   const _DerivedChip({
-    required this.label, required this.value,
-    required this.unit,  required this.dark,
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.dark,
   });
 
   @override
@@ -2783,18 +3651,27 @@ class _DerivedChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label,
-          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800,
-            color: c.textHint, letterSpacing: 0.8)),
+            style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w800,
+                color: c.textHint,
+                letterSpacing: 0.8)),
         const SizedBox(height: 2),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text(value ?? '—',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: c.textPrimary)),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: c.textPrimary)),
           if (value != null) ...[
             const SizedBox(width: 3),
             Padding(
               padding: const EdgeInsets.only(bottom: 2),
               child: Text(unit,
-                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: c.textHint)),
+                  style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      color: c.textHint)),
             ),
           ],
         ]),
@@ -2802,8 +3679,6 @@ class _DerivedChip extends StatelessWidget {
     );
   }
 }
-
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Card de dose com hierarquia visual
@@ -2847,32 +3722,50 @@ class _DoseCard extends StatelessWidget {
     final lower = seg.toLowerCase();
 
     // ── Dose máxima / limite absoluto ──────────────────────────────────────
-    if (lower.startsWith('máx') || lower.startsWith('max') ||
-        lower.contains('máx.') || lower.contains('máximo') ||
-        lower.contains('dose máx') || lower.contains('dosis máx') ||
-        lower.contains('não ultrapassar') || lower.contains('no exceder') ||
-        lower.contains('limite') || lower.contains('teto')) {
+    if (lower.startsWith('máx') ||
+        lower.startsWith('max') ||
+        lower.contains('máx.') ||
+        lower.contains('máximo') ||
+        lower.contains('dose máx') ||
+        lower.contains('dosis máx') ||
+        lower.contains('não ultrapassar') ||
+        lower.contains('no exceder') ||
+        lower.contains('limite') ||
+        lower.contains('teto')) {
       return _SegmentType.max;
     }
 
     // ── Manutenção / infusão / titular ─────────────────────────────────────
-    if (lower.startsWith('manutenção') || lower.startsWith('mantenimiento') ||
-        lower.startsWith('manutenção:') || lower.startsWith('mantenimiento:') ||
-        lower.startsWith('infusão') || lower.startsWith('infusión') ||
-        lower.startsWith('infusão contínua') || lower.startsWith('infusión continua') ||
-        lower.startsWith('titular') || lower.startsWith('manutenção') ||
-        lower.contains('em bomba') || lower.contains('contínua:') ||
-        lower.contains('contínuo:') || lower.contains('manutenção:')) {
+    if (lower.startsWith('manutenção') ||
+        lower.startsWith('mantenimiento') ||
+        lower.startsWith('manutenção:') ||
+        lower.startsWith('mantenimiento:') ||
+        lower.startsWith('infusão') ||
+        lower.startsWith('infusión') ||
+        lower.startsWith('infusão contínua') ||
+        lower.startsWith('infusión continua') ||
+        lower.startsWith('titular') ||
+        lower.startsWith('manutenção') ||
+        lower.contains('em bomba') ||
+        lower.contains('contínua:') ||
+        lower.contains('contínuo:') ||
+        lower.contains('manutenção:')) {
       return _SegmentType.maintenance;
     }
 
     // ── Repetição / segunda dose / sem resposta ────────────────────────────
-    if (lower.startsWith('repetir') || lower.startsWith('2ª dose') ||
-        lower.startsWith('se sem resposta') || lower.startsWith('sin respuesta') ||
-        lower.startsWith('se necessário') || lower.startsWith('si necesario') ||
-        lower.contains('sem resposta') || lower.contains('sin respuesta') ||
-        lower.contains('repetir') || lower.contains('2ª dose') ||
-        lower.contains('segunda dose') || lower.contains('segunda dosis')) {
+    if (lower.startsWith('repetir') ||
+        lower.startsWith('2ª dose') ||
+        lower.startsWith('se sem resposta') ||
+        lower.startsWith('sin respuesta') ||
+        lower.startsWith('se necessário') ||
+        lower.startsWith('si necesario') ||
+        lower.contains('sem resposta') ||
+        lower.contains('sin respuesta') ||
+        lower.contains('repetir') ||
+        lower.contains('2ª dose') ||
+        lower.contains('segunda dose') ||
+        lower.contains('segunda dosis')) {
       return _SegmentType.repeat;
     }
 
@@ -2898,7 +3791,6 @@ class _DoseCard extends StatelessWidget {
         ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
         // ── Header label ──────────────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
@@ -2910,8 +3802,11 @@ class _DoseCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: const Text('REFERÊNCIA DA LITERATURA',
-                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900,
-                  color: Color(0xFFFFE8A6), letterSpacing: 2.0)),
+                  style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFFFFE8A6),
+                      letterSpacing: 2.0)),
             ),
           ]),
         ),
@@ -2924,8 +3819,12 @@ class _DoseCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: Text(segments.first,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900,
-                color: Colors.white, letterSpacing: -0.5, height: 1.2)),
+                style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                    height: 1.2)),
           )
         else
           // Dose multi-etapa: linha por linha com hierarquia
@@ -2954,20 +3853,21 @@ class _DoseCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(Icons.info_outline_rounded, size: 13,
-                color: Colors.white.withOpacity(0.5)),
+              Icon(Icons.info_outline_rounded,
+                  size: 13, color: Colors.white.withOpacity(0.5)),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(dose.detail,
-                  style: TextStyle(fontSize: 11.5,
-                    color: Colors.white.withOpacity(0.65),
-                    fontWeight: FontWeight.w500, height: 1.55)),
+                    style: TextStyle(
+                        fontSize: 11.5,
+                        color: Colors.white.withOpacity(0.65),
+                        fontWeight: FontWeight.w500,
+                        height: 1.55)),
               ),
             ]),
           ),
         ] else
           const SizedBox(height: 14),
-
       ]),
     );
   }
@@ -3001,7 +3901,8 @@ class _DoseSegmentRow extends StatelessWidget {
         Column(children: [
           // Badge numerado
           Container(
-            width: 22, height: 22,
+            width: 22,
+            height: 22,
             decoration: BoxDecoration(
               color: cfg.badgeBg,
               shape: BoxShape.circle,
@@ -3009,10 +3910,12 @@ class _DoseSegmentRow extends StatelessWidget {
             ),
             child: Center(
               child: cfg.badgeIcon != null
-                ? Icon(cfg.badgeIcon, size: 11, color: cfg.badgeFg)
-                : Text('${index + 1}',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900,
-                      color: cfg.badgeFg)),
+                  ? Icon(cfg.badgeIcon, size: 11, color: cfg.badgeFg)
+                  : Text('${index + 1}',
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: cfg.badgeFg)),
             ),
           ),
           // Linha vertical (exceto último)
@@ -3033,23 +3936,26 @@ class _DoseSegmentRow extends StatelessWidget {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 2, bottom: 4),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               // Label da etapa
               if (cfg.label != null) ...[
                 Text(cfg.label!,
-                  style: TextStyle(
-                    fontSize: 8.5, fontWeight: FontWeight.w800,
-                    color: cfg.labelColor, letterSpacing: 1.4)),
+                    style: TextStyle(
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w800,
+                        color: cfg.labelColor,
+                        letterSpacing: 1.4)),
                 const SizedBox(height: 2),
               ],
               // Texto da dose
               Text(text,
-                style: TextStyle(
-                  fontSize: cfg.fontSize,
-                  fontWeight: cfg.fontWeight,
-                  color: cfg.textColor,
-                  height: 1.3,
-                  letterSpacing: -0.2)),
+                  style: TextStyle(
+                      fontSize: cfg.fontSize,
+                      fontWeight: cfg.fontWeight,
+                      color: cfg.textColor,
+                      height: 1.3,
+                      letterSpacing: -0.2)),
               const SizedBox(height: 10),
             ]),
           ),
@@ -3210,9 +4116,8 @@ class _DrugSearchAutocompleteState extends State<_DrugSearchAutocomplete> {
 
     // 2. Busca por termos do _termMap (nomes comerciais, siglas, inglês)
     //    Encontra os canonical names e mapeia de volta para DrugModel
-    final termMatches = _allTerms
-        .where((t) => t.toLowerCase().contains(q))
-        .toList();
+    final termMatches =
+        _allTerms.where((t) => t.toLowerCase().contains(q)).toList();
 
     // Para cada termo, tenta encontrar um DrugModel com nome similar
     final Set<String> seenIds = byName.map((d) => d.id).toSet();
@@ -3312,7 +4217,8 @@ class _DrugSearchAutocompleteState extends State<_DrugSearchAutocomplete> {
               TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w500),
           prefixIcon: const Padding(
             padding: EdgeInsets.only(left: 12, right: 8),
-            child: Icon(Icons.search_rounded, size: 20, color: Color(0xFF6B7280)),
+            child:
+                Icon(Icons.search_rounded, size: 20, color: Color(0xFF6B7280)),
           ),
           prefixIconConstraints:
               const BoxConstraints(minWidth: 40, minHeight: 40),
@@ -3329,7 +4235,8 @@ class _DrugSearchAutocompleteState extends State<_DrugSearchAutocomplete> {
                       size: 18, color: Color(0xFFAAAAAA)),
                   splashRadius: 18,
                   padding: const EdgeInsets.only(right: 4),
-                  constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                  constraints:
+                      const BoxConstraints(minWidth: 40, minHeight: 40),
                 )
               : null,
           suffixIconConstraints:
@@ -3405,12 +4312,15 @@ class _DrugSuggestionDropdown extends StatelessWidget {
               final drug = suggestions[i];
               // Realça parte que bate com o query no nome
               return InkWell(
-                onTap: () { AppHaptics.light(context); onSelect(drug); },
+                onTap: () {
+                  AppHaptics.light(context);
+                  onSelect(drug);
+                },
                 splashColor: const Color(0x140D6B57),
                 highlightColor: const Color(0xFFF0FFF8),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   child: Row(children: [
                     // Ícone de grupo
                     Container(
@@ -3436,7 +4346,8 @@ class _DrugSuggestionDropdown extends StatelessWidget {
                         children: [
                           // Nome com realce do trecho buscado
                           _HighlightText(
-                            text: drug.nameL10n(context.read<AppProvider>().lang),
+                            text:
+                                drug.nameL10n(context.read<AppProvider>().lang),
                             query: query,
                             baseStyle: const TextStyle(
                               fontSize: 13,

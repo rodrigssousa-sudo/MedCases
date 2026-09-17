@@ -94,6 +94,8 @@ import '../services/clinical_identity_transport_envelope.dart';
 import '../services/plantao_machine_native_context_prefetch.dart';
 import '../services/clinical_crosscutting_evidence_compliance_guard.dart';
 
+import '../services/entitlement_service.dart';
+
 // ── Resultado das operações de Pin no "Meu Plantão" ───────────────────────────
 enum PinResult {
   success, // item fixado com sucesso
@@ -7565,6 +7567,17 @@ class AppProvider extends ChangeNotifier {
         PlantaoContinuationType.freeFollowUp,
     Iterable<PlantaoSection> shadowRequestedSections = const <PlantaoSection>[],
   }) async {
+    // MEDCASES_R25A_ENTITLEMENT_AI_FUNCTIONAL_GATE_V1
+    // One functional gate covers normal UI, buttons and direct/deeplink callers.
+    final r25aEntitlementDecision =
+        await EntitlementService.instance.consumeAiAllowance(
+      isPlantao: !longResponse,
+    );
+    if (!r25aEntitlementDecision.allowed) {
+      onError(r25aEntitlementDecision.code);
+      return false;
+    }
+
     // M71_PLANTAO_CANONICAL_SINGLE_ENTRYPOINT_GUARD_V1
     // Public selector fail-closed boundary for Plantão. The private
     // legacy core owns single-flight/terminal mechanics downstream.

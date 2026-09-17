@@ -44,11 +44,53 @@ void main() {
     });
 
     test('GPT guard text change rebinds the structured DTO', () {
+      // Verifica o fluxo, inclusive a terceira barreira, sem depender de
+      // uma substring que era invalidada por quebras de linha do formatter.
+      final start = source.indexOf(
+        'Future<void> _finalizeGptSuccessfulRequest({',
+      );
+      expect(start, greaterThanOrEqualTo(0));
+
+      final guard = source.indexOf(
+        'final regimenOutputGuardModified = safeOutput != preRegimenSafeOutput;',
+        start,
+      );
+      final evidence = source.indexOf(
+        'final evidenceComplianceModified =',
+        start,
+      );
+      final dto = source.indexOf(
+        'final ClinicalStructuredOutput? safeClinicalOutput =',
+        start,
+      );
+      final persist = source.indexOf(
+        'final persistStatus = await persistAiExchangeOnce(',
+        start,
+      );
+      final done = source.indexOf(
+        'wrappedOnDone(finalUiText, safeClinicalOutput);',
+        start,
+      );
+      expect(guard, greaterThan(start));
+      expect(evidence, greaterThan(guard));
+      expect(dto, greaterThan(evidence));
+      expect(persist, greaterThan(dto));
+      expect(done, greaterThan(persist));
+
+      final binding = source.substring(dto, persist);
+      final rebindsFromFinalText = RegExp(
+        r'final ClinicalStructuredOutput\?\s+safeClinicalOutput\s*=\s*'
+        r'safeOutput\s*==\s*validatedOutput\s*\?\s*productiveClinicalOutput'
+        r'\s*:\s*\(\s*regimenOutputGuardModified\s*\|\|\s*'
+        r'questionsRepairedToValidContract\s*\|\|\s*'
+        r'evidenceComplianceModified\s*\)\s*\?\s*'
+        r'PlantaoLocalClinicalOutputAdapter\.fromValidatedText'
+        r'\(\s*safeOutput\s*\)\s*:\s*null\s*;',
+      );
+      expect(rebindsFromFinalText.hasMatch(binding), isTrue);
       expect(
-        source,
-        contains(
-          'regimenOutputGuardModified || questionsRepairedToValidContract',
-        ),
+        source.substring(persist, done),
+        contains('assistantOutput: safeOutput,'),
       );
     });
 

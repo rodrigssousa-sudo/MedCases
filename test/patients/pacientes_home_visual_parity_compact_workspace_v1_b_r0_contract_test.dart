@@ -132,7 +132,7 @@ void main() {
       expect(
         divider,
         contains(
-          'MEDCASES_PACIENTES_HOME_COMPACT_SECTION_LABEL_V1_B_R0',
+          'MEDCASES_PACIENTES_CENTERED_SECTION_DIVIDER_PLUS8_V1',
         ),
       );
       final normalizedDivider =
@@ -154,7 +154,7 @@ void main() {
 
       expect(
         card,
-        contains('MEDCASES_PACIENTES_HOME_COMPACT_SESSION_CARD_V1_B_R0'),
+        contains('MEDCASES_PACIENTES_SAVED_CARD_VISIBLE_OWNER_STRUCTURAL_V3'),
       );
       expect(card, contains('onTap: onEvolve'));
       expect(card, contains('PopupMenuButton<String>'));

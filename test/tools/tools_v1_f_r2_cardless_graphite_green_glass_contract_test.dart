@@ -232,17 +232,17 @@ void main() {
   test(
     'TOOLS V1-F-R2 GREEN — geometria título seta e retorno do topbar permanecem',
     () {
-      expect(tools, contains('height: 56'));
-      expect(tools, contains('FERRAMENTAS'));
-      expect(
-        tools,
-        contains('Icons.arrow_back_ios_new_rounded'),
-      );
-      expect(tools, contains('nav.canPop()'));
-      expect(
-        tools,
-        contains('MainShell.pendingTab.value = 0'),
-      );
+      // Topbar atual: área segura física + 48 px, título +SCORES.
+      final state = classBlock(tools, '_ToolsScreenState');
+      final header = classBlock(tools, '_ToolsTopbarContent');
+      expect(state, contains('height: topPad + 48'));
+      expect(state, contains('height: 48'));
+      expect(state, contains('statusBarColor: Colors.transparent'));
+      expect(header, contains("'+SCORES'"));
+      expect(header, contains('Icons.arrow_back_ios_new_rounded'));
+      expect(header, contains('nav.canPop()'));
+      expect(header, contains('nav.pop()'));
+      expect(header, contains('MainShell.pendingTab.value = 0'));
     },
   );
 
@@ -296,27 +296,15 @@ void main() {
   test(
     'TOOLS V1-F-R2 GREEN — Material ancestor e montagem hideHeader permanecem',
     () {
-      expect(
-        home,
-        contains('MaterialType.transparency'),
-      );
-      expect(
-        RegExp(
-          r'ToolsScreen\s*\(\s*'
-          r'hideHeader\s*:\s*true\s*'
-          r'\)',
-          multiLine: true,
-        ).hasMatch(home),
-        isTrue,
-      );
-      expect(
-        RegExp(
-          r'child\s*:\s*(?:const\s+)?'
-          r'ToolsScreen\s*\(\s*\)',
-          multiLine: true,
-        ).hasMatch(home),
-        isTrue,
-      );
+      // Montagem legada embutida permanece sem duplicar topbar.
+      expect(home, contains('const Expanded(child: ToolsScreen(hideHeader: true))'));
+      expect(home, contains('toolsScreenTabNotifier.value = null;'));
+      expect(home, contains('onTabChange(4);'));
+      final state = classBlock(tools, '_ToolsScreenState');
+      expect(state, contains('final showHeader = !widget.hideHeader;'));
+      expect(state, contains('if (!showHeader)'));
+      expect(state, contains('const Expanded(child: _ToolsHubLanding())'));
+      expect(state, contains('child: ColoredBox('));
     },
   );
 

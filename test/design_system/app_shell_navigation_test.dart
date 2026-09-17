@@ -275,33 +275,46 @@ void main() {
       expect(selected, 2);
     });
   });
-  group('Legacy floating footer regression', () {
-    test('footer IA shrunk layout contract fits the 38 px bar', () {
+  group('Floating footer shrink regression', () {
+    test('footer IA shrunk layout scales current SVG and preserves tap actions', () {
       final source = File('lib/main.dart').readAsStringSync();
+      final owner = source.indexOf(
+        'class _FloatingFooterState extends State<_FloatingFooter> {',
+      );
+      final navStart = source.indexOf('Widget _buildNavRow() => Row(', owner);
+      final navEnd = source.indexOf('Widget _buildAiRow() => Row(', navStart);
 
-      const expectedBlock = """
-            onTap: widget.onFabTap,
-            onDoubleTap: widget.onFabDoubleTap,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.zero,
-""";
+      expect(owner, greaterThanOrEqualTo(0));
+      expect(navStart, greaterThan(owner));
+      expect(navEnd, greaterThan(navStart));
 
-      expect(source.contains(expectedBlock), isTrue);
-      expect(source.contains('static const _barHeightShrunk = 38.0;'), isTrue);
-      expect(source.contains('onTap: widget.onFabTap,'), isTrue);
-      expect(source.contains('onDoubleTap: widget.onFabDoubleTap,'), isTrue);
-      expect(source.contains('width: 26,'), isTrue);
-      expect(source.contains('height: 26,'), isTrue);
-      expect(source.contains("child: Text('IA',"), isTrue);
+      final footer = source.substring(owner, navEnd);
+      final nav = source.substring(navStart, navEnd);
+      expect(footer.contains('static const _barHeightShrunk = 38.0;'), isTrue);
+      expect(footer.contains(
+        'final barHeight = _shrunk ? _barHeightShrunk : _barHeightFull;',
+      ), isTrue);
+      expect(footer.contains('height: barHeight,'), isTrue);
 
-      const nominalContentHeight = 26.0 + 0.0 + 10.0;
+      // O layout atual usa uma imagem SVG 54x54 em uma caixa de 31.5 px;
+      // a coluna inclui legenda 10 px. A FittedBox deve reduzir a coluna
+      // no modo de 38 px, sem pressupor a antiga estrutura 26x26.
+      const nominalContentHeight = 31.5 + 10.0;
       const shrunkBarHeight = 38.0;
-
-      expect(nominalContentHeight, lessThanOrEqualTo(shrunkBarHeight));
+      expect(nominalContentHeight, greaterThan(shrunkBarHeight));
+      expect(nav.contains('child: FittedBox('), isTrue);
+      expect(nav.contains('fit: BoxFit.scaleDown,'), isTrue);
+      expect(nav.contains('child: Column('), isTrue);
+      expect(nav.contains('_IaDynamicFloat('), isTrue);
+      expect(nav.contains('height: 31.5,'), isTrue);
+      expect(nav.contains('child: OverflowBox('), isTrue);
+      expect(nav.contains("'assets/icons/home_v2/ic_ia.svg'"), isTrue);
+      expect(nav.contains('width: 54,'), isTrue);
+      expect(nav.contains('height: 54,'), isTrue);
+      expect(nav.contains('opacity: _shrunk ? 0.0 : 1.0,'), isTrue);
+      expect(nav.contains("child: Text('IA',"), isTrue);
+      expect(nav.contains('onTap: widget.onFabTap,'), isTrue);
+      expect(nav.contains('onDoubleTap: widget.onFabDoubleTap,'), isTrue);
     });
   });
 }

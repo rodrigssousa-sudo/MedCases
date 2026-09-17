@@ -225,7 +225,7 @@ class HomeV2ClinicalGrid extends StatelessWidget {
       palette: palette,
       left: _HomeV2MobilePairButton(
         palette: palette,
-        label: isEs ? 'HERRAMIENTAS' : 'FERRAMENTAS',
+        label: '+SCORES',
         svgAsset: 'assets/icons/home_v2/ic_ferramentas.svg',
         iconColor: _kHomeProductiveIconGreen,
         onTap: onTools,

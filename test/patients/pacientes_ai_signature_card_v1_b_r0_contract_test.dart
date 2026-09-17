@@ -78,7 +78,7 @@ void main() {
       expect(iconStart, greaterThanOrEqualTo(0));
 
       final iconEnd = idle.indexOf(
-        'const SizedBox(width: 12)',
+        'const SizedBox(width: 14)',
         iconStart,
       );
       expect(iconEnd, greaterThan(iconStart));
@@ -97,8 +97,8 @@ void main() {
         contains('offset: Offset(0, -lift)'),
       );
       expect(iconBlock, contains('child: SizedBox('));
-      expect(iconBlock, contains('width: 38'));
-      expect(iconBlock, contains('height: 38'));
+      expect(iconBlock, contains('width: 58'));
+      expect(iconBlock, contains('height: 58'));
       expect(
         iconBlock,
         contains("assets/icons/home_v2/ic_ia.svg"),

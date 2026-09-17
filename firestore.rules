@@ -1,6 +1,6 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database
+  match /databases/{database}/documents {
     // MEDCASES_SUPPORT_TICKET_RULES_V2_B_R1
     match /support_tickets/{ticketId} {
       allow create: if isAuthed()
@@ -65,7 +65,6 @@ service cloud.firestore {
       allow delete: if isMaster();
     }
 
-}/documents {
 
     // ══════════════════════════════════════════════════════════════════════════
     // HELPERS DE AUTENTICAÇÃO — AUDIT 453 (Apple Pre-Submission Hardening)
@@ -163,11 +162,87 @@ service cloud.firestore {
       );
     }
 
-    // BUILD 310 — Guard específico para campos do Ambassador Track.
-    // Apenas master/admin podem escrever isPartner, partnerTitle, referralLink.
-    function isWritingPartnerFields() {
-      return request.resource.data.diff(resource.data).affectedKeys()
-             .hasAny(['isPartner', 'partnerTitle', 'referralLink']);
+    // R20A — Client self-writes may never mint roles, staff flags, subscription
+    // privileges or administrative/account approval state. Admin SDK is not
+    // subject to Security Rules; privileged client updates still require isAdmin.
+    function r20aProtectedProfileFields() {
+      return [
+        'role', 'permissions', 'permission', 'accessLevel',
+        'isAdmin', 'isMaster', 'isSupervisor', 'isStaff',
+        'isPartner', 'partnerTitle', 'referralLink',
+        'plan', 'subscriptionStatus', 'subscriptionTier', 'subscriptionId',
+        'subscriptionExpiresAt', 'subscriptionEndDate', 'subscription',
+        'isPremium', 'premium', 'premiumAccess', 'premiumUntil',
+        'premiumExpiresAt', 'entitlements', 'accessGranted',
+        'aiCredits', 'credits', 'tokensBalance',
+        'stripeCustomerId', 'appleOriginalTransactionId',
+        'googlePurchaseToken', 'trialEndsAt', 'trialEndDate',
+        'status', 'accountStatus', 'approvedBy', 'approvedAt',
+        'blockedAt', 'blockedReason', 'isBlocked'
+      ];
+    }
+
+    function r20aSafeSelfCreate() {
+      return request.resource.data.get('role', 'user') == 'user'
+        && request.resource.data.get('plan', 'free') == 'free'
+        && request.resource.data.get('subscriptionStatus', 'trial') == 'trial'
+        && request.resource.data.get('status', 'approved') == 'approved'
+        && request.resource.data.get('accountStatus', 'active') == 'active'
+        && request.resource.data.get('approvedBy', 'system') == 'system'
+        // R22D: legacy UserModel.toMap sends false/null partner defaults.
+        // Accept only nonprivileged defaults; privileged values remain denied.
+        && request.resource.data.get('isPartner', false) == false
+        && request.resource.data.get('partnerTitle', null) == null
+        && request.resource.data.get('referralLink', null) == null
+        && !request.resource.data.keys().hasAny([
+          'isAdmin', 'isMaster', 'isSupervisor', 'isStaff',
+          'permissions', 'permission', 'accessLevel',
+          'isPremium', 'premium', 'premiumAccess', 'premiumUntil',
+          'premiumExpiresAt', 'entitlements', 'accessGranted',
+          'aiCredits', 'credits', 'tokensBalance',
+          'subscriptionTier', 'subscriptionId', 'subscriptionExpiresAt',
+          'subscriptionEndDate', 'subscription',
+          'stripeCustomerId', 'appleOriginalTransactionId',
+          'googlePurchaseToken', 'trialEndsAt', 'trialEndDate',
+          'blockedAt', 'blockedReason', 'isBlocked'
+        ]);
+    }
+
+    function r20aSafeSelfUpdate() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(r20aProtectedProfileFields());
+    }
+
+    // R22A: a standard admin may maintain ordinary profiles, including the
+    // existing user->supervisor workflow, but may never grant master/admin,
+    // mutate privileged aliases or change/delete an existing master profile.
+    // Master actions remain gated by the existing isMaster() helper. These
+    // Firestore rules do not validate or inventory production custom claims.
+    function r22aSafeAdminUpdate() {
+      return isMaster() || (
+        resource.data.get('role', 'user') != 'master'
+        && request.resource.data.get('role', 'user') != 'master'
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'isMaster', 'isAdmin', 'isSupervisor', 'isStaff',
+          'permissions', 'permission', 'accessLevel',
+          'entitlements', 'accessGranted'
+        ])
+        && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])
+          || (
+            resource.data.get('role', 'user') in ['user', 'supervisor']
+            && request.resource.data.get('role', 'user') in ['user', 'supervisor']
+          )
+        )
+      );
+    }
+
+    // A nested /sessions document inherits the UID from its parent. Never
+    // allow every authenticated user to read or alter another user's content.
+    function r22aSessionOwner(sessionId) {
+      return isAuthed()
+        && exists(/databases/$(database)/documents/sessions/$(sessionId))
+        && get(/databases/$(database)/documents/sessions/$(sessionId)).data.get('userId', '') == request.auth.uid;
     }
 
     // ══════════════════════════════════════════════════════════════════════════
@@ -308,7 +383,8 @@ service cloud.firestore {
       allow read, list: if isAdmin();
 
       match /{allSubcollections=**} {
-        allow read, write: if isAuthed();
+        allow read: if r22aSessionOwner(sessionId) || isAdmin();
+        allow create, update, delete: if r22aSessionOwner(sessionId);
       }
     }
 
@@ -351,16 +427,21 @@ service cloud.firestore {
 
       allow list: if isAdmin();
 
-      allow create: if isAuthed()
-        && request.auth.uid == userId;
+      // R20A: roles and privileged fields must be provisioned by trusted
+      // administration; a new client profile is always an ordinary user.
+      allow create: if isOwner(userId) && r20aSafeSelfCreate();
 
       allow update: if isAuthed() && (
-        isAdmin()
+        (isAdmin() && r22aSafeAdminUpdate())
         ||
-        (request.auth.uid == userId && !isWritingPartnerFields())
+        (isOwner(userId) && r20aSafeSelfUpdate())
       );
 
-      allow delete: if isAdmin();
+      // Standard admins cannot delete master accounts. Master keeps the
+      // pre-existing administrative ability to delete any profile.
+      allow delete: if isMaster() || (
+        isAdmin() && resource.data.get('role', 'user') != 'master'
+      );
 
       // Subcoleções do usuário
       // AUDIT 453: isOwner() substitui checagem inline — proteção IDOR explícita
@@ -514,7 +595,9 @@ service cloud.firestore {
     // bypassa estas rules — portanto o 'create' do Admin SDK nunca bate aqui.
     match /admin_notifications/{notificationId} {
       allow read:   if isAdmin() || isSupervisor();
-      allow create: if isAuthed();
+      // Cloud Functions/Admin SDK bypass rules. Client-side arbitrary
+      // notifications from ordinary authenticated users are forbidden.
+      allow create: if isAdmin();
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }

@@ -122,60 +122,37 @@ void main() {
   });
 
   group('Home V2 — aplicação exclusiva aos desenhos', () {
-    test('conecta os nove SVGs visíveis deste micro-build', () {
+    test('conecta os SVGs efetivamente exibidos na Home atual', () {
       const assets = <String>[
-        'ic_farmacos.svg',
-        'ic_paciente.svg',
-        'ic_pediatria.svg',
-        'ic_ferramentas.svg',
-        'ic_historia.svg',
-        'ic_avaliacao.svg',
-        'ic_notas.svg',
-        'ic_timer.svg',
-        'ic_plantao.svg',
+        'ic_guia_clinica.svg', 'ic_simulacao.svg',
+        'ic_farmacos.svg', 'ic_vacina.svg',
+        'ic_paciente.svg', 'ic_pediatria.svg',
+        'ic_ferramentas.svg', 'ic_historia.svg',
+        'ic_laboratorio.svg', 'ic_avaliacao.svg',
+        'resumo.svg', 'ic_timer.svg', 'ic_mi_guardia.svg',
       ];
-
       for (final asset in assets) {
-        expect(
-          modules,
-          contains('assets/icons/home_v2/$asset'),
-          reason: 'SVG oficial não conectado: $asset',
-        );
+        expect(modules, contains('assets/icons/home_v2/$asset'),
+          reason: 'SVG produtivo ausente: $asset');
       }
+      expect(modules, isNot(contains('assets/icons/home_v2/ic_notas.svg')));
     });
-
-    test('usa ColorFilter e BlendMode srcIn', () {
-      expect(
-        modules,
-        contains('ColorFilter.mode('),
-      );
-
-      expect(
-        modules,
-        contains('BlendMode.srcIn'),
-      );
-
-      const semanticCalls = <String>[
-        'HomeV2IconPalette.farmacos(dark)',
-        'HomeV2IconPalette.paciente(dark)',
-        'HomeV2IconPalette.pediatria(dark)',
-        'HomeV2IconPalette.ferramentas(dark)',
-        'HomeV2IconPalette.historia(dark)',
-        'HomeV2IconPalette.avaliacao(dark)',
-        'HomeV2IconPalette.notas(dark)',
-        'HomeV2IconPalette.timer(dark)',
-        'HomeV2IconPalette.plantao(dark)',
-      ];
-
-      for (final call in semanticCalls) {
-        expect(
-          modules,
-          contains(call),
-          reason: 'Cor semântica não aplicada: $call',
-        );
+    test('preserva SVG nativo nos cards e filtro nos widgets tintados', () {
+      // Layout atual usa SVG colorido nativo nos cards principais e cor
+      // verde explicita nos atalhos; widgets com tintagem usam srcIn.
+      expect(modules, contains('const Color _kHomeProductiveIconGreen = Color(0xFF10B981)'));
+      expect(modules, contains('iconColor: _kHomeProductiveIconGreen'));
+      final utility = classBlock(modules, '_UtilityShortcut');
+      final moduleIcon = classBlock(modules, '_ModuleIcon');
+      for (final source in [utility, moduleIcon]) {
+        expect(source, contains('ColorFilter.mode('));
+        expect(source, contains('BlendMode.srcIn'));
       }
+      final card = classBlock(modules, '_HomeV2MobilePairButton');
+      expect(card, contains('SvgPicture.asset('));
+      expect(card, contains('svgAsset!'));
+      expect(card, isNot(contains('colorFilter:')));
     });
-
     test('utilidades abandonam somente os Material Icons antigos', () {
       final utility = classBlock(
         modules,
@@ -251,51 +228,17 @@ void main() {
       );
     });
 
-    test('preserva tamanhos e fundo estrutural dos ícones', () {
-      expect(
-        modules,
-        contains('width: 36'),
-      );
-
-      expect(
-        modules,
-        contains('iconSize: 31'),
-      );
-
-      expect(
-        modules,
-        contains('iconSize: 30'),
-      );
-
-      expect(
-        modules,
-        contains('width: 22'),
-      );
-
-      expect(
-        modules,
-        contains('height: 22'),
-      );
-
-      expect(
-        modules,
-        contains('compact ? 18 : 21'),
-      );
-
-      final moduleIcon = classBlock(
-        modules,
-        '_ModuleIcon',
-      );
-
-      expect(
-        moduleIcon,
-        contains('color: palette.surfaceStrong'),
-      );
-
-      expect(
-        moduleIcon,
-        contains('border: Border.all('),
-      );
+    test('preserva dimensoes dos SVGs e fundo estrutural de modulo', () {
+      for (final token in const [
+        'width: 54', 'height: 54', 'width: 22', 'height: 22',
+        'compact ? 18 : 21',
+      ]) {
+        expect(modules, contains(token), reason: token);
+      }
+      final moduleIcon = classBlock(modules, '_ModuleIcon');
+      expect(moduleIcon, contains('final size = compact ? 34.0 : 40.0'));
+      expect(moduleIcon, contains('color: palette.surfaceStrong'));
+      expect(moduleIcon, contains('border: Border.all('));
     });
   });
 

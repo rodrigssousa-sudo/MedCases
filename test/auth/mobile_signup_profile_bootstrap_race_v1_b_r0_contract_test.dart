@@ -127,15 +127,18 @@ void main() {
       expect(mainSource, contains('stream: AuthService.currentUserStream()'));
     });
 
-    test('Firestore still permits an authenticated owner to create the profile', () {
+    test('Firestore permits only safe owner profile creation', () {
       final userRules = sourceBlock(
         rules,
         'match /users/{userId} {',
         '// Subcoleções do usuário',
       );
-      expect(userRules, contains('allow create: if isAuthed()'));
-      expect(userRules, contains('request.auth.uid == userId'));
+      // R22D: the authenticated owner can create only a nonprivileged profile.
+      // Do not reintroduce the insecure blanket authenticated-create rule.
+      expect(userRules, contains('allow create: if isOwner(userId) && r20aSafeSelfCreate();'));
+      expect(userRules, isNot(contains('allow create: if isAuthed()')));
       expect(userRules, contains('allow get: if isAuthed()'));
+      expect(userRules, contains('request.auth.uid == userId || isAdmin()'));
     });
   });
 }

@@ -23,6 +23,7 @@ import '../platform/calcu_stub.dart'
     if (dart.library.html) '../platform/calcu_web.dart';
 import 'upgrade_screen.dart';
 
+import '../services/entitlement_service.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // URL base — ?lang=pt ou ?lang=es injetado em initState() conforme AppProvider
 // ─────────────────────────────────────────────────────────────────────────────
@@ -650,7 +651,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         forceFirebaseRefresh: forceFirebaseRefresh,
       );
 
-      if (!mounted || generation != _mcc1DocumentGeneration) return;
+
+      // MEDCASES_R25A_ENTITLEMENT_SIGNED_SESSION_ADOPTION_V1
+      EntitlementService.instance.adoptTrustedSession(
+        tier: session.tier,
+        entitlementSource: session.entitlementSource,
+      );
+if (!mounted || generation != _mcc1DocumentGeneration) return;
 
       final tokenJson = jsonEncode(session.token);
       final tierJson = jsonEncode(session.tier);

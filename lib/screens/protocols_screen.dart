@@ -384,6 +384,8 @@ class _SimulationProtocolDetailPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
+              const SizedBox(height: 4),
+              // R21_RELEASE_STANDBY: Simulacoes 2.0 desligadas; manter o detalhe legado.
               ...visibleClinicalContent,
               if (protocolReferences.isNotEmpty || evidenceRecords.isNotEmpty)
                 _SimulationReferencesEvidenceDisclosure(

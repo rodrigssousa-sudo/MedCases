@@ -22,13 +22,14 @@ void main() {
 
     expect(entry, contains('MedCasesAdminApp'));
     expect(entry, contains('DefaultFirebaseOptions.currentPlatform'));
-    expect(screen, contains('if (!admin.isAdmin)'));
+    expect(screen, contains('if (!admin.isAdmin && !admin.isSupervisor)'));
+    expect(screen, contains('Supervisor/Admin/Master'));
     expect(screen, contains('AdminV2Screen(currentAdmin: admin)'));
-    expect(screen, contains('Erros & Saúde do Sistema'));
-    expect(screen, contains("collection('admin_incidents')"));
+    expect(screen, contains('Erros & Saúde'));
+    expect(screen, contains("listCollection(\n      'admin_incidents'"));
     expect(screen, contains("loadDocument('admin_metrics/realtime')"));
     expect(screen, contains("loadDocument('admin_error_metrics/realtime')"));
-    expect(screen, contains('AdminScreen(currentAdmin: widget.currentAdmin)'));
+    expect(screen, contains('ADMIN_V2_LEGACY_BRIDGE_FINAL_REMOVAL_V1'));
   });
 
   test('dashboard is compact and reads real user metrics from Firestore', () {
@@ -220,7 +221,7 @@ void main() {
       contains(r"'admin_incidents/${incident.id}'"),
     );
     expect(screen, contains("'acknowledgedBy': widget.currentAdmin.uid"));
-    expect(screen, contains("'resolvedBy': widget.currentAdmin.uid"));
+    expect(screen, contains("status == 'resolved' ? widget.currentAdmin.uid : null"));
     expect(
       screen,
       contains(
@@ -468,7 +469,7 @@ void main() {
     expect(screen, contains('Tokens 24h'));
     expect(screen, contains('Tokens entrada'));
     expect(screen, contains('Tokens saída'));
-    expect(screen, contains('Custo hoje'));
+    expect(screen, contains('Custo 24h'));
     expect(screen, contains('Custo mês'));
     expect(screen, contains('Erros 24h'));
     expect(screen, contains('Latência média'));
@@ -487,13 +488,14 @@ void main() {
     expect(screen, contains('ADMIN_V2_SETTINGS_MIGRATION_V1'));
   });
 
-  test('legacy admin remains untouched and reachable from admin v2', () {
+  test('legacy admin source is preserved but no longer bridged from admin v2', () {
     final legacy = File('lib/screens/admin_screen.dart').readAsStringSync();
     final screen =
         File('lib/screens/admin_v2/admin_v2_screen.dart').readAsStringSync();
 
     expect(legacy, contains('class AdminScreen'));
-    expect(screen, contains('../admin_screen.dart'));
-    expect(screen, contains('Operações atuais'));
+    expect(screen, contains('ADMIN_V2_LEGACY_BRIDGE_FINAL_REMOVAL_V1'));
+    expect(screen, isNot(contains("import '../admin_screen.dart';")));
+    expect(screen, isNot(contains('AdminScreen(currentAdmin: widget.currentAdmin)')));
   });
 }
