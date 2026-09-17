@@ -7,39 +7,8 @@ void main() {
 
   String owner() => File(ownerPath).readAsStringSync();
 
-  group('Pre-login Onboarding UI V2 B R1', () {
-    test('uses canonical MedCases Pro dark identity', () {
-      final source = owner();
-
-      for (final token in <String>[
-        'MEDCASES_PRE_LOGIN_ONBOARDING_UI_V2_B_R1',
-        'const _kBg          = Color(0xFF1A1D23);',
-        'const _kBgCard      = Color(0xFF252930);',
-        'const _kGreen       = Color(0xFF0D6B57);',
-        'const _kGreenMid    = Color(0xFF0D6B57);',
-        'const _kGreenLight  = Color(0xFF0D6B57);',
-        'const _kNeon        = Color(0xFF0D6B57);',
-        'const _kNeonGlow    = Color(0xFF0D6B57);',
-        'const _kBorder      = Color(0xFF374151);',
-      ]) {
-        expect(source, contains(token), reason: token);
-      }
-
-      for (final stale in <String>[
-        'Color(0xFF06110C)',
-        'Color(0xFF0E1A14)',
-        'Color(0xFF0E7C52)',
-        'Color(0xFF13A06A)',
-        'Color(0xFF1DBF7B)',
-        'Color(0xFF33FF88)',
-        'Color(0xFF2AF07A)',
-        'MedixAI',
-      ]) {
-        expect(source, isNot(contains(stale)), reason: stale);
-      }
-    });
-
-    test('login consent and language routing stay wired', () {
+  group('Pre-login canonical R719/R77 release contract', () {
+    test('keeps login consent and language routing wired', () {
       final source = owner();
 
       for (final token in <String>[
@@ -50,101 +19,48 @@ void main() {
       ]) {
         expect(source, contains(token), reason: token);
       }
-
-      expect(
-        source,
-        matches(
-          RegExp(
-            r'void\s+_onConsentAccepted\(\)\s*=>\s*setState\(\(\)\s*=>\s*_hasConsented\s*=\s*true\);',
-          ),
-        ),
-      );
-      expect(
-        source,
-        matches(
-          RegExp(
-            r'void\s+_goLogin\(\)\s*=>\s*setState\(\(\)\s*=>\s*_showLogin\s*=\s*true\);',
-          ),
-        ),
-      );
-      expect(
-        source,
-        matches(
-          RegExp(
-            r'void\s+_backToPreview\(\)\s*=>\s*setState\(\(\)\s*=>\s*_showLogin\s*=\s*false\);',
-          ),
-        ),
-      );
     });
 
-    test('keeps the onboarding content hierarchy', () {
+    test('contains current Premium plan architecture', () {
       final source = owner();
 
       for (final token in <String>[
-        '_IaBlockDark(onTap: _goLogin, isEs: _isEs)',
-        '_MetricsRow(isEs: _isEs)',
-        '..._protocols.map((p) => _ProtoCard(',
-        '_CritCard(data: c, onTap: _goLogin, isEs: _isEs)',
-        "'Choque Séptico'",
-        "'ACV Isquémico'",
-        "'Dosis de noradrenalina en choque séptico'",
+        '_R719PremiumPrice',
+        '_R719PlanFeature',
+        '30 días gratis',
+        '30 dias grátis',
+        'US\\\$ 14,99',
       ]) {
         expect(source, contains(token), reason: token);
       }
     });
 
-    test('removes stale manual-admin approval copy', () {
-      final source = owner();
-
-      expect(source, isNot(contains('Aprobado por administrador')));
-      expect(source, isNot(contains('Aprovado pelo administrador')));
-      expect(
-        source,
-        contains('Acceso gratuito · Para profesionales de salud'),
-      );
-      expect(
-        source,
-        contains('Acesso gratuito · Para profissionais de saúde'),
-      );
-    });
-
-    test('retains restrained premium depth instead of green aura', () {
-      final source = owner();
-
-      expect(source, contains('Color(0x12000000)'));
-      expect(source, contains('Color(0x0A000000)'));
-      expect(source, isNot(contains('blurRadius: 55')));
-      expect(source, isNot(contains('spreadRadius: 6')));
-    });
-
-    test('header and CTA preserve productive actions', () {
-      final source = owner();
-
-      expect(
-        source,
-        contains(
-          '_DarkHeader(isEs: _isEs, onToggleLang: _toggleLang, onLogin: _goLogin)',
-        ),
-      );
-      expect(source, contains('_CtaDark('));
-      expect(source, contains('onPressed: onTap'));
-      expect(source, contains("isEs ? 'PT' : 'ES'"));
-    });
-
-    test('keeps PT ES onboarding copy', () {
+    test('contains current educational disclaimer', () {
       final source = owner();
 
       for (final token in <String>[
-        "'Crear mi cuenta gratuita'",
-        "'Criar minha conta gratuita'",
-        "'Acceso de muestra'",
-        "'Acesso demonstrativo'",
-        "'Actualizados con evidencia reciente'",
-        "'Atualizados com evidência recente'",
-        "'Casos de máxima urgencia clínica'",
-        "'Casos de máxima urgência clínica'",
+        '_R77Disclaimer',
+        'HERRAMIENTA EDUCATIVA DE APOYO CLÍNICO',
+        'FERRAMENTA EDUCATIVA DE APOIO CLÍNICO',
+        'La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.',
+        'A decisão e a verificação das doses são responsabilidade exclusiva do médico assistente.',
       ]) {
         expect(source, contains(token), reason: token);
+      }
+    });
+
+    test('does not regress to retired sample-access copy', () {
+      final source = owner();
+
+      for (final stale in <String>[
+        'Acceso de muestra',
+        'Acesso demonstrativo',
+        'Crear mi cuenta gratuita',
+        'Criar minha conta gratuita',
+        'Aprobado por administrador',
+        'Aprovado pelo administrador',
+      ]) {
+        expect(source, isNot(contains(stale)), reason: stale);
       }
     });
   });
