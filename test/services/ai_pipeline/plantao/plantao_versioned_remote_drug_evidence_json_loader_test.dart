@@ -30,20 +30,22 @@ Map<String, Object?> currentJson({
 }
 
 void main() {
+  Future<String> tokenProvider() async => 'mcc1.test.signature';
+
   test('resolves current pointer and immutable bundle paths', () async {
     final requested = <String>[];
     final client = MockClient((request) async {
       requested.add(request.url.path);
       return switch (request.url.path) {
-        '/data/ai-drug-data/current.json' => http.Response(
+        '/api/ai-drug-data/current.json' => http.Response(
             jsonEncode(currentJson()),
             200,
           ),
-        '/data/ai-drug-data/bundles/$bundleId/manifest.json' =>
+        '/api/ai-drug-data/bundles/$bundleId/manifest.json' =>
           http.Response('{"source":{},"projection":{}}', 200),
-        '/data/ai-drug-data/bundles/$bundleId/index.json' =>
+        '/api/ai-drug-data/bundles/$bundleId/index.json' =>
           http.Response('[]', 200),
-        '/data/ai-drug-data/bundles/$bundleId/drugs/furosemida.json' =>
+        '/api/ai-drug-data/bundles/$bundleId/drugs/furosemida.json' =>
           http.Response('{"drugId":"furosemida"}', 200),
         _ => http.Response('not found', 404),
       };
@@ -52,8 +54,9 @@ void main() {
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
       client: client,
       baseUri: Uri.parse(
-        'https://medcasescalcu.com/data/ai-drug-data/',
+        'https://medcasescalcu.com/api/ai-drug-data/',
       ),
+      authorizationTokenProvider: tokenProvider,
     );
 
     await loader.loadJsonText('manifest.json');
@@ -63,10 +66,10 @@ void main() {
     expect(
       requested,
       <String>[
-        '/data/ai-drug-data/current.json',
-        '/data/ai-drug-data/bundles/$bundleId/manifest.json',
-        '/data/ai-drug-data/bundles/$bundleId/index.json',
-        '/data/ai-drug-data/bundles/$bundleId/drugs/furosemida.json',
+        '/api/ai-drug-data/current.json',
+        '/api/ai-drug-data/bundles/$bundleId/manifest.json',
+        '/api/ai-drug-data/bundles/$bundleId/index.json',
+        '/api/ai-drug-data/bundles/$bundleId/drugs/furosemida.json',
       ],
     );
   });
@@ -82,6 +85,7 @@ void main() {
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
       client: client,
+      authorizationTokenProvider: tokenProvider,
     );
 
     await expectLater(
@@ -99,6 +103,7 @@ void main() {
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
       client: client,
+      authorizationTokenProvider: tokenProvider,
     );
 
     await expectLater(
@@ -110,11 +115,11 @@ void main() {
   test('integrates with generated read-only adapter', () async {
     final client = MockClient((request) async {
       return switch (request.url.path) {
-        '/data/ai-drug-data/current.json' => http.Response(
+        '/api/ai-drug-data/current.json' => http.Response(
             jsonEncode(currentJson()),
             200,
           ),
-        '/data/ai-drug-data/bundles/$bundleId/manifest.json' => http.Response(
+        '/api/ai-drug-data/bundles/$bundleId/manifest.json' => http.Response(
             jsonEncode(<String, Object?>{
               'source': <String, Object?>{
                 'bundleVersion': bundleId,
@@ -133,7 +138,7 @@ void main() {
             }),
             200,
           ),
-        '/data/ai-drug-data/bundles/$bundleId/index.json' => http.Response(
+        '/api/ai-drug-data/bundles/$bundleId/index.json' => http.Response(
             jsonEncode(<Object?>[
               <String, Object?>{
                 'drugId': 'furosemida',
@@ -152,7 +157,7 @@ void main() {
             ]),
             200,
           ),
-        '/data/ai-drug-data/bundles/$bundleId/drugs/furosemida.json' =>
+        '/api/ai-drug-data/bundles/$bundleId/drugs/furosemida.json' =>
           http.Response.bytes(
             utf8.encode(
               jsonEncode(<String, Object?>{
@@ -191,6 +196,7 @@ void main() {
 
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
       client: client,
+      authorizationTokenProvider: tokenProvider,
     );
     final adapter = PlantaoGeneratedDrugEvidenceReadOnlyAdapter(
       loadJsonText: loader.loadJsonText,

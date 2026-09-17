@@ -32,6 +32,7 @@ void main() {
         b = 'clinical-data-v1-test-ai-2222222222222222';
     final observer = PlantaoRemoteDrugEvidenceRuntimeObserver();
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       observer: observer,
       currentPointerTtl: const Duration(minutes: 5),
       now: () => now,
@@ -61,6 +62,7 @@ void main() {
     const id = 'clinical-data-v1-test-ai-3333333333333333';
     final observer = PlantaoRemoteDrugEvidenceRuntimeObserver();
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       observer: observer,
       currentPointerTtl: const Duration(minutes: 1),
       now: () => now,
@@ -91,6 +93,7 @@ void main() {
     const id = 'clinical-data-v1-test-ai-4444444444444444';
     final observer = PlantaoRemoteDrugEvidenceRuntimeObserver();
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       observer: observer,
       currentPointerTtl: const Duration(minutes: 1),
       now: () => now,
@@ -114,13 +117,14 @@ void main() {
     var fetches = 0;
     const id = 'clinical-data-v1-test-ai-5555555555555555';
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+        authorizationTokenProvider: () async => 'mcc1.test.signature',
         client: MockClient((r) async {
-      if (r.url.path.endsWith('/current.json')) {
-        fetches++;
-        return jr(currentJson(id));
-      }
-      return jr({});
-    }));
+          if (r.url.path.endsWith('/current.json')) {
+            fetches++;
+            return jr(currentJson(id));
+          }
+          return jr({});
+        }));
     await loader.loadJsonText('manifest.json');
     loader.invalidateCurrentPointerForLifecycle();
     await loader.loadJsonText('index.json');

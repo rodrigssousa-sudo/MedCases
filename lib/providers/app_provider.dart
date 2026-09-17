@@ -70,6 +70,7 @@ import '../services/ai_stream/ai_event.dart'; // BUILD 462E-A: Anti-Frankenstein
 import '../services/ai_stream/gpt_sse_client.dart'; // BUILD 462E-A: per-request SSE client ref
 import '../services/auth_service.dart'; // BUILD 462E-A: Web token refresh (getAdminToken)
 import '../services/firebase_runtime_guard.dart'; // BUILD 463-A.1: SafeApps guard for auth boot-lock
+import '../services/calculator_mcc1_bridge_service.dart';
 import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: canonicalDecision routing
 import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
 import '../services/ai/timeout_content_safety_guard.dart'; // MICRO-BUILD 462E-A.5.3.7.2.1: TerminalCause, TimeoutSafetyVerdict, TimeoutContentSafetyGuard
@@ -5317,7 +5318,23 @@ class AppProvider extends ChangeNotifier {
       _plantaoDrugEvidenceRemoteLoader =
       PlantaoVersionedRemoteDrugEvidenceJsonLoader(
     observer: _plantaoDrugEvidenceRuntimeObserver,
+    authorizationTokenProvider: _plantaoDrugEvidenceAuthorizationToken,
   );
+  CalculatorMcc1Session? _plantaoDrugEvidenceSession;
+
+  Future<String> _plantaoDrugEvidenceAuthorizationToken() async {
+    final cached = _plantaoDrugEvidenceSession;
+    if (cached != null &&
+        cached.expiresAtUtc.isAfter(
+          DateTime.now().toUtc().add(const Duration(seconds: 30)),
+        )) {
+      return cached.token;
+    }
+    final issued = await const CalculatorMcc1BridgeService().issueSession();
+    _plantaoDrugEvidenceSession = issued;
+    return issued.token;
+  }
+
   PlantaoRemoteDrugEvidenceRuntimeSnapshot
       get plantaoDrugEvidenceRuntimeShadowSnapshot =>
           _plantaoDrugEvidenceRuntimeObserver.snapshot;
@@ -7381,8 +7398,8 @@ class AppProvider extends ChangeNotifier {
             validatedOutput
         ? productiveClinicalOutput
         : (regimenOutputGuardModified ||
-              questionsRepairedToValidContract ||
-              evidenceComplianceModified)
+                questionsRepairedToValidContract ||
+                evidenceComplianceModified)
             ? PlantaoLocalClinicalOutputAdapter.fromValidatedText(safeOutput)
             : null;
 

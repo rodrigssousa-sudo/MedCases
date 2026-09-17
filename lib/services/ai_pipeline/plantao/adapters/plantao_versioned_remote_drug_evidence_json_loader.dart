@@ -15,11 +15,12 @@ class PlantaoVersionedRemoteDrugEvidenceJsonLoader {
     this.currentPointerTtl = const Duration(minutes: 5),
     DateTime Function()? now,
     this.observer,
+    this.authorizationTokenProvider,
   })  : client = client ?? http.Client(),
         now = now ?? DateTime.now,
         baseUri = baseUri ??
             Uri.parse(
-              'https://medcasescalcu.com/data/ai-drug-data/',
+              'https://medcasescalcu.com/api/ai-drug-data/',
             ),
         _ownsClient = client == null;
 
@@ -39,6 +40,7 @@ class PlantaoVersionedRemoteDrugEvidenceJsonLoader {
   final Duration currentPointerTtl;
   final DateTime Function() now;
   final PlantaoRemoteDrugEvidenceRuntimeObserver? observer;
+  final Future<String> Function()? authorizationTokenProvider;
   final bool _ownsClient;
 
   _PlantaoRemoteDrugEvidenceCurrent? _cachedCurrent;
@@ -211,10 +213,15 @@ class PlantaoVersionedRemoteDrugEvidenceJsonLoader {
     final stopwatch = Stopwatch()..start();
 
     try {
+      final token = (await authorizationTokenProvider?.call())?.trim() ?? '';
+      if (token.isEmpty) {
+        throw StateError('Remote drug evidence authorization unavailable');
+      }
       final response = await client.get(
         uri,
         headers: <String, String>{
           'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
           if (noCache) 'Cache-Control': 'no-cache',
         },
       ).timeout(requestTimeout);

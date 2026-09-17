@@ -48,19 +48,20 @@ void main() {
     final client = MockClient((request) async {
       requested.add(request.url.path);
       return switch (request.url.path) {
-        '/data/ai-drug-data/current.json' => jsonResponse(currentJson()),
-        '/data/ai-drug-data/bundles/$bundleId/manifest.json' =>
+        '/api/ai-drug-data/current.json' => jsonResponse(currentJson()),
+        '/api/ai-drug-data/bundles/$bundleId/manifest.json' =>
           jsonResponse(<String, Object?>{'manifest': true}),
-        '/data/ai-drug-data/bundles/$bundleId/index.json' =>
+        '/api/ai-drug-data/bundles/$bundleId/index.json' =>
           jsonResponse(<Object?>[]),
         _ => jsonResponse(<String, Object?>{}, statusCode: 404),
       };
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       client: client,
       observer: observer,
       baseUri: Uri.parse(
-        'https://medcasescalcu.com/data/ai-drug-data/',
+        'https://medcasescalcu.com/api/ai-drug-data/',
       ),
     );
 
@@ -80,7 +81,7 @@ void main() {
     expect(snapshot.httpSuccessRate, 1);
     expect(
       requested.where(
-        (path) => path == '/data/ai-drug-data/current.json',
+        (path) => path == '/api/ai-drug-data/current.json',
       ),
       hasLength(1),
     );
@@ -89,12 +90,13 @@ void main() {
   test('records 404 without retaining clinical payload', () async {
     final observer = PlantaoRemoteDrugEvidenceRuntimeObserver();
     final client = MockClient((request) async {
-      if (request.url.path == '/data/ai-drug-data/current.json') {
+      if (request.url.path == '/api/ai-drug-data/current.json') {
         return jsonResponse(currentJson());
       }
       return jsonResponse(<String, Object?>{}, statusCode: 404);
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       client: client,
       observer: observer,
     );
@@ -123,6 +125,7 @@ void main() {
       return jsonResponse(currentJson());
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       client: client,
       observer: observer,
       requestTimeout: const Duration(milliseconds: 1),
@@ -153,6 +156,7 @@ void main() {
       return jsonResponse(currentJson(typedRegimenCount: 1));
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       client: client,
       observer: observer,
     );
@@ -176,15 +180,16 @@ void main() {
     final observer = PlantaoRemoteDrugEvidenceRuntimeObserver();
     final client = MockClient((request) async {
       return switch (request.url.path) {
-        '/data/ai-drug-data/current.json' => jsonResponse(currentJson()),
-        '/data/ai-drug-data/bundles/$bundleId/manifest.json' =>
+        '/api/ai-drug-data/current.json' => jsonResponse(currentJson()),
+        '/api/ai-drug-data/bundles/$bundleId/manifest.json' =>
           jsonResponse(<String, Object?>{}),
-        '/data/ai-drug-data/bundles/$bundleId/index.json' =>
+        '/api/ai-drug-data/bundles/$bundleId/index.json' =>
           jsonResponse(<Object?>[]),
         _ => jsonResponse(<String, Object?>{}, statusCode: 404),
       };
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       client: client,
       observer: observer,
     );
@@ -203,6 +208,7 @@ void main() {
       return jsonResponse(currentJson());
     });
     final loader = PlantaoVersionedRemoteDrugEvidenceJsonLoader(
+      authorizationTokenProvider: () async => 'mcc1.test.signature',
       client: client,
       observer: observer,
     );
