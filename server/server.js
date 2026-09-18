@@ -73,6 +73,7 @@ const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const { registerAudioTranscriptionRoutes } = require('./audio_transcription_routes');
 const { registerCalculatorSessionRoutes } = require('./calculator_session_routes');
+const { registerRevenueCatWebhookRoutes } = require('./revenuecat_webhook_routes');
 const {
   initializeApp,
   cert,
@@ -1264,6 +1265,12 @@ registerAudioTranscriptionRoutes({
 });
 
 app.use(express.json({ limit: '512kb' }));
+
+// RevenueCat -> Firebase authoritative billing state.
+registerRevenueCatWebhookRoutes({
+  app,
+  firebaseAdminApp,
+});
 
 // R3.2B1 — authenticated short-lived session for external calculator.
 registerCalculatorSessionRoutes({

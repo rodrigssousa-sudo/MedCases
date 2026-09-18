@@ -7,6 +7,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'revenuecat_purchase_sheet.dart';
+
 const _kDark = Color(0xFF0F1116);
 const _kGreen = Color(0xFF075f45);
 const _kGold = Color(0xFFC5A365);
@@ -42,25 +44,23 @@ class _S {
   String get freeCta => es ? 'Empezar gratis' : 'Começar grátis';
 
   String get premiumLabel => 'MEDCASES PREMIUM';
-  String get premiumTrial => es ? '30 días gratis' : '30 dias grátis';
+  String get premiumTrial => es ? '1 mes gratis' : '1 mês grátis';
   String get premiumRegularPrice => 'US\$ 19,99';
   String get premiumPrice => 'US\$ 14,99';
   String get premiumPeriod => es ? '/mes' : '/mês';
   String get premiumLaunch =>
       es ? 'Precio especial de lanzamiento' : 'Preço especial de lançamento';
   String get premiumLaunchDuration =>
-      es ? 'Durante los primeros 3 meses' : 'Durante os primeiros 3 meses';
+      es ? 'Después US\$ 14,99/mes' : 'Depois US\$ 14,99/mês';
   String get premiumAfter =>
-      es ? 'Después US\$ 19,99/mes' : 'Depois US\$ 19,99/mês';
+      es ? 'Plan anual disponible' : 'Plano anual disponível';
   String get premiumCancel =>
       es ? 'Cancela cuando quieras.' : 'Cancele quando quiser.';
   String get premiumIncludesTitle =>
       es ? 'INCLUYE TODO LO DE GRATIS, MÁS:' : 'INCLUI TUDO DO GRÁTIS, MAIS:';
 
   // ── CTA ───────────────────────────────────────────────────────────────────
-  String ctaLabel(int plan) => es
-      ? 'Probar Premium gratis por 30 días'
-      : 'Testar Premium grátis por 30 dias';
+  String ctaLabel(int plan) => es ? 'Ver planes Premium' : 'Ver planos Premium';
 
   // ── Card ──────────────────────────────────────────────────────────────────
   String get selected => es ? 'Seleccionado' : 'Selecionado';
@@ -176,20 +176,26 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   void _toggleLang() => setState(() => _isEs = !_isEs);
 
   Future<void> _subscribe() async {
-    // R1 UI-only: o paywall está visível para homologação, mas nenhuma compra
-    // é iniciada até Apple App Store + Google Play serem conectados ao billing.
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          _isEs
-              ? 'Pago aún no conectado en esta build de homologación.'
-              : 'Pagamento ainda não conectado nesta build de homologação.',
-        ),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 3),
-      ),
+    final activated = await showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => RevenueCatPurchaseSheet(isEs: _isEs),
     );
+    if (!mounted || activated != true) return;
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(
+            _isEs
+                ? 'Premium activado correctamente.'
+                : 'Premium ativado com sucesso.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
   }
 
   @override

@@ -33,6 +33,26 @@ assert.equal(
   resolveMedCasesTier({ plan: 'premium' }).tier,
   'premium',
 );
+assert.equal(
+  resolveMedCasesTier({
+    plan: 'free',
+    subscriptionStatus: 'trial',
+    billingEntitlementActive: true,
+    billingEntitlementId: 'medcases_pro_premium',
+    billingEntitlementExpiresAtMs: (NOW * 1000) + 60_000,
+  }, NOW * 1000).tier,
+  'premium',
+);
+assert.equal(
+  resolveMedCasesTier({
+    plan: 'free',
+    subscriptionStatus: 'trial',
+    billingEntitlementActive: true,
+    billingEntitlementId: 'medcases_pro_premium',
+    billingEntitlementExpiresAtMs: (NOW * 1000) - 1,
+  }, NOW * 1000).tier,
+  'free',
+);
 
 const freeIssued = issueCalculatorSession({
   uid: 'uid-free-1',
@@ -138,6 +158,8 @@ expectThrow(
 
 console.log('APP_SIGNED_SESSION_CONTRACT_TEST=PASS');
 console.log('TRIAL_DOES_NOT_GRANT_PREMIUM=PASS');
+console.log('SERVER_BACKED_REVENUECAT_TRIAL_GRANTS_PREMIUM=PASS');
+console.log('EXPIRED_REVENUECAT_ENTITLEMENT_FAILS_CLOSED=PASS');
 console.log('FREE_CAPABILITIES_CONTRACT=PASS');
 console.log('PREMIUM_CAPABILITIES_CONTRACT=PASS');
 console.log('TOKEN_TAMPER_REJECTION=PASS');

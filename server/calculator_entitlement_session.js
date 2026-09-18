@@ -55,7 +55,7 @@ function safeEqualBase64Url(left, right) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
-function resolveMedCasesTier(userDoc = {}) {
+function resolveMedCasesTier(userDoc = {}, nowMs = Date.now()) {
   const plan = normalized(userDoc.plan);
   const subscriptionStatus = normalized(userDoc.subscriptionStatus);
 
@@ -69,10 +69,21 @@ function resolveMedCasesTier(userDoc = {}) {
     subscriptionStatus === 'premium' ||
     subscriptionStatus === 'paid';
 
-  if (premiumByPlan || premiumBySubscription) {
+  const billingExpiresAtMs = Number(userDoc.billingEntitlementExpiresAtMs ?? 0);
+  const premiumByRevenueCat =
+    userDoc.billingEntitlementActive === true &&
+    clean(userDoc.billingEntitlementId) === 'medcases_pro_premium' &&
+    Number.isFinite(billingExpiresAtMs) &&
+    billingExpiresAtMs > Number(nowMs);
+
+  if (premiumByRevenueCat || premiumByPlan || premiumBySubscription) {
     return Object.freeze({
       tier: 'premium',
-      source: premiumByPlan ? 'server_plan' : 'server_subscription_status',
+      source: premiumByRevenueCat
+        ? 'server_revenuecat_entitlement'
+        : premiumByPlan
+          ? 'server_plan'
+          : 'server_subscription_status',
     });
   }
 
@@ -117,7 +128,7 @@ function issueCalculatorSession({
   const aud = clean(audience);
   if (!aud) throw new Error('CALCULATOR_SESSION_AUDIENCE_REQUIRED');
 
-  const entitlement = resolveMedCasesTier(userDoc);
+  const entitlement = resolveMedCasesTier(userDoc, now * 1000);
 
   const claims = Object.freeze({
     v: 1,

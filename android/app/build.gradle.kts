@@ -85,7 +85,7 @@ android {
     defaultConfig {
         applicationId = "com.medcasespro.med"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
