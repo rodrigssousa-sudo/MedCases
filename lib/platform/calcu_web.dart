@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:async';
 // calcu_web.dart — Implementação Web da calculadora embutida.
 // Compilado APENAS no target Web (dart2js / wasm).
 // iOS/Android usam calcu_stub.dart via conditional import em calculadora_screen.dart.
@@ -13,6 +15,7 @@ import 'dart:ui_web' as ui_web;
 // ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 import 'package:flutter/material.dart';
+import '../screens/upgrade_screen.dart';
 
 /// Sufixo único por URL — evita re-registro do mesmo viewType se o widget
 /// for reconstruído com a mesma URL (platformViewRegistry lança se re-registrar).
@@ -62,12 +65,44 @@ class _CalcuWebFrame extends StatefulWidget {
 }
 
 class _CalcuWebFrameState extends State<_CalcuWebFrame> {
+  // MEDCASES_PREMIUM_WEB_PARENT_BRIDGE_V1_B_R4
+  static const Set<String> _premiumAllowedOrigins = <String>{
+    'https://medcasescalcu.com',
+    'https://www.medcasescalcu.com',
+  };
+
+  StreamSubscription<html.MessageEvent>? _premiumBridgeSubscription;
+
+  void _handlePremiumBridgeMessage(html.MessageEvent event) {
+    if (!_premiumAllowedOrigins.contains(event.origin)) return;
+
+    final raw = event.data;
+    if (raw is! String || raw.isEmpty) return;
+
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map) return;
+      if (decoded['type']?.toString() != 'medcases:premium-upgrade') return;
+
+      final requested =
+          decoded['lang']?.toString().trim().toLowerCase() ?? 'es';
+      final lang = requested == 'pt' ? 'pt' : 'es';
+
+      if (!mounted) return;
+      showUpgradeScreen(context, lang: lang);
+    } catch (_) {
+      // Unrelated or malformed cross-window messages are ignored.
+    }
+  }
+
   bool _loading = true;
   bool _hasError = false;
 
   @override
   void initState() {
     super.initState();
+    _premiumBridgeSubscription =
+        html.window.onMessage.listen(_handlePremiumBridgeMessage);
     // Simula tempo de carregamento — o iframe não expõe onLoad via HtmlElementView.
     // Após 4s consideramos carregado (comportamento conservador).
     Future.delayed(const Duration(milliseconds: 3500), () {
@@ -76,14 +111,18 @@ class _CalcuWebFrameState extends State<_CalcuWebFrame> {
   }
 
   @override
+  void dispose() {
+    _premiumBridgeSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final Color loaderBg = widget.dark
-        ? const Color(0xFF0F091E)
-        : const Color(0xFFF8F9FA);
+    final Color loaderBg =
+        widget.dark ? const Color(0xFF0F091E) : const Color(0xFFF8F9FA);
     final Color loaderFg = const Color(0xFFA78BFA);
-    final Color errorText = widget.dark
-        ? const Color(0xFF9CA3AF)
-        : const Color(0xFF6B7280);
+    final Color errorText =
+        widget.dark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
 
     return Stack(
       children: [
@@ -134,7 +173,8 @@ class _CalcuWebFrameState extends State<_CalcuWebFrame> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.signal_wifi_off_rounded, size: 40, color: loaderFg),
+                    Icon(Icons.signal_wifi_off_rounded,
+                        size: 40, color: loaderFg),
                     const SizedBox(height: 12),
                     Text(
                       'Não foi possível carregar a calculadora.\nVerifique sua conexão e tente novamente.',
@@ -152,7 +192,8 @@ class _CalcuWebFrameState extends State<_CalcuWebFrame> {
                       }),
                       child: Text(
                         'Tentar novamente',
-                        style: TextStyle(color: loaderFg, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            color: loaderFg, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],

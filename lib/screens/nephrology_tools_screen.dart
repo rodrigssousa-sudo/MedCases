@@ -35,6 +35,7 @@ import 'internacion/services/internacion_firestore_service.dart';
 
 import '../design_system/foundation/med_typography.dart';
 import '../design_system/tokens/med_spacing.dart';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // MEDCASES_FERRAMENTAS_4_TABS_SUPER_PREMIUM_STRUCTURED_FOOTER_V1_B_R0_R5_PROOF_GATE_FIX_TRANSACTIONAL
 // Paleta canônica MedCases Pro (dark-first)
@@ -222,14 +223,8 @@ class _ToolsKeyboardFlowController {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => ensureVisible());
-    Future<void>.delayed(
-      const Duration(milliseconds: 180),
-      ensureVisible,
-    );
-    Future<void>.delayed(
-      const Duration(milliseconds: 360),
-      ensureVisible,
-    );
+    Future<void>.delayed(const Duration(milliseconds: 180), ensureVisible);
+    Future<void>.delayed(const Duration(milliseconds: 360), ensureVisible);
   }
 
   void _ensureToolbar() {
@@ -257,18 +252,14 @@ class _ToolsKeyboardFlowController {
         final last = isLast(active);
 
         // MEDCASES_FERRAMENTAS_KEYBOARD_FLOATING_NEXT_ACCESSORY_V1_B_R0
-        final isDark =
-            Theme.of(currentHost).brightness == Brightness.dark;
-        final isEs =
-            Localizations.localeOf(currentHost).languageCode == 'es';
-        final actionLabel =
-            last ? 'OK' : (isEs ? 'SIGUIENTE' : 'PRÓXIMO');
-        final buttonBg =
-            isDark ? Colors.white : const Color(0xFF1A1D23);
-        final buttonFg =
-            isDark ? const Color(0xFF111318) : Colors.white;
-        final buttonBorder =
-            isDark ? const Color(0xFFD8DEE7) : const Color(0xFF374151);
+        final isDark = Theme.of(currentHost).brightness == Brightness.dark;
+        final isEs = Localizations.localeOf(currentHost).languageCode == 'es';
+        final actionLabel = last ? 'OK' : (isEs ? 'SIGUIENTE' : 'PRÓXIMO');
+        final buttonBg = isDark ? Colors.white : const Color(0xFF1A1D23);
+        final buttonFg = isDark ? const Color(0xFF111318) : Colors.white;
+        final buttonBorder = isDark
+            ? const Color(0xFFD8DEE7)
+            : const Color(0xFF374151);
 
         return Positioned(
           right: 12,
@@ -287,10 +278,7 @@ class _ToolsKeyboardFlowController {
                   decoration: BoxDecoration(
                     color: buttonBg,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: buttonBorder,
-                      width: 0.7,
-                    ),
+                    border: Border.all(color: buttonBorder, width: 0.7),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(
@@ -318,7 +306,9 @@ class _ToolsKeyboardFlowController {
                       ),
                       const SizedBox(width: 6),
                       Icon(
-                        last ? Icons.check_rounded : Icons.arrow_forward_rounded,
+                        last
+                            ? Icons.check_rounded
+                            : Icons.arrow_forward_rounded,
                         size: 15,
                         color: buttonFg,
                       ),
@@ -370,14 +360,11 @@ class _ToolsKeyboardFlowController {
 class _ToolsKeyboardFlowScope extends InheritedWidget {
   final _ToolsKeyboardFlowController flow;
 
-  const _ToolsKeyboardFlowScope({
-    required this.flow,
-    required super.child,
-  });
+  const _ToolsKeyboardFlowScope({required this.flow, required super.child});
 
   static _ToolsKeyboardFlowController of(BuildContext context) {
-    final scope =
-        context.dependOnInheritedWidgetOfExactType<_ToolsKeyboardFlowScope>();
+    final scope = context
+        .dependOnInheritedWidgetOfExactType<_ToolsKeyboardFlowScope>();
     assert(scope != null, 'Fluxo de teclado não encontrado.');
     return scope!.flow;
   }
@@ -423,7 +410,9 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   // ── BUILD 426: Patient autofill ──────────────────────────────────────────────
   /// Abre o modal de seleção de paciente e faz autofill dos controllers demográficos.
   Future<void> _showPatientSelectionSheet(
-      BuildContext context, AppProvider p) async {
+    BuildContext context,
+    AppProvider p,
+  ) async {
     await showToolsPatientSelectionSheet(
       context: context,
       isEs: widget.isEs,
@@ -445,9 +434,9 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       final sexo = paciente.sexo.trim().toUpperCase();
       final bool? female = sexo.isEmpty ? null : sexo == 'F';
       context.read<ToolsStateProvider>().applyFromPatient(
-            age: age,
-            female: female,
-          );
+        age: age,
+        female: female,
+      );
       if (mounted) setState(() {});
     } catch (_) {
       // Falha silenciosa — nunca quebra a UI clínica.
@@ -491,8 +480,7 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     tp.applyFromCache(cache);
     // Creatinina basal é nefrológica; creatinina sérica atual é tp.crCtrl.
     // Fallback em 'creatinina' migra caches anteriores sem perda de dados.
-    final basal =
-        cache['creatinina_basal'] ?? cache['creatinina'] ?? '';
+    final basal = cache['creatinina_basal'] ?? cache['creatinina'] ?? '';
     if (basal.isNotEmpty && _creatBaseCtrl.text != basal) {
       _creatBaseCtrl.text = basal;
     }
@@ -519,8 +507,9 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       final p = context.read<AppProvider>();
       final tp = context.read<ToolsStateProvider>();
       tp.refreshPendingFlag();
-      p.saveToolsCache(tp.exportToCache()
-        ..['creatinina_basal'] = _creatBaseCtrl.text); // exclusivo nefro
+      p.saveToolsCache(
+        tp.exportToCache()..['creatinina_basal'] = _creatBaseCtrl.text,
+      ); // exclusivo nefro
     } catch (_) {}
     _animCtrl.dispose();
     // Apenas controllers PRIVADOS de nefrologia são dispostos aqui:
@@ -605,9 +594,11 @@ class _NephrologyBodyState extends State<_NephrologyBody>
         weight == null ||
         creatBase == null ||
         creatCurr == null) {
-      setState(() => _errorMsg = widget.isEs
-          ? 'Verifica los valores ingresados.'
-          : 'Verifique os valores inseridos.');
+      setState(
+        () => _errorMsg = widget.isEs
+            ? 'Verifica los valores ingresados.'
+            : 'Verifique os valores inseridos.',
+      );
       return;
     }
 
@@ -649,8 +640,7 @@ class _NephrologyBodyState extends State<_NephrologyBody>
     final deeplinkPayload = queryParams.startsWith('?')
         ? queryParams.substring(1)
         : queryParams;
-    final conductaUrl =
-        '$baseUrl?modulo=nefrologia&$deeplinkPayload';
+    final conductaUrl = '$baseUrl?modulo=nefrologia&$deeplinkPayload';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -685,26 +675,26 @@ class _NephrologyBodyState extends State<_NephrologyBody>
   Widget build(BuildContext context) {
     final isEs = widget.isEs;
     final dark = widget.dark;
-    final bg = dark ? _kBg : Colors.white; // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_LIGHT_WHITE
+    final bg = dark
+        ? _kBg
+        : Colors
+              .white; // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_LIGHT_WHITE
     final surf = dark ? _kSurface : Colors.white;
     final txt = dark ? Colors.white : const Color(0xFF0F1116);
     final sub = dark ? _kTextSub : const Color(0xFF64748B);
     final border = dark ? _kBorder : const Color(0xFFCBD5E1);
 
     final toolsState = context.watch<ToolsStateProvider>();
-    _keyboardFlow.configure(
-      context,
-      <TextEditingController>[
-        toolsState.ageCtrl,
-        toolsState.weightCtrl,
-        toolsState.heightCtrl,
-        _creatBaseCtrl,
-        toolsState.crCtrl,
-        _naUrineCtrl,
-        toolsState.naCtrl,
-        _creatUrineCtrl,
-      ],
-    );
+    _keyboardFlow.configure(context, <TextEditingController>[
+      toolsState.ageCtrl,
+      toolsState.weightCtrl,
+      toolsState.heightCtrl,
+      _creatBaseCtrl,
+      toolsState.crCtrl,
+      _naUrineCtrl,
+      toolsState.naCtrl,
+      _creatUrineCtrl,
+    ]);
 
     // BUILD 452-3: resizeToAvoidBottomInset=true — o Scaffold cede espaço
     // ao teclado e o CustomScrollView rola naturalmente sem comprimir a viewport.
@@ -713,138 +703,157 @@ class _NephrologyBodyState extends State<_NephrologyBody>
       backgroundColor: bg,
       body: SafeArea(
         child: _ToolsKeyboardFlowScope(
-            flow: _keyboardFlow,
-            child: Form(
-              key: _formKey,
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  // ── Header ────────────────────────────────────────────────────
-                  const SliverToBoxAdapter(child: SizedBox(height: 0)), // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_HEADER_REMOVED
+          flow: _keyboardFlow,
+          child: Form(
+            key: _formKey,
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // ── Header ────────────────────────────────────────────────────
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 0),
+                ), // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_HEADER_REMOVED
+                // ── BUILD 426: Chip de importação de paciente ─────────────────
+                SliverToBoxAdapter(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.90,
+                      child: ToolsPatientImportChip(
+                        isEs: isEs,
+                        dark: dark,
+                        onTap: () {
+                          final p = context.read<AppProvider>();
+                          _showPatientSelectionSheet(context, p);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 4)),
 
-                  // ── BUILD 426: Chip de importação de paciente ─────────────────
+                // ── BUILD 427: Restore Banner ────────────────────────────────
+                if (_showRestoreBanner)
                   SliverToBoxAdapter(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: FractionallySizedBox(
-                        widthFactor: 0.90,
-                        child: ToolsPatientImportChip(
+                    child: ToolsRestoreBanner(
                       isEs: isEs,
                       dark: dark,
-                      onTap: () {
-                        final p = context.read<AppProvider>();
-                        _showPatientSelectionSheet(context, p);
+                      onRestore: _restoreFromCache,
+                      onDiscard: _discardCache,
+                    ),
+                  ),
+
+                // ── Inputs ────────────────────────────────────────────────────
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    MedSpacing.screenHorizontalPadding,
+                    0,
+                    MedSpacing.screenHorizontalPadding,
+                    0,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: _InputSection(
+                      isEs: isEs,
+                      dark: dark,
+                      surf: surf,
+                      txt: txt,
+                      sub: sub,
+                      border: border,
+                      ageCtrl: context.read<ToolsStateProvider>().ageCtrl,
+                      weightCtrl: context.read<ToolsStateProvider>().weightCtrl,
+                      heightCtrl: context.read<ToolsStateProvider>().heightCtrl,
+                      creatBaseCtrl: _creatBaseCtrl,
+                      creatCurrCtrl: context.read<ToolsStateProvider>().crCtrl,
+                      naUrineCtrl: _naUrineCtrl,
+                      naSerumCtrl: context.read<ToolsStateProvider>().naCtrl,
+                      creatUrineCtrl: _creatUrineCtrl,
+                      isFemale: context.read<ToolsStateProvider>().isFemale,
+                      onSexChange: (v) {
+                        context.read<ToolsStateProvider>().setFemale(v);
+                        setState(() {});
                       },
-                    ),
-                      ),
+                      validatePos: _validatePositive,
+                      validateNonZ: _validateNonZero,
                     ),
                   ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 4)),
+                ),
 
-                  // ── BUILD 427: Restore Banner ────────────────────────────────
-                  if (_showRestoreBanner)
-                    SliverToBoxAdapter(
-                      child: ToolsRestoreBanner(
-                        isEs: isEs,
-                        dark: dark,
-                        onRestore: _restoreFromCache,
-                        onDiscard: _discardCache,
-                      ),
-                    ),
-
-                  // ── Inputs ────────────────────────────────────────────────────
+                // ── Error ─────────────────────────────────────────────────────
+                if (_errorMsg != null)
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 0, MedSpacing.screenHorizontalPadding, 0),
+                    padding: const EdgeInsets.fromLTRB(
+                      MedSpacing.screenHorizontalPadding,
+                      8,
+                      MedSpacing.screenHorizontalPadding,
+                      0,
+                    ),
                     sliver: SliverToBoxAdapter(
-                      child: _InputSection(
-                        isEs: isEs,
-                        dark: dark,
-                        surf: surf,
-                        txt: txt,
-                        sub: sub,
-                        border: border,
-                        ageCtrl: context.read<ToolsStateProvider>().ageCtrl,
-                        weightCtrl:
-                            context.read<ToolsStateProvider>().weightCtrl,
-                        heightCtrl:
-                            context.read<ToolsStateProvider>().heightCtrl,
-                        creatBaseCtrl: _creatBaseCtrl,
-                        creatCurrCtrl:
-                            context.read<ToolsStateProvider>().crCtrl,
-                        naUrineCtrl: _naUrineCtrl,
-                        naSerumCtrl: context.read<ToolsStateProvider>().naCtrl,
-                        creatUrineCtrl: _creatUrineCtrl,
-                        isFemale: context.read<ToolsStateProvider>().isFemale,
-                        onSexChange: (v) {
-                          context.read<ToolsStateProvider>().setFemale(v);
-                          setState(() {});
-                        },
-                        validatePos: _validatePositive,
-                        validateNonZ: _validateNonZero,
+                      child: Text(
+                        _errorMsg!,
+                        style: const TextStyle(
+                          color: _kRed,
+                          fontSize: MedTypography.auxiliarySize,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
 
-                  // ── Error ─────────────────────────────────────────────────────
-                  if (_errorMsg != null)
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 8, MedSpacing.screenHorizontalPadding, 0),
-                      sliver: SliverToBoxAdapter(
-                        child: Text(
-                          _errorMsg!,
-                          style: const TextStyle(
-                            color: _kRed,
-                            fontSize: MedTypography.auxiliarySize,
-                            fontWeight: FontWeight.w500,
+                // ── Botão Calcular ─────────────────────────────────────────────
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    MedSpacing.screenHorizontalPadding,
+                    16,
+                    MedSpacing.screenHorizontalPadding,
+                    0,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: _CalcButton(isEs: isEs, onTap: _calculate),
+                  ),
+                ),
+
+                // ── Resultados animados ────────────────────────────────────────
+                if (_result != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      MedSpacing.screenHorizontalPadding,
+                      20,
+                      MedSpacing.screenHorizontalPadding,
+                      0,
+                    ),
+                    sliver: SliverToBoxAdapter(
+                      child: FadeTransition(
+                        opacity: _fadeAnim,
+                        child: SlideTransition(
+                          position: _slideAnim,
+                          child: _ResultsSection(
+                            result: _result!,
+                            isEs: isEs,
+                            dark: dark,
+                            surf: surf,
+                            txt: txt,
+                            sub: sub,
+                            border: border,
+                            onDeeplink: _launchDeeplink,
                           ),
                         ),
                       ),
                     ),
-
-                  // ── Botão Calcular ─────────────────────────────────────────────
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 16, MedSpacing.screenHorizontalPadding, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _CalcButton(isEs: isEs, onTap: _calculate),
-                    ),
                   ),
 
-                  // ── Resultados animados ────────────────────────────────────────
-                  if (_result != null)
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 20, MedSpacing.screenHorizontalPadding, 0),
-                      sliver: SliverToBoxAdapter(
-                        child: FadeTransition(
-                          opacity: _fadeAnim,
-                          child: SlideTransition(
-                            position: _slideAnim,
-                            child: _ResultsSection(
-                              result: _result!,
-                              isEs: isEs,
-                              dark: dark,
-                              surf: surf,
-                              txt: txt,
-                              sub: sub,
-                              border: border,
-                              onDeeplink: _launchDeeplink,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  // BUILD 454-3: AnimatedContainer amortece a transição do teclado em
-                  // split view — evita o salto brusco que ocultava o campo ativo.
-                  SliverToBoxAdapter(
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeOut,
-                      height: _toolsMainShellFooterBottomInset(context),
-                    ),
+                // BUILD 454-3: AnimatedContainer amortece a transição do teclado em
+                // split view — evita o salto brusco que ocultava o campo ativo.
+                SliverToBoxAdapter(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOut,
+                    height: _toolsMainShellFooterBottomInset(context),
                   ),
-                ],
-              ),
-            )),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -875,7 +884,12 @@ class _Header extends StatelessWidget {
           bottom: BorderSide(color: dark ? _kBorder : const Color(0xFFE2E8F0)),
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 14, MedSpacing.screenHorizontalPadding, 14),
+      padding: const EdgeInsets.fromLTRB(
+        MedSpacing.screenHorizontalPadding,
+        14,
+        MedSpacing.screenHorizontalPadding,
+        14,
+      ),
       child: Row(
         children: [
           // TOOLS V1-H-R1: ícone sem box secundário
@@ -900,9 +914,9 @@ class _Header extends StatelessWidget {
                       ? 'CKD-EPI · Cockcroft-Gault · KDIGO · FeNa'
                       : 'CKD-EPI · Cockcroft-Gault · KDIGO · FeNa',
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontSize:
-                          MedTypography.auxiliarySize) /* MEDCASES_TOOLS_V1_H_R9_CANONICAL_HEADER_STYLE */,
+                    color: Colors.white,
+                    fontSize: MedTypography.auxiliarySize,
+                  ) /* MEDCASES_TOOLS_V1_H_R9_CANONICAL_HEADER_STYLE */,
                 ),
               ],
             ),
@@ -1010,8 +1024,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: weightCtrl,
                       label: isEs ? 'Peso (kg)' : 'Peso (kg)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1023,8 +1038,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: heightCtrl,
                       label: isEs ? 'Altura (cm)' : 'Altura (cm)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1040,10 +1056,7 @@ class _InputSection extends StatelessWidget {
         const SizedBox(height: 14),
 
         // ── Grupo 2: Creatinina ──────────────────────────────────────────────
-        _SectionLabel(
-          isEs ? 'CREATININA SÉRICA' : 'CREATININA SÉRICA',
-          sub,
-        ),
+        _SectionLabel(isEs ? 'CREATININA SÉRICA' : 'CREATININA SÉRICA', sub),
         const SizedBox(height: 8),
         _InputCard(
           dark: dark,
@@ -1101,10 +1114,12 @@ class _InputSection extends StatelessWidget {
                   Expanded(
                     child: _FieldBox(
                       ctrl: naUrineCtrl,
-                      label:
-                          isEs ? 'Na Urinario (mEq/L)' : 'Na Urinário (mEq/L)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      label: isEs
+                          ? 'Na Urinario (mEq/L)'
+                          : 'Na Urinário (mEq/L)',
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1116,8 +1131,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: naSerumCtrl,
                       label: isEs ? 'Na Sérico (mEq/L)' : 'Na Sérico (mEq/L)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1168,9 +1184,7 @@ class _SectionLabel extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: dark
-              ? const Color(0xFFA8B2C1)
-              : const Color(0xFF334155),
+          color: dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155),
           fontSize: 12.5,
           height: 1.2,
           fontWeight: FontWeight.w800,
@@ -1180,7 +1194,6 @@ class _SectionLabel extends StatelessWidget {
     );
   }
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Input Card container
@@ -1199,22 +1212,7 @@ class _InputCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MEDCASES_FERRAMENTAS_CANONICAL_FLAT_SURFACE_CONVERGENCE_V1_B_R0_SECTION_BODY
-    final divider = dark
-        ? const Color(0xFF374151)
-        : const Color(0xFFD8E0E7);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(
-          bottom: BorderSide(color: divider, width: 0.7),
-        ),
-      ),
-      child: child,
-    );
+    return Padding(padding: const EdgeInsets.only(bottom: 11), child: child);
   }
 }
 
@@ -1262,8 +1260,7 @@ class _FieldBox extends StatelessWidget {
     final fill = dark ? const Color(0xFF20252D) : const Color(0xFFF7F9FB);
     final border = dark ? const Color(0xFF2A3039) : const Color(0xFFEDF1F4);
     final primary = dark ? Colors.white : const Color(0xFF0F172A);
-    final secondary =
-        dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155);
+    final secondary = dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155);
     final flow = _ToolsKeyboardFlowScope.of(context);
     final node = flow.nodeFor(ctrl);
     final isLast = flow.isLast(ctrl);
@@ -1286,10 +1283,12 @@ class _FieldBox extends StatelessWidget {
         AnimatedBuilder(
           animation: node,
           builder: (context, _) {
-            final activeBorder =
-                node.hasFocus ? const Color(0xFF0D6B57) : border;
-            final activeIcon =
-                node.hasFocus ? const Color(0xFF0D6B57) : secondary;
+            final activeBorder = node.hasFocus
+                ? const Color(0xFF0D6B57)
+                : border;
+            final activeIcon = node.hasFocus
+                ? const Color(0xFF0D6B57)
+                : secondary;
 
             return AnimatedContainer(
               duration: const Duration(milliseconds: 140),
@@ -1313,11 +1312,11 @@ class _FieldBox extends StatelessWidget {
                       focusNode: node,
                       onTapOutside: (_) =>
                           FocusManager.instance.primaryFocus?.unfocus(),
-                      textInputAction:
-                          isLast ? TextInputAction.done : TextInputAction.next,
+                      textInputAction: isLast
+                          ? TextInputAction.done
+                          : TextInputAction.next,
                       onFieldSubmitted: (_) => flow.advance(ctrl),
-                      scrollPadding:
-                          const EdgeInsets.fromLTRB(20, 20, 20, 120),
+                      scrollPadding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
                       cursorColor: const Color(0xFF0D6B57),
                       controller: ctrl,
                       keyboardType: type,
@@ -1425,8 +1424,9 @@ class _SexOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor =
-        left ? const Color(0xFF3B82F6) : const Color(0xFFEC4899);
+    final activeColor = left
+        ? const Color(0xFF3B82F6)
+        : const Color(0xFFEC4899);
 
     return Expanded(
       child: GestureDetector(
@@ -1442,17 +1442,17 @@ class _SexOption extends StatelessWidget {
             ),
           ),
           child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: active ? Colors.white : Colors.white70,
-              fontSize: MedTypography.auxiliarySize,
-              fontWeight: FontWeight.w600,
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: active ? Colors.white : Colors.white70,
+                fontSize: MedTypography.auxiliarySize,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-                  ),
         ),
       ),
     );
@@ -1469,37 +1469,37 @@ class _CalcButton extends StatelessWidget {
 
   @override
   Widget build(
-          BuildContext
-              context) => // TOOLS V1-G-R1-R3: calcular delicado padronizado
-      Align(
-        alignment: Alignment.center,
-        child: FractionallySizedBox(
-          widthFactor: 0.72,
-          child: SizedBox(
-            height: 46,
-            child: ElevatedButton(
-              onPressed: onTap,
-              style: ElevatedButton.styleFrom(
-                // BUILD 450: petróleo + branco
-                backgroundColor: const Color(0xFF0D6B57),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                isEs ? 'CALCULAR' : 'CALCULAR',
-                style: const TextStyle(
-                  fontSize: MedTypography.auxiliarySize,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.4,
-                ),
-              ),
+    BuildContext context,
+  ) => // TOOLS V1-G-R1-R3: calcular delicado padronizado
+  Align(
+    alignment: Alignment.center,
+    child: FractionallySizedBox(
+      widthFactor: 0.72,
+      child: SizedBox(
+        height: 46,
+        child: ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            // BUILD 450: petróleo + branco
+            backgroundColor: const Color(0xFF0D6B57),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            elevation: 0,
+          ),
+          child: Text(
+            isEs ? 'CALCULAR' : 'CALCULAR',
+            style: const TextStyle(
+              fontSize: MedTypography.auxiliarySize,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.4,
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1532,7 +1532,9 @@ class _ResultsSection extends StatelessWidget {
 
         // CKD-EPI
         _ResultCard(
-          dark: dark, surf: surf, border: border,
+          dark: dark,
+          surf: surf,
+          border: border,
           icon: Icons.science_rounded,
           // BUILD 450: CrCl/eGFR result icon petróleo
           iconColor: _kPetroleo,
@@ -1667,14 +1669,20 @@ class _ResultsSection extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(Icons.water_rounded,
-                    color: _kAmber.withOpacity(0.4), size: 18),
+                Icon(
+                  Icons.water_rounded,
+                  color: _kAmber.withOpacity(0.4),
+                  size: 18,
+                ),
                 const SizedBox(width: 10),
                 Text(
                   isEs
                       ? 'FeNa: campos opcionales vacíos'
                       : 'FeNa: campos opcionais não preenchidos',
-                  style: TextStyle(color: sub, fontSize: MedTypography.auxiliarySize),
+                  style: TextStyle(
+                    color: sub,
+                    fontSize: MedTypography.auxiliarySize,
+                  ),
                 ),
               ],
             ),
@@ -1692,7 +1700,11 @@ class _ResultsSection extends StatelessWidget {
           isEs
               ? '⚕ Los resultados son de uso clínico exclusivo. La conducta terapéutica se abre en el módulo especializado.'
               : '⚕ Resultados de uso clínico exclusivo. A conduta terapêutica é aberta no módulo especializado.',
-          style: TextStyle(color: sub, fontSize: MedTypography.microTextSize, height: 1.4),
+          style: TextStyle(
+            color: sub,
+            fontSize: MedTypography.microTextSize,
+            height: 1.4,
+          ),
         ),
       ],
     );
@@ -1808,75 +1820,75 @@ class _ResultCard extends StatelessWidget {
   // MEDCASES_FERRAMENTAS_RESULTS_CANONICAL_PREMIUM_COMPACT_LAYOUT_V1_B_R0
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: surf,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: border, width: 0.7),
+    decoration: BoxDecoration(
+      color: surf,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: border, width: 0.7),
+    ),
+    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: iconColor.withValues(alpha: dark ? 0.12 : 0.09),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: iconColor, size: 15),
         ),
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: dark ? 0.12 : 0.09),
-                borderRadius: BorderRadius.circular(8),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: dark
+                      ? const Color(0xFFF1F5F9)
+                      : const Color(0xFF1F2937),
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.3,
+                ),
               ),
-              child: Icon(icon, color: iconColor, size: 15),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: dark
-                          ? const Color(0xFFF1F5F9)
-                          : const Color(0xFF1F2937),
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.3,
-                    ),
+              const SizedBox(height: 2),
+              valueRow,
+              if (sub.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                Text(
+                  sub,
+                  style: TextStyle(
+                    color: dark
+                        ? const Color(0xFFA8B2C1)
+                        : const Color(0xFF64748B),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w500,
+                    height: 1.28,
                   ),
-                  const SizedBox(height: 2),
-                  valueRow,
-                  if (sub.isNotEmpty) ...[
-                    const SizedBox(height: 3),
-                    Text(
-                      sub,
-                      style: TextStyle(
-                        color: dark
-                            ? const Color(0xFFA8B2C1)
-                            : const Color(0xFF64748B),
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w500,
-                        height: 1.28,
-                      ),
-                    ),
-                  ],
-                  if (formula != null && formula!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      formula!,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: dark
-                            ? const Color(0xFF7F8A99)
-                            : const Color(0xFF94A3B8),
-                        height: 1.25,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
+                ),
+              ],
+              if (formula != null && formula!.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  formula!,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: dark
+                        ? const Color(0xFF7F8A99)
+                        : const Color(0xFF94A3B8),
+                    height: 1.25,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1907,21 +1919,21 @@ class _GfRBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-        decoration: BoxDecoration(
-          color: _color.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: _color.withOpacity(0.4)),
-        ),
-        child: Text(
-          _stage,
-          style: TextStyle(
-            color: _color,
-            fontSize: MedTypography.microTextSize,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+    decoration: BoxDecoration(
+      color: _color.withOpacity(0.15),
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(color: _color.withOpacity(0.4)),
+    ),
+    child: Text(
+      _stage,
+      style: TextStyle(
+        color: _color,
+        fontSize: MedTypography.microTextSize,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1935,44 +1947,42 @@ class _DeeplinkButton extends StatelessWidget {
   // MEDCASES_FERRAMENTAS_RESULTS_CTA_SECONDARY_COMPACT_V1_B_R0
   @override
   Widget build(BuildContext context) => SizedBox(
-        width: double.infinity,
-        height: 42,
-        child: DecoratedBox(
-          // BUILD 450: fundo petróleo sólido + texto branco (substitui gradiente neon)
-          decoration: BoxDecoration(
-            color: _kPetroleo,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: ElevatedButton(
-            onPressed: onTap,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              elevation: 0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  // BUILD 444 [P1]: string compliance Apple CDS
-                  isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
-                  style: const TextStyle(
-                    fontSize: MedTypography.auxiliarySize,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                const Icon(Icons.arrow_forward_rounded, size: 16),
-              ],
-            ),
-          ),
+    width: double.infinity,
+    height: 42,
+    child: DecoratedBox(
+      // BUILD 450: fundo petróleo sólido + texto branco (substitui gradiente neon)
+      decoration: BoxDecoration(
+        color: _kPetroleo,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: 0,
         ),
-      );
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              // BUILD 444 [P1]: string compliance Apple CDS
+              isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
+              style: const TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(Icons.arrow_forward_rounded, size: 16),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2018,7 +2028,8 @@ class _NephroEngine {
 
     final ratio = creatCurr / kappa;
     final double power = creatCurr <= kappa ? alpha : -1.200;
-    final gfr = 142.0 *
+    final gfr =
+        142.0 *
         math.pow(ratio, power) *
         math.pow(0.9938, age.toDouble()) *
         sexFactor;
@@ -2039,10 +2050,7 @@ class _NephroEngine {
   }
 
   // ── KDIGO LRA ─────────────────────────────────────────────────────────────
-  static int _kdigo({
-    required double creatBase,
-    required double creatCurr,
-  }) {
+  static int _kdigo({required double creatBase, required double creatCurr}) {
     final delta = creatCurr - creatBase;
     final proportion = creatCurr / creatBase;
 
@@ -2090,21 +2098,14 @@ class _NephroEngine {
     double? creatUrine,
   }) {
     return _NephroResult(
-      ckdEpi: _ckdEpi(
-        age: age,
-        isFemale: isFemale,
-        creatCurr: creatCurr,
-      ),
+      ckdEpi: _ckdEpi(age: age, isFemale: isFemale, creatCurr: creatCurr),
       cockcroft: _cockcroftGault(
         age: age,
         isFemale: isFemale,
         weight: weight,
         creatCurr: creatCurr,
       ),
-      kdigoStage: _kdigo(
-        creatBase: creatBase,
-        creatCurr: creatCurr,
-      ),
+      kdigoStage: _kdigo(creatBase: creatBase, creatCurr: creatCurr),
       fena: _fena(
         naUrine: naUrine,
         naSerum: naSerum,

@@ -37,6 +37,7 @@ import 'internacion/services/internacion_firestore_service.dart';
 
 import '../design_system/foundation/med_typography.dart';
 import '../design_system/tokens/med_spacing.dart';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // MEDCASES_FERRAMENTAS_4_TABS_SUPER_PREMIUM_STRUCTURED_FOOTER_V1_B_R0_R5_PROOF_GATE_FIX_TRANSACTIONAL
 // Paleta canônica MedCases Pro (dark-first) — idêntica a nephrology/cardio
@@ -224,14 +225,8 @@ class _ToolsKeyboardFlowController {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => ensureVisible());
-    Future<void>.delayed(
-      const Duration(milliseconds: 180),
-      ensureVisible,
-    );
-    Future<void>.delayed(
-      const Duration(milliseconds: 360),
-      ensureVisible,
-    );
+    Future<void>.delayed(const Duration(milliseconds: 180), ensureVisible);
+    Future<void>.delayed(const Duration(milliseconds: 360), ensureVisible);
   }
 
   void _ensureToolbar() {
@@ -259,18 +254,14 @@ class _ToolsKeyboardFlowController {
         final last = isLast(active);
 
         // MEDCASES_FERRAMENTAS_KEYBOARD_FLOATING_NEXT_ACCESSORY_V1_B_R0
-        final isDark =
-            Theme.of(currentHost).brightness == Brightness.dark;
-        final isEs =
-            Localizations.localeOf(currentHost).languageCode == 'es';
-        final actionLabel =
-            last ? 'OK' : (isEs ? 'SIGUIENTE' : 'PRÓXIMO');
-        final buttonBg =
-            isDark ? Colors.white : const Color(0xFF1A1D23);
-        final buttonFg =
-            isDark ? const Color(0xFF111318) : Colors.white;
-        final buttonBorder =
-            isDark ? const Color(0xFFD8DEE7) : const Color(0xFF374151);
+        final isDark = Theme.of(currentHost).brightness == Brightness.dark;
+        final isEs = Localizations.localeOf(currentHost).languageCode == 'es';
+        final actionLabel = last ? 'OK' : (isEs ? 'SIGUIENTE' : 'PRÓXIMO');
+        final buttonBg = isDark ? Colors.white : const Color(0xFF1A1D23);
+        final buttonFg = isDark ? const Color(0xFF111318) : Colors.white;
+        final buttonBorder = isDark
+            ? const Color(0xFFD8DEE7)
+            : const Color(0xFF374151);
 
         return Positioned(
           right: 12,
@@ -289,10 +280,7 @@ class _ToolsKeyboardFlowController {
                   decoration: BoxDecoration(
                     color: buttonBg,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: buttonBorder,
-                      width: 0.7,
-                    ),
+                    border: Border.all(color: buttonBorder, width: 0.7),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(
@@ -320,7 +308,9 @@ class _ToolsKeyboardFlowController {
                       ),
                       const SizedBox(width: 6),
                       Icon(
-                        last ? Icons.check_rounded : Icons.arrow_forward_rounded,
+                        last
+                            ? Icons.check_rounded
+                            : Icons.arrow_forward_rounded,
                         size: 15,
                         color: buttonFg,
                       ),
@@ -372,14 +362,11 @@ class _ToolsKeyboardFlowController {
 class _ToolsKeyboardFlowScope extends InheritedWidget {
   final _ToolsKeyboardFlowController flow;
 
-  const _ToolsKeyboardFlowScope({
-    required this.flow,
-    required super.child,
-  });
+  const _ToolsKeyboardFlowScope({required this.flow, required super.child});
 
   static _ToolsKeyboardFlowController of(BuildContext context) {
-    final scope =
-        context.dependOnInheritedWidgetOfExactType<_ToolsKeyboardFlowScope>();
+    final scope = context
+        .dependOnInheritedWidgetOfExactType<_ToolsKeyboardFlowScope>();
     assert(scope != null, 'Fluxo de teclado não encontrado.');
     return scope!.flow;
   }
@@ -501,7 +488,9 @@ class _HepatologyBodyState extends State<_HepatologyBody>
 
   // ── BUILD 426: Patient autofill ─────────────────────────────────────────────
   Future<void> _showPatientSelectionSheet(
-      BuildContext context, AppProvider p) async {
+    BuildContext context,
+    AppProvider p,
+  ) async {
     await showToolsPatientSelectionSheet(
       context: context,
       isEs: widget.isEs,
@@ -526,9 +515,9 @@ class _HepatologyBodyState extends State<_HepatologyBody>
       final sexo = paciente.sexo.trim().toUpperCase();
       final bool? female = sexo.isEmpty ? null : sexo == 'F';
       context.read<ToolsStateProvider>().applyFromPatient(
-            age: age,
-            female: female,
-          );
+        age: age,
+        female: female,
+      );
       if (mounted) setState(() {});
     } catch (_) {
       // Falha silenciosa — nunca quebra a UI clínica.
@@ -658,9 +647,11 @@ class _HepatologyBodyState extends State<_HepatologyBody>
         plat == null ||
         tpPat == null ||
         tpCtrl == null) {
-      setState(() => _errorMsg = widget.isEs
-          ? 'Verifica los valores ingresados.'
-          : 'Verifique os valores inseridos.');
+      setState(
+        () => _errorMsg = widget.isEs
+            ? 'Verifica los valores ingresados.'
+            : 'Verifique os valores inseridos.',
+      );
       return;
     }
 
@@ -725,8 +716,7 @@ class _HepatologyBodyState extends State<_HepatologyBody>
     final deeplinkPayload = queryParams.startsWith('?')
         ? queryParams.substring(1)
         : queryParams;
-    final conductaUrl =
-        '$baseUrl?modulo=hepatologia&$deeplinkPayload';
+    final conductaUrl = '$baseUrl?modulo=hepatologia&$deeplinkPayload';
     if (!mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -740,35 +730,35 @@ class _HepatologyBodyState extends State<_HepatologyBody>
   Widget build(BuildContext context) {
     final isEs = widget.isEs;
     final dark = widget.dark;
-    final bg = dark ? _kBg : Colors.white; // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_LIGHT_WHITE
+    final bg = dark
+        ? _kBg
+        : Colors
+              .white; // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_LIGHT_WHITE
     final surf = dark ? _kSurface : Colors.white;
     final txt = dark ? Colors.white : const Color(0xFF0F1116);
     final sub = dark ? _kTextSub : const Color(0xFF64748B);
     final border = dark ? _kBorder : const Color(0xFFCBD5E1);
 
     final toolsState = context.watch<ToolsStateProvider>();
-    _keyboardFlow.configure(
-      context,
-      <TextEditingController>[
-        toolsState.ageCtrl,
-        toolsState.naCtrl,
-        toolsState.biliCtrl,
-        toolsState.crCtrl,
-        toolsState.inrCtrl,
-        toolsState.albCtrl,
-        toolsState.astCtrl,
-        _astUlnCtrl,
-        toolsState.altCtrl,
-        _altUlnCtrl,
-        _faCtrl,
-        _faUlnCtrl,
-        toolsState.platCtrl,
-        _tpPatientCtrl,
-        _tpControlCtrl,
-        _noduleCountCtrl,
-        _noduleSizesCtrl,
-      ],
-    );
+    _keyboardFlow.configure(context, <TextEditingController>[
+      toolsState.ageCtrl,
+      toolsState.naCtrl,
+      toolsState.biliCtrl,
+      toolsState.crCtrl,
+      toolsState.inrCtrl,
+      toolsState.albCtrl,
+      toolsState.astCtrl,
+      _astUlnCtrl,
+      toolsState.altCtrl,
+      _altUlnCtrl,
+      _faCtrl,
+      _faUlnCtrl,
+      toolsState.platCtrl,
+      _tpPatientCtrl,
+      _tpControlCtrl,
+      _noduleCountCtrl,
+      _noduleSizesCtrl,
+    ]);
 
     // BUILD 452-3: resizeToAvoidBottomInset=true — o Scaffold cede espaço
     // ao teclado e o CustomScrollView rola naturalmente sem comprimir a viewport.
@@ -777,152 +767,174 @@ class _HepatologyBodyState extends State<_HepatologyBody>
       backgroundColor: bg,
       body: SafeArea(
         child: _ToolsKeyboardFlowScope(
-            flow: _keyboardFlow,
-            child: Form(
-              key: _formKey,
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  // ── Header ──────────────────────────────────────────────────
-                  const SliverToBoxAdapter(child: SizedBox(height: 0)), // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_HEADER_REMOVED
+          flow: _keyboardFlow,
+          child: Form(
+            key: _formKey,
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // ── Header ──────────────────────────────────────────────────
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 0),
+                ), // MEDCASES_TOOLS_COMPACT_WHITE_CONTENT_V1_B_R3_HEADER_REMOVED
+                // ── BUILD 426: Chip de importação de paciente ─────────────────
+                SliverToBoxAdapter(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.90,
+                      child: ToolsPatientImportChip(
+                        isEs: isEs,
+                        dark: dark,
+                        onTap: () {
+                          final p = context.read<AppProvider>();
+                          _showPatientSelectionSheet(context, p);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 4)),
 
-                  // ── BUILD 426: Chip de importação de paciente ─────────────────
+                // ── BUILD 427: Restore Banner ─────────────────────────────────
+                if (_showRestoreBanner)
                   SliverToBoxAdapter(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: FractionallySizedBox(
-                        widthFactor: 0.90,
-                        child: ToolsPatientImportChip(
+                    child: ToolsRestoreBanner(
                       isEs: isEs,
                       dark: dark,
-                      onTap: () {
-                        final p = context.read<AppProvider>();
-                        _showPatientSelectionSheet(context, p);
-                      },
-                    ),
-                      ),
+                      onRestore: _restoreFromCache,
+                      onDiscard: _discardCache,
                     ),
                   ),
-                  const SliverToBoxAdapter(child: SizedBox(height: 4)),
 
-                  // ── BUILD 427: Restore Banner ─────────────────────────────────
-                  if (_showRestoreBanner)
-                    SliverToBoxAdapter(
-                      child: ToolsRestoreBanner(
-                        isEs: isEs,
-                        dark: dark,
-                        onRestore: _restoreFromCache,
-                        onDiscard: _discardCache,
-                      ),
+                // ── Inputs ──────────────────────────────────────────────────
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    MedSpacing.screenHorizontalPadding,
+                    0,
+                    MedSpacing.screenHorizontalPadding,
+                    0,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: _InputSection(
+                      isEs: isEs,
+                      dark: dark,
+                      surf: surf,
+                      txt: txt,
+                      sub: sub,
+                      border: border,
+                      ageCtrl: context.read<ToolsStateProvider>().ageCtrl,
+                      naCtrl: context.read<ToolsStateProvider>().naCtrl,
+                      dialysis: _dialysis,
+                      onDialysisChange: (v) => setState(() => _dialysis = v),
+                      biliCtrl: context.read<ToolsStateProvider>().biliCtrl,
+                      creatCtrl: context.read<ToolsStateProvider>().crCtrl,
+                      inrCtrl: context.read<ToolsStateProvider>().inrCtrl,
+                      albCtrl: context.read<ToolsStateProvider>().albCtrl,
+                      astCtrl: context.read<ToolsStateProvider>().astCtrl,
+                      astUlnCtrl: _astUlnCtrl,
+                      altCtrl: context.read<ToolsStateProvider>().altCtrl,
+                      altUlnCtrl: _altUlnCtrl,
+                      faCtrl: _faCtrl,
+                      faUlnCtrl: _faUlnCtrl,
+                      platCtrl: context.read<ToolsStateProvider>().platCtrl,
+                      ascites: _ascites,
+                      encephalopathy: _encephalopathy,
+                      onAscitesChange: (v) => setState(() => _ascites = v),
+                      onEncephChange: (v) =>
+                          setState(() => _encephalopathy = v),
+                      tpPatientCtrl: _tpPatientCtrl,
+                      tpControlCtrl: _tpControlCtrl,
+                      noduleCountCtrl: _noduleCountCtrl,
+                      noduleSizesCtrl: _noduleSizesCtrl,
+                      hasMetastasis: _hasMetastasis,
+                      hasMacroInvasion: _hasMacroInvasion,
+                      onMetastasisChange: (v) =>
+                          setState(() => _hasMetastasis = v),
+                      onMacroInvasionChange: (v) =>
+                          setState(() => _hasMacroInvasion = v),
+                      validatePos: _reqPositive,
+                      validateInt: _reqNonNegInt,
                     ),
+                  ),
+                ),
 
-                  // ── Inputs ──────────────────────────────────────────────────
+                // ── Error ────────────────────────────────────────────────────
+                if (_errorMsg != null)
                   SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 0, MedSpacing.screenHorizontalPadding, 0),
+                    padding: const EdgeInsets.fromLTRB(
+                      MedSpacing.screenHorizontalPadding,
+                      8,
+                      MedSpacing.screenHorizontalPadding,
+                      0,
+                    ),
                     sliver: SliverToBoxAdapter(
-                      child: _InputSection(
-                        isEs: isEs,
-                        dark: dark,
-                        surf: surf,
-                        txt: txt,
-                        sub: sub,
-                        border: border,
-                        ageCtrl: context.read<ToolsStateProvider>().ageCtrl,
-                        naCtrl: context.read<ToolsStateProvider>().naCtrl,
-                        dialysis: _dialysis,
-                        onDialysisChange: (v) => setState(() => _dialysis = v),
-                        biliCtrl: context.read<ToolsStateProvider>().biliCtrl,
-                        creatCtrl: context.read<ToolsStateProvider>().crCtrl,
-                        inrCtrl: context.read<ToolsStateProvider>().inrCtrl,
-                        albCtrl: context.read<ToolsStateProvider>().albCtrl,
-                        astCtrl: context.read<ToolsStateProvider>().astCtrl,
-                        astUlnCtrl: _astUlnCtrl,
-                        altCtrl: context.read<ToolsStateProvider>().altCtrl,
-                        altUlnCtrl: _altUlnCtrl,
-                        faCtrl: _faCtrl,
-                        faUlnCtrl: _faUlnCtrl,
-                        platCtrl: context.read<ToolsStateProvider>().platCtrl,
-                        ascites: _ascites,
-                        encephalopathy: _encephalopathy,
-                        onAscitesChange: (v) => setState(() => _ascites = v),
-                        onEncephChange: (v) =>
-                            setState(() => _encephalopathy = v),
-                        tpPatientCtrl: _tpPatientCtrl,
-                        tpControlCtrl: _tpControlCtrl,
-                        noduleCountCtrl: _noduleCountCtrl,
-                        noduleSizesCtrl: _noduleSizesCtrl,
-                        hasMetastasis: _hasMetastasis,
-                        hasMacroInvasion: _hasMacroInvasion,
-                        onMetastasisChange: (v) =>
-                            setState(() => _hasMetastasis = v),
-                        onMacroInvasionChange: (v) =>
-                            setState(() => _hasMacroInvasion = v),
-                        validatePos: _reqPositive,
-                        validateInt: _reqNonNegInt,
+                      child: Text(
+                        _errorMsg!,
+                        style: const TextStyle(
+                          color: _kRed,
+                          fontSize: MedTypography.auxiliarySize,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
 
-                  // ── Error ────────────────────────────────────────────────────
-                  if (_errorMsg != null)
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 8, MedSpacing.screenHorizontalPadding, 0),
-                      sliver: SliverToBoxAdapter(
-                        child: Text(
-                          _errorMsg!,
-                          style: const TextStyle(
-                            color: _kRed,
-                            fontSize: MedTypography.auxiliarySize,
-                            fontWeight: FontWeight.w500,
+                // ── Botão Calcular ────────────────────────────────────────────
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    MedSpacing.screenHorizontalPadding,
+                    16,
+                    MedSpacing.screenHorizontalPadding,
+                    0,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: _CalcButton(isEs: isEs, onTap: _calculate),
+                  ),
+                ),
+
+                // ── Resultados animados ───────────────────────────────────────
+                if (_result != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      MedSpacing.screenHorizontalPadding,
+                      20,
+                      MedSpacing.screenHorizontalPadding,
+                      0,
+                    ),
+                    sliver: SliverToBoxAdapter(
+                      child: FadeTransition(
+                        opacity: _fadeAnim,
+                        child: SlideTransition(
+                          position: _slideAnim,
+                          child: _ResultsSection(
+                            result: _result!,
+                            isEs: isEs,
+                            dark: dark,
+                            surf: surf,
+                            txt: txt,
+                            sub: sub,
+                            border: border,
+                            onDeeplink: _launchDeeplink,
                           ),
                         ),
                       ),
                     ),
-
-                  // ── Botão Calcular ────────────────────────────────────────────
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 16, MedSpacing.screenHorizontalPadding, 0),
-                    sliver: SliverToBoxAdapter(
-                      child: _CalcButton(isEs: isEs, onTap: _calculate),
-                    ),
                   ),
 
-                  // ── Resultados animados ───────────────────────────────────────
-                  if (_result != null)
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 20, MedSpacing.screenHorizontalPadding, 0),
-                      sliver: SliverToBoxAdapter(
-                        child: FadeTransition(
-                          opacity: _fadeAnim,
-                          child: SlideTransition(
-                            position: _slideAnim,
-                            child: _ResultsSection(
-                              result: _result!,
-                              isEs: isEs,
-                              dark: dark,
-                              surf: surf,
-                              txt: txt,
-                              sub: sub,
-                              border: border,
-                              onDeeplink: _launchDeeplink,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  // BUILD 454-3: AnimatedContainer amortece a transição do teclado em
-                  // split view — evita o salto brusco que ocultava o campo ativo.
-                  SliverToBoxAdapter(
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeOut,
-                      height: _toolsMainShellFooterBottomInset(context),
-                    ),
+                // BUILD 454-3: AnimatedContainer amortece a transição do teclado em
+                // split view — evita o salto brusco que ocultava o campo ativo.
+                SliverToBoxAdapter(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOut,
+                    height: _toolsMainShellFooterBottomInset(context),
                   ),
-                ],
-              ),
-            )),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -953,7 +965,12 @@ class _Header extends StatelessWidget {
           bottom: BorderSide(color: dark ? _kBorder : const Color(0xFFE2E8F0)),
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 14, MedSpacing.screenHorizontalPadding, 14),
+      padding: const EdgeInsets.fromLTRB(
+        MedSpacing.screenHorizontalPadding,
+        14,
+        MedSpacing.screenHorizontalPadding,
+        14,
+      ),
       child: Row(
         children: [
           // TOOLS V1-H-R1: ícone sem box secundário
@@ -976,8 +993,9 @@ class _Header extends StatelessWidget {
                 Text(
                   'MELD-Na · Child-Pugh · FIB-4 · APRI · Maddrey · Milán',
                   style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: MedTypography.auxiliarySize) /* MEDCASES_TOOLS_V1_H_R9_CANONICAL_HEADER_STYLE */,
+                    color: Colors.white,
+                    fontSize: MedTypography.auxiliarySize,
+                  ) /* MEDCASES_TOOLS_V1_H_R9_CANONICAL_HEADER_STYLE */,
                 ),
               ],
             ),
@@ -1111,8 +1129,9 @@ class _InputSection extends StatelessWidget {
                           ? 'Sodio Sérico (mEq/L)'
                           : 'Sódio Sérico (mEq/L)',
                       hint: '125 – 145',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1159,8 +1178,9 @@ class _InputSection extends StatelessWidget {
                       label: isEs
                           ? 'Bilirrubina Total (mg/dL)'
                           : 'Bilirrubina Total (mg/dL)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1174,8 +1194,9 @@ class _InputSection extends StatelessWidget {
                       label: isEs
                           ? 'Creatinina Sérica (mg/dL)'
                           : 'Creatinina Sérica (mg/dL)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1192,8 +1213,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: inrCtrl,
                       label: 'INR',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1207,8 +1229,9 @@ class _InputSection extends StatelessWidget {
                       label: isEs
                           ? 'Albúmina Sérica (g/dL)'
                           : 'Albumina Sérica (g/dL)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1244,8 +1267,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: astCtrl,
                       label: 'AST/TGO (U/L)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1258,8 +1282,9 @@ class _InputSection extends StatelessWidget {
                       ctrl: astUlnCtrl,
                       label: isEs ? 'AST ULN (Ref: 40)' : 'AST ULN (Ref: 40)',
                       hint: '40',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1277,8 +1302,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: altCtrl,
                       label: 'ALT/TGP (U/L)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1291,8 +1317,9 @@ class _InputSection extends StatelessWidget {
                       ctrl: altUlnCtrl,
                       label: isEs ? 'ALT ULN (Ref: 40)' : 'ALT ULN (Ref: 40)',
                       hint: '40',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1310,8 +1337,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: faCtrl,
                       label: 'FA (U/L)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1324,8 +1352,9 @@ class _InputSection extends StatelessWidget {
                       ctrl: faUlnCtrl,
                       label: isEs ? 'FA ULN (Ref: 120)' : 'FA ULN (Ref: 120)',
                       hint: '120',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1402,8 +1431,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: tpPatientCtrl,
                       label: isEs ? 'TP Paciente (seg)' : 'TP Paciente (seg)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1415,8 +1445,9 @@ class _InputSection extends StatelessWidget {
                     child: _FieldBox(
                       ctrl: tpControlCtrl,
                       label: isEs ? 'TP Control (seg)' : 'TP Controle (seg)',
-                      type:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      type: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       dark: dark,
                       txt: txt,
                       sub: sub,
@@ -1487,8 +1518,9 @@ class _InputSection extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               _BoolToggle(
-                label:
-                    isEs ? 'Invasión Macrovascular' : 'Invasão Macrovascular',
+                label: isEs
+                    ? 'Invasión Macrovascular'
+                    : 'Invasão Macrovascular',
                 dark: dark,
                 txt: txt,
                 sub: sub,
@@ -1557,7 +1589,8 @@ class _ResultsSection extends StatelessWidget {
           ),
           subText: _meldInterpretation(result.meldNa, isEs),
           subColor: _meldColor(result.meldNa),
-          formula: 'MELD = 9.57·ln(Cr) + 3.78·ln(Bili) + 11.20·ln(INR) + 6.43  '
+          formula:
+              'MELD = 9.57·ln(Cr) + 3.78·ln(Bili) + 11.20·ln(INR) + 6.43  '
               '→  MELD-Na = MELD + 1.32·(137−Na) − [0.033·MELD·(137−Na)]',
         ),
         const SizedBox(height: 6),
@@ -1619,7 +1652,8 @@ class _ResultsSection extends StatelessWidget {
           ),
           subText: _fib4Interpretation(result.fib4, isEs),
           subColor: _fib4Color(result.fib4),
-          formula: 'FIB-4 = (Edad × AST) / (Plaquetas × √ALT)  |  '
+          formula:
+              'FIB-4 = (Edad × AST) / (Plaquetas × √ALT)  |  '
               '< 1.30: F0–F1 · 1.30–2.67: Indeterminado · > 2.67: F3–F4',
         ),
         const SizedBox(height: 6),
@@ -1651,7 +1685,8 @@ class _ResultsSection extends StatelessWidget {
           ),
           subText: _apriInterpretation(result.apri, isEs),
           subColor: _apriColor(result.apri),
-          formula: 'APRI = ((AST / AST_ULN) × 100) / Plaquetas  |  '
+          formula:
+              'APRI = ((AST / AST_ULN) × 100) / Plaquetas  |  '
               '< 0.5: Sin Fibrosis / Sem Fibrose · > 1.5: Cirrosis / Cirrose',
         ),
         const SizedBox(height: 6),
@@ -1689,11 +1724,11 @@ class _ResultsSection extends StatelessWidget {
           ),
           subText: result.maddreyDf >= 32.0
               ? (isEs
-                  ? 'DF ≥ 32 — Considerar corticoterapia. Mortalidad a 30 días elevada.'
-                  : 'DF ≥ 32 — Considerar corticoterapia. Mortalidade em 30 dias elevada.')
+                    ? 'DF ≥ 32 — Considerar corticoterapia. Mortalidad a 30 días elevada.'
+                    : 'DF ≥ 32 — Considerar corticoterapia. Mortalidade em 30 dias elevada.')
               : (isEs
-                  ? 'DF < 32 — Riesgo de mortalidad a corto plazo bajo.'
-                  : 'DF < 32 — Risco de mortalidade a curto prazo baixo.'),
+                    ? 'DF < 32 — Riesgo de mortalidad a corto plazo bajo.'
+                    : 'DF < 32 — Risco de mortalidade a curto prazo baixo.'),
           subColor: result.maddreyDf >= 32.0 ? _kRed : _kGreen,
           formula:
               'Maddrey DF = 4.6 × (TP Paciente − TP Controle) + Bilirrubina Total',
@@ -1720,11 +1755,11 @@ class _ResultsSection extends StatelessWidget {
           ),
           subText: result.milanCriteria
               ? (isEs
-                  ? 'Paciente elegible para trasplante hepático según criterios de Milán (1996).'
-                  : 'Paciente elegível para transplante hepático segundo critérios de Milão (1996).')
+                    ? 'Paciente elegible para trasplante hepático según criterios de Milán (1996).'
+                    : 'Paciente elegível para transplante hepático segundo critérios de Milão (1996).')
               : (isEs
-                  ? 'Paciente fuera de los criterios. Evaluar criterios extendidos (UCSF, Up-to-7).'
-                  : 'Paciente fora dos critérios. Avaliar critérios estendidos (UCSF, Up-to-7).'),
+                    ? 'Paciente fuera de los criterios. Evaluar criterios extendidos (UCSF, Up-to-7).'
+                    : 'Paciente fora dos critérios. Avaliar critérios estendidos (UCSF, Up-to-7).'),
           subColor: result.milanCriteria ? _kGreen : _kRed,
           formula: isEs
               ? 'Nódulo único ≤ 5 cm  OU  até 3 nódulos ≤ 3 cm · Sem metástasis · Sin invasión macrovascular'
@@ -1739,8 +1774,9 @@ class _ResultsSection extends StatelessWidget {
           border: border,
           icon: Icons.swap_vert_rounded,
           iconColor: _factorRColor(result.factorR),
-          title:
-              isEs ? 'Factor R — Patrón de Daño' : 'Fator R — Padrão de Lesão',
+          title: isEs
+              ? 'Factor R — Patrón de Daño'
+              : 'Fator R — Padrão de Lesão',
           valueRow: Row(
             children: [
               Text(
@@ -1760,7 +1796,8 @@ class _ResultsSection extends StatelessWidget {
           ),
           subText: _factorRInterpretation(result.factorR, isEs),
           subColor: _factorRColor(result.factorR),
-          formula: 'Factor R = (ALT / ALT_ULN) / (FA / FA_ULN)  |  '
+          formula:
+              'Factor R = (ALT / ALT_ULN) / (FA / FA_ULN)  |  '
               'R > 5: Hepatocelular · R 2–5: Mixto · R < 2: Colestático',
         ),
 
@@ -1774,7 +1811,11 @@ class _ResultsSection extends StatelessWidget {
           isEs
               ? '⚕ Los resultados son de uso clínico exclusivo. La conducta terapéutica se abre en el módulo especializado.'
               : '⚕ Resultados de uso clínico exclusivo. A conduta terapêutica é aberta no módulo especializado.',
-          style: TextStyle(color: sub, fontSize: MedTypography.microTextSize, height: 1.4),
+          style: TextStyle(
+            color: sub,
+            fontSize: MedTypography.microTextSize,
+            height: 1.4,
+          ),
         ),
       ],
     );
@@ -1937,9 +1978,7 @@ class _SectionLabel extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(
-          color: dark
-              ? const Color(0xFFA8B2C1)
-              : const Color(0xFF334155),
+          color: dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155),
           fontSize: 12.5,
           height: 1.2,
           fontWeight: FontWeight.w800,
@@ -1949,7 +1988,6 @@ class _SectionLabel extends StatelessWidget {
     );
   }
 }
-
 
 class _InputCard extends StatelessWidget {
   final bool dark;
@@ -1965,22 +2003,7 @@ class _InputCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MEDCASES_FERRAMENTAS_CANONICAL_FLAT_SURFACE_CONVERGENCE_V1_B_R0_SECTION_BODY
-    final divider = dark
-        ? const Color(0xFF374151)
-        : const Color(0xFFD8E0E7);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 11),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(
-          bottom: BorderSide(color: divider, width: 0.7),
-        ),
-      ),
-      child: child,
-    );
+    return Padding(padding: const EdgeInsets.only(bottom: 11), child: child);
   }
 }
 
@@ -2024,8 +2047,7 @@ class _FieldBox extends StatelessWidget {
     final fill = dark ? const Color(0xFF20252D) : const Color(0xFFF7F9FB);
     final border = dark ? const Color(0xFF2A3039) : const Color(0xFFEDF1F4);
     final primary = dark ? Colors.white : const Color(0xFF0F172A);
-    final secondary =
-        dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155);
+    final secondary = dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155);
     final flow = _ToolsKeyboardFlowScope.of(context);
     final node = flow.nodeFor(ctrl);
     final isLast = flow.isLast(ctrl);
@@ -2048,10 +2070,12 @@ class _FieldBox extends StatelessWidget {
         AnimatedBuilder(
           animation: node,
           builder: (context, _) {
-            final activeBorder =
-                node.hasFocus ? const Color(0xFF0D6B57) : border;
-            final activeIcon =
-                node.hasFocus ? const Color(0xFF0D6B57) : secondary;
+            final activeBorder = node.hasFocus
+                ? const Color(0xFF0D6B57)
+                : border;
+            final activeIcon = node.hasFocus
+                ? const Color(0xFF0D6B57)
+                : secondary;
 
             return AnimatedContainer(
               duration: const Duration(milliseconds: 140),
@@ -2075,11 +2099,11 @@ class _FieldBox extends StatelessWidget {
                       focusNode: node,
                       onTapOutside: (_) =>
                           FocusManager.instance.primaryFocus?.unfocus(),
-                      textInputAction:
-                          isLast ? TextInputAction.done : TextInputAction.next,
+                      textInputAction: isLast
+                          ? TextInputAction.done
+                          : TextInputAction.next,
                       onFieldSubmitted: (_) => flow.advance(ctrl),
-                      scrollPadding:
-                          const EdgeInsets.fromLTRB(20, 20, 20, 120),
+                      scrollPadding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
                       cursorColor: const Color(0xFF0D6B57),
                       controller: ctrl,
                       keyboardType: type,
@@ -2095,7 +2119,7 @@ class _FieldBox extends StatelessWidget {
                       ),
                       decoration: InputDecoration(
                         isDense: true,
-contentPadding: EdgeInsets.zero,
+                        contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -2140,8 +2164,7 @@ class _FieldBoxFreeText extends StatelessWidget {
     final fill = dark ? const Color(0xFF20252D) : const Color(0xFFF7F9FB);
     final border = dark ? const Color(0xFF2A3039) : const Color(0xFFEDF1F4);
     final primary = dark ? Colors.white : const Color(0xFF0F172A);
-    final secondary =
-        dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155);
+    final secondary = dark ? const Color(0xFFA8B2C1) : const Color(0xFF334155);
     final flow = _ToolsKeyboardFlowScope.of(context);
     final node = flow.nodeFor(ctrl);
     final isLast = flow.isLast(ctrl);
@@ -2164,10 +2187,12 @@ class _FieldBoxFreeText extends StatelessWidget {
         AnimatedBuilder(
           animation: node,
           builder: (context, _) {
-            final activeBorder =
-                node.hasFocus ? const Color(0xFF0D6B57) : border;
-            final activeIcon =
-                node.hasFocus ? const Color(0xFF0D6B57) : secondary;
+            final activeBorder = node.hasFocus
+                ? const Color(0xFF0D6B57)
+                : border;
+            final activeIcon = node.hasFocus
+                ? const Color(0xFF0D6B57)
+                : secondary;
 
             return AnimatedContainer(
               duration: const Duration(milliseconds: 140),
@@ -2191,11 +2216,11 @@ class _FieldBoxFreeText extends StatelessWidget {
                       focusNode: node,
                       onTapOutside: (_) =>
                           FocusManager.instance.primaryFocus?.unfocus(),
-                      textInputAction:
-                          isLast ? TextInputAction.done : TextInputAction.next,
+                      textInputAction: isLast
+                          ? TextInputAction.done
+                          : TextInputAction.next,
                       onFieldSubmitted: (_) => flow.advance(ctrl),
-                      scrollPadding:
-                          const EdgeInsets.fromLTRB(20, 20, 20, 120),
+                      scrollPadding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
                       cursorColor: const Color(0xFF0D6B57),
                       controller: ctrl,
                       style: TextStyle(
@@ -2206,7 +2231,7 @@ class _FieldBoxFreeText extends StatelessWidget {
                       ),
                       decoration: InputDecoration(
                         isDense: true,
-contentPadding: EdgeInsets.zero,
+                        contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -2246,7 +2271,9 @@ class _DialysisToggle extends StatelessWidget {
       decoration: BoxDecoration(
         color: dark ? const Color(0xFF20252D) : const Color(0xFFF7F9FB),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: dark ? const Color(0xFF2A3039) : const Color(0xFFEDF1F4)),
+        border: Border.all(
+          color: dark ? const Color(0xFF2A3039) : const Color(0xFFEDF1F4),
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: Row(
@@ -2302,7 +2329,13 @@ class _ScoreSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: sub, fontSize: MedTypography.sectionLabelSize)),
+        Text(
+          label,
+          style: TextStyle(
+            color: sub,
+            fontSize: MedTypography.sectionLabelSize,
+          ),
+        ),
         const SizedBox(height: 6),
         Row(
           children: List.generate(options.length, (i) {
@@ -2313,17 +2346,20 @@ class _ScoreSelector extends StatelessWidget {
                 onTap: () => onChanged(score),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
-                  margin:
-                      EdgeInsets.only(right: i < options.length - 1 ? 6 : 0),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  margin: EdgeInsets.only(
+                    right: i < options.length - 1 ? 6 : 0,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 4,
+                  ),
                   // BUILD 450: ativo=petróleo sólido/branco, inativo=cinza
                   decoration: BoxDecoration(
                     color: active
                         ? const Color(0xFF0D6B57)
                         : (dark
-                            ? const Color(0xFF2D3340)
-                            : const Color(0xFFE2E8F0)),
+                              ? const Color(0xFF2D3340)
+                              : const Color(0xFFE2E8F0)),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: active
@@ -2417,37 +2453,37 @@ class _CalcButton extends StatelessWidget {
 
   @override
   Widget build(
-          BuildContext
-              context) => // TOOLS V1-G-R1-R3: calcular delicado padronizado
-      Align(
-        alignment: Alignment.center,
-        child: FractionallySizedBox(
-          widthFactor: 0.72,
-          child: SizedBox(
-            height: 46,
-            child: ElevatedButton(
-              onPressed: onTap,
-              style: ElevatedButton.styleFrom(
-                // BUILD 450: petróleo + branco
-                backgroundColor: const Color(0xFF0D6B57),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'CALCULAR',
-                style: TextStyle(
-                  fontSize: MedTypography.auxiliarySize,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.4,
-                ),
-              ),
+    BuildContext context,
+  ) => // TOOLS V1-G-R1-R3: calcular delicado padronizado
+  Align(
+    alignment: Alignment.center,
+    child: FractionallySizedBox(
+      widthFactor: 0.72,
+      child: SizedBox(
+        height: 46,
+        child: ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            // BUILD 450: petróleo + branco
+            backgroundColor: const Color(0xFF0D6B57),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            elevation: 0,
+          ),
+          child: const Text(
+            'CALCULAR',
+            style: TextStyle(
+              fontSize: MedTypography.auxiliarySize,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.4,
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2477,75 +2513,75 @@ class _ResultCard extends StatelessWidget {
   // MEDCASES_FERRAMENTAS_RESULTS_CANONICAL_PREMIUM_COMPACT_LAYOUT_V1_B_R0
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: surf,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: border, width: 0.7),
+    decoration: BoxDecoration(
+      color: surf,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: border, width: 0.7),
+    ),
+    padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: iconColor.withValues(alpha: dark ? 0.12 : 0.09),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: iconColor, size: 15),
         ),
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: dark ? 0.12 : 0.09),
-                borderRadius: BorderRadius.circular(8),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: dark
+                      ? const Color(0xFFF1F5F9)
+                      : const Color(0xFF1F2937),
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.3,
+                ),
               ),
-              child: Icon(icon, color: iconColor, size: 15),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: dark
-                          ? const Color(0xFFF1F5F9)
-                          : const Color(0xFF1F2937),
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.3,
-                    ),
+              const SizedBox(height: 2),
+              valueRow,
+              if (subText.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                Text(
+                  subText,
+                  style: TextStyle(
+                    color: dark
+                        ? const Color(0xFFA8B2C1)
+                        : const Color(0xFF64748B),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w500,
+                    height: 1.28,
                   ),
-                  const SizedBox(height: 2),
-                  valueRow,
-                  if (subText.isNotEmpty) ...[
-                    const SizedBox(height: 3),
-                    Text(
-                      subText,
-                      style: TextStyle(
-                        color: dark
-                            ? const Color(0xFFA8B2C1)
-                            : const Color(0xFF64748B),
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w500,
-                        height: 1.28,
-                      ),
-                    ),
-                  ],
-                  if (formula != null && formula!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      formula!,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: dark
-                            ? const Color(0xFF7F8A99)
-                            : const Color(0xFF94A3B8),
-                        height: 1.25,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
+                ),
+              ],
+              if (formula != null && formula!.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  formula!,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: dark
+                        ? const Color(0xFF7F8A99)
+                        : const Color(0xFF94A3B8),
+                    height: 1.25,
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2574,21 +2610,21 @@ class _MeldBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color: _color.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: _color.withOpacity(0.4)),
-        ),
-        child: Text(
-          _label,
-          style: TextStyle(
-            color: _color,
-            fontSize: MedTypography.microTextSize,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      color: _color.withOpacity(0.15),
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(color: _color.withOpacity(0.4)),
+    ),
+    child: Text(
+      _label,
+      style: TextStyle(
+        color: _color,
+        fontSize: MedTypography.microTextSize,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 }
 
 class _ClassBadge extends StatelessWidget {
@@ -2608,21 +2644,21 @@ class _ClassBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color: _color.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: _color.withOpacity(0.4)),
-        ),
-        child: Text(
-          'Clase $cls',
-          style: TextStyle(
-            color: _color,
-            fontSize: MedTypography.microTextSize,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      color: _color.withOpacity(0.15),
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(color: _color.withOpacity(0.4)),
+    ),
+    child: Text(
+      'Clase $cls',
+      style: TextStyle(
+        color: _color,
+        fontSize: MedTypography.microTextSize,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 }
 
 class _Pill extends StatelessWidget {
@@ -2632,21 +2668,21 @@ class _Pill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: color.withOpacity(0.4)),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontSize: MedTypography.microTextSize,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.15),
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(color: color.withOpacity(0.4)),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(
+        color: color,
+        fontSize: MedTypography.microTextSize,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2660,43 +2696,41 @@ class _DeeplinkButton extends StatelessWidget {
   // MEDCASES_FERRAMENTAS_RESULTS_CTA_SECONDARY_COMPACT_V1_B_R0
   @override
   Widget build(BuildContext context) => SizedBox(
-        width: double.infinity,
-        height: 42,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: const Color(0xFF0D6B57),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: ElevatedButton(
-            onPressed: onTap,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              elevation: 0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  // BUILD 444 [P1]: string compliance Apple CDS
-                  isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
-                  style: const TextStyle(
-                    fontSize: MedTypography.auxiliarySize,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                const Icon(Icons.arrow_forward_rounded, size: 16),
-              ],
-            ),
-          ),
+    width: double.infinity,
+    height: 42,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFF059669),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: 0,
         ),
-      );
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              // BUILD 444 [P1]: string compliance Apple CDS
+              isEs ? 'Acceder al Soporte' : 'Acessar Suporte',
+              style: const TextStyle(
+                fontSize: MedTypography.auxiliarySize,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(Icons.arrow_forward_rounded, size: 16),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2753,7 +2787,8 @@ class _HepEngine {
     }
 
     // MELD original (arredondado)
-    final meldRaw = 9.57 * math.log(cr) +
+    final meldRaw =
+        9.57 * math.log(cr) +
         3.78 * math.log(bili) +
         11.20 * math.log(safeInr) +
         6.43;
@@ -2809,7 +2844,8 @@ class _HepEngine {
       inrPts = 3;
 
     // Ascite e encefalopatia: soma direta dos pontos 1–3
-    final total = biliPts +
+    final total =
+        biliPts +
         albPts +
         inrPts +
         ascites.clamp(1, 3) +
@@ -2945,23 +2981,9 @@ class _HepEngine {
       ),
       childPughPoints: ctp.points,
       childPughClass: ctp.cls,
-      fib4: _fib4(
-        age: age,
-        ast: ast,
-        alt: alt,
-        platelets: platelets,
-      ),
-      apri: _apri(
-        ast: ast,
-        astUln: astUln,
-        platelets: platelets,
-      ),
-      factorR: _factorR(
-        alt: alt,
-        altUln: altUln,
-        fa: fa,
-        faUln: faUln,
-      ),
+      fib4: _fib4(age: age, ast: ast, alt: alt, platelets: platelets),
+      apri: _apri(ast: ast, astUln: astUln, platelets: platelets),
+      factorR: _factorR(alt: alt, altUln: altUln, fa: fa, faUln: faUln),
       maddreyDf: _maddreyDf(
         tpPatient: tpPatient,
         tpControl: tpControl,

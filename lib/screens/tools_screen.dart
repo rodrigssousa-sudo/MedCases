@@ -33,6 +33,10 @@ import 'hepato_premium_workspace_screen.dart' show HepatoPremiumWorkspaceScreen;
 import 'electrolytes_premium_workspace_screen.dart'
     show ElectrolytesPremiumWorkspaceScreen;
 import 'electrolytes_tools_screen.dart' show ElectrolytesToolsScreen;
+import 'plus_scores_mb1_workspace_screen.dart'
+    show PlusScoresMb1Specialty, PlusScoresMb1WorkspaceScreen;
+import 'plus_scores_mb2_workspace_screen.dart'
+    show PlusScoresMb2Specialty, PlusScoresMb2WorkspaceScreen;
 
 // ──────────────────────────────────────────────────────────────────
 // COLOR CONSTANTS — alinhadas com common_widgets.dart
@@ -55,8 +59,9 @@ final ValueNotifier<int?> toolsScreenTabNotifier = ValueNotifier<int?>(null);
 // BUILD 445: Notifier que MainShell usa para avisar quando a tela de Ferramentas
 // fica visível (true) ou oculta (false) no IndexedStack.
 // Permite que ToolsScreen exiba o dialog de retorno ao reentrar na seção.
-final ValueNotifier<bool> toolsScreenVisibleNotifier =
-    ValueNotifier<bool>(false);
+final ValueNotifier<bool> toolsScreenVisibleNotifier = ValueNotifier<bool>(
+  false,
+);
 
 class ToolsScreen extends StatefulWidget {
   final bool hideHeader;
@@ -174,12 +179,7 @@ class _ToolsScreenState extends State<ToolsScreen>
     //                       └── SizedBox(56) + Stack(botão + título)
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     if (!showHeader) {
-      return Column(
-        children: [
-          _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
-          const Expanded(child: _ToolsHubLanding()),
-        ],
-      );
+      return Column(children: [const Expanded(child: _ToolsHubLanding())]);
     }
 
     // MEDCASES_HERRAMIENTAS_TOPBAR_UNIFIED_OWNER_CUTOVER_V1_B_R5_R1
@@ -202,10 +202,7 @@ class _ToolsScreenState extends State<ToolsScreen>
             Column(
               children: [
                 SizedBox(height: topPad + 48),
-                _ToolsTabRow(dark: dark, isEs: isEs, tabCtrl: _tabCtrl),
-                Expanded(
-                  child: const _ToolsHubLanding(),
-                ),
+                Expanded(child: const _ToolsHubLanding()),
               ],
             ),
             Positioned(
@@ -246,22 +243,18 @@ class _ToolsTopbarBg extends StatelessWidget {
     final glassColor = dark
         ? const Color(0xFF252930).withOpacity(0.70)
         : Colors.white.withOpacity(0.70);
-    final borderColor =
-        dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+    final borderColor = dark
+        ? const Color(0xFF374151)
+        : const Color(0xFFE2E7EC);
 
     // MEDCASES_HERRAMIENTAS_HOME_TOPBAR_V1_B_R1
     return ClipRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: 14,
-          sigmaY: 14,
-        ),
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
         child: Container(
           decoration: BoxDecoration(
             color: glassColor,
-            border: Border(
-              bottom: BorderSide(color: borderColor, width: 0.7),
-            ),
+            border: Border(bottom: BorderSide(color: borderColor, width: 0.7)),
           ),
         ),
       ),
@@ -304,8 +297,8 @@ class _ToolsTopbarContent extends StatelessWidget {
                     size: 20,
                     color: /* MEDCASES_TOOLS_BACK_LEFT_V1_B_R0 */
                         Theme.of(context).brightness == Brightness.dark
-                            ? (Colors.white)
-                            : (const Color(0xFF05070A)),
+                        ? (Colors.white)
+                        : (const Color(0xFF05070A)),
                   ),
                 ),
               ),
@@ -313,15 +306,15 @@ class _ToolsTopbarContent extends StatelessWidget {
           ),
           // ── TÍTULO — centro geométrico absoluto ──────────────────────────
           Text(
-            isEs ? 'HERRAMIENTAS' : 'FERRAMENTAS',
+            '+SCORES',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
               letterSpacing: 1.2,
               color: /* MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R16_R5_R13 */
                   Theme.of(context).brightness == Brightness.dark
-                      ? (Colors.white)
-                      : (const Color(0xFF05070A)),
+                  ? (Colors.white)
+                  : (const Color(0xFF05070A)),
             ),
           ),
         ],
@@ -339,18 +332,14 @@ class _ToolsTopbarContent extends StatelessWidget {
 void _openToolsSpecialtyRoute(BuildContext context, int index) {
   if (index == 0) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const NephroPremiumWorkspaceScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const NephroPremiumWorkspaceScreen()),
     );
     return;
   }
 
   if (index == 1) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const CardioPremiumWorkspaceScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const CardioPremiumWorkspaceScreen()),
     );
     return;
   }
@@ -366,9 +355,7 @@ void _openToolsSpecialtyRoute(BuildContext context, int index) {
 
   if (index == 3) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const HepatoPremiumWorkspaceScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const HepatoPremiumWorkspaceScreen()),
     );
     return;
   }
@@ -380,17 +367,452 @@ void _openToolsSpecialtyRoute(BuildContext context, int index) {
   );
 }
 
+// MEDCASES_PLUS_SCORES_22X79_UNIFIED_OWNER_V1_B_R4
+// Catálogo único Guardia-first: 22 especialidades / 79 ferramentas.
+// 28 ferramentas canônicas + MB1 26 + MB2 25.
 class _ToolsHubLanding extends StatelessWidget {
   const _ToolsHubLanding();
 
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AppProvider>();
+    final isEs = p.lang == 'es';
+    final dark = p.darkMode;
+    final pageBg = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4);
+    final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
+    final sub = dark ? const Color(0xFFAEB9CC) : const Color(0xFF64748B);
+
+    final items = <_PlusScoresUnifiedSpecialtyItem>[
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Emergencias / UCI',
+        titlePt: 'Emergência / UTI',
+        subtitleEs: 'SOFA · qSOFA',
+        subtitlePt: 'SOFA · qSOFA',
+        icon: Icons.monitor_heart_outlined,
+        count: 2,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.emergencyIcu,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Cardiología',
+        titlePt: 'Cardiologia',
+        subtitleEs: 'SCA · FA · QTc · riesgo CV',
+        subtitlePt: 'SCA · FA · QTc · risco CV',
+        icon: Icons.favorite_border_rounded,
+        count: 10,
+        onTap: () => _openToolsSpecialtyRoute(context, 1),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Neurología',
+        titlePt: 'Neurologia',
+        subtitleEs: 'NIHSS',
+        subtitlePt: 'NIHSS',
+        icon: Icons.psychology_outlined,
+        count: 1,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.neurology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Tromboembolismo',
+        titlePt: 'Tromboembolismo',
+        subtitleEs: 'YEARS',
+        subtitlePt: 'YEARS',
+        icon: Icons.air_rounded,
+        count: 1,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.thromboembolism,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Neumología',
+        titlePt: 'Pneumologia',
+        subtitleEs: 'CURB-65',
+        subtitlePt: 'CURB-65',
+        icon: Icons.air_rounded,
+        count: 1,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.pulmonology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Trauma / Ortopedia',
+        titlePt: 'Trauma / Ortopedia',
+        subtitleEs: 'Ottawa · NEXUS · C-Spine · Gustilo · MESS',
+        subtitlePt: 'Ottawa · NEXUS · C-Spine · Gustilo · MESS',
+        icon: Icons.health_and_safety_outlined,
+        count: 6,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.traumaOrthopedics,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Electrolitos',
+        titlePt: 'Eletrólitos',
+        subtitleEs: 'Na · Ca · osmolaridad · ácido-base',
+        subtitlePt: 'Na · Ca · osmolalidade · ácido-base',
+        icon: Icons.science_outlined,
+        count: 6,
+        onTap: () => _openToolsSpecialtyRoute(context, 2),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Infectología',
+        titlePt: 'Infectologia',
+        subtitleEs: 'LRINEC · McIsaac · Duke ISCVID',
+        subtitlePt: 'LRINEC · McIsaac · Duke ISCVID',
+        icon: Icons.bug_report_outlined,
+        count: 3,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.infectiousDiseases,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Nefrología',
+        titlePt: 'Nefrologia',
+        subtitleEs: 'TFG · KDIGO · KFRE · FENa',
+        subtitlePt: 'TFG · KDIGO · KFRE · FENa',
+        icon: Icons.water_drop_outlined,
+        count: 7,
+        onTap: () => _openToolsSpecialtyRoute(context, 0),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Cirugía / Gastro',
+        titlePt: 'Cirurgia / Gastro',
+        subtitleEs: 'Alvarado · BISAP · Hinchey · Caprini · RCRI',
+        subtitlePt: 'Alvarado · BISAP · Hinchey · Caprini · RCRI',
+        icon: Icons.local_hospital_outlined,
+        count: 5,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.surgeryGastro,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Pediatría',
+        titlePt: 'Pediatria',
+        subtitleEs: 'Silverman · Westley · apendicitis pediátrica',
+        subtitlePt: 'Silverman · Westley · apendicite pediátrica',
+        icon: Icons.child_care_outlined,
+        count: 3,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.pediatrics,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Trauma · Gravedad',
+        titlePt: 'Trauma · Gravidade',
+        subtitleEs: 'RTS · ISS · choque hemorrágico ATLS',
+        subtitlePt: 'RTS · ISS · choque hemorrágico ATLS',
+        icon: Icons.monitor_heart_outlined,
+        count: 3,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.traumaSeverity,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Obstetricia',
+        titlePt: 'Obstetrícia',
+        subtitleEs: 'Bishop · HELLP Tennessee',
+        subtitlePt: 'Bishop · HELLP Tennessee',
+        icon: Icons.pregnant_woman_outlined,
+        count: 2,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.obstetrics,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Hematología',
+        titlePt: 'Hematologia',
+        subtitleEs: 'ISTH DIC · 4Ts · PLASMIC · IPSS-R',
+        subtitlePt: 'ISTH DIC · 4Ts · PLASMIC · IPSS-R',
+        icon: Icons.bloodtype_outlined,
+        count: 4,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.hematology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Endocrinología',
+        titlePt: 'Endocrinologia',
+        subtitleEs: 'FRAX · FINDRISC · Burch-Wartofsky',
+        subtitlePt: 'FRAX · FINDRISC · Burch-Wartofsky',
+        icon: Icons.auto_graph_outlined,
+        count: 3,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.endocrinology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Hepatología',
+        titlePt: 'Hepatologia',
+        subtitleEs: 'MELD · Child-Pugh · FIB-4 · Maddrey · Lille',
+        subtitlePt: 'MELD · Child-Pugh · FIB-4 · Maddrey · Lille',
+        icon: Icons.monitor_heart_outlined,
+        count: 5,
+        onTap: () => _openToolsSpecialtyRoute(context, 3),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Oncología',
+        titlePt: 'Oncologia',
+        subtitleEs: 'ECOG · MASCC',
+        subtitlePt: 'ECOG · MASCC',
+        icon: Icons.biotech_outlined,
+        count: 2,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb1WorkspaceScreen(
+              specialty: PlusScoresMb1Specialty.oncology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Neonatología',
+        titlePt: 'Neonatologia',
+        subtitleEs: 'SNAPPE-II · New Ballard · Bell',
+        subtitlePt: 'SNAPPE-II · New Ballard · Bell',
+        icon: Icons.child_friendly_outlined,
+        count: 3,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.neonatology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Urología',
+        titlePt: 'Urologia',
+        subtitleEs: 'IPSS · Gleason/ISUP · Bosniak',
+        subtitlePt: 'IPSS · Gleason/ISUP · Bosniak',
+        icon: Icons.water_outlined,
+        count: 3,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.urology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Reumatología',
+        titlePt: 'Reumatologia',
+        subtitleEs: 'DAS28 · SLEDAI-2K · BASDAI · Beighton',
+        subtitlePt: 'DAS28 · SLEDAI-2K · BASDAI · Beighton',
+        icon: Icons.accessibility_new_outlined,
+        count: 4,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.rheumatology,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Geriatría',
+        titlePt: 'Geriatria',
+        subtitleEs: 'Katz · Lawton-Brody · MMSE',
+        subtitlePt: 'Katz · Lawton-Brody · MMSE',
+        icon: Icons.elderly_outlined,
+        count: 3,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.geriatrics,
+            ),
+          ),
+        ),
+      ),
+      _PlusScoresUnifiedSpecialtyItem(
+        titleEs: 'Psiquiatría',
+        titlePt: 'Psiquiatria',
+        subtitleEs: 'PHQ-9 · SAD PERSONS histórico',
+        subtitlePt: 'PHQ-9 · SAD PERSONS histórico',
+        icon: Icons.psychology_outlined,
+        count: 2,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const PlusScoresMb2WorkspaceScreen(
+              specialty: PlusScoresMb2Specialty.psychiatry,
+            ),
+          ),
+        ),
+      ),
+    ];
+
     return ColoredBox(
-      color: p.darkMode ? const Color(0xFF1A1D23) : const Color(0xFFECF0F4),
-      child: const SizedBox.expand(),
+      color: pageBg,
+      child: ListView.separated(
+        padding: const EdgeInsets.fromLTRB(10, 12, 10, 120),
+        itemCount: items.length,
+        separatorBuilder: (_, __) => Divider(
+          height: 1,
+          thickness: 0.6,
+          color: dark ? const Color(0xFF303741) : const Color(0xFFDDE3E9),
+        ),
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: item.onTap,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 38,
+                      height: 38,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF009C3B).withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        item.icon,
+                        size: 20,
+                        color: const Color(0xFF009C3B),
+                      ),
+                    ),
+                    const SizedBox(width: 11),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isEs ? item.titleEs : item.titlePt,
+                            style: TextStyle(
+                              color: text,
+                              fontSize: 13,
+                              height: 1.15,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            isEs ? item.subtitleEs : item.subtitlePt,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: sub,
+                              fontSize: 10.2,
+                              height: 1.25,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      constraints: const BoxConstraints(minWidth: 28),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF009C3B).withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        '${item.count}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFF009C3B),
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 3),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      size: 18,
+                      color: Color(0xFF009C3B),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
+}
+
+class _PlusScoresUnifiedSpecialtyItem {
+  final String titleEs;
+  final String titlePt;
+  final String subtitleEs;
+  final String subtitlePt;
+  final IconData icon;
+  final int count;
+  final VoidCallback onTap;
+
+  const _PlusScoresUnifiedSpecialtyItem({
+    required this.titleEs,
+    required this.titlePt,
+    required this.subtitleEs,
+    required this.subtitlePt,
+    required this.icon,
+    required this.count,
+    required this.onTap,
+  });
 }
 
 class _ToolsDedicatedSpecialtyScreen extends StatelessWidget {
@@ -498,8 +920,9 @@ class _ToolsTabRow extends StatelessWidget {
       ),
       _ToolsSpecialtyItem(
         title: isEs ? 'Cardiología' : 'Cardiologia',
-        subtitle:
-            isEs ? 'FA · SCA · QTc · riesgo CV' : 'FA · SCA · QTc · risco CV',
+        subtitle: isEs
+            ? 'FA · SCA · QTc · riesgo CV'
+            : 'FA · SCA · QTc · risco CV',
         icon: Icons.favorite_border_rounded,
       ),
       _ToolsSpecialtyItem(
@@ -603,7 +1026,7 @@ class _ToolsSpecialtyItem {
   });
 }
 
-class _ToolsFlatTab extends StatelessWidget {
+class _ToolsFlatTab extends StatefulWidget {
   final int index;
   final String title;
   final String subtitle;
@@ -621,26 +1044,36 @@ class _ToolsFlatTab extends StatelessWidget {
   });
 
   @override
+  State<_ToolsFlatTab> createState() => _ToolsFlatTabState();
+}
+
+class _ToolsFlatTabState extends State<_ToolsFlatTab> {
+  @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: tabCtrl,
+      animation: widget.tabCtrl,
       builder: (context, _) {
-        final surface =
-            dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
-        final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
-        final titleColor =
-            dark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
-        final subColor =
-            dark ? const Color(0xFFAEB9CC) : const Color(0xFF64748B);
-        const accent = Color(0xFF009C3B);
+        final surface = widget.dark
+            ? const Color(0xFF252930)
+            : const Color(0xFFFFFFFF);
+        final border = widget.dark
+            ? const Color(0xFF374151)
+            : const Color(0xFFE2E7EC);
+        final titleColor = widget.dark
+            ? const Color(0xFFF8FAFC)
+            : const Color(0xFF0F172A);
+        final subColor = widget.dark
+            ? const Color(0xFFAEB9CC)
+            : const Color(0xFF64748B);
+        const accent = Color(0xFF059669);
 
         return Material(
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
-              tabCtrl.animateTo(index);
-              _openToolsSpecialtyRoute(context, index);
+              widget.tabCtrl.animateTo(widget.index);
+              _openToolsSpecialtyRoute(context, widget.index);
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 140),
@@ -649,10 +1082,7 @@ class _ToolsFlatTab extends StatelessWidget {
               decoration: BoxDecoration(
                 color: surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: border,
-                  width: 0.7,
-                ),
+                border: Border.all(color: border, width: 0.7),
               ),
               child: Row(
                 children: [
@@ -664,7 +1094,7 @@ class _ToolsFlatTab extends StatelessWidget {
                       color: accent.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: Icon(icon, size: 24, color: accent),
+                    child: Icon(widget.icon, size: 24, color: accent),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -673,7 +1103,7 @@ class _ToolsFlatTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          widget.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -685,7 +1115,7 @@ class _ToolsFlatTab extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          subtitle,
+                          widget.subtitle,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -699,8 +1129,11 @@ class _ToolsFlatTab extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 3),
-                  const Icon(Icons.chevron_right_rounded,
-                      size: 17, color: accent),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    size: 17,
+                    color: accent,
+                  ),
                 ],
               ),
             ),
@@ -776,7 +1209,8 @@ class _BiometricsTabState extends State<_BiometricsTab> {
     final kappa = _sexFem ? 0.7 : 0.9;
     final alpha = _sexFem ? -0.241 : -0.302;
     final ratio = cr / kappa;
-    double gfr = 142 *
+    double gfr =
+        142 *
         _pow(ratio < 1 ? ratio : 1, alpha) *
         _pow(ratio > 1 ? ratio : 1, -1.200) *
         _pow(0.9938, a);
@@ -812,128 +1246,165 @@ class _BiometricsTabState extends State<_BiometricsTab> {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      child: Column(children: [
-        _SectionCard(
-          title: isEs ? 'Antropometría' : 'Antropometria',
-          icon: Icons.person_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Peso (kg)' : 'Peso (kg)',
-                      ctrl: _wCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '78')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Talla (cm)' : 'Altura (cm)',
-                      ctrl: _hCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '171')),
-            ]),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Edad (años)' : 'Idade (anos)',
-                      ctrl: _ageCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '60')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Creatinina (mg/dL)' : 'Creatinina (mg/dL)',
-                      ctrl: _crCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '1,0')),
-            ]),
-            const SizedBox(height: 10),
-            _CanonicalSexToggle(
-              isEs: isEs,
-              isFemale: _sexFem,
-              onChanged: (value) => setState(() => _sexFem = value),
+      child: Column(
+        children: [
+          _SectionCard(
+            title: isEs ? 'Antropometría' : 'Antropometria',
+            icon: Icons.person_rounded,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'Peso (kg)' : 'Peso (kg)',
+                        ctrl: _wCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '78',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'Talla (cm)' : 'Altura (cm)',
+                        ctrl: _hCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '171',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'Edad (años)' : 'Idade (anos)',
+                        ctrl: _ageCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '60',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs
+                            ? 'Creatinina (mg/dL)'
+                            : 'Creatinina (mg/dL)',
+                        ctrl: _crCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '1,0',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                _CanonicalSexToggle(
+                  isEs: isEs,
+                  isFemale: _sexFem,
+                  onChanged: (value) => setState(() => _sexFem = value),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ResultTile(
+                        label: 'IMC',
+                        value: _fmt(_bmiVal),
+                        unit: 'kg/m²',
+                        note: _bmiLabel(_bmiVal),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _ResultTile(
+                        label: isEs ? 'Peso Ideal' : 'Peso Ideal',
+                        value: _idealWeight,
+                        unit: 'kg',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                _ResultTile(
+                  label: isEs
+                      ? 'Peso Ajustado (obesos)'
+                      : 'Peso Ajustado (obesos)',
+                  value: _adjustedWeight,
+                  unit: 'kg',
+                  full: true,
+                  note: isEs
+                      ? 'Usar en obesos (IMC>30) para dosis de fármacos'
+                      : 'Usar em obesos (IMC>30) para dose de fármacos',
+                ),
+              ],
             ),
-            const SizedBox(height: 14),
-            Row(children: [
-              Expanded(
-                  child: _ResultTile(
-                      label: 'IMC',
-                      value: _fmt(_bmiVal),
-                      unit: 'kg/m²',
-                      note: _bmiLabel(_bmiVal))),
-              const SizedBox(width: 8),
-              Expanded(
-                  child: _ResultTile(
-                      label: isEs ? 'Peso Ideal' : 'Peso Ideal',
-                      value: _idealWeight,
-                      unit: 'kg')),
-            ]),
-            const SizedBox(height: 8),
-            _ResultTile(
-                label:
-                    isEs ? 'Peso Ajustado (obesos)' : 'Peso Ajustado (obesos)',
-                value: _adjustedWeight,
-                unit: 'kg',
-                full: true,
-                note: isEs
-                    ? 'Usar en obesos (IMC>30) para dosis de fármacos'
-                    : 'Usar em obesos (IMC>30) para dose de fármacos'),
-          ]),
-        ),
-        const SizedBox(height: 12),
-        _SectionCard(
-          title: isEs ? 'Función Renal' : 'Função Renal',
-          icon: Icons.water_rounded,
-          child: Column(children: [
-            _ResultTile(
-                label:
-                    isEs ? 'ClCr — Cockcroft-Gault' : 'ClCr — Cockcroft-Gault',
-                value: _clcr,
-                unit: 'mL/min',
-                note: _clcrLabel(_clcr),
-                full: true),
-            const SizedBox(height: 8),
-            _ResultTile(
-                label: isEs ? 'TFG — CKD-EPI 2021' : 'TFG — CKD-EPI 2021',
-                value: _ckdEpi,
-                unit: 'mL/min/1,73m²',
-                note: _clcrLabel(_ckdEpi),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'Cockcroft-Gault: usar para ajuste de fármacos. CKD-EPI: estadificación de ERC (KDIGO).'
-                    : 'Cockcroft-Gault: usar para ajuste de fármacos. CKD-EPI: estadiamento de DRC (KDIGO).'),
-            const SizedBox(height: 8),
-            _RenalGuideRow(
-                label: '≥ 90',
-                status: isEs ? 'G1 — Función normal' : 'G1 — Função normal',
-                ok: true),
-            _RenalGuideRow(
-                label: '60–89',
-                status: isEs ? 'G2 — Leve. Vigilar' : 'G2 — Leve. Monitorar'),
-            _RenalGuideRow(
-                label: '30–59',
-                status: isEs
-                    ? 'G3 — Moderada. Ajuste frecuente'
-                    : 'G3 — Moderada. Ajuste frequente',
-                warn: true),
-            _RenalGuideRow(
-                label: '15–29',
-                status: isEs
-                    ? 'G4 — Grave. Ajuste obligatorio'
-                    : 'G4 — Grave. Ajuste obrigatório',
-                warn: true),
-            _RenalGuideRow(
-                label: '<15',
-                status: isEs
-                    ? 'G5 — Falla. Dosis muy reducida'
-                    : 'G5 — Falência. Dose muito reduzida',
-                danger: true),
-          ]),
-        ),
-      ]),
+          ),
+          const SizedBox(height: 12),
+          _SectionCard(
+            title: isEs ? 'Función Renal' : 'Função Renal',
+            icon: Icons.water_rounded,
+            child: Column(
+              children: [
+                _ResultTile(
+                  label: isEs
+                      ? 'ClCr — Cockcroft-Gault'
+                      : 'ClCr — Cockcroft-Gault',
+                  value: _clcr,
+                  unit: 'mL/min',
+                  note: _clcrLabel(_clcr),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _ResultTile(
+                  label: isEs ? 'TFG — CKD-EPI 2021' : 'TFG — CKD-EPI 2021',
+                  value: _ckdEpi,
+                  unit: 'mL/min/1,73m²',
+                  note: _clcrLabel(_ckdEpi),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'Cockcroft-Gault: usar para ajuste de fármacos. CKD-EPI: estadificación de ERC (KDIGO).'
+                      : 'Cockcroft-Gault: usar para ajuste de fármacos. CKD-EPI: estadiamento de DRC (KDIGO).',
+                ),
+                const SizedBox(height: 8),
+                _RenalGuideRow(
+                  label: '≥ 90',
+                  status: isEs ? 'G1 — Función normal' : 'G1 — Função normal',
+                  ok: true,
+                ),
+                _RenalGuideRow(
+                  label: '60–89',
+                  status: isEs ? 'G2 — Leve. Vigilar' : 'G2 — Leve. Monitorar',
+                ),
+                _RenalGuideRow(
+                  label: '30–59',
+                  status: isEs
+                      ? 'G3 — Moderada. Ajuste frecuente'
+                      : 'G3 — Moderada. Ajuste frequente',
+                  warn: true,
+                ),
+                _RenalGuideRow(
+                  label: '15–29',
+                  status: isEs
+                      ? 'G4 — Grave. Ajuste obligatorio'
+                      : 'G4 — Grave. Ajuste obrigatório',
+                  warn: true,
+                ),
+                _RenalGuideRow(
+                  label: '<15',
+                  status: isEs
+                      ? 'G5 — Falla. Dosis muy reducida'
+                      : 'G5 — Falência. Dose muito reduzida',
+                  danger: true,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1300,134 +1771,180 @@ class _ScoresTabState extends State<_ScoresTab> {
     return 'TEP PROVÁVEL (>6)';
   }
 
-  Widget _scoreRow(String label, bool value, VoidCallback onTap,
-          {double points = 1}) =>
-      GestureDetector(
-        onTap: () {
-          AppHaptics.selection(context);
-          onTap();
-        },
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: value ? const Color(0xFFECFDF5) : const Color(0xFFF8F8F8),
-            border: Border.all(
-                color: value ? const Color(0xFFBBF7D0) : kToolBorder),
-          ),
-          child: Row(children: [
-            Container(
-              width: 22,
-              height: 22,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: value ? kToolGreen : Colors.white,
-                  border: Border.all(
-                      color: value ? kToolGreen : const Color(0xFFA8B2C1),
-                      width: 2)),
-              child: value
-                  ? const Icon(Icons.check, size: 13, color: Colors.white)
-                  : null,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-                child: Text(label,
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: value
-                            ? AppColors.of(context).textPrimary
-                            : AppColors.of(context).textSecondary))),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: value
-                      ? kToolGreen.withOpacity(0.15)
-                      : AppColors.of(context).surface),
-              child: Text(
-                  points == points.roundToDouble()
-                      ? '+${points.toInt()}'
-                      : '${points > 0 ? "+" : ""}$points',
-                  style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      color:
-                          value ? kToolGreen : AppColors.of(context).textHint)),
-            ),
-          ]),
+  Widget _scoreRow(
+    String label,
+    bool value,
+    VoidCallback onTap, {
+    double points = 1,
+  }) => GestureDetector(
+    onTap: () {
+      AppHaptics.selection(context);
+      onTap();
+    },
+    child: Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: value ? const Color(0xFFECFDF5) : const Color(0xFFF8F8F8),
+        border: Border.all(
+          color: value ? const Color(0xFFBBF7D0) : kToolBorder,
         ),
-      );
-
-  Widget _glasRow(String label, int value, int max, VoidCallback onDec,
-          VoidCallback onInc) =>
-      Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Row(children: [
-          Expanded(
-              child: Text(label,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.of(context).textPrimary))),
-          IconButton(
-              icon: const Icon(Icons.remove_circle_outline),
-              iconSize: 22,
-              color: kToolGreen,
-              onPressed: value > 1 ? onDec : null),
+      ),
+      child: Row(
+        children: [
           Container(
-            width: 36,
-            alignment: Alignment.center,
-            child: Text('$value',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.of(context).textPrimary)),
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: value ? kToolGreen : Colors.white,
+              border: Border.all(
+                color: value ? kToolGreen : const Color(0xFFA8B2C1),
+                width: 2,
+              ),
+            ),
+            child: value
+                ? const Icon(Icons.check, size: 13, color: Colors.white)
+                : null,
           ),
-          IconButton(
-              icon: const Icon(Icons.add_circle_outline),
-              iconSize: 22,
-              color: kToolGreen,
-              onPressed: value < max ? onInc : null),
-          SizedBox(
-              width: 30,
-              child: Text('/$max',
-                  style: TextStyle(
-                      fontSize: 11, color: AppColors.of(context).textHint))),
-        ]),
-      );
-
-  Widget _sofaDropRow(String label, int value, List<String> options,
-          ValueChanged<int?> onChanged) =>
-      Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Row(children: [
+          const SizedBox(width: 10),
           Expanded(
-              child: Text(label,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.of(context).textPrimary))),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<int>(
-                value: value,
-                isDense: true,
-                style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.of(context).textPrimary),
-                onChanged: onChanged,
-                items: List.generate(options.length,
-                    (i) => DropdownMenuItem(value: i, child: Text(options[i]))),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: value
+                    ? AppColors.of(context).textPrimary
+                    : AppColors.of(context).textSecondary,
               ),
             ),
           ),
-        ]),
-      );
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: value
+                  ? kToolGreen.withOpacity(0.15)
+                  : AppColors.of(context).surface,
+            ),
+            child: Text(
+              points == points.roundToDouble()
+                  ? '+${points.toInt()}'
+                  : '${points > 0 ? "+" : ""}$points',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                color: value ? kToolGreen : AppColors.of(context).textHint,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Widget _glasRow(
+    String label,
+    int value,
+    int max,
+    VoidCallback onDec,
+    VoidCallback onInc,
+  ) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.of(context).textPrimary,
+            ),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.remove_circle_outline),
+          iconSize: 22,
+          color: kToolGreen,
+          onPressed: value > 1 ? onDec : null,
+        ),
+        Container(
+          width: 36,
+          alignment: Alignment.center,
+          child: Text(
+            '$value',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              color: AppColors.of(context).textPrimary,
+            ),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.add_circle_outline),
+          iconSize: 22,
+          color: kToolGreen,
+          onPressed: value < max ? onInc : null,
+        ),
+        SizedBox(
+          width: 30,
+          child: Text(
+            '/$max',
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColors.of(context).textHint,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _sofaDropRow(
+    String label,
+    int value,
+    List<String> options,
+    ValueChanged<int?> onChanged,
+  ) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.of(context).textPrimary,
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          decoration: BoxDecoration(border: Border.all(color: kToolBorder)),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<int>(
+              value: value,
+              isDense: true,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: AppColors.of(context).textPrimary,
+              ),
+              onChanged: onChanged,
+              items: List.generate(
+                options.length,
+                (i) => DropdownMenuItem(value: i, child: Text(options[i])),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -1436,770 +1953,976 @@ class _ScoresTabState extends State<_ScoresTab> {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      child: Column(children: [
-        // ── Glasgow ─────────────────────────────────────────────────
-        _SectionCard(
-          title: isEs ? 'Escala de Glasgow (GCS)' : 'Escala de Glasgow (GCS)',
-          icon: Icons.psychology_rounded,
-          badge: '$_glasGCS',
-          badgeColor: _glasGCS >= 14
-              ? kToolGreen
-              : _glasGCS >= 9
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            _glasRow(
-                isEs ? 'Abertura Ocular (O)' : 'Abertura Ocular (O)',
-                _glasEye,
-                4,
-                () => setState(() => _glasEye--),
-                () => setState(() => _glasEye++)),
-            _glasRow(
-                isEs ? 'Respuesta Verbal (V)' : 'Resposta Verbal (V)',
-                _glasVerbal,
-                5,
-                () => setState(() => _glasVerbal--),
-                () => setState(() => _glasVerbal++)),
-            _glasRow(
-                isEs ? 'Respuesta Motora (M)' : 'Resposta Motora (M)',
-                _glasMotor,
-                6,
-                () => setState(() => _glasMotor--),
-                () => setState(() => _glasMotor++)),
-            const Divider(),
-            _ResultTile(
-                label: 'GCS Total',
-                value: '$_glasGCS',
-                unit: '/15',
-                note: _glasLabel(_glasGCS),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'O: 1=Ninguna 2=Dolor 3=Voz 4=Espontánea | V: 1=Ninguna 2=Sonidos 3=Palabras 4=Confuso 5=Orientado | M: 1=Ninguna 2=Extensión 3=Flexión 4=Retirada 5=Localiza 6=Obedece'
-                    : 'O: 1=Nenhuma 2=Dor 3=Voz 4=Espontânea | V: 1=Nenhuma 2=Sons 3=Palavras 4=Confuso 5=Orientado | M: 1=Nenhuma 2=Extensão 3=Flexão 4=Retirada 5=Localiza 6=Obedece'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        // ── SOFA ─────────────────────────────────────────────────────
-        _SectionCard(
-          title: 'Score SOFA (Sepse)',
-          icon: Icons.monitor_heart_rounded,
-          badge: '$_sofaTotal',
-          badgeColor: _sofaTotal <= 6
-              ? kToolGreen
-              : _sofaTotal <= 9
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            _sofaDropRow(
-                isEs ? 'Respiratorio (PaO2/FiO2)' : 'Respiratório (PaO2/FiO2)',
-                _sofaResp,
-                isEs
-                    ? [
-                        '≥400 (0)',
-                        '<400 (1)',
-                        '<300 (2)',
-                        '<200+VPP (3)',
-                        '<100+VPP (4)'
-                      ]
-                    : [
-                        '≥400 (0)',
-                        '<400 (1)',
-                        '<300 (2)',
-                        '<200+VPP (3)',
-                        '<100+VPP (4)'
-                      ],
-                (v) => setState(() => _sofaResp = v ?? 0)),
-            _sofaDropRow(
-                isEs ? 'Coagulación (Plaquetas)' : 'Coagulação (Plaquetas)',
-                _sofaCoag,
-                ['≥150k (0)', '<150k (1)', '<100k (2)', '<50k (3)', '<20k (4)'],
-                (v) => setState(() => _sofaCoag = v ?? 0)),
-            _sofaDropRow(
-                isEs ? 'Hepático (Bilirrubina)' : 'Hepático (Bilirrubina)',
-                _sofaLiver,
-                [
-                  '<1,2 (0)',
-                  '1,2–1,9 (1)',
-                  '2,0–5,9 (2)',
-                  '6,0–11,9 (3)',
-                  '≥12,0 (4)'
-                ],
-                (v) => setState(() => _sofaLiver = v ?? 0)),
-            _sofaDropRow(
-                isEs
-                    ? 'Cardiovascular (PAM/Vaso)'
-                    : 'Cardiovascular (PAM/Vaso)',
-                _sofaCardio,
-                isEs
-                    ? [
-                        'PAM≥70(0)',
-                        'PAM<70(1)',
-                        'Dopa≤5(2)',
-                        'Dopa>5/NA≤0,1(3)',
-                        'Dopa>15/NA>0,1(4)'
-                      ]
-                    : [
-                        'PAM≥70(0)',
-                        'PAM<70(1)',
-                        'Dopa≤5(2)',
-                        'Dopa>5/NA≤0,1(3)',
-                        'Dopa>15/NA>0,1(4)'
-                      ],
-                (v) => setState(() => _sofaCardio = v ?? 0)),
-            _sofaDropRow(
-                isEs ? 'Neurológico (GCS)' : 'Neurológico (GCS)',
-                _sofaNeuro,
-                ['15 (0)', '13–14 (1)', '10–12 (2)', '6–9 (3)', '<6 (4)'],
-                (v) => setState(() => _sofaNeuro = v ?? 0)),
-            _sofaDropRow(
-                isEs
-                    ? 'Renal (Creatinina/Diuresis)'
-                    : 'Renal (Creatinina/Diurese)',
-                _sofaRenal,
-                [
-                  '<1,2 (0)',
-                  '1,2–1,9 (1)',
-                  '2,0–3,4 (2)',
-                  '3,5–4,9/<500mL(3)',
-                  '>5/>200mL(4)'
-                ],
-                (v) => setState(() => _sofaRenal = v ?? 0)),
-            const Divider(),
-            _ResultTile(
-                label: 'SOFA Total',
-                value: '$_sofaTotal',
-                unit: '/24',
-                note: _sofaLabel(_sofaTotal),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'SOFA ≥2: disfunción orgánica = SEPSIS. Aumento ≥2 puntos = mayor mortalidad.'
-                    : 'SOFA ≥2: disfunção orgânica = SEPSE. Aumento ≥2 pontos = maior mortalidade.'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        // ── CHA2DS2-VASc ──────────────────────────────────────────────
-        _SectionCard(
-          title: 'CHA₂DS₂-VASc (FA)',
-          icon: Icons.favorite_rounded,
-          badge: '$_chaScore',
-          badgeColor: _chaScore == 0
-              ? kToolGreen
-              : _chaScore == 1
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            _scoreRow(isEs ? 'IC / FE reduzida (C)' : 'IC / FE reduzida (C)',
-                _cha_ic, () => setState(() => _cha_ic = !_cha_ic)),
-            _scoreRow(isEs ? 'Hipertensión (H)' : 'Hipertensão (H)', _cha_has,
-                () => setState(() => _cha_has = !_cha_has)),
-            _scoreRow(isEs ? 'Edad ≥75 años (A₂)' : 'Idade ≥75 anos (A₂)',
-                _cha_age75, () => setState(() => _cha_age75 = !_cha_age75),
-                points: 2),
-            _scoreRow(isEs ? 'Diabetes mellitus (D)' : 'Diabetes mellitus (D)',
-                _cha_dm, () => setState(() => _cha_dm = !_cha_dm)),
-            _scoreRow(
-                isEs
-                    ? 'AVC/AIT/Tromboembolismo (S₂)'
-                    : 'AVC/AIT/Tromboembolismo (S₂)',
-                _cha_stroke,
-                () => setState(() => _cha_stroke = !_cha_stroke),
-                points: 2),
-            _scoreRow(isEs ? 'Enfermedad Vascular (V)' : 'Doença Vascular (V)',
-                _cha_vasc, () => setState(() => _cha_vasc = !_cha_vasc)),
-            _scoreRow(
-                isEs ? 'Edad 65–74 años (A)' : 'Idade 65–74 anos (A)',
-                _cha_age65_74,
-                () => setState(() => _cha_age65_74 = !_cha_age65_74)),
-            _scoreRow(isEs ? 'Sexo femenino (Sc)' : 'Sexo feminino (Sc)',
-                _cha_female, () => setState(() => _cha_female = !_cha_female)),
-            const Divider(),
-            Row(children: [
-              Expanded(
-                  child: _ResultTile(
-                      label: isEs ? 'Puntuación' : 'Pontuação',
-                      value: '$_chaScore',
-                      unit: '/9')),
-              const SizedBox(width: 8),
-              Expanded(
-                  child: _ResultTile(
-                      label: isEs ? 'AVC/año' : 'AVC/ano',
-                      value: _chaStroke(_chaScore),
-                      unit: '')),
-            ]),
-            const SizedBox(height: 8),
-            _InfoNote(text: _chaRisk(_chaScore)),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        // ── Wells TVP ─────────────────────────────────────────────────
-        _SectionCard(
-          title: isEs
-              ? 'Wells — TVP (Trombosis Venosa)'
-              : 'Wells — TVP (Trombose Venosa)',
-          icon: Icons.airline_seat_flat_angled_rounded,
-          badge: _wtScore.toStringAsFixed(0),
-          badgeColor: _wtScore <= 0
-              ? kToolGreen
-              : _wtScore <= 2
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            _scoreRow(
-                isEs ? 'Cáncer activo (trat. <6m)' : 'Câncer ativo (trat. <6m)',
-                _wt_active_cancer,
-                () => setState(() => _wt_active_cancer = !_wt_active_cancer)),
-            _scoreRow(
-                isEs ? 'Parálisis/paresia MMII' : 'Paralisia/paresia MMII',
-                _wt_paralysis,
-                () => setState(() => _wt_paralysis = !_wt_paralysis)),
-            _scoreRow(
-                isEs
-                    ? 'Inmovilización >3 días / cirugía <12 semanas'
-                    : 'Imobilização >3 dias / cirurgia <12 semanas',
-                _wt_recent_immob,
-                () => setState(() => _wt_recent_immob = !_wt_recent_immob)),
-            _scoreRow(
-                isEs ? 'Dolor a la palpación venosa' : 'Dor à palpação venosa',
-                _wt_localized_tender,
-                () => setState(
-                    () => _wt_localized_tender = !_wt_localized_tender)),
-            _scoreRow(
-                isEs ? 'Edema de toda la pierna' : 'Edema de toda a perna',
-                _wt_entire_leg_swol,
-                () =>
-                    setState(() => _wt_entire_leg_swol = !_wt_entire_leg_swol)),
-            _scoreRow(
-                isEs
-                    ? 'Pantorrilla ≥3 cm mayor que contralateral'
-                    : 'Panturrilha ≥3 cm maior que contralateral',
-                _wt_calf_swol3cm,
-                () => setState(() => _wt_calf_swol3cm = !_wt_calf_swol3cm)),
-            _scoreRow(
-                isEs
-                    ? 'Edema con fóvea en pierna sintomática'
-                    : 'Edema com cacifo na perna sintomática',
-                _wt_pitting_edema,
-                () => setState(() => _wt_pitting_edema = !_wt_pitting_edema)),
-            _scoreRow(
-                isEs
-                    ? 'Venas superficiales colaterales'
-                    : 'Veias superficiais colaterais',
-                _wt_collateral_veins,
-                () => setState(
-                    () => _wt_collateral_veins = !_wt_collateral_veins)),
-            _scoreRow(
-                isEs ? 'TVP previa documentada' : 'TVP prévia documentada',
-                _wt_previous_dvt,
-                () => setState(() => _wt_previous_dvt = !_wt_previous_dvt)),
-            _scoreRow(
-                isEs
-                    ? 'Diagnóstico alternativo más probable (−2)'
-                    : 'Diagnóstico alternativo mais provável (−2)',
-                _wt_alt_dx_likely,
-                () => setState(() => _wt_alt_dx_likely = !_wt_alt_dx_likely),
-                points: -2),
-            const Divider(),
-            _ResultTile(
-                label: isEs ? 'Score Wells TVP' : 'Score Wells TVP',
-                value: _wtScore.toStringAsFixed(0),
-                unit: 'pts',
-                note: _wtLabel(_wtScore),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? '≤0: Baja → D-dímero. 1–2: Moderada → D-dímero o eco-Doppler. ≥3: Alta → Eco-Doppler direto.'
-                    : '≤0: Baixa → D-dímero. 1–2: Moderada → D-dímero ou eco-Doppler. ≥3: Alta → Eco-Doppler direto.'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        // ── Wells TEP ─────────────────────────────────────────────────
-        _SectionCard(
-          title: isEs
-              ? 'Wells — TEP (Tromboembolismo Pulmonar)'
-              : 'Wells — TEP (Tromboembolismo Pulmonar)',
-          icon: Icons.air_rounded,
-          badge: _wpScore.toStringAsFixed(1),
-          badgeColor: _wpScore < 2
-              ? kToolGreen
-              : _wpScore <= 6
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            _scoreRow(
-                isEs
-                    ? 'Signos/síntomas de TVP (+3)'
-                    : 'Sinais/sintomas de TVP (+3)',
-                _wp_dvt_signs,
-                () => setState(() => _wp_dvt_signs = !_wp_dvt_signs),
-                points: 3),
-            _scoreRow(
-                isEs
-                    ? 'TEP el diagnóstico más probable (+3)'
-                    : 'TEP o diagnóstico mais provável (+3)',
-                _wp_no_alt_dx,
-                () => setState(() => _wp_no_alt_dx = !_wp_no_alt_dx),
-                points: 3),
-            _scoreRow(isEs ? 'FC > 100 bpm (+1,5)' : 'FC > 100 bpm (+1,5)',
-                _wp_hr100, () => setState(() => _wp_hr100 = !_wp_hr100),
-                points: 1.5),
-            _scoreRow(
-                isEs
-                    ? 'Inmovilización ≥3 días / cirugía <4 semanas (+1,5)'
-                    : 'Imobilização ≥3 dias / cirurgia <4 semanas (+1,5)',
-                _wp_immob,
-                () => setState(() => _wp_immob = !_wp_immob),
-                points: 1.5),
-            _scoreRow(
-                isEs ? 'TVP/TEP previo (+1,5)' : 'TVP/TEP prévio (+1,5)',
-                _wp_prev_dvt,
-                () => setState(() => _wp_prev_dvt = !_wp_prev_dvt),
-                points: 1.5),
-            _scoreRow(
-                isEs ? 'Hemoptisis (+1)' : 'Hemoptise (+1)',
-                _wp_hemoptysis,
-                () => setState(() => _wp_hemoptysis = !_wp_hemoptysis)),
-            _scoreRow(
-                isEs ? 'Malignidad activa (+1)' : 'Malignidade ativa (+1)',
-                _wp_malignancy,
-                () => setState(() => _wp_malignancy = !_wp_malignancy)),
-            const Divider(),
-            _ResultTile(
-                label: isEs ? 'Score Wells TEP' : 'Score Wells TEP',
-                value: _wpScore.toStringAsFixed(1),
-                unit: 'pts',
-                note: _wpLabel(_wpScore),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? '<2: TEP improbable → D-dímero. 2–6: Moderado. >6: TEP probable → AngioTC de tórax direto.'
-                    : '<2: TEP improvável → D-dímero. 2–6: Moderado. >6: TEP provável → AngioTC de tórax direto.'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        // ── CURB-65 ───────────────────────────────────────────────────
-        _SectionCard(
-          title: 'CURB-65 (PAC)',
-          icon: Icons.masks_rounded,
-          badge: '$_curbScore',
-          badgeColor: _curbScore <= 1
-              ? kToolGreen
-              : _curbScore == 2
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            _scoreRow(
-                isEs ? 'Confusión (nueva)' : 'Confusão (nova)',
-                _curb_confusion,
-                () => setState(() => _curb_confusion = !_curb_confusion)),
-            _scoreRow(isEs ? 'Urea >50 mg/dL' : 'Ureia >50 mg/dL', _curb_ureia,
-                () => setState(() => _curb_ureia = !_curb_ureia)),
-            _scoreRow(isEs ? 'FR ≥30/min' : 'FR ≥30 irpm', _curb_rr,
-                () => setState(() => _curb_rr = !_curb_rr)),
-            _scoreRow(
-                isEs ? 'PAS <90 o PAD ≤60 mmHg' : 'PAS <90 ou PAD ≤60 mmHg',
-                _curb_bp,
-                () => setState(() => _curb_bp = !_curb_bp)),
-            _scoreRow(isEs ? 'Edad ≥65 años' : 'Idade ≥65 anos', _curb_age65,
-                () => setState(() => _curb_age65 = !_curb_age65)),
-            const Divider(),
-            Row(children: [
-              Expanded(
-                  child: _ResultTile(
-                      label: 'CURB-65', value: '$_curbScore', unit: '/5')),
-              const SizedBox(width: 8),
-              Expanded(
-                  child: _ResultTile(
-                      label: isEs ? 'Mortalidad' : 'Mortalidade',
-                      value: _curbMort(_curbScore),
-                      unit: '')),
-            ]),
-            const SizedBox(height: 8),
-            _InfoNote(text: _curbLabel(_curbScore)),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        // ── NEWS2 ─────────────────────────────────────────────────────
-        _SectionCard(
-          title: 'NEWS2 (Alerta Precoce)',
-          icon: Icons.monitor_heart_outlined,
-          badge: '$_newsTotal',
-          badgeColor: _newsTotal == 0
-              ? kToolGreen
-              : _newsTotal <= 4
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            // FR
-            _sofaDropRow(
-                isEs ? 'FR (irpm)' : 'FR (irpm)',
-                _news_rr,
-                ['≤8 (+3)', '9–11 (+1)', '12–20 (0)', '21–24 (+2)', '≥25 (+3)'],
-                (v) => setState(() => _news_rr = v ?? 0)),
-            // SpO2 escala A
-            _sofaDropRow(
-                isEs ? 'SpO₂ % (Esc. A)' : 'SpO₂ % (Esc. A)',
-                _news_spo2,
-                ['≤91 (+3)', '92–93 (+2)', '94–95 (+1)', '≥96 (0)'],
-                (v) => setState(() => _news_spo2 = v ?? 0)),
-            // O2 suplementar
-            Container(
-              margin: const EdgeInsets.only(bottom: 6),
-              child: Row(children: [
-                Expanded(
-                    child: Text(
-                        isEs ? 'O₂ suplementario (+2)' : 'O₂ suplementar (+2)',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.of(context).textPrimary))),
-                Switch(
-                  value: _news_supo2,
-                  thumbColor: WidgetStateProperty.resolveWith(
-                    (states) => states.contains(WidgetState.selected)
-                        ? kToolGreen
-                        : null,
-                  ),
-                  onChanged: (v) => setState(() => _news_supo2 = v),
+      child: Column(
+        children: [
+          // ── Glasgow ─────────────────────────────────────────────────
+          _SectionCard(
+            title: isEs ? 'Escala de Glasgow (GCS)' : 'Escala de Glasgow (GCS)',
+            icon: Icons.psychology_rounded,
+            badge: '$_glasGCS',
+            badgeColor: _glasGCS >= 14
+                ? kToolGreen
+                : _glasGCS >= 9
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                _glasRow(
+                  isEs ? 'Abertura Ocular (O)' : 'Abertura Ocular (O)',
+                  _glasEye,
+                  4,
+                  () => setState(() => _glasEye--),
+                  () => setState(() => _glasEye++),
                 ),
-              ]),
+                _glasRow(
+                  isEs ? 'Respuesta Verbal (V)' : 'Resposta Verbal (V)',
+                  _glasVerbal,
+                  5,
+                  () => setState(() => _glasVerbal--),
+                  () => setState(() => _glasVerbal++),
+                ),
+                _glasRow(
+                  isEs ? 'Respuesta Motora (M)' : 'Resposta Motora (M)',
+                  _glasMotor,
+                  6,
+                  () => setState(() => _glasMotor--),
+                  () => setState(() => _glasMotor++),
+                ),
+                const Divider(),
+                _ResultTile(
+                  label: 'GCS Total',
+                  value: '$_glasGCS',
+                  unit: '/15',
+                  note: _glasLabel(_glasGCS),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'O: 1=Ninguna 2=Dolor 3=Voz 4=Espontánea | V: 1=Ninguna 2=Sonidos 3=Palabras 4=Confuso 5=Orientado | M: 1=Ninguna 2=Extensión 3=Flexión 4=Retirada 5=Localiza 6=Obedece'
+                      : 'O: 1=Nenhuma 2=Dor 3=Voz 4=Espontânea | V: 1=Nenhuma 2=Sons 3=Palavras 4=Confuso 5=Orientado | M: 1=Nenhuma 2=Extensão 3=Flexão 4=Retirada 5=Localiza 6=Obedece',
+                ),
+              ],
             ),
-            // PA sistólica
-            _sofaDropRow(
-                isEs ? 'PAS (mmHg)' : 'PAS (mmHg)',
-                _news_sbp,
-                [
-                  '≤90 (+3)',
-                  '91–100 (+2)',
-                  '101–110 (+1)',
-                  '111–219 (0)',
-                  '≥220 (+3)'
-                ],
-                (v) => setState(() => _news_sbp = v ?? 0)),
-            // FC
-            _sofaDropRow(
-                isEs ? 'FC (bpm)' : 'FC (bpm)',
-                _news_hr,
-                [
-                  '≤40 (+3)',
-                  '41–50 (+1)',
-                  '51–90 (0)',
-                  '91–110 (+1)',
-                  '111–130 (+2)',
-                  '≥131 (+3)'
-                ],
-                (v) => setState(() => _news_hr = v ?? 0)),
-            // Nível consciência AVPU
-            _sofaDropRow(
-                isEs ? 'Conciencia (AVPU)' : 'Consciência (AVPU)',
-                _news_neuro,
-                isEs
-                    ? [
-                        'Alerta (0)',
-                        'Voz/Confuso (+3)',
-                        'Dolor (+3)',
-                        'Inconsciente (+3)'
-                      ]
-                    : [
-                        'Alerta (0)',
-                        'Voz/Confuso (+3)',
-                        'Dor (+3)',
-                        'Inconsciente (+3)'
-                      ],
-                (v) =>
-                    setState(() => _news_neuro = v != null && v > 0 ? 3 : 0)),
-            // Temperatura
-            _sofaDropRow(
-                isEs ? 'Temperatura °C' : 'Temperatura °C',
-                _news_temp,
-                [
-                  '≤35,0 (+3)',
-                  '35,1–36,0 (+1)',
-                  '36,1–38,0 (0)',
-                  '38,1–39,0 (+1)',
-                  '≥39,1 (+2)'
-                ],
-                (v) => setState(() => _news_temp = v ?? 0)),
-            const Divider(),
-            _ResultTile(
-                label: 'NEWS2 Total',
-                value: '$_newsTotal',
-                unit: 'pts',
-                note: _newsLabel(_newsTotal),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'Desarrollado por la Royal College of Physicians (RCP) 2017. Score ≥7 = activar respuesta crítica inmediata.'
-                    : 'Royal College of Physicians 2017. Score ≥7 = acionar resposta de emergência imediata.'),
-          ]),
-        ),
+          ),
 
-        const SizedBox(height: 12),
+          const SizedBox(height: 12),
 
-        // ── Child-Pugh ────────────────────────────────────────────────
-        _SectionCard(
-          title: isEs
-              ? 'Child-Pugh (Hepatopatía Crónica)'
-              : 'Child-Pugh (Hepatopatia Crônica)',
-          icon: Icons.local_hospital_rounded,
-          badge: '$_cpTotal',
-          badgeColor: _cpTotal <= 6
-              ? kToolGreen
-              : _cpTotal <= 9
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child: Column(children: [
-            _sofaDropRow(
-                isEs ? 'Bilirrubina total' : 'Bilirrubina total',
-                _cp_bili - 1,
-                isEs
-                    ? ['<2 mg/dL (1)', '2–3 mg/dL (2)', '>3 mg/dL (3)']
-                    : ['<2 mg/dL (1)', '2–3 mg/dL (2)', '>3 mg/dL (3)'],
-                (v) => setState(() => _cp_bili = (v ?? 0) + 1)),
-            _sofaDropRow(
-                isEs ? 'Albúmina sérica' : 'Albumina sérica',
-                _cp_alb - 1,
-                ['>3,5 g/dL (1)', '2,8–3,5 g/dL (2)', '<2,8 g/dL (3)'],
-                (v) => setState(() => _cp_alb = (v ?? 0) + 1)),
-            _sofaDropRow(
-                'TP / INR',
-                _cp_pt - 1,
-                isEs
-                    ? [
-                        '<4 s / <1,7 (1)',
-                        '4–6 s / 1,7–2,3 (2)',
-                        '>6 s / >2,3 (3)'
-                      ]
-                    : [
-                        '<4 s / <1,7 (1)',
-                        '4–6 s / 1,7–2,3 (2)',
-                        '>6 s / >2,3 (3)'
-                      ],
-                (v) => setState(() => _cp_pt = (v ?? 0) + 1)),
-            _sofaDropRow(
-                isEs ? 'Ascitis' : 'Ascite',
-                _cp_ascite - 1,
-                isEs
-                    ? ['Ausente (1)', 'Leve (2)', 'Tensa/refractaria (3)']
-                    : ['Ausente (1)', 'Leve (2)', 'Tensa/refratária (3)'],
-                (v) => setState(() => _cp_ascite = (v ?? 0) + 1)),
-            _sofaDropRow(
-                isEs ? 'Encefalopatía' : 'Encefalopatia',
-                _cp_encef - 1,
-                isEs
-                    ? [
-                        'Ninguna — Grado 0 (1)',
-                        'Grado I–II (2)',
-                        'Grado III–IV (3)'
-                      ]
-                    : [
-                        'Nenhuma — Grau 0 (1)',
-                        'Grau I–II (2)',
-                        'Grau III–IV (3)'
-                      ],
-                (v) => setState(() => _cp_encef = (v ?? 0) + 1)),
-            const Divider(),
-            _ResultTile(
-                label: 'Child-Pugh',
-                value: '$_cpTotal',
-                unit: 'pts',
-                note: _cpClass(_cpTotal),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'A (<6): cirrosis compensada. B (7–9): disfunción hepática significativa. C (≥10): descompensada — lista de trasplante.'
-                    : 'A (≤6): cirrose compensada. B (7–9): disfunção hepática significativa. C (≥10): descompensada — avaliar transplante.'),
-          ]),
-        ),
+          // ── SOFA ─────────────────────────────────────────────────────
+          _SectionCard(
+            title: 'Score SOFA (Sepse)',
+            icon: Icons.monitor_heart_rounded,
+            badge: '$_sofaTotal',
+            badgeColor: _sofaTotal <= 6
+                ? kToolGreen
+                : _sofaTotal <= 9
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                _sofaDropRow(
+                  isEs
+                      ? 'Respiratorio (PaO2/FiO2)'
+                      : 'Respiratório (PaO2/FiO2)',
+                  _sofaResp,
+                  isEs
+                      ? [
+                          '≥400 (0)',
+                          '<400 (1)',
+                          '<300 (2)',
+                          '<200+VPP (3)',
+                          '<100+VPP (4)',
+                        ]
+                      : [
+                          '≥400 (0)',
+                          '<400 (1)',
+                          '<300 (2)',
+                          '<200+VPP (3)',
+                          '<100+VPP (4)',
+                        ],
+                  (v) => setState(() => _sofaResp = v ?? 0),
+                ),
+                _sofaDropRow(
+                  isEs ? 'Coagulación (Plaquetas)' : 'Coagulação (Plaquetas)',
+                  _sofaCoag,
+                  [
+                    '≥150k (0)',
+                    '<150k (1)',
+                    '<100k (2)',
+                    '<50k (3)',
+                    '<20k (4)',
+                  ],
+                  (v) => setState(() => _sofaCoag = v ?? 0),
+                ),
+                _sofaDropRow(
+                  isEs ? 'Hepático (Bilirrubina)' : 'Hepático (Bilirrubina)',
+                  _sofaLiver,
+                  [
+                    '<1,2 (0)',
+                    '1,2–1,9 (1)',
+                    '2,0–5,9 (2)',
+                    '6,0–11,9 (3)',
+                    '≥12,0 (4)',
+                  ],
+                  (v) => setState(() => _sofaLiver = v ?? 0),
+                ),
+                _sofaDropRow(
+                  isEs
+                      ? 'Cardiovascular (PAM/Vaso)'
+                      : 'Cardiovascular (PAM/Vaso)',
+                  _sofaCardio,
+                  isEs
+                      ? [
+                          'PAM≥70(0)',
+                          'PAM<70(1)',
+                          'Dopa≤5(2)',
+                          'Dopa>5/NA≤0,1(3)',
+                          'Dopa>15/NA>0,1(4)',
+                        ]
+                      : [
+                          'PAM≥70(0)',
+                          'PAM<70(1)',
+                          'Dopa≤5(2)',
+                          'Dopa>5/NA≤0,1(3)',
+                          'Dopa>15/NA>0,1(4)',
+                        ],
+                  (v) => setState(() => _sofaCardio = v ?? 0),
+                ),
+                _sofaDropRow(
+                  isEs ? 'Neurológico (GCS)' : 'Neurológico (GCS)',
+                  _sofaNeuro,
+                  ['15 (0)', '13–14 (1)', '10–12 (2)', '6–9 (3)', '<6 (4)'],
+                  (v) => setState(() => _sofaNeuro = v ?? 0),
+                ),
+                _sofaDropRow(
+                  isEs
+                      ? 'Renal (Creatinina/Diuresis)'
+                      : 'Renal (Creatinina/Diurese)',
+                  _sofaRenal,
+                  [
+                    '<1,2 (0)',
+                    '1,2–1,9 (1)',
+                    '2,0–3,4 (2)',
+                    '3,5–4,9/<500mL(3)',
+                    '>5/>200mL(4)',
+                  ],
+                  (v) => setState(() => _sofaRenal = v ?? 0),
+                ),
+                const Divider(),
+                _ResultTile(
+                  label: 'SOFA Total',
+                  value: '$_sofaTotal',
+                  unit: '/24',
+                  note: _sofaLabel(_sofaTotal),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'SOFA ≥2: disfunción orgánica = SEPSIS. Aumento ≥2 puntos = mayor mortalidad.'
+                      : 'SOFA ≥2: disfunção orgânica = SEPSE. Aumento ≥2 pontos = maior mortalidade.',
+                ),
+              ],
+            ),
+          ),
 
-        const SizedBox(height: 12),
+          const SizedBox(height: 12),
 
-        // ── PSI/PORT ──────────────────────────────────────────────────
-        _SectionCard(
-          title: isEs
-              ? 'PSI/PORT (Neumonía — Gravedad)'
-              : 'PSI/PORT (PAC — Gravidade)',
-          icon: Icons.air_outlined,
-          badge: '$_psiScore',
-          badgeColor: _psiScore <= 70
-              ? kToolGreen
-              : _psiScore <= 90
-                  ? const Color(0xFFB45309)
-                  : const Color(0xFFCC2222),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Idade
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(children: [
-                Expanded(
-                    child: Text(
-                        isEs
-                            ? 'Edad (años) — pontuação direta'
-                            : 'Idade (anos) — pontuação direta',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.of(context).textPrimary))),
-                const SizedBox(width: 8),
-                SizedBox(
-                  width: 72,
-                  child: TextField(
-                    controller: _psiAgeCtrl,
-                    keyboardType: TextInputType.number,
-                    spellCheckConfiguration:
-                        const SpellCheckConfiguration.disabled(),
-                    autocorrect: false,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.of(context).textPrimary),
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
-                      hintText: '65',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: kToolBorder)),
+          // ── CHA2DS2-VASc ──────────────────────────────────────────────
+          _SectionCard(
+            title: 'CHA₂DS₂-VASc (FA)',
+            icon: Icons.favorite_rounded,
+            badge: '$_chaScore',
+            badgeColor: _chaScore == 0
+                ? kToolGreen
+                : _chaScore == 1
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                _scoreRow(
+                  isEs ? 'IC / FE reduzida (C)' : 'IC / FE reduzida (C)',
+                  _cha_ic,
+                  () => setState(() => _cha_ic = !_cha_ic),
+                ),
+                _scoreRow(
+                  isEs ? 'Hipertensión (H)' : 'Hipertensão (H)',
+                  _cha_has,
+                  () => setState(() => _cha_has = !_cha_has),
+                ),
+                _scoreRow(
+                  isEs ? 'Edad ≥75 años (A₂)' : 'Idade ≥75 anos (A₂)',
+                  _cha_age75,
+                  () => setState(() => _cha_age75 = !_cha_age75),
+                  points: 2,
+                ),
+                _scoreRow(
+                  isEs ? 'Diabetes mellitus (D)' : 'Diabetes mellitus (D)',
+                  _cha_dm,
+                  () => setState(() => _cha_dm = !_cha_dm),
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'AVC/AIT/Tromboembolismo (S₂)'
+                      : 'AVC/AIT/Tromboembolismo (S₂)',
+                  _cha_stroke,
+                  () => setState(() => _cha_stroke = !_cha_stroke),
+                  points: 2,
+                ),
+                _scoreRow(
+                  isEs ? 'Enfermedad Vascular (V)' : 'Doença Vascular (V)',
+                  _cha_vasc,
+                  () => setState(() => _cha_vasc = !_cha_vasc),
+                ),
+                _scoreRow(
+                  isEs ? 'Edad 65–74 años (A)' : 'Idade 65–74 anos (A)',
+                  _cha_age65_74,
+                  () => setState(() => _cha_age65_74 = !_cha_age65_74),
+                ),
+                _scoreRow(
+                  isEs ? 'Sexo femenino (Sc)' : 'Sexo feminino (Sc)',
+                  _cha_female,
+                  () => setState(() => _cha_female = !_cha_female),
+                ),
+                const Divider(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ResultTile(
+                        label: isEs ? 'Puntuación' : 'Pontuação',
+                        value: '$_chaScore',
+                        unit: '/9',
+                      ),
                     ),
-                    onChanged: (_) => setState(() {}),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _ResultTile(
+                        label: isEs ? 'AVC/año' : 'AVC/ano',
+                        value: _chaStroke(_chaScore),
+                        unit: '',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(text: _chaRisk(_chaScore)),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── Wells TVP ─────────────────────────────────────────────────
+          _SectionCard(
+            title: isEs
+                ? 'Wells — TVP (Trombosis Venosa)'
+                : 'Wells — TVP (Trombose Venosa)',
+            icon: Icons.airline_seat_flat_angled_rounded,
+            badge: _wtScore.toStringAsFixed(0),
+            badgeColor: _wtScore <= 0
+                ? kToolGreen
+                : _wtScore <= 2
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                _scoreRow(
+                  isEs
+                      ? 'Cáncer activo (trat. <6m)'
+                      : 'Câncer ativo (trat. <6m)',
+                  _wt_active_cancer,
+                  () => setState(() => _wt_active_cancer = !_wt_active_cancer),
+                ),
+                _scoreRow(
+                  isEs ? 'Parálisis/paresia MMII' : 'Paralisia/paresia MMII',
+                  _wt_paralysis,
+                  () => setState(() => _wt_paralysis = !_wt_paralysis),
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Inmovilización >3 días / cirugía <12 semanas'
+                      : 'Imobilização >3 dias / cirurgia <12 semanas',
+                  _wt_recent_immob,
+                  () => setState(() => _wt_recent_immob = !_wt_recent_immob),
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Dolor a la palpación venosa'
+                      : 'Dor à palpação venosa',
+                  _wt_localized_tender,
+                  () => setState(
+                    () => _wt_localized_tender = !_wt_localized_tender,
                   ),
                 ),
-              ]),
+                _scoreRow(
+                  isEs ? 'Edema de toda la pierna' : 'Edema de toda a perna',
+                  _wt_entire_leg_swol,
+                  () => setState(
+                    () => _wt_entire_leg_swol = !_wt_entire_leg_swol,
+                  ),
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Pantorrilla ≥3 cm mayor que contralateral'
+                      : 'Panturrilha ≥3 cm maior que contralateral',
+                  _wt_calf_swol3cm,
+                  () => setState(() => _wt_calf_swol3cm = !_wt_calf_swol3cm),
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Edema con fóvea en pierna sintomática'
+                      : 'Edema com cacifo na perna sintomática',
+                  _wt_pitting_edema,
+                  () => setState(() => _wt_pitting_edema = !_wt_pitting_edema),
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Venas superficiales colaterales'
+                      : 'Veias superficiais colaterais',
+                  _wt_collateral_veins,
+                  () => setState(
+                    () => _wt_collateral_veins = !_wt_collateral_veins,
+                  ),
+                ),
+                _scoreRow(
+                  isEs ? 'TVP previa documentada' : 'TVP prévia documentada',
+                  _wt_previous_dvt,
+                  () => setState(() => _wt_previous_dvt = !_wt_previous_dvt),
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Diagnóstico alternativo más probable (−2)'
+                      : 'Diagnóstico alternativo mais provável (−2)',
+                  _wt_alt_dx_likely,
+                  () => setState(() => _wt_alt_dx_likely = !_wt_alt_dx_likely),
+                  points: -2,
+                ),
+                const Divider(),
+                _ResultTile(
+                  label: isEs ? 'Score Wells TVP' : 'Score Wells TVP',
+                  value: _wtScore.toStringAsFixed(0),
+                  unit: 'pts',
+                  note: _wtLabel(_wtScore),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? '≤0: Baja → D-dímero. 1–2: Moderada → D-dímero o eco-Doppler. ≥3: Alta → Eco-Doppler direto.'
+                      : '≤0: Baixa → D-dímero. 1–2: Moderada → D-dímero ou eco-Doppler. ≥3: Alta → Eco-Doppler direto.',
+                ),
+              ],
             ),
-            Text('COMORBIDADES (+pts)',
-                style: TextStyle(
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── Wells TEP ─────────────────────────────────────────────────
+          _SectionCard(
+            title: isEs
+                ? 'Wells — TEP (Tromboembolismo Pulmonar)'
+                : 'Wells — TEP (Tromboembolismo Pulmonar)',
+            icon: Icons.air_rounded,
+            badge: _wpScore.toStringAsFixed(1),
+            badgeColor: _wpScore < 2
+                ? kToolGreen
+                : _wpScore <= 6
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                _scoreRow(
+                  isEs
+                      ? 'Signos/síntomas de TVP (+3)'
+                      : 'Sinais/sintomas de TVP (+3)',
+                  _wp_dvt_signs,
+                  () => setState(() => _wp_dvt_signs = !_wp_dvt_signs),
+                  points: 3,
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'TEP el diagnóstico más probable (+3)'
+                      : 'TEP o diagnóstico mais provável (+3)',
+                  _wp_no_alt_dx,
+                  () => setState(() => _wp_no_alt_dx = !_wp_no_alt_dx),
+                  points: 3,
+                ),
+                _scoreRow(
+                  isEs ? 'FC > 100 bpm (+1,5)' : 'FC > 100 bpm (+1,5)',
+                  _wp_hr100,
+                  () => setState(() => _wp_hr100 = !_wp_hr100),
+                  points: 1.5,
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Inmovilización ≥3 días / cirugía <4 semanas (+1,5)'
+                      : 'Imobilização ≥3 dias / cirurgia <4 semanas (+1,5)',
+                  _wp_immob,
+                  () => setState(() => _wp_immob = !_wp_immob),
+                  points: 1.5,
+                ),
+                _scoreRow(
+                  isEs ? 'TVP/TEP previo (+1,5)' : 'TVP/TEP prévio (+1,5)',
+                  _wp_prev_dvt,
+                  () => setState(() => _wp_prev_dvt = !_wp_prev_dvt),
+                  points: 1.5,
+                ),
+                _scoreRow(
+                  isEs ? 'Hemoptisis (+1)' : 'Hemoptise (+1)',
+                  _wp_hemoptysis,
+                  () => setState(() => _wp_hemoptysis = !_wp_hemoptysis),
+                ),
+                _scoreRow(
+                  isEs ? 'Malignidad activa (+1)' : 'Malignidade ativa (+1)',
+                  _wp_malignancy,
+                  () => setState(() => _wp_malignancy = !_wp_malignancy),
+                ),
+                const Divider(),
+                _ResultTile(
+                  label: isEs ? 'Score Wells TEP' : 'Score Wells TEP',
+                  value: _wpScore.toStringAsFixed(1),
+                  unit: 'pts',
+                  note: _wpLabel(_wpScore),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? '<2: TEP improbable → D-dímero. 2–6: Moderado. >6: TEP probable → AngioTC de tórax direto.'
+                      : '<2: TEP improvável → D-dímero. 2–6: Moderado. >6: TEP provável → AngioTC de tórax direto.',
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── CURB-65 ───────────────────────────────────────────────────
+          _SectionCard(
+            title: 'CURB-65 (PAC)',
+            icon: Icons.masks_rounded,
+            badge: '$_curbScore',
+            badgeColor: _curbScore <= 1
+                ? kToolGreen
+                : _curbScore == 2
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                _scoreRow(
+                  isEs ? 'Confusión (nueva)' : 'Confusão (nova)',
+                  _curb_confusion,
+                  () => setState(() => _curb_confusion = !_curb_confusion),
+                ),
+                _scoreRow(
+                  isEs ? 'Urea >50 mg/dL' : 'Ureia >50 mg/dL',
+                  _curb_ureia,
+                  () => setState(() => _curb_ureia = !_curb_ureia),
+                ),
+                _scoreRow(
+                  isEs ? 'FR ≥30/min' : 'FR ≥30 irpm',
+                  _curb_rr,
+                  () => setState(() => _curb_rr = !_curb_rr),
+                ),
+                _scoreRow(
+                  isEs ? 'PAS <90 o PAD ≤60 mmHg' : 'PAS <90 ou PAD ≤60 mmHg',
+                  _curb_bp,
+                  () => setState(() => _curb_bp = !_curb_bp),
+                ),
+                _scoreRow(
+                  isEs ? 'Edad ≥65 años' : 'Idade ≥65 anos',
+                  _curb_age65,
+                  () => setState(() => _curb_age65 = !_curb_age65),
+                ),
+                const Divider(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ResultTile(
+                        label: 'CURB-65',
+                        value: '$_curbScore',
+                        unit: '/5',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _ResultTile(
+                        label: isEs ? 'Mortalidad' : 'Mortalidade',
+                        value: _curbMort(_curbScore),
+                        unit: '',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(text: _curbLabel(_curbScore)),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── NEWS2 ─────────────────────────────────────────────────────
+          _SectionCard(
+            title: 'NEWS2 (Alerta Precoce)',
+            icon: Icons.monitor_heart_outlined,
+            badge: '$_newsTotal',
+            badgeColor: _newsTotal == 0
+                ? kToolGreen
+                : _newsTotal <= 4
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                // FR
+                _sofaDropRow(
+                  isEs ? 'FR (irpm)' : 'FR (irpm)',
+                  _news_rr,
+                  [
+                    '≤8 (+3)',
+                    '9–11 (+1)',
+                    '12–20 (0)',
+                    '21–24 (+2)',
+                    '≥25 (+3)',
+                  ],
+                  (v) => setState(() => _news_rr = v ?? 0),
+                ),
+                // SpO2 escala A
+                _sofaDropRow(
+                  isEs ? 'SpO₂ % (Esc. A)' : 'SpO₂ % (Esc. A)',
+                  _news_spo2,
+                  ['≤91 (+3)', '92–93 (+2)', '94–95 (+1)', '≥96 (0)'],
+                  (v) => setState(() => _news_spo2 = v ?? 0),
+                ),
+                // O2 suplementar
+                Container(
+                  margin: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          isEs
+                              ? 'O₂ suplementario (+2)'
+                              : 'O₂ suplementar (+2)',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.of(context).textPrimary,
+                          ),
+                        ),
+                      ),
+                      Switch(
+                        value: _news_supo2,
+                        thumbColor: WidgetStateProperty.resolveWith(
+                          (states) => states.contains(WidgetState.selected)
+                              ? kToolGreen
+                              : null,
+                        ),
+                        onChanged: (v) => setState(() => _news_supo2 = v),
+                      ),
+                    ],
+                  ),
+                ),
+                // PA sistólica
+                _sofaDropRow(
+                  isEs ? 'PAS (mmHg)' : 'PAS (mmHg)',
+                  _news_sbp,
+                  [
+                    '≤90 (+3)',
+                    '91–100 (+2)',
+                    '101–110 (+1)',
+                    '111–219 (0)',
+                    '≥220 (+3)',
+                  ],
+                  (v) => setState(() => _news_sbp = v ?? 0),
+                ),
+                // FC
+                _sofaDropRow(
+                  isEs ? 'FC (bpm)' : 'FC (bpm)',
+                  _news_hr,
+                  [
+                    '≤40 (+3)',
+                    '41–50 (+1)',
+                    '51–90 (0)',
+                    '91–110 (+1)',
+                    '111–130 (+2)',
+                    '≥131 (+3)',
+                  ],
+                  (v) => setState(() => _news_hr = v ?? 0),
+                ),
+                // Nível consciência AVPU
+                _sofaDropRow(
+                  isEs ? 'Conciencia (AVPU)' : 'Consciência (AVPU)',
+                  _news_neuro,
+                  isEs
+                      ? [
+                          'Alerta (0)',
+                          'Voz/Confuso (+3)',
+                          'Dolor (+3)',
+                          'Inconsciente (+3)',
+                        ]
+                      : [
+                          'Alerta (0)',
+                          'Voz/Confuso (+3)',
+                          'Dor (+3)',
+                          'Inconsciente (+3)',
+                        ],
+                  (v) =>
+                      setState(() => _news_neuro = v != null && v > 0 ? 3 : 0),
+                ),
+                // Temperatura
+                _sofaDropRow(
+                  isEs ? 'Temperatura °C' : 'Temperatura °C',
+                  _news_temp,
+                  [
+                    '≤35,0 (+3)',
+                    '35,1–36,0 (+1)',
+                    '36,1–38,0 (0)',
+                    '38,1–39,0 (+1)',
+                    '≥39,1 (+2)',
+                  ],
+                  (v) => setState(() => _news_temp = v ?? 0),
+                ),
+                const Divider(),
+                _ResultTile(
+                  label: 'NEWS2 Total',
+                  value: '$_newsTotal',
+                  unit: 'pts',
+                  note: _newsLabel(_newsTotal),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'Desarrollado por la Royal College of Physicians (RCP) 2017. Score ≥7 = activar respuesta crítica inmediata.'
+                      : 'Royal College of Physicians 2017. Score ≥7 = acionar resposta de emergência imediata.',
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── Child-Pugh ────────────────────────────────────────────────
+          _SectionCard(
+            title: isEs
+                ? 'Child-Pugh (Hepatopatía Crónica)'
+                : 'Child-Pugh (Hepatopatia Crônica)',
+            icon: Icons.local_hospital_rounded,
+            badge: '$_cpTotal',
+            badgeColor: _cpTotal <= 6
+                ? kToolGreen
+                : _cpTotal <= 9
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              children: [
+                _sofaDropRow(
+                  isEs ? 'Bilirrubina total' : 'Bilirrubina total',
+                  _cp_bili - 1,
+                  isEs
+                      ? ['<2 mg/dL (1)', '2–3 mg/dL (2)', '>3 mg/dL (3)']
+                      : ['<2 mg/dL (1)', '2–3 mg/dL (2)', '>3 mg/dL (3)'],
+                  (v) => setState(() => _cp_bili = (v ?? 0) + 1),
+                ),
+                _sofaDropRow(
+                  isEs ? 'Albúmina sérica' : 'Albumina sérica',
+                  _cp_alb - 1,
+                  ['>3,5 g/dL (1)', '2,8–3,5 g/dL (2)', '<2,8 g/dL (3)'],
+                  (v) => setState(() => _cp_alb = (v ?? 0) + 1),
+                ),
+                _sofaDropRow(
+                  'TP / INR',
+                  _cp_pt - 1,
+                  isEs
+                      ? [
+                          '<4 s / <1,7 (1)',
+                          '4–6 s / 1,7–2,3 (2)',
+                          '>6 s / >2,3 (3)',
+                        ]
+                      : [
+                          '<4 s / <1,7 (1)',
+                          '4–6 s / 1,7–2,3 (2)',
+                          '>6 s / >2,3 (3)',
+                        ],
+                  (v) => setState(() => _cp_pt = (v ?? 0) + 1),
+                ),
+                _sofaDropRow(
+                  isEs ? 'Ascitis' : 'Ascite',
+                  _cp_ascite - 1,
+                  isEs
+                      ? ['Ausente (1)', 'Leve (2)', 'Tensa/refractaria (3)']
+                      : ['Ausente (1)', 'Leve (2)', 'Tensa/refratária (3)'],
+                  (v) => setState(() => _cp_ascite = (v ?? 0) + 1),
+                ),
+                _sofaDropRow(
+                  isEs ? 'Encefalopatía' : 'Encefalopatia',
+                  _cp_encef - 1,
+                  isEs
+                      ? [
+                          'Ninguna — Grado 0 (1)',
+                          'Grado I–II (2)',
+                          'Grado III–IV (3)',
+                        ]
+                      : [
+                          'Nenhuma — Grau 0 (1)',
+                          'Grau I–II (2)',
+                          'Grau III–IV (3)',
+                        ],
+                  (v) => setState(() => _cp_encef = (v ?? 0) + 1),
+                ),
+                const Divider(),
+                _ResultTile(
+                  label: 'Child-Pugh',
+                  value: '$_cpTotal',
+                  unit: 'pts',
+                  note: _cpClass(_cpTotal),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'A (<6): cirrosis compensada. B (7–9): disfunción hepática significativa. C (≥10): descompensada — lista de trasplante.'
+                      : 'A (≤6): cirrose compensada. B (7–9): disfunção hepática significativa. C (≥10): descompensada — avaliar transplante.',
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // ── PSI/PORT ──────────────────────────────────────────────────
+          _SectionCard(
+            title: isEs
+                ? 'PSI/PORT (Neumonía — Gravedad)'
+                : 'PSI/PORT (PAC — Gravidade)',
+            icon: Icons.air_outlined,
+            badge: '$_psiScore',
+            badgeColor: _psiScore <= 70
+                ? kToolGreen
+                : _psiScore <= 90
+                ? const Color(0xFFB45309)
+                : const Color(0xFFCC2222),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Idade
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          isEs
+                              ? 'Edad (años) — pontuação direta'
+                              : 'Idade (anos) — pontuação direta',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.of(context).textPrimary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: 72,
+                        child: TextField(
+                          controller: _psiAgeCtrl,
+                          keyboardType: TextInputType.number,
+                          spellCheckConfiguration:
+                              const SpellCheckConfiguration.disabled(),
+                          autocorrect: false,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.of(context).textPrimary,
+                          ),
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 8,
+                            ),
+                            hintText: '65',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: kToolBorder),
+                            ),
+                          ),
+                          onChanged: (_) => setState(() {}),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  'COMORBIDADES (+pts)',
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
-                    color: AppColors.of(context).textHint)),
-            const SizedBox(height: 6),
-            _scoreRow(
-                isEs ? 'Neoplasia activa (+30)' : 'Neoplasia ativa (+30)',
-                _psi_neoplasm,
-                () => setState(() => _psi_neoplasm = !_psi_neoplasm),
-                points: 30),
-            _scoreRow(
-                isEs
-                    ? 'Hepatopatía crónica (+20)'
-                    : 'Hepatopatia crônica (+20)',
-                _psi_liver,
-                () => setState(() => _psi_liver = !_psi_liver),
-                points: 20),
-            _scoreRow(
-                isEs ? 'ICC / cardiopatía (+10)' : 'ICC / cardiopatia (+10)',
-                _psi_chf,
-                () => setState(() => _psi_chf = !_psi_chf),
-                points: 10),
-            _scoreRow(isEs ? 'AVC / secuelas (+10)' : 'AVC / sequela (+10)',
-                _psi_cva, () => setState(() => _psi_cva = !_psi_cva),
-                points: 10),
-            _scoreRow(isEs ? 'ERC (+10)' : 'DRC (+10)', _psi_renal,
-                () => setState(() => _psi_renal = !_psi_renal),
-                points: 10),
-            _scoreRow(
-                isEs
-                    ? 'Internado en residencia (+10)'
-                    : 'Institucionalizado (+10)',
-                _psi_nursing,
-                () => setState(() => _psi_nursing = !_psi_nursing),
-                points: 10),
-            const SizedBox(height: 8),
-            Text('EXAME FÍSICO / CLÍNICA (+pts)',
-                style: TextStyle(
+                    color: AppColors.of(context).textHint,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _scoreRow(
+                  isEs ? 'Neoplasia activa (+30)' : 'Neoplasia ativa (+30)',
+                  _psi_neoplasm,
+                  () => setState(() => _psi_neoplasm = !_psi_neoplasm),
+                  points: 30,
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Hepatopatía crónica (+20)'
+                      : 'Hepatopatia crônica (+20)',
+                  _psi_liver,
+                  () => setState(() => _psi_liver = !_psi_liver),
+                  points: 20,
+                ),
+                _scoreRow(
+                  isEs ? 'ICC / cardiopatía (+10)' : 'ICC / cardiopatia (+10)',
+                  _psi_chf,
+                  () => setState(() => _psi_chf = !_psi_chf),
+                  points: 10,
+                ),
+                _scoreRow(
+                  isEs ? 'AVC / secuelas (+10)' : 'AVC / sequela (+10)',
+                  _psi_cva,
+                  () => setState(() => _psi_cva = !_psi_cva),
+                  points: 10,
+                ),
+                _scoreRow(
+                  isEs ? 'ERC (+10)' : 'DRC (+10)',
+                  _psi_renal,
+                  () => setState(() => _psi_renal = !_psi_renal),
+                  points: 10,
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Internado en residencia (+10)'
+                      : 'Institucionalizado (+10)',
+                  _psi_nursing,
+                  () => setState(() => _psi_nursing = !_psi_nursing),
+                  points: 10,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'EXAME FÍSICO / CLÍNICA (+pts)',
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
-                    color: AppColors.of(context).textHint)),
-            const SizedBox(height: 6),
-            _scoreRow(
-                isEs
-                    ? 'Confusión/alteración mental (+20)'
-                    : 'Confusão / alt. mental (+20)',
-                _psi_alt_ms,
-                () => setState(() => _psi_alt_ms = !_psi_alt_ms),
-                points: 20),
-            _scoreRow(isEs ? 'FR ≥30/min (+20)' : 'FR ≥30 irpm (+20)',
-                _psi_rr30, () => setState(() => _psi_rr30 = !_psi_rr30),
-                points: 20),
-            _scoreRow(isEs ? 'PAS <90 mmHg (+20)' : 'PAS <90 mmHg (+20)',
-                _psi_sbp90, () => setState(() => _psi_sbp90 = !_psi_sbp90),
-                points: 20),
-            _scoreRow(isEs ? 'Tª <35 o ≥40°C (+15)' : 'T° <35 ou ≥40°C (+15)',
-                _psi_temp, () => setState(() => _psi_temp = !_psi_temp),
-                points: 15),
-            _scoreRow(isEs ? 'FC ≥125 bpm (+10)' : 'FC ≥125 bpm (+10)',
-                _psi_hr125, () => setState(() => _psi_hr125 = !_psi_hr125),
-                points: 10),
-            const SizedBox(height: 8),
-            Text('LABS / IMAGEM (+pts)',
-                style: TextStyle(
+                    color: AppColors.of(context).textHint,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _scoreRow(
+                  isEs
+                      ? 'Confusión/alteración mental (+20)'
+                      : 'Confusão / alt. mental (+20)',
+                  _psi_alt_ms,
+                  () => setState(() => _psi_alt_ms = !_psi_alt_ms),
+                  points: 20,
+                ),
+                _scoreRow(
+                  isEs ? 'FR ≥30/min (+20)' : 'FR ≥30 irpm (+20)',
+                  _psi_rr30,
+                  () => setState(() => _psi_rr30 = !_psi_rr30),
+                  points: 20,
+                ),
+                _scoreRow(
+                  isEs ? 'PAS <90 mmHg (+20)' : 'PAS <90 mmHg (+20)',
+                  _psi_sbp90,
+                  () => setState(() => _psi_sbp90 = !_psi_sbp90),
+                  points: 20,
+                ),
+                _scoreRow(
+                  isEs ? 'Tª <35 o ≥40°C (+15)' : 'T° <35 ou ≥40°C (+15)',
+                  _psi_temp,
+                  () => setState(() => _psi_temp = !_psi_temp),
+                  points: 15,
+                ),
+                _scoreRow(
+                  isEs ? 'FC ≥125 bpm (+10)' : 'FC ≥125 bpm (+10)',
+                  _psi_hr125,
+                  () => setState(() => _psi_hr125 = !_psi_hr125),
+                  points: 10,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'LABS / IMAGEM (+pts)',
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
-                    color: AppColors.of(context).textHint)),
-            const SizedBox(height: 6),
-            _scoreRow(
-                isEs ? 'pH arterial <7,35 (+30)' : 'pH arterial <7,35 (+30)',
-                _psi_ph735,
-                () => setState(() => _psi_ph735 = !_psi_ph735),
-                points: 30),
-            _scoreRow(isEs ? 'BUN >30 mg/dL (+20)' : 'Ureia >30 mg/dL (+20)',
-                _psi_bun30, () => setState(() => _psi_bun30 = !_psi_bun30),
-                points: 20),
-            _scoreRow(isEs ? 'Na <130 mEq/L (+20)' : 'Na <130 mEq/L (+20)',
-                _psi_na130, () => setState(() => _psi_na130 = !_psi_na130),
-                points: 20),
-            _scoreRow(
-                isEs ? 'Glucosa ≥250 mg/dL (+10)' : 'Glicose ≥250 mg/dL (+10)',
-                _psi_gluc250,
-                () => setState(() => _psi_gluc250 = !_psi_gluc250),
-                points: 10),
-            _scoreRow(isEs ? 'Hto <30% (+10)' : 'Ht <30% (+10)', _psi_hct30,
-                () => setState(() => _psi_hct30 = !_psi_hct30),
-                points: 10),
-            _scoreRow(isEs ? 'PaO₂ <60 mmHg (+10)' : 'PaO₂ <60 mmHg (+10)',
-                _psi_po2_60, () => setState(() => _psi_po2_60 = !_psi_po2_60),
-                points: 10),
-            _scoreRow(isEs ? 'Derrame pleural (+10)' : 'Derrame pleural (+10)',
-                _psi_eff, () => setState(() => _psi_eff = !_psi_eff),
-                points: 10),
-            const Divider(),
-            _ResultTile(
-                label: 'PSI/PORT',
-                value: '$_psiScore',
-                unit: 'pts',
-                note: _psiClass(_psiScore),
-                full: true),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'Fine MJ, NEJM 1997. Clases I–II: ambulatorio. III: observación. IV–V: hospitalización. CURB-65 para comparar.'
-                    : 'Fine MJ, NEJM 1997. Classes I–II: ambulatorial. III: observação. IV–V: internação. Comparar com CURB-65.'),
-          ]),
-        ),
-      ]),
+                    color: AppColors.of(context).textHint,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _scoreRow(
+                  isEs ? 'pH arterial <7,35 (+30)' : 'pH arterial <7,35 (+30)',
+                  _psi_ph735,
+                  () => setState(() => _psi_ph735 = !_psi_ph735),
+                  points: 30,
+                ),
+                _scoreRow(
+                  isEs ? 'BUN >30 mg/dL (+20)' : 'Ureia >30 mg/dL (+20)',
+                  _psi_bun30,
+                  () => setState(() => _psi_bun30 = !_psi_bun30),
+                  points: 20,
+                ),
+                _scoreRow(
+                  isEs ? 'Na <130 mEq/L (+20)' : 'Na <130 mEq/L (+20)',
+                  _psi_na130,
+                  () => setState(() => _psi_na130 = !_psi_na130),
+                  points: 20,
+                ),
+                _scoreRow(
+                  isEs
+                      ? 'Glucosa ≥250 mg/dL (+10)'
+                      : 'Glicose ≥250 mg/dL (+10)',
+                  _psi_gluc250,
+                  () => setState(() => _psi_gluc250 = !_psi_gluc250),
+                  points: 10,
+                ),
+                _scoreRow(
+                  isEs ? 'Hto <30% (+10)' : 'Ht <30% (+10)',
+                  _psi_hct30,
+                  () => setState(() => _psi_hct30 = !_psi_hct30),
+                  points: 10,
+                ),
+                _scoreRow(
+                  isEs ? 'PaO₂ <60 mmHg (+10)' : 'PaO₂ <60 mmHg (+10)',
+                  _psi_po2_60,
+                  () => setState(() => _psi_po2_60 = !_psi_po2_60),
+                  points: 10,
+                ),
+                _scoreRow(
+                  isEs ? 'Derrame pleural (+10)' : 'Derrame pleural (+10)',
+                  _psi_eff,
+                  () => setState(() => _psi_eff = !_psi_eff),
+                  points: 10,
+                ),
+                const Divider(),
+                _ResultTile(
+                  label: 'PSI/PORT',
+                  value: '$_psiScore',
+                  unit: 'pts',
+                  note: _psiClass(_psiScore),
+                  full: true,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'Fine MJ, NEJM 1997. Clases I–II: ambulatorio. III: observación. IV–V: hospitalización. CURB-65 para comparar.'
+                      : 'Fine MJ, NEJM 1997. Classes I–II: ambulatorial. III: observação. IV–V: internação. Comparar com CURB-65.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -2300,7 +3023,8 @@ class _CardioHubViewState extends State<CardioHubView> {
             ],
           ),
           const SizedBox(
-              height: 80), // Margem de segurança para o Dock flutuante inferior
+            height: 80,
+          ), // Margem de segurança para o Dock flutuante inferior
         ],
       ),
     );
@@ -2408,13 +3132,17 @@ class _CardioHubViewState extends State<CardioHubView> {
                       ? 'Abrir calculadora >'
                       : 'Abrir Calculadora >', // BUILD 332 Fix 3: ES lowercase
                   style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue),
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
                 const SizedBox(width: 2),
-                Icon(Icons.arrow_forward_ios_rounded,
-                    size: 8, color: Colors.blue[600]),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 8,
+                  color: Colors.blue[600],
+                ),
               ],
             ),
           ),
@@ -2568,21 +3296,25 @@ class _CardioHubViewState extends State<CardioHubView> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const Divider(),
-                  ...criteria.keys.map((key) => CheckboxListTile(
-                        title: Text(key, style: const TextStyle(fontSize: 13)),
-                        value: selectedCriteria[key],
-                        dense: true,
-                        activeColor: Colors.blue,
-                        onChanged: (val) => setModalState(() {
-                          selectedCriteria[key] = val ?? false;
-                          calculate();
-                        }),
-                      )),
+                  ...criteria.keys.map(
+                    (key) => CheckboxListTile(
+                      title: Text(key, style: const TextStyle(fontSize: 13)),
+                      value: selectedCriteria[key],
+                      dense: true,
+                      activeColor: Colors.blue,
+                      onChanged: (val) => setModalState(() {
+                        selectedCriteria[key] = val ?? false;
+                        calculate();
+                      }),
+                    ),
+                  ),
                   CheckboxListTile(
                     title: const Text(
                       'AVC / AIT / Tromboembolismo Prévio (+2)',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     value: historicStroke,
                     dense: true,
@@ -2596,8 +3328,10 @@ class _CardioHubViewState extends State<CardioHubView> {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     child: Text(
                       'Faixa Etária:',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Row(
@@ -2708,16 +3442,18 @@ class _CardioHubViewState extends State<CardioHubView> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const Divider(),
-                  ...criteria.keys.map((key) => CheckboxListTile(
-                        title: Text(key, style: const TextStyle(fontSize: 13)),
-                        value: criteria[key],
-                        dense: true,
-                        activeColor: Colors.blue,
-                        onChanged: (val) => setModalState(() {
-                          criteria[key] = val ?? false;
-                          calculate();
-                        }),
-                      )),
+                  ...criteria.keys.map(
+                    (key) => CheckboxListTile(
+                      title: Text(key, style: const TextStyle(fontSize: 13)),
+                      value: criteria[key],
+                      dense: true,
+                      activeColor: Colors.blue,
+                      onChanged: (val) => setModalState(() {
+                        criteria[key] = val ?? false;
+                        calculate();
+                      }),
+                    ),
+                  ),
                   const SizedBox(height: 14),
                   Container(
                     width: double.infinity,
@@ -2791,8 +3527,10 @@ class _CardioHubViewState extends State<CardioHubView> {
                   ),
                   const Divider(),
                   SwitchListTile(
-                    title: const Text('Sexo Feminino',
-                        style: TextStyle(fontSize: 13)),
+                    title: const Text(
+                      'Sexo Feminino',
+                      style: TextStyle(fontSize: 13),
+                    ),
                     value: isFemale,
                     activeColor: Colors.blue,
                     dense: true,
@@ -2802,8 +3540,10 @@ class _CardioHubViewState extends State<CardioHubView> {
                     }),
                   ),
                   SwitchListTile(
-                    title: const Text('Diabetes Mellitus',
-                        style: TextStyle(fontSize: 13)),
+                    title: const Text(
+                      'Diabetes Mellitus',
+                      style: TextStyle(fontSize: 13),
+                    ),
                     value: hasDiabetes,
                     activeColor: Colors.blue,
                     dense: true,
@@ -2813,8 +3553,10 @@ class _CardioHubViewState extends State<CardioHubView> {
                     }),
                   ),
                   SwitchListTile(
-                    title: const Text('Tabagista Ativo',
-                        style: TextStyle(fontSize: 13)),
+                    title: const Text(
+                      'Tabagista Ativo',
+                      style: TextStyle(fontSize: 13),
+                    ),
                     value: isSmoker,
                     activeColor: Colors.blue,
                     dense: true,
@@ -2906,10 +3648,7 @@ class _LabImportCard extends StatelessWidget {
             stops: [0.0, 0.55, 1.0],
           ),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: kGold.withOpacity(0.35),
-            width: 1.2,
-          ),
+          border: Border.all(color: kGold.withOpacity(0.35), width: 1.2),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.30),
@@ -3072,7 +3811,7 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
       _phCtrl,
       _pco2Ctrl,
       _beCtrl,
-      _wCtrl
+      _wCtrl,
     ]) {
       c.dispose();
     }
@@ -3139,8 +3878,8 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
         comp = pco2 < expPco2 - 2
             ? 'com compensação respiratória (hiperventilação)'
             : pco2 > expPco2 + 2
-                ? 'com distúrbio respiratório adicional'
-                : 'compensação adequada';
+            ? 'com distúrbio respiratório adicional'
+            : 'compensação adequada';
       }
     } else if (ph > 7.45) {
       if (pco2 < 35) {
@@ -3179,224 +3918,306 @@ class _ElectrolytesTabState extends State<_ElectrolytesTab> {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      child: Column(children: [
-        // ── Card de importação automática por IA ─────────────────────────
-        _LabImportCard(locale: p.lang),
-        const SizedBox(height: 12),
+      child: Column(
+        children: [
+          // ── Card de importação automática por IA ─────────────────────────
+          _LabImportCard(locale: p.lang),
+          const SizedBox(height: 12),
 
-        _SectionCard(
-          title: isEs ? 'Electrolitos' : 'Eletrólitos',
-          icon: Icons.science_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'Na⁺ (mEq/L)',
-                      ctrl: _naCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '140')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'Cl⁻ (mEq/L)',
-                      ctrl: _clCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '104')),
-            ]),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'HCO₃⁻ (mEq/L)',
-                      ctrl: _hco3Ctrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '24')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Glucosa (mg/dL)' : 'Glicose (mg/dL)',
-                      ctrl: _glucCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '100')),
-            ]),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Ca²⁺ total (mg/dL)' : 'Ca²⁺ total (mg/dL)',
-                      ctrl: _caCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '9,5')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Albúmina (g/dL)' : 'Albumina (g/dL)',
-                      ctrl: _albumCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '4,0')),
-            ]),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'BUN (mg/dL)' : 'BUN/Ureia (mg/dL)',
-                      ctrl: _bunCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '14')),
-              const SizedBox(width: 10),
-              Expanded(child: SizedBox()), // espaço reservado para simetria
-            ]),
-            const SizedBox(height: 14),
-            Row(children: [
-              Expanded(
-                  child: _ResultTile(
-                      label: isEs ? 'Gap Aniónico' : 'Gap Aniônico',
-                      value: _anionGap,
-                      unit: 'mEq/L',
-                      note: _agLabel(_anionGap))),
-              const SizedBox(width: 8),
-              Expanded(
-                  child: _ResultTile(
-                      label: 'Na⁺ Corrigido', value: _corrNa, unit: 'mEq/L')),
-            ]),
-            const SizedBox(height: 8),
-            Row(children: [
-              Expanded(
-                  child: _ResultTile(
-                      label: isEs ? 'Ca²⁺ Corregido' : 'Ca²⁺ Corrigido',
-                      value: _corrCa,
-                      unit: 'mg/dL',
-                      note: double.tryParse(
-                                  (_corrCa ?? '').replaceAll(',', '.')) !=
-                              null
-                          ? (double.parse(_corrCa!.replaceAll(',', '.')) < 8.5
-                              ? 'BAIXO: Hipocalcemia'
-                              : double.parse(_corrCa!.replaceAll(',', '.')) >
-                                      10.5
+          _SectionCard(
+            title: isEs ? 'Electrolitos' : 'Eletrólitos',
+            icon: Icons.science_rounded,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'Na⁺ (mEq/L)',
+                        ctrl: _naCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '140',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'Cl⁻ (mEq/L)',
+                        ctrl: _clCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '104',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'HCO₃⁻ (mEq/L)',
+                        ctrl: _hco3Ctrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '24',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'Glucosa (mg/dL)' : 'Glicose (mg/dL)',
+                        ctrl: _glucCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '100',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs
+                            ? 'Ca²⁺ total (mg/dL)'
+                            : 'Ca²⁺ total (mg/dL)',
+                        ctrl: _caCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '9,5',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'Albúmina (g/dL)' : 'Albumina (g/dL)',
+                        ctrl: _albumCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '4,0',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'BUN (mg/dL)' : 'BUN/Ureia (mg/dL)',
+                        ctrl: _bunCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '14',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SizedBox(),
+                    ), // espaço reservado para simetria
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ResultTile(
+                        label: isEs ? 'Gap Aniónico' : 'Gap Aniônico',
+                        value: _anionGap,
+                        unit: 'mEq/L',
+                        note: _agLabel(_anionGap),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _ResultTile(
+                        label: 'Na⁺ Corrigido',
+                        value: _corrNa,
+                        unit: 'mEq/L',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ResultTile(
+                        label: isEs ? 'Ca²⁺ Corregido' : 'Ca²⁺ Corrigido',
+                        value: _corrCa,
+                        unit: 'mg/dL',
+                        note:
+                            double.tryParse(
+                                  (_corrCa ?? '').replaceAll(',', '.'),
+                                ) !=
+                                null
+                            ? (double.parse(_corrCa!.replaceAll(',', '.')) < 8.5
+                                  ? 'BAIXO: Hipocalcemia'
+                                  : double.parse(
+                                          _corrCa!.replaceAll(',', '.'),
+                                        ) >
+                                        10.5
                                   ? 'ALTO: Hipercalcemia'
                                   : 'Normal')
-                          : '')),
-              const SizedBox(width: 8),
-              Expanded(
-                  child: _ResultTile(
-                      label: isEs ? 'Osmolaridad calc.' : 'Osmolaridade calc.',
-                      value: _osmolarity,
-                      unit: 'mOsm/kg')),
-            ]),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'Gap Aniônico = Na - (Cl + HCO₃). Ca corregido = Ca + 0,8×(4 - Alb). Osmolaridad = 2×Na + Gluc/18 + BUN/2,8.'
-                    : 'Gap Aniônico = Na − (Cl + HCO₃). Ca corrigido = Ca + 0,8×(4 − Alb). Osmolaridade = 2×Na + Gluc/18 + BUN/2,8.'),
-          ]),
-        ),
-
-        const SizedBox(height: 12),
-
-        _SectionCard(
-          title: isEs ? 'Gasometría Arterial' : 'Gasometria Arterial',
-          icon: Icons.air_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'pH',
-                      ctrl: _phCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '7,40')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'pCO₂ (mmHg)',
-                      ctrl: _pco2Ctrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '40')),
-            ]),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'HCO₃⁻ (mEq/L)',
-                      ctrl: _hco3Ctrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '24')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'BE (mEq/L)',
-                      ctrl: _beCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '0')),
-            ]),
-            const SizedBox(height: 14),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: const Color(0xFF0F1116),
-              ),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('INTERPRETAÇÃO',
-                        style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.w900,
-                            color: Color(0xBFFFE8A6),
-                            letterSpacing: 2)),
-                    const SizedBox(height: 8),
-                    Text(_gasInterpret(),
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            height: 1.5)),
-                  ]),
+                            : '',
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _ResultTile(
+                        label: isEs
+                            ? 'Osmolaridad calc.'
+                            : 'Osmolaridade calc.',
+                        value: _osmolarity,
+                        unit: 'mOsm/kg',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'Gap Aniônico = Na - (Cl + HCO₃). Ca corregido = Ca + 0,8×(4 - Alb). Osmolaridad = 2×Na + Gluc/18 + BUN/2,8.'
+                      : 'Gap Aniônico = Na − (Cl + HCO₃). Ca corrigido = Ca + 0,8×(4 − Alb). Osmolaridade = 2×Na + Gluc/18 + BUN/2,8.',
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            _InfoNote(
-                text: isEs
-                    ? 'pH: 7,35–7,45 | pCO₂: 35–45 mmHg | HCO₃: 22–26 mEq/L | BE: -2 a +2 mEq/L.'
-                    : 'pH: 7,35–7,45 | pCO₂: 35–45 mmHg | HCO₃: 22–26 mEq/L | BE: −2 a +2 mEq/L.'),
-          ]),
-        ),
+          ),
 
-        const SizedBox(height: 12),
+          const SizedBox(height: 12),
 
-        _SectionCard(
-          title: isEs ? 'Déficit de Bicarbonato' : 'Déficit de Bicarbonato',
-          icon: Icons.calculate_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Peso (kg)' : 'Peso (kg)',
-                      ctrl: _wCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '70')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: 'HCO₃⁻ atual (mEq/L)',
-                      ctrl: _hco3Ctrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '18')),
-            ]),
-            const SizedBox(height: 14),
-            _ResultTile(
-                label: isEs
-                    ? 'Déficit de HCO₃⁻ (meta: 24)'
-                    : 'Déficit de HCO₃⁻ (meta: 24)',
-                value: _bicarbonateDef,
-                unit: 'mEq',
-                full: true,
-                note: isEs
-                    ? 'Fórmula: Peso × 0,3 × (24 − HCO₃). Repor 50% do déficit inicialmente.'
-                    : 'Fórmula: Peso × 0,3 × (24 − HCO₃). Repor 50% do déficit inicialmente.'),
-          ]),
-        ),
-      ]),
+          _SectionCard(
+            title: isEs ? 'Gasometría Arterial' : 'Gasometria Arterial',
+            icon: Icons.air_rounded,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'pH',
+                        ctrl: _phCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '7,40',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'pCO₂ (mmHg)',
+                        ctrl: _pco2Ctrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '40',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'HCO₃⁻ (mEq/L)',
+                        ctrl: _hco3Ctrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '24',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'BE (mEq/L)',
+                        ctrl: _beCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '0',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFF0F1116),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'INTERPRETAÇÃO',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xBFFFE8A6),
+                          letterSpacing: 2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _gasInterpret(),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _InfoNote(
+                  text: isEs
+                      ? 'pH: 7,35–7,45 | pCO₂: 35–45 mmHg | HCO₃: 22–26 mEq/L | BE: -2 a +2 mEq/L.'
+                      : 'pH: 7,35–7,45 | pCO₂: 35–45 mmHg | HCO₃: 22–26 mEq/L | BE: −2 a +2 mEq/L.',
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          _SectionCard(
+            title: isEs ? 'Déficit de Bicarbonato' : 'Déficit de Bicarbonato',
+            icon: Icons.calculate_rounded,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'Peso (kg)' : 'Peso (kg)',
+                        ctrl: _wCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '70',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: 'HCO₃⁻ atual (mEq/L)',
+                        ctrl: _hco3Ctrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '18',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                _ResultTile(
+                  label: isEs
+                      ? 'Déficit de HCO₃⁻ (meta: 24)'
+                      : 'Déficit de HCO₃⁻ (meta: 24)',
+                  value: _bicarbonateDef,
+                  unit: 'mEq',
+                  full: true,
+                  note: isEs
+                      ? 'Fórmula: Peso × 0,3 × (24 − HCO₃). Repor 50% do déficit inicialmente.'
+                      : 'Fórmula: Peso × 0,3 × (24 − HCO₃). Repor 50% do déficit inicialmente.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -3739,9 +4560,11 @@ class _InfusionTabState extends State<_InfusionTab> {
     ).then((_) {
       Future.delayed(const Duration(milliseconds: 250), () {
         if (_scrollCtrl.hasClients) {
-          _scrollCtrl.animateTo(0,
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeOutCubic);
+          _scrollCtrl.animateTo(
+            0,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOutCubic,
+          );
         }
       });
     });
@@ -3759,7 +4582,7 @@ class _InfusionTabState extends State<_InfusionTab> {
       _infWeightCtrl,
       _doseCtrl,
       _concCalcCtrl,
-      _weightCalcCtrl
+      _weightCalcCtrl,
     ]) {
       c.dispose();
     }
@@ -3820,129 +4643,162 @@ class _InfusionTabState extends State<_InfusionTab> {
     return SingleChildScrollView(
       controller: _scrollCtrl,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-      child: Column(children: [
-        _SectionCard(
-          title: isEs ? 'Velocidad → Dosis' : 'Velocidade → Dose',
-          icon: Icons.water_drop_rounded,
-          child: Column(children: [
-            DrugAutocompleteField(
-              controller: _infDrugCtrl,
-              drugs: p.drugsDB,
-              label: 'Fármaco',
-              hint: 'Noradrenalina',
-              onChanged: (_) => setState(() {}),
+      child: Column(
+        children: [
+          _SectionCard(
+            title: isEs ? 'Velocidad → Dosis' : 'Velocidade → Dose',
+            icon: Icons.water_drop_rounded,
+            child: Column(
+              children: [
+                DrugAutocompleteField(
+                  controller: _infDrugCtrl,
+                  drugs: p.drugsDB,
+                  label: 'Fármaco',
+                  hint: 'Noradrenalina',
+                  onChanged: (_) => setState(() {}),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs
+                            ? 'Concentración (mg/mL)'
+                            : 'Concentração (mg/mL)',
+                        ctrl: _infConcCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '4',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs ? 'Velocidad (mL/h)' : 'Velocidade (mL/h)',
+                        ctrl: _infRateCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '10',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                _LabeledInput(
+                  label: isEs
+                      ? 'Peso (kg) — opcional para mcg/kg/min'
+                      : 'Peso (kg) — opcional para mcg/kg/min',
+                  ctrl: _infWeightCtrl,
+                  onChanged: (_) => setState(() {}),
+                  hint: '70',
+                ),
+                const SizedBox(height: 14),
+                // ════════════════════════════════════════════════════════════════
+                // CARD RESULTADO PREMIUM — layout visual exclusivo
+                // ════════════════════════════════════════════════════════════════
+                _InfusionResultCard(
+                  isEs: isEs,
+                  drugName: _infDrugCtrl.text,
+                  infusionRate: _infusionRate,
+                  infusionFormula: _infusionFormula,
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'Verificar prescripción antes de administrar. Revisar protocolo institucional.'
+                      : 'Verificar prescrição antes de administrar. Revisar protocolo institucional.',
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs
-                          ? 'Concentración (mg/mL)'
-                          : 'Concentração (mg/mL)',
-                      ctrl: _infConcCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '4')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Velocidad (mL/h)' : 'Velocidade (mL/h)',
-                      ctrl: _infRateCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '10')),
-            ]),
-            const SizedBox(height: 10),
-            _LabeledInput(
-                label: isEs
-                    ? 'Peso (kg) — opcional para mcg/kg/min'
-                    : 'Peso (kg) — opcional para mcg/kg/min',
-                ctrl: _infWeightCtrl,
-                onChanged: (_) => setState(() {}),
-                hint: '70'),
-            const SizedBox(height: 14),
-            // ════════════════════════════════════════════════════════════════
-            // CARD RESULTADO PREMIUM — layout visual exclusivo
-            // ════════════════════════════════════════════════════════════════
-            _InfusionResultCard(
-              isEs: isEs,
-              drugName: _infDrugCtrl.text,
-              infusionRate: _infusionRate,
-              infusionFormula: _infusionFormula,
+          ),
+          const SizedBox(height: 12),
+          _SectionCard(
+            title: isEs
+                ? 'Dosis → Velocidad (mcg/kg/min)'
+                : 'Dose → Velocidade (mcg/kg/min)',
+            icon: Icons.swap_vert_rounded,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs
+                            ? 'Dosis (mcg/kg/min)'
+                            : 'Dose (mcg/kg/min)',
+                        ctrl: _doseCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '0,1',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _LabeledInput(
+                        label: isEs
+                            ? 'Concentración (mg/mL)'
+                            : 'Concentração (mg/mL)',
+                        ctrl: _concCalcCtrl,
+                        onChanged: (_) => setState(() {}),
+                        hint: '4',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                _LabeledInput(
+                  label: isEs
+                      ? 'Peso del paciente (kg)'
+                      : 'Peso do paciente (kg)',
+                  ctrl: _weightCalcCtrl,
+                  onChanged: (_) => setState(() {}),
+                  hint: '70',
+                ),
+                const SizedBox(height: 14),
+                _ResultTile(
+                  label: isEs
+                      ? 'Velocidad de Infusión'
+                      : 'Velocidade de Infusão',
+                  value: _doseToRate,
+                  unit: '',
+                  full: true,
+                  note: isEs
+                      ? 'Fórmula: Dosis × Peso × 60 / (Conc × 1000)'
+                      : 'Fórmula: Dose × Peso × 60 / (Conc × 1000)',
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'Verificar prescripción antes de administrar. Revisar protocolo institucional.'
-                    : 'Verificar prescrição antes de administrar. Revisar protocolo institucional.'),
-          ]),
-        ),
-        const SizedBox(height: 12),
-        _SectionCard(
-          title: isEs
-              ? 'Dosis → Velocidad (mcg/kg/min)'
-              : 'Dose → Velocidade (mcg/kg/min)',
-          icon: Icons.swap_vert_rounded,
-          child: Column(children: [
-            Row(children: [
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs ? 'Dosis (mcg/kg/min)' : 'Dose (mcg/kg/min)',
-                      ctrl: _doseCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '0,1')),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: _LabeledInput(
-                      label: isEs
-                          ? 'Concentración (mg/mL)'
-                          : 'Concentração (mg/mL)',
-                      ctrl: _concCalcCtrl,
-                      onChanged: (_) => setState(() {}),
-                      hint: '4')),
-            ]),
-            const SizedBox(height: 10),
-            _LabeledInput(
-                label:
-                    isEs ? 'Peso del paciente (kg)' : 'Peso do paciente (kg)',
-                ctrl: _weightCalcCtrl,
-                onChanged: (_) => setState(() {}),
-                hint: '70'),
-            const SizedBox(height: 14),
-            _ResultTile(
-                label: isEs ? 'Velocidad de Infusión' : 'Velocidade de Infusão',
-                value: _doseToRate,
-                unit: '',
-                full: true,
-                note: isEs
-                    ? 'Fórmula: Dosis × Peso × 60 / (Conc × 1000)'
-                    : 'Fórmula: Dose × Peso × 60 / (Conc × 1000)'),
-          ]),
-        ),
-        const SizedBox(height: 12),
-        _SectionCard(
-          title: isEs
-              ? 'Fármacos de Referencia (toque para simular)'
-              : 'Fármacos de Referência (toque para simular)',
-          icon: Icons.touch_app_rounded,
-          child: Column(children: [
-            _InfoNote(
-                text: isEs
-                    ? 'Toque en un fármaco para cargar los parámetros de referencia de la literatura médica. El simulador requiere peso y velocidad teóricos.'
-                    : 'Toque em um fármaco para carregar os parâmetros de referência da literatura médica. O simulador requer peso e velocidade teóricos.'),
-            const SizedBox(height: 10),
-            ..._rescue.map((d) => _VasoRefRow(
-                  drug: d.name,
-                  dose: d.dose,
-                  note: d.indication,
-                  onTap: () => _fillAndScroll(d, context),
-                )),
-            const SizedBox(height: 8),
-            _InfoNote(
-                text: isEs
-                    ? 'Preferir CVC para vasopresores. Titular conforme PAM objetivo ≥65 mmHg.'
-                    : 'Preferir CVC para vasopressores. Titular conforme PAM alvo ≥65 mmHg.'),
-          ]),
-        ),
-      ]),
+          ),
+          const SizedBox(height: 12),
+          _SectionCard(
+            title: isEs
+                ? 'Fármacos de Referencia (toque para simular)'
+                : 'Fármacos de Referência (toque para simular)',
+            icon: Icons.touch_app_rounded,
+            child: Column(
+              children: [
+                _InfoNote(
+                  text: isEs
+                      ? 'Toque en un fármaco para cargar los parámetros de referencia de la literatura médica. El simulador requiere peso y velocidad teóricos.'
+                      : 'Toque em um fármaco para carregar os parâmetros de referência da literatura médica. O simulador requer peso e velocidade teóricos.',
+                ),
+                const SizedBox(height: 10),
+                ..._rescue.map(
+                  (d) => _VasoRefRow(
+                    drug: d.name,
+                    dose: d.dose,
+                    note: d.indication,
+                    onTap: () => _fillAndScroll(d, context),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _InfoNote(
+                  text: isEs
+                      ? 'Preferir CVC para vasopresores. Titular conforme PAM objetivo ≥65 mmHg.'
+                      : 'Preferir CVC para vasopressores. Titular conforme PAM alvo ≥65 mmHg.',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -3986,7 +4842,7 @@ class _InfusionResultCard extends StatelessWidget {
             Color(0xFF071510),
             Color(0xFF0D2B1C),
             Color(0xFF0F3D28),
-            Color(0xFF075f45)
+            Color(0xFF075f45),
           ],
           stops: [0.0, 0.35, 0.65, 1.0],
         ),
@@ -4034,7 +4890,9 @@ class _InfusionResultCard extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFFE8A6).withOpacity(0.15),
                         borderRadius: BorderRadius.circular(6),
@@ -4077,8 +4935,11 @@ class _InfusionResultCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline_rounded,
-                            size: 16, color: Colors.white.withOpacity(0.35)),
+                        Icon(
+                          Icons.info_outline_rounded,
+                          size: 16,
+                          color: Colors.white.withOpacity(0.35),
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           isEs
@@ -4099,24 +4960,30 @@ class _InfusionResultCard extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                            child: _ResultMetric(
-                                value: parts[0],
-                                label: _labelFor(parts[0], isEs))),
+                          child: _ResultMetric(
+                            value: parts[0],
+                            label: _labelFor(parts[0], isEs),
+                          ),
+                        ),
                         Container(
-                            width: 1,
-                            height: 60,
-                            color: Colors.white.withOpacity(0.12)),
+                          width: 1,
+                          height: 60,
+                          color: Colors.white.withOpacity(0.12),
+                        ),
                         Expanded(
-                            child: _ResultMetric(
-                                value: parts[1],
-                                label: _labelFor(parts[1], isEs))),
+                          child: _ResultMetric(
+                            value: parts[1],
+                            label: _labelFor(parts[1], isEs),
+                          ),
+                        ),
                       ],
                     )
                   else
                     _ResultMetric(
-                        value: parts[0],
-                        label: _labelFor(parts[0], isEs),
-                        large: true),
+                      value: parts[0],
+                      label: _labelFor(parts[0], isEs),
+                      large: true,
+                    ),
 
                   const SizedBox(height: 14),
                   // ── Fórmula utilizada ───────────────────────────────────────
@@ -4124,7 +4991,9 @@ class _InfusionResultCard extends StatelessWidget {
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 9),
+                        horizontal: 12,
+                        vertical: 9,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.25),
                         borderRadius: BorderRadius.circular(10),
@@ -4133,11 +5002,15 @@ class _InfusionResultCard extends StatelessWidget {
                         ),
                       ),
                       child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Icon(Icons.functions_rounded,
-                                  size: 11, color: const Color(0xBFFFE8A6)),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.functions_rounded,
+                                size: 11,
+                                color: const Color(0xBFFFE8A6),
+                              ),
                               const SizedBox(width: 5),
                               Text(
                                 isEs
@@ -4150,36 +5023,44 @@ class _InfusionResultCard extends StatelessWidget {
                                   letterSpacing: 1.0,
                                 ),
                               ),
-                            ]),
-                            const SizedBox(height: 5),
-                            Text(
-                              infusionFormula!,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                height: 1.5,
-                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            infusionFormula!,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              height: 1.5,
                             ),
-                          ]),
+                          ),
+                        ],
+                      ),
                     ),
                   const SizedBox(height: 12),
                   // ── Referências bibliográficas ──────────────────────────────
                   Container(
                     width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 9,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.20),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.white.withOpacity(0.07)),
                     ),
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(children: [
-                            Icon(Icons.menu_book_rounded,
-                                size: 11, color: const Color(0xBFFFE8A6)),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.menu_book_rounded,
+                              size: 11,
+                              color: const Color(0xBFFFE8A6),
+                            ),
                             const SizedBox(width: 5),
                             Text(
                               isEs
@@ -4192,23 +5073,28 @@ class _InfusionResultCard extends StatelessWidget {
                                 letterSpacing: 1.0,
                               ),
                             ),
-                          ]),
-                          const SizedBox(height: 6),
-                          _RefLine(
-                              text: isEs
-                                  ? '1. Brunton LL, et al. Goodman & Gilman\'s Pharmacological Basis of Therapeutics, 14th ed. McGraw-Hill, 2023.'
-                                  : '1. Brunton LL, et al. Goodman & Gilman\'s Pharmacological Basis of Therapeutics, 14ª ed. McGraw-Hill, 2023.'),
-                          const SizedBox(height: 3),
-                          _RefLine(
-                              text: isEs
-                                  ? '2. Marino PL. The ICU Book, 4th ed. Lippincott Williams & Wilkins, 2014.'
-                                  : '2. Marino PL. The ICU Book, 4ª ed. Lippincott Williams & Wilkins, 2014.'),
-                          const SizedBox(height: 3),
-                          _RefLine(
-                              text: isEs
-                                  ? '3. Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.'
-                                  : '3. Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.'),
-                        ]),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        _RefLine(
+                          text: isEs
+                              ? '1. Brunton LL, et al. Goodman & Gilman\'s Pharmacological Basis of Therapeutics, 14th ed. McGraw-Hill, 2023.'
+                              : '1. Brunton LL, et al. Goodman & Gilman\'s Pharmacological Basis of Therapeutics, 14ª ed. McGraw-Hill, 2023.',
+                        ),
+                        const SizedBox(height: 3),
+                        _RefLine(
+                          text: isEs
+                              ? '2. Marino PL. The ICU Book, 4th ed. Lippincott Williams & Wilkins, 2014.'
+                              : '2. Marino PL. The ICU Book, 4ª ed. Lippincott Williams & Wilkins, 2014.',
+                        ),
+                        const SizedBox(height: 3),
+                        _RefLine(
+                          text: isEs
+                              ? '3. Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.'
+                              : '3. Rhodes A, et al. Surviving Sepsis Campaign Guidelines. Crit Care Med. 2017;45(3):486-552.',
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ],
@@ -4238,34 +5124,40 @@ class _ResultMetric extends StatelessWidget {
   final String value;
   final String label;
   final bool large;
-  const _ResultMetric(
-      {required this.value, required this.label, this.large = false});
+  const _ResultMetric({
+    required this.value,
+    required this.label,
+    this.large = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: large ? 28 : 22,
-            fontWeight: FontWeight.w900,
-            color: Colors.white,
-            letterSpacing: -0.8,
-            height: 1.1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: large ? 28 : 22,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: -0.8,
+              height: 1.1,
+            ),
           ),
-        ),
-        const SizedBox(height: 3),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: Colors.white.withOpacity(0.50),
-            fontWeight: FontWeight.w500,
+          const SizedBox(height: 3),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.white.withOpacity(0.50),
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
@@ -4273,8 +5165,12 @@ class _ResultMetric extends StatelessWidget {
 class _VasoRefRow extends StatelessWidget {
   final String drug, dose, note;
   final VoidCallback? onTap;
-  const _VasoRefRow(
-      {required this.drug, required this.dose, required this.note, this.onTap});
+  const _VasoRefRow({
+    required this.drug,
+    required this.dose,
+    required this.note,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -4302,55 +5198,84 @@ class _VasoRefRow extends StatelessWidget {
                 : c.border,
           ),
         ),
-        child: Row(children: [
-          Expanded(
+        child: Row(
+          children: [
+            Expanded(
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                Text(drug,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    drug,
                     style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        color: c.textPrimary)),
-                const SizedBox(height: 2),
-                Text(note,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: c.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    note,
                     style: TextStyle(
-                        fontSize: 11, color: c.textSecondary, height: 1.3)),
-              ])),
-          const SizedBox(width: 8),
-          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: kToolGreen.withOpacity(0.12),
+                      fontSize: 11,
+                      color: c.textSecondary,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
               ),
-              child: Text(dose,
-                  style: const TextStyle(
+            ),
+            const SizedBox(width: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: kToolGreen.withOpacity(0.12),
+                  ),
+                  child: Text(
+                    dose,
+                    style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
-                      color: kToolGreen)),
-            ),
-            if (tappable) ...[
-              const SizedBox(height: 3),
-              Row(mainAxisSize: MainAxisSize.min, children: [
-                Icon(Icons.touch_app_rounded,
-                    size: 9,
-                    color: dark
-                        ? const Color(0xFF0D6B57)
-                        : const Color(0xFF0D6B57)),
-                const SizedBox(width: 3),
-                Text('calcular',
-                    style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600,
+                      color: kToolGreen,
+                    ),
+                  ),
+                ),
+                if (tappable) ...[
+                  const SizedBox(height: 3),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.touch_app_rounded,
+                        size: 9,
                         color: dark
                             ? const Color(0xFF0D6B57)
-                            : const Color(0xFF0D6B57))),
-              ]),
-            ],
-          ]),
-        ]),
+                            : const Color(0xFF0D6B57),
+                      ),
+                      const SizedBox(width: 3),
+                      Text(
+                        'calcular',
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w600,
+                          color: dark
+                              ? const Color(0xFF0D6B57)
+                              : const Color(0xFF0D6B57),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -4372,124 +5297,154 @@ class _RiskSheet extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.fromLTRB(
-          20, 12, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
+        20,
+        12,
+        20,
+        20 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Handle
-            Center(
-                child: Container(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Handle
+          Center(
+            child: Container(
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                  color:
-                      dark ? const Color(0xFF3A3A3C) : const Color(0xFFD1D5DB),
-                  borderRadius: BorderRadius.circular(2)),
-            )),
-            const SizedBox(height: 14),
+                color: dark ? const Color(0xFF3A3A3C) : const Color(0xFFD1D5DB),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
 
-            // Cabeçalho
-            Row(children: [
+          // Cabeçalho
+          Row(
+            children: [
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFFEF4444).withOpacity(0.12)),
-                child: const Icon(Icons.medication_rounded,
-                    size: 18, color: Color(0xFFEF4444)),
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0xFFEF4444).withOpacity(0.12),
+                ),
+                child: const Icon(
+                  Icons.medication_rounded,
+                  size: 18,
+                  color: Color(0xFFEF4444),
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    Text(drug.name,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                            color:
-                                dark ? Colors.white : const Color(0xFF0F172A))),
-                    Text('Calculadora preenchida — informe peso e velocidade',
-                        style: TextStyle(
-                            fontSize: 11,
-                            color: dark
-                                ? const Color(0xFF9CA3AF)
-                                : const Color(0xFF6B7280))),
-                  ])),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      drug.name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: dark ? Colors.white : const Color(0xFF0F172A),
+                      ),
+                    ),
+                    Text(
+                      'Calculadora preenchida — informe peso e velocidade',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: dark
+                            ? const Color(0xFF9CA3AF)
+                            : const Color(0xFF6B7280),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
-                child: Icon(Icons.close_rounded,
-                    size: 20,
-                    color: dark
-                        ? const Color(0xFF9CA3AF)
-                        : const Color(0xFF6B7280)),
-              ),
-            ]),
-
-            const SizedBox(height: 14),
-
-            // Riscos
-            if (drug.risks.isNotEmpty) ...[
-              _RiskBlock(
-                label: 'ATENÇÃO — EFEITOS E RISCOS',
-                labelColor: const Color(0xFFF59E0B),
-                icon: Icons.info_outline_rounded,
-                items: drug.risks,
-                bgDark: const Color(0xFF271C0A),
-                bgLight: const Color(0xFFFFFBEB),
-                borderDark: const Color(0xFF5C3D0A),
-                borderLight: const Color(0xFFFCD34D),
-                textDark: const Color(0xFFFDE68A),
-                textLight: const Color(0xFF78350F),
-                dark: dark,
-              ),
-              const SizedBox(height: 8),
-            ],
-
-            // Evitar / Contraindicações
-            if (drug.avoid.isNotEmpty) ...[
-              _RiskBlock(
-                label: 'EVITAR / CONTRAINDICADO',
-                labelColor: const Color(0xFFEF4444),
-                icon: Icons.block_rounded,
-                items: drug.avoid,
-                bgDark: const Color(0xFF2A1515),
-                bgLight: const Color(0xFFFFF0F0),
-                borderDark: const Color(0xFF6B2020),
-                borderLight: const Color(0xFFFCA5A5),
-                textDark: const Color(0xFFFFCCCC),
-                textLight: const Color(0xFF7F1D1D),
-                dark: dark,
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            // Botão de ação
-            SizedBox(
-              width: double.infinity,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: kToolGreen.withOpacity(0.12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Icon(
+                  Icons.close_rounded,
+                  size: 20,
+                  color: dark
+                      ? const Color(0xFF9CA3AF)
+                      : const Color(0xFF6B7280),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(Icons.calculate_rounded,
-                      size: 16, color: kToolGreen),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 14),
+
+          // Riscos
+          if (drug.risks.isNotEmpty) ...[
+            _RiskBlock(
+              label: 'ATENÇÃO — EFEITOS E RISCOS',
+              labelColor: const Color(0xFFF59E0B),
+              icon: Icons.info_outline_rounded,
+              items: drug.risks,
+              bgDark: const Color(0xFF271C0A),
+              bgLight: const Color(0xFFFFFBEB),
+              borderDark: const Color(0xFF5C3D0A),
+              borderLight: const Color(0xFFFCD34D),
+              textDark: const Color(0xFFFDE68A),
+              textLight: const Color(0xFF78350F),
+              dark: dark,
+            ),
+            const SizedBox(height: 8),
+          ],
+
+          // Evitar / Contraindicações
+          if (drug.avoid.isNotEmpty) ...[
+            _RiskBlock(
+              label: 'EVITAR / CONTRAINDICADO',
+              labelColor: const Color(0xFFEF4444),
+              icon: Icons.block_rounded,
+              items: drug.avoid,
+              bgDark: const Color(0xFF2A1515),
+              bgLight: const Color(0xFFFFF0F0),
+              borderDark: const Color(0xFF6B2020),
+              borderLight: const Color(0xFFFCA5A5),
+              textDark: const Color(0xFFFFCCCC),
+              textLight: const Color(0xFF7F1D1D),
+              dark: dark,
+            ),
+            const SizedBox(height: 12),
+          ],
+
+          // Botão de ação
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: kToolGreen.withOpacity(0.12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.calculate_rounded,
+                    size: 16,
+                    color: kToolGreen,
+                  ),
                   const SizedBox(width: 8),
-                  const Text('Entendido — ir para a calculadora',
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: kToolGreen)),
-                ]),
+                  const Text(
+                    'Entendido — ir para a calculadora',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: kToolGreen,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ]),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -4529,39 +5484,55 @@ class _RiskBlock extends StatelessWidget {
         color: bg,
         border: Border.all(color: border),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Icon(icon, size: 11, color: labelColor),
-          const SizedBox(width: 5),
-          Text(label,
-              style: TextStyle(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 11, color: labelColor),
+              const SizedBox(width: 5),
+              Text(
+                label,
+                style: TextStyle(
                   fontSize: 9,
                   fontWeight: FontWeight.w900,
                   color: labelColor,
-                  letterSpacing: 1.5)),
-        ]),
-        const SizedBox(height: 8),
-        ...items.map((item) => Padding(
-              padding: const EdgeInsets.only(bottom: 5),
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Container(
-                    width: 4,
-                    height: 4,
-                    decoration: BoxDecoration(
-                        color: text.withOpacity(0.6), shape: BoxShape.circle),
-                  ),
+                  letterSpacing: 1.5,
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                    child: Text(item,
-                        style:
-                            TextStyle(fontSize: 12, color: text, height: 1.4))),
-              ]),
-            )),
-      ]),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 5),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: text.withOpacity(0.6),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      item,
+                      style: TextStyle(fontSize: 12, color: text, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -4588,17 +5559,17 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
   int _cat = 0;
 
   List<String> _categories(bool isEs) => [
-        isEs ? 'DOLOR/FIEBRE' : 'DOR/FEBRE',
-        isEs ? 'NÁUSEAS' : 'NÁUSEA',
-        isEs ? 'INFECCIÓN' : 'INFECÇÃO',
-        'HAS',
-        'HipoK+',
-        isEs ? 'SEDACIÓN' : 'SEDAÇÃO',
-        isEs ? 'SEPSIS' : 'SEPSE',
-        isEs ? 'COAGULACIÓN' : 'COAGULAÇÃO',
-        isEs ? 'ANTI-HAS GRAVE' : 'ANTI-HAS GRAVE',
-        isEs ? 'DISNEA' : 'DISPNEIA',
-      ];
+    isEs ? 'DOLOR/FIEBRE' : 'DOR/FEBRE',
+    isEs ? 'NÁUSEAS' : 'NÁUSEA',
+    isEs ? 'INFECCIÓN' : 'INFECÇÃO',
+    'HAS',
+    'HipoK+',
+    isEs ? 'SEDACIÓN' : 'SEDAÇÃO',
+    isEs ? 'SEPSIS' : 'SEPSE',
+    isEs ? 'COAGULACIÓN' : 'COAGULAÇÃO',
+    isEs ? 'ANTI-HAS GRAVE' : 'ANTI-HAS GRAVE',
+    isEs ? 'DISNEA' : 'DISPNEIA',
+  ];
 
   // Ícones por categoria de prescrição
   static const _catIcons = [
@@ -4620,70 +5591,87 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
     final isEs = p.lang == 'es';
     final categories = _categories(isEs);
 
-    return Column(children: [
-      // ── Sub-tabs com underline indicator ──────────────────────
-      Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF0F1116),
-          border: Border(
-              bottom:
-                  BorderSide(color: Colors.white.withOpacity(0.08), width: 1)),
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            children: List.generate(categories.length, (i) {
-              final active = _cat == i;
-              return GestureDetector(
-                onTap: () {
-                  AppHaptics.selection(context);
-                  setState(() => _cat = i);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.only(right: 2),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-                  decoration: BoxDecoration(
-                    border: Border(
+    return Column(
+      children: [
+        // ── Sub-tabs com underline indicator ──────────────────────
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF0F1116),
+            border: Border(
+              bottom: BorderSide(
+                color: Colors.white.withOpacity(0.08),
+                width: 1,
+              ),
+            ),
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: List.generate(categories.length, (i) {
+                final active = _cat == i;
+                return GestureDetector(
+                  onTap: () {
+                    AppHaptics.selection(context);
+                    setState(() => _cat = i);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: const EdgeInsets.only(right: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 11,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
                         bottom: BorderSide(
-                      color:
-                          active ? const Color(0xFF0D6B57) : Colors.transparent,
-                      width: 2.5,
-                    )),
-                  ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(_catIcons[i],
-                        size: 13,
-                        color: active
-                            ? const Color(0xFF0D6B57)
-                            : Colors.white.withOpacity(0.40)),
-                    const SizedBox(width: 5),
-                    Text(categories[i],
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight:
-                              active ? FontWeight.w800 : FontWeight.w500,
                           color: active
                               ? const Color(0xFF0D6B57)
-                              : Colors.white.withOpacity(0.45),
-                          letterSpacing: 0.5,
-                        )),
-                  ]),
-                ),
-              );
-            }),
+                              : Colors.transparent,
+                          width: 2.5,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _catIcons[i],
+                          size: 13,
+                          color: active
+                              ? const Color(0xFF0D6B57)
+                              : Colors.white.withOpacity(0.40),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          categories[i],
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: active
+                                ? FontWeight.w800
+                                : FontWeight.w500,
+                            color: active
+                                ? const Color(0xFF0D6B57)
+                                : Colors.white.withOpacity(0.45),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
           ),
         ),
-      ),
-      Expanded(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
-          child: _buildPrescription(isEs),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+            child: _buildPrescription(isEs),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget _buildPrescription(bool isEs) {
@@ -4714,687 +5702,802 @@ class _PrescriptionsTabState extends State<_PrescriptionsTab> {
   }
 
   Widget _buildPainFever(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'Dolor Leve–Moderado (Adulto)'
-            : 'Dor Leve–Moderada (Adulto)',
-        level: 'MOD',
-        badge: isEs ? '1ª Elección' : '1ª Escolha',
-        sideTitle: isEs ? 'Claves rápidas' : 'Pontos-chave',
-        sideBody: isEs
-            ? 'Paracetamol es seguro, eficaz y puede combinarse con otras medicaciones.'
-            : 'Paracetamol é seguro, eficaz e pode ser combinado com outras medicações.',
-        sideType: _SideNoteType.info,
-        evidence: isEs
-            ? 'Modelo educativo · WHO Essential Medicines 2023 · UpToDate: Acetaminophen use in adults · Micromedex DrugDex'
-            : 'Modelo educacional · OMS Medicamentos Essenciais 2023 · UpToDate: Paracetamol no adulto · Micromedex DrugDex',
-        tags: [
-          _PrescTag(isEs ? 'DOR LEVE' : 'DOR LEVE', const Color(0xFF059669)),
-          _PrescTag(
-              isEs ? 'DOR MODERADA' : 'DOR MODERADA', const Color(0xFFD97706)),
-          _PrescTag('Adulto', const Color(0xFF6366F1)),
-        ],
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'Dolor Leve–Moderado (Adulto)'
+              : 'Dor Leve–Moderada (Adulto)',
+          level: 'MOD',
+          badge: isEs ? '1ª Elección' : '1ª Escolha',
+          sideTitle: isEs ? 'Claves rápidas' : 'Pontos-chave',
+          sideBody: isEs
+              ? 'Paracetamol es seguro, eficaz y puede combinarse con otras medicaciones.'
+              : 'Paracetamol é seguro, eficaz e pode ser combinado com outras medicações.',
+          sideType: _SideNoteType.info,
+          evidence: isEs
+              ? 'Modelo educativo · WHO Essential Medicines 2023 · UpToDate: Acetaminophen use in adults · Micromedex DrugDex'
+              : 'Modelo educacional · OMS Medicamentos Essenciais 2023 · UpToDate: Paracetamol no adulto · Micromedex DrugDex',
+          tags: [
+            _PrescTag(isEs ? 'DOR LEVE' : 'DOR LEVE', const Color(0xFF059669)),
+            _PrescTag(
+              isEs ? 'DOR MODERADA' : 'DOR MODERADA',
+              const Color(0xFFD97706),
+            ),
+            _PrescTag('Adulto', const Color(0xFF6366F1)),
+          ],
+          items: [
+            _PrescItem(
               '1.',
               isEs
                   ? 'Paracetamol 1 g VO/IV 6/6h (máx. 4 g/dia). Preferir para febre e dor leve.'
-                  : 'Paracetamol 1 g VO/IV 6/6h (máx. 4 g/dia). Preferir para febre e dor leve.'),
-          _PrescItem(
+                  : 'Paracetamol 1 g VO/IV 6/6h (máx. 4 g/dia). Preferir para febre e dor leve.',
+            ),
+            _PrescItem(
               '2.',
               isEs
                   ? 'SE necessário: Ibuprofeno 400–600 mg 8/8h VO (com alimento). Evitar em IR, úlcera, ICC.'
-                  : 'SE necessário: Ibuprofeno 400–600 mg 8/8h VO (com alimento). Evitar IR, úlcera, ICC.'),
-          _PrescItem(
+                  : 'SE necessário: Ibuprofeno 400–600 mg 8/8h VO (com alimento). Evitar IR, úlcera, ICC.',
+            ),
+            _PrescItem(
               '3.',
               isEs
                   ? 'Dipirona 1 g VO/IV 6/6h (IV lento ≥15 min). Alternativa eficaz.'
-                  : 'Dipirona 1 g VO/IV 6/6h (IV lento ≥15 min). Alternativa eficaz.'),
-          _PrescItem(
+                  : 'Dipirona 1 g VO/IV 6/6h (IV lento ≥15 min). Alternativa eficaz.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Não combinar dois AINEs. Evitar em gestante, IR grave, plaquetopenia.'
-                  : 'Não combinar dois AINEs. Evitar em gestante, IR grave, plaquetopenia.'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs ? 'Dolor Moderado–Severo' : 'Dor Moderada–Grave',
-        level: 'ALTO',
-        badge: isEs ? 'Uso cuidadoso' : 'Uso cuidadoso',
-        sideTitle: isEs ? 'Precaución' : 'Precaução',
-        sideBody: isEs
-            ? 'Opioides pueden causar depresión respiratoria. Monitorización esencial.'
-            : 'Opioides podem causar depressão respiratória. Monitorização essencial.',
-        sideType: _SideNoteType.warning,
-        evidence: isEs
-            ? 'Modelo educativo · Lexicomp Opioid Analgesics · APS Pain Guidelines 2022 · UpToDate: Management of acute pain'
-            : 'Modelo educacional · Lexicomp Analgésicos Opioides · APS Pain Guidelines 2022 · UpToDate: Manejo da dor aguda',
-        tags: [
-          _PrescTag(
-              isEs ? 'DOR MODERADA' : 'DOR MODERADA', const Color(0xFFD97706)),
-          _PrescTag(
-              isEs ? 'DOR SEVERA' : 'DOR SEVERA', const Color(0xFFDC2626)),
-          _PrescTag('Adulto', const Color(0xFF6366F1)),
-        ],
-        items: [
-          _PrescItem(
+                  : 'Não combinar dois AINEs. Evitar em gestante, IR grave, plaquetopenia.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs ? 'Dolor Moderado–Severo' : 'Dor Moderada–Grave',
+          level: 'ALTO',
+          badge: isEs ? 'Uso cuidadoso' : 'Uso cuidadoso',
+          sideTitle: isEs ? 'Precaución' : 'Precaução',
+          sideBody: isEs
+              ? 'Opioides pueden causar depresión respiratoria. Monitorización esencial.'
+              : 'Opioides podem causar depressão respiratória. Monitorização essencial.',
+          sideType: _SideNoteType.warning,
+          evidence: isEs
+              ? 'Modelo educativo · Lexicomp Opioid Analgesics · APS Pain Guidelines 2022 · UpToDate: Management of acute pain'
+              : 'Modelo educacional · Lexicomp Analgésicos Opioides · APS Pain Guidelines 2022 · UpToDate: Manejo da dor aguda',
+          tags: [
+            _PrescTag(
+              isEs ? 'DOR MODERADA' : 'DOR MODERADA',
+              const Color(0xFFD97706),
+            ),
+            _PrescTag(
+              isEs ? 'DOR SEVERA' : 'DOR SEVERA',
+              const Color(0xFFDC2626),
+            ),
+            _PrescTag('Adulto', const Color(0xFF6366F1)),
+          ],
+          items: [
+            _PrescItem(
               '1.',
               isEs
                   ? 'Tramadol 50–100 mg VO 8/8h (ou IV lento em 100 mL SF). Máx. 400 mg/dia.'
-                  : 'Tramadol 50–100 mg VO 8/8h (ou IV lento em 100 mL SF). Máx. 400 mg/dia.'),
-          _PrescItem(
+                  : 'Tramadol 50–100 mg VO 8/8h (ou IV lento em 100 mL SF). Máx. 400 mg/dia.',
+            ),
+            _PrescItem(
               '2.',
               isEs
                   ? 'Morfina 2–5 mg IV lento a cada 4h. Titular pela dor (EV ou PO). Cuidado: depressão respiratória.'
-                  : 'Morfina 2–5 mg IV lento a cada 4h. Titular pela dor (EV ou PO). Cuidado: depressão resp.'),
-          _PrescItem(
+                  : 'Morfina 2–5 mg IV lento a cada 4h. Titular pela dor (EV ou PO). Cuidado: depressão resp.',
+            ),
+            _PrescItem(
               '3.',
               isEs
                   ? 'Cetorolaco 30 mg IV/IM 8/8h (máx. 5 dias). Excelente para cólica renal.'
-                  : 'Cetorolaco 30 mg IV/IM 8/8h (máx. 5 dias). Excelente para cólica renal.'),
-          _PrescItem(
+                  : 'Cetorolaco 30 mg IV/IM 8/8h (máx. 5 dias). Excelente para cólica renal.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Naloxona 0,4 mg IV disponível. Monitorar SpO2 contínua com opioides IV.'
-                  : 'Naloxona 0,4 mg IV disponível. Monitorar SpO2 contínua com opioides IV.'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs ? 'Fiebre (T >38,3°C)' : 'Febre (T >38,3°C)',
-        level: 'MOD',
-        badge: isEs ? '1ª Elección' : '1ª Escolha',
-        sideTitle: isEs ? 'Importante' : 'Importante',
-        sideBody: isEs
-            ? 'Tratar la causa es más importante que solo reducir la fiebre.'
-            : 'Tratar a causa é mais importante que apenas reduzir a febre.',
-        sideType: _SideNoteType.important,
-        evidence: isEs
-            ? 'Modelo educativo · WHO Fever Management Guidelines · UpToDate: Approach to the adult with fever · Micromedex'
-            : 'Modelo educacional · OMS Manejo da Febre · UpToDate: Abordagem do adulto com febre · Micromedex',
-        tags: [
-          _PrescTag(
-              isEs ? 'FIEBRE LEVE' : 'FEBRE LEVE', const Color(0xFF059669)),
-          _PrescTag(isEs ? 'FIEBRE MODERADA' : 'FEBRE MODERADA',
-              const Color(0xFFD97706)),
-          _PrescTag('Adulto', const Color(0xFF6366F1)),
-        ],
-        items: [
-          _PrescItem(
+                  : 'Naloxona 0,4 mg IV disponível. Monitorar SpO2 contínua com opioides IV.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs ? 'Fiebre (T >38,3°C)' : 'Febre (T >38,3°C)',
+          level: 'MOD',
+          badge: isEs ? '1ª Elección' : '1ª Escolha',
+          sideTitle: isEs ? 'Importante' : 'Importante',
+          sideBody: isEs
+              ? 'Tratar la causa es más importante que solo reducir la fiebre.'
+              : 'Tratar a causa é mais importante que apenas reduzir a febre.',
+          sideType: _SideNoteType.important,
+          evidence: isEs
+              ? 'Modelo educativo · WHO Fever Management Guidelines · UpToDate: Approach to the adult with fever · Micromedex'
+              : 'Modelo educacional · OMS Manejo da Febre · UpToDate: Abordagem do adulto com febre · Micromedex',
+          tags: [
+            _PrescTag(
+              isEs ? 'FIEBRE LEVE' : 'FEBRE LEVE',
+              const Color(0xFF059669),
+            ),
+            _PrescTag(
+              isEs ? 'FIEBRE MODERADA' : 'FEBRE MODERADA',
+              const Color(0xFFD97706),
+            ),
+            _PrescTag('Adulto', const Color(0xFF6366F1)),
+          ],
+          items: [
+            _PrescItem(
               '1.',
               isEs
                   ? 'Paracetamol 750 mg–1 g VO/IV 6/6h. Primeira escolha — seguro e eficaz.'
-                  : 'Paracetamol 750 mg–1 g VO/IV 6/6h. Primeira escolha — seguro e eficaz.'),
-          _PrescItem(
+                  : 'Paracetamol 750 mg–1 g VO/IV 6/6h. Primeira escolha — seguro e eficaz.',
+            ),
+            _PrescItem(
               '2.',
               isEs
                   ? 'Dipirona 1 g IV 6/6h (lento) se febre persistente ou mal-tolerada.'
-                  : 'Dipirona 1 g IV 6/6h (lento) se febre persistente ou mal-tolerada.'),
-          _PrescItem(
+                  : 'Dipirona 1 g IV 6/6h (lento) se febre persistente ou mal-tolerada.',
+            ),
+            _PrescItem(
               '3.',
               isEs
                   ? 'Compressa morna se T > 40°C e paciente confortável.'
-                  : 'Compressa morna se T >40°C e paciente confortável.'),
-          _PrescItem(
+                  : 'Compressa morna se T >40°C e paciente confortável.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Investigar CAUSA — não tratar febre isoladamente sem colher culturas.'
-                  : 'Investigar CAUSA — não tratar febre isoladamente sem colher culturas.'),
-        ],
-      ),
-    ]);
+                  : 'Investigar CAUSA — não tratar febre isoladamente sem colher culturas.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildNausea(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'Náuseas y Vómitos — 1ª Línea'
-            : 'Náuseas e Vômitos — 1ª Linha',
-        level: 'MOD',
-        evidence: isEs
-            ? 'Modelo educativo · UpToDate: Antiemetics — pharmacology and principles of use · Micromedex Ondansetron'
-            : 'Modelo educacional · UpToDate: Antieméticos — farmacologia e uso · Micromedex Ondansetrona',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'Náuseas y Vómitos — 1ª Línea'
+              : 'Náuseas e Vômitos — 1ª Linha',
+          level: 'MOD',
+          evidence: isEs
+              ? 'Modelo educativo · UpToDate: Antiemetics — pharmacology and principles of use · Micromedex Ondansetron'
+              : 'Modelo educacional · UpToDate: Antieméticos — farmacologia e uso · Micromedex Ondansetrona',
+          items: [
+            _PrescItem(
               '1.',
               isEs
                   ? 'Ondansetrona 4–8 mg IV lento (2–5 min) 8/8h. Primeira escolha — menos sedação.'
-                  : 'Ondansetrona 4–8 mg IV lento (2–5 min) 8/8h. Primeira escolha — menos sedação.'),
-          _PrescItem(
+                  : 'Ondansetrona 4–8 mg IV lento (2–5 min) 8/8h. Primeira escolha — menos sedação.',
+            ),
+            _PrescItem(
               '2.',
               isEs
                   ? 'Metoclopramida 10 mg IV 8/8h (lento em 50 mL SF, 15 min). Útil se dismotilidade gástrica.'
-                  : 'Metoclopramida 10 mg IV 8/8h (lento em 50 mL SF, 15 min). Útil se dismotilidade gástrica.'),
-          _PrescItem(
+                  : 'Metoclopramida 10 mg IV 8/8h (lento em 50 mL SF, 15 min). Útil se dismotilidade gástrica.',
+            ),
+            _PrescItem(
               '3.',
               isEs
                   ? 'Dimenidrinato 50 mg IV/VO 8/8h se náusea vestibular.'
-                  : 'Dimenidrinato 50 mg IV/VO 8/8h se náusea vestibular.'),
-          _PrescItem(
+                  : 'Dimenidrinato 50 mg IV/VO 8/8h se náusea vestibular.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Metoclopramida: evitar em parkinsonismo. Ondansetrona: monitorar QT.'
-                  : 'Metoclopramida: evitar em parkinsonismo. Ondansetrona: monitorar QT.'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs
-            ? 'Vómitos Incoercibles / Quimioterapia'
-            : 'Vômitos Incoercíveis / Quimioterapia',
-        level: 'ALTO',
-        evidence: isEs
-            ? 'Modelo educativo · ASCO Antiemesis Guidelines 2020 · Lexicomp Aprepitant · UpToDate: CINV management'
-            : 'Modelo educacional · ASCO Antiemese 2020 · Lexicomp Aprepitanto · UpToDate: Manejo da NVIQ',
-        items: [
-          _PrescItem(
+                  : 'Metoclopramida: evitar em parkinsonismo. Ondansetrona: monitorar QT.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs
+              ? 'Vómitos Incoercibles / Quimioterapia'
+              : 'Vômitos Incoercíveis / Quimioterapia',
+          level: 'ALTO',
+          evidence: isEs
+              ? 'Modelo educativo · ASCO Antiemesis Guidelines 2020 · Lexicomp Aprepitant · UpToDate: CINV management'
+              : 'Modelo educacional · ASCO Antiemese 2020 · Lexicomp Aprepitanto · UpToDate: Manejo da NVIQ',
+          items: [
+            _PrescItem(
               '1.',
               isEs
                   ? 'Ondansetrona 8 mg IV 8/8h + Dexametasona 8 mg IV 12/12h.'
-                  : 'Ondansetrona 8 mg IV 8/8h + Dexametasona 8 mg IV 12/12h.'),
-          _PrescItem(
+                  : 'Ondansetrona 8 mg IV 8/8h + Dexametasona 8 mg IV 12/12h.',
+            ),
+            _PrescItem(
               '2.',
               isEs
                   ? 'Aprepitanto 125 mg D1 + 80 mg D2-D3 (se disponível — antagonista NK1).'
-                  : 'Aprepitanto 125 mg D1 + 80 mg D2-D3 (se disponível — antagonista NK1).'),
-          _PrescItem(
+                  : 'Aprepitanto 125 mg D1 + 80 mg D2-D3 (se disponível — antagonista NK1).',
+            ),
+            _PrescItem(
               '3.',
               isEs
                   ? 'Hidratação IV se ingestão oral comprometida.'
-                  : 'Hidratação IV se ingestão oral comprometida.'),
-        ],
-      ),
-    ]);
+                  : 'Hidratação IV se ingestão oral comprometida.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildInfection(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'ITU no Complicada (ambulatorio)'
-            : 'ITU não Complicada (ambulatorial)',
-        level: 'MOD',
-        evidence: isEs
-            ? 'Modelo educativo · IDSA UTI Guidelines 2011 (actualización 2022) · UpToDate: Uncomplicated UTI in women · Micromedex'
-            : 'Modelo educacional · IDSA ITU Guidelines 2022 · UpToDate: ITU não complicada na mulher · SBI 2023',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'ITU no Complicada (ambulatorio)'
+              : 'ITU não Complicada (ambulatorial)',
+          level: 'MOD',
+          evidence: isEs
+              ? 'Modelo educativo · IDSA UTI Guidelines 2011 (actualización 2022) · UpToDate: Uncomplicated UTI in women · Micromedex'
+              : 'Modelo educacional · IDSA ITU Guidelines 2022 · UpToDate: ITU não complicada na mulher · SBI 2023',
+          items: [
+            _PrescItem(
               '1.ª opção',
               isEs
                   ? 'Nitrofurantoína 100 mg VO 12/12h × 5 dias (não usar em IR: ClCr <45).'
-                  : 'Nitrofurantoína 100 mg VO 12/12h × 5 dias (não usar em IR: ClCr <45).'),
-          _PrescItem(
+                  : 'Nitrofurantoína 100 mg VO 12/12h × 5 dias (não usar em IR: ClCr <45).',
+            ),
+            _PrescItem(
               '2.ª opção',
               isEs
                   ? 'Fosfomicina 3 g VO dose única (cistite simples).'
-                  : 'Fosfomicina 3 g VO dose única (cistite simples).'),
-          _PrescItem(
+                  : 'Fosfomicina 3 g VO dose única (cistite simples).',
+            ),
+            _PrescItem(
               '3.ª opção',
               isEs
                   ? 'Ciprofloxacino 500 mg VO 12/12h × 3 dias (reservar quinolonas).'
-                  : 'Ciprofloxacino 500 mg VO 12/12h × 3 dias (reservar quinolonas).'),
-          _PrescItem(
+                  : 'Ciprofloxacino 500 mg VO 12/12h × 3 dias (reservar quinolonas).',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Amoxicilina isolada: alta resistência (>30%). Evitar sem antibiograma.'
-                  : 'Amoxicilina isolada: alta resistência (>30%). Evitar sem antibiograma.'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs
-            ? 'ITU Complicada / Pielonefritis'
-            : 'ITU Complicada / Pielonefrite',
-        level: 'ALTO',
-        evidence: isEs
-            ? 'Modelo educativo · IDSA Pyelonephritis Guidelines · UpToDate: Acute complicated UTI in adults · Lexicomp Ceftriaxone'
-            : 'Modelo educacional · IDSA Pielonefrite · UpToDate: ITU complicada no adulto · Lexicomp Ceftriaxona',
-        items: [
-          _PrescItem(
+                  : 'Amoxicilina isolada: alta resistência (>30%). Evitar sem antibiograma.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs
+              ? 'ITU Complicada / Pielonefritis'
+              : 'ITU Complicada / Pielonefrite',
+          level: 'ALTO',
+          evidence: isEs
+              ? 'Modelo educativo · IDSA Pyelonephritis Guidelines · UpToDate: Acute complicated UTI in adults · Lexicomp Ceftriaxone'
+              : 'Modelo educacional · IDSA Pielonefrite · UpToDate: ITU complicada no adulto · Lexicomp Ceftriaxona',
+          items: [
+            _PrescItem(
               'Internado IV',
               isEs
                   ? 'Ceftriaxona 1–2 g IV/dia ou Ciprofloxacino 400 mg IV 12/12h.'
-                  : 'Ceftriaxona 1–2 g IV/dia ou Ciprofloxacino 400 mg IV 12/12h.'),
-          _PrescItem(
+                  : 'Ceftriaxona 1–2 g IV/dia ou Ciprofloxacino 400 mg IV 12/12h.',
+            ),
+            _PrescItem(
               'Ambulatorial',
               isEs
                   ? 'Ciprofloxacino 500 mg VO 12/12h × 7 dias (pielonefrite leve).'
-                  : 'Ciprofloxacino 500 mg VO 12/12h × 7 dias (pielonefrite leve).'),
-          _PrescItem(
+                  : 'Ciprofloxacino 500 mg VO 12/12h × 7 dias (pielonefrite leve).',
+            ),
+            _PrescItem(
               'Cultura+',
               isEs
                   ? 'Aguardar antibiograma e desescalar em 48–72h.'
-                  : 'Aguardar antibiograma e desescalar em 48–72h.'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs
-            ? 'PAC Leve–Moderada (ambulatorio)'
-            : 'PAC Leve–Moderada (ambulatorial)',
-        level: 'MOD',
-        evidence: isEs
-            ? 'Modelo educativo · ATS/IDSA CAP Guidelines 2019 · CURB-65 score · UpToDate: CAP treatment in adults'
-            : 'Modelo educacional · ATS/IDSA PAC 2019 · Escore CURB-65 · UpToDate: Tratamento da PAC no adulto · SBPT',
-        items: [
-          _PrescItem(
+                  : 'Aguardar antibiograma e desescalar em 48–72h.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs
+              ? 'PAC Leve–Moderada (ambulatorio)'
+              : 'PAC Leve–Moderada (ambulatorial)',
+          level: 'MOD',
+          evidence: isEs
+              ? 'Modelo educativo · ATS/IDSA CAP Guidelines 2019 · CURB-65 score · UpToDate: CAP treatment in adults'
+              : 'Modelo educacional · ATS/IDSA PAC 2019 · Escore CURB-65 · UpToDate: Tratamento da PAC no adulto · SBPT',
+          items: [
+            _PrescItem(
               'Sem comorbidade',
               isEs
                   ? 'Amoxicilina 1 g VO 8/8h × 5 dias (pneumococo — 1ª opção).'
-                  : 'Amoxicilina 1 g VO 8/8h × 5 dias (pneumococo — 1ª opção).'),
-          _PrescItem(
+                  : 'Amoxicilina 1 g VO 8/8h × 5 dias (pneumococo — 1ª opção).',
+            ),
+            _PrescItem(
               'Atípico suspeito',
               isEs
                   ? 'Azitromicina 500 mg/dia × 5 dias OU Doxiciclina 100 mg 12/12h × 7 dias.'
-                  : 'Azitromicina 500 mg/dia × 5 dias OU Doxiciclina 100 mg 12/12h × 7 dias.'),
-          _PrescItem(
+                  : 'Azitromicina 500 mg/dia × 5 dias OU Doxiciclina 100 mg 12/12h × 7 dias.',
+            ),
+            _PrescItem(
               'Com comorbidade',
               isEs
                   ? 'Amox+Clav 875/125 mg 12/12h + Azitromicina × 7 dias.'
-                  : 'Amox+Clav 875/125 mg 12/12h + Azitromicina × 7 dias.'),
-          _PrescItem(
+                  : 'Amox+Clav 875/125 mg 12/12h + Azitromicina × 7 dias.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'CURB-65 ≥2 = considerar internação. ≥3 = UTI avaliação.'
-                  : 'CURB-65 ≥2 = considerar internação. ≥3 = avaliar UTI.'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs ? 'Celulitis / Erisipela' : 'Celulite / Erisipela',
-        level: 'MOD',
-        evidence: isEs
-            ? 'Modelo educativo · IDSA Skin & Soft Tissue Infections 2014 · UpToDate: Cellulitis and skin abscess · Lexicomp'
-            : 'Modelo educacional · IDSA Infecções de Pele 2014 · UpToDate: Celulite e abscesso · Lexicomp Cefalexina',
-        items: [
-          _PrescItem(
+                  : 'CURB-65 ≥2 = considerar internação. ≥3 = avaliar UTI.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs ? 'Celulitis / Erisipela' : 'Celulite / Erisipela',
+          level: 'MOD',
+          evidence: isEs
+              ? 'Modelo educativo · IDSA Skin & Soft Tissue Infections 2014 · UpToDate: Cellulitis and skin abscess · Lexicomp'
+              : 'Modelo educacional · IDSA Infecções de Pele 2014 · UpToDate: Celulite e abscesso · Lexicomp Cefalexina',
+          items: [
+            _PrescItem(
               'Leve VO',
               isEs
                   ? 'Cefalexina 500 mg VO 6/6h × 5–7 dias (estafilococo/estreptococo).'
-                  : 'Cefalexina 500 mg VO 6/6h × 5–7 dias (estafilococo/estreptococo).'),
-          _PrescItem(
+                  : 'Cefalexina 500 mg VO 6/6h × 5–7 dias (estafilococo/estreptococo).',
+            ),
+            _PrescItem(
               'Moderada IV',
               isEs
                   ? 'Oxacilina 2 g IV 4/4h ou Cefazolina 2 g IV 8/8h.'
-                  : 'Oxacilina 2 g IV 4/4h ou Cefazolina 2 g IV 8/8h.'),
-          _PrescItem(
+                  : 'Oxacilina 2 g IV 4/4h ou Cefazolina 2 g IV 8/8h.',
+            ),
+            _PrescItem(
               'MRSA suspeito',
               isEs
                   ? 'Vancomicina 15–20 mg/kg IV 12/12h.'
-                  : 'Vancomicina 15–20 mg/kg IV 12/12h.'),
-        ],
-      ),
-    ]);
+                  : 'Vancomicina 15–20 mg/kg IV 12/12h.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildHAS(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'HAS Estágio 1–2 (ambulatorio)'
-            : 'HAS Estágio 1–2 (ambulatorial)',
-        level: 'MOD',
-        evidence: isEs
-            ? 'Modelo educativo · ESC/ESH Hypertension Guidelines 2023 · JNC 8 · UpToDate: Choice of drug therapy in primary HTN'
-            : 'Modelo educacional · ESC/ESH HAS 2023 · Diretriz Brasileira HAS 2023 · UpToDate: Escolha do anti-hipertensivo',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'HAS Estágio 1–2 (ambulatorio)'
+              : 'HAS Estágio 1–2 (ambulatorial)',
+          level: 'MOD',
+          evidence: isEs
+              ? 'Modelo educativo · ESC/ESH Hypertension Guidelines 2023 · JNC 8 · UpToDate: Choice of drug therapy in primary HTN'
+              : 'Modelo educacional · ESC/ESH HAS 2023 · Diretriz Brasileira HAS 2023 · UpToDate: Escolha do anti-hipertensivo',
+          items: [
+            _PrescItem(
               '1.ª linha',
               isEs
                   ? 'Anlodipino 5 mg VO 1×/dia (pode titular para 10 mg).'
-                  : 'Anlodipino 5 mg VO 1×/dia (pode titular para 10 mg).'),
-          _PrescItem(
+                  : 'Anlodipino 5 mg VO 1×/dia (pode titular para 10 mg).',
+            ),
+            _PrescItem(
               'Ou',
               isEs
                   ? 'Losartana 50 mg VO 1×/dia (titular para 100 mg). Preferir em DM/proteinúria.'
-                  : 'Losartana 50 mg VO 1×/dia (titular para 100 mg). Preferir em DM/proteinúria.'),
-          _PrescItem(
+                  : 'Losartana 50 mg VO 1×/dia (titular para 100 mg). Preferir em DM/proteinúria.',
+            ),
+            _PrescItem(
               'Ou',
               isEs
                   ? 'Enalapril 5–10 mg VO 12/12h. Monitorar K+ e creatinina.'
-                  : 'Enalapril 5–10 mg VO 12/12h. Monitorar K+ e creatinina.'),
-          _PrescItem(
+                  : 'Enalapril 5–10 mg VO 12/12h. Monitorar K+ e creatinina.',
+            ),
+            _PrescItem(
               'Combinação',
               isEs
                   ? 'Anlodipino + Losartana se PA não controlada com monoterapia em 4 semanas.'
-                  : 'Anlodipino + Losartana se PA não controlada com monoterapia em 4 semanas.'),
-          _PrescItem(
+                  : 'Anlodipino + Losartana se PA não controlada com monoterapia em 4 semanas.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'IECA/ARA2: contraindicados na gravidez. Monitorar K+ com poupadores.'
-                  : 'IECA/ARA2: contraindicados na gravidez. Monitorar K+ com poupadores.'),
-        ],
-      ),
-    ]);
+                  : 'IECA/ARA2: contraindicados na gravidez. Monitorar K+ com poupadores.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildHypoK(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title:
-            isEs ? 'Hipopotasemia — Reposición' : 'Hipopotassemia — Reposição',
-        level: 'ALTO',
-        evidence: isEs
-            ? 'Modelo educativo · UpToDate: Clinical manifestations and treatment of hypokalemia · Micromedex KCl · Lexicomp'
-            : 'Modelo educacional · UpToDate: Manifestações e tratamento da hipocalemia · Micromedex KCl · Lexicomp',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'Hipopotasemia — Reposición'
+              : 'Hipopotassemia — Reposição',
+          level: 'ALTO',
+          evidence: isEs
+              ? 'Modelo educativo · UpToDate: Clinical manifestations and treatment of hypokalemia · Micromedex KCl · Lexicomp'
+              : 'Modelo educacional · UpToDate: Manifestações e tratamento da hipocalemia · Micromedex KCl · Lexicomp',
+          items: [
+            _PrescItem(
               'K+ 3,0–3,5',
               isEs
                   ? 'KCl 40 mEq VO (frutas, sal light) ou KCl oral 40 mEq fracionado.'
-                  : 'KCl 40 mEq VO (frutas, sal light) ou KCl oral 40 mEq fracionado.'),
-          _PrescItem(
+                  : 'KCl 40 mEq VO (frutas, sal light) ou KCl oral 40 mEq fracionado.',
+            ),
+            _PrescItem(
               'K+ 2,5–3,0',
               isEs
                   ? 'KCl 40–60 mEq em 500 mL SF IV em 4–6h (taxa máx. 10 mEq/h periférica).'
-                  : 'KCl 40–60 mEq em 500 mL SF IV em 4–6h (taxa máx. 10 mEq/h periférica).'),
-          _PrescItem(
+                  : 'KCl 40–60 mEq em 500 mL SF IV em 4–6h (taxa máx. 10 mEq/h periférica).',
+            ),
+            _PrescItem(
               'K+ <2,5/ECG alt.',
               isEs
                   ? 'KCl até 20–40 mEq/h em via central com monitorização ECG contínua.'
-                  : 'KCl até 20–40 mEq/h em via central com monitorização ECG contínua.'),
-          _PrescItem(
+                  : 'KCl até 20–40 mEq/h em via central com monitorização ECG contínua.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'NUNCA KCl IV direto (bolus). Sempre diluído. Verificar e repor Mg2+ junto (hipoMg perpetua hipoK).'
-                  : 'NUNCA KCl IV direto (bolus). Sempre diluído. Repor Mg2+ junto (hipoMg perpetua hipoK).'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs ? 'Hipomagnesemia' : 'Hipomagnesemia',
-        level: 'MOD',
-        items: [
-          _PrescItem(
+                  : 'NUNCA KCl IV direto (bolus). Sempre diluído. Repor Mg2+ junto (hipoMg perpetua hipoK).',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs ? 'Hipomagnesemia' : 'Hipomagnesemia',
+          level: 'MOD',
+          items: [
+            _PrescItem(
               'Reposição IV',
               isEs
                   ? 'MgSO4 2 g IV em 100 mL SF em 15–20 min. Repetir se Mg <1,5 mg/dL.'
-                  : 'MgSO4 2 g IV em 100 mL SF em 15–20 min. Repetir se Mg <1,5 mg/dL.'),
-          _PrescItem(
+                  : 'MgSO4 2 g IV em 100 mL SF em 15–20 min. Repetir se Mg <1,5 mg/dL.',
+            ),
+            _PrescItem(
               'Manutenção VO',
               isEs
                   ? 'Óxido de Magnésio 400 mg VO 1–2×/dia.'
-                  : 'Óxido de Magnésio 400 mg VO 1–2×/dia.'),
-          _PrescItem(
+                  : 'Óxido de Magnésio 400 mg VO 1–2×/dia.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Hipomagnesemia: causa comum de hipocalemia e hipocalcemia refratária.'
-                  : 'Hipomagnesemia: causa comum de hipocalemia e hipocalcemia refratária.'),
-        ],
-      ),
-    ]);
+                  : 'Hipomagnesemia: causa comum de hipocalemia e hipocalcemia refratária.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildSedation(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'Sedación/Analgesia en UTI (PADIS 2018)'
-            : 'Sedação/Analgesia em UTI (PADIS 2018)',
-        level: 'ALTO',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'Sedación/Analgesia en UTI (PADIS 2018)'
+              : 'Sedação/Analgesia em UTI (PADIS 2018)',
+          level: 'ALTO',
+          items: [
+            _PrescItem(
               isEs ? '1. Analgesia' : '1. Analgesia',
               isEs
                   ? 'Analgesia-PRIMERO: Fentanil 25–50 mcg IV PRN o Morfina 2–4 mg IV PRN.'
-                  : 'Analgesia-PRIMEIRO: Fentanil 25–50 mcg IV PRN ou Morfina 2–4 mg IV PRN.'),
-          _PrescItem(
+                  : 'Analgesia-PRIMEIRO: Fentanil 25–50 mcg IV PRN ou Morfina 2–4 mg IV PRN.',
+            ),
+            _PrescItem(
               isEs ? '2. Sedación leve' : '2. Sedação leve',
               isEs
                   ? 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV O Dexmedetomidina 0,2–1,5 mcg/kg/h.'
-                  : 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV OU Dexmedetomidina 0,2–1,5 mcg/kg/h.'),
-          _PrescItem(
+                  : 'Meta RASS -1 a 0. Propofol 0,5–3 mg/kg/h IV OU Dexmedetomidina 0,2–1,5 mcg/kg/h.',
+            ),
+            _PrescItem(
               '3. Delirium',
               isEs
                   ? 'Haloperidol 0,25–0,5 mg IV 8/8h si agitación. Orientación + luz + movilización precoz.'
-                  : 'Haloperidol 0,25–0,5 mg IV 8/8h se agitação. Orientação + luz + mobilização precoce.'),
-          _PrescItem(
+                  : 'Haloperidol 0,25–0,5 mg IV 8/8h se agitação. Orientação + luz + mobilização precoce.',
+            ),
+            _PrescItem(
               isEs ? 'Sedación profunda' : 'Sedação profunda',
               isEs
                   ? 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SDRA/status).'
-                  : 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SARA/status).'),
-          _PrescItem(
+                  : 'Midazolam 0,02–0,1 mg/kg/h + Fentanil 25–100 mcg/h (IOT/SARA/status).',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Interrupción diaria de la sedación ("sedation vacation"). Evaluar RASS 4×/día.'
-                  : 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs
-            ? 'Escalas RASS / BPS (referencia)'
-            : 'Escalas RASS / BPS (referência)',
-        level: 'MOD',
-        items: [
-          _PrescItem(
+                  : 'Interrupção diária da sedação ("sedation vacation"). Avaliar RASS 4×/dia.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs
+              ? 'Escalas RASS / BPS (referencia)'
+              : 'Escalas RASS / BPS (referência)',
+          level: 'MOD',
+          items: [
+            _PrescItem(
               'RASS',
               isEs
                   ? '+4=combativo; +1=agitado; 0=alerta; -1=somnoliento; -3=moderado; -5=no responsivo.'
-                  : '+4=combativo; +1=agitado; 0=alerta; -1=sonolento; -3=moderado; -5=não responsivo.'),
-          _PrescItem(
+                  : '+4=combativo; +1=agitado; 0=alerta; -1=sonolento; -3=moderado; -5=não responsivo.',
+            ),
+            _PrescItem(
               'BPS',
               isEs
                   ? '3=sin dolor; 12=dolor máximo. Evaluación: expresión facial + extremidad + ventilación.'
-                  : '3=sem dor; 12=dor máxima. Avaliação: expressão facial + membro + ventilação.'),
-          _PrescItem(
+                  : '3=sem dor; 12=dor máxima. Avaliação: expressão facial + membro + ventilação.',
+            ),
+            _PrescItem(
               'CAM-ICU',
               isEs
                   ? 'Evalúa delirium en ventilado: 1)inicio agudo+fluctuación, 2)desatención, 3)alteración consciencia o pensamiento desorganizado.'
-                  : 'Avalia delirium em ventilado: 1)início agudo+flutuação, 2)desatenção, 3)consciência alt. ou pensamento desorganizado.'),
-        ],
-      ),
-    ]);
+                  : 'Avalia delirium em ventilado: 1)início agudo+flutuação, 2)desatenção, 3)consciência alt. ou pensamento desorganizado.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildSepsis(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'Bundle de Sepsis — HORA 1 (SSC 2021)'
-            : 'Bundle de Sepse — HORA 1 (SSC 2021)',
-        level: 'ALTO',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'Bundle de Sepsis — HORA 1 (SSC 2021)'
+              : 'Bundle de Sepse — HORA 1 (SSC 2021)',
+          level: 'ALTO',
+          items: [
+            _PrescItem(
               '1.',
               isEs
                   ? 'Medir lactato (repetir se >2 mmol/L).'
-                  : 'Medir lactato (repetir se >2 mmol/L).'),
-          _PrescItem(
+                  : 'Medir lactato (repetir se >2 mmol/L).',
+            ),
+            _PrescItem(
               '2.',
               isEs
                   ? 'Hemocultura 2× ANTES do antibiótico.'
-                  : 'Hemocultura 2× ANTES do antibiótico.'),
-          _PrescItem(
+                  : 'Hemocultura 2× ANTES do antibiótico.',
+            ),
+            _PrescItem(
               '3.',
               isEs
                   ? 'Antibiótico de amplo espectro em <1h.'
-                  : 'Antibiótico de amplo espectro em <1h.'),
-          _PrescItem(
+                  : 'Antibiótico de amplo espectro em <1h.',
+            ),
+            _PrescItem(
               '4.',
               isEs
                   ? 'SF/RL 30 mL/kg IV em ≤3h se hipoperfusão.'
-                  : 'SF/RL 30 mL/kg IV em ≤3h se hipoperfusão.'),
-          _PrescItem(
+                  : 'SF/RL 30 mL/kg IV em ≤3h se hipoperfusão.',
+            ),
+            _PrescItem(
               '5.',
               isEs
                   ? 'Vasopressor se PAM <65 após volume: Noradrenalina 0,1–1 µg/kg/min.'
-                  : 'Vasopressor se PAM <65 após volume: Noradrenalina 0,1–1 µg/kg/min.'),
-          _PrescItem(
+                  : 'Vasopressor se PAM <65 após volume: Noradrenalina 0,1–1 µg/kg/min.',
+            ),
+            _PrescItem(
               'ATB empírico',
               isEs
                   ? 'Pip-Tazo 4,5g IV 6/6h + Vancomicina 25 mg/kg IV (1ª dose, com infusão 1–2h).'
-                  : 'Pip-Tazo 4,5g IV 6/6h + Vancomicina 25 mg/kg IV (1ª dose, infusão 1–2h).'),
-          _PrescItem(
+                  : 'Pip-Tazo 4,5g IV 6/6h + Vancomicina 25 mg/kg IV (1ª dose, infusão 1–2h).',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Desescalar em 48–72h com cultura. Avaliar foco cirúrgico.'
-                  : 'Desescalar em 48–72h com cultura. Avaliar foco cirúrgico.'),
-        ],
-      ),
-    ]);
+                  : 'Desescalar em 48–72h com cultura. Avaliar foco cirúrgico.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildCoagulation(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs ? 'Profilaxis de TVP / TEP' : 'Profilaxia de TVP / TEP',
-        level: 'MOD',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs ? 'Profilaxis de TVP / TEP' : 'Profilaxia de TVP / TEP',
+          level: 'MOD',
+          items: [
+            _PrescItem(
               'Internados ClCr>30',
               isEs
                   ? 'Enoxaparina 40 mg SC 1×/dia.'
-                  : 'Enoxaparina 40 mg SC 1×/dia.'),
-          _PrescItem(
+                  : 'Enoxaparina 40 mg SC 1×/dia.',
+            ),
+            _PrescItem(
               'Obesos >100 kg',
               isEs
                   ? 'Enoxaparina 40 mg SC 12/12h ou 0,5 mg/kg/dia.'
-                  : 'Enoxaparina 40 mg SC 12/12h ou 0,5 mg/kg/dia.'),
-          _PrescItem(
+                  : 'Enoxaparina 40 mg SC 12/12h ou 0,5 mg/kg/dia.',
+            ),
+            _PrescItem(
               'ClCr <30',
               isEs
                   ? 'HNF 5000 UI SC 8/8h (preferir em IR grave).'
-                  : 'HNF 5000 UI SC 8/8h (preferir em IR grave).'),
-          _PrescItem(
+                  : 'HNF 5000 UI SC 8/8h (preferir em IR grave).',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'Contraindicada: sangramento ativo, plaquetas <50k, cirurgia SNC recente.'
-                  : 'Contraindicada: sangramento ativo, plaquetas <50k, cirurgia SNC recente.'),
-        ],
-      ),
-      _PrescCard(
-        title:
-            isEs ? 'Anticoagulación FA (inicio)' : 'Anticoagulação FA (início)',
-        level: 'MOD',
-        items: [
-          _PrescItem(
+                  : 'Contraindicada: sangramento ativo, plaquetas <50k, cirurgia SNC recente.',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs
+              ? 'Anticoagulación FA (inicio)'
+              : 'Anticoagulação FA (início)',
+          level: 'MOD',
+          items: [
+            _PrescItem(
               'CHA2DS2 ≥2 (H) / ≥3 (M)',
               isEs
                   ? 'Indicação formal de anticoagulação.'
-                  : 'Indicação formal de anticoagulação.'),
-          _PrescItem(
+                  : 'Indicação formal de anticoagulação.',
+            ),
+            _PrescItem(
               '1.ª opção',
               isEs
                   ? 'Rivaroxabana 20 mg 1×/dia (com jantar). ClCr 15–49: 15 mg/dia.'
-                  : 'Rivaroxabana 20 mg 1×/dia (com jantar). ClCr 15–49: 15 mg/dia.'),
-          _PrescItem(
+                  : 'Rivaroxabana 20 mg 1×/dia (com jantar). ClCr 15–49: 15 mg/dia.',
+            ),
+            _PrescItem(
               'Alternativa',
               isEs
                   ? 'Apixabana 5 mg 12/12h. Reduzir para 2,5 mg se ≥2: idade≥80/peso≤60/Cr≥1,5.'
-                  : 'Apixabana 5 mg 12/12h. Reduzir para 2,5 mg se ≥2: idade≥80/peso≤60/Cr≥1,5.'),
-          _PrescItem(
+                  : 'Apixabana 5 mg 12/12h. Reduzir para 2,5 mg se ≥2: idade≥80/peso≤60/Cr≥1,5.',
+            ),
+            _PrescItem(
               'Valvar/mecânica',
               isEs
                   ? 'Warfarina (alvo INR 2–3 ou 2,5–3,5 mecânica). DOAC contraindicado.'
-                  : 'Warfarina (alvo INR 2–3 ou 2,5–3,5 mecânica). DOAC contraindicado.'),
-        ],
-      ),
-    ]);
+                  : 'Warfarina (alvo INR 2–3 ou 2,5–3,5 mecânica). DOAC contraindicado.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildHypertensiveEmergency(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'Emergencia Hipertensiva — UTI'
-            : 'Emergência Hipertensiva — UTI',
-        level: 'ALTO',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'Emergencia Hipertensiva — UTI'
+              : 'Emergência Hipertensiva — UTI',
+          level: 'ALTO',
+          items: [
+            _PrescItem(
               'Meta geral',
               isEs
                   ? 'Reduzir PAM 20–25% nas primeiras 1–2h. NÃO normalizar abruptamente.'
-                  : 'Reduzir PAM 20–25% nas primeiras 1–2h. NÃO normalizar abruptamente.'),
-          _PrescItem(
+                  : 'Reduzir PAM 20–25% nas primeiras 1–2h. NÃO normalizar abruptamente.',
+            ),
+            _PrescItem(
               'EAP/encef.',
               isEs
                   ? 'Nitroprussiato 0,5–10 µg/kg/min IV (titular) OU Nicardipino 5–15 mg/h IV.'
-                  : 'Nitroprussiato 0,5–10 µg/kg/min IV (titular) OU Nicardipino 5–15 mg/h IV.'),
-          _PrescItem(
+                  : 'Nitroprussiato 0,5–10 µg/kg/min IV (titular) OU Nicardipino 5–15 mg/h IV.',
+            ),
+            _PrescItem(
               'Disseção Ao.',
               isEs
                   ? 'Esmolol 500 mcg/kg IV + 50–200 mcg/kg/min + Nitroprussiato. Meta PAS ≤120.'
-                  : 'Esmolol 500 mcg/kg IV + 50–200 mcg/kg/min + Nitroprussiato. Meta PAS ≤120.'),
-          _PrescItem(
+                  : 'Esmolol 500 mcg/kg IV + 50–200 mcg/kg/min + Nitroprussiato. Meta PAS ≤120.',
+            ),
+            _PrescItem(
               'Eclâmpsia',
               isEs
                   ? 'Hidralazina 5–10 mg IV 20 min + MgSO4 4–6 g IV (ver protocolo pré-ecl.).'
-                  : 'Hidralazina 5–10 mg IV 20 min + MgSO4 4–6 g IV (ver protocolo pré-ecl.).'),
-          _PrescItem(
+                  : 'Hidralazina 5–10 mg IV 20 min + MgSO4 4–6 g IV (ver protocolo pré-ecl.).',
+            ),
+            _PrescItem(
               'Contra.',
               isEs
                   ? 'NUNCA nifedipino sublingual — queda abrupta e imprevisível → isquemia.'
-                  : 'NUNCA nifedipino sublingual — queda abrupta e imprevisível → isquemia.'),
-        ],
-      ),
-    ]);
+                  : 'NUNCA nifedipino sublingual — queda abrupta e imprevisível → isquemia.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget _buildDyspnea(bool isEs) {
-    return Column(children: [
-      _PrescCard(
-        title: isEs
-            ? 'Dispnea Aguda — Algoritmo Rápido'
-            : 'Dispneia Aguda — Algoritmo Rápido',
-        level: 'ALTO',
-        items: [
-          _PrescItem(
+    return Column(
+      children: [
+        _PrescCard(
+          title: isEs
+              ? 'Dispnea Aguda — Algoritmo Rápido'
+              : 'Dispneia Aguda — Algoritmo Rápido',
+          level: 'ALTO',
+          items: [
+            _PrescItem(
               'ABCDE',
               isEs
                   ? 'Posição sentada, O2 por máscara (Venturi 35–50% se DPOC: máx. SpO2 88–92%).'
-                  : 'Posição sentada, O2 por máscara (Venturi 35–50% se DPOC: máx. SpO2 88–92%).'),
-          _PrescItem(
+                  : 'Posição sentada, O2 por máscara (Venturi 35–50% se DPOC: máx. SpO2 88–92%).',
+            ),
+            _PrescItem(
               'EAP',
               isEs
                   ? 'Furosemida 40–80 mg IV + NTG 5–10 µg/min IV + VNI (CPAP ≥5 cmH2O).'
-                  : 'Furosemida 40–80 mg IV + NTG 5–10 µg/min IV + VNI (CPAP ≥5 cmH2O).'),
-          _PrescItem(
+                  : 'Furosemida 40–80 mg IV + NTG 5–10 µg/min IV + VNI (CPAP ≥5 cmH2O).',
+            ),
+            _PrescItem(
               'Broncoespasmo',
               isEs
                   ? 'Salbutamol 2,5 mg NEB a cada 20 min × 3 + Ipratrópio 0,5 mg NEB + MgSO4 2g IV.'
-                  : 'Salbutamol 2,5 mg NEB a cada 20 min × 3 + Ipratrópio 0,5 mg NEB + MgSO4 2g IV.'),
-          _PrescItem(
+                  : 'Salbutamol 2,5 mg NEB a cada 20 min × 3 + Ipratrópio 0,5 mg NEB + MgSO4 2g IV.',
+            ),
+            _PrescItem(
               'DPOC exacerb.',
               isEs
                   ? 'Broncodilatadores + Prednisona 40 mg/dia × 5d + ATB (azitro/amox-clav) se infecção.'
-                  : 'Broncodilatadores + Prednisona 40 mg/dia × 5d + ATB (azitro/amox-clav) se infecção.'),
-          _PrescItem(
+                  : 'Broncodilatadores + Prednisona 40 mg/dia × 5d + ATB (azitro/amox-clav) se infecção.',
+            ),
+            _PrescItem(
               'TEP',
               isEs
                   ? 'Anticoagulação imediata (enoxaparina ou rivaroxabana). Trombólise se instável.'
-                  : 'Anticoagulação imediata (enoxaparina ou rivaroxabana). Trombólise se instável.'),
-          _PrescItem(
+                  : 'Anticoagulação imediata (enoxaparina ou rivaroxabana). Trombólise se instável.',
+            ),
+            _PrescItem(
               'Aten.',
               isEs
                   ? 'O2 alvo: SpO2 94–98% (geral) OU 88–92% (DPOC/hipoxemia crônica).'
-                  : 'O2 alvo: SpO2 94–98% (geral) OU 88–92% (DPOC/hipoxemia crônica).'),
-        ],
-      ),
-      _PrescCard(
-        title: isEs
-            ? 'VNI — Indicaciones y Configuración'
-            : 'VNI — Indicações e Configuração',
-        level: 'MOD',
-        items: [
-          _PrescItem(
+                  : 'O2 alvo: SpO2 94–98% (geral) OU 88–92% (DPOC/hipoxemia crônica).',
+            ),
+          ],
+        ),
+        _PrescCard(
+          title: isEs
+              ? 'VNI — Indicaciones y Configuración'
+              : 'VNI — Indicações e Configuração',
+          level: 'MOD',
+          items: [
+            _PrescItem(
               'Indicações',
               isEs
                   ? 'EAP cardiogênico, DPOC exacerbação, hipoxemia leve-mod (SpO2 <92% com O2 convencional).'
-                  : 'EAP cardiogênico, DPOC exacerbação, hipoxemia leve-mod (SpO2 <92% com O2 convencional).'),
-          _PrescItem(
+                  : 'EAP cardiogênico, DPOC exacerbação, hipoxemia leve-mod (SpO2 <92% com O2 convencional).',
+            ),
+            _PrescItem(
               'Início CPAP',
               isEs
                   ? 'CPAP 5–8 cmH2O + FiO2 40–60%. Reavaliação em 30–60 min.'
-                  : 'CPAP 5–8 cmH2O + FiO2 40–60%. Reavaliação em 30–60 min.'),
-          _PrescItem(
+                  : 'CPAP 5–8 cmH2O + FiO2 40–60%. Reavaliação em 30–60 min.',
+            ),
+            _PrescItem(
               'BiPAP',
               isEs
                   ? 'IPAP 12–20 / EPAP 4–8 cmH2O. FR backup 12–16/min.'
-                  : 'IPAP 12–20 / EPAP 4–8 cmH2O. FR backup 12–16/min.'),
-          _PrescItem(
+                  : 'IPAP 12–20 / EPAP 4–8 cmH2O. FR backup 12–16/min.',
+            ),
+            _PrescItem(
               'Contra.',
               isEs
                   ? 'Parada respiratória, incapacidade de proteger VA, vômitos, agitação severa, politrauma facial.'
-                  : 'Parada respiratória, incapacidade de proteger VA, vômitos, agitação severa, politrauma facial.'),
-        ],
-      ),
-    ]);
+                  : 'Parada respiratória, incapacidade de proteger VA, vômitos, agitação severa, politrauma facial.',
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -5432,14 +6535,14 @@ class _PrescCard extends StatelessWidget {
   Color get _levelColor => level == 'ALTO'
       ? const Color(0xFFDC2626)
       : level == 'MOD'
-          ? const Color(0xFFD97706)
-          : const Color(0xFF059669);
+      ? const Color(0xFFD97706)
+      : const Color(0xFF059669);
 
   Color get _levelBg => level == 'ALTO'
       ? const Color(0xFFDC2626).withOpacity(0.10)
       : level == 'MOD'
-          ? const Color(0xFFD97706).withOpacity(0.10)
-          : const Color(0xFF059669).withOpacity(0.10);
+      ? const Color(0xFFD97706).withOpacity(0.10)
+      : const Color(0xFF059669).withOpacity(0.10);
 
   @override
   Widget build(BuildContext context) {
@@ -5458,109 +6561,139 @@ class _PrescCard extends StatelessWidget {
         color: c.cardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color:
-                isAlto ? const Color(0xFFDC2626).withOpacity(0.20) : c.border),
+          color: isAlto ? const Color(0xFFDC2626).withOpacity(0.20) : c.border,
+        ),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2))
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // ── Header colorido ──────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-          decoration: BoxDecoration(
-            color: isAlto
-                ? const Color(0xFFDC2626).withOpacity(0.04)
-                : const Color(0xFFD97706).withOpacity(0.04),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            border: Border(
-                bottom: BorderSide(
-                    color: isAlto
-                        ? const Color(0xFFDC2626).withOpacity(0.12)
-                        : const Color(0xFFD97706).withOpacity(0.12))),
-          ),
-          child: Row(children: [
-            // Level badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: _levelBg,
-                borderRadius: BorderRadius.circular(7),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header colorido ──────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            decoration: BoxDecoration(
+              color: isAlto
+                  ? const Color(0xFFDC2626).withOpacity(0.04)
+                  : const Color(0xFFD97706).withOpacity(0.04),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
               ),
-              child: Text(level,
-                  style: TextStyle(
+              border: Border(
+                bottom: BorderSide(
+                  color: isAlto
+                      ? const Color(0xFFDC2626).withOpacity(0.12)
+                      : const Color(0xFFD97706).withOpacity(0.12),
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                // Level badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _levelBg,
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  child: Text(
+                    level,
+                    style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 1.2,
-                      color: _levelColor)),
-            ),
-            const SizedBox(width: 10),
-            // Título
-            Expanded(
-                child: Text(title,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: c.textPrimary,
-                        letterSpacing: -0.3))),
-            // Badge top-right
-            if (badge != null)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: isAlto
-                          ? const Color(0xFFDC2626).withOpacity(0.4)
-                          : c.border),
+                      color: _levelColor,
+                    ),
+                  ),
                 ),
-                child: Text(badge!,
+                const SizedBox(width: 10),
+                // Título
+                Expanded(
+                  child: Text(
+                    title,
                     style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: c.textPrimary,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ),
+                // Badge top-right
+                if (badge != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isAlto
+                            ? const Color(0xFFDC2626).withOpacity(0.4)
+                            : c.border,
+                      ),
+                    ),
+                    child: Text(
+                      badge!,
+                      style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                         color: isAlto
                             ? const Color(0xFFDC2626)
-                            : c.textSecondary)),
-              ),
-          ]),
-        ),
-
-        // ── Body ────────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Steps sempre full-width
-            _buildSteps(context, steps, specials, c),
-            // SideNote abaixo dos steps, full-width compacto
-            if (hasSide) ...[
-              const SizedBox(height: 10),
-              _PrescSideNote(
-                title: sideTitle!,
-                body: sideBody!,
-                type: sideType,
-                fullWidth: true,
-              ),
-            ],
-          ]),
-        ),
-
-        // ── Tags de rodapé ──────────────────────────────────────
-        if (hasTags)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
-            child: Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: tags!.map((t) => _PrescTagChip(tag: t)).toList()),
+                            : c.textSecondary,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
 
-        // ── Linha de evidência bibliográfica ────────────────────
-        _PrescEvidenceFooter(evidence: evidence, c: c),
-      ]),
+          // ── Body ────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Steps sempre full-width
+                _buildSteps(context, steps, specials, c),
+                // SideNote abaixo dos steps, full-width compacto
+                if (hasSide) ...[
+                  const SizedBox(height: 10),
+                  _PrescSideNote(
+                    title: sideTitle!,
+                    body: sideBody!,
+                    type: sideType,
+                    fullWidth: true,
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          // ── Tags de rodapé ──────────────────────────────────────
+          if (hasTags)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: tags!.map((t) => _PrescTagChip(tag: t)).toList(),
+              ),
+            ),
+
+          // ── Linha de evidência bibliográfica ────────────────────
+          _PrescEvidenceFooter(evidence: evidence, c: c),
+        ],
+      ),
     );
   }
 
@@ -5570,21 +6703,31 @@ class _PrescCard extends StatelessWidget {
       step.startsWith('⚠') ||
       step.startsWith('!');
 
-  Widget _buildSteps(BuildContext context, List<_PrescItem> steps,
-      List<_PrescItem> specials, AppColors c) {
+  Widget _buildSteps(
+    BuildContext context,
+    List<_PrescItem> steps,
+    List<_PrescItem> specials,
+    AppColors c,
+  ) {
     int stepNum = 0;
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ...steps.map((item) {
-        // Detectar se é numerado (começa com dígito ou "1." etc.) ou label
-        final isNum = RegExp(r'^\d').hasMatch(item.step);
-        if (isNum) stepNum++;
-        final numToShow = isNum ? stepNum : null;
-        return _PrescStepRow(
-            item: item, stepNum: numToShow, isAlto: level == 'ALTO');
-      }),
-      if (specials.isNotEmpty) const SizedBox(height: 4),
-      ...specials.map((item) => _PrescAttenRow(item: item)),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...steps.map((item) {
+          // Detectar se é numerado (começa com dígito ou "1." etc.) ou label
+          final isNum = RegExp(r'^\d').hasMatch(item.step);
+          if (isNum) stepNum++;
+          final numToShow = isNum ? stepNum : null;
+          return _PrescStepRow(
+            item: item,
+            stepNum: numToShow,
+            isAlto: level == 'ALTO',
+          );
+        }),
+        if (specials.isNotEmpty) const SizedBox(height: 4),
+        ...specials.map((item) => _PrescAttenRow(item: item)),
+      ],
+    );
   }
 }
 
@@ -5616,22 +6759,24 @@ class _PrescEvidenceFooter extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: lineCol, width: 1)),
       ),
-      child: Row(children: [
-        Icon(Icons.menu_book_rounded, size: 11, color: iconCol),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            ref,
-            style: TextStyle(
-              fontSize: 9.5,
-              color: textCol,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.1,
-              height: 1.3,
+      child: Row(
+        children: [
+          Icon(Icons.menu_book_rounded, size: 11, color: iconCol),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              ref,
+              style: TextStyle(
+                fontSize: 9.5,
+                color: textCol,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.1,
+                height: 1.3,
+              ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
@@ -5657,49 +6802,67 @@ class _PrescStepRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    final circleColor =
-        isAlto ? const Color(0xFFDC2626) : const Color(0xFF059669);
+    final circleColor = isAlto
+        ? const Color(0xFFDC2626)
+        : const Color(0xFF059669);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 9),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Número circular OU label step
-        if (stepNum != null)
-          Container(
-            width: 22,
-            height: 22,
-            decoration:
-                BoxDecoration(color: circleColor, shape: BoxShape.circle),
-            alignment: Alignment.center,
-            child: Text('$stepNum',
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Número circular OU label step
+          if (stepNum != null)
+            Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                color: circleColor,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '$stepNum',
                 style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white)),
-          )
-        else
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: const Color(0xFF10B981).withOpacity(0.10),
-              borderRadius: BorderRadius.circular(5),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                ),
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: const Color(0xFF10B981).withOpacity(0.10),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Text(
+                item.step,
+                style: const TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF10B981),
+                  letterSpacing: 0.5,
+                ),
+              ),
             ),
-            child: Text(item.step,
-                style: const TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF10B981),
-                    letterSpacing: 0.5)),
-          ),
-        const SizedBox(width: 10),
-        Expanded(
+          const SizedBox(width: 10),
+          Expanded(
             child: Padding(
-          padding: EdgeInsets.only(top: stepNum != null ? 3 : 1),
-          child: Text(item.desc,
-              style: TextStyle(
-                  fontSize: 12.5, color: c.textSecondary, height: 1.45)),
-        )),
-      ]),
+              padding: EdgeInsets.only(top: stepNum != null ? 3 : 1),
+              child: Text(
+                item.desc,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  color: c.textSecondary,
+                  height: 1.45,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -5715,8 +6878,9 @@ class _PrescAttenRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     final isContra = _isContra;
-    final bgColor =
-        isContra ? const Color(0xFFDC2626) : const Color(0xFFD97706);
+    final bgColor = isContra
+        ? const Color(0xFFDC2626)
+        : const Color(0xFFD97706);
     final bgFill = bgColor.withOpacity(0.07);
     final border = bgColor.withOpacity(0.20);
 
@@ -5728,24 +6892,39 @@ class _PrescAttenRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(9),
         border: Border.all(color: border),
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(isContra ? Icons.block_rounded : Icons.warning_amber_rounded,
-            size: 14, color: bgColor),
-        const SizedBox(width: 7),
-        Container(
-          margin: const EdgeInsets.only(right: 6, top: 1),
-          child: Text(item.step,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            isContra ? Icons.block_rounded : Icons.warning_amber_rounded,
+            size: 14,
+            color: bgColor,
+          ),
+          const SizedBox(width: 7),
+          Container(
+            margin: const EdgeInsets.only(right: 6, top: 1),
+            child: Text(
+              item.step,
               style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  color: bgColor,
-                  letterSpacing: 0.3)),
-        ),
-        Expanded(
-            child: Text(item.desc,
-                style: TextStyle(
-                    fontSize: 11.5, color: c.textSecondary, height: 1.4))),
-      ]),
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                color: bgColor,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              item.desc,
+              style: TextStyle(
+                fontSize: 11.5,
+                color: c.textSecondary,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -5755,11 +6934,12 @@ class _PrescSideNote extends StatelessWidget {
   final String title, body;
   final _SideNoteType type;
   final bool fullWidth;
-  const _PrescSideNote(
-      {required this.title,
-      required this.body,
-      required this.type,
-      this.fullWidth = false});
+  const _PrescSideNote({
+    required this.title,
+    required this.body,
+    required this.type,
+    this.fullWidth = false,
+  });
 
   Color get _accent {
     switch (type) {
@@ -5797,28 +6977,38 @@ class _PrescSideNote extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: accent.withOpacity(0.18)),
         ),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(_icon, size: 13, color: accent),
-          const SizedBox(width: 7),
-          Expanded(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(_icon, size: 13, color: accent),
+            const SizedBox(width: 7),
+            Expanded(
               child: RichText(
-            text: TextSpan(children: [
-              TextSpan(
-                text: '$title  ',
-                style: TextStyle(
-                    fontSize: 11, fontWeight: FontWeight.w800, color: accent),
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '$title  ',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: accent,
+                      ),
+                    ),
+                    TextSpan(
+                      text: body,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: c.textSecondary,
+                        height: 1.4,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              TextSpan(
-                text: body,
-                style: TextStyle(
-                    fontSize: 11,
-                    color: c.textSecondary,
-                    height: 1.4,
-                    fontWeight: FontWeight.w400),
-              ),
-            ]),
-          )),
-        ]),
+            ),
+          ],
+        ),
       );
     }
 
@@ -5829,22 +7019,32 @@ class _PrescSideNote extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: accent.withOpacity(0.20)),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Icon(_icon, size: 14, color: accent),
-          const SizedBox(width: 6),
-          Expanded(
-              child: Text(title,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(_icon, size: 14, color: accent),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  title,
                   style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      color: accent))),
-        ]),
-        const SizedBox(height: 7),
-        Text(body,
-            style:
-                TextStyle(fontSize: 11, color: c.textSecondary, height: 1.4)),
-      ]),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: accent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 7),
+          Text(
+            body,
+            style: TextStyle(fontSize: 11, color: c.textSecondary, height: 1.4),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -5863,17 +7063,25 @@ class _PrescTagChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: tag.color.withOpacity(0.25)),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Container(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
             width: 6,
             height: 6,
-            decoration:
-                BoxDecoration(color: tag.color, shape: BoxShape.circle)),
-        const SizedBox(width: 5),
-        Text(tag.label,
+            decoration: BoxDecoration(color: tag.color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            tag.label,
             style: TextStyle(
-                fontSize: 10, fontWeight: FontWeight.w700, color: tag.color)),
-      ]),
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: tag.color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -5888,49 +7096,67 @@ class _SectionCard extends StatelessWidget {
   final Widget child;
   final String? badge;
   final Color? badgeColor;
-  const _SectionCard(
-      {required this.title,
-      required this.icon,
-      required this.child,
-      this.badge,
-      this.badgeColor});
+  const _SectionCard({
+    required this.title,
+    required this.icon,
+    required this.child,
+    this.badge,
+    this.badgeColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return StandardCard(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.of(context).darkBtn),
-            child: Icon(icon, size: 16, color: kToolGold),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-              child: Text(title,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.of(context).darkBtn,
+                ),
+                child: Icon(icon, size: 16, color: kToolGold),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
                   style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.of(context).textPrimary,
-                      letterSpacing: -0.3))),
-          if (badge != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: badgeColor ?? kToolGreen),
-              child: Text(badge!,
-                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.of(context).textPrimary,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ),
+              if (badge != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: badgeColor ?? kToolGreen,
+                  ),
+                  child: Text(
+                    badge!,
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
-                      color: Colors.white)),
-            ),
-        ]),
-        const SizedBox(height: 14),
-        child,
-      ]),
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          child,
+        ],
+      ),
     );
   }
 }
@@ -5940,29 +7166,36 @@ class _LabeledInput extends StatelessWidget {
   final TextEditingController ctrl;
   final ValueChanged<String> onChanged;
   final String hint;
-  const _LabeledInput(
-      {required this.label,
-      required this.ctrl,
-      required this.onChanged,
-      required this.hint});
+  const _LabeledInput({
+    required this.label,
+    required this.ctrl,
+    required this.onChanged,
+    required this.hint,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
           style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.2,
-              color: AppColors.of(context).textHint)),
-      const SizedBox(height: 5),
-      MedInput(
-        controller: ctrl,
-        hintText: hint,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        onChanged: onChanged,
-      ),
-    ]);
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.2,
+            color: AppColors.of(context).textHint,
+          ),
+        ),
+        const SizedBox(height: 5),
+        MedInput(
+          controller: ctrl,
+          hintText: hint,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          onChanged: onChanged,
+        ),
+      ],
+    );
   }
 }
 
@@ -6016,10 +7249,12 @@ class _PediatTabRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
     final divider = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
-    final activeColor =
-        dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
-    final inactiveColor =
-        dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeColor = dark
+        ? const Color(0xFF0D6B57)
+        : const Color(0xFF0D6B57);
+    final inactiveColor = dark
+        ? const Color(0xFF94A3B8)
+        : const Color(0xFF64748B);
     final activeBackground = dark
         ? const Color(0xFF0D6B57).withValues(alpha: 0.10)
         : const Color(0xFF0D6B57).withValues(alpha: 0.06);
@@ -6028,9 +7263,7 @@ class _PediatTabRow extends StatelessWidget {
       height: 40,
       decoration: BoxDecoration(
         color: surface,
-        border: Border(
-          bottom: BorderSide(color: divider, width: 0.7),
-        ),
+        border: Border(bottom: BorderSide(color: divider, width: 0.7)),
       ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -6064,8 +7297,9 @@ class _PediatTabRow extends StatelessWidget {
                             fontSize: _PediatricsVisualScaleR3.tabLabel,
                             height: 1,
                             fontWeight: FontWeight.w700,
-                            color:
-                                activeIndex == i ? activeColor : inactiveColor,
+                            color: activeIndex == i
+                                ? activeColor
+                                : inactiveColor,
                             letterSpacing: 0.05,
                           ),
                         ),
@@ -6089,11 +7323,7 @@ class _PediatTabRow extends StatelessWidget {
                   width: 0.7,
                   height: 40,
                   child: Center(
-                    child: Container(
-                      width: 0.7,
-                      height: 20,
-                      color: divider,
-                    ),
+                    child: Container(width: 0.7, height: 20, color: divider),
                   ),
                 ),
             ],
@@ -6199,10 +7429,7 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
   double? get _bmi {
     final w = _n(_weightCtrl), h = _n(_heightCtrl);
     if (w == null || h == null || h <= 0) return null;
-    return PediatricGrowthEngineV2026.bmi(
-      weightKg: w,
-      heightCm: h,
-    );
+    return PediatricGrowthEngineV2026.bmi(weightKg: w, heightCm: h);
   }
 
   double? get _bsa {
@@ -6246,8 +7473,14 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
   String _hrNormal(double? y, double? m) {
     final age = _vitalMonths(y, m);
     final low = _interpVital(age, const [110, 100, 90, 70, 60, 60]).round();
-    final high =
-        _interpVital(age, const [180, 170, 160, 140, 120, 100]).round();
+    final high = _interpVital(age, const [
+      180,
+      170,
+      160,
+      140,
+      120,
+      100,
+    ]).round();
     return '$low–$high bpm';
   }
 
@@ -6296,12 +7529,12 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
 
   // ── PEWS ────────────────────────────────────────────────────────
   BrightonPewsResultV2026 get _pewsResult => BrightonPewsEngineV2026.calculate(
-        behavior: _pewsBehavior,
-        cardiovascular: _pewsCardio,
-        respiratory: _pewsRespiratory,
-        quarterHourlyNebulizer: _pewsQuarterHourlyNebulizer,
-        persistentPostOpVomiting: _pewsPersistentPostOpVomiting,
-      );
+    behavior: _pewsBehavior,
+    cardiovascular: _pewsCardio,
+    respiratory: _pewsRespiratory,
+    quarterHourlyNebulizer: _pewsQuarterHourlyNebulizer,
+    persistentPostOpVomiting: _pewsPersistentPostOpVomiting,
+  );
 
   int get _pewsTotal => _pewsResult.total;
 
@@ -6572,7 +7805,8 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
       }
     }
 
-    final sourceName = assessment?.reference ==
+    final sourceName =
+        assessment?.reference ==
             PediatricGrowthReference.whoChildGrowthStandards2006
         ? 'WHO Child Growth Standards'
         : 'WHO Growth Reference 2007';
@@ -6702,16 +7936,17 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
               ] else ...[
                 _PedSourceNote(
                   isEs: isEs,
-                  text: _growthIndicator ==
+                  text:
+                      _growthIndicator ==
                               PediatricGrowthIndicator.weightForAge &&
                           ageMonths != null &&
                           ageMonths > 120
                       ? (isEs
-                          ? 'WHO peso/edad se utiliza hasta 10 años. Para mayores, use talla/edad o IMC/edad.'
-                          : 'WHO peso/idade é utilizado até 10 anos. Para maiores, use altura/idade ou IMC/idade.')
+                            ? 'WHO peso/edad se utiliza hasta 10 años. Para mayores, use talla/edad o IMC/edad.'
+                            : 'WHO peso/idade é utilizado até 10 anos. Para maiores, use altura/idade ou IMC/idade.')
                       : (isEs
-                          ? 'Complete edad, sexo, peso y/o talla para calcular el percentil y dibujar la curva.'
-                          : 'Preencha idade, sexo, peso e/ou altura para calcular o percentil e desenhar a curva.'),
+                            ? 'Complete edad, sexo, peso y/o talla para calcular el percentil y dibujar la curva.'
+                            : 'Preencha idade, sexo, peso e/ou altura para calcular o percentil e desenhar a curva.'),
                 ),
               ],
             ],
@@ -7030,1072 +8265,1173 @@ class _PediatricsTabContentState extends State<PediatricsTabContent> {
       }
     }
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      // ── Campo de peso editável ───────────────────────────────────
-      Container(
-        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-        margin: const EdgeInsets.only(bottom: 14),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: const Color(0xFF065F46).withOpacity(0.08),
-          border: Border.all(color: const Color(0xFF065F46).withOpacity(0.35)),
-        ),
-        child: Row(children: [
-          const Icon(Icons.scale_rounded, size: 18, color: Color(0xFF065F46)),
-          const SizedBox(width: 10),
-          Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                isEs ? 'Peso del paciente' : 'Peso do paciente',
-                style: const TextStyle(
-                    fontSize: _PediatricsVisualScaleR3.sectionLabel,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF065F46),
-                    letterSpacing: 0.3),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ── Campo de peso editável ───────────────────────────────────
+        Container(
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          margin: const EdgeInsets.only(bottom: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: const Color(0xFF065F46).withOpacity(0.08),
+            border: Border.all(
+              color: const Color(0xFF065F46).withOpacity(0.35),
+            ),
+          ),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.scale_rounded,
+                size: 18,
+                color: Color(0xFF065F46),
               ),
-              const SizedBox(height: 4),
-              SizedBox(
-                height: 32,
-                child: TextField(
-                  controller: _dosesWeightCtrl,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  style: const TextStyle(
-                      fontSize: _PediatricsVisualScaleR3.body,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF065F46)),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                    hintText: isEs ? 'Ej: 25,0' : 'Ex: 25,0',
-                    hintStyle: TextStyle(
-                        fontSize: _PediatricsVisualScaleR3.body,
-                        color: const Color(0xFF065F46).withOpacity(0.4)),
-                    border: InputBorder.none,
-                    suffix: const Text('kg',
-                        style: TextStyle(
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isEs ? 'Peso del paciente' : 'Peso do paciente',
+                      style: const TextStyle(
+                        fontSize: _PediatricsVisualScaleR3.sectionLabel,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF065F46),
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    SizedBox(
+                      height: 32,
+                      child: TextField(
+                        controller: _dosesWeightCtrl,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        style: const TextStyle(
+                          fontSize: _PediatricsVisualScaleR3.body,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF065F46),
+                        ),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          hintText: isEs ? 'Ej: 25,0' : 'Ex: 25,0',
+                          hintStyle: TextStyle(
                             fontSize: _PediatricsVisualScaleR3.body,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF065F46))),
-                  ),
-                  onChanged: (_) => setState(() {}),
+                            color: const Color(0xFF065F46).withOpacity(0.4),
+                          ),
+                          border: InputBorder.none,
+                          suffix: const Text(
+                            'kg',
+                            style: TextStyle(
+                              fontSize: _PediatricsVisualScaleR3.body,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF065F46),
+                            ),
+                          ),
+                        ),
+                        onChanged: (_) => setState(() {}),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ]),
-          ),
-          if (w != null) ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: const Color(0xFF065F46).withOpacity(0.12),
-              ),
-              child: Text('${_fmt(w)} kg',
-                  style: const TextStyle(
+              if (w != null) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFF065F46).withOpacity(0.12),
+                  ),
+                  child: Text(
+                    '${_fmt(w)} kg',
+                    style: const TextStyle(
                       fontSize: _PediatricsVisualScaleR3.body,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF065F46))),
-            )
-          ],
-        ]),
-      ),
-
-      // ── Disclaimer Apple Guideline 1.4.2 + dica de interação ─────
-      Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color(0xFF1E3A8A).withOpacity(0.06),
-          border: Border.all(color: const Color(0xFF1E3A8A).withOpacity(0.18)),
+                      color: Color(0xFF065F46),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            const Icon(Icons.verified_user_outlined,
-                size: 12, color: Color(0xFF1E3A8A)),
-            const SizedBox(width: 6),
-            Expanded(
-                child: Text(
-              isEs
-                  ? 'Doses baseadas em diretrizes AHA PALS 2020, WHO e Harriet Lane Handbook 22ª ed.'
-                  : 'Doses baseadas em diretrizes AHA PALS 2020, WHO e Harriet Lane Handbook 22ª ed.',
-              style: const TextStyle(
-                  fontSize: _PediatricsVisualScaleR3.sectionLabel,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF1E3A8A),
-                  height: 1.3),
-            )),
-          ]),
-          const SizedBox(height: 5),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.touch_app_rounded,
-                size: 12, color: Color(0xFF1E3A8A)),
-            const SizedBox(width: 6),
-            Expanded(
-                child: Text(
-              isEs
-                  ? 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.'
-                  : 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.',
-              style: TextStyle(
-                  fontSize: _PediatricsVisualScaleR3.sectionLabel,
-                  color: const Color(0xFF1E3A8A).withOpacity(0.75),
-                  height: 1.3),
-            )),
-          ]),
-        ]),
-      ),
 
-      _SectionCard(
-        title: isEs
-            ? 'Reanimación — PCR Pediátrica'
-            : 'Reanimação — PCR Pediátrica',
-        icon: Icons.emergency_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'Adrenalina IV/IO',
-              dose: '0,01 mg/kg',
-              weight: w,
-              mgPerKg: 0.01,
-              unit: 'mg',
-              maxDose: '1 mg',
-              color: const Color(0xFFCC2222),
-              line: _TherapeuticLine.first,
-              indication: isEs
-                  ? 'PCR em assistolia, AESP, FV/TV sem pulso'
-                  : 'PCR em assistolia, AESP, FV/TV sem pulso',
-              warningNote: isEs
-                  ? 'Repetir a cada 3–5 min. Administrar rapidamente em bolus. Seguir imediatamente com flush. Monitorizar ECG e PA.'
-                  : 'Repetir a cada 3–5 min. Administrar rapidamente em bolus. Seguir imediatamente com flush. Monitorizar ECG e PA.',
-              contraindications: isEs
-                  ? [
-                      'Taquicardia ventricular sin FV',
-                      'Hipertensión severa no controlada',
-                      'Feocromocitoma (relativa)',
-                      'Monitorización ECG continua obligatoria'
-                    ]
-                  : [
-                      'Taquicardia ventricular sem FV',
-                      'Hipertensão severa não controlada',
-                      'Feocromocitoma (relativa)',
-                      'Monitorização ECG contínua obrigatória'
-                    ]),
-          _PedDoseRow(
-              label: 'Amiodarona IV/IO',
-              dose: '5 mg/kg',
-              weight: w,
-              mgPerKg: 5.0,
-              unit: 'mg',
-              maxDose: '300 mg',
-              color: const Color(0xFFD97706),
-              line: _TherapeuticLine.second,
-              indication: isEs
-                  ? 'FV/TV refractaria (2ª dose adrenalina)'
-                  : 'FV/TV refratária (após 2ª dose adrenalina)',
-              warningNote: isEs
-                  ? 'Infundir lentamente em 10–20 min. Monitorizar hipotensão. Prolongar QT.'
-                  : 'Infundir lentamente em 10–20 min. Monitorizar hipotensão. Prolonga QT.',
-              contraindications: isEs
-                  ? [
-                      'Bradicardia sinusal grave',
-                      'Bloqueo AV de 2º y 3º grado sin marcapaso',
-                      'Hipersensibilidad al yodo',
-                      'Hipotensión severa',
-                      'QT largo congénito'
-                    ]
-                  : [
-                      'Bradicardia sinusal grave',
-                      'Bloqueio AV 2º e 3º grau sem marca-passo',
-                      'Hipersensibilidade ao iodo',
-                      'Hipotensão severa',
-                      'QT longo congênito'
-                    ]),
-          _PedDoseRow(
-              label: 'Adenosina IV (TSV)',
-              dose: '0,1 mg/kg',
-              weight: w,
-              mgPerKg: 0.1,
-              unit: 'mg',
-              maxDose: '6 mg',
-              color: const Color(0xFFD97706),
-              line: _TherapeuticLine.first,
-              indication: 'TSV — taquicardia supraventricular',
-              warningNote: isEs
-                  ? 'Bolus IV RÁPIDO (1–2 s). Seguir com flush SF 20 mL. Pode causar assistolia transitória.'
-                  : 'Bolus IV RÁPIDO (1–2 s). Seguir com flush SF 20 mL. Pode causar assistolia transitória.',
-              contraindications: isEs
-                  ? [
-                      'Bloqueo AV 2º y 3º grado',
-                      'Síndrome del seno enfermo',
-                      'Asma bronquial (broncoespasmo)',
-                      'Flutter/fibrilación auricular',
-                      'Administrar en bolo IV rápido (bolus 1-2 s)'
-                    ]
-                  : [
-                      'Bloqueio AV 2º e 3º grau',
-                      'Doença do nó sinusal',
-                      'Asma brônquica (broncoespasmo)',
-                      'Flutter/fibrilação atrial',
-                      'Administrar em bolus IV rápido (1-2 s)'
-                    ]),
-          _PedDoseRow(
-              label: 'Atropina IV (bradicardia)',
-              dose: '0,02 mg/kg',
-              weight: w,
-              mgPerKg: 0.02,
-              unit: 'mg',
-              maxDose: '0,5 mg',
-              color: const Color(0xFF1D4ED8),
-              line: _TherapeuticLine.second,
-              indication: isEs
-                  ? 'Bradicardia sintomática con hipotensión'
-                  : 'Bradicardia sintomática com hipotensão',
-              warningNote: isEs
-                  ? 'Dosis MÍNIMA 0,1 mg — dosis menores pueden causar bradicardia paradójica.'
-                  : 'Dose MÍNIMA 0,1 mg — doses menores podem causar bradicardia paradoxal.',
-              contraindications: isEs
-                  ? [
-                      'Glaucoma de ángulo cerrado',
-                      'Taquicardia sinusal',
-                      'Miastenia gravis',
-                      'Dosis mínima 0,1 mg (dosis menores → bradicardia paradójica)',
-                      'Íleo paralítico / obstrucción intestinal'
-                    ]
-                  : [
-                      'Glaucoma de ângulo fechado',
-                      'Taquicardia sinusal',
-                      'Miastenia gravis',
-                      'Dose mínima 0,1 mg (doses menores → bradicardia paradoxal)',
-                      'Íleo paralítico / obstrução intestinal'
-                    ]),
-          _PedDoseRow(
-              label: 'Glicose 10% IV (hipoglicemia)',
-              dose: '2–5 mL/kg',
-              weight: w,
-              mgPerKg: 3.0,
-              unit: 'mL',
-              maxDose: '250 mL',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      'Hiperglucemia (BGL > 180 mg/dL)',
-                      'Confirmar hipoglucemia antes de administrar',
-                      'Acceso venoso periférico preferible (osmolaridade 556 mOsm/L)'
-                    ]
-                  : [
-                      'Hiperglicemia (BGL > 180 mg/dL)',
-                      'Confirmar hipoglicemia antes de administrar',
-                      'Acesso venoso periférico preferível (osmolaridade 556 mOsm/L)'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        // ── Disclaimer Apple Guideline 1.4.2 + dica de interação ─────
+        Container(
+          margin: const EdgeInsets.only(bottom: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xFF1E3A8A).withOpacity(0.06),
+            border: Border.all(
+              color: const Color(0xFF1E3A8A).withOpacity(0.18),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.verified_user_outlined,
+                    size: 12,
+                    color: Color(0xFF1E3A8A),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      isEs
+                          ? 'Doses baseadas em diretrizes AHA PALS 2020, WHO e Harriet Lane Handbook 22ª ed.'
+                          : 'Doses baseadas em diretrizes AHA PALS 2020, WHO e Harriet Lane Handbook 22ª ed.',
+                      style: const TextStyle(
+                        fontSize: _PediatricsVisualScaleR3.sectionLabel,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1E3A8A),
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.touch_app_rounded,
+                    size: 12,
+                    color: Color(0xFF1E3A8A),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      isEs
+                          ? 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.'
+                          : 'Toque em cada fármaco para ver contraindicações e referências bibliográficas completas.',
+                      style: TextStyle(
+                        fontSize: _PediatricsVisualScaleR3.sectionLabel,
+                        color: const Color(0xFF1E3A8A).withOpacity(0.75),
+                        height: 1.3,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
 
-      // ── Dor ────────────────────────────────────────────────────────
-      _SectionCard(
-        title: isEs ? 'Analgesia — Dolor' : 'Analgesia — Dor',
-        icon: Icons.healing_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'Paracetamol VO/VR',
-              dose: '10–15 mg/kg q4–6h',
-              weight: w,
-              mgPerKg: 12.5,
-              unit: 'mg',
-              maxDose: '1000 mg',
-              color: const Color(0xFF065F46),
-              line: _TherapeuticLine.first,
-              indication: isEs
-                  ? '1ª elección — analgesia y antipiresis'
-                  : '1ª escolha — analgesia e antipirese',
-              contraindications: isEs
-                  ? [
-                      'Insuficiencia hepática grave',
-                      'Hipersensibilidad al paracetamol',
-                      'No superar 4 dosis/día',
-                      'Evitar en neonatos < 32 semanas (ajustar dosis)'
-                    ]
-                  : [
-                      'Insuficiência hepática grave',
-                      'Hipersensibilidade ao paracetamol',
-                      'Não ultrapassar 4 doses/dia',
-                      'Evitar em neonatos < 32 semanas (ajustar dose)'
-                    ]),
-          _PedDoseRow(
-              label: 'Ibuprofeno VO',
-              dose: '5–10 mg/kg q6–8h',
-              weight: w,
-              mgPerKg: 7.5,
-              unit: 'mg',
-              maxDose: '400 mg',
-              color: const Color(0xFF065F46),
-              line: _TherapeuticLine.second,
-              indication: isEs
-                  ? 'Dolor leve–moderado (≥ 6 meses)'
-                  : 'Dor leve–moderada (≥ 6 meses)',
-              warningNote: isEs
-                  ? 'Evitar em Dengue. Não usar < 6 meses. Evitar desidratação.'
-                  : 'Evitar em Dengue. Não usar < 6 meses. Evitar desidratação.',
-              contraindications: isEs
-                  ? [
-                      '< 6 meses de edad (contraindicado)',
-                      'Insuficiencia renal / deshidratación',
-                      'Úlcera péptica activa',
-                      'Dengue (riesgo de sangrado)',
-                      'Asma inducida por AINEs',
-                      'Insuficiencia hepática'
-                    ]
-                  : [
-                      '< 6 meses de idade (contraindicado)',
-                      'Insuficiência renal / desidratação',
-                      'Úlcera péptica ativa',
-                      'Dengue (risco de sangramento)',
-                      'Asma induzida por AINEs',
-                      'Insuficiência hepática'
-                    ]),
-          _PedDoseRow(
-              label: 'Dipirona/Metamizol VO/IV',
-              dose: '15 mg/kg q6h',
-              weight: w,
-              mgPerKg: 15.0,
-              unit: 'mg',
-              maxDose: '1000 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      '< 3 meses / < 5 kg (contraindicado IV)',
-                      'Hipersensibilidad a pirazolonas',
-                      'Porfiria hepática aguda',
-                      'Riesgo de agranulocitosis (monitorizar CBC)',
-                      'Hipotensión en administración IV rápida'
-                    ]
-                  : [
-                      '< 3 meses / < 5 kg (contraindicado IV)',
-                      'Hipersensibilidade a pirazolonas',
-                      'Porfiria hepática aguda',
-                      'Risco de agranulocitose (monitorar hemograma)',
-                      'Hipotensão em administração IV rápida'
-                    ]),
-          _PedDoseRow(
-              label: 'Morfina IV/SC',
-              dose: '0,05–0,1 mg/kg q2–4h',
-              weight: w,
-              mgPerKg: 0.1,
-              unit: 'mg',
-              maxDose: '5 mg',
-              color: const Color(0xFF7C3AED),
-              line: _TherapeuticLine.second,
-              indication: isEs
-                  ? 'Dolor severo, procedimientos dolorosos'
-                  : 'Dor severa, procedimentos dolorosos',
-              warningNote: isEs
-                  ? 'Monitorizar SpO₂ e FR. Ter Naloxona 0,01 mg/kg disponível. Titular pela resposta.'
-                  : 'Monitorizar SpO₂ e FR. Ter Naloxona 0,01 mg/kg disponível. Titular pela resposta.',
-              contraindications: isEs
-                  ? [
-                      '< 6 meses (ajuste de dosis — alta sensibilidad)',
-                      'Depresión respiratoria',
-                      'Íleo paralítico',
-                      'Hipertensión intracraneal aguda',
-                      'Hipotensión severa',
-                      'Antídoto: Naloxona 0,01 mg/kg IV'
-                    ]
-                  : [
-                      '< 6 meses (ajuste de dose — alta sensibilidade)',
-                      'Depressão respiratória',
-                      'Íleo paralítico',
-                      'Hipertensão intracraniana aguda',
-                      'Hipotensão severa',
-                      'Antídoto: Naloxona 0,01 mg/kg IV'
-                    ]),
-          _PedDoseRow(
-              label: 'Tramadol VO/IV',
-              dose: '1–2 mg/kg q4–6h',
-              weight: w,
-              mgPerKg: 1.5,
-              unit: 'mg',
-              maxDose: '100 mg',
-              color: const Color(0xFF7C3AED),
-              line: _TherapeuticLine.third,
-              indication: isEs
-                  ? '> 12 años VO solamente (FDA 2017)'
-                  : '> 12 anos VO somente (FDA 2017)',
-              warningNote: isEs
-                  ? '⚠ CONTRAINDICADO < 12 años VO — riesgo fatal CYP2D6. Prohibido post-amigdalectomía.'
-                  : '⚠ CONTRAINDICADO < 12 anos VO — risco fatal CYP2D6. Proibido pós-amigdalectomia.',
-              contraindications: isEs
-                  ? [
-                      '< 12 años VO (metabolizadores ultrarrápidos CYP2D6 — riesgo mortal)',
-                      'Post-amigdalectomía / adenoidectomía (< 18 años)',
-                      'Epilepsia no controlada',
-                      'Depresión respiratoria',
-                      'IMAO concomitante'
-                    ]
-                  : [
-                      '< 12 anos VO (metabolizadores ultrarrápidos CYP2D6 — risco fatal)',
-                      'Pós-amigdalectomia / adenoidectomia (< 18 anos)',
-                      'Epilepsia não controlada',
-                      'Depressão respiratória',
-                      'IMAO concomitante'
-                    ]),
-          _PedDoseRow(
-              label: 'Cetorolaco IV/IM',
-              dose: '0,5 mg/kg q6h',
-              weight: w,
-              mgPerKg: 0.5,
-              unit: 'mg',
-              maxDose: '30 mg',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      '< 2 años (contraindicado)',
-                      'Insuficiencia renal',
-                      'Úlcera péptica activa',
-                      'Sangrado gastrointestinal activo',
-                      'Máximo 5 días de uso'
-                    ]
-                  : [
-                      '< 2 anos (contraindicado)',
-                      'Insuficiência renal',
-                      'Úlcera péptica ativa',
-                      'Sangramento gastrointestinal ativo',
-                      'Máximo 5 dias de uso'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        _SectionCard(
+          title: isEs
+              ? 'Reanimación — PCR Pediátrica'
+              : 'Reanimação — PCR Pediátrica',
+          icon: Icons.emergency_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'Adrenalina IV/IO',
+                dose: '0,01 mg/kg',
+                weight: w,
+                mgPerKg: 0.01,
+                unit: 'mg',
+                maxDose: '1 mg',
+                color: const Color(0xFFCC2222),
+                line: _TherapeuticLine.first,
+                indication: isEs
+                    ? 'PCR em assistolia, AESP, FV/TV sem pulso'
+                    : 'PCR em assistolia, AESP, FV/TV sem pulso',
+                warningNote: isEs
+                    ? 'Repetir a cada 3–5 min. Administrar rapidamente em bolus. Seguir imediatamente com flush. Monitorizar ECG e PA.'
+                    : 'Repetir a cada 3–5 min. Administrar rapidamente em bolus. Seguir imediatamente com flush. Monitorizar ECG e PA.',
+                contraindications: isEs
+                    ? [
+                        'Taquicardia ventricular sin FV',
+                        'Hipertensión severa no controlada',
+                        'Feocromocitoma (relativa)',
+                        'Monitorización ECG continua obligatoria',
+                      ]
+                    : [
+                        'Taquicardia ventricular sem FV',
+                        'Hipertensão severa não controlada',
+                        'Feocromocitoma (relativa)',
+                        'Monitorização ECG contínua obrigatória',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Amiodarona IV/IO',
+                dose: '5 mg/kg',
+                weight: w,
+                mgPerKg: 5.0,
+                unit: 'mg',
+                maxDose: '300 mg',
+                color: const Color(0xFFD97706),
+                line: _TherapeuticLine.second,
+                indication: isEs
+                    ? 'FV/TV refractaria (2ª dose adrenalina)'
+                    : 'FV/TV refratária (após 2ª dose adrenalina)',
+                warningNote: isEs
+                    ? 'Infundir lentamente em 10–20 min. Monitorizar hipotensão. Prolongar QT.'
+                    : 'Infundir lentamente em 10–20 min. Monitorizar hipotensão. Prolonga QT.',
+                contraindications: isEs
+                    ? [
+                        'Bradicardia sinusal grave',
+                        'Bloqueo AV de 2º y 3º grado sin marcapaso',
+                        'Hipersensibilidad al yodo',
+                        'Hipotensión severa',
+                        'QT largo congénito',
+                      ]
+                    : [
+                        'Bradicardia sinusal grave',
+                        'Bloqueio AV 2º e 3º grau sem marca-passo',
+                        'Hipersensibilidade ao iodo',
+                        'Hipotensão severa',
+                        'QT longo congênito',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Adenosina IV (TSV)',
+                dose: '0,1 mg/kg',
+                weight: w,
+                mgPerKg: 0.1,
+                unit: 'mg',
+                maxDose: '6 mg',
+                color: const Color(0xFFD97706),
+                line: _TherapeuticLine.first,
+                indication: 'TSV — taquicardia supraventricular',
+                warningNote: isEs
+                    ? 'Bolus IV RÁPIDO (1–2 s). Seguir com flush SF 20 mL. Pode causar assistolia transitória.'
+                    : 'Bolus IV RÁPIDO (1–2 s). Seguir com flush SF 20 mL. Pode causar assistolia transitória.',
+                contraindications: isEs
+                    ? [
+                        'Bloqueo AV 2º y 3º grado',
+                        'Síndrome del seno enfermo',
+                        'Asma bronquial (broncoespasmo)',
+                        'Flutter/fibrilación auricular',
+                        'Administrar en bolo IV rápido (bolus 1-2 s)',
+                      ]
+                    : [
+                        'Bloqueio AV 2º e 3º grau',
+                        'Doença do nó sinusal',
+                        'Asma brônquica (broncoespasmo)',
+                        'Flutter/fibrilação atrial',
+                        'Administrar em bolus IV rápido (1-2 s)',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Atropina IV (bradicardia)',
+                dose: '0,02 mg/kg',
+                weight: w,
+                mgPerKg: 0.02,
+                unit: 'mg',
+                maxDose: '0,5 mg',
+                color: const Color(0xFF1D4ED8),
+                line: _TherapeuticLine.second,
+                indication: isEs
+                    ? 'Bradicardia sintomática con hipotensión'
+                    : 'Bradicardia sintomática com hipotensão',
+                warningNote: isEs
+                    ? 'Dosis MÍNIMA 0,1 mg — dosis menores pueden causar bradicardia paradójica.'
+                    : 'Dose MÍNIMA 0,1 mg — doses menores podem causar bradicardia paradoxal.',
+                contraindications: isEs
+                    ? [
+                        'Glaucoma de ángulo cerrado',
+                        'Taquicardia sinusal',
+                        'Miastenia gravis',
+                        'Dosis mínima 0,1 mg (dosis menores → bradicardia paradójica)',
+                        'Íleo paralítico / obstrucción intestinal',
+                      ]
+                    : [
+                        'Glaucoma de ângulo fechado',
+                        'Taquicardia sinusal',
+                        'Miastenia gravis',
+                        'Dose mínima 0,1 mg (doses menores → bradicardia paradoxal)',
+                        'Íleo paralítico / obstrução intestinal',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Glicose 10% IV (hipoglicemia)',
+                dose: '2–5 mL/kg',
+                weight: w,
+                mgPerKg: 3.0,
+                unit: 'mL',
+                maxDose: '250 mL',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        'Hiperglucemia (BGL > 180 mg/dL)',
+                        'Confirmar hipoglucemia antes de administrar',
+                        'Acceso venoso periférico preferible (osmolaridade 556 mOsm/L)',
+                      ]
+                    : [
+                        'Hiperglicemia (BGL > 180 mg/dL)',
+                        'Confirmar hipoglicemia antes de administrar',
+                        'Acesso venoso periférico preferível (osmolaridade 556 mOsm/L)',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-      // ── Febre ──────────────────────────────────────────────────────
-      _SectionCard(
-        title: isEs ? 'Antitérmicos — Fiebre' : 'Antipiréticos — Febre',
-        icon: Icons.thermostat_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'Paracetamol VO/VR',
-              dose: '10–15 mg/kg q4–6h',
-              weight: w,
-              mgPerKg: 12.5,
-              unit: 'mg',
-              maxDose: '1000 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      'Insuficiencia hepática grave',
-                      'No superar 5 dosis/día',
-                      'Intervalo mínimo de 4h entre dosis'
-                    ]
-                  : [
-                      'Insuficiência hepática grave',
-                      'Não ultrapassar 5 doses/dia',
-                      'Intervalo mínimo de 4h entre doses'
-                    ]),
-          _PedDoseRow(
-              label: 'Ibuprofeno VO',
-              dose: '5–10 mg/kg q6–8h',
-              weight: w,
-              mgPerKg: 7.5,
-              unit: 'mg',
-              maxDose: '400 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      '< 6 meses (contraindicado)',
-                      'Dengue — evitar AINEs',
-                      'Deshidratación / hipovolemia',
-                      'No combinar con otros AINEs'
-                    ]
-                  : [
-                      '< 6 meses (contraindicado)',
-                      'Dengue — evitar AINEs',
-                      'Desidratação / hipovolemia',
-                      'Não combinar com outros AINEs'
-                    ]),
-          _PedDoseRow(
-              label: 'Dipirona VO/IV',
-              dose: '15 mg/kg q6h',
-              weight: w,
-              mgPerKg: 15.0,
-              unit: 'mg',
-              maxDose: '500 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      '< 3 meses / < 5 kg',
-                      'Hipersensibilidad a pirazolonas',
-                      'IV lenta (riesgo hipotensión)'
-                    ]
-                  : [
-                      '< 3 meses / < 5 kg',
-                      'Hipersensibilidade a pirazolonas',
-                      'IV lenta (risco hipotensão)'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        // ── Dor ────────────────────────────────────────────────────────
+        _SectionCard(
+          title: isEs ? 'Analgesia — Dolor' : 'Analgesia — Dor',
+          icon: Icons.healing_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'Paracetamol VO/VR',
+                dose: '10–15 mg/kg q4–6h',
+                weight: w,
+                mgPerKg: 12.5,
+                unit: 'mg',
+                maxDose: '1000 mg',
+                color: const Color(0xFF065F46),
+                line: _TherapeuticLine.first,
+                indication: isEs
+                    ? '1ª elección — analgesia y antipiresis'
+                    : '1ª escolha — analgesia e antipirese',
+                contraindications: isEs
+                    ? [
+                        'Insuficiencia hepática grave',
+                        'Hipersensibilidad al paracetamol',
+                        'No superar 4 dosis/día',
+                        'Evitar en neonatos < 32 semanas (ajustar dosis)',
+                      ]
+                    : [
+                        'Insuficiência hepática grave',
+                        'Hipersensibilidade ao paracetamol',
+                        'Não ultrapassar 4 doses/dia',
+                        'Evitar em neonatos < 32 semanas (ajustar dose)',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Ibuprofeno VO',
+                dose: '5–10 mg/kg q6–8h',
+                weight: w,
+                mgPerKg: 7.5,
+                unit: 'mg',
+                maxDose: '400 mg',
+                color: const Color(0xFF065F46),
+                line: _TherapeuticLine.second,
+                indication: isEs
+                    ? 'Dolor leve–moderado (≥ 6 meses)'
+                    : 'Dor leve–moderada (≥ 6 meses)',
+                warningNote: isEs
+                    ? 'Evitar em Dengue. Não usar < 6 meses. Evitar desidratação.'
+                    : 'Evitar em Dengue. Não usar < 6 meses. Evitar desidratação.',
+                contraindications: isEs
+                    ? [
+                        '< 6 meses de edad (contraindicado)',
+                        'Insuficiencia renal / deshidratación',
+                        'Úlcera péptica activa',
+                        'Dengue (riesgo de sangrado)',
+                        'Asma inducida por AINEs',
+                        'Insuficiencia hepática',
+                      ]
+                    : [
+                        '< 6 meses de idade (contraindicado)',
+                        'Insuficiência renal / desidratação',
+                        'Úlcera péptica ativa',
+                        'Dengue (risco de sangramento)',
+                        'Asma induzida por AINEs',
+                        'Insuficiência hepática',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Dipirona/Metamizol VO/IV',
+                dose: '15 mg/kg q6h',
+                weight: w,
+                mgPerKg: 15.0,
+                unit: 'mg',
+                maxDose: '1000 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        '< 3 meses / < 5 kg (contraindicado IV)',
+                        'Hipersensibilidad a pirazolonas',
+                        'Porfiria hepática aguda',
+                        'Riesgo de agranulocitosis (monitorizar CBC)',
+                        'Hipotensión en administración IV rápida',
+                      ]
+                    : [
+                        '< 3 meses / < 5 kg (contraindicado IV)',
+                        'Hipersensibilidade a pirazolonas',
+                        'Porfiria hepática aguda',
+                        'Risco de agranulocitose (monitorar hemograma)',
+                        'Hipotensão em administração IV rápida',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Morfina IV/SC',
+                dose: '0,05–0,1 mg/kg q2–4h',
+                weight: w,
+                mgPerKg: 0.1,
+                unit: 'mg',
+                maxDose: '5 mg',
+                color: const Color(0xFF7C3AED),
+                line: _TherapeuticLine.second,
+                indication: isEs
+                    ? 'Dolor severo, procedimientos dolorosos'
+                    : 'Dor severa, procedimentos dolorosos',
+                warningNote: isEs
+                    ? 'Monitorizar SpO₂ e FR. Ter Naloxona 0,01 mg/kg disponível. Titular pela resposta.'
+                    : 'Monitorizar SpO₂ e FR. Ter Naloxona 0,01 mg/kg disponível. Titular pela resposta.',
+                contraindications: isEs
+                    ? [
+                        '< 6 meses (ajuste de dosis — alta sensibilidad)',
+                        'Depresión respiratoria',
+                        'Íleo paralítico',
+                        'Hipertensión intracraneal aguda',
+                        'Hipotensión severa',
+                        'Antídoto: Naloxona 0,01 mg/kg IV',
+                      ]
+                    : [
+                        '< 6 meses (ajuste de dose — alta sensibilidade)',
+                        'Depressão respiratória',
+                        'Íleo paralítico',
+                        'Hipertensão intracraniana aguda',
+                        'Hipotensão severa',
+                        'Antídoto: Naloxona 0,01 mg/kg IV',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Tramadol VO/IV',
+                dose: '1–2 mg/kg q4–6h',
+                weight: w,
+                mgPerKg: 1.5,
+                unit: 'mg',
+                maxDose: '100 mg',
+                color: const Color(0xFF7C3AED),
+                line: _TherapeuticLine.third,
+                indication: isEs
+                    ? '> 12 años VO solamente (FDA 2017)'
+                    : '> 12 anos VO somente (FDA 2017)',
+                warningNote: isEs
+                    ? '⚠ CONTRAINDICADO < 12 años VO — riesgo fatal CYP2D6. Prohibido post-amigdalectomía.'
+                    : '⚠ CONTRAINDICADO < 12 anos VO — risco fatal CYP2D6. Proibido pós-amigdalectomia.',
+                contraindications: isEs
+                    ? [
+                        '< 12 años VO (metabolizadores ultrarrápidos CYP2D6 — riesgo mortal)',
+                        'Post-amigdalectomía / adenoidectomía (< 18 años)',
+                        'Epilepsia no controlada',
+                        'Depresión respiratoria',
+                        'IMAO concomitante',
+                      ]
+                    : [
+                        '< 12 anos VO (metabolizadores ultrarrápidos CYP2D6 — risco fatal)',
+                        'Pós-amigdalectomia / adenoidectomia (< 18 anos)',
+                        'Epilepsia não controlada',
+                        'Depressão respiratória',
+                        'IMAO concomitante',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Cetorolaco IV/IM',
+                dose: '0,5 mg/kg q6h',
+                weight: w,
+                mgPerKg: 0.5,
+                unit: 'mg',
+                maxDose: '30 mg',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        '< 2 años (contraindicado)',
+                        'Insuficiencia renal',
+                        'Úlcera péptica activa',
+                        'Sangrado gastrointestinal activo',
+                        'Máximo 5 días de uso',
+                      ]
+                    : [
+                        '< 2 anos (contraindicado)',
+                        'Insuficiência renal',
+                        'Úlcera péptica ativa',
+                        'Sangramento gastrointestinal ativo',
+                        'Máximo 5 dias de uso',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-      // ── Descongestionantes / Respiratório ──────────────────────────
-      _SectionCard(
-        title: isEs
-            ? 'Descongestionantes y Vía Aérea'
-            : 'Descongestionantes e Via Aérea',
-        icon: Icons.air_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'Salbutamol inalatório (crise)',
-              dose: '2,5–5 mg (nebulização)',
-              weight: w,
-              mgPerKg: null,
-              unit: 'mg',
-              maxDose: null,
-              color: const Color(0xFF1D4ED8),
-              line: _TherapeuticLine.first,
-              indication: isEs
-                  ? 'Crisis de asma, broncoespasmo agudo'
-                  : 'Crise de asma, broncoespasmo agudo',
-              warningNote: isEs
-                  ? 'Repetir a cada 20 min × 3. Monitorizar FC e SpO₂ durante nebulização.'
-                  : 'Repetir a cada 20 min × 3. Monitorizar FC e SpO₂ durante nebulização.',
-              contraindications: isEs
-                  ? [
-                      'Hipersensibilidad a salbutamol',
-                      'Taquicardia no controlada',
-                      'Monitorizar FC y SpO₂ durante nebulización',
-                      'Preferir MDI + espaciador en < 5 años'
-                    ]
-                  : [
-                      'Hipersensibilidade ao salbutamol',
-                      'Taquicardia não controlada',
-                      'Monitorar FC e SpO₂ durante nebulização',
-                      'Preferir MDI + espaçador em < 5 anos'
-                    ]),
-          _PedDoseRow(
-              label: 'Ipratrópio inalatório',
-              dose: '250–500 mcg nebulização',
-              weight: w,
-              mgPerKg: null,
-              unit: 'mcg',
-              maxDose: null,
-              color: const Color(0xFF1D4ED8),
-              contraindications: isEs
-                  ? [
-                      'Hipersensibilidad a atropina / brometo',
-                      'Glaucoma de ángulo cerrado',
-                      'Retención urinaria / hipertrofia prostática'
-                    ]
-                  : [
-                      'Hipersensibilidade à atropina / brometo',
-                      'Glaucoma de ângulo fechado',
-                      'Retenção urinária / hipertrofia prostática'
-                    ]),
-          _PedDoseRow(
-              label: 'Adrenalina nebulizada (crupe)',
-              dose: '0,5 mL/kg de 1:1000',
-              weight: w,
-              mgPerKg: null,
-              unit: 'mL',
-              maxDose: '5 mL',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Taquicardia > 200 bpm',
-                      'Cardiopatía congénita cianótica',
-                      'Observar 2–4h post-nebulización (efecto rebote)',
-                      'No usar sin supervisión médica continua'
-                    ]
-                  : [
-                      'Taquicardia > 200 bpm',
-                      'Cardiopatia congênita cianótica',
-                      'Observar 2–4h pós-nebulização (efeito rebote)',
-                      'Não usar sem supervisão médica contínua'
-                    ]),
-          _PedDoseRow(
-              label: 'Dexametasona VO/IM (crupe)',
-              dose: '0,15–0,6 mg/kg dose única',
-              weight: w,
-              mgPerKg: 0.3,
-              unit: 'mg',
-              maxDose: '10 mg',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Infección viral sin indicación clínica',
-                      'Infección bacteriana activa no tratada',
-                      'Inmunosupresión severa (relativa)',
-                      'Varicela activa'
-                    ]
-                  : [
-                      'Infecção viral sem indicação clínica',
-                      'Infecção bacteriana ativa não tratada',
-                      'Imunossupressão grave (relativa)',
-                      'Varicela ativa'
-                    ]),
-          _PedDoseRow(
-              label: 'Prednisolona VO',
-              dose: '1–2 mg/kg/dia ÷ 1–2x',
-              weight: w,
-              mgPerKg: 1.0,
-              unit: 'mg',
-              maxDose: '40 mg',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Infección fúngica sistémica',
-                      'Varicela / Herpes activo',
-                      'Vacunas vivas (evitar durante tratamiento)',
-                      'Tuberculosis activa no tratada'
-                    ]
-                  : [
-                      'Infecção fúngica sistêmica',
-                      'Varicela / Herpes ativo',
-                      'Vacinas vivas (evitar durante o tratamento)',
-                      'Tuberculose ativa não tratada'
-                    ]),
-          _PedDoseRow(
-              label: 'Solução Fisiológica nasal',
-              dose: '2–3 gotas/narina q4–6h',
-              weight: w,
-              mgPerKg: null,
-              unit: '',
-              maxDose: null,
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      'Sin contraindicaciones absolutas',
-                      'Evitar en neonatos sin orientación',
-                      'Primera línea en congestión nasal pediátrica'
-                    ]
-                  : [
-                      'Sem contraindicações absolutas',
-                      'Evitar em neonatos sem orientação',
-                      'Primeira linha na congestão nasal pediátrica'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        // ── Febre ──────────────────────────────────────────────────────
+        _SectionCard(
+          title: isEs ? 'Antitérmicos — Fiebre' : 'Antipiréticos — Febre',
+          icon: Icons.thermostat_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'Paracetamol VO/VR',
+                dose: '10–15 mg/kg q4–6h',
+                weight: w,
+                mgPerKg: 12.5,
+                unit: 'mg',
+                maxDose: '1000 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        'Insuficiencia hepática grave',
+                        'No superar 5 dosis/día',
+                        'Intervalo mínimo de 4h entre dosis',
+                      ]
+                    : [
+                        'Insuficiência hepática grave',
+                        'Não ultrapassar 5 doses/dia',
+                        'Intervalo mínimo de 4h entre doses',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Ibuprofeno VO',
+                dose: '5–10 mg/kg q6–8h',
+                weight: w,
+                mgPerKg: 7.5,
+                unit: 'mg',
+                maxDose: '400 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        '< 6 meses (contraindicado)',
+                        'Dengue — evitar AINEs',
+                        'Deshidratación / hipovolemia',
+                        'No combinar con otros AINEs',
+                      ]
+                    : [
+                        '< 6 meses (contraindicado)',
+                        'Dengue — evitar AINEs',
+                        'Desidratação / hipovolemia',
+                        'Não combinar com outros AINEs',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Dipirona VO/IV',
+                dose: '15 mg/kg q6h',
+                weight: w,
+                mgPerKg: 15.0,
+                unit: 'mg',
+                maxDose: '500 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        '< 3 meses / < 5 kg',
+                        'Hipersensibilidad a pirazolonas',
+                        'IV lenta (riesgo hipotensión)',
+                      ]
+                    : [
+                        '< 3 meses / < 5 kg',
+                        'Hipersensibilidade a pirazolonas',
+                        'IV lenta (risco hipotensão)',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-      // ── Sedação e Analgesia Procedural ────────────────────────────
-      _SectionCard(
-        title: isEs ? 'Sedación y Analgesia' : 'Sedação e Analgesia',
-        icon: Icons.medication_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'Midazolam IV/IM',
-              dose: '0,05–0,1 mg/kg',
-              weight: w,
-              mgPerKg: 0.1,
-              unit: 'mg',
-              maxDose: '5 mg',
-              color: const Color(0xFF7C3AED),
-              contraindications: isEs
-                  ? [
-                      'Hipersensibilidad a benzodiacepinas',
-                      'Glaucoma de ángulo cerrado',
-                      'Depresión respiratoria severa',
-                      'Antídoto: Flumazenil 0,01 mg/kg IV',
-                      'Monitorizar SpO₂ continuamente'
-                    ]
-                  : [
-                      'Hipersensibilidade a benzodiazepinas',
-                      'Glaucoma de ângulo fechado',
-                      'Depressão respiratória grave',
-                      'Antídoto: Flumazenil 0,01 mg/kg IV',
-                      'Monitorar SpO₂ continuamente'
-                    ]),
-          _PedDoseRow(
-              label: 'Cetamina IV',
-              dose: '1–2 mg/kg (procedimentos)',
-              weight: w,
-              mgPerKg: 1.5,
-              unit: 'mg',
-              maxDose: '200 mg',
-              color: const Color(0xFF7C3AED),
-              contraindications: isEs
-                  ? [
-                      'Hipertensión intracraneal (TEC grave)',
-                      'Psicosis activa',
-                      'Eclampsia / preeclampsia',
-                      'Cirugía de laringe/tráquea (laringoespasmo)',
-                      'Asociar con midazolam para prevenir alucinaciones'
-                    ]
-                  : [
-                      'Hipertensão intracraniana (TCE grave)',
-                      'Psicose ativa',
-                      'Eclâmpsia / pré-eclâmpsia',
-                      'Cirurgia de laringe/traqueia (laringoespasmo)',
-                      'Associar com midazolam para prevenir alucinações'
-                    ]),
-          _PedDoseRow(
-              label: 'Fentanil IV',
-              dose: '1–2 mcg/kg',
-              weight: w,
-              mgPerKg: 0.0015,
-              unit: 'mg',
-              maxDose: '100 mcg',
-              color: const Color(0xFF7C3AED),
-              contraindications: isEs
-                  ? [
-                      'Depresión respiratoria',
-                      'Hipotensión severa',
-                      'Rigidez torácica ("tórax leñoso") con dosis altas — usar lentamente',
-                      'Antídoto: Naloxona 0,01 mg/kg IV'
-                    ]
-                  : [
-                      'Depressão respiratória',
-                      'Hipotensão severa',
-                      'Rigidez torácica ("tórax lenhoso") com doses altas — administrar lentamente',
-                      'Antídoto: Naloxona 0,01 mg/kg IV'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        // ── Descongestionantes / Respiratório ──────────────────────────
+        _SectionCard(
+          title: isEs
+              ? 'Descongestionantes y Vía Aérea'
+              : 'Descongestionantes e Via Aérea',
+          icon: Icons.air_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'Salbutamol inalatório (crise)',
+                dose: '2,5–5 mg (nebulização)',
+                weight: w,
+                mgPerKg: null,
+                unit: 'mg',
+                maxDose: null,
+                color: const Color(0xFF1D4ED8),
+                line: _TherapeuticLine.first,
+                indication: isEs
+                    ? 'Crisis de asma, broncoespasmo agudo'
+                    : 'Crise de asma, broncoespasmo agudo',
+                warningNote: isEs
+                    ? 'Repetir a cada 20 min × 3. Monitorizar FC e SpO₂ durante nebulização.'
+                    : 'Repetir a cada 20 min × 3. Monitorizar FC e SpO₂ durante nebulização.',
+                contraindications: isEs
+                    ? [
+                        'Hipersensibilidad a salbutamol',
+                        'Taquicardia no controlada',
+                        'Monitorizar FC y SpO₂ durante nebulización',
+                        'Preferir MDI + espaciador en < 5 años',
+                      ]
+                    : [
+                        'Hipersensibilidade ao salbutamol',
+                        'Taquicardia não controlada',
+                        'Monitorar FC e SpO₂ durante nebulização',
+                        'Preferir MDI + espaçador em < 5 anos',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Ipratrópio inalatório',
+                dose: '250–500 mcg nebulização',
+                weight: w,
+                mgPerKg: null,
+                unit: 'mcg',
+                maxDose: null,
+                color: const Color(0xFF1D4ED8),
+                contraindications: isEs
+                    ? [
+                        'Hipersensibilidad a atropina / brometo',
+                        'Glaucoma de ángulo cerrado',
+                        'Retención urinaria / hipertrofia prostática',
+                      ]
+                    : [
+                        'Hipersensibilidade à atropina / brometo',
+                        'Glaucoma de ângulo fechado',
+                        'Retenção urinária / hipertrofia prostática',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Adrenalina nebulizada (crupe)',
+                dose: '0,5 mL/kg de 1:1000',
+                weight: w,
+                mgPerKg: null,
+                unit: 'mL',
+                maxDose: '5 mL',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Taquicardia > 200 bpm',
+                        'Cardiopatía congénita cianótica',
+                        'Observar 2–4h post-nebulización (efecto rebote)',
+                        'No usar sin supervisión médica continua',
+                      ]
+                    : [
+                        'Taquicardia > 200 bpm',
+                        'Cardiopatia congênita cianótica',
+                        'Observar 2–4h pós-nebulização (efeito rebote)',
+                        'Não usar sem supervisão médica contínua',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Dexametasona VO/IM (crupe)',
+                dose: '0,15–0,6 mg/kg dose única',
+                weight: w,
+                mgPerKg: 0.3,
+                unit: 'mg',
+                maxDose: '10 mg',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Infección viral sin indicación clínica',
+                        'Infección bacteriana activa no tratada',
+                        'Inmunosupresión severa (relativa)',
+                        'Varicela activa',
+                      ]
+                    : [
+                        'Infecção viral sem indicação clínica',
+                        'Infecção bacteriana ativa não tratada',
+                        'Imunossupressão grave (relativa)',
+                        'Varicela ativa',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Prednisolona VO',
+                dose: '1–2 mg/kg/dia ÷ 1–2x',
+                weight: w,
+                mgPerKg: 1.0,
+                unit: 'mg',
+                maxDose: '40 mg',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Infección fúngica sistémica',
+                        'Varicela / Herpes activo',
+                        'Vacunas vivas (evitar durante tratamiento)',
+                        'Tuberculosis activa no tratada',
+                      ]
+                    : [
+                        'Infecção fúngica sistêmica',
+                        'Varicela / Herpes ativo',
+                        'Vacinas vivas (evitar durante o tratamento)',
+                        'Tuberculose ativa não tratada',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Solução Fisiológica nasal',
+                dose: '2–3 gotas/narina q4–6h',
+                weight: w,
+                mgPerKg: null,
+                unit: '',
+                maxDose: null,
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        'Sin contraindicaciones absolutas',
+                        'Evitar en neonatos sin orientación',
+                        'Primera línea en congestión nasal pediátrica',
+                      ]
+                    : [
+                        'Sem contraindicações absolutas',
+                        'Evitar em neonatos sem orientação',
+                        'Primeira linha na congestão nasal pediátrica',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-      // ── Antibióticos ───────────────────────────────────────────────
-      _SectionCard(
-        title: isEs ? 'Antibióticos Pediátricos' : 'Antibióticos Pediátricos',
-        icon: Icons.science_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'Amoxicilina VO',
-              dose: '40–90 mg/kg/dia ÷ 3x',
-              weight: w,
-              mgPerKg: 50.0,
-              unit: 'mg',
-              maxDose: '3000 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      'Alergia a penicilinas',
-                      'Mononucleosis (rash generalizado)',
-                      'Insuficiencia renal grave (ajustar dosis)'
-                    ]
-                  : [
-                      'Alergia a penicilinas',
-                      'Mononucleose (rash generalizado)',
-                      'Insuficiência renal grave (ajustar dose)'
-                    ]),
-          _PedDoseRow(
-              label: 'Amox-Clavulanato VO',
-              dose: '40–90 mg/kg/dia ÷ 2–3x',
-              weight: w,
-              mgPerKg: 45.0,
-              unit: 'mg',
-              maxDose: '1500 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      'Alergia a penicilinas / clavulanato',
-                      'Hepatitis colestásica previa por amox-clav',
-                      'Mononucleosis infecciosa',
-                      'Ajustar en insuficiencia renal'
-                    ]
-                  : [
-                      'Alergia a penicilinas / clavulanato',
-                      'Hepatite colestática prévia por amox-clav',
-                      'Mononucleose infecciosa',
-                      'Ajustar em insuficiência renal'
-                    ]),
-          _PedDoseRow(
-              label: 'Azitromicina VO',
-              dose: '10 mg/kg/dia 1x (3–5d)',
-              weight: w,
-              mgPerKg: 10.0,
-              unit: 'mg',
-              maxDose: '500 mg',
-              color: const Color(0xFF1D4ED8),
-              contraindications: isEs
-                  ? [
-                      'Hipersensibilidad a macrólidos',
-                      'QT largo / uso de otros fármacos QT',
-                      'Insuficiencia hepática grave',
-                      'Arritmia cardíaca preexistente'
-                    ]
-                  : [
-                      'Hipersensibilidade a macrolídeos',
-                      'QT longo / uso de outros fármacos QT',
-                      'Insuficiência hepática grave',
-                      'Arritmia cardíaca preexistente'
-                    ]),
-          _PedDoseRow(
-              label: 'Ceftriaxona IV/IM',
-              dose: '50–100 mg/kg/dia ÷ 1–2x',
-              weight: w,
-              mgPerKg: 50.0,
-              unit: 'mg',
-              maxDose: '4000 mg',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Alergia a cefalosporinas (precaución cruzada con penicilinas)',
-                      'Neonatos ictéricos o prematuros (desplaza bilirrubina)',
-                      'No mezclar con calcio IV (precipita en neonatos — riesgo de muerte)',
-                      'Insuficiencia renal grave + hepática simultánea'
-                    ]
-                  : [
-                      'Alergia a cefalosporinas (precaução cruzada com penicilinas)',
-                      'Neonatos ictéricos ou prematuros (desloca bilirrubina)',
-                      'Não misturar com cálcio IV (precipita em neonatos — risco de morte)',
-                      'Insuficiência renal grave + hepática simultânea'
-                    ]),
-          _PedDoseRow(
-              label: 'Cefalexina VO',
-              dose: '25–50 mg/kg/dia ÷ 4x',
-              weight: w,
-              mgPerKg: 25.0,
-              unit: 'mg',
-              maxDose: '2000 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      'Alergia a cefalosporinas',
-                      'Insuficiencia renal (ajustar dosis)',
-                      'Precaución en alérgicos a penicilinas (5–10% reacción cruzada)'
-                    ]
-                  : [
-                      'Alergia a cefalosporinas',
-                      'Insuficiência renal (ajustar dose)',
-                      'Precaução em alérgicos a penicilinas (5–10% reação cruzada)'
-                    ]),
-          _PedDoseRow(
-              label: 'Sulfametoxazol-Trimetoprim VO',
-              dose: '8 mg/kg/dia (TMP) ÷ 2x',
-              weight: w,
-              mgPerKg: 8.0,
-              unit: 'mg',
-              maxDose: '320 mg',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      '< 2 meses (kernicterus neonatal)',
-                      'Insuficiencia renal grave',
-                      'Deficiencia de G6PD',
-                      'Hipersensibilidad a sulfonamidas',
-                      'Embarazo (1º y 3º trimestre)',
-                      'Monitorizar CBC en uso prolongado'
-                    ]
-                  : [
-                      '< 2 meses (kernicterus neonatal)',
-                      'Insuficiência renal grave',
-                      'Deficiência de G6PD',
-                      'Hipersensibilidade a sulfonamidas',
-                      'Monitorar hemograma em uso prolongado'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        // ── Sedação e Analgesia Procedural ────────────────────────────
+        _SectionCard(
+          title: isEs ? 'Sedación y Analgesia' : 'Sedação e Analgesia',
+          icon: Icons.medication_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'Midazolam IV/IM',
+                dose: '0,05–0,1 mg/kg',
+                weight: w,
+                mgPerKg: 0.1,
+                unit: 'mg',
+                maxDose: '5 mg',
+                color: const Color(0xFF7C3AED),
+                contraindications: isEs
+                    ? [
+                        'Hipersensibilidad a benzodiacepinas',
+                        'Glaucoma de ángulo cerrado',
+                        'Depresión respiratoria severa',
+                        'Antídoto: Flumazenil 0,01 mg/kg IV',
+                        'Monitorizar SpO₂ continuamente',
+                      ]
+                    : [
+                        'Hipersensibilidade a benzodiazepinas',
+                        'Glaucoma de ângulo fechado',
+                        'Depressão respiratória grave',
+                        'Antídoto: Flumazenil 0,01 mg/kg IV',
+                        'Monitorar SpO₂ continuamente',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Cetamina IV',
+                dose: '1–2 mg/kg (procedimentos)',
+                weight: w,
+                mgPerKg: 1.5,
+                unit: 'mg',
+                maxDose: '200 mg',
+                color: const Color(0xFF7C3AED),
+                contraindications: isEs
+                    ? [
+                        'Hipertensión intracraneal (TEC grave)',
+                        'Psicosis activa',
+                        'Eclampsia / preeclampsia',
+                        'Cirugía de laringe/tráquea (laringoespasmo)',
+                        'Asociar con midazolam para prevenir alucinaciones',
+                      ]
+                    : [
+                        'Hipertensão intracraniana (TCE grave)',
+                        'Psicose ativa',
+                        'Eclâmpsia / pré-eclâmpsia',
+                        'Cirurgia de laringe/traqueia (laringoespasmo)',
+                        'Associar com midazolam para prevenir alucinações',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Fentanil IV',
+                dose: '1–2 mcg/kg',
+                weight: w,
+                mgPerKg: 0.0015,
+                unit: 'mg',
+                maxDose: '100 mcg',
+                color: const Color(0xFF7C3AED),
+                contraindications: isEs
+                    ? [
+                        'Depresión respiratoria',
+                        'Hipotensión severa',
+                        'Rigidez torácica ("tórax leñoso") con dosis altas — usar lentamente',
+                        'Antídoto: Naloxona 0,01 mg/kg IV',
+                      ]
+                    : [
+                        'Depressão respiratória',
+                        'Hipotensão severa',
+                        'Rigidez torácica ("tórax lenhoso") com doses altas — administrar lentamente',
+                        'Antídoto: Naloxona 0,01 mg/kg IV',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-      // ── Crise Convulsiva ───────────────────────────────────────────
-      _SectionCard(
-        title: isEs ? 'Crisis Convulsiva' : 'Crise Convulsiva',
-        icon: Icons.bolt_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'Diazepam IV (1ª linha)',
-              dose: '0,2–0,5 mg/kg',
-              weight: w,
-              mgPerKg: 0.3,
-              unit: 'mg',
-              maxDose: '10 mg',
-              color: const Color(0xFF1D4ED8),
-              contraindications: isEs
-                  ? [
-                      'Depresión respiratoria severa',
-                      'Glaucoma de ángulo cerrado',
-                      'Antídoto: Flumazenil 0,01 mg/kg IV',
-                      'IV lento: riesgo de apnea'
-                    ]
-                  : [
-                      'Depressão respiratória grave',
-                      'Glaucoma de ângulo fechado',
-                      'Antídoto: Flumazenil 0,01 mg/kg IV',
-                      'IV lento: risco de apneia'
-                    ]),
-          _PedDoseRow(
-              label: 'Midazolam IM/IO (1ª linha)',
-              dose: '0,2 mg/kg',
-              weight: w,
-              mgPerKg: 0.2,
-              unit: 'mg',
-              maxDose: '10 mg',
-              color: const Color(0xFF1D4ED8),
-              contraindications: isEs
-                  ? [
-                      'Depresión respiratoria',
-                      'Hipotensión severa',
-                      'Antídoto: Flumazenil 0,01 mg/kg',
-                      'Monitorizar SpO₂'
-                    ]
-                  : [
-                      'Depressão respiratória',
-                      'Hipotensão severa',
-                      'Antídoto: Flumazenil 0,01 mg/kg',
-                      'Monitorar SpO₂'
-                    ]),
-          _PedDoseRow(
-              label: 'Fenitoína IV (2ª linha)',
-              dose: '20 mg/kg',
-              weight: w,
-              mgPerKg: 20.0,
-              unit: 'mg',
-              maxDose: '1000 mg',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Bradicardia sinusal / bloqueo AV',
-                      'Síndrome de Adams-Stokes',
-                      'Infusión lenta < 1 mg/kg/min (arritmia y hipotensión)',
-                      'No mezclar con glucosa (precipita)',
-                      'Extravasación → necrosis tisular'
-                    ]
-                  : [
-                      'Bradicardia sinusal / bloqueio AV',
-                      'Síndrome de Adams-Stokes',
-                      'Infusão lenta < 1 mg/kg/min (arritmia e hipotensão)',
-                      'Não misturar com glicose (precipita)',
-                      'Extravasamento → necrose tissular'
-                    ]),
-          _PedDoseRow(
-              label: 'Fenobarbital IV (2ª linha)',
-              dose: '20 mg/kg',
-              weight: w,
-              mgPerKg: 20.0,
-              unit: 'mg',
-              maxDose: '1000 mg',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Depresión respiratoria grave (riesgo de apnea)',
-                      'Porfiria aguda',
-                      'Insuficiencia hepática grave',
-                      'Hipotensión — infusión lenta'
-                    ]
-                  : [
-                      'Depressão respiratória grave (risco de apneia)',
-                      'Porfiria aguda',
-                      'Insuficiência hepática grave',
-                      'Hipotensão — infusão lenta'
-                    ]),
-          _PedDoseRow(
-              label: 'Levetiracetam IV (2ª linha)',
-              dose: '60 mg/kg',
-              weight: w,
-              mgPerKg: 60.0,
-              unit: 'mg',
-              maxDose: '3000 mg',
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Hipersensibilidad al levetiracetam',
-                      'Insuficiencia renal grave (ajustar)',
-                      'Monitorizar comportamiento: agitación, psicosis en niños'
-                    ]
-                  : [
-                      'Hipersensibilidade ao levetiracetam',
-                      'Insuficiência renal grave (ajustar)',
-                      'Monitorar comportamento: agitação, psicose em crianças'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        // ── Antibióticos ───────────────────────────────────────────────
+        _SectionCard(
+          title: isEs ? 'Antibióticos Pediátricos' : 'Antibióticos Pediátricos',
+          icon: Icons.science_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'Amoxicilina VO',
+                dose: '40–90 mg/kg/dia ÷ 3x',
+                weight: w,
+                mgPerKg: 50.0,
+                unit: 'mg',
+                maxDose: '3000 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        'Alergia a penicilinas',
+                        'Mononucleosis (rash generalizado)',
+                        'Insuficiencia renal grave (ajustar dosis)',
+                      ]
+                    : [
+                        'Alergia a penicilinas',
+                        'Mononucleose (rash generalizado)',
+                        'Insuficiência renal grave (ajustar dose)',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Amox-Clavulanato VO',
+                dose: '40–90 mg/kg/dia ÷ 2–3x',
+                weight: w,
+                mgPerKg: 45.0,
+                unit: 'mg',
+                maxDose: '1500 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        'Alergia a penicilinas / clavulanato',
+                        'Hepatitis colestásica previa por amox-clav',
+                        'Mononucleosis infecciosa',
+                        'Ajustar en insuficiencia renal',
+                      ]
+                    : [
+                        'Alergia a penicilinas / clavulanato',
+                        'Hepatite colestática prévia por amox-clav',
+                        'Mononucleose infecciosa',
+                        'Ajustar em insuficiência renal',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Azitromicina VO',
+                dose: '10 mg/kg/dia 1x (3–5d)',
+                weight: w,
+                mgPerKg: 10.0,
+                unit: 'mg',
+                maxDose: '500 mg',
+                color: const Color(0xFF1D4ED8),
+                contraindications: isEs
+                    ? [
+                        'Hipersensibilidad a macrólidos',
+                        'QT largo / uso de otros fármacos QT',
+                        'Insuficiencia hepática grave',
+                        'Arritmia cardíaca preexistente',
+                      ]
+                    : [
+                        'Hipersensibilidade a macrolídeos',
+                        'QT longo / uso de outros fármacos QT',
+                        'Insuficiência hepática grave',
+                        'Arritmia cardíaca preexistente',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Ceftriaxona IV/IM',
+                dose: '50–100 mg/kg/dia ÷ 1–2x',
+                weight: w,
+                mgPerKg: 50.0,
+                unit: 'mg',
+                maxDose: '4000 mg',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Alergia a cefalosporinas (precaución cruzada con penicilinas)',
+                        'Neonatos ictéricos o prematuros (desplaza bilirrubina)',
+                        'No mezclar con calcio IV (precipita en neonatos — riesgo de muerte)',
+                        'Insuficiencia renal grave + hepática simultánea',
+                      ]
+                    : [
+                        'Alergia a cefalosporinas (precaução cruzada com penicilinas)',
+                        'Neonatos ictéricos ou prematuros (desloca bilirrubina)',
+                        'Não misturar com cálcio IV (precipita em neonatos — risco de morte)',
+                        'Insuficiência renal grave + hepática simultânea',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Cefalexina VO',
+                dose: '25–50 mg/kg/dia ÷ 4x',
+                weight: w,
+                mgPerKg: 25.0,
+                unit: 'mg',
+                maxDose: '2000 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        'Alergia a cefalosporinas',
+                        'Insuficiencia renal (ajustar dosis)',
+                        'Precaución en alérgicos a penicilinas (5–10% reacción cruzada)',
+                      ]
+                    : [
+                        'Alergia a cefalosporinas',
+                        'Insuficiência renal (ajustar dose)',
+                        'Precaução em alérgicos a penicilinas (5–10% reação cruzada)',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Sulfametoxazol-Trimetoprim VO',
+                dose: '8 mg/kg/dia (TMP) ÷ 2x',
+                weight: w,
+                mgPerKg: 8.0,
+                unit: 'mg',
+                maxDose: '320 mg',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        '< 2 meses (kernicterus neonatal)',
+                        'Insuficiencia renal grave',
+                        'Deficiencia de G6PD',
+                        'Hipersensibilidad a sulfonamidas',
+                        'Embarazo (1º y 3º trimestre)',
+                        'Monitorizar CBC en uso prolongado',
+                      ]
+                    : [
+                        '< 2 meses (kernicterus neonatal)',
+                        'Insuficiência renal grave',
+                        'Deficiência de G6PD',
+                        'Hipersensibilidade a sulfonamidas',
+                        'Monitorar hemograma em uso prolongado',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-      // ── Vasopressores ──────────────────────────────────────────────
-      _SectionCard(
-        title: isEs ? 'Vasopresores y Líquidos' : 'Vasopressores e Fluidos',
-        icon: Icons.water_rounded,
-        child: Column(children: [
-          _PedDoseRow(
-              label: 'SF 0,9% bolus (choque)',
-              dose: '10–20 mL/kg',
-              weight: w,
-              mgPerKg: 15.0,
-              unit: 'mL',
-              maxDose: '500 mL',
-              color: const Color(0xFF065F46),
-              contraindications: isEs
-                  ? [
-                      'Insuficiencia cardíaca congestiva descompensada',
-                      'Edema pulmonar',
-                      'Monitorizar auscultación y SpO₂ durante expansión'
-                    ]
-                  : [
-                      'Insuficiência cardíaca congestiva descompensada',
-                      'Edema pulmonar',
-                      'Monitorar ausculta e SpO₂ durante expansão'
-                    ]),
-          _PedDoseRow(
-              label: 'Noradrenalina (dose início)',
-              dose: '0,1 mcg/kg/min',
-              weight: w,
-              mgPerKg: null,
-              unit: 'mcg/kg/min',
-              maxDose: null,
-              color: const Color(0xFFCC2222),
-              contraindications: isEs
-                  ? [
-                      'Hipovolemia no corregida',
-                      'Trombosis vascular mesentérica / periférica',
-                      'Acceso venoso central preferido (extravasación → necrosis)',
-                      'Antídoto extravasación: fentolamina local'
-                    ]
-                  : [
-                      'Hipovolemia não corrigida',
-                      'Trombose vascular mesentérica / periférica',
-                      'Acesso venoso central preferido (extravasamento → necrose)',
-                      'Antídoto extravasamento: fentolamina local'
-                    ]),
-          _PedDoseRow(
-              label: 'Dopamina (dose renal)',
-              dose: '2–5 mcg/kg/min',
-              weight: w,
-              mgPerKg: null,
-              unit: 'mcg/kg/min',
-              maxDose: null,
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Feocromocitoma',
-                      'Fibrilación ventricular',
-                      'Taquiarritmias no tratadas',
-                      'Monitorización ECG continua',
-                      'Acceso venoso central preferido'
-                    ]
-                  : [
-                      'Feocromocitoma',
-                      'Fibrilação ventricular',
-                      'Taquiarritmias não tratadas',
-                      'Monitorização ECG contínua',
-                      'Acesso venoso central preferido'
-                    ]),
-          _PedDoseRow(
-              label: 'Dobutamina (inotrópico)',
-              dose: '5–20 mcg/kg/min',
-              weight: w,
-              mgPerKg: null,
-              unit: 'mcg/kg/min',
-              maxDose: null,
-              color: const Color(0xFFD97706),
-              contraindications: isEs
-                  ? [
-                      'Obstrucción subaórtica hipertrófica',
-                      'Fibrilación auricular (aumenta FC)',
-                      'Hipovolemia no corregida',
-                      'Monitorización ECG y PA invasiva'
-                    ]
-                  : [
-                      'Obstrução subaórtica hipertrófica',
-                      'Fibrilação atrial (aumenta FC)',
-                      'Hipovolemia não corrigida',
-                      'Monitorização ECG e PA invasiva'
-                    ]),
-        ]),
-      ),
-      const SizedBox(height: 12),
+        // ── Crise Convulsiva ───────────────────────────────────────────
+        _SectionCard(
+          title: isEs ? 'Crisis Convulsiva' : 'Crise Convulsiva',
+          icon: Icons.bolt_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'Diazepam IV (1ª linha)',
+                dose: '0,2–0,5 mg/kg',
+                weight: w,
+                mgPerKg: 0.3,
+                unit: 'mg',
+                maxDose: '10 mg',
+                color: const Color(0xFF1D4ED8),
+                contraindications: isEs
+                    ? [
+                        'Depresión respiratoria severa',
+                        'Glaucoma de ángulo cerrado',
+                        'Antídoto: Flumazenil 0,01 mg/kg IV',
+                        'IV lento: riesgo de apnea',
+                      ]
+                    : [
+                        'Depressão respiratória grave',
+                        'Glaucoma de ângulo fechado',
+                        'Antídoto: Flumazenil 0,01 mg/kg IV',
+                        'IV lento: risco de apneia',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Midazolam IM/IO (1ª linha)',
+                dose: '0,2 mg/kg',
+                weight: w,
+                mgPerKg: 0.2,
+                unit: 'mg',
+                maxDose: '10 mg',
+                color: const Color(0xFF1D4ED8),
+                contraindications: isEs
+                    ? [
+                        'Depresión respiratoria',
+                        'Hipotensión severa',
+                        'Antídoto: Flumazenil 0,01 mg/kg',
+                        'Monitorizar SpO₂',
+                      ]
+                    : [
+                        'Depressão respiratória',
+                        'Hipotensão severa',
+                        'Antídoto: Flumazenil 0,01 mg/kg',
+                        'Monitorar SpO₂',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Fenitoína IV (2ª linha)',
+                dose: '20 mg/kg',
+                weight: w,
+                mgPerKg: 20.0,
+                unit: 'mg',
+                maxDose: '1000 mg',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Bradicardia sinusal / bloqueo AV',
+                        'Síndrome de Adams-Stokes',
+                        'Infusión lenta < 1 mg/kg/min (arritmia y hipotensión)',
+                        'No mezclar con glucosa (precipita)',
+                        'Extravasación → necrosis tisular',
+                      ]
+                    : [
+                        'Bradicardia sinusal / bloqueio AV',
+                        'Síndrome de Adams-Stokes',
+                        'Infusão lenta < 1 mg/kg/min (arritmia e hipotensão)',
+                        'Não misturar com glicose (precipita)',
+                        'Extravasamento → necrose tissular',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Fenobarbital IV (2ª linha)',
+                dose: '20 mg/kg',
+                weight: w,
+                mgPerKg: 20.0,
+                unit: 'mg',
+                maxDose: '1000 mg',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Depresión respiratoria grave (riesgo de apnea)',
+                        'Porfiria aguda',
+                        'Insuficiencia hepática grave',
+                        'Hipotensión — infusión lenta',
+                      ]
+                    : [
+                        'Depressão respiratória grave (risco de apneia)',
+                        'Porfiria aguda',
+                        'Insuficiência hepática grave',
+                        'Hipotensão — infusão lenta',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Levetiracetam IV (2ª linha)',
+                dose: '60 mg/kg',
+                weight: w,
+                mgPerKg: 60.0,
+                unit: 'mg',
+                maxDose: '3000 mg',
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Hipersensibilidad al levetiracetam',
+                        'Insuficiencia renal grave (ajustar)',
+                        'Monitorizar comportamiento: agitación, psicosis en niños',
+                      ]
+                    : [
+                        'Hipersensibilidade ao levetiracetam',
+                        'Insuficiência renal grave (ajustar)',
+                        'Monitorar comportamento: agitação, psicose em crianças',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
 
-      _InfoNote(
+        // ── Vasopressores ──────────────────────────────────────────────
+        _SectionCard(
+          title: isEs ? 'Vasopresores y Líquidos' : 'Vasopressores e Fluidos',
+          icon: Icons.water_rounded,
+          child: Column(
+            children: [
+              _PedDoseRow(
+                label: 'SF 0,9% bolus (choque)',
+                dose: '10–20 mL/kg',
+                weight: w,
+                mgPerKg: 15.0,
+                unit: 'mL',
+                maxDose: '500 mL',
+                color: const Color(0xFF065F46),
+                contraindications: isEs
+                    ? [
+                        'Insuficiencia cardíaca congestiva descompensada',
+                        'Edema pulmonar',
+                        'Monitorizar auscultación y SpO₂ durante expansión',
+                      ]
+                    : [
+                        'Insuficiência cardíaca congestiva descompensada',
+                        'Edema pulmonar',
+                        'Monitorar ausculta e SpO₂ durante expansão',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Noradrenalina (dose início)',
+                dose: '0,1 mcg/kg/min',
+                weight: w,
+                mgPerKg: null,
+                unit: 'mcg/kg/min',
+                maxDose: null,
+                color: const Color(0xFFCC2222),
+                contraindications: isEs
+                    ? [
+                        'Hipovolemia no corregida',
+                        'Trombosis vascular mesentérica / periférica',
+                        'Acceso venoso central preferido (extravasación → necrosis)',
+                        'Antídoto extravasación: fentolamina local',
+                      ]
+                    : [
+                        'Hipovolemia não corrigida',
+                        'Trombose vascular mesentérica / periférica',
+                        'Acesso venoso central preferido (extravasamento → necrose)',
+                        'Antídoto extravasamento: fentolamina local',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Dopamina (dose renal)',
+                dose: '2–5 mcg/kg/min',
+                weight: w,
+                mgPerKg: null,
+                unit: 'mcg/kg/min',
+                maxDose: null,
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Feocromocitoma',
+                        'Fibrilación ventricular',
+                        'Taquiarritmias no tratadas',
+                        'Monitorización ECG continua',
+                        'Acceso venoso central preferido',
+                      ]
+                    : [
+                        'Feocromocitoma',
+                        'Fibrilação ventricular',
+                        'Taquiarritmias não tratadas',
+                        'Monitorização ECG contínua',
+                        'Acesso venoso central preferido',
+                      ],
+              ),
+              _PedDoseRow(
+                label: 'Dobutamina (inotrópico)',
+                dose: '5–20 mcg/kg/min',
+                weight: w,
+                mgPerKg: null,
+                unit: 'mcg/kg/min',
+                maxDose: null,
+                color: const Color(0xFFD97706),
+                contraindications: isEs
+                    ? [
+                        'Obstrucción subaórtica hipertrófica',
+                        'Fibrilación auricular (aumenta FC)',
+                        'Hipovolemia no corregida',
+                        'Monitorización ECG y PA invasiva',
+                      ]
+                    : [
+                        'Obstrução subaórtica hipertrófica',
+                        'Fibrilação atrial (aumenta FC)',
+                        'Hipovolemia não corrigida',
+                        'Monitorização ECG e PA invasiva',
+                      ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        _InfoNote(
           text: isEs
               ? '⚠ Doses calculadas para referência. Confirmar com farmácia pediátrica. Limite pela dose máxima informada.'
-              : '⚠ Doses calculadas para referência. Confirmar com farmácia pediátrica. Limite pela dose máxima informada.'),
-    ]);
+              : '⚠ Doses calculadas para referência. Confirmar com farmácia pediátrica. Limite pela dose máxima informada.',
+        ),
+      ],
+    );
   }
 }
 
@@ -8157,24 +9493,29 @@ class _PedCompactInput extends StatelessWidget {
             decoration: InputDecoration(
               isDense: true,
               filled: true,
-              fillColor:
-                  dark ? const Color(0xFF1F232A) : const Color(0xFFFFFFFF),
+              fillColor: dark
+                  ? const Color(0xFF1F232A)
+                  : const Color(0xFFFFFFFF),
               hintText: hint,
               hintStyle: TextStyle(
                 fontSize: _PediatricsVisualScaleR3.hint,
                 fontWeight: FontWeight.w400,
                 color: c.textHint,
               ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 9,
+              ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(color: c.border, width: 0.7),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide:
-                    const BorderSide(color: Color(0xFF0D6B57), width: 1.1),
+                borderSide: const BorderSide(
+                  color: Color(0xFF0D6B57),
+                  width: 1.1,
+                ),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -8311,10 +9652,7 @@ class _PedSourceNote extends StatefulWidget {
   final bool isEs;
   final String text;
 
-  const _PedSourceNote({
-    required this.isEs,
-    required this.text,
-  });
+  const _PedSourceNote({required this.isEs, required this.text});
 
   @override
   State<_PedSourceNote> createState() => _PedSourceNoteState();
@@ -8463,10 +9801,7 @@ class _PedSexSelector extends StatelessWidget {
     final border = dark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
     const active = Color(0xFF0D6B57);
 
-    Widget option(
-      String label,
-      PediatricBiologicalSex sex,
-    ) {
+    Widget option(String label, PediatricBiologicalSex sex) {
       final selected = value == sex;
 
       return Expanded(
@@ -8502,15 +9837,9 @@ class _PedSexSelector extends StatelessWidget {
       ),
       child: Row(
         children: [
-          option(
-            isEs ? 'Masculino' : 'Masculino',
-            PediatricBiologicalSex.male,
-          ),
+          option(isEs ? 'Masculino' : 'Masculino', PediatricBiologicalSex.male),
           Container(width: 0.7, height: 38, color: border),
-          option(
-            isEs ? 'Femenino' : 'Feminino',
-            PediatricBiologicalSex.female,
-          ),
+          option(isEs ? 'Femenino' : 'Feminino', PediatricBiologicalSex.female),
         ],
       ),
     );
@@ -8540,10 +9869,7 @@ class _PedGrowthIndicatorToggle extends StatelessWidget {
         PediatricGrowthIndicator.heightForAge,
         isEs ? 'Talla/edad' : 'Altura/idade',
       ),
-      (
-        PediatricGrowthIndicator.bmiForAge,
-        isEs ? 'IMC/edad' : 'IMC/idade',
-      ),
+      (PediatricGrowthIndicator.bmiForAge, isEs ? 'IMC/edad' : 'IMC/idade'),
     ];
 
     const activeColor = Color(0xFF0D6B57);
@@ -8559,11 +9885,7 @@ class _PedGrowthIndicatorToggle extends StatelessWidget {
       child: Row(
         children: List.generate(options.length * 2 - 1, (index) {
           if (index.isOdd) {
-            return Container(
-              width: 0.7,
-              height: 38,
-              color: c.border,
-            );
+            return Container(width: 0.7, height: 38, color: c.border);
           }
 
           final item = options[index ~/ 2];
@@ -8576,9 +9898,7 @@ class _PedGrowthIndicatorToggle extends StatelessWidget {
                 duration: const Duration(milliseconds: 140),
                 alignment: Alignment.center,
                 color: selected
-                    ? activeColor.withValues(
-                        alpha: c.dark ? 0.16 : 0.08,
-                      )
+                    ? activeColor.withValues(alpha: c.dark ? 0.16 : 0.08)
                     : Colors.transparent,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -8681,8 +10001,9 @@ class _PedPewsSelectorFlat extends StatelessWidget {
                                 ? const Color(0xFF0D6B57)
                                 : Colors.transparent,
                             border: Border.all(
-                              color:
-                                  active ? const Color(0xFF0D6B57) : c.border,
+                              color: active
+                                  ? const Color(0xFF0D6B57)
+                                  : c.border,
                               width: 1,
                             ),
                           ),
@@ -8964,11 +10285,7 @@ class _PedGrowthChartPainter extends CustomPainter {
     final tp = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
-          color: color,
-          fontSize: size,
-          fontWeight: weight,
-        ),
+        style: TextStyle(color: color, fontSize: size, fontWeight: weight),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
@@ -9053,152 +10370,173 @@ class _PedDrugRef {
   final String source; // Ex: 'American Heart Association (AHA)'
   final String detail; // Ex: 'PALS Provider Manual, 2020'
   final String? doi;
-  const _PedDrugRef(
-      {required this.type,
-      required this.source,
-      required this.detail,
-      this.doi});
+  const _PedDrugRef({
+    required this.type,
+    required this.source,
+    required this.detail,
+    this.doi,
+  });
 }
 
 // ── Mapa global de referências por fármaco (Apple Guideline 1.4.2) ──────────
 const Map<String, List<_PedDrugRef>> _kPedDrugRefs = {
   'Adrenalina IV/IO': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'American Heart Association (AHA)',
-        detail: 'Pediatric Advanced Life Support (PALS) Provider Manual, 2020.',
-        doi: null),
+      type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail: 'Pediatric Advanced Life Support (PALS) Provider Manual, 2020.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Estudo',
-        source: 'Zhang Z, et al.',
-        detail:
-            'Efficacy and safety of epinephrine in pediatric cardiac arrest: A systematic review. Resuscitation, 2019; 136: 102–108.',
-        doi: '10.1016/j.resuscitation.2019.01.023'),
+      type: 'Estudo',
+      source: 'Zhang Z, et al.',
+      detail:
+          'Efficacy and safety of epinephrine in pediatric cardiac arrest: A systematic review. Resuscitation, 2019; 136: 102–108.',
+      doi: '10.1016/j.resuscitation.2019.01.023',
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Micromedex®',
-        detail: 'Epinephrine Injection. Truven Health Analytics, 2024.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Epinephrine Injection. Truven Health Analytics, 2024.',
+      doi: null,
+    ),
   ],
   'Amiodarona IV/IO': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'American Heart Association (AHA)',
-        detail:
-            'PALS Guidelines 2020 — Antiarrhythmic Therapy in Pediatric Cardiac Arrest.',
-        doi: null),
+      type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail:
+          'PALS Guidelines 2020 — Antiarrhythmic Therapy in Pediatric Cardiac Arrest.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Micromedex®',
-        detail:
-            'Amiodarone Hydrochloride Injection. Truven Health Analytics, 2024.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail:
+          'Amiodarone Hydrochloride Injection. Truven Health Analytics, 2024.',
+      doi: null,
+    ),
   ],
   'Adenosina IV (TSV)': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'American Heart Association (AHA)',
-        detail:
-            'PALS 2020 — Management of Supraventricular Tachycardia in Children.',
-        doi: null),
+      type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail:
+          'PALS 2020 — Management of Supraventricular Tachycardia in Children.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Estudo',
-        source: 'Weindling SN, et al.',
-        detail:
-            'Duration of complete atrioventricular block after adenosine-induced transient heart block. Am Heart J. 1996;131(6):1129–32.',
-        doi: null),
+      type: 'Estudo',
+      source: 'Weindling SN, et al.',
+      detail:
+          'Duration of complete atrioventricular block after adenosine-induced transient heart block. Am Heart J. 1996;131(6):1129–32.',
+      doi: null,
+    ),
   ],
   'Atropina IV (bradicardia)': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'American Heart Association (AHA)',
-        detail: 'PALS 2020 — Bradycardia Management Algorithm.',
-        doi: null),
+      type: 'Diretriz',
+      source: 'American Heart Association (AHA)',
+      detail: 'PALS 2020 — Bradycardia Management Algorithm.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Harriet Lane Handbook',
-        detail: 'Atropine. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Harriet Lane Handbook',
+      detail: 'Atropine. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
+      doi: null,
+    ),
   ],
   'Glicose 10% IV (hipoglicemia)': [
     _PedDrugRef(
-        type: 'Protocolo',
-        source: 'WHO / UNICEF',
-        detail:
-            'Hypoglycaemia management in children. IMCI guidelines, WHO, 2019.',
-        doi: null),
+      type: 'Protocolo',
+      source: 'WHO / UNICEF',
+      detail:
+          'Hypoglycaemia management in children. IMCI guidelines, WHO, 2019.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Micromedex®',
-        detail: 'Dextrose 10% Injection. Truven Health Analytics, 2024.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Dextrose 10% Injection. Truven Health Analytics, 2024.',
+      doi: null,
+    ),
   ],
   'Paracetamol VO/VR': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'SBP / Academia Americana de Pediatria',
-        detail:
-            'Guideline for use of analgesics/antipyretics in children. Pediatrics, 2011;127(3):580–587.',
-        doi: '10.1542/peds.2010-3852'),
+      type: 'Diretriz',
+      source: 'SBP / Academia Americana de Pediatria',
+      detail:
+          'Guideline for use of analgesics/antipyretics in children. Pediatrics, 2011;127(3):580–587.',
+      doi: '10.1542/peds.2010-3852',
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Micromedex®',
-        detail: 'Acetaminophen. Truven Health Analytics, 2024.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Acetaminophen. Truven Health Analytics, 2024.',
+      doi: null,
+    ),
   ],
   'Ibuprofeno VO': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'Academia Americana de Pediatria',
-        detail:
-            'Clinical Report — Fever in Children. Pediatrics, 2011;127(3):580–587.',
-        doi: '10.1542/peds.2010-3852'),
+      type: 'Diretriz',
+      source: 'Academia Americana de Pediatria',
+      detail:
+          'Clinical Report — Fever in Children. Pediatrics, 2011;127(3):580–587.',
+      doi: '10.1542/peds.2010-3852',
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Harriet Lane Handbook',
-        detail:
-            'Ibuprofen. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Harriet Lane Handbook',
+      detail: 'Ibuprofen. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
+      doi: null,
+    ),
   ],
   'Morfina IV/SC': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'WHO',
-        detail:
-            'WHO guidelines on the pharmacological treatment of persisting pain in children with medical illnesses. WHO, 2012.',
-        doi: null),
+      type: 'Diretriz',
+      source: 'WHO',
+      detail:
+          'WHO guidelines on the pharmacological treatment of persisting pain in children with medical illnesses. WHO, 2012.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Micromedex®',
-        detail: 'Morphine Sulfate. Truven Health Analytics, 2024.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail: 'Morphine Sulfate. Truven Health Analytics, 2024.',
+      doi: null,
+    ),
   ],
   'Tramadol VO/IV': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'FDA / EMA',
-        detail:
-            'Tramadol: contraindicated in children <12 years for pain. FDA Drug Safety Communication, 2017.',
-        doi: null),
+      type: 'Diretriz',
+      source: 'FDA / EMA',
+      detail:
+          'Tramadol: contraindicated in children <12 years for pain. FDA Drug Safety Communication, 2017.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Harriet Lane Handbook',
-        detail: 'Tramadol. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Harriet Lane Handbook',
+      detail: 'Tramadol. In: Harriet Lane Handbook, 22nd ed. Elsevier, 2021.',
+      doi: null,
+    ),
   ],
   'Salbutamol inalatório (crise)': [
     _PedDrugRef(
-        type: 'Diretriz',
-        source: 'GINA / SBPT',
-        detail:
-            'Global Initiative for Asthma (GINA) Report, 2023 — Management of acute asthma in children.',
-        doi: null),
+      type: 'Diretriz',
+      source: 'GINA / SBPT',
+      detail:
+          'Global Initiative for Asthma (GINA) Report, 2023 — Management of acute asthma in children.',
+      doi: null,
+    ),
     _PedDrugRef(
-        type: 'Base de Dados',
-        source: 'Micromedex®',
-        detail:
-            'Albuterol (Salbutamol) Inhalation. Truven Health Analytics, 2024.',
-        doi: null),
+      type: 'Base de Dados',
+      source: 'Micromedex®',
+      detail:
+          'Albuterol (Salbutamol) Inhalation. Truven Health Analytics, 2024.',
+      doi: null,
+    ),
   ],
 };
 
@@ -9215,7 +10553,7 @@ class _PedDoseRow extends StatefulWidget {
   final List<String> contraindications;
   final _TherapeuticLine line;
   final String?
-      indication; // breve indicação clínica (ex: 'PCR, FV/TV sem pulso')
+  indication; // breve indicação clínica (ex: 'PCR, FV/TV sem pulso')
   final String? warningNote; // nota de atenção clínica rápida
 
   const _PedDoseRow({
@@ -9243,9 +10581,11 @@ class _PedDoseRowState extends State<_PedDoseRow> {
     if (widget.weight == null || widget.mgPerKg == null) return '—';
     double raw = widget.weight! * widget.mgPerKg!;
     if (widget.maxDose != null) {
-      final maxNum = double.tryParse(widget.maxDose!
-          .replaceAll(RegExp(r'[^\d,\.]'), '')
-          .replaceAll(',', '.'));
+      final maxNum = double.tryParse(
+        widget.maxDose!
+            .replaceAll(RegExp(r'[^\d,\.]'), '')
+            .replaceAll(',', '.'),
+      );
       if (maxNum != null && raw > maxNum) raw = maxNum;
     }
     return raw >= 100
@@ -9258,32 +10598,37 @@ class _PedDoseRowState extends State<_PedDoseRow> {
     if (widget.line == _TherapeuticLine.none) return const SizedBox.shrink();
     final (label, bg, fg) = switch (widget.line) {
       _TherapeuticLine.first => (
-          '1ª linha',
-          const Color(0xFFDC2626).withOpacity(0.12),
-          const Color(0xFFDC2626)
-        ),
+        '1ª linha',
+        const Color(0xFFDC2626).withOpacity(0.12),
+        const Color(0xFFDC2626),
+      ),
       _TherapeuticLine.second => (
-          '2ª linha',
-          const Color(0xFFD97706).withOpacity(0.12),
-          const Color(0xFFD97706)
-        ),
+        '2ª linha',
+        const Color(0xFFD97706).withOpacity(0.12),
+        const Color(0xFFD97706),
+      ),
       _TherapeuticLine.third => (
-          '3ª linha',
-          const Color(0xFF6366F1).withOpacity(0.12),
-          const Color(0xFF6366F1)
-        ),
+        '3ª linha',
+        const Color(0xFF6366F1).withOpacity(0.12),
+        const Color(0xFF6366F1),
+      ),
       _TherapeuticLine.none => ('', Colors.transparent, Colors.transparent),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration:
-          BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
-      child: Text(label,
-          style: TextStyle(
-              fontSize: MedTypography.sectionLabelSize,
-              fontWeight: FontWeight.w900,
-              color: fg,
-              letterSpacing: 0.5)),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: MedTypography.sectionLabelSize,
+          fontWeight: FontWeight.w900,
+          color: fg,
+          letterSpacing: 0.5,
+        ),
+      ),
     );
   }
 
@@ -9312,239 +10657,320 @@ class _PedDoseRowState extends State<_PedDoseRow> {
             boxShadow: _expanded
                 ? [
                     BoxShadow(
-                        color: widget.color.withOpacity(0.10),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4))
+                      color: widget.color.withOpacity(0.10),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
                   ]
                 : [
                     BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1))
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
                   ],
           ),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // ── Header do card ──────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 11, 12, 0),
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // Barra colorida de categoria
-                Container(
-                  width: 3,
-                  height: 42,
-                  margin: const EdgeInsets.only(right: 10, top: 2),
-                  decoration: BoxDecoration(
-                    color: widget.color,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                Expanded(
-                    child: Column(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Header do card ──────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 11, 12, 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Barra colorida de categoria
+                    Container(
+                      width: 3,
+                      height: 42,
+                      margin: const EdgeInsets.only(right: 10, top: 2),
+                      decoration: BoxDecoration(
+                        color: widget.color,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                      // Nome + badge linha
-                      Row(children: [
-                        Expanded(
-                            child: Text(widget.label,
-                                style: TextStyle(
+                          // Nome + badge linha
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.label,
+                                  style: TextStyle(
                                     fontSize: MedTypography.clinicalBodySize,
                                     fontWeight: FontWeight.w800,
-                                    color: c.textPrimary))),
-                        _buildLineBadge(),
-                        if (hasContra || refs.isNotEmpty) ...[
-                          const SizedBox(width: 6),
-                          Icon(
-                              _expanded
-                                  ? Icons.keyboard_arrow_up_rounded
-                                  : Icons.keyboard_arrow_down_rounded,
-                              size: 16,
-                              color: c.textHint),
-                        ],
-                      ]),
-                      const SizedBox(height: 3),
-                      // Dose por kg + máx
-                      Row(children: [
-                        Text(widget.dose,
-                            style: TextStyle(
-                                fontSize: MedTypography.auxiliarySize,
-                                fontWeight: FontWeight.w600,
-                                color: c.textSecondary)),
-                        if (widget.maxDose != null) ...[
-                          Text('  ·  máx: ${widget.maxDose}',
-                              style: TextStyle(
+                                    color: c.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              _buildLineBadge(),
+                              if (hasContra || refs.isNotEmpty) ...[
+                                const SizedBox(width: 6),
+                                Icon(
+                                  _expanded
+                                      ? Icons.keyboard_arrow_up_rounded
+                                      : Icons.keyboard_arrow_down_rounded,
+                                  size: 16,
+                                  color: c.textHint,
+                                ),
+                              ],
+                            ],
+                          ),
+                          const SizedBox(height: 3),
+                          // Dose por kg + máx
+                          Row(
+                            children: [
+                              Text(
+                                widget.dose,
+                                style: TextStyle(
                                   fontSize: MedTypography.auxiliarySize,
-                                  color: c.textHint)),
-                        ],
-                      ]),
-                      if (widget.indication != null) ...[
-                        const SizedBox(height: 2),
-                        Text(widget.indication!,
-                            style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: c.textSecondary,
+                                ),
+                              ),
+                              if (widget.maxDose != null) ...[
+                                Text(
+                                  '  ·  máx: ${widget.maxDose}',
+                                  style: TextStyle(
+                                    fontSize: MedTypography.auxiliarySize,
+                                    color: c.textHint,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          if (widget.indication != null) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              widget.indication!,
+                              style: TextStyle(
                                 fontSize: MedTypography.microTextSize,
                                 color: widget.color.withOpacity(0.8),
-                                fontStyle: FontStyle.italic)),
-                      ],
-                    ])),
-                // Dose calculada em destaque
-                if (widget.weight != null && widget.mgPerKg != null) ...[
-                  const SizedBox(width: 12),
-                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 11, vertical: 7),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: widget.color.withOpacity(0.12),
-                        border:
-                            Border.all(color: widget.color.withOpacity(0.30)),
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                      child: Text(calcDose,
-                          style: TextStyle(
-                              fontSize: MedTypography.clinicalBodySize,
-                              fontWeight: FontWeight.w900,
-                              color: widget.color)),
                     ),
-                    const SizedBox(height: 3),
-                    Text('dose calc.',
-                        style: TextStyle(
-                            fontSize: MedTypography.auxiliarySize,
-                            color: c.textHint)),
-                  ]),
-                ],
-              ]),
-            ),
+                    // Dose calculada em destaque
+                    if (widget.weight != null && widget.mgPerKg != null) ...[
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 11,
+                              vertical: 7,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: widget.color.withOpacity(0.12),
+                              border: Border.all(
+                                color: widget.color.withOpacity(0.30),
+                              ),
+                            ),
+                            child: Text(
+                              calcDose,
+                              style: TextStyle(
+                                fontSize: MedTypography.clinicalBodySize,
+                                fontWeight: FontWeight.w900,
+                                color: widget.color,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'dose calc.',
+                            style: TextStyle(
+                              fontSize: MedTypography.auxiliarySize,
+                              color: c.textHint,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-            // ── Painel expandido ──────────────────────────────────
-            if (_expanded) ...[
-              Divider(height: 1, color: widget.color.withOpacity(0.15)),
+              // ── Painel expandido ──────────────────────────────────
+              if (_expanded) ...[
+                Divider(height: 1, color: widget.color.withOpacity(0.15)),
 
-              // Nota de atenção rápida
-              if (widget.warningNote != null)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFD97706).withOpacity(0.07),
-                      borderRadius: BorderRadius.circular(9),
-                      border: Border.all(
-                          color: const Color(0xFFD97706).withOpacity(0.25)),
-                    ),
-                    child: Row(
+                // Nota de atenção rápida
+                if (widget.warningNote != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFD97706).withOpacity(0.07),
+                        borderRadius: BorderRadius.circular(9),
+                        border: Border.all(
+                          color: const Color(0xFFD97706).withOpacity(0.25),
+                        ),
+                      ),
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.warning_amber_rounded,
-                              size: 13, color: Color(0xFFD97706)),
+                          const Icon(
+                            Icons.warning_amber_rounded,
+                            size: 13,
+                            color: Color(0xFFD97706),
+                          ),
                           const SizedBox(width: 7),
                           Expanded(
-                              child: Text(widget.warningNote!,
-                                  style: const TextStyle(
-                                      fontSize: MedTypography.microTextSize,
-                                      color: Color(0xFF7A5F00),
-                                      fontWeight: FontWeight.w600,
-                                      height: 1.4))),
-                        ]),
-                  ),
-                ),
-
-              // Contraindicações
-              if (hasContra)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color(0xFFDC2626).withOpacity(0.06),
-                      border: Border.all(
-                          color: const Color(0xFFDC2626).withOpacity(0.22)),
+                            child: Text(
+                              widget.warningNote!,
+                              style: const TextStyle(
+                                fontSize: MedTypography.microTextSize,
+                                color: Color(0xFF7A5F00),
+                                fontWeight: FontWeight.w600,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Column(
+                  ),
+
+                // Contraindicações
+                if (hasContra)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color(0xFFDC2626).withOpacity(0.06),
+                        border: Border.all(
+                          color: const Color(0xFFDC2626).withOpacity(0.22),
+                        ),
+                      ),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(children: [
-                            const Icon(Icons.block_rounded,
-                                size: 12, color: Color(0xFFDC2626)),
-                            const SizedBox(width: 6),
-                            const Text('Contraindicações / Precauções',
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.block_rounded,
+                                size: 12,
+                                color: Color(0xFFDC2626),
+                              ),
+                              const SizedBox(width: 6),
+                              const Text(
+                                'Contraindicações / Precauções',
                                 style: TextStyle(
-                                    fontSize: MedTypography.microTextSize,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFFDC2626),
-                                    letterSpacing: 0.2)),
-                          ]),
-                          const SizedBox(height: 7),
-                          ...widget.contraindications.map((ci) => Padding(
-                                padding: const EdgeInsets.only(bottom: 4),
-                                child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          width: 4,
-                                          height: 4,
-                                          margin: const EdgeInsets.only(
-                                              top: 5, right: 7),
-                                          decoration: const BoxDecoration(
-                                              color: Color(0xFFDC2626),
-                                              shape: BoxShape.circle)),
-                                      Expanded(
-                                          child: Text(ci,
-                                              style: const TextStyle(
-                                                  fontSize: MedTypography
-                                                      .microTextSize,
-                                                  color: Color(0xFFDC2626),
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.4))),
-                                    ]),
-                              )),
-                        ]),
-                  ),
-                ),
-
-              // Referências locales + evidencia global (Apple Guideline 1.4.2)
-              if (refs.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(children: [
-                          Icon(Icons.menu_book_rounded,
-                              size: 12, color: widget.color.withOpacity(0.8)),
-                          const SizedBox(width: 6),
-                          Text('Referencias y Evidencias',
-                              style: TextStyle(
                                   fontSize: MedTypography.microTextSize,
                                   fontWeight: FontWeight.w900,
-                                  color: widget.color,
-                                  letterSpacing: 0.2)),
-                        ]),
+                                  color: Color(0xFFDC2626),
+                                  letterSpacing: 0.2,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 7),
+                          ...widget.contraindications.map(
+                            (ci) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 4,
+                                    height: 4,
+                                    margin: const EdgeInsets.only(
+                                      top: 5,
+                                      right: 7,
+                                    ),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFDC2626),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      ci,
+                                      style: const TextStyle(
+                                        fontSize: MedTypography.microTextSize,
+                                        color: Color(0xFFDC2626),
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                // Referências locales + evidencia global (Apple Guideline 1.4.2)
+                if (refs.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.menu_book_rounded,
+                              size: 12,
+                              color: widget.color.withOpacity(0.8),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Referencias y Evidencias',
+                              style: TextStyle(
+                                fontSize: MedTypography.microTextSize,
+                                fontWeight: FontWeight.w900,
+                                color: widget.color,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 8),
-                        ...refs.map((ref) =>
-                            _PedRefCitation(ref: ref, accent: widget.color)),
-                      ]),
+                        ...refs.map(
+                          (ref) =>
+                              _PedRefCitation(ref: ref, accent: widget.color),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                // Tarjeta de evidencia global (base de datos unificada)
+                Builder(
+                  builder: (ctx) {
+                    final globalEv = getGlobalEvidence(widget.label);
+                    if (globalEv == null) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),
+                      child: EvidenceCardWidget(ev: globalEv),
+                    );
+                  },
                 ),
 
-              // Tarjeta de evidencia global (base de datos unificada)
-              Builder(builder: (ctx) {
-                final globalEv = getGlobalEvidence(widget.label);
-                if (globalEv == null) return const SizedBox.shrink();
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 6, 14, 0),
-                  child: EvidenceCardWidget(ev: globalEv),
-                );
-              }),
-
-              const SizedBox(height: 12),
-            ] else
-              const SizedBox(height: 2),
-          ]),
+                const SizedBox(height: 12),
+              ] else
+                const SizedBox(height: 2),
+            ],
+          ),
         ),
       ),
     );
@@ -9579,65 +11005,94 @@ class _PedRefCitation extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 7),
       padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
       decoration: BoxDecoration(
-        color:
-            c.dark ? Colors.white.withOpacity(0.03) : const Color(0xFFF9FAFB),
+        color: c.dark
+            ? Colors.white.withOpacity(0.03)
+            : const Color(0xFFF9FAFB),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: c.border),
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Ícone
-        Container(
-          padding: const EdgeInsets.all(5),
-          margin: const EdgeInsets.only(right: 9),
-          decoration: BoxDecoration(
-            color: _typeColor.withOpacity(0.10),
-            borderRadius: BorderRadius.circular(7),
-          ),
-          child: Icon(Icons.library_books_rounded, size: 12, color: _typeColor),
-        ),
-        Expanded(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: _typeColor.withOpacity(0.10),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Text(ref.type,
-                  style: TextStyle(
-                      fontSize: MedTypography.microTextSize,
-                      fontWeight: FontWeight.w900,
-                      color: _typeColor,
-                      letterSpacing: 0.5)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Ícone
+          Container(
+            padding: const EdgeInsets.all(5),
+            margin: const EdgeInsets.only(right: 9),
+            decoration: BoxDecoration(
+              color: _typeColor.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(7),
             ),
-            const SizedBox(width: 7),
-            Expanded(
-                child: Text(ref.source,
-                    style: TextStyle(
-                        fontSize: MedTypography.microTextSize,
-                        fontWeight: FontWeight.w800,
-                        color: c.textPrimary),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis)),
-          ]),
-          const SizedBox(height: 4),
-          Text(ref.detail,
-              style: TextStyle(
-                  fontSize: MedTypography.sectionLabelSize,
-                  color: c.textSecondary,
-                  height: 1.35)),
-          if (ref.doi != null) ...[
-            const SizedBox(height: 3),
-            Text('DOI: ${ref.doi}',
-                style: TextStyle(
+            child: Icon(
+              Icons.library_books_rounded,
+              size: 12,
+              color: _typeColor,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _typeColor.withOpacity(0.10),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        ref.type,
+                        style: TextStyle(
+                          fontSize: MedTypography.microTextSize,
+                          fontWeight: FontWeight.w900,
+                          color: _typeColor,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 7),
+                    Expanded(
+                      child: Text(
+                        ref.source,
+                        style: TextStyle(
+                          fontSize: MedTypography.microTextSize,
+                          fontWeight: FontWeight.w800,
+                          color: c.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  ref.detail,
+                  style: TextStyle(
                     fontSize: MedTypography.sectionLabelSize,
-                    color: _typeColor,
-                    fontWeight: FontWeight.w600)),
-          ],
-        ])),
-      ]),
+                    color: c.textSecondary,
+                    height: 1.35,
+                  ),
+                ),
+                if (ref.doi != null) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    'DOI: ${ref.doi}',
+                    style: TextStyle(
+                      fontSize: MedTypography.sectionLabelSize,
+                      color: _typeColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -9673,134 +11128,168 @@ class _PewsSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return Column(
-        children: List.generate(options.length, (i) {
-      final sel = value == i;
-      final dotColor = _kColors[i.clamp(0, 3)];
-      final isNormal = i == 0;
+      children: List.generate(options.length, (i) {
+        final sel = value == i;
+        final dotColor = _kColors[i.clamp(0, 3)];
+        final isNormal = i == 0;
 
-      return GestureDetector(
-        onTap: () => onChanged(i),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          margin: const EdgeInsets.only(bottom: 6),
-          padding: EdgeInsets.fromLTRB(
-              14, sel && isNormal ? 12 : 10, 14, sel && isNormal ? 12 : 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            // Selecionado normal → azul sólido; outros → cor da severidade
-            color: sel
-                ? (isNormal
-                    ? _kBlueBg.withOpacity(0.12)
-                    : dotColor.withOpacity(0.10))
-                : c.surface,
-            border: Border.all(
-              color:
-                  sel ? dotColor.withOpacity(isNormal ? 0.70 : 0.50) : c.border,
-              width: sel ? 1.5 : 1.0,
+        return GestureDetector(
+          onTap: () => onChanged(i),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            margin: const EdgeInsets.only(bottom: 6),
+            padding: EdgeInsets.fromLTRB(
+              14,
+              sel && isNormal ? 12 : 10,
+              14,
+              sel && isNormal ? 12 : 10,
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(children: [
-                // Ícone check / círculo
-                Container(
-                  width: 18,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: sel ? dotColor : Colors.transparent,
-                    border: Border.all(
-                        color: sel ? dotColor : c.border, width: 1.5),
-                  ),
-                  child: sel
-                      ? const Icon(Icons.check, size: 10, color: Colors.white)
-                      : null,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: Text(options[i],
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              // Selecionado normal → azul sólido; outros → cor da severidade
+              color: sel
+                  ? (isNormal
+                        ? _kBlueBg.withOpacity(0.12)
+                        : dotColor.withOpacity(0.10))
+                  : c.surface,
+              border: Border.all(
+                color: sel
+                    ? dotColor.withOpacity(isNormal ? 0.70 : 0.50)
+                    : c.border,
+                width: sel ? 1.5 : 1.0,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    // Ícone check / círculo
+                    Container(
+                      width: 18,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: sel ? dotColor : Colors.transparent,
+                        border: Border.all(
+                          color: sel ? dotColor : c.border,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: sel
+                          ? const Icon(
+                              Icons.check,
+                              size: 10,
+                              color: Colors.white,
+                            )
+                          : null,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        options[i],
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: sel ? FontWeight.w800 : FontWeight.w500,
                           color: sel ? dotColor : c.textSecondary,
-                        ))),
-                // Badge de pontuação
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: sel
-                        ? dotColor.withOpacity(0.15)
-                        : c.border.withOpacity(0.4),
-                  ),
-                  child: Text(
-                    '+$i pt',
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: sel ? dotColor : c.textSecondary,
+                        ),
+                      ),
                     ),
-                  ),
+                    // Badge de pontuação
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 7,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: sel
+                            ? dotColor.withOpacity(0.15)
+                            : c.border.withOpacity(0.4),
+                      ),
+                      child: Text(
+                        '+$i pt',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: sel ? dotColor : c.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ]),
 
-              // Referências clínicas — só aparecem quando este card está selecionado e é o normal (i==0)
-              if (sel && isNormal && referenceLines.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: _kBlueBg.withOpacity(0.08),
-                    border: Border.all(color: _kBlueBg.withOpacity(0.20)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        Icon(Icons.info_outline_rounded,
-                            size: 11, color: _kBlueBg.withOpacity(0.7)),
-                        const SizedBox(width: 4),
-                        Text('Valores de referência normais',
-                            style: TextStyle(
-                              fontSize: 9.5,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.3,
-                              color: _kBlueBg.withOpacity(0.8),
-                            )),
-                      ]),
-                      const SizedBox(height: 5),
-                      ...referenceLines.map((line) => Padding(
+                // Referências clínicas — só aparecem quando este card está selecionado e é o normal (i==0)
+                if (sel && isNormal && referenceLines.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: _kBlueBg.withOpacity(0.08),
+                      border: Border.all(color: _kBlueBg.withOpacity(0.20)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline_rounded,
+                              size: 11,
+                              color: _kBlueBg.withOpacity(0.7),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Valores de referência normais',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.3,
+                                color: _kBlueBg.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        ...referenceLines.map(
+                          (line) => Padding(
                             padding: const EdgeInsets.only(bottom: 3),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('• ',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: _kBlueBg.withOpacity(0.6))),
+                                Text(
+                                  '• ',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: _kBlueBg.withOpacity(0.6),
+                                  ),
+                                ),
                                 Expanded(
-                                    child: Text(line,
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
-                                          color: _kBlueBg.withOpacity(0.85),
-                                          height: 1.4,
-                                        ))),
+                                  child: Text(
+                                    line,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: _kBlueBg.withOpacity(0.85),
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
-                          )),
-                    ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                )
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-      );
-    }));
+        );
+      }),
+    );
   }
 }
 
@@ -9810,18 +11299,20 @@ class _ResultTile extends StatelessWidget {
   final String? unit;
   final String? note;
   final bool full;
-  const _ResultTile(
-      {required this.label,
-      this.value,
-      this.unit,
-      this.note,
-      this.full = false});
+  const _ResultTile({
+    required this.label,
+    this.value,
+    this.unit,
+    this.note,
+    this.full = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final hasVal = value != null && value != '—';
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final noteColor = (note ?? '').startsWith('BAIXO') ||
+    final noteColor =
+        (note ?? '').startsWith('BAIXO') ||
             (note ?? '').startsWith('ATENÇÃO') ||
             (note ?? '').startsWith('GRAVE') ||
             (note ?? '').startsWith('CRÍTICO') ||
@@ -9830,10 +11321,10 @@ class _ResultTile extends StatelessWidget {
             (note ?? '').startsWith('DÉFICIT')
         ? const Color(0xFFCC2222)
         : (note ?? '').startsWith('RISCO') ||
-                (note ?? '').contains('↑') ||
-                (note ?? '').contains('Hipercalcemia')
-            ? const Color(0xFFB45309)
-            : (dark ? const Color(0xFF34D399) : const Color(0xFF065F46));
+              (note ?? '').contains('↑') ||
+              (note ?? '').contains('Hipercalcemia')
+        ? const Color(0xFFB45309)
+        : (dark ? const Color(0xFF34D399) : const Color(0xFF065F46));
 
     // Cores adaptativas ao tema:
     //  Modo claro: fundo verde-menta suave (0xFFECFDF5) — padrão original
@@ -9857,49 +11348,70 @@ class _ResultTile extends StatelessWidget {
         color: tileBg,
         border: Border.all(color: tileBorder),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(label,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
             style: TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-                color: AppColors.of(context).textHint)),
-        const SizedBox(height: 4),
-        Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          // AUDIT 2.1: Flexible + overflow=ellipsis previne RenderFlex overflow
-          // quando valor numérico é exibido em Row com Expanded-siblings.
-          // Sem overflow handler, valores longos (ex: "1234,56") num Row de
-          // dois tiles causa layout exception no iOS/Android (Impeller/Skia).
-          Flexible(
-              child: Text(value ?? '—',
+              fontSize: 9,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.2,
+              color: AppColors.of(context).textHint,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // AUDIT 2.1: Flexible + overflow=ellipsis previne RenderFlex overflow
+              // quando valor numérico é exibido em Row com Expanded-siblings.
+              // Sem overflow handler, valores longos (ex: "1234,56") num Row de
+              // dois tiles causa layout exception no iOS/Android (Impeller/Skia).
+              Flexible(
+                child: Text(
+                  value ?? '—',
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      color: valueColor,
-                      letterSpacing: -0.5))),
-          if (unit != null && unit!.isNotEmpty && hasVal) ...[
-            const SizedBox(width: 3),
-            Padding(
-                padding: const EdgeInsets.only(bottom: 2),
-                child: Text(unit!,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: valueColor,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ),
+              if (unit != null && unit!.isNotEmpty && hasVal) ...[
+                const SizedBox(width: 3),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 2),
+                  child: Text(
+                    unit!,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: TextStyle(
-                        fontSize: 10, color: AppColors.of(context).textHint))),
-          ],
-        ]),
-        if (note != null && note!.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          Text(note!,
+                      fontSize: 10,
+                      color: AppColors.of(context).textHint,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          if (note != null && note!.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              note!,
               style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: noteColor,
-                  height: 1.3)),
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                color: noteColor,
+                height: 1.3,
+              ),
+            ),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }
@@ -9933,15 +11445,19 @@ class _InfoNote extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: const Color(0xFFFFF8E7),
-          border: Border.all(color: const Color(0xFFFFE0A0))),
-      child: Text(text,
-          style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF7A5F00),
-              height: 1.4)),
+        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFFFFF8E7),
+        border: Border.all(color: const Color(0xFFFFE0A0)),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF7A5F00),
+          height: 1.4,
+        ),
+      ),
     );
   }
 }
@@ -9949,61 +11465,73 @@ class _InfoNote extends StatelessWidget {
 class _RenalGuideRow extends StatelessWidget {
   final String label, status;
   final bool ok, warn, danger;
-  const _RenalGuideRow(
-      {required this.label,
-      required this.status,
-      this.ok = false,
-      this.warn = false,
-      this.danger = false});
+  const _RenalGuideRow({
+    required this.label,
+    required this.status,
+    this.ok = false,
+    this.warn = false,
+    this.danger = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final bg = danger
         ? const Color(0xFFFFF0F0)
         : warn
-            ? const Color(0xFFFFF8E7)
-            : ok
-                ? const Color(0xFFECFDF5)
-                : const Color(0xFFF8F8F8);
+        ? const Color(0xFFFFF8E7)
+        : ok
+        ? const Color(0xFFECFDF5)
+        : const Color(0xFFF8F8F8);
     final border = danger
         ? const Color(0xFFFFCCCC)
         : warn
-            ? const Color(0xFFFFE0A0)
-            : ok
-                ? const Color(0xFFBBF7D0)
-                : kToolBorder;
+        ? const Color(0xFFFFE0A0)
+        : ok
+        ? const Color(0xFFBBF7D0)
+        : kToolBorder;
     final txtColor = danger
         ? const Color(0xFFCC2222)
         : warn
-            ? const Color(0xFFB45309)
-            : ok
-                ? const Color(0xFF065F46)
-                : AppColors.of(context).textPrimary;
+        ? const Color(0xFFB45309)
+        : ok
+        ? const Color(0xFF065F46)
+        : AppColors.of(context).textPrimary;
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: bg,
-            border: Border.all(color: border)),
-        child: Row(children: [
-          SizedBox(
+          borderRadius: BorderRadius.circular(12),
+          color: bg,
+          border: Border.all(color: border),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
               width: 70,
-              child: Text(label,
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900,
-                      color: txtColor))),
-          const SizedBox(width: 8),
-          Expanded(
-              child: Text(status,
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: txtColor,
-                      height: 1.3))),
-        ]),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  color: txtColor,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                status,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: txtColor,
+                  height: 1.3,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -10164,14 +11692,8 @@ Future<void> _showReturnDataDialog({
     transitionDuration: const Duration(milliseconds: 240),
     transitionBuilder: (_, anim, __, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(
-          parent: anim,
-          curve: Curves.easeOutBack,
-        ),
-        child: FadeTransition(
-          opacity: anim,
-          child: child,
-        ),
+        scale: CurvedAnimation(parent: anim, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: anim, child: child),
       );
     },
     pageBuilder: (dialogCtx, _, __) {
@@ -10245,11 +11767,7 @@ Future<void> _showReturnDataDialog({
                   isEs
                       ? '¿Desea reaprovechar los datos clínicos completados recientemente o prefiere comenzar un nuevo cálculo desde cero?'
                       : 'Deseja reaproveitar os dados clínicos preenchidos recentemente ou prefere iniciar um novo cálculo do zero?',
-                  style: TextStyle(
-                    color: sub,
-                    fontSize: 13.5,
-                    height: 1.5,
-                  ),
+                  style: TextStyle(color: sub, fontSize: 13.5, height: 1.5),
                 ),
                 const SizedBox(height: 22),
 
