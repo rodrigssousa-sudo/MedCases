@@ -446,7 +446,7 @@
     /* Reset e base */
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
-      background-color: #07110d;
+      background-color: #0F1116;
       margin: 0; padding: 0;
       height: 100%; width: 100%;
       overscroll-behavior: none;
@@ -461,72 +461,22 @@
       touch-action: pan-y;
     }
 
-    /* ── Splash screen de carregamento ─────────────────────────────── */
-    #loading {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #07110d;
-      z-index: 9999;
-      will-change: opacity;
-      transition: opacity 0.4s ease;
-    }
-    #loading.fade-out { opacity: 0; pointer-events: none; }
-
-    #loading-logo {
-      width: 84px; height: 84px;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #0d5c3a 0%, #07110d 100%);
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 28px;
-      box-shadow:
-        0 0 0 1px rgba(197,163,101,0.15),
-        0 12px 40px rgba(0,0,0,0.55),
-        0 2px 8px rgba(197,163,101,0.10);
-      animation: logoIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
-    }
-    #loading-logo img {
-      width: 56px; height: 56px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
-    /* Fallback se a imagem não carregar */
-    #loading-logo-letter {
-      color: #FFE8A6;
-      font-size: 36px;
-      font-weight: 900;
-      font-family: -apple-system, 'Georgia', serif;
-      display: none;
-    }
-
-    #loading-title {
-      color: #C5A365;
-      font-size: 20px;
-      font-weight: 700;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      letter-spacing: 0.3px;
-    }
-    #loading-sub {
-      color: rgba(255,255,255,0.38);
-      font-size: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      margin-top: 5px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    #loading-spinner {
-      margin-top: 40px;
-      width: 28px; height: 28px;
-      border: 2.5px solid rgba(197,163,101,0.18);
-      border-top-color: #C5A365;
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
-      will-change: transform;
-    }
+    /* Match the Flutter splash while the engine downloads. */
+    #loading { position:fixed; inset:0; background:#0F1116; z-index:9999;
+      font-family:Roboto,Arial,sans-serif; overflow:hidden; }
+    #loading::before, #loading::after { content:""; position:absolute; border-radius:50%; background:#0D6B57; }
+    #loading::before { width:240px; height:240px; top:-4%; right:-70px; opacity:.055; }
+    #loading::after { width:160px; height:160px; bottom:12%; left:-50px; opacity:.035; }
+    #loading-brand { position:absolute; top:27%; left:0; right:0; text-align:center; }
+    #loading-logo { width:150px; height:150px; margin:0 auto 24px; }
+    #loading-logo img { width:150px; height:150px; object-fit:contain; }
+    #loading-title { color:white; font-size:26px; font-weight:700; letter-spacing:1.2px; line-height:31px; }
+    #loading-sub { color:rgba(13,107,87,.85); font-size:12px; font-weight:500; letter-spacing:1.1px; margin-top:8px; }
+    #loading-status { position:absolute; bottom:72px; left:0; right:0; text-align:center; }
+    #loading-spinner { width:22px; height:22px; margin:0 auto 16px; border:2px solid transparent;
+      border-top-color:rgba(13,107,87,.7); border-right-color:rgba(13,107,87,.7); border-radius:50%; animation:spin .9s linear infinite; }
+    #loading-status span { color:rgba(255,255,255,.42); font-size:11px; letter-spacing:.6px; }
+    @media(prefers-reduced-motion:reduce) { #loading-spinner { animation:none; } }
 
     /* ── Google Sign-In modal nativo (Safari-safe) ──────────────────── */
     #gsi-modal {
@@ -654,15 +604,13 @@
 <body>
 
   <!-- ── Splash screen ─────────────────────────────────────────────── -->
-  <div id="loading">
-    <div id="loading-logo">
-      <img src="icons/Icon-192.png" alt="MedCases Pro"
-           onerror="this.style.display='none'; document.getElementById('loading-logo-letter').style.display='block'">
-      <span id="loading-logo-letter">M</span>
+  <div id="loading" role="status" aria-label="Carregando MedCases Pro">
+    <div id="loading-brand">
+      <div id="loading-logo"><img src="assets/assets/icon/splash_mplus_premium.png" alt=""></div>
+      <div id="loading-title">MedCases Pro</div>
+      <div id="loading-sub">IA Clínica de bolso</div>
     </div>
-    <div id="loading-title">MedCases Pro</div>
-    <div id="loading-sub">Apoio Clínico · Educacional</div>
-    <div id="loading-spinner"></div>
+    <div id="loading-status"><div id="loading-spinner"></div><span>Carregando dados clínicos...</span></div>
   </div>
 
   <!-- ── Toast de atualização ──────────────────────────────────────── -->
@@ -749,34 +697,13 @@
       _splashRemoved = true;
       var el = document.getElementById('loading');
       if (!el) return;
-      el.classList.add('fade-out');
-      setTimeout(function() {
-        if (el && el.parentNode) el.parentNode.removeChild(el);
-      }, 420);
+      el.remove();
     }
 
     window.addEventListener('flutter-first-frame', removeSplash);
 
-    // Observer como fallback — detecta quando Flutter monta o DOM
-    var _obs = new MutationObserver(function(mutations) {
-      for (var i = 0; i < mutations.length; i++) {
-        var nodes = mutations[i].addedNodes;
-        for (var j = 0; j < nodes.length; j++) {
-          var n = nodes[j];
-          if (n.tagName) {
-            var tag = n.tagName.toLowerCase();
-            if (tag === 'flt-glass-pane' || tag === 'flutter-view' || tag === 'flt-scene-host') {
-              setTimeout(removeSplash, 150);
-              _obs.disconnect();
-              return;
-            }
-          }
-        }
-      }
-    });
-    _obs.observe(document.body, { childList: true, subtree: true });
-    // Timeout de segurança: remove splash após 15s em qualquer caso
-    setTimeout(function() { if (!_splashRemoved) removeSplash(); }, 15000);
+    // Keep the cover until Flutter paints, not merely when its DOM is mounted.
+    // Slow connections retain the branded loading screen instead of a blank frame.
 
     // ── Boot do Flutter ──────────────────────────────────────────────
     function bootFlutter() {

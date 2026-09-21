@@ -8,6 +8,7 @@ import 'dart:js_util' as js_util;
 import 'dart:ui_web' as ui_web;
 import 'package:flutter/widgets.dart';
 import 'landing_message.dart';
+import 'startup_cover.dart';
 
 class PublicLanding extends StatefulWidget {
   const PublicLanding(
@@ -27,6 +28,8 @@ class _PublicLandingState extends State<PublicLanding> {
   late final String _viewType;
   late final html.IFrameElement _frame;
   StreamSubscription<html.MessageEvent>? _messages;
+  StreamSubscription<html.Event>? _frameLoad;
+  bool _loaded = false;
   final _testimonials = TestimonialService();
   Future<void> _sendTestimonials() async {
     try {
@@ -59,10 +62,16 @@ class _PublicLandingState extends State<PublicLanding> {
     _frame = html.IFrameElement()
       ..src = uri.toString()
       ..title = 'MedCases Pro'
+      ..style.visibility = 'hidden'
       ..style.border = '0'
       ..style.width = '100%'
       ..style.height = '100%';
     _frame.setAttribute('allow', 'autoplay');
+    _frameLoad = _frame.onLoad.listen((_) {
+      if (!mounted) return;
+      _frame.style.visibility = 'visible';
+      setState(() => _loaded = true);
+    });
     ui_web.platformViewRegistry.registerViewFactory(_viewType, (_) => _frame);
     _messages = html.window.onMessage.listen((event) {
       // dart:html MessageEvent.source returns null for cross-frame WindowBase
@@ -70,7 +79,7 @@ class _PublicLandingState extends State<PublicLanding> {
       if (!mounted ||
           event.origin != html.window.location.origin ||
           !identical(js_util.getProperty<Object?>(event, 'source'),
-            js_util.getProperty<Object?>(_frame, 'contentWindow'))) {
+              js_util.getProperty<Object?>(_frame, 'contentWindow'))) {
         return;
       }
       final language = landingLoginLanguage(event.data);
@@ -90,11 +99,18 @@ class _PublicLandingState extends State<PublicLanding> {
   @override
   void dispose() {
     _messages?.cancel();
+    _frameLoad?.cancel();
     _testimonials.dispose();
     _frame.remove();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => HtmlElementView(viewType: _viewType);
+  Widget build(BuildContext context) => Stack(
+        fit: StackFit.expand,
+        children: [
+          HtmlElementView(viewType: _viewType),
+          if (!_loaded) const Positioned.fill(child: StartupCover()),
+        ],
+      );
 }

@@ -1061,11 +1061,11 @@ class _SplashScreenState extends State<_SplashScreen>
     // ── Animação de entrada ──────────────────────────────────────
     _ctrl = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 1450));
-    _scale = Tween<double>(begin: 0.82, end: 1.0)
+    _scale = Tween<double>(begin: kIsWeb ? 1.0 : 0.82, end: 1.0)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack));
-    _fade = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fade = Tween<double>(begin: kIsWeb ? 1.0 : 0.0, end: 1.0).animate(
         CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.65)));
-    _slide = Tween<Offset>(begin: const Offset(0, 0.10), end: Offset.zero)
+    _slide = Tween<Offset>(begin: kIsWeb ? Offset.zero : const Offset(0, 0.10), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
 
     _logoTurns = Tween<double>(begin: 0.0, end: 1.0).animate(
