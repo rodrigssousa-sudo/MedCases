@@ -366,18 +366,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          if (widget.onBack != null)
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8, top: 2),
-                child: IconButton(
-                  tooltip: _isEs ? 'Volver' : 'Voltar',
-                  onPressed: widget.onBack,
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                  color: kAuthMuted,
-                ),
-              ),
-            ),
           SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -445,6 +433,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 500),
                   child: _buildDisclaimer(),
+                ),
+              ),
+            ),
+          if (widget.onBack != null)
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8, top: 2),
+                child: IconButton(
+                  tooltip: _isEs ? 'Volver' : 'Voltar',
+                  onPressed: widget.onBack,
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  color: kAuthMuted,
                 ),
               ),
             ),

@@ -1,3 +1,4 @@
+import '../testimonials/testimonial_intent.dart';
 // ── Tela de preview pré-login — MedCases Pro V2 (dark institucional) ─────────
 // MEDCASES_PRE_LOGIN_ONBOARDING_UI_V2_B_R1
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../screens/login_screen.dart';
+import '../widgets/public_landing/public_landing.dart';
 import '../screens/legal_screen.dart';
 
 // ── Paleta MedCases Pro (dark premium clínico institucional) ─────────────────
@@ -128,7 +130,10 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
 
   void _onConsentAccepted() => setState(() => _hasConsented = true);
   void _goLogin()           => setState(() => _showLogin = true);
-  void _backToPreview()     => setState(() => _showLogin = false);
+  void _backToPreview() {
+    TestimonialIntent.clear();
+    setState(() => _showLogin = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,9 +153,40 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
             left: 0, right: 0, bottom: 0,
             child: ConsentModal(lang: _lang, onAccepted: _onConsentAccepted),
           ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 4, left: 8,
+            child: IconButton(
+              onPressed: _backToPreview,
+              tooltip: _isEs ? 'Volver a la página' : 'Voltar à página',
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+            ),
+          ),
         ]);
       }
       return LoginScreen(onBack: _backToPreview);
+    }
+
+    if (kIsWeb) {
+      return Scaffold(
+        backgroundColor: _kBg,
+        body: PublicLanding(
+          language: _lang,
+          onTestimonial: (language) async {
+            await TestimonialIntent.request();
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('lang', language);
+            if (!mounted) return;
+            setState(() { _lang = language; _showLogin = true; });
+          },
+          onLogin: (language) async {
+            await TestimonialIntent.clear();
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('lang', language);
+            if (!mounted) return;
+            setState(() { _lang = language; _showLogin = true; });
+          },
+        ),
+      );
     }
 
     return Scaffold(

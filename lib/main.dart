@@ -1,3 +1,5 @@
+import 'testimonials/testimonial_entry.dart';
+import 'testimonials/testimonial_screen.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' show ImageFilter;
@@ -1974,8 +1976,8 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
     if (!_ready) {
       return const _SplashScreen();
     }
-    return const ProfessionalDeclarationGateWidget(
-      child: MainShell(),
+    return ProfessionalDeclarationGateWidget(
+      child: TestimonialEntry(user: widget.user, child: const MainShell()),
     );
   }
 }
@@ -5616,6 +5618,20 @@ class _AppDrawerState extends State<_AppDrawer> {
                 _DrawerBlock(
                   dividerColor: divider,
                   children: [
+                    if (kIsWeb && p.currentUser != null)
+                      _DrawerRow(
+                        icon: Icons.rate_review_outlined,
+                        iconColor: const Color(0xFFC5A365),
+                        title: p.lang == 'es' ? 'Testimonios' : 'Depoimentos',
+                        dark: dark, textCol: textCol, subCol: subCol,
+                        onTap: () {
+                          final navigator = Navigator.of(context);
+                          final user = p.currentUser!;
+                          _close(context);
+                          navigator.push(MaterialPageRoute<void>(builder: (_) =>
+                            TestimonialScreen(user: user, onClose: () => navigator.pop())));
+                        },
+                      ),
                     // ── Fontes e Diretrizes (Task 6 — App Store Guideline 1.4.1) ──
                     _DrawerRow(
                       icon: Icons.menu_book_rounded,

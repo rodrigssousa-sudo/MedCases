@@ -43,7 +43,7 @@ ARG BUNDLE_VERSION=dev
 ARG BUILT_AT=unknown
 
 # -O1: nível de otimização reduzido — menos RAM que O2/O3, suficiente para produção
-RUN flutter build web --release --no-tree-shake-icons -O1 \
+RUN flutter build web --release --no-wasm-dry-run --no-tree-shake-icons -O1 \
       --dart-define=BUILD_COMMIT="$BUILD_COMMIT" \
       --dart-define=BUNDLE_VERSION="$BUNDLE_VERSION" \
       --dart-define=BUILT_AT="$BUILT_AT"

@@ -129,6 +129,8 @@ flutter_native_splash:
 flutter:
   uses-material-design: true
   assets:
+    - assets/public_landing/
+    - assets/public_landing/assets/
     - assets/clinical/clinical_registry_phase24_authoritative270.json
     - assets/icons/study_workspace/
     - assets/icons/simulation/
