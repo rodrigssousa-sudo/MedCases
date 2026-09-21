@@ -87,6 +87,9 @@ No DNS, separate calculator app, Functions or Firestore indexes are changed.
   Bibliography links GINA 2026, GOLD 2026, KDIGO 2024, WHO 2025,
   AHA/ACC/HFSA 2022 and the previously verified Humulin N / DailyMed reference.
 - Eleven supplied screenshots and supplied logo are retained.
-- Hero video is still explicitly provisional: licensed Pexels/Thirdman 5426206,
-  two stationary clinicians sharing a phone. It does not fulfill the desired
-  corridor/tablet scene; no paid generation or unverified replacement was used.
+- Hero uses the owner-supplied Canva MP4 export: real footage of doctors with
+  a tablet, VITALY GARIEV / Artlist asset VAGtSU1u3ZI, design DAHVySs8m7s.
+  User approved real footage over the original walking sequence and rejected
+  the AI candidate. Web asset: 854×480 H.264, 14.4 seconds, silent, ~1 MB.
+  No MedCases interface is depicted in the stock footage; original app
+  screenshots remain in their separate showcase. Canva credits are bilingual.
