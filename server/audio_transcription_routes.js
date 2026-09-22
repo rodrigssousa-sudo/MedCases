@@ -1,3 +1,4 @@
+const {assertUsageReservation}=require('./usage_reservation_guard');
 'use strict';
 
 const crypto = require('crypto');
@@ -105,13 +106,14 @@ function hmacBase64Url(secret, payload) {
     .digest('base64url');
 }
 
-function issueGrantToken({ runtime, uid, sessionId, deduplicationKey }) {
+function issueGrantToken({ runtime, uid, sessionId, deduplicationKey, usage }) {
   const nowDate = runtime.now();
   const issuedEpoch = Math.floor(nowDate.getTime() / 1000);
   const expiresEpoch = issuedEpoch + GRANT_TTL_SECONDS;
   const claims = {
     v: 1,
     uid,
+    ...(usage ? {usage} : {}),
     sessionId,
     deduplicationKey,
     scope: GRANT_SCOPE,
@@ -547,6 +549,7 @@ function wrapRawParser(parser) {
 function registerAudioTranscriptionRoutes({
   app,
   authenticateFirebaseToken,
+  db,
   log,
   isProd = false,
   env = process.env,
@@ -579,7 +582,7 @@ function registerAudioTranscriptionRoutes({
     limiter,
     grantJson,
     authenticateFirebaseToken,
-    (req, res) => {
+    async (req, res) => {
       const requestId =
         req.headers['x-request-id'] ?? `audio_${crypto.randomUUID()}`;
       res.setHeader('X-Request-ID', requestId);
@@ -600,9 +603,11 @@ function registerAudioTranscriptionRoutes({
         if (typeof uid !== 'string' || uid.length < 1 || uid.length > 256) {
           throw new AudioBackendError('audio_grant_firebase_identity_missing', 401);
         }
+        const usage = await assertUsageReservation(db, uid, req.headers).catch(() => { throw new AudioBackendError('audio_usage_reservation_required',403); });
         const token = issueGrantToken({
           runtime,
           uid,
+          usage,
           sessionId,
           deduplicationKey,
         });
@@ -647,6 +652,7 @@ function registerAudioTranscriptionRoutes({
       try {
         const token = bearerToken(req);
         const claims = verifyGrantToken(runtime, token);
+        await assertUsageReservation(db, claims.uid, claims.usage || {}).catch(() => { throw new AudioBackendError('audio_usage_reservation_invalid',403); });
         parsed = await parseMultipartBuffer(req);
         audioBuffer = parsed.audioBuffer;
 

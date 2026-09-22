@@ -30,7 +30,7 @@ void main() {
 
       expect(
         'studyMode: _longResponse,'.allMatches(source).length,
-        3,
+        2,
       );
 
       final aiBubbleStart = source.indexOf('AiBubble(');
@@ -40,11 +40,11 @@ void main() {
         (aiBubbleStart + 1800).clamp(0, source.length),
       );
       expect(
-        'studyMode: _longResponse,'.allMatches(aiBubbleTail).length,
+        'studyMode: messageLongResponse,'.allMatches(aiBubbleTail).length,
         1,
       );
 
-      expect(source, contains('visible: !_longResponse'));
+      expect(source, contains('visible: !messageLongResponse'));
       expect(source, contains('study_user_hidden'));
       expect(source, contains('GuardiaClinicalResponseView('));
     });

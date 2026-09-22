@@ -80,7 +80,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'provider_gateway_http.dart' as http;
 // Build 190: ai_prompt_modules.dart não é mais chamado aqui.
 // PromptModules.build() foi substituído por AiSmartRouter.build() em ai_gateway_service.dart.
 // Import mantido comentado para referência histórica — pode ser removido após Build 190 estabilizar.
@@ -167,11 +167,6 @@ class GeminiServiceV2 {
   static const _endpointStream =
       'https://generativelanguage.googleapis.com/v1beta/models/'
       '$_modelId:streamGenerateContent?alt=sse';
-
-  /// Endpoint síncrono (usado APENAS pelo Context Classifier — leve e rápido).
-  static const _endpointSync =
-      'https://generativelanguage.googleapis.com/v1beta/models/'
-      '$_modelId:generateContent';
 
   // ══════════════════════════════════════════════════════════════════════════
   // CONTROLE DE QUOTA E RETRY
@@ -320,13 +315,13 @@ class GeminiServiceV2 {
 
     // ── Pipeline assíncrono (não bloqueia o thread UI) ────────────────────────
     _runPipeline(
-      controller:        controller,
-      apiKey:            apiKey,
-      userMessage:       userMessage,
-      systemPrompt:      systemPrompt,
-      history:           history,
-      useGrounding:      useGrounding,
-      isPlantaoMode:     isPlantaoMode,     // Build 223
+      controller: controller,
+      apiKey: apiKey,
+      userMessage: userMessage,
+      systemPrompt: systemPrompt,
+      history: history,
+      useGrounding: useGrounding,
+      isPlantaoMode: isPlantaoMode, // Build 223
       cachedContentName: cachedContentName, // BUILD 278
     );
 
@@ -352,9 +347,9 @@ class GeminiServiceV2 {
     required String systemPrompt,
     required List<Map<String, String>> history,
     required bool useGrounding,
-    String modeAnchor = '',        // Build 157.1
-    bool isPlantaoMode = false,    // Build 223
-    String? cachedContentName,     // BUILD 278: ID do cache ativo
+    String modeAnchor = '', // Build 157.1
+    bool isPlantaoMode = false, // Build 223
+    String? cachedContentName, // BUILD 278: ID do cache ativo
   }) async {
     if (controller.isClosed) return;
 
@@ -366,20 +361,21 @@ class GeminiServiceV2 {
     // já tem contexto suficiente para distinguir continuidade de novo tema.
     // O _classifyContext ainda existe para uso futuro mas não bloqueia mais o histórico.
     final windowedHistory = _buildContextWindow(history, 'MÉDICO');
-    _log('[GeminiV2] histórico → ${windowedHistory.length ~/ 2} troca(s) no payload (classifier bypass Build 110)');
+    _log(
+        '[GeminiV2] histórico → ${windowedHistory.length ~/ 2} troca(s) no payload (classifier bypass Build 110)');
 
     // ── Passo 2: Stream com histórico calibrado ───────────────────────────────
     try {
       await _executeWithRetry(
-        controller:        controller,
-        apiKey:            apiKey,
-        userMessage:       userMessage,
-        systemPrompt:      systemPrompt,
-        history:           windowedHistory,
-        useGrounding:      useGrounding,
-        attempt:           0,
-        modeAnchor:        modeAnchor,        // Build 157.1
-        isPlantaoMode:     isPlantaoMode,     // Build 223
+        controller: controller,
+        apiKey: apiKey,
+        userMessage: userMessage,
+        systemPrompt: systemPrompt,
+        history: windowedHistory,
+        useGrounding: useGrounding,
+        attempt: 0,
+        modeAnchor: modeAnchor, // Build 157.1
+        isPlantaoMode: isPlantaoMode, // Build 223
         cachedContentName: cachedContentName, // BUILD 278
       );
     } catch (e) {
@@ -389,161 +385,6 @@ class GeminiServiceV2 {
           ..add(GeminiChunk.error('unexpected'))
           ..close();
       }
-    }
-  }
-
-  // ══════════════════════════════════════════════════════════════════════════
-  // _classifyContext — Context Classifier (CAMADA 2)
-  //
-  // Chamada síncrona ultra-leve à API (não-streaming, generateContent).
-  // Envia APENAS:
-  //   • Última resposta da IA (truncada a 300 chars para economizar tokens)
-  //   • Nova pergunta do usuário
-  //
-  // A instrução do sistema temporária ordena: responda UMA palavra.
-  //   'MÉDICO' = mesma consulta/caso/medicamento/tema clínico anterior
-  //   'NOVO'   = mudou de assunto, novo caso, nova dúvida não relacionada
-  //
-  // Custo típico: ~60-80 tokens. Timeout agressivo: 8 segundos.
-  // Fallback em qualquer falha: 'MÉDICO' (conservador — mantém contexto).
-  //
-  // Por que não usar o histórico completo para classificar?
-  //   Para não gastar tokens do classifier com histórico longo. O par
-  //   (última IA + nova query) é suficiente para determinar continuidade.
-  // ══════════════════════════════════════════════════════════════════════════
-  static Future<String> _classifyContext({
-    required String apiKey,
-    required List<Map<String, String>> history,
-    required String userMessage,
-  }) async {
-    // Busca a última resposta da IA no histórico (percorre de trás para frente)
-    String lastAiResponse = '';
-    for (int i = history.length - 1; i >= 0; i--) {
-      if (history[i]['role'] == 'assistant') {
-        lastAiResponse = history[i]['content'] ?? '';
-        break;
-      }
-    }
-
-    // Sem resposta prévia da IA → não há contexto para comparar
-    if (lastAiResponse.isEmpty) {
-      _log('[GeminiV2] classifier: sem resposta IA prévia → MÉDICO');
-      return 'MÉDICO';
-    }
-
-    // Trunca para 300 chars — suficiente para capturar o tema sem gastar tokens
-    final truncatedAi = lastAiResponse.length > 300
-        ? '${lastAiResponse.substring(0, 300)}...'
-        : lastAiResponse;
-
-    // Instrução temporária em inglês — eficiente para classificação binária
-    const classifierSystemPrompt =
-        'You are a medical conversation context classifier. '
-        'Your ONLY job is to determine if the new user question continues the same '
-        'clinical topic as the previous AI response, or starts a completely new topic. '
-        'Reply with EXACTLY one word — no punctuation, no explanation:\n'
-        '"MÉDICO" — if the new question follows up on the same clinical case, '
-        'medication, diagnosis, exam, or any aspect of the previous response.\n'
-        '"NOVO" — if the user changed subject, started a new case, asked about '
-        'something completely unrelated, or explicitly said they want a new topic.';
-
-    final requestBody = jsonEncode({
-      'system_instruction': {
-        'parts': [
-          {'text': classifierSystemPrompt}
-        ],
-      },
-      'contents': [
-        {
-          'role': 'user',
-          'parts': [
-            {
-              'text': 'Previous AI response (truncated to 300 chars):\n'
-                  '"$truncatedAi"\n\n'
-                  'New user question:\n'
-                  '"$userMessage"\n\n'
-                  'Same clinical topic? Reply MÉDICO or NOVO.',
-            }
-          ],
-        }
-      ],
-      'generationConfig': {
-        'maxOutputTokens': 10,   // Uma palavra — 10 tokens é mais que suficiente
-        'temperature': 0.0,      // Determinístico — queremos uma classificação estável
-        'topK': 1,               // Greedy decoding — token mais provável apenas
-        'thinkingConfig': {'thinkingBudget': 0}, // Zero CoT — velocidade máxima
-      },
-    });
-
-    final url = Uri.parse('$_endpointSync?key=$apiKey');
-
-    try {
-      final response = await http
-          .post(
-            url,
-            headers: {'Content-Type': 'application/json'},
-            body: requestBody,
-          )
-          .timeout(const Duration(seconds: 8));
-
-      if (response.statusCode != 200) {
-  _log(
-          '[GeminiV2] classifier HTTP ${response.statusCode} → fallback MÉDICO',
-        );
-        return 'MÉDICO';
-      }
-
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      final rawText = _extractTextFromSync(data).trim().toUpperCase();
-      _log('[GeminiV2] classifier resposta raw: "$rawText"');
-
-      // Sanitiza: remove tudo que não seja letra maiúscula ou acentuada.
-      // Previne que "MÉDICO." / "NOVO!" / "MÉDICO\n" quebrem a avaliação.
-      final normalized =
-          rawText.replaceAll(RegExp(r'[^A-ZÁÉÍÓÚÃÕÇ]'), '').toUpperCase();
-      _log('[GeminiV2] classifier normalizado: "$normalized"');
-
-      // Aceita variações naturais: NUEVO, NEW, CHANGE → NOVO
-      // Qualquer outra resposta (incluindo silêncio ou erro) → MÉDICO (conservador)
-      if (normalized.contains('NOV') ||
-          normalized.contains('NEW') ||
-          normalized.contains('CHAN') ||
-          normalized.contains('DIFF')) {
-        return 'NOVO';
-      }
-      return 'MÉDICO';
-    } on TimeoutException {
-      _log('[GeminiV2] classifier timeout (8s) → fallback MÉDICO');
-      return 'MÉDICO';
-    } catch (e) {
-      _log('[GeminiV2] classifier erro: $e → fallback MÉDICO');
-      return 'MÉDICO';
-    }
-  }
-
-  // ── Extrai texto de resposta síncrona (generateContent, não SSE) ──────────
-  // Aplica o mesmo filtro de CoT para garantir que o classificador
-  // não retorne texto de pensamento interno acidentalmente.
-  static String _extractTextFromSync(Map<String, dynamic> data) {
-    try {
-      final candidates = data['candidates'] as List?;
-      if (candidates == null || candidates.isEmpty) return '';
-      final candidate = candidates[0] as Map<String, dynamic>;
-      final parts = candidate['content']?['parts'] as List?;
-      if (parts == null || parts.isEmpty) return '';
-
-      final buffer = StringBuffer();
-      for (final rawPart in parts) {
-        final part = rawPart as Map<String, dynamic>;
-        // Filtra CoT mesmo no classifier
-        if (part['thought'] == true) continue;
-        if (part.containsKey('thoughtSignature')) continue;
-        final text = part['text'] as String?;
-        if (text != null && text.isNotEmpty) buffer.write(text);
-      }
-      return buffer.toString();
-    } catch (_) {
-      return '';
     }
   }
 
@@ -575,7 +416,8 @@ class GeminiServiceV2 {
     if (contextLabel == 'NOVO') {
       // Assunto novo confirmado pelo classificador — clean slate para evitar
       // mistura de dados clínicos entre casos distintos (segurança do paciente).
-      _log('[GeminiV2] NOVO: histórico descartado para este payload (${history.length} entradas)');
+      _log(
+          '[GeminiV2] NOVO: histórico descartado para este payload (${history.length} entradas)');
       return [];
     }
 
@@ -586,7 +428,8 @@ class GeminiServiceV2 {
     const maxEntries = maxPairs * 2; // 4 entradas = 2 user + 2 model
 
     if (history.length <= maxEntries) {
-      _log('[GeminiV2] MÉDICO: histórico completo (${history.length} entradas)');
+      _log(
+          '[GeminiV2] MÉDICO: histórico completo (${history.length} entradas)');
       return List.of(history); // já dentro do limite — usa tudo sem truncar
     }
 
@@ -643,9 +486,9 @@ class GeminiServiceV2 {
     required int attempt,
     // Build 135: contagem de tentativas transitórias (separada da contagem 429)
     int transientAttempt = 0,
-    String modeAnchor = '',      // Build 157.1
-    bool isPlantaoMode = false,  // Build 223
-    String? cachedContentName,  // BUILD 278: ID do Context Cache ativo
+    String modeAnchor = '', // Build 157.1
+    bool isPlantaoMode = false, // Build 223
+    String? cachedContentName, // BUILD 278: ID do Context Cache ativo
   }) async {
     if (controller.isClosed) return;
 
@@ -674,7 +517,8 @@ class GeminiServiceV2 {
     GeminiChunk? capturedError;
     final chunks = <GeminiChunk>[];
     bool hadContent = false;
-    bool firstChunkSent = false; // rastreia se já fizemos pipe ao controller final
+    bool firstChunkSent =
+        false; // rastreia se já fizemos pipe ao controller final
 
     final completer = Completer<void>();
     probeIntermediate.stream.listen(
@@ -749,22 +593,24 @@ class GeminiServiceV2 {
     // ── Sem conteúdo: decide se faz retry ou propaga erro ────────────────────
     final isTransientError = capturedError != null &&
         (capturedError!.errorCode == 'http_503' ||
-         capturedError!.errorCode == 'timeout'  ||
-         capturedError!.errorCode == 'network'  ||
-         capturedError!.errorCode == 'stream_error');
+            capturedError!.errorCode == 'timeout' ||
+            capturedError!.errorCode == 'network' ||
+            capturedError!.errorCode == 'stream_error');
 
-    final partialCharsTotal = chunks.fold<int>(0, (sum, c) => sum + c.text.length);
-    final hasPartialContent  = hadContent && partialCharsTotal > 40;
+    final partialCharsTotal =
+        chunks.fold<int>(0, (sum, c) => sum + c.text.length);
+    final hasPartialContent = hadContent && partialCharsTotal > 40;
 
-    if (isTransientError && !hasPartialContent &&
+    if (isTransientError &&
+        !hasPartialContent &&
         transientAttempt < _maxTransientRetries) {
-
       if (controller.isClosed) return;
 
       final baseDelay = _transientRetryBaseDelays[transientAttempt];
-      final jitterMs  = _rng.nextInt(_transientJitterMs * 2 + 1) - _transientJitterMs;
-      final waitMs    = (baseDelay.inMilliseconds + jitterMs).clamp(500, 30000);
-      final waitDur   = Duration(milliseconds: waitMs);
+      final jitterMs =
+          _rng.nextInt(_transientJitterMs * 2 + 1) - _transientJitterMs;
+      final waitMs = (baseDelay.inMilliseconds + jitterMs).clamp(500, 30000);
+      final waitDur = Duration(milliseconds: waitMs);
 
       _log(
         '[GeminiV2] Build 229: erro transitório (${capturedError!.errorCode}) — '
@@ -795,7 +641,8 @@ class GeminiServiceV2 {
         transientAttempt: transientAttempt + 1,
         modeAnchor: modeAnchor,
         isPlantaoMode: isPlantaoMode,
-        cachedContentName: cachedContentName, // BUILD 278: preserva cache no retry
+        cachedContentName:
+            cachedContentName, // BUILD 278: preserva cache no retry
       );
     }
 
@@ -807,7 +654,8 @@ class GeminiServiceV2 {
     }
     if (capturedError != null && !controller.isClosed) {
       if (isTransientError && transientAttempt >= _maxTransientRetries) {
-        _log('[GeminiV2] Build 229: retries esgotados → propagando ${capturedError!.errorCode}');
+        _log(
+            '[GeminiV2] Build 229: retries esgotados → propagando ${capturedError!.errorCode}');
       }
       controller
         ..add(capturedError!)
@@ -855,9 +703,11 @@ class GeminiServiceV2 {
     required List<Map<String, String>> history,
     required bool useGrounding,
     required int attempt,
-    String modeAnchor = '',      // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
-    bool isPlantaoMode = false,  // Build 223: remove bullets/## do prefixo no Modo Plantão
-    String? cachedContentName,  // BUILD 278: ID do Context Cache ativo
+    String modeAnchor =
+        '', // Build 157.1: âncora de modo — PRIMEIRA parte em system_instruction
+    bool isPlantaoMode =
+        false, // Build 223: remove bullets/## do prefixo no Modo Plantão
+    String? cachedContentName, // BUILD 278: ID do Context Cache ativo
   }) async {
     final url = Uri.parse('$_endpointStream&key=$apiKey');
 
@@ -873,7 +723,8 @@ class GeminiServiceV2 {
     final blindedSystemPrompt = systemPrompt;
 
     if (_debugGemini) {
-      _log('[AI_ROUTER] GeminiV2 pass-through → prompt=${blindedSystemPrompt.length}c isPlantao=$isPlantaoMode');
+      _log(
+          '[AI_ROUTER] GeminiV2 pass-through → prompt=${blindedSystemPrompt.length}c isPlantao=$isPlantaoMode');
     }
 
     // ── Monta contents: histórico janelado (já calibrado) + nova mensagem ─────
@@ -902,12 +753,14 @@ class GeminiServiceV2 {
       for (final entry in history) {
         contentsHistoryChars += (entry['content'] ?? '').length;
       }
-      final totalApproxPayload = blindedSystemPrompt.length
-          + contentsHistoryChars
-          + userMessage.length;
+      final totalApproxPayload = blindedSystemPrompt.length +
+          contentsHistoryChars +
+          userMessage.length;
       debugPrint('[GEMINI_SIZE] ══════════════════════════════════════');
-      debugPrint('[GEMINI_SIZE] blindedSystemPrompt=${blindedSystemPrompt.length} chars');
-      debugPrint('[GEMINI_SIZE] contentsHistory=${contentsHistoryChars} chars (${history.length} entradas)');
+      debugPrint(
+          '[GEMINI_SIZE] blindedSystemPrompt=${blindedSystemPrompt.length} chars');
+      debugPrint(
+          '[GEMINI_SIZE] contentsHistory=${contentsHistoryChars} chars (${history.length} entradas)');
       debugPrint('[GEMINI_SIZE] userMessage=${userMessage.length} chars');
       debugPrint('[GEMINI_SIZE] totalApproxPayload=$totalApproxPayload chars');
       debugPrint('[GEMINI_SIZE] ══════════════════════════════════════');
@@ -931,13 +784,17 @@ class GeminiServiceV2 {
         'system_instruction': modeAnchor.isNotEmpty
             ? {
                 'parts': [
-                  {'text': modeAnchor},          // Part 0: âncora de modo (PRIORIDADE 1)
-                  {'text': blindedSystemPrompt},  // Part 1: prefixo + prompt do AiService
+                  {'text': modeAnchor}, // Part 0: âncora de modo (PRIORIDADE 1)
+                  {
+                    'text': blindedSystemPrompt
+                  }, // Part 1: prefixo + prompt do AiService
                 ],
               }
             : {
                 'parts': [
-                  {'text': blindedSystemPrompt},  // single-part (modo sem âncora)
+                  {
+                    'text': blindedSystemPrompt
+                  }, // single-part (modo sem âncora)
                 ],
               },
       'contents': contents,
@@ -1061,9 +918,10 @@ class GeminiServiceV2 {
           errStr.contains('unavailable') ||
           errStr.contains('service unavailable') ||
           errStr.contains('overloaded') ||
-          errStr.contains('resource_exhausted') ||   // gRPC status 8
-          errStr.contains('internal') ||             // gRPC status 13
-          errStr.contains('aborted')) {              // gRPC status 10
+          errStr.contains('resource_exhausted') || // gRPC status 8
+          errStr.contains('internal') || // gRPC status 13
+          errStr.contains('aborted')) {
+        // gRPC status 10
         // BUILD 244: single-line 503 summary — no full exception in release
         debugPrint('[AI_PROVIDER] free=503 fallback=paid');
         if (!controller.isClosed) {
@@ -1077,7 +935,7 @@ class GeminiServiceV2 {
       // ── CATEGORIA C: Timeout / Deadline Exceeded → timeout ───────────────
       // DEADLINE_EXCEEDED (gRPC status 4): a requisição excedeu o prazo máximo.
       // Mapeado para 'timeout' — mesmo handler da TimeoutException HTTP.
-      if (errStr.contains('deadline_exceeded') ||    // gRPC status 4
+      if (errStr.contains('deadline_exceeded') || // gRPC status 4
           errStr.contains('deadline exceeded')) {
         _log('[GeminiV2] deadline excedido (gRPC DEADLINE_EXCEEDED): $e');
         if (!controller.isClosed) {
@@ -1091,8 +949,9 @@ class GeminiServiceV2 {
       // ── CATEGORIA D: Cancelamento → network ──────────────────────────────
       // CANCELLED (gRPC status 1): cliente ou servidor cancelou a operação.
       // Tratado como perda de rede — o usuário pode tentar novamente.
-      if (errStr.contains('cancelled') ||            // gRPC status 1 (en-US)
-          errStr.contains('canceled')) {             // variante americana
+      if (errStr.contains('cancelled') || // gRPC status 1 (en-US)
+          errStr.contains('canceled')) {
+        // variante americana
         _log('[GeminiV2] requisição cancelada (gRPC CANCELLED): $e');
         if (!controller.isClosed) {
           controller
@@ -1112,7 +971,8 @@ class GeminiServiceV2 {
           errStr.contains('connection reset') ||
           errStr.contains('broken pipe') ||
           errStr.contains('os error');
-      _log('[GeminiV2] erro de rede${isSocket ? " (SocketException)" : ""}: $e');
+      _log(
+          '[GeminiV2] erro de rede${isSocket ? " (SocketException)" : ""}: $e');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('network'))
@@ -1135,7 +995,7 @@ class GeminiServiceV2 {
             waitTime = Duration(seconds: retrySeconds.clamp(2, 60));
           }
         }
-  _log(
+        _log(
           '[GeminiV2] 429 rate limit — retry ${attempt + 1}/$_maxRetries '
           'em ${waitTime.inSeconds}s',
         );
@@ -1149,8 +1009,8 @@ class GeminiServiceV2 {
           history: history,
           useGrounding: useGrounding,
           attempt: attempt + 1,
-          modeAnchor: modeAnchor,           // Build 157.1
-          isPlantaoMode: isPlantaoMode,     // Build 223
+          modeAnchor: modeAnchor, // Build 157.1
+          isPlantaoMode: isPlantaoMode, // Build 223
           cachedContentName: cachedContentName, // BUILD 278
         );
       }
@@ -1168,7 +1028,8 @@ class GeminiServiceV2 {
     }
 
     if (response.statusCode == 401 || response.statusCode == 403) {
-      _log('[GeminiV2] ${response.statusCode}: chave API inválida/sem permissão');
+      _log(
+          '[GeminiV2] ${response.statusCode}: chave API inválida/sem permissão');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('api_key_invalid'))
@@ -1182,7 +1043,8 @@ class GeminiServiceV2 {
     // Emite 'http_404' → ProviderRouterService.shouldTriggerPaidFallback → tryPaidFallback().
     // O usuário não vê erro — a IA responde normalmente via proxy pago.
     if (response.statusCode == 404) {
-      debugPrint('[AI_PROVIDER] free=404 endpoint_not_found → fallback=paid silencioso');
+      debugPrint(
+          '[AI_PROVIDER] free=404 endpoint_not_found → fallback=paid silencioso');
       if (!controller.isClosed) {
         controller
           ..add(GeminiChunk.error('http_404'))
@@ -1299,7 +1161,7 @@ class GeminiServiceV2 {
               // ── SAFETY/RECITATION guard: não emite isDone=true se vai fazer retry
               final shouldRetryWithoutGrounding =
                   (finishReason == 'SAFETY' || finishReason == 'RECITATION') &&
-                  useGrounding;
+                      useGrounding;
 
               if (textFragment.isNotEmpty) {
                 hadContent = true;
@@ -1309,7 +1171,8 @@ class GeminiServiceV2 {
                     // isDone só é true se há finishReason E não haverá retry.
                     // Sem esse guard, a UI recebe isDone antes do retry ser
                     // executado, quebrando a sincronia do streaming.
-                    isDone: finishReason != null && !shouldRetryWithoutGrounding,
+                    isDone:
+                        finishReason != null && !shouldRetryWithoutGrounding,
                     finishReason:
                         shouldRetryWithoutGrounding ? null : finishReason,
                   ));
@@ -1330,7 +1193,7 @@ class GeminiServiceV2 {
 
               // ── Tratamento de finishReason ────────────────────────────────
               if (finishReason != null) {
-          _log(
+                _log(
                   '[GeminiV2] finishReason=$finishReason '
                   '(conteúdo: ${hadContent ? 'sim' : 'nenhum'})',
                 );
@@ -1344,7 +1207,7 @@ class GeminiServiceV2 {
                     // Limite de tokens atingido — resposta parcial entregue.
                     // maxOutputTokens=3200 previne isso na maioria dos casos.
                     // Quando ocorre, a resposta parcial é válida e útil.
-              _log(
+                    _log(
                       '[GeminiV2] MAX_TOKENS: resposta parcial entregue '
                       '(aumentar maxOutputTokens se recorrente)',
                     );
@@ -1356,7 +1219,7 @@ class GeminiServiceV2 {
                     // Primeira tentativa: retry sem grounding (que pode
                     // trazer conteúdo que aciona o filtro).
                     if (useGrounding && !controller.isClosed) {
-                _log(
+                      _log(
                         '[GeminiV2] $finishReason: retry sem grounding',
                       );
                       return _streamRequest(
@@ -1367,8 +1230,8 @@ class GeminiServiceV2 {
                         history: history,
                         useGrounding: false, // desativa grounding no retry
                         attempt: attempt,
-                        modeAnchor: modeAnchor,           // Build 157.1
-                        isPlantaoMode: isPlantaoMode,     // Build 223
+                        modeAnchor: modeAnchor, // Build 157.1
+                        isPlantaoMode: isPlantaoMode, // Build 223
                         cachedContentName: cachedContentName, // BUILD 278
                       );
                     }
@@ -1382,7 +1245,7 @@ class GeminiServiceV2 {
               }
             } catch (parseError) {
               // JSON mal-formado em chunk — ignora e continua processando
-        _log('[GeminiV2] parse error em evento SSE: $parseError');
+              _log('[GeminiV2] parse error em evento SSE: $parseError');
             }
           } else {
             lineBuffer.write(char);
@@ -1472,12 +1335,14 @@ class GeminiServiceV2 {
         final part = rawPart as Map<String, dynamic>;
 
         // ── 6 filtros de descarte (ordem importa: thought primeiro) ──────
-        if (part['thought'] == true) continue;           // [1] CoT explícito
-        if (part.containsKey('thoughtSignature')) continue; // [2] assinatura CoT
-        if (part.containsKey('functionCall')) continue;     // [3] tool call
-        if (part.containsKey('executableCode')) continue;   // [4] código interno
-        if (part.containsKey('codeExecutionResult')) continue; // [5] resultado exec
-        if (part.containsKey('inlineData')) continue;       // [6] binário inline
+        if (part['thought'] == true) continue; // [1] CoT explícito
+        if (part.containsKey('thoughtSignature'))
+          continue; // [2] assinatura CoT
+        if (part.containsKey('functionCall')) continue; // [3] tool call
+        if (part.containsKey('executableCode')) continue; // [4] código interno
+        if (part.containsKey('codeExecutionResult'))
+          continue; // [5] resultado exec
+        if (part.containsKey('inlineData')) continue; // [6] binário inline
 
         // ── Aceita apenas texto puro ─────────────────────────────────────
         final text = part['text'] as String?;
@@ -1692,8 +1557,9 @@ class GeminiServiceV2 {
   static String errorMessage(String code, String lang) {
     final isEs = lang == 'es';
     final cooldownSecs = quotaCooldownRemaining?.inSeconds;
-    final cooldownHint =
-        (cooldownSecs != null && cooldownSecs > 0) ? ' (~${cooldownSecs}s)' : '';
+    final cooldownHint = (cooldownSecs != null && cooldownSecs > 0)
+        ? ' (~${cooldownSecs}s)'
+        : '';
 
     return switch (code) {
       'quota' => isEs

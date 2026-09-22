@@ -85,7 +85,7 @@ class _CopilotButtonState extends State<CopilotButton>
       String text, List<_ImageAttachment> attachments) async {
     if (!mounted) return;
 
-    final apiKey = GeminiService.apiKeyForLab;
+    final apiKey = GeminiService.gatewayTransportMarker;
     if (apiKey.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -179,8 +179,7 @@ class _CopilotButtonState extends State<CopilotButton>
     // MEDCASES_PACIENTES_FINAL_AI_EMPHASIS_V1_B_R0
     // MEDCASES_PACIENTES_AI_SIGNATURE_CARD_V1_B_R0
     final dark = widget.dark;
-    final surface =
-        dark ? const Color(0xFF202A29) : const Color(0xFFF4FAF7);
+    final surface = dark ? const Color(0xFF202A29) : const Color(0xFFF4FAF7);
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -216,8 +215,7 @@ class _CopilotButtonState extends State<CopilotButton>
 
   // ── Estado idle (botão normal) ────────────────────────────────────────────
   Widget _buildIdleState() {
-    final textPrimary =
-        widget.dark ? Colors.white : const Color(0xFF111827);
+    final textPrimary = widget.dark ? Colors.white : const Color(0xFF111827);
     final textSecondary =
         widget.dark ? const Color(0xFFCBD5E1) : const Color(0xFF667085);
 
@@ -252,7 +250,6 @@ class _CopilotButtonState extends State<CopilotButton>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-
               const Text(
                 'IA CLÍNICA · SOAP',
                 style: TextStyle(
@@ -419,7 +416,6 @@ class _CopilotButtonState extends State<CopilotButton>
       },
     );
   }
-
 }
 
 // ═════════════════════════════════════════════════════════════════════════════

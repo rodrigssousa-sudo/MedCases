@@ -292,8 +292,8 @@ class InternacionFirestoreService {
     // ── BUILD 292: AUTH DEBUG ────────────────────────────────────────────────
     final auth = FirebaseAuth.instance.currentUser;
     debugPrint('========== AUTH DEBUG ==========');
-    debugPrint('FirebaseAuth.currentUser = ${auth?.uid}');
-    debugPrint('UID recebido = $uid');
+    debugPrint('FirebaseAuth.currentUser = [redacted]');
+    debugPrint('UID recebido = [redacted]');
     debugPrint('request iguais = ${auth?.uid == uid}');
     debugPrint('================================');
 
@@ -301,7 +301,7 @@ class InternacionFirestoreService {
     final collection = _col(uid);
     final authed = auth != null || AuthService.hasCachedToken;
     debugPrint('[MeuPlantao][PATH] ${collection.path}');
-    debugPrint('[MeuPlantao][AUTH] uid=$uid authed=$authed '
+    debugPrint('[MeuPlantao][AUTH] uid=[redacted] authed=$authed '
         'fbUser=${auth?.uid ?? "null"} '
         'hasCachedToken=${AuthService.hasCachedToken}');
 
@@ -334,7 +334,7 @@ class InternacionFirestoreService {
     }
 
     // ── AUTH GATE: auth não disponível → aguarda authStateChanges() ──────────
-    debugPrint('[BUILD292][AUTH_STREAM_GATE] waiting_for_auth uid=$uid');
+    debugPrint('[BUILD292][AUTH_STREAM_GATE] waiting_for_auth uid=[redacted]');
 
     final controller = StreamController<List<PacienteSession>>();
     StreamSubscription<User?>? authSub;
@@ -348,7 +348,7 @@ class InternacionFirestoreService {
       }
 
       // Auth confirmado — cancela listener de auth e abre snapshot Firestore
-      debugPrint('[BUILD292][AUTH_STREAM_GATE] auth_ready uid=$uid');
+      debugPrint('[BUILD292][AUTH_STREAM_GATE] auth_ready uid=[redacted]');
       debugPrint('[BUILD292][PLANTAO_STREAM] opening path=${collection.path}');
       authSub?.cancel();
       authSub = null;

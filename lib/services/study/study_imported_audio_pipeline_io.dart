@@ -1,4 +1,6 @@
 import 'dart:io';
+import '../monthly_usage_ledger.dart';
+import '../entitlement_service.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -51,8 +53,10 @@ final class _StudyEducationalSegmentProvider
     required this.sourceId,
     required this.isEs,
     required this.backgroundSession,
+    required this.usageReservation,
   });
 
+  final UsageReservation usageReservation;
   final String sourceId;
   final bool isEs;
   final StudyBackgroundTranscriptionSession? backgroundSession;
@@ -98,6 +102,7 @@ final class _StudyEducationalSegmentProvider
       final extraction = await StudyMultimodalExtractionService.binary(
         sourceId: sourceId,
         type: StudySourceType.uploadedAudio,
+        usageReservation: usageReservation,
         fileName:
             'segment_${request.segmentIndex.toString().padLeft(5, '0')}.m4a',
         mimeType: 'audio/mp4',
@@ -220,142 +225,156 @@ final class StudyImportedAudioPipeline {
     }
 
     _validateCoverage(segments, durationMs);
+    await EntitlementService.instance.refreshAuthoritativeTier();
+    final usage = await MonthlyUsageLedger.instance.begin(
+        operationId: 'study-import-$jobId',
+        kinds: {UsageKind.transcription},
+        maximumMs: durationMs);
+    var usageCompleted = false;
+    try {
+      final coveredDurationMs = segments.last.endMs;
+      debugPrint(
+        '[StudyImportedAudioCoverage] '
+        'durationMs=$durationMs '
+        'coveredDurationMs=$coveredDurationMs '
+        'segments=${segments.length}/${segments.length}',
+      );
 
-    final coveredDurationMs = segments.last.endMs;
-    debugPrint(
-      '[StudyImportedAudioCoverage] '
-      'durationMs=$durationMs '
-      'coveredDurationMs=$coveredDurationMs '
-      'segments=${segments.length}/${segments.length}',
-    );
-
-    final root = await _stateRoot();
-    final durableStore = FileClinicalLongFormDurableStore(rootDirectory: root);
-    final backgroundSession =
-        await StudyBackgroundTranscriptionCoordinator.tryStart(
-      sourceId: sourceId,
-      isEs: isEs,
-      segments: <StudyBackgroundSegmentSpec>[
-        for (final segment in segments)
-          StudyBackgroundSegmentSpec(
-            index: segment.index,
-            path: segment.path,
-            mimeType: 'audio/mp4',
-          ),
-      ],
-    );
-
-    final checkpointStore =
-        FileClinicalLongFormSegmentTranscriptCheckpointStore(
-      rootDirectory: root,
-    );
-
-    final manifest = ClinicalLongFormRecordingManifest(
-      sessionId: jobId,
-      locale: isEs ? 'es' : 'pt-BR',
-      state: ClinicalLongFormRecordingState.stopped,
-      createdAtUtc: DateTime.now().toUtc(),
-      totalActiveDuration: Duration(milliseconds: durationMs),
-      segments: segments
-          .map(
-            (segment) => ClinicalLongFormSegmentManifest(
+      final root = await _stateRoot();
+      final durableStore =
+          FileClinicalLongFormDurableStore(rootDirectory: root);
+      final backgroundSession =
+          await StudyBackgroundTranscriptionCoordinator.tryStart(
+        sourceId: sourceId,
+        isEs: isEs,
+        usageReservation: usage,
+        segments: <StudyBackgroundSegmentSpec>[
+          for (final segment in segments)
+            StudyBackgroundSegmentSpec(
               index: segment.index,
               path: segment.path,
-              startedAtUtc: DateTime.fromMillisecondsSinceEpoch(
-                segment.startMs,
-                isUtc: true,
+              mimeType: 'audio/mp4',
+            ),
+        ],
+      );
+
+      final checkpointStore =
+          FileClinicalLongFormSegmentTranscriptCheckpointStore(
+        rootDirectory: root,
+      );
+
+      final manifest = ClinicalLongFormRecordingManifest(
+        sessionId: jobId,
+        locale: isEs ? 'es' : 'pt-BR',
+        state: ClinicalLongFormRecordingState.stopped,
+        createdAtUtc: DateTime.now().toUtc(),
+        totalActiveDuration: Duration(milliseconds: durationMs),
+        segments: segments
+            .map(
+              (segment) => ClinicalLongFormSegmentManifest(
+                index: segment.index,
+                path: segment.path,
+                startedAtUtc: DateTime.fromMillisecondsSinceEpoch(
+                  segment.startMs,
+                  isUtc: true,
+                ),
+                activeDuration: Duration(milliseconds: segment.durationMs),
+                completed: true,
               ),
-              activeDuration: Duration(milliseconds: segment.durationMs),
-              completed: true,
+            )
+            .toList(growable: false),
+      );
+
+      await durableStore.saveManifest(manifest);
+
+      var queue = await durableStore.loadBatchQueue(jobId);
+      ClinicalLongFormTranscriptAssembler assembler;
+
+      if (queue == null || queue.totalCount != segments.length) {
+        queue = ClinicalLongFormBatchQueue.fromManifest(manifest);
+        await durableStore.saveBatchQueue(queue);
+        assembler = ClinicalLongFormTranscriptAssembler(
+          expectedSegmentCount: queue.totalCount,
+        );
+      } else {
+        final recovery = ClinicalLongFormEngineStateRecoveryOrchestrator(
+          checkpointStore: checkpointStore,
+        );
+        final recovered = await recovery.recoverBatch(
+          manifest: manifest,
+          queue: queue,
+        );
+        queue = recovered.queue;
+        assembler = recovered.assembler;
+        await durableStore.saveBatchQueue(queue);
+      }
+
+      if (!queue.isComplete) {
+        final runner = ClinicalLongFormCheckpointedBatchRunner(
+          queue: queue,
+          provider: _StudyEducationalSegmentProvider(
+            sourceId: sourceId,
+            isEs: isEs,
+            backgroundSession: backgroundSession,
+            usageReservation: usage,
+          ),
+          assembler: assembler,
+          durableStore: durableStore,
+          checkpointStore: checkpointStore,
+          locale: manifest.locale,
+        );
+
+        try {
+          await runner.runUntilBlocked();
+        } finally {
+          await runner.dispose();
+        }
+      }
+
+      if (!queue.isComplete || !assembler.isComplete) {
+        throw StateError(
+          'study_imported_audio_incomplete_'
+          '${queue.completedCount}_${queue.totalCount}',
+        );
+      }
+
+      final assembly = assembler.assemble();
+
+      if (!assembly.complete ||
+          assembly.segmentCount != segments.length ||
+          assembly.expectedSegmentCount != segments.length ||
+          assembly.text.trim().isEmpty) {
+        throw StateError('study_imported_audio_assembly_incomplete');
+      }
+
+      final refs = segments
+          .map(
+            (segment) => SourceRef(
+              sourceId: sourceId,
+              sourceType: StudySourceType.uploadedAudio,
+              timestampStartMs: segment.startMs,
+              timestampEndMs: segment.endMs,
             ),
           )
-          .toList(growable: false),
-    );
+          .toList(growable: false);
 
-    await durableStore.saveManifest(manifest);
-
-    var queue = await durableStore.loadBatchQueue(jobId);
-    ClinicalLongFormTranscriptAssembler assembler;
-
-    if (queue == null || queue.totalCount != segments.length) {
-      queue = ClinicalLongFormBatchQueue.fromManifest(manifest);
-      await durableStore.saveBatchQueue(queue);
-      assembler = ClinicalLongFormTranscriptAssembler(
-        expectedSegmentCount: queue.totalCount,
-      );
-    } else {
-      final recovery = ClinicalLongFormEngineStateRecoveryOrchestrator(
-        checkpointStore: checkpointStore,
-      );
-      final recovered = await recovery.recoverBatch(
-        manifest: manifest,
-        queue: queue,
-      );
-      queue = recovered.queue;
-      assembler = recovered.assembler;
-      await durableStore.saveBatchQueue(queue);
-    }
-
-    if (!queue.isComplete) {
-      final runner = ClinicalLongFormCheckpointedBatchRunner(
-        queue: queue,
-        provider: _StudyEducationalSegmentProvider(
-          sourceId: sourceId,
-          isEs: isEs,
-          backgroundSession: backgroundSession,
-        ),
-        assembler: assembler,
-        durableStore: durableStore,
-        checkpointStore: checkpointStore,
-        locale: manifest.locale,
-      );
-
-      try {
-        await runner.runUntilBlocked();
-      } finally {
-        await runner.dispose();
+      if (backgroundSession != null) {
+        await backgroundSession.cleanup();
       }
-    }
 
-    if (!queue.isComplete || !assembler.isComplete) {
-      throw StateError(
-        'study_imported_audio_incomplete_'
-        '${queue.completedCount}_${queue.totalCount}',
+      await usage.finish(actualMs: durationMs, success: true);
+      usageCompleted = true;
+      return StudyImportedAudioPipelineResult(
+        extraction: StudyExtraction(
+          text: assembly.text.trim(),
+          refs: List<SourceRef>.unmodifiable(refs),
+        ),
+        jobId: jobId,
+        segmentCount: segments.length,
       );
+    } finally {
+      if (!usageCompleted) await usage.finish(actualMs: 0, success: false);
     }
-
-    final assembly = assembler.assemble();
-
-    if (!assembly.complete ||
-        assembly.segmentCount != segments.length ||
-        assembly.expectedSegmentCount != segments.length ||
-        assembly.text.trim().isEmpty) {
-      throw StateError('study_imported_audio_assembly_incomplete');
-    }
-
-    final refs = segments
-        .map(
-          (segment) => SourceRef(
-            sourceId: sourceId,
-            sourceType: StudySourceType.uploadedAudio,
-            timestampStartMs: segment.startMs,
-            timestampEndMs: segment.endMs,
-          ),
-        )
-        .toList(growable: false);
-
-    if (backgroundSession != null) {
-      await backgroundSession.cleanup();
-    }
-
-    return StudyImportedAudioPipelineResult(
-      extraction: StudyExtraction(
-        text: assembly.text.trim(),
-        refs: List<SourceRef>.unmodifiable(refs),
-      ),
-      jobId: jobId,
-      segmentCount: segments.length,
-    );
   }
 
   static Future<void> cleanup(String jobId) async {

@@ -18,6 +18,25 @@ import '../services/entitlement_service.dart';
 import 'upgrade_screen.dart';
 import 'dart:math' as math;
 
+String _recordingFailure(Object error, bool isEs) {
+  final code = error.toString();
+  if (code.contains('MONTHLY_USAGE_LIMIT')) {
+    return isEs
+        ? 'Límite mensual de audio alcanzado.'
+        : 'Limite mensal de áudio atingido.';
+  }
+  if (code.contains('USAGE_') ||
+      error is SocketException ||
+      error is TimeoutException) {
+    return isEs
+        ? 'No se pudo reservar el audio. Verifique su conexión e inténtelo de nuevo.'
+        : 'Não foi possível reservar o áudio. Verifique sua conexão e tente novamente.';
+  }
+  return isEs
+      ? 'No se pudo completar la grabación. Inténtelo de nuevo.'
+      : 'Não foi possível concluir a gravação. Tente novamente.';
+}
+
 final class _AudioRuntimePalette {
   const _AudioRuntimePalette({
     required this.page,
@@ -122,7 +141,7 @@ class _NotesAudioConsultationLocalRuntimeScreenState
       });
     } catch (error) {
       if (mounted) {
-        setState(() => _error = '$error');
+        setState(() => _error = _recordingFailure(error, widget.isEs));
       }
     } finally {
       if (mounted) {
@@ -166,7 +185,7 @@ class _NotesAudioConsultationLocalRuntimeScreenState
       });
     } catch (error) {
       if (mounted) {
-        setState(() => _error = '$error');
+        setState(() => _error = _recordingFailure(error, widget.isEs));
       }
     } finally {
       if (mounted) {
@@ -289,7 +308,6 @@ class _NotesAudioLongFormLocalRuntimeScreenState
     _r25aEntitlement.refreshAuthoritativeTier();
   }
 
-
   // MEDCASES_R25A_ENTITLEMENT_LONGFORM_AUDIO_GATE_V1
   final EntitlementService _r25aEntitlement = EntitlementService.instance;
 
@@ -355,6 +373,13 @@ class _NotesAudioLongFormLocalRuntimeScreenState
   }
 
   Future<void> _start() async {
+    await _r25aEntitlement.refreshAuthoritativeTier();
+    if (!mounted) return;
+    if (!_r25aEntitlement.canUse(MedCasesCapability.audioLongForm)) {
+      await showUpgradeScreen(context, lang: widget.isEs ? 'es' : 'pt');
+      return;
+    }
+
     if (_busy || _session != null) return;
 
     setState(() {
@@ -368,7 +393,9 @@ class _NotesAudioLongFormLocalRuntimeScreenState
     RecordLongFormAudioProvider? provider;
 
     try {
-      provider = RecordLongFormAudioProvider();
+      provider = RecordLongFormAudioProvider(onQuotaReached: () {
+        unawaited(_stop());
+      });
       _visualAudioProvider = provider;
 
       final aacSupported = await provider.isAacLcSupported();
@@ -436,7 +463,7 @@ class _NotesAudioLongFormLocalRuntimeScreenState
       }
 
       if (mounted) {
-        setState(() => _error = '$error');
+        setState(() => _error = _recordingFailure(error, widget.isEs));
       }
     } finally {
       _busy = false;
@@ -678,13 +705,10 @@ class _NotesAudioLongFormLocalRuntimeScreenState
 
   @override
   Widget build(BuildContext context) {
-    if (!_r25aEntitlement.isResolvedForCurrentUser) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (!_r25aEntitlement.can(MedCasesCapability.audioLongForm)) {
+    if (!_r25aEntitlement.can(MedCasesCapability.audioLongForm) &&
+        !_recording &&
+        !_paused &&
+        _stoppedManifest == null) {
       return Scaffold(
         body: SafeArea(
           child: Center(
@@ -710,10 +734,9 @@ class _NotesAudioLongFormLocalRuntimeScreenState
                   FilledButton(
                     onPressed: () => showUpgradeScreen(
                       context,
-                      lang:
-                          Localizations.localeOf(context).languageCode == 'pt'
-                              ? 'pt'
-                              : 'es',
+                      lang: Localizations.localeOf(context).languageCode == 'pt'
+                          ? 'pt'
+                          : 'es',
                     ),
                     child: const Text('MedCases Premium'),
                   ),

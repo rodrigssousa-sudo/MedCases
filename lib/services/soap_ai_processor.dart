@@ -6,12 +6,11 @@
 
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'provider_gateway_http.dart' as http;
 import 'gemini_service.dart';
 import 'clinical_recorder_service.dart';
 
 class SoapAiProcessor {
-
   // BUILD 334: gemini-2.5-flash-lite → gemini-2.5-flash (modelo canônico).
   static const _endpoint =
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
@@ -19,7 +18,8 @@ class SoapAiProcessor {
   // ─────────────────────────────────────────────────────────────────────────
   // structure() — converte transcrição bruta em SoapData
   // ─────────────────────────────────────────────────────────────────────────
-  static Future<SoapData> structure(String rawTranscript, {String lang = 'pt'}) async {
+  static Future<SoapData> structure(String rawTranscript,
+      {String lang = 'pt'}) async {
     if (rawTranscript.trim().isEmpty) {
       return SoapData(rawTranscript: rawTranscript);
     }
@@ -64,33 +64,35 @@ SCHEMA JSON obrigatório:
 
       if (result.isError) {
         debugPrint('[SoapAI] Erro Gemini: ${result.text}');
-        return SoapData(rawTranscript: rawTranscript, subjective: rawTranscript);
+        return SoapData(
+            rawTranscript: rawTranscript, subjective: rawTranscript);
       }
 
       // Extrai JSON da resposta (pode vir com ```json ... ```)
       String jsonStr = result.text.trim();
       final jsonStart = jsonStr.indexOf('{');
-      final jsonEnd   = jsonStr.lastIndexOf('}');
+      final jsonEnd = jsonStr.lastIndexOf('}');
       if (jsonStart >= 0 && jsonEnd > jsonStart) {
         jsonStr = jsonStr.substring(jsonStart, jsonEnd + 1);
       }
 
-      final Map<String, dynamic> data = jsonDecode(jsonStr) as Map<String, dynamic>;
+      final Map<String, dynamic> data =
+          jsonDecode(jsonStr) as Map<String, dynamic>;
 
       return SoapData(
-        subjective:    (data['subjective']   ?? '').toString().trim(),
-        objective:     (data['objective']    ?? '').toString().trim(),
-        assessment:    (data['assessment']   ?? '').toString().trim(),
-        plan:          (data['plan']         ?? '').toString().trim(),
-        medications:   (data['medications']  ?? '').toString().trim(),
-        exams:         (data['exams']        ?? '').toString().trim(),
+        subjective: (data['subjective'] ?? '').toString().trim(),
+        objective: (data['objective'] ?? '').toString().trim(),
+        assessment: (data['assessment'] ?? '').toString().trim(),
+        plan: (data['plan'] ?? '').toString().trim(),
+        medications: (data['medications'] ?? '').toString().trim(),
+        exams: (data['exams'] ?? '').toString().trim(),
         rawTranscript: rawTranscript,
       );
     } catch (e) {
       debugPrint('[SoapAI] Parse error: $e');
       // Fallback: coloca tudo no campo subjetivo
       return SoapData(
-        subjective:    rawTranscript,
+        subjective: rawTranscript,
         rawTranscript: rawTranscript,
       );
     }
@@ -100,8 +102,9 @@ SCHEMA JSON obrigatório:
   // ocrExam() — OCR de imagem de exame laboratorial/de imagem
   // Recebe bytes da imagem e retorna texto estruturado
   // ─────────────────────────────────────────────────────────────────────────
-  static Future<String> ocrExam(Uint8List imageBytes, {String lang = 'pt'}) async {
-    final apiKey = GeminiService.apiKeyForLab;
+  static Future<String> ocrExam(Uint8List imageBytes,
+      {String lang = 'pt'}) async {
+    final apiKey = GeminiService.gatewayTransportMarker;
     if (apiKey.isEmpty) {
       return 'IA não conectada. Configure a chave Gemini nas configurações.';
     }
@@ -128,13 +131,18 @@ REGRAS:
 
     final payload = {
       'system_instruction': {
-        'parts': [{'text': systemInstruction}]
+        'parts': [
+          {'text': systemInstruction}
+        ]
       },
       'contents': [
         {
           'role': 'user',
           'parts': [
-            {'text': '$langInstr\nAnalise este exame médico e extraia todos os resultados estruturados:'},
+            {
+              'text':
+                  '$langInstr\nAnalise este exame médico e extraia todos os resultados estruturados:'
+            },
             {
               'inline_data': {
                 'mime_type': mimeType,
@@ -151,11 +159,13 @@ REGRAS:
     };
 
     try {
-      final response = await http.post(
-        Uri.parse('$_endpoint?key=$apiKey'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(payload),
-      ).timeout(const Duration(seconds: 60));
+      final response = await http
+          .post(
+            Uri.parse('$_endpoint?key=$apiKey'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(payload),
+          )
+          .timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -180,15 +190,21 @@ REGRAS:
   // Detecta MIME type pelos magic bytes
   static String _detectMime(Uint8List bytes) {
     if (bytes.length > 3 &&
-        bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF) {
+        bytes[0] == 0xFF &&
+        bytes[1] == 0xD8 &&
+        bytes[2] == 0xFF) {
       return 'image/jpeg';
     }
     if (bytes.length > 3 &&
-        bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E) {
+        bytes[0] == 0x89 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x4E) {
       return 'image/png';
     }
     if (bytes.length > 3 &&
-        bytes[0] == 0x25 && bytes[1] == 0x50 && bytes[2] == 0x44) {
+        bytes[0] == 0x25 &&
+        bytes[1] == 0x50 &&
+        bytes[2] == 0x44) {
       return 'application/pdf';
     }
     return 'image/jpeg';

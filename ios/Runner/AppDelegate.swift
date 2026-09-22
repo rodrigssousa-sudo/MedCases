@@ -1,6 +1,7 @@
 import AVFoundation
 import CryptoKit
 import Firebase
+import FirebaseAuth
 import Flutter
 import Security
 import UIKit
@@ -45,6 +46,33 @@ import UIKit
     if
       let controller = window?.rootViewController as? FlutterViewController
     {
+      let durationChannel = FlutterMethodChannel(name: "medcases/audio_duration_v1", binaryMessenger: controller.binaryMessenger)
+      durationChannel.setMethodCallHandler { call, reply in
+        guard call.method == "duration", let args = call.arguments as? [String: Any],
+              let path = args["path"] as? String else { reply(FlutterMethodNotImplemented); return }
+        guard path.hasPrefix("/"), FileManager.default.isReadableFile(atPath: path) else {
+          reply(FlutterError(code: "INVALID_AUDIO_PATH", message: nil, details: nil)); return
+        }
+        let asset = AVURLAsset(url: URL(fileURLWithPath: path))
+        var completed = false // accessed only on main queue
+        let timeout = DispatchWorkItem {
+          guard !completed else { return }; completed = true
+          asset.cancelLoading()
+          reply(FlutterError(code: "AUDIO_DURATION_TIMEOUT", message: nil, details: nil))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 30, execute: timeout)
+        asset.loadValuesAsynchronously(forKeys: ["duration"]) {
+          var error: NSError?
+          let status = asset.statusOfValue(forKey: "duration", error: &error)
+          let seconds = status == .loaded ? CMTimeGetSeconds(asset.duration) : Double.nan
+          DispatchQueue.main.async {
+            guard !completed else { return }; completed = true; timeout.cancel()
+            if seconds.isFinite && seconds > 0 && seconds < Double(Int.max) / 1000 {
+              reply(Int((seconds * 1000).rounded()))
+            } else { reply(FlutterError(code: "AUDIO_DURATION_UNAVAILABLE", message: nil, details: nil)) }
+          }
+        }
+      }
       MedCasesLongFormAtRestChannel.register(
         messenger: controller.binaryMessenger
       )
@@ -92,6 +120,7 @@ private final class MedCasesLongFormAtRestChannel {
     "reviewedTranscript",
     "retentionMetadata",
     "transportPlaintextStaging",
+    "premiumDrugCatalog",
   ]
 
   static func register(messenger: FlutterBinaryMessenger) {
@@ -542,6 +571,16 @@ private final class MedCasesLongFormAtRestChannel {
       options: .regularExpression
     ) != nil else {
       throw BridgeFailure(code: "ios_logical_name_invalid")
+    }
+
+    if assetKind == "premiumDrugCatalog" {
+      guard let uid = Auth.auth().currentUser?.uid else {
+        throw BridgeFailure(code: "catalog_auth_required")
+      }
+      let owner = SHA256.hash(data: Data(uid.utf8)).map { String(format: "%02x", $0) }.joined()
+      guard sessionId == owner, keyId == "catalog." + String(owner.prefix(48)) else {
+        throw BridgeFailure(code: "catalog_owner_mismatch")
+      }
     }
 
     guard allowedAssetKinds.contains(assetKind) else {

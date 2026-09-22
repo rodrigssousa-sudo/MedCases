@@ -45,7 +45,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'provider_gateway_http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -71,8 +71,9 @@ class GeminiCacheEntry {
 
   /// true → cache ainda válido (não expirou E não vai expirar em 5min).
   /// Margem de 5min para renovar antes da expiração.
-  bool get isValid =>
-      DateTime.now().toUtc().isBefore(expiresAt.subtract(const Duration(minutes: 5)));
+  bool get isValid => DateTime.now()
+      .toUtc()
+      .isBefore(expiresAt.subtract(const Duration(minutes: 5)));
 
   @override
   String toString() =>
@@ -107,9 +108,9 @@ class GeminiCacheService {
 
   // ══ CHAVES DE PERSISTÊNCIA ════════════════════════════════════════════════
 
-  static const _kCacheName    = 'gemini_cache_name_v1';
+  static const _kCacheName = 'gemini_cache_name_v1';
   static const _kCacheExpires = 'gemini_cache_expires_v1';
-  static const _kCacheFp      = 'gemini_cache_fp_v1';
+  static const _kCacheFp = 'gemini_cache_fp_v1';
 
   // ══ ESTADO EM MEMÓRIA ═════════════════════════════════════════════════════
 
@@ -126,7 +127,8 @@ class GeminiCacheService {
   static int _fingerprint(String prompt) {
     if (prompt.isEmpty) return 0;
     final head = prompt.substring(0, prompt.length.clamp(0, 500));
-    final tail = prompt.substring((prompt.length - 500).clamp(0, prompt.length));
+    final tail =
+        prompt.substring((prompt.length - 500).clamp(0, prompt.length));
     int h = 17 * prompt.length;
     for (final c in '$head$tail'.codeUnits) {
       h = h * 31 + c;
@@ -165,16 +167,16 @@ class GeminiCacheService {
     // ── 2. Restaura do SharedPrefs ─────────────────────────────────────────
     try {
       final prefs = await SharedPreferences.getInstance();
-      final savedName    = prefs.getString(_kCacheName) ?? '';
+      final savedName = prefs.getString(_kCacheName) ?? '';
       final savedExpires = prefs.getString(_kCacheExpires) ?? '';
-      final savedFp      = prefs.getInt(_kCacheFp) ?? 0;
+      final savedFp = prefs.getInt(_kCacheFp) ?? 0;
 
       if (savedName.isNotEmpty && savedExpires.isNotEmpty && savedFp == fp) {
         final expiresAt = DateTime.tryParse(savedExpires);
         if (expiresAt != null) {
           final entry = GeminiCacheEntry(
-            name:              savedName,
-            expiresAt:         expiresAt,
+            name: savedName,
+            expiresAt: expiresAt,
             promptFingerprint: fp,
           );
           if (entry.isValid) {
@@ -238,7 +240,7 @@ class GeminiCacheService {
 
   /// Invalida o cache em memória e no SharedPrefs (ex: após troca de API key).
   static Future<void> invalidate() async {
-    _activeCache    = null;
+    _activeCache = null;
     _createInFlight = null;
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -326,11 +328,12 @@ class GeminiCacheService {
     }
 
     // Extrai o name e a expiração da resposta
-    final name       = data['name']?.toString() ?? '';
+    final name = data['name']?.toString() ?? '';
     final expireTime = data['expireTime']?.toString() ?? ''; // RFC3339
 
     if (name.isEmpty) {
-      _log('[GEMINI_CACHE] action=create_no_name response=${response.body.substring(0, (response.body.length).clamp(0, 200))}');
+      _log(
+          '[GEMINI_CACHE] action=create_no_name response=${response.body.substring(0, (response.body.length).clamp(0, 200))}');
       return null;
     }
 
@@ -341,12 +344,13 @@ class GeminiCacheService {
           DateTime.now().toUtc().add(const Duration(seconds: _cacheTtlSeconds));
     } else {
       // Fallback: usa TTL local se a API não retornou expireTime
-      expiresAt = DateTime.now().toUtc().add(const Duration(seconds: _cacheTtlSeconds));
+      expiresAt =
+          DateTime.now().toUtc().add(const Duration(seconds: _cacheTtlSeconds));
     }
 
     final entry = GeminiCacheEntry(
-      name:              name,
-      expiresAt:         expiresAt,
+      name: name,
+      expiresAt: expiresAt,
       promptFingerprint: fp,
     );
 
@@ -363,9 +367,9 @@ class GeminiCacheService {
   /// Persiste o cache em SharedPrefs (background — não bloqueia).
   static void _persistToPrefs(GeminiCacheEntry entry) {
     SharedPreferences.getInstance().then((prefs) {
-      prefs.setString(_kCacheName,    entry.name);
+      prefs.setString(_kCacheName, entry.name);
       prefs.setString(_kCacheExpires, entry.expiresAt.toIso8601String());
-      prefs.setInt(_kCacheFp,         entry.promptFingerprint);
+      prefs.setInt(_kCacheFp, entry.promptFingerprint);
     }).catchError((e) {
       _log('[GEMINI_CACHE] action=prefs_write_error error=$e');
     });

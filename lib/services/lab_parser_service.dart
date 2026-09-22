@@ -14,7 +14,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:http/http.dart' as http;
+import 'provider_gateway_http.dart' as http;
 import 'gemini_service.dart';
 import '../models/lab_result_model.dart';
 import 'lab_normalizer.dart';
@@ -73,7 +73,7 @@ class LabParserService {
     try {
       final response = await http
           .post(
-            Uri.parse('$_endpoint?key=${GeminiService.apiKeyForLab}'),
+            Uri.parse('$_endpoint?key=${GeminiService.gatewayTransportMarker}'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(requestBody),
           )
@@ -161,20 +161,20 @@ class LabParserService {
 
   static LabStatus _forceCritical(LabResult result) {
     final key = LabNormalizer.normalizeKey(result.examKey);
-    final v   = result.value;
+    final v = result.value;
 
-    if (key == 'potassium'   && (v >= 6.5  || v < 2.5))   return LabStatus.critical;
-    if (key == 'sodium'      && (v < 120   || v > 160))    return LabStatus.critical;
-    if (key == 'glucose'     && (v < 50    || v > 600))    return LabStatus.critical;
-    if (key == 'ph'          && (v < 7.10  || v > 7.60))   return LabStatus.critical;
-    if (key == 'lactate'     && v >= 4.0)                   return LabStatus.critical;
-    if (key == 'hemoglobin'  && v < 7.0)                    return LabStatus.critical;
-    if (key == 'platelets'   && v < 20000)                  return LabStatus.critical;
-    if (key == 'paco2'       && (v < 20    || v > 70))      return LabStatus.critical;
-    if (key == 'pao2'        && v < 50)                     return LabStatus.critical;
-    if (key == 'calcium'     && (v < 6.5   || v > 13.0))   return LabStatus.critical;
-    if (key == 'magnesium'   && (v < 0.8   || v > 4.0))    return LabStatus.critical;
-    if (key == 'inr'         && v > 5.0)                    return LabStatus.critical;
+    if (key == 'potassium' && (v >= 6.5 || v < 2.5)) return LabStatus.critical;
+    if (key == 'sodium' && (v < 120 || v > 160)) return LabStatus.critical;
+    if (key == 'glucose' && (v < 50 || v > 600)) return LabStatus.critical;
+    if (key == 'ph' && (v < 7.10 || v > 7.60)) return LabStatus.critical;
+    if (key == 'lactate' && v >= 4.0) return LabStatus.critical;
+    if (key == 'hemoglobin' && v < 7.0) return LabStatus.critical;
+    if (key == 'platelets' && v < 20000) return LabStatus.critical;
+    if (key == 'paco2' && (v < 20 || v > 70)) return LabStatus.critical;
+    if (key == 'pao2' && v < 50) return LabStatus.critical;
+    if (key == 'calcium' && (v < 6.5 || v > 13.0)) return LabStatus.critical;
+    if (key == 'magnesium' && (v < 0.8 || v > 4.0)) return LabStatus.critical;
+    if (key == 'inr' && v > 5.0) return LabStatus.critical;
 
     return result.status;
   }
@@ -192,8 +192,8 @@ class LabParserService {
         },
       ],
       'generationConfig': {
-        'temperature':       0.05,  // máximo determinismo para extração estruturada
-        'maxOutputTokens':   4096,
+        'temperature': 0.05, // máximo determinismo para extração estruturada
+        'maxOutputTokens': 4096,
         'responseMimeType': 'application/json',
       },
       'safetySettings': _safetySettings(),
@@ -213,15 +213,15 @@ class LabParserService {
             {
               'inlineData': {
                 'mimeType': mimeType,
-                'data':     base64Encode(bytes),
+                'data': base64Encode(bytes),
               },
             },
           ],
         },
       ],
       'generationConfig': {
-        'temperature':       0.05,
-        'maxOutputTokens':   4096,
+        'temperature': 0.05,
+        'maxOutputTokens': 4096,
         'responseMimeType': 'application/json',
       },
       'safetySettings': _safetySettings(),
@@ -240,15 +240,15 @@ class LabParserService {
             {
               'inlineData': {
                 'mimeType': 'application/pdf',
-                'data':     base64Encode(bytes),
+                'data': base64Encode(bytes),
               },
             },
           ],
         },
       ],
       'generationConfig': {
-        'temperature':       0.05,
-        'maxOutputTokens':   4096,
+        'temperature': 0.05,
+        'maxOutputTokens': 4096,
         'responseMimeType': 'application/json',
       },
       'safetySettings': _safetySettings(),
@@ -262,11 +262,11 @@ class LabParserService {
 
     final langInstruction = isEs
         ? 'Preencha "examName" obrigatoriamente em ESPANHOL '
-          '(ex: Sódio → Sodio, Ureia → Urea, Hemoglobina → Hemoglobina, '
-          'Plaquetas → Plaquetas, Leucócitos → Leucocitos).'
+            '(ex: Sódio → Sodio, Ureia → Urea, Hemoglobina → Hemoglobina, '
+            'Plaquetas → Plaquetas, Leucócitos → Leucocitos).'
         : 'Preencha "examName" obrigatoriamente em PORTUGUÊS '
-          '(ex: Sodium → Sódio, Urea → Ureia, Hemoglobin → Hemoglobina, '
-          'Platelets → Plaquetas, WBC → Leucócitos).';
+            '(ex: Sodium → Sódio, Urea → Ureia, Hemoglobin → Hemoglobina, '
+            'Platelets → Plaquetas, WBC → Leucócitos).';
 
     return '''
 Você é um extrator especializado de laudos laboratoriais médicos para o MedCases Pro.
@@ -312,16 +312,22 @@ INSTRUÇÕES CRÍTICAS:
   // ── Safety settings (igual ao GeminiService principal) ────────────────
 
   static List<Map<String, String>> _safetySettings() => [
-    {'category': 'HARM_CATEGORY_HARASSMENT',        'threshold': 'BLOCK_NONE'},
-    {'category': 'HARM_CATEGORY_HATE_SPEECH',       'threshold': 'BLOCK_NONE'},
-    {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'},
-    {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'},
-  ];
+        {'category': 'HARM_CATEGORY_HARASSMENT', 'threshold': 'BLOCK_NONE'},
+        {'category': 'HARM_CATEGORY_HATE_SPEECH', 'threshold': 'BLOCK_NONE'},
+        {
+          'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+          'threshold': 'BLOCK_NONE'
+        },
+        {
+          'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          'threshold': 'BLOCK_NONE'
+        },
+      ];
 
   // ── Guard: API key ────────────────────────────────────────────────────
 
   static void _assertApiKey() {
-    if (!GeminiService.hasApiKey) {
+    if (!GeminiService.providerTransportAvailable) {
       throw LabParseException(
         'Gemini API Key não configurada. '
         'Conecte sua conta Google no menu lateral.',

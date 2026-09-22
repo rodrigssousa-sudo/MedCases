@@ -1,7 +1,9 @@
 import 'dart:async';
+import '../monthly_usage_ledger.dart';
+import '../entitlement_service.dart';
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+import '../provider_gateway_http.dart' as http;
 
 import '../../models/study_workspace_model.dart';
 import '../gemini_service.dart';
@@ -66,118 +68,141 @@ final class StudyLargeFileExtractionService {
     required int byteLength,
     required Stream<List<int>> byteStream,
     required bool isEs,
+    int? audioDurationMs,
   }) async {
-    if (!StudyLongInputPolicy.supports(type)) {
-      throw StateError('study_long_input_type_not_supported');
+    UsageReservation? usage;
+    var completed = false;
+    if (type == StudySourceType.uploadedAudio) {
+      if (audioDurationMs == null || audioDurationMs <= 0)
+        throw StateError('AUDIO_DURATION_REQUIRED');
+      await EntitlementService.instance.refreshAuthoritativeTier();
+      usage = await MonthlyUsageLedger.instance.begin(
+          operationId: 'stream-$sourceId',
+          kinds: {UsageKind.transcription},
+          maximumMs: audioDurationMs);
     }
-    if (!StudyEducationalMaterialPolicy.binaryRemoteExtractionEnabled) {
-      throw StateError('study_binary_extraction_disabled');
-    }
-    if (StudyEducationalMaterialPolicy.realPatientMaterialAllowed) {
-      throw StateError('study_long_input_patient_material_policy_invalid');
-    }
-    if (byteLength <= 0) throw StateError('study_file_empty');
-    if (byteLength > StudyLongInputPolicy.maxFilesApiBytes) {
-      throw StateError('study_file_over_2gb');
-    }
-    if (type == StudySourceType.pdf &&
-        byteLength > StudyLongInputPolicy.maxPdfBytes) {
-      throw StateError('study_pdf_over_50mb');
-    }
-    if (!_mimeAllowed(type, mimeType)) {
-      throw StateError('study_long_input_mime_not_allowed');
-    }
-    if (!GeminiService.hasApiKey || GeminiService.apiKeyForLab.trim().isEmpty) {
-      throw StateError('study_ai_not_ready');
-    }
-
-    final apiKey = GeminiService.apiKeyForLab.trim();
-    final client = http.Client();
-    _RemoteStudyFile? remote;
-    StudyExtraction? extraction;
-    Object? primaryError;
-    StackTrace? primaryStack;
-
     try {
-      remote = await _upload(
-        client: client,
-        apiKey: apiKey,
-        fileName: fileName,
-        mimeType: mimeType,
-        byteLength: byteLength,
-        byteStream: byteStream,
-      );
-      remote = await _waitUntilActive(
-        client: client,
-        apiKey: apiKey,
-        file: remote,
-      );
-
-      if (type == StudySourceType.uploadedAudio) {
-        final audioTokens = await _countTokens(
-          client: client,
-          apiKey: apiKey,
-          file: remote,
-        );
-        if (audioTokens <= 0) {
-          throw StateError('study_audio_duration_unavailable');
-        }
-        if (audioTokens > StudyLongInputPolicy.maxUploadedAudioTokens) {
-          throw StateError('study_audio_over_4h');
-        }
-
-        final estimatedDurationMs =
-            (audioTokens * 1000 / StudyLongInputPolicy.audioTokensPerSecond)
-                .round();
-
-        extraction = await _extractAudio(
-          client: client,
-          apiKey: apiKey,
-          file: remote,
-          sourceId: sourceId,
-          fileName: fileName,
-          isEs: isEs,
-          estimatedDurationMs: estimatedDurationMs,
-        );
-      } else {
-        extraction = await _extractPdf(
-          client: client,
-          apiKey: apiKey,
-          file: remote,
-          sourceId: sourceId,
-          fileName: fileName,
-          isEs: isEs,
-        );
+      if (!StudyLongInputPolicy.supports(type)) {
+        throw StateError('study_long_input_type_not_supported');
       }
-    } catch (error, stack) {
-      primaryError = error;
-      primaryStack = stack;
-    }
+      if (!StudyEducationalMaterialPolicy.binaryRemoteExtractionEnabled) {
+        throw StateError('study_binary_extraction_disabled');
+      }
+      if (StudyEducationalMaterialPolicy.realPatientMaterialAllowed) {
+        throw StateError('study_long_input_patient_material_policy_invalid');
+      }
+      if (byteLength <= 0) throw StateError('study_file_empty');
+      if (byteLength > StudyLongInputPolicy.maxFilesApiBytes) {
+        throw StateError('study_file_over_2gb');
+      }
+      if (type == StudySourceType.pdf &&
+          byteLength > StudyLongInputPolicy.maxPdfBytes) {
+        throw StateError('study_pdf_over_50mb');
+      }
+      if (!_mimeAllowed(type, mimeType)) {
+        throw StateError('study_long_input_mime_not_allowed');
+      }
+      if (!GeminiService.providerTransportAvailable ||
+          GeminiService.gatewayTransportMarker.trim().isEmpty) {
+        throw StateError('study_ai_not_ready');
+      }
 
-    Object? cleanupError;
-    if (remote != null) {
+      final apiKey = GeminiService.gatewayTransportMarker.trim();
+      final client =
+          http.Client(defaultHeaders: usage?.serverHeaders ?? const {});
+      _RemoteStudyFile? remote;
+      StudyExtraction? extraction;
+      Object? primaryError;
+      StackTrace? primaryStack;
+
       try {
-        await _delete(
+        remote = await _upload(
           client: client,
           apiKey: apiKey,
-          fileName: remote.name,
+          fileName: fileName,
+          mimeType: mimeType,
+          byteLength: byteLength,
+          byteStream: byteStream,
         );
-      } catch (error) {
-        cleanupError = error;
-      }
-    }
-    client.close();
+        remote = await _waitUntilActive(
+          client: client,
+          apiKey: apiKey,
+          file: remote,
+        );
 
-    if (cleanupError != null) {
-      throw StateError('study_remote_file_cleanup_failed');
+        if (type == StudySourceType.uploadedAudio) {
+          final audioTokens = await _countTokens(
+            client: client,
+            apiKey: apiKey,
+            file: remote,
+          );
+          if (audioTokens <= 0) {
+            throw StateError('study_audio_duration_unavailable');
+          }
+          if (audioTokens > StudyLongInputPolicy.maxUploadedAudioTokens) {
+            throw StateError('study_audio_over_4h');
+          }
+
+          final estimatedDurationMs =
+              (audioTokens * 1000 / StudyLongInputPolicy.audioTokensPerSecond)
+                  .round();
+
+          extraction = await _extractAudio(
+            client: client,
+            apiKey: apiKey,
+            file: remote,
+            sourceId: sourceId,
+            fileName: fileName,
+            isEs: isEs,
+            estimatedDurationMs: estimatedDurationMs,
+          );
+        } else {
+          extraction = await _extractPdf(
+            client: client,
+            apiKey: apiKey,
+            file: remote,
+            sourceId: sourceId,
+            fileName: fileName,
+            isEs: isEs,
+          );
+        }
+      } catch (error, stack) {
+        primaryError = error;
+        primaryStack = stack;
+      }
+
+      Object? cleanupError;
+      if (remote != null) {
+        try {
+          await _delete(
+            client: client,
+            apiKey: apiKey,
+            fileName: remote.name,
+          );
+        } catch (error) {
+          cleanupError = error;
+        }
+      }
+      client.close();
+
+      if (cleanupError != null) {
+        throw StateError('study_remote_file_cleanup_failed');
+      }
+      if (primaryError != null) {
+        Error.throwWithStackTrace(primaryError, primaryStack!);
+      }
+      if (extraction == null) {
+        throw StateError('study_long_input_extraction_missing');
+      }
+      if (usage != null && !usage.authorizes(UsageKind.transcription))
+        throw StateError('TRANSCRIPTION_USER_CHANGED');
+      completed = true;
+      return extraction;
+    } finally {
+      if (usage != null)
+        await usage.finish(
+            actualMs: completed ? usage.maximumMs : 0, success: completed);
     }
-    if (primaryError != null) {
-      Error.throwWithStackTrace(primaryError, primaryStack!);
-    }
-    if (extraction == null) {
-      throw StateError('study_long_input_extraction_missing');
-    }
-    return extraction;
   }
 
   static Future<_RemoteStudyFile> _upload({

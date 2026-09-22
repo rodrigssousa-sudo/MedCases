@@ -92,7 +92,8 @@ void main() {
     test('buffer bruto continua acumulando texto clínico integral', () {
       expect(
         ai,
-        contains("_messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));"),
+        matches(RegExp(
+            r"_messages\.add\(\s*_ChatMsg\(\s*mode: requestMode,\s*role: 'ai',\s*text: cleanedChunk")),
       );
       expect(ai, contains('text: cleanedChunk,'));
     });

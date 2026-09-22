@@ -184,8 +184,8 @@ class _RevenueCatPurchaseSheetState extends State<RevenueCatPurchaseSheet> {
             Text(
               _plan == RevenueCatPlan.monthly
                   ? (es
-                      ? '1 mes gratis para nuevos clientes elegibles; después se renueva mensualmente.'
-                      : '1 mês grátis para novos clientes elegíveis; depois renova mensalmente.')
+                      ? 'Las ofertas de prueba, cuando estén disponibles, dependen de la elegibilidad y las condiciones de la tienda.'
+                      : 'As ofertas de teste, quando disponíveis, dependem da elegibilidade e das condições da loja.')
                   : (es
                       ? 'Suscripción anual con renovación automática.'
                       : 'Assinatura anual com renovação automática.'),

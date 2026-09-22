@@ -1,41 +1,36 @@
+import '../widgets/clinical_entrypoints.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_3A_V2_B_R1_GENERIC_CONTEXTS
 import 'dart:ui';
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart'; // BUILD 296+: AuthService.currentUser guard
 import '../services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
-import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/app_provider.dart';
-import '../services/firestore_service.dart';
 import '../widgets/common_widgets.dart';
 import '../models/drug_model.dart';
 import '../services/drug_interaction_service.dart';
 import '../services/notification_service.dart';
-import 'cockpit_screen.dart';
 import 'internacion/internacion_screen.dart';
 import 'internacion/services/internacion_persistence.dart' show PacienteSession;
 import 'drugs_screen.dart' show DrugsScreen, showDrugDetailSheet;
 import 'prescripciones_screen.dart'
     show PrescripcionesScreen, prescriptionModels;
-import 'tools_screen.dart'
-    show PediatricsTabContent, ToolsScreen, toolsScreenTabNotifier;
+import 'tools_screen.dart' show PediatricsTabContent, toolsScreenTabNotifier;
 import 'calculadora_screen.dart' show CalculadoraScreen;
 import 'prescripciones_screen.dart';
 import 'drug_interactions_screen.dart';
 import 'protocols_screen.dart' show openProtocolById, showProtocolDetail;
-import '../models/protocol_model.dart';
 import 'avaliacao_screen.dart';
 import '../widgets/meu_plantao_dashboard.dart';
 import '../home_v2/components/home_v2_modules_view.dart';
 import '../home_v2/theme/home_v2_palette.dart';
-import 'ai_screen.dart' show AiScreen;
+import 'ai_screen.dart' show AiScreen, AiPendingQuery, AiRequestMode;
 import '../home_v2/components/chat/inline_chat_view.dart';
 import 'ai/widgets/streaming_text_drain.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -272,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
       dark = context.select<AppProvider, bool>((p) => p.darkMode);
       isEs = context.select<AppProvider, bool>((p) => p.lang == 'es');
       p = context.read<AppProvider>();
-    } catch (e, st) {
+    } catch (e) {
       debugPrint(
           '[BUILD297][HomeScreen] component_skipped reason=provider_not_ready error=$e');
       // Fallback seguro: mostra spinner centralizado enquanto provider carrega.
@@ -853,80 +848,6 @@ class _HomeSafeLoadingShell extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // GREETING — boas-vindas com nome do usuário
 // ─────────────────────────────────────────────────────────────────────────────
-class _Greeting extends StatelessWidget {
-  final AppProvider p;
-  final bool dark;
-  final bool isEs;
-  const _Greeting({required this.p, required this.dark, required this.isEs});
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    final name = p.currentUser?.displayName ?? '';
-    final first = name.isNotEmpty ? name.split(' ').first : '';
-
-    return Row(children: [
-      // Avatar
-      Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            colors: [Color(0xFF0D6B57), Color(0xFF0F1116)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          border: Border.all(
-            color: const Color(0xFF0D6B57).withOpacity(0.3),
-            width: 1.5,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            first.isNotEmpty ? first[0].toUpperCase() : 'M',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFFFFE8A6),
-            ),
-          ),
-        ),
-      ),
-      const SizedBox(width: 12),
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            isEs ? 'Bienvenido' : 'Bem-vindo',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: c.textHint,
-              letterSpacing: 0.3,
-            ),
-          ),
-          if (first.isNotEmpty)
-            Text(
-              first,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: c.textPrimary,
-                letterSpacing: -0.5,
-              ),
-            ),
-          Text(
-            isEs ? 'Apoyo clínico educativo' : 'Apoio clínico educativo',
-            style: TextStyle(
-              fontSize: 11,
-              color: c.textHint,
-            ),
-          ),
-        ]),
-      ),
-    ]);
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SEARCH BAR — abre bottom sheet de busca unificada
@@ -1045,7 +966,7 @@ class _SearchSheetState extends State<_SearchSheet> {
     final q = _q.toLowerCase().trim();
 
     // Fármacos — visível apenas na Web
-    final drugs = (q.isEmpty || !kIsWeb)
+    final drugs = q.isEmpty
         ? <DrugModel>[]
         : p.drugsDB
             .where((d) =>
@@ -1229,12 +1150,8 @@ class _SearchSheetState extends State<_SearchSheet> {
                                   divColor: divColor,
                                   onTap: () async {
                                     Navigator.pop(context);
-                                    // Registra como recente imediatamente
-                                    await homeRegisterRecent(
-                                        'drug', d.id, d.name,
-                                        p: context.read<AppProvider>());
                                     if (context.mounted) {
-                                      showDrugDetailSheet(context, d);
+                                      openDrugFromHomeSearch(context, d.id);
                                     }
                                   },
                                 )),
@@ -1867,9 +1784,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   int _sttSessionEpoch = 0;
 
   // MedCases IA Official Blue palette — Build 138
-  static const _kAiBlue = Color(0xFF1B6FD8);
-  static const _kAiBlueBg = Color(0xFF252930);
-  static const _kAiBlueBord = Color(0xFF60A5FA);
 
   // ── Histórico de mensagens (multi-turn inline) ────────────────────────────
   // Cada item: {'role': 'user'|'ai', 'text': '...', 'isError': bool}
@@ -1906,15 +1820,14 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   // BUILD 434 [PASSO 2]: trava idempotente de carregamento de histórico.
   // Impede race conditions quando didUpdateWidget dispara _loadChatHistory()
   // em paralelo com uma chamada anterior ainda pendente.
-  bool _isLoadingHistory = false;
+
   // UID do último carregamento bem-sucedido — evita re-fetch desnecessário
   // quando o widget rebuilda sem mudança de usuário.
-  String? _lastLoadedUid;
+
   // BUILD 435 [PASSO 1]: flag de cache vazio no boot.
   // true  → última tentativa retornou vazio (permission-denied ou cache ocluído).
   // Permite re-fetch quando geminiConnected transita false→true, mesmo que
   // _lastLoadedUid já esteja setado para o mesmo UID.
-  bool _lastLoadWasEmpty = false;
 
   @override
   void initState() {
@@ -1964,8 +1877,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
             _streaming = '';
             _thinking = false;
             _sessionId = null;
-            _lastLoadedUid = null;
-            _lastLoadWasEmpty = true;
           });
         }
       }
@@ -1994,192 +1905,10 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   // TRAVA DE UID (_lastLoadedUid):
   //   Impede re-fetch desnecessário quando o widget rebuilda por mudança de dark/isEs
   //   sem mudança de usuário — o histórico já está em _messages, nada a fazer.
-  Future<void> _loadChatHistory() async {
-    if (!mounted) return;
-    // Trava de concorrência: aborta se carregamento já em voo
-    if (_isLoadingHistory) {
-      debugPrint(
-          '[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=already_loading');
-      return;
-    }
-
-    AppProvider p;
-    try {
-      p = context.read<AppProvider>();
-    } catch (_) {
-      debugPrint(
-          '[BUILD434][HomeInlineChat] _loadChatHistory skipped reason=provider_not_ready');
-      return;
-    }
-
-    final uid = p.currentUser?.uid;
-    // BUILD 435 [PASSO 1]: trava de UID ampliada.
-    // Aborta somente se já carregamos COM SUCESSO (cache não estava vazio).
-    // Se _lastLoadWasEmpty == true, permite nova tentativa (post-OAuth retry).
-    if (uid == null || (uid == _lastLoadedUid && !_lastLoadWasEmpty)) {
-      debugPrint('[BUILD435][HomeInlineChat] _loadChatHistory skipped '
-          'reason=${uid == null ? "no_uid" : "already_loaded_uid=$uid"} '
-          'lastWasEmpty=$_lastLoadWasEmpty');
-      return;
-    }
-
-    _isLoadingHistory = true;
-    debugPrint('[BUILD441][HomeInlineChat] _loadChatHistory START uid=$uid '
-        'lastWasEmpty=$_lastLoadWasEmpty');
-
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (!mounted) return;
-      final histKey = '${uid}_$_kHistKey';
-
-      // ── LAYER 1: SharedPreferences local (sempre disponível, imune a Firestore) ──
-      // BUILD 441 [P1]: lê o cache local PRIMEIRO — sem depender do Firestore.
-      // Se o cache estiver preenchido (gravado por _homePersistTurn), restaura
-      // imediatamente. Só vai ao Firestore se o cache estiver vazio.
-      final raw = prefs.getString(histKey);
-      if (raw != null && raw.isNotEmpty) {
-        // Cache local encontrado — restaura sem tocar no Firestore
-        _lastLoadWasEmpty = false;
-        _restoreMessagesFromRaw(raw, uid);
-        return;
-      }
-
-      // ── LAYER 2: Typed Firestore fetch via loadHistoriesTypedForUi() ──────────
-      // MICRO-BUILD 463-A.2-R3: Replaced the old loadHistories() + exception-cascade
-      // with strict algebraic result routing on FirestoreLoadResult<T> variants.
-      //
-      // INVARIANT: The widget lifecycle binds exclusively to the typed result.
-      //   No independent evaluation of provider.authBarrierState is permitted here.
-      //   All branch decisions flow from the sealed variant returned by the provider.
-      //
-      // _FsSuccess<T>    → hydrate _messages, mount timeline, _lastLoadWasEmpty=false.
-      // _FsEmpty<T>      → ONLY legitimate path for confirmed_new_user emission.
-      // _FsAuthDenied<T> → abort state mutations; degraded_wait; preserve old cache.
-      // _FsOffline<T>    → hold existing state; freeze screen; mount degradation badge.
-      // _FsFailure<T>    → hold existing state; freeze screen; allow retry.
-      debugPrint('[BUILD442][HomeInlineChat] cache_local_vazio uid=$uid '
-          '→ loadHistoriesTypedForUi() Firestore (typed)');
-
-      if (!mounted) return;
-      final fsResult =
-          await context.read<AppProvider>().loadHistoriesTypedForUi(uid);
-      if (!mounted) return;
-
-      if (fsResult.isSuccess) {
-        // ── _FsSuccess: hydrate active memory structures, mount timeline ────
-        // Provider already wrote _myHistories + persisted cache in loadHistoriesTypedForUi.
-        // Re-read local cache to populate _messages for this widget.
-        final rawAfterFetch =
-            (await SharedPreferences.getInstance()).getString(histKey);
-        if (!mounted) return;
-        if (rawAfterFetch != null && rawAfterFetch.isNotEmpty) {
-          _lastLoadWasEmpty = false;
-          _restoreMessagesFromRaw(rawAfterFetch, uid);
-        } else {
-          // Firestore returned data but local persist is not yet visible — rare
-          // race; treat as new session (provider data is in memory via stream).
-          _lastLoadedUid = uid;
-          _lastLoadWasEmpty = false;
-          debugPrint('[BUILD442][HomeInlineChat] confirmed_new_user uid=$uid '
-              '→ _FsSuccess but no local cache, sessão inicializada');
-        }
-      } else if (fsResult.isEmpty) {
-        // ── _FsEmpty: ONLY legitimate confirmed_new_user path ───────────────
-        // Firestore responded authoritatively: this uid has zero history docs.
-        // The auth barrier was open (loadHistoriesTypedForUi verifies via the
-        // dual-uid barrier inside FirestoreService.loadHistoriesTyped).
-        _lastLoadedUid = uid;
-        _lastLoadWasEmpty = false; // engaja trava; sem mais retries até OAuth
-        debugPrint('[BUILD442][HomeInlineChat] confirmed_new_user uid=$uid '
-            '→ _FsEmpty (Firestore authReady confirmed), sessão inicializada vazia');
-        if (mounted) setState(() {}); // força rebuild do campo de texto
-      } else if (fsResult.isAuthDenied) {
-        // ── _FsAuthDenied: abort all state mutations — degraded_wait ─────────
-        // Firebase SDK session not established. No authoritative confirmation
-        // that this user has no history. Do NOT emit confirmed_new_user.
-        // Do NOT modify _lastLoadedUid guard — preserve retry on next auth event.
-        // Do NOT set _lastLoadWasEmpty=false — keep retry window open.
-        _lastLoadedUid = uid;
-        _lastLoadWasEmpty = true; // permits retry on next auth resolution
-        debugPrint(
-            '[UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait '
-            'uid=$uid result=_FsAuthDenied → cache frozen, retry_permitted');
-        // Do NOT setState() — avoid UI flicker on a recoverable auth state.
-      } else {
-        // ── _FsOffline / _FsFailure: hold existing state; freeze rendering ───
-        // Retain in-memory data. Do not overwrite any cache. Permit retry.
-        _lastLoadedUid = uid;
-        _lastLoadWasEmpty = true;
-        debugPrint(
-            '[BUILD442][HomeInlineChat] result=${fsResult.runtimeType} uid=$uid '
-            '→ state frozen, retry permitido na próxima transição');
-      }
-    } catch (e) {
-      debugPrint(
-          '[BUILD441][HomeInlineChat] _loadChatHistory ERROR $e uid=$uid');
-    } finally {
-      _isLoadingHistory = false;
-    }
-  }
 
   // ── BUILD 441: helper de parsing e restauração reutilizável ─────────────────
   // Extrai a sessão mais recente de um JSON bruto e restaura _messages.
   // Idempotente: só aplica setState se _messages ainda estiver vazio.
-  void _restoreMessagesFromRaw(String raw, String? uid) {
-    List<dynamic> sessions = [];
-    try {
-      final decoded = jsonDecode(raw);
-      if (decoded is List) sessions = decoded;
-    } catch (_) {
-      debugPrint('[BUILD441][HomeInlineChat] JSON parse error uid=$uid');
-      _lastLoadedUid = uid;
-      return;
-    }
-    if (sessions.isEmpty || !mounted) {
-      _lastLoadedUid = uid;
-      return;
-    }
-
-    final latest = sessions.first;
-    if (latest is! Map) {
-      _lastLoadedUid = uid;
-      return;
-    }
-    final msgs = latest['messages'];
-    if (msgs is! List || msgs.isEmpty) {
-      _lastLoadedUid = uid;
-      return;
-    }
-
-    final restored = msgs
-        .whereType<Map>()
-        .map((m) => {
-              'role': m['role']?.toString() ?? 'unknown',
-              'text': m['text']?.toString() ?? '',
-              'isError': false,
-            })
-        .where((m) => (m['text'] as String).isNotEmpty)
-        .toList();
-
-    if (restored.isEmpty || !mounted) {
-      _lastLoadedUid = uid;
-      return;
-    }
-
-    if (_messages.isEmpty) {
-      setState(() {
-        _messages.addAll(restored);
-        _sessionId = latest['id']?.toString();
-      });
-      _lastLoadWasEmpty = false;
-      debugPrint('[BUILD441][HomeInlineChat] RESTORED '
-          '${restored.length} msgs session=${_sessionId ?? "?"} uid=$uid');
-    } else {
-      debugPrint('[BUILD441][HomeInlineChat] skip_restore '
-          'reason=session_active uid=$uid');
-    }
-    _lastLoadedUid = uid;
-  }
 
   @override
   void didUpdateWidget(_HomeInlineChat old) {
@@ -2343,7 +2072,15 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
 
     final String message;
 
-    if (code == 'permission_denied') {
+    if (code == 'usage_connection_required') {
+      message = widget.isEs
+          ? 'Conéctate a internet para autorizar el audio y vuelve a intentar.'
+          : 'Conecte-se à internet para autorizar o áudio e tente novamente.';
+    } else if (code == 'monthly_usage_limit') {
+      message = widget.isEs
+          ? 'Límite mensual de audio alcanzado.'
+          : 'Limite mensal de áudio atingido.';
+    } else if (code == 'permission_denied') {
       message = widget.isEs
           ? 'Permiso de micrófono denegado. '
               'Habilítalo en Ajustes.'
@@ -2659,7 +2396,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
           // Limpa histórico pendente e define apenas a primeira query
           AiScreen.pendingHistory.value =
               []; // limpa histórico anterior da IA tab
-          AiScreen.pendingQuery.value = firstUserMsg;
+          AiScreen.pendingQuery.value =
+              AiPendingQuery(query: firstUserMsg, mode: AiRequestMode.estudo);
         }
       }
       widget.onNavigateToAi(2);
@@ -2836,7 +2574,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
   void _goToAiTab([String? q, bool withHistory = false]) {
     if (q != null && q.isNotEmpty) {
       // Chip de atalho ou campo preenchido: dispara nova query na tela de IA
-      AiScreen.pendingQuery.value = q;
+      AiScreen.pendingQuery.value =
+          AiPendingQuery(query: q, mode: AiRequestMode.estudo);
     } else if (withHistory) {
       // Build 1556 Fix: escopo local do _HomeInlineChatState corrigido.
       //
@@ -2892,8 +2631,6 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
           _streaming = '';
           _thinking = false;
           _sessionId = null;
-          _lastLoadedUid = null;
-          _lastLoadWasEmpty = true;
         });
       }
     });
@@ -3353,30 +3090,6 @@ String _cleanHomeAiText(String raw) {
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS INTERNOS — bolha de resposta IA + avatar
 // ─────────────────────────────────────────────────────────────────────────────
-class _AiBubbleAvatar extends StatelessWidget {
-  final bool dark;
-  const _AiBubbleAvatar({required this.dark});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 28,
-      height: 28,
-      margin: const EdgeInsets.only(right: 8, top: 2),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: dark ? const Color(0xFF162A1C) : const Color(0xFFE6F7EF),
-      ),
-      child: Center(
-        child: Icon(
-          Icons.psychology_alt_rounded,
-          size: 14,
-          color: dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57),
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ORDEM 13: Sanitizador de markdown parcial para streaming (home mini-chat).
@@ -3445,7 +3158,7 @@ class _AiBubble extends StatefulWidget {
   final bool isStreaming;
   final bool dark;
   final bool isEs;
-  final VoidCallback? onExpand;
+  final VoidCallback? onExpand = null;
 
   const _AiBubble({
     required this.text,
@@ -3453,7 +3166,6 @@ class _AiBubble extends StatefulWidget {
     required this.isStreaming,
     required this.dark,
     required this.isEs,
-    this.onExpand,
   });
 
   @override
@@ -3879,7 +3591,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
   final _focus = FocusNode();
 
   static const _kGreen = Color(0xFF0D7A55);
-  static const _kGreenBg = Color(0xFF0D7A55);
+
   static const _kGreenBord = Color(0xFF0D9E6E);
 
   // Chips de exemplo bilíngues
@@ -3909,7 +3621,8 @@ class _HomeIaCardState extends State<_HomeIaCard> {
   void _navigate([String? query]) {
     final q = (query ?? _ctrl.text).trim();
     if (q.isNotEmpty) {
-      AiScreen.pendingQuery.value = q;
+      AiScreen.pendingQuery.value =
+          AiPendingQuery(query: q, mode: AiRequestMode.estudo);
     }
     _ctrl.clear();
     _focus.unfocus();
@@ -3977,7 +3690,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
             Row(children: [
               // SUPER ORDEM MASTER 15 M2: M+ verde ESTRITO — somente sessão de IA real do usuário.
               // geminiConnected (OAuth Google) OU openAiKey pessoal.
-              // EXCLUI GeminiService.hasApiKey (chave servidor) que causava M+ falso.
+              // EXCLUI GeminiService.providerTransportAvailable (chave servidor) que causava M+ falso.
               Builder(builder: (ctx) {
                 final p = ctx.watch<AppProvider>();
                 final connected = p.geminiConnected || p.openAiKey.isNotEmpty;
@@ -4568,13 +4281,6 @@ class _HomeCalculadoraFarmacosCardState
     );
   }
 
-  void _openFarmacos() {
-    AppHaptics.light(context);
-    Navigator.of(context).push(
-      _HomeScreenState._slide(const _FarmacosShell()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     // B141: Vibrant Purple — #7e22ce → #a855f7
@@ -4787,52 +4493,6 @@ class _HomeDivider extends StatelessWidget {
 // HOME SECTION HEADER — título de seção com ícone e linha decorativa
 // Usado em: HISTORIAL CLÍNICO (bloco 3 do mobile layout Build 93)
 // ─────────────────────────────────────────────────────────────────────────────
-class _HomeSectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool dark;
-
-  const _HomeSectionHeader({
-    required this.icon,
-    required this.label,
-    required this.dark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final iconColor = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
-    final textColor =
-        dark ? Colors.white.withOpacity(0.72) : const Color(0xFF374151);
-    final lineColor =
-        dark ? Colors.white.withOpacity(0.08) : const Color(0xFFE5E7EB);
-
-    return Row(children: [
-      Container(
-        width: 28,
-        height: 28,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: iconColor.withOpacity(0.12),
-        ),
-        child: Icon(icon, size: 15, color: iconColor),
-      ),
-      const SizedBox(width: 8),
-      Text(
-        label,
-        style: TextStyle(
-          fontSize: 11.5,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.8,
-          color: textColor,
-        ),
-      ),
-      const SizedBox(width: 10),
-      Expanded(
-        child: Container(height: 1, color: lineColor),
-      ),
-    ]);
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CARD METADE — Adulto / Pediatría (lado a lado)
@@ -7390,7 +7050,7 @@ class _RecentesSheetState extends State<_RecentesSheet> {
                                 try {
                                   final drug =
                                       p.drugsDB.firstWhere((d) => d.id == id);
-                                  showDrugDetailSheet(ctx, drug);
+                                  openDrugFromRecent(ctx, drug.id);
                                 } catch (_) {
                                   Navigator.of(ctx).push(
                                     _HomeScreenState._slide(
@@ -7564,7 +7224,7 @@ class _FavoritosSheet extends StatelessWidget {
                                           : const Color(0xFFCBD5E0)),
                                   onTap: () {
                                     Navigator.pop(context);
-                                    showDrugDetailSheet(context, d);
+                                    openDrugFromFavorite(context, d.id);
                                   },
                                 ),
                                 Container(height: 1, color: divColor),
@@ -8214,7 +7874,7 @@ class _ShellHeader extends StatelessWidget {
   final String subtitle;
   // BUILD 282 ORDEM 4: showIcon=false oculta o card-ícone lateral
   // (usado na Pediatria para seguir o design canônico sem ícone no header).
-  final bool showIcon;
+  final bool showIcon = true;
 
   const _ShellHeader({
     required this.gradientColors,
@@ -8223,7 +7883,6 @@ class _ShellHeader extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.subtitle,
-    this.showIcon = true,
   });
 
   @override
@@ -8576,39 +8235,6 @@ class _FarmacosShellState extends State<_FarmacosShell> {
 // ─────────────────────────────────────────────────────────────────────────────
 // CALCULADORAS SHELL
 // ─────────────────────────────────────────────────────────────────────────────
-class _CalculadorasShell extends StatelessWidget {
-  const _CalculadorasShell();
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.watch<AppProvider>();
-    final dark = p.darkMode;
-    final isEs = p.lang == 'es';
-
-    return Scaffold(
-      backgroundColor: dark ? const Color(0xFF1A1D23) : const Color(0xFFFFFFFF),
-      body: Column(children: [
-        // BUILD 282-CROMATICO: Gradiente idêntico ao card da Home (topLeft→bottomRight)
-        // 3B0764→7E22CE→A855F7 — mesmo cromatismo, continuidade visual perfeita.
-        _ShellHeader(
-          gradientColors: const [
-            Color(0xFF3B0764),
-            Color(0xFF7E22CE),
-            Color(0xFFA855F7)
-          ],
-          accentColor: const Color(
-              0xFFE9D5FF), // lilás claro — consistente com home card
-          icon: Icons.calculate_rounded,
-          label: 'CALCULADORA CLÍNICA',
-          subtitle: isEs
-              ? 'Nefrología · Cardio · Hepatología'
-              : 'Nefrologia · Cardio · Hepatologia',
-        ),
-        const Expanded(child: ToolsScreen(hideHeader: true)),
-      ]),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PRESCRIPCIONES SHELL
@@ -8725,7 +8351,17 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
     final isEs = p.lang == 'es';
     final res = <_SearchResult>[];
 
-    // BUILD 325: busca local de fármacos removida — dados via WebView calculadora.
+    // Discovery transports canonical identity only; details resolve and gate
+    // again in DrugsScreen before any clinical document is displayed.
+    for (final drug in p.drugsDB
+        .where((d) => d.id.contains(q) || d.name.toLowerCase().contains(q))
+        .take(_maxPerCat)) {
+      res.add(_SearchResult(
+          cat: _SearchCat.drug,
+          title: drug.name,
+          subtitle: drug.id,
+          data: drug));
+    }
 
     // ── 2. Protocolos ──────────────────────────────────────────────────────
     int protoCount = 0;
@@ -8778,7 +8414,7 @@ class _GlobalSearchModalState extends State<_GlobalSearchModal> {
     Navigator.pop(context); // fecha modal
     switch (r.cat) {
       case _SearchCat.drug:
-        showDrugDetailSheet(context, r.data as DrugModel);
+        openDrugFromGlobalSearch(context, (r.data as DrugModel).id);
       case _SearchCat.protocol:
         showProtocolDetail(context, r.data as dynamic);
       case _SearchCat.prescription:

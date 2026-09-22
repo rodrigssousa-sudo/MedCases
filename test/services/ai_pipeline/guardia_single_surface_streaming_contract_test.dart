@@ -24,7 +24,7 @@ void main() {
         expect(
           RegExp(
             r'final\s+bool\s+useGuardiaPresentation\s*=\s*'
-            r'!_longResponse\s*&&\s*!isSafeCard\s*;',
+            r'!messageLongResponse\s*&&\s*!isSafeCard\s*;',
           ).hasMatch(screen),
           isTrue,
         );
@@ -113,7 +113,7 @@ void main() {
         expect(
           screen,
           contains(
-            '(_longResponse || isSafeCard) &&',
+            '(messageLongResponse || isSafeCard) &&',
           ),
         );
         expect(
@@ -139,7 +139,7 @@ void main() {
         );
         expect(
           RegExp(
-            r'_longResponse\s*&&\s*'
+            r'messageLongResponse\s*&&\s*'
             r'msg\.clinicalOutput\s*!=\s*null',
           ).hasMatch(screen),
           isTrue,

@@ -1614,7 +1614,7 @@ class _PendingScreenState extends State<_PendingScreen> {
           platform: kIsWeb ? 'web' : 'ios',
         );
         debugPrint(
-            '[PendingScreen] ensureUserProfileExists concluído — uid=${firebaseUser.uid}');
+            '[PendingScreen] ensureUserProfileExists concluído — uid=[redacted]');
       } else {
         // Fallback: se currentUser for null, tenta approveUser diretamente
         await AuthService.approveUser(widget.user.uid, 'system-auto');

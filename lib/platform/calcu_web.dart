@@ -1,3 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/calculator_mcc1_bridge_service.dart';
+import '../services/entitlement_service.dart';
 import 'dart:convert';
 import 'dart:async';
 // calcu_web.dart — Implementação Web da calculadora embutida.
@@ -20,6 +23,7 @@ import '../screens/upgrade_screen.dart';
 /// Sufixo único por URL — evita re-registro do mesmo viewType se o widget
 /// for reconstruído com a mesma URL (platformViewRegistry lança se re-registrar).
 final _registered = <String>{};
+final _frames = <String, html.IFrameElement>{};
 
 /// Constrói o widget iframe embutido para Flutter Web.
 /// [url] — URL completa a carregar (ex.: https://www.medcasescalcu.com?lang=pt)
@@ -30,7 +34,7 @@ Widget buildCalculadoraWebView(String url, bool dark) {
 
   if (!_registered.contains(viewType)) {
     ui_web.platformViewRegistry.registerViewFactory(viewType, (int viewId) {
-      return html.IFrameElement()
+      final frame = html.IFrameElement()
         ..src = url
         ..style.border = 'none'
         ..style.width = '100%'
@@ -39,6 +43,8 @@ Widget buildCalculadoraWebView(String url, bool dark) {
         ..allow = 'fullscreen'
         ..setAttribute('allowfullscreen', 'true')
         ..setAttribute('loading', 'lazy');
+      _frames[viewType] = frame;
+      return frame;
     });
     _registered.add(viewType);
   }
@@ -72,9 +78,57 @@ class _CalcuWebFrameState extends State<_CalcuWebFrame> {
   };
 
   StreamSubscription<html.MessageEvent>? _premiumBridgeSubscription;
+  StreamSubscription<User?>? _authSubscription;
+  int _sessionEpoch = 0;
+  bool _sendingSession = false;
+  void _revokeFrame() {
+    _sessionEpoch++;
+    _frames[widget.viewType]?.contentWindow?.postMessage(
+        jsonEncode({'type': 'medcases:session-revoke'}),
+        Uri.parse(widget.url).origin);
+  }
+
+  Future<void> _sendSession() async {
+    if (_sendingSession || !mounted) return;
+    final owner = FirebaseAuth.instance.currentUser?.uid;
+    if (owner == null) {
+      _revokeFrame();
+      return;
+    }
+    _sendingSession = true;
+    final epoch = _sessionEpoch;
+    var retryForNewOwner = false;
+    try {
+      final session = await const CalculatorMcc1BridgeService().issueSession();
+      if (!mounted) return;
+      if (epoch != _sessionEpoch ||
+          owner != FirebaseAuth.instance.currentUser?.uid) {
+        retryForNewOwner = true;
+        return;
+      }
+      _frames[widget.viewType]?.contentWindow?.postMessage(
+          jsonEncode({'type': 'medcases:session', 'token': session.token}),
+          Uri.parse(widget.url).origin);
+    } catch (_) {
+      if (epoch != _sessionEpoch) {
+        retryForNewOwner = true;
+      } else {
+        _revokeFrame();
+      }
+    } finally {
+      _sendingSession = false;
+      if (retryForNewOwner && mounted) unawaited(_sendSession());
+    }
+  }
+
+  void _entitlementChanged() {
+    _revokeFrame();
+    unawaited(_sendSession());
+  }
 
   void _handlePremiumBridgeMessage(html.MessageEvent event) {
-    if (!_premiumAllowedOrigins.contains(event.origin)) return;
+    if (!_premiumAllowedOrigins.contains(event.origin) ||
+        event.source != _frames[widget.viewType]?.contentWindow) return;
 
     final raw = event.data;
     if (raw is! String || raw.isEmpty) return;
@@ -82,6 +136,10 @@ class _CalcuWebFrameState extends State<_CalcuWebFrame> {
     try {
       final decoded = jsonDecode(raw);
       if (decoded is! Map) return;
+      if (decoded['type'] == 'medcases:session-request') {
+        unawaited(_sendSession());
+        return;
+      }
       if (decoded['type']?.toString() != 'medcases:premium-upgrade') return;
 
       final requested =
@@ -103,6 +161,10 @@ class _CalcuWebFrameState extends State<_CalcuWebFrame> {
     super.initState();
     _premiumBridgeSubscription =
         html.window.onMessage.listen(_handlePremiumBridgeMessage);
+    EntitlementService.instance.addListener(_entitlementChanged);
+    _authSubscription = FirebaseAuth.instance
+        .authStateChanges()
+        .listen((_) => _entitlementChanged());
     // Simula tempo de carregamento — o iframe não expõe onLoad via HtmlElementView.
     // Após 4s consideramos carregado (comportamento conservador).
     Future.delayed(const Duration(milliseconds: 3500), () {
@@ -112,6 +174,9 @@ class _CalcuWebFrameState extends State<_CalcuWebFrame> {
 
   @override
   void dispose() {
+    _revokeFrame();
+    EntitlementService.instance.removeListener(_entitlementChanged);
+    _authSubscription?.cancel();
     _premiumBridgeSubscription?.cancel();
     super.dispose();
   }

@@ -32,17 +32,17 @@ import '../services/gemini_service.dart';
 
 // ── Paleta local (dark-first) ─────────────────────────────────────────────────
 class _C {
-  static const bg          = Color(0xFF101614);
-  static const surface     = Color(0xFF17211D);
-  static const green       = Color(0xFF46E28C);
+  static const bg = Color(0xFF101614);
+  static const surface = Color(0xFF17211D);
+  static const green = Color(0xFF46E28C);
   // ignore: unused_field
-  static const greenDark   = Color(0xFF10B981);
-  static const amber       = Color(0xFFF59E0B);
-  static const amberBg     = Color(0x1DF59E0B);
-  static const border      = Color(0x1AFFFFFF);
+  static const greenDark = Color(0xFF10B981);
+  static const amber = Color(0xFFF59E0B);
+  static const amberBg = Color(0x1DF59E0B);
+  static const border = Color(0x1AFFFFFF);
   static const textPrimary = Color(0xFFEEF2EE);
-  static const textSec     = Color(0xFF7A9486);
-  static const red         = Color(0xFFEF4444);
+  static const textSec = Color(0xFF7A9486);
+  static const red = Color(0xFFEF4444);
 }
 
 // ── Entry point público ────────────────────────────────────────────────────────
@@ -71,10 +71,10 @@ class _AnalyzeExamSheet extends StatefulWidget {
 }
 
 class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
-  bool   _loading      = false;
-  String _loadingMsg   = '';
-  final  _textCtrl     = TextEditingController();
-  bool   _showTextInput = false;
+  bool _loading = false;
+  String _loadingMsg = '';
+  final _textCtrl = TextEditingController();
+  bool _showTextInput = false;
 
   bool get _isEs => widget.locale.toLowerCase() == 'es';
 
@@ -125,10 +125,8 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       if (photo == null) return;
       final bytes = await photo.readAsBytes();
       await _analyzeImage(bytes, _guessMime(photo.name));
-
     } else if (status.isPermanentlyDenied) {
       _showPermissionDeniedDialog(isCamera: true);
-
     } else {
       // Negado desta vez
       _showError(_isEs
@@ -168,10 +166,8 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
       if (image == null) return;
       final bytes = await image.readAsBytes();
       await _analyzeImage(bytes, _guessMime(image.name));
-
     } else if (status.isPermanentlyDenied) {
       _showPermissionDeniedDialog(isCamera: false);
-
     } else {
       _showError(_isEs
           ? 'Se necesita acceso a la galería para seleccionar el examen.'
@@ -241,9 +237,8 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
 
   Future<void> _analyzePdf(Uint8List bytes) async {
     if (!_checkConnected()) return;
-    _startLoading(_isEs
-        ? 'Procesando PDF del examen...'
-        : 'Processando PDF do exame...');
+    _startLoading(
+        _isEs ? 'Procesando PDF del examen...' : 'Processando PDF do exame...');
     try {
       final results = await LabParserService.parsePdf(
         bytes,
@@ -310,7 +305,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
   // ── Helpers de estado ───────────────────────────────────────────────────────
 
   bool _checkConnected() {
-    if (!GeminiService.hasApiKey) {
+    if (!GeminiService.providerTransportAvailable) {
       _showError(_isEs
           ? 'Conecta tu cuenta Google en el menú lateral para usar esta función.'
           : 'Conecte sua conta Google no menu lateral para usar esta função.');
@@ -322,7 +317,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
   void _startLoading(String msg) {
     if (!mounted) return;
     setState(() {
-      _loading    = true;
+      _loading = true;
       _loadingMsg = msg;
     });
   }
@@ -344,14 +339,15 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
         title: Row(children: [
           Icon(
             isCamera ? Icons.camera_alt_rounded : Icons.photo_library_rounded,
-            color: _C.amber, size: 20,
+            color: _C.amber,
+            size: 20,
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               _isEs
                   ? (isCamera ? 'Acceso a la Cámara' : 'Acceso a la Galería')
-                  : (isCamera ? 'Acesso à Câmera'    : 'Acesso à Galeria'),
+                  : (isCamera ? 'Acesso à Câmera' : 'Acesso à Galeria'),
               style: const TextStyle(
                 color: _C.textPrimary,
                 fontSize: 16,
@@ -364,14 +360,14 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
           _isEs
               ? (isCamera
                   ? 'MedCases Pro necesita acceso a la cámara para fotografiar '
-                    'exámenes clínicos. Toque "Configuración" para habilitar el permiso.'
+                      'exámenes clínicos. Toque "Configuración" para habilitar el permiso.'
                   : 'MedCases Pro necesita acceso a la galería para importar '
-                    'imágenes de exámenes. Toque "Configuración" para habilitar el permiso.')
+                      'imágenes de exámenes. Toque "Configuración" para habilitar el permiso.')
               : (isCamera
                   ? 'O MedCases Pro precisa de acesso à câmera para fotografar '
-                    'exames clínicos. Toque em "Configurações" para habilitar a permissão.'
+                      'exames clínicos. Toque em "Configurações" para habilitar a permissão.'
                   : 'O MedCases Pro precisa de acesso à galeria para importar '
-                    'imagens de exames. Toque em "Configurações" para habilitar a permissão.'),
+                      'imagens de exames. Toque em "Configurações" para habilitar a permissão.'),
           style: const TextStyle(color: _C.textSec, fontSize: 13, height: 1.5),
         ),
         actions: [
@@ -389,8 +385,8 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
             },
             child: Text(
               _isEs ? 'Configuración' : 'Configurações',
-              style: const TextStyle(
-                color: _C.green, fontWeight: FontWeight.w700),
+              style:
+                  const TextStyle(color: _C.green, fontWeight: FontWeight.w700),
             ),
           ),
         ],
@@ -426,9 +422,9 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
 
   static String _guessMime(String filename) {
     final ext = filename.toLowerCase().split('.').last;
-    if (ext == 'png')  return 'image/png';
+    if (ext == 'png') return 'image/png';
     if (ext == 'webp') return 'image/webp';
-    if (ext == 'gif')  return 'image/gif';
+    if (ext == 'gif') return 'image/gif';
     return 'image/jpeg';
   }
 
@@ -452,11 +448,11 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
                   // Handle
                   Center(
                     child: Container(
-                      width: 38, height: 4,
+                      width: 38,
+                      height: 4,
                       decoration: BoxDecoration(
                         color: Colors.white24,
                         borderRadius: BorderRadius.circular(10),
@@ -472,7 +468,9 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isEs ? 'Analizar Examen Clínico' : 'Analisar Exame Clínico',
+                          isEs
+                              ? 'Analizar Examen Clínico'
+                              : 'Analisar Exame Clínico',
                           style: const TextStyle(
                             color: _C.textPrimary,
                             fontSize: 20,
@@ -558,7 +556,7 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                   ),
 
                   // Aviso de conexão se não conectado
-                  if (!GeminiService.hasApiKey) ...[
+                  if (!GeminiService.providerTransportAvailable) ...[
                     const SizedBox(height: 12),
                     _NoApiKeyBanner(isEs: isEs),
                   ],
@@ -581,7 +579,8 @@ class _AnalyzeExamSheetState extends State<_AnalyzeExamSheet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      width: 40, height: 40,
+                      width: 40,
+                      height: 40,
                       child: CircularProgressIndicator(
                         color: _C.green,
                         strokeWidth: 3,
@@ -666,8 +665,8 @@ class _TipRow extends StatelessWidget {
       Icon(icon, size: 14, color: _C.green),
       const SizedBox(width: 8),
       Expanded(
-        child: Text(text,
-          style: const TextStyle(color: _C.textSec, fontSize: 12)),
+        child:
+            Text(text, style: const TextStyle(color: _C.textSec, fontSize: 12)),
       ),
     ]);
   }
@@ -675,11 +674,11 @@ class _TipRow extends StatelessWidget {
 
 // ── Tile de opção ──────────────────────────────────────────────────────────────
 class _OptionTile extends StatelessWidget {
-  final IconData       icon;
-  final String         title;
-  final String         subtitle;
-  final VoidCallback?  onTap;      // nullable → desabilitado durante loading
-  final Widget?        trailing;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap; // nullable → desabilitado durante loading
+  final Widget? trailing;
 
   const _OptionTile({
     required this.icon,
@@ -713,7 +712,8 @@ class _OptionTile extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               child: Row(children: [
                 Container(
-                  width: 40, height: 40,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: _C.green.withOpacity(0.10),
@@ -726,17 +726,17 @@ class _OptionTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(title,
-                        style: const TextStyle(
-                          color: _C.textPrimary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        )),
+                          style: const TextStyle(
+                            color: _C.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          )),
                       const SizedBox(height: 1),
                       Text(subtitle,
-                        style: const TextStyle(
-                          color: _C.textSec,
-                          fontSize: 12,
-                        )),
+                          style: const TextStyle(
+                            color: _C.textSec,
+                            fontSize: 12,
+                          )),
                     ],
                   ),
                 ),
@@ -783,17 +783,17 @@ class _TextInputPanel extends StatelessWidget {
           decoration: InputDecoration(
             hintText: isEs
                 ? 'Pegue aquí el texto del laboratorio...\n\n'
-                  'Ejemplo:\n'
-                  'Na: 138 mEq/L\n'
-                  'K: 4.2 mEq/L\n'
-                  'Cr: 1.1 mg/dL\n'
-                  'Hb: 12.5 g/dL'
+                    'Ejemplo:\n'
+                    'Na: 138 mEq/L\n'
+                    'K: 4.2 mEq/L\n'
+                    'Cr: 1.1 mg/dL\n'
+                    'Hb: 12.5 g/dL'
                 : 'Cole aqui o texto do laudo...\n\n'
-                  'Exemplo:\n'
-                  'Na: 138 mEq/L\n'
-                  'K: 4,2 mEq/L\n'
-                  'Cr: 1,1 mg/dL\n'
-                  'Hb: 12,5 g/dL',
+                    'Exemplo:\n'
+                    'Na: 138 mEq/L\n'
+                    'K: 4,2 mEq/L\n'
+                    'Cr: 1,1 mg/dL\n'
+                    'Hb: 12,5 g/dL',
             hintStyle: const TextStyle(
               color: _C.textSec,
               fontSize: 12,
@@ -860,9 +860,9 @@ class _NoApiKeyBanner extends StatelessWidget {
           child: Text(
             isEs
                 ? 'IA no conectada. Ve al menú lateral → "Conectar IA" para '
-                  'activar la extracción automática.'
+                    'activar la extracción automática.'
                 : 'IA não conectada. Acesse o menu lateral → "Conectar IA" para '
-                  'ativar a extração automática.',
+                    'ativar a extração automática.',
             style: const TextStyle(
               color: _C.amber,
               fontSize: 12,

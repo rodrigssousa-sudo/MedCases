@@ -1,3 +1,4 @@
+import 'ai/safety/clinical_request_safety.dart';
 import 'clinical_thread_manager.dart';
 
 /// ClinicalSessionMemory — Memória clínica estruturada da sessão atual
@@ -14,6 +15,7 @@ import 'clinical_thread_manager.dart';
 ///   AiService serializa via buildMemoryBlock() → injeta no system prompt →
 ///   ChatScreen atualiza estado após cada resposta via update*() helpers
 class ClinicalSessionMemory {
+  final ClinicalSafetyMemory safety = ClinicalSafetyMemory();
 
   // ── Estado clínico estruturado ─────────────────────────────────────────────
 
@@ -211,6 +213,7 @@ class ClinicalSessionMemory {
 
   /// Reseta toda a memória clínica (chamado na mudança de tema ou manualmente)
   void reset() {
+    safety.reset();
     activeProblems.clear();
     workingDiagnoses.clear();
     previousMeds.clear();

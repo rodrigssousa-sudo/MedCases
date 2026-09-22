@@ -43,9 +43,12 @@ async function withServer({ env, fetchImpl }, action) {
     next();
   };
 
+  const usageState={uid:'firebase-test-user-001',state:'reserved',attempt:'fixture-attempt',kinds:['transcription'],maximumMs:60000};
+  const db={collection:name=>({doc:id=>({get:async()=>({exists:name==='usageReservations'&&id==='a'.repeat(64),data:()=>usageState})})})};
   const runtimeSurface = registerAudioTranscriptionRoutes({
     app,
     authenticateFirebaseToken: firebaseAuthStub,
+    db,
     log: logger(),
     isProd: false,
     env,
@@ -64,7 +67,7 @@ async function withServer({ env, fetchImpl }, action) {
   const address = server.address();
   const base = `http://127.0.0.1:${address.port}`;
   try {
-    return await action({ base, runtimeSurface });
+    return await action({ base, runtimeSurface, usageState });
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
@@ -77,6 +80,8 @@ async function grant(base, sessionId = 'session_audio_001', dedupe = 'session_au
       Authorization: 'Bearer firebase-synthetic-token',
       'Content-Type': 'application/json',
       'X-Request-ID': 'server-test-grant',
+      'X-MedCases-Usage-Reservation': 'a'.repeat(64),
+      'X-MedCases-Usage-Attempt': 'fixture-attempt',
     },
     body: JSON.stringify({
       sessionId,
@@ -304,4 +309,16 @@ test('backend audio owner contains no durable raw-audio filesystem persistence',
   assert.match(source, /sensitivePayloadLogged:\s*false/);
   assert.match(source, /productionCallsiteWired:\s*false/);
   assert.match(source, /productionCutoverEnabled:\s*false/);
+});
+
+
+test('missing receipt cannot create audio grant; completed receipt cannot execute a signed grant',async()=>{
+ const f=fixture();let calls=0;
+ await withServer({env:f.env,fetchImpl:async()=>{calls++;throw Error('must not call');}},async({base,usageState})=>{
+  const missing=await fetch(`${base}/api/ai/audio/grant`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'session_audio_001',deduplicationKey:'session_audio_001:segment:0',scope:GRANT_SCOPE})});
+  assert.equal(missing.status,403);
+  const g=await grant(base);assert.equal(g.response.status,200);usageState.state='completed';
+  const response=await fetch(`${base}/api/ai/audio/transcriptions`,{method:'POST',headers:{Authorization:`Bearer ${g.json.accessToken}`,'X-MedCases-Idempotency-Key':'session_audio_001:segment:0','X-MedCases-Audio-Retention':'transient-delete'},body:transcriptionForm()});
+  assert.equal(response.status,403);assert.equal(calls,0);
+ });
 });

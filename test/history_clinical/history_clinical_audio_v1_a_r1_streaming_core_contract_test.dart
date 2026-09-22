@@ -35,7 +35,9 @@ void main() {
         contains('void Function(String text)? onPartialResult'),
       );
     }
-    expect(helper, contains('onPartialResult: onPartialResult'));
+    expect(helper, contains('onPartialResult: (text)'));
+    expect(helper, contains('if (!ownsSession()) return;'));
+    expect(helper, contains('onPartialResult?.call(text);'));
   });
 
   test('mobile provider replaces partial hypotheses and guards old sessions',

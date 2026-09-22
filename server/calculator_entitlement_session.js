@@ -76,6 +76,14 @@ function resolveMedCasesTier(userDoc = {}, nowMs = Date.now()) {
     Number.isFinite(billingExpiresAtMs) &&
     billingExpiresAtMs > Number(nowMs);
 
+  // An explicit billing record takes precedence over stale legacy plan labels.
+  // Active trials and cancelled-but-unexpired periods share this same decision.
+  const hasBillingRecord = Object.prototype.hasOwnProperty.call(userDoc, 'billingEntitlementActive') ||
+    Object.prototype.hasOwnProperty.call(userDoc, 'billingEntitlementId') ||
+    Object.prototype.hasOwnProperty.call(userDoc, 'billingEntitlementExpiresAtMs');
+  if (hasBillingRecord && !premiumByRevenueCat) {
+    return Object.freeze({ tier: 'free', source: 'server_billing_inactive_or_expired' });
+  }
   if (premiumByRevenueCat || premiumByPlan || premiumBySubscription) {
     return Object.freeze({
       tier: 'premium',
@@ -137,7 +145,9 @@ function issueCalculatorSession({
     cap: capabilitiesForTier(entitlement.tier),
     aud,
     iat: now,
-    exp: now + ttl,
+    exp: entitlement.source === 'server_revenuecat_entitlement'
+      ? Math.min(now + ttl, Math.floor(Number(userDoc.billingEntitlementExpiresAtMs) / 1000))
+      : now + ttl,
     jti: clean(sessionId) || crypto.randomUUID(),
   });
 

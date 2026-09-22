@@ -1,7 +1,9 @@
 import 'dart:convert';
+import '../monthly_usage_ledger.dart';
+import '../entitlement_service.dart';
 import 'dart:typed_data';
 
-import 'package:http/http.dart' as http;
+import '../provider_gateway_http.dart' as http;
 
 import '../../models/study_workspace_model.dart';
 import '../gemini_service.dart';
@@ -57,22 +59,43 @@ final class StudyMultimodalExtractionService {
     required String mimeType,
     required Uint8List bytes,
     required bool isEs,
+    int? audioDurationMs,
+    UsageReservation? usageReservation,
   }) async {
-    if (!StudyEducationalMaterialPolicy.binaryRemoteExtractionEnabled) {
-      throw StateError('study_binary_extraction_disabled');
+    final audio = type == StudySourceType.uploadedAudio ||
+        type == StudySourceType.recordedAudio;
+    UsageReservation? ownUsage;
+    var completed = false;
+    if (audio && usageReservation == null) {
+      if (audioDurationMs == null || audioDurationMs <= 0)
+        throw StateError('AUDIO_DURATION_REQUIRED');
+      await EntitlementService.instance.refreshAuthoritativeTier();
+      ownUsage = await MonthlyUsageLedger.instance.begin(
+          operationId: 'binary-$sourceId',
+          kinds: {UsageKind.transcription},
+          maximumMs: audioDurationMs);
     }
-    if (bytes.isEmpty) throw StateError('study_file_empty');
-    if (bytes.length > StudyEducationalMaterialPolicy.maxInlineBytes) {
-      throw StateError('study_file_over_20mb');
-    }
-    if (!_mimeAllowed(type, mimeType)) {
-      throw StateError('study_mime_not_allowed');
-    }
-    if (!GeminiService.hasApiKey || GeminiService.apiKeyForLab.trim().isEmpty) {
-      throw StateError('study_ai_not_ready');
-    }
+    final usage = usageReservation ?? ownUsage;
+    try {
+      if (audio &&
+          (usage == null || !usage.authorizes(UsageKind.transcription)))
+        throw StateError('TRANSCRIPTION_QUOTA_REQUIRED');
+      if (!StudyEducationalMaterialPolicy.binaryRemoteExtractionEnabled) {
+        throw StateError('study_binary_extraction_disabled');
+      }
+      if (bytes.isEmpty) throw StateError('study_file_empty');
+      if (bytes.length > StudyEducationalMaterialPolicy.maxInlineBytes) {
+        throw StateError('study_file_over_20mb');
+      }
+      if (!_mimeAllowed(type, mimeType)) {
+        throw StateError('study_mime_not_allowed');
+      }
+      if (!GeminiService.providerTransportAvailable ||
+          GeminiService.gatewayTransportMarker.trim().isEmpty) {
+        throw StateError('study_ai_not_ready');
+      }
 
-    final prompt = """
+      final prompt = """
 MODO ESTUDIO MEDCASES — EXTRACCIÓN DE MATERIAL EDUCATIVO.
 Archivo: $fileName
 Idioma de salida: ${isEs ? "español" : "português"}.
@@ -91,50 +114,62 @@ Devuelve SOLO JSON válido:
 ]}
 """;
 
-    final body = <String, Object?>{
-      'contents': <Object?>[
-        <String, Object?>{
-          'role': 'user',
-          'parts': <Object?>[
-            <String, Object?>{'text': prompt},
-            <String, Object?>{
-              'inlineData': <String, Object?>{
-                'mimeType': mimeType,
-                'data': base64Encode(bytes),
+      final body = <String, Object?>{
+        'contents': <Object?>[
+          <String, Object?>{
+            'role': 'user',
+            'parts': <Object?>[
+              <String, Object?>{'text': prompt},
+              <String, Object?>{
+                'inlineData': <String, Object?>{
+                  'mimeType': mimeType,
+                  'data': base64Encode(bytes),
+                },
               },
-            },
-          ],
+            ],
+          },
+        ],
+        'generationConfig': <String, Object?>{
+          'temperature': 0.1,
+          'responseMimeType': 'application/json',
+          'maxOutputTokens': 8192,
         },
-      ],
-      'generationConfig': <String, Object?>{
-        'temperature': 0.1,
-        'responseMimeType': 'application/json',
-        'maxOutputTokens': 8192,
-      },
-    };
+      };
 
-    final uri = Uri.parse(
-      '$_endpoint?key='
-      '${Uri.encodeQueryComponent(GeminiService.apiKeyForLab)}',
-    );
+      final uri = Uri.parse(
+        '$_endpoint?key='
+        '${Uri.encodeQueryComponent(GeminiService.gatewayTransportMarker)}',
+      );
 
-    final response = await http
-        .post(
-          uri,
-          headers: const <String, String>{'content-type': 'application/json'},
-          body: jsonEncode(body),
-        )
-        .timeout(const Duration(seconds: 90));
+      final response = await http
+          .post(
+            uri,
+            headers: <String, String>{
+              'content-type': 'application/json',
+              if (audio) ...?usage?.serverHeaders
+            },
+            body: jsonEncode(body),
+          )
+          .timeout(const Duration(seconds: 90));
 
-    if (response.statusCode != 200) {
-      throw StateError('study_extract_http_${response.statusCode}');
+      if (response.statusCode != 200) {
+        throw StateError('study_extract_http_${response.statusCode}');
+      }
+
+      final decoded = _decode(
+        sourceId: sourceId,
+        type: type,
+        raw: _candidateText(response.body),
+      );
+      if (audio && !usage!.authorizes(UsageKind.transcription))
+        throw StateError('TRANSCRIPTION_USER_CHANGED');
+      completed = true;
+      return decoded;
+    } finally {
+      if (ownUsage != null)
+        await ownUsage.finish(
+            actualMs: completed ? ownUsage.maximumMs : 0, success: completed);
     }
-
-    return _decode(
-      sourceId: sourceId,
-      type: type,
-      raw: _candidateText(response.body),
-    );
   }
 
   static bool _mimeAllowed(StudySourceType type, String mimeType) {

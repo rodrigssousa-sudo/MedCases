@@ -1,0 +1,170 @@
+{
+  "id": "noradrenalina",
+  "category": "emergencia",
+  "icon": "💊",
+  "color": null,
+  "colorTxt": null,
+  "pt": {
+    "name": "Noradrenalina",
+    "class": "Vasopressor agonista alfa-adrenérgico predominante",
+    "pharmacologicClass": "Vasopressor agonista alfa-adrenérgico predominante",
+    "commercialNames": "Marcas variam por país.",
+    "presentation": "Concentrados e bolsas prontas em concentrações diversas; não inferir equivalência.",
+    "presentations": "Concentrados e bolsas prontas em concentrações diversas; não inferir equivalência.",
+    "mechanism": "Mecanismo específico da classe conforme fonte primária e formulação.",
+    "pharmacodynamics": "Mecanismo específico da classe conforme fonte primária e formulação.",
+    "pharmacokinetics": "Revisar absorção, metabolismo, meia-vida e eliminação na fonte primária.",
+    "indications": "Restauração da pressão arterial em hipotensão aguda grave após correção adequada da hipovolemia.",
+    "dose": "Infusão IV titulada à meta hemodinâmica. Rótulos históricos iniciam 8-12 microgramas/min e mantêm 2-4 microgramas/min, mas protocolos por peso e concentrações variam; exigir concentração, acesso, bomba e monitorização explícitos.",
+    "pediatricDose": "Requer tabela completa por idade/peso; automação pediátrica bloqueada.",
+    "renalDose": "Avaliar função renal e tabela específica; não inferir ajuste.",
+    "hepaticDose": "Avaliar hepatopatia; não inferir ajuste.",
+    "commonAdverseEffects": "Isquemia periférica, ansiedade, cefaleia, dispneia e bradicardia reflexa.",
+    "dangerousAdverseEffects": "Arritmias, isquemia/necrose, extravasamento, hipertensão grave e redução de perfusão de órgãos.",
+    "adverseEffects": "Isquemia periférica, ansiedade, cefaleia, dispneia e bradicardia reflexa.; Arritmias, isquemia/necrose, extravasamento, hipertensão grave e redução de perfusão de órgãos.",
+    "contraindications": "Hipersensibilidade e contraindicações específicas da bula.",
+    "interactions": "Revisar interações farmacodinâmicas e metabólicas aplicáveis.",
+    "monitoring": "Monitorar eficácia, tolerabilidade, função orgânica e eventos graves.",
+    "administration": "Usar somente via/formulação rotulada; respeitar técnica e alimentos.",
+    "preparation": "Confirmar concentração, diluição e estabilidade no produto; não inferir.",
+    "infusionProtocol": "Quando IV, usar bomba/monitorização e protocolo da bula; caso contrário não aplicável.",
+    "pregnancy": "Avaliar risco fetal, indicação e bula.",
+    "lactation": "Avaliar excreção e risco-benefício.",
+    "specialPopulations": "Individualizar em idosos, comorbidades, gestação e disfunção orgânica.",
+    "patientEducation": "Orientar adesão, sinais de alarme e não interromper abruptamente quando aplicável.",
+    "clinicalPearls": "Formulações e combinações não são automaticamente intercambiáveis.",
+    "guidelineRecommendations": "Usar conforme diretriz oficial da indicação e jurisdição.",
+    "safetyFlags": "Arritmias, isquemia/necrose, extravasamento, hipertensão grave e redução de perfusão de órgãos.",
+    "alerts": "Arritmias, isquemia/necrose, extravasamento, hipertensão grave e redução de perfusão de órgãos.; monitorização obrigatória",
+    "references": [
+      "Fonte primária/oficial - https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=norepinephrine",
+      "Fonte primária/oficial - https://www.accessdata.fda.gov/drugsatfda_docs/label/2020/007513s038lbl.pdf"
+    ],
+    "ref": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=norepinephrine"
+  },
+  "es": {
+    "name": "Noradrenalina",
+    "class": "Vasopressor agonista alfa-adrenérgico predominante",
+    "pharmacologicClass": "Vasopressor agonista alfa-adrenérgico predominante",
+    "commercialNames": "Marcas variam por país.",
+    "presentation": "Concentrados y bolsas prontas em concentrações diversas; no inferir equivalência.",
+    "presentations": "Concentrados y bolsas prontas em concentrações diversas; no inferir equivalência.",
+    "mechanism": "Mecanismo específico da classe conforme fonte primária y formulação.",
+    "pharmacodynamics": "Mecanismo específico da classe conforme fonte primária y formulação.",
+    "pharmacokinetics": "Revisar absorção, metabolismo, meia-vida y eliminação na fonte primária.",
+    "indications": "Restauração da pressão arterial em hipotensão aguda grave após correção adequada da hipovolemia.",
+    "dose": "Infusão IV titulada à meta hemodinâmica. Rótulos históricos iniciam 8-12 microgramas/min y mantêm 2-4 microgramas/min, mas protocolos por peso y concentrações variam; exigir concentração, acesso, bomba y monitorização explícitos.",
+    "pediatricDose": "Requer tabela completa por idade/peso; automação pediátrica bloqueada.",
+    "renalDose": "Avaliar función renal y tabela específica; no inferir ajuste.",
+    "hepaticDose": "Avaliar hepatopatia; no inferir ajuste.",
+    "commonAdverseEffects": "Isquemia periférica, ansiedade, cefaleia, dispneia y bradicardia reflexa.",
+    "dangerousAdverseEffects": "Arritmias, isquemia/necrose, extravasamento, hipertensão grave y redução de perfusão de órgãos.",
+    "adverseEffects": "Isquemia periférica, ansiedade, cefaleia, dispneia y bradicardia reflexa.; Arritmias, isquemia/necrose, extravasamento, hipertensão grave y redução de perfusão de órgãos.",
+    "contraindications": "Hipersensibilidade y contraindicações específicas da bula.",
+    "interactions": "Revisar interações farmacodinâmicas y metabólicas aplicáveis.",
+    "monitoring": "Monitorar eficácia, tolerabilidade, función orgânica y eventos graves.",
+    "administration": "Usar somente via/formulação rotulada; respeitar técnica y alimentos.",
+    "preparation": "Confirmar concentração, diluição y estabilidade no produto; no inferir.",
+    "infusionProtocol": "Quando IV, usar bomba/monitorização y protocolo da bula; caso contrário no aplicável.",
+    "pregnancy": "Avaliar riesgo fetal, indicação y bula.",
+    "lactation": "Avaliar excreção y riesgo-benefício.",
+    "specialPopulations": "Individualizar em idosos, comorbidades, gestação y disfunción orgânica.",
+    "patientEducation": "Orientar adesão, sinais de alarme y no interromper abruptamente quando aplicável.",
+    "clinicalPearls": "Formulações y combinações no são automaticamente intercambiáveis.",
+    "guidelineRecommendations": "Usar conforme diretriz oficial da indicação y jurisdição.",
+    "safetyFlags": "Arritmias, isquemia/necrose, extravasamento, hipertensão grave y redução de perfusão de órgãos.",
+    "alerts": "Arritmias, isquemia/necrose, extravasamento, hipertensão grave y redução de perfusão de órgãos.; monitorização obrigatória",
+    "references": [
+      "Fonte primária/oficial - https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=norepinephrine",
+      "Fonte primária/oficial - https://www.accessdata.fda.gov/drugsatfda_docs/label/2020/007513s038lbl.pdf"
+    ],
+    "ref": "https://dailymed.nlm.nih.gov/dailymed/search.cfm?query=norepinephrine"
+  },
+  "name": {
+    "pt": "Noradrenalina",
+    "es": "Noradrenalina"
+  },
+  "keywords": [
+    "noradrenalina",
+    "noradrenalina (hemitartarato de)"
+  ],
+  "dataVersion": "clinical-data-v1-b2437901deb78b1e",
+  "clinicalContentSha256": "b2437901deb78b1eeb3119ee415221916ce300d3c825122141897d5b793b513d",
+  "source": "medcases-calculadora",
+  "schema": "legacy-v1",
+  "sourceModule": "emergencia.js",
+  "mc_clinical_enrichment_v1": {
+    "schema": "medcases.clinical-enrichment.v1",
+    "drug_key": "noradrenalina",
+    "stage_a_batch": "04",
+    "stage_a_reviewed_at": "2026-08-24",
+    "stage_a_source_policy": "official_regulatory_label_admin_preparation_references",
+    "sections": {
+      "administracao_preparo": {
+        "pt": [
+          {
+            "label": "Diluição",
+            "text": "Diluir antes da administração. A rotulagem consultada orienta preparo em dextrose 5% ou em solução de cloreto de sódio que contenha 5% de dextrose; solução salina isolada não é recomendada para essa apresentação concentrada."
+          },
+          {
+            "label": "Acesso venoso",
+            "text": "Infundir em veia calibrosa e verificar frequentemente o local de infusão para reduzir o risco de extravasamento e necrose tecidual."
+          },
+          {
+            "label": "Estabilidade / compatibilidade",
+            "text": "A solução diluída pode ser mantida por até 24 horas em temperatura ambiente, protegida da luz. Evitar contato com sais de ferro, álcalis ou agentes oxidantes."
+          }
+        ],
+        "es": [
+          {
+            "label": "Dilución",
+            "text": "Diluir antes de administrar. El rotulado consultado indica preparación en dextrosa al 5% o en solución de cloruro de sodio que contenga 5% de dextrosa; la solución salina sola no se recomienda para esta presentación concentrada."
+          },
+          {
+            "label": "Acceso venoso",
+            "text": "Infundir en una vena de buen calibre y comprobar frecuentemente el sitio de infusión para reducir el riesgo de extravasación y necrosis tisular."
+          },
+          {
+            "label": "Estabilidad / compatibilidad",
+            "text": "La solución diluida puede mantenerse hasta 24 horas a temperatura ambiente, protegida de la luz. Evitar contacto con sales de hierro, álcalis o agentes oxidantes."
+          }
+        ]
+      },
+      "referencias": {
+        "pt": [
+          {
+            "label": "DailyMed — Norepinephrine Bitartrate Injection",
+            "text": "Fonte oficial/regulatória consultada em 24/08/2026 para Administração/Preparo."
+          }
+        ],
+        "es": [
+          {
+            "label": "DailyMed — Norepinephrine Bitartrate Injection",
+            "text": "Fuente oficial/regulatoria consultada el 24/08/2026 para Administración/Preparación."
+          }
+        ]
+      }
+    },
+    "sources": [
+      {
+        "stage": "A_BATCH04",
+        "id": "dailymed_norepinephrine_4408987e",
+        "title": "DailyMed — Norepinephrine Bitartrate Injection",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4408987e-690a-41ac-9677-e24604fa9793",
+        "reviewed_at": "2026-08-24"
+      }
+    ]
+  },
+  "mc_gold_standard_v1": {
+    "status": "PASS_CLINICAL_HOMOLOGATION",
+    "sourceOwner": "database/emergencia.js",
+    "sourceField": "noradrenalina.mcGoldClinicalV1",
+    "lote": "056",
+    "requiredFields": 33,
+    "approvedSha256": "498cafa4e0fbd5a28b86b77472df89a94eaa0fa96bde0eb3b706fdf18d0e7236",
+    "calculationAuthorized": false,
+    "publicationAuthorized": true,
+    "clinicalPackagePublicationState": "BLOQUEADA",
+    "ownerPublicationAuthorization": "lote002-owner-confirmed"
+  }
+}

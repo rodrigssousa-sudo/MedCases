@@ -1,10 +1,12 @@
+import '../services/monthly_usage_ledger.dart';
+import '../services/entitlement_service.dart';
+import '../services/study/study_file_selection.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_STUDY_WORKSPACE
 import 'dart:ui' as ui;
 
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -48,7 +50,6 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   final Map<String, List<String>> _recordedRawPaths = <String, List<String>>{};
   final Map<String, String> _importedAudioJobIds = <String, String>{};
 
-  List<Study> _library = const <Study>[];
   bool _busy = false;
   bool _noticeAccepted = false;
   StudyArtifactType _artifactType = StudyArtifactType.visualSummary;
@@ -182,7 +183,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
   Future<void> _persistStudy() async {
     await StudyLibraryService.save(_study);
-    _library = await StudyLibraryService.loadAll();
+    await StudyLibraryService.loadAll();
   }
 
   String _addSource(StudySourceType type, String title) {
@@ -243,7 +244,6 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   Future<void> _openLibrary() async {
     var studies = await StudyLibraryService.loadAll();
     if (!mounted) return;
-    _library = studies;
     var deletedCurrent = false;
 
     final selected = await showModalBottomSheet<Study>(
@@ -309,7 +309,6 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
             final refreshed = await StudyLibraryService.loadAll();
             if (!sheetContext.mounted) return;
             setSheetState(() => studies = refreshed);
-            _library = refreshed;
             if (study.id == _study.id) deletedCurrent = true;
           }
 
@@ -748,7 +747,15 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     _replace(source);
     setState(() => _busy = true);
 
+    UsageReservation? transcriptionUsage;
+    var transcriptionComplete = false;
     try {
+      await EntitlementService.instance.refreshAuthoritativeTier();
+      transcriptionUsage = await MonthlyUsageLedger.instance.begin(
+          operationId: 'recorded-$sourceId',
+          kinds: {UsageKind.transcription},
+          maximumMs: handoff.segments
+              .fold<int>(0, (sum, segment) => sum + segment.activeDurationMs));
       final texts = <String>[];
       final refs = <SourceRef>[];
       final paths = handoff.segments.map((segment) => segment.path).toList();
@@ -758,6 +765,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
           await StudyBackgroundTranscriptionCoordinator.tryStart(
         sourceId: sourceId,
         isEs: widget.isEs,
+        usageReservation: transcriptionUsage,
         segments: <StudyBackgroundSegmentSpec>[
           for (final segment in handoff.segments)
             StudyBackgroundSegmentSpec(
@@ -781,6 +789,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
           extraction = await StudyMultimodalExtractionService.binary(
             sourceId: sourceId,
             type: StudySourceType.recordedAudio,
+            usageReservation: transcriptionUsage,
             fileName: 'segment_${segment.index}.m4a',
             mimeType: 'audio/mp4',
             bytes: Uint8List.fromList(bytes),
@@ -810,6 +819,9 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
         await backgroundSession.cleanup();
       }
 
+      await transcriptionUsage.finish(
+          actualMs: transcriptionUsage.maximumMs, success: true);
+      transcriptionComplete = true;
       _recordedRawPaths[sourceId] = List<String>.unmodifiable(paths);
 
       source = source.transition(
@@ -830,10 +842,12 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       await _removeSource(sourceId);
       _message(
         widget.isEs
-            ? 'No fue posible transcribir esta grabación.'
-            : 'Não foi possível transcrever esta gravação.',
+            ? 'No fue posible transcribir. Verifica tu conexión y el saldo mensual de audio.'
+            : 'Não foi possível transcrever. Verifique a conexão e o saldo mensal de áudio.',
       );
     } finally {
+      if (!transcriptionComplete && transcriptionUsage != null)
+        await transcriptionUsage.finish(actualMs: 0, success: false);
       if (mounted) setState(() => _busy = false);
     }
   }
@@ -845,16 +859,24 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     final isLongInput =
         type == StudySourceType.uploadedAudio || type == StudySourceType.pdf;
 
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: extensions,
-      allowMultiple: false,
-      withData: !isLongInput,
-      withReadStream: isLongInput,
-    );
-    if (result == null || result.files.isEmpty) return;
-
-    final file = result.files.single;
+    MeasuredStudyFile? selected;
+    try {
+      selected = await selectStudyFile(
+          audio: type == StudySourceType.uploadedAudio,
+          longInput: isLongInput,
+          extensions: extensions);
+    } catch (_) {
+      _message(widget.isEs
+          ? 'No fue posible medir el audio.'
+          : 'Não foi possível medir o áudio.');
+      return;
+    }
+    if (selected == null) return;
+    if (!mounted) {
+      releaseStudyFile(selected);
+      return;
+    }
+    final file = selected.file;
     final id = _addSource(type, file.name);
     var source = _source(id).transition(StudySourceState.processing);
     _replace(source);
@@ -891,6 +913,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
           type: type,
           fileName: file.name,
           mimeType: _mime(file.name, type),
+          audioDurationMs: selected.durationMs,
           byteLength: file.size,
           byteStream: stream,
           isEs: widget.isEs,
@@ -906,6 +929,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
           type: type,
           fileName: file.name,
           mimeType: _mime(file.name, type),
+          audioDurationMs: selected.durationMs,
           bytes: Uint8List.fromList(bytes),
           isEs: widget.isEs,
         );
@@ -933,6 +957,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                 : 'Não foi possível processar este arquivo.'),
       );
     } finally {
+      releaseStudyFile(selected);
       if (mounted) setState(() => _busy = false);
     }
   }

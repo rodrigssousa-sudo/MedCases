@@ -35,7 +35,8 @@ class _HomeV2PreviewScreenState extends State<HomeV2PreviewScreen> {
 
     if (normalizedQuery.isNotEmpty) {
       AiScreen.pendingHistory.value = [];
-      AiScreen.pendingQuery.value = normalizedQuery;
+      AiScreen.pendingQuery.value =
+          AiPendingQuery(query: normalizedQuery, mode: AiRequestMode.estudo);
     }
 
     widget.onNavigateToAi(2);

@@ -1,0 +1,367 @@
+{
+  "id": "insulina_regular",
+  "category": "gold33",
+  "icon": "💊",
+  "color": null,
+  "colorTxt": null,
+  "keywords": [
+    "insulina_regular"
+  ],
+  "source": "medcases-calculadora",
+  "schema": "premium-v1",
+  "sourceModule": "gold33_nova_lista.js",
+  "pt": {
+    "name": "Insulina humana regular U-100 - HUMULIN R",
+    "class": "Insulina humana de acao curta",
+    "pharmacologicClass": "Hormônio antidiabético; insulina humana recombinante",
+    "mechanism": "Aumenta captacao periferica de glicose e inibe producao hepatica de glicose.",
+    "pharmacodynamics": "Efeito hipoglicemiante varia com dose, via, sitio, fluxo sanguineo, temperatura, atividade fisica e outros fatores.",
+    "pharmacokinetics": "Exposicao e efeito apresentam variabilidade interindividual; o rotulo exige individualizacao por necessidade metabolica e glicemia.",
+    "indications": "Melhora do controle glicemico em adultos e pacientes pediatricos com diabetes mellitus.",
+    "commercialNames": "HUMULIN R nos EUA; marcas/disponibilidade BR/AR nao verificadas.",
+    "presentation": "Solucao injetavel limpida e incolor para SC ou IV sob supervisao.",
+    "presentations": "U-100 = 100 unidades/mL; frasco multidose 10 mL e apresentacoes de 3 mL conforme rotulo. Nao confundir com U-500.",
+    "dose": "Nao existe dose universal. Individualizar por via, necessidade metabolica, glicemia e objetivo. SC: aproximadamente 30 minutos antes da refeicao; IV somente sob supervisao medica.",
+    "pediatricDose": "Indicada em pediatria, mas sem formula universal mg/kg ou U/kg no rotulo. AUTOMATABLE=NO sem protocolo clinico especifico.",
+    "renalDose": "Comprometimento renal pode alterar necessidade de insulina; monitorar glicose com maior frequencia e ajustar individualmente. Sem tabela fixa por eGFR/ClCr.",
+    "hepaticDose": "Comprometimento hepatico pode alterar necessidade de insulina; monitorar e ajustar individualmente. Sem algoritmo numerico fixo.",
+    "commonAdverseEffects": "Hipoglicemia, reacoes no local, lipodistrofia/amilóide cutanea localizada, ganho de peso e edema.",
+    "dangerousAdverseEffects": "Hipoglicemia grave, hipocalemia, hipersensibilidade sistemica e erros de concentracao/produto.",
+    "adverseEffects": "Prurido, rash, lipodistrofia e retencao de sodio/edema podem ocorrer.",
+    "contraindications": "Episodios de hipoglicemia e hipersensibilidade a HUMULIN R ou excipientes.",
+    "interactions": "Fármacos que reduzem ou elevam glicose alteram necessidade; beta-bloqueadores podem mascarar sintomas de hipoglicemia. Mistura somente conforme rotulo.",
+    "monitoring": "Glicemia; potassio especialmente em IV; hipoglicemia; sitios de injecao e mudancas de necessidade com doenca, dieta ou atividade.",
+    "administration": "SC aproximadamente 30 minutos antes das refeicoes, alternando sitios. IV somente sob supervisao com monitorizacao estreita de glicose e potassio.",
+    "preparation": "SC: o rotulo permite diluicao sob supervisao com diluente esteril especifico para U-10 ou U-50. Nao inferir outros diluentes.",
+    "infusionProtocol": "IV: 0,1 a 1 unidade/mL em sistemas contendo NaCl 0,9%, somente sob supervisao. Bolsas preparadas: 48 h refrigeradas e ate 48 h adicionais em temperatura ambiente conforme rotulo.",
+    "pregnancy": "Controle glicemico adequado e essencial; necessidades de insulina podem mudar e exigem monitorizacao individual.",
+    "lactation": "Pode ser utilizada quando clinicamente indicada; necessidades podem mudar no pos-parto.",
+    "specialPopulations": "Pediatria, idosos e disfuncao renal/hepatica requerem ajustes individualizados e monitorizacao mais frequente.",
+    "patientEducation": "Confirmar sempre nome e concentracao; usar seringa U-100 apropriada; reconhecer/tratar hipoglicemia; rotacionar locais.",
+    "clinicalPearls": "U-100 e U-500 diferem cinco vezes em concentracao. Esta ficha valida apenas U-100.",
+    "guidelineRecommendations": "",
+    "safetyFlags": "ALTO_RISCO; HIPOGLICEMIA; HIPOCALemia; U100_NAO_CONFUNDIR_U500; IV_SOMENTE_SUPERVISAO.",
+    "alerts": "Nao automatizar dose total diaria sem protocolo. U-500, bombas e protocolos de cetoacidose exigem fichas proprias.",
+    "references": [
+      "DailyMed/NLM EUA - HUMULIN R U-100, efetivo 16-06-2026. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b519bd83-038c-4ec5-a231-a51ec5cc291f"
+    ],
+    "ref": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b519bd83-038c-4ec5-a231-a51ec5cc291f"
+  },
+  "es": {
+    "name": "Insulina humana regular U-100 - HUMULIN R",
+    "class": "Insulina humana de accion corta",
+    "pharmacologicClass": "Hormona antidiabetica; insulina humana recombinante",
+    "mechanism": "Aumenta captacion periferica de glucosa e inhibe produccion hepatica de glucosa.",
+    "pharmacodynamics": "El efecto hipoglucemiante varia con dosis, via, sitio, flujo sanguineo, temperatura, actividad fisica y otros factores.",
+    "pharmacokinetics": "Exposicion y efecto presentan variabilidad interindividual; el rotulo exige individualizacion por necesidad metabolica y glucemia.",
+    "indications": "Mejora del control glucemico en adultos y pacientes pediatricos con diabetes mellitus.",
+    "commercialNames": "HUMULIN R en EE.UU.; marcas/disponibilidad BR/AR no verificadas.",
+    "presentation": "Solucion inyectable transparente e incolora para SC o IV bajo supervision.",
+    "presentations": "U-100 = 100 unidades/mL; vial multidosis 10 mL y presentaciones de 3 mL segun rotulo. No confundir con U-500.",
+    "dose": "No existe dosis universal. Individualizar por via, necesidad metabolica, glucemia y objetivo. SC: aproximadamente 30 minutos antes de la comida; IV solo bajo supervision medica.",
+    "pediatricDose": "Indicada en pediatria, pero sin formula universal mg/kg o U/kg en el rotulo. AUTOMATABLE=NO sin protocolo clinico especifico.",
+    "renalDose": "El compromiso renal puede cambiar requerimiento de insulina; monitorizar glucosa con mayor frecuencia y ajustar individualmente. Sin tabla fija por eGFR/CrCl.",
+    "hepaticDose": "El compromiso hepatico puede cambiar requerimiento de insulina; monitorizar y ajustar individualmente. Sin algoritmo numerico fijo.",
+    "commonAdverseEffects": "Hipoglucemia, reacciones locales, lipodistrofia/amiloidosis cutanea localizada, aumento de peso y edema.",
+    "dangerousAdverseEffects": "Hipoglucemia grave, hipopotasemia, hipersensibilidad sistemica y errores de concentracion/producto.",
+    "adverseEffects": "Prurito, rash, lipodistrofia y retencion de sodio/edema pueden ocurrir.",
+    "contraindications": "Episodios de hipoglucemia e hipersensibilidad a HUMULIN R o excipientes.",
+    "interactions": "Farmacos que reducen o elevan glucosa alteran requerimiento; beta-bloqueantes pueden enmascarar sintomas de hipoglucemia. Mezcla solo segun rotulo.",
+    "monitoring": "Glucemia; potasio especialmente en IV; hipoglucemia; sitios de inyeccion y cambios de requerimiento con enfermedad, dieta o actividad.",
+    "administration": "SC aproximadamente 30 minutos antes de comidas, rotando sitios. IV solo bajo supervision con vigilancia estrecha de glucosa y potasio.",
+    "preparation": "SC: el rotulo permite dilucion bajo supervision con diluyente esteril especifico para U-10 o U-50. No inferir otros diluyentes.",
+    "infusionProtocol": "IV: 0,1 a 1 unidad/mL en sistemas con NaCl 0,9%, solo bajo supervision. Bolsas preparadas: 48 h refrigeradas y hasta 48 h adicionales a temperatura ambiente segun rotulo.",
+    "pregnancy": "El control glucemico adecuado es esencial; requerimientos de insulina pueden cambiar y exigen monitorizacion individual.",
+    "lactation": "Puede utilizarse cuando esta clinicamente indicada; requerimientos pueden cambiar posparto.",
+    "specialPopulations": "Pediatria, mayores y disfuncion renal/hepatica requieren ajustes individualizados y monitorizacion mas frecuente.",
+    "patientEducation": "Confirmar siempre nombre y concentracion; usar jeringa U-100 apropiada; reconocer/tratar hipoglucemia; rotar sitios.",
+    "clinicalPearls": "U-100 y U-500 difieren cinco veces en concentracion. Esta ficha valida solo U-100.",
+    "guidelineRecommendations": "",
+    "safetyFlags": "ALTO_RIESGO; HIPOGLUCEMIA; HIPOPOTASEMIA; U100_NO_CONFUNDIR_U500; IV_SOLO_SUPERVISION.",
+    "alerts": "No automatizar dosis total diaria sin protocolo. U-500, bombas y protocolos de cetoacidosis requieren fichas propias.",
+    "references": [
+      "DailyMed/NLM EUA - HUMULIN R U-100, efetivo 16-06-2026. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b519bd83-038c-4ec5-a231-a51ec5cc291f"
+    ],
+    "ref": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b519bd83-038c-4ec5-a231-a51ec5cc291f"
+  },
+  "dataVersion": "clinical-data-v1-b2437901deb78b1e",
+  "clinicalContentSha256": "b2437901deb78b1eeb3119ee415221916ce300d3c825122141897d5b793b513d",
+  "name": {
+    "pt": "Insulina humana regular U-100 - HUMULIN R",
+    "es": "Insulina humana regular U-100 - HUMULIN R"
+  },
+  "mc_gold_standard_v1": {
+    "status": "PASS_CLINICAL_HOMOLOGATION",
+    "sourceOwner": "database/gold33_nova_lista.js",
+    "sourceField": "insulina_regular.mcGoldClinicalV1",
+    "requiredFields": 33,
+    "lote": "098",
+    "approvedSha256": "1fb457e570b21b2b1c7c38a689855eaff55ce2ce921a82f0e0627854e7833074",
+    "calculationAuthorized": false,
+    "publicationAuthorized": false,
+    "clinicalPackagePublicationState": "BLOQUEADA",
+    "list": "NOVA_LISTA_GOLD33_V1",
+    "zipSha256": "8cf68dfc42d5e3e1cd1f612f129d7c43cfcf81ba56f299617a3e169c364eaefa",
+    "packageFile": "GOLD33_NOVA_LISTA_LOTE_098_HOMOLOGADO_CLINICAMENTE.zip",
+    "packageRestrictions": [
+      {
+        "id": "insulina_regular",
+        "bloqueios_clinicos": [
+          "DOSE_AUTOMATICA_UNIVERSAL_BLOQUEADA",
+          "U500_BLOQUEADA",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "insulina_nph_caneta",
+        "bloqueios_clinicos": [
+          "DOSE_AUTOMATICA_UNIVERSAL_BLOQUEADA",
+          "VIA_IV_BLOQUEADA",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "levotiroxina_sodica",
+        "bloqueios_clinicos": [
+          "CALCULO_PEDIATRICO_BLOQUEADO_ATE_IDADE_PESO_ETIOLOGIA",
+          "RISCO_ERRO_MCG_MG",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "tiamazol",
+        "bloqueios_clinicos": [
+          "CALCULO_PEDIATRICO_BLOQUEADO_ATE_IDADE_PESO",
+          "GESTACAO_ALTO_RISCO",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "amitriptilina_comprimido",
+        "bloqueios_clinicos": [
+          "CALCULO_PEDIATRICO_BLOQUEADO",
+          "DOSE_HOSPITALAR_NAO_AUTOMATIZAR",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "nortriptilina_comprimido",
+        "bloqueios_clinicos": [
+          "CALCULO_PEDIATRICO_BLOQUEADO",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "fluoxetina_comprimido",
+        "bloqueios_clinicos": [
+          "INTERACOES_CYP2D6_QT_ALTO_RISCO",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "sertralina_comprimido",
+        "bloqueios_clinicos": [
+          "HEPATOPATIA_MODERADA_GRAVE_NAO_RECOMENDADA",
+          "PEDIATRIA_FORA_TOC_BLOQUEADA",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "escitalopram_comprimido",
+        "bloqueios_clinicos": [
+          "CRCL_MENOR_20_AUTOMACAO_BLOQUEADA",
+          "IDADE_PEDIATRICA_DEPENDE_INDICACAO",
+          "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      },
+      {
+        "id": "clonazepam_gotas",
+        "bloqueios_clinicos": [
+          "CALCULO_PEDIATRICO_BLOQUEADO_ATE_INDICACAO_IDADE_PESO",
+          "CONVERSAO_GOTAS_RESTRITA_AO_PRODUTO",
+          "OPIOIDES_ALTO_RISCO"
+        ],
+        "pendencias_nao_bloqueantes": [
+          "CONFIRMAR_VIGENCIA_REGULATORIA_LOCAL_2026_ANTES_DE_PUBLICAR"
+        ],
+        "states": {
+          "PESQUISA": "CONCLUIDA",
+          "REVISAO_CLINICA": "HOMOLOGADA",
+          "HOMOLOGACAO_DADOS": "SIM",
+          "AUTORIZACAO_CALCULO": "CONFORME_BLOQUEIOS_GRANULARES",
+          "INTEGRACAO_TECNICA": "NAO_INICIADA",
+          "PUBLICACAO": "BLOQUEADA"
+        },
+        "technical_mapping": {
+          "mode": "NEW_ENTRY_NO_LEGACY_BASELINE",
+          "repository_destination": "NAO_INVENTADO_NESTE_PACOTE"
+        }
+      }
+    ],
+    "packageRecordMetadata": {
+      "ID": "insulina_regular",
+      "NOTA_REVISAO_CLINICA": "HOMOLOGADO CLINICAMENTE em 20-09-2026 por Dra Eugenia Marques; APROVADO INTEGRALMENTE; sem excecoes informadas. Conteudo clinico congelado em relacao ao candidato revisado; bloqueios granulares preservados.",
+      "PROVENIENCIA": "NEW_ENTRY_NO_LEGACY_BASELINE",
+      "ESCOPO_VALIDADO": "HUMULIN R U-100 SC/IV - EUA",
+      "BLOQUEIOS_CLINICOS": [
+        "DOSE_AUTOMATICA_UNIVERSAL_BLOQUEADA",
+        "U500_BLOQUEADA",
+        "JURISDICAO_BR_AR_NAO_CONFIRMADA"
+      ],
+      "PENDENCIAS_NAO_BLOQUEANTES": [
+        "GUIDELINE_INDEPENDENTE_NAO_ADICIONADA"
+      ],
+      "HOMOLOGACAO": {
+        "LISTA": "NOVA_LISTA_GOLD33_V1",
+        "LOTE": "098",
+        "MEDICO_REVISOR": "Dra Eugenia Marques",
+        "DATA_REVISAO": "20-09-2026",
+        "RESULTADO": "Aprovado integralmente",
+        "ARQUIVO_REVISADO": "098",
+        "EXCECOES_INFORMADAS": 0,
+        "REVISAO_CLINICA": "HOMOLOGADA",
+        "HOMOLOGACAO_DADOS": "SIM",
+        "INTEGRACAO_TECNICA": "NAO_INICIADA",
+        "PUBLICACAO": "BLOQUEADA",
+        "CLINICAL_CONTENT_FROZEN": true
+      }
+    },
+    "supersededPackages": [],
+    "referenceOnly": true
+  }
+}

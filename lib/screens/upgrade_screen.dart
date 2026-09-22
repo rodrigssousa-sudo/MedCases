@@ -5,6 +5,7 @@
 // Totalmente bilíngue ES/PT — idioma inicial via parâmetro `initialLang`.
 // Botão de toggle muda idioma localmente sem afetar o AppProvider.
 import 'package:flutter/material.dart';
+import '../services/entitlement_service.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'revenuecat_purchase_sheet.dart';
@@ -44,14 +45,9 @@ class _S {
   String get freeCta => es ? 'Empezar gratis' : 'Começar grátis';
 
   String get premiumLabel => 'MEDCASES PREMIUM';
-  String get premiumTrial => es ? '1 mes gratis' : '1 mês grátis';
-  String get premiumRegularPrice => 'US\$ 19,99';
-  String get premiumPrice => 'US\$ 14,99';
-  String get premiumPeriod => es ? '/mes' : '/mês';
-  String get premiumLaunch =>
-      es ? 'Precio especial de lanzamiento' : 'Preço especial de lançamento';
-  String get premiumLaunchDuration =>
-      es ? 'Después US\$ 14,99/mes' : 'Depois US\$ 14,99/mês';
+  String get premiumPlanSummary => es
+      ? 'Consulta los precios y las condiciones disponibles en la tienda antes de confirmar.'
+      : 'Consulte os preços e as condições disponíveis na loja antes de confirmar.';
   String get premiumAfter =>
       es ? 'Plan anual disponible' : 'Plano anual disponível';
   String get premiumCancel =>
@@ -153,6 +149,7 @@ class UpgradeScreen extends StatefulWidget {
 class _UpgradeScreenState extends State<UpgradeScreen>
     with SingleTickerProviderStateMixin {
   int _selectedPlan = 0; // R1 UI-only: Premium mensal é a única oferta visível
+  bool _purchaseOpen = false;
   late bool _isEs;
   late AnimationController _anim;
   late Animation<double> _fadeIn;
@@ -160,6 +157,7 @@ class _UpgradeScreenState extends State<UpgradeScreen>
   @override
   void initState() {
     super.initState();
+    EntitlementService.instance.addListener(_entitlementChanged);
     _isEs = widget.initialLang == 'es';
     _anim = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 420));
@@ -169,38 +167,49 @@ class _UpgradeScreenState extends State<UpgradeScreen>
 
   @override
   void dispose() {
+    EntitlementService.instance.removeListener(_entitlementChanged);
     _anim.dispose();
     super.dispose();
   }
 
+  void _entitlementChanged() { if (mounted) setState(() {}); }
+
   void _toggleLang() => setState(() => _isEs = !_isEs);
 
   Future<void> _subscribe() async {
-    if (!mounted) return;
-    final activated = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => RevenueCatPurchaseSheet(isEs: _isEs),
-    );
-    if (!mounted || activated != true) return;
-    ScaffoldMessenger.of(context)
-      ..clearSnackBars()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(
-            _isEs
-                ? 'Premium activado correctamente.'
-                : 'Premium ativado com sucesso.',
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
+    if (!mounted || _purchaseOpen || EntitlementService.instance.isPremium) return;
+    _purchaseOpen = true;
+    try {
+      await showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (_) => RevenueCatPurchaseSheet(isEs: _isEs),
       );
+      if (!mounted) return;
+      // A sheet result never grants access. Revalidate the sovereign state.
+      await EntitlementService.instance.refreshAuthoritativeTier(force: true);
+      if (mounted && EntitlementService.instance.isPremium &&
+          ModalRoute.of(context)?.isCurrent == true) {
+        await Navigator.maybePop(context);
+      }
+    } finally {
+      _purchaseOpen = false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final s = _S(_isEs);
+    if (EntitlementService.instance.isPremium) {
+      return Scaffold(
+        body: SafeArea(child: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(_isEs ? 'Premium activo' : 'Premium ativo'),
+          TextButton(onPressed: () => Navigator.maybePop(context),
+            child: Text(_isEs ? 'Volver' : 'Voltar')),
+        ]))),
+      );
+    }
     return Scaffold(
       backgroundColor: _kDark,
       body: FadeTransition(
@@ -516,79 +525,11 @@ class _UpgradeScreenState extends State<UpgradeScreen>
             ),
           ),
           const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(999),
-              color: _kGold.withOpacity(0.14),
-              border: Border.all(color: _kGold.withOpacity(0.32)),
-            ),
-            child: Text(
-              s.premiumTrial,
-              style: const TextStyle(
-                fontSize: 10.5,
-                fontWeight: FontWeight.w900,
-                color: _kGoldL,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
           Text(
-            s.premiumRegularPrice,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: Colors.white.withOpacity(0.35),
-              decoration: TextDecoration.lineThrough,
-              decorationColor: Colors.white.withOpacity(0.45),
-            ),
+            s.premiumPlanSummary,
+            style: const TextStyle(fontSize: 14, color: Colors.white),
           ),
-          const SizedBox(height: 2),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                s.premiumPrice,
-                style: const TextStyle(
-                  fontSize: 31,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                  height: 1,
-                ),
-              ),
-              const SizedBox(width: 3),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 3),
-                child: Text(
-                  s.premiumPeriod,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white.withOpacity(0.50),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 9),
-          Text(
-            s.premiumLaunch,
-            style: const TextStyle(
-              fontSize: 11.5,
-              fontWeight: FontWeight.w900,
-              color: _kGoldL,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            s.premiumLaunchDuration,
-            style: TextStyle(
-              fontSize: 10.5,
-              fontWeight: FontWeight.w700,
-              color: Colors.white.withOpacity(0.60),
-            ),
-          ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 12),
           Text(
             s.premiumAfter,
             style: TextStyle(
@@ -762,21 +703,65 @@ const bool kIsReviewMode = false;
 /// Mude para `false` para liberar o paywall no lançamento oficial.
 const bool _kPaywallLocked = false;
 
-void showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
-  // Em modo de revisão Apple: nunca exibe paywall
-  if (kIsReviewMode) return;
-  if (_kPaywallLocked) return;
+// MEDCASES_APPLE_PRERELEASE_PAYWALL_WEBVIEW_INPUT_LOCK_V1_B_R0
+/// Owns one presentation, including its closing transition and child sheets.
+/// Acquisition happens synchronously, before the presenter can yield.
+class PaywallPresentationGuard {
+  bool _active = false;
+  bool get active => _active;
 
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (_) => SizedBox(
-      height: MediaQuery.of(context).size.height * 0.92,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        child: UpgradeScreen(showClose: true, initialLang: lang),
+  Future<void> run(
+    Future<void> Function() present, {
+    VoidCallback? onChanged,
+  }) async {
+    if (_active) return;
+    _active = true;
+    try {
+      onChanged?.call();
+      await present();
+    } finally {
+      _active = false;
+      onChanged?.call();
+    }
+  }
+}
+
+final _upgradePresentationGuard = PaywallPresentationGuard();
+
+Future<void> showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
+  if (kIsReviewMode || _kPaywallLocked || EntitlementService.instance.isPremium) return Future<void>.value();
+
+  return _upgradePresentationGuard.run(() async {
+    await EntitlementService.instance.refreshAuthoritativeTier();
+    if (!context.mounted || EntitlementService.instance.isPremium) return;
+    final navigator = Navigator.of(context);
+    final localizations = MaterialLocalizations.of(context);
+    final height = MediaQuery.sizeOf(context).height * 0.92;
+    // Equivalent modal defaults to showModalBottomSheet, but retain the route
+    // so callers remain locked until its overlay has actually been removed.
+    final route = ModalBottomSheetRoute<void>(
+      capturedThemes: InheritedTheme.capture(
+        from: context,
+        to: navigator.context,
       ),
-    ),
-  );
+      barrierLabel: localizations.scrimLabel,
+      barrierOnTapHint: localizations.scrimOnTapHint(
+        localizations.bottomSheetLabel,
+      ),
+      modalBarrierColor: Theme.of(context).bottomSheetTheme.modalBarrierColor,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SizedBox(
+        height: height,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          child: UpgradeScreen(showClose: true, initialLang: lang),
+        ),
+      ),
+    );
+    // The popped future may stay pending when the Navigator is disposed.
+    // completed also covers disposal, as well as the reverse transition.
+    navigator.push<void>(route);
+    await route.completed;
+  });
 }

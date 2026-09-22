@@ -8,7 +8,7 @@
 // FREE
 // - full guides
 // - full scores
-// - essential drug library (400) through signed MCC1 surface
+// - essential drug library (Free60) through signed MCC1 surface
 // - no weight dose
 // - no renal premium tool
 // - Study AI: 5/day
@@ -27,7 +27,12 @@
 // - expanded transcription: 90 min/month
 // - clinical history without Free monthly cap
 
+import 'dart:async';
+import 'offline_entitlement_lease.dart';
+
+import 'free_drug_catalog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,12 +41,26 @@ import 'calculator_mcc1_bridge_service.dart';
 enum EntitlementTier { free, premium }
 
 enum MedCasesCapability {
+  home,
+  protocolsFull,
+  generalCalculators,
+  search,
+  safetyWarnings,
+  publicReferences,
   guidesFull,
   scoresFull,
   drugsEssentialLibrary,
   drugsFullLibrary,
   drugsWeightDose,
   drugsRenalAdjustment,
+  drugsHepaticAdjustment,
+  drugsAdvancedPreparation,
+  drugsAdvancedInfusion,
+  drugsPediatricResources,
+  fullPlantao,
+  extendedStudyAi,
+  unlimitedClinicalHistory,
+  fullOfflinePharma,
   aiStudy,
   aiPlantao,
   audioBasic,
@@ -68,8 +87,8 @@ class EntitlementLimits {
     required this.clinicalHistoriesPerMonth,
   });
 
-  static const free = EntitlementLimits(
-    drugLibraryItems: 400,
+  static final free = EntitlementLimits(
+    drugLibraryItems: freeDrugCanonicalIds.length,
     aiStudyQueriesPerDay: 5,
     plantaoQueriesPerDay: 1,
     audioRecordingMinutesPerMonth: 15,
@@ -134,13 +153,57 @@ class EntitlementDecision {
 }
 
 class EntitlementService extends ChangeNotifier {
-  EntitlementService._();
+  EntitlementService._()
+      : _uidReader = _firebaseUid,
+        _clock = DateTime.now,
+        _sessionLoader = ((force) => const CalculatorMcc1BridgeService()
+            .issueSession(forceFirebaseRefresh: force));
+
+  @visibleForTesting
+  EntitlementService.forTesting({
+    required String? Function() uid,
+    required DateTime Function() clock,
+    required Future<CalculatorMcc1Session> Function(bool force) sessionLoader,
+    OfflineEntitlementLease? offlineLease,
+  })  : _uidReader = uid,
+        _clock = clock,
+        _sessionLoader = sessionLoader {
+    if (offlineLease != null) _offline = offlineLease;
+  }
+
+  late OfflineEntitlementLease _offline = OfflineEntitlementLease(
+      publicKey:
+          const String.fromEnvironment('MEDCASES_ENTITLEMENT_PUBLIC_KEY'),
+      uid: _uidReader,
+      now: _clock);
+  final String? Function() _uidReader;
+  final DateTime Function() _clock;
+  final Future<CalculatorMcc1Session> Function(bool force) _sessionLoader;
+  Future<EntitlementSnapshot>? _inFlight;
+  String? _inFlightUid;
+  int _generation = 0;
+  DateTime? _validUntil;
+  Timer? _expiryTimer;
+
+  static String? _firebaseUid() {
+    try {
+      return FirebaseAuth.instance.currentUser?.uid;
+    } catch (_) {
+      return null;
+    } // Before Firebase initialization: fail closed.
+  }
 
   static final EntitlementService instance = EntitlementService._();
 
   static const Duration _trustedSnapshotTtl = Duration(minutes: 5);
 
   static const Set<MedCasesCapability> _freeCapabilities = {
+    MedCasesCapability.home,
+    MedCasesCapability.protocolsFull,
+    MedCasesCapability.generalCalculators,
+    MedCasesCapability.search,
+    MedCasesCapability.safetyWarnings,
+    MedCasesCapability.publicReferences,
     MedCasesCapability.guidesFull,
     MedCasesCapability.scoresFull,
     MedCasesCapability.drugsEssentialLibrary,
@@ -156,6 +219,14 @@ class EntitlementService extends ChangeNotifier {
     MedCasesCapability.drugsFullLibrary,
     MedCasesCapability.drugsWeightDose,
     MedCasesCapability.drugsRenalAdjustment,
+    MedCasesCapability.drugsHepaticAdjustment,
+    MedCasesCapability.drugsAdvancedPreparation,
+    MedCasesCapability.drugsAdvancedInfusion,
+    MedCasesCapability.drugsPediatricResources,
+    MedCasesCapability.fullPlantao,
+    MedCasesCapability.extendedStudyAi,
+    MedCasesCapability.unlimitedClinicalHistory,
+    MedCasesCapability.fullOfflinePharma,
     MedCasesCapability.audioLongForm,
     MedCasesCapability.transcriptionExpanded,
   };
@@ -165,8 +236,6 @@ class EntitlementService extends ChangeNotifier {
     uid: null,
     resolvedAtUtc: DateTime.fromMillisecondsSinceEpoch(0, isUtc: true),
   );
-
-  bool _resolving = false;
 
   static EntitlementSnapshot _freeSnapshot({
     required String source,
@@ -201,7 +270,7 @@ class EntitlementService extends ChangeNotifier {
     );
   }
 
-  String? get _currentUid => FirebaseAuth.instance.currentUser?.uid;
+  String? get _currentUid => _uidReader();
 
   bool get isResolvedForCurrentUser {
     final uid = _currentUid;
@@ -209,8 +278,12 @@ class EntitlementService extends ChangeNotifier {
     if (_trusted.resolvedUid != uid) return false;
     if (_trusted.source == 'client_fail_closed_default') return false;
 
-    final age = DateTime.now().toUtc().difference(_trusted.resolvedAtUtc);
-    return age >= Duration.zero && age <= _trustedSnapshotTtl;
+    final now = _clock().toUtc();
+    final age = now.difference(_trusted.resolvedAtUtc);
+    return age >= Duration.zero &&
+        age < _trustedSnapshotTtl &&
+        _validUntil != null &&
+        now.isBefore(_validUntil!);
   }
 
   EntitlementSnapshot get current {
@@ -220,7 +293,7 @@ class EntitlementService extends ChangeNotifier {
         source:
             uid == null ? 'unauthenticated_free' : 'stale_or_unresolved_free',
         uid: uid,
-        resolvedAtUtc: DateTime.now().toUtc(),
+        resolvedAtUtc: _clock().toUtc(),
       );
     }
     return _trusted;
@@ -230,82 +303,120 @@ class EntitlementService extends ChangeNotifier {
 
   bool can(MedCasesCapability capability) => current.can(capability);
 
-  Future<EntitlementSnapshot> refreshAuthoritativeTier({
-    bool force = false,
-  }) async {
-    if (!force && isResolvedForCurrentUser) return current;
+  /// Access policy only. Clinical authorities must be checked separately.
+  Future<bool> restoreOfflineEntitlement() async {
+    final generation = _generation;
+    final uid = _currentUid;
+    final data = await _offline.restore();
+    if (data == null || uid != _currentUid || generation != _generation)
+      return false;
+    final expires = DateTime.fromMillisecondsSinceEpoch(
+        (data['exp'] as int) * 1000,
+        isUtc: true);
+    adoptTrustedSession(
+        session: CalculatorMcc1Session(
+            token: '',
+            tier: data['tier'] as String,
+            capabilities: const [],
+            expiresAtUtc: expires,
+            entitlementSource: 'verified_offline_lease'),
+        expectedUid: uid!);
+    return isPremium;
+  }
 
-    if (_resolving) return current;
+  bool canUse(MedCasesCapability capability) => can(capability);
+  bool showsPremiumLock(MedCasesCapability capability) => !canUse(capability);
+  bool canAccessDrug(String canonicalId) =>
+      canonicalId.isNotEmpty &&
+      (freeDrugCanonicalIds.contains(canonicalId) ||
+          canUse(MedCasesCapability.drugsFullLibrary));
 
+  Future<EntitlementSnapshot> refreshAuthoritativeTier({bool force = false}) {
+    if (!force && isResolvedForCurrentUser) return Future.value(current);
     final uid = _currentUid;
     if (uid == null || uid.isEmpty) {
-      _trusted = _freeSnapshot(
-        source: 'unauthenticated_free',
-        uid: null,
-        resolvedAtUtc: DateTime.now().toUtc(),
-      );
-      notifyListeners();
-      return current;
+      resetToFree();
+      return Future.value(current);
     }
+    if (_inFlight != null && _inFlightUid == uid) return _inFlight!;
+    final generation = ++_generation;
+    _inFlightUid = uid;
+    final future = _resolve(uid, generation, force);
+    _inFlight = future;
+    return future;
+  }
 
-    _resolving = true;
-    notifyListeners();
-
+  Future<EntitlementSnapshot> _resolve(
+      String uid, int generation, bool force) async {
     try {
-      final session = await const CalculatorMcc1BridgeService().issueSession(
-        forceFirebaseRefresh: force,
-      );
-
-      adoptTrustedSession(
-        tier: session.tier,
-        entitlementSource: session.entitlementSource,
-      );
+      final session = await _sessionLoader(force);
+      if (generation != _generation || _currentUid != uid) return current;
+      adoptTrustedSession(session: session, expectedUid: uid);
     } catch (error) {
-      _trusted = _freeSnapshot(
-        source: 'authoritative_resolution_failed_free',
-        uid: uid,
-        resolvedAtUtc: DateTime.now().toUtc(),
-      );
-
-      if (kDebugMode) {
-        debugPrint(
-          '[EntitlementService] resolution_failed '
-          'type=${error.runtimeType} tier=free',
-        );
+      if (generation == _generation && _currentUid == uid) {
+        // An in-memory, UID-bound, unexpired signed result remains usable
+        // during a network failure. Never extend its validity on failure.
+        final networkFailure =
+            error is TimeoutException || error is http.ClientException;
+        if (networkFailure && !isResolvedForCurrentUser) {
+          await restoreOfflineEntitlement();
+          if (generation != _generation || uid != _currentUid) return current;
+        }
+        if (!networkFailure || !isResolvedForCurrentUser) {
+          if (!networkFailure) unawaited(_offline.clear());
+          _trusted = _freeSnapshot(
+              source: 'authoritative_resolution_failed_free',
+              uid: uid,
+              resolvedAtUtc: _clock().toUtc());
+          _validUntil = null;
+        }
+        if (kDebugMode)
+          debugPrint(
+              '[EntitlementService] resolution_failed type=${error.runtimeType}');
       }
     } finally {
-      _resolving = false;
-      notifyListeners();
+      if (generation == _generation) {
+        _inFlight = null;
+        _inFlightUid = null;
+        notifyListeners();
+      }
     }
-
     return current;
   }
 
-  void adoptTrustedSession({
-    required String tier,
-    required String entitlementSource,
-  }) {
-    final uid = _currentUid;
-    final normalizedTier = tier.trim().toLowerCase();
-    final resolvedTier = normalizedTier == 'premium'
+  /// Only the authenticated issuer flow may call this; never RevenueCat UI or JS.
+  void adoptTrustedSession(
+      {required CalculatorMcc1Session session, required String expectedUid}) {
+    final now = _clock().toUtc();
+    if (expectedUid.isEmpty ||
+        _currentUid != expectedUid ||
+        !session.expiresAtUtc.isAfter(now)) return;
+    final resolvedTier = session.tier == 'premium'
         ? EntitlementTier.premium
         : EntitlementTier.free;
-
+    final ttlEnd = now.add(_trustedSnapshotTtl);
+    _validUntil =
+        session.expiresAtUtc.isBefore(ttlEnd) ? session.expiresAtUtc : ttlEnd;
     _trusted = EntitlementSnapshot(
       tier: resolvedTier,
-      capabilities: resolvedTier == EntitlementTier.premium
-          ? Set.unmodifiable(_premiumCapabilities)
-          : Set.unmodifiable(_freeCapabilities),
+      capabilities: Set.unmodifiable(resolvedTier == EntitlementTier.premium
+          ? _premiumCapabilities
+          : _freeCapabilities),
       limits: resolvedTier == EntitlementTier.premium
           ? EntitlementLimits.premium
           : EntitlementLimits.free,
-      source: entitlementSource.trim().isEmpty
+      source: session.entitlementSource.isEmpty
           ? 'signed_calculator_session'
-          : entitlementSource.trim(),
-      resolvedUid: uid,
-      resolvedAtUtc: DateTime.now().toUtc(),
+          : session.entitlementSource,
+      resolvedUid: expectedUid,
+      resolvedAtUtc: now,
     );
-
+    if (session.entitlementSource != 'verified_offline_lease') {
+      unawaited(
+          _offline.save(session.offlineEntitlement).catchError((Object _) {}));
+    }
+    _expiryTimer?.cancel();
+    _expiryTimer = Timer(_validUntil!.difference(now), notifyListeners);
     notifyListeners();
   }
 
@@ -324,7 +435,10 @@ class EntitlementService extends ChangeNotifier {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now().toUtc();
+    if (_currentUid != uid) {
+      return const EntitlementDecision.deny('ENTITLEMENT_USER_CHANGED');
+    }
+    final now = _clock().toUtc();
     final day = '${now.year.toString().padLeft(4, '0')}-'
         '${now.month.toString().padLeft(2, '0')}-'
         '${now.day.toString().padLeft(2, '0')}';
@@ -367,7 +481,10 @@ class EntitlementService extends ChangeNotifier {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now().toUtc();
+    if (_currentUid != uid) {
+      return const EntitlementDecision.deny('ENTITLEMENT_USER_CHANGED');
+    }
+    final now = _clock().toUtc();
     final month = '${now.year.toString().padLeft(4, '0')}-'
         '${now.month.toString().padLeft(2, '0')}';
 
@@ -387,11 +504,24 @@ class EntitlementService extends ChangeNotifier {
     return EntitlementDecision.allow(remaining: limit - next);
   }
 
+  @override
+  void dispose() {
+    _generation++;
+    _expiryTimer?.cancel();
+    super.dispose();
+  }
+
   void resetToFree() {
+    unawaited(_offline.clear().catchError((Object _) {}));
+    _generation++;
+    _inFlight = null;
+    _inFlightUid = null;
+    _validUntil = null;
+    _expiryTimer?.cancel();
     _trusted = _freeSnapshot(
       source: 'explicit_free_reset',
       uid: _currentUid,
-      resolvedAtUtc: DateTime.now().toUtc(),
+      resolvedAtUtc: _clock().toUtc(),
     );
     notifyListeners();
   }

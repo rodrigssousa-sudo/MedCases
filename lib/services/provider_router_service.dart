@@ -1,3 +1,4 @@
+import 'ai/safety/clinical_request_safety.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // provider_router_service.dart — Build 226 (Gemini Paid Failover Router)
 //
@@ -81,6 +82,23 @@ class PaidProxyResult {
 // ProviderRouterService
 // ─────────────────────────────────────────────────────────────────────────────
 class ProviderRouterService {
+  static String get clinicalUserId {
+    final webUid = AuthService.webUser.value?.uid;
+    if (webUid != null && webUid.isNotEmpty) return webUid;
+    try {
+      return FirebaseAuth.instance.currentUser?.uid ?? '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  static void requireClinicalOwner(ClinicalRequestContext? context) {
+    if (context != null &&
+        (context.uid.isEmpty || context.uid != clinicalUserId)) {
+      throw StateError('CLINICAL_SAFETY_OWNER_CHANGED');
+    }
+  }
+
   ProviderRouterService._(); // estático — sem instâncias
 
   // ── URL da Cloud Function (Build 226) ─────────────────────────────────────
@@ -154,6 +172,7 @@ class ProviderRouterService {
   /// Obtém ID Token do usuário atual para autenticação.
   /// Retorna [PaidProxyResult] com o texto da resposta.
   static Future<PaidProxyResult> callPaidProxy({
+    ClinicalRequestContext? clinicalContext,
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
@@ -165,6 +184,8 @@ class ProviderRouterService {
     // Estudo: 2048 tok (resposta acadêmica completa).
     int maxOutputTokens = 800,
   }) async {
+    clinicalContext?.requireTransport(mode: mode, language: lang);
+    requireClinicalOwner(clinicalContext);
     final startMs = DateTime.now().millisecondsSinceEpoch;
     final effectiveRequestId =
         requestId.isEmpty ? generateRequestId() : requestId;
@@ -306,6 +327,8 @@ class ProviderRouterService {
       required String url,
       required Duration timeout,
     }) {
+      clinicalContext?.requireTransport(mode: mode, language: lang);
+      requireClinicalOwner(clinicalContext);
       return http
           .post(
             Uri.parse(url),
@@ -547,6 +570,7 @@ class ProviderRouterService {
   /// Auth e estrutura de resposta idênticos ao callPaidProxy().
   /// Retorna [PaidProxyResult] com o texto da resposta.
   static Future<PaidProxyResult> callGptProxy({
+    ClinicalRequestContext? clinicalContext,
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
@@ -555,6 +579,8 @@ class ProviderRouterService {
     String requestId = '',
     int maxOutputTokens = 800,
   }) async {
+    clinicalContext?.requireTransport(mode: mode, language: lang);
+    requireClinicalOwner(clinicalContext);
     final startMs = DateTime.now().millisecondsSinceEpoch;
 
     // ── Auth: mesma lógica do callPaidProxy ───────────────────────────────
@@ -634,6 +660,8 @@ class ProviderRouterService {
     // ── HTTP POST para a mesma Cloud Function ─────────────────────────────
     http.Response response;
     try {
+      clinicalContext?.requireTransport(mode: mode, language: lang);
+      requireClinicalOwner(clinicalContext);
       response = await http
           .post(
             Uri.parse(_legacyProxyUrl),
@@ -838,6 +866,7 @@ class ProviderRouterService {
   //   2. Após AiCompleted, passar fullText por sanitizeAndCheck()
   //   3. Somente depois persistir no Firestore / _aiHistory
   static Stream<AiEvent> callGptProxyStream({
+    ClinicalRequestContext? clinicalContext,
     required String userMessage,
     required String systemPrompt,
     // idToken é opcional: quando vazio, buscado internamente (mesmo padrão
@@ -851,6 +880,8 @@ class ProviderRouterService {
     int maxOutputTokens = 800,
     void Function(GptSseClient client)? onClientCreated,
   }) async* {
+    clinicalContext?.requireTransport(mode: mode, language: lang);
+    requireClinicalOwner(clinicalContext);
     // ── KILL SWITCH: kUseGptProxySse = false → legado ──────────────────────
     if (!kUseGptProxySse) {
       if (kDebugMode) {
@@ -858,6 +889,7 @@ class ProviderRouterService {
             'requestId=$requestId');
       }
       yield* _callGptProxyStreamLegacy(
+        clinicalContext: clinicalContext,
         userMessage: userMessage,
         systemPrompt: systemPrompt,
         history: history,
@@ -928,7 +960,10 @@ class ProviderRouterService {
       }
     }
 
+    clinicalContext?.requireTransport(mode: mode, language: lang);
+    requireClinicalOwner(clinicalContext);
     final payload = GptSsePayload(
+      clinicalContext: clinicalContext,
       userMessage: userMessage,
       systemPrompt: systemPrompt,
       history: history.cast<Map<String, String>>(),
@@ -953,6 +988,7 @@ class ProviderRouterService {
   // Executado APENAS quando kUseGptProxySse=false.
   // NÃO REMOVER nesta build.
   static Stream<AiEvent> _callGptProxyStreamLegacy({
+    ClinicalRequestContext? clinicalContext,
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
@@ -961,10 +997,13 @@ class ProviderRouterService {
     String requestId = '',
     int maxOutputTokens = 800,
   }) async* {
+    clinicalContext?.requireTransport(mode: mode, language: lang);
+    requireClinicalOwner(clinicalContext);
     final startMs = DateTime.now().millisecondsSinceEpoch;
     final reqId = requestId.isEmpty ? 'req_legacy_$startMs' : requestId;
 
     final result = await callGptProxy(
+      clinicalContext: clinicalContext,
       userMessage: userMessage,
       systemPrompt: systemPrompt,
       history: history,

@@ -35,7 +35,7 @@
 import 'dart:convert';
 // dart:typed_data is transitively available via flutter/foundation.dart
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import '../../../services/provider_gateway_http.dart' as http;
 
 // ── Resultado do draft da IA — todos os campos são nullable ──────────────────
 class SoapDraftResult {
@@ -45,19 +45,19 @@ class SoapDraftResult {
   final String? pacienteIdade;
   final String? pacienteSexo;
   final String? pacienteDiagnostico;
-  final int?    pacienteDiaInternacion;
+  final int? pacienteDiaInternacion;
 
   // ── S — Subjetivo ─────────────────────────────────────────────────────────
   final String? notePasaNoche;
-  final int?    dolorEscala;
-  final bool?   fiebre;
-  final bool?   disnea;
-  final bool?   nauseas;
-  final bool?   tos;
+  final int? dolorEscala;
+  final bool? fiebre;
+  final bool? disnea;
+  final bool? nauseas;
+  final bool? tos;
   final String? alimentacion;
   final String? diuresis;
   final String? evacuacion;
-  final bool?   suenoRestado;
+  final bool? suenoRestado;
   final String? notasLibresSubjetivo;
 
   // ── O — Signos vitales ────────────────────────────────────────────────────
@@ -82,9 +82,9 @@ class SoapDraftResult {
   final String? tratamientoActual;
 
   // ── A — Evaluación ───────────────────────────────────────────────────────
-  final String?       estadoClinical;
+  final String? estadoClinical;
   final List<String>? problemasActivos;
-  final String?       notasEvaluacion;
+  final String? notasEvaluacion;
 
   // ── P — Plan ──────────────────────────────────────────────────────────────
   final String? planTerapeutico;
@@ -180,7 +180,6 @@ class SoapDraftResult {
   // Build 165: cada campo do nó O tem try-catch individual + dual-mode lookup
   // ═══════════════════════════════════════════════════════════════════════════
   factory SoapDraftResult.fromJson(Map<String, dynamic> json) {
-
     // ── Helpers de conversão segura ─────────────────────────────────────────
     String? safeStr(dynamic v) {
       if (v == null) return null;
@@ -199,9 +198,16 @@ class SoapDraftResult {
       if (v == null) return null;
       if (v is bool) return v;
       switch (v.toString().toLowerCase().trim()) {
-        case 'true': case '1': case 'yes': return true;
-        case 'false': case '0': case 'no': return false;
-        default: return null;
+        case 'true':
+        case '1':
+        case 'yes':
+          return true;
+        case 'false':
+        case '0':
+        case 'no':
+          return false;
+        default:
+          return null;
       }
     }
 
@@ -210,7 +216,9 @@ class SoapDraftResult {
     // Usa apenas 'is Map' (sem parâmetro de tipo) + cast explícito.
     Map<String, dynamic> safeMap(dynamic v) {
       if (v is Map) {
-        try { return Map<String, dynamic>.from(v); } catch (_) {}
+        try {
+          return Map<String, dynamic>.from(v);
+        } catch (_) {}
       }
       return {};
     }
@@ -232,14 +240,15 @@ class SoapDraftResult {
     try {
       final pac = safeMap(json['paciente']);
       debugPrint('🤖 [SoapParser] paciente keys: ${pac.keys.toList()}');
-      pNome  = safeStr(pac['nome']);
-      pCama  = safeStr(pac['cama']);
+      pNome = safeStr(pac['nome']);
+      pCama = safeStr(pac['cama']);
       pIdade = safeStr(pac['idade']);
       final sexoRaw = safeStr(pac['sexo'])?.toUpperCase();
-      pSexo  = (sexoRaw == 'M' || sexoRaw == 'F') ? sexoRaw : null;
-      pDiag  = safeStr(pac['diagnostico']);
-      pDia   = safeInt(pac['diaInternacion'], min: 1, max: 90);
-      debugPrint('🤖 [SoapParser] paciente → nome=$pNome cama=$pCama diag=$pDiag dia=$pDia');
+      pSexo = (sexoRaw == 'M' || sexoRaw == 'F') ? sexoRaw : null;
+      pDiag = safeStr(pac['diagnostico']);
+      pDia = safeInt(pac['diaInternacion'], min: 1, max: 90);
+      debugPrint(
+          '🤖 [SoapParser] paciente → nome=$pNome cama=$pCama diag=$pDiag dia=$pDia');
     } catch (e, stack) {
       debugPrint('💥 [SoapParser] ERRO PARSE PACIENTE: $e\n$stack');
     }
@@ -252,18 +261,19 @@ class SoapDraftResult {
       final s = safeMap(json['subjetivo']);
       debugPrint('🤖 [SoapParser] subjetivo keys: ${s.keys.toList()}');
       notePasaNoche = safeStr(s['notePasaNoche']);
-      dolorEscala   = safeInt(s['dolorEscala']);
-      fiebre        = safeBool(s['fiebre']);
-      disnea        = safeBool(s['disnea']);
-      nauseas       = safeBool(s['nauseas']);
-      tos           = safeBool(s['tos']);
-      alimentacion  = safeStr(s['alimentacion']);
-      diuresis      = safeStr(s['diuresis']);
-      evacuacion    = safeStr(s['evacuacion']);
-      suenoRestado  = safeBool(s['suenoRestado']);
-      notasLibres   = safeStr(s['notasLibres']);
+      dolorEscala = safeInt(s['dolorEscala']);
+      fiebre = safeBool(s['fiebre']);
+      disnea = safeBool(s['disnea']);
+      nauseas = safeBool(s['nauseas']);
+      tos = safeBool(s['tos']);
+      alimentacion = safeStr(s['alimentacion']);
+      diuresis = safeStr(s['diuresis']);
+      evacuacion = safeStr(s['evacuacion']);
+      suenoRestado = safeBool(s['suenoRestado']);
+      notasLibres = safeStr(s['notasLibres']);
       final sPreview = notePasaNoche ?? '';
-      debugPrint('🤖 [SoapParser] S → notePasaNoche=${sPreview.substring(0, sPreview.length.clamp(0, 40))} dolor=$dolorEscala fiebre=$fiebre');
+      debugPrint(
+          '🤖 [SoapParser] S → notePasaNoche=${sPreview.substring(0, sPreview.length.clamp(0, 40))} dolor=$dolorEscala fiebre=$fiebre');
     } catch (e, stack) {
       debugPrint('💥 [SoapParser] ERRO PARSE SUBJETIVO (S): $e\n$stack');
     }
@@ -282,12 +292,13 @@ class SoapDraftResult {
       // ── Signos Vitais: tenta sub-nó → fallback campos flat ────────────────
       try {
         final sv = safeMap(o['signosVitales']);
-        pa          = safeStr(sv['pa'])          ?? safeStr(o['pa']);
-        fc          = safeStr(sv['fc'])          ?? safeStr(o['fc']);
-        fr          = safeStr(sv['fr'])          ?? safeStr(o['fr']);
-        satO2       = safeStr(sv['satO2'])       ?? safeStr(o['satO2']);
+        pa = safeStr(sv['pa']) ?? safeStr(o['pa']);
+        fc = safeStr(sv['fc']) ?? safeStr(o['fc']);
+        fr = safeStr(sv['fr']) ?? safeStr(o['fr']);
+        satO2 = safeStr(sv['satO2']) ?? safeStr(o['satO2']);
         temperatura = safeStr(sv['temperatura']) ?? safeStr(o['temperatura']);
-        debugPrint('🤖 [SoapParser] O-vitais → PA=$pa FC=$fc FR=$fr satO2=$satO2 T=$temperatura');
+        debugPrint(
+            '🤖 [SoapParser] O-vitais → PA=$pa FC=$fc FR=$fr satO2=$satO2 T=$temperatura');
       } catch (e, stack) {
         debugPrint('💥 [SoapParser] ERRO PARSE O-VITAIS: $e\n$stack');
       }
@@ -295,13 +306,16 @@ class SoapDraftResult {
       // ── Exame Físico: tenta sub-nó → fallback campos flat ────────────────
       try {
         final ef = safeMap(o['examenFisico']);
-        estadoGeneral = safeStr(ef['estadoGeneral']) ?? safeStr(o['estadoGeneral']);
-        acv           = safeStr(ef['acv'])           ?? safeStr(o['acv']);
-        ar            = safeStr(ef['ar'])            ?? safeStr(o['ar']);
-        abdomen       = safeStr(ef['abdomen'])       ?? safeStr(o['abdomen']);
-        extremidades  = safeStr(ef['extremidades'])  ?? safeStr(o['extremidades']);
+        estadoGeneral =
+            safeStr(ef['estadoGeneral']) ?? safeStr(o['estadoGeneral']);
+        acv = safeStr(ef['acv']) ?? safeStr(o['acv']);
+        ar = safeStr(ef['ar']) ?? safeStr(o['ar']);
+        abdomen = safeStr(ef['abdomen']) ?? safeStr(o['abdomen']);
+        extremidades =
+            safeStr(ef['extremidades']) ?? safeStr(o['extremidades']);
         final egPreview = estadoGeneral ?? '';
-        debugPrint('🤖 [SoapParser] O-examen → EG=${egPreview.substring(0, egPreview.length.clamp(0, 40))} ACV=$acv AR=$ar');
+        debugPrint(
+            '🤖 [SoapParser] O-examen → EG=${egPreview.substring(0, egPreview.length.clamp(0, 40))} ACV=$acv AR=$ar');
       } catch (e, stack) {
         debugPrint('💥 [SoapParser] ERRO PARSE O-EXAMEN-FISICO: $e\n$stack');
       }
@@ -309,19 +323,20 @@ class SoapDraftResult {
       // ── Exames Complementares: tenta sub-nó → fallback campos flat ────────
       try {
         final ex = safeMap(o['examenes']);
-        laboratorio       = dualRead(ex, 'laboratorio') ?? safeStr(o['laboratorio']);
-        imagenes          = dualRead(ex, 'imagenes')    ?? safeStr(o['imagenes']);
-        culturas          = dualRead(ex, 'culturas')    ?? safeStr(o['culturas']);
-        ecg               = dualRead(ex, 'ecg')         ?? safeStr(o['ecg']);
+        laboratorio = dualRead(ex, 'laboratorio') ?? safeStr(o['laboratorio']);
+        imagenes = dualRead(ex, 'imagenes') ?? safeStr(o['imagenes']);
+        culturas = dualRead(ex, 'culturas') ?? safeStr(o['culturas']);
+        ecg = dualRead(ex, 'ecg') ?? safeStr(o['ecg']);
         tratamientoActual = safeStr(o['tratamientoActual']);
         final labPreview = laboratorio ?? '';
-        debugPrint('🤖 [SoapParser] O-exames → lab=${labPreview.substring(0, labPreview.length.clamp(0, 40))} ecg=$ecg tto=$tratamientoActual');
+        debugPrint(
+            '🤖 [SoapParser] O-exames → lab=${labPreview.substring(0, labPreview.length.clamp(0, 40))} ecg=$ecg tto=$tratamientoActual');
       } catch (e, stack) {
         debugPrint('💥 [SoapParser] ERRO PARSE O-EXAMES-COMPL: $e\n$stack');
       }
-
     } catch (e, stack) {
-      debugPrint('💥 [SoapParser] ERRO PARSE OBJETIVO (O) — NÓ RAIZ: $e\n$stack');
+      debugPrint(
+          '💥 [SoapParser] ERRO PARSE OBJETIVO (O) — NÓ RAIZ: $e\n$stack');
     }
 
     // ── Nó A — Evaluación ──────────────────────────────────────────────────
@@ -330,7 +345,7 @@ class SoapDraftResult {
     try {
       final a = safeMap(json['evaluacion']);
       debugPrint('🤖 [SoapParser] evaluacion keys: ${a.keys.toList()}');
-      estadoClinical  = safeStr(a['estado']);
+      estadoClinical = safeStr(a['estado']);
       notasEvaluacion = safeStr(a['notasEvaluacion']);
       final rawProb = a['problemasActivos'];
       final notasPreview = notasEvaluacion ?? '';
@@ -339,10 +354,10 @@ class SoapDraftResult {
       final rawProbDesc = rawProb == null
           ? 'null'
           : (rawProb is List
-              ? 'List(${(rawProb as List).length})'
-              : 'non-List(${rawProb.toString().substring(0, rawProb.toString().length.clamp(0, 20))})'
-            );
-      debugPrint('🤖 [SoapParser] A → estado=$estadoClinical rawProb=$rawProbDesc notas=${notasPreview.substring(0, notasPreview.length.clamp(0, 40))}');
+              ? 'List(${rawProb.length})'
+              : 'non-List(${rawProb.toString().substring(0, rawProb.toString().length.clamp(0, 20))})');
+      debugPrint(
+          '🤖 [SoapParser] A → estado=$estadoClinical rawProb=$rawProbDesc notas=${notasPreview.substring(0, notasPreview.length.clamp(0, 40))}');
       if (rawProb is List && rawProb.isNotEmpty) {
         problemasActivos = rawProb
             .map((e) => e?.toString().trim() ?? '')
@@ -359,9 +374,10 @@ class SoapDraftResult {
       final p = safeMap(json['plan']);
       debugPrint('🤖 [SoapParser] plan keys: ${p.keys.toList()}');
       planTerapeutico = safeStr(p['planTerapeutico']);
-      criteriosAlta   = safeStr(p['criteriosAlta']);
+      criteriosAlta = safeStr(p['criteriosAlta']);
       final planPreview = planTerapeutico ?? '';
-      debugPrint('🤖 [SoapParser] P → plan=${planPreview.substring(0, planPreview.length.clamp(0, 60))} criterios=$criteriosAlta');
+      debugPrint(
+          '🤖 [SoapParser] P → plan=${planPreview.substring(0, planPreview.length.clamp(0, 60))} criterios=$criteriosAlta');
     } catch (e, stack) {
       debugPrint('💥 [SoapParser] ERRO PARSE PLAN (P): $e\n$stack');
     }
@@ -374,10 +390,7 @@ class SoapDraftResult {
       // (runtimeType.toString() retorna 'minified:a_<dynamic>' em release).
       final rawFarmDesc = rawFarm == null
           ? 'null'
-          : (rawFarm is List
-              ? 'List(${(rawFarm as List).length})'
-              : 'non-List'
-            );
+          : (rawFarm is List ? 'List(${rawFarm.length})' : 'non-List');
       debugPrint('🤖 [SoapParser] farmacos raw type: $rawFarmDesc');
       if (rawFarm is List && rawFarm.isNotEmpty) {
         farmacos = rawFarm
@@ -389,7 +402,8 @@ class SoapDraftResult {
                 if (med.isEmpty) return null;
                 return <String, String>{'medicamento': med, 'dosis': dos};
               } catch (fe) {
-                debugPrint('💥 [SoapParser] ERRO PARSE FARMACO ITEM: $fe — raw: $e');
+                debugPrint(
+                    '💥 [SoapParser] ERRO PARSE FARMACO ITEM: $fe — raw: $e');
                 return null;
               }
             })
@@ -400,56 +414,60 @@ class SoapDraftResult {
       }
     } catch (e, stack) {
       // ISOLAMENTO TOTAL: erro de farmacos NUNCA propaga para cima
-      debugPrint('💥 [SoapParser] ERRO PARSE FARMACOS (isolado, O/A/P não afetados): $e\n$stack');
+      debugPrint(
+          '💥 [SoapParser] ERRO PARSE FARMACOS (isolado, O/A/P não afetados): $e\n$stack');
     }
 
     // ── Sumário de diagnóstico ──────────────────────────────────────────────
     debugPrint('🤖 [SoapParser] ═══ RESULTADO FINAL ═══');
-    debugPrint('🤖 [SoapParser] S preenchido: ${notePasaNoche != null || fiebre != null || pa != null}');
-    debugPrint('🤖 [SoapParser] O preenchido: ${pa != null || estadoGeneral != null || laboratorio != null}');
-    debugPrint('🤖 [SoapParser] A preenchido: ${estadoClinical != null || problemasActivos != null}');
+    debugPrint(
+        '🤖 [SoapParser] S preenchido: ${notePasaNoche != null || fiebre != null || pa != null}');
+    debugPrint(
+        '🤖 [SoapParser] O preenchido: ${pa != null || estadoGeneral != null || laboratorio != null}');
+    debugPrint(
+        '🤖 [SoapParser] A preenchido: ${estadoClinical != null || problemasActivos != null}');
     debugPrint('🤖 [SoapParser] P preenchido: ${planTerapeutico != null}');
     debugPrint('🤖 [SoapParser] Fármacos: ${farmacos?.length ?? 0}');
 
     return SoapDraftResult(
-      pacienteNome:          pNome,
-      pacienteCama:          pCama,
-      pacienteIdade:         pIdade,
-      pacienteSexo:          pSexo,
-      pacienteDiagnostico:   pDiag,
+      pacienteNome: pNome,
+      pacienteCama: pCama,
+      pacienteIdade: pIdade,
+      pacienteSexo: pSexo,
+      pacienteDiagnostico: pDiag,
       pacienteDiaInternacion: pDia,
-      notePasaNoche:         notePasaNoche,
-      dolorEscala:           dolorEscala,
-      fiebre:                fiebre,
-      disnea:                disnea,
-      nauseas:               nauseas,
-      tos:                   tos,
-      alimentacion:          alimentacion,
-      diuresis:              diuresis,
-      evacuacion:            evacuacion,
-      suenoRestado:          suenoRestado,
-      notasLibresSubjetivo:  notasLibres,
-      pa:                    pa,
-      fc:                    fc,
-      fr:                    fr,
-      satO2:                 satO2,
-      temperatura:           temperatura,
-      estadoGeneral:         estadoGeneral,
-      acv:                   acv,
-      ar:                    ar,
-      abdomen:               abdomen,
-      extremidades:          extremidades,
-      laboratorio:           laboratorio,
-      imagenes:              imagenes,
-      culturas:              culturas,
-      ecg:                   ecg,
-      tratamientoActual:     tratamientoActual,
-      estadoClinical:        estadoClinical,
-      problemasActivos:      problemasActivos,
-      notasEvaluacion:       notasEvaluacion,
-      planTerapeutico:       planTerapeutico,
-      criteriosAlta:         criteriosAlta,
-      farmacos:              farmacos,
+      notePasaNoche: notePasaNoche,
+      dolorEscala: dolorEscala,
+      fiebre: fiebre,
+      disnea: disnea,
+      nauseas: nauseas,
+      tos: tos,
+      alimentacion: alimentacion,
+      diuresis: diuresis,
+      evacuacion: evacuacion,
+      suenoRestado: suenoRestado,
+      notasLibresSubjetivo: notasLibres,
+      pa: pa,
+      fc: fc,
+      fr: fr,
+      satO2: satO2,
+      temperatura: temperatura,
+      estadoGeneral: estadoGeneral,
+      acv: acv,
+      ar: ar,
+      abdomen: abdomen,
+      extremidades: extremidades,
+      laboratorio: laboratorio,
+      imagenes: imagenes,
+      culturas: culturas,
+      ecg: ecg,
+      tratamientoActual: tratamientoActual,
+      estadoClinical: estadoClinical,
+      problemasActivos: problemasActivos,
+      notasEvaluacion: notasEvaluacion,
+      planTerapeutico: planTerapeutico,
+      criteriosAlta: criteriosAlta,
+      farmacos: farmacos,
     );
   }
 }
@@ -476,19 +494,28 @@ class SoapCopilotService {
   //   tratamientoActual                     ← direto
   static const Map<String, dynamic> _responseSchema = {
     'type': 'object',
-    'required': ['paciente', 'subjetivo', 'objetivo', 'evaluacion', 'plan', 'farmacos'],
+    'required': [
+      'paciente',
+      'subjetivo',
+      'objetivo',
+      'evaluacion',
+      'plan',
+      'farmacos'
+    ],
     'properties': {
-
       // ── DEMOGRÁFICO ────────────────────────────────────────────────────────
       'paciente': {
         'type': 'object',
         'required': ['nome', 'cama', 'diagnostico'],
         'properties': {
-          'nome':           {'type': 'string'},
-          'cama':           {'type': 'string'},
-          'idade':          {'type': 'string'},
-          'sexo':           {'type': 'string', 'enum': ['M', 'F']},
-          'diagnostico':    {'type': 'string'},
+          'nome': {'type': 'string'},
+          'cama': {'type': 'string'},
+          'idade': {'type': 'string'},
+          'sexo': {
+            'type': 'string',
+            'enum': ['M', 'F']
+          },
+          'diagnostico': {'type': 'string'},
           'diaInternacion': {'type': 'integer', 'minimum': 1, 'maximum': 90},
         },
       },
@@ -499,16 +526,25 @@ class SoapCopilotService {
         'required': ['notePasaNoche'],
         'properties': {
           'notePasaNoche': {'type': 'string'},
-          'dolorEscala':   {'type': 'integer', 'minimum': 0, 'maximum': 10},
-          'fiebre':        {'type': 'boolean'},
-          'disnea':        {'type': 'boolean'},
-          'nauseas':       {'type': 'boolean'},
-          'tos':           {'type': 'boolean'},
-          'alimentacion':  {'type': 'string', 'enum': ['Bien', 'Regular', 'Mal']},
-          'diuresis':      {'type': 'string', 'enum': ['Normal', 'Oliguria', 'Anuria']},
-          'evacuacion':    {'type': 'string', 'enum': ['Normal', 'Constipado', 'Diarrea']},
-          'suenoRestado':  {'type': 'boolean'},
-          'notasLibres':   {'type': 'string'},
+          'dolorEscala': {'type': 'integer', 'minimum': 0, 'maximum': 10},
+          'fiebre': {'type': 'boolean'},
+          'disnea': {'type': 'boolean'},
+          'nauseas': {'type': 'boolean'},
+          'tos': {'type': 'boolean'},
+          'alimentacion': {
+            'type': 'string',
+            'enum': ['Bien', 'Regular', 'Mal']
+          },
+          'diuresis': {
+            'type': 'string',
+            'enum': ['Normal', 'Oliguria', 'Anuria']
+          },
+          'evacuacion': {
+            'type': 'string',
+            'enum': ['Normal', 'Constipado', 'Diarrea']
+          },
+          'suenoRestado': {'type': 'boolean'},
+          'notasLibres': {'type': 'string'},
         },
       },
 
@@ -520,24 +556,24 @@ class SoapCopilotService {
         'required': ['pa', 'fc', 'estadoGeneral', 'planTerapeutico_ob'],
         'properties': {
           // Signos vitais (flat)
-          'pa':               {'type': 'string'},
-          'fc':               {'type': 'string'},
-          'fr':               {'type': 'string'},
-          'satO2':            {'type': 'string'},
-          'temperatura':      {'type': 'string'},
+          'pa': {'type': 'string'},
+          'fc': {'type': 'string'},
+          'fr': {'type': 'string'},
+          'satO2': {'type': 'string'},
+          'temperatura': {'type': 'string'},
           // Exame físico (flat)
-          'estadoGeneral':    {'type': 'string'},
-          'acv':              {'type': 'string'},
-          'ar':               {'type': 'string'},
-          'abdomen':          {'type': 'string'},
-          'extremidades':     {'type': 'string'},
+          'estadoGeneral': {'type': 'string'},
+          'acv': {'type': 'string'},
+          'ar': {'type': 'string'},
+          'abdomen': {'type': 'string'},
+          'extremidades': {'type': 'string'},
           // Exames complementares (flat)
-          'laboratorio':      {'type': 'string'},
-          'imagenes':         {'type': 'string'},
-          'culturas':         {'type': 'string'},
-          'ecg':              {'type': 'string'},
+          'laboratorio': {'type': 'string'},
+          'imagenes': {'type': 'string'},
+          'culturas': {'type': 'string'},
+          'ecg': {'type': 'string'},
           // Tratamento atual
-          'tratamientoActual':  {'type': 'string'},
+          'tratamientoActual': {'type': 'string'},
           // Campo auxiliar para forçar emissão (descartado no parse)
           'planTerapeutico_ob': {'type': 'string'},
         },
@@ -566,7 +602,7 @@ class SoapCopilotService {
         'required': ['planTerapeutico'],
         'properties': {
           'planTerapeutico': {'type': 'string'},
-          'criteriosAlta':   {'type': 'string'},
+          'criteriosAlta': {'type': 'string'},
         },
       },
 
@@ -578,7 +614,7 @@ class SoapCopilotService {
           'required': ['medicamento', 'dosis'],
           'properties': {
             'medicamento': {'type': 'string'},
-            'dosis':       {'type': 'string'},
+            'dosis': {'type': 'string'},
           },
         },
       },
@@ -595,7 +631,6 @@ class SoapCopilotService {
       'CADA dato encontrado al campo JSON exacto. Tolera caos: texto fragmentado, '
       'abreviaturas medicas, datos fuera de orden, imagenes de monitores o '
       'planillas manuscritas — extrae TODO sin omitir ni inventar.\n\n'
-
       '═══════════════════════════════════════════════════════════════\n'
       'REGLA ABSOLUTA — ESTRUCTURA FLAT DEL NODO "objetivo":\n'
       '═══════════════════════════════════════════════════════════════\n'
@@ -614,11 +649,9 @@ class SoapCopilotService {
       '    "planTerapeutico_ob": ""\n'
       '  }\n'
       '}\n\n'
-
       '═══════════════════════════════════════════════════════════════\n'
       'DIRECTIVAS DE EXTRACCION EXAUSTIVA — CAMPO POR CAMPO:\n'
       '═══════════════════════════════════════════════════════════════\n'
-
       'PACIENTE (demografico):\n'
       '• nome: nombre completo del paciente. Busca: "Paciente:", "Nombre:", '
       '"Apellido:", etiquetas de pulsera, cabezal de planilla.\n'
@@ -633,7 +666,6 @@ class SoapCopilotService {
       '"CIE-10", primera linea del cuadro clinico.\n'
       '• diaInternacion: dia de internacion/hospitalizacion (entero 1-90). '
       'Busca: "Dia X de internacion", "D+X", "HD#X", "DH".\n\n'
-
       'SUBJETIVO (S):\n'
       '• notePasaNoche: como paso la noche el paciente — texto libre completo '
       'del medico o enfermeria. Consolida frases como "paso noche tranquila", '
@@ -655,7 +687,6 @@ class SoapCopilotService {
       '"no durmio", "sono mal", "agitado en la noche".\n'
       '• notasLibres: cualquier informacion subjetiva relevante no capturada '
       'arriba — texto medico libre, quejas del paciente, novedades.\n\n'
-
       'OBJETIVO — SIGNOS VITALES (campos flat en "objetivo"):\n'
       '• pa: presion arterial en formato "120/80". Busca: "PA", "TA", "BP", '
       '"tension arterial", "presion", "SBP/DBP".\n'
@@ -669,7 +700,6 @@ class SoapCopilotService {
       '• temperatura: temperatura corporal en grados C (solo numero). '
       'Busca: "T", "Temp", "temperatura", "febril", "afebril". '
       'Si dice "afebril" estimar 36.5.\n\n'
-
       'OBJETIVO — EXAMEN FISICO (campos flat en "objetivo"):\n'
       '• estadoGeneral: descripcion del estado general. Busca: "EG:", '
       '"RADS", "RAEG", "estado general", "aspecto general", '
@@ -682,7 +712,6 @@ class SoapCopilotService {
       '"depresible", "RHA", "dolor a palpacion", "hepato", "esplenomegalia".\n'
       '• extremidades: examen de extremidades. Busca: "MMII", "MMSS", '
       '"edemas", "pulsos", "relleno capilar", "cianosis", "varices".\n\n'
-
       'OBJETIVO — EXAMENES COMPLEMENTARIOS (campos flat en "objetivo"):\n'
       '• laboratorio: TODOS los valores de laboratorio encontrados — '
       'hemograma (Hb, leucocitos, plaquetas), bioquimica (glucosa, urea, '
@@ -701,7 +730,6 @@ class SoapCopilotService {
       '• tratamientoActual: medicacion o tratamiento en curso mencionado '
       'en el objetivo. Busca: "tratamiento actual", "medicacion actual", '
       '"drogas", "infusion", "goteo".\n\n'
-
       'EVALUACION (A):\n'
       '• estado: "mejorando"/"estable"/"empeorando". Infiere del contexto '
       'clinico si no esta explicito.\n'
@@ -710,7 +738,6 @@ class SoapCopilotService {
       '"diagnosticos", "CIE-10". SUBSTITUYE completamente — no mezcles.\n'
       '• notasEvaluacion: impresion clinica del medico, interpretacion de '
       'resultados, razonamiento diagnostico, conclusion del pase de guardia.\n\n'
-
       'PLAN (P):\n'
       '• planTerapeutico: TODAS las indicaciones medicas, ordenes, cambios '
       'de tratamiento. Busca: "indicaciones", "plan:", "conducta:", '
@@ -719,7 +746,6 @@ class SoapCopilotService {
       '• criteriosAlta: criterios o condiciones para el alta hospitalaria. '
       'Busca: "alta si", "criterios de alta", "condiciones para alta", '
       '"puede irse cuando".\n\n'
-
       'FARMACOS:\n'
       '• farmacos[]: lista de TODOS los medicamentos. Para cada uno:\n'
       '  - medicamento: nombre generico o comercial completo.\n'
@@ -727,7 +753,6 @@ class SoapCopilotService {
       '(ej: "500mg VO c/8h", "1g EV c/12h", "20mg/h BIC IV").\n'
       'Busca en: recetas, indicaciones, hoja de medicacion, planilla de '
       'enfermeria, cualquier listado de drogas con dosis.\n\n'
-
       '═══════════════════════════════════════════════════════════════\n'
       'REGLAS CRITICAS FINALES:\n'
       '═══════════════════════════════════════════════════════════════\n'
@@ -747,7 +772,8 @@ class SoapCopilotService {
     String? text,
     List<Uint8List>? images,
     List<String>? imagesMimeType,
-  }) => analyze(apiKey: apiKey, textInput: text, images: images);
+  }) =>
+      analyze(apiKey: apiKey, textInput: text, images: images);
 
   static Future<SoapDraftResult> analyze({
     required String apiKey,
@@ -779,7 +805,9 @@ class SoapCopilotService {
     // ── Corpo da requisição ────────────────────────────────────────────────
     final body = jsonEncode({
       'system_instruction': {
-        'parts': [{'text': _systemPrompt}],
+        'parts': [
+          {'text': _systemPrompt}
+        ],
       },
       'contents': [
         {
@@ -791,7 +819,8 @@ class SoapCopilotService {
         'responseMimeType': 'application/json',
         'responseSchema': _responseSchema,
         'temperature': 0.1,
-        'maxOutputTokens': 8192,  // Build 181: aumentado 4096→8192 para lab extenso
+        'maxOutputTokens':
+            8192, // Build 181: aumentado 4096→8192 para lab extenso
       },
     });
 
@@ -817,8 +846,7 @@ class SoapCopilotService {
         final errBody = jsonDecode(response.body);
         detail = errBody['error']?['message']?.toString() ?? '';
       } catch (_) {}
-      throw Exception(
-          'API Gemini retornou ${response.statusCode}. '
+      throw Exception('API Gemini retornou ${response.statusCode}. '
           '${detail.isNotEmpty ? detail : response.body}');
     }
 
@@ -831,7 +859,7 @@ class SoapCopilotService {
         throw Exception('Gemini retornou lista de candidatos vazia.');
       }
       final content = candidates[0]['content'];
-      final parts2  = content is Map ? content['parts'] : null;
+      final parts2 = content is Map ? content['parts'] : null;
       if (parts2 is! List || parts2.isEmpty) {
         throw Exception('Nenhuma parte de conteúdo na resposta Gemini.');
       }
@@ -855,8 +883,7 @@ class SoapCopilotService {
       try {
         soapJson = jsonDecode(cleaned) as Map<String, dynamic>;
       } catch (_) {
-        throw Exception(
-            'Erro ao parsear JSON da IA. '
+        throw Exception('Erro ao parsear JSON da IA. '
             'Resposta bruta: ${rawText.length > 200 ? rawText.substring(0, 200) : rawText}');
       }
     }

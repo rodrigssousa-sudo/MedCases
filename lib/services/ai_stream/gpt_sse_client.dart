@@ -1,3 +1,4 @@
+import '../ai/safety/clinical_request_safety.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // lib/services/ai_stream/gpt_sse_client.dart
 // BUILD 462B-REDIRECIONADA — Real GPT SSE Client
@@ -46,6 +47,7 @@ typedef GptHttpClientFactory = http.Client Function();
 /// Idêntico ao payload do callGptProxy (legado) — compatibilidade total.
 // ─────────────────────────────────────────────────────────────────────────────
 class GptSsePayload {
+  final ClinicalRequestContext? clinicalContext;
   final String userMessage;
   final String systemPrompt;
   final List<Map<String, String>> history;
@@ -55,6 +57,7 @@ class GptSsePayload {
   final int maxOutputTokens;
 
   const GptSsePayload({
+    this.clinicalContext,
     required this.userMessage,
     required this.systemPrompt,
     this.history = const [],
@@ -169,6 +172,8 @@ class GptSseClient {
   ///   • Bytes reais da rede → SseParser → AiEvent
   // ──────────────────────────────────────────────────────────────────────────
   Stream<AiEvent> stream(GptSsePayload payload) async* {
+    payload.clinicalContext
+        ?.requireTransport(mode: payload.mode, language: payload.lang);
     _startMs = DateTime.now().millisecondsSinceEpoch;
     _cancelled = false;
     _completed = false;

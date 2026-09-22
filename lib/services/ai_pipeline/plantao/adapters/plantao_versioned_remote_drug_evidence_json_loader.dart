@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../shadow/plantao_remote_drug_evidence_runtime_observer.dart';
+import 'plantao_canonical_catalog_readonly_resolver.dart';
+
+export 'plantao_canonical_catalog_readonly_resolver.dart';
 
 class PlantaoVersionedRemoteDrugEvidenceJsonLoader {
   PlantaoVersionedRemoteDrugEvidenceJsonLoader({
@@ -46,6 +49,23 @@ class PlantaoVersionedRemoteDrugEvidenceJsonLoader {
   _PlantaoRemoteDrugEvidenceCurrent? _cachedCurrent;
   DateTime? _cachedCurrentAt;
   Future<_PlantaoRemoteDrugEvidenceCurrent>? _currentPointerInFlight;
+
+  /// Canonical discovery bypasses the historical AI bundle, while the existing
+  /// typed-evidence pipeline remains shadow-only with its original gates.
+  late final canonicalCatalog = PlantaoCanonicalCatalogReadOnlyResolver(
+    loadObject: (path) async {
+      final text = await _getText(
+        baseUri.resolve(path),
+        maximumBytes: maximumPayloadBytes,
+        noCache: true,
+      );
+      final decoded = jsonDecode(text);
+      if (decoded is! Map<String, Object?>) {
+        throw const FormatException('Invalid canonical gateway response');
+      }
+      return decoded;
+    },
+  );
 
   Future<String> loadJsonText(String relativePath) async {
     observer?.recordLogicalRequest();

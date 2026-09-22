@@ -1,8 +1,7 @@
 // firestore_service.dart — dados por usuário no Firestore
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart'
-    show kDebugMode, kIsWeb, debugPrint, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb, debugPrint;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -417,8 +416,6 @@ class FirestoreService {
       'https://firestore.googleapis.com/v1/projects/$_projectId/databases/(default)/documents';
   static String get _firebaseApiKey =>
       DefaultFirebaseOptions.currentPlatform.apiKey;
-  static bool get _isIosWeb =>
-      kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
   // Cooldown por endpoint após 403 — evita retry storm
   static DateTime? _guidesRestRetryAfter;
@@ -448,13 +445,6 @@ class FirestoreService {
   //   _isUserAuthenticated → retained as alias for _hasAnyAuthCredential.
   //   All new code must reference the explicit names above.
 
-  /// Strict SDK identity check — Firebase SDK currentUser is non-null.
-  /// Used exclusively for user-private Firestore read barriers.
-  static bool get _hasSdkIdentity {
-    if (!_isFirebaseReady) return false;
-    return FirebaseAuth.instance.currentUser != null;
-  }
-
   /// Broad auth check — SDK session OR REST token present.
   /// Used only by public/shared-content pre-flight guards to suppress 403 spam.
   /// DO NOT use for user-private data endpoints.
@@ -466,10 +456,6 @@ class FirestoreService {
     if (kIsWeb) return AuthService.hasCachedToken;
     return false;
   }
-
-  /// @Deprecated — use [_hasAnyAuthCredential] explicitly for public endpoints
-  /// or [_hasSdkIdentity] for user-private barriers.
-  static bool get _isUserAuthenticated => _hasAnyAuthCredential;
 
   static const _guidesCacheKey = 'clinical_guides_cache_v1';
   static const _guidesCacheFirstOpenResetKey =
@@ -582,8 +568,8 @@ class FirestoreService {
             data[key] = raw is double
                 ? raw
                 : (raw is num
-                      ? raw.toDouble()
-                      : double.tryParse(raw?.toString() ?? '') ?? 0.0);
+                    ? raw.toDouble()
+                    : double.tryParse(raw?.toString() ?? '') ?? 0.0);
           } else if (value.containsKey('arrayValue')) {
             final arrRaw = safeMap(value['arrayValue']);
             final valsList = arrRaw['values'];
@@ -674,7 +660,8 @@ class FirestoreService {
           try {
             final resp = await http
                 .get(
-                  Uri.parse('$_fsBase/app_config/global?key=$_firebaseApiKey'),
+                  Uri.parse(
+                      '$_fsBase/app_config/global?key=$_firebaseApiKey&mask.fieldPaths=geminiPaidEnabled'),
                   headers: _restGetHeaders(token),
                 )
                 .timeout(const Duration(seconds: 4));
@@ -709,44 +696,24 @@ class FirestoreService {
           }
         }
 
-        // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ─────
-        debugPrint(
-          '[NATIVE_AUTH] source=FirebaseSDK uid=${FirebaseAuth.instance.currentUser?.uid ?? 'null'} endpoint=app_config/global',
-        );
-        try {
-          final doc = await _db
-              .collection('app_config')
-              .doc('global')
-              .get()
-              .timeout(const Duration(seconds: 4));
-          debugPrint(
-            '[FirestoreService] app_config/global SDK exists=${doc.exists}',
-          );
-          // safeMap: protege contra tipos inesperados do SDK em dart2js release
-          final data = doc.exists ? safeMap(doc.data()) : <String, dynamic>{};
-          if (data.isNotEmpty) {
-            _cachedAppConfigGlobal = Map<String, dynamic>.from(data);
-            _appConfigGlobalRetryAfter = null;
-          }
-          return Map<String, dynamic>.from(data);
-        } on FirebaseException catch (e) {
-          if (e.code == 'permission-denied') {
-            // permission-denied ocorre para usuários não-admin (esperado).
-            // NÃO aplica cooldown — NÃO guarda em cache.
-            final uid = FirebaseAuth.instance.currentUser?.uid ?? 'null';
-            debugPrint(
-              '[FirestoreService] app_config/global permission-denied uid=$uid (não-admin ou token não propagado)',
-            );
-          } else {
-            debugPrint(
-              '[FirestoreService] app_config/global SDK erro: ${e.code}',
-            );
-            _appConfigGlobalRetryAfter = DateTime.now().add(
-              const Duration(seconds: 30),
-            );
-          }
-          return <String, dynamic>{};
-        }
+        // Fetch only the public toggle: SDK document reads would also fetch
+        // legacy provider credentials stored beside it.
+        final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+        if (token == null || token.isEmpty) return <String, dynamic>{};
+        final response = await http
+            .get(
+              Uri.parse(
+                  '$_fsBase/app_config/global?key=$_firebaseApiKey&mask.fieldPaths=geminiPaidEnabled'),
+              headers: _restGetHeaders(token),
+            )
+            .timeout(const Duration(seconds: 4));
+        if (response.statusCode != 200) return <String, dynamic>{};
+        final data = _decodeFirestoreFields(response.body);
+        _cachedAppConfigGlobal = {
+          'geminiPaidEnabled': data['geminiPaidEnabled'] == true
+        };
+        _appConfigGlobalRetryAfter = null;
+        return Map<String, dynamic>.from(_cachedAppConfigGlobal);
       } catch (e) {
         debugPrint('[FirestoreService] _loadAppConfigGlobalData ERRO: $e');
         return Map<String, dynamic>.from(_cachedAppConfigGlobal);
@@ -763,118 +730,27 @@ class FirestoreService {
   /// Carrega a chave OpenAI global do app, salva pelo administrador.
   /// Armazenada em app_config/global campo 'openAiKey'.
   /// Todos os usuários aprovados usam essa chave — nenhuma configuração manual.
-  static Future<String> loadAppAiKey() async {
-    try {
-      final data = await _loadAppConfigGlobalData();
-      final key = safeString(data['openAiKey']).trim();
-      debugPrint(
-        '[FirestoreService] loadAppAiKey key.isNotEmpty=${key.isNotEmpty}',
-      );
-      return key;
-    } catch (e) {
-      debugPrint('[FirestoreService] loadAppAiKey ERRO: $e');
-      return '';
-    }
-  }
+  static Future<String> loadAppAiKey() async => '';
 
   // ── Chave Gemini API do APP (compartilhada) ───────────────────────────────
   /// Carrega a Gemini API Key global do app, salva pelo administrador.
   /// Armazenada em app_config/global campo 'apiKey'.
   /// Usada diretamente nas chamadas à API do Gemini (sem OAuth token).
-  static Future<String> loadGeminiApiKey() async {
-    try {
-      final data = await _loadAppConfigGlobalData();
-      final key = safeString(data['apiKey']).trim().isNotEmpty
-          ? safeString(data['apiKey']).trim()
-          : safeString(data['geminiApiKey']).trim();
-      debugPrint(
-        '[FirestoreService] loadGeminiApiKey key.isNotEmpty=${key.isNotEmpty}',
-      );
-      return key;
-    } catch (e) {
-      debugPrint('[FirestoreService] loadGeminiApiKey ERRO: $e');
-      return '';
-    }
-  }
+  static Future<String> loadGeminiApiKey() async =>
+      'medcases-authenticated-gateway';
 
   /// Salva a Gemini API Key global do app em app_config/global.
   ///
   /// BUILD 322: branch Web usa REST PATCH + Bearer token (mesmo padrão de
   /// saveAppAiKey / saveGeminiPaidEnabled). Nativo mantém SDK intacto.
-  static Future<void> saveGeminiApiKey(String key) async {
-    // ── Limpar cache para forçar releitura limpa após write ─────────────────
-    _cachedAppConfigGlobal.clear();
-    _appConfigGlobalRetryAfter = null;
-
-    if (kIsWeb) {
-      final token = await AuthService.getAdminToken();
-      debugPrint(
-        '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveGeminiApiKey)',
-      );
-      if (token.isEmpty) {
-        debugPrint(
-          '[FirestoreService] saveGeminiApiKey ERRO Web — token REST vazio',
-        );
-        throw Exception('saveGeminiApiKey: token REST vazio');
-      }
-      try {
-        const mask = 'updateMask.fieldPaths=apiKey';
-        final resp = await http
-            .patch(
-              Uri.parse('$_fsBase/app_config/global?$mask'),
-              headers: {
-                'Authorization': 'Bearer $token',
-                'Content-Type': 'application/json',
-              },
-              body: jsonEncode({
-                'fields': {
-                  'apiKey': {'stringValue': key.trim()},
-                },
-              }),
-            )
-            .timeout(const Duration(seconds: 8));
-        if (resp.statusCode == 200) {
-          debugPrint(
-            '[FirestoreService] saveGeminiApiKey OK → app_config/global (REST Web)',
-          );
-        } else {
-          debugPrint(
-            '[FirestoreService] saveGeminiApiKey ERRO REST ${resp.statusCode}: '
-            '${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
-          );
-          throw Exception('saveGeminiApiKey REST ${resp.statusCode}');
-        }
-      } catch (e) {
-        debugPrint('[FirestoreService] saveGeminiApiKey ERRO REST: $e');
-        rethrow;
-      }
-      return;
-    }
-
-    // ── NATIVO: SDK ─────────────────────────────────────────────────────────
-    try {
-      await _db.collection('app_config').doc('global').set({
-        'apiKey': key.trim(),
-      }, SetOptions(merge: true));
-      debugPrint('[FirestoreService] saveGeminiApiKey OK');
-    } catch (e) {
-      debugPrint('[FirestoreService] saveGeminiApiKey ERRO: $e');
-      rethrow;
-    }
+  static Future<void> saveGeminiApiKey(String key) {
+    throw StateError('PROVIDER_CREDENTIALS_SERVER_MANAGED');
   }
 
   // ── Chave OpenAI — vinculada ao perfil do usuário no Firestore ────────────
   /// Carrega a chave OpenAI do perfil do usuário (fallback individual).
   /// Armazenada em users/{uid}/prefs/settings campo 'openAiKey'.
-  static Future<String> loadAiKey(String uid) async {
-    try {
-      final doc = await _userPrefs(uid).get();
-      if (!doc.exists) return '';
-      return safeString(doc.data()?['openAiKey']);
-    } catch (_) {
-      return '';
-    }
-  }
+  static Future<String> loadAiKey(String uid) async => '';
 
   /// Salva a chave OpenAI global do app em app_config/global.
   /// Todos os usuários aprovados passam a usar essa chave automaticamente.
@@ -882,82 +758,8 @@ class FirestoreService {
   /// BUILD 322: branch Web usa REST PATCH + Bearer token (mesmo padrão de
   /// saveGeminiPaidEnabled). Nativo mantém SDK intacto.
   /// Cache invalidado em ambas as plataformas para forçar releitura limpa.
-  static Future<void> saveAppAiKey(String key) async {
-    // ── Limpar cache local para garantir leitura limpa após write ───────────
-    _cachedAppConfigGlobal.clear();
-    _appConfigGlobalRetryAfter = null;
-
-    if (kIsWeb) {
-      // ── WEB: REST PATCH com AuthService.getAdminToken() ─────────────────
-      // FirebaseAuth.instance.currentUser é sempre null no Web (login via
-      // REST Identity Toolkit não injeta token no Firebase Auth SDK).
-      // getAdminToken() retorna o token REST correto (auto-refresh incluído).
-      final token = await AuthService.getAdminToken();
-      debugPrint(
-        '[WEB_AUTH] source=REST token=${token.isNotEmpty} endpoint=app_config/global (saveAppAiKey)',
-      );
-      if (token.isEmpty) {
-        debugPrint(
-          '[FirestoreService] saveAppAiKey ERRO Web — token REST vazio',
-        );
-        throw Exception('saveAppAiKey: token REST vazio');
-      }
-      try {
-        // updateMask garante que apenas o campo 'openAiKey' é alterado (merge
-        // seguro no REST — não sobrescreve outros campos do documento).
-        const mask = 'updateMask.fieldPaths=openAiKey';
-        final resp = await http
-            .patch(
-              Uri.parse('$_fsBase/app_config/global?$mask'),
-              headers: {
-                'Authorization': 'Bearer $token',
-                'Content-Type': 'application/json',
-              },
-              body: jsonEncode({
-                'fields': {
-                  'openAiKey': {'stringValue': key.trim()},
-                },
-              }),
-            )
-            .timeout(const Duration(seconds: 8));
-        if (resp.statusCode == 200) {
-          debugPrint(
-            '[FirestoreService] saveAppAiKey OK → app_config/global (REST Web)',
-          );
-          debugPrint(
-            '[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}',
-          );
-        } else {
-          debugPrint(
-            '[FirestoreService] saveAppAiKey ERRO REST ${resp.statusCode}: '
-            '${resp.body.substring(0, resp.body.length.clamp(0, 220))}',
-          );
-          throw Exception('saveAppAiKey REST ${resp.statusCode}');
-        }
-      } catch (e) {
-        debugPrint('[FirestoreService] saveAppAiKey ERRO REST: $e');
-        rethrow;
-      }
-      return;
-    }
-
-    // ── NATIVO: SDK (FirebaseAuth token populado automaticamente) ──────────
-    final fbUser = FirebaseAuth.instance.currentUser;
-    debugPrint(
-      '[NATIVE_AUTH] source=FirebaseSDK uid=${fbUser?.uid ?? 'null'} endpoint=app_config/global (saveAppAiKey)',
-    );
-    try {
-      await _db.collection('app_config').doc('global').set({
-        'openAiKey': key.trim(),
-      }, SetOptions(merge: true));
-      debugPrint('[FirestoreService] saveAppAiKey OK → app_config/global');
-      debugPrint(
-        '[ADMIN_AI_KEY] saved=true provider=openai key_empty=${key.trim().isEmpty}',
-      );
-    } catch (e) {
-      debugPrint('[FirestoreService] saveAppAiKey ERRO: $e');
-      rethrow;
-    }
+  static Future<void> saveAppAiKey(String key) {
+    throw StateError('PROVIDER_CREDENTIALS_SERVER_MANAGED');
   }
 
   // ── Gemini Paid Proxy — Build 226 ─────────────────────────────────────────
@@ -1165,10 +967,8 @@ class FirestoreService {
 
   /// Salva (ou remove) a chave OpenAI no perfil Firestore do usuário.
   /// Passa [key] vazio para remover a chave (modo local).
-  static Future<void> saveAiKey(String uid, String key) async {
-    try {
-      await _userPrefs(uid).set({'openAiKey': key}, SetOptions(merge: true));
-    } catch (_) {}
+  static Future<void> saveAiKey(String uid, String key) {
+    throw StateError('PROVIDER_CREDENTIALS_SERVER_MANAGED');
   }
 
   static Future<void> updateDisplayName(String uid, String displayName) async {
@@ -1188,7 +988,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return {};
@@ -1196,7 +996,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return {};
@@ -1209,7 +1009,7 @@ class FirestoreService {
       if (e.code == 'permission-denied') {
         debugPrint(
           '[FIRESTORE_AUTH_BARRIER] operation=loadFavDrugs '
-          'allowed=false reason=permission_denied uid=$uid '
+          'allowed=false reason=permission_denied uid=[redacted] '
           'sdkRequestDispatched=true → authDenied (cache preservado)',
         );
       }
@@ -1235,7 +1035,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return {};
@@ -1243,7 +1043,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return {};
@@ -1256,7 +1056,7 @@ class FirestoreService {
       if (e.code == 'permission-denied') {
         debugPrint(
           '[FIRESTORE_AUTH_BARRIER] operation=loadFavProtocols '
-          'allowed=false reason=permission_denied uid=$uid '
+          'allowed=false reason=permission_denied uid=[redacted] '
           'sdkRequestDispatched=true → authDenied (cache preservado)',
         );
       }
@@ -1282,7 +1082,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return {};
@@ -1290,7 +1090,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return {};
@@ -1303,7 +1103,7 @@ class FirestoreService {
       if (e.code == 'permission-denied') {
         debugPrint(
           '[FIRESTORE_AUTH_BARRIER] operation=loadFavPrescriptions '
-          'allowed=false reason=permission_denied uid=$uid '
+          'allowed=false reason=permission_denied uid=[redacted] '
           'sdkRequestDispatched=true → authDenied (cache preservado)',
         );
       }
@@ -1328,7 +1128,8 @@ class FirestoreService {
   // updatedAt. Exchange sub-path: …/ai_sessions/{sessionId}/exchanges/{requestId}.
   static CollectionReference<Map<String, dynamic>> _userAiSessions(
     String uid,
-  ) => _db.collection('users').doc(uid).collection('ai_sessions');
+  ) =>
+      _db.collection('users').doc(uid).collection('ai_sessions');
 
   /// Salva UMA sessão de chat no Firestore (upsert por session.id).
   /// Injeta sempre `updatedAt` como server timestamp para que a query
@@ -1365,7 +1166,7 @@ class FirestoreService {
     if (!_isFirebaseReady || firebaseUser == null || firebaseUser.uid != uid) {
       debugPrint(
         '[AI_HISTORY_DELETE][LEGACY] allowed=false '
-        'reason=auth_guard uid=$uid',
+        'reason=auth_guard uid=[redacted]',
       );
       return false;
     }
@@ -1399,7 +1200,7 @@ class FirestoreService {
     if (!_isFirebaseReady || firebaseUser == null || firebaseUser.uid != uid) {
       debugPrint(
         '[AI_HISTORY_DELETE][CANONICAL] allowed=false '
-        'reason=auth_guard uid=$uid',
+        'reason=auth_guard uid=[redacted]',
       );
       return false;
     }
@@ -1450,7 +1251,7 @@ class FirestoreService {
   // [permissionDenied] flag. When true, the caller MUST map to
   // [SessionPersistAuthDenied] and MUST NOT enqueue into the offline queue.
   static Future<({bool ok, bool permissionDenied, Object? error})>
-  batchWriteAiExchange({
+      batchWriteAiExchange({
     required String uid,
     required String sessionId,
     required String requestId,
@@ -1618,7 +1419,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return {};
@@ -1626,7 +1427,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return {};
@@ -1639,7 +1440,7 @@ class FirestoreService {
       if (e.code == 'permission-denied') {
         debugPrint(
           '[FIRESTORE_AUTH_BARRIER] operation=loadFavCases '
-          'allowed=false reason=permission_denied uid=$uid '
+          'allowed=false reason=permission_denied uid=[redacted] '
           'sdkRequestDispatched=true → authDenied (cache preservado)',
         );
       }
@@ -1665,7 +1466,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return [];
@@ -1673,7 +1474,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return [];
@@ -1694,7 +1495,7 @@ class FirestoreService {
       if (e.code == 'permission-denied') {
         debugPrint(
           '[FIRESTORE_AUTH_BARRIER] operation=loadCases '
-          'allowed=false reason=permission_denied uid=$uid '
+          'allowed=false reason=permission_denied uid=[redacted] '
           'sdkRequestDispatched=true → authDenied (cache preservado)',
         );
       }
@@ -1756,7 +1557,7 @@ class FirestoreService {
       if (activeUid != uid) {
         debugPrint(
           '[SECURE_STREAM][AUTO_CLOSE] stream=streamActiveCases '
-          'parentUid=$uid activeUid=$activeUid',
+          'parentUid=[redacted] activeUid=$activeUid',
         );
         yield* Stream.empty();
         return;
@@ -1790,7 +1591,7 @@ class FirestoreService {
     if (fbUser == null) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=$operation '
-        'allowed=false reason=uid_mismatch_or_null uid=$uid '
+        'allowed=false reason=uid_mismatch_or_null uid=[redacted] '
         'sdkWriteDispatched=false',
       );
       return const FsWriteAuthDenied('uid_mismatch_or_null');
@@ -1799,7 +1600,7 @@ class FirestoreService {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=$operation '
         'allowed=false reason=uid_mismatch_or_null '
-        'expectedUid=$uid firebaseUid=${fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${fbUser.uid} '
         'sdkWriteDispatched=false',
       );
       return const FsWriteAuthDenied('uid_mismatch_or_null');
@@ -1811,7 +1612,7 @@ class FirestoreService {
   /// mirrors it to public_histories. Returns the write outcome.
   /// [uploadedAt] is only non-null in the success path when h.isPublic.
   static Future<({FirestoreWriteResult result, String? uploadedAt})>
-  saveHistoryTyped(String uid, ClinicalHistoryModel h) async {
+      saveHistoryTyped(String uid, ClinicalHistoryModel h) async {
     final denial = _writeAuthCheck(uid, 'saveHistoryTyped');
     if (denial != null) return (result: denial, uploadedAt: null);
 
@@ -1845,13 +1646,13 @@ class FirestoreService {
     } on FirebaseException catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
-        'uid=$uid error=${e.code} sdkWriteDispatched=true → FsWriteFailure',
+        'uid=[redacted] error=${e.code} sdkWriteDispatched=true → FsWriteFailure',
       );
       return (result: FsWriteFailure(e, st), uploadedAt: null);
     } catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=saveHistoryTyped '
-        'uid=$uid error=$e sdkWriteDispatched=true → FsWriteFailure',
+        'uid=[redacted] error=$e sdkWriteDispatched=true → FsWriteFailure',
       );
       return (result: FsWriteFailure(e, st), uploadedAt: null);
     }
@@ -1878,13 +1679,13 @@ class FirestoreService {
     } on FirebaseException catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
-        'uid=$uid hid=$hid error=${e.code} → FsWriteFailure',
+        'uid=[redacted] hid=$hid error=${e.code} → FsWriteFailure',
       );
       return FsWriteFailure(e, st);
     } catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=deleteHistoryTyped '
-        'uid=$uid hid=$hid error=$e → FsWriteFailure',
+        'uid=[redacted] hid=$hid error=$e → FsWriteFailure',
       );
       return FsWriteFailure(e, st);
     }
@@ -1906,13 +1707,13 @@ class FirestoreService {
     } on FirebaseException catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
-        'uid=$uid type=$type error=${e.code} → FsWriteFailure',
+        'uid=[redacted] type=$type error=${e.code} → FsWriteFailure',
       );
       return FsWriteFailure(e, st);
     } catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=saveFavoritesTyped '
-        'uid=$uid type=$type error=$e → FsWriteFailure',
+        'uid=[redacted] type=$type error=$e → FsWriteFailure',
       );
       return FsWriteFailure(e, st);
     }
@@ -1932,13 +1733,13 @@ class FirestoreService {
     } on FirebaseException catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
-        'uid=$uid caseId=${c.id} error=${e.code} → FsWriteFailure',
+        'uid=[redacted] caseId=${c.id} error=${e.code} → FsWriteFailure',
       );
       return FsWriteFailure(e, st);
     } catch (e, st) {
       debugPrint(
         '[FIRESTORE_WRITE_BARRIER] operation=saveCaseProgressTyped '
-        'uid=$uid caseId=${c.id} error=$e → FsWriteFailure',
+        'uid=[redacted] caseId=${c.id} error=$e → FsWriteFailure',
       );
       return FsWriteFailure(e, st);
     }
@@ -1992,9 +1793,9 @@ class FirestoreService {
 
       final cached = _normalizePublicHistories(
         decoded.whereType<Map>().map(
-          (item) =>
-              ClinicalHistoryModel.fromJson(Map<String, dynamic>.from(item)),
-        ),
+              (item) => ClinicalHistoryModel.fromJson(
+                  Map<String, dynamic>.from(item)),
+            ),
       );
       _debugPublicHistories('cache read count=${cached.length}');
       return cached;
@@ -2059,8 +1860,8 @@ class FirestoreService {
       return raw is double
           ? raw
           : (raw is num
-                ? raw.toDouble()
-                : double.tryParse(raw?.toString() ?? '') ?? 0.0);
+              ? raw.toDouble()
+              : double.tryParse(raw?.toString() ?? '') ?? 0.0);
     }
     if (v.containsKey('nullValue')) return null;
     if (v.containsKey('mapValue')) {
@@ -2160,7 +1961,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUserH == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return [];
@@ -2168,7 +1969,7 @@ class FirestoreService {
     if (_fbUserH.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
-        'expectedUid=$uid firebaseUid=${_fbUserH.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUserH.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return [];
@@ -2191,11 +1992,11 @@ class FirestoreService {
           // latência e disparar o watchdog de 8 s (BUILD 313).
           debugPrint(
             '[BUILD427][FIRESTORE] loadHistories permission-denied '
-            'uid=$uid — fast-fail instantâneo (sem cache retry)',
+            'uid=[redacted] — fast-fail instantâneo (sem cache retry)',
           );
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER] operation=loadHistories '
-            'allowed=false reason=permission_denied uid=$uid '
+            'allowed=false reason=permission_denied uid=[redacted] '
             'sdkRequestDispatched=true '
             'result=authDenied — cache local preservado, escrita proibida',
           );
@@ -2232,7 +2033,7 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       debugPrint(
         '[BUILD427][FIRESTORE] loadHistories FirebaseException '
-        'code=${e.code} uid=$uid — retornando []',
+        'code=${e.code} uid=[redacted] — retornando []',
       );
       return [];
     } catch (_) {
@@ -2244,12 +2045,12 @@ class FirestoreService {
   // Canonical typed variant. All internal callers must use this method.
   // Dual-check barrier: (1) null SDK user, (2) uid mismatch — both block dispatch.
   static Future<FirestoreLoadResult<List<ClinicalHistoryModel>>>
-  loadHistoriesTyped(String uid) async {
+      loadHistoriesTyped(String uid) async {
     final _fbUserT = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUserT == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2257,7 +2058,7 @@ class FirestoreService {
     if (_fbUserT.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-        'expectedUid=$uid firebaseUid=${_fbUserT.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUserT.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2273,7 +2074,7 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER] operation=loadHistoriesTyped '
-            'allowed=false reason=permission_denied uid=$uid '
+            'allowed=false reason=permission_denied uid=[redacted] '
             'sdkRequestDispatched=true → authDenied',
           );
           return FirestoreLoadResult.authDenied();
@@ -2324,7 +2125,7 @@ class FirestoreService {
     } on FirebaseException catch (e) {
       debugPrint(
         '[FirestoreService] loadHistoriesTyped FirebaseException '
-        'code=${e.code} uid=$uid',
+        'code=${e.code} uid=[redacted]',
       );
       if (e.code == 'permission-denied')
         return FirestoreLoadResult.authDenied();
@@ -2364,7 +2165,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2372,7 +2173,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2388,7 +2189,7 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavDrugsTyped '
-            'allowed=false reason=permission_denied uid=$uid '
+            'allowed=false reason=permission_denied uid=[redacted] '
             'sdkRequestDispatched=true → authDenied',
           );
           return FirestoreLoadResult.authDenied();
@@ -2443,7 +2244,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2451,7 +2252,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2467,7 +2268,7 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavProtocolsTyped '
-            'allowed=false reason=permission_denied uid=$uid → authDenied',
+            'allowed=false reason=permission_denied uid=[redacted] → authDenied',
           );
           return FirestoreLoadResult.authDenied();
         }
@@ -2519,7 +2320,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2527,7 +2328,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2543,7 +2344,7 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavPrescriptionsTyped '
-            'allowed=false reason=permission_denied uid=$uid → authDenied',
+            'allowed=false reason=permission_denied uid=[redacted] → authDenied',
           );
           return FirestoreLoadResult.authDenied();
         }
@@ -2595,7 +2396,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2603,7 +2404,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2619,7 +2420,7 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadFavCasesTyped '
-            'allowed=false reason=permission_denied uid=$uid → authDenied',
+            'allowed=false reason=permission_denied uid=[redacted] → authDenied',
           );
           return FirestoreLoadResult.authDenied();
         }
@@ -2672,7 +2473,7 @@ class FirestoreService {
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2680,7 +2481,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -2696,7 +2497,7 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadCasesTyped '
-            'allowed=false reason=permission_denied uid=$uid → authDenied',
+            'allowed=false reason=permission_denied uid=[redacted] → authDenied',
           );
           return FirestoreLoadResult.authDenied();
         }
@@ -2773,19 +2574,19 @@ class FirestoreService {
   /// Targets [_userAiHistory] — schema v1 inline documents.
   /// Same auth-barrier and cache-fallback contract as loadAiSessionsTyped.
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
-  loadLegacyAiSessionsTyped(String uid) async {
+      loadLegacyAiSessionsTyped(String uid) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE][loadLegacyAiSessionsTyped] '
-        'allowed=false reason=firebase_user_null uid=$uid',
+        'allowed=false reason=firebase_user_null uid=[redacted]',
       );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE][loadLegacyAiSessionsTyped] '
-        'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}',
+        'allowed=false reason=uid_mismatch uid=[redacted] fbUid=${_fbUser.uid}',
       );
       return FirestoreLoadResult.authDenied();
     }
@@ -2802,15 +2603,14 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE][loadLegacyAiSessionsTyped] '
-            'allowed=false reason=permission_denied uid=$uid',
+            'allowed=false reason=permission_denied uid=[redacted]',
           );
           return FirestoreLoadResult.authDenied();
         }
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs
-              .map((d) => sdkDocToSafeMap(d.data()))
-              .toList();
+          final cached =
+              snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2820,9 +2620,8 @@ class FirestoreService {
       } catch (_) {
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs
-              .map((d) => sdkDocToSafeMap(d.data()))
-              .toList();
+          final cached =
+              snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2843,19 +2642,19 @@ class FirestoreService {
   /// Targets [_userAiSessions] — schema v2 with isDeleted + updatedAt index.
   /// Filter: isDeleted==false, ordered descending by updatedAt, limit 10.
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
-  loadCanonicalAiSessionSummariesTyped(String uid) async {
+      loadCanonicalAiSessionSummariesTyped(String uid) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
-        'allowed=false reason=firebase_user_null uid=$uid',
+        'allowed=false reason=firebase_user_null uid=[redacted]',
       );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
-        'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}',
+        'allowed=false reason=uid_mismatch uid=[redacted] fbUid=${_fbUser.uid}',
       );
       return FirestoreLoadResult.authDenied();
     }
@@ -2873,15 +2672,14 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE][loadCanonicalAiSessionSummariesTyped] '
-            'allowed=false reason=permission_denied uid=$uid',
+            'allowed=false reason=permission_denied uid=[redacted]',
           );
           return FirestoreLoadResult.authDenied();
         }
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs
-              .map((d) => sdkDocToSafeMap(d.data()))
-              .toList();
+          final cached =
+              snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2891,9 +2689,8 @@ class FirestoreService {
       } catch (_) {
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs
-              .map((d) => sdkDocToSafeMap(d.data()))
-              .toList();
+          final cached =
+              snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
               : FirestoreLoadResult.success(cached);
@@ -2939,9 +2736,7 @@ class FirestoreService {
     }
 
     final fbUser = FirebaseAuth.instance.currentUser;
-    if (!_isFirebaseReady ||
-        fbUser == null ||
-        fbUser.uid != normalizedUid) {
+    if (!_isFirebaseReady || fbUser == null || fbUser.uid != normalizedUid) {
       return (
         ok: false,
         permissionDenied: true,
@@ -3017,19 +2812,19 @@ class FirestoreService {
 
   /// Ordered ascending by createdAt (chronological turn order).
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
-  loadAiSessionExchangesTyped(String uid, String sessionId) async {
+      loadAiSessionExchangesTyped(String uid, String sessionId) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE][loadAiSessionExchangesTyped] '
-        'allowed=false reason=firebase_user_null uid=$uid',
+        'allowed=false reason=firebase_user_null uid=[redacted]',
       );
       return FirestoreLoadResult.authDenied();
     }
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE][loadAiSessionExchangesTyped] '
-        'allowed=false reason=uid_mismatch uid=$uid fbUid=${_fbUser.uid}',
+        'allowed=false reason=uid_mismatch uid=[redacted] fbUid=${_fbUser.uid}',
       );
       return FirestoreLoadResult.authDenied();
     }
@@ -3048,7 +2843,7 @@ class FirestoreService {
       if (e.code == 'permission-denied') {
         debugPrint(
           '[FIRESTORE][loadAiSessionExchangesTyped] '
-          'allowed=false reason=permission_denied uid=$uid sessionId=$sessionId',
+          'allowed=false reason=permission_denied uid=[redacted] sessionId=$sessionId',
         );
         return FirestoreLoadResult.authDenied();
       }
@@ -3068,12 +2863,12 @@ class FirestoreService {
   /// Cache preservation: a network failure returns success(cachedData) when
   /// valid cache entries exist. It never collapses to empty() silently.
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
-  loadAiSessionsTyped(String uid) async {
+      loadAiSessionsTyped(String uid) async {
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-        'allowed=false reason=firebase_user_null uid=$uid '
+        'allowed=false reason=firebase_user_null uid=[redacted] '
         'sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -3081,7 +2876,7 @@ class FirestoreService {
     if (_fbUser.uid != uid) {
       debugPrint(
         '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-        'expectedUid=$uid firebaseUid=${_fbUser.uid} '
+        'expectedUid=[redacted] firebaseUid=${_fbUser.uid} '
         'allowed=false reason=uid_mismatch sdkRequestDispatched=false',
       );
       return FirestoreLoadResult.authDenied();
@@ -3099,7 +2894,7 @@ class FirestoreService {
         if (e.code == 'permission-denied') {
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-            'allowed=false reason=permission_denied uid=$uid → authDenied',
+            'allowed=false reason=permission_denied uid=[redacted] → authDenied',
           );
           return FirestoreLoadResult.authDenied();
         }
@@ -3107,12 +2902,11 @@ class FirestoreService {
         // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs
-              .map((d) => sdkDocToSafeMap(d.data()))
-              .toList();
+          final cached =
+              snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-            'source=cache count=${cached.length} uid=$uid',
+            'source=cache count=${cached.length} uid=[redacted]',
           );
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
@@ -3125,12 +2919,11 @@ class FirestoreService {
         // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
-          final cached = snap.docs
-              .map((d) => sdkDocToSafeMap(d.data()))
-              .toList();
+          final cached =
+              snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           debugPrint(
             '[FIRESTORE_AUTH_BARRIER][TYPED] operation=loadAiSessionsTyped '
-            'source=cache(timeout_fallback) count=${cached.length} uid=$uid',
+            'source=cache(timeout_fallback) count=${cached.length} uid=[redacted]',
           );
           return cached.isEmpty
               ? FirestoreLoadResult.offline()
@@ -3167,7 +2960,7 @@ class FirestoreService {
       if (activeUid != uid) {
         debugPrint(
           '[SECURE_STREAM][AUTO_CLOSE] stream=streamHistories '
-          'parentUid=$uid activeUid=$activeUid',
+          'parentUid=[redacted] activeUid=$activeUid',
         );
         yield* Stream.empty();
         return;
@@ -3303,14 +3096,13 @@ class FirestoreService {
     try {
       // Filtra isPublic=true via query SDK — reduz transferência e respeita rules.
       // isHidden é filtrado em memória (campo opcional, pode estar ausente).
-      final query = _publicHistories
-          .where('isPublic', isEqualTo: true)
-          .limit(100);
+      final query =
+          _publicHistories.where('isPublic', isEqualTo: true).limit(100);
       final snap = source == null
           ? await query.get().timeout(const Duration(seconds: 8))
           : await query
-                .get(GetOptions(source: source))
-                .timeout(const Duration(seconds: 8));
+              .get(GetOptions(source: source))
+              .timeout(const Duration(seconds: 8));
 
       // ── CAMADA DUPLA DE PROTEÇÃO contra TypeError em dart2js release ─────
       // Mesmo que _safeDocsToHistoryList já tenha try/catch individual por doc,
@@ -3570,9 +3362,8 @@ class FirestoreService {
       }
 
       if (resp.statusCode != 200) {
-        final snippet = resp.body.length > 220
-            ? resp.body.substring(0, 220)
-            : resp.body;
+        final snippet =
+            resp.body.length > 220 ? resp.body.substring(0, 220) : resp.body;
         _setPublicHistoriesError(
           'REST public_histories HTTP ${resp.statusCode}: $snippet',
         );
@@ -3606,11 +3397,13 @@ class FirestoreService {
   static Stream<List<ClinicalHistoryModel>> historiesStream(String uid) {
     return _userHistories(
       uid,
-    ).orderBy('updatedAt', descending: true).snapshots()
-    // CAMADA DUPLA: _safeDocsToHistoryList já tem try/catch por doc,
-    // mas envolvemos em try/catch extra para garantir que TypeError de
-    // dart2js não escapa e não quebra o stream inteiro.
-    .map((snap) {
+    )
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        // CAMADA DUPLA: _safeDocsToHistoryList já tem try/catch por doc,
+        // mas envolvemos em try/catch extra para garantir que TypeError de
+        // dart2js não escapa e não quebra o stream inteiro.
+        .map((snap) {
       try {
         return _safeDocsToHistoryList(snap.docs);
       } catch (e) {
@@ -3798,9 +3591,8 @@ class FirestoreService {
               .timeout(const Duration(seconds: 4));
           // BUILD 258: sdkDocToSafeMapAny — converte doc.data() (Map<String,Object?>)
           // para Map<String,dynamic> seguro sem TypeError em dart2js release mode.
-          final data = doc.exists
-              ? sdkDocToSafeMapAny(doc.data())
-              : <String, dynamic>{};
+          final data =
+              doc.exists ? sdkDocToSafeMapAny(doc.data()) : <String, dynamic>{};
           if (data.isNotEmpty) {
             _cachedAppUpdate = data; // já é Map<String,dynamic> seguro
             _appUpdateRetryAfter = null;
@@ -3918,8 +3710,7 @@ class FirestoreService {
         },
       },
     };
-    const mask =
-        'updateMask.fieldPaths=version'
+    const mask = 'updateMask.fieldPaths=version'
         '&updateMask.fieldPaths=title'
         '&updateMask.fieldPaths=date'
         '&updateMask.fieldPaths=active'
@@ -4092,8 +3883,7 @@ class FirestoreService {
       'publicKey': {'stringValue': publicKey},
       'updatedAt': {'stringValue': DateTime.now().toUtc().toIso8601String()},
     };
-    const mask =
-        'updateMask.fieldPaths=serviceId'
+    const mask = 'updateMask.fieldPaths=serviceId'
         '&updateMask.fieldPaths=templateId'
         '&updateMask.fieldPaths=publicKey'
         '&updateMask.fieldPaths=updatedAt';
@@ -4240,9 +4030,11 @@ class FirestoreService {
 
   /// Carrega todas as anotações do usuário, ordenadas por updatedAt desc.
   static Stream<List<Map<String, dynamic>>> notesStream(String uid) {
-    return _userNotes(uid).orderBy('updatedAt', descending: true).snapshots()
-    // Cada doc em try/catch individual via helper — imune a TypeError dart2js
-    .map((snap) {
+    return _userNotes(uid)
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        // Cada doc em try/catch individual via helper — imune a TypeError dart2js
+        .map((snap) {
       final result = <Map<String, dynamic>>[];
       for (final doc in snap.docs) {
         try {
@@ -4487,11 +4279,9 @@ class FirestoreService {
       final missingId = g.id.trim().isEmpty;
       final missingTitle = g.title.trim().isEmpty;
       final missingPdf = g.pdfUrl.trim().isEmpty;
-   final missingEditorial = !g.hasEditorialContent;
+      final missingEditorial = !g.hasEditorialContent;
 
-   if (missingId ||
-       missingTitle ||
-       (missingPdf && missingEditorial)) {
+      if (missingId || missingTitle || (missingPdf && missingEditorial)) {
         if (kDebugMode) {
           // ORDEM 50 M3: normalize probe gated to kDebugMode
           debugPrint(
@@ -4568,8 +4358,8 @@ class FirestoreService {
       final decoded = rawDecoded is List ? rawDecoded : const <dynamic>[];
       final guides = _normalizeGuides(
         decoded.whereType<Map>().map(
-          (item) => GuideModel.fromJson(Map<String, dynamic>.from(item)),
-        ),
+              (item) => GuideModel.fromJson(Map<String, dynamic>.from(item)),
+            ),
       );
       final bounded = guides.take(guidesPortalPageSize).toList(growable: false);
       _debugGuides(
@@ -4637,8 +4427,8 @@ class FirestoreService {
       final snap = source == null
           ? await query.get().timeout(const Duration(seconds: 8))
           : await query
-                .get(GetOptions(source: source))
-                .timeout(const Duration(seconds: 8));
+              .get(GetOptions(source: source))
+              .timeout(const Duration(seconds: 8));
       // CAMADA DUPLA: _safeDocsToGuideList já tem try/catch por doc,
       // mas envolvemos em try/catch extra para garantir que TypeError de
       // dart2js não escapa e não aparece como erro visível ao usuário.
@@ -4694,8 +4484,8 @@ class FirestoreService {
       final snap = source == null
           ? await query.get().timeout(const Duration(seconds: 8))
           : await query
-                .get(GetOptions(source: source))
-                .timeout(const Duration(seconds: 8));
+              .get(GetOptions(source: source))
+              .timeout(const Duration(seconds: 8));
       // CAMADA DUPLA: mesma proteção da tentativa 1
       List<GuideModel> guides;
       try {
@@ -4972,8 +4762,8 @@ class FirestoreService {
               );
             }
           } else {
-            refreshedToken = await FirebaseAuth.instance.currentUser
-                ?.getIdToken(true);
+            refreshedToken =
+                await FirebaseAuth.instance.currentUser?.getIdToken(true);
             if (kDebugMode) {
               // ORDEM 50 M3: retry auth probe gated to kDebugMode
               debugPrint(
@@ -4984,8 +4774,8 @@ class FirestoreService {
         } catch (_) {}
         final retryHeaders =
             (refreshedToken != null && refreshedToken.isNotEmpty)
-            ? <String, String>{'Authorization': 'Bearer $refreshedToken'}
-            : <String, String>{};
+                ? <String, String>{'Authorization': 'Bearer $refreshedToken'}
+                : <String, String>{};
         _debugGuides('rest auth retry tokenPresent=${retryHeaders.isNotEmpty}');
         if (retryHeaders.isNotEmpty) {
           resp = await doGet(headers: retryHeaders);
@@ -5203,82 +4993,13 @@ class FirestoreService {
         // CAMADA DUPLA: protege contra TypeError de dart2js que pode escapar
         // mesmo com _safeDocsToGuideList tendo try/catch interno por documento.
         .map((snap) {
-          try {
-            return _normalizeGuides(_safeDocsToGuideList(snap.docs));
-          } catch (e) {
-            if (kDebugMode)
-              debugPrint('[guidesStream] parse error silenciado: $e');
-            return const <GuideModel>[];
-          }
-        });
-  }
-
-  static Stream<List<GuideModel>> _guidesStreamRest() {
-    late StreamController<List<GuideModel>> ctrl;
-    Timer? timer;
-
-    Future<void> fetch() async {
       try {
-        _debugGuides('rest stream fetch start');
-        final remote = await loadPublishedGuides(forceRemote: true).timeout(
-          const Duration(seconds: 15),
-          onTimeout: () {
-            _setGuidesError(
-              'Stream REST clinical_guides timeout: nenhuma resposta em 15s.',
-            );
-            return const <GuideModel>[];
-          },
-        );
-        if (ctrl.isClosed) return;
-        if (remote.isNotEmpty) {
-          ctrl.add(remote);
-          _debugGuides('rest stream emitted count=${remote.length}');
-          return;
-        }
-
-        final cached = await loadCachedPublishedGuides();
-        if (ctrl.isClosed) return;
-        if (cached.isNotEmpty) {
-          ctrl.add(cached);
-          _debugGuides('rest stream emitted cached count=${cached.length}');
-          return;
-        }
-
-        final error = lastGuidesErrorMessage.isEmpty
-            ? 'Stream REST clinical_guides retornou vazio sem cache.'
-            : lastGuidesErrorMessage;
-        ctrl.addError(StateError(error));
-        _debugGuides('rest stream emitted error=$error');
+        return _normalizeGuides(_safeDocsToGuideList(snap.docs));
       } catch (e) {
-        final error = 'Stream REST clinical_guides falhou: $e';
-        _setGuidesError(error);
-        if (!ctrl.isClosed) ctrl.addError(StateError(error));
+        if (kDebugMode) debugPrint('[guidesStream] parse error silenciado: $e');
+        return const <GuideModel>[];
       }
-    }
-
-    ctrl = StreamController<List<GuideModel>>(
-      onListen: () {
-        _debugGuides('rest stream onListen');
-        loadCachedPublishedGuides().then((cached) {
-          if (!ctrl.isClosed && cached.isNotEmpty) {
-            ctrl.add(cached);
-            _debugGuides('rest stream preloaded cache count=${cached.length}');
-          }
-        });
-        unawaited(fetch());
-        timer = Timer.periodic(
-          const Duration(seconds: 20),
-          (_) => unawaited(fetch()),
-        );
-      },
-      onCancel: () {
-        timer?.cancel();
-        timer = null;
-        _debugGuides('rest stream cancelled');
-      },
-    );
-
-    return ctrl.stream;
+    });
   }
 
   /// Stream de TODAS as guias para o admin (incluindo não publicadas).
@@ -5304,9 +5025,8 @@ class FirestoreService {
     final now = DateTime.now().toUtc().toIso8601String();
     final data = <String, dynamic>{
       ...guide.toJson(),
-      'uploadedAt': guide.uploadedAt.trim().isEmpty
-          ? now
-          : guide.uploadedAt.trim(),
+      'uploadedAt':
+          guide.uploadedAt.trim().isEmpty ? now : guide.uploadedAt.trim(),
       'searchPrefixes': _buildGuideSearchPrefixes(guide),
       'searchIndexVersion': _guidesSearchIndexVersion,
     };
@@ -5366,8 +5086,7 @@ class FirestoreService {
     };
 
     // updateMask: atualiza apenas os 4 campos (não sobrescreve outros)
-    const mask =
-        'updateMask.fieldPaths=enabled'
+    const mask = 'updateMask.fieldPaths=enabled'
         '&updateMask.fieldPaths=message'
         '&updateMask.fieldPaths=updatedBy'
         '&updateMask.fieldPaths=updatedAt';
@@ -5456,9 +5175,9 @@ class FirestoreService {
       final url = '$_fsBase/clinical_library/$normalized?key=$apiKey';
       debugPrint('[BUILD272][RAG] REST GET $url tokenPresent=true');
 
-      final resp = await http
-          .get(Uri.parse(url), headers: {'Authorization': 'Bearer $token'})
-          .timeout(const Duration(seconds: 8));
+      final resp = await http.get(Uri.parse(url), headers: {
+        'Authorization': 'Bearer $token'
+      }).timeout(const Duration(seconds: 8));
 
       debugPrint('[BUILD272][RAG] REST status=${resp.statusCode}');
 

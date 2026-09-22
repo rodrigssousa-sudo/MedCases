@@ -1,4 +1,5 @@
 'use strict';
+const { signOfflineEntitlement } = require('./offline_entitlement_lease');
 
 const { getAuth } = require('firebase-admin/auth');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -80,6 +81,7 @@ function createCalculatorSessionHandler({
         : {};
 
     let issued;
+    let offlineEntitlement;
     try {
       issued = issueCalculatorSession({
         uid,
@@ -87,12 +89,21 @@ function createCalculatorSessionHandler({
         secret,
         nowEpoch: nowEpochProvider(),
       });
+      offlineEntitlement = signOfflineEntitlement({
+        ...issued.claims,
+        // The offline lease is independent from the short-lived MCC1 session.
+        // Only the authoritative billing record can extend its upper bound.
+        exp: issued.entitlementSource === 'server_revenuecat_entitlement'
+          ? Math.floor(Number(userDoc.billingEntitlementExpiresAtMs) / 1000)
+          : issued.claims.exp,
+      });
     } catch (_) {
       return jsonError(res, 503, 'CALCULATOR_SESSION_ISSUE_FAILED');
     }
 
     return res.status(200).json({
       ok: true,
+      offlineEntitlement,
       accessToken: issued.accessToken,
       tier: issued.claims.tier,
       capabilities: issued.claims.cap,

@@ -110,7 +110,10 @@ void main() {
     expect(row, contains("label: 'PÚBLICAS'"));
     expect(row, contains("label: lang == 'es' ? '+ NUEVA' : '+ NOVA'"));
     expect(row, contains('index: 2'));
-    expect(row, contains('onTap: onNew'));
+    expect(row, contains('consumeClinicalHistoryCreationAllowance()'));
+    expect(row, contains('if (!decision.allowed)'));
+    expect(row, contains('onNew();'));
+    expect(row.indexOf('if (!decision.allowed)'), lessThan(row.indexOf('onNew();')));
 
     expect(flat, contains('final VoidCallback? onTap;'));
     expect(flat, contains('this.onTap,'));

@@ -1,7 +1,7 @@
+import '../../../widgets/clinical_entrypoints.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
-import '../../calculadora_screen.dart';
 import 'collapsible_content_blocks.dart';
 import 'clinical_markdown_presentation.dart';
 
@@ -17,6 +17,7 @@ class AiBlockBubble extends StatelessWidget {
   final bool ttsReady;
   final String lang; // globalLanguageLock — controla textos da UI
   final bool studyMode;
+
   /// Build 120 — ActionChip: ao clicar, injeta texto no input e dispara _send()
   final void Function(String chipText)? onChipTap;
 
@@ -276,11 +277,7 @@ class AiBlockBubble extends StatelessWidget {
                 // e abre na WebView interna (CalculadoraScreen) — NUNCA Safari.
                 onTapLink: (text, href, title) {
                   if (href != null && href.contains('http')) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CalculadoraScreen(initialUrl: href),
-                      ),
-                    );
+                    openCalculatorFromAi(context, href);
                   }
                 },
               ),

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+import 'provider_gateway_http.dart' as http;
 
 // Import condicional: ls_web.dart (Web, usa dart:js) ou ls_stub.dart (iOS/Android, no-op).
 // Isola completamente dart:js do compilador nativo — resolve o erro
@@ -15,20 +15,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'study/study_google_ai_server_auth_code_gate_v1.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GEMINI SERVICE — Autenticação por API Key
-//
-// Arquitetura (Session 4 — 2025):
-//   Google Login = identidade apenas (scope 'email') — sem verificação restrita
-//   Gemini API calls = API Key do projeto (salva no Firestore config/app_settings)
-//
-// O scope 'generative-language.retriever' era RESTRITO — exigia verificação
-// formal do Google e bloqueava todos os usuários não-Test com 403 access_denied.
-// Solução: remover o scope restrito. O Gemini é chamado via API Key, não OAuth.
-//
-// Web:     GSI redirect flow (Safari-safe) salva apenas email
-// Android: google_sign_in salva apenas email
-// API Key: estática — carregada do Firestore via AppProvider.setGeminiApiKey()
-// ─────────────────────────────────────────────────────────────────────────────
+// GEMINI SERVICE — Firebase-authenticated MedCases gateway transport.
+// Provider wire formats are preserved; provider credentials belong to the
+// existing server. Google sign-in remains identity-only.
 
 class GeminiResult {
   final String text;
@@ -72,19 +61,16 @@ String _cleanInternalBlocks(String raw) {
     '',
   );
   // Remove linhas isoladas que contenham padrões de chamada de ferramentas
-  text = text
-      .split('\n')
-      .where((line) {
-        final lower = line.toLowerCase().trim();
-        if (lower.startsWith('tool_code')) return false;
-        if (lower.startsWith('print(google_search')) return false;
-        if (lower.startsWith('print(perplexity')) return false;
-        if (lower.startsWith('google_search.search')) return false;
-        if (lower.contains('queries=[')) return false;
-        if (lower.startsWith('search_query')) return false;
-        return true;
-      })
-      .join('\n');
+  text = text.split('\n').where((line) {
+    final lower = line.toLowerCase().trim();
+    if (lower.startsWith('tool_code')) return false;
+    if (lower.startsWith('print(google_search')) return false;
+    if (lower.startsWith('print(perplexity')) return false;
+    if (lower.startsWith('google_search.search')) return false;
+    if (lower.contains('queries=[')) return false;
+    if (lower.startsWith('search_query')) return false;
+    return true;
+  }).join('\n');
 
   // 2. Remove blocos <thinking>...</thinking> do Gemini
   text = text.replaceAll(
@@ -267,138 +253,28 @@ class GeminiService {
   // 1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com
   // (tipo Android — SHA-1: configurar no Firebase Console para cada keystore)
 
-  // ── API Key estática (carregada do Firestore pelo AppProvider) ────────────
-  static String _geminiApiKey = '';
-  static const _keyGak =
-      'medcases_gak'; // localStorage key para persistência entre reloads
-
-  // BUILD 294: Discriminador de origem da chave Gemini.
-  // CRÍTICO: SecurityWipe só pode apagar chaves de origem oauth/admin/cache.
-  // Chaves de origem appConfig (app_config/global) pertencem ao sistema e
-  // NUNCA devem ser apagadas pelo SecurityWipe — são necessárias para todos
-  // os usuários aprovados enviarem mensagens à IA.
-  //
-  // Sequência de boot regular (usuário não-privilegiado):
-  //   1. _loadAiKeyFromFirestore() → loadGeminiApiKey() → source = appConfig
-  //   2. checkGeminiSession() → SecurityWipe → clearOAuthKey() → NÃO apaga
-  //   3. AI funciona normalmente
-  //
-  // Sequência após OAuth admin:
-  //   1. JS salva chave OAuth em medcases_gak → source = oauth
-  //   2. Logout → clearOAuthKey() → apaga corretamente
-  //   3. Próximo login regular: _loadAiKeyFromFirestore() → source = appConfig
-  static GeminiKeySource _keySource = GeminiKeySource.none;
-
-  /// Retorna a origem da chave Gemini atualmente carregada.
-  static GeminiKeySource get keySource => _keySource;
-
-  /// Setter chamado pelo AppProvider após carregar a chave do Firestore.
-  /// Automaticamente persiste no localStorage para sobreviver reloads do service worker.
-  static void setGeminiApiKey(
-    String key, {
-    GeminiKeySource source = GeminiKeySource.appConfig,
-  }) {
-    final trimmed = key.trim();
-    if (trimmed.isEmpty) return;
-    _geminiApiKey = trimmed;
-    _keySource = source;
-    // Persiste via dart:js (mcLsSet) E via SharedPreferences (dupla garantia)
-    if (kIsWeb) _webSet(_keyGak, trimmed);
-    // SharedPreferences em background — não bloqueia, garante persistência
-    SharedPreferences.getInstance()
-        .then((p) {
-          p.setString(_keyGak, trimmed);
-        })
-        .catchError((_) {});
-    debugPrint(
-      '[GeminiService] API Key definida (source=${source.name}) e cacheada ✓',
-    );
-  }
-
-  /// Restaura a API Key do SharedPreferences/localStorage sem precisar do Firestore.
-  /// Chamar em main() antes do runApp — garante que a key está disponível
-  /// imediatamente, mesmo quando o Firestore falha por reload do service worker.
-  /// Usa SharedPreferences como primário (Flutter Web usa localStorage nativamente,
-  /// sem dart:js — imune ao SES lockdown e CSP). dart:js como fallback secundário.
+  static const _geminiApiKey = 'medcases-authenticated-gateway';
+  static GeminiKeySource get keySource => GeminiKeySource.none;
+  static void setGeminiApiKey(String ignored,
+      {GeminiKeySource source = GeminiKeySource.appConfig}) {}
   static Future<void> initFromStorage() async {
-    if (_geminiApiKey.isNotEmpty) return; // já carregada
-    try {
-      // Primário: SharedPreferences (Flutter Web → localStorage via dart:html interno)
-      final prefs = await SharedPreferences.getInstance();
-      final fromPrefs = prefs.getString(_keyGak) ?? '';
-      if (fromPrefs.isNotEmpty) {
-        _geminiApiKey = fromPrefs;
-        _keySource = GeminiKeySource.cache;
-        debugPrint(
-          '[GeminiService] API Key restaurada do SharedPreferences no boot ✓',
-        );
-        return;
-      }
-    } catch (_) {}
-    // Secundário: dart:js → mcLsGet (se disponível no window)
-    if (kIsWeb) {
-      final cached = _webGet(_keyGak);
-      if (cached != null && cached.isNotEmpty) {
-        _geminiApiKey = cached;
-        _keySource = GeminiKeySource.cache;
-        debugPrint('[GeminiService] API Key restaurada via mcLsGet no boot ✓');
-      }
-    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('medcases_gak');
+    if (kIsWeb) _webRemove('medcases_gak');
   }
 
-  /// Versão síncrona legada — mantida para compatibilidade, usa apenas dart:js.
   static void initFromLocalStorage() {
-    if (!kIsWeb) return;
-    if (_geminiApiKey.isNotEmpty) return;
-    final cached = _webGet(_keyGak);
-    if (cached != null && cached.isNotEmpty) {
-      _geminiApiKey = cached;
-      debugPrint('[GeminiService] API Key restaurada do localStorage (sync) ✓');
-    }
+    if (kIsWeb) _webRemove('medcases_gak');
   }
 
-  /// BUILD 277 / BUILD 294: Wipes the in-memory cached API key without
-  /// touching Firestore. Full wipe — use only on logout or admin reset.
-  static void clearCachedApiKey() {
-    _geminiApiKey = '';
-    _keySource = GeminiKeySource.none;
-    debugPrint(
-      '[GeminiService] clearCachedApiKey() — in-memory key wiped (full)',
-    );
-  }
-
-  /// BUILD 294: SecurityWipe-safe clear — only clears OAuth/admin/cache keys.
-  /// NEVER clears appConfig keys (from app_config/global) — those are system
-  /// keys needed by ALL approved users for IA to function.
-  ///
-  /// Returns true if a key was actually cleared, false if it was skipped.
-  static bool clearOAuthCachedApiKey() {
-    if (_keySource == GeminiKeySource.appConfig) {
-      debugPrint(
-        '[BUILD294][SecurityWipe] skipped reason=app_config_key '
-        'source=${_keySource.name}',
-      );
-      return false;
-    }
-    final hadKey = _geminiApiKey.isNotEmpty;
-    _geminiApiKey = '';
-    _keySource = GeminiKeySource.none;
-    if (hadKey) {
-      debugPrint(
-        '[BUILD294][SecurityWipe] wiped_oauth_only '
-        'source was=${_keySource == GeminiKeySource.none ? "cleared" : _keySource.name}',
-      );
-    }
-    return hadKey;
-  }
-
-  /// Verifica se a API Key foi carregada (sem expor a chave em si).
-  static bool get hasApiKey => _geminiApiKey.isNotEmpty;
-
-  /// Expõe a chave para serviços internos que fazem chamadas diretas
-  /// (ex: LabParserService — que precisa enviar imagem/PDF inline).
-  /// NÃO use fora do escopo interno do app.
-  static String get apiKeyForLab => _geminiApiKey;
+  static void clearCachedApiKey() {}
+  static bool clearOAuthCachedApiKey() => false;
+  // Compatibility availability marker, NOT a provider secret or authorization.
+  static bool get providerTransportAvailable =>
+      Uri.tryParse(http.gatewayBase)?.scheme == 'https';
+  // Compatibility only; this is transport configuration, never a credential.
+  static bool get hasApiKey => providerTransportAvailable;
+  static String get gatewayTransportMarker => _geminiApiKey;
 
   // Chaves de storage
   static const _keyEmail = 'gemini_google_email';
@@ -603,8 +479,7 @@ class GeminiService {
       String hint = '';
       if (eStr.contains('ApiException: 10') ||
           eStr.contains('DEVELOPER_ERROR')) {
-        hint =
-            '\n  ▶ DEVELOPER_ERROR (code 10): causas comuns:\n'
+        hint = '\n  ▶ DEVELOPER_ERROR (code 10): causas comuns:\n'
             '    1. SHA-1 do keystore NÃO está no Firebase Console\n'
             '       → Firebase Console → Configurações → Android → Adicionar SHA-1\n'
             '    2. google-services.json desatualizado\n'
@@ -875,9 +750,9 @@ class GeminiService {
           );
           if (maxTokens < 4000) {
             final expandedTokens = (maxTokens * 1.6).round().clamp(
-              maxTokens + 500,
-              4000,
-            );
+                  maxTokens + 500,
+                  4000,
+                );
             debugPrint(
               '[GeminiService] Retry $maxTokens→$expandedTokens tokens',
             );

@@ -551,6 +551,15 @@ class AiSmartRouter {
   //   • bodyBuf  → tudo que o shrink pode truncar (RAG, módulos, contrato)
   //   • suffix   → output_shield + langLock recência + END_OF_INSTRUCTIONS
   // O sufixo é concatenado DEPOIS do corte, garantindo blindagem intacta.
+  /// Existing mode contract, shared by streaming and fallback transports.
+  static String modeContract({
+    required bool isPlantaoMode,
+    bool hasSpecificContext = false,
+  }) =>
+      isPlantaoMode
+          ? (hasSpecificContext ? _contractPlantaoRef : _contractPlantao)
+          : _contractEstudo;
+
   static String _buildPrompt({
     required bool isPlantaoMode,
     required _IntentResult intent,
@@ -559,9 +568,10 @@ class AiSmartRouter {
     bool hasSpecificContext = false,
   }) {
     // Seleciona contrato: fallback genérico vs. referência (Camada C já tem matriz)
-    final contract = isPlantaoMode
-        ? (hasSpecificContext ? _contractPlantaoRef : _contractPlantao)
-        : _contractEstudo;
+    final contract = modeContract(
+      isPlantaoMode: isPlantaoMode,
+      hasSpecificContext: hasSpecificContext,
+    );
 
     final bodyBuf = StringBuffer();
 

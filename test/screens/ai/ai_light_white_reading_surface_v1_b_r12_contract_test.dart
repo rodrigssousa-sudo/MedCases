@@ -29,7 +29,7 @@ void main() {
 
     test('Study e Plantão continuam em seus caminhos existentes', () {
       expect(ai, contains('study_user_hidden'));
-      expect(ai, contains('visible: !_longResponse'));
+      expect(ai, contains('visible: !messageLongResponse'));
       expect(ai, contains('GuardiaClinicalResponseView('));
     });
   });

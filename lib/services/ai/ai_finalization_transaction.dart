@@ -1,3 +1,4 @@
+import 'safety/clinical_request_safety.dart';
 // lib/services/ai/ai_finalization_transaction.dart
 // MICRO-BUILD 462E-A.5.3.7.3.2 — Extracted from lib/providers/app_provider.dart
 //
@@ -42,8 +43,10 @@ final class ActiveAiSessionContext {
   final String mode;
   final String locale;
   final DateTime createdAt;
+  final ClinicalRequestContext? clinicalContext;
 
   const ActiveAiSessionContext({
+    this.clinicalContext,
     required this.uid,
     required this.sessionId,
     required this.requestId,

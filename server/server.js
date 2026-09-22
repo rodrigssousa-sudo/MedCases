@@ -166,7 +166,7 @@ async function authenticateFirebaseToken(req, res, next) {
 
   try {
     const decodedToken =
-      await firebaseAuth.verifyIdToken(idToken);
+      await firebaseAuth.verifyIdToken(idToken, true);
     req.auth = {
       uid: decodedToken.uid,
       email: decodedToken.email ?? null,
@@ -1231,22 +1231,29 @@ app.use(cors({
       'http://localhost:8080',
       'http://127.0.0.1',
     ];
-    if (!origin || allowed.some(a => origin.startsWith(a))) {
+    if (!origin || allowed.includes(origin)) {
       cb(null, true);
     } else {
       log.warn('CORS bloqueou origem:', origin);
       cb(new Error('Not allowed by CORS'));
     }
   },
-  methods:          ['GET', 'POST', 'OPTIONS'],
+  methods:          ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type',
     'Authorization',
     'X-Request-ID',
     'X-MedCases-Idempotency-Key',
     'X-MedCases-Audio-Retention',
+    'X-MedCases-Usage-Reservation',
+    'X-MedCases-Usage-Attempt',
+    'X-Goog-Upload-Protocol',
+    'X-Goog-Upload-Command',
+    'X-Goog-Upload-Offset',
+    'X-Goog-Upload-Header-Content-Type',
+    'X-Goog-Upload-Header-Content-Length',
   ],
-  exposedHeaders:   ['X-Request-ID'],
+  exposedHeaders:   ['X-Request-ID', 'X-Goog-Upload-URL'],
   credentials:      true,
   maxAge:           86_400,
 }));
@@ -1259,12 +1266,25 @@ registerStudyBackgroundTranscriptionRoutes(app);
 // Authorization, enquanto /audio/grant aplica Firebase explicitamente.
 registerAudioTranscriptionRoutes({
   app,
+  db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
   authenticateFirebaseToken,
   log,
   isProd: IS_PROD,
 });
 
+require('./provider_transport_routes').registerProviderTransport({
+  app, express, authenticate: authenticateFirebaseToken,
+  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
+  db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
+  keyProvider:()=>GEMINI_API_KEY,
+});
+
 app.use(express.json({ limit: '512kb' }));
+require('./monthly_usage_routes').registerMonthlyUsageRoutes({
+  app, authenticate: authenticateFirebaseToken,
+  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
+  db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
+});
 
 // RevenueCat -> Firebase authoritative billing state.
 registerRevenueCatWebhookRoutes({

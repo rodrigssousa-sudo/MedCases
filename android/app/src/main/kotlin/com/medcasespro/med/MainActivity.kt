@@ -18,6 +18,25 @@ import javax.crypto.spec.GCMParameterSpec
 class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "medcases/audio_duration_v1")
+            .setMethodCallHandler { call, result ->
+                val path = call.argument<String>("path")
+                if (call.method != "duration" || path == null) { result.notImplemented() }
+                else if (!path.startsWith("/") || !java.io.File(path).isFile || !java.io.File(path).canRead()) {
+                    result.error("INVALID_AUDIO_PATH", null, null)
+                } else Thread {
+                    val reader = android.media.MediaMetadataRetriever()
+                    try {
+                        reader.setDataSource(path)
+                        val duration = reader.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull()
+                        runOnUiThread {
+                            if (duration != null && duration > 0) result.success(duration)
+                            else result.error("AUDIO_DURATION_UNAVAILABLE", null, null)
+                        }
+                    } catch (_: Exception) { runOnUiThread { result.error("AUDIO_DURATION_UNAVAILABLE", null, null) } }
+                    finally { reader.release() }
+                }.start()
+            }
 
         MedCasesLongFormAtRestChannel.register(
             activity = this,
@@ -55,6 +74,7 @@ private object MedCasesLongFormAtRestChannel {
         "reviewedTranscript",
         "retentionMetadata",
         "transportPlaintextStaging",
+        "premiumDrugCatalog",
     )
 
     fun register(
@@ -488,6 +508,22 @@ private object MedCasesLongFormAtRestChannel {
 
         if (!Regex("^[A-Za-z0-9._-]{1,128}$").matches(logicalName)) {
             throw BridgeFailure("android_logical_name_invalid")
+        }
+
+        if (assetKind == "premiumDrugCatalog") {
+            // Firebase Auth is already supplied by the Flutter Firebase plugin.
+            // Reflection avoids adding a second native dependency/version owner.
+            val authType = Class.forName("com.google.firebase.auth.FirebaseAuth")
+            val auth = authType.getMethod("getInstance").invoke(null)
+            val user = authType.getMethod("getCurrentUser").invoke(auth)
+                ?: throw BridgeFailure("catalog_auth_required")
+            val uid = Class.forName("com.google.firebase.auth.FirebaseUser")
+                .getMethod("getUid").invoke(user) as String
+            val owner = java.security.MessageDigest.getInstance("SHA-256")
+                .digest(uid.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
+            if (sessionId != owner || keyId != "catalog." + owner.take(48)) {
+                throw BridgeFailure("catalog_owner_mismatch")
+            }
         }
 
         if (!allowedAssetKinds.contains(assetKind)) {

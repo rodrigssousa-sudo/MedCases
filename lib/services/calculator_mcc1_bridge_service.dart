@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 
 class CalculatorMcc1Session {
   const CalculatorMcc1Session({
+    this.offlineEntitlement,
     required this.token,
     required this.tier,
     required this.capabilities,
@@ -22,6 +23,7 @@ class CalculatorMcc1Session {
     required this.entitlementSource,
   });
 
+  final String? offlineEntitlement;
   final String token;
   final String tier;
   final List<String> capabilities;
@@ -78,6 +80,9 @@ class CalculatorMcc1BridgeService {
       response = await _postIssuer(idToken);
     }
 
+    if (FirebaseAuth.instance.currentUser?.uid != user.uid) {
+      throw const CalculatorMcc1BridgeException('ISSUER_USER_CHANGED');
+    }
     return parseIssuedSession(
       statusCode: response.statusCode,
       body: response.body,
@@ -165,6 +170,9 @@ class CalculatorMcc1BridgeService {
         (map['entitlementSource'] ?? '').toString().trim();
 
     return CalculatorMcc1Session(
+      offlineEntitlement: map['offlineEntitlement'] is String
+          ? map['offlineEntitlement'] as String
+          : null,
       token: token,
       tier: tier,
       capabilities: List<String>.unmodifiable(capabilities),

@@ -13,7 +13,7 @@ void main() {
     test('automatic Plantao continuation is visually hidden', () {
       expect(
         screen,
-        contains('if (!_longResponse && hasAutomaticVisibleProjection)'),
+        contains('if (!messageLongResponse && hasAutomaticVisibleProjection)'),
       );
       expect(
         screen,
@@ -24,7 +24,7 @@ void main() {
     test('direct Plantao user question remains visually hidden', () {
       expect(
         screen,
-        contains('if (!_longResponse && !hasAutomaticVisibleProjection)'),
+        contains('if (!messageLongResponse && !hasAutomaticVisibleProjection)'),
       );
       expect(
         screen,
@@ -35,7 +35,7 @@ void main() {
     test('questions continuation special projection remains hidden', () {
       expect(
         screen,
-        contains('if (!_longResponse && isQuestionsButtonProjection)'),
+        contains('if (!messageLongResponse && isQuestionsButtonProjection)'),
       );
       expect(
         screen,
@@ -60,13 +60,14 @@ void main() {
       expect(
         screen,
         isNot(
-          contains('if (_longResponse && hasAutomaticVisibleProjection)'),
+          contains('if (messageLongResponse && hasAutomaticVisibleProjection)'),
         ),
       );
       expect(
         screen,
         isNot(
-          contains('if (_longResponse && !hasAutomaticVisibleProjection)'),
+          contains(
+              'if (messageLongResponse && !hasAutomaticVisibleProjection)'),
         ),
       );
     });

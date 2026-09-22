@@ -39,6 +39,7 @@ class RevenueCatBillingService {
   static const _applePublicSdkKey = 'appl_BhPlakoQItDPCjxqvzjZZwNHFiA';
   static const _googlePublicSdkKey = 'goog_ZHSMuRwvJKtScPTiNSRKUzVePji';
 
+  Future<void> _configurationQueue = Future<void>.value();
   bool _configured = false;
   String? _configuredUid;
 
@@ -54,7 +55,21 @@ class RevenueCatBillingService {
     throw const RevenueCatBillingException('STORE_PLATFORM_UNSUPPORTED');
   }
 
-  Future<void> ensureConfiguredForCurrentUser() async {
+  Future<void> ensureConfiguredForCurrentUser() {
+    final operation = _configurationQueue.then((_) => _configureCurrentUser());
+    _configurationQueue = operation.catchError((Object _) {});
+    return operation;
+  }
+
+  void _requireSameUser(String? uid) {
+    if (uid == null ||
+        FirebaseAuth.instance.currentUser?.uid != uid ||
+        _configuredUid != uid) {
+      throw const RevenueCatBillingException('BILLING_USER_CHANGED');
+    }
+  }
+
+  Future<void> _configureCurrentUser() async {
     if (!isStoreSupported) {
       throw const RevenueCatBillingException('STORE_PLATFORM_UNSUPPORTED');
     }
@@ -113,9 +128,12 @@ class RevenueCatBillingService {
 
   Future<RevenueCatPurchaseOutcome> purchase(RevenueCatPlan plan) async {
     try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
       final offering = await _offering();
+      _requireSameUser(uid);
       final package = _package(offering, plan);
       final result = await Purchases.purchase(PurchaseParams.package(package));
+      _requireSameUser(uid);
       return RevenueCatPurchaseOutcome(
         cancelled: false,
         storeEntitlementActive: result.customerInfo.entitlements.active
@@ -135,8 +153,11 @@ class RevenueCatBillingService {
 
   Future<RevenueCatPurchaseOutcome> restorePurchases() async {
     try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
       await ensureConfiguredForCurrentUser();
+      _requireSameUser(uid);
       final info = await Purchases.restorePurchases();
+      _requireSameUser(uid);
       return RevenueCatPurchaseOutcome(
         cancelled: false,
         storeEntitlementActive:

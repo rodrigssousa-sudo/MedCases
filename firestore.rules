@@ -170,6 +170,7 @@ service cloud.firestore {
         'role', 'permissions', 'permission', 'accessLevel',
         'isAdmin', 'isMaster', 'isSupervisor', 'isStaff',
         'isPartner', 'partnerTitle', 'referralLink',
+        'billingEntitlementActive', 'billingEntitlementId', 'billingEntitlementExpiresAtMs',
         'subscriptionTier', 'subscriptionId',
         'subscriptionExpiresAt', 'subscriptionEndDate', 'subscription',
         'isPremium', 'premium', 'premiumAccess', 'premiumUntil',
@@ -198,6 +199,7 @@ service cloud.firestore {
         && !request.resource.data.keys().hasAny([
           'isAdmin', 'isMaster', 'isSupervisor', 'isStaff',
           'permissions', 'permission', 'accessLevel',
+          'billingEntitlementActive', 'billingEntitlementId', 'billingEntitlementExpiresAtMs',
           'isPremium', 'premium', 'premiumAccess', 'premiumUntil',
           'premiumExpiresAt', 'entitlements', 'accessGranted',
           'aiCredits', 'credits', 'tokensBalance',

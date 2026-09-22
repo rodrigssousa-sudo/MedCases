@@ -7,7 +7,7 @@ void main() {
     test('Study oculta identidade redundante no call-site da resposta', () {
       final source = File('lib/screens/ai_screen.dart').readAsStringSync();
 
-      expect(source, contains('visible: !_longResponse'));
+      expect(source, contains('visible: !messageLongResponse'));
       expect(source, contains('_AiResponseIdentityHeader('));
 
       // Owner legado continua existente para caminhos não-Study.

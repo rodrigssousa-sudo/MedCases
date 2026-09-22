@@ -33,7 +33,7 @@ void main() {
 
       final snapshot = onDone.indexOf('final guardiaProvisionalText =');
       final finalFormatting =
-          onDone.indexOf('String safeFinalText = _longResponse');
+          onDone.indexOf('String safeFinalText = requestLongResponse');
       expect(snapshot, lessThan(finalFormatting));
     });
 

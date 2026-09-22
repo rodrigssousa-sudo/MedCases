@@ -92,11 +92,13 @@ const int _kInitialDelayMs = 2500;
 // ─────────────────────────────────────────────────────────────────────────────
 
 const String _kManifestUrl = 'https://medcasescalcu.com/manifest-offline.json';
-const String _kBaseUrl     = 'https://medcasescalcu.com/';
+const String _kBaseUrl = 'https://medcasescalcu.com/';
 
 /// Arquivos essenciais — se qualquer um estiver ausente, o swap é abortado.
 const List<String> _kEssentialFiles = [
   'index.html',
+  'js/clinical-commercial-surfaces.js',
+  'js/clinical-action-authorization.js',
   'js/medcases-ux-v2.js',
   'js/hub-accordion.js',
   'js/elec-calc.js',
@@ -115,12 +117,12 @@ const List<String> _kAllowedHosts = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 enum CalcuCacheStatus {
-  unknown,         // estado inicial — ainda não verificado
-  downloading,     // download em andamento (pausado incluso)
-  downloadPaused,  // pausado temporariamente por AI/caching busy
-  ready,           // cache válido e disponível offline
+  unknown, // estado inicial — ainda não verificado
+  downloading, // download em andamento (pausado incluso)
+  downloadPaused, // pausado temporariamente por AI/caching busy
+  ready, // cache válido e disponível offline
   updateAvailable, // nova versão disponível; cache atual ainda válido
-  error,           // falha no último ciclo de download
+  error, // falha no último ciclo de download
 }
 
 class CalcuCacheState {
@@ -129,9 +131,9 @@ class CalcuCacheState {
   final String? remoteVersion;
   final DateTime? downloadedAt;
   final int fileCount;
-  final int filesDownloaded;   // quantidade já baixada (para progresso real)
-  final int filesTotal;        // total esperado (para progresso real)
-  final double progress;       // 0.0 → 1.0
+  final int filesDownloaded; // quantidade já baixada (para progresso real)
+  final int filesTotal; // total esperado (para progresso real)
+  final double progress; // 0.0 → 1.0
   final String? errorMessage;
 
   const CalcuCacheState({
@@ -158,15 +160,15 @@ class CalcuCacheState {
     String? errorMessage,
   }) =>
       CalcuCacheState(
-        status:          status          ?? this.status,
-        localVersion:    localVersion    ?? this.localVersion,
-        remoteVersion:   remoteVersion   ?? this.remoteVersion,
-        downloadedAt:    downloadedAt    ?? this.downloadedAt,
-        fileCount:       fileCount       ?? this.fileCount,
+        status: status ?? this.status,
+        localVersion: localVersion ?? this.localVersion,
+        remoteVersion: remoteVersion ?? this.remoteVersion,
+        downloadedAt: downloadedAt ?? this.downloadedAt,
+        fileCount: fileCount ?? this.fileCount,
         filesDownloaded: filesDownloaded ?? this.filesDownloaded,
-        filesTotal:      filesTotal      ?? this.filesTotal,
-        progress:        progress        ?? this.progress,
-        errorMessage:    errorMessage    ?? this.errorMessage,
+        filesTotal: filesTotal ?? this.filesTotal,
+        progress: progress ?? this.progress,
+        errorMessage: errorMessage ?? this.errorMessage,
       );
 
   bool get isReady =>
@@ -214,7 +216,6 @@ class OfflineCalculatorCacheService {
   bool _schedulerStarted = false;
   bool _lastManifestCheckSucceeded = false;
 
-
   // ── Callback de "AI ocupada" — injetado externamente ──────────────────────
   // Evita importação circular com app_provider.dart.
   // Registrado em main.dart após login:
@@ -250,8 +251,7 @@ class OfflineCalculatorCacheService {
   File _manifestFile(Directory root) => File('${root.path}/manifest.json');
 
   // Arquivo de progresso dentro de tmp/ — persiste arquivos já baixados
-  File _progressFile(Directory tmpDir) =>
-      File('${tmpDir.path}/.progress.json');
+  File _progressFile(Directory tmpDir) => File('${tmpDir.path}/.progress.json');
 
   // ── API pública ────────────────────────────────────────────────────────────
 
@@ -317,8 +317,8 @@ class OfflineCalculatorCacheService {
       return DateTime(now.year, now.month, now.day, 16);
     }
 
-    final tomorrow = DateTime(now.year, now.month, now.day)
-        .add(const Duration(days: 1));
+    final tomorrow =
+        DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
     return DateTime(tomorrow.year, tomorrow.month, tomorrow.day);
   }
 
@@ -439,9 +439,9 @@ class OfflineCalculatorCacheService {
     try {
       if (!skipInitialDelay) {
         // Atraso inicial: deixa a Home renderizar e a IA inicializar
-        debugPrint('[OFFLINE_CACHE] aguardando ${_kInitialDelayMs}ms antes de sincronizar');
-        await Future<void>.delayed(
-            Duration(milliseconds: _kInitialDelayMs));
+        debugPrint(
+            '[OFFLINE_CACHE] aguardando ${_kInitialDelayMs}ms antes de sincronizar');
+        await Future<void>.delayed(Duration(milliseconds: _kInitialDelayMs));
       }
       if (_cancelRequested) return;
       await _syncImpl(force: force);
@@ -466,7 +466,8 @@ class OfflineCalculatorCacheService {
     if (_cancelRequested) return;
 
     if (remote == null) {
-      debugPrint('[OFFLINE_CACHE] manifest remoto indisponível — fallback online');
+      debugPrint(
+          '[OFFLINE_CACHE] manifest remoto indisponível — fallback online');
       if (!await hasValidCache()) {
         _emit(_state.copyWith(
             status: CalcuCacheStatus.error, errorMessage: 'sem conexão'));
@@ -475,16 +476,15 @@ class OfflineCalculatorCacheService {
     }
 
     final remoteVersion = remote['version'] as String? ?? '0';
-    final localVersion  = _state.localVersion ?? '';
+    final localVersion = _state.localVersion ?? '';
     debugPrint('[OFFLINE_CACHE] manifest remote version=$remoteVersion '
         'local version=$localVersion');
 
     _emit(_state.copyWith(remoteVersion: remoteVersion));
 
     // 3. Compara versões
-    final needsUpdate = force ||
-        localVersion.isEmpty ||
-        localVersion != remoteVersion;
+    final needsUpdate =
+        force || localVersion.isEmpty || localVersion != remoteVersion;
 
     if (!needsUpdate) {
       debugPrint('[OFFLINE_CACHE] ready=true (versão atual)');
@@ -509,10 +509,8 @@ class OfflineCalculatorCacheService {
 
   Future<void> _downloadVersionThrottled(
       Map<String, dynamic> manifest, String version) async {
-    final rawFiles = (manifest['files'] as List?)
-            ?.map((f) => f.toString())
-            .toList() ??
-        [];
+    final rawFiles =
+        (manifest['files'] as List?)?.map((f) => f.toString()).toList() ?? [];
 
     if (rawFiles.isEmpty) {
       debugPrint('[OFFLINE_CACHE] manifest sem arquivos — abortando');
@@ -542,13 +540,11 @@ class OfflineCalculatorCacheService {
         'baixados de sessão anterior');
 
     // Filtra apenas arquivos que ainda precisam ser baixados
-    final todo = rawFiles
-        .where((f) => !alreadyDone.contains(f))
-        .toList();
+    final todo = rawFiles.where((f) => !alreadyDone.contains(f)).toList();
 
     final int totalFiles = rawFiles.length;
-    int completedCount   = alreadyDone.length;
-    int failedCount      = 0;
+    int completedCount = alreadyDone.length;
+    int failedCount = 0;
 
     _emit(_state.copyWith(
       status: CalcuCacheStatus.downloading,
@@ -608,8 +604,7 @@ class OfflineCalculatorCacheService {
           debugPrint('[OFFLINE_CACHE] falha no arquivo: $filePath');
         }
 
-        final progress =
-            totalFiles > 0 ? completedCount / totalFiles : 0.0;
+        final progress = totalFiles > 0 ? completedCount / totalFiles : 0.0;
 
         _emit(_state.copyWith(
           filesDownloaded: completedCount,
@@ -617,7 +612,8 @@ class OfflineCalculatorCacheService {
           progress: progress,
         ));
 
-        debugPrint('[OFFLINE_CACHE] progress=${(progress * 100).toStringAsFixed(0)}% '
+        debugPrint(
+            '[OFFLINE_CACHE] progress=${(progress * 100).toStringAsFixed(0)}% '
             'file=$filePath ok=$success '
             '($completedCount/$totalFiles)');
       }
@@ -644,7 +640,8 @@ class OfflineCalculatorCacheService {
     for (final essential in _kEssentialFiles) {
       final f = File('${tmpDir.path}/$essential');
       if (!f.existsSync() || f.lengthSync() == 0) {
-        debugPrint('[OFFLINE_CACHE] ESSENCIAL FALTANDO: $essential — abortando swap');
+        debugPrint(
+            '[OFFLINE_CACHE] ESSENCIAL FALTANDO: $essential — abortando swap');
         _emit(_state.copyWith(
           status: CalcuCacheStatus.error,
           errorMessage: 'arquivo essencial ausente: $essential',
@@ -734,7 +731,7 @@ class OfflineCalculatorCacheService {
   Future<void> _atomicSwap(
       Directory tmpDir, String version, int fileCount) async {
     try {
-      final root       = await _cacheRoot;
+      final root = await _cacheRoot;
       final currentDir = await _currentDir;
 
       // Remove versão anterior SOMENTE após nova estar validada
@@ -746,26 +743,27 @@ class OfflineCalculatorCacheService {
       await tmpDir.rename(currentDir.path);
 
       // Persiste manifest local
-      final now          = DateTime.now();
+      final now = DateTime.now();
       final manifestData = {
-        'version':     version,
+        'version': version,
         'downloadedAt': now.toIso8601String(),
-        'fileCount':   fileCount,
-        'status':      'ready',
+        'fileCount': fileCount,
+        'status': 'ready',
       };
       await _manifestFile(root).writeAsString(jsonEncode(manifestData));
 
       _emit(_state.copyWith(
-        status:          CalcuCacheStatus.ready,
-        localVersion:    version,
-        downloadedAt:    now,
-        fileCount:       fileCount,
+        status: CalcuCacheStatus.ready,
+        localVersion: version,
+        downloadedAt: now,
+        fileCount: fileCount,
         filesDownloaded: fileCount,
-        progress:        1.0,
-        errorMessage:    null,
+        progress: 1.0,
+        errorMessage: null,
       ));
 
-      debugPrint('[OFFLINE_CACHE] ready=true version=$version files=$fileCount');
+      debugPrint(
+          '[OFFLINE_CACHE] ready=true version=$version files=$fileCount');
     } catch (e) {
       debugPrint('[OFFLINE_CACHE] erro no swap atômico: $e');
       _emit(_state.copyWith(
@@ -782,15 +780,14 @@ class OfflineCalculatorCacheService {
       final root = await _cacheRoot;
       final file = _manifestFile(root);
       if (!file.existsSync()) return;
-      final json =
-          jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
       final downloadedAt = json['downloadedAt'] != null
           ? DateTime.tryParse(json['downloadedAt'] as String)
           : null;
       _emit(_state.copyWith(
         localVersion: json['version'] as String?,
         downloadedAt: downloadedAt,
-        fileCount:    (json['fileCount'] as num?)?.toInt() ?? 0,
+        fileCount: (json['fileCount'] as num?)?.toInt() ?? 0,
         status: json['status'] == 'ready'
             ? CalcuCacheStatus.ready
             : CalcuCacheStatus.unknown,

@@ -4,13 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('R13 Study continuation stable action contract', () {
     late String screen;
-    setUpAll(() => screen = File('lib/screens/ai_screen.dart').readAsStringSync());
+    setUpAll(
+        () => screen = File('lib/screens/ai_screen.dart').readAsStringSync());
 
     test('same AI message freezes one tuple', () {
       expect(screen, contains('_stableStudyContinuationByMessageId'));
       expect(screen, contains('_resolveStableStudyContinuationForMessage('));
       expect(screen, contains('[STUDY_CONTINUATION][FROZEN]'));
-      expect(screen, contains('_stableStudyContinuationByMessageId[message.id] = resolved;'));
+      expect(
+          screen,
+          contains(
+              '_stableStudyContinuationByMessageId[message.id] = resolved;'));
     });
 
     test('button dispatches direct execution only as provider override', () {
@@ -34,7 +38,9 @@ void main() {
     });
 
     test('override survives debounce and pending queue', () {
-      final n = RegExp('providerInputOverride: providerInputOverride').allMatches(screen).length;
+      final n = RegExp('providerInputOverride: providerInputOverride')
+          .allMatches(screen)
+          .length;
       expect(n, greaterThanOrEqualTo(2));
       expect(
         RegExp(
@@ -47,8 +53,11 @@ void main() {
     });
 
     test('Plantao case anchor remains fallback', () {
-      expect(screen, contains('_bindPlantaoCaseAnchorForButton(trimmed)'));
-      expect(screen, contains('fromButton && !_longResponse'));
+      expect(
+          screen,
+          matches(RegExp(
+              r'_bindPlantaoCaseAnchorForButton\(trimmed,\s*studyMode: requestLongResponse\)')));
+      expect(screen, contains('fromButton && !requestLongResponse'));
     });
   });
 }

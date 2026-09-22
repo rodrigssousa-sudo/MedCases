@@ -1,0 +1,1 @@
+Test-only gateway metadata snapshot from medcases-calculadora commit 6b5a79cec541362a9dd98ebb8130b7c2657ca7f5. catalog.json reproduces GET /api/drug-catalog projection. Three drug files are verbatim source fixtures. before-ids.json contains the former 838 IDs. Not bundled by the app or used as runtime fallback. No clinical approval is implied.

@@ -9,8 +9,9 @@ void main() {
 
     expect(user, contains('final bool cleanPlantaoPresentation;'));
     expect(user, contains('if (!widget.cleanPlantaoPresentation) ...['));
-    expect(ai, contains('cleanPlantaoPresentation: !_longResponse'));
-    expect(ai, contains('if (_longResponse || isActiveStreamingBubble) ...['));
+    expect(ai, contains('cleanPlantaoPresentation: !messageLongResponse'));
+    expect(ai,
+        contains('if (messageLongResponse || isActiveStreamingBubble) ...['));
     expect(ai, contains('editText: msg.text'));
     expect(ai, contains('onCopy: () => _copyMsg(userVisibleText)'));
     expect(ai, contains('userDisplayText: visibleLabel'));

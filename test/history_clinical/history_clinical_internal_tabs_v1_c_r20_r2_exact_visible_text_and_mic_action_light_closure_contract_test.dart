@@ -8,7 +8,7 @@ void main() {
   test('expanded Ditado e IA and action row use adaptive mic palette', () {
     expect(src.contains("'Ditado e IA'"), isTrue);
     expect(src.contains('color: micPrimary,'), isTrue);
-    expect(src.contains('color: active ? const Color(0xFF10B981) : micSecondary,'), isTrue);
+    expect(src.contains('color: active ? const Color(0xFF0D6B57) : micSecondary,'), isTrue);
     expect(src.contains(': micSecondary,'), isTrue);
     expect(src.contains('color: busy ? const Color(0xFF8FD5B8) : micMuted,'), isTrue);
   });

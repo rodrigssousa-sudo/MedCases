@@ -155,7 +155,7 @@ void main() {
           expect(
             ai,
             contains(
-              'longResponse: _longResponse',
+              'longResponse: requestLongResponse',
             ),
           );
         },

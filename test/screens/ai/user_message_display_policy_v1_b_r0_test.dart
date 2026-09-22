@@ -58,16 +58,15 @@ void main() {
       );
       expect(
         RegExp(
-          r"_ChatMsg\(\s*role:\s*'user',\s*text:\s*trimmed,",
+          r"_ChatMsg\(\s*mode:\s*requestMode,\s*role:\s*'user',\s*text:\s*trimmed,",
           multiLine: true,
         ).hasMatch(source),
         isTrue,
       );
       expect(
         source,
-        contains(
-          'String _bindPlantaoCaseAnchorForButton(String actionText)',
-        ),
+        matches(RegExp(
+            r'String _bindPlantaoCaseAnchorForButton\(\s*String actionText,\s*\{\s*required bool studyMode')),
       );
     });
 

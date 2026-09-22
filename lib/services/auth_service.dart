@@ -182,7 +182,7 @@ class AuthService {
       return;
     }
     debugPrint('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED] '
-        'firebaseUidAfter=${firebaseUser.uid} '
+        'firebaseUidAfter=[redacted] '
         'adapterType=${_adapterType}');
   }
 
@@ -192,7 +192,7 @@ class AuthService {
   /// NEVER called when the token refresh threw an exception.
   static void logSdkTokenRefreshed({required String uid}) {
     debugPrint('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED] '
-        'uid=$uid '
+        'uid=[redacted] '
         'adapterType=${_adapterType}');
   }
 
@@ -496,7 +496,7 @@ class AuthService {
       await saveSession(user);
 
       debugPrint(
-        '[AUTH_SOCIAL][READY] provider=$provider uid=${firebaseUser.uid} '
+        '[AUTH_SOCIAL][READY] provider=$provider uid=[redacted] '
         'sdkUserPresent=${_auth.currentUser != null}',
       );
 
@@ -568,7 +568,7 @@ class AuthService {
       await firebaseUser.getIdToken(true);
       logSdkTokenRefreshed(uid: firebaseUser.uid);
 
-      debugPrint('[Auth] Login nativo OK — uid=${firebaseUser.uid}');
+      debugPrint('[Auth] Login nativo OK — uid=[redacted]');
 
       // ensureUserProfileExists: cria/repara doc se ausente ou incompleto.
       // Garante que mesmo usuários que nunca passaram pelo registro web
@@ -631,7 +631,7 @@ class AuthService {
     required String password,
   }) async {
     debugPrint('[Auth][LOGIN] REQUEST:');
-    debugPrint('[Auth][LOGIN]   EMAIL : ${email.trim()}');
+    debugPrint('[Auth][LOGIN]   EMAIL : [redacted]');
 
     // MICRO-BUILD 463-A.2-R2: emit SDK establish start for the web path.
     logSdkEstablishStart(
@@ -721,7 +721,7 @@ class AuthService {
       if (FirebaseRuntimeGuard.isReady) {
         try {
           debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
-              'uid=$uid — calling SDK signInWithEmailAndPassword '
+              'uid=[redacted] — calling SDK signInWithEmailAndPassword '
               'to establish hasFirebaseSdkIdentity=true');
           final credential = await _auth
               .signInWithEmailAndPassword(
@@ -769,7 +769,7 @@ class AuthService {
                 );
                 debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
                     'unified_token: REST plane updated with SDK-refreshed JWT '
-                    'uid=${firebaseUser.uid}');
+                    'uid=[redacted]');
               }
             } catch (tokenErr) {
               // Token refresh failure is non-fatal — REST token is still valid.
@@ -778,7 +778,7 @@ class AuthService {
             }
             debugPrint('[AUTH_SDK_ESTABLISH][WEB_BRIDGE] '
                 'sdkIdentityEstablished=true '
-                'uid=${firebaseUser.uid} '
+                'uid=[redacted] '
                 'adapterType=${_adapterType}');
           } else {
             // SDK returned null user after sign-in — log but do not block login.
@@ -939,7 +939,7 @@ class AuthService {
     String? referredBy,
   }) async {
     try {
-      debugPrint('[Auth] Iniciando cadastro nativo — email=$email');
+      debugPrint('[Auth] Iniciando cadastro nativo — email=[redacted]');
 
       // 1. Cria a conta Firebase Auth
       final cred = await _auth.createUserWithEmailAndPassword(
@@ -947,7 +947,7 @@ class AuthService {
         password: password,
       );
       final firebaseUser = cred.user!;
-      debugPrint('[Auth] Auth criado — uid=${firebaseUser.uid}');
+      debugPrint('[Auth] Auth criado — uid=[redacted]');
 
       // 2. Atualiza displayName no Firebase Auth
       await firebaseUser.updateDisplayName(displayName.trim());
@@ -1022,7 +1022,7 @@ class AuthService {
     };
     debugPrint('[Auth][REGISTER] REQUEST:');
     debugPrint('[Auth][REGISTER]   ENDPOINT : $endpoint');
-    debugPrint('[Auth][REGISTER]   EMAIL    : ${email.trim()}');
+    debugPrint('[Auth][REGISTER]   EMAIL    : [redacted]');
     debugPrint(
         '[Auth][REGISTER]   API_KEY  : ${_webApiKey.substring(0, 8)}...${_webApiKey.substring(_webApiKey.length - 4)}');
     debugPrint(
@@ -1080,7 +1080,7 @@ class AuthService {
       final idToken = body['idToken'] as String;
       final refreshToken = body['refreshToken'] as String? ?? '';
 
-      debugPrint('[Auth][REGISTER]   UID : $uid');
+      debugPrint('[Auth][REGISTER]   UID : [redacted]');
       _cacheTokens(idToken: idToken, refreshToken: refreshToken);
 
       final user = _buildNewUser(
@@ -1286,7 +1286,7 @@ class AuthService {
         registrationResult = await nativeRegistration;
       } catch (error) {
         debugPrint(
-          '[Auth] Bootstrap do cadastro falhou antes do perfil — uid=$uid error=$error',
+          '[Auth] Bootstrap do cadastro falhou antes do perfil — uid=[redacted] error=$error',
         );
       }
 
@@ -1307,7 +1307,7 @@ class AuthService {
           registeredUser.uid == uid) {
         bootstrapUser = registeredUser;
         debugPrint(
-          '[Auth] Cadastro e perfil convergiram antes do AuthGate — uid=$uid',
+          '[Auth] Cadastro e perfil convergiram antes do AuthGate — uid=[redacted]',
         );
         yield registeredUser;
       }
@@ -1328,7 +1328,7 @@ class AuthService {
       // Recuperação limitada ao próprio usuário ainda autenticado. Preserva os
       // metadados capturados no cadastro caso a primeira escrita tenha falhado.
       debugPrint(
-        '[Auth] Perfil ausente com sessão válida; reparando users/$uid',
+        '[Auth] Perfil ausente com sessão válida; reparando users/[redacted]',
       );
       final recoveredUser = await ensureUserProfileExists(
         activeUser,
@@ -1879,7 +1879,7 @@ class AuthService {
         // Nao imprimir corpo HTTP nem credenciais em logs.
         throw StateError('Falha ao persistir perfil (${patchResp.statusCode})');
       }
-      debugPrint('[Auth] _createUserDocRest OK — uid=${user.uid}');
+      debugPrint('[Auth] _createUserDocRest OK — uid=[redacted]');
 
       // ── Notifica usuários MASTER sobre novo cadastro ──────────────────────
       _notifyMastersNewUser(user).ignore();
@@ -2055,7 +2055,7 @@ class AuthService {
 
         await ref.set(docData);
         debugPrint(
-            '[Auth] Perfil criado no Firestore — uid=$uid status=approved');
+            '[Auth] Perfil criado no Firestore — uid=[redacted] status=approved');
         return newUser;
       }
 
@@ -2085,7 +2085,7 @@ class AuthService {
         debugPrint(
             '[Auth] Perfil reparado — campos: ${repairs.keys.join(', ')}');
       } else {
-        debugPrint('[Auth] Perfil OK, sem reparos necessários — uid=$uid');
+        debugPrint('[Auth] Perfil OK, sem reparos necessários — uid=[redacted]');
       }
 
       return user;

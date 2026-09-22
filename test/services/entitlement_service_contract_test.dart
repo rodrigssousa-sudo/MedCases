@@ -28,7 +28,7 @@ void main() {
       expect(free.can(MedCasesCapability.drugsFullLibrary), isFalse);
       expect(free.can(MedCasesCapability.drugsWeightDose), isFalse);
       expect(free.can(MedCasesCapability.drugsRenalAdjustment), isFalse);
-      expect(free.limits.drugLibraryItems, 400);
+      expect(free.limits.drugLibraryItems, 60);
     });
 
     test('Premium unlocks all pharmacology capabilities', () {

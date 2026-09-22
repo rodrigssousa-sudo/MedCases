@@ -213,7 +213,7 @@ void main() {
           expect(
             gptBranch,
             contains(
-              'userInput: input',
+              'userInput: persistedUserInput',
             ),
           );
 
@@ -260,7 +260,7 @@ void main() {
           expect(
             geminiBranch,
             contains(
-              'userInput: input',
+              'userInput: persistedUserInput',
             ),
           );
 
@@ -355,7 +355,7 @@ void main() {
 
             final tokens = <String>[
               '_aiHistory',
-              'while (_aiHistory.length > 20) '
+              'while (_aiHistory.length > 60) '
                   '_aiHistory.removeAt(0);',
               'await persistAiExchangeOnce(',
               'wrappedOnDone($textVariable)',

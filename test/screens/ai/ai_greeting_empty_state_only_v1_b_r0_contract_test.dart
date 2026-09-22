@@ -27,7 +27,7 @@ void main() {
     // Prior physical Plantão cleanup remains intact.
     expect(
       source,
-      contains('if (!_longResponse && !hasAutomaticVisibleProjection)'),
+      contains('if (!messageLongResponse && !hasAutomaticVisibleProjection)'),
     );
   });
 }

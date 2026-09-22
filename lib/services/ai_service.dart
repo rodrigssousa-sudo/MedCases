@@ -1,3 +1,7 @@
+import 'ai/safety/clinical_safety_flow.dart';
+import 'ai/safety/clinical_request_safety.dart';
+import 'ai_gateway_service.dart' show prepareAiRequestPrompt;
+import 'ai_pipeline/ai_request_contract.dart';
 import 'package:flutter/foundation.dart'
     show kDebugMode, debugPrint, visibleForTesting;
 import 'ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationRepairResult, AiSafeOutputException
@@ -34,6 +38,8 @@ class AiService {
   /// os call sites de ferramentas secundárias (transcript, organizer) mas
   /// não é mais usado — a autenticação é por Firebase ID Token.
   static Future<AiResult> chat({
+    ClinicalRequestContext? clinicalContext,
+    String appLanguage = 'pt',
     required String
     apiKey, // mantido para compatibilidade — ignorado internamente
     required String userMessage,
@@ -45,6 +51,31 @@ class AiService {
     // SUPER ORDEM 38: Plantão → gemini-2.5-flash | Estudo → gemini-2.5-pro
     bool isPlantaoMode = false,
   }) async {
+    final owner = ProviderRouterService.clinicalUserId;
+    final utilityRequestId = ProviderRouterService.generateRequestId();
+    final utilityMemory = ClinicalSafetyMemory().capture(
+      uid: owner,
+      sessionId: utilityRequestId,
+      userQuery: userMessage,
+    );
+    final requestContext = clinicalContext ??
+        ClinicalRequestContext(
+          uid: owner,
+          requestId: utilityRequestId,
+          sessionId: utilityRequestId,
+          mode: isPlantaoMode ? AiRequestMode.plantao : AiRequestMode.estudo,
+          language: appLanguage,
+          userQuery: userMessage,
+          memory: utilityMemory,
+          evidence: ClinicalEvidenceBundle(),
+          createdAt: DateTime.now(),
+          ownsRequest: () =>
+              owner.isNotEmpty && owner == ProviderRouterService.clinicalUserId,
+        );
+    if (!requestContext.mayGenerate) {
+      return AiResult(text: requestContext.safeMessage);
+    }
+
     // SUPER ORDEM 38: apiKey.isEmpty guard REMOVIDO.
     // Autenticação agora é via Firebase ID Token no geminiPaidProxy.
     // Chave local nunca é necessária — o proxy cuida de tudo server-side.
@@ -63,6 +94,9 @@ class AiService {
 
     try {
       final result = await ProviderRouterService.callPaidProxy(
+        clinicalContext: requestContext,
+        requestId: requestContext.requestId,
+        lang: requestContext.language,
         userMessage: userMessage,
         systemPrompt: systemPrompt,
         history: history,
@@ -73,7 +107,16 @@ class AiService {
       );
 
       if (result.success && result.text.isNotEmpty) {
-        return AiResult(text: result.text.trim());
+        final safety = ClinicalSafetyFlow(requestContext).terminal(result.text,
+            mode: isPlantaoMode ? AiRequestMode.plantao : AiRequestMode.estudo);
+        debugPrint(safety.telemetry(requestContext));
+        if (requestContext.ownsRequest?.call() == false) {
+          return AiResult.error('CONTEXT_EXPIRED', 'cancelled');
+        }
+        return AiResult(
+            text: safety.allowed
+                ? result.text.trim()
+                : requestContext.safeMessage);
       }
       if (result.errorCode == 'unauthenticated') {
         return AiResult.error('NOT_CONNECTED', 'no_key');
@@ -120,13 +163,18 @@ class AiService {
   // request original para não colidir com o anti-retry guard do caller).
   // ══════════════════════════════════════════════════════════════════════════
   static Future<TruncationRepairResult> repairTruncated({
+    ClinicalRequestContext? clinicalContext,
     required String originalText,
     required String requestId,
     required bool isPlantaoMode,
     String appLanguage = 'pt',
   }) async {
     final repairRequestId = '${requestId}_repair';
-    final repairMode = isPlantaoMode ? 'plantao' : 'estudo';
+    final requestMode =
+        isPlantaoMode ? AiRequestMode.plantao : AiRequestMode.estudo;
+    final repairMode = requestMode.name;
+    clinicalContext?.requireTransport(
+        mode: requestMode.name, language: appLanguage);
     final repairMaxOutputTokens = isPlantaoMode ? 1200 : 1800;
 
     if (kDebugMode) {
@@ -154,9 +202,16 @@ class AiService {
               'Nunca interrompa palavra, dose, unidade, lista ou recomendação clínica.\n\n'
               '$originalText';
 
-    final repairSystemPrompt = appLanguage == 'es'
+    final repairBaseSystemPrompt = appLanguage == 'es'
         ? 'Eres un asistente médico. Completa el texto clínico truncado.'
         : 'Você é um assistente médico. Complete o texto clínico truncado.';
+
+    final repairModePrompt = prepareAiRequestPrompt(
+      mode: requestMode,
+      systemPrompt: repairBaseSystemPrompt,
+      hasSpecificContext: isPlantaoMode,
+    );
+    final repairSystemPrompt = repairModePrompt.systemPrompt;
 
     try {
       // Layer 2 — GPT pago.
@@ -174,6 +229,7 @@ class AiService {
 
       try {
         gptResult = await ProviderRouterService.callGptProxy(
+          clinicalContext: clinicalContext,
           userMessage: repairPrompt,
           systemPrompt: repairSystemPrompt,
           history: const [],
@@ -272,6 +328,7 @@ class AiService {
 
       try {
         geminiResult = await ProviderRouterService.callPaidProxy(
+          clinicalContext: clinicalContext,
           userMessage: repairPrompt,
           systemPrompt: repairSystemPrompt,
           history: const [],

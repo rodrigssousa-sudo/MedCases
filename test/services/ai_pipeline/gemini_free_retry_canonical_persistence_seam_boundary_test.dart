@@ -123,7 +123,7 @@ void main() {
         'assistantOutput: retryFinalText',
         'if (retryFinalText.isNotEmpty &&',
         '_aiHistory',
-        'while (_aiHistory.length > 20) '
+        'while (_aiHistory.length > 60) '
             '_aiHistory.removeAt(0);',
         'await persistAiExchangeOnce(',
         '_aiStreamActive = false;',
@@ -169,8 +169,7 @@ void main() {
       expect(
         calls,
         hasLength(6),
-        reason:
-            'GPT SSE, Gemini Free principal e '
+        reason: 'GPT SSE, Gemini Free principal e '
             'Gemini Free retry e os dois fallbacks pagos e o caminho crítico pago direto devem persistir.',
       );
     });

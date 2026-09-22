@@ -1,7 +1,7 @@
+import '../../../widgets/clinical_entrypoints.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_4A_V2_B_R1_AI_WIDGETS
 import 'package:flutter/material.dart';
 
-import '../../calculadora_screen.dart';
 import '../../../services/ai_next_action_engine.dart';
 import '../../../services/plantao_continuation_policy.dart';
 import '../../../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart';
@@ -191,23 +191,25 @@ class ActionButtonsRow extends StatelessWidget {
                         )
                       : null)
                   : ActionCardButton(
-                  title: aiLabel,
-                  icon: Icons.auto_awesome_rounded,
-                  accentColor: _kToolBtn,
-                  dark: dark,
-                  onTap: () => onActionTap(
-                    hasStudyNext ? effectiveStudyPrompt : action.promptToSend,
-                    visibleLabel: aiLabel,
-                    isStudyNext:
-                        hasStudyNext, // BUILD 308: sinaliza botão de Estudo
-                    continuationType: hasStudyNext
-                        ? PlantaoContinuationType.freeFollowUp
-                        : action.continuationType,
-                    requestedSections: hasStudyNext
-                        ? const <PlantaoSection>[]
-                        : action.requestedSections,
-                  ),
-                ))
+                      title: aiLabel,
+                      icon: Icons.auto_awesome_rounded,
+                      accentColor: _kToolBtn,
+                      dark: dark,
+                      onTap: () => onActionTap(
+                        hasStudyNext
+                            ? effectiveStudyPrompt
+                            : action.promptToSend,
+                        visibleLabel: aiLabel,
+                        isStudyNext:
+                            hasStudyNext, // BUILD 308: sinaliza botão de Estudo
+                        continuationType: hasStudyNext
+                            ? PlantaoContinuationType.freeFollowUp
+                            : action.continuationType,
+                        requestedSections: hasStudyNext
+                            ? const <PlantaoSection>[]
+                            : action.requestedSections,
+                      ),
+                    ))
               : null;
 
           final calcBtn = link != null
@@ -219,15 +221,11 @@ class ActionButtonsRow extends StatelessWidget {
                   accentColor: _kToolBtn,
                   dark: dark,
                   onTap: () {
-                    // CACHE-FIRST SINGLE-NAV:
-                    // never await disk/cache resolution before opening the screen.
-                    // CalculadoraScreen owns local-vs-online source selection.
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            CalculadoraScreen(initialUrl: link.url),
-                      ),
-                    );
+                    // Authorize before constructing the route. The calculator
+                    // retains ownership of local-vs-online source selection.
+                    (isPlantaoMode
+                        ? openCalculatorFromPlantao
+                        : openCalculatorFromStudy)(context, link.url);
                   },
                 )
               : null;

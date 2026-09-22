@@ -1,3 +1,4 @@
+import '../services/medcases_feature_authorization.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -9,8 +10,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart'
     show ValueNotifier, debugPrint, defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -24,6 +27,9 @@ import '../platform/calcu_stub.dart'
 import 'upgrade_screen.dart';
 
 import '../services/entitlement_service.dart';
+import '../services/entitlement_webview_contract.dart';
+import '../services/calculator_origin_policy.dart';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // URL base — ?lang=pt ou ?lang=es injetado em initState() conforme AppProvider
 // ─────────────────────────────────────────────────────────────────────────────
@@ -191,7 +197,16 @@ class CalculadoraScreen extends StatefulWidget {
   // Quando null, comportamento padrão: homepage da calculadora com lang do provider.
   final String? initialUrl;
 
-  const CalculadoraScreen({super.key, this.initialUrl});
+  const CalculadoraScreen({super.key, this.initialUrl})
+      : _testAuthorization = null;
+
+  // Test seam for the authorization boundary, not a mock PlatformView.
+  CalculadoraScreen.forAuthorizationTest(
+      {super.key,
+      this.initialUrl,
+      required MedCasesFeatureAuthorization authorization})
+      : _testAuthorization = authorization;
+  final MedCasesFeatureAuthorization? _testAuthorization;
 
   // MEDCASES_OFFLINE_MINIMAL_CACHE_REFRESH_V1_R2
   static final ValueNotifier<int> cacheRefreshGeneration =
@@ -203,12 +218,124 @@ class CalculadoraScreen extends StatefulWidget {
   }
 
   @override
+  State<CalculadoraScreen> createState() => _CalculatorAuthorizationState();
+}
+
+// Authorize even when a caller constructs the route directly. The existing
+// runtime is created only after authorization, and disposed on owner changes.
+class _CalculatorAuthorizationState extends State<CalculadoraScreen> {
+  late final _authorization =
+      widget._testAuthorization ?? MedCasesFeatureAuthorization.instance;
+  bool _allowed = false;
+  String? _owner;
+  int _generation = 0;
+
+  FeatureTarget get _target => FeatureTarget.calculator(widget.initialUrl);
+
+  @override
+  void initState() {
+    super.initState();
+    _authorization.entitlement.addListener(_onEntitlementChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _resolve());
+  }
+
+  @override
+  void didUpdateWidget(CalculadoraScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialUrl != widget.initialUrl) {
+      _allowed = false;
+      _resolve();
+    }
+  }
+
+  void _onEntitlementChanged() {
+    if (!mounted) return;
+    final owner = _authorization.entitlement.current.resolvedUid;
+    if (_allowed && (owner != _owner || !_authorization.allows(_target))) {
+      setState(() {
+        _allowed = false;
+        _generation++;
+      });
+    }
+  }
+
+  Future<void> _resolve() async {
+    final generation = ++_generation;
+    final allowed = await _authorization.authorize(
+      _target,
+      entrypoint: FeatureEntryPoint.directNavigator,
+      presentPaywall: () async {
+        if (mounted)
+          await showUpgradeScreen(context,
+              lang: context.read<AppProvider>().lang);
+      },
+    );
+    if (!mounted || generation != _generation) return;
+    setState(() {
+      _owner = _authorization.entitlement.current.resolvedUid;
+      _allowed = allowed;
+    });
+  }
+
+  @override
+  void dispose() {
+    _authorization.entitlement.removeListener(_onEntitlementChanged);
+    _generation++;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => _allowed
+      ? _AuthorizedCalculatorRuntime(
+          key: ValueKey(_owner), initialUrl: widget.initialUrl)
+      : Scaffold(
+          appBar: AppBar(),
+          body: Center(
+              child: IconButton(
+                  icon: const Icon(Icons.lock_outline), onPressed: _resolve)));
+}
+
+class _AuthorizedCalculatorRuntime extends CalculadoraScreen {
+  const _AuthorizedCalculatorRuntime({super.key, super.initialUrl});
+  @override
   State<CalculadoraScreen> createState() => _CalculadoraScreenState();
 }
 
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
   // Native WebView controller — inicializado apenas em iOS/Android (!kIsWeb)
   late final WebViewController _controller;
+  // MEDCASES_APPLE_PRERELEASE_PAYWALL_WEBVIEW_INPUT_LOCK_V1_B_R0
+  final _drugPaywallGuard = PaywallPresentationGuard();
+
+  Future<void> _openDrugUpgradePaywall(String lang) async {
+    if (!mounted ||
+        _drugPaywallGuard.active ||
+        EntitlementService.instance.isPremium) return;
+    try {
+      await _drugPaywallGuard.run(
+        () async {
+          // Remove the native view from presentation before pushing the modal.
+          await WidgetsBinding.instance.endOfFrame;
+          if (!mounted) return;
+          await showUpgradeScreen(context, lang: lang);
+          if (!mounted || kIsWeb) return;
+          unawaited(_installMcc1BridgeForDocument(
+            rawUrl: await _controller.currentUrl(),
+            generation: _mcc1DocumentGeneration,
+            forceFirebaseRefresh: true,
+          ));
+        },
+        onChanged: () {
+          if (mounted) setState(() {});
+        },
+      );
+    } catch (error) {
+      // The guard restores input in finally, including presentation failures.
+      debugPrint(
+          '[CalculadoraWebView][MC_UPGRADE] presentation failed: $error');
+    }
+  }
+
   // Fix#6: dark mode agora mutável — reativo a toggleDarkMode() em runtime
   bool _dark = false;
   // Fix#6: flag que indica se a WebView já terminou de carregar (page finished)
@@ -314,13 +441,44 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     };
 
     const accepted = <String>{
-      'lang', 'idioma', 'modulo',
-      'peso', 'altura', 'idade', 'creatinina', 'clcr', 'sexo',
-      'tfg', 'pregnant', 'hemodialysis',
-      'ph', 'pco2', 'hco3', 'be', 'na', 'cl', 'gluc', 'ca', 'bun', 'alb',
-      'pas', 'col', 'qt', 'fc',
-      'bili', 'inr', 'ast', 'alt', 'plat',
-      'k', 'mg', 'kdigo', 'child_pugh', 'chads_vasc', 'has_bled', 'ascvd',
+      'lang',
+      'idioma',
+      'modulo',
+      'peso',
+      'altura',
+      'idade',
+      'creatinina',
+      'clcr',
+      'sexo',
+      'tfg',
+      'pregnant',
+      'hemodialysis',
+      'ph',
+      'pco2',
+      'hco3',
+      'be',
+      'na',
+      'cl',
+      'gluc',
+      'ca',
+      'bun',
+      'alb',
+      'pas',
+      'col',
+      'qt',
+      'fc',
+      'bili',
+      'inr',
+      'ast',
+      'alt',
+      'plat',
+      'k',
+      'mg',
+      'kdigo',
+      'child_pugh',
+      'chads_vasc',
+      'has_bled',
+      'ascvd',
     };
 
     final payload = <String, String>{};
@@ -333,7 +491,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     }
     return payload;
   }
-
 
   // MEDCASES_CALCULATOR_THEME_SYNC_V2_B_R0
   String _withCalculatorTheme(String rawUrl, String theme) {
@@ -375,11 +532,15 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   //
   // iOS WKWebView must load the local file with an explicit read-access
   // directory so sibling css/js/data files can be read by the page.
+  final _originPolicy = CalculatorOriginPolicy();
+
   Future<void> _loadCalculatorTarget(
     String targetUrl, {
     required String reason,
   }) async {
     final targetUri = Uri.tryParse(targetUrl);
+    _originPolicy.selectLocalDocument(targetUrl);
+    if (!_originPolicy.allows(targetUrl)) return;
 
     if (!kIsWeb &&
         _detectIOS() &&
@@ -400,9 +561,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         debugPrint(
           '[CalculadoraWebView][CACHE_FIRST] '
           'source=local platform=ios reason=$reason '
-          'readAccessPath=$readAccessPath '
-          'absoluteFilePath=$localPath '
-          'routeQuery=${targetUri.query}',
+          'readAccessPath=[redacted] '
+          'absoluteFilePath=[redacted] '
+          'routeQuery=[redacted]',
         );
 
         await platform.loadFileWithParams(
@@ -419,7 +580,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       '[CalculadoraWebView][CACHE_FIRST] '
       'source=${targetUri?.scheme == "file" ? "local" : "online"} '
       'platform=${_detectIOS() ? "ios" : "android"} '
-      'reason=$reason url=$targetUrl',
+      'reason=$reason url=[redacted]',
     );
 
     await _controller.loadRequest(Uri.parse(targetUrl));
@@ -557,7 +718,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     } catch (e) {
       debugPrint(
         '[CalculadoraWebView][CACHE_FIRST] '
-        'resolveFailed=true reason=$reason error=$e fallback=$_webUrl',
+        'resolveFailed=true reason=$reason error=$e fallback=[redacted]',
       );
 
       if (!mounted) return;
@@ -606,8 +767,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         'selected=${localUrl == null ? "online" : "local"}',
       );
 
-      final targetUrl =
-          _withCacheRefreshToken(localUrl ?? _webUrl, generation);
+      final targetUrl = _withCacheRefreshToken(localUrl ?? _webUrl, generation);
       if (!mounted) return;
       _webviewReady = false;
       await _loadCalculatorTarget(
@@ -626,6 +786,21 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     }
   }
 
+  void _onEntitlementChanged() {
+    if (kIsWeb || !mounted || EntitlementService.instance.isPremium) return;
+    unawaited(_revokeInactiveBridge());
+  }
+
+  Future<void> _revokeInactiveBridge() async {
+    try {
+      final url = await _controller.currentUrl();
+      if (!mounted ||
+          EntitlementService.instance.isPremium ||
+          !_originPolicy.allows(url)) return;
+      await _controller
+          .runJavaScript('window.__medcasesMcc1Bridge?.revoke?.();');
+    } catch (_) {/* Disposed/navigating views retain no new authorization. */}
+  }
 
   bool _isMcc1EligibleCalculatorUrl(String? rawUrl) {
     if (rawUrl == null || rawUrl.trim().isEmpty) return false;
@@ -647,18 +822,23 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
     }
 
     try {
+      final expectedUid = FirebaseAuth.instance.currentUser?.uid;
       final session = await const CalculatorMcc1BridgeService().issueSession(
         forceFirebaseRefresh: forceFirebaseRefresh,
       );
 
-
       // MEDCASES_R25A_ENTITLEMENT_SIGNED_SESSION_ADOPTION_V1
-      EntitlementService.instance.adoptTrustedSession(
-        tier: session.tier,
-        entitlementSource: session.entitlementSource,
-      );
-if (!mounted || generation != _mcc1DocumentGeneration) return;
+      if (!mounted ||
+          generation != _mcc1DocumentGeneration ||
+          expectedUid == null ||
+          FirebaseAuth.instance.currentUser?.uid != expectedUid) return;
+      EntitlementService.instance
+          .adoptTrustedSession(session: session, expectedUid: expectedUid);
 
+      final featuresJson = jsonEncode(MedCasesCapability.values
+          .where(EntitlementService.instance.canUse)
+          .map((feature) => feature.name)
+          .toList());
       final tokenJson = jsonEncode(session.token);
       final tierJson = jsonEncode(session.tier);
       final capabilitiesJson = jsonEncode(session.capabilities);
@@ -679,13 +859,18 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
     return { ok: false, code: 'MCC1_PAGE_ORIGIN_REJECTED' };
   }
 
+  let revoked = false;
+  const isLive = () => !revoked && Date.now() < Date.parse(expiresAtUtc);
   const protectedFetch = async (input, init = {}) => {
+    if (!isLive()) throw new Error('MCC1_SESSION_EXPIRED');
     const target = new URL(String(input), window.location.origin);
     const targetHost = String(target.hostname || '').toLowerCase();
 
     if (
       target.protocol !== 'https:' ||
       !allowedHosts.has(targetHost) ||
+      (target.port && target.port !== '443') ||
+      target.username || target.password ||
       !target.pathname.startsWith('/api/')
     ) {
       throw new Error('MCC1_FETCH_TARGET_REJECTED');
@@ -705,10 +890,17 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
 
   const bridge = Object.freeze({
     version: 1,
-    tier,
-    capabilities,
+    get tier() { return isLive() ? tier : 'free'; },
+    get capabilities() { return isLive() ? capabilities : []; },
+    get features() { return isLive() ? $featuresJson : []; },
     expiresAtUtc,
     fetch: protectedFetch,
+    revoke() {
+      revoked = true;
+      window.dispatchEvent(new CustomEvent('medcases:mcc1-ready', {
+        detail: { version: 1, tier: 'free', capabilities: [], expiresAtUtc },
+      }));
+    },
   });
 
   try {
@@ -721,6 +913,13 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
     enumerable: false,
     writable: false,
   });
+
+  setTimeout(() => {
+    if (window.__medcasesMcc1Bridge !== bridge || isLive()) return;
+    window.dispatchEvent(new CustomEvent('medcases:mcc1-ready', {
+      detail: { version: 1, tier: 'free', capabilities: [], expiresAtUtc },
+    }));
+  }, Math.max(0, Date.parse(expiresAtUtc) - Date.now()));
 
   window.dispatchEvent(
     new CustomEvent('medcases:mcc1-ready', {
@@ -744,13 +943,20 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
 """;
 
       await _controller.runJavaScript(source);
+      await _controller.runJavaScript(entitlementWebViewGuardScript);
 
       if (!mounted || generation != _mcc1DocumentGeneration) return;
 
       _mcc1RefreshTimer?.cancel();
-      final refreshAt = session.expiresAtUtc.subtract(
+      final signedRefreshAt = session.expiresAtUtc.subtract(
         const Duration(seconds: 60),
       );
+      // Refresh before the sovereign five-minute in-memory cache expires.
+      final cacheRefreshAt =
+          DateTime.now().toUtc().add(const Duration(minutes: 4));
+      final refreshAt = signedRefreshAt.isBefore(cacheRefreshAt)
+          ? signedRefreshAt
+          : cacheRefreshAt;
       var delay = refreshAt.difference(DateTime.now().toUtc());
       if (delay < const Duration(seconds: 30)) {
         delay = const Duration(seconds: 30);
@@ -783,10 +989,10 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
   void initState() {
     super.initState();
 
-    final p         = context.read<AppProvider>();
-    final lang      = p.lang;
+    final p = context.read<AppProvider>();
+    final lang = p.lang;
     final langParam = lang == 'es' ? 'es' : 'pt';
-    _dark           = p.darkMode;
+    _dark = p.darkMode;
     // Build 189: initialUrl tem prioridade sobre URL padrão do provider.
     // ExternalToolLinkEngine já injeta lang+tab+q — não sobrescrever.
     final themeParam = _dark ? 'dark' : 'light';
@@ -804,6 +1010,7 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
     // Fix#6: escuta mudanças de tema do AppProvider — injeta tema na WebView
     // imediatamente após toggle, sem necessidade de recarregar a página.
     p.addListener(_onProviderChanged);
+    EntitlementService.instance.addListener(_onEntitlementChanged);
     CalculadoraScreen.cacheRefreshGeneration
         .addListener(_onCalculatorCacheRefreshRequested);
 
@@ -836,26 +1043,43 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
         ..addJavaScriptChannel(
           'MCCalcDiag',
           onMessageReceived: (message) {
-            debugPrint(
-              '[CalculadoraWebView][WK_DOM_DIAG] ${message.message}',
-            );
+            // Native diagnostics must never log arbitrary page/patient text.
           },
         )
-          // MEDCASES_PREMIUM_R8_2_MCUPGRADE_NATIVE_CHANNEL_V1_B_R0
+        // MEDCASES_PREMIUM_R8_2_MCUPGRADE_NATIVE_CHANNEL_V1_B_R0
         ..addJavaScriptChannel(
           'MCUpgrade',
-          onMessageReceived: (message) {
-            if (!mounted) return;
+          onMessageReceived: (message) async {
+            if (!mounted ||
+                !_originPolicy.allows(await _controller.currentUrl()) ||
+                !mounted) return;
             final requestedLang = message.message.trim().toLowerCase();
             final paywallLang = requestedLang == 'pt' ? 'pt' : 'es';
             debugPrint(
               '[CalculadoraWebView][MC_UPGRADE] source=drug-lock lang=$paywallLang',
             );
-            showUpgradeScreen(context, lang: paywallLang);
+            unawaited(_openDrugUpgradePaywall(paywallLang));
           },
         )
         ..setNavigationDelegate(NavigationDelegate(
+          onNavigationRequest: (request) async {
+            if (_originPolicy.allows(request.url)) {
+              return NavigationDecision.navigate;
+            }
+            final external = Uri.tryParse(request.url);
+            if (mounted &&
+                request.isMainFrame &&
+                external != null &&
+                external.scheme == 'https' &&
+                external.userInfo.isEmpty) {
+              try {
+                await launchUrl(external, mode: LaunchMode.externalApplication);
+              } catch (_) {/* Remains outside the privileged WebView. */}
+            }
+            return NavigationDecision.prevent;
+          },
           onPageStarted: (url) async {
+            if (!mounted || !_originPolicy.allows(url)) return;
             _mcc1DocumentGeneration += 1;
             _mcc1RefreshTimer?.cancel();
             // MEDCASES_IOS_CALCULADORA_GLOBAL_TABS_FLUTTER_INJECTION_BYPASS_COUNTERFACTUAL_V1_B_R0
@@ -873,6 +1097,7 @@ if (!mounted || generation != _mcc1DocumentGeneration) return;
             }
           },
           onPageFinished: (url) async {
+            if (!mounted || !_originPolicy.allows(url)) return;
             final mcc1Generation = _mcc1DocumentGeneration;
             unawaited(
               _installMcc1BridgeForDocument(
@@ -2989,15 +3214,17 @@ ensurePage();
               'code=${error.errorCode} '
               'type=${error.errorType?.name ?? "?"} '
               'desc="${error.description}" '
-              'url="${error.url ?? "n/a"}"',
+              'url="[redacted]"',
             );
             // Se file:// falhar com ACCESS_DENIED, faz fallback para online.
             // Isso garante que o usuário vê a calculadora mesmo sem cache local.
             if ((error.description.contains('ERR_ACCESS_DENIED') ||
                     error.description.contains('ERR_FILE_NOT_FOUND') ||
-                    error.errorCode == -13 ) && // -13 = ERR_ACCESS_DENIED no Chromium
+                    error.errorCode ==
+                        -13) && // -13 = ERR_ACCESS_DENIED no Chromium
                 mounted) {
-              debugPrint('[CalculadoraWebView] file→online fallback ativado url=$_webUrl');
+              debugPrint(
+                  '[CalculadoraWebView] file→online fallback ativado url=[redacted]');
               _controller.loadRequest(Uri.parse(_webUrl));
             }
           },
@@ -3018,7 +3245,8 @@ ensurePage();
         final platform = _controller.platform;
         if (platform is AndroidWebViewController) {
           platform.setAllowFileAccess(true);
-          debugPrint('[CalculadoraWebView][BUILD283] AndroidWebView.setAllowFileAccess(true) — file:// desbloqueado');
+          debugPrint(
+              '[CalculadoraWebView][BUILD283] AndroidWebView.setAllowFileAccess(true) — file:// desbloqueado');
         }
       }
 
@@ -3259,7 +3487,6 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
     }
   }
 
-
   Future<void> _injectPatientContext() async {
     if (kIsWeb || _calculatorPatientPayload.isEmpty) return;
 
@@ -3282,7 +3509,8 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
   }
   apply();
 })(PAYLOAD_JSON);
-""".replaceFirst('PAYLOAD_JSON', payloadJson),
+"""
+            .replaceFirst('PAYLOAD_JSON', payloadJson),
       );
     } catch (e) {
       debugPrint('[CalculadoraScreen][patient-context] inject error: $e');
@@ -3338,6 +3566,7 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
 
   @override
   void dispose() {
+    EntitlementService.instance.removeListener(_onEntitlementChanged);
     _mcc1RefreshTimer?.cancel();
     // MEDCASES_PATIENT_CONTEXT_SESSION_BRIDGE_V1_B_R0_R1: best-effort em gesto/back do SO.
     if (!kIsWeb) unawaited(_clearCalculatorSession());
@@ -3356,7 +3585,8 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
     // SUPER ORDEM VISUAL 09: barBg/borderCol/textPrimary/textSecondary removidos
     // — o AppBar agora usa gradiente roxo const; só scaffoldBg permanece.
     // Fix#6: _dark agora é mutável — atualizado pelo listener do AppProvider.
-    final Color scaffoldBg  = _dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
+    final Color scaffoldBg =
+        _dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -3370,7 +3600,7 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Container(
-      // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R8
+            // MEDCASES_LIGHT_TOPBAR_GLOBAL_V1_B_R8
             // MEDCASES_FARMACOS_WEBVIEW_TOPBAR_V1_B_R0
             decoration: Theme.of(context).brightness == Brightness.dark
                 ? const BoxDecoration(
@@ -3404,7 +3634,9 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).brightness == Brightness.dark ? (Colors.white) : const Color(0xFF05070A),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? (Colors.white)
+                            : const Color(0xFF05070A),
                         letterSpacing: 0.4,
                       ),
                     ),
@@ -3420,7 +3652,10 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
                           padding: EdgeInsets.all(8.0),
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
-                            color: Theme.of(context).brightness == Brightness.dark ? (Colors.white) : const Color(0xFF05070A),
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? (Colors.white)
+                                    : const Color(0xFF05070A),
                             size: 20,
                           ),
                         ),
@@ -3452,11 +3687,18 @@ body[data-mc-flutter-farmacos-landing="true"]:not(:has(#fd-modal.open)) #farmaco
         // WebView ocupa o viewport completo — zero anteparos inferiores.
         body: kIsWeb
             ? buildCalculadoraWebView(_webUrl, _dark)
-            : WebViewWidget(controller: _controller),
+            : SizedBox.expand(
+                child: Offstage(
+                  offstage: _drugPaywallGuard.active,
+                  child: AbsorbPointer(
+                    absorbing: _drugPaywallGuard.active,
+                    child: WebViewWidget(controller: _controller),
+                  ),
+                ),
+              ),
       ),
     );
   }
-
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

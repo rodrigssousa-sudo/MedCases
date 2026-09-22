@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MedCases Clinical Content Manifest V1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "contentVersion",
+    "sequence",
+    "contentHash",
+    "generatedAt",
+    "minimumAppSchema",
+    "itemCount",
+    "publicationStatus",
+    "domains"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "contentVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contentHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "publicationStatus": {
+      "enum": [
+        "DRAFT",
+        "REVIEWED",
+        "CANARY",
+        "PRODUCTION",
+        "REVOKED"
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "minimumAppSchema": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "itemCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "domains": {
+      "type": "object",
+      "properties": {
+        "guides": {
+          "$ref": "#/$defs/domain"
+        },
+        "drugs": {
+          "$ref": "#/$defs/domain"
+        },
+        "protocols": {
+          "$ref": "#/$defs/domain"
+        },
+        "cases": {
+          "$ref": "#/$defs/domain"
+        },
+        "contexts": {
+          "$ref": "#/$defs/domain"
+        },
+        "simulations": {
+          "$ref": "#/$defs/domain"
+        },
+        "references": {
+          "$ref": "#/$defs/domain"
+        },
+        "interactions": {
+          "$ref": "#/$defs/domain"
+        },
+        "drugEvidence": {
+          "$ref": "#/$defs/domain"
+        },
+        "clinicalRules": {
+          "$ref": "#/$defs/domain"
+        },
+        "reviewMetadata": {
+          "$ref": "#/$defs/domain"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "domain": {
+      "type": "object",
+      "required": [
+        "owner",
+        "schemaVersion",
+        "contentVersion",
+        "itemCount",
+        "contentHash",
+        "generatedAt",
+        "minimumAppSchema",
+        "publicationStatus",
+        "indexPath"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "contentVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "publicationStatus": {
+          "enum": [
+            "DRAFT",
+            "REVIEWED",
+            "CANARY",
+            "PRODUCTION",
+            "REVOKED"
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "itemCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "minimumAppSchema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "indexPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "canonicalId",
+        "schemaVersion",
+        "contentVersion",
+        "contentHash",
+        "updatedAt",
+        "publicationStatus",
+        "payload"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0"
+        },
+        "contentVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "publicationStatus": {
+          "enum": [
+            "DRAFT",
+            "REVIEWED",
+            "CANARY",
+            "PRODUCTION",
+            "REVOKED"
+          ]
+        },
+        "canonicalId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,199}$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "clinicalReviewStatus": {
+          "type": "string"
+        },
+        "reviewedBy": {
+          "type": "string"
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidenceVersion": {
+          "type": "string"
+        },
+        "referenceId": {
+          "type": "string"
+        },
+        "sourceType": {
+          "type": "string"
+        },
+        "publicationYear": {
+          "type": "integer"
+        },
+        "guidelineVersion": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$comment": "Hashes use recursively sorted JSON keys, UTF-8, SHA-256. Manifest hash covers domains; domain hash covers complete index object; item hash covers envelope without contentHash. Runtime additionally validates exact owner, sequence, paths, counts, index-item parity, PT/ES and entitlement. Root itemCount counts domains; each domain itemCount counts entries including tombstones."
+}

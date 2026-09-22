@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:async';
+import 'clinical_content/clinical_content_gateway.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,15 +12,49 @@ import '../models/clinical_guide_article.dart';
 class ClinicalGuidesEditorialService {
   ClinicalGuidesEditorialService._();
 
+  static ClinicalContentGateway? _remoteGateway;
+  static StreamSubscription<void>? _remoteSubscription;
+  static final _remoteChanges = StreamController<void>.broadcast();
+  static void clearRemoteGateway() {
+    _remoteSubscription?.cancel();
+    _remoteSubscription = null;
+    _remoteGateway = null;
+    _remoteChanges.add(null);
+  }
+
+  static void configureRemoteGateway(ClinicalContentGateway gateway) {
+    _remoteSubscription?.cancel();
+    _remoteGateway = gateway;
+    _remoteSubscription = gateway.changes.listen(
+        (_) => _remoteChanges.add(null),
+        onDone: () => _remoteChanges.add(null));
+    _remoteChanges.add(null);
+  }
+
+  static List<ClinicalGuideArticle>? _snapshotGuides(String? language) {
+    final gateway = _remoteGateway;
+    if (gateway == null || !gateway.hasDomain('guides')) return null;
+    return _sortNewestFirst(gateway
+        .activeItems('guides')
+        .map((item) => ClinicalGuideArticle.fromJson(item.payload,
+            documentId: item.canonicalId))
+        .where((guide) => _matchesLanguage(guide, language))
+        .toList(growable: false));
+  }
+
   static CollectionReference<Map<String, dynamic>> get _collection =>
       FirebaseFirestore.instance.collection('clinical_guides');
 
   static Future<List<ClinicalGuideArticle>> loadPublished({
     String? language,
   }) async {
+    final remote = _snapshotGuides(language);
+    if (remote != null) return remote;
     final snapshot =
         await _collection.where('isPublished', isEqualTo: true).get();
 
+    final remoteAfterRead = _snapshotGuides(language);
+    if (remoteAfterRead != null) return remoteAfterRead;
     final guides = snapshot.docs
         .map(
           (doc) =>
@@ -31,19 +67,37 @@ class ClinicalGuidesEditorialService {
   }
 
   static Stream<List<ClinicalGuideArticle>> watchPublished({String? language}) {
-    return _collection.where('isPublished', isEqualTo: true).snapshots().map(
-          (snapshot) => _sortNewestFirst(
-            snapshot.docs
-                .map(
-                  (doc) => ClinicalGuideArticle.fromJson(
-                    doc.data(),
-                    documentId: doc.id,
-                  ),
-                )
-                .where((guide) => _matchesLanguage(guide, language))
-                .toList(growable: false),
-          ),
-        );
+    return Stream<List<ClinicalGuideArticle>>.multi((controller) {
+      void emitRemote() {
+        final remote = _snapshotGuides(language);
+        if (remote != null) controller.add(remote);
+      }
+
+      emitRemote();
+      final remoteSub = _remoteChanges.stream.listen((_) => emitRemote());
+      StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? originalSub;
+      if (_snapshotGuides(language) == null) {
+        originalSub = _collection
+            .where('isPublished', isEqualTo: true)
+            .snapshots()
+            .listen((snapshot) {
+          if (_snapshotGuides(language) != null) return;
+          controller.add(_sortNewestFirst(snapshot.docs
+              .map((doc) =>
+                  ClinicalGuideArticle.fromJson(doc.data(), documentId: doc.id))
+              .where((guide) => _matchesLanguage(guide, language))
+              .toList(growable: false)));
+        }, onError: (Object error, StackTrace stack) {
+          if (_snapshotGuides(language) == null) {
+            controller.addError(error, stack);
+          }
+        });
+      }
+      controller.onCancel = () {
+        remoteSub.cancel();
+        originalSub?.cancel();
+      };
+    });
   }
 
   // MEDCASES_WEB_GUIAS_OPEN_RELEASE_REST_BRIDGE_V1_B_R0
@@ -52,6 +106,27 @@ class ClinicalGuidesEditorialService {
   // request.auth, so a direct Firestore SDK get() can be permission-denied
   // even though the Web user is authenticated. Native keeps the SDK path.
   static Future<ClinicalGuideArticle?> loadById(String id) async {
+    final result = await _loadByIdOriginal(id);
+    final gateway = _remoteGateway;
+    if (gateway != null && gateway.hasDomain('guides')) {
+      final item = gateway.lookup('guides', id);
+      return item == null
+          ? null
+          : ClinicalGuideArticle.fromJson(item.payload,
+              documentId: item.canonicalId);
+    }
+    return result;
+  }
+
+  static Future<ClinicalGuideArticle?> _loadByIdOriginal(String id) async {
+    final gateway = _remoteGateway;
+    if (gateway != null && gateway.hasDomain('guides')) {
+      final item = gateway.lookup('guides', id);
+      return item == null
+          ? null
+          : ClinicalGuideArticle.fromJson(item.payload,
+              documentId: item.canonicalId);
+    }
     if (kIsWeb) {
       return _loadByIdRestWeb(id);
     }

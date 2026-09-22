@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const {assertUsageReservation}=require('./usage_reservation_guard');
 const express = require('express');
 const { getApps } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
@@ -205,6 +206,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
         }
 
         const uid = await firebaseUid(req, rt.app);
+        const usage = await assertUsageReservation(getFirestore(rt.app),uid,req.headers);
         const expectedSegments = Number(req.body?.expectedSegments);
         if (
           !Number.isInteger(expectedSegments) ||
@@ -224,6 +226,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
         const jobRef = db.collection(COLLECTION).doc(jobId);
         await jobRef.set({
           uid,
+          usage,
           expectedSegments,
           locale,
           sourceId,
@@ -305,6 +308,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
           return res.status(403).json({ error: 'study_job_binding_invalid' });
         }
 
+        await assertUsageReservation(db, grant.uid, job.usage || {});
         const segmentRef = jobRef.collection('segments').doc(String(index));
         const leaseResult = await db.runTransaction(async (tx) => {
           const snap = await tx.get(segmentRef);

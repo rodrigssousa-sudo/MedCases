@@ -363,7 +363,7 @@ void main() {
         'structured output validado segue ao A-F',
         () {
           expect(
-            completedBlock,
+            completedBlock.replaceAll(RegExp(r'\s+'), ' '),
             contains(
               'clinicalOutput: '
               'finalizationOutcome'

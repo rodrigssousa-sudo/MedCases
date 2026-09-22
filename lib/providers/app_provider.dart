@@ -1,6 +1,10 @@
+import '../services/medcases_feature_authorization.dart';
+import '../services/canonical_free_discovery.dart';
+import '../services/canonical_drug_library.dart';
+import '../services/ai/safety/clinical_safety_flow.dart';
+import '../services/ai/safety/clinical_request_safety.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui' as ui;
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, User; // BUILD 309 S3 / BUILD 463-A.1
 import 'package:flutter/foundation.dart';
@@ -50,6 +54,10 @@ import '../services/ai_pipeline/plantao/shadow/plantao_persistence_shadow_adapte
 import '../services/ai_pipeline/plantao/shadow/plantao_retrieval_shadow_adapter.dart';
 import '../services/ai_pipeline/plantao/adapters/plantao_generated_drug_evidence_readonly_adapter.dart';
 import '../services/ai_pipeline/plantao/adapters/plantao_versioned_remote_drug_evidence_json_loader.dart';
+import '../services/clinical_content/clinical_content_platform.dart';
+import '../services/clinical_guides_editorial_service.dart';
+import '../services/clinical_content/clinical_content_models.dart';
+import '../services/clinical_content/clinical_content_gateway.dart';
 import '../services/ai_pipeline/plantao/shadow/plantao_remote_drug_evidence_runtime_observer.dart';
 import '../services/ai_pipeline/plantao/shadow/plantao_shadow_execution_isolator.dart';
 import '../services/ai_pipeline/plantao/shadow/plantao_drug_evidence_shadow_adapter.dart';
@@ -73,7 +81,6 @@ import '../services/firebase_runtime_guard.dart'; // BUILD 463-A.1: SafeApps gua
 import '../services/calculator_mcc1_bridge_service.dart';
 import '../services/external_tool_link_engine.dart'; // MICRO-BUILD 462E-A.5.1: canonicalDecision routing
 import '../services/ai_stream/truncation_inspector.dart'; // MICRO-BUILD 462E-A.5.1: TruncationInspector barrier
-import '../services/ai/timeout_content_safety_guard.dart'; // MICRO-BUILD 462E-A.5.3.7.2.1: TerminalCause, TimeoutSafetyVerdict, TimeoutContentSafetyGuard
 import '../services/ai/ai_finalization_transaction.dart'; // MICRO-BUILD 462E-A.5.3.7.3.2: AiTransactionPhase, TerminalSignal, ProviderAttemptContext, FinalOutputSnapshot, SerialEventQueue, AiFinalizationTransaction
 import '../services/ai_pipeline/ai_pipeline_contracts.dart'; // AI-RECONSTRUCTION-R18.6G-R2: canonical GPT SSE content finalization
 import '../services/ai/clinical_dosage_presets.dart'; // MICRO-BUILD 462E-A.5.3.7.3.2.2: ClinicalNumericValidator, ClinicalDosagePreset
@@ -90,7 +97,6 @@ import '../services/ai_pipeline/app_provider_ai_response_pipeline.dart';
 
 import '../services/dkahhs/dkahhs_runtime_safety_contract.dart';
 
-import '../services/clinical_identity_transport_envelope.dart';
 import '../services/plantao_machine_native_context_prefetch.dart';
 import '../services/clinical_crosscutting_evidence_compliance_guard.dart';
 
@@ -359,10 +365,6 @@ class AppProvider extends ChangeNotifier {
   // ── Idioma padrão baseado no locale do sistema operacional ────────────────
   /// Retorna 'pt' para português (pt, pt_BR) e 'es' para qualquer outro idioma.
   /// Usado apenas quando o usuário nunca escolheu um idioma explicitamente.
-  static String _systemLang() {
-    final locale = ui.PlatformDispatcher.instance.locale;
-    return locale.languageCode == 'pt' ? 'pt' : 'es';
-  }
 
   // ── Estado Firebase ───────────────────────────────────────────────────────
   UserModel? _currentUser;
@@ -653,6 +655,19 @@ class AppProvider extends ChangeNotifier {
   // Instância única por sessão de chat — reseta automaticamente ao mudar de tema.
   // Não persiste entre sessões (RAM only, by design).
   final ClinicalSessionMemory _sessionMemory = ClinicalSessionMemory();
+  final Map<String, ClinicalRequestContext> _clinicalSafetyByRequest = {};
+
+  /// Last presentation gate, after UI-specific clinical transformations.
+  String guardAiClinicalPresentation(
+      String requestId, String text, AiRequestMode mode) {
+    final snapshot = _clinicalSafetyByRequest[requestId];
+    if (snapshot == null || snapshot.uid != (_currentUser?.uid ?? '')) {
+      return 'Resposta indisponível: contexto clínico inválido.';
+    }
+    final result = ClinicalSafetyFlow(snapshot).terminal(text, mode: mode);
+    debugPrint(result.telemetry(snapshot));
+    return result.allowed ? text : snapshot.safeMessage;
+  }
 
   // ── BUILD 249: ClinicalThreadManager — anti-cross-case contamination ──────
   // Rastreia thread clínico ativo. Decide se nova query é follow-up do caso
@@ -669,7 +684,6 @@ class AppProvider extends ChangeNotifier {
   // _sessionLockedLang mantido apenas por compatibilidade de interface.
   // A única variável soberana é _lang (idioma configurado pelo usuário no app).
   // A pergunta pode estar em QUALQUER idioma — a resposta SEMPRE usa _lang.
-  String? _sessionLockedLang;
 
   /// Build 190 — Language Lock Absoluto.
   /// Retorna SEMPRE _lang (idioma do app). A detecção por idioma da pergunta
@@ -680,7 +694,6 @@ class AppProvider extends ChangeNotifier {
     // Build 190 / BUILD 248: _lang é soberano. Nunca detectamos idioma da pergunta.
     // _sessionLockedLang agora apenas espelha _lang para compatibilidade.
     // O idioma da resposta é EXCLUSIVAMENTE o idioma configurado no app (_lang).
-    _sessionLockedLang = _lang;
     if (kDebugMode) {
       debugPrint(
         '[LANG_LOCK] appLanguage=$_lang inputIgnored=true responseLanguage=$_lang',
@@ -816,7 +829,7 @@ class AppProvider extends ChangeNotifier {
   String get openAiKey => _openAiKey;
   // Build 156.2: hasAiKey inclui a chave Gemini do app (carregada do Firestore
   // pelo admin) — não depende mais apenas de _openAiKey (chave OpenAI legada).
-  bool get hasAiKey => _openAiKey.isNotEmpty || GeminiService.hasApiKey;
+  bool get hasAiKey => hasAuthenticatedAiSession;
   bool get aiKeyLoading => _aiKeyLoading;
 
   // ── Getters — Gemini OAuth ────────────────────────────────────────────────
@@ -825,11 +838,15 @@ class AppProvider extends ChangeNotifier {
   String get geminiEmail => _geminiEmail;
 
   /// true quando qualquer IA real está disponível (chave Gemini do app OU OpenAI legada OU sessão OAuth Gemini)
-  /// Build 156.2: inclui GeminiService.hasApiKey — chave do app carregada silenciosamente
+  /// Build 156.2: inclui GeminiService.providerTransportAvailable — chave do app carregada silenciosamente
   /// do Firestore após o login do médico via Google Sign-In / Firebase Auth.
   /// O médico nunca configura nada manualmente — fluxo 100% automático e invisível.
-  bool get hasAnyAi =>
-      GeminiService.hasApiKey || _openAiKey.isNotEmpty || _geminiConnected;
+  bool get hasAuthenticatedAiSession {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    return uid != null && uid == _currentUser?.uid;
+  }
+
+  bool get hasAnyAi => hasAuthenticatedAiSession;
 
   // ── BUILD 326: aiStreaming proxy → AiChatProvider ─────────────────────────
   /// Indica se há streaming ativo. Proxy para AiChatProvider.aiStreaming.
@@ -845,9 +862,40 @@ class AppProvider extends ChangeNotifier {
 
   // ── Cache imutável (calculado uma vez no primeiro acesso) ────────────────
   // BUILD 325: drugsDB retorna lista vazia — banco de fármacos migrado para WebView.
-  List<DrugModel> get drugsDB => const [];
-  List<ProtocolModel> get protocolsDB => protocolsDatabase;
-  List<ClinicalCaseModel> get casesDB => casesDatabase;
+  List<DrugModel> get drugsDB =>
+      CanonicalDrugLibrary.currentRuntime?.discovery(_lang) ?? const [];
+  Future<void> refreshCanonicalDrugDiscovery() async {
+    final prefs = await SharedPreferences.getInstance();
+    final library = CanonicalDrugLibrary.runtime(
+      entitlement: EntitlementService.instance,
+      preferences: prefs,
+      loadIndex: loadAiCanonicalDrugCatalog,
+      loadDocument: (id) async => (await lookupAiCanonicalDrug(id))?.source,
+    );
+    await library.restore();
+    try {
+      await library.refresh();
+    } catch (_) {/* Retain validated index. */}
+    notifyListeners();
+  }
+
+  List<ProtocolModel> get protocolsDB {
+    final gateway = _remoteClinicalContent?.gateway;
+    return gateway != null && gateway.hasDomain('protocols')
+        ? List.unmodifiable(gateway
+            .activeItems('protocols')
+            .map(ClinicalContentModels.protocol))
+        : protocolsDatabase;
+  }
+
+  List<ClinicalCaseModel> get casesDB {
+    final gateway = _remoteClinicalContent?.gateway;
+    return gateway != null && gateway.hasDomain('cases')
+        ? List.unmodifiable(gateway
+            .activeItems('cases')
+            .map(ClinicalContentModels.clinicalCase))
+        : casesDatabase;
+  }
 
   DrugModel? get activeDrug => null;
 
@@ -855,6 +903,11 @@ class AppProvider extends ChangeNotifier {
 
   // ── Login com usuário do Firebase ─────────────────────────────────────────
   Future<void> setUser(UserModel user) {
+    if (_currentUser?.uid != user.uid) {
+      if (_currentUser != null) EntitlementService.instance.resetToFree();
+      _clearRemoteClinicalContent();
+      resetAiSessionFull();
+    }
     // ── BUILD 463-A.2: Single in-flight convergence latch ─────────────────
     //
     // If a convergence for this uid is already in progress, return the
@@ -864,7 +917,7 @@ class AppProvider extends ChangeNotifier {
     if (_authConvergenceInFlight != null && _authConvergenceUid == user.uid) {
       debugPrint(
         '[AUTH_CONVERGENCE][LATCH_HIT] '
-        'uid=${user.uid} — reusing existing in-flight Future',
+        'uid=[redacted] — reusing existing in-flight Future',
       );
       return _authConvergenceInFlight!;
     }
@@ -924,6 +977,10 @@ class AppProvider extends ChangeNotifier {
         _currentAuthBarrierState = AppAuthBarrierState.authFailed;
         // Allow the rest of setUser() to proceed (app continues in read-only
         // degraded mode) but Firestore writes are blocked by barrier check.
+        if (_currentUser?.uid != user.uid) {
+          resetAiSessionFull();
+          _clinicalSafetyByRequest.clear();
+        }
         _currentUser = user;
         _lang = user.lang;
         _darkMode = user.darkMode;
@@ -1060,6 +1117,11 @@ class AppProvider extends ChangeNotifier {
       _currentAuthBarrierState = AppAuthBarrierState.authFailed;
     }
 
+    if (_currentUser?.uid != user.uid) {
+      _clearRemoteClinicalContent();
+      resetAiSessionFull();
+      _clinicalSafetyByRequest.clear();
+    }
     _currentUser = user;
     _lang = user.lang;
     _darkMode = user.darkMode;
@@ -1094,7 +1156,7 @@ class AppProvider extends ChangeNotifier {
       _firestoreSyncFuture = _syncFromFirestore(user.uid);
     } else {
       debugPrint(
-        '[BUILD291][SYNC_DEDUP] sync já em voo para uid=${user.uid} — reutilizando Future existente',
+        '[BUILD291][SYNC_DEDUP] sync já em voo para uid=[redacted] — reutilizando Future existente',
       );
     }
 
@@ -1198,7 +1260,17 @@ class AppProvider extends ChangeNotifier {
     _usagePaused = false;
   }
 
+  void _clearRemoteClinicalContent() {
+    _remoteClinicalContent?.gateway.close();
+    _remoteClinicalContent = null;
+    ClinicalGuidesEditorialService.clearRemoteGateway();
+  }
+
   void clearUser() {
+    EntitlementService.instance.resetToFree();
+    _clearRemoteClinicalContent();
+    resetAiSessionFull();
+    _clinicalSafetyByRequest.clear();
     _stopUsageTimer();
     _cancelHistoriesStream(); // SYNC-FIX: cancela stream reativo ao fazer logout
     AppResumeCoordinator.instance
@@ -1264,79 +1336,14 @@ class AppProvider extends ChangeNotifier {
   //  2. users/{uid}/prefs/settings.openAiKey → chave individual (legado / admin)
   //  3. SharedPreferences local → fallback offline
   Future<void> _loadAiKeyFromFirestore(String uid) async {
+    _openAiKey = '';
     try {
-      // Carrega OpenAI Key e Gemini API Key em paralelo — mais rápido
-      // CRÍTICO: geminiApiKey NUNCA tem return prematuro — deve sempre ser carregada
-      final results = await Future.wait([
-        FirestoreService.loadAppAiKey(),
-        FirestoreService.loadGeminiApiKey(),
-      ]);
-
-      final appKey = results[0];
-      final geminiKey = results[1];
-
-      // ── OpenAI Key ──────────────────────────────────────────────────────────
-      if (appKey.isNotEmpty) {
-        _openAiKey = appKey;
-        final p = await SharedPreferences.getInstance();
-        await p.setString(_k('openAiKey', uid), appKey);
-      } else {
-        // Fallback: chave individual do usuário (legado)
-        final userKey = await FirestoreService.loadAiKey(uid);
-        if (userKey.isNotEmpty) {
-          _openAiKey = userKey;
-          final p = await SharedPreferences.getInstance();
-          await p.setString(_k('openAiKey', uid), userKey);
-        }
-      }
-
-      // ── Gemini Free Key — injeta no GeminiService + cacheia localmente ──────
-      // Fonte: app_config/global.apiKey (lido por todos os usuários aprovados)
-      // NÃO é a GEMINI_PAID_API_KEY — essa fica só no Firebase Secret server-side.
-      if (geminiKey.isNotEmpty) {
-        GeminiService.setGeminiApiKey(
-          geminiKey,
-          source: GeminiKeySource.appConfig,
-        ); // BUILD 294: marca como appConfig — SecurityWipe nunca apaga
-        debugPrint(
-          '[AI_FREE_PROVIDER] source=app_config/global ready=true (login load)',
-        );
-      } else {
-        // Firestore retornou vazio — tenta SharedPreferences/localStorage
-        if (!GeminiService.hasApiKey) {
-          await GeminiService.initFromStorage();
-        }
-        if (GeminiService.hasApiKey) {
-          debugPrint(
-            '[AI_FREE_PROVIDER] source=localStorage/SharedPrefs ready=true (login load)',
-          );
-        } else {
-          debugPrint(
-            '[AI_FREE_PROVIDER] source=none ready=false — app_config/global vazio e sem cache local',
-          );
-          debugPrint(
-            '[AppProvider] Gemini API Key não encontrada em nenhuma fonte',
-          );
-        }
-      }
-
-      _aiKeyLoading = false;
-      notifyListeners();
-    } catch (_) {
-      // Sem rede: tenta cache local para OpenAI
-      try {
-        final p = await SharedPreferences.getInstance();
-        _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
-      } catch (_) {}
-      // Restaura Gemini Key do SharedPrefs/localStorage se Firestore falhou
-      if (!GeminiService.hasApiKey) {
-        await GeminiService.initFromStorage();
-        if (GeminiService.hasApiKey) {
-          debugPrint(
-            '[AppProvider] Gemini Key restaurada do SharedPrefs (rede falhou) ✓',
-          );
-        }
-      }
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_k('openAiKey', uid));
+      await prefs.remove('openAiKey');
+      await GeminiService.initFromStorage();
+      unawaited(refreshCanonicalDrugDiscovery());
+    } finally {
       _aiKeyLoading = false;
       notifyListeners();
     }
@@ -1349,7 +1356,8 @@ class AppProvider extends ChangeNotifier {
   Future<void> _syncFromFirestore(String uid) async {
     // BUILD 290: SYNC_TRACE — instrumentação científica para isolar
     // short-circuits e silent exceptions. Cada await tem marcador próprio.
-    debugPrint('[SYNC_TRACE][START] Iniciando sincronismo para o uid: $uid');
+    debugPrint(
+        '[SYNC_TRACE][START] Iniciando sincronismo para o uid: [redacted]');
 
     // BUILD 463-A.2-R1: AUTH BARRIER CHECK before any network collection reads.
     //
@@ -1366,13 +1374,13 @@ class AppProvider extends ChangeNotifier {
     if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
       debugPrint(
         '[SYNC_TRACE][ABORT] '
-        'uid=$uid '
+        'uid=[redacted] '
         'barrierState=${_currentAuthBarrierState.name} '
         'reason=auth_boundary_active '
         'action=no_network_reads_no_storage_writes',
       );
       debugPrint(
-        '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+        '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=[redacted] '
         '— isAdmin=$isAdmin isMaster=$isMaster '
         '(aborted_by_auth_barrier)',
       );
@@ -1414,13 +1422,13 @@ class AppProvider extends ChangeNotifier {
       if (_currentAuthBarrierState != AppAuthBarrierState.authReady) {
         debugPrint(
           '[SYNC_TRACE][ABORT] '
-          'uid=$uid '
+          'uid=[redacted] '
           'barrierState=${_currentAuthBarrierState.name} '
           'reason=auth_boundary_active_post_step1 '
           'action=no_merge_no_storage_writes',
         );
         debugPrint(
-          '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+          '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=[redacted] '
           '— isAdmin=$isAdmin isMaster=$isMaster '
           '(aborted_by_auth_barrier_post_step1)',
         );
@@ -1435,7 +1443,7 @@ class AppProvider extends ChangeNotifier {
           casesResult.shouldFreezeLocalCache) {
         debugPrint(
           '[SYNC_TRACE][STEP1_FREEZE] '
-          'uid=$uid '
+          'uid=[redacted] '
           'reason=one_or_more_favs_returned_authDenied_or_offline '
           'action=local_cache_preserved_no_write',
         );
@@ -1461,7 +1469,7 @@ class AppProvider extends ChangeNotifier {
       } else if (casesTyped.shouldFreezeLocalCache) {
         debugPrint(
           '[SYNC_TRACE][STEP2_FREEZE] '
-          'uid=$uid result=${casesTyped.runtimeType} → casos locais preservados',
+          'uid=[redacted] result=${casesTyped.runtimeType} → casos locais preservados',
         );
       } else {
         _customCases = []; // empty — remote says no custom cases
@@ -1516,7 +1524,7 @@ class AppProvider extends ChangeNotifier {
     // _firestoreSyncFuture se resolve aqui — checkGeminiSession() retorna
     // do await imediatamente, sem polling, sem delay artificial.
     debugPrint(
-      '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=$uid '
+      '[SYNC_TRACE][FUTURE_RESOLVED] Future resolvido para uid=[redacted] '
       '— isAdmin=$isAdmin isMaster=$isMaster',
     );
   }
@@ -1556,7 +1564,7 @@ class AppProvider extends ChangeNotifier {
         // authDenied or offline: retain current in-memory state, do not overwrite cache.
         debugPrint(
           '[APP_PROVIDER][_syncHistoriesFromFirestore] '
-          'uid=$uid result=${result.runtimeType} → cache frozen, no write',
+          'uid=[redacted] result=${result.runtimeType} → cache frozen, no write',
         );
       }
       // empty: remote has no docs → accepted as authoritative empty state.
@@ -1597,7 +1605,8 @@ class AppProvider extends ChangeNotifier {
       _hapticEnabled = p.getBool('hapticEnabled') ?? true;
       // Chave de IA — lida com prefixo de usuário se disponível (fallback offline)
       if (uid != null) {
-        _openAiKey = p.getString(_k('openAiKey', uid)) ?? '';
+        _openAiKey = '';
+        await p.remove(_k('openAiKey', uid));
       }
 
       // Dados por usuário (se uid disponível usa cache dedicado)
@@ -1802,8 +1811,8 @@ class AppProvider extends ChangeNotifier {
       await p.setBool('darkMode', _darkMode);
       await p.setBool('hapticEnabled', _hapticEnabled);
       // Chave de IA só persiste com prefixo de usuário (nunca global)
-      if (u != null && _openAiKey.isNotEmpty) {
-        await p.setString(_k('openAiKey', u), _openAiKey);
+      if (u != null) {
+        await p.remove(_k('openAiKey', u));
       }
       await p.setStringList(_k('favDrugs', u), _favDrugs.toList());
       await p.setStringList(_k('favProtocols', u), _favProtocols.toList());
@@ -2001,7 +2010,6 @@ class AppProvider extends ChangeNotifier {
   void setLang(String l) {
     _lang = l;
     // Build 100: resetar o language lock da sessão ao trocar o idioma do app.
-    _sessionLockedLang = null;
     _saveLocal();
     if (_currentUser != null) {
       FirestoreService.updateUserProfile(_currentUser!.uid, lang: l);
@@ -2615,7 +2623,7 @@ class AppProvider extends ChangeNotifier {
     // Reuse in-flight future for the same uid (single-flight latch).
     if (_historyLoadInFlight != null && _historyLoadUid == uid) {
       debugPrint(
-        '[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid → reusing in-flight future',
+        '[APP_PROVIDER][loadHistoriesTypedForUi] uid=[redacted] → reusing in-flight future',
       );
       return _historyLoadInFlight!;
     }
@@ -2644,7 +2652,7 @@ class AppProvider extends ChangeNotifier {
     // were awaiting, discard this result entirely.
     if (_historyLoadGeneration != myGeneration) {
       debugPrint(
-        '[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
+        '[APP_PROVIDER][loadHistoriesTypedForUi] uid=[redacted] '
         'STALE_EPOCH dropped: myGen=$myGeneration currentGen=$_historyLoadGeneration',
       );
       // Return authDenied as a safe sentinel — UI will hold existing cache.
@@ -2652,7 +2660,7 @@ class AppProvider extends ChangeNotifier {
     }
 
     debugPrint(
-      '[APP_PROVIDER][loadHistoriesTypedForUi] uid=$uid '
+      '[APP_PROVIDER][loadHistoriesTypedForUi] uid=[redacted] '
       'result=${result.runtimeType} gen=$myGeneration',
     );
 
@@ -2669,7 +2677,7 @@ class AppProvider extends ChangeNotifier {
       // authDenied / offline / failure → freeze cache.
       debugPrint(
         '[APP_PROVIDER][loadHistories] '
-        'uid=$uid result=${result.runtimeType} → cache frozen',
+        'uid=[redacted] result=${result.runtimeType} → cache frozen',
       );
     }
 
@@ -2728,7 +2736,7 @@ class AppProvider extends ChangeNotifier {
     if (_sessionsLoadInFlight != null && _sessionsLoadUid == uid) {
       debugPrint(
         '[APP_PROVIDER][loadAiSessionsTypedForUi] '
-        'providerInstanceId=$instanceId caller=$caller uid=$uid '
+        'providerInstanceId=$instanceId caller=$caller uid=[redacted] '
         'result=reuse_in_flight',
       );
       // Await the shared future and wrap as applied (generation is still ours).
@@ -2780,7 +2788,7 @@ class AppProvider extends ChangeNotifier {
     if (_sessionsLoadGeneration != generation) {
       debugPrint(
         '[APP_PROVIDER][loadAiSessionsTypedForUi] '
-        'providerInstanceId=$instanceId caller=$caller uid=$uid '
+        'providerInstanceId=$instanceId caller=$caller uid=[redacted] '
         'generation=$generation currentGeneration=$_sessionsLoadGeneration '
         'result=discarded reason=stale_generation',
       );
@@ -2789,7 +2797,7 @@ class AppProvider extends ChangeNotifier {
 
     debugPrint(
       '[APP_PROVIDER][loadAiSessionsTypedForUi] '
-      'providerInstanceId=$instanceId caller=$caller uid=$uid '
+      'providerInstanceId=$instanceId caller=$caller uid=[redacted] '
       'generation=$generation currentGeneration=$_sessionsLoadGeneration '
       'result=applied',
     );
@@ -2823,7 +2831,7 @@ class AppProvider extends ChangeNotifier {
         // authDenied / offline / failure → freeze: retain existing data
         debugPrint(
           '[APP_PROVIDER][loadHistories] '
-          'uid=$uid result=${result.runtimeType} → '
+          'uid=[redacted] result=${result.runtimeType} → '
           'cache frozen, local state preserved (operational warning)',
         );
         // _myHistories unchanged — notifyListeners not called to avoid UI flicker
@@ -3110,41 +3118,20 @@ class AppProvider extends ChangeNotifier {
 
   /// Salva a chave OpenAI GLOBAL do app (admin → todos os usuários).
   /// Persiste em app_config/global.openAiKey + atualiza estado local.
-  Future<void> setAppAiKey(String key) async {
-    final trimmed = key.trim();
-    _openAiKey = trimmed;
-    notifyListeners();
-    await FirestoreService.saveAppAiKey(trimmed);
-    // Atualiza cache local do usuário atual também
-    if (_currentUser != null) {
-      try {
-        final p = await SharedPreferences.getInstance();
-        await p.setString(_k('openAiKey', _currentUser!.uid), trimmed);
-      } catch (_) {}
-    }
+  Future<void> setAppAiKey(String key) {
+    throw StateError('PROVIDER_CREDENTIALS_SERVER_MANAGED');
   }
 
   /// Salva a chave OpenAI vinculada ao UID do usuário logado.
   /// Persiste no Firestore (sync entre dispositivos) + cache local (offline).
-  Future<void> setAiKey(String key) async {
-    if (_currentUser == null) return;
-    _openAiKey = key.trim();
-    notifyListeners();
-    final uid = _currentUser!.uid;
-    // Persiste no Firestore do usuário
-    FirestoreService.saveAiKey(uid, _openAiKey).catchError((_) {});
-    // Persiste no cache local com prefixo do usuário (funciona offline)
-    try {
-      final p = await SharedPreferences.getInstance();
-      await p.setString(_k('openAiKey', uid), _openAiKey);
-    } catch (_) {}
+  Future<void> setAiKey(String key) {
+    throw StateError('PROVIDER_CREDENTIALS_SERVER_MANAGED');
   }
 
   /// Limpa o histórico de conversa da IA (nova conversa)
   void clearAiHistory() {
     cancelAiStream(); // cancela streaming em curso se houver
     _aiHistory.clear();
-    _sessionLockedLang = null; // reset language lock ao iniciar nova sessão
     _threadManager.reset(); // BUILD 249: reset thread ao iniciar nova conversa
     ClinicalThreadManager
         .resetStaticState(); // BUILD 304 PURIF-1: limpa _lastTaskLabel/_lastStudyActivityMs
@@ -3230,9 +3217,9 @@ class AppProvider extends ChangeNotifier {
   /// garantir que a próxima conversa comece 100% limpa, sem nenhum contexto
   /// residual da sessão anterior contaminando as respostas do modelo.
   void resetAiSessionFull() {
+    _clinicalSafetyByRequest.clear();
     cancelAiStream(); // cancela qualquer stream em andamento
     _aiHistory.clear(); // limpa histórico de mensagens enviadas à API
-    _sessionLockedLang = null; // libera language lock
     _sessionMemory
         .reset(); // zera memória clínica estruturada (diag, meds, labs)
     _threadManager.reset(); // BUILD 249: reset thread clínico ativo
@@ -3241,6 +3228,7 @@ class AppProvider extends ChangeNotifier {
     // MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: Reset conversation lifetime
     // identifiers so the next sendAiMessage() starts a fresh sessionId.
     _currentConversationSessionId = '';
+    _currentConversationMode = null;
     _currentConversationTitle = '';
     _isFirstMessageOfSession = true;
     debugPrint('[AppProvider] resetAiSessionFull — sessão clínica zerada');
@@ -3337,6 +3325,10 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
+  /// Read-only diagnostic state; does not change retry or safety decisions.
+  bool get isGeminiConfigRetryBlocked =>
+      _geminiApiKeyUnavailable && _isGeminiRetryBlocked();
+
   bool _isGeminiRetryBlocked() =>
       _geminiRetryAfter != null && DateTime.now().isBefore(_geminiRetryAfter!);
 
@@ -3400,14 +3392,14 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<bool> _ensureGeminiApiKey({required String source}) async {
-    if (GeminiService.hasApiKey) {
+    if (GeminiService.providerTransportAvailable) {
       _clearGeminiConfigUnavailable();
       return true;
     }
 
     // Tenta restaurar do SharedPreferences/localStorage (sem rede)
     await GeminiService.initFromStorage();
-    if (GeminiService.hasApiKey) {
+    if (GeminiService.providerTransportAvailable) {
       _clearGeminiConfigUnavailable();
       debugPrint(
         '[checkGeminiSession] API Key restaurada do SharedPrefs ($source) ✓',
@@ -3459,7 +3451,7 @@ class AppProvider extends ChangeNotifier {
 
     // Segunda tentativa de SharedPrefs (pode ter sido persistido após a primeira tentativa)
     await GeminiService.initFromStorage();
-    if (GeminiService.hasApiKey) {
+    if (GeminiService.providerTransportAvailable) {
       _clearGeminiConfigUnavailable();
       debugPrint(
         '[checkGeminiSession] API Key restaurada do SharedPrefs (fallback) ✓',
@@ -3582,7 +3574,7 @@ class AppProvider extends ChangeNotifier {
 
         if (_geminiConnected &&
             _geminiEmail.isNotEmpty &&
-            GeminiService.hasApiKey) {
+            GeminiService.providerTransportAvailable) {
           return;
         }
 
@@ -3653,7 +3645,7 @@ class AppProvider extends ChangeNotifier {
                 }
               }
               debugPrint(
-                '[checkGeminiSession] redirect OAuth OK — $email, apiKey: ${GeminiService.hasApiKey}',
+                '[checkGeminiSession] redirect OAuth OK — [redacted], apiKey: ${GeminiService.providerTransportAvailable}',
               );
               return;
             }
@@ -3674,7 +3666,7 @@ class AppProvider extends ChangeNotifier {
           final email = await GeminiService.connectedEmail() ?? '';
           _setGeminiConnectionState(connected: true, email: email);
           debugPrint(
-            '[checkGeminiSession] sessão existente — $email, apiKey: ${GeminiService.hasApiKey}',
+            '[checkGeminiSession] sessão existente — [redacted], apiKey: ${GeminiService.providerTransportAvailable}',
           );
           return;
         }
@@ -5322,17 +5314,72 @@ class AppProvider extends ChangeNotifier {
     observer: _plantaoDrugEvidenceRuntimeObserver,
     authorizationTokenProvider: _plantaoDrugEvidenceAuthorizationToken,
   );
+
+  ClinicalContentPlatform? _remoteClinicalContent;
+  ClinicalContentPlatform? get remoteClinicalContent => _remoteClinicalContent;
+
+  /// Explicit host configuration after endpoint/publication review. Existing
+  /// offline, entitlement and UI repositories remain the fallback until then.
+  void configureRemoteClinicalContent(ClinicalContentGateway gateway) {
+    gateway.registerModelValidator(ClinicalContentModels.validate);
+    ClinicalGuidesEditorialService.configureRemoteGateway(gateway);
+    _remoteClinicalContent?.gateway.close();
+    _remoteClinicalContent = ClinicalContentPlatform(
+      gateway: gateway,
+      drugs: _plantaoDrugEvidenceRemoteLoader.canonicalCatalog,
+    );
+  }
+
+  Future<ContentSyncResult> synchronizeRemoteClinicalContent() async {
+    final platform = _remoteClinicalContent;
+    if (platform == null) {
+      return const ContentSyncResult(false, 'NOT_CONFIGURED', 0);
+    }
+    final result = await platform.synchronize();
+    if (result.activated && identical(platform, _remoteClinicalContent)) {
+      notifyListeners();
+    }
+    return result;
+  }
+
+  /// Read-only catalog access; never materializes therapy or mutates prompts.
+  Future<Map<String, Map<String, Object?>>> loadAiCanonicalDrugCatalog() =>
+      !EntitlementService.instance.isPremium
+          ? Future.value(Map.from(canonicalFreeDiscovery))
+          : (_remoteClinicalContent?.drugs.loadIndex() ??
+              _plantaoDrugEvidenceRemoteLoader.canonicalCatalog.loadIndex());
+
+  Future<PlantaoReadOnlyCatalogDocument?> lookupAiCanonicalDrug(
+    String canonicalDrugId,
+  ) =>
+      MedCasesFeatureAuthorization.instance
+          .execute<PlantaoReadOnlyCatalogDocument?>(
+        FeatureTarget.drug(canonicalDrugId),
+        entrypoint: FeatureEntryPoint.aiAction,
+        action: () =>
+            _remoteClinicalContent?.drugs.lookup(canonicalDrugId) ??
+            _plantaoDrugEvidenceRemoteLoader.canonicalCatalog
+                .lookup(canonicalDrugId),
+      );
+
   CalculatorMcc1Session? _plantaoDrugEvidenceSession;
+  String? _plantaoDrugEvidenceSessionUid;
 
   Future<String> _plantaoDrugEvidenceAuthorizationToken() async {
     final cached = _plantaoDrugEvidenceSession;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
     if (cached != null &&
+        _plantaoDrugEvidenceSessionUid == uid &&
+        uid != null &&
         cached.expiresAtUtc.isAfter(
           DateTime.now().toUtc().add(const Duration(seconds: 30)),
         )) {
       return cached.token;
     }
     final issued = await const CalculatorMcc1BridgeService().issueSession();
+    if (uid == null || FirebaseAuth.instance.currentUser?.uid != uid)
+      throw StateError('CATALOG_USER_CHANGED');
+    _plantaoDrugEvidenceSessionUid = uid;
     _plantaoDrugEvidenceSession = issued;
     return issued.token;
   }
@@ -6206,6 +6253,15 @@ class AppProvider extends ChangeNotifier {
   // the first sendAiMessage() call after resetAiSessionFull() / screen mount.
   // NEVER overwritten with thisRequestId inside the pipeline.
   String _currentConversationSessionId = '';
+  AiRequestMode? _currentConversationMode;
+
+  void _prepareAiConversationMode(AiRequestMode mode) {
+    // Cross-surface sends cannot inherit the opposite mode's history/session.
+    if (_currentConversationMode != null && _currentConversationMode != mode) {
+      resetAiSessionFull();
+    }
+    _currentConversationMode = mode;
+  }
 
   /// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 5]: Public read-only accessor.
   /// Non-empty when the current conversation is owned by the canonical v2 pipeline.
@@ -6218,6 +6274,7 @@ class AppProvider extends ChangeNotifier {
   /// O histórico textual e o ClinicalThreadManager são reidratados
   /// separadamente por rebuildAiHistoryFromMessages().
   void adoptRestoredAiConversation({
+    AiRequestMode? mode,
     required String sessionId,
     required String title,
   }) {
@@ -6232,6 +6289,7 @@ class AppProvider extends ChangeNotifier {
     }
 
     _currentConversationSessionId = normalizedSessionId;
+    _currentConversationMode = mode;
 
     final normalizedTitle = title.trim();
 
@@ -6414,6 +6472,27 @@ class AppProvider extends ChangeNotifier {
     required String assistantOutput,
     String? userDisplayText,
   }) async {
+    final safetyContext =
+        context.clinicalContext ?? _clinicalSafetyByRequest[context.requestId];
+    if (safetyContext == null ||
+        safetyContext.uid != (_currentUser?.uid ?? '') ||
+        safetyContext.sessionId != context.sessionId ||
+        safetyContext.mode.name != context.mode ||
+        safetyContext.ownsRequest?.call() == false) {
+      return const SessionPersistSkipped('clinical_safety_context');
+    }
+    final safetyResult = ClinicalSafetyPass.evaluate(
+      context: safetyContext,
+      output: assistantOutput,
+      outputMode: safetyContext.mode,
+    );
+    debugPrint(safetyResult.telemetry(safetyContext));
+    if (!safetyResult.allowed) {
+      _removeRejectedAiHistoryTail(
+          userInput: userInput, assistantOutput: assistantOutput);
+      return const SessionPersistSkipped('clinical_safety_rejected');
+    }
+
     // Idempotency check — the requestId is unique per turn.
     if (_persistedExchangeIds.contains(context.requestId)) {
       // ignore: avoid_print
@@ -6461,6 +6540,13 @@ class AppProvider extends ChangeNotifier {
       return const SessionPersistSkipped('critical_machine_gate');
     }
 
+    final finalSafety =
+        ClinicalSafetyFlow(safetyContext).terminal(safeAssistantOutput);
+    if (!finalSafety.allowed) {
+      _removeRejectedAiHistoryTail(
+          userInput: userInput, assistantOutput: assistantOutput);
+      return const SessionPersistSkipped('clinical_safety_post_transform');
+    }
     _persistedExchangeIds.add(context.requestId);
 
     // ── PILLAR 4 / MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 6]: ─────────────
@@ -6617,6 +6703,13 @@ class AppProvider extends ChangeNotifier {
       return false;
     }
 
+    final clinicalContext = _clinicalSafetyByRequest[normalizedRequestId];
+    if (clinicalContext == null ||
+        clinicalContext.ownsRequest?.call() == false ||
+        !ClinicalSafetyFlow(clinicalContext).terminal(normalizedText).allowed) {
+      return false;
+    }
+
     final result = await FirestoreService.reconcileAiExchangeFinalPresentation(
       uid: uid,
       sessionId: normalizedSessionId,
@@ -6759,7 +6852,7 @@ class AppProvider extends ChangeNotifier {
     if (_aiSummaryLoadInFlight != null && _aiSummaryLoadUid == uid) {
       debugPrint(
         '[HISTORY_REPOSITORY][LOAD] '
-        'providerInstanceId=$instanceId uid=$uid '
+        'providerInstanceId=$instanceId uid=[redacted] '
         'result=reuse_in_flight',
       );
       await _aiSummaryLoadInFlight;
@@ -6780,7 +6873,7 @@ class AppProvider extends ChangeNotifier {
             _aiSummaryLoadUid != uid) {
           debugPrint(
             '[HISTORY_REPOSITORY][LOAD] '
-            'providerInstanceId=$instanceId uid=$uid '
+            'providerInstanceId=$instanceId uid=[redacted] '
             'generation=$generation '
             'currentGeneration=$_aiSummaryLoadGeneration '
             'result=discarded reason=stale_generation',
@@ -6792,7 +6885,7 @@ class AppProvider extends ChangeNotifier {
         if (firebaseUid != uid) {
           debugPrint(
             '[HISTORY_REPOSITORY][LOAD] '
-            'providerInstanceId=$instanceId uid=$uid '
+            'providerInstanceId=$instanceId uid=[redacted] '
             'result=discarded reason=auth_uid_changed',
           );
           return;
@@ -6829,7 +6922,7 @@ class AppProvider extends ChangeNotifier {
 
         debugPrint(
           '[HISTORY_REPOSITORY][LOAD] '
-          'providerInstanceId=$instanceId uid=$uid '
+          'providerInstanceId=$instanceId uid=[redacted] '
           'generation=$generation result=applied '
           'canonicalServerCount=$canonicalCount '
           'canonicalLocalCount=$localCount '
@@ -6842,7 +6935,7 @@ class AppProvider extends ChangeNotifier {
       } catch (error) {
         debugPrint(
           '[HISTORY_REPOSITORY][LOAD] '
-          'providerInstanceId=$instanceId uid=$uid '
+          'providerInstanceId=$instanceId uid=[redacted] '
           'generation=$generation result=failure '
           'errorType=${error.runtimeType}',
         );
@@ -6955,7 +7048,12 @@ class AppProvider extends ChangeNotifier {
   }) async {
     if (!_isPlantaoQuestionsExactTenTask(input)) return candidateOutput;
 
-    final isEs = _lang == 'es';
+    final clinicalContext = _clinicalSafetyByRequest[requestId];
+    if (clinicalContext == null ||
+        clinicalContext.ownsRequest?.call() == false) {
+      return '';
+    }
+    final isEs = clinicalContext.language == 'es';
     final initialCount = _plantaoQuestionsExactTenCount(candidateOutput);
     if (_isValidPlantaoQuestionsExactTen(candidateOutput, isEs: isEs)) {
       if (kDebugMode) {
@@ -6998,11 +7096,12 @@ class AppProvider extends ChangeNotifier {
 
     try {
       final repaired = await ProviderRouterService.callGptProxy(
+        clinicalContext: clinicalContext,
         userMessage: repairInput,
         systemPrompt: systemPrompt,
         history: const <Map<String, String>>[],
         mode: 'plantao',
-        lang: _lang,
+        lang: clinicalContext.language,
         requestId: '${requestId}_q10r1',
         maxOutputTokens: 1800,
       );
@@ -7058,6 +7157,15 @@ class AppProvider extends ChangeNotifier {
     bool canonicalPlantaoAuthority = false,
     String? canonicalPlantaoPathologyKey,
   }) {
+    final clinicalContext = _clinicalSafetyByRequest[requestId];
+    if (clinicalContext != null && assistantOutput.isNotEmpty) {
+      final rawSafety =
+          ClinicalSafetyFlow(clinicalContext).terminal(assistantOutput);
+      if (!rawSafety.allowed) {
+        debugPrint(rawSafety.telemetry(clinicalContext));
+        return clinicalContext.safeMessage;
+      }
+    }
     if (longResponse || assistantOutput.isEmpty) return assistantOutput;
 
     final semanticCoreText =
@@ -7313,6 +7421,22 @@ class AppProvider extends ChangeNotifier {
     required ActiveAiSessionContext sessionCtx,
     ClinicalStructuredOutput? clinicalOutput,
   }) async {
+    final clinicalContext =
+        sessionCtx.clinicalContext ?? _clinicalSafetyByRequest[requestId];
+    if (clinicalContext == null ||
+        clinicalContext.ownsRequest?.call() == false) {
+      return;
+    }
+    final rawSafety =
+        ClinicalSafetyFlow(clinicalContext).terminal(validatedOutput);
+    if (!rawSafety.allowed) {
+      debugPrint(rawSafety.telemetry(clinicalContext));
+      _removeRejectedAiHistoryTail(
+          userInput: visibleUserInput, assistantOutput: validatedOutput);
+      validatedOutput = clinicalContext.safeMessage;
+      clinicalOutput = null;
+    }
+
     // ── Step A: Clinical Numeric Determinism Gate (Validation) ───────────
     // Unit-coupled extraction: only values paired with a clinical dose unit
     // (mcg/kg/min, mg/h, U/min) are evaluated. Standalone numbers (weights,
@@ -7553,6 +7677,7 @@ class AppProvider extends ChangeNotifier {
     void Function(String finalText, ClinicalStructuredOutput? clinicalOutput)?
         onStructuredDone,
     required void Function(String errorMsg) onError,
+    bool Function()? requestStillCurrent,
     String? visibleUserInput,
     String? userDisplayText,
     bool longResponse = false, // Motor de Partida (Build 149)
@@ -7573,6 +7698,7 @@ class AppProvider extends ChangeNotifier {
         await EntitlementService.instance.consumeAiAllowance(
       isPlantao: !longResponse,
     );
+    if (requestStillCurrent != null && !requestStillCurrent()) return false;
     if (!r25aEntitlementDecision.allowed) {
       onError(r25aEntitlementDecision.code);
       return false;
@@ -7614,6 +7740,13 @@ class AppProvider extends ChangeNotifier {
       );
       debugPrint('[M71_PLANTAO_CANONICAL_ENTRY_GUARD] allowed=true '
           'owner=ai_screen_m56c');
+    }
+
+    // Resolve a mode boundary before capturing the persistence session ID.
+    if (!_aiCallInFlight && !_aiAnswerInProgress && !_aiStreamActive) {
+      _prepareAiConversationMode(
+        longResponse ? AiRequestMode.estudo : AiRequestMode.plantao,
+      );
     }
 
     // Phase3K-C5A-R3C: method-scope correlation owner.
@@ -7705,8 +7838,8 @@ class AppProvider extends ChangeNotifier {
     if (!longResponse &&
         plantaoPersistenceEligibilityGate != null &&
         phase3kResolvedRequestId != null &&
-        phase3kResolvedRequestId!.isNotEmpty) {
-      _plantaoPersistenceEligibilityByRequest[phase3kResolvedRequestId!] =
+        phase3kResolvedRequestId.isNotEmpty) {
+      _plantaoPersistenceEligibilityByRequest[phase3kResolvedRequestId] =
           plantaoPersistenceEligibilityGate;
     }
 
@@ -7757,6 +7890,7 @@ class AppProvider extends ChangeNotifier {
         _plantaoBufferedCutoverExecutionActive = false;
       }
 
+      if (requestStillCurrent != null && !requestStillCurrent()) return false;
       switch (phase3kDecision.disposition) {
         case PlantaoBufferedCutoverDisposition.committed:
           if (phase3kQaEligible) {
@@ -7774,7 +7908,12 @@ class AppProvider extends ChangeNotifier {
             );
           }
           final phase3kResult = phase3kDecision.result!;
-          onChunk(phase3kResult.displayText);
+          final phase3kSafeText = guardAiClinicalPresentation(
+            phase3kResolvedRequestId,
+            phase3kResult.displayText,
+            longResponse ? AiRequestMode.estudo : AiRequestMode.plantao,
+          );
+          onChunk(phase3kSafeText);
 
           final phase3kStructuredOutput = phase3kResult.structuredOutput;
 
@@ -7789,7 +7928,12 @@ class AppProvider extends ChangeNotifier {
             return true;
           }());
 
-          onDone(phase3kResult.finalText);
+          final phase3kSafeFinalText = guardAiClinicalPresentation(
+            phase3kResolvedRequestId,
+            phase3kResult.finalText,
+            longResponse ? AiRequestMode.estudo : AiRequestMode.plantao,
+          );
+          onDone(phase3kSafeFinalText);
 
           assert(() {
             debugPrint(
@@ -7801,7 +7945,11 @@ class AppProvider extends ChangeNotifier {
 
           if (onStructuredDone != null &&
               phase3kStructuredOutput is ClinicalStructuredOutput) {
-            onStructuredDone(phase3kResult.finalText, phase3kStructuredOutput);
+            onStructuredDone(
+                phase3kSafeFinalText,
+                phase3kSafeFinalText == phase3kResult.finalText
+                    ? phase3kStructuredOutput
+                    : null);
 
             assert(() {
               debugPrint(
@@ -7841,6 +7989,7 @@ class AppProvider extends ChangeNotifier {
       }
     }
 
+    if (requestStillCurrent != null && !requestStillCurrent()) return false;
     return _sendAiMessageLegacyCore(
       input,
       onChunk: onChunk,
@@ -7975,6 +8124,9 @@ class AppProvider extends ChangeNotifier {
     Iterable<PlantaoSection> shadowRequestedSections = const <PlantaoSection>[],
     AiProviderEffectPolicy phase3kEffectPolicy = AiProviderEffectPolicy.legacy,
   }) async {
+    final requestMode =
+        longResponse ? AiRequestMode.estudo : AiRequestMode.plantao;
+
     assert(
       phase3kEffectPolicy == AiProviderEffectPolicy.legacy ||
           phase3kEffectPolicy == AiProviderEffectPolicy.bufferedPipeline,
@@ -7987,13 +8139,13 @@ class AppProvider extends ChangeNotifier {
     // Condição idêntica ao Factor 2 em ai_screen.dart → consistência absoluta.
     // _geminiConnected: sessão OAuth Google válida (token real do usuário)
     // _openAiKey:       chave OpenAI pessoal configurada pelo próprio usuário
-    // EXCLUÍDO: GeminiService.hasApiKey (chave servidor compartilhada — bypass confirmado)
-    final bool hasRealAuth = _geminiConnected || _openAiKey.isNotEmpty;
+    // EXCLUÍDO: GeminiService.providerTransportAvailable (chave servidor compartilhada — bypass confirmado)
+    final bool hasRealAuth = hasAuthenticatedAiSession;
     if (!hasRealAuth) {
       debugPrint(
         '[BACKEND_GUARD_FACTOR3] Tentativa de envio sem auth real bloqueada. '
         'geminiConnected=$_geminiConnected openAiKey=${_openAiKey.isNotEmpty} '
-        'input="${input.substring(0, input.length.clamp(0, 40))}..." → return false',
+        'request denied',
       );
       // Notifica a UI com código de erro específico para tratamento correto
       onError('AUTH_REQUIRED');
@@ -8010,6 +8162,7 @@ class AppProvider extends ChangeNotifier {
       );
       return false;
     }
+    _prepareAiConversationMode(requestMode);
     _aiCallInFlight = true;
 
     // PHASE3I CONTEXT-LEAK FINAL CONTRACT:
@@ -8034,6 +8187,7 @@ class AppProvider extends ChangeNotifier {
           plantaoPersistenceEligibilityGate;
     }
 
+    ClinicalRequestContext? safetyContext;
     var guardiaTraceProviderChunkIndex = 0;
     var guardiaTraceProviderAccumulatedLen = 0;
 
@@ -8053,7 +8207,10 @@ class AppProvider extends ChangeNotifier {
         }
         return true;
       }());
-      onChunk(accumulated);
+      final snapshot = safetyContext;
+      if (snapshot == null || snapshot.ownsRequest?.call() == false) return;
+      final preview = ClinicalSafetyFlow(snapshot).preview(accumulated);
+      if (preview != null) onChunk(preview);
     }
 
     _activeRequestId = thisRequestId;
@@ -8097,6 +8254,74 @@ class AppProvider extends ChangeNotifier {
       locale: _lang,
       createdAt: DateTime.now(),
     );
+
+    ClinicalRequestContext freezeClinicalContext() {
+      final existing = safetyContext;
+      if (existing != null) return existing;
+      final query = persistedUserInput;
+      final newPatient = RegExp(
+              r'\b(?:novo paciente|nova paciente|outro paciente|nuevo paciente|nueva paciente|otro paciente|new patient|novo caso|nuevo caso)\b',
+              caseSensitive: false)
+          .hasMatch(query);
+      if (newPatient) {
+        _aiHistory.clear();
+        _sessionMemory.reset();
+        _threadManager.reset();
+        _currentConversationSessionId = '';
+        _currentConversationTitle = '';
+        _isFirstMessageOfSession = true;
+        final identity =
+            _resolveCanonicalAiCorrelation(requestId: thisRequestId);
+        _currentConversationSessionId = identity.sessionId;
+        activeSessionCtx = ActiveAiSessionContext(
+          uid: activeSessionCtx.uid,
+          sessionId: identity.sessionId,
+          requestId: thisRequestId,
+          mode: activeSessionCtx.mode,
+          locale: activeSessionCtx.locale,
+          createdAt: activeSessionCtx.createdAt,
+        );
+      }
+      final memory = _sessionMemory.safety.capture(
+        uid: activeSessionCtx.uid,
+        sessionId: activeSessionCtx.sessionId,
+        userQuery: query,
+        newPatient: newPatient,
+      );
+      final snapshot = ClinicalRequestContext(
+        requestId: thisRequestId,
+        sessionId: activeSessionCtx.sessionId,
+        uid: activeSessionCtx.uid,
+        mode: requestMode,
+        language: activeSessionCtx.locale,
+        userQuery: query,
+        memory: memory,
+        evidence: ClinicalEvidenceBundle.forRequest(
+          query: query,
+          facts: memory.confirmedFacts,
+          language: activeSessionCtx.locale,
+          protocolEvidence: canonicalPlantaoAttestation?.safetyEvidence,
+        ),
+        ownsRequest: () =>
+            _activeRequestId == thisRequestId &&
+            (_currentUser?.uid ?? '') == activeSessionCtx.uid &&
+            _currentConversationSessionId == activeSessionCtx.sessionId,
+        createdAt: activeSessionCtx.createdAt,
+      );
+      safetyContext = snapshot;
+      _clinicalSafetyByRequest.clear();
+      _clinicalSafetyByRequest[thisRequestId] = snapshot;
+      activeSessionCtx = ActiveAiSessionContext(
+        uid: activeSessionCtx.uid,
+        sessionId: activeSessionCtx.sessionId,
+        requestId: activeSessionCtx.requestId,
+        mode: activeSessionCtx.mode,
+        locale: activeSessionCtx.locale,
+        createdAt: activeSessionCtx.createdAt,
+        clinicalContext: snapshot,
+      );
+      return snapshot;
+    }
 
     // M77_CLINICAL_NEW_THREAD_SESSION_ROTATION_V1
     // The thread manager already owns topic-boundary classification. This seam
@@ -8341,6 +8566,22 @@ class AppProvider extends ChangeNotifier {
         }
         _wrapperFired = true;
 
+        final initialContext = safetyContext;
+        if (initialContext == null ||
+            initialContext.ownsRequest?.call() == false) {
+          return;
+        }
+        final rawSafety = ClinicalSafetyFlow(initialContext).terminal(text);
+        if (!rawSafety.allowed) {
+          debugPrint(rawSafety.telemetry(initialContext));
+          _removeRejectedAiHistoryTail(
+              userInput: persistedUserInput, assistantOutput: text);
+          onDone(initialContext.safeMessage);
+          onStructuredDone?.call(initialContext.safeMessage, null);
+          notifyListeners();
+          return;
+        }
+
         final utf16SafeProviderText =
             !longResponse ? WellFormedUtf16.normalize(text) : text;
 
@@ -8372,9 +8613,36 @@ class AppProvider extends ChangeNotifier {
           guardedText = WellFormedUtf16.normalize(guardedText);
         }
 
-        final guardedClinicalOutput = guardedText == utf16SafeProviderText
-            ? clinicalOutput
-            : PlantaoLocalClinicalOutputAdapter.fromValidatedText(guardedText);
+        final snapshot = safetyContext;
+        if (snapshot == null ||
+            snapshot.uid != (_currentUser?.uid ?? '') ||
+            _activeRequestId != thisRequestId) {
+          return;
+        }
+        final medicationClaims = <String>[
+          for (final item in [
+            ...?clinicalOutput?.prescricao,
+            ...?clinicalOutput?.primeiraLinha,
+            ...?clinicalOutput?.segundaLinha
+          ])
+            '${item.farmaco} ${item.posologia}',
+        ];
+        final safetyResult = ClinicalSafetyFlow(snapshot).terminal(guardedText,
+            mode: requestMode, structuredClaims: medicationClaims);
+        debugPrint(safetyResult.telemetry(snapshot));
+        if (!safetyResult.allowed) {
+          _removeRejectedAiHistoryTail(
+              userInput: persistedUserInput, assistantOutput: text);
+          guardedText = snapshot.safeMessage;
+          clinicalOutput = null;
+        }
+
+        final guardedClinicalOutput = !safetyResult.allowed
+            ? null
+            : guardedText == utf16SafeProviderText
+                ? clinicalOutput
+                : PlantaoLocalClinicalOutputAdapter.fromValidatedText(
+                    guardedText);
 
         // O contrato legado continua sendo a porta soberana de fechamento da UI.
         // O callback estruturado é apenas um hook aditivo executado depois.
@@ -8564,7 +8832,7 @@ class AppProvider extends ChangeNotifier {
 
         // Montar systemPrompt para este ciclo QA
         // Reutiliza o mesmo pipeline de contexto (RAG, sessionLang, intent)
-        final qaSessionLang = _resolveSessionLang(input);
+        final qaSessionLang = activeSessionCtx.locale;
         final qaIntent = _classifyIntent(input);
         // GLOBAL_CONTEXT_BUILD1: ClinicalThreadManager is the only productive
         // continue/switch decision owner. SessionMemory is reset only after
@@ -8604,6 +8872,18 @@ class AppProvider extends ChangeNotifier {
             'removed=$removed reason=${qaThreadStatus.reason}',
           );
         }
+        if (_activeRequestId != thisRequestId ||
+            activeSessionCtx.uid != (_currentUser?.uid ?? '')) {
+          return false;
+        }
+        final clinicalSnapshot = freezeClinicalContext();
+        if (!clinicalSnapshot.mayGenerate) {
+          final result = ClinicalSafetyPass.evaluate(
+              context: clinicalSnapshot, output: '', outputMode: requestMode);
+          debugPrint(result.telemetry(clinicalSnapshot));
+          onDone(clinicalSnapshot.safeMessage);
+          return true;
+        }
         final qaExpandedInput = qaThreadStatus.isContinuation
             ? _expandedQuery(input, forceContext: true)
             : input;
@@ -8631,7 +8911,7 @@ class AppProvider extends ChangeNotifier {
             ClinicalCrosscuttingEvidenceResolver.enrich(
           query: qaExpandedInput,
           baseContext: '',
-          lang: _lang,
+          lang: activeSessionCtx.locale,
         );
         final qaShadowRequest = _lastPlantaoShadowRequest;
         if (!longResponse && qaShadowRequest != null) {
@@ -8641,7 +8921,7 @@ class AppProvider extends ChangeNotifier {
           );
         }
 
-        final qaSystemPrompt = AiService.buildClinicalSystemPrompt(
+        final qaBaseSystemPrompt = AiService.buildClinicalSystemPrompt(
           lang: qaSessionLang,
           matchedProtocolSummaries: qaFinalProtos,
           matchedDrugSummaries: const [],
@@ -8660,6 +8940,13 @@ class AppProvider extends ChangeNotifier {
           isPlantaoMode: !longResponse,
           proprietaryDrugContext: null,
         );
+
+        final qaModePrompt = prepareAiRequestPrompt(
+          mode: requestMode,
+          systemPrompt: qaBaseSystemPrompt,
+          hasSpecificContext: !longResponse,
+        );
+        final qaSystemPrompt = qaModePrompt.systemPrompt;
 
         final qaHistory = List<Map<String, String>>.from(
           ClinicalThreadManager.buildThreadHistory(
@@ -8713,11 +9000,12 @@ class AppProvider extends ChangeNotifier {
 
           try {
             final paidResult = await ProviderRouterService.callPaidProxy(
+              clinicalContext: safetyContext,
               userMessage: input,
               systemPrompt: qaSystemPrompt,
               history: qaHistory,
-              mode: longResponse ? 'estudo' : 'plantao',
-              lang: _lang,
+              mode: qaModePrompt.providerMode,
+              lang: activeSessionCtx.locale,
               requestId: thisRequestId,
               maxOutputTokens: longResponse ? 2500 : 3200,
             );
@@ -8871,12 +9159,13 @@ class AppProvider extends ChangeNotifier {
 
         // Criar stream SSE real
         final qaStream = ProviderRouterService.callGptProxyStream(
+          clinicalContext: safetyContext,
           userMessage: input,
           systemPrompt: qaSystemPrompt,
           idToken: gptQaToken,
           history: qaHistory,
-          mode: longResponse ? 'estudo' : 'plantao',
-          lang: _lang,
+          mode: qaModePrompt.providerMode,
+          lang: activeSessionCtx.locale,
           requestId:
               thisRequestId, // ID UNIFICADO propagado para o GptSseClient
           maxOutputTokens: longResponse ? 2500 : 3200,
@@ -9351,7 +9640,19 @@ class AppProvider extends ChangeNotifier {
           'reason=${threadStatus.reason}',
         );
       }
-      final sessionLang = _resolveSessionLang(input);
+      if (_activeRequestId != thisRequestId ||
+          activeSessionCtx.uid != (_currentUser?.uid ?? '')) {
+        return false;
+      }
+      final clinicalSnapshot = freezeClinicalContext();
+      if (!clinicalSnapshot.mayGenerate) {
+        final result = ClinicalSafetyPass.evaluate(
+            context: clinicalSnapshot, output: '', outputMode: requestMode);
+        debugPrint(result.telemetry(clinicalSnapshot));
+        onDone(clinicalSnapshot.safeMessage);
+        return true;
+      }
+      final sessionLang = activeSessionCtx.locale;
       final intent = _classifyIntent(input);
       // BUILD 249/250: após HARD RESET, _expandedQuery() lê histórico já vazio →
       // zero contaminação de contexto anterior no payload enviado.
@@ -9384,7 +9685,7 @@ class AppProvider extends ChangeNotifier {
           ClinicalCrosscuttingEvidenceResolver.enrich(
         query: expandedInput,
         baseContext: '',
-        lang: _lang,
+        lang: activeSessionCtx.locale,
       );
       final retrievalShadowRequest = _lastPlantaoShadowRequest;
       if (!longResponse && retrievalShadowRequest != null) {
@@ -9402,7 +9703,7 @@ class AppProvider extends ChangeNotifier {
       // quando o tema mudou (= primeiro turno do novo tópico). Em ambos os casos
       // a saudação breve é permitida uma única vez. Nas mensagens subsequentes do
       // mesmo tema isEmpty=false e o prompt proíbe repetição de saudações.
-      final systemPrompt = AiService.buildClinicalSystemPrompt(
+      final baseSystemPrompt = AiService.buildClinicalSystemPrompt(
         lang: sessionLang,
         matchedProtocolSummaries: finalProtocols,
         matchedDrugSummaries: const [],
@@ -9421,6 +9722,13 @@ class AppProvider extends ChangeNotifier {
         isPlantaoMode: !longResponse,
         proprietaryDrugContext: proprietaryContext,
       );
+
+      final preparedModePrompt = prepareAiRequestPrompt(
+        mode: requestMode,
+        systemPrompt: baseSystemPrompt,
+        hasSpecificContext: !longResponse,
+      );
+      final systemPrompt = preparedModePrompt.systemPrompt;
 
       // BUILD 253: log do tamanho real do systemPrompt (não gateado por kDebugMode).
       // Permite confirmar redução de tokens atingida no modo Plantão.
@@ -9458,7 +9766,7 @@ class AppProvider extends ChangeNotifier {
       //   3. GeminiService.initFromStorage() → SharedPrefs/localStorage (fallback)
       // [AI_CONFIG] verbose log removed BUILD 244 — not needed in production
 
-      if (!GeminiService.hasApiKey) {
+      if (!GeminiService.providerTransportAvailable) {
         // BUILD 244: verbose key-loading logs moved under kDebugMode guard
         if (kDebugMode) debugPrint('[AI_FREE_PROVIDER] source=loading');
         // BUILD 309 [S3]: Força renovação do JWT Android antes do Firestore.
@@ -9506,7 +9814,7 @@ class AppProvider extends ChangeNotifier {
 
       // Resolve a chave final — Gemini Free Key em memória.
       // Se vazia: GeminiServiceV2 emitirá chunk.error('api_key_invalid') → tratado abaixo.
-      final geminiApiKey = GeminiService.apiKeyForLab;
+      final geminiApiKey = GeminiService.gatewayTransportMarker;
       if (kDebugMode)
         debugPrint(
           '[AI_ROUTER] freeKey=${geminiApiKey.isNotEmpty} motor=${longResponse ? "estudo" : "plantao"}',
@@ -9667,6 +9975,7 @@ class AppProvider extends ChangeNotifier {
           }
 
           final gptResult = await ProviderRouterService.callGptProxy(
+            clinicalContext: safetyContext,
             userMessage: input,
             systemPrompt: systemPrompt,
             history: List<Map<String, String>>.from(
@@ -9683,8 +9992,8 @@ class AppProvider extends ChangeNotifier {
                 (m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''},
               ),
             ),
-            mode: longResponse ? 'estudo' : 'plantao',
-            lang: _lang,
+            mode: preparedModePrompt.providerMode,
+            lang: activeSessionCtx.locale,
             requestId: requestId,
             maxOutputTokens: longResponse ? 2500 : 3200,
           );
@@ -9725,7 +10034,7 @@ class AppProvider extends ChangeNotifier {
             final gptSanitized = AiSmartRouter.sanitizeAndCheck(
               gptResult.text,
               isPlantaoMode: !longResponse,
-              appLanguage: _lang,
+              appLanguage: activeSessionCtx.locale,
             );
             final gptText = _applyPlantaoClinicalRegimenOutputGuard(
               userInput: input,
@@ -9816,6 +10125,7 @@ class AppProvider extends ChangeNotifier {
         }
 
         final paidResult = await ProviderRouterService.callPaidProxy(
+          clinicalContext: safetyContext,
           userMessage: input,
           systemPrompt: systemPrompt,
           history: List<Map<String, String>>.from(
@@ -9833,8 +10143,8 @@ class AppProvider extends ChangeNotifier {
               (m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''},
             ),
           ),
-          mode: longResponse ? 'estudo' : 'plantao',
-          lang: _lang,
+          mode: preparedModePrompt.providerMode,
+          lang: activeSessionCtx.locale,
           requestId: requestId,
           maxOutputTokens: longResponse
               ? 2500
@@ -9873,7 +10183,7 @@ class AppProvider extends ChangeNotifier {
           final paidSanitized = AiSmartRouter.sanitizeAndCheck(
             paidResult.text,
             isPlantaoMode: !longResponse,
-            appLanguage: _lang,
+            appLanguage: activeSessionCtx.locale,
           );
           final paidText = _applyPlantaoClinicalRegimenOutputGuard(
             userInput: input,
@@ -9964,11 +10274,7 @@ class AppProvider extends ChangeNotifier {
       // GPT pago → Gemini pago. A sessão Gemini não pode rebaixar esse modo.
       // Estudo com sessão Gemini preserva o caminho academic/free-first.
       // O canário local continua permitindo forçar o gateway pago em debug.
-      const bool kForcePaidGatewayCanaryInDebug = false;
-      final bool forcePaidCanary = kDebugMode &&
-          kForcePaidGatewayCanaryInDebug &&
-          _geminiConnected &&
-          aiPriority == 'critical';
+      const bool forcePaidCanary = false;
 
       final effectivePriority = resolveEffectiveAiPriorityForRouting(
         isPlantaoMode: !longResponse,
@@ -9977,12 +10283,7 @@ class AppProvider extends ChangeNotifier {
         forcePaidCanary: forcePaidCanary,
       );
 
-      if (forcePaidCanary) {
-        debugPrint(
-          '[ROUTER_CANARY] provider=paid reason=debug_canary '
-          'geminiConnected=true requestId=$requestId',
-        );
-      } else if (kDebugMode &&
+      if (kDebugMode &&
           _geminiConnected &&
           aiPriority == 'critical' &&
           effectivePriority == 'academic') {
@@ -10026,6 +10327,7 @@ class AppProvider extends ChangeNotifier {
         // Chama proxy pago direto (sem stream Free).
         unawaited(() async {
           final paidResult = await ProviderRouterService.callPaidProxy(
+            clinicalContext: safetyContext,
             userMessage: input,
             systemPrompt: systemPrompt,
             history: List<Map<String, String>>.from(
@@ -10043,8 +10345,8 @@ class AppProvider extends ChangeNotifier {
                 (m) => {'role': m['role'] ?? '', 'content': m['content'] ?? ''},
               ),
             ),
-            mode: longResponse ? 'estudo' : 'plantao',
-            lang: _lang,
+            mode: preparedModePrompt.providerMode,
+            lang: activeSessionCtx.locale,
             requestId: requestId,
             maxOutputTokens: longResponse
                 ? 2500
@@ -10075,7 +10377,7 @@ class AppProvider extends ChangeNotifier {
             final paidSanitized = AiSmartRouter.sanitizeAndCheck(
               paidResult.text,
               isPlantaoMode: !longResponse,
-              appLanguage: _lang,
+              appLanguage: activeSessionCtx.locale,
             );
             final paidText = _applyPlantaoClinicalRegimenOutputGuard(
               userInput: input,
@@ -10216,8 +10518,9 @@ class AppProvider extends ChangeNotifier {
       }
 
       final stream = AiGatewayService.sendStream(
+        clinicalContext: safetyContext,
         userMessage: input,
-        systemPrompt: systemPrompt,
+        systemPrompt: baseSystemPrompt,
         apiKey: geminiApiKey, // ← chave do app (admin), carregada do Firestore
         // BUILD 249: thread-filtered history — empty on new case, minimal on continuation
         history: List.unmodifiable(
@@ -10234,7 +10537,8 @@ class AppProvider extends ChangeNotifier {
         ),
         useGrounding: true,
         longResponse: longResponse, // false=Motor Plantão / true=Motor Estudos
-        appLanguage: _lang, // Build 190: Language Lock Absoluto — idioma do app
+        appLanguage: activeSessionCtx
+            .locale, // Build 190: Language Lock Absoluto — idioma do app
         canonicalTaskOverride: _canonicalTaskOverride, // MICRO-BUILD 462E-A.5.2
       );
 
@@ -10394,7 +10698,7 @@ class AppProvider extends ChangeNotifier {
               final partialSanitized = AiSmartRouter.sanitizeAndCheck(
                 rawPartial,
                 isPlantaoMode: !longResponse,
-                appLanguage: _lang,
+                appLanguage: activeSessionCtx.locale,
               );
               final partialText = _applyPlantaoClinicalRegimenOutputGuard(
                 userInput: input,
@@ -10502,10 +10806,11 @@ class AppProvider extends ChangeNotifier {
                 );
 
                 final repairResult = await AiService.repairTruncated(
+                  clinicalContext: safetyContext,
                   originalText: rawText,
                   requestId: thisRequestId,
                   isPlantaoMode: !longResponse,
-                  appLanguage: _lang,
+                  appLanguage: activeSessionCtx.locale,
                 );
 
                 if (!repairResult.isValid) {
@@ -10530,7 +10835,7 @@ class AppProvider extends ChangeNotifier {
                   ? AiSmartRouter.sanitizeAndCheck(
                       barrierText,
                       isPlantaoMode: !longResponse,
-                      appLanguage: _lang,
+                      appLanguage: activeSessionCtx.locale,
                     )
                   : null;
               final finalText = _applyPlantaoClinicalRegimenOutputGuard(
@@ -10880,8 +11185,9 @@ class AppProvider extends ChangeNotifier {
                   true,
                 ); // reativa indicador de streaming
                 final retryStream = AiGatewayService.sendStream(
+                  clinicalContext: safetyContext,
                   userMessage: input,
-                  systemPrompt: systemPrompt,
+                  systemPrompt: baseSystemPrompt,
                   apiKey: geminiApiKey,
                   history: List<Map<String, String>>.from(
                     ClinicalThreadManager.buildThreadHistory(
@@ -10896,7 +11202,7 @@ class AppProvider extends ChangeNotifier {
                   ),
                   useGrounding: true,
                   longResponse: longResponse,
-                  appLanguage: _lang,
+                  appLanguage: activeSessionCtx.locale,
                 );
                 _aiStreamSub = retryStream.listen(
                   (chunk) async {
@@ -10963,10 +11269,11 @@ class AppProvider extends ChangeNotifier {
 
                         final retryRepairResult =
                             await AiService.repairTruncated(
+                          clinicalContext: safetyContext,
                           originalText: retryText,
                           requestId: thisRequestId,
                           isPlantaoMode: !longResponse,
-                          appLanguage: _lang,
+                          appLanguage: activeSessionCtx.locale,
                         );
 
                         if (!retryRepairResult.isValid) {
@@ -11235,7 +11542,11 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> buildAIAnswer(String input) async {
+  Future<String> buildAIAnswer(String input,
+      {required AiRequestMode mode}) async {
+    if (mode != AiRequestMode.plantao) {
+      throw StateError('LEGACY_AI_PLANTAO_ONLY');
+    }
     // Guard: rejeita chamada se já há uma em andamento (evita duplicação)
     if (_aiAnswerInProgress) {
       debugPrint(
@@ -11245,13 +11556,14 @@ class AppProvider extends ChangeNotifier {
     }
     _aiAnswerInProgress = true;
     try {
-      return await _buildAIAnswerImpl(input);
+      return await _buildAIAnswerImpl(input, mode: mode);
     } finally {
       _aiAnswerInProgress = false;
     }
   }
 
-  Future<String> _buildAIAnswerImpl(String input) async {
+  Future<String> _buildAIAnswerImpl(String input,
+      {required AiRequestMode mode}) async {
     // ── strictContextIsolation — Passo A: detectar mudança de tema ────────
     // Deve ocorrer ANTES de montar o prompt. Ao mudar de tema:
     //   1. Memória clínica é resetada (sem dados do tema anterior)
@@ -11265,7 +11577,7 @@ class AppProvider extends ChangeNotifier {
     // buildAIAnswer é sempre Modo Plantão (isPlantaoMode=true).
     final threadStatusAnswer = _threadManager.evaluate(
       currentUserText: input,
-      isPlantaoMode: true,
+      isPlantaoMode: mode == AiRequestMode.plantao,
     );
     if (threadStatusAnswer.action == ThreadAction.newThread) {
       // BUILD 250: HARD RESET síncrono — ocorre ANTES da montagem do systemPrompt.
@@ -11345,7 +11657,7 @@ class AppProvider extends ChangeNotifier {
       userQuery: expandedInput,
       memory: _sessionMemory,
       isFirstMessage: _aiHistory.isEmpty,
-      isPlantaoMode: true,
+      isPlantaoMode: mode == AiRequestMode.plantao,
       proprietaryDrugContext: proprietaryContextAnswer,
     );
 
@@ -11367,10 +11679,10 @@ class AppProvider extends ChangeNotifier {
     // Build 156.2: usa Gemini sempre que a chave do app estiver disponível,
     // independente de _geminiConnected (OAuth de conta Google do usuário).
     // A chave é do APP (admin → Firestore), não do usuário individual.
-    // _geminiConnected = flag de OAuth legada; GeminiService.hasApiKey = real.
-    if (_geminiConnected || GeminiService.hasApiKey) {
+    // _geminiConnected = flag de OAuth legada; GeminiService.providerTransportAvailable = real.
+    if (_geminiConnected || GeminiService.providerTransportAvailable) {
       // Garante API Key presente antes de chamar — pode ter sido perdida por reload
-      if (!GeminiService.hasApiKey) {
+      if (!GeminiService.providerTransportAvailable) {
         debugPrint(
           '[buildAIAnswer] API Key ausente — recuperando automaticamente...',
         );
@@ -11387,7 +11699,7 @@ class AppProvider extends ChangeNotifier {
           } else {
             // Firestore vazio — SharedPreferences é o fallback primário (sem dart:js/eval)
             await GeminiService.initFromStorage();
-            if (GeminiService.hasApiKey) {
+            if (GeminiService.providerTransportAvailable) {
               debugPrint('[buildAIAnswer] API Key restaurada do SharedPrefs ✓');
             }
           }
@@ -11396,7 +11708,7 @@ class AppProvider extends ChangeNotifier {
             '[buildAIAnswer] Firestore falhou: $e — tentando SharedPrefs...',
           );
           await GeminiService.initFromStorage();
-          if (GeminiService.hasApiKey) {
+          if (GeminiService.providerTransportAvailable) {
             debugPrint(
               '[buildAIAnswer] API Key restaurada do SharedPrefs (fallback) ✓',
             );
@@ -11412,7 +11724,8 @@ class AppProvider extends ChangeNotifier {
           ClinicalThreadManager.buildThreadHistory(
             fullHistory: _sanitizedHistory,
             status: threadStatusAnswer,
-            isPlantaoMode: true, // buildAIAnswer is always Plantão mode
+            isPlantaoMode: mode ==
+                AiRequestMode.plantao, // buildAIAnswer is always Plantão mode
           ),
         ),
         maxTokens:
@@ -11528,6 +11841,7 @@ class AppProvider extends ChangeNotifier {
     }
 
     final result = await AiService.chat(
+      isPlantaoMode: mode == AiRequestMode.plantao,
       apiKey: _openAiKey,
       userMessage: input,
       systemPrompt: systemPrompt,
@@ -11536,7 +11850,8 @@ class AppProvider extends ChangeNotifier {
         ClinicalThreadManager.buildThreadHistory(
           fullHistory: _sanitizedHistory,
           status: threadStatusAnswer,
-          isPlantaoMode: true, // buildAIAnswer is always Plantão mode
+          isPlantaoMode: mode ==
+              AiRequestMode.plantao, // buildAIAnswer is always Plantão mode
         ),
       ),
       maxTokens: 1100, // Passo 6 OpenAI legado — mesmo limite do Gemini

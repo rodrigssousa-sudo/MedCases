@@ -26,7 +26,7 @@ void main() {
 
       expect(body, contains('final studyRequestBusy ='));
       expect(body, contains('p.aiRequestBusy'));
-      expect(body, contains('if (_longResponse)'));
+      expect(body, contains('if (requestLongResponse)'));
       expect(body, contains('_queueStudySend('));
       expect(
         body.indexOf('_queueStudySend('),

@@ -1,3 +1,5 @@
+import 'provider_router_service.dart' show ProviderRouterService;
+import 'ai/safety/clinical_request_safety.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // ModeAnchorEngine / AiGatewayService — Build 225 (Intent Engine Multidimensional)
 //
@@ -51,6 +53,7 @@
 // ══════════════════════════════════════════════════════════════════════════════
 
 import 'dart:async';
+import 'ai_pipeline/ai_request_contract.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, debugPrint;
 import 'gemini_service_v2.dart';
 import 'gemini_cache_service.dart'; // BUILD 278: Context Caching nativo
@@ -65,6 +68,64 @@ import 'ai_pipeline/plantao/contracts/plantao_canonical_route_decision.dart';
 // de compilação caso haja referências indiretas.
 import 'ai_gateway_service_io.dart'
     if (dart.library.js_interop) 'ai_gateway_service_web.dart';
+
+// MEDCASES_APPLE_PRERELEASE_AI_MODE_ISOLATION_V1_B_R0
+/// Immutable mode envelope. Transport-specific clinical context remains intact.
+class PreparedAiModePrompt {
+  final AiRequestMode mode;
+  final String systemPrompt;
+  final String anchor;
+  final String contract;
+
+  const PreparedAiModePrompt._({
+    required this.mode,
+    required this.systemPrompt,
+    required this.anchor,
+    required this.contract,
+  });
+
+  bool get longResponse => mode == AiRequestMode.estudo;
+  bool get isPlantaoMode => mode == AiRequestMode.plantao;
+  String get providerMode => mode.name;
+  String get contractName =>
+      isPlantaoMode ? 'CONTRACT_PLANTAO' : 'CONTRACT_ESTUDO';
+}
+
+/// Reuses the existing instructions verbatim; never shrinks clinical context.
+/// Idempotent for the same mode, fail-closed for an opposite mode envelope.
+PreparedAiModePrompt prepareAiRequestPrompt({
+  required AiRequestMode mode,
+  required String systemPrompt,
+  bool hasSpecificContext = false,
+}) {
+  final isPlantao = mode == AiRequestMode.plantao;
+  final anchor = isPlantao ? _modeAnchorPlantao : _modeAnchorEstudo;
+  final otherAnchor = isPlantao ? _modeAnchorEstudo : _modeAnchorPlantao;
+  final contract = AiSmartRouter.modeContract(
+    isPlantaoMode: isPlantao,
+    hasSpecificContext: hasSpecificContext,
+  );
+  final otherContract = AiSmartRouter.modeContract(isPlantaoMode: !isPlantao);
+  if (systemPrompt.contains(otherAnchor) ||
+      systemPrompt.contains(otherContract) ||
+      (isPlantao == false &&
+          systemPrompt.contains(AiSmartRouter.modeContract(
+            isPlantaoMode: true,
+            hasSpecificContext: true,
+          )))) {
+    throw StateError('AI_MODE_CONTRACT_MISMATCH');
+  }
+  final body = systemPrompt.contains(contract)
+      ? systemPrompt
+      : '$contract\n\n$systemPrompt';
+  final prepared = body.contains(anchor) ? body : '$anchor\n\n$body';
+  return PreparedAiModePrompt._(
+    mode: mode,
+    systemPrompt: prepared,
+    anchor: anchor,
+    contract: contract,
+  );
+}
 
 // ── Build 232: Auditoria temporária de tamanho de prompt ─────────────────────
 // Remover após diagnóstico. NÃO imprime conteúdo clínico — apenas tamanhos.
@@ -661,6 +722,7 @@ class AiGatewayService {
   /// [longResponse]  — false=Motor Plantão / true=Motor Estudos
   /// [appLanguage]   — Build 190: idioma soberano do app ('pt'|'es'). NUNCA detectado da query.
   static Stream<GeminiChunk> sendStream({
+    ClinicalRequestContext? clinicalContext,
     required String userMessage,
     required String systemPrompt,
     required String apiKey,
@@ -676,8 +738,12 @@ class AiGatewayService {
     // BUILD 278: wraps _sendStreamAsync (async*) para manter a assinatura
     // Stream<GeminiChunk> síncrona exigida pelos callers existentes.
     // O gerador assíncrono permite await (getActiveCache) sem mudar a API.
+    clinicalContext?.requireTransport(
+        mode: longResponse ? 'estudo' : 'plantao', language: appLanguage);
+    ProviderRouterService.requireClinicalOwner(clinicalContext);
     return _sendStreamAsync(
-      userMessage:  userMessage,
+      clinicalContext: clinicalContext,
+      userMessage: userMessage,
       systemPrompt: systemPrompt,
       apiKey:       apiKey,
       history:      history,
@@ -689,6 +755,7 @@ class AiGatewayService {
   }
 
   static Stream<GeminiChunk> _sendStreamAsync({
+    ClinicalRequestContext? clinicalContext,
     required String userMessage,
     required String systemPrompt,
     required String apiKey,
@@ -903,8 +970,12 @@ class AiGatewayService {
         ? _buildOutputCompactDirective(resolvedLang)
         : ''; // Plantão: sem alteração nas instruções de output
 
-    final String finalSystemPrompt =
-        '$modeAnchorJit\n\n$basePrompt$outputCompact';
+    final preparedModePrompt = prepareAiRequestPrompt(
+      mode: longResponse ? AiRequestMode.estudo : AiRequestMode.plantao,
+      systemPrompt: '$basePrompt$outputCompact',
+      hasSpecificContext: hasSpecificMatrizContext,
+    );
+    final String finalSystemPrompt = preparedModePrompt.systemPrompt;
 
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
@@ -984,6 +1055,9 @@ class AiGatewayService {
           'outputCompact=${outputCompact.length}c');
     }
 
+    clinicalContext?.requireTransport(
+        mode: longResponse ? 'estudo' : 'plantao', language: appLanguage);
+    ProviderRouterService.requireClinicalOwner(clinicalContext);
     yield* GeminiServiceV2.sendStream(
       apiKey:          apiKey,
       userMessage:     userMessage,        // mensagem LIMPA — mandato está no system

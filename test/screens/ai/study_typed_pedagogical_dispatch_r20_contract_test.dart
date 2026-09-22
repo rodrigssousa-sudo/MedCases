@@ -17,7 +17,7 @@ void main() {
       expect(
         screen,
         contains(
-          'providerInputOverride == null && _longResponse && !fromButton',
+          'providerInputOverride == null && requestLongResponse && !fromButton',
         ),
       );
     });
@@ -33,7 +33,10 @@ void main() {
     });
 
     test('Plantao and R15 continuation contracts stay present', () {
-      expect(screen, contains('_bindPlantaoCaseAnchorForButton(trimmed)'));
+      expect(
+          screen,
+          matches(RegExp(
+              r'_bindPlantaoCaseAnchorForButton\(trimmed,\s*studyMode: requestLongResponse\)')));
       expect(screen, contains('[STUDY_CONTINUATION][DISPATCH]'));
       expect(screen, contains('guard=generic_no_choice_terms'));
     });

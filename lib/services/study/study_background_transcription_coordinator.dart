@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../monthly_usage_ledger.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -32,6 +33,7 @@ final class StudyBackgroundTranscriptionSession {
     required this.grant,
     required this.expectedSegments,
     required this.statusPath,
+    required this.usageReservation,
   }) : _baseUri = baseUri;
 
   final Uri _baseUri;
@@ -39,11 +41,14 @@ final class StudyBackgroundTranscriptionSession {
   final String grant;
   final int expectedSegments;
   final String statusPath;
+  final UsageReservation usageReservation;
 
   final Map<int, String> _cache = <int, String>{};
   bool _cleaned = false;
 
   Future<String> awaitTranscript(int segmentIndex) async {
+    if (!usageReservation.authorizes(UsageKind.transcription))
+      throw StateError('TRANSCRIPTION_USER_CHANGED');
     final cached = _cache[segmentIndex];
     if (cached != null && cached.trim().isNotEmpty) {
       return cached;
@@ -52,6 +57,8 @@ final class StudyBackgroundTranscriptionSession {
     final deadline = DateTime.now().add(const Duration(hours: 2));
     while (DateTime.now().isBefore(deadline)) {
       await _refresh();
+      if (!usageReservation.authorizes(UsageKind.transcription))
+        throw StateError('TRANSCRIPTION_USER_CHANGED');
       final ready = _cache[segmentIndex];
       if (ready != null && ready.trim().isNotEmpty) {
         return ready;
@@ -138,7 +145,10 @@ final class StudyBackgroundTranscriptionCoordinator {
     required String sourceId,
     required bool isEs,
     required List<StudyBackgroundSegmentSpec> segments,
+    required UsageReservation usageReservation,
   }) async {
+    if (!usageReservation.authorizes(UsageKind.transcription))
+      throw StateError('TRANSCRIPTION_QUOTA_REQUIRED');
     if (!(Platform.isIOS || Platform.isAndroid) || segments.isEmpty) {
       return null;
     }
@@ -170,6 +180,7 @@ final class StudyBackgroundTranscriptionCoordinator {
           _baseUri.resolve('/api/ai/study/background-transcription/jobs'),
           headers: <String, String>{
             'Authorization': 'Bearer $idToken',
+            ...usageReservation.serverHeaders,
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
@@ -243,6 +254,7 @@ final class StudyBackgroundTranscriptionCoordinator {
     );
 
     return StudyBackgroundTranscriptionSession._(
+      usageReservation: usageReservation,
       baseUri: _baseUri,
       jobId: jobId,
       grant: grant,

@@ -22,7 +22,7 @@ import '../services/gemini_service.dart';
 import '../widgets/common_widgets.dart';
 import '../services/stt_helper.dart';
 import 'dart:typed_data';
-import 'package:http/http.dart' as http;
+import '../services/provider_gateway_http.dart' as http;
 import '../platform/web_impl.dart'
     if (dart.library.io) '../platform/web_stub.dart' as webPlatform;
 import 'clinical_recorder_sheet.dart';
@@ -2396,19 +2396,6 @@ class _HistoryCard extends StatelessWidget {
     this.onModHide,
     this.onModDelete,
   });
-
-  Color get _outcomeColor {
-    switch (h.outcome) {
-      case 'alta':
-        return const Color(0xFF065F46);
-      case 'obito':
-        return const Color(0xFFCC2222);
-      case 'transferencia':
-        return const Color(0xFF1E40AF);
-      default:
-        return const Color(0xFFC5A365);
-    }
-  }
 
   String _outcomeLabel(String lang) {
     switch (h.outcome) {
@@ -4938,25 +4925,6 @@ class _HistoryEditorState extends State<_HistoryEditor> {
   }
 
   // Nome legível do campo para feedback
-  String _fieldLabel(String key) {
-    final lang = widget.p.lang;
-    final labels = {
-      'chiefComplaint': _hcT(lang, 'stt_chief'),
-      'hpi': _hcT(lang, 'stt_hpi'),
-      'pastHistory': _hcT(lang, 'stt_past'),
-      'familyHistory': _hcT(lang, 'stt_family'),
-      'socialHistory': _hcT(lang, 'stt_social'),
-      'medications': _hcT(lang, 'stt_meds'),
-      'allergies': _hcT(lang, 'stt_allergies'),
-      'reviewOfSystems': _hcT(lang, 'stt_ros'),
-      'vitalSigns': _hcT(lang, 'stt_vitals'),
-      'physicalExam': _hcT(lang, 'stt_pe'),
-      'workingDiagnosis': _hcT(lang, 'stt_wdx'),
-      'treatmentPlan': _hcT(lang, 'stt_plan'),
-      'evolutionNote': _hcT(lang, 'stt_evol_note'),
-    };
-    return labels[key] ?? key;
-  }
 
   /// Retorna o campo padrão inicial para cada seção com microfone ativo.
   /// Retorna null para seções sem microfone (0=Paciente, 3=Exames, 6=Desfecho).
@@ -5469,121 +5437,6 @@ class _HistoryEditorState extends State<_HistoryEditor> {
       backgroundColor: Colors.transparent,
       builder: (_) => _HistoryPreviewSheet(history: snap, lang: widget.p.lang),
     );
-  }
-
-  void _startStt(String key) {
-    // Toggle: parar se já está ouvindo este campo
-    if (_sttListening && _sttActiveKey == key) {
-      _stopAllStt();
-      return;
-    }
-    // Se estava ouvindo outro campo, parar antes
-    if (_sttListening) _stopAllStt();
-
-    final appLang = widget.p.lang;
-    final locale = appLang == 'es' ? 'es-ES' : 'pt-BR';
-
-    if (kIsWeb) {
-      // ── Web: usa Web Speech API via dart:html ────────────────────────────
-      if (!webPlatform.webHasSpeechRecognition()) {
-        if (!mounted) return;
-        showDialog(
-          context: context,
-          useRootNavigator: !kIsWeb,
-          builder: (_) => AlertDialog(
-            title: Text(widget.p.t('dictation_not_supported')),
-            content: Text(widget.p.t('dictation_browser_msg')),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-        return;
-      }
-      final recog = webPlatform.WebSpeechRecognizer();
-      recog.start(
-        key,
-        locale,
-        onResult: (transcript, isFinal) {
-          if (isFinal) {
-            _insertIntoField(key, transcript);
-            if (mounted) setState(() => _sttInterim = '');
-          } else {
-            if (mounted) setState(() => _sttInterim = transcript);
-          }
-        },
-        onEnd: () {
-          if (mounted)
-            setState(() {
-              _sttListening = false;
-              _sttActiveKey = null;
-              _sttInterim = '';
-            });
-        },
-        onError: (_) {
-          if (mounted)
-            setState(() {
-              _sttListening = false;
-              _sttActiveKey = null;
-              _sttInterim = '';
-            });
-        },
-      );
-      _sttRecog = recog;
-    } else {
-      // ── Mobile (iOS / Android): usa speech_to_text nativo ───────────────
-      // STT-GUARD: erros nativos de AVAudioSession / SFSpeechRecognizer
-      // não devem propagar e fechar o app silenciosamente.
-      try {
-        SttHelper.start(
-          locale: locale,
-          onResult: (transcript) {
-            if (!mounted) return;
-            _insertIntoField(key, transcript);
-            setState(() {
-              _sttInterim = '';
-            });
-          },
-          onError: (code) {
-            if (!mounted) return;
-            setState(() {
-              _sttListening = false;
-              _sttActiveKey = null;
-              _sttInterim = '';
-            });
-            _showSttMobileError(code);
-          },
-          onEnd: () {
-            if (mounted)
-              setState(() {
-                _sttListening = false;
-                _sttActiveKey = null;
-                _sttInterim = '';
-              });
-          },
-        );
-      } catch (e, st) {
-        debugPrint(
-          '[HistoryScreen][_startSttForField] SttHelper.start exception: $e\n$st',
-        );
-        if (mounted)
-          setState(() {
-            _sttListening = false;
-            _sttActiveKey = null;
-            _sttInterim = '';
-          });
-      }
-    }
-
-    _sttActiveKey = key;
-    if (mounted)
-      setState(() {
-        _sttListening = true;
-        _sttInterim = '';
-      });
   }
 
   /// Insere texto transcrito no campo correto, com espaço inteligente.
@@ -6830,7 +6683,6 @@ class _EditorField extends StatefulWidget {
   final String hint;
   final bool multiline, numeric;
   final int lines;
-  final VoidCallback? onMic;
 
   /// Chave usada para persistir sugestões adaptativas (ex: 'hpi', 'physicalExam').
   /// Se null, autocomplete não é habilitado para este campo.
@@ -6840,7 +6692,6 @@ class _EditorField extends StatefulWidget {
   final FocusNode? focusNode;
 
   /// Chamado com a fieldKey quando este campo ganha foco (para atualizar badge do ditáfone).
-  final void Function(String key)? onFocused;
 
   const _EditorField(
     this.label,
@@ -6849,10 +6700,8 @@ class _EditorField extends StatefulWidget {
     this.multiline = false,
     this.numeric = false,
     this.lines = 3,
-    this.onMic,
     this.fieldKey,
     this.focusNode,
-    this.onFocused,
   });
 
   @override
@@ -6969,50 +6818,6 @@ class _EditorFieldState extends State<_EditorField> {
                     : const Color(0xFF4B5563),
               ),
             ),
-            if (widget.onMic != null) ...[
-              const Spacer(),
-              GestureDetector(
-                onTap: widget.onMic,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.transparent,
-                    border: Border.all(
-                      color: const Color(0xFFDC2626).withOpacity(0.30),
-                      width: 0.7,
-                    ),
-                  ),
-                  child: Builder(
-                    builder: (ctx) {
-                      final localLang = ctx.read<AppProvider>().lang;
-                      return Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.mic_rounded,
-                            size: 11,
-                            color: Color(0xFFDC2626),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            _hcT(localLang, 'dictate_btn'),
-                            style: const TextStyle(
-                              fontSize: MedTypography.auxiliarySize,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFFDC2626),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
           ],
         ),
         const SizedBox(height: 5),
@@ -7020,11 +6825,6 @@ class _EditorFieldState extends State<_EditorField> {
         Focus(
           focusNode: widget.focusNode,
           onFocusChange: (hasFocus) {
-            if (hasFocus &&
-                widget.fieldKey != null &&
-                widget.onFocused != null) {
-              widget.onFocused!(widget.fieldKey!);
-            }
             if (!hasFocus) {
               _saveSuggestions();
               if (_showSuggestions)
@@ -7160,159 +6960,6 @@ class _PulseDotState extends State<_PulseDot>
 // BOTÃO DITÁFONE INTELIGENTE
 // Botão grande único para ditado contínuo com roteamento automático de campos
 // ─────────────────────────────────────────────────────────────────────────────
-class _SmartDictaphoneButton extends StatelessWidget {
-  final bool active;
-  final String currentField;
-  final VoidCallback onTap;
-  final String lang;
-
-  const _SmartDictaphoneButton({
-    required this.active,
-    required this.currentField,
-    required this.onTap,
-    required this.lang,
-  });
-
-  static Map<String, String> _labels(String lang) => lang == 'es'
-      ? {
-          'chiefComplaint': 'Motivo de consulta',
-          'hpi': 'Enfermedad actual',
-          'pastHistory': 'Antecedentes personales',
-          'familyHistory': 'Antecedentes familiares',
-          'socialHistory': 'Historia social',
-          'medications': 'Medicación habitual',
-          'allergies': 'Alergias',
-          'reviewOfSystems': 'Revisión de sistemas',
-          'vitalSigns': 'Signos vitales',
-          'physicalExam': 'Examen físico',
-          'workingDiagnosis': 'Hipótesis diagnóstica',
-          'treatmentPlan': 'Plan terapéutico',
-        }
-      : {
-          'chiefComplaint': 'Queixa principal',
-          'hpi': 'HDA',
-          'pastHistory': 'Antecedentes pessoais',
-          'familyHistory': 'Antecedentes familiares',
-          'socialHistory': 'História social',
-          'medications': 'Medicamentos',
-          'allergies': 'Alergias',
-          'reviewOfSystems': 'Revisão de sistemas',
-          'vitalSigns': 'Sinais vitais',
-          'physicalExam': 'Exame físico',
-          'workingDiagnosis': 'Hipótese diagnóstica',
-          'treatmentPlan': 'Conduta',
-        };
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs = lang == 'es';
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          gradient: active
-              ? const LinearGradient(
-                  colors: [Color(0xFF0F1116), Color(0xFF0D6B57)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                )
-              : null,
-          color: active ? null : const Color(0xFFF0F7F4),
-          border: Border.all(
-            color: active ? const Color(0xFF0D6B57) : const Color(0xFFBBD6C8),
-            width: active ? 1.5 : 1,
-          ),
-          boxShadow: active
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFF0D6B57).withOpacity(0.25),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : [],
-        ),
-        child: Row(
-          children: [
-            // Ícone mic animado
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: active
-                    ? Colors.white.withOpacity(0.15)
-                    : const Color(0xFF0D6B57).withOpacity(0.12),
-                border: Border.all(
-                  color: active
-                      ? Colors.white.withOpacity(0.3)
-                      : const Color(0xFF0D6B57).withOpacity(0.3),
-                ),
-              ),
-              child: Center(
-                child: Icon(
-                  active ? Icons.mic_rounded : Icons.mic_none_rounded,
-                  size: 22,
-                  color: active ? Colors.white : const Color(0xFF0D6B57),
-                ),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    active
-                        ? _hcT(lang, 'dictaphone_active')
-                        : _hcT(lang, 'dictaphone'),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: active ? Colors.white : const Color(0xFF0D6B57),
-                      letterSpacing: 0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    active && currentField.isNotEmpty
-                        ? '→ ${_labels(lang)[currentField] ?? currentField}'
-                        : (isEs
-                            ? 'Diga "queja", "antecedentes", "examen"... y el texto va al campo correcto'
-                            : 'Diga "queixa", "antecedentes", "exame físico"... e o texto vai para o campo certo'),
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w600,
-                      color: active
-                          ? Colors.white.withOpacity(0.80)
-                          : const Color(0xFF666666),
-                      height: 1.4,
-                    ),
-                    maxLines: 2,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            if (active)
-              _PulseDot(color: const Color(0xFF86EFAC))
-            else
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 20,
-                color: const Color(0xFF0D6B57).withOpacity(0.5),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MIC CONTROL BAR — colapsável: pílula compacta ↔ barra completa
@@ -7345,7 +6992,6 @@ class _MicControlBar extends StatelessWidget {
   // Navegação de campos
   final VoidCallback onPrevField;
   final VoidCallback onNextField;
-  final void Function(String fieldKey)? onFieldFocused;
 
   const _MicControlBar({
     required this.lang,
@@ -7363,7 +7009,6 @@ class _MicControlBar extends StatelessWidget {
     required this.onOrganizarIA,
     required this.onPrevField,
     required this.onNextField,
-    this.onFieldFocused,
   });
 // HISTORY_CLINICAL_V1_C_R16_R3_MIC_EXPANDED_LIGHT_FINAL
 
@@ -7723,132 +7368,6 @@ class _MicControlBar extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // FIELD NAV BAR — botões de navegação anterior/próximo campo
 // ─────────────────────────────────────────────────────────────────────────────
-class _FieldNavBar extends StatelessWidget {
-  final VoidCallback onPrev;
-  final VoidCallback onNext;
-  final bool isDark;
-
-  /// Chamado após mover o foco — recebe a fieldKey do campo que ganhou foco.
-  final void Function(String fieldKey)? onFieldFocused;
-
-  const _FieldNavBar({
-    required this.onPrev,
-    required this.onNext,
-    required this.isDark,
-    this.onFieldFocused,
-  });
-
-  // Mapa de debugLabel → fieldKey dos _EditorField que usam fieldKey
-  static const _kKnownKeys = [
-    'chiefComplaint',
-    'hpi',
-    'pastHistory',
-    'familyHistory',
-    'socialHistory',
-    'medications',
-    'allergies',
-    'reviewOfSystems',
-    'vitalSigns',
-    'physicalExam',
-    'workingDiagnosis',
-    'treatmentPlan',
-    'procedures',
-    'evolution',
-    'dischargeCondition',
-    'followUp',
-  ];
-
-  void _afterNav(BuildContext context) {
-    if (onFieldFocused == null) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      try {
-        final scope = FocusScope.of(context);
-        final focused = scope.focusedChild;
-        if (focused == null) return;
-        final label = focused.debugLabel ?? '';
-        for (final key in _kKnownKeys) {
-          if (label.contains(key)) {
-            onFieldFocused!(key);
-            return;
-          }
-        }
-      } catch (_) {}
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final btnBg =
-        isDark ? Colors.white.withOpacity(0.07) : const Color(0xFFEFF2F5);
-    final btnBorder =
-        isDark ? Colors.white.withOpacity(0.10) : const Color(0xFFD1D9E0);
-    final iconColor = isDark ? Colors.white70 : const Color(0xFF475569);
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _NavBtn(
-          icon: Icons.keyboard_arrow_up_rounded,
-          bg: btnBg,
-          border: btnBorder,
-          iconC: iconColor,
-          onTap: () {
-            onPrev();
-            _afterNav(context);
-          },
-          tooltip: 'Campo anterior',
-        ),
-        const SizedBox(width: 6),
-        _NavBtn(
-          icon: Icons.keyboard_arrow_down_rounded,
-          bg: btnBg,
-          border: btnBorder,
-          iconC: iconColor,
-          onTap: () {
-            onNext();
-            _afterNav(context);
-          },
-          tooltip: 'Próximo campo',
-        ),
-      ],
-    );
-  }
-}
-
-class _NavBtn extends StatelessWidget {
-  final IconData icon;
-  final Color bg;
-  final Color border;
-  final Color iconC;
-  final VoidCallback onTap;
-  final String tooltip;
-  const _NavBtn({
-    required this.icon,
-    required this.bg,
-    required this.border,
-    required this.iconC,
-    required this.onTap,
-    required this.tooltip,
-  });
-
-  @override
-  Widget build(BuildContext context) => Tooltip(
-        message: tooltip,
-        child: GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: 40,
-            height: 48,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: bg,
-              border: Border.all(color: border, width: 1),
-            ),
-            child: Icon(icon, size: 22, color: iconC),
-          ),
-        ),
-      );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BOTÃO MIC CENTRAL — estilo Gemini
@@ -8891,395 +8410,15 @@ class _PreviewItemHighlight extends StatelessWidget {
   }
 }
 
-class _MetaChip extends StatelessWidget {
-  final String label;
-
-  const _MetaChip(this.label);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: const Color(0xFF2D3340),
-        border: Border.all(
-          color: const Color(0xFF374151),
-          width: 0.65,
-        ),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 10.5,
-          fontWeight: FontWeight.w600,
-          color: Colors.white70,
-        ),
-      ),
-    );
-  }
-}
-
 // HISTORY_CLINICAL_V1_D_R21_R3_DETAIL_CARD_CONTINUOUS
-class _DetailCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final List<Widget> children;
-
-  const _DetailCard({
-    required this.icon,
-    required this.title,
-    required this.children,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final filled = children.where((child) => child is! SizedBox).isNotEmpty;
-    if (!filled) return const SizedBox();
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(2, 14, 2, 14),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color(0xFF374151), width: 0.65),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 15, color: const Color(0xFF0D6B57)),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.05,
-                    color: Color(0xFFE8F0EC),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 11),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // HISTORY_CLINICAL_V1_D_R21_R3_SECTION_BLOCK_FLAT
-class _SectionBlock extends StatelessWidget {
-  final String label, text;
-  final IconData? icon;
-
-  const _SectionBlock(this.label, this.text, {this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (icon != null) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Icon(
-                icon,
-                size: 14,
-                color: const Color(0xFF0D6B57),
-              ),
-            ),
-            const SizedBox(width: 9),
-          ],
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.0,
-                    color: Colors.white54,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  text,
-                  style: const TextStyle(
-                    fontSize: 13.5,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFE8F0EC),
-                    height: 1.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // HISTORY_CLINICAL_V1_D_R21_R3_ALLERGY_DARK_SEMANTIC
-class _AllergyBanner extends StatelessWidget {
-  final String text;
-
-  const _AllergyBanner(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 10, top: 2),
-      padding: const EdgeInsets.fromLTRB(12, 11, 12, 11),
-      decoration: const BoxDecoration(
-        color: Color(0xFF252930),
-        border: Border(
-          left: BorderSide(color: Color(0xFFEF4444), width: 2.2),
-          bottom: BorderSide(color: Color(0xFF374151), width: 0.65),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(
-            Icons.warning_amber_rounded,
-            size: 17,
-            color: Color(0xFFF87171),
-          ),
-          const SizedBox(width: 9),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'ALERGIAS',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFFF87171),
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  text,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFE8F0EC),
-                    height: 1.45,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // HISTORY_CLINICAL_V1_D_R21_R3_DX_DARK_SEMANTIC
-class _DxBanner extends StatelessWidget {
-  final String final_, working, cid, differential, lang;
-  const _DxBanner({
-    required this.final_,
-    required this.working,
-    required this.cid,
-    required this.differential,
-    required this.lang,
-  });
-  @override
-  Widget build(BuildContext context) {
-    final hasFinal = final_.isNotEmpty;
-    final primaryColor =
-        hasFinal ? const Color(0xFF10B981) : const Color(0xFF92400E);
-    final bgColor = const Color(0xFF252930);
-    final borderColor = primaryColor.withOpacity(0.55);
-    final textColor = const Color(0xFFE8F0EC);
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: bgColor,
-        border: Border.all(color: borderColor, width: 1.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header da caixa de diagnóstico
-          Container(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-            decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.08),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(17),
-              ),
-              border: Border(bottom: BorderSide(color: borderColor)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: primaryColor,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      hasFinal
-                          ? Icons.check_rounded
-                          : Icons.lightbulb_outline_rounded,
-                      size: 14,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  hasFinal
-                      ? _hcT(lang, 'dx_final_label')
-                      : _hcT(lang, 'dx_working_label'),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.3,
-                    color: primaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Conteúdo
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  hasFinal ? final_ : working,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w900,
-                    color: textColor,
-                    height: 1.25,
-                  ),
-                ),
-                if (cid.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: primaryColor.withOpacity(0.1),
-                    ),
-                    child: Text(
-                      'CID-10: $cid',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: primaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-                if (differential.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    _hcT(lang, 'dx_diff_label'),
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w900,
-                      color: primaryColor.withOpacity(0.6),
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    differential,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF555555),
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // HISTORY_CLINICAL_V1_D_R21_R3_OUTCOME_DARK_SEMANTIC
-class _OutcomeBadge extends StatelessWidget {
-  final String outcome;
-
-  const _OutcomeBadge(this.outcome);
-
-  @override
-  Widget build(BuildContext context) {
-    final lang = context.read<AppProvider>().lang;
-    final map = {
-      'internado': (_hcT(lang, 'out_internado'), const Color(0xFFC5A365)),
-      'alta': (_hcT(lang, 'pdf_out_alta'), const Color(0xFF10B981)),
-      'obito': (_hcT(lang, 'out_obito'), const Color(0xFFF87171)),
-      'transferencia': (_hcT(lang, 'out_transf'), const Color(0xFF60A5FA)),
-    };
-    final info = map[outcome] ??
-        (
-          _hcT(lang, 'out_internado'),
-          const Color(0xFFC5A365),
-        );
-    final outcomeLabel = info.$1;
-    final outcomeColor = info.$2;
-    final outcomePrefix = _hcT(lang, 'outcome_title');
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.fromLTRB(11, 9, 11, 9),
-      decoration: BoxDecoration(
-        color: const Color(0xFF252930),
-        border: Border(
-          left: BorderSide(color: outcomeColor, width: 2.2),
-          bottom: const BorderSide(color: Color(0xFF374151), width: 0.65),
-        ),
-      ),
-      child: Text(
-        '$outcomePrefix: $outcomeLabel',
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: Color(0xFFE8F0EC),
-        ),
-      ),
-    );
-  }
-}
 
 // HISTORY_CLINICAL_V1_D_R21_R3_DRUGS_DARK
 class _DrugChips extends StatelessWidget {
@@ -9341,130 +8480,6 @@ class _DrugChips extends StatelessWidget {
 }
 
 // HISTORY_CLINICAL_V1_D_R21_R3_SAVED_EVOLUTION_DARK
-class _EvolutionSection extends StatelessWidget {
-  final List<EvolutionEntry> evolutions;
-  const _EvolutionSection({required this.evolutions});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.timeline_rounded,
-                  size: 16, color: const Color(0xFF10B981)),
-              SizedBox(width: 8),
-              Text(
-                'EVOLUÇÃO CLÍNICA',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
-                  color: const Color(0xFFE8F0EC),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ...evolutions.map((e) {
-            final _lang4 = context.read<AppProvider>().lang;
-            final dt = DateTime.tryParse(e.date);
-            final dateStr = dt != null
-                ? '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')} ${_lang4 == "es" ? "a las" : "às"} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}'
-                : '';
-            final typeLabels = _lang4 == 'es'
-                ? {
-                    'evolution': 'Evolución',
-                    'nursing': 'Enfermería',
-                    'lab': 'Lab',
-                    'imaging': 'Imagen',
-                    'procedure': 'Procedimiento',
-                  }
-                : {
-                    'evolution': 'Evolução',
-                    'nursing': 'Enfermagem',
-                    'lab': 'Lab',
-                    'imaging': 'Imagem',
-                    'procedure': 'Procedimento',
-                  };
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: const BoxDecoration(
-                          color: const Color(0xFF10B981),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      Container(width: 2, height: 40, color: kBorder),
-                    ],
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              typeLabels[e.type] ??
-                                  (_lang4 == 'es' ? 'Evolución' : 'Evolução'),
-                              style: const TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w900,
-                                color: const Color(0xFF10B981),
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              dateStr,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.white60,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (e.author.isNotEmpty)
-                          Text(
-                            e.author,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.white60,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        const SizedBox(height: 4),
-                        Text(
-                          e.text,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF374151),
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-}
 
 class _EvolutionEditorCard extends StatefulWidget {
   final EvolutionEntry evo;
@@ -12124,7 +11139,7 @@ class _LabOcrService {
     String mimeType,
     String lang,
   ) async {
-    final apiKey = GeminiService.apiKeyForLab;
+    final apiKey = GeminiService.gatewayTransportMarker;
     if (apiKey.isEmpty) {
       throw Exception(
         lang == 'es'
@@ -12201,7 +11216,6 @@ class _OrganizarIASheetState extends State<_OrganizarIASheet> {
   webPlatform.WebSpeechRecognizer? _voiceRecog;
 
   static const _kGreen = Color(0xFF0D6B57);
-  static const _kPurple = Color(0xFF7C3AED);
 
   String get _lang => widget.lang;
   bool get _isEs => _lang == 'es';

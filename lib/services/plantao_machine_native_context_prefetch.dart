@@ -1,3 +1,4 @@
+import 'ai/safety/clinical_request_safety.dart';
 import 'dart:async';
 
 import 'dart:convert';
@@ -570,6 +571,7 @@ class PlantaoMachineNativePrefetchResult {
 // arbitrary product callers from fabricating the token.
 class PlantaoCanonicalRuntimeAttestation {
   PlantaoCanonicalRuntimeAttestation._({
+    required this.safetyEvidence,
     required String providerInput,
     required String language,
     required int issuedAtEpochMs,
@@ -580,6 +582,7 @@ class PlantaoCanonicalRuntimeAttestation {
         _language = language.trim().toLowerCase(),
         _issuedAtEpochMs = issuedAtEpochMs;
 
+  final ClinicalEvidenceBundle safetyEvidence;
   final String _providerInput;
   final String _language;
   final int _issuedAtEpochMs;
@@ -679,6 +682,8 @@ class PlantaoMachineNativeContextPrefetch {
             ? '$userText\n\n${result.providerPromptBlock}'
             : userText;
     final attestation = PlantaoCanonicalRuntimeAttestation._(
+      safetyEvidence:
+          ClinicalEvidenceBundle.fromMachinePack(result.contextPack),
       providerInput: providerInput,
       language: language,
       issuedAtEpochMs: DateTime.now().millisecondsSinceEpoch,

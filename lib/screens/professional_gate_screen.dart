@@ -138,7 +138,7 @@ class ProfessionalDeclarationGate {
         declarationVersion: _kDeclVersion,
         declarationLang: lang,
       );
-      debugPrint('[ProfGate] Declaração salva no Firestore — uid=$uid ver=$_kDeclVersion');
+      debugPrint('[ProfGate] Declaração salva no Firestore — uid=[redacted] ver=$_kDeclVersion');
     } catch (e) {
       // Firestore indisponível — cache local garante que o usuário não bloqueie
       debugPrint('[ProfGate] Firestore indisponível (${e.runtimeType}) — salvo apenas localmente');
@@ -149,7 +149,7 @@ class ProfessionalDeclarationGate {
     //    iCloud Keychain. Firestore acima garante persistência cross-device.
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kProfKey, true);
-    debugPrint('[ProfGate] Declaração salva em SharedPreferences — uid=$uid');
+    debugPrint('[ProfGate] Declaração salva em SharedPreferences — uid=[redacted]');
   }
 }
 

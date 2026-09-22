@@ -128,7 +128,7 @@ class FcmService {
         'savedAt':   FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
 
-      debugPrint('[FCM] Token salvo: uid=$uid docId=$docId platform=${kIsWeb ? 'web' : _platformName()}');
+      debugPrint('[FCM] Token salvo: uid=[redacted] docId=$docId platform=${kIsWeb ? 'web' : _platformName()}');
     } catch (e) {
       debugPrint('[FCM] Erro ao salvar token: $e');
     }
@@ -169,7 +169,7 @@ class FcmService {
           .collection('fcmTokens').doc(docId)
           .delete();
       await FirebaseMessaging.instance.deleteToken();
-      debugPrint('[FCM] Token removido ao logout uid=$uid');
+      debugPrint('[FCM] Token removido ao logout uid=[redacted]');
     } catch (e) {
       debugPrint('[FCM] Erro ao remover token: $e');
     }
