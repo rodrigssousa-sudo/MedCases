@@ -24,10 +24,10 @@ function registerClinicalContentRoutes({app,authenticate,limiter,db,root=process
       JSON.parse(bytes.toString('utf8'));
       return res.type('application/json').send(bytes);
     }catch(error){
-      const codes = {INVALID_PATH: 400, PAYLOAD_LIMIT: 413, NOT_CONFIGURED: 503};
+      const codes = {INVALID_PATH: 400, PAYLOAD_LIMIT: 413, NOT_CONFIGURED: 500};
       const code = error instanceof ContentRepositoryError && Object.hasOwn(codes, error.code)
         ? error.code : 'CONTENT_UNAVAILABLE';
-      return res.status(codes[code] || 503).json({error: code});
+      return res.status(codes[code] || 500).json({error: code});
     }
   });
 }

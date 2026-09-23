@@ -72,24 +72,24 @@ for (const [field, values] of Object.entries({
   AWS_ACCESS_KEY_ID: [undefined, ''], AWS_SECRET_ACCESS_KEY: [undefined, ''],
 })) for (const value of values) test('invalid configuration fail closed: ' + field + ' ' + String(value), async () => {
   const result = await route(createClinicalContentRepository({...env, [field]: value}));
-  assert.equal(result.code, 503); assert.deepEqual(result.value, {error: 'NOT_CONFIGURED'});
+  assert.equal(result.code, 500); assert.deepEqual(result.value, {error: 'NOT_CONFIGURED'});
 });
 test('unset backend keeps filesystem; unset root remains NOT_CONFIGURED', async () => {
   const repo = createClinicalContentRepository({}); assert.ok(repo instanceof FilesystemClinicalContentRepository);
   assert.equal((await route(repo)).value.error, 'NOT_CONFIGURED');
 });
 for (const [name, options, code, error] of [
-  ['empty', {bytes: Buffer.alloc(0)}, 503, 'CONTENT_UNAVAILABLE'],
+  ['empty', {bytes: Buffer.alloc(0)}, 500, 'CONTENT_UNAVAILABLE'],
   ['minimum JSON', {}, 200],
   ['exactly 8 MiB', {bytes: Buffer.from('"' + ' '.repeat(MAX_BYTES - 2) + '"')}, 200],
   ['8 MiB + 1 declared', {bytes: Buffer.alloc(MAX_BYTES + 1)}, 413, 'PAYLOAD_LIMIT'],
   ['8 MiB + 1 streamed', {bytes: Buffer.alloc(MAX_BYTES + 1), length: null}, 413, 'PAYLOAD_LIMIT'],
   ['false smaller cannot bypass size', {bytes: Buffer.alloc(MAX_BYTES + 1), length: 2}, 413, 'PAYLOAD_LIMIT'],
   ['absent length', {length: null}, 200],
-  ['smaller length', {length: 1}, 503, 'CONTENT_UNAVAILABLE'],
-  ['larger length/truncation', {length: 3}, 503, 'CONTENT_UNAVAILABLE'],
-  ['invalid length', {length: 'invalid'}, 503, 'CONTENT_UNAVAILABLE'],
-  ['invalid JSON', {bytes: Buffer.from('{invalid')}, 503, 'CONTENT_UNAVAILABLE'],
+  ['smaller length', {length: 1}, 500, 'CONTENT_UNAVAILABLE'],
+  ['larger length/truncation', {length: 3}, 500, 'CONTENT_UNAVAILABLE'],
+  ['invalid length', {length: 'invalid'}, 500, 'CONTENT_UNAVAILABLE'],
+  ['invalid JSON', {bytes: Buffer.from('{invalid')}, 500, 'CONTENT_UNAVAILABLE'],
 ]) test(name, async () => {
   const {repo, state} = storage(options);
   const result = await route(repo); assert.equal(result.code, code); assert.equal(result.sends, 1);
@@ -104,7 +104,7 @@ test('oversized declared response never consumes stream', async () => {
 for (const status of [301, 307, 403, 404, 429, 500, 503]) test('storage status ' + status + ' sanitized without error body parsing or redirect', async () => {
   let reads = 0; const body = new Readable({read() { reads++; this.push('PRIVATE_SECRET'); }});
   const {repo, state} = storage({status, body, length: null});
-  const result = await route(repo); assert.equal(result.code, 503);
+  const result = await route(repo); assert.equal(result.code, 500);
   assert.deepEqual(result.value, {error: 'CONTENT_UNAVAILABLE'}); assert.equal(reads, 0);
   assert.equal(state.calls, 1); assert.ok(body.destroyed); repo.close();
 });
@@ -120,12 +120,12 @@ test('mid-stream error never sends partial JSON', async () => {
 });
 test('timeout before response aborts transport', async () => {
   const {repo, state} = storage({stall: true, timeoutMs: 30});
-  assert.equal((await route(repo)).code, 503); assert.ok(state.signal.aborted); repo.close();
+  assert.equal((await route(repo)).code, 500); assert.ok(state.signal.aborted); repo.close();
 });
 test('timeout during stalled stream destroys stream', async () => {
   const body = new PassThrough(); body.write('{');
   const {repo, state} = storage({body, length: null, timeoutMs: 30});
-  assert.equal((await route(repo)).code, 503); assert.ok(body.destroyed); assert.ok(state.signal.aborted); repo.close();
+  assert.equal((await route(repo)).code, 500); assert.ok(body.destroyed); assert.ok(state.signal.aborted); repo.close();
 });
 test('caller cancellation and pre-aborted signal', async () => {
   const {repo, state} = storage({stall: true}); const controller = new AbortController();
