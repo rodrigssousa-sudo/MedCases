@@ -91,6 +91,8 @@ void main() {
           },
         }
     ];
+    Directory('.dart_tool/final_entitlement_free_premium')
+        .createSync(recursive: true);
     File('.dart_tool/final_entitlement_free_premium/feature-matrix.json')
         .writeAsStringSync(const JsonEncoder.withIndent('  ').convert({
       'scope':

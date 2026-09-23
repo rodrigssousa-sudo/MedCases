@@ -15171,7 +15171,7 @@
         "lib/services/entitlement_service.dart",
         "lib/services/free_drug_catalog.dart"
       ],
-      "sha256": "dd6aab356972d6304ba691330688bb8e4a44ce19bbdab251e79f407f1670d463"
+      "sha256": "b7e5ce56e0396fa6e13123f78adefe43d8c9a5a2aca47e23ba0b2813bcae9aca"
     },
     {
       "path": "test/services/final_release_cache_test.dart",
