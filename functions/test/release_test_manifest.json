@@ -790,7 +790,8 @@
         "server/test/study_background_transcription_routes_contract_test.js",
         "server/test/usage_reservation_guard_test.js",
         "server/test/clinical_content_routes_test.js",
-        "server/test/cors_release_policy_test.js"
+        "server/test/cors_release_policy_test.js",
+        "server/test/clinical_content_repository_test.js"
       ]
     },
     {

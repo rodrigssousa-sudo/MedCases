@@ -1287,6 +1287,7 @@ require('./provider_transport_routes').registerProviderTransport({
 });
 
 require('./clinical_content_routes').registerClinicalContentRoutes({
+  repository: require('./clinical_content_repository').createClinicalContentRepository(),
   app, authenticate: authenticateFirebaseToken,
   limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
   db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
