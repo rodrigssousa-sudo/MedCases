@@ -1,3 +1,4 @@
+const {wav}=require('./media_fixture');
 'use strict';
 const {test}=require('node:test');const assert=require('node:assert/strict');
 const {allowedPath,resourceKey,registerProviderTransport}=require('../provider_transport_routes');
@@ -12,7 +13,7 @@ test('existing-app registration retains Firebase middleware and UID resource bou
  registerProviderTransport({app:{use:(path,a,l,h)=>{assert.equal(path,'/api/ai/provider');assert.equal(a,auth);assert.equal(l,limiter);handler=h;}},express:{json:()=> (req,res,next)=>next()},authenticate:auth,limiter,db,keyProvider:()=> 'server-test-secret',fetchImpl:async(url,options)=>{upstream.push({url:String(url),options});return new Response(JSON.stringify({name:'files/example',uri:'https://generativelanguage.googleapis.com/v1beta/files/example'}),{status:200,headers:{'content-type':'application/json'}});}});
  async function invoke(uid,path,body={},method='POST'){
   const res={code:200,headers:{},status(c){this.code=c;return this;},json(v){this.body=v;return this;},send(v){this.body=v;return this;},end(){},on(){},setHeader(k,v){this.headers[k]=v;}};
-  await handler({auth:uid?{uid}:undefined,path,method,headers:{},query:{},body},res);return res;
+  await handler({auth:uid?{uid}:undefined,path,method,headers:{'x-goog-upload-header-content-length':'4'},query:{},body},res);return res;
  }
  assert.equal((await invoke(null,'/v1beta/models/gemini-2.5-flash:generateContent')).code,401);
  assert.equal((await invoke('A','/v1beta/files/not-owned',{},'GET')).code,403);assert.equal(upstream.length,0);
@@ -35,7 +36,7 @@ test('audio generation claims once across direct requests and bound uploaded ref
   const res={code:200,status(c){this.code=c;return this;},json(v){this.body=v;return this;},send(v){this.body=v;return this;},end(){},on(){},setHeader(){}};
   await handler({auth:{uid:'A'},path,method,headers,query:{},body},res);return res;
  }
- const audio={contents:[{parts:[{inlineData:{mimeType:'audio/mp4',data:'synthetic'}}]}]};
+ const audio={contents:[{parts:[{inlineData:{mimeType:'audio/wav',data:wav().toString('base64')}}]}]};
  const result=await Promise.all([call(audio),call(audio)]);assert.equal(result.filter(r=>r.code===200).length,1);assert.equal(generations,1);
  await db.collection('providerResourceOwnership').doc(resourceKey('A','files/audio')).set({uid:'A',usage});
  const replay=await call({contents:[{parts:[{fileData:{fileUri:'https://generativelanguage.googleapis.com/v1beta/files/audio'}}]}]},{});

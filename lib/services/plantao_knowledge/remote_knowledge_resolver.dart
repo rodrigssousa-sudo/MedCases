@@ -174,39 +174,67 @@ class TherapeuticOptionSession {
   final Future<bool> Function(String id) lookupDrug;
   final Future<List<TherapeuticEvidenceClaim>> Function() refreshEvidence;
   final bool Function()? externalConflictDetected;
-  bool get current =>
-      ownsRequest() &&
-      !resolution.conflict &&
-      resolution.protocol != null &&
-      resolver.isCurrent(resolution.protocol!);
+  bool get current {
+    try {
+      return ownsRequest() &&
+          externalConflictDetected?.call() != true &&
+          !resolution.conflict &&
+          resolution.protocol != null &&
+          resolver.isCurrent(resolution.protocol!);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Synchronous last-mile gate, also called by the UI immediately before the
+  /// clipboard handoff. No await may separate this decision from that handoff.
+  bool authorizesDelivery(String optionId, String text) {
+    try {
+      if (!current) return false;
+      final options =
+          resolution.protocol!.options.where((o) => o['optionId'] == optionId);
+      return options.length == 1 &&
+          PracticalPrescriptionFormatter.format(options.single, language) ==
+              text &&
+          safetyAllows(text) &&
+          current;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<String?> copy(String optionId) async {
     try {
-      if (!current) return null;
-      if (externalConflictDetected?.call() == true) {
-        resolver.event('REMOTE_CONTENT_REVIEW_RECOMMENDED',
-            protocolId: resolution.protocol!.id,
-            version: resolution.protocol!.version,
-            conflict: true);
+      if (!current) {
+        if (externalConflictDetected?.call() == true) {
+          resolver.event('REMOTE_CONTENT_REVIEW_RECOMMENDED',
+              protocolId: resolution.protocol?.id,
+              version: resolution.protocol?.version,
+              conflict: true);
+        }
         return null;
       }
+      final options =
+          resolution.protocol!.options.where((o) => o['optionId'] == optionId);
+      if (options.length != 1) return null;
+      final text =
+          PracticalPrescriptionFormatter.format(options.single, language);
+      if (text == null || !authorizesDelivery(optionId, text)) return null;
+      final evidence = await refreshEvidence();
+      if (!authorizesDelivery(optionId, text)) return null;
       final fresh = await resolver.resolve(resolution.contextId,
-          externalClaims: await refreshEvidence());
-      if (!current ||
+          externalClaims: evidence);
+      if (!authorizesDelivery(optionId, text) ||
           fresh.conflict ||
           fresh.protocol?.hash != resolution.protocol?.hash) return null;
       final matches =
           fresh.protocol!.options.where((o) => o['optionId'] == optionId);
       if (matches.length != 1) return null;
-      final o = matches.single;
-      for (final d in o['drugs'] as List) {
-        if (!await lookupDrug(contentObject(d)['drugId'] as String) || !current)
-          return null;
+      for (final d in matches.single['drugs'] as List) {
+        final found = await lookupDrug(contentObject(d)['drugId'] as String);
+        if (!found || !authorizesDelivery(optionId, text)) return null;
       }
-      final text = PracticalPrescriptionFormatter.format(o, language);
-      if (text == null || !current || !safetyAllows(text)) {
-        resolver.event('COPY_DENIED', optionId: optionId, language: language);
-        return null;
-      }
+      if (!authorizesDelivery(optionId, text)) return null;
       resolver.event('COPY_AUTHORIZED', optionId: optionId, language: language);
       return text;
     } catch (_) {

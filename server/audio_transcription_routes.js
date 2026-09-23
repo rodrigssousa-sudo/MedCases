@@ -1,3 +1,4 @@
+const {inspectAudio,combineProofs,digest}=require('./audio_media_budget');
 const {assertUsageReservation,usageReceipt}=require('./usage_reservation_guard');
 const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
@@ -680,7 +681,8 @@ function registerAudioTranscriptionRoutes({
 
         const owner = new MonthlyUsageOwner({db});
         const receipt = usageReceipt(claims.usage);
-        const claimed = await owner.claimExecution(claims.uid, receipt);
+        const media = combineProofs([await inspectAudio(audioBuffer)],digest(JSON.stringify({sessionId:parsed.sessionId,idempotencyKey:parsed.idempotencyKey,model:parsed.model,language:parsed.language,prompt:parsed.prompt})));
+        const claimed = await owner.claimExecution(claims.uid, receipt, 0, media);
         if (!claimed.claimed) throw new AudioBackendError('audio_execution_already_claimed',409);
         execution = {owner, receipt, uid:claims.uid};
         const transcript = await callOpenAiTranscription(runtime, parsed);

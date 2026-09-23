@@ -102,7 +102,7 @@ async function grant(base, sessionId = 'session_audio_001', dedupe = 'session_au
 function transcriptionForm({
   sessionId = 'session_audio_001',
   dedupe = 'session_audio_001:segment:0',
-  bytes = Buffer.from('synthetic-m4a-payload-without-patient-data', 'utf8'),
+  bytes = require('node:fs').readFileSync(require('node:path').join(__dirname,'fixtures/silence-4s-aac.m4a')),
 } = {}) {
   const form = new FormData();
   form.append('sessionId', sessionId);

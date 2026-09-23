@@ -357,6 +357,11 @@
       "file": "functions/test/cors_release_policy.test.js",
       "category": "security",
       "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/callable_security.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
     }
   ],
   "historicalPipelineArchaeology": [
@@ -754,7 +759,8 @@
         "functions/test/shadow_decommission.test.js",
         "functions/test/shadow_handler_parity.test.js",
         "functions/test/release_manifest.test.js",
-        "functions/test/cors_release_policy.test.js"
+        "functions/test/cors_release_policy.test.js",
+        "functions/test/callable_security.test.js"
       ]
     },
     {
@@ -822,7 +828,8 @@
         "test/services/entitlement_integration_closure_test.dart",
         "test/providers/firestore_typed_reads_test.dart",
         "test/services/ai/safety/clinical_safety_flow_integration_test.dart",
-        "test/services/ai_pipeline/plantao/plantao_drug_identity_provenance_binding_shadow_adapter_test.dart"
+        "test/services/ai_pipeline/plantao/plantao_drug_identity_provenance_binding_shadow_adapter_test.dart",
+        "test/plantao_knowledge/security_copy_race_test.dart"
       ]
     },
     {
@@ -835,6 +842,13 @@
       "files": [
         "test/services/private_cache_web_test.dart",
         "test/services/canonical_catalog_web_cipher_test.dart"
+      ]
+    },
+    {
+      "id": "r2-adversarial-server",
+      "runtime": "node",
+      "files": [
+        "server/test/security_r2_test.js"
       ]
     }
   ],

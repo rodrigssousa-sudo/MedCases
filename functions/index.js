@@ -1,4 +1,5 @@
 const console = require('./private_logger');
+const {callableCorsOrigins, requireCallableRevocation} = require('./callable_security');
 // MEDCASES_SHADOW_OBSERVATION_S1_IMPORT_BEGIN
 const {
   createClinicalShadowObservationS1Runtime,
@@ -2552,12 +2553,14 @@ function _callGeminiRestAIRaw(apiKey, model, systemPrompt, contents, maxOutputTo
 
 exports.atenderConsultaIA = onCall(
   {
+    cors: callableCorsOrigins(),
     region:         'us-central1',
     secrets:        [GEMINI_AI_KEY],
     timeoutSeconds: 90,
     memory:         '512MiB',
   },
   async (request) => {
+    await requireCallableRevocation(request, admin.auth());
     const startMs = Date.now();
 
     // ── 1. AUTENTICAÇÃO OBRIGATÓRIA ─────────────────────────────────────────
@@ -4823,12 +4826,14 @@ async function _requireMasterForAiControl(request) {
 
 exports.adminSetGptOperationalState = onCall(
   {
+    cors: callableCorsOrigins(),
     region: 'us-central1',
     secrets: [GPT_ADMIN_UNLOCK_CODE],
     timeoutSeconds: 30,
     memory: '256MiB',
   },
   async (request) => {
+    await requireCallableRevocation(request, admin.auth());
     const actor = await _requireMasterForAiControl(request);
     const enabled = request.data?.enabled === true;
 

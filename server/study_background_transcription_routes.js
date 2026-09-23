@@ -1,3 +1,4 @@
+const {inspectAudio,combineProofs,digest}=require('./audio_media_budget');
 const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
 
@@ -354,7 +355,8 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
 
         const owner = new MonthlyUsageOwner({db});
         const receipt = usageReceipt(job.usage);
-        const claimed = await owner.claimExecution(grant.uid,receipt,index);
+        const media = combineProofs([await inspectAudio(body)],digest(JSON.stringify({jobId,index,mimeType})));
+        const claimed = await owner.claimExecution(grant.uid,receipt,index,media);
         if (!claimed.claimed) return res.status(409).json({error:'execution_already_claimed'});
         // At-most-once after upstream dispatch, including unknown network outcome.
         let transcript;

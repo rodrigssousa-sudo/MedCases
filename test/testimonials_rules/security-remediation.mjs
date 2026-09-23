@@ -31,6 +31,14 @@ try{
  await assertSucceeds(setDoc(doc(a,'users/audit-a/clinical_histories/new'),{synthetic:true}));pass('owner private create');
  await assertFails(setDoc(doc(b,'users/audit-a/clinical_histories/new2'),{synthetic:true}));pass('cross owner private create denied');
  for(const key of billing){const uid='create-'+key,db=env.authenticatedContext(uid).firestore();await assertFails(setDoc(doc(db,'users',uid),{[key]:true}));pass('billing create denied '+key);}
+ // PF-002: retain own-session lifecycle without permitting ownership transfer.
+ const legacy=doc(a,'sessions','r2-owned');
+ await assertSucceeds(setDoc(legacy,{userId:'audit-a',technical:'TEST'}));pass('legacy owner create');
+ await assertSucceeds(getDoc(legacy));pass('legacy owner read');
+ await assertSucceeds(updateDoc(legacy,{technical:'UPDATED'}));pass('legacy update preserving owner');
+ await assertFails(updateDoc(legacy,{userId:'audit-b'}));pass('legacy ownership mutation denied');
+ await assertFails(getDoc(doc(b,'sessions','r2-owned')));pass('legacy cross-user injection denied');
+ await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(),'sessions','r2-owned')));pass('legacy anonymous denied');
  await env.withSecurityRulesDisabled(async c=>{
   const db=c.firestore();const adapter={collection:name=>({doc:id=>doc(db,name,id)}),runTransaction:fn=>runTransaction(db,tx=>fn({get:async ref=>{const s=await tx.get(ref);return {exists:s.exists(),data:()=>s.data()};},set:(...args)=>tx.set(...args)}))};
   const secret='synthetic-authorized-webhook-test-only-0000';

@@ -42,7 +42,7 @@ async function execute(endpoint,observerMode,fixture){
  const data={uid:fixture.wrongUid?'other-user':'fixture-user',userMessage:' synthetic request ',systemPrompt:' synthetic safety instructions ',history:[{role:'user',content:'synthetic history'}],longResponse:fixture.study||false,mode:fixture.study?'study':'plantao',requestId:'fixed-request'};
  let output;
  if(endpoint==='gemini'){
-  try{output=await h.handlers.atenderConsultaIA({auth:fixture.noAuth?null:{uid:'fixture-user'},data});}catch(e){output={error:e.code,message:e.message};}
+  try{output=await h.handlers.atenderConsultaIA({auth:fixture.noAuth?null:{uid:'fixture-user'},rawRequest:{headers:{authorization:'Bearer fixture-token'}},data});}catch(e){output={error:e.code,message:e.message};}
  }else{
   const req=Object.assign(new EventEmitter(),{method:'POST',headers:{authorization:'Bearer fixture-token','content-type':'application/json'},body:data});
   const res=Object.assign(new EventEmitter(),{headers:{},chunks:[],code:200,writableEnded:false,status(n){this.code=n;return this;},setHeader(k,v){this.headers[k]=v;},flushHeaders(){},flush(){},write(x){this.chunks.push(x);},end(){this.writableEnded=true;return this;},json(x){this.payload=plain(x);this.end();return this;}});

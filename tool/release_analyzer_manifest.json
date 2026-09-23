@@ -3102,7 +3102,7 @@
         "lib/widgets/common_widgets.dart",
         "lib/widgets/error_state_widget.dart"
       ],
-      "sha256": "40f398b988730e8137439174eaf4e344066fe49dddb1e281c1eb3b7873cb2ab8"
+      "sha256": "540ac3876a3da79e7e8ca690190016d3baeff8005b60e4f13efd131747aafee8"
     },
     {
       "path": "lib/screens/avaliacao_screen.dart",
@@ -7337,6 +7337,7 @@
         "lib/services/plantao_knowledge/private_knowledge_snapshot_store.dart",
         "lib/services/plantao_knowledge/remote_knowledge_resolver.dart",
         "test/plantao_knowledge/remote_knowledge_test.dart",
+        "test/plantao_knowledge/security_copy_race_test.dart",
         "test/plantao_knowledge/therapeutic_options_view_test.dart",
         "test/services/clinical_content/clinical_content_foundation_test.dart",
         "test/services/clinical_content/protocol_expansion_closure_test.dart",
@@ -7355,6 +7356,7 @@
       "currentCallers": [
         "lib/providers/app_provider.dart",
         "test/plantao_knowledge/remote_knowledge_test.dart",
+        "test/plantao_knowledge/security_copy_race_test.dart",
         "test/services/clinical_content/clinical_content_source_models_test.dart",
         "test/services/clinical_content/protocol_expansion_closure_test.dart"
       ],
@@ -8162,9 +8164,10 @@
         "lib/screens/ai/widgets/therapeutic_options_view.dart",
         "lib/screens/ai_screen.dart",
         "test/plantao_knowledge/remote_knowledge_test.dart",
+        "test/plantao_knowledge/security_copy_race_test.dart",
         "test/plantao_knowledge/therapeutic_options_view_test.dart"
       ],
-      "sha256": "2375853a39a16ca761494121677ba939fa6cc43848c3624b30e820b7355e432e"
+      "sha256": "ecc1dae25e3fe698d3ea3bb0f3f2c50c2c42528011469e0298b9a39a884890d3"
     },
     {
       "path": "lib/services/plantao_machine_native_context_prefetch.dart",
@@ -11658,6 +11661,7 @@
       "currentCallers": [
         "test/plantao_knowledge/pipeline_boundary_test.dart",
         "test/plantao_knowledge/remote_knowledge_test.dart",
+        "test/plantao_knowledge/security_copy_race_test.dart",
         "test/plantao_knowledge/therapeutic_options_view_test.dart"
       ],
       "sha256": "7355fd2a5718e0e71440c7cda38348d95a116aca733236f1967a8bc3609d84cc"
@@ -11700,6 +11704,19 @@
       ],
       "currentCallers": [],
       "sha256": "f17e6fa9d3d4fa13bc5457b7c9bdeb311fbff6fdfc8d95e15711fcba1fc39b1a"
+    },
+    {
+      "path": "test/plantao_knowledge/security_copy_race_test.dart",
+      "classification": "RELEASE_TEST",
+      "runtimeReachable": false,
+      "localImports": [
+        "lib/services/clinical_content/clinical_content_gateway.dart",
+        "lib/services/clinical_content/clinical_content_models.dart",
+        "lib/services/plantao_knowledge/remote_knowledge_resolver.dart",
+        "test/plantao_knowledge/knowledge_fixture.dart"
+      ],
+      "currentCallers": [],
+      "sha256": "721f004abf6b30d03dbbacf376173e9caccfb61f263e5a26e0a25567b80dc83a"
     },
     {
       "path": "test/plantao_knowledge/therapeutic_options_view_test.dart",

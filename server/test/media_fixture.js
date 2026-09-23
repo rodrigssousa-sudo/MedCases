@@ -1,0 +1,6 @@
+'use strict';
+const {inspectAudio,combineProofs,digest}=require('../audio_media_budget');
+function wav(ms=4000){const rate=8000,n=ms*rate/1000,b=Buffer.alloc(44+n*2);b.write('RIFF');b.writeUInt32LE(b.length-8,4);b.write('WAVEfmt ',8);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(rate,24);b.writeUInt32LE(rate*2,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(n*2,40);return b;}
+async function proof(ms=4000,key='TECHNICAL_REQUEST'){return combineProofs([await inspectAudio(wav(ms))],digest(Buffer.from(key)));}
+function database(){const data=new Map([['users/A',{plan:'free'}],['users/B',{plan:'free'}]]);let q=Promise.resolve();const ref=p=>({path:p,get:async()=>({exists:data.has(p),data:()=>structuredClone(data.get(p))}),set:async v=>data.set(p,structuredClone(v))});return {data,collection:c=>({doc:id=>ref(c+'/'+id)}),runTransaction(fn){const w=q.then(async()=>{const writes=[];const v=await fn({get:r=>r.get(),set:(r,v,opt)=>writes.push([r.path,opt?.merge?{...data.get(r.path),...v}:structuredClone(v)])});for(const[p,v]of writes)data.set(p,v);return v});q=w.catch(()=>{});return w}};}
+module.exports={wav,proof,database};

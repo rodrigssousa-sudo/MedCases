@@ -6,6 +6,8 @@ const { getFirestore } = require('firebase-admin/firestore');
 const WEBHOOK_PATH = '/api/billing/revenuecat/webhook';
 const WEBHOOK_AUTH_ENV = 'MEDCASES_REVENUECAT_WEBHOOK_AUTH';
 const PREMIUM_ENTITLEMENT = 'medcases_pro_premium';
+// Bound skew without rewriting event timestamps or ordering legitimate events.
+const MAX_FUTURE_EVENT_SKEW_MS = 5 * 60 * 1000;
 
 function clean(value) { return String(value ?? '').trim(); }
 
@@ -32,7 +34,7 @@ function deriveRevenueCatBillingState(event, nowMs = Date.now()) {
     ? event.entitlement_ids.map(clean)
     : [];
 
-  if (!eventId || !Number.isFinite(eventTimestampMs)) {
+  if (!eventId || !Number.isSafeInteger(eventTimestampMs) || eventTimestampMs <= 0) {
     return { ignored: true, reason: 'event_identity_invalid' };
   }
   if (!uid || uid.startsWith('$RCAnonymousID:') || uid.length > 128) {
@@ -81,6 +83,11 @@ function createRevenueCatWebhookHandler({
     }
 
     const state = deriveRevenueCatBillingState(req.body?.event, nowMsProvider());
+    // Reject before opening the transaction: neither dedup nor ordering is
+    // advanced by a future event. A corrected event may be safely retried.
+    if (!state.ignored && state.eventTimestampMs > nowMsProvider() + MAX_FUTURE_EVENT_SKEW_MS) {
+      return res.status(422).json({ok:false,error:'REVENUECAT_EVENT_FUTURE_TIMESTAMP'});
+    }
     if (state.ignored) {
       return res.status(200).json({ ok: true, ignored: true, reason: state.reason });
     }
@@ -153,6 +160,7 @@ function registerRevenueCatWebhookRoutes({ app, firebaseAdminApp, authorizationP
 
 module.exports = {
   WEBHOOK_PATH,
+  MAX_FUTURE_EVENT_SKEW_MS,
   WEBHOOK_AUTH_ENV,
   PREMIUM_ENTITLEMENT,
   isAuthorizedWebhook,

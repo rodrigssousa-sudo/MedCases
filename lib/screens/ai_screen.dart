@@ -4342,7 +4342,7 @@ class _AiScreenState extends State<AiScreen> {
     final id=optionId??_therapeuticPrimary[messageId]?['optionId'] as String?;
     final text=session==null||id==null?null:await session.copy(id);
     if(!mounted)return;
-    if(text==null||session?.current!=true) {
+    if(text==null||id==null||session?.authorizesDelivery(id,text)!=true) {
       final es=context.read<AppProvider>().lang=='es';
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(es
         ?'Prescripción no disponible: faltan datos o validación clínica.'

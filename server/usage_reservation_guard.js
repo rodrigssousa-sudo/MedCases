@@ -1,10 +1,10 @@
 'use strict';
-async function assertUsageReservation(db,uid,headers,kind='transcription') {
+async function assertUsageReservation(db,uid,headers,kind='transcription',allowCompleted=false) {
  const id=headers['x-medcases-usage-reservation'];const attempt=headers['x-medcases-usage-attempt'];
  if(typeof id!=='string'||! /^[a-f0-9]{64}$/.test(id)||typeof attempt!=='string'||!attempt)throw Error('SERVER_QUOTA_RESERVATION_REQUIRED');
  const snapshot=await db.collection('usageReservations').doc(id).get();
  const value=snapshot.exists?snapshot.data():null;
- if(!value || value.uid!==uid || !['reserved','executing'].includes(value.state) || value.attempt!==attempt ||
+ if(!value || value.uid!==uid || !(allowCompleted?['reserved','executing','completed']:['reserved','executing']).includes(value.state) || value.attempt!==attempt ||
    !Array.isArray(value.kinds) || !value.kinds.includes(kind) || !Number.isSafeInteger(value.maximumMs) || value.maximumMs<=0)throw Error('SERVER_QUOTA_RESERVATION_INVALID');
  return {'x-medcases-usage-reservation':id,'x-medcases-usage-attempt':attempt};
 }

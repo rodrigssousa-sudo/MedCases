@@ -1,3 +1,4 @@
+const {proof}=require('./media_fixture');
 'use strict';
 const {test}=require('node:test');const assert=require('node:assert/strict');
 const {MonthlyUsageOwner}=require('../monthly_usage_owner');
@@ -44,7 +45,8 @@ test('Free transcription limit is 30 minutes, independent of device',async()=>{
 test('execution slots are atomic, bounded, shared across providers and never refunded by client',async()=>{
  const owner=new MonthlyUsageOwner({db:database()});
  const r=await owner.reserve('A',{...req('audio',900000),kinds:['transcription'],executionCount:2});
- const claims=await Promise.all([owner.claimExecution('A',r,0),owner.claimExecution('A',r,0)]);
+ const media=await proof();
+ const claims=await Promise.all([owner.claimExecution('A',r,0,media),owner.claimExecution('A',r,0,media)]);
  assert.equal(claims.filter(c=>c.claimed).length,1);
  assert.equal((await owner.finish('A',{...r,actualMs:0,success:false})).chargedMs,900000);
  await assert.rejects(owner.claimExecution('B',r,1),/NOT_OWNED/);
@@ -52,7 +54,7 @@ test('execution slots are atomic, bounded, shared across providers and never ref
  await assert.rejects(owner.claimExecution('A',r,2),/NOT_AUTHORIZED/);
  await assert.rejects(owner.failBeforeExecution('A',r),/BILLABLE/);
  await owner.completeExecution('A',r,0);await owner.completeExecution('A',r,0);
- assert.equal((await owner.claimExecution('A',r,1)).claimed,true);
+ assert.equal((await owner.claimExecution('A',r,1,media)).claimed,true);
  assert.equal((await owner.completeExecution('A',r,1)).state,'completed');
  assert.equal((await owner.claimExecution('A',r,0)).claimed,false);
 });

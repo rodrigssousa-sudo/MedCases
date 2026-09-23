@@ -386,15 +386,22 @@ service cloud.firestore {
       allow create: if isAuthed()
         && request.resource.data.userId == request.auth.uid;
 
-      allow read, update, delete: if isAuthed()
+      allow read, delete: if isAuthed()
         && resource.data.userId == request.auth.uid;
+
+      // Preserve the legacy lifecycle, but ownership cannot be transferred.
+      allow update: if isAuthed()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId;
 
       // BUILD 332: Admin/Master podem listar e ler sessões para sincronismo
       // no Painel Master — loadAiSessions usa /users/{uid}/ai_chat_history
       // mas esta coleção raiz é lida pelo painel de suporte.
       allow read, list: if isAdmin();
 
-      match /{allSubcollections=**} {
+      // Require a child collection/document: a v2 recursive wildcard alone
+      // also matches the parent session and would bypass immutable ownership.
+      match /{childCollection}/{childDocument}/{allSubcollections=**} {
         allow read: if r22aSessionOwner(sessionId) || isAdmin();
         allow create, update, delete: if r22aSessionOwner(sessionId);
       }

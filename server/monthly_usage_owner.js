@@ -1,4 +1,5 @@
 'use strict';
+const {validProof}=require('./audio_media_budget');
 const crypto=require('node:crypto');
 const {resolveMedCasesTier}=require('./calculator_entitlement_session');
 const LIMITS=Object.freeze({free:{recording:15*60000,transcription:30*60000},premium:{recording:240*60000,transcription:90*60000}});
@@ -50,7 +51,7 @@ class MonthlyUsageOwner {
  }
  // Only server execution paths can claim work. A finite plan is fixed when the
  // reservation is created; each slot is single-use across ALL providers.
- async claimExecution(uid,{id,attempt},index=0){
+ async claimExecution(uid,{id,attempt},index=0,media){
   if(!/^[a-f0-9]{64}$/.test(id)||!Number.isInteger(index)||index<0)throw Error('INVALID_EXECUTION');
   return this.db.runTransaction(async tx=>{
    const ref=this.db.collection('usageReservations').doc(id);
@@ -58,10 +59,16 @@ class MonthlyUsageOwner {
    const [snap,prior]=await Promise.all([tx.get(ref),tx.get(execution)]);
    if(!snap.exists||snap.data().uid!==uid)throw Error('RESERVATION_NOT_OWNED');
    const op=snap.data();if(op.attempt!==attempt)throw Error('STALE_ATTEMPT');
-   if(prior.exists) return {claimed:false,state:prior.data().state};
+   if(prior.exists) {
+    if(media && (!validProof(media)||prior.data().mediaHash!==media.sha256||prior.data().requestHash!==media.requestHash))throw Error('EXECUTION_BINDING_CONFLICT');
+    return {claimed:false,state:prior.data().state};
+   }
    if(!['reserved','executing'].includes(op.state)||index>=(op.executionCount||1)||!op.kinds.includes('transcription'))throw Error('EXECUTION_NOT_AUTHORIZED');
-   tx.set(ref,{...op,state:'executing',chargedMs:op.maximumMs});
-   tx.set(execution,{uid,id,attempt,index,state:'executing',startedAt:this.now()});
+   if(!validProof(media))throw Error('MEDIA_PROOF_REQUIRED');
+   const used=op.authorizedMediaMs||0;
+   if(!Number.isSafeInteger(used)||used<0||media.durationMs>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
+   tx.set(ref,{...op,state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+media.durationMs});
+   tx.set(execution,{uid,id,attempt,index,mediaHash:media.sha256,requestHash:media.requestHash,durationMs:media.durationMs,state:'executing',startedAt:this.now()});
    return {claimed:true,state:'executing'};
   });
  }
