@@ -1,3 +1,6 @@
+import 'private_session_epoch.dart';
+import 'secure_session_store_native.dart'
+    if (dart.library.js_interop) 'secure_session_store_web.dart';
 // auth_service.dart — Firebase Auth + Firestore via REST (Web) e SDK (nativo)
 import 'dart:async';
 import 'dart:convert';
@@ -9,7 +12,6 @@ import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/widgets.dart' show ValueNotifier;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart'; // BUILD 294: guard Firebase.apps
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
@@ -276,11 +278,17 @@ class AuthService {
   /// Chamado pelo LoginScreen imediatamente após login bem-sucedido,
   /// apenas quando o usuário marcou "Manter conectado".
   static Future<void> saveSession(UserModel user) async {
+    final epoch = _sessionGeneration;
+    final privateEpoch = PrivateSessionEpoch.current;
     try {
       final p = await SharedPreferences.getInstance();
+      if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return;
+      await SecureSessionStore.write({'uid': user.uid,
+        'refreshToken': _cachedRefreshTk, 'userJson': jsonEncode(user.toJson())});
+      if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return;
       await p.setBool(_kKeepLoggedIn, true);
-      await p.setString(_kRefreshToken, _cachedRefreshTk);
-      await p.setString(_kUserJson, jsonEncode(user.toJson()));
+      await p.remove(_kRefreshToken);
+      await p.remove(_kUserJson);
     } catch (_) {}
   }
 
@@ -292,6 +300,7 @@ class AuthService {
   //   Call 1: troca refreshToken_A → recebe refreshToken_B (novo)  ← persiste B
   //   Call 2: troca refreshToken_A (stale) → recebe 400 INVALID    ← limpa sessão!
   // O resultado: sessão destruída ao abrir teclado, usuário é deslogado.
+  static int _sessionGeneration = 0;
   static Future<UserModel?>? _restoreInFlight;
 
   /// Lê a sessão persistida e, se válida, renova o idToken silenciosamente.
@@ -315,6 +324,8 @@ class AuthService {
   }
 
   static Future<UserModel?> _restoreSessionImpl() async {
+    final epoch = _sessionGeneration;
+    final privateEpoch = PrivateSessionEpoch.current;
     // BUILD 463-A.2-R1: persistence_restore telemetry
     // NOTE: This path is the Web REST identity-toolkit refresh (securetoken.googleapis.com).
     // It does NOT establish a Firebase SDK session (FirebaseAuth.instance.currentUser).
@@ -333,8 +344,23 @@ class AuthService {
         return null;
       }
 
-      final refreshToken = p.getString(_kRefreshToken) ?? '';
-      final userJson = p.getString(_kUserJson) ?? '';
+      var stored = await SecureSessionStore.read();
+      if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return null;
+      if (stored == null) {
+        final legacy = p.getString(_kUserJson);
+        final token = p.getString(_kRefreshToken);
+        final sdkUid = FirebaseAuth.instance.currentUser?.uid;
+        if (legacy != null && token != null && sdkUid != null &&
+            (jsonDecode(legacy) as Map)['uid'] == sdkUid) {
+          stored = {'uid': sdkUid, 'refreshToken': token, 'userJson': legacy};
+          await SecureSessionStore.write(stored);
+          if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return null;
+          await p.remove(_kRefreshToken);
+          await p.remove(_kUserJson);
+        }
+      }
+      final refreshToken = stored?['refreshToken'] ?? '';
+      final userJson = stored?['userJson'] ?? '';
       if (refreshToken.isEmpty || userJson.isEmpty) {
         logSdkEstablishFailed(
             stage: 'prefs_check', reason: 'missing_refresh_token_or_user_json');
@@ -351,6 +377,7 @@ class AuthService {
           )
           .timeout(const Duration(seconds: 4));
 
+      if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return null;
       if (resp.statusCode != 200) {
         // Token inválido/expirado — limpa sessão e força novo login
         logSdkEstablishFailed(
@@ -377,13 +404,15 @@ class AuthService {
           int.tryParse(body['expires_in']?.toString() ?? '3600') ?? 3600;
       final uid = body['user_id'] as String? ?? '';
 
+      if (stored?['uid'] != uid || epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return null;
       // Atualiza cache em memória
       _cachedIdToken = newIdToken;
       _cachedRefreshTk = newRefreshToken;
       _tokenExpiresAt = DateTime.now().add(Duration(seconds: expiresIn - 300));
 
       // Persiste o novo refreshToken
-      await p.setString(_kRefreshToken, newRefreshToken);
+      await SecureSessionStore.write({'uid': uid, 'refreshToken': newRefreshToken, 'userJson': userJson});
+      if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return null;
 
       // ── Re-lê o documento Firestore para obter o status ATUAL ──────────────
       // O JSON em cache pode ter status:'pending' do momento do cadastro.
@@ -402,7 +431,8 @@ class AuthService {
             data['uid'] = uid;
             freshUser = UserModel.fromMap(data);
             // Atualiza o JSON em cache com os dados frescos
-            await p.setString(_kUserJson, jsonEncode(freshUser.toJson()));
+            if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return null;
+            await SecureSessionStore.write({'uid': uid, 'refreshToken': newRefreshToken, 'userJson': jsonEncode(freshUser.toJson())});
           }
         } catch (_) {
           // Falha de rede ao re-ler Firestore — usa JSON em cache como fallback
@@ -420,6 +450,7 @@ class AuthService {
           });
 
       // Seta webUser para que _AuthGate roteie direto ao MainShell
+      if (epoch != _sessionGeneration || privateEpoch != PrivateSessionEpoch.current) return null;
       if (kIsWeb) webUser.value = user;
 
       // SUPPRESSED: logSdkTokenRefreshed() is NOT emitted here.
@@ -439,6 +470,14 @@ class AuthService {
 
   /// Remove todos os dados de sessão persistida (logout explícito ou token expirado).
   static Future<void> clearSession() async {
+    _sessionGeneration++;
+    PrivateSessionEpoch.invalidate();
+    _restoreInFlight = null;
+    _cachedRefreshTk = '';
+    _cachedIdToken = '';
+    try { await SecureSessionStore.clear(); } catch (_) {
+      debugPrint('SECURE_SESSION_CLEAR_FAILED');
+    }
     try {
       final p = await SharedPreferences.getInstance();
       await p.remove(_kKeepLoggedIn);

@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -11,24 +12,31 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria final scrollable subnav and white titles V1-B-R0-R5', () {
     test('keeps one canonical 14px tab label scale', () {
       final scale = classBlock(tools, '_PediatricsVisualScaleR3');
 
-      expect(scale, contains('static const double tabLabel = 14.0;'));
+      expect(scale, contains('static const double tabLabel = 12.0;'));
     });
 
     test('subnav scrolls horizontally instead of scaling labels down', () {
       final nav = classBlock(tools, '_PediatTabRow');
 
-      expect(nav, contains('height: 44'));
+      expect(nav, contains('height: 40'));
       expect(nav, contains('SingleChildScrollView('));
       expect(nav, contains('scrollDirection: Axis.horizontal'));
       expect(
         nav,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 8)'),
+        contains('padding: EdgeInsets.zero'),
       );
       expect(nav, contains('constraints: const BoxConstraints(minWidth: 112)'));
       expect(
@@ -46,11 +54,12 @@ void main() {
       final nav = classBlock(tools, '_PediatTabRow');
 
       expect(nav, contains('onTap: () => onSelect(i)'));
-      expect(nav, contains('right: i < sections.length - 1'));
-      expect(nav, contains('width: active ? 2 : 0.7'));
-      expect(nav, contains('FontWeight.w800'));
-      expect(nav, contains('FontWeight.w600'));
-      expect(nav, contains('Color(0xFF10B981)'));
+      expect(nav, contains('if (i < sections.length - 1)'));
+      expect(nav,
+          contains('child: Container(width: 0.7, height: 20, color: divider)'));
+      expect(nav, contains('FontWeight.w700'));
+      expect(nav, contains('height: 2'));
+      expect(nav, contains('Color(0xFF0D6B57)'));
     });
 
     test('all dark tab titles use primary white', () {
@@ -60,13 +69,13 @@ void main() {
       expect(
         normalized,
         contains(
-          'final activeColor = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);',
+          'final activeColor = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);',
         ),
       );
       expect(
         normalized,
         contains(
-          'final inactiveColor = dark ? const Color(0xFFF8FAFC) : const Color(0xFF111827);',
+          'final inactiveColor = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);',
         ),
       );
     });

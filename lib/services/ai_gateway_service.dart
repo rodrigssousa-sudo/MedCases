@@ -66,8 +66,7 @@ import 'ai_pipeline/plantao/contracts/plantao_canonical_route_decision.dart';
 // mais chamados no fluxo principal (Build 156). GeminiServiceV2 usa seu
 // próprio pipeline SSE interno. A importação permanece para evitar erros
 // de compilação caso haja referências indiretas.
-import 'ai_gateway_service_io.dart'
-    if (dart.library.js_interop) 'ai_gateway_service_web.dart';
+
 
 // MEDCASES_APPLE_PRERELEASE_AI_MODE_ISOLATION_V1_B_R0
 /// Immutable mode envelope. Transport-specific clinical context remains intact.

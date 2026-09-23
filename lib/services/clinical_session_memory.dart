@@ -53,7 +53,7 @@ class ClinicalSessionMemory {
   String _dominantTopic = '';
 
   /// Número de turnos no tema atual — threshold para considerar tema estabelecido
-  int _topicTurnCount = 0;
+
 
   // ── API pública de atualização ─────────────────────────────────────────────
 
@@ -175,7 +175,7 @@ class ClinicalSessionMemory {
 
     if (isFollowUp || isTooShortToBeNewTopic) {
       // Mantém tema atual — é continuação da conversa
-      if (_dominantTopic.isNotEmpty) _topicTurnCount++;
+
       return false;
     }
 
@@ -184,21 +184,21 @@ class ClinicalSessionMemory {
     if (_dominantTopic.isEmpty) {
       // Primeira query — estabelece tema
       _dominantTopic = newTopic;
-      _topicTurnCount = 1;
+
       return false;
     }
 
     // Reutiliza o classificador canônico do thread. Cálculo por peso e ajuste
     // renal são continuações que carregam novos dados, não novos temas clínicos.
     if (ClinicalThreadManager.isContextualClinicalFollowUp(newQuery)) {
-      _topicTurnCount++;
+
       return false;
     }
 
     final isSameTopic = _topicsOverlap(_dominantTopic, newTopic);
 
     if (isSameTopic) {
-      _topicTurnCount++;
+
       return false;
     }
 
@@ -207,7 +207,7 @@ class ClinicalSessionMemory {
     // Queries de follow-up já foram capturadas acima e nunca chegam aqui.
     reset();
     _dominantTopic = newTopic;
-    _topicTurnCount = 1;
+
     return true;
   }
 
@@ -225,7 +225,7 @@ class ClinicalSessionMemory {
     currentRiskLevel = 'low';
     clinicalEvolution = '';
     _dominantTopic = '';
-    _topicTurnCount = 0;
+
   }
 
   // ── Serialização para o prompt ───────────────────────────────────────────

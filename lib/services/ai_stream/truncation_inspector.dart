@@ -183,7 +183,7 @@ class TruncationInspector {
   static final RegExp _numericRangeNoUnit = RegExp(r'\d+[–\-—]\d+\s*$');
 
   // Linha terminando em dígito imediatamente (sem pontuação ou unidade)
-  static final RegExp _trailingDigit = RegExp(r'\d\s*$');
+
 
   static bool _hasMidNumericCut(String text) {
     final trimmed = text.trimRight();

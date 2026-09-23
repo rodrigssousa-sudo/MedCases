@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'history_release_runtime_harness.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 
@@ -124,44 +125,35 @@ void main() {
     expect(history, isNot(contains('_FloatingFooter(')));
   });
 
-  test('topbar clínica é grafite, plana e sem efeitos legados', () {
-    final surface = markerSlice(
-      history,
-      'HISTORY_CLINICAL_V1_B_R4_TOPBAR_BEGIN',
-      'HISTORY_CLINICAL_V1_B_R4_TOPBAR_END',
-    );
+  testWidgets('topbar clínica atual preserva grafite sem sombra ou gradiente', (tester) async {
+    await verifyHistoryTopbar(tester);
+    final surface = classSlice(history, '_HcTopbarBg');
 
-    expect(surface, contains('Color(0xFF1A1D23)'));
+    expect(surface, contains('Color(0xFF252930)'));
     expect(surface, contains('Color(0xFF374151)'));
     expect(surface, isNot(contains('LinearGradient')));
     expect(surface, isNot(contains('BoxShadow')));
   });
 
-  test('faixa de abas é superfície contínua com divisor fino', () {
-    final surface = markerSlice(
-      history,
-      'HISTORY_CLINICAL_V1_B_R4_TAB_SURFACE_BEGIN',
-      'HISTORY_CLINICAL_V1_B_R4_TAB_SURFACE_END',
-    );
+  testWidgets('faixa de abas é superfície contínua com divisor fino', (tester) async {
+    await verifyHistoryNavigation(tester);
+    final surface = classSlice(history, '_HcTabRow');
 
-    expect(surface, contains('width: 0.5'));
+    expect(surface, contains('width: 0.7'));
     expect(surface, isNot(contains('LinearGradient')));
     expect(surface, isNot(contains('BoxShadow')));
   });
 
-  test('lista remove card elevado externo e preserva marcador semântico', () {
-    final surface = markerSlice(
-      history,
-      'HISTORY_CLINICAL_V1_B_R4_LIST_SURFACE_BEGIN',
-      'HISTORY_CLINICAL_V1_B_R4_LIST_SURFACE_END',
-    );
+  testWidgets('lista atual sem elevação preserva conteúdo e marcador semântico', (tester) async {
+    await verifyHistoryListSurface(tester);
+    final surface = classSlice(history, '_HistoryCard');
 
-    expect(surface, contains('Colors.transparent'));
+    expect(surface, contains('Color(0xFF252930)'));
     expect(surface, contains('_cardAccent'));
-    expect(surface, contains('width: 0.5'));
+    expect(surface, contains('width: 0.7'));
     expect(surface, isNot(contains('LinearGradient')));
     expect(surface, isNot(contains('BoxShadow')));
-    expect(surface, isNot(contains('borderRadius')));
+    expect(surface, contains('BorderRadius.circular(12)'));
   });
 
   test('owners funcionais e ações clínicas permanecem presentes', () {
@@ -173,7 +165,9 @@ void main() {
       'deleteHistory(',
       'toggleHistoryPublic(',
       '_openOcrPicker',
-      '_SmartDictaphoneButton',
+      '_MicControlBar',
+      '_toggleSmartDictaphone',
+      'SttHelper.start(',
     ]) {
       expect(history, contains(token), reason: 'Contrato removido: $token');
     }

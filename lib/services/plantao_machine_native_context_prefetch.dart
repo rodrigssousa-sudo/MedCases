@@ -672,15 +672,21 @@ class PlantaoMachineNativeContextPrefetch {
   Future<PlantaoMachineNativeAttestedPrefetch> prefetchAttested({
     required String userText,
     required String language,
+    Future<String> Function(PlantaoMachineNativePrefetchResult)? supplementalEvidence,
   }) async {
     final result = await prefetch(
       userText: userText,
       language: language,
     );
-    final providerInput =
+    final internalInput =
         result.authoritative && result.providerPromptBlock.trim().isNotEmpty
             ? '$userText\n\n${result.providerPromptBlock}'
             : userText;
+    String supplement = '';
+    if (supplementalEvidence != null) {
+      try { supplement = await supplementalEvidence(result); } catch (_) { /* existing pipeline fallback */ }
+    }
+    final providerInput = supplement.isEmpty ? internalInput : '$internalInput\n\n$supplement';
     final attestation = PlantaoCanonicalRuntimeAttestation._(
       safetyEvidence:
           ClinicalEvidenceBundle.fromMachinePack(result.contextPack),

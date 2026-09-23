@@ -7850,7 +7850,7 @@ M. ANTI-CONTRADICAO CRUZADA: JAMAIS aprovar um farmaco em CONDUTA e contraindica
           : '';
       if (hasProprietary) {
         debugPrint(
-          '[BUILD272][AiService] PROPRIETARIO_MEDCASES injetado: ${proprietaryDrugContext!.length} chars',
+          '[BUILD272][AiService] PROPRIETARIO_MEDCASES injetado: ${proprietaryDrugContext.length} chars',
         );
       }
 
@@ -8034,7 +8034,7 @@ M. ANTI-CONTRADICAO CRUZADA: JAMAIS aprovar um farmaco em CONDUTA e contraindica
           crosscuttingEvidenceContext.trim().isNotEmpty;
       final crosscuttingEvidenceId = hasCrosscuttingEvidence
           ? (RegExp(r'^id=([^\r\n]+)', multiLine: true)
-                  .firstMatch(crosscuttingEvidenceContext!)
+                  .firstMatch(crosscuttingEvidenceContext)
                   ?.group(1) ??
               'unknown')
           : 'none';

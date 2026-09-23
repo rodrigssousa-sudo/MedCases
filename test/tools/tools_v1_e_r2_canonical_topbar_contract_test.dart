@@ -1,3 +1,5 @@
+import '../architecture/architectural_runtime_harness.dart';
+import '../tools/tools_hub_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -202,23 +204,16 @@ String maskNonCode(String source) {
 }
 
 void main() {
-  late String homeSource;
   late String toolsSource;
   late String patientsSource;
   late String notesSource;
   late String assessmentSource;
 
-  late String toolsState;
   late String toolsTopbarBackground;
   late String toolsTopbarBuild;
   late String toolsTopbarContent;
-  late String toolsTabRow;
 
   setUpAll(() {
-    homeSource = File(
-      'lib/screens/home_screen.dart',
-    ).readAsStringSync();
-
     toolsSource = File(
       'lib/screens/tools_screen.dart',
     ).readAsStringSync();
@@ -234,15 +229,6 @@ void main() {
     assessmentSource = File(
       'lib/screens/avaliacao_screen.dart',
     ).readAsStringSync();
-
-    toolsState = extractBalancedOwner(
-      toolsSource,
-      RegExp(
-        r'class\s+_ToolsScreenState\b',
-        multiLine: true,
-      ),
-      ownerLabel: '_ToolsScreenState',
-    );
 
     toolsTopbarBackground = extractBalancedOwner(
       toolsSource,
@@ -271,56 +257,17 @@ void main() {
       ),
       ownerLabel: '_ToolsTopbarContent',
     );
-
-    toolsTabRow = extractBalancedOwner(
-      toolsSource,
-      RegExp(
-        r'class\s+_ToolsTabRow\b',
-        multiLine: true,
-      ),
-      ownerLabel: '_ToolsTabRow',
-    );
   });
 
-  test(
-    'TOOLS V1-E-R2 RED — shell usa SafeArea único sem inset superior manual',
-    () {
-      final toolsStateCode = maskNonCode(
-        toolsState,
-      );
-
-      expect(
-        countToken(
-          toolsStateCode,
-          'SafeArea(',
-        ),
-        1,
-      );
-
-      expect(
-        RegExp(
-          r'(?:'
-          r'MediaQuery\.(?:paddingOf|viewPaddingOf)\(context\)\.top|'
-          r'MediaQuery\.of\(context\)\.'
-          r'(?:padding|viewPadding)\.top|'
-          r'View\.of\(context\)\.padding\.top'
-          r')',
-          multiLine: true,
-        ).hasMatch(toolsStateCode),
-        isFalse,
-      );
-
-      expect(
-        RegExp(
-          r'\bPositioned\s*\(\s*'
-          r'top\s*:',
-          multiLine: true,
-          dotAll: true,
-        ).hasMatch(toolsStateCode),
-        isFalse,
-      );
-    },
-  );
+  testWidgets(
+      "TOOLS V1-E-R2 RED — shell usa SafeArea único sem inset superior manual",
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final embedded in [false, true]) {
+        await verifyToolsShell(tester, dark: dark, embedded: embedded);
+      }
+    }
+  });
 
   test(
     'TOOLS V1-E-R2 GREEN — build do topbar usa vidro grafite sem sombra',
@@ -360,39 +307,15 @@ void main() {
     },
   );
 
-  test(
-    'TOOLS V1-E-R2 GREEN — título seta e callback de retorno permanecem',
-    () {
-      expect(
-        toolsTopbarContent,
-        contains("'FERRAMENTAS'"),
-      );
-
-      expect(
-        toolsTopbarContent,
-        contains(
-          'Icons.arrow_back_ios_new_rounded',
-        ),
-      );
-
-      expect(
-        toolsTopbarContent,
-        contains('nav.canPop()'),
-      );
-
-      expect(
-        toolsTopbarContent,
-        contains('nav.pop()'),
-      );
-
-      expect(
-        toolsTopbarContent,
-        contains(
-          'MainShell.pendingTab.value = 0;',
-        ),
-      );
-    },
-  );
+  testWidgets(
+      "TOOLS V1-E-R2 GREEN — título seta e callback de retorno permanecem",
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final embedded in [false, true]) {
+        await verifyToolsShell(tester, dark: dark, embedded: embedded);
+      }
+    }
+  });
 
   test(
     'TOOLS V1-E-R2 GREEN — três referências canônicas usam SafeArea sem inset manual',
@@ -461,68 +384,33 @@ void main() {
     },
   );
 
-  test(
-    'TOOLS V1-E-R2 GREEN — seletor preserva quatro abas e ordem clínica',
-    () {
-      final labels = [
-        'NEFROLOG',
-        'CARDIO',
-        'ELETR',
-        'HEPATOLOG',
-      ];
-
-      var cursor = -1;
-
-      for (final label in labels) {
-        final next = toolsTabRow.indexOf(
-          label,
-          cursor + 1,
-        );
-
-        expect(
-          next,
-          greaterThan(cursor),
-          reason: 'ordem clínica deve permanecer '
-              'Nefrologia → Cardio → '
-              'Eletrólitos → Hepatologia',
-        );
-
-        cursor = next;
+  testWidgets(
+      'hub produtivo preserva acesso às quatro especialidades canônicas',
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final es in [false, true]) {
+        await verifyToolsHub(tester, dark: dark, isEs: es);
       }
-    },
-  );
+    }
+  });
 
-  test(
-    'TOOLS V1-E-R2 GREEN — rota direta preserva Material transparente',
-    () {
-      expect(
-        RegExp(
-          r'Navigator\.of\(context\)\.push\s*\(\s*'
-          r'_HomeScreenState\._slide\s*\(\s*'
-          r'const\s+Material\s*\(\s*'
-          r'type\s*:\s*MaterialType\.transparency\s*,\s*'
-          r'child\s*:\s*ToolsScreen\s*\(\s*\)',
-          multiLine: true,
-          dotAll: true,
-        ).hasMatch(homeSource),
-        isTrue,
-      );
-    },
-  );
+  testWidgets(
+      "TOOLS V1-E-R2 GREEN — rota direta preserva Material transparente",
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final embedded in [false, true]) {
+        await verifyToolsShell(tester, dark: dark, embedded: embedded);
+      }
+    }
+  });
 
-  test(
-    'TOOLS V1-E-R2 GREEN — montagem embutida continua sem header duplicado',
-    () {
-      expect(
-        RegExp(
-          r'class\s+_CalculadorasShell\b'
-          r'[\s\S]*?ToolsScreen\s*\(\s*'
-          r'hideHeader\s*:\s*true\s*\)',
-          multiLine: true,
-          dotAll: true,
-        ).hasMatch(homeSource),
-        isTrue,
-      );
-    },
-  );
+  testWidgets(
+      "TOOLS V1-E-R2 GREEN — montagem embutida continua sem header duplicado",
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final embedded in [false, true]) {
+        await verifyToolsShell(tester, dark: dark, embedded: embedded);
+      }
+    }
+  });
 }

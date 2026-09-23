@@ -39,13 +39,13 @@ import '../design_system/tokens/med_spacing.dart';
 const _kBg = Color(0xFF1A1D23);
 const _kSurface = Color(0xFF252930);
 const _kBorder = Color(0xFF374151);
-const _kCyan = Color(0xFF009C3B);
+
 // BUILD 450: Azul Petróleo — substitui neon no Light Mode
 const _kPetroleo = Color(0xFF009C3B);
 const _kGreen = Color(0xFF009C3B);
 const _kAmber = Color(0xFFF59E0B);
 const _kRed = Color(0xFFEF4444);
-const _kPurple = Color(0xFF8B5CF6);
+
 const _kTextSub = Color(0xFFAEB9CC);
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1088,101 +1088,7 @@ class _CardioBodyState extends State<_CardioBody>
 // ─────────────────────────────────────────────────────────────────────────────
 // Header
 // ─────────────────────────────────────────────────────────────────────────────
-class _CardioHeader extends StatelessWidget {
-  final bool isEs;
-  final Color surf, bord, txt, sub;
-  const _CardioHeader({
-    required this.isEs,
-    required this.surf,
-    required this.bord,
-    required this.txt,
-    required this.sub,
-  });
 
-  // TOOLS V1-H-R1: header plano unificado
-  // TOOLS V1-H-R1: subtítulo branco
-
-  @override
-  Widget build(
-          BuildContext
-              context) => /* MEDCASES_TOOLS_V1_H_R12_R5_BACKGROUND_ONLY_EXTENSION */
-      SizedBox(
-        height: 68,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              left: -MedSpacing.screenHorizontalPadding,
-              right: -MedSpacing.screenHorizontalPadding,
-              top: -32,
-              height: 32,
-              child: IgnorePointer(
-                child: ColoredBox(
-                  color: surf,
-                ),
-              ),
-            ),
-            Positioned(
-              left: -MedSpacing.screenHorizontalPadding,
-              right: -MedSpacing.screenHorizontalPadding,
-              top: 0,
-              bottom: 0,
-              child: SizedBox(
-                width: MediaQuery.sizeOf(context).width,
-                child: SizedBox(
-                  width: MediaQuery.sizeOf(context).width,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(
-                        MedSpacing.screenHorizontalPadding,
-                        14,
-                        MedSpacing.screenHorizontalPadding,
-                        14),
-                    decoration: BoxDecoration(
-                      color: surf,
-                      border: Border(
-                        bottom: BorderSide(color: bord),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        // TOOLS V1-H-R1: ícone sem box secundário
-                        const Icon(Icons.favorite_rounded,
-                            color: _kPetroleo, size: 20),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                isEs ? 'CARDIOLOGÍA' : 'CARDIOLOGIA',
-                                style: TextStyle(
-                                  color: txt,
-                                  fontSize: MedTypography.internalTitleSize,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                'PREVENT-ASCVD · CHA₂DS₂-VA · HAS-BLED · QTc',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: MedTypography
-                                        .auxiliarySize) /* MEDCASES_TOOLS_V1_H_R9_CANONICAL_HEADER_STYLE */,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Input Section

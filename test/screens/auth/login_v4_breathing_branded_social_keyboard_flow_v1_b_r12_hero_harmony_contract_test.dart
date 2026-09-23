@@ -39,7 +39,7 @@ void main() {
 
     test('social row remains 46px', () {
       final start = source.indexOf('Widget _buildSocialLoginSection()');
-      final end = source.indexOf('Widget _socialAuthButton(', start);
+      final end = source.indexOf('Widget _registerPhotoPicker(', start);
       final region = source.substring(start, end);
       expect(region, contains('height: 46'));
       expect(region, isNot(contains('height: 56')));

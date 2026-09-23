@@ -1,3 +1,4 @@
+import 'guide_runtime_fixture.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -87,12 +88,5 @@ void main() {
     expect(source, contains('letterSpacing: canonicalHomeStyle ? 1.2 : 0.4'));
   });
 
-  test('Portal search pagination and native bridge remain intact', () {
-    expect(source, contains('class _GuidePortalSearchDelegate'));
-    expect(source, contains('Future<void> _loadMoreGuides()'));
-    expect(source, contains('NotificationListener<ScrollNotification>'));
-    expect(source, contains('scrollDirection: Axis.horizontal'));
-    expect(source, contains('ClinicalGuidesEditorialService.loadById(g.id)'));
-    expect(source, contains('_openPdf(g);'));
-  });
+  testSearchBridge();
 }

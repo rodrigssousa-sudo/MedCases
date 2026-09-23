@@ -10,14 +10,14 @@ test('two server workers cannot exceed account quota; preferences/reinstall are 
  const db=database();const a=new MonthlyUsageOwner({db}),b=new MonthlyUsageOwner({db});
  const results=await Promise.all(Array.from({length:20},(_,i)=>(i%2?a:b).reserve('A',req(`device-${i}`)).then(()=>true,()=>false)));assert.equal(results.filter(Boolean).length,15);
 });
-test('failed/cancelled retry, old callback, duplicate result and UID isolation',async()=>{
- const owner=new MonthlyUsageOwner({db:database()});let r=await owner.reserve('A',req('job',900000));
- await owner.finish('A',{...r,actualMs:1,success:false});const retry=await owner.reserve('A',req('job',900000));assert.notEqual(r.attempt,retry.attempt);
- await assert.rejects(owner.finish('A',{...r,actualMs:1,success:true}),/STALE/);
- await assert.rejects(owner.finish('B',{...retry,actualMs:1,success:true}),/NOT_OWNED/);
- const result=await owner.finish('A',{...retry,actualMs:60000,success:true});assert.equal(result.chargedMs,60000);
- assert.deepEqual(await owner.finish('A',{...retry,actualMs:60000,success:true}),result);
- await owner.reserve('A',req('remaining',840000));await assert.rejects(owner.reserve('A',req('over',1)),/LIMIT/);
+test('client cancellation cannot refund; terminal operation never reopens',async()=>{
+ const owner=new MonthlyUsageOwner({db:database()});const r=await owner.reserve('A',req('job',900000));
+ const result=await owner.finish('A',{...r,actualMs:0,success:false});assert.equal(result.chargedMs,900000);
+ const retry=await owner.reserve('A',req('job',900000));assert.equal(r.attempt,retry.attempt);assert.equal(retry.state,'completed');
+ await assert.rejects(owner.finish('A',{...r,attempt:'old',actualMs:1,success:true}),/STALE/);
+ await assert.rejects(owner.finish('B',{...r,actualMs:1,success:true}),/NOT_OWNED/);
+ assert.deepEqual(await owner.finish('A',{...r,actualMs:60000,success:true}),result);
+ await assert.rejects(owner.reserve('A',req('over',1)),/LIMIT/);
 });
 test('idempotent concurrent retry, monthly rollover and original-bucket completion',async()=>{
  let now=Date.UTC(2026,8,30);const owner=new MonthlyUsageOwner({db:database(),now:()=>now});
@@ -39,4 +39,27 @@ for(const state of ['TRIAL','PAID','CANCELLED_STILL_ACTIVE','EXPIRED'])test(`sov
 test('Free transcription limit is 30 minutes, independent of device',async()=>{
  const owner=new MonthlyUsageOwner({db:database()});await owner.reserve('A',{...req('trans',30*60000),kinds:['transcription']});
  await assert.rejects(owner.reserve('A',{...req('overflow',1),kinds:['transcription']}),/LIMIT/);
+});
+
+test('execution slots are atomic, bounded, shared across providers and never refunded by client',async()=>{
+ const owner=new MonthlyUsageOwner({db:database()});
+ const r=await owner.reserve('A',{...req('audio',900000),kinds:['transcription'],executionCount:2});
+ const claims=await Promise.all([owner.claimExecution('A',r,0),owner.claimExecution('A',r,0)]);
+ assert.equal(claims.filter(c=>c.claimed).length,1);
+ assert.equal((await owner.finish('A',{...r,actualMs:0,success:false})).chargedMs,900000);
+ await assert.rejects(owner.claimExecution('B',r,1),/NOT_OWNED/);
+ await assert.rejects(owner.claimExecution('A',{...r,attempt:'stale'},1),/STALE/);
+ await assert.rejects(owner.claimExecution('A',r,2),/NOT_AUTHORIZED/);
+ await assert.rejects(owner.failBeforeExecution('A',r),/BILLABLE/);
+ await owner.completeExecution('A',r,0);await owner.completeExecution('A',r,0);
+ assert.equal((await owner.claimExecution('A',r,1)).claimed,true);
+ assert.equal((await owner.completeExecution('A',r,1)).state,'completed');
+ assert.equal((await owner.claimExecution('A',r,0)).claimed,false);
+});
+test('server verified failure before work can release, but never reopen attempt',async()=>{
+ const owner=new MonthlyUsageOwner({db:database()});const r=await owner.reserve('A',req('failed',900000));
+ assert.equal((await owner.failBeforeExecution('A',r)).chargedMs,0);
+ assert.equal((await owner.reserve('A',req('failed',900000))).state,'server_verified_failed');
+ await assert.rejects(owner.claimExecution('A',r),/NOT_AUTHORIZED/);
+ await owner.reserve('A',req('new',900000));
 });

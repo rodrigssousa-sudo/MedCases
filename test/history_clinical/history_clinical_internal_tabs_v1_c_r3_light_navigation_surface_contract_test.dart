@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -78,23 +79,24 @@ void main() {
     expect(history, isNot(contains('bottomNavigationBar:')));
   });
 
-  test('fundação light usa canvas, divisor e texto clínicos oficiais', () {
+  testWidgets('fundação light usa canvas, divisor e texto clínicos oficiais', (tester) async {
+    // The live owner now has a 40px strip and entitlement-gated creation.
+    // Verify geometry, selection and navigation instead of retired markers.
+    await verifyHistoryNavigation(tester);
     final row = classSlice(history, '_HcTabRow');
     final flat = classSlice(history, '_HcFlatTabState');
     final screen = classSlice(history, '_HistoryScreenState');
     final card = classSlice(history, '_HistoryCard');
-    expect(
-        row, contains('HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_TABROW_LIGHT'));
-    expect(
-        flat, contains('HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_FLATTAB_LIGHT'));
     expect(screen,
         contains('HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_SCREEN_CANVAS_LIGHT'));
     expect(card,
         contains('HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_HISTORY_CARD_LIGHT'));
     expect('$row$screen', contains('Color(0xFFECF1F3)'));
-    expect('$row$card', contains('Color(0xFFD8E0E7)'));
-    expect('$flat$card', contains('Color(0xFF05070A)'));
-    expect(card, contains('Colors.transparent'));
+    expect(row, contains('Color(0xFFE7EBEF)'));
+    expect(card, contains('Color(0xFFD8DEE7)'));
+    expect(flat, contains('Color(0xFF64748B)'));
+    expect(card, contains('Color(0xFF0D1B2A)'));
+    expect(card, contains('Colors.white'));
   });
 
   test('expressões dark e ações internas continuam presentes', () {

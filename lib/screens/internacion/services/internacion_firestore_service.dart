@@ -75,7 +75,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/foundation.dart';
 import '../models/evolucion_model.dart';
 import '../components/patient_accordion.dart';
@@ -824,7 +824,7 @@ class InternacionFirestoreService {
       // Usa 'is Map' (sem genérico) + Map.from() explícito — 100% seguro em release.
       final rawPaciente = data['paciente'];
       final pacienteJson = (rawPaciente is Map)
-          ? Map<String, dynamic>.from(rawPaciente as Map)
+          ? Map<String, dynamic>.from(rawPaciente)
           : <String, dynamic>{};
 
       // Build 207 FIX TYPE-ERASURE: 'e as Map<String, dynamic>' dentro do .map()
@@ -860,7 +860,7 @@ class InternacionFirestoreService {
         historial: historialList
             .map((e) {
               if (e is Map) {
-                return _evolFromJson(Map<String, dynamic>.from(e as Map));
+                return _evolFromJson(Map<String, dynamic>.from(e));
               }
               return null;
             })
@@ -882,7 +882,7 @@ class InternacionFirestoreService {
       // Build 207: usa 'is Map' + Map.from() — imune a type erasure em dart2js.
       final rawPaciente = data['paciente'];
       final pacienteJson = (rawPaciente is Map)
-          ? Map<String, dynamic>.from(rawPaciente as Map)
+          ? Map<String, dynamic>.from(rawPaciente)
           : <String, dynamic>{};
       final deletedAtTs = data['deletedAt'];
       DateTime? deletedAt;
@@ -953,7 +953,7 @@ class InternacionFirestoreService {
     // Build 207: usa 'is Map' (sem genérico) — imune à minificação dart2js.
     // 'is Map' é checagem estrutural que sobrevive ao --minify do dart2js.
     Map<String, dynamic> safe(dynamic v) =>
-        (v is Map) ? Map<String, dynamic>.from(v as Map) : {};
+        (v is Map) ? Map<String, dynamic>.from(v) : {};
 
     final s = safe(j['subjetivo']);
     final o = safe(j['objetivo']);

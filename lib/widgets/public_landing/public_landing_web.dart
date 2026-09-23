@@ -4,7 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import '../../testimonials/testimonial_service.dart';
 import 'dart:html' as html;
-import 'dart:js_util' as js_util;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:ui_web' as ui_web;
 import 'package:flutter/widgets.dart';
 import 'landing_message.dart';
@@ -67,10 +68,14 @@ class _PublicLandingState extends State<PublicLanding> {
     _messages = html.window.onMessage.listen((event) {
       // dart:html MessageEvent.source returns null for cross-frame WindowBase
       // wrappers. Compare the native windows, preserving exact source isolation.
+      final source = (event as JSObject).getProperty<JSAny?>('source'.toJS);
+      final frameWindow =
+          (_frame as JSObject).getProperty<JSAny?>('contentWindow'.toJS);
       if (!mounted ||
           event.origin != html.window.location.origin ||
-          !identical(js_util.getProperty<Object?>(event, 'source'),
-            js_util.getProperty<Object?>(_frame, 'contentWindow'))) {
+          source.isUndefinedOrNull ||
+          frameWindow.isUndefinedOrNull ||
+          !source.strictEquals(frameWindow).toDart) {
         return;
       }
       final language = landingLoginLanguage(event.data);

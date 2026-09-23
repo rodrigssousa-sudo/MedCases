@@ -60,11 +60,13 @@ Future<JSAny?> _result(_Request request) {
 /// Browser-only non-extractable AES keys; clear documents never enter storage.
 class WebCanonicalCatalogCipher implements CanonicalCatalogCipher {
   WebCanonicalCatalogCipher(
-      {String? Function()? currentUid, bool Function()? authorized})
+      {String? Function()? currentUid, bool Function()? authorized,
+      this.databaseName = 'medcases.catalog.keys.v1'})
       : _currentUid = currentUid ??
             (() => EntitlementService.instance.current.resolvedUid),
         _authorized =
             authorized ?? (() => EntitlementService.instance.isPremium);
+  final String databaseName;
   final String? Function() _currentUid;
   final bool Function() _authorized;
   void _check(String uid) {
@@ -73,7 +75,7 @@ class WebCanonicalCatalogCipher implements CanonicalCatalogCipher {
   }
 
   Future<_Database> _database() async {
-    final request = _indexedDB.open('medcases.catalog.keys.v1', 1);
+    final request = _indexedDB.open(databaseName, 1);
     request.onupgradeneeded = ((JSAny? _) {
       _Database(request.result as JSObject).createObjectStore('keys');
     }).toJS;

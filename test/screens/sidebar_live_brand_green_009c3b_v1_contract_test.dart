@@ -1,3 +1,4 @@
+import '../navigation/main_shell_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -21,7 +22,8 @@ String classBlock(String source, String className) {
 }
 
 void main() {
-  test('live visible sidebar brand green is #009C3B with excluded surfaces preserved', () {
+  testWidgets('live visible sidebar brand green is #009C3B with excluded surfaces preserved', (tester) async {
+    await verifyMainShellRuntime(tester);
     final source = File('lib/main.dart').readAsStringSync();
 
     final drawer = classBlock(source, '_AppDrawerState');
@@ -30,7 +32,6 @@ void main() {
     final lang = classBlock(source, '_LangBadge');
     final theme = classBlock(source, '_ThemeToggle');
     final onOff = classBlock(source, '_OnOffToggle');
-    final quick = classBlock(source, '_DrawerQuickAccess');
     final offline = classBlock(source, '_OfflineDrawerCardState');
     final about = classBlock(source, '_AboutAppSheet');
 
@@ -48,7 +49,7 @@ void main() {
     );
     expect(
       premium,
-      contains('const accent = Color(0xFF009C3B);'),
+      contains('const gold = Color(0xFFFFE8A6);'),
     );
     expect(
       lang,
@@ -78,16 +79,8 @@ void main() {
       reason: 'only the two excluded photo-action old greens may remain in _AppDrawerState',
     );
 
-    // Dead/commented quick access stays untouched.
-    expect(
-      quick,
-      contains('iconColor: const Color(0xFF0D6B57),'),
-    );
-    expect(
-      quick,
-      contains('0xFF1A2E22'),
-      reason: 'dark structural divider must remain unchanged',
-    );
+    // Retired _DrawerQuickAccess had no caller. The real drawer and Notes
+    // navigation are now exercised above; other palette exclusions stay intact.
 
     // Secondary About surface is outside the direct drawer cutover.
     expect(

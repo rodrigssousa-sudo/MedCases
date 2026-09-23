@@ -334,7 +334,7 @@ class AiFinalizationTransaction {
   // ── Ownership & atomic guards ──────────────────────────────────────────────
   bool _ownershipAcquired           = false;
   bool _toolResolutionStarted       = false;
-  bool _toolResolutionCompleted     = false;
+
   bool _cacheReleased               = false;
   bool _coordinatorCompleted        = false;
   bool _assistantPersisted          = false;
@@ -529,7 +529,7 @@ class AiFinalizationTransaction {
 
   // ── Telemetry helpers ──────────────────────────────────────────────────────
 
-  void markToolResolutionCompleted() => _toolResolutionCompleted = true;
+  void markToolResolutionCompleted() {}
   void markCacheReleased()           => _cacheReleased = true;
   void markCoordinatorCompleted()    => _coordinatorCompleted = true;
   void markAssistantPersisted()      => _assistantPersisted = true;

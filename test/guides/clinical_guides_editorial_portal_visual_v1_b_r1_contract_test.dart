@@ -1,9 +1,12 @@
+import 'guide_runtime_fixture.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('Guides render as a true editorial horizontal portal rail', () {
+  testVerticalPortal();
+  test('Current editorial cover, overlay and metadata contracts remain intact',
+      () {
     final source = File('lib/screens/library_screen.dart').readAsStringSync();
 
     expect(source, contains('final List<GuideModel> portalGuides;'));
@@ -16,8 +19,6 @@ void main() {
     expect(source, contains('if (!featured) {'));
     expect(source, contains('return const SizedBox.shrink();'));
     expect(source, contains('const railHeight = 356.0;'));
-    expect(source, contains('scrollDirection: Axis.horizontal'));
-    expect(source, contains('BouncingScrollPhysics()'));
     expect(source, contains('GestureDetector('));
     expect(source, contains('onTap: () => onOpenGuide(item)'));
 
@@ -72,18 +73,5 @@ void main() {
     expect(source, contains('_openPdf(g);'));
   });
 
-  test('Spanish/Portuguese portal labels derive from locale', () {
-    final source = File('lib/screens/library_screen.dart').readAsStringSync();
-
-    expect(
-      source,
-      contains(
-        "Localizations.localeOf(context).languageCode.toLowerCase() == 'es';",
-      ),
-    );
-    expect(source, contains("'DESTACADOS'"));
-    expect(source, contains("'DESTAQUES'"));
-    expect(source, contains("'Desliza para ver más'"));
-    expect(source, contains("'Deslize para ver mais'"));
-  });
+  testPortalLabels();
 }

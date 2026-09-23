@@ -1,3 +1,5 @@
+import '../architecture/architectural_runtime_harness.dart';
+import '../tools/tools_hub_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -202,7 +204,6 @@ void expectInputCardWrapperIsFlat(
 
 void main() {
   late String tools;
-  late String home;
   late String nephrology;
   late String cardio;
   late String electrolytes;
@@ -211,9 +212,6 @@ void main() {
   setUpAll(() {
     tools = readSource(
       'lib/screens/tools_screen.dart',
-    );
-    home = readSource(
-      'lib/screens/home_screen.dart',
     );
     nephrology = readSource(
       'lib/screens/nephrology_tools_screen.dart',
@@ -293,20 +291,15 @@ void main() {
     },
   );
 
-  test(
-    'TOOLS V1-F-R2 GREEN — Material ancestor e montagem hideHeader permanecem',
-    () {
-      // Montagem legada embutida permanece sem duplicar topbar.
-      expect(home, contains('const Expanded(child: ToolsScreen(hideHeader: true))'));
-      expect(home, contains('toolsScreenTabNotifier.value = null;'));
-      expect(home, contains('onTabChange(4);'));
-      final state = classBlock(tools, '_ToolsScreenState');
-      expect(state, contains('final showHeader = !widget.hideHeader;'));
-      expect(state, contains('if (!showHeader)'));
-      expect(state, contains('const Expanded(child: _ToolsHubLanding())'));
-      expect(state, contains('child: ColoredBox('));
-    },
-  );
+  testWidgets(
+      "TOOLS V1-F-R2 GREEN — Material ancestor e montagem hideHeader permanecem",
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final embedded in [false, true]) {
+        await verifyToolsShell(tester, dark: dark, embedded: embedded);
+      }
+    }
+  });
 
   test(
     'TOOLS V1-F-R2 RED — topbar usa vidro grafite sem alterar geometria',
@@ -339,35 +332,15 @@ void main() {
     },
   );
 
-  test(
-    'TOOLS V1-F-R2 RED — seletor principal usa verde MedCases e não ciano',
-    () {
-      final tabRow = classBlock(
-        tools,
-        '_ToolsTabRow',
-      );
-      final flatTab = classBlock(
-        tools,
-        '_ToolsFlatTabState',
-      );
-      final combined = '$tabRow\n$flatTab';
-
-      expect(
-        RegExp(
-          r'0xFF(?:00C781|008F66|10B981|059669)',
-          caseSensitive: false,
-        ).hasMatch(combined),
-        isTrue,
-      );
-      expect(
-        RegExp(
-          r'0xFF(?:00E5FF|00B4CC|06B6D4|0891B2)',
-          caseSensitive: false,
-        ).hasMatch(combined),
-        isFalse,
-      );
-    },
-  );
+  testWidgets(
+      'hub produtivo usa verde MedCases, com contraste e callbacks reais',
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final es in [false, true]) {
+        await verifyToolsHub(tester, dark: dark, isEs: es);
+      }
+    }
+  });
 
   test(
     'TOOLS V1-F-R2 RED — Nefrologia remove wrapper visual externo de _InputCard',

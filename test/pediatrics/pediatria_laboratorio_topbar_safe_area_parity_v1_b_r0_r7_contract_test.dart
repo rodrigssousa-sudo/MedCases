@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -24,22 +25,28 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final home = File('lib/screens/home_screen.dart').readAsStringSync();
   final mainSource = File('lib/main.dart').readAsStringSync();
 
   group('Pediatria — Laboratório topbar safe-area parity R7', () {
     test('tab 8 and Lab tab 9 both own physical Y zero', () {
+      final normalized = mainSource.replaceAll(RegExp(r'\s+'), ' ');
       expect(
-        mainSource,
-        contains(
-          'isHome || _tab == 2 || _tab == 4 || _tab == 8 || _tab == 9',
-        ),
-      );
-
+          normalized,
+          contains(
+              'top: (isHome || _tab == 2 || _tab == 4 || _tab == 5 || _tab == 8 || _tab == 9 || _tab == 10 || _tab == 11 || _tab == 12) ? 0 : MediaQuery.of(context).padding.top'));
       expect(mainSource, contains('final labKeyboardOpen = _tab == 9 &&'));
       expect(
-        mainSource,
-        contains('editorOpen || kbOpen || labKeyboardOpen'),
+        normalized,
+        contains(
+            'final hidden = editorOpen || kbOpen || toolsKeyboardOpen || labKeyboardOpen || patientKeyboardOpen || assessmentKeyboardOpen;'),
       );
     });
 
@@ -90,7 +97,7 @@ void main() {
       expect(shell, contains('fontSize: 16'));
       expect(shell, contains('width: 36'));
       expect(shell, contains('height: 36'));
-      expect(shell, contains('onTap: onBack ??'));
+      expect(shell, matches(RegExp(r'onTap:\s*onBack\s*\?\?')));
       expect(
         shell,
         contains('const Expanded(child: PediatricsTabContent())'),

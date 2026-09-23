@@ -305,7 +305,7 @@ function createProductionServer() {
     });
 
   const verifyFirebaseIdToken =
-    async (idToken) => admin.auth().verifyIdToken(idToken);
+    async (idToken) => admin.auth().verifyIdToken(idToken, true);
 
   const fetchImpl = globalThis.fetch;
   if (typeof fetchImpl !== 'function') {

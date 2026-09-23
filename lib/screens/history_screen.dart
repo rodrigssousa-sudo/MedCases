@@ -3845,7 +3845,8 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                     ),
                                   ),
                                   const SizedBox(width: 9),
-                                  Column(
+                                  Expanded(
+                                    child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
@@ -3870,9 +3871,11 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                         ),
                                       ),
                                     ],
+                                    ),
                                   ),
-                                  const Spacer(),
-                                  Column(
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       if (history.authorName.isNotEmpty)
@@ -3908,6 +3911,7 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                                         ),
                                       ),
                                     ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -4335,12 +4339,15 @@ class _HistoryDetailState extends State<_HistoryDetail> {
                             color: Colors.grey[400],
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            _hcT(p.lang, 'pdf_hint'),
-                            style: TextStyle(
-                              fontSize: MedTypography.auxiliarySize,
-                              color: Colors.grey[400],
-                              fontWeight: FontWeight.w500,
+                          Flexible(
+                            child: Text(
+                              _hcT(p.lang, 'pdf_hint'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: MedTypography.auxiliarySize,
+                                color: Colors.grey[400],
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ],
@@ -5857,8 +5864,10 @@ class _HistoryEditorState extends State<_HistoryEditor> {
               // Padding inferior adaptativo:
               //   Expandida: 168px (barra completa ~110px + SafeArea 34px + buffer 24px)
               //   Recolhida:  72px (pílula ~40px + SafeArea 24px + buffer 8px)
+              // Scaffold consumes the inherited inset when resizing its body.
+              // Read the view only to detect whether the keyboard is open.
               final keyboardFocusMode =
-                  MediaQuery.viewInsetsOf(context).bottom > 0;
+                  View.of(context).viewInsets.bottom > 0;
               final micPad = keyboardFocusMode
                   ? 16.0
                   : hasMic
@@ -6807,7 +6816,8 @@ class _EditorFieldState extends State<_EditorField> {
         // ── Header: label + botão mic ──────────────────────────────────────────
         Row(
           children: [
-            Text(
+            Flexible(
+              child: Text(
               widget.label,
               style: TextStyle(
                 fontSize: MedTypography.auxiliarySize,
@@ -6816,6 +6826,7 @@ class _EditorFieldState extends State<_EditorField> {
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white70
                     : const Color(0xFF4B5563),
+              ),
               ),
             ),
           ],
@@ -7013,9 +7024,14 @@ class _MicControlBar extends StatelessWidget {
 // HISTORY_CLINICAL_V1_C_R16_R3_MIC_EXPANDED_LIGHT_FINAL
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: FocusManager.instance,
+        builder: (context, _) => _buildControls(context),
+      );
+
+  Widget _buildControls(BuildContext context) {
     final safeBottom = MediaQuery.paddingOf(context).bottom;
-    final keyboardTextMode = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final keyboardTextMode = View.of(context).viewInsets.bottom > 0;
     final busy = smartActive || sttListening || relatoActive || aiProcessing;
     // HISTORY_CLINICAL_V1_C_R14_R4_MIC_DOCK_LIGHT_CLOSURE
     final micDockDark = Theme.of(context).brightness == Brightness.dark;
@@ -7033,9 +7049,12 @@ class _MicControlBar extends StatelessWidget {
     final micActionBorder =
         micDockDark ? const Color(0xFF374151) : const Color(0xFFD8E0E7);
 
-    final focusedWidget = FocusManager.instance.primaryFocus?.context?.widget;
-    final keyboardType =
-        focusedWidget is EditableText ? focusedWidget.keyboardType : null;
+    final focusContext = FocusManager.instance.primaryFocus?.context;
+    final focusedWidget = focusContext?.widget;
+    // Flutter attaches the text field focus node below EditableText.
+    final keyboardType = focusedWidget is EditableText
+        ? focusedWidget.keyboardType
+        : focusContext?.findAncestorWidgetOfExactType<EditableText>()?.keyboardType;
     final numericKeyboardMode = keyboardType == TextInputType.number ||
         keyboardType ==
             const TextInputType.numberWithOptions(

@@ -16,8 +16,9 @@ import 'package:flutter_test/flutter_test.dart';
 // (avoids importing firebase_core which would require initialization)
 // ─────────────────────────────────────────────────────────────────────────────
 
-enum _UserStatus { pending, approved, blocked }
-enum _UserRole   { master, admin, supervisor, user }
+enum _UserStatus { pending, approved }
+
+enum _UserRole { user }
 
 class _UserModel {
   final String uid;
@@ -33,31 +34,32 @@ class _UserModel {
     required this.uid,
     required this.email,
     required this.displayName,
-    this.role            = _UserRole.user,
-    this.status          = _UserStatus.pending,
-    this.acceptedTerms   = false,
+    this.role = _UserRole.user,
+    this.status = _UserStatus.pending,
+    this.acceptedTerms = false,
     this.acceptedTermsAt = null,
     this.professionalCategory,
   });
 
   bool get isApproved => status == _UserStatus.approved;
-  bool get isPending  => status == _UserStatus.pending;
+  bool get isPending => status == _UserStatus.pending;
 
   _UserModel copyWith({
     _UserStatus? status,
     bool? acceptedTerms,
     DateTime? acceptedTermsAt,
     String? professionalCategory,
-  }) => _UserModel(
-    uid:                  uid,
-    email:                email,
-    displayName:          displayName,
-    role:                 role,
-    status:               status          ?? this.status,
-    acceptedTerms:        acceptedTerms   ?? this.acceptedTerms,
-    acceptedTermsAt:      acceptedTermsAt ?? this.acceptedTermsAt,
-    professionalCategory: professionalCategory ?? this.professionalCategory,
-  );
+  }) =>
+      _UserModel(
+        uid: uid,
+        email: email,
+        displayName: displayName,
+        role: role,
+        status: status ?? this.status,
+        acceptedTerms: acceptedTerms ?? this.acceptedTerms,
+        acceptedTermsAt: acceptedTermsAt ?? this.acceptedTermsAt,
+        professionalCategory: professionalCategory ?? this.professionalCategory,
+      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -97,14 +99,14 @@ class _MockAuthService {
     }
 
     // Simulate createUserWithEmailAndPassword + Firestore write
-    final uid  = 'uid_${email.hashCode.abs()}';
+    final uid = 'uid_${email.hashCode.abs()}';
     final user = _UserModel(
-      uid:          uid,
-      email:        email.trim().toLowerCase(),
-      displayName:  displayName.trim(),
-      role:         _UserRole.user,
-      status:       _UserStatus.approved, // auto-approve (matches real code)
-      acceptedTerms: false,               // ← gate not yet passed
+      uid: uid,
+      email: email.trim().toLowerCase(),
+      displayName: displayName.trim(),
+      role: _UserRole.user,
+      status: _UserStatus.approved, // auto-approve (matches real code)
+      acceptedTerms: false, // ← gate not yet passed
     );
 
     // Simulate async Firestore document creation
@@ -149,8 +151,8 @@ class _MockAuthService {
     if (user == null) return;
     await Future.delayed(Duration.zero); // simulate async Firestore write
     _firestoreUsers[uid] = user.copyWith(
-      acceptedTerms:        true,
-      acceptedTermsAt:      DateTime.now(),
+      acceptedTerms: true,
+      acceptedTermsAt: DateTime.now(),
       professionalCategory: professionalCategory,
     );
   }
@@ -162,13 +164,13 @@ class _MockAuthService {
 
 class _MockDisclaimerGate {
   String? selectedCategory;
-  bool    checkboxMarked = false;
+  bool checkboxMarked = false;
 
   /// Mirrors: bool get _canConfirm => _selectedCategory != null && _checked
   bool get canConfirm => selectedCategory != null && checkboxMarked;
 
   void selectCategory(String cat) => selectedCategory = cat;
-  void toggleCheckbox()           => checkboxMarked = !checkboxMarked;
+  void toggleCheckbox() => checkboxMarked = !checkboxMarked;
 
   Future<bool> confirmAndSave(String uid) async {
     if (!canConfirm) return false;
@@ -187,10 +189,10 @@ class _MockDisclaimerGate {
 enum _AppRoute { loginScreen, disclaimerGate, mainCockpit }
 
 _AppRoute _resolveRoute(_UserModel? user) {
-  if (user == null)               return _AppRoute.loginScreen;
-  if (!user.isApproved)           return _AppRoute.loginScreen;
-  if (!user.acceptedTerms)        return _AppRoute.disclaimerGate;
-  return                                  _AppRoute.mainCockpit;
+  if (user == null) return _AppRoute.loginScreen;
+  if (!user.isApproved) return _AppRoute.loginScreen;
+  if (!user.acceptedTerms) return _AppRoute.disclaimerGate;
+  return _AppRoute.mainCockpit;
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -205,13 +207,13 @@ void main() {
   // TEST CASE 1 — New Account Registration (Multi-step Onboarding)
   // ──────────────────────────────────────────────────────────────────────────
   group('TC-1: New Account Registration', () {
-
-    test('1.1 — createUserWithEmailAndPassword succeeds with valid credentials', () async {
+    test('1.1 — createUserWithEmailAndPassword succeeds with valid credentials',
+        () async {
       final result = await _MockAuthService.register(
-        email:       'rodrigssousa@gmail.com',
-        password:    'SecurePass123',
+        email: 'rodrigssousa@gmail.com',
+        password: 'SecurePass123',
         displayName: 'Rodrigo Sousa',
-        profession:  'Médico / Residente',
+        profession: 'Médico / Residente',
       );
 
       expect(result.success, isTrue,
@@ -221,29 +223,33 @@ void main() {
       expect(result.user!.email, equals('rodrigssousa@gmail.com'));
     });
 
-    test('1.2 — Firestore document is created asynchronously after registration', () async {
+    test(
+        '1.2 — Firestore document is created asynchronously after registration',
+        () async {
       final result = await _MockAuthService.register(
-        email:       'rodrigssousa@gmail.com',
-        password:    'SecurePass123',
+        email: 'rodrigssousa@gmail.com',
+        password: 'SecurePass123',
         displayName: 'Rodrigo Sousa',
       );
 
       expect(result.success, isTrue);
 
-      final uid  = result.user!.uid;
-      final doc  = _firestoreUsers[uid];
+      final uid = result.user!.uid;
+      final doc = _firestoreUsers[uid];
       expect(doc, isNotNull,
           reason: 'users/{uid} document must be written to Firestore');
-      expect(doc!.uid,   isNotEmpty);
-      expect(doc.email,  equals('rodrigssousa@gmail.com'));
+      expect(doc!.uid, isNotEmpty);
+      expect(doc.email, equals('rodrigssousa@gmail.com'));
       expect(doc.status, equals(_UserStatus.approved),
           reason: 'Auto-approval must set status=approved immediately');
     });
 
-    test('1.3 — New user is routed to DisclaimerGate (not cockpit) after registration', () async {
+    test(
+        '1.3 — New user is routed to DisclaimerGate (not cockpit) after registration',
+        () async {
       final result = await _MockAuthService.register(
-        email:       'rodrigssousa@gmail.com',
-        password:    'SecurePass123',
+        email: 'rodrigssousa@gmail.com',
+        password: 'SecurePass123',
         displayName: 'Rodrigo Sousa',
       );
 
@@ -251,21 +257,23 @@ void main() {
 
       final route = _resolveRoute(result.user);
       expect(route, equals(_AppRoute.disclaimerGate),
-          reason: 'Newly registered user must hit DisclaimerGate before cockpit');
+          reason:
+              'Newly registered user must hit DisclaimerGate before cockpit');
     });
 
-    test('1.4 — Duplicate email registration returns EMAIL_EXISTS error', () async {
+    test('1.4 — Duplicate email registration returns EMAIL_EXISTS error',
+        () async {
       // First registration
       await _MockAuthService.register(
-        email:       'rodrigssousa@gmail.com',
-        password:    'SecurePass123',
+        email: 'rodrigssousa@gmail.com',
+        password: 'SecurePass123',
         displayName: 'Rodrigo Sousa',
       );
 
       // Second registration with same email
       final result = await _MockAuthService.register(
-        email:       'rodrigssousa@gmail.com',
-        password:    'AnotherPass456',
+        email: 'rodrigssousa@gmail.com',
+        password: 'AnotherPass456',
         displayName: 'Other User',
       );
 
@@ -274,10 +282,11 @@ void main() {
           reason: 'EMAIL_EXISTS must return a user-friendly Portuguese error');
     });
 
-    test('1.5 — Weak password (< 6 chars) is rejected with correct error', () async {
+    test('1.5 — Weak password (< 6 chars) is rejected with correct error',
+        () async {
       final result = await _MockAuthService.register(
-        email:       'newuser@test.com',
-        password:    '123',
+        email: 'newuser@test.com',
+        password: '123',
         displayName: 'Test User',
       );
 
@@ -291,13 +300,12 @@ void main() {
   // TEST CASE 2 — Mandatory Legal Disclaimer Gate
   // ──────────────────────────────────────────────────────────────────────────
   group('TC-2: Mandatory Legal Disclaimer Interceptor', () {
-
     late _UserModel testUser;
 
     setUp(() async {
       final result = await _MockAuthService.register(
-        email:       'rodrigssousa@gmail.com',
-        password:    'SecurePass123',
+        email: 'rodrigssousa@gmail.com',
+        password: 'SecurePass123',
         displayName: 'Rodrigo Sousa',
       );
       testUser = result.user!;
@@ -323,7 +331,8 @@ void main() {
       gate.toggleCheckbox();
 
       expect(gate.canConfirm, isFalse,
-          reason: 'Button must remain locked when professional category is not selected');
+          reason:
+              'Button must remain locked when professional category is not selected');
     });
 
     test('2.4 — CTA button ACTIVATES only when BOTH conditions are true', () {
@@ -332,10 +341,12 @@ void main() {
       gate.toggleCheckbox();
 
       expect(gate.canConfirm, isTrue,
-          reason: 'Button must activate (green + check icon) when both fields are valid');
+          reason:
+              'Button must activate (green + check icon) when both fields are valid');
     });
 
-    test('2.5 — confirmAndSave writes acceptedTerms=true to Firestore', () async {
+    test('2.5 — confirmAndSave writes acceptedTerms=true to Firestore',
+        () async {
       final gate = _MockDisclaimerGate();
       gate.selectCategory('Médico / Residente');
       gate.toggleCheckbox();
@@ -350,27 +361,29 @@ void main() {
           reason: 'acceptedTerms must be written to Firestore on confirmation');
     });
 
-    test('2.6 — acceptedTermsAt timestamp is written on confirmation', () async {
+    test('2.6 — acceptedTermsAt timestamp is written on confirmation',
+        () async {
       final gate = _MockDisclaimerGate();
       gate.selectCategory('Estudante de Medicina');
       gate.toggleCheckbox();
 
       final before = DateTime.now().subtract(const Duration(seconds: 1));
       await gate.confirmAndSave(testUser.uid);
-      final after  = DateTime.now().add(const Duration(seconds: 1));
+      final after = DateTime.now().add(const Duration(seconds: 1));
 
       final updatedDoc = _firestoreUsers[testUser.uid]!;
       expect(updatedDoc.acceptedTermsAt, isNotNull,
           reason: 'acceptedTermsAt must record server timestamp');
       expect(
         updatedDoc.acceptedTermsAt!.isAfter(before) &&
-        updatedDoc.acceptedTermsAt!.isBefore(after),
+            updatedDoc.acceptedTermsAt!.isBefore(after),
         isTrue,
         reason: 'Timestamp must be within the test execution window',
       );
     });
 
-    test('2.7 — professionalCategory is stored correctly in Firestore', () async {
+    test('2.7 — professionalCategory is stored correctly in Firestore',
+        () async {
       final gate = _MockDisclaimerGate();
       gate.selectCategory('Outro Profissional de Saúde');
       gate.toggleCheckbox();
@@ -378,10 +391,13 @@ void main() {
       await gate.confirmAndSave(testUser.uid);
 
       final updatedDoc = _firestoreUsers[testUser.uid]!;
-      expect(updatedDoc.professionalCategory, equals('Outro Profissional de Saúde'));
+      expect(updatedDoc.professionalCategory,
+          equals('Outro Profissional de Saúde'));
     });
 
-    test('2.8 — confirmAndSave returns false and does NOT write if gate is incomplete', () async {
+    test(
+        '2.8 — confirmAndSave returns false and does NOT write if gate is incomplete',
+        () async {
       final gate = _MockDisclaimerGate();
       // Deliberately incomplete — only category, no checkbox
       gate.selectCategory('Médico / Residente');
@@ -404,10 +420,11 @@ void main() {
 
       // Re-read the updated user from "Firestore"
       final updatedUser = _firestoreUsers[testUser.uid]!;
-      final route       = _resolveRoute(updatedUser);
+      final route = _resolveRoute(updatedUser);
 
       expect(route, equals(_AppRoute.mainCockpit),
-          reason: 'After accepting terms, user must be routed to the main cockpit');
+          reason:
+              'After accepting terms, user must be routed to the main cockpit');
     });
 
     test('2.10 — Toggling checkbox twice resets to disabled state', () {
@@ -426,21 +443,21 @@ void main() {
   // TEST CASE 3 — Standard Login with Existing Credentials
   // ──────────────────────────────────────────────────────────────────────────
   group('TC-3: Standard Login Flow', () {
-
     setUp(() async {
       // Seed a user who has NOT yet accepted terms
       final reg = await _MockAuthService.register(
-        email:       'rodrigssousa@gmail.com',
-        password:    'SecurePass123',
+        email: 'rodrigssousa@gmail.com',
+        password: 'SecurePass123',
         displayName: 'Rodrigo Sousa',
       );
       // Ensure they are seeded as approved but terms NOT yet accepted
       _firestoreUsers[reg.user!.uid] = reg.user!;
     });
 
-    test('3.1 — signInWithEmailAndPassword resolves with valid credentials', () async {
+    test('3.1 — signInWithEmailAndPassword resolves with valid credentials',
+        () async {
       final result = await _MockAuthService.login(
-        email:    'rodrigssousa@gmail.com',
+        email: 'rodrigssousa@gmail.com',
         password: 'SecurePass123',
       );
 
@@ -450,21 +467,24 @@ void main() {
       expect(result.user!.email, equals('rodrigssousa@gmail.com'));
     });
 
-    test('3.2 — Login reads Firestore profile (acceptedTerms field is present)', () async {
+    test('3.2 — Login reads Firestore profile (acceptedTerms field is present)',
+        () async {
       final result = await _MockAuthService.login(
-        email:    'rodrigssousa@gmail.com',
+        email: 'rodrigssousa@gmail.com',
         password: 'SecurePass123',
       );
 
       expect(result.success, isTrue);
       // acceptedTerms comes from Firestore — must not be null
       expect(result.user!.acceptedTerms, equals(false),
-          reason: 'Firestore profile must be read during login; acceptedTerms=false for new user');
+          reason:
+              'Firestore profile must be read during login; acceptedTerms=false for new user');
     });
 
-    test('3.3 — If acceptedTerms=false, routing goes to DisclaimerGate', () async {
+    test('3.3 — If acceptedTerms=false, routing goes to DisclaimerGate',
+        () async {
       final result = await _MockAuthService.login(
-        email:    'rodrigssousa@gmail.com',
+        email: 'rodrigssousa@gmail.com',
         password: 'SecurePass123',
       );
 
@@ -472,48 +492,52 @@ void main() {
 
       final route = _resolveRoute(result.user);
       expect(route, equals(_AppRoute.disclaimerGate),
-          reason: 'User with acceptedTerms=false must be intercepted by DisclaimerGate on every login');
+          reason:
+              'User with acceptedTerms=false must be intercepted by DisclaimerGate on every login');
     });
 
-    test('3.4 — If acceptedTerms=true, routing goes directly to mainCockpit', () async {
+    test('3.4 — If acceptedTerms=true, routing goes directly to mainCockpit',
+        () async {
       // First, login and accept terms
       final loginResult = await _MockAuthService.login(
-        email:    'rodrigssousa@gmail.com',
+        email: 'rodrigssousa@gmail.com',
         password: 'SecurePass123',
       );
       final uid = loginResult.user!.uid;
 
       // Simulate the user completing the disclaimer gate
       await _MockAuthService.acceptTerms(
-        uid:                  uid,
+        uid: uid,
         professionalCategory: 'Médico / Residente',
       );
 
       // Now login again (second session)
       final secondLogin = await _MockAuthService.login(
-        email:    'rodrigssousa@gmail.com',
+        email: 'rodrigssousa@gmail.com',
         password: 'SecurePass123',
       );
 
       final route = _resolveRoute(secondLogin.user);
       expect(route, equals(_AppRoute.mainCockpit),
-          reason: 'Returning user with acceptedTerms=true must go directly to cockpit');
+          reason:
+              'Returning user with acceptedTerms=true must go directly to cockpit');
     });
 
     test('3.5 — Login with wrong password returns localized error', () async {
       final result = await _MockAuthService.login(
-        email:    'rodrigssousa@gmail.com',
+        email: 'rodrigssousa@gmail.com',
         password: 'Wrong',
       );
 
       expect(result.success, isFalse);
       expect(result.error, contains('incorretos'),
-          reason: 'INVALID_LOGIN_CREDENTIALS must return Portuguese-localized error');
+          reason:
+              'INVALID_LOGIN_CREDENTIALS must return Portuguese-localized error');
     });
 
     test('3.6 — Login with unknown email returns localized error', () async {
       final result = await _MockAuthService.login(
-        email:    'ghost@notexist.com',
+        email: 'ghost@notexist.com',
         password: 'AnyPassword123',
       );
 
@@ -533,40 +557,39 @@ void main() {
   // BONUS: AuthResult model integrity
   // ──────────────────────────────────────────────────────────────────────────
   group('Auth Result Model Integrity', () {
-
     test('B.1 — AuthResult.success carries the user object', () async {
       final result = await _MockAuthService.register(
-        email:       'test@model.com',
-        password:    'ValidPass1',
+        email: 'test@model.com',
+        password: 'ValidPass1',
         displayName: 'Test',
       );
       expect(result.success, isTrue);
-      expect(result.user,    isA<_UserModel>());
-      expect(result.error,   isNull);
+      expect(result.user, isA<_UserModel>());
+      expect(result.error, isNull);
     });
 
     test('B.2 — AuthResult.error carries no user object', () async {
       final result = await _MockAuthService.login(
-        email:    'nobody@test.com',
+        email: 'nobody@test.com',
         password: 'WrongPass1',
       );
       expect(result.success, isFalse);
-      expect(result.user,    isNull);
-      expect(result.error,   isNotNull);
+      expect(result.user, isNull);
+      expect(result.error, isNotNull);
     });
 
     test('B.3 — New user model has expected default state', () async {
       final result = await _MockAuthService.register(
-        email:       'defaults@test.com',
-        password:    'Pass123456',
+        email: 'defaults@test.com',
+        password: 'Pass123456',
         displayName: 'Defaults User',
       );
       final user = result.user!;
-      expect(user.acceptedTerms,        isFalse);
-      expect(user.acceptedTermsAt,      isNull);
+      expect(user.acceptedTerms, isFalse);
+      expect(user.acceptedTermsAt, isNull);
       expect(user.professionalCategory, isNull);
-      expect(user.status,               equals(_UserStatus.approved));
-      expect(user.role,                 equals(_UserRole.user));
+      expect(user.status, equals(_UserStatus.approved));
+      expect(user.role, equals(_UserRole.user));
     });
   });
 }

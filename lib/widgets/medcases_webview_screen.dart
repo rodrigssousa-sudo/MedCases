@@ -186,7 +186,7 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
     if (kIsWeb || _controller == null) return;
     final theme = _dark ? 'dark' : 'light';
     try {
-      await _controller!.runJavaScript(
+      await _controller.runJavaScript(
         "if(typeof window.updateMedCasesTheme==='function'){window.updateMedCasesTheme('$theme');}",
       );
     } catch (e) {
@@ -389,7 +389,7 @@ class _MedCasesWebViewScreenState extends State<MedCasesWebViewScreen> {
     // Native — WebViewWidget com loading overlay
     return Stack(
       children: [
-        WebViewWidget(controller: _controller!),
+        WebViewWidget(controller: _controller),
         if (_isLoading)
           Container(
             color: const Color(0xFF0F091E).withOpacity(0.85),

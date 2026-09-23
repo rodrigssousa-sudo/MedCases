@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -59,11 +60,12 @@ void main() {
     expect(owner, isNot(contains('return Container(')));
   });
 
-  test('tipos são texto, sem preenchimento e com linha verde', () {
+  testWidgets('tipos são texto, sem preenchimento e com linha verde', (tester) async {
+    await verifyHistoryEvolution(tester);
     expect(owner, contains('SingleChildScrollView('));
     expect(owner, contains('scrollDirection: Axis.horizontal'));
     expect(owner, contains('bottom: BorderSide('));
-    expect(owner, contains('Color(0xFF10B981)'));
+    expect(owner, contains('Color(0xFF0D6B57)'));
     expect(
       owner,
       contains(

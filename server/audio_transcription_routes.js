@@ -1,4 +1,5 @@
-const {assertUsageReservation}=require('./usage_reservation_guard');
+const {assertUsageReservation,usageReceipt}=require('./usage_reservation_guard');
+const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
 
 const crypto = require('crypto');
@@ -136,6 +137,7 @@ function constantTimeEqualBase64Url(left, right) {
   try {
     leftBytes = Buffer.from(left, 'base64url');
     rightBytes = Buffer.from(right, 'base64url');
+    if (leftBytes.toString('base64url') !== left || rightBytes.toString('base64url') !== right) return false;
   } catch (_) {
     return false;
   }
@@ -645,6 +647,7 @@ function registerAudioTranscriptionRoutes({
         });
       }
 
+      let execution = null;
       let audioBuffer = null;
       let parsed = null;
       const requestReceivedAtUtc = runtime.now().toISOString();
@@ -675,6 +678,11 @@ function registerAudioTranscriptionRoutes({
           throw new AudioBackendError('audio_grant_request_binding_mismatch', 403);
         }
 
+        const owner = new MonthlyUsageOwner({db});
+        const receipt = usageReceipt(claims.usage);
+        const claimed = await owner.claimExecution(claims.uid, receipt);
+        if (!claimed.claimed) throw new AudioBackendError('audio_execution_already_claimed',409);
+        execution = {owner, receipt, uid:claims.uid};
         const transcript = await callOpenAiTranscription(runtime, parsed);
         const upstreamCompletedAtUtc = runtime.now().toISOString();
 
@@ -711,6 +719,10 @@ function registerAudioTranscriptionRoutes({
         safeLog(log, 'warn', `[${requestId}] audio transcription rejected`);
         return sendError(res, error, requestId);
       } finally {
+        if (execution) {
+          // Unknown upstream outcome is still charged; never automatically replay.
+          await execution.owner.completeExecution(execution.uid, execution.receipt).catch(() => {});
+        }
         if (Buffer.isBuffer(audioBuffer)) {
           audioBuffer.fill(0);
         }

@@ -1,3 +1,5 @@
+import '../architecture/architectural_runtime_harness.dart';
+import 'pediatric_navigation_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -13,89 +15,52 @@ void main() {
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria final type scale and card geometry V1-B-R0', () {
-    test('raises local pediatric text scale exactly 3px', () {
-      final scale = classBlock(tools, '_PediatricsVisualScaleR3');
-
-      for (final token in <String>[
-        'static const double tabLabel = 14.0',
-        'static const double sectionLabel = 13.0',
-        'static const double body = 14.5',
-        'static const double micro = 11.5',
-        'static const double inputText = 15.5',
-        'static const double hint = 14.0',
-        'static const double option = 14.5',
-        'static const double result = 15.5',
-      ]) {
-        expect(scale, contains(token), reason: token);
+    testWidgets("preserves scale and productive pediatric navigation",
+        (tester) async {
+      for (final dark in [false, true]) {
+        await verifyPediatricGeometry(tester, dark: dark);
+        for (final isEs in [false, true]) {
+          await verifyPediatricNavigation(tester, dark: dark, isEs: isEs);
+        }
       }
-
-      expect(
-        classBlock(tools, '_PedMetricRow'),
-        contains('fontSize: valueSmall ? 13.5'),
-      );
-      expect(
-        classBlock(tools, '_PedNavRow'),
-        contains('fontSize: 14.5'),
-      );
-      expect(
-        classBlock(tools, '_PedNavRow'),
-        contains('fontSize: 11.5'),
-      );
     });
 
-    test('uses 0px topbar gap and 0.1px lateral content limit', () {
-      final state = classBlock(tools, '_PediatricsTabContentState');
-
-      expect(state, contains('const SizedBox(height: 0)'));
-      expect(
-        state,
-        contains(
-          'padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)',
-        ),
-      );
+    testWidgets("uses 0px topbar gap and 0.1px lateral content limit",
+        (tester) async {
+      for (final dark in [false, true]) {
+        await verifyPediatricGeometry(tester, dark: dark);
+        for (final isEs in [false, true]) {
+          await verifyPediatricNavigation(tester, dark: dark, isEs: isEs);
+        }
+      }
     });
 
-    test('uses 1px vertical spacing between pediatric cards', () {
-      expect(
-        classBlock(tools, '_PedSectionGap'),
-        contains('SizedBox(height: 1)'),
-      );
+    testWidgets("uses 1px vertical spacing between pediatric cards",
+        (tester) async {
+      for (final dark in [false, true]) {
+        await verifyPediatricGeometry(tester, dark: dark);
+        for (final isEs in [false, true]) {
+          await verifyPediatricNavigation(tester, dark: dark, isEs: isEs);
+        }
+      }
     });
 
-    test('preserves card colors and shape', () {
-      final card = classBlock(tools, '_PedFlatSection');
-
-      expect(
-        card,
-        contains(
-          'c.dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF)',
-        ),
-      );
-      expect(
-        card,
-        contains(
-          'c.dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7)',
-        ),
-      );
-      expect(card, contains('BorderRadius.circular(8)'));
-      expect(card, contains('padding: const EdgeInsets.fromLTRB(13, 10, 13, 10)'));
-      expect(card, isNot(contains('BoxShadow')));
+    testWidgets("preserves card colors and shape", (tester) async {
+      for (final dark in [false, true]) {
+        await verifyPediatricGeometry(tester, dark: dark);
+        for (final isEs in [false, true]) {
+          await verifyPediatricNavigation(tester, dark: dark, isEs: isEs);
+        }
+      }
     });
 
-    test('preserves 44px canonical subnav geometry', () {
-      final nav = classBlock(tools, '_PediatTabRow');
-
-      expect(nav, contains('height: 44'));
-      expect(
-        nav,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 8)'),
-      );
-      expect(
-        nav,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 12)'),
-      );
-      expect(nav, contains('right: i < sections.length - 1'));
-      expect(nav, contains('width: active ? 2 : 0.7'));
+    testWidgets("preserves 44px canonical subnav geometry", (tester) async {
+      for (final dark in [false, true]) {
+        await verifyPediatricGeometry(tester, dark: dark);
+        for (final isEs in [false, true]) {
+          await verifyPediatricNavigation(tester, dark: dark, isEs: isEs);
+        }
+      }
     });
 
     test('preserves clinical engines and PT ES', () {

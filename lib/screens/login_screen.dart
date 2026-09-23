@@ -31,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _Mode _mode = _Mode.login;
   bool _loading = false;
-  String? _socialLoadingProvider;
   bool _obscure = true;
   bool _rememberEmail = true; // SUPER ORDEM MASTER 14 M4: ativo por padrão
   bool _keepLoggedIn =
@@ -58,17 +57,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // ── Nova paleta ────────────────────────────────────────────────────────────
   // Verde profundo diferente do anterior (#0F1C14 → #061A12)
-  static const kBg = Color(0xFF1A1D23); // fundo hero — verde bem escuro
+   // fundo hero — verde bem escuro
   // MEDCASES_AUTH_FLAT_SINGLE_SURFACE_CREATE_ACCOUNT_V1_B_R0_R4
   // MEDCASES_LOGIN_SIGNUP_AUTH_UI_V2_B_R1
-  static const kForest = Color(0xFF17382D); // camada intermediária
+   // camada intermediária
   static const kGreen = Color(0xFF0E8000); // verde clínico canônico
   static const kGreenMid = Color(0xFF0E8000); // mesmo acento: superfície flat
-  static const kPanel = Color(0x00000000); // transparente: sem painel/sheet
+   // transparente: sem painel/sheet
   static const kText = Color(0xFFF1F5F9); // texto primário sobre dark
   static const kTextMid = Color(0xFF94A3B8); // texto secundário canônico
-  static const kGold = Color(0xFFC5A365); // dourado MedCases
-  static const kGoldL = Color(0xFFFFE8A6); // dourado claro
+   // dourado MedCases
+   // dourado claro
 
   static const _kPrefEmail = 'login_saved_email';
   static const _kPrefRemember = 'login_remember_email';
@@ -285,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() {
       _loading = true;
-      _socialLoadingProvider = provider;
+
       _error = null;
       _success = null;
     });
@@ -300,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
         result.error == SocialAuthService.cancelledResultCode) {
       setState(() {
         _loading = false;
-        _socialLoadingProvider = null;
+
       });
       return;
     }
@@ -310,14 +309,14 @@ class _LoginScreenState extends State<LoginScreen> {
       // the canonical AuthGate owns navigation.
       setState(() {
         _loading = false;
-        _socialLoadingProvider = null;
+
       });
       return;
     }
 
     setState(() {
       _loading = false;
-      _socialLoadingProvider = null;
+
       _error = result.error;
     });
   }
@@ -661,62 +660,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialAuthButton({
-    required String provider,
-    required String label,
-    required Widget leading,
-  }) {
-    final busy = _loading && _socialLoadingProvider == provider;
 
-    return SizedBox(
-      height: 39,
-      child: FilledButton(
-        onPressed: _loading ? null : () => _submitSocial(provider),
-        style: FilledButton.styleFrom(
-          backgroundColor: kAuthSurface,
-          disabledBackgroundColor: kAuthSurface.withValues(alpha: 0.58),
-          foregroundColor: kAuthText,
-          disabledForegroundColor: kAuthMuted,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(
-              color: kAuthBorder,
-              width: 0.8,
-            ),
-          ),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: busy
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: kAuthText,
-                      ),
-                    )
-                  : leading,
-            ),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.1,
-                color: kAuthText,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   // ── Step indicator ────────────────────────────────────────────────────────
   // ── Campos login ──────────────────────────────────────────────────────────
@@ -1420,8 +1364,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ? 'Herramienta de apoyo clínico educativo. No sustituye el juicio clínico individual ni las guías institucionales vigentes.'
       : 'Ferramenta de apoio clínico educacional. Não substitui o julgamento clínico individual nem as diretrizes institucionais vigentes.';
 
-  String _registerSuccessMsg() =>
-      _isEs ? 'Cuenta creada correctamente.' : 'Conta criada com sucesso.';
+
 
   String _resetSuccessMsg(String email) => _isEs
       ? 'Enlace de recuperación enviado a $email. Revisa tu bandeja de entrada.'
@@ -1458,11 +1401,11 @@ class _MedicalDisclaimerCheckbox extends StatelessWidget {
       'individualizada.';
 
   // BUILD 431: palette constants — Canvas Premium dark
-  static const _kAccent = Color(0xFF0D6B57);
-  static const _kSurface = Color(0xFF252930);
-  static const _kBorder = Color(0x1AFFFFFF); // 10% white
-  static const _kTextSec = Color(0xB3FFFFFF); // white70
-  static const _kTextHint = Color(0xFF8B9BB4);
+
+
+   // 10% white
+   // white70
+
 
   @override
   Widget build(BuildContext context) {

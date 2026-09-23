@@ -103,7 +103,7 @@ class _HomeV2MobilePairButton extends StatelessWidget {
     required this.iconColor,
     required this.onTap,
     this.svgAsset,
-    this.icon,
+
   });
 
   final HomeV2Palette palette;
@@ -111,7 +111,7 @@ class _HomeV2MobilePairButton extends StatelessWidget {
   final Color iconColor;
   final VoidCallback onTap;
   final String? svgAsset;
-  final IconData? icon;
+  final IconData? icon = null;
 
   @override
   Widget build(BuildContext context) {
@@ -385,80 +385,9 @@ class HomeV2UtilityRow extends StatelessWidget {
   }
 }
 
-class _UtilityShortcut extends StatelessWidget {
-  const _UtilityShortcut({
-    required this.palette,
-    required this.svgAsset,
-    required this.iconColor,
-    required this.label,
-    required this.onTap,
-  });
 
-  final HomeV2Palette palette;
-  final String svgAsset;
-  final Color iconColor;
-  final String label;
-  final VoidCallback onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 6,
-            vertical: 10,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                svgAsset,
-                width: 22,
-                height: 22,
-                colorFilter: ColorFilter.mode(
-                  iconColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: palette.textPrimary,
-                  fontSize: 10.5,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.15,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
-class _UtilityDivider extends StatelessWidget {
-  const _UtilityDivider({
-    required this.palette,
-  });
-
-  final HomeV2Palette palette;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 42,
-      color: palette.border,
-    );
-  }
-}
 
 class HomeV2GuardiaSurface extends StatelessWidget {
   const HomeV2GuardiaSurface({
@@ -515,144 +444,6 @@ class HomeV2GuardiaSurface extends StatelessWidget {
           ),
           child,
         ],
-      ),
-    );
-  }
-}
-
-class _ClinicalShortcut extends StatelessWidget {
-  const _ClinicalShortcut({
-    required this.palette,
-    required this.label,
-    required this.svgAsset,
-    required this.iconColor,
-    required this.iconSize,
-    required this.onTap,
-  });
-
-  final HomeV2Palette palette;
-  final String label;
-  final String svgAsset;
-  final Color iconColor;
-  final double iconSize;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: palette.surface,
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              svgAsset,
-              width: iconSize,
-              height: iconSize,
-              colorFilter: ColorFilter.mode(
-                iconColor,
-                BlendMode.srcIn,
-              ),
-            ),
-            const SizedBox(height: 7),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: palette.textPrimary,
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.1,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ClinicalVerticalDivider extends StatelessWidget {
-  const _ClinicalVerticalDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final palette = HomeV2Palette.resolve(dark);
-
-    return SizedBox(
-      width: 1,
-      height: 68,
-      child: Center(
-        child: Container(
-          width: 0.55,
-          height: 42,
-          color: palette.border,
-        ),
-      ),
-    );
-  }
-}
-
-class _ClinicalHorizontalDivider extends StatelessWidget {
-  const _ClinicalHorizontalDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
-    final palette = HomeV2Palette.resolve(dark);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Container(
-        height: 0.55,
-        width: double.infinity,
-        color: palette.border,
-      ),
-    );
-  }
-}
-
-class _ModuleIcon extends StatelessWidget {
-  const _ModuleIcon({
-    required this.palette,
-    required this.svgAsset,
-    required this.color,
-    this.compact = false,
-  });
-
-  final HomeV2Palette palette;
-  final String svgAsset;
-  final Color color;
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final size = compact ? 34.0 : 40.0;
-
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: palette.surfaceStrong,
-        borderRadius: BorderRadius.circular(compact ? 10 : 12),
-        border: Border.all(
-          color: palette.border,
-        ),
-      ),
-      alignment: Alignment.center,
-      child: SvgPicture.asset(
-        svgAsset,
-        width: compact ? 18 : 21,
-        height: compact ? 18 : 21,
-        colorFilter: ColorFilter.mode(
-          color,
-          BlendMode.srcIn,
-        ),
       ),
     );
   }

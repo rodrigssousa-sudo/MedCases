@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -79,6 +80,13 @@ String markerSlice(String source, String begin, String end) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   late String home;
   late String mainSource;
   late String tools;
@@ -132,7 +140,7 @@ void main() {
       expect(shell, contains('const Expanded(child: PediatricsTabContent())'));
       expect(shell, contains('const _PediatricsShell({this.onBack});'));
       expect(shell, contains('final VoidCallback? onBack;'));
-      expect(shell, contains('onTap: onBack ??'));
+      expect(shell, matches(RegExp(r'onTap:\s*onBack\s*\?\?')));
       expect(
         shell,
         contains('() => Navigator.of(context).pop(),'),
@@ -158,9 +166,8 @@ void main() {
     test('MainShell monta Pediatria como workspace interno tab 8', () {
       expect(
         mainSource,
-        contains(
-          "import 'screens/home_screen.dart' show PediatricsMainShellWorkspace;",
-        ),
+        matches(RegExp(
+            r"import 'screens/home_screen.dart'\s+show\s+PediatricsMainShellWorkspace(?:,\s*InternacionMainShellWorkspace)?;")),
       );
       expect(
         mainSource,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'home_release_runtime_harness.dart';
 
 void main() {
   late String home;
@@ -17,7 +18,7 @@ void main() {
   });
 
   group('Mi Guardia — fonte canônica', () {
-    test('mantém duas rotas de novo paciente', () {
+    testWidgets('mantém duas rotas de novo paciente', (tester) async {
       expect(
         RegExp(
           r'onAddPatient\s*:\s*\(\)\s*\{',
@@ -25,7 +26,7 @@ void main() {
         2,
       );
 
-      expect(home, contains('rootNavigator: true'));
+      await verifyRealPatientRoute(tester, module: false);
       expect(home, contains('_AdultoShell('));
     });
 
@@ -84,7 +85,7 @@ void main() {
       );
 
       final end = dashboard.indexOf(
-        'class _PlantaoHeader extends StatelessWidget',
+        'class _GuardiaShortcutCard extends StatefulWidget',
         start,
       );
 

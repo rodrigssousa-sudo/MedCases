@@ -52,7 +52,7 @@ enum _SimulatedFirestoreResult {
 /// Persistence spy — counts write attempts.
 class _PersistenceSpy {
   int newUserWriteCount = 0;
-  int normalWriteCount  = 0;
+  int normalWriteCount = 0;
   final List<String> ops = [];
 
   void recordNewUserWrite() {
@@ -67,7 +67,7 @@ class _PersistenceSpy {
 
   void reset() {
     newUserWriteCount = 0;
-    normalWriteCount  = 0;
+    normalWriteCount = 0;
     ops.clear();
   }
 }
@@ -80,7 +80,7 @@ class _MockTokenStore {
   bool get hasGeminiEmail => geminiEmail != null && geminiEmail!.isNotEmpty;
 
   void clear() {
-    restToken   = null;
+    restToken = null;
     geminiEmail = null;
   }
 }
@@ -166,9 +166,9 @@ FirestoreLoadResult<List<String>> simulateDualBarrierGuard({
   required _FakeFirestoreGate gate,
 }) {
   final bool allowed = gate.preCheckDual(
-    firebaseUid:   firebaseUid,
-    requestedUid:  requestedUid,
-    operation:     operation,
+    firebaseUid: firebaseUid,
+    requestedUid: requestedUid,
+    operation: operation,
   );
   if (!allowed) return FirestoreLoadResult.authDenied();
   return gate.dispatchRead(firestoreResult);
@@ -187,7 +187,7 @@ FirestoreLoadResult<List<String>> simulateDualBarrierGuard({
 ///   authFailed       exception / firebaseUnavailable
 AppAuthBarrierState simulateBootLock({
   required String expectedUid,
-  required String? firebaseSdkUid,  // null = SDK returned no user (stable)
+  required String? firebaseSdkUid, // null = SDK returned no user (stable)
   required bool restTokenPresent,
   bool firebaseAvailable = true,
   bool throwsDuringLatch = false,
@@ -227,7 +227,8 @@ FirestoreLoadResult<List<String>> simulateBarrierGuard({
   required _FakeFirestoreGate gate,
 }) {
   // Rigid: only authReady permits SDK dispatch
-  final bool firebaseUserPresent = barrierState == AppAuthBarrierState.authReady;
+  final bool firebaseUserPresent =
+      barrierState == AppAuthBarrierState.authReady;
   final bool allowed = gate.preCheck(firebaseUserPresent: firebaseUserPresent);
 
   if (!allowed) {
@@ -243,7 +244,6 @@ FirestoreLoadResult<List<String>> simulateBarrierGuard({
 
 void main() {
   group('BUILD 463-A.1.1: Rigid AuthReady Invariant & Pre-Check Barrier', () {
-
     late _FakeFirestoreGate gate;
 
     setUp(() {
@@ -263,7 +263,7 @@ void main() {
 
       final result = simulateBootLock(
         expectedUid: uid,
-        firebaseSdkUid: uid,   // matching non-null uid
+        firebaseSdkUid: uid, // matching non-null uid
         restTokenPresent: true,
         firebaseAvailable: true,
       );
@@ -280,13 +280,15 @@ void main() {
     // "undetermined" and resolved to authReady ("degraded").
     // The rigid invariant mandates: null → authRequired, never authReady.
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 2: Hard Refresh Latch — SDK null after hydration → authRequired (NOT authReady)', () {
+    test(
+        'Vector 2: Hard Refresh Latch — SDK null after hydration → authRequired (NOT authReady)',
+        () {
       const uid = 'user_refresh_uid_456';
 
       // Phase 1: SDK null after full hydration window → authRequired
       final nullResult = simulateBootLock(
         expectedUid: uid,
-        firebaseSdkUid: null,   // null after hydration timeout
+        firebaseSdkUid: null, // null after hydration timeout
         restTokenPresent: true,
         firebaseAvailable: true,
       );
@@ -316,13 +318,15 @@ void main() {
     // 463-A.1.1 CORRECTION: In 463-A.1, REST token + null SDK produced
     // "degraded authReady". The rigid invariant mandates authRequired.
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 3: Orphaned Cache — REST token present, SDK null → authRequired (NOT degraded)', () {
+    test(
+        'Vector 3: Orphaned Cache — REST token present, SDK null → authRequired (NOT degraded)',
+        () {
       const uid = 'user_orphaned_uid_789';
       final store = _MockTokenStore()..restToken = 'valid_rest_token_xyz';
 
       final result = simulateBootLock(
         expectedUid: uid,
-        firebaseSdkUid: null,                // no SDK user
+        firebaseSdkUid: null, // no SDK user
         restTokenPresent: store.hasCachedToken,
         firebaseAvailable: true,
       );
@@ -346,7 +350,8 @@ void main() {
       expect(readResult.isAuthDenied, isTrue,
           reason: 'authRequired state must block all Firestore reads');
       expect(gate.readCount, equals(0),
-          reason: 'No SDK read must be dispatched when barrier is authRequired');
+          reason:
+              'No SDK read must be dispatched when barrier is authRequired');
 
       print('[VECTOR_3][PASS] Orphaned cache: state=${result.name} '
           'readCount=${gate.readCount}');
@@ -355,13 +360,15 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Vector 4: Active UID Mismatch → authMismatch + SecuritySyndicationException
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 4: UID Mismatch — rogue uid → authMismatch + exception + cache purge', () {
+    test(
+        'Vector 4: UID Mismatch — rogue uid → authMismatch + exception + cache purge',
+        () {
       const expectedUid = 'user_legitimate_uid_aaa';
-      const rogueUid    = 'rogue_attacker_uid_bbb';
+      const rogueUid = 'rogue_attacker_uid_bbb';
 
       final result = simulateBootLock(
         expectedUid: expectedUid,
-        firebaseSdkUid: rogueUid,   // MISMATCH — non-null but wrong uid
+        firebaseSdkUid: rogueUid, // MISMATCH — non-null but wrong uid
         restTokenPresent: true,
         firebaseAvailable: true,
       );
@@ -376,11 +383,11 @@ void main() {
         reason: 'uid_mismatch_at_setUser',
       );
       expect(ex.expectedUid, equals(expectedUid));
-      expect(ex.actualUid,   equals(rogueUid));
-      expect(ex.reason,      equals('uid_mismatch_at_setUser'));
-      expect(ex.toString(),  contains('SecuritySyndicationException'));
-      expect(ex.toString(),  contains(expectedUid));
-      expect(ex.toString(),  contains(rogueUid));
+      expect(ex.actualUid, equals(rogueUid));
+      expect(ex.reason, equals('uid_mismatch_at_setUser'));
+      expect(ex.toString(), contains('SecuritySyndicationException'));
+      expect(ex.toString(), contains(expectedUid));
+      expect(ex.toString(), contains(rogueUid));
 
       // Global decision cache purge on mismatch
       ExternalToolLinkEngine.resolveDecision(
@@ -390,7 +397,8 @@ void main() {
       expect(ExternalToolLinkEngine.decisionCacheSize, greaterThan(0));
       ExternalToolLinkEngine.clearAllDecisions(reason: 'identity_mismatch');
       expect(ExternalToolLinkEngine.decisionCacheSize, equals(0),
-          reason: 'clearAllDecisions must flush entire cache on identity mismatch');
+          reason:
+              'clearAllDecisions must flush entire cache on identity mismatch');
 
       print('[VECTOR_4][PASS] UID mismatch: state=${result.name}');
     });
@@ -398,7 +406,9 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Vector 5: Gemini OAuth Cross-Over — barrier not authReady → blocked
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 5: Gemini OAuth Cross-Over — non-authReady barrier → Firestore blocked', () {
+    test(
+        'Vector 5: Gemini OAuth Cross-Over — non-authReady barrier → Firestore blocked',
+        () {
       // authPending (still in boot) — must block Firestore
       final result = simulateBarrierGuard(
         barrierState: AppAuthBarrierState.authPending,
@@ -430,7 +440,9 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Vector 6: Token Expiry Fail-Safe — revoked mid-run → offline result
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 6: Token Expiry — revoked mid-run → offline, no cache corruption', () {
+    test(
+        'Vector 6: Token Expiry — revoked mid-run → offline, no cache corruption',
+        () {
       final spy = _PersistenceSpy();
 
       // Phase 1: valid auth, success fetch
@@ -462,13 +474,16 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Vector 7: Sequential User Swap — cache purged via clearAllDecisions()
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 7: Sequential User Swap — User A purged via clearAllDecisions()', () {
+    test(
+        'Vector 7: Sequential User Swap — User A purged via clearAllDecisions()',
+        () {
       const uidA = 'user_A_uid_seq_swap';
       const uidB = 'user_B_uid_seq_swap';
 
       // User A populates decision cache
       ExternalToolLinkEngine.resolveDecision(
-        uidA, 'diluir vancomicina volume final 250mL',
+        uidA,
+        'diluir vancomicina volume final 250mL',
       );
       expect(ExternalToolLinkEngine.decisionCacheSize, greaterThan(0));
 
@@ -492,7 +507,8 @@ void main() {
 
       // User B populates fresh cache
       ExternalToolLinkEngine.resolveDecision(
-        uidB, 'dosagem amoxicilina paciente pediatrico',
+        uidB,
+        'dosagem amoxicilina paciente pediatrico',
       );
       expect(ExternalToolLinkEngine.decisionCacheSize, equals(1));
 
@@ -502,7 +518,9 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Vector 8: Rule Denial Containment — permission-denied → authDenied
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 8: Rule Denial Containment — permission-denied → authDenied, no write', () {
+    test(
+        'Vector 8: Rule Denial Containment — permission-denied → authDenied, no write',
+        () {
       final spy = _PersistenceSpy();
 
       // Barrier is authReady but Firestore returns permission-denied
@@ -532,7 +550,9 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Vector 9: Offline Boot Verification
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 9: Offline Boot — all endpoints down → offline, cache preserved', () {
+    test(
+        'Vector 9: Offline Boot — all endpoints down → offline, cache preserved',
+        () {
       final result = simulateBarrierGuard(
         barrierState: AppAuthBarrierState.authReady,
         firestoreResult: _SimulatedFirestoreResult.offline,
@@ -554,9 +574,11 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Vector 10: Rebuild Idempotence — ONE boot transaction per lifecycle
     // ─────────────────────────────────────────────────────────────────────────
-    test('Vector 10: Rebuild Idempotence — 50 rebuilds → exactly ONE boot transaction', () {
+    test(
+        'Vector 10: Rebuild Idempotence — 50 rebuilds → exactly ONE boot transaction',
+        () {
       const uid = 'user_rebuild_idempotence_uid';
-      var bootLockCallCount     = 0;
+      var bootLockCallCount = 0;
       var barrierTransitionCount = 0;
       AppAuthBarrierState? lastState;
 
@@ -577,7 +599,7 @@ void main() {
         // Subsequent passes read cached barrier state — no SDK call
       }
 
-      expect(bootLockCallCount,     equals(1));
+      expect(bootLockCallCount, equals(1));
       expect(barrierTransitionCount, equals(1));
       expect(lastState, equals(AppAuthBarrierState.authReady));
 
@@ -588,18 +610,20 @@ void main() {
     // ─────────────────────────────────────────────────────────────────────────
     // Firebase unavailable → authFailed (NOT authReady)
     // ─────────────────────────────────────────────────────────────────────────
-    test('Firebase unavailable (Safari private) → authFailed, never authReady', () {
+    test('Firebase unavailable (Safari private) → authFailed, never authReady',
+        () {
       const uid = 'user_safari_private_uid';
 
       final result = simulateBootLock(
         expectedUid: uid,
         firebaseSdkUid: null,
         restTokenPresent: true,
-        firebaseAvailable: false,  // Safari private / Firebase init failure
+        firebaseAvailable: false, // Safari private / Firebase init failure
       );
 
       expect(result, equals(AppAuthBarrierState.authFailed),
-          reason: 'Firebase unavailable must produce authFailed, not authReady');
+          reason:
+              'Firebase unavailable must produce authFailed, not authReady');
       expect(result, isNot(equals(AppAuthBarrierState.authReady)));
 
       print('[SAFARI_PRIVATE][PASS] authFailed: state=${result.name}');
@@ -616,7 +640,7 @@ void main() {
         firebaseSdkUid: null,
         restTokenPresent: false,
         firebaseAvailable: true,
-        throwsDuringLatch: true,   // unexpected exception
+        throwsDuringLatch: true, // unexpected exception
       );
 
       expect(result, equals(AppAuthBarrierState.authFailed),
@@ -635,15 +659,17 @@ void main() {
     // It verifies that having a REST token (hasCachedToken=true) in the
     // absence of a Firebase SDK user NEVER triggers Firestore reads.
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant A: REST Token + Firebase User null → authRequired + readCount=0', () {
-
-      test('A.1: REST token present, SDK null → authRequired (not authReady)', () {
+    group(
+        'Invariant A: REST Token + Firebase User null → authRequired + readCount=0',
+        () {
+      test('A.1: REST token present, SDK null → authRequired (not authReady)',
+          () {
         const uid = 'user_invariant_a_uid';
         final store = _MockTokenStore()..restToken = 'bearer_token_valid';
 
         final barrierState = simulateBootLock(
           expectedUid: uid,
-          firebaseSdkUid: null,                 // no Firebase user
+          firebaseSdkUid: null, // no Firebase user
           restTokenPresent: store.hasCachedToken, // REST token IS present
           firebaseAvailable: true,
         );
@@ -657,7 +683,9 @@ void main() {
         print('[INV_A.1][PASS] barrierState=${barrierState.name}');
       });
 
-      test('A.2: REST token + null SDK user → all Firestore reads blocked (readCount=0)', () {
+      test(
+          'A.2: REST token + null SDK user → all Firestore reads blocked (readCount=0)',
+          () {
         const uid = 'user_invariant_a2_uid';
         final fakeGate = _FakeFirestoreGate();
 
@@ -670,8 +698,14 @@ void main() {
         );
 
         // authRequired → all reads must be blocked
-        final ops = ['loadHistories', 'loadFavDrugs', 'loadFavProtocols',
-                     'loadFavPrescriptions', 'loadFavCases', 'loadCases'];
+        final ops = [
+          'loadHistories',
+          'loadFavDrugs',
+          'loadFavProtocols',
+          'loadFavPrescriptions',
+          'loadFavCases',
+          'loadCases'
+        ];
 
         for (final op in ops) {
           fakeGate.reset();
@@ -693,7 +727,9 @@ void main() {
             'barrierState=${barrierState.name}');
       });
 
-      test('A.3: REST token present, SDK null — verify only authReady permits reads', () {
+      test(
+          'A.3: REST token present, SDK null — verify only authReady permits reads',
+          () {
         final fakeGate = _FakeFirestoreGate();
 
         // Only authReady should allow reads
@@ -733,13 +769,14 @@ void main() {
     //   3. dataOrElse() returns the fallback (not null/empty-as-new-user)
     //   4. The result is never silently coerced to an empty success
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant B: permission-denied → authDenied + cache freeze + no write bypass', () {
-
+    group(
+        'Invariant B: permission-denied → authDenied + cache freeze + no write bypass',
+        () {
       test('B.1: permission-denied → authDenied (not success or empty)', () {
         final fakeGate = _FakeFirestoreGate();
 
         final result = simulateBarrierGuard(
-          barrierState: AppAuthBarrierState.authReady,   // barrier is open
+          barrierState: AppAuthBarrierState.authReady, // barrier is open
           firestoreResult: _SimulatedFirestoreResult.permissionDenied,
           operation: 'loadHistories',
           gate: fakeGate,
@@ -748,18 +785,23 @@ void main() {
         expect(result.isAuthDenied, isTrue,
             reason: 'Invariant B: permission-denied must map to authDenied');
         expect(result.isSuccess, isFalse,
-            reason: 'Invariant B: permission-denied must NOT be treated as success');
+            reason:
+                'Invariant B: permission-denied must NOT be treated as success');
         expect(result.isEmpty, isFalse,
-            reason: 'Invariant B: permission-denied must NOT be treated as empty');
+            reason:
+                'Invariant B: permission-denied must NOT be treated as empty');
         // SDK WAS dispatched (we were past the pre-check, server rejected us)
         expect(fakeGate.readCount, equals(1),
             reason: 'When barrier=authReady, request is dispatched. '
                 'Server returned permission-denied → sdkRequestDispatched=true');
 
-        print('[INV_B.1][PASS] permission-denied → isAuthDenied=${result.isAuthDenied}');
+        print(
+            '[INV_B.1][PASS] permission-denied → isAuthDenied=${result.isAuthDenied}');
       });
 
-      test('B.2: authDenied result activates cache freeze (shouldFreezeLocalCache=true)', () {
+      test(
+          'B.2: authDenied result activates cache freeze (shouldFreezeLocalCache=true)',
+          () {
         final fakeGate = _FakeFirestoreGate();
 
         final result = simulateBarrierGuard(
@@ -770,8 +812,10 @@ void main() {
         );
 
         expect(result.shouldFreezeLocalCache, isTrue,
-            reason: 'Invariant B: authDenied must freeze the local cache layout');
-        print('[INV_B.2][PASS] shouldFreezeLocalCache=${result.shouldFreezeLocalCache}');
+            reason:
+                'Invariant B: authDenied must freeze the local cache layout');
+        print(
+            '[INV_B.2][PASS] shouldFreezeLocalCache=${result.shouldFreezeLocalCache}');
       });
 
       test('B.3: authDenied — no "new user" write is bypassed', () {
@@ -795,7 +839,8 @@ void main() {
         }
 
         expect(spy.newUserWriteCount, equals(0),
-            reason: 'Invariant B: authDenied must NEVER trigger new-user write');
+            reason:
+                'Invariant B: authDenied must NEVER trigger new-user write');
         print('[INV_B.3][PASS] newUserWriteCount=${spy.newUserWriteCount}');
       });
 
@@ -811,14 +856,17 @@ void main() {
         print('[INV_B.4][PASS] dataOrElse returns fallback correctly');
       });
 
-      test('B.5: barrier pre-check (firebase_user_null) → authDenied, readCount=0', () {
+      test(
+          'B.5: barrier pre-check (firebase_user_null) → authDenied, readCount=0',
+          () {
         // Distinct from permission-denied: this is the PRE-CHECK barrier
         // (sdkRequestDispatched=false — zero network call).
         final fakeGate = _FakeFirestoreGate();
 
         final result = simulateBarrierGuard(
-          barrierState: AppAuthBarrierState.authRequired,  // null user
-          firestoreResult: _SimulatedFirestoreResult.success, // irrelevant — blocked
+          barrierState: AppAuthBarrierState.authRequired, // null user
+          firestoreResult:
+              _SimulatedFirestoreResult.success, // irrelevant — blocked
           operation: 'loadHistories',
           gate: fakeGate,
         );
@@ -828,7 +876,8 @@ void main() {
             reason: 'Pre-check barrier must produce readCount=0 '
                 '(sdkRequestDispatched=false)');
         expect(result.shouldFreezeLocalCache, isTrue);
-        print('[INV_B.5][PASS] Pre-check barrier: readCount=0 isAuthDenied=true');
+        print(
+            '[INV_B.5][PASS] Pre-check barrier: readCount=0 isAuthDenied=true');
       });
     });
 
@@ -836,14 +885,13 @@ void main() {
     // Supplementary: FirestoreLoadResult<T> algebraic type invariants
     // ─────────────────────────────────────────────────────────────────────────
     group('FirestoreLoadResult<T> algebraic type invariants', () {
-
       test('success() — isSuccess=true, shouldFreezeLocalCache=false', () {
         final r = FirestoreLoadResult.success(['a', 'b', 'c']);
         expect(r.isSuccess, isTrue);
-        expect(r.isEmpty,      isFalse);
+        expect(r.isEmpty, isFalse);
         expect(r.isAuthDenied, isFalse);
-        expect(r.isOffline,    isFalse);
-        expect(r.isFailure,    isFalse);
+        expect(r.isOffline, isFalse);
+        expect(r.isFailure, isFalse);
         expect(r.shouldFreezeLocalCache, isFalse);
         expect(r.dataOrElse([]), equals(['a', 'b', 'c']));
       });
@@ -851,10 +899,10 @@ void main() {
       test('empty() — isEmpty=true, shouldFreezeLocalCache=false', () {
         final r = FirestoreLoadResult<List<String>>.empty();
         expect(r.isEmpty, isTrue);
-        expect(r.isSuccess,    isFalse);
+        expect(r.isSuccess, isFalse);
         expect(r.isAuthDenied, isFalse);
-        expect(r.isOffline,    isFalse);
-        expect(r.isFailure,    isFalse);
+        expect(r.isOffline, isFalse);
+        expect(r.isFailure, isFalse);
         expect(r.shouldFreezeLocalCache, isFalse);
         expect(r.dataOrElse(['fallback']), equals(['fallback']));
       });
@@ -863,7 +911,7 @@ void main() {
         final r = FirestoreLoadResult<List<String>>.authDenied();
         expect(r.isAuthDenied, isTrue);
         expect(r.isSuccess, isFalse);
-        expect(r.isEmpty,   isFalse);
+        expect(r.isEmpty, isFalse);
         expect(r.isOffline, isFalse);
         expect(r.isFailure, isFalse);
         expect(r.shouldFreezeLocalCache, isTrue);
@@ -873,10 +921,10 @@ void main() {
       test('offline() — isOffline=true, shouldFreezeLocalCache=true', () {
         final r = FirestoreLoadResult<List<String>>.offline();
         expect(r.isOffline, isTrue);
-        expect(r.isSuccess,    isFalse);
-        expect(r.isEmpty,      isFalse);
+        expect(r.isSuccess, isFalse);
+        expect(r.isEmpty, isFalse);
         expect(r.isAuthDenied, isFalse);
-        expect(r.isFailure,    isFalse);
+        expect(r.isFailure, isFalse);
         expect(r.shouldFreezeLocalCache, isTrue);
         expect(r.dataOrElse(['fallback']), equals(['fallback']));
       });
@@ -884,10 +932,10 @@ void main() {
       test('failure() — isFailure=true, shouldFreezeLocalCache=true', () {
         final r = FirestoreLoadResult<List<String>>.failure(Exception('err'));
         expect(r.isFailure, isTrue);
-        expect(r.isSuccess,    isFalse);
-        expect(r.isEmpty,      isFalse);
+        expect(r.isSuccess, isFalse);
+        expect(r.isEmpty, isFalse);
         expect(r.isAuthDenied, isFalse);
-        expect(r.isOffline,    isFalse);
+        expect(r.isOffline, isFalse);
         expect(r.shouldFreezeLocalCache, isTrue);
         expect(r.dataOrElse(['fallback']), equals(['fallback']));
       });
@@ -901,8 +949,13 @@ void main() {
           FirestoreLoadResult<int>.failure('err'),
         ];
         for (final r in types) {
-          final trueCount = [r.isSuccess, r.isEmpty, r.isAuthDenied,
-                             r.isOffline, r.isFailure].where((v) => v).length;
+          final trueCount = [
+            r.isSuccess,
+            r.isEmpty,
+            r.isAuthDenied,
+            r.isOffline,
+            r.isFailure
+          ].where((v) => v).length;
           expect(trueCount, equals(1),
               reason: '${r.runtimeType} must be exactly one category');
         }
@@ -913,31 +966,34 @@ void main() {
     // Supplementary: SecuritySyndicationException contract
     // ─────────────────────────────────────────────────────────────────────────
     group('SecuritySyndicationException — contract invariants', () {
-
       test('Exception preserves fields and has meaningful toString()', () {
         final ex = SecuritySyndicationException(
           expectedUid: 'uid_expected_abc',
-          actualUid:   'uid_actual_xyz',
-          reason:      'uid_mismatch_at_setUser',
+          actualUid: 'uid_actual_xyz',
+          reason: 'uid_mismatch_at_setUser',
         );
         expect(ex.expectedUid, equals('uid_expected_abc'));
-        expect(ex.actualUid,   equals('uid_actual_xyz'));
-        expect(ex.reason,      equals('uid_mismatch_at_setUser'));
-        expect(ex.toString(),  contains('SecuritySyndicationException'));
-        expect(ex.toString(),  contains('uid_expected_abc'));
-        expect(ex.toString(),  contains('uid_actual_xyz'));
+        expect(ex.actualUid, equals('uid_actual_xyz'));
+        expect(ex.reason, equals('uid_mismatch_at_setUser'));
+        expect(ex.toString(), contains('SecuritySyndicationException'));
+        expect(ex.toString(), contains('uid_expected_abc'));
+        expect(ex.toString(), contains('uid_actual_xyz'));
       });
 
       test('Exception is-a Exception (can be thrown/caught)', () {
         expect(
           () => throw SecuritySyndicationException(
-            expectedUid: 'a', actualUid: 'b', reason: 'test',
+            expectedUid: 'a',
+            actualUid: 'b',
+            reason: 'test',
           ),
           throwsA(isA<SecuritySyndicationException>()),
         );
         expect(
           () => throw SecuritySyndicationException(
-            expectedUid: 'a', actualUid: 'b', reason: 'test',
+            expectedUid: 'a',
+            actualUid: 'b',
+            reason: 'test',
           ),
           throwsA(isA<Exception>()),
         );
@@ -948,13 +1004,18 @@ void main() {
     // Supplementary: AppAuthBarrierState enum completeness
     // ─────────────────────────────────────────────────────────────────────────
     group('AppAuthBarrierState — enum completeness', () {
-
       test('All 5 variants declared with correct names', () {
         final allValues = AppAuthBarrierState.values;
         expect(allValues.length, equals(5));
-        expect(allValues.map((v) => v.name).toSet(), containsAll([
-          'authPending', 'authReady', 'authMismatch', 'authRequired', 'authFailed',
-        ]));
+        expect(
+            allValues.map((v) => v.name).toSet(),
+            containsAll([
+              'authPending',
+              'authReady',
+              'authMismatch',
+              'authRequired',
+              'authFailed',
+            ]));
       });
 
       test('authPending is index 0 (default initial state)', () {
@@ -979,7 +1040,8 @@ void main() {
             expect(result.isAuthDenied, isTrue,
                 reason: '${state.name} must deny reads');
             expect(fakeGate.readCount, equals(0),
-                reason: '${state.name} must have readCount=0 (sdkRequestDispatched=false)');
+                reason:
+                    '${state.name} must have readCount=0 (sdkRequestDispatched=false)');
           }
         }
       });
@@ -989,14 +1051,14 @@ void main() {
     // Supplementary: clearAllDecisions() global sweep contract
     // ─────────────────────────────────────────────────────────────────────────
     group('ExternalToolLinkEngine.clearAllDecisions() — sweep contract', () {
-
       test('clearAllDecisions() removes all entries and logs correctly', () {
         // Populate cache with multiple decisions
         ExternalToolLinkEngine.resolveDecision(
-          'req_sweep_1', 'bomba de infusão noradrenalina');
+            'req_sweep_1', 'bomba de infusão noradrenalina');
         ExternalToolLinkEngine.resolveDecision(
-          'req_sweep_2', 'diluir vancomicina volume final');
-        expect(ExternalToolLinkEngine.decisionCacheSize, greaterThanOrEqualTo(2));
+            'req_sweep_2', 'diluir vancomicina volume final');
+        expect(
+            ExternalToolLinkEngine.decisionCacheSize, greaterThanOrEqualTo(2));
 
         ExternalToolLinkEngine.clearAllDecisions(reason: 'identity_mismatch');
         expect(ExternalToolLinkEngine.decisionCacheSize, equals(0));
@@ -1013,7 +1075,7 @@ void main() {
 
       test('clearDecisionCache() delegates to clearAllDecisions()', () {
         ExternalToolLinkEngine.resolveDecision(
-          'req_alias_1', 'diluir amikacina 250mg em 100mL');
+            'req_alias_1', 'diluir amikacina 250mg em 100mL');
         expect(ExternalToolLinkEngine.decisionCacheSize, greaterThan(0));
         // Legacy alias still works
         ExternalToolLinkEngine.clearDecisionCache();
@@ -1032,26 +1094,30 @@ void main() {
     // an active mismatched session (e.g. stale token from a previous account) was
     // previously able to pass the null guard and reach the Firestore SDK.
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant C: uid_mismatch at dispatch → authDenied, readCount=0', () {
-
-      test('C.1: active Firebase user with mismatched uid → authDenied, readCount=0', () {
-        const firebaseUid  = 'firebase_active_uid_AAA'; // session in SDK
-        const requestedUid = 'requested_uid_BBB';       // uid passed to Firestore
+    group('Invariant C: uid_mismatch at dispatch → authDenied, readCount=0',
+        () {
+      test(
+          'C.1: active Firebase user with mismatched uid → authDenied, readCount=0',
+          () {
+        const firebaseUid = 'firebase_active_uid_AAA'; // session in SDK
+        const requestedUid = 'requested_uid_BBB'; // uid passed to Firestore
 
         final dualGate = _FakeFirestoreGate();
         final result = simulateDualBarrierGuard(
-          firebaseUid:    firebaseUid,
-          requestedUid:   requestedUid,
+          firebaseUid: firebaseUid,
+          requestedUid: requestedUid,
           firestoreResult: _SimulatedFirestoreResult.success,
-          operation:      'loadHistories',
-          gate:           dualGate,
+          operation: 'loadHistories',
+          gate: dualGate,
         );
 
         expect(result.isAuthDenied, isTrue,
-            reason: 'Invariant C: non-null Firebase user with uid != requestedUid '
+            reason:
+                'Invariant C: non-null Firebase user with uid != requestedUid '
                 'must return authDenied');
         expect(dualGate.readCount, equals(0),
-            reason: 'Invariant C: uid_mismatch must produce sdkRequestDispatched=false '
+            reason:
+                'Invariant C: uid_mismatch must produce sdkRequestDispatched=false '
                 '(readCount=0) — no network call to Firestore made');
         expect(result.shouldFreezeLocalCache, isTrue);
 
@@ -1061,22 +1127,26 @@ void main() {
       });
 
       test('C.2: uid_mismatch blocked across all 6 Firestore entry points', () {
-        const firebaseUid  = 'firebase_session_uid_XYZ';
+        const firebaseUid = 'firebase_session_uid_XYZ';
         const requestedUid = 'different_uid_ABC';
 
         final ops = [
-          'loadHistories', 'loadFavDrugs', 'loadFavProtocols',
-          'loadFavPrescriptions', 'loadFavCases', 'loadCases',
+          'loadHistories',
+          'loadFavDrugs',
+          'loadFavProtocols',
+          'loadFavPrescriptions',
+          'loadFavCases',
+          'loadCases',
         ];
 
         for (final op in ops) {
           final dualGate = _FakeFirestoreGate();
           final result = simulateDualBarrierGuard(
-            firebaseUid:    firebaseUid,
-            requestedUid:   requestedUid,
+            firebaseUid: firebaseUid,
+            requestedUid: requestedUid,
             firestoreResult: _SimulatedFirestoreResult.success,
-            operation:      op,
-            gate:           dualGate,
+            operation: op,
+            gate: dualGate,
           );
           expect(result.isAuthDenied, isTrue,
               reason: 'Invariant C: $op must block uid_mismatch');
@@ -1084,7 +1154,8 @@ void main() {
               reason: 'Invariant C: $op must have readCount=0 on uid_mismatch');
         }
 
-        print('[INV_C.2][PASS] All ${ops.length} entry points block uid_mismatch');
+        print(
+            '[INV_C.2][PASS] All ${ops.length} entry points block uid_mismatch');
       });
 
       test('C.3: matching uid passes dual check → readCount=1', () {
@@ -1092,15 +1163,16 @@ void main() {
 
         final dualGate = _FakeFirestoreGate();
         final result = simulateDualBarrierGuard(
-          firebaseUid:    uid,
-          requestedUid:   uid,   // same uid — check 2 passes
+          firebaseUid: uid,
+          requestedUid: uid, // same uid — check 2 passes
           firestoreResult: _SimulatedFirestoreResult.success,
-          operation:      'loadHistories',
-          gate:           dualGate,
+          operation: 'loadHistories',
+          gate: dualGate,
         );
 
         expect(result.isSuccess, isTrue,
-            reason: 'Invariant C: matching uid must pass dual barrier and read');
+            reason:
+                'Invariant C: matching uid must pass dual barrier and read');
         expect(dualGate.readCount, equals(1),
             reason: 'Invariant C: matching uid must produce readCount=1 '
                 '(sdkRequestDispatched=true)');
@@ -1109,16 +1181,18 @@ void main() {
             'readCount=${dualGate.readCount}');
       });
 
-      test('C.4: null Firebase user still blocked by check 1 (dual barrier is additive)', () {
+      test(
+          'C.4: null Firebase user still blocked by check 1 (dual barrier is additive)',
+          () {
         const requestedUid = 'any_requested_uid';
 
         final dualGate = _FakeFirestoreGate();
         final result = simulateDualBarrierGuard(
-          firebaseUid:    null,    // no SDK user
-          requestedUid:   requestedUid,
+          firebaseUid: null, // no SDK user
+          requestedUid: requestedUid,
           firestoreResult: _SimulatedFirestoreResult.success,
-          operation:      'loadHistories',
-          gate:           dualGate,
+          operation: 'loadHistories',
+          gate: dualGate,
         );
 
         expect(result.isAuthDenied, isTrue,
@@ -1130,7 +1204,9 @@ void main() {
         print('[INV_C.4][PASS] Null user blocked at check 1 of dual barrier');
       });
 
-      test('C.5: cross-session swap — User A uid active when User B uid is requested', () {
+      test(
+          'C.5: cross-session swap — User A uid active when User B uid is requested',
+          () {
         const userAUid = 'uid_user_session_A_active';
         const userBUid = 'uid_user_B_requesting_data';
         // Simulates the exact privilege window: SDK still holds session A
@@ -1138,21 +1214,26 @@ void main() {
 
         final dualGate = _FakeFirestoreGate();
         final ops = [
-          'loadHistories', 'loadFavDrugs', 'loadFavProtocols',
-          'loadFavPrescriptions', 'loadFavCases', 'loadCases',
+          'loadHistories',
+          'loadFavDrugs',
+          'loadFavProtocols',
+          'loadFavPrescriptions',
+          'loadFavCases',
+          'loadCases',
         ];
 
         for (final op in ops) {
           dualGate.reset();
           final result = simulateDualBarrierGuard(
-            firebaseUid:    userAUid,  // SDK still holds A's session
-            requestedUid:   userBUid,  // B's uid requested
+            firebaseUid: userAUid, // SDK still holds A's session
+            requestedUid: userBUid, // B's uid requested
             firestoreResult: _SimulatedFirestoreResult.success,
-            operation:      op,
-            gate:           dualGate,
+            operation: op,
+            gate: dualGate,
           );
           expect(result.isAuthDenied, isTrue,
-              reason: '$op: cross-session swap must be blocked by uid_mismatch');
+              reason:
+                  '$op: cross-session swap must be blocked by uid_mismatch');
           expect(dualGate.readCount, equals(0),
               reason: '$op: cross-session swap must produce readCount=0');
         }
@@ -1176,13 +1257,13 @@ void main() {
     // These are structural invariants verified by inspection of the watchdog
     // code path. The test models the contract as observable side-effects.
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant D: 20-second watchdog compliance — never overrides auth', () {
-
+    group('Invariant D: 20-second watchdog compliance — never overrides auth',
+        () {
       test('D.1: watchdog fires → bootDone=true, authResolved unchanged', () {
         // Simulates the two flags the watchdog sets:
-        bool bootDone      = false;
-        bool minTimeDone   = false;
-        bool authResolved  = false;  // watchdog MUST NOT touch this
+        bool bootDone = false;
+        bool minTimeDone = false;
+        bool authResolved = false; // watchdog MUST NOT touch this
         AppAuthBarrierState? barrierState; // watchdog MUST NOT set this
 
         // Simulate watchdog firing (from main.dart line ~1145-1151):
@@ -1191,17 +1272,20 @@ void main() {
         // It does NOT set _authResolved, does NOT call setUser(), does NOT
         // write SharedPreferences, does NOT clear caches.
         final void Function() watchdogFire = () {
-          bootDone    = true;
+          bootDone = true;
           minTimeDone = true;
           // authResolved and barrierState intentionally NOT modified
         };
 
         watchdogFire();
 
-        expect(bootDone,     isTrue,  reason: 'Watchdog must set bootDone=true');
-        expect(minTimeDone,  isTrue,  reason: 'Watchdog must set minTimeDone=true');
-        expect(authResolved, isFalse, reason: 'Watchdog MUST NOT set authResolved=true');
-        expect(barrierState, isNull,  reason: 'Watchdog MUST NOT assign a barrierState');
+        expect(bootDone, isTrue, reason: 'Watchdog must set bootDone=true');
+        expect(minTimeDone, isTrue,
+            reason: 'Watchdog must set minTimeDone=true');
+        expect(authResolved, isFalse,
+            reason: 'Watchdog MUST NOT set authResolved=true');
+        expect(barrierState, isNull,
+            reason: 'Watchdog MUST NOT assign a barrierState');
 
         print('[INV_D.1][PASS] Watchdog fire: bootDone=$bootDone '
             'authResolved=$authResolved barrierState=$barrierState');
@@ -1223,7 +1307,8 @@ void main() {
         // After watchdog fires, barrier must remain authPending
         // (it will only change when Firebase SDK emits a user)
         expect(currentBarrier, equals(AppAuthBarrierState.authPending),
-            reason: 'Invariant D: watchdog must not advance barrierState to authReady');
+            reason:
+                'Invariant D: watchdog must not advance barrierState to authReady');
         expect(currentBarrier, isNot(equals(AppAuthBarrierState.authReady)),
             reason: 'authReady is only set by the auth convergence manager');
 
@@ -1231,7 +1316,9 @@ void main() {
             'barrier=${currentBarrier.name}');
       });
 
-      test('D.3: watchdog does not wipe local cache or write unauthenticated state', () {
+      test(
+          'D.3: watchdog does not wipe local cache or write unauthenticated state',
+          () {
         // Simulates the "write spy" pattern — records if any write was triggered
         // by the watchdog path.
         final spy = _PersistenceSpy();
@@ -1267,13 +1354,14 @@ void main() {
     // variant and takes the correct action without triggering "new user" writes.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant E: loadHistoriesTyped consumer migration contract', () {
-
-      test('E.1: success result → histories assigned, cache write triggered', () {
+      test('E.1: success result → histories assigned, cache write triggered',
+          () {
         final List<String> memoryStore = [];
         int localCacheWrites = 0;
 
         // Simulate the consumer in AppProvider.loadHistories():
-        final result = FirestoreLoadResult.success(['hc_001', 'hc_002', 'hc_003']);
+        final result =
+            FirestoreLoadResult.success(['hc_001', 'hc_002', 'hc_003']);
         if (result.isSuccess) {
           memoryStore
             ..clear()
@@ -1342,7 +1430,8 @@ void main() {
             'newUserWrites=${spy.newUserWriteCount}');
       });
 
-      test('E.4: empty result → histories cleared, cache write triggered '
+      test(
+          'E.4: empty result → histories cleared, cache write triggered '
           '(authoritative empty — not new-user write)', () {
         final List<String> memoryStore = ['stale_item'];
         int localCacheWrites = 0;
@@ -1372,7 +1461,9 @@ void main() {
             'newUserWrites=${spy.newUserWriteCount}');
       });
 
-      test('E.5: all 4 relevant variant paths are mutually exclusive in consumer', () {
+      test(
+          'E.5: all 4 relevant variant paths are mutually exclusive in consumer',
+          () {
         // Validates the consumer branch selection is exhaustive and non-overlapping.
         final variants = <FirestoreLoadResult<List<String>>>[
           FirestoreLoadResult.success([]),
@@ -1385,12 +1476,15 @@ void main() {
         for (final r in variants) {
           int branchHits = 0;
           if (r.isSuccess) branchHits++;
-          if (r.isEmpty)   branchHits++;
-          if (r.shouldFreezeLocalCache && !r.isSuccess && !r.isEmpty) branchHits++;
+          if (r.isEmpty) branchHits++;
+          if (r.shouldFreezeLocalCache && !r.isSuccess && !r.isEmpty)
+            branchHits++;
           expect(branchHits, equals(1),
-              reason: '${r.runtimeType} must match exactly one consumer branch');
+              reason:
+                  '${r.runtimeType} must match exactly one consumer branch');
         }
-        print('[INV_E.5][PASS] All 5 variants map to exactly one consumer branch');
+        print(
+            '[INV_E.5][PASS] All 5 variants map to exactly one consumer branch');
       });
     });
 
@@ -1403,7 +1497,6 @@ void main() {
     // custom-token prohibition is enforced.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant F: FirebaseAuthAdapter simulation contract', () {
-
       late SimulatedFirebaseAuthAdapter adapter;
 
       setUp(() {
@@ -1422,10 +1515,11 @@ void main() {
         print('[INV_F.1][PASS] initial currentUid=null');
       });
 
-      test('F.2: signInWithEmailAndPassword establishes SDK identity', () async {
+      test('F.2: signInWithEmailAndPassword establishes SDK identity',
+          () async {
         expect(adapter.currentUid, isNull);
         await adapter.signInWithEmailAndPassword(
-          'dr.medico@hospital.br', 'password123');
+            'dr.medico@hospital.br', 'password123');
         expect(adapter.currentUid, isNotNull,
             reason: 'F.2: email/password sign-in must establish currentUid');
         expect(adapter.currentUid, contains('dr_medico'),
@@ -1437,7 +1531,8 @@ void main() {
         await adapter.signInWithEmailAndPassword('user@test.com', 'pass');
         final token = await adapter.forceTokenRefresh();
         expect(token, isNotNull,
-            reason: 'F.3: forceTokenRefresh must return non-null token when signed in');
+            reason:
+                'F.3: forceTokenRefresh must return non-null token when signed in');
         expect(token, contains('simulated_id_token'),
             reason: 'F.3: simulated token has expected prefix');
         print('[INV_F.3][PASS] forceTokenRefresh: token=$token');
@@ -1447,7 +1542,8 @@ void main() {
         expect(adapter.currentUid, isNull);
         final token = await adapter.forceTokenRefresh();
         expect(token, isNull,
-            reason: 'F.4: forceTokenRefresh must return null when no SDK session');
+            reason:
+                'F.4: forceTokenRefresh must return null when no SDK session');
         print('[INV_F.4][PASS] forceTokenRefresh with no session: token=null');
       });
 
@@ -1479,24 +1575,30 @@ void main() {
         // Only firebase_custom_token_* prefixed tokens are accepted.
         // Raw Google Access Tokens / Gemini OAuth hashes MUST be rejected.
         expect(
-          () async => adapter.signInWithCustomToken('ya29.GoogleAccessToken_NOT_VALID'),
+          () async =>
+              adapter.signInWithCustomToken('ya29.GoogleAccessToken_NOT_VALID'),
           throwsA(isA<Exception>()),
-          reason: 'F.7: Raw Google Access Token must be REJECTED by signInWithCustomToken',
+          reason:
+              'F.7: Raw Google Access Token must be REJECTED by signInWithCustomToken',
         );
         expect(
-          () async => adapter.signInWithCustomToken('eyJhbGciOiJSUzI1NiJ9.gemini_hash'),
+          () async =>
+              adapter.signInWithCustomToken('eyJhbGciOiJSUzI1NiJ9.gemini_hash'),
           throwsA(isA<Exception>()),
-          reason: 'F.7: Gemini OAuth hash must be REJECTED by signInWithCustomToken',
+          reason:
+              'F.7: Gemini OAuth hash must be REJECTED by signInWithCustomToken',
         );
         print('[INV_F.7][PASS] Custom token prohibition enforced');
       });
 
-      test('F.8: valid custom token (firebase_custom_token_*) is accepted', () async {
+      test('F.8: valid custom token (firebase_custom_token_*) is accepted',
+          () async {
         await adapter.signInWithCustomToken('firebase_custom_token_abc123');
         expect(adapter.currentUid, isNotNull,
             reason: 'F.8: properly prefixed custom token must be accepted');
         expect(adapter.currentUid, contains('abc123'));
-        print('[INV_F.8][PASS] valid custom token accepted: uid=${adapter.currentUid}');
+        print(
+            '[INV_F.8][PASS] valid custom token accepted: uid=${adapter.currentUid}');
       });
 
       test('F.9: authStateChanges emits current uid', () async {
@@ -1517,7 +1619,6 @@ void main() {
     // via the AUTH_SDK_ESTABLISH log contract.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant G: Session establishment engine — method routing', () {
-
       late SimulatedFirebaseAuthAdapter adapter;
 
       setUp(() {
@@ -1530,21 +1631,25 @@ void main() {
         ExternalToolLinkEngine.clearAllDecisions(reason: 'test_tearDown');
       });
 
-      test('G.1: email/password → credential accepted + token refreshed → authReady', () async {
-        const email     = 'medico@medcases.app';
-        const password  = 'secure_password_123';
+      test(
+          'G.1: email/password → credential accepted + token refreshed → authReady',
+          () async {
+        const email = 'medico@medcases.app';
+        const password = 'secure_password_123';
 
         await adapter.signInWithEmailAndPassword(email, password);
         final uid = adapter.currentUid;
-        expect(uid, isNotNull, reason: 'G.1: SDK must have uid after email/password');
+        expect(uid, isNotNull,
+            reason: 'G.1: SDK must have uid after email/password');
 
         final token = await adapter.forceTokenRefresh();
-        expect(token, isNotNull, reason: 'G.1: Token must be non-null after refresh');
+        expect(token, isNotNull,
+            reason: 'G.1: Token must be non-null after refresh');
 
         // Simulate boot-lock with matching uid → authReady
         final barrierState = simulateBootLock(
-          expectedUid:      uid!,
-          firebaseSdkUid:   uid,
+          expectedUid: uid!,
+          firebaseSdkUid: uid,
           restTokenPresent: true,
           firebaseAvailable: true,
         );
@@ -1553,7 +1658,8 @@ void main() {
         print('[INV_G.1][PASS] email/password → authReady uid=$uid');
       });
 
-      test('G.2: persistence restore → authReady when SDK uid matches', () async {
+      test('G.2: persistence restore → authReady when SDK uid matches',
+          () async {
         // Simulates: restoreSession() returned a UserModel with cached uid,
         // then the SDK propagates the same uid.
         const persistedUid = 'uid_from_cached_session_abc';
@@ -1561,14 +1667,15 @@ void main() {
         expect(adapter.currentUid, equals(persistedUid));
 
         final barrierState = simulateBootLock(
-          expectedUid:      persistedUid,
-          firebaseSdkUid:   persistedUid,
+          expectedUid: persistedUid,
+          firebaseSdkUid: persistedUid,
           restTokenPresent: true,
           firebaseAvailable: true,
         );
         expect(barrierState, equals(AppAuthBarrierState.authReady),
             reason: 'G.2: persistence restore with matching uid → authReady');
-        print('[INV_G.2][PASS] persistence restore → authReady uid=$persistedUid');
+        print(
+            '[INV_G.2][PASS] persistence restore → authReady uid=$persistedUid');
       });
 
       test('G.3: custom token path → authReady when uid matches', () async {
@@ -1580,8 +1687,8 @@ void main() {
         expect(token, isNotNull);
 
         final barrierState = simulateBootLock(
-          expectedUid:      uid!,
-          firebaseSdkUid:   uid,
+          expectedUid: uid!,
+          firebaseSdkUid: uid,
           restTokenPresent: false,
           firebaseAvailable: true,
         );
@@ -1596,13 +1703,14 @@ void main() {
         const expectedUid = 'completely_different_expected_uid';
 
         final barrierState = simulateBootLock(
-          expectedUid:      expectedUid,
-          firebaseSdkUid:   sdkUid,   // SDK has different uid
+          expectedUid: expectedUid,
+          firebaseSdkUid: sdkUid, // SDK has different uid
           restTokenPresent: false,
           firebaseAvailable: true,
         );
         expect(barrierState, equals(AppAuthBarrierState.authMismatch),
-            reason: 'G.4: uid mismatch after custom token sign-in → authMismatch');
+            reason:
+                'G.4: uid mismatch after custom token sign-in → authMismatch');
         print('[INV_G.4][PASS] custom token uid mismatch → authMismatch '
             'sdkUid=$sdkUid expectedUid=$expectedUid');
       });
@@ -1616,8 +1724,8 @@ void main() {
         expect(token, isNotNull);
 
         final barrierState = simulateBootLock(
-          expectedUid:      uid,
-          firebaseSdkUid:   uid,
+          expectedUid: uid,
+          firebaseSdkUid: uid,
           restTokenPresent: false,
           firebaseAvailable: true,
         );
@@ -1640,8 +1748,9 @@ void main() {
     // without re-executing the convergence logic.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant H: Convergence latch — 50 rebuilds → ONE transaction', () {
-
-      test('H.1: 50 consecutive calls with same uid → exactly 1 boot-lock execution', () {
+      test(
+          'H.1: 50 consecutive calls with same uid → exactly 1 boot-lock execution',
+          () {
         const uid = 'uid_latch_stress_test_50';
         var transactionCount = 0;
         AppAuthBarrierState? resolvedState;
@@ -1659,20 +1768,21 @@ void main() {
           // First call: execute convergence
           transactionCount++;
           resolvedState = simulateBootLock(
-            expectedUid:      uid,
-            firebaseSdkUid:   uid,
+            expectedUid: uid,
+            firebaseSdkUid: uid,
             restTokenPresent: true,
             firebaseAvailable: true,
           );
           inFlightUid = uid;
-          inFlight    = Future.value(resolvedState);
+          inFlight = Future.value(resolvedState);
         }
 
         expect(transactionCount, equals(1),
             reason: 'H.1: Exactly ONE boot-lock transaction must execute for '
                 '50 calls with the same uid (latch deduplication)');
         expect(resolvedState, equals(AppAuthBarrierState.authReady));
-        print('[INV_H.1][PASS] 50 rebuilds → transactionCount=$transactionCount '
+        print(
+            '[INV_H.1][PASS] 50 rebuilds → transactionCount=$transactionCount '
             'state=${resolvedState?.name}');
       });
 
@@ -1684,8 +1794,10 @@ void main() {
         // First user
         transactionCount++;
         final stateA = simulateBootLock(
-          expectedUid: uidA, firebaseSdkUid: uidA,
-          restTokenPresent: true, firebaseAvailable: true,
+          expectedUid: uidA,
+          firebaseSdkUid: uidA,
+          restTokenPresent: true,
+          firebaseAvailable: true,
         );
 
         // Simulate user switch — latch reset by clearUser()
@@ -1700,18 +1812,22 @@ void main() {
           inFlightUid = uidB;
         }
         final stateB = simulateBootLock(
-          expectedUid: uidB, firebaseSdkUid: uidB,
-          restTokenPresent: true, firebaseAvailable: true,
+          expectedUid: uidB,
+          firebaseSdkUid: uidB,
+          restTokenPresent: true,
+          firebaseAvailable: true,
         );
 
         expect(transactionCount, equals(2),
-            reason: 'H.2: A uid switch must reset the latch and start a new transaction');
+            reason:
+                'H.2: A uid switch must reset the latch and start a new transaction');
         expect(stateA, equals(AppAuthBarrierState.authReady));
         expect(stateB, equals(AppAuthBarrierState.authReady));
         print('[INV_H.2][PASS] uid switch: transactionCount=$transactionCount');
       });
 
-      test('H.3: latch cleared on logout — next login starts fresh transaction', () {
+      test('H.3: latch cleared on logout — next login starts fresh transaction',
+          () {
         const uid = 'uid_latch_logout_reset';
         var transactionCount = 0;
         String? latchUid;
@@ -1720,8 +1836,10 @@ void main() {
         transactionCount++;
         latchUid = uid;
         final state1 = simulateBootLock(
-          expectedUid: uid, firebaseSdkUid: uid,
-          restTokenPresent: true, firebaseAvailable: true,
+          expectedUid: uid,
+          firebaseSdkUid: uid,
+          restTokenPresent: true,
+          firebaseAvailable: true,
         );
         expect(state1, equals(AppAuthBarrierState.authReady));
 
@@ -1736,13 +1854,16 @@ void main() {
           latchUid = uid;
         }
         final state2 = simulateBootLock(
-          expectedUid: uid, firebaseSdkUid: uid,
-          restTokenPresent: true, firebaseAvailable: true,
+          expectedUid: uid,
+          firebaseSdkUid: uid,
+          restTokenPresent: true,
+          firebaseAvailable: true,
         );
         expect(state2, equals(AppAuthBarrierState.authReady));
         expect(transactionCount, equals(2),
             reason: 'H.3: logout+relogin must produce exactly 2 transactions');
-        print('[INV_H.3][PASS] logout+relogin: transactionCount=$transactionCount');
+        print(
+            '[INV_H.3][PASS] logout+relogin: transactionCount=$transactionCount');
       });
     });
 
@@ -1756,8 +1877,9 @@ void main() {
     //   3. _decisionCache.length == 0
     //   4. All streaming subscriptions conceptually cancelled
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant I: Logout lock-down — Firestore blocked, cache=0, user=null', () {
-
+    group(
+        'Invariant I: Logout lock-down — Firestore blocked, cache=0, user=null',
+        () {
       test('I.1: logout → barrier resets to authPending', () {
         // Pre-condition: authReady from a valid session
         final priorState = AppAuthBarrierState.authReady;
@@ -1773,8 +1895,14 @@ void main() {
       test('I.2: logout → all Firestore reads blocked', () {
         // After logout, barrier is authPending — all reads must block.
         final dualGate = _FakeFirestoreGate();
-        final ops = ['loadHistories', 'loadFavDrugs', 'loadFavProtocols',
-                     'loadFavPrescriptions', 'loadFavCases', 'loadCases'];
+        final ops = [
+          'loadHistories',
+          'loadFavDrugs',
+          'loadFavProtocols',
+          'loadFavPrescriptions',
+          'loadFavCases',
+          'loadCases'
+        ];
 
         for (final op in ops) {
           dualGate.reset();
@@ -1794,8 +1922,10 @@ void main() {
 
       test('I.3: logout → decisionCache cleared to 0', () {
         // Populate decision cache
-        ExternalToolLinkEngine.resolveDecision('req_pre_logout_1', 'bomba noradrenalina');
-        ExternalToolLinkEngine.resolveDecision('req_pre_logout_2', 'diluir vancomicina');
+        ExternalToolLinkEngine.resolveDecision(
+            'req_pre_logout_1', 'bomba noradrenalina');
+        ExternalToolLinkEngine.resolveDecision(
+            'req_pre_logout_2', 'diluir vancomicina');
         expect(ExternalToolLinkEngine.decisionCacheSize, greaterThan(0));
 
         // Logout: clearAllDecisions(reason: 'logout')
@@ -1819,7 +1949,8 @@ void main() {
 
       test('I.5: complete logout sequence — all invariants hold together', () {
         // 1. Populate state pre-logout
-        ExternalToolLinkEngine.resolveDecision('combined_test_req', 'diluir meropenem');
+        ExternalToolLinkEngine.resolveDecision(
+            'combined_test_req', 'diluir meropenem');
         final preCacheSize = ExternalToolLinkEngine.decisionCacheSize;
         expect(preCacheSize, greaterThan(0));
 
@@ -1827,19 +1958,19 @@ void main() {
         ExternalToolLinkEngine.clearAllDecisions(reason: 'logout');
 
         // 3. Validate all invariants
-        final cacheAfter      = ExternalToolLinkEngine.decisionCacheSize;
-        final barrierAfter    = AppAuthBarrierState.authPending; // clearUser sets this
-        final dualGate        = _FakeFirestoreGate();
+        final cacheAfter = ExternalToolLinkEngine.decisionCacheSize;
+        final barrierAfter =
+            AppAuthBarrierState.authPending; // clearUser sets this
+        final dualGate = _FakeFirestoreGate();
         final firestoreResult = simulateBarrierGuard(
-          barrierState:    barrierAfter,
+          barrierState: barrierAfter,
           firestoreResult: _SimulatedFirestoreResult.success,
-          operation:       'loadHistories',
-          gate:            dualGate,
+          operation: 'loadHistories',
+          gate: dualGate,
         );
 
-        expect(cacheAfter,      equals(0),
-            reason: 'I.5: decisionCache must be 0');
-        expect(barrierAfter,    equals(AppAuthBarrierState.authPending),
+        expect(cacheAfter, equals(0), reason: 'I.5: decisionCache must be 0');
+        expect(barrierAfter, equals(AppAuthBarrierState.authPending),
             reason: 'I.5: barrier must be authPending');
         expect(firestoreResult.isAuthDenied, isTrue,
             reason: 'I.5: Firestore must be blocked');
@@ -1861,8 +1992,9 @@ void main() {
     // versa. Gemini OAuth is completely orthogonal to both.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant J: Credential plane separation', () {
-
-      test('J.1: REST credential plane — hasRestCredential models in-memory token', () {
+      test(
+          'J.1: REST credential plane — hasRestCredential models in-memory token',
+          () {
         // Simulated REST token store
         final store = _MockTokenStore()..restToken = 'rest_id_token_valid';
         expect(store.hasCachedToken, isTrue,
@@ -1870,19 +2002,22 @@ void main() {
 
         // REST token alone does NOT produce authReady
         final state = simulateBootLock(
-          expectedUid:      'any_uid',
-          firebaseSdkUid:   null,  // SDK has no session
+          expectedUid: 'any_uid',
+          firebaseSdkUid: null, // SDK has no session
           restTokenPresent: store.hasCachedToken,
           firebaseAvailable: true,
         );
         expect(state, equals(AppAuthBarrierState.authRequired),
-            reason: 'J.1: REST token + null SDK → authRequired (not authReady)');
+            reason:
+                'J.1: REST token + null SDK → authRequired (not authReady)');
         expect(state, isNot(equals(AppAuthBarrierState.authReady)));
         print('[INV_J.1][PASS] REST plane: hasCachedToken=true → authRequired '
             'state=${state.name}');
       });
 
-      test('J.2: SDK identity plane — non-null SDK user satisfies hasFirebaseSdkIdentity', () {
+      test(
+          'J.2: SDK identity plane — non-null SDK user satisfies hasFirebaseSdkIdentity',
+          () {
         final adapter = SimulatedFirebaseAuthAdapter();
         adapter.simulateExternalSignIn('sdk_uid_plane_b_test');
         expect(adapter.currentUid, isNotNull,
@@ -1890,26 +2025,29 @@ void main() {
 
         // SDK identity alone (without REST token) must produce authReady
         final state = simulateBootLock(
-          expectedUid:      adapter.currentUid!,
-          firebaseSdkUid:   adapter.currentUid,
-          restTokenPresent: false,  // no REST token
+          expectedUid: adapter.currentUid!,
+          firebaseSdkUid: adapter.currentUid,
+          restTokenPresent: false, // no REST token
           firebaseAvailable: true,
         );
         expect(state, equals(AppAuthBarrierState.authReady),
             reason: 'J.2: SDK identity without REST token → authReady');
         adapter.reset();
-        print('[INV_J.2][PASS] SDK identity plane → authReady without REST token');
+        print(
+            '[INV_J.2][PASS] SDK identity plane → authReady without REST token');
       });
 
-      test('J.3: Gemini OAuth is completely orthogonal — no Firebase Auth coupling', () {
+      test(
+          'J.3: Gemini OAuth is completely orthogonal — no Firebase Auth coupling',
+          () {
         // Gemini OAuth connected = true does NOT mean Firebase SDK has a session.
         // The gemini OAuth state (GoogleSignIn) is a SEPARATE credential plane.
         const geminiEmailPresent = true; // simulates _geminiConnected=true
 
         // With Gemini OAuth but null Firebase SDK user → still authRequired
         final state = simulateBootLock(
-          expectedUid:      'any_uid',
-          firebaseSdkUid:   null,  // no Firebase SDK user
+          expectedUid: 'any_uid',
+          firebaseSdkUid: null, // no Firebase SDK user
           restTokenPresent: false,
           firebaseAvailable: true,
         );
@@ -1917,9 +2055,11 @@ void main() {
         expect(geminiEmailPresent, isTrue,
             reason: 'J.3: Gemini OAuth present (control)');
         expect(state, equals(AppAuthBarrierState.authRequired),
-            reason: 'J.3: Gemini OAuth MUST NOT produce authReady — it is orthogonal');
+            reason:
+                'J.3: Gemini OAuth MUST NOT produce authReady — it is orthogonal');
         expect(state, isNot(equals(AppAuthBarrierState.authReady)));
-        print('[INV_J.3][PASS] Gemini OAuth orthogonal: geminiPresent=$geminiEmailPresent '
+        print(
+            '[INV_J.3][PASS] Gemini OAuth orthogonal: geminiPresent=$geminiEmailPresent '
             'state=${state.name}');
       });
     });
@@ -1932,10 +2072,9 @@ void main() {
     // specification schema for all establishment paths.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant K: AUTH_SDK_ESTABLISH telemetry schema', () {
-
       test('K.1: START schema — contains method and expectedUid', () {
         // Validate the log format by simulating the log construction.
-        const method      = 'email_password';
+        const method = 'email_password';
         const expectedUid = 'uid_telemetry_k1_test';
 
         final logLine = '[AUTH_SDK_ESTABLISH][START] '
@@ -1963,9 +2102,10 @@ void main() {
       });
 
       test('K.4: FAILED schema — contains stage and reason', () {
-        const stage  = 'auth_state_propagation';
+        const stage = 'auth_state_propagation';
         const reason = 'user_null_after_sign_in';
-        final logLine = '[AUTH_SDK_ESTABLISH][FAILED] stage=$stage reason=$reason';
+        final logLine =
+            '[AUTH_SDK_ESTABLISH][FAILED] stage=$stage reason=$reason';
         expect(logLine, contains('[AUTH_SDK_ESTABLISH][FAILED]'));
         expect(logLine, contains('stage=$stage'));
         expect(logLine, contains('reason=$reason'));
@@ -1983,15 +2123,16 @@ void main() {
           final logLine = '[AUTH_SDK_ESTABLISH][START] '
               'method=$method expectedUid=test firebaseUidBefore=null';
           expect(logLine, contains('method=$method'),
-              reason: 'K.5: method=$method must be a valid telemetry method value');
+              reason:
+                  'K.5: method=$method must be a valid telemetry method value');
         }
         print('[INV_K.5][PASS] All ${validMethods.length} method values valid');
       });
 
       test('K.6: complete AUTH_CONVERGENCE[READY] schema', () {
-        const expectedUid  = 'uid_convergence_ready_k6';
-        const firebaseUid  = 'uid_convergence_ready_k6';
-        const uidsMatch    = true;
+        const expectedUid = 'uid_convergence_ready_k6';
+        const firebaseUid = 'uid_convergence_ready_k6';
+        const uidsMatch = true;
 
         final logLine = '[AUTH_CONVERGENCE][READY] '
             'expectedUid=$expectedUid '
@@ -2015,9 +2156,8 @@ void main() {
     // 'simulated' is FORBIDDEN in non-test runtimes.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant L: adapterType tag — live binding enforcement', () {
-
       test('L.1: START schema includes adapterType tag', () {
-        const method      = 'email_password';
+        const method = 'email_password';
         const expectedUid = 'uid_L1_test';
 
         // Simulate the corrected START log line with adapterType
@@ -2031,11 +2171,14 @@ void main() {
         expect(logLine, contains('adapterType=live'),
             reason: 'L.1: START must include adapterType=live in production');
         expect(logLine, isNot(contains('adapterType=simulated')),
-            reason: 'L.1: adapterType=simulated is FORBIDDEN in production logs');
+            reason:
+                'L.1: adapterType=simulated is FORBIDDEN in production logs');
         print('[INV_L.1][PASS] START adapterType=live confirmed');
       });
 
-      test('L.2: CREDENTIAL_ACCEPTED schema includes adapterType and firebaseUidAfter', () {
+      test(
+          'L.2: CREDENTIAL_ACCEPTED schema includes adapterType and firebaseUidAfter',
+          () {
         const firebaseUid = 'uid_L2_credential_test';
 
         // Simulate the corrected CREDENTIAL_ACCEPTED log line
@@ -2048,7 +2191,8 @@ void main() {
             reason: 'L.2: CREDENTIAL_ACCEPTED must include firebaseUidAfter');
         expect(logLine, contains('adapterType=live'),
             reason: 'L.2: CREDENTIAL_ACCEPTED must include adapterType=live');
-        print('[INV_L.2][PASS] CREDENTIAL_ACCEPTED schema firebaseUidAfter + adapterType');
+        print(
+            '[INV_L.2][PASS] CREDENTIAL_ACCEPTED schema firebaseUidAfter + adapterType');
       });
 
       test('L.3: TOKEN_REFRESHED schema includes uid and adapterType', () {
@@ -2067,7 +2211,7 @@ void main() {
       });
 
       test('L.4: FAILED schema includes adapterType', () {
-        const stage  = 'auth_state_propagation';
+        const stage = 'auth_state_propagation';
         const reason = 'sdk_user_null_after_sign_in';
 
         final logLine = '[AUTH_SDK_ESTABLISH][FAILED] '
@@ -2094,7 +2238,8 @@ void main() {
         expect(logLine, contains('[AUTH_CONVERGENCE][READY]'));
         expect(logLine, contains('adapterType=live'),
             reason: 'L.5: READY line must include adapterType=live');
-        print('[INV_L.5][PASS] AUTH_CONVERGENCE[READY] adapterType=live confirmed');
+        print(
+            '[INV_L.5][PASS] AUTH_CONVERGENCE[READY] adapterType=live confirmed');
       });
     });
 
@@ -2109,8 +2254,8 @@ void main() {
     //
     // This invariant directly tests the false-success prevention gate.
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant M: CREDENTIAL_ACCEPTED gating — false-success removal', () {
-
+    group('Invariant M: CREDENTIAL_ACCEPTED gating — false-success removal',
+        () {
       late SimulatedFirebaseAuthAdapter adapter;
 
       setUp(() {
@@ -2146,17 +2291,23 @@ void main() {
 
         expect(emittedLines, hasLength(1));
         expect(emittedLines.first, contains('[AUTH_SDK_ESTABLISH][FAILED]'),
-            reason: 'M.1: null SDK user must emit FAILED, not CREDENTIAL_ACCEPTED');
+            reason:
+                'M.1: null SDK user must emit FAILED, not CREDENTIAL_ACCEPTED');
         expect(emittedLines.first, isNot(contains('[CREDENTIAL_ACCEPTED]')),
-            reason: 'M.1: CREDENTIAL_ACCEPTED must be SUPPRESSED when user is null');
+            reason:
+                'M.1: CREDENTIAL_ACCEPTED must be SUPPRESSED when user is null');
         expect(emittedLines.first, contains('sdk_user_null_after_sign_in'));
-        print('[INV_M.1][PASS] null user → FAILED, CREDENTIAL_ACCEPTED suppressed');
+        print(
+            '[INV_M.1][PASS] null user → FAILED, CREDENTIAL_ACCEPTED suppressed');
       });
 
-      test('M.2: non-null SDK user → CREDENTIAL_ACCEPTED emitted with firebaseUidAfter', () async {
+      test(
+          'M.2: non-null SDK user → CREDENTIAL_ACCEPTED emitted with firebaseUidAfter',
+          () async {
         await adapter.signInWithEmailAndPassword('dr@medcases.app', 'pass123');
         final uid = adapter.currentUid;
-        expect(uid, isNotNull, reason: 'M.2: pre-condition: SDK user must be non-null');
+        expect(uid, isNotNull,
+            reason: 'M.2: pre-condition: SDK user must be non-null');
 
         // Simulate the gating logic from logSdkCredentialAccepted() with non-null user
         final List<String> emittedLines = [];
@@ -2164,29 +2315,34 @@ void main() {
         final String? simulatedUid = uid; // non-null
 
         if (simulatedUid == null) {
-          emittedLines.add('[AUTH_SDK_ESTABLISH][FAILED] stage=credential_accepted_guard '
+          emittedLines.add(
+              '[AUTH_SDK_ESTABLISH][FAILED] stage=credential_accepted_guard '
               'reason=sdk_user_null_after_sign_in adapterType=live');
         } else {
           emittedLines.add('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED] '
               'firebaseUidAfter=$simulatedUid adapterType=live');
         }
 
-        expect(emittedLines.first, contains('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED]'),
+        expect(emittedLines.first,
+            contains('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED]'),
             reason: 'M.2: non-null user must emit CREDENTIAL_ACCEPTED');
         expect(emittedLines.first, contains('firebaseUidAfter=$uid'),
             reason: 'M.2: CREDENTIAL_ACCEPTED must include firebaseUidAfter');
         expect(emittedLines.first, isNot(contains('[FAILED]')),
             reason: 'M.2: FAILED must NOT be emitted for non-null user');
-        print('[INV_M.2][PASS] non-null user → CREDENTIAL_ACCEPTED with firebaseUidAfter=$uid');
+        print(
+            '[INV_M.2][PASS] non-null user → CREDENTIAL_ACCEPTED with firebaseUidAfter=$uid');
       });
 
-      test('M.3: TOKEN_REFRESHED only emitted after successful getIdToken', () async {
+      test('M.3: TOKEN_REFRESHED only emitted after successful getIdToken',
+          () async {
         await adapter.signInWithEmailAndPassword('user@test.com', 'pass');
         final token = await adapter.forceTokenRefresh();
         // TOKEN_REFRESHED is only emitted when getIdToken returns without throwing.
         // Since forceTokenRefresh succeeded (non-null), the emit is valid.
         expect(token, isNotNull,
-            reason: 'M.3: token refresh must succeed before TOKEN_REFRESHED is emitted');
+            reason:
+                'M.3: token refresh must succeed before TOKEN_REFRESHED is emitted');
 
         final List<String> emittedLines = [];
         // Simulate the post-getIdToken emit path (only reached on success)
@@ -2196,12 +2352,16 @@ void main() {
         }
 
         expect(emittedLines, hasLength(1));
-        expect(emittedLines.first, contains('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED]'));
+        expect(emittedLines.first,
+            contains('[AUTH_SDK_ESTABLISH][TOKEN_REFRESHED]'));
         expect(emittedLines.first, contains('adapterType=live'));
-        print('[INV_M.3][PASS] TOKEN_REFRESHED only emitted after successful refresh');
+        print(
+            '[INV_M.3][PASS] TOKEN_REFRESHED only emitted after successful refresh');
       });
 
-      test('M.4: persistence_restore path — CREDENTIAL_ACCEPTED and TOKEN_REFRESHED suppressed', () {
+      test(
+          'M.4: persistence_restore path — CREDENTIAL_ACCEPTED and TOKEN_REFRESHED suppressed',
+          () {
         // The REST token refresh path (_restoreSessionImpl) must NOT emit
         // CREDENTIAL_ACCEPTED or TOKEN_REFRESHED. It emits REST_TOKEN_REFRESHED
         // and REST_RESTORE_COMPLETE instead.
@@ -2221,19 +2381,24 @@ void main() {
         // STRICT: none of the lines must be CREDENTIAL_ACCEPTED or TOKEN_REFRESHED
         for (final line in emittedLines) {
           expect(line, isNot(contains('[CREDENTIAL_ACCEPTED]')),
-              reason: 'M.4: persistence_restore must NOT emit CREDENTIAL_ACCEPTED');
+              reason:
+                  'M.4: persistence_restore must NOT emit CREDENTIAL_ACCEPTED');
           expect(line, isNot(contains('[TOKEN_REFRESHED]')),
               reason: 'M.4: persistence_restore must NOT emit TOKEN_REFRESHED');
         }
         expect(
           emittedLines.any((l) => l.contains('[REST_TOKEN_REFRESHED]')),
           isTrue,
-          reason: 'M.4: persistence_restore must emit REST_TOKEN_REFRESHED instead',
+          reason:
+              'M.4: persistence_restore must emit REST_TOKEN_REFRESHED instead',
         );
-        print('[INV_M.4][PASS] persistence_restore suppresses CREDENTIAL_ACCEPTED + TOKEN_REFRESHED');
+        print(
+            '[INV_M.4][PASS] persistence_restore suppresses CREDENTIAL_ACCEPTED + TOKEN_REFRESHED');
       });
 
-      test('M.5: AUTH_CONVERGENCE[READY] does not re-emit CREDENTIAL_ACCEPTED or TOKEN_REFRESHED', () {
+      test(
+          'M.5: AUTH_CONVERGENCE[READY] does not re-emit CREDENTIAL_ACCEPTED or TOKEN_REFRESHED',
+          () {
         // The corrected _setUserImpl READY path emits ONLY AUTH_CONVERGENCE[READY].
         // The redundant CREDENTIAL_ACCEPTED + TOKEN_REFRESHED re-emissions at that
         // point were removed in 463-A.2-R1 to prevent duplicate/false-success lines.
@@ -2251,7 +2416,8 @@ void main() {
             reason: 'M.5: READY path must NOT re-emit CREDENTIAL_ACCEPTED');
         expect(emittedLines.first, isNot(contains('[TOKEN_REFRESHED]')),
             reason: 'M.5: READY path must NOT re-emit TOKEN_REFRESHED');
-        print('[INV_M.5][PASS] READY path: exactly 1 line, no duplicate telemetry');
+        print(
+            '[INV_M.5][PASS] READY path: exactly 1 line, no duplicate telemetry');
       });
     });
 
@@ -2264,7 +2430,6 @@ void main() {
     // SYNC_TRACE[SUCCESS] is never emitted on a blocked channel.
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant N: sync freezer — auth boundary abort contract', () {
-
       /// Simulates the corrected _syncFromFirestore barrier check.
       /// Returns true if the sync proceeds to storage writes, false if aborted.
       bool simulateSyncFreezer({
@@ -2282,7 +2447,8 @@ void main() {
           barrierState: AppAuthBarrierState.authPending,
         );
         expect(proceeded, isFalse,
-            reason: 'N.1: authPending must abort sync before any storage writes');
+            reason:
+                'N.1: authPending must abort sync before any storage writes');
         print('[INV_N.1][PASS] authPending → sync aborted');
       });
 
@@ -2291,7 +2457,8 @@ void main() {
           barrierState: AppAuthBarrierState.authRequired,
         );
         expect(proceeded, isFalse,
-            reason: 'N.2: authRequired must abort sync before any storage writes');
+            reason:
+                'N.2: authRequired must abort sync before any storage writes');
         print('[INV_N.2][PASS] authRequired → sync aborted');
       });
 
@@ -2300,7 +2467,8 @@ void main() {
           barrierState: AppAuthBarrierState.authMismatch,
         );
         expect(proceeded, isFalse,
-            reason: 'N.3: authMismatch must abort sync before any storage writes');
+            reason:
+                'N.3: authMismatch must abort sync before any storage writes');
         print('[INV_N.3][PASS] authMismatch → sync aborted');
       });
 
@@ -2309,7 +2477,8 @@ void main() {
           barrierState: AppAuthBarrierState.authFailed,
         );
         expect(proceeded, isFalse,
-            reason: 'N.4: authFailed must abort sync before any storage writes');
+            reason:
+                'N.4: authFailed must abort sync before any storage writes');
         print('[INV_N.4][PASS] authFailed → sync aborted');
       });
 
@@ -2318,15 +2487,18 @@ void main() {
           barrierState: AppAuthBarrierState.authReady,
         );
         expect(proceeded, isTrue,
-            reason: 'N.5: authReady must allow sync to proceed to storage writes');
+            reason:
+                'N.5: authReady must allow sync to proceed to storage writes');
         print('[INV_N.5][PASS] authReady → sync proceeds');
       });
 
-      test('N.6: SYNC_TRACE[SUCCESS] schema requires authReady confirmation', () {
+      test('N.6: SYNC_TRACE[SUCCESS] schema requires authReady confirmation',
+          () {
         // Validates that SUCCESS is only emitted on the authReady path.
         // On any other barrier state, ABORT is emitted instead.
-        const successLine   = '[SYNC_TRACE][SUCCESS] Sincronismo concluído com sucesso.';
-        const abortLine     = '[SYNC_TRACE][ABORT]';
+        const successLine =
+            '[SYNC_TRACE][SUCCESS] Sincronismo concluído com sucesso.';
+        const abortLine = '[SYNC_TRACE][ABORT]';
 
         final allStates = AppAuthBarrierState.values;
         for (final state in allStates) {
@@ -2351,10 +2523,10 @@ void main() {
         // Simulates the specific failure mode: auth-blocked loadFav* returns {}
         // which is then merged with the local cache and written to disk.
         // The freezer must catch this before the merge+write step.
-        final localDrugs   = <String>{'drug_A', 'drug_B'};
-        final remoteDrugs  = <String>{};  // barrier-blocked → returned {}
-        var writeCount     = 0;
-        var mergedDrugs    = Set<String>.from(localDrugs);
+        final localDrugs = <String>{'drug_A', 'drug_B'};
+        final remoteDrugs = <String>{}; // barrier-blocked → returned {}
+        var writeCount = 0;
+        var mergedDrugs = Set<String>.from(localDrugs);
 
         // Simulate the corrected sync path with authRequired barrier
         final barrierState = AppAuthBarrierState.authRequired;
@@ -2395,8 +2567,9 @@ void main() {
     //   6. [EXT_TOOL_CACHE][RELEASE] decision cache release → cacheSize=0
     //   7. [RESUME_COORDINATOR][COMPLETE] as absolute terminal owner marker
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant O: terminal pipeline ordering — completeAiRequest is absolute terminal', () {
-
+    group(
+        'Invariant O: terminal pipeline ordering — completeAiRequest is absolute terminal',
+        () {
       /// Simulates the 7-step terminal pipeline and returns the ordered list
       /// of step labels as they would be emitted in the corrected implementation.
       /// [preemptComplete] injects a premature completeAiRequest before step 1
@@ -2446,93 +2619,121 @@ void main() {
       int indexOf(List<String> steps, String label) =>
           steps.indexWhere((s) => s.contains(label));
 
-      test('O.1: correct pipeline — RESUME_COORDINATOR[COMPLETE] is last step', () {
+      test('O.1: correct pipeline — RESUME_COORDINATOR[COMPLETE] is last step',
+          () {
         final steps = simulatePipeline();
 
-        final rawIdx      = indexOf(steps, '[RAW_AI_OUTPUT]');
-        final releaseIdx  = indexOf(steps, '[EXT_TOOL_CACHE][RELEASE]');
+        final rawIdx = indexOf(steps, '[RAW_AI_OUTPUT]');
+        final releaseIdx = indexOf(steps, '[EXT_TOOL_CACHE][RELEASE]');
         final completeIdx = indexOf(steps, '[RESUME_COORDINATOR][COMPLETE]');
 
         expect(completeIdx, greaterThan(rawIdx),
-            reason: 'O.1: completeAiRequest must come AFTER RAW_AI_OUTPUT emission');
+            reason:
+                'O.1: completeAiRequest must come AFTER RAW_AI_OUTPUT emission');
         expect(completeIdx, greaterThan(releaseIdx),
-            reason: 'O.1: completeAiRequest must come AFTER EXT_TOOL_CACHE[RELEASE]');
+            reason:
+                'O.1: completeAiRequest must come AFTER EXT_TOOL_CACHE[RELEASE]');
         expect(completeIdx, equals(steps.length - 1),
-            reason: 'O.1: RESUME_COORDINATOR[COMPLETE] must be the absolute last step');
+            reason:
+                'O.1: RESUME_COORDINATOR[COMPLETE] must be the absolute last step');
         print('[INV_O.1][PASS] correct pipeline: completeAiRequest at position '
             '${completeIdx + 1}/${steps.length} (last)');
       });
 
-      test('O.2: BUILD 241 defect model — premature complete fires BEFORE RAW_AI_OUTPUT', () {
+      test(
+          'O.2: BUILD 241 defect model — premature complete fires BEFORE RAW_AI_OUTPUT',
+          () {
         // This test documents the DEFECT that was fixed in 462E-A.5.3.4.
         // The defect: completeAiRequest at line 5477 fired before RAW_AI_OUTPUT.
         // We verify that the defect model produces the wrong order, confirming
         // the fix was necessary.
         final defectSteps = simulatePipeline(preemptComplete: true);
 
-        final rawIdx      = indexOf(defectSteps, '[RAW_AI_OUTPUT]');
-        final completeIdx = indexOf(defectSteps, '[RESUME_COORDINATOR][COMPLETE]');
+        final rawIdx = indexOf(defectSteps, '[RAW_AI_OUTPUT]');
+        final completeIdx =
+            indexOf(defectSteps, '[RESUME_COORDINATOR][COMPLETE]');
 
         // In the defect model, complete fires FIRST (before raw output).
         expect(completeIdx, lessThan(rawIdx),
-            reason: 'O.2 defect model: premature complete must appear before RAW_AI_OUTPUT '
+            reason:
+                'O.2 defect model: premature complete must appear before RAW_AI_OUTPUT '
                 '(confirming this ordering is WRONG and was fixed in 462E-A.5.3.4)');
 
         // The corrected implementation must NOT exhibit this ordering.
         final fixedSteps = simulatePipeline(preemptComplete: false);
-        final fixedRawIdx      = indexOf(fixedSteps, '[RAW_AI_OUTPUT]');
-        final fixedCompleteIdx = indexOf(fixedSteps, '[RESUME_COORDINATOR][COMPLETE]');
+        final fixedRawIdx = indexOf(fixedSteps, '[RAW_AI_OUTPUT]');
+        final fixedCompleteIdx =
+            indexOf(fixedSteps, '[RESUME_COORDINATOR][COMPLETE]');
 
         expect(fixedCompleteIdx, greaterThan(fixedRawIdx),
-            reason: 'O.2 fix: corrected pipeline must have completeAiRequest AFTER RAW_AI_OUTPUT');
+            reason:
+                'O.2 fix: corrected pipeline must have completeAiRequest AFTER RAW_AI_OUTPUT');
         print('[INV_O.2][PASS] BUILD 241 defect documented and fix verified');
       });
 
-      test('O.3: timeout path defect model — complete fires BEFORE EXT_TOOL_CACHE[RELEASE]', () {
+      test(
+          'O.3: timeout path defect model — complete fires BEFORE EXT_TOOL_CACHE[RELEASE]',
+          () {
         // Documents the global-timeout and critical-timeout defects fixed in 462E-A.5.3.4.
         // Both timer callbacks had completeAiRequest before releaseCanonicalDecision.
         final defectSteps = simulatePipeline(timeoutBeforeRelease: true);
 
-        final releaseIdx  = indexOf(defectSteps, '[EXT_TOOL_CACHE][RELEASE]');
-        final completeIdx = indexOf(defectSteps, '[RESUME_COORDINATOR][COMPLETE]');
+        final releaseIdx = indexOf(defectSteps, '[EXT_TOOL_CACHE][RELEASE]');
+        final completeIdx =
+            indexOf(defectSteps, '[RESUME_COORDINATOR][COMPLETE]');
 
         // In the defect model, complete fires before release.
         expect(completeIdx, lessThan(releaseIdx),
-            reason: 'O.3 defect model: timeout path complete must appear before RELEASE '
+            reason:
+                'O.3 defect model: timeout path complete must appear before RELEASE '
                 '(confirming this ordering is WRONG and was fixed in 462E-A.5.3.4)');
 
         // The corrected implementation must NOT exhibit this.
         final fixedSteps = simulatePipeline(timeoutBeforeRelease: false);
-        final fixedReleaseIdx  = indexOf(fixedSteps, '[EXT_TOOL_CACHE][RELEASE]');
-        final fixedCompleteIdx = indexOf(fixedSteps, '[RESUME_COORDINATOR][COMPLETE]');
+        final fixedReleaseIdx =
+            indexOf(fixedSteps, '[EXT_TOOL_CACHE][RELEASE]');
+        final fixedCompleteIdx =
+            indexOf(fixedSteps, '[RESUME_COORDINATOR][COMPLETE]');
 
         expect(fixedCompleteIdx, greaterThan(fixedReleaseIdx),
-            reason: 'O.3 fix: corrected timer path must have completeAiRequest AFTER RELEASE');
-        print('[INV_O.3][PASS] timeout path defect documented and fix verified');
+            reason:
+                'O.3 fix: corrected timer path must have completeAiRequest AFTER RELEASE');
+        print(
+            '[INV_O.3][PASS] timeout path defect documented and fix verified');
       });
 
-      test('O.4: POST_SANITIZE_STALE defect model — complete fires BEFORE RELEASE', () {
+      test(
+          'O.4: POST_SANITIZE_STALE defect model — complete fires BEFORE RELEASE',
+          () {
         // Documents the POST_SANITIZE_STALE defect fixed at line 4498 in 462E-A.5.3.4.
         final defectSteps = simulatePipeline(staleBeforeRelease: true);
 
-        final releaseIdx  = indexOf(defectSteps, '[EXT_TOOL_CACHE][RELEASE]');
-        final completeIdx = indexOf(defectSteps, '[RESUME_COORDINATOR][COMPLETE]');
+        final releaseIdx = indexOf(defectSteps, '[EXT_TOOL_CACHE][RELEASE]');
+        final completeIdx =
+            indexOf(defectSteps, '[RESUME_COORDINATOR][COMPLETE]');
 
         expect(completeIdx, lessThan(releaseIdx),
-            reason: 'O.4 defect model: stale path complete must appear before RELEASE '
+            reason:
+                'O.4 defect model: stale path complete must appear before RELEASE '
                 '(confirming this ordering is WRONG and was fixed in 462E-A.5.3.4)');
 
         // The corrected implementation must have the right order.
         final fixedSteps = simulatePipeline(staleBeforeRelease: false);
-        final fixedReleaseIdx  = indexOf(fixedSteps, '[EXT_TOOL_CACHE][RELEASE]');
-        final fixedCompleteIdx = indexOf(fixedSteps, '[RESUME_COORDINATOR][COMPLETE]');
+        final fixedReleaseIdx =
+            indexOf(fixedSteps, '[EXT_TOOL_CACHE][RELEASE]');
+        final fixedCompleteIdx =
+            indexOf(fixedSteps, '[RESUME_COORDINATOR][COMPLETE]');
 
         expect(fixedCompleteIdx, greaterThan(fixedReleaseIdx),
-            reason: 'O.4 fix: corrected stale path must have completeAiRequest AFTER RELEASE');
-        print('[INV_O.4][PASS] POST_SANITIZE_STALE defect documented and fix verified');
+            reason:
+                'O.4 fix: corrected stale path must have completeAiRequest AFTER RELEASE');
+        print(
+            '[INV_O.4][PASS] POST_SANITIZE_STALE defect documented and fix verified');
       });
 
-      test('O.5: pipeline step count — exactly 7 canonical steps in correct order', () {
+      test(
+          'O.5: pipeline step count — exactly 7 canonical steps in correct order',
+          () {
         final steps = simulatePipeline();
 
         // Verify all 7 canonical steps are present.
@@ -2559,15 +2760,19 @@ void main() {
         final s6 = indexOf(steps, '[EXT_TOOL_CACHE][RELEASE]');
         final s7 = indexOf(steps, '[RESUME_COORDINATOR][COMPLETE]');
 
-        expect(s1, lessThan(s6), reason: 'O.5: RAW_AI_OUTPUT (s1) < RELEASE (s6)');
+        expect(s1, lessThan(s6),
+            reason: 'O.5: RAW_AI_OUTPUT (s1) < RELEASE (s6)');
         expect(s6, lessThan(s7), reason: 'O.5: RELEASE (s6) < COMPLETE (s7)');
-        expect(s7, equals(6),    reason: 'O.5: COMPLETE must be at index 6 (last of 7 steps)');
+        expect(s7, equals(6),
+            reason: 'O.5: COMPLETE must be at index 6 (last of 7 steps)');
 
         print('[INV_O.5][PASS] 7-step pipeline order validated: '
             's1=$s1 s6=$s6 s7=$s7 total=${steps.length}');
       });
 
-      test('O.6: no microtask dispatches completeAiRequest before cache release', () async {
+      test(
+          'O.6: no microtask dispatches completeAiRequest before cache release',
+          () async {
         // Asserts the async microtask scheduling invariant:
         // completeAiRequest must not be schedulable (via Future.microtask,
         // scheduleMicrotask, or unawaited) before the cache release handshake.
@@ -2606,34 +2811,41 @@ void main() {
         expect(log[1], contains('[RESUME_COORDINATOR][COMPLETE]'),
             reason: 'O.6: complete microtask runs last');
 
-        final releaseIdx  = indexOf(log, '[EXT_TOOL_CACHE][RELEASE]');
+        final releaseIdx = indexOf(log, '[EXT_TOOL_CACHE][RELEASE]');
         final completeIdx = indexOf(log, '[RESUME_COORDINATOR][COMPLETE]');
         expect(completeIdx, greaterThan(releaseIdx),
-            reason: 'O.6: no microtask may dispatch complete before release handshake');
+            reason:
+                'O.6: no microtask may dispatch complete before release handshake');
 
-        print('[INV_O.6][PASS] async microtask order: release=$releaseIdx complete=$completeIdx '
+        print(
+            '[INV_O.6][PASS] async microtask order: release=$releaseIdx complete=$completeIdx '
             'release_before_complete=${releaseIdx < completeIdx}');
       });
 
-      test('O.7: all 4 defect sites are fixed — completeAiRequest never appears before RELEASE in corrected pipeline', () {
+      test(
+          'O.7: all 4 defect sites are fixed — completeAiRequest never appears before RELEASE in corrected pipeline',
+          () {
         // Runs all 4 defect site models and verifies none appear in the corrected pipeline.
         // This is a regression guard: if any defect is re-introduced, this test catches it.
 
         // Corrected pipeline (no defects).
         final corrected = simulatePipeline(
-          preemptComplete:    false,
+          preemptComplete: false,
           timeoutBeforeRelease: false,
-          staleBeforeRelease:   false,
+          staleBeforeRelease: false,
         );
 
-        final releaseIdx  = indexOf(corrected, '[EXT_TOOL_CACHE][RELEASE]');
-        final completeIdx = indexOf(corrected, '[RESUME_COORDINATOR][COMPLETE]');
+        final releaseIdx = indexOf(corrected, '[EXT_TOOL_CACHE][RELEASE]');
+        final completeIdx =
+            indexOf(corrected, '[RESUME_COORDINATOR][COMPLETE]');
 
         expect(completeIdx, greaterThan(releaseIdx),
-            reason: 'O.7: corrected pipeline — complete (idx=$completeIdx) must be after '
+            reason:
+                'O.7: corrected pipeline — complete (idx=$completeIdx) must be after '
                 'release (idx=$releaseIdx)');
         expect(completeIdx, equals(corrected.length - 1),
-            reason: 'O.7: complete must be the absolute last element in corrected pipeline');
+            reason:
+                'O.7: complete must be the absolute last element in corrected pipeline');
 
         // Verify no defect model passes this check.
         final defectSite1 = simulatePipeline(preemptComplete: true);
@@ -2641,11 +2853,13 @@ void main() {
         final defectSite3 = simulatePipeline(staleBeforeRelease: true);
 
         for (final defect in [defectSite1, defectSite2, defectSite3]) {
-          final dReleaseIdx  = indexOf(defect, '[EXT_TOOL_CACHE][RELEASE]');
-          final dCompleteIdx = indexOf(defect, '[RESUME_COORDINATOR][COMPLETE]');
+          final dReleaseIdx = indexOf(defect, '[EXT_TOOL_CACHE][RELEASE]');
+          final dCompleteIdx =
+              indexOf(defect, '[RESUME_COORDINATOR][COMPLETE]');
           // In defect models, complete appears at or before release.
           expect(dCompleteIdx, lessThanOrEqualTo(dReleaseIdx),
-              reason: 'O.7: defect model must show complete ≤ release (wrong order) '
+              reason:
+                  'O.7: defect model must show complete ≤ release (wrong order) '
                   'to validate the defect is correctly modelled');
         }
 
@@ -2682,7 +2896,6 @@ void main() {
     //        transitions back to false (barrier → authRequired on next setUser).
     // ██████████████████████████████████████████████████████████████████████████
     group('Invariant P: web Firebase SDK credential bridge contract', () {
-
       late SimulatedFirebaseAuthAdapter adapter;
 
       setUp(() {
@@ -2714,7 +2927,7 @@ void main() {
         bool sdkThrows = false,
       }) async {
         final store = _MockTokenStore();
-        final uid   = 'uid_${email.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}';
+        final uid = 'uid_${email.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_')}';
         store.restToken = 'rest_id_token_for_$uid';
 
         // REST plane populated (step 1).
@@ -2731,7 +2944,9 @@ void main() {
         return (store: store, sdkUid: adapter.currentUid);
       }
 
-      test('P.1: REST-only path (pre-R2 defect) → authRequired, sdkIdentity=false', () {
+      test(
+          'P.1: REST-only path (pre-R2 defect) → authRequired, sdkIdentity=false',
+          () {
         // This models the defect that R2 fixes: web login only called the REST
         // endpoint, leaving FirebaseAuth.currentUser == null.
         final store = simulateRestOnlyPath(uid: 'p1_uid');
@@ -2745,30 +2960,36 @@ void main() {
 
         // Barrier resolves authRequired when SDK user is null.
         final state = simulateBootLock(
-          expectedUid:      'p1_uid',
-          firebaseSdkUid:   null, // adapter.currentUid
+          expectedUid: 'p1_uid',
+          firebaseSdkUid: null, // adapter.currentUid
           restTokenPresent: store.hasCachedToken,
           firebaseAvailable: true,
         );
         expect(state, equals(AppAuthBarrierState.authRequired),
             reason: 'P.1: REST-only → authRequired (pre-R2 defect confirmed)');
         expect(state, isNot(equals(AppAuthBarrierState.authReady)));
-        print('[INV_P.1][PASS] REST-only defect: restToken=true sdkUid=null → authRequired');
+        print(
+            '[INV_P.1][PASS] REST-only defect: restToken=true sdkUid=null → authRequired');
       });
 
-      test('P.2: SDK bridge establishes non-null currentUid after signInWithEmailAndPassword', () async {
-        const email    = 'dr.web@hospital.br';
+      test(
+          'P.2: SDK bridge establishes non-null currentUid after signInWithEmailAndPassword',
+          () async {
+        const email = 'dr.web@hospital.br';
         const password = 'secure_pass_456';
 
-        final result = await simulateWebBridge(email: email, password: password);
+        final result =
+            await simulateWebBridge(email: email, password: password);
 
         expect(result.sdkUid, isNotNull,
             reason: 'P.2: SDK bridge must establish non-null currentUid');
         expect(result.sdkUid, contains('dr_web'),
-            reason: 'P.2: simulated SDK uid is derived from email (test convention)');
+            reason:
+                'P.2: simulated SDK uid is derived from email (test convention)');
         expect(result.store.hasCachedToken, isTrue,
             reason: 'P.2: REST plane must remain populated after bridge');
-        print('[INV_P.2][PASS] SDK bridge: sdkUid=${result.sdkUid} restToken=true');
+        print(
+            '[INV_P.2][PASS] SDK bridge: sdkUid=${result.sdkUid} restToken=true');
       });
 
       test('P.3: dual-plane satisfied → barrier resolves authReady', () async {
@@ -2781,22 +3002,25 @@ void main() {
 
         // Barrier must resolve authReady when SDK uid matches expected uid.
         final state = simulateBootLock(
-          expectedUid:      result.sdkUid!,
-          firebaseSdkUid:   result.sdkUid,
+          expectedUid: result.sdkUid!,
+          firebaseSdkUid: result.sdkUid,
           restTokenPresent: result.store.hasCachedToken,
           firebaseAvailable: true,
         );
         expect(state, equals(AppAuthBarrierState.authReady),
             reason: 'P.3: dual-plane (REST+SDK) → authReady');
-        print('[INV_P.3][PASS] dual-plane: sdkUid=${result.sdkUid} → authReady');
+        print(
+            '[INV_P.3][PASS] dual-plane: sdkUid=${result.sdkUid} → authReady');
       });
 
-      test('P.4: SDK bridge failure → REST plane retained, barrier falls back to authRequired', () async {
+      test(
+          'P.4: SDK bridge failure → REST plane retained, barrier falls back to authRequired',
+          () async {
         const email = 'fallback@medcases.br';
 
         // Simulate SDK bridge failure (adapter throws / unavailable).
         final result = await simulateWebBridge(
-          email: email, password: 'pw', sdkThrows: true);
+            email: email, password: 'pw', sdkThrows: true);
 
         // REST plane retained (step 1 succeeded).
         expect(result.store.hasCachedToken, isTrue,
@@ -2808,23 +3032,28 @@ void main() {
 
         // Barrier falls back to authRequired (non-fatal degraded path).
         final state = simulateBootLock(
-          expectedUid:      'uid_fallback_medcases_br',
-          firebaseSdkUid:   null,
+          expectedUid: 'uid_fallback_medcases_br',
+          firebaseSdkUid: null,
           restTokenPresent: result.store.hasCachedToken,
           firebaseAvailable: true,
         );
         expect(state, equals(AppAuthBarrierState.authRequired),
-            reason: 'P.4: SDK failure → authRequired (non-fatal degraded path)');
-        print('[INV_P.4][PASS] SDK bridge failure: restToken=true sdkUid=null → authRequired');
+            reason:
+                'P.4: SDK failure → authRequired (non-fatal degraded path)');
+        print(
+            '[INV_P.4][PASS] SDK bridge failure: restToken=true sdkUid=null → authRequired');
       });
 
-      test('P.5: forceTokenRefresh() after bridge returns non-null unified token', () async {
+      test(
+          'P.5: forceTokenRefresh() after bridge returns non-null unified token',
+          () async {
         await adapter.signInWithEmailAndPassword('token@test.br', 'pw');
         expect(adapter.currentUid, isNotNull);
 
         final token = await adapter.forceTokenRefresh();
         expect(token, isNotNull,
-            reason: 'P.5: forceTokenRefresh must return non-null token after bridge');
+            reason:
+                'P.5: forceTokenRefresh must return non-null token after bridge');
         expect(token, contains('simulated_id_token'),
             reason: 'P.5: simulated token has expected prefix');
         // In production this SDK-issued JWT would overwrite _cachedIdToken,
@@ -2832,16 +3061,20 @@ void main() {
         print('[INV_P.5][PASS] forceTokenRefresh post-bridge: token=$token');
       });
 
-      test('P.6: REST idToken must NOT be passed to signInWithCustomToken (prohibition)', () {
+      test(
+          'P.6: REST idToken must NOT be passed to signInWithCustomToken (prohibition)',
+          () {
         // REST idTokens are Identity Toolkit JWTs — NOT Firebase Custom Tokens.
         // Passing them to signInWithCustomToken() must be rejected.
         // This validates the prohibition comment in _loginWeb.
-        const restIdToken = 'eyJhbGciOiJSUzI1NiIsImtpZCI6...identitytoolkit_jwt';
+        const restIdToken =
+            'eyJhbGciOiJSUzI1NiIsImtpZCI6...identitytoolkit_jwt';
 
         expect(
           () async => adapter.signInWithCustomToken(restIdToken),
           throwsA(isA<Exception>()),
-          reason: 'P.6: REST idToken (non firebase_custom_token_ prefix) MUST be rejected',
+          reason:
+              'P.6: REST idToken (non firebase_custom_token_ prefix) MUST be rejected',
         );
 
         // Only firebase_custom_token_* is accepted by the SimulatedAdapter.
@@ -2850,10 +3083,13 @@ void main() {
           throwsA(isA<Exception>()),
           reason: 'P.6: Google OAuth token must also be rejected',
         );
-        print('[INV_P.6][PASS] REST idToken and OAuth token rejected by signInWithCustomToken');
+        print(
+            '[INV_P.6][PASS] REST idToken and OAuth token rejected by signInWithCustomToken');
       });
 
-      test('P.7: bridge telemetry schema — WEB_BRIDGE log lines match AUTH_SDK_ESTABLISH format', () {
+      test(
+          'P.7: bridge telemetry schema — WEB_BRIDGE log lines match AUTH_SDK_ESTABLISH format',
+          () {
         // Validates the expected log format for the web bridge path.
         // These strings must appear in the debug output during _loginWeb execution.
         final logs = <String>[];
@@ -2888,7 +3124,8 @@ void main() {
             reason: 'P.7: START must carry adapterType=live');
 
         expect(logs[2], contains('[AUTH_SDK_ESTABLISH][CREDENTIAL_ACCEPTED]'),
-            reason: 'P.7: CREDENTIAL_ACCEPTED must appear after bridge success');
+            reason:
+                'P.7: CREDENTIAL_ACCEPTED must appear after bridge success');
         expect(logs[2], contains('firebaseUidAfter=bridge_uid_p7'),
             reason: 'P.7: CREDENTIAL_ACCEPTED must include firebaseUidAfter');
 
@@ -2898,12 +3135,16 @@ void main() {
             reason: 'P.7: TOKEN_REFRESHED must include uid');
 
         expect(logs[4], contains('sdkIdentityEstablished=true'),
-            reason: 'P.7: final WEB_BRIDGE log must confirm sdkIdentityEstablished=true');
+            reason:
+                'P.7: final WEB_BRIDGE log must confirm sdkIdentityEstablished=true');
 
-        print('[INV_P.7][PASS] bridge telemetry schema: ${logs.length} log lines validated');
+        print(
+            '[INV_P.7][PASS] bridge telemetry schema: ${logs.length} log lines validated');
       });
 
-      test('P.8: signOut after bridge clears SDK identity → barrier returns to authRequired', () async {
+      test(
+          'P.8: signOut after bridge clears SDK identity → barrier returns to authRequired',
+          () async {
         // Sign in via bridge.
         await adapter.signInWithEmailAndPassword('logout@test.br', 'pw');
         final uidBefore = adapter.currentUid;
@@ -2912,8 +3153,8 @@ void main() {
 
         // Barrier pre-signOut: authReady.
         final stateBefore = simulateBootLock(
-          expectedUid:      uidBefore!,
-          firebaseSdkUid:   uidBefore,
+          expectedUid: uidBefore!,
+          firebaseSdkUid: uidBefore,
           restTokenPresent: true,
           firebaseAvailable: true,
         );
@@ -2929,8 +3170,8 @@ void main() {
         // REST token would also be cleared by AuthService.logout() in production,
         // but here we test the SDK plane independently.
         final stateAfter = simulateBootLock(
-          expectedUid:      uidBefore,
-          firebaseSdkUid:   null, // adapter.currentUid after signOut
+          expectedUid: uidBefore,
+          firebaseSdkUid: null, // adapter.currentUid after signOut
           restTokenPresent: false,
           firebaseAvailable: true,
         );
@@ -2962,8 +3203,9 @@ void main() {
     //   Q.8: _wrapperFired dedup layer prevents double UI dispatch even if
     //        ownership guard is bypassed at the stream layer.
     // ██████████████████████████████████████████████████████████████████████████
-    group('Invariant Q: atomic terminal ownership guard — concurrency regression', () {
-
+    group(
+        'Invariant Q: atomic terminal ownership guard — concurrency regression',
+        () {
       setUp(() {
         ExternalToolLinkEngine.clearAllDecisions(reason: 'test_setUp');
       });
@@ -2990,7 +3232,9 @@ void main() {
             return true;
           },
           hasOwnership: () => _acquired,
-          reset: () { _acquired = false; },
+          reset: () {
+            _acquired = false;
+          },
         );
       }
 
@@ -2999,7 +3243,9 @@ void main() {
       Future<void> simulatePersistenceDelay(int ms) =>
           Future<void>.delayed(Duration(milliseconds: ms));
 
-      test('Q.1: tryAcquireTerminalOwnership is non-reentrant — returns true exactly once', () {
+      test(
+          'Q.1: tryAcquireTerminalOwnership is non-reentrant — returns true exactly once',
+          () {
         final gate = makeOwnershipGate();
 
         // First caller wins.
@@ -3018,10 +3264,12 @@ void main() {
             'first=true subsequent=false');
       });
 
-      test('Q.2: concurrent callers — exactly one wins, all others silent-abort', () async {
-        final gate       = makeOwnershipGate();
-        final winners    = <int>[];
-        final aborted    = <int>[];
+      test(
+          'Q.2: concurrent callers — exactly one wins, all others silent-abort',
+          () async {
+        final gate = makeOwnershipGate();
+        final winners = <int>[];
+        final aborted = <int>[];
 
         // Simulate 5 concurrent paths all trying to acquire ownership
         // simultaneously (as happens when chunk.isDone and timeout both fire
@@ -3046,12 +3294,13 @@ void main() {
             'aborted=${aborted.length}/5');
       });
 
-      test('Q.3: completeAiRequest never called twice under race condition', () async {
+      test('Q.3: completeAiRequest never called twice under race condition',
+          () async {
         // Simulates a race between chunk.isDone arrival and a concurrent timeout.
         // Uses a counter to verify completeAiRequest idempotency.
-        final gate             = makeOwnershipGate();
-        int completeCallCount  = 0;
-        int releaseCallCount   = 0;
+        final gate = makeOwnershipGate();
+        int completeCallCount = 0;
+        int releaseCallCount = 0;
 
         void simulateCompleteAiRequest() => completeCallCount++;
         void simulateReleaseCanonicalDecision() => releaseCallCount++;
@@ -3078,16 +3327,19 @@ void main() {
             reason: 'Q.3: completeAiRequest must be called exactly ONCE '
                 'even when chunk.isDone and timeout race');
         expect(releaseCallCount, equals(1),
-            reason: 'Q.3: releaseCanonicalDecision must be called exactly ONCE');
+            reason:
+                'Q.3: releaseCanonicalDecision must be called exactly ONCE');
 
-        print('[INV_Q.3][PASS] race condition: completeCount=$completeCallCount '
+        print(
+            '[INV_Q.3][PASS] race condition: completeCount=$completeCallCount '
             'releaseCount=$releaseCallCount (both must equal 1)');
       });
 
-      test('Q.4: late-arriving chunks cannot push updates into completed state', () {
+      test('Q.4: late-arriving chunks cannot push updates into completed state',
+          () {
         // Simulates late chunk delivery after terminal ownership is acquired.
         // In production: stream emits additional text after chunk.isDone was processed.
-        final gate          = makeOwnershipGate();
+        final gate = makeOwnershipGate();
         final renderedTexts = <String>[];
 
         void simulateChunkArrival(String text) {
@@ -3118,21 +3370,25 @@ void main() {
             reason: 'Q.4: only pre-terminal chunks must be rendered '
                 '(2 before + 0 late = 2)');
         expect(renderedTexts, isNot(contains(' chunk tardio 1')),
-            reason: 'Q.4: late chunk 1 must be dropped after terminal ownership');
+            reason:
+                'Q.4: late chunk 1 must be dropped after terminal ownership');
         expect(renderedTexts, isNot(contains(' chunk tardio 2')),
-            reason: 'Q.4: late chunk 2 must be dropped after terminal ownership');
+            reason:
+                'Q.4: late chunk 2 must be dropped after terminal ownership');
 
         print('[INV_Q.4][PASS] late chunks dropped: '
             'rendered=${renderedTexts.length} late=0 (all dropped)');
       });
 
-      test('Q.5: 50ms persistence delay + concurrent cancel → exactly ONE terminal owner', () async {
+      test(
+          'Q.5: 50ms persistence delay + concurrent cancel → exactly ONE terminal owner',
+          () async {
         // This is the primary regression test from the mandate:
         // SessionDedup.save() introduces a 50ms delay. During that delay,
         // a cancel/timeout fires. Assert that only one path completes.
-        final gate              = makeOwnershipGate();
-        int completionCount     = 0;
-        final List<String> log  = [];
+        final gate = makeOwnershipGate();
+        int completionCount = 0;
+        final List<String> log = [];
 
         // Path A: chunk.isDone wins ownership, runs persistence (50ms delay),
         //         then completes.
@@ -3179,16 +3435,19 @@ void main() {
         expect(log, isNot(contains('pathB_complete_WRONG')),
             reason: 'Q.5: pathB must never reach complete');
         expect(log, contains('pathA_persistence_done'),
-            reason: 'Q.5: persistence must complete even during concurrent timeout');
+            reason:
+                'Q.5: persistence must complete even during concurrent timeout');
 
         print('[INV_Q.5][PASS] 50ms persistence + concurrent timeout: '
             'completionCount=$completionCount log=$log');
       });
 
-      test('Q.6: owner executes full 7-step pipeline; loser drops payload silently', () async {
-        final gate          = makeOwnershipGate();
-        final ownerSteps    = <String>[];
-        final loserActions  = <String>[];
+      test(
+          'Q.6: owner executes full 7-step pipeline; loser drops payload silently',
+          () async {
+        final gate = makeOwnershipGate();
+        final ownerSteps = <String>[];
+        final loserActions = <String>[];
 
         // Owner: executes full pipeline.
         Future<void> owner() async {
@@ -3219,15 +3478,19 @@ void main() {
         expect(ownerSteps, hasLength(7),
             reason: 'Q.6: owner must execute all 7 pipeline steps');
         expect(ownerSteps.last, contains('[RESUME_COORDINATOR][COMPLETE]'),
-            reason: 'Q.6: COMPLETE must be the absolute last step for the owner');
+            reason:
+                'Q.6: COMPLETE must be the absolute last step for the owner');
         expect(loserActions, equals(['silent_abort']),
-            reason: 'Q.6: loser must only produce silent_abort — no ILLEGAL_EXECUTION');
+            reason:
+                'Q.6: loser must only produce silent_abort — no ILLEGAL_EXECUTION');
 
         print('[INV_Q.6][PASS] owner=${ownerSteps.length} steps '
             'loser=${loserActions.first}');
       });
 
-      test('Q.7: retry path resets ownership — new stream attempt has fresh gate', () {
+      test(
+          'Q.7: retry path resets ownership — new stream attempt has fresh gate',
+          () {
         // When the free stream closes empty (onDone with empty accumulator),
         // the retry engine resets _hasTerminalOwnershipAcquired = false so
         // the new stream listener can acquire ownership independently.
@@ -3247,18 +3510,21 @@ void main() {
 
         // No further callers can steal ownership.
         expect(gate.tryAcquire(), isFalse,
-            reason: 'Q.7: concurrent caller during retry must still be blocked');
+            reason:
+                'Q.7: concurrent caller during retry must still be blocked');
 
         print('[INV_Q.7][PASS] retry ownership reset: '
             'first=acquired reset=cleared retry=acquired concurrent=blocked');
       });
 
-      test('Q.8: _wrapperFired dedup prevents double UI dispatch even if ownership bypassed', () {
+      test(
+          'Q.8: _wrapperFired dedup prevents double UI dispatch even if ownership bypassed',
+          () {
         // Models the _wrapperFired guard (BUILD 318) as a second safety layer.
         // Even if the ownership gate were bypassed (e.g., by a bug), the UI
         // dispatch wrapper must still prevent a double call to onDone/onError.
         bool _wrapperFired = false;
-        int  uiDispatchCount = 0;
+        int uiDispatchCount = 0;
 
         void wrappedOnDone(String text) {
           if (_wrapperFired) return; // BUILD 318 dedup
@@ -3297,8 +3563,11 @@ void main() {
     //   • Generation 1 result arrives → stale-epoch guard fires → discarded.
     //   • State tree is NOT updated; UI is NOT notified.
     // ─────────────────────────────────────────────────────────────────────────
-    group('Invariant R: stale generation discard — single-flight epoch isolation', () {
-      test('R.1: prior generation result is discarded when epoch is bumped', () async {
+    group(
+        'Invariant R: stale generation discard — single-flight epoch isolation',
+        () {
+      test('R.1: prior generation result is discarded when epoch is bumped',
+          () async {
         // Simulate the _historyLoadGeneration counter and per-call capture.
         int currentGeneration = 0;
         final List<String> stateWrites = [];
@@ -3342,7 +3611,8 @@ void main() {
         final gen2Result = await gen2Future;
 
         expect(gen1Result, equals('STALE_DISCARDED'),
-            reason: 'R.1: generation 1 must be discarded after epoch bump to 2');
+            reason:
+                'R.1: generation 1 must be discarded after epoch bump to 2');
         expect(gen2Result, equals('gen2_data'),
             reason: 'R.1: generation 2 (winner) must succeed');
         expect(stateWrites, equals(['gen2_data']),
@@ -3382,16 +3652,24 @@ void main() {
         }
 
         // Two simultaneous calls for the same uid.
-        final f1 = simulateSingleFlight(uid: 'user_abc', delay: const Duration(milliseconds: 50), result: 'data');
-        final f2 = simulateSingleFlight(uid: 'user_abc', delay: const Duration(milliseconds: 50), result: 'data');
+        final f1 = simulateSingleFlight(
+            uid: 'user_abc',
+            delay: const Duration(milliseconds: 50),
+            result: 'data');
+        final f2 = simulateSingleFlight(
+            uid: 'user_abc',
+            delay: const Duration(milliseconds: 50),
+            result: 'data');
 
         final r1 = await f1;
         final r2 = await f2;
 
         expect(r1, equals(r2),
-            reason: 'R.2: same-uid concurrent calls must receive identical result');
+            reason:
+                'R.2: same-uid concurrent calls must receive identical result');
         expect(reuseCount, equals(1),
-            reason: 'R.2: second call must reuse in-flight future, not spawn new');
+            reason:
+                'R.2: second call must reuse in-flight future, not spawn new');
         expect(currentGeneration, equals(1),
             reason: 'R.2: generation must not be bumped by same-uid reuse');
 
@@ -3399,7 +3677,8 @@ void main() {
             'generation=$currentGeneration reuseCount=$reuseCount');
       });
 
-      test('R.3: different uid always spawns new fetch and bumps generation', () async {
+      test('R.3: different uid always spawns new fetch and bumps generation',
+          () async {
         int currentGeneration = 0;
 
         void simulateFetch(String uid) {
@@ -3417,7 +3696,9 @@ void main() {
             'generation=$currentGeneration');
       });
 
-      test('R.4: _FsAuthDenied sentinel returned on stale-epoch discard prevents state write', () async {
+      test(
+          'R.4: _FsAuthDenied sentinel returned on stale-epoch discard prevents state write',
+          () async {
         // Models the exact sentinel value returned when stale-epoch guard fires.
         // The caller must treat this as a frozen cache signal (no state mutation).
         final List<String> mutations = [];
@@ -3443,9 +3724,11 @@ void main() {
         applyResult('FsAuthDenied');
 
         expect(mutations, isEmpty,
-            reason: 'R.4: stale-epoch FsAuthDenied sentinel must not produce any state mutations');
+            reason:
+                'R.4: stale-epoch FsAuthDenied sentinel must not produce any state mutations');
 
-        print('[INV_R.4][PASS] stale sentinel FsAuthDenied: mutations=${mutations.length} (must be 0)');
+        print(
+            '[INV_R.4][PASS] stale sentinel FsAuthDenied: mutations=${mutations.length} (must be 0)');
       });
     });
 
@@ -3464,13 +3747,15 @@ void main() {
     //   4: CACHE RELEASE HANDSHAKE (cacheSize → 0)
     //   5: COORD_COMPLETE (terminal — maximum index, unconditional)
     // ─────────────────────────────────────────────────────────────────────────
-    group('Invariant S: strict serialization sequence — COORD_COMPLETE is absolute terminal', () {
+    group(
+        'Invariant S: strict serialization sequence — COORD_COMPLETE is absolute terminal',
+        () {
       // Pipeline step labels matching the mandate's 6-step sequence.
-      const kTruncCheck    = 'TRUNCATION_CHECK';
+      const kTruncCheck = 'TRUNCATION_CHECK';
       const kRespValidator = 'RESPONSE_VALIDATOR';
-      const kSessionDedup  = 'SESSION_DEDUP_SAVE';
-      const kExtToolGate   = 'EXT_TOOL_GATE';
-      const kCacheRelease  = 'CACHE_RELEASE_HANDSHAKE';
+      const kSessionDedup = 'SESSION_DEDUP_SAVE';
+      const kExtToolGate = 'EXT_TOOL_GATE';
+      const kCacheRelease = 'CACHE_RELEASE_HANDSHAKE';
       const kCoordComplete = 'COORD_COMPLETE';
 
       // Helper: simulate a full pipeline run and record the step order.
@@ -3486,30 +3771,34 @@ void main() {
         // Steps may be short-circuited to error variants, but COORD_COMPLETE
         // must still be the terminal step.
         if (!simulateCancellation) {
-          log.add(kTruncCheck);    // step 0
+          log.add(kTruncCheck); // step 0
           log.add(kRespValidator); // step 1
         }
 
         if (!simulateTimeout && !simulateCancellation) {
-          log.add(kSessionDedup);  // step 2
+          log.add(kSessionDedup); // step 2
         }
 
-        log.add(kExtToolGate);   // step 3 (always evaluated)
-        cacheSize = 0;            // cache cleared at release
-        log.add(kCacheRelease);  // step 4
+        log.add(kExtToolGate); // step 3 (always evaluated)
+        cacheSize = 0; // cache cleared at release
+        log.add(kCacheRelease); // step 4
         log.add(kCoordComplete); // step 5 — ABSOLUTE TERMINAL
 
         return (log: log, finalCacheSize: cacheSize);
       }
 
-      test('S.1: normal path — all 6 steps in strict index order, cacheSize=0 at COORD_COMPLETE', () {
+      test(
+          'S.1: normal path — all 6 steps in strict index order, cacheSize=0 at COORD_COMPLETE',
+          () {
         final result = runPipeline();
 
         expect(result.log.last, equals(kCoordComplete),
-            reason: 'S.1: COORD_COMPLETE must be the absolute last step (max index)');
+            reason:
+                'S.1: COORD_COMPLETE must be the absolute last step (max index)');
         expect(result.finalCacheSize, equals(0),
             reason: 'S.1: cacheSize must be 0 at the point of COORD_COMPLETE');
-        expect(result.log.indexOf(kCoordComplete), equals(result.log.length - 1),
+        expect(
+            result.log.indexOf(kCoordComplete), equals(result.log.length - 1),
             reason: 'S.1: COORD_COMPLETE index must equal log.length-1');
         expect(result.log.indexOf(kCacheRelease),
             lessThan(result.log.indexOf(kCoordComplete)),
@@ -3531,25 +3820,31 @@ void main() {
             reason: 'S.2: cacheSize must be 0 at COORD_COMPLETE on timeout');
         expect(result.log.indexOf(kCacheRelease),
             lessThan(result.log.indexOf(kCoordComplete)),
-            reason: 'S.2: CACHE_RELEASE must still precede COORD_COMPLETE on timeout');
+            reason:
+                'S.2: CACHE_RELEASE must still precede COORD_COMPLETE on timeout');
 
         print('[INV_S.2][PASS] timeout path: '
             'steps=${result.log.join(" → ")} cacheSize=${result.finalCacheSize}');
       });
 
-      test('S.3: cancellation path — COORD_COMPLETE still last, cacheSize=0', () {
+      test('S.3: cancellation path — COORD_COMPLETE still last, cacheSize=0',
+          () {
         final result = runPipeline(simulateCancellation: true);
 
         expect(result.log.last, equals(kCoordComplete),
-            reason: 'S.3: COORD_COMPLETE must be last even on cancellation path');
+            reason:
+                'S.3: COORD_COMPLETE must be last even on cancellation path');
         expect(result.finalCacheSize, equals(0),
-            reason: 'S.3: cacheSize must be 0 at COORD_COMPLETE on cancellation');
+            reason:
+                'S.3: cacheSize must be 0 at COORD_COMPLETE on cancellation');
 
         print('[INV_S.3][PASS] cancellation path: '
             'steps=${result.log.join(" → ")} cacheSize=${result.finalCacheSize}');
       });
 
-      test('S.4: COORD_COMPLETE index must always equal max index in execution log', () {
+      test(
+          'S.4: COORD_COMPLETE index must always equal max index in execution log',
+          () {
         for (final scenario in ['normal', 'timeout', 'cancel']) {
           final result = runPipeline(
             simulateTimeout: scenario == 'timeout',
@@ -3559,11 +3854,13 @@ void main() {
           final coordIdx = result.log.indexOf(kCoordComplete);
 
           expect(coordIdx, equals(maxIdx),
-              reason: 'S.4 [$scenario]: COORD_COMPLETE index=$coordIdx must equal maxIdx=$maxIdx');
+              reason:
+                  'S.4 [$scenario]: COORD_COMPLETE index=$coordIdx must equal maxIdx=$maxIdx');
           expect(result.finalCacheSize, equals(0),
               reason: 'S.4 [$scenario]: cacheSize must be 0 at terminal point');
         }
-        print('[INV_S.4][PASS] COORD_COMPLETE is unconditional terminal across all scenarios');
+        print(
+            '[INV_S.4][PASS] COORD_COMPLETE is unconditional terminal across all scenarios');
       });
 
       test('S.5: no step may be inserted after COORD_COMPLETE', () {
@@ -3589,7 +3886,8 @@ void main() {
         expect(postCompleteSteps, isEmpty,
             reason: 'S.5: no steps may exist after COORD_COMPLETE in the log');
         expect(cacheSize, equals(0),
-            reason: 'S.5: cacheSize=0 at COORD_COMPLETE confirms CACHE_RELEASE fired first');
+            reason:
+                'S.5: cacheSize=0 at COORD_COMPLETE confirms CACHE_RELEASE fired first');
 
         print('[INV_S.5][PASS] no post-COORD_COMPLETE steps: '
             'postSteps=${postCompleteSteps.length} cacheSize=$cacheSize');
@@ -3602,29 +3900,33 @@ void main() {
         log.add(kExtToolGate);
         log.add(kCacheRelease);
 
-        expect(log.indexOf(kExtToolGate),
-            lessThan(log.indexOf(kCacheRelease)),
-            reason: 'S.6: EXT_TOOL_GATE must precede CACHE_RELEASE in execution order');
+        expect(log.indexOf(kExtToolGate), lessThan(log.indexOf(kCacheRelease)),
+            reason:
+                'S.6: EXT_TOOL_GATE must precede CACHE_RELEASE in execution order');
 
         print('[INV_S.6][PASS] EXT_TOOL_GATE → CACHE_RELEASE order verified');
       });
 
-      test('S.7: dual-ID correlation — parentRequestId owns completeAiRequest, '
+      test(
+          'S.7: dual-ID correlation — parentRequestId owns completeAiRequest, '
           'providerRequestId scoped to provider transport', () {
         // Models the MICRO-BUILD 462E-A.5.3.6 log contract:
         // [AI_PIPELINE_RESOLVER] parentRequestId=X providerRequestId=Y
         // All completeAiRequest calls must use parentRequestId, not providerRequestId.
         final log = <String>[];
-        const parentReqId   = 'req_1000000000000';
+        const parentReqId = 'req_1000000000000';
         const providerReqId = 'req_1000000000001';
 
         // Log emission at start of free-stream scope.
-        log.add('[AI_PIPELINE_RESOLVER] parentRequestId=$parentReqId providerRequestId=$providerReqId');
+        log.add(
+            '[AI_PIPELINE_RESOLVER] parentRequestId=$parentReqId providerRequestId=$providerReqId');
 
         // Simulate correct terminal execution.
         void releaseCache(String requestId) {
-          log.add('[EXT_TOOL_CACHE][RELEASE] parentRequestId=$requestId cacheSize=0');
+          log.add(
+              '[EXT_TOOL_CACHE][RELEASE] parentRequestId=$requestId cacheSize=0');
         }
+
         void completeAiRequest(String requestId) {
           log.add('[RESUME_COORDINATOR] completed ai_request id=$requestId');
         }
@@ -3633,11 +3935,13 @@ void main() {
         completeAiRequest(parentReqId);
 
         // Verify parentRequestId is used for all terminal ops, not providerRequestId.
-        final releaseLog  = log.firstWhere((l) => l.contains('RELEASE'));
-        final completeLog = log.lastWhere((l) => l.contains('RESUME_COORDINATOR'));
+        final releaseLog = log.firstWhere((l) => l.contains('RELEASE'));
+        final completeLog =
+            log.lastWhere((l) => l.contains('RESUME_COORDINATOR'));
 
         expect(releaseLog.contains(parentReqId), isTrue,
-            reason: 'S.7: CACHE_RELEASE must use parentRequestId, not providerRequestId');
+            reason:
+                'S.7: CACHE_RELEASE must use parentRequestId, not providerRequestId');
         expect(completeLog.contains(parentReqId), isTrue,
             reason: 'S.7: completeAiRequest must use parentRequestId');
         expect(releaseLog.contains(providerReqId), isFalse,
@@ -3647,13 +3951,13 @@ void main() {
             'parentReqId=$parentReqId providerReqId=$providerReqId → terminal ops use parent');
       });
 
-      test('S.8: typed UI route — _FsAuthDenied never emits confirmed_new_user', () {
+      test('S.8: typed UI route — _FsAuthDenied never emits confirmed_new_user',
+          () {
         // Invariant Q (UI Defacement Protection):
         // When the repository returns _FsAuthDenied into the active widget,
         // the layout must trap to degraded_wait with zero confirmed_new_user emissions.
         final List<String> stdout = [];
         bool lastLoadWasEmpty = true; // initial state
-        String? lastLoadedUid;
 
         void applyTypedResult({
           required String resultType,
@@ -3662,20 +3966,20 @@ void main() {
           switch (resultType) {
             case '_FsSuccess':
               lastLoadWasEmpty = false;
-              lastLoadedUid    = uid;
+
               stdout.add('mount_timeline uid=$uid');
             case '_FsEmpty':
               lastLoadWasEmpty = false;
-              lastLoadedUid    = uid;
+
               stdout.add('confirmed_new_user uid=$uid'); // ONLY here
             case '_FsAuthDenied':
               // degraded_wait: no state mutations, no confirmed_new_user
-              lastLoadedUid    = uid;
+
               lastLoadWasEmpty = true; // retry window stays open
-              stdout.add('[UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait');
+              stdout.add(
+                  '[UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait');
             case '_FsOffline':
             case '_FsFailure':
-              lastLoadedUid    = uid;
               lastLoadWasEmpty = true;
             default:
               break;
@@ -3685,26 +3989,31 @@ void main() {
         // Simulate _FsAuthDenied arriving at widget.
         applyTypedResult(resultType: '_FsAuthDenied', uid: 'user_abc');
 
-        final confirmedNewUserLines = stdout
-            .where((l) => l.contains('confirmed_new_user'))
-            .toList();
+        final confirmedNewUserLines =
+            stdout.where((l) => l.contains('confirmed_new_user')).toList();
 
         expect(confirmedNewUserLines, isEmpty,
             reason: 'S.8: _FsAuthDenied must NEVER emit confirmed_new_user');
         expect(lastLoadWasEmpty, isTrue,
-            reason: 'S.8: _FsAuthDenied must keep retry window open (_lastLoadWasEmpty=true)');
+            reason:
+                'S.8: _FsAuthDenied must keep retry window open (_lastLoadWasEmpty=true)');
         expect(stdout.any((l) => l.contains('degraded_wait')), isTrue,
-            reason: 'S.8: _FsAuthDenied must log auth_boundary_active: degraded_wait');
+            reason:
+                'S.8: _FsAuthDenied must log auth_boundary_active: degraded_wait');
 
         // Also verify _FsEmpty is the ONLY path that emits confirmed_new_user.
         applyTypedResult(resultType: '_FsEmpty', uid: 'user_xyz');
-        final newUserLines = stdout.where((l) => l.contains('confirmed_new_user')).toList();
+        final newUserLines =
+            stdout.where((l) => l.contains('confirmed_new_user')).toList();
         expect(newUserLines.length, equals(1),
-            reason: 'S.8: confirmed_new_user must be emitted exactly once, only via _FsEmpty');
+            reason:
+                'S.8: confirmed_new_user must be emitted exactly once, only via _FsEmpty');
         expect(lastLoadWasEmpty, isFalse,
-            reason: 'S.8: _FsEmpty must set _lastLoadWasEmpty=false (lock uid guard)');
+            reason:
+                'S.8: _FsEmpty must set _lastLoadWasEmpty=false (lock uid guard)');
 
-        print('[INV_S.8][PASS] _FsAuthDenied→degraded_wait, _FsEmpty→confirmed_new_user only: '
+        print(
+            '[INV_S.8][PASS] _FsAuthDenied→degraded_wait, _FsEmpty→confirmed_new_user only: '
             'newUserCount=${newUserLines.length}');
       });
     });
@@ -3724,47 +4033,59 @@ void main() {
     //   T.7: tryAcquireOwnership is non-reentrant across all source labels.
     //   T.8: transaction isTerminal only after markCoordinatorCompleted().
     // ─────────────────────────────────────────────────────────────────────────
-    group('Invariant T: AiFinalizationTransaction — per-request atomic state machine', () {
+    group(
+        'Invariant T: AiFinalizationTransaction — per-request atomic state machine',
+        () {
       // Helper: simulate AiFinalizationTransaction from production code.
       ({
         bool Function(String source) tryAcquireOwnership,
         bool Function() isTerminal,
         void Function() markCoordinatorCompleted,
         void Function(String sessionId) emitPersistTelemetry,
-        bool Function({required String event, required String providerReqId}) dropIfTerminal,
+        bool Function(
+            {required String event,
+            required String providerReqId}) dropIfTerminal,
         List<String> telemetry,
-      })
-      makeTransaction({required String parentId, required String providerId}) {
-        bool _ownershipAcquired    = false;
+      }) makeTransaction(
+          {required String parentId, required String providerId}) {
+        bool _ownershipAcquired = false;
         bool _coordinatorCompleted = false;
         final telemetry = <String>[];
 
         return (
           tryAcquireOwnership: (String source) {
             if (_ownershipAcquired) {
-              telemetry.add('[AI_TERMINAL_OWNER][REJECTED] parentRequestId=$parentId source=$source reason=ownership_already_acquired');
+              telemetry.add(
+                  '[AI_TERMINAL_OWNER][REJECTED] parentRequestId=$parentId source=$source reason=ownership_already_acquired');
               return false;
             }
             _ownershipAcquired = true;
-            telemetry.add('[AI_TERMINAL_OWNER][ACQUIRED] parentRequestId=$parentId source=$source');
+            telemetry.add(
+                '[AI_TERMINAL_OWNER][ACQUIRED] parentRequestId=$parentId source=$source');
             return true;
           },
           isTerminal: () => _coordinatorCompleted,
-          markCoordinatorCompleted: () { _coordinatorCompleted = true; },
+          markCoordinatorCompleted: () {
+            _coordinatorCompleted = true;
+          },
           emitPersistTelemetry: (String sessionId) {
             final dedupKey = '$parentId:assistant_final';
-            telemetry.add('[SESSION_PERSIST] parentRequestId=$parentId sessionId=$sessionId phase=assistant_final dedupKey=$dedupKey');
+            telemetry.add(
+                '[SESSION_PERSIST] parentRequestId=$parentId sessionId=$sessionId phase=assistant_final dedupKey=$dedupKey');
           },
-          dropIfTerminal: ({required String event, required String providerReqId}) {
+          dropIfTerminal: (
+              {required String event, required String providerReqId}) {
             if (!_coordinatorCompleted) return false;
-            telemetry.add('[AI_LATE_EVENT_DROPPED] parentRequestId=$parentId providerRequestId=$providerReqId event=$event terminalState=completed');
+            telemetry.add(
+                '[AI_LATE_EVENT_DROPPED] parentRequestId=$parentId providerRequestId=$providerReqId event=$event terminalState=completed');
             return true;
           },
           telemetry: telemetry,
         );
       }
 
-      test('T.1: racing onDone vs Timeout — exactly ONE caller wins ownership', () async {
+      test('T.1: racing onDone vs Timeout — exactly ONE caller wins ownership',
+          () async {
         final txn = makeTransaction(parentId: 'req_A', providerId: 'req_A1');
         final winners = <String>[];
 
@@ -3776,21 +4097,25 @@ void main() {
         }
 
         await Future.wait([
-          simulatePath('stream_onDone',       10),
+          simulatePath('stream_onDone', 10),
           simulatePath('global_timeout_timer', 10),
         ]);
 
         expect(winners.length, equals(1),
             reason: 'T.1: exactly ONE path must win terminal ownership');
         expect(txn.isTerminal(), isFalse,
-            reason: 'T.1: isTerminal is false until markCoordinatorCompleted()');
+            reason:
+                'T.1: isTerminal is false until markCoordinatorCompleted()');
 
         txn.markCoordinatorCompleted();
         expect(txn.isTerminal(), isTrue,
-            reason: 'T.1: isTerminal must be true after markCoordinatorCompleted()');
+            reason:
+                'T.1: isTerminal must be true after markCoordinatorCompleted()');
 
-        final acquiredLogs = txn.telemetry.where((l) => l.contains('ACQUIRED')).toList();
-        final rejectedLogs = txn.telemetry.where((l) => l.contains('REJECTED')).toList();
+        final acquiredLogs =
+            txn.telemetry.where((l) => l.contains('ACQUIRED')).toList();
+        final rejectedLogs =
+            txn.telemetry.where((l) => l.contains('REJECTED')).toList();
         expect(acquiredLogs.length, equals(1),
             reason: 'T.1: exactly one ACQUIRED telemetry line');
         expect(rejectedLogs.length, equals(1),
@@ -3800,7 +4125,9 @@ void main() {
             'acquired=${acquiredLogs.length} rejected=${rejectedLogs.length}');
       });
 
-      test('T.2: two independent request transactions — completing A does not affect B', () {
+      test(
+          'T.2: two independent request transactions — completing A does not affect B',
+          () {
         final txnA = makeTransaction(parentId: 'req_A', providerId: 'req_A1');
         final txnB = makeTransaction(parentId: 'req_B', providerId: 'req_B1');
 
@@ -3809,10 +4136,13 @@ void main() {
 
         final bWon = txnB.tryAcquireOwnership('chunk_isDone');
 
-        expect(aWon, isTrue,  reason: 'T.2: Request A must win ownership');
-        expect(bWon, isTrue,  reason: 'T.2: Request B must win ownership independently');
-        expect(txnA.isTerminal(), isTrue,  reason: 'T.2: Request A must be terminal');
-        expect(txnB.isTerminal(), isFalse, reason: 'T.2: Request B must NOT be terminal yet');
+        expect(aWon, isTrue, reason: 'T.2: Request A must win ownership');
+        expect(bWon, isTrue,
+            reason: 'T.2: Request B must win ownership independently');
+        expect(txnA.isTerminal(), isTrue,
+            reason: 'T.2: Request A must be terminal');
+        expect(txnB.isTerminal(), isFalse,
+            reason: 'T.2: Request B must NOT be terminal yet');
 
         final aSecond = txnA.tryAcquireOwnership('late_timer');
         expect(aSecond, isFalse,
@@ -3832,7 +4162,9 @@ void main() {
             'A.terminal=${txnA.isTerminal()} B.terminal=${txnB.isTerminal()}');
       });
 
-      test('T.3: late chunks after coordinator completion are dropped with telemetry', () {
+      test(
+          'T.3: late chunks after coordinator completion are dropped with telemetry',
+          () {
         final txn = makeTransaction(parentId: 'req_C', providerId: 'req_C1');
         final droppedEvents = <String>[];
 
@@ -3840,24 +4172,32 @@ void main() {
         txn.markCoordinatorCompleted();
 
         for (final event in ['chunk_text', 'chunk_done', 'chunk_error']) {
-          final dropped = txn.dropIfTerminal(event: event, providerReqId: 'req_C1');
+          final dropped =
+              txn.dropIfTerminal(event: event, providerReqId: 'req_C1');
           if (dropped) droppedEvents.add(event);
         }
 
         expect(droppedEvents.length, equals(3),
             reason: 'T.3: all 3 late events must be dropped');
-        expect(droppedEvents, containsAll(['chunk_text', 'chunk_done', 'chunk_error']),
+        expect(droppedEvents,
+            containsAll(['chunk_text', 'chunk_done', 'chunk_error']),
             reason: 'T.3: every late event type must be dropped');
 
-        final lateLogs = txn.telemetry.where((l) => l.contains('AI_LATE_EVENT_DROPPED')).toList();
+        final lateLogs = txn.telemetry
+            .where((l) => l.contains('AI_LATE_EVENT_DROPPED'))
+            .toList();
         expect(lateLogs.length, equals(3),
-            reason: 'T.3: [AI_LATE_EVENT_DROPPED] must be emitted for each dropped event');
+            reason:
+                'T.3: [AI_LATE_EVENT_DROPPED] must be emitted for each dropped event');
 
-        print('[INV_T.3][PASS] late events dropped: count=${droppedEvents.length} '
+        print(
+            '[INV_T.3][PASS] late events dropped: count=${droppedEvents.length} '
             'lateLogs=${lateLogs.length}');
       });
 
-      test('T.4: [AI_TERMINAL_OWNER][REJECTED] telemetry fires on ownership contention', () {
+      test(
+          'T.4: [AI_TERMINAL_OWNER][REJECTED] telemetry fires on ownership contention',
+          () {
         final txn = makeTransaction(parentId: 'req_D', providerId: 'req_D1');
 
         txn.tryAcquireOwnership('chunk_isDone');
@@ -3865,16 +4205,20 @@ void main() {
         txn.tryAcquireOwnership('stream_onDone');
         txn.tryAcquireOwnership('retry_onError');
 
-        final rejectedLogs = txn.telemetry
-            .where((l) => l.contains('REJECTED'))
-            .toList();
+        final rejectedLogs =
+            txn.telemetry.where((l) => l.contains('REJECTED')).toList();
 
         expect(rejectedLogs.length, equals(3),
             reason: 'T.4: 3 contending callers must emit REJECTED telemetry');
-        expect(rejectedLogs.every((l) => l.contains('reason=ownership_already_acquired')), isTrue,
-            reason: 'T.4: all REJECTED logs must state ownership_already_acquired');
+        expect(
+            rejectedLogs
+                .every((l) => l.contains('reason=ownership_already_acquired')),
+            isTrue,
+            reason:
+                'T.4: all REJECTED logs must state ownership_already_acquired');
 
-        print('[INV_T.4][PASS] contention telemetry: rejectedCount=${rejectedLogs.length}');
+        print(
+            '[INV_T.4][PASS] contention telemetry: rejectedCount=${rejectedLogs.length}');
       });
 
       test('T.5: [SESSION_PERSIST] dedup key emitted with correct format', () {
@@ -3882,26 +4226,28 @@ void main() {
         txn.tryAcquireOwnership('chunk_isDone');
         txn.emitPersistTelemetry('req_E');
 
-        final persistLogs = txn.telemetry
-            .where((l) => l.contains('SESSION_PERSIST'))
-            .toList();
+        final persistLogs =
+            txn.telemetry.where((l) => l.contains('SESSION_PERSIST')).toList();
 
         expect(persistLogs.length, equals(1),
             reason: 'T.5: exactly one SESSION_PERSIST log');
-        expect(persistLogs.first.contains('dedupKey=req_E:assistant_final'), isTrue,
+        expect(persistLogs.first.contains('dedupKey=req_E:assistant_final'),
+            isTrue,
             reason: 'T.5: dedup key must be parentRequestId:assistant_final');
         expect(persistLogs.first.contains('phase=assistant_final'), isTrue,
             reason: 'T.5: phase must be assistant_final');
         expect(persistLogs.first.contains('messageRole=assistant'), isFalse,
-            reason: 'T.5: simplified test model; production emits messageRole=assistant');
+            reason:
+                'T.5: simplified test model; production emits messageRole=assistant');
 
         print('[INV_T.5][PASS] SESSION_PERSIST: ${persistLogs.first}');
       });
 
-      test('T.6: sealed ToolResolution variants branch without re-computation', () {
+      test('T.6: sealed ToolResolution variants branch without re-computation',
+          () {
         // Models immutable consumption of ToolResolution sealed variants.
         const notApplicable = ('ToolNotApplicable', 'intent_none');
-        const payloadReady  = ('ToolPayloadReady',  'drug_interaction');
+        const payloadReady = ('ToolPayloadReady', 'drug_interaction');
 
         final uiLog = <String>[];
         for (final entry in [notApplicable, payloadReady]) {
@@ -3915,7 +4261,8 @@ void main() {
         }
 
         expect(uiLog.length, equals(2),
-            reason: 'T.6: each resolution variant must produce exactly one UI action');
+            reason:
+                'T.6: each resolution variant must produce exactly one UI action');
         expect(uiLog.first, contains('no_tool_card'),
             reason: 'T.6: ToolNotApplicable must suppress tool card');
         expect(uiLog.last, contains('mount_tool_card'),
@@ -3924,7 +4271,9 @@ void main() {
         print('[INV_T.6][PASS] ToolResolution routing: ${uiLog.join(", ")}');
       });
 
-      test('T.7: tryAcquireOwnership is non-reentrant across all 9 source labels', () {
+      test(
+          'T.7: tryAcquireOwnership is non-reentrant across all 9 source labels',
+          () {
         final txn = makeTransaction(parentId: 'req_F', providerId: 'req_F1');
         const allSources = [
           'global_timeout_timer',
@@ -3947,13 +4296,15 @@ void main() {
         }
 
         expect(rejectedCount, equals(allSources.length - 1),
-            reason: 'T.7: all remaining ${allSources.length - 1} sources must be rejected');
+            reason:
+                'T.7: all remaining ${allSources.length - 1} sources must be rejected');
 
         print('[INV_T.7][PASS] non-reentrant gate: '
             'winner=${allSources.first} rejectedCount=$rejectedCount');
       });
 
-      test('T.8: isTerminal is false until markCoordinatorCompleted() fires', () {
+      test('T.8: isTerminal is false until markCoordinatorCompleted() fires',
+          () {
         final txn = makeTransaction(parentId: 'req_G', providerId: 'req_G1');
 
         expect(txn.isTerminal(), isFalse,
@@ -3963,7 +4314,8 @@ void main() {
             reason: 'T.8: false after ownership acquired');
         txn.emitPersistTelemetry('req_G');
         expect(txn.isTerminal(), isFalse,
-            reason: 'T.8: false after persistence — coordinator not yet called');
+            reason:
+                'T.8: false after persistence — coordinator not yet called');
         txn.markCoordinatorCompleted();
         expect(txn.isTerminal(), isTrue,
             reason: 'T.8: true ONLY after markCoordinatorCompleted()');

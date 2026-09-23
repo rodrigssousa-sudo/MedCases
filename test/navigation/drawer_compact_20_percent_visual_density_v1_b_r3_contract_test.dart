@@ -119,7 +119,7 @@ void main() {
       );
       final offline = slice(
         'class _OnOffToggle extends StatelessWidget',
-        'class _DrawerQuickAccess extends StatelessWidget',
+        'class _AboutAppSheet extends StatelessWidget',
       );
 
       for (final block in [theme, offline]) {

@@ -170,7 +170,7 @@ class _NotesScreenState extends State<NotesScreen> {
     final isEs = lang == 'es';
 
     final bg      = dark ? const Color(0xFF1A1D23) : const Color(0xFFF5F6F8);
-    final headerBg = dark ? const Color(0xFF2D3340) : const Color(0xFF0F1116);
+
     final searchBg = dark ? const Color(0xFF222222) : Colors.white;
     final searchBorder = dark ? const Color(0xFF374151) : const Color(0xFFE0E0E0);
     final textCol  = dark ? Colors.white : const Color(0xFF0F1116);

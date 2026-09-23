@@ -829,6 +829,9 @@ class OfflineCalculatorCacheService {
   }
 
   void dispose() {
+    _cancelRequested = true;
+    _syncSlotTimer?.cancel();
+    _syncSlotTimer = null;
     _controller.close();
   }
 }

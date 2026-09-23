@@ -1,3 +1,4 @@
+import 'guide_runtime_fixture.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -9,18 +10,7 @@ void main() {
     source = File('lib/screens/library_screen.dart').readAsStringSync();
   });
 
-  test('Guide count header is replaced by a zero-size widget', () {
-    final start = source.indexOf('class _GuidesTab');
-    final end = source.indexOf('\nclass ', start + 1);
-
-    expect(start, isNonNegative);
-    expect(end, greaterThan(start));
-
-    final guidesTab = source.substring(start, end);
-
-    expect(guidesTab, contains('MEDCASES_GUIDES_COUNT_HEADER_REMOVED_V1_B_R3'));
-    expect(guidesTab, contains('const SizedBox.shrink()'));
-  });
+  testCountHeader();
 
   test('Guide portal critical contracts remain intact', () {
     expect(source, contains('MEDCASES_GUIA_CLINICO_TRUE_LIQUID_GLASS_V1_B_R1'));

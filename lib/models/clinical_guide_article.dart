@@ -19,19 +19,19 @@ class ClinicalGuideBlock {
       text: _firstNonEmpty(json, const ['text', 'content', 'body']),
       items: rawItems is List
           ? rawItems
-                .map((item) => item?.toString().trim() ?? '')
-                .where((item) => item.isNotEmpty)
-                .toList(growable: false)
+              .map((item) => item?.toString().trim() ?? '')
+              .where((item) => item.isNotEmpty)
+              .toList(growable: false)
           : const <String>[],
     );
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'type': type,
-    if (title.isNotEmpty) 'title': title,
-    if (text.isNotEmpty) 'text': text,
-    if (items.isNotEmpty) 'items': items,
-  };
+        'type': type,
+        if (title.isNotEmpty) 'title': title,
+        if (text.isNotEmpty) 'text': text,
+        if (items.isNotEmpty) 'items': items,
+      };
 }
 
 class ClinicalGuideArticle {
@@ -39,6 +39,7 @@ class ClinicalGuideArticle {
     required this.id,
     required this.title,
     this.slug = '',
+    this.publicUrl = '',
     this.language = 'es',
     this.specialty = 'Geral',
     this.subtitle = '',
@@ -59,6 +60,7 @@ class ClinicalGuideArticle {
 
   final String id;
   final String slug;
+  final String publicUrl;
   final String language;
   final String specialty;
   final String title;
@@ -80,9 +82,8 @@ class ClinicalGuideArticle {
 
   bool get hasEditorialBody => bodyBlocks.isNotEmpty;
   ClinicalGuideArticle forLanguage(String requestedLanguage) {
-    final code = requestedLanguage.trim().toLowerCase().startsWith('es')
-        ? 'es'
-        : 'pt';
+    final code =
+        requestedLanguage.trim().toLowerCase().startsWith('es') ? 'es' : 'pt';
     final raw = localizations[code];
 
     Map<String, dynamic>? locale;
@@ -136,9 +137,13 @@ class ClinicalGuideArticle {
 
     final references = _stringList(json['references']);
     final rawPublished = json['isPublished'];
-    final status = _firstNonEmpty(json, const [
-      'status',
-    ], fallback: _asBool(rawPublished, fallback: true) ? 'published' : 'draft');
+    final status = _firstNonEmpty(
+        json,
+        const [
+          'status',
+        ],
+        fallback:
+            _asBool(rawPublished, fallback: true) ? 'published' : 'draft');
     final isPublished = _asBool(
       rawPublished,
       fallback: status.toLowerCase() == 'published',
@@ -157,14 +162,21 @@ class ClinicalGuideArticle {
     return ClinicalGuideArticle(
       id: _firstNonEmpty(json, const ['id'], fallback: documentId),
       slug: _firstNonEmpty(json, const ['slug']),
-      language: _firstNonEmpty(json, const [
-        'language',
-        'lang',
-      ], fallback: 'es'),
-      specialty: _firstNonEmpty(json, const [
-        'specialty',
-        'category',
-      ], fallback: 'Geral'),
+      publicUrl: _firstNonEmpty(json, const ['publicUrl']),
+      language: _firstNonEmpty(
+          json,
+          const [
+            'language',
+            'lang',
+          ],
+          fallback: 'es'),
+      specialty: _firstNonEmpty(
+          json,
+          const [
+            'specialty',
+            'category',
+          ],
+          fallback: 'Geral'),
       title: _firstNonEmpty(json, const ['title', 'name', 'titulo']),
       subtitle: _firstNonEmpty(json, const ['subtitle', 'subTitle']),
       heroImageUrl: _firstNonEmpty(json, const [
@@ -195,29 +207,29 @@ class ClinicalGuideArticle {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    if (id.isNotEmpty) 'id': id,
-    if (slug.isNotEmpty) 'slug': slug,
-    'language': language,
-    'specialty': specialty,
-    'title': title,
-    if (subtitle.isNotEmpty) 'subtitle': subtitle,
-    if (heroImageUrl.isNotEmpty) 'heroImageUrl': heroImageUrl,
-    if (summary.isNotEmpty) 'summary': summary,
-    if (bodyBlocks.isNotEmpty)
-      'bodyBlocks': bodyBlocks
-          .map((block) => block.toJson())
-          .toList(growable: false),
-    if (references.isNotEmpty) 'references': references,
-    if (pdfUrl.isNotEmpty) 'pdfUrl': pdfUrl,
-    if (authors.isNotEmpty) 'authors': authors,
-    if (year.isNotEmpty) 'year': year,
-    'status': status,
-    'isPublished': isPublished,
-    if (publishedAt != null) 'publishedAt': publishedAt!.toIso8601String(),
-    if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
-    'version': version,
-    if (localizations.isNotEmpty) 'localizations': localizations,
-  };
+        if (id.isNotEmpty) 'id': id,
+        if (slug.isNotEmpty) 'slug': slug,
+        if (publicUrl.isNotEmpty) 'publicUrl': publicUrl,
+        'language': language,
+        'specialty': specialty,
+        'title': title,
+        if (subtitle.isNotEmpty) 'subtitle': subtitle,
+        if (heroImageUrl.isNotEmpty) 'heroImageUrl': heroImageUrl,
+        if (summary.isNotEmpty) 'summary': summary,
+        if (bodyBlocks.isNotEmpty)
+          'bodyBlocks':
+              bodyBlocks.map((block) => block.toJson()).toList(growable: false),
+        if (references.isNotEmpty) 'references': references,
+        if (pdfUrl.isNotEmpty) 'pdfUrl': pdfUrl,
+        if (authors.isNotEmpty) 'authors': authors,
+        if (year.isNotEmpty) 'year': year,
+        'status': status,
+        'isPublished': isPublished,
+        if (publishedAt != null) 'publishedAt': publishedAt!.toIso8601String(),
+        if (updatedAt != null) 'updatedAt': updatedAt!.toIso8601String(),
+        'version': version,
+        if (localizations.isNotEmpty) 'localizations': localizations,
+      };
 }
 
 String _string(Object? value, {String fallback = ''}) {

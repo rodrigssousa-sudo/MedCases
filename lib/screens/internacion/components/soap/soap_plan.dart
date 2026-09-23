@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
 
-import '../../../../design_system/foundation/med_typography.dart';
+
 class SoapPlan extends StatefulWidget {
   final PlanData data;
   final ValueChanged<PlanData> onChanged;

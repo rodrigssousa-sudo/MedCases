@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +22,13 @@ String methodBlock(String source, String signature, String endMarker) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria PEWS premium layout hierarchy V1-B-R0', () {
@@ -85,7 +93,7 @@ void main() {
       expect(selector, contains('active ? FontWeight.w700 : FontWeight.w500'));
       expect(
         selector,
-        contains("const Color(0xFF10B981).withValues(alpha: 0.055)"),
+        contains("const Color(0xFF0D6B57).withValues(alpha: 0.055)"),
       );
       expect(selector, contains('borderRadius: BorderRadius.circular(8)'));
       expect(selector, isNot(contains('boxShadow')));
@@ -112,7 +120,7 @@ void main() {
         "const ['BIOMETRÍA', 'CRECIMIENTO', 'FUNCIÓN RENAL', 'PEWS']",
         "const ['BIOMETRIA', 'CRESCIMENTO', 'FUNÇÃO RENAL', 'PEWS']",
         'const SizedBox(height: 0),',
-        'padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)',
+        'padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)',
       ]) {
         expect(tools, contains(token), reason: token);
       }

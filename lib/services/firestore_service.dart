@@ -1,3 +1,4 @@
+import 'private_session_epoch.dart';
 // firestore_service.dart — dados por usuário no Firestore
 import 'dart:async';
 import 'dart:convert';
@@ -2046,6 +2047,8 @@ class FirestoreService {
   // Dual-check barrier: (1) null SDK user, (2) uid mismatch — both block dispatch.
   static Future<FirestoreLoadResult<List<ClinicalHistoryModel>>>
       loadHistoriesTyped(String uid) async {
+    final epoch = PrivateSessionEpoch.current;
+    bool owned() => epoch == PrivateSessionEpoch.current && FirebaseAuth.instance.currentUser?.uid == uid;
     final _fbUserT = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUserT == null) {
       debugPrint(
@@ -2088,7 +2091,8 @@ class FirestoreService {
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
-        if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
+        if (!owned()) return FirestoreLoadResult.authDenied();
+      if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
         final listCached = snap.docs
             .map(
               (d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())),
@@ -2106,7 +2110,8 @@ class FirestoreService {
         } catch (_) {
           return FirestoreLoadResult.offline();
         }
-        if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
+        if (!owned()) return FirestoreLoadResult.authDenied();
+      if (snap.docs.isEmpty) return FirestoreLoadResult.offline();
         final listCached = snap.docs
             .map(
               (d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())),
@@ -2116,6 +2121,7 @@ class FirestoreService {
         return FirestoreLoadResult.success(listCached);
       }
       // Server succeeded — authoritative empty is valid here.
+      if (!owned()) return FirestoreLoadResult.authDenied();
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       final list = snap.docs
           .map((d) => ClinicalHistoryModel.fromJson(sdkDocToSafeMap(d.data())))
@@ -2864,6 +2870,8 @@ class FirestoreService {
   /// valid cache entries exist. It never collapses to empty() silently.
   static Future<FirestoreLoadResult<List<Map<String, dynamic>>>>
       loadAiSessionsTyped(String uid) async {
+    final epoch = PrivateSessionEpoch.current;
+    bool owned() => epoch == PrivateSessionEpoch.current && FirebaseAuth.instance.currentUser?.uid == uid;
     final _fbUser = FirebaseAuth.instance.currentUser;
     if (!_isFirebaseReady || _fbUser == null) {
       debugPrint(
@@ -2902,6 +2910,7 @@ class FirestoreService {
         // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
+          if (!owned()) return FirestoreLoadResult.authDenied();
           final cached =
               snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           debugPrint(
@@ -2919,6 +2928,7 @@ class FirestoreService {
         // ALGEBRAIC RULE: server failed → 0 cache entries = offline(), not empty().
         try {
           snap = await query.get(const GetOptions(source: Source.cache));
+          if (!owned()) return FirestoreLoadResult.authDenied();
           final cached =
               snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList();
           debugPrint(
@@ -2932,6 +2942,7 @@ class FirestoreService {
           return FirestoreLoadResult.offline();
         }
       }
+      if (!owned()) return FirestoreLoadResult.authDenied();
       if (snap.docs.isEmpty) return FirestoreLoadResult.empty();
       return FirestoreLoadResult.success(
         snap.docs.map((d) => sdkDocToSafeMap(d.data())).toList(),

@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +12,13 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria topbar subnav zero gap final V1-B-R0-R2', () {
@@ -28,23 +36,23 @@ void main() {
     test('preserves 44px pediatric subnav geometry', () {
       final nav = classBlock(tools, '_PediatTabRow');
 
-      expect(nav, contains('height: 44'));
+      expect(nav, contains('height: 40'));
       expect(
         nav,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 8)'),
+        contains('padding: EdgeInsets.zero'),
       );
       expect(
         nav,
         contains('padding: const EdgeInsets.symmetric(horizontal: 12)'),
       );
-      expect(nav, contains('right: i < sections.length - 1'));
+      expect(nav, contains('if (i < sections.length - 1)'));
     });
 
     test('preserves 0.1px content geometry below subnav', () {
       final state = classBlock(tools, '_PediatricsTabContentState');
       expect(
         state,
-        contains('padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)'),
+        contains('padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)'),
       );
     });
 

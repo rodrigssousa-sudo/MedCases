@@ -95,15 +95,15 @@ Future<_PipelineResult> _runFinalizationPipeline({
         truncCheck.confidenceLevel == TruncationConfidence.high) {
       // ── STEP 4: Repair subsystem (AT MOST ONCE per requestId) ──────────
       final repairResult = await repairEngine.repair(
-        originalText:  rawText,
-        requestId:     requestId,
+        originalText: rawText,
+        requestId: requestId,
         isPlantaoMode: isPlantaoMode,
       );
 
       if (!repairResult.isValid) {
         // Catastrophic failure → AiSafeOutputException
         throw AiSafeOutputException(
-          message:   repairResult.failureReason ?? 'repair_failed',
+          message: repairResult.failureReason ?? 'repair_failed',
           requestId: requestId,
         );
       }
@@ -115,14 +115,15 @@ Future<_PipelineResult> _runFinalizationPipeline({
     if (reInspection.isTruncated &&
         reInspection.confidenceLevel == TruncationConfidence.high) {
       throw AiSafeOutputException(
-        message:   'reinspect_still_truncated: ${reInspection.violationReason}',
+        message: 'reinspect_still_truncated: ${reInspection.violationReason}',
         requestId: requestId,
       );
     }
 
     // ── STEP 6: Persistence — ONLY if barrier passed ───────────────────────
     if (barrierText.isNotEmpty) {
-      sink.save(barrierText); // Simulates _aiHistory.add() + SessionDedup.save()
+      sink.save(
+          barrierText); // Simulates _aiHistory.add() + SessionDedup.save()
     }
 
     // ── STEP 7: ResumeCoordinator + EXT_TOOL Card ─────────────────────────
@@ -141,7 +142,8 @@ Future<_PipelineResult> _runFinalizationPipeline({
     // ignore: avoid_print
     print('[TRUNCATION_CHECK] DROP_PAYLOAD — REPAIR CRITICAL FAILURE '
         'requestId=${safeError.requestId} reason=${safeError.message}');
-    coordinator.complete(requestId); // ResumeCoordinator.complete() always fires
+    coordinator
+        .complete(requestId); // ResumeCoordinator.complete() always fires
     // EXT_TOOL card is NOT rendered on DROP_PAYLOAD
     // (coordinator.renderExtToolCard() is NOT called here)
 
@@ -181,13 +183,15 @@ class _PipelineResult {
 
 void main() {
   group('Pipeline Integration — MICRO-BUILD 462E-A.5.1', () {
-
     // ── Scenario 1: Truncated response → inspector captures → repair once ───
     // → SessionDedup/aiHistory NOT called (no persistence before barrier)
     // ──────────────────────────────────────────────────────────────────────────
-    group('Scenario 1: Truncated response — repair runs ONCE, persistence blocked', () {
-
-      test('1a. Inspect captures high-confidence truncation (H3 mid-numeric cut)', () {
+    group(
+        'Scenario 1: Truncated response — repair runs ONCE, persistence blocked',
+        () {
+      test(
+          '1a. Inspect captures high-confidence truncation (H3 mid-numeric cut)',
+          () {
         // The exact Test C string from the mandate — "Velocidade: **55–7"
         const truncatedText = 'Velocidade: **55–7';
         final result = TruncationInspector.inspect(truncatedText);
@@ -198,21 +202,23 @@ void main() {
             reason: 'Confidence must be high for H3 hit');
       });
 
-      test('1b. Pipeline triggers repair EXACTLY ONCE for truncated input', () async {
+      test('1b. Pipeline triggers repair EXACTLY ONCE for truncated input',
+          () async {
         const truncatedText = 'Velocidade: **55–7'; // H3 high-confidence
-        const repairedText  = 'Velocidade: **55–75 mL/h**. Titular conforme resposta clínica.';
+        const repairedText =
+            'Velocidade: **55–75 mL/h**. Titular conforme resposta clínica.';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
-        final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.repaired(repairedText));
+        final repairEngine = _MockRepairEngine(
+            (_) => TruncationRepairResult.repaired(repairedText));
 
         final result = await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario1',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario1',
         );
 
         expect(result.repairCallCount, equals(1),
@@ -221,29 +227,33 @@ void main() {
         expect(result.droppedPayload, isFalse);
       });
 
-      test('1c. Persistence (sink.save) is NOT called on raw truncated text — only after repair', () async {
+      test(
+          '1c. Persistence (sink.save) is NOT called on raw truncated text — only after repair',
+          () async {
         const truncatedText = 'Dose máxima: **55–'; // H2 high-confidence
-        const repairedText  = 'Dose máxima: **55–80 mg/kg/dia**. Ajustar conforme função renal.';
+        const repairedText =
+            'Dose máxima: **55–80 mg/kg/dia**. Ajustar conforme função renal.';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
         // Repair returns valid result — persistence happens AFTER repair
-        final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.repaired(repairedText));
+        final repairEngine = _MockRepairEngine(
+            (_) => TruncationRepairResult.repaired(repairedText));
 
         await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario1c',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario1c',
         );
 
         // The raw truncated text must NOT be the persisted text
         expect(sink.savedTexts, isNotEmpty,
             reason: 'Repaired text should be persisted');
         expect(sink.savedTexts.first, equals(repairedText),
-            reason: 'Only the repaired text should be saved, never the raw truncated text');
+            reason:
+                'Only the repaired text should be saved, never the raw truncated text');
         expect(sink.savedTexts.first, isNot(equals(truncatedText)),
             reason: 'Raw truncated text must never reach persistence');
       });
@@ -251,72 +261,82 @@ void main() {
 
     // ── Scenario 2: Successfully repaired → exactly ONE persistence tx ───────
     // ──────────────────────────────────────────────────────────────────────────
-    group('Scenario 2: Successfully repaired text → exactly ONE persistence transaction', () {
-
-      test('2a. Single persistence call for successfully repaired response', () async {
+    group(
+        'Scenario 2: Successfully repaired text → exactly ONE persistence transaction',
+        () {
+      test('2a. Single persistence call for successfully repaired response',
+          () async {
         const truncatedText = 'Infusão de noradrenalina: iniciar com **0,1–';
-        const repairedText  = 'Infusão de noradrenalina: iniciar com **0,1–0,3 mcg/kg/min**. '
+        const repairedText =
+            'Infusão de noradrenalina: iniciar com **0,1–0,3 mcg/kg/min**. '
             'Titular de 0,05 em 0,05 conforme PAM alvo ≥65 mmHg.';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
-        final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.repaired(repairedText));
+        final repairEngine = _MockRepairEngine(
+            (_) => TruncationRepairResult.repaired(repairedText));
 
         await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario2',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario2',
         );
 
         expect(sink.saveCount, equals(1),
-            reason: 'Exactly ONE persistence transaction must occur for repaired text');
+            reason:
+                'Exactly ONE persistence transaction must occur for repaired text');
         expect(sink.savedTexts.first, equals(repairedText),
-            reason: 'The persisted text must be the repaired (merged + deduped) version');
+            reason:
+                'The persisted text must be the repaired (merged + deduped) version');
       });
 
-      test('2b. Clean response (no truncation) → exactly ONE persistence call, zero repair', () async {
+      test(
+          '2b. Clean response (no truncation) → exactly ONE persistence call, zero repair',
+          () async {
         const cleanText = 'Amoxicilina: 500 mg 8/8h VO por 7 dias. '
             'Ajustar para 250 mg 8/8h em ClCr < 30 mL/min.';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
         // Repair engine should NOT be called for clean text
-        final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.clean(cleanText));
+        final repairEngine =
+            _MockRepairEngine((_) => TruncationRepairResult.clean(cleanText));
 
         await _runFinalizationPipeline(
-          rawText:      cleanText,
+          rawText: cleanText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario2b',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario2b',
         );
 
         expect(sink.saveCount, equals(1),
             reason: 'One persistence call for clean response');
         expect(repairEngine.callCount, equals(0),
-            reason: 'Repair engine must NOT be called for clean (non-truncated) response');
+            reason:
+                'Repair engine must NOT be called for clean (non-truncated) response');
       });
 
-      test('2c. ResumeCoordinator is signaled AFTER persistence (correct ordering)', () async {
+      test(
+          '2c. ResumeCoordinator is signaled AFTER persistence (correct ordering)',
+          () async {
         const truncatedText = 'Vancomicina: **15–';
-        const repairedText  = 'Vancomicina: **15–20 mg/kg** IV 12/12h. '
+        const repairedText = 'Vancomicina: **15–20 mg/kg** IV 12/12h. '
             'Monitorar vale sérico alvo 15-20 mg/L.';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
-        final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.repaired(repairedText));
+        final repairEngine = _MockRepairEngine(
+            (_) => TruncationRepairResult.repaired(repairedText));
 
         final result = await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario2c',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario2c',
         );
 
         expect(result.completed, isTrue,
@@ -332,12 +352,13 @@ void main() {
     // → AiFailed(retryable: false) → no EXT_TOOL_PAYLOAD_READY
     // → ResumeCoordinator signaled
     // ──────────────────────────────────────────────────────────────────────────
-    group('Scenario 3: Catastrophic repair failure → DROP_PAYLOAD terminal sequence', () {
-
+    group(
+        'Scenario 3: Catastrophic repair failure → DROP_PAYLOAD terminal sequence',
+        () {
       test('3a. AiSafeOutputException is thrown when repair fails', () async {
         const truncatedText = 'Velocidade: **55–7'; // H3 high-confidence
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
         // Repair engine returns catastrophic failure
         final repairEngine = _MockRepairEngine((_) =>
@@ -345,15 +366,16 @@ void main() {
                 'repair_proxy_failed: timeout'));
 
         final result = await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario3',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario3',
         );
 
         expect(result.droppedPayload, isTrue,
-            reason: 'DROP_PAYLOAD must be triggered on catastrophic repair failure');
+            reason:
+                'DROP_PAYLOAD must be triggered on catastrophic repair failure');
         expect(result.completed, isFalse,
             reason: 'Pipeline must NOT complete successfully on DROP_PAYLOAD');
       });
@@ -361,64 +383,70 @@ void main() {
       test('3b. No EXT_TOOL_PAYLOAD_READY on DROP_PAYLOAD', () async {
         const truncatedText = 'Noradrenalina: titular de **0,05–';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
         final repairEngine = _MockRepairEngine((_) =>
             TruncationRepairResult.catastrophicFailure(
                 'reinspect_still_truncated: mid_numeric_or_unit_cut'));
 
         await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario3b',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario3b',
         );
 
         expect(coordinator.extToolCardRendered, isFalse,
             reason: 'EXT_TOOL card must NOT be rendered on DROP_PAYLOAD');
       });
 
-      test('3c. ResumeCoordinator is signaled even on DROP_PAYLOAD (no hang)', () async {
+      test('3c. ResumeCoordinator is signaled even on DROP_PAYLOAD (no hang)',
+          () async {
         const truncatedText = 'Dopamina bomba de infusão: iniciar **5–';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
         final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.catastrophicFailure('repair_exception: network_timeout'));
+            TruncationRepairResult.catastrophicFailure(
+                'repair_exception: network_timeout'));
 
         final result = await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario3c',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario3c',
         );
 
         expect(coordinator.completed, isTrue,
-            reason: 'ResumeCoordinator.complete() MUST be called even on DROP_PAYLOAD '
+            reason:
+                'ResumeCoordinator.complete() MUST be called even on DROP_PAYLOAD '
                 '— prevents infinite loading state / pipeline hang');
         expect(result.droppedPayload, isTrue);
       });
 
-      test('3d. Persistence sink NOT called on DROP_PAYLOAD (history clean)', () async {
+      test('3d. Persistence sink NOT called on DROP_PAYLOAD (history clean)',
+          () async {
         const truncatedText = 'Peso: IMC **32–'; // mid-numeric H3
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
         final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.catastrophicFailure('repair_proxy_failed: empty_response'));
+            TruncationRepairResult.catastrophicFailure(
+                'repair_proxy_failed: empty_response'));
 
         await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario3d',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario3d',
         );
 
         expect(sink.saveCount, equals(0),
-            reason: 'Raw incomplete response must NEVER be committed to history '
+            reason:
+                'Raw incomplete response must NEVER be committed to history '
                 'on catastrophic failure');
       });
 
@@ -426,17 +454,17 @@ void main() {
         const truncatedText = 'Velocidade: **55–7';
         const expectedReason = 'repair_proxy_failed: http_503';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
-        final repairEngine = _MockRepairEngine((_) =>
-            TruncationRepairResult.catastrophicFailure(expectedReason));
+        final repairEngine = _MockRepairEngine(
+            (_) => TruncationRepairResult.catastrophicFailure(expectedReason));
 
         final result = await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_scenario3e',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_scenario3e',
         );
 
         expect(result.dropReason, equals(expectedReason),
@@ -446,7 +474,6 @@ void main() {
 
     // ── ExternalToolDecision Cache: LinkedHashMap + releaseDecision ───────────
     group('ExternalToolDecision Cache — LinkedHashMap lifecycle', () {
-
       setUp(() {
         // Clear cache before each test for isolation
         ExternalToolLinkEngine.clearDecisionCache();
@@ -462,16 +489,19 @@ void main() {
           'Qual é a fisiopatologia do choque séptico?', // no tool intent
         );
         expect(decision, isNull,
-            reason: 'Input without explicit tool intent must return null (embargo total)');
+            reason:
+                'Input without explicit tool intent must return null (embargo total)');
       });
 
-      test('4b. resolveDecision returns non-null for explicit infusion intent', () {
+      test('4b. resolveDecision returns non-null for explicit infusion intent',
+          () {
         final decision = ExternalToolLinkEngine.resolveDecision(
           'req_cache_2',
           'bomba de infusão de noradrenalina',
         );
         expect(decision, isNotNull,
-            reason: 'Infusion intent must return non-null ExternalToolDecision');
+            reason:
+                'Infusion intent must return non-null ExternalToolDecision');
         expect(decision!.intent, ExternalToolIntent.infusion);
         expect(decision.toRouterTask(), equals('infusao_ev'));
       });
@@ -479,30 +509,32 @@ void main() {
       test('4c. toRouterTask maps each intent to correct task label', () {
         final intentToTask = {
           ExternalToolIntent.drugInteraction: 'interacao_medicamentosa',
-          ExternalToolIntent.dilution:        'diluicao_ev',
-          ExternalToolIntent.infusion:        'infusao_ev',
-          ExternalToolIntent.dosage:          'dose_farmaco',
+          ExternalToolIntent.dilution: 'diluicao_ev',
+          ExternalToolIntent.infusion: 'infusao_ev',
+          ExternalToolIntent.dosage: 'dose_farmaco',
           ExternalToolIntent.drugInformation: 'informacao_farmaco',
-          ExternalToolIntent.none:            '',
+          ExternalToolIntent.none: '',
         };
         for (final entry in intentToTask.entries) {
           final decision = ExternalToolDecision(
-            requestId:   'req_task_test',
-            intent:      entry.key,
+            requestId: 'req_task_test',
+            intent: entry.key,
             primaryDrug: 'noradrenalina',
-            targetTab:   'farmacos',
+            targetTab: 'farmacos',
           );
           expect(decision.toRouterTask(), equals(entry.value),
               reason: '${entry.key.name} must map to "${entry.value}"');
         }
       });
 
-      test('4d. releaseDecision removes specific entry, clearDecisionCache removes all', () {
+      test(
+          '4d. releaseDecision removes specific entry, clearDecisionCache removes all',
+          () {
         // Add two decisions
         ExternalToolLinkEngine.resolveDecision(
-          'req_release_1', 'bomba de infusão de noradrenalina');
+            'req_release_1', 'bomba de infusão de noradrenalina');
         ExternalToolLinkEngine.resolveDecision(
-          'req_release_2', 'diluição de vancomicina');
+            'req_release_2', 'diluição de vancomicina');
 
         // Release one specific entry
         ExternalToolLinkEngine.releaseDecision('req_release_1_infusion');
@@ -511,14 +543,14 @@ void main() {
         ExternalToolLinkEngine.clearDecisionCache();
         // After clear, resolveDecision with same requestId must re-compute
         final recomputed = ExternalToolLinkEngine.resolveDecision(
-          'req_release_2', 'diluição de vancomicina');
+            'req_release_2', 'diluição de vancomicina');
         // Should re-return the decision (dilution intent)
         expect(recomputed, isNotNull);
       });
 
       test('4e. AiSafeOutputException carries requestId and message', () {
         const exception = AiSafeOutputException(
-          message:   'repair_proxy_failed: timeout',
+          message: 'repair_proxy_failed: timeout',
           requestId: 'req_exception_test',
         );
         expect(exception.requestId, equals('req_exception_test'));
@@ -549,13 +581,15 @@ void main() {
     // ── Group 5: MICRO-BUILD 462E-A.5.2 — Canonical Task Enforcement & Terminal Order ──
     group('MICRO-BUILD 462E-A.5.2 Canonical Task Enforcement & Sequencing', () {
       // ── 5a: infusion prompt → canonicalDecision.intent == infusion → toRouterTask() == "infusao_ev" ──
-      test('5a. "Como titular noradrenalina em bomba de infusão?" '
+      test(
+          '5a. "Como titular noradrenalina em bomba de infusão?" '
           '→ intent=infusion → toRouterTask()=infusao_ev', () {
         ExternalToolLinkEngine.clearDecisionCache();
         const prompt = 'Como titular noradrenalina em bomba de infusão?';
         const requestId = 'req_5a_infusion';
 
-        final decision = ExternalToolLinkEngine.resolveDecision(requestId, prompt);
+        final decision =
+            ExternalToolLinkEngine.resolveDecision(requestId, prompt);
 
         // Must detect infusion intent
         expect(decision, isNotNull,
@@ -566,14 +600,17 @@ void main() {
         // toRouterTask() must return "infusao_ev" — not "diluicao" or any other
         final routerTask = decision.toRouterTask();
         expect(routerTask, equals('infusao_ev'),
-            reason: 'BUILD306 and AI_ROUTER must consume "infusao_ev" verbatim; '
+            reason:
+                'BUILD306 and AI_ROUTER must consume "infusao_ev" verbatim; '
                 'regex-derived "diluicao" is strictly prohibited when intent is declared');
 
         ExternalToolLinkEngine.clearDecisionCache();
       });
 
       // ── 5b: dilution prompt → toRouterTask() == "diluicao_ev" ──
-      test('5b. dilution prompt → toRouterTask()=diluicao_ev (authority boundary)', () {
+      test(
+          '5b. dilution prompt → toRouterTask()=diluicao_ev (authority boundary)',
+          () {
         ExternalToolLinkEngine.clearDecisionCache();
         const requestId = 'req_5b_dilution';
         final decision = ExternalToolLinkEngine.resolveDecision(
@@ -585,7 +622,9 @@ void main() {
       });
 
       // ── 5c: interaction prompt → toRouterTask() == "interacao_medicamentosa" ──
-      test('5c. drug interaction prompt → toRouterTask()=interacao_medicamentosa', () {
+      test(
+          '5c. drug interaction prompt → toRouterTask()=interacao_medicamentosa',
+          () {
         ExternalToolLinkEngine.clearDecisionCache();
         const requestId = 'req_5c_interaction';
         final decision = ExternalToolLinkEngine.resolveDecision(
@@ -597,7 +636,8 @@ void main() {
       });
 
       // ── 5d: none intent → canonicalDecision is null → normal classifier path ──
-      test('5d. generic clinical prompt → intent=none → canonicalDecision=null '
+      test(
+          '5d. generic clinical prompt → intent=none → canonicalDecision=null '
           '→ normal classifier path', () {
         ExternalToolLinkEngine.clearDecisionCache();
         const requestId = 'req_5d_none';
@@ -606,13 +646,16 @@ void main() {
         // Generic clinical prompts return null (intent=none) → normal classifier path
         // toRouterTask() is NOT called; BUILD306 runs _detectIntent() normally
         expect(decision, isNull,
-            reason: 'generic prompt must yield null — no canonical override injected');
+            reason:
+                'generic prompt must yield null — no canonical override injected');
         ExternalToolLinkEngine.clearDecisionCache();
       });
 
       // ── 5e: Execution index tracking — TRUNCATION_CHECK < Persistence < UI < ResumeCoordinator ──
-      test('5e. Execution index tracking: '
-          'TRUNCATION_CHECK < Persistence < EXT_TOOL_PAYLOAD_READY < ResumeCoordinator.complete', () async {
+      test(
+          '5e. Execution index tracking: '
+          'TRUNCATION_CHECK < Persistence < EXT_TOOL_PAYLOAD_READY < ResumeCoordinator.complete',
+          () async {
         // Simulate the Rigid Transactional Termination Pyramid sequencing.
         // Uses integer index counters to assert strict ordering.
         final List<String> executionLog = [];
@@ -625,9 +668,7 @@ void main() {
         }) async {
           // Stage 1: TruncationInspector.inspect() — HARD BARRIER
           executionLog.add('TRUNCATION_CHECK');
-          final truncResult = TruncationInspector.inspect(rawText);
-
-          String barrierText = rawText;
+          TruncationInspector.inspect(rawText);
 
           // Stage 2 (conditional): Repair subsystem
           if (simulateTruncation) {
@@ -642,7 +683,6 @@ void main() {
                 resumeCoordinatorCompleted: true,
               );
             }
-            barrierText = '$rawText [repaired]';
           }
 
           // Stage 3: Persistence committed
@@ -674,30 +714,37 @@ void main() {
         final log = result.executionLog;
 
         // Assert strict ordering via index comparisons
-        final truncIdx     = log.indexOf('TRUNCATION_CHECK');
-        final persistIdx   = log.indexOf('PERSISTENCE');
-        final uiIdx        = log.indexOf('EXT_TOOL_PAYLOAD_READY');
-        final resumeIdx    = log.indexOf('RESUME_COORDINATOR_COMPLETE');
+        final truncIdx = log.indexOf('TRUNCATION_CHECK');
+        final persistIdx = log.indexOf('PERSISTENCE');
+        final uiIdx = log.indexOf('EXT_TOOL_PAYLOAD_READY');
+        final resumeIdx = log.indexOf('RESUME_COORDINATOR_COMPLETE');
 
-        expect(truncIdx,   greaterThanOrEqualTo(0), reason: 'TRUNCATION_CHECK must execute');
-        expect(persistIdx, greaterThanOrEqualTo(0), reason: 'PERSISTENCE must execute');
-        expect(uiIdx,      greaterThanOrEqualTo(0), reason: 'EXT_TOOL_PAYLOAD_READY must execute');
-        expect(resumeIdx,  greaterThanOrEqualTo(0), reason: 'RESUME_COORDINATOR_COMPLETE must execute');
+        expect(truncIdx, greaterThanOrEqualTo(0),
+            reason: 'TRUNCATION_CHECK must execute');
+        expect(persistIdx, greaterThanOrEqualTo(0),
+            reason: 'PERSISTENCE must execute');
+        expect(uiIdx, greaterThanOrEqualTo(0),
+            reason: 'EXT_TOOL_PAYLOAD_READY must execute');
+        expect(resumeIdx, greaterThanOrEqualTo(0),
+            reason: 'RESUME_COORDINATOR_COMPLETE must execute');
 
-        expect(truncIdx,   lessThan(persistIdx),
+        expect(truncIdx, lessThan(persistIdx),
             reason: 'TRUNCATION_CHECK must precede PERSISTENCE');
         expect(persistIdx, lessThan(uiIdx),
             reason: 'PERSISTENCE must precede EXT_TOOL_PAYLOAD_READY');
-        expect(uiIdx,      lessThan(resumeIdx),
-            reason: 'EXT_TOOL_PAYLOAD_READY must precede RESUME_COORDINATOR_COMPLETE — '
+        expect(uiIdx, lessThan(resumeIdx),
+            reason:
+                'EXT_TOOL_PAYLOAD_READY must precede RESUME_COORDINATOR_COMPLETE — '
                 'marking complete before UI render is prohibited');
         expect(result.resumeCoordinatorCompleted, isTrue);
         expect(result.persistenceCommitted, isTrue);
       });
 
       // ── 5f: DROP_PAYLOAD → ResumeCoordinator fires even on catastrophic failure ──
-      test('5f. catastrophic repair failure → DROP_PAYLOAD → '
-          'ResumeCoordinator.complete still fires (no orphan request)', () async {
+      test(
+          '5f. catastrophic repair failure → DROP_PAYLOAD → '
+          'ResumeCoordinator.complete still fires (no orphan request)',
+          () async {
         final List<String> log = [];
 
         Future<_PipelineStageResult> runWithCatastrophicFailure() async {
@@ -718,44 +765,51 @@ void main() {
         }
 
         final result = await runWithCatastrophicFailure();
-        final uiIdx    = result.executionLog.indexOf('UI_ERROR_EMITTED');
-        final resumeIdx = result.executionLog.indexOf('RESUME_COORDINATOR_COMPLETE');
+        final uiIdx = result.executionLog.indexOf('UI_ERROR_EMITTED');
+        final resumeIdx =
+            result.executionLog.indexOf('RESUME_COORDINATOR_COMPLETE');
 
         expect(result.droppedPayload, isTrue);
         expect(result.persistenceCommitted, isFalse,
             reason: 'No persistence on DROP_PAYLOAD');
         expect(result.resumeCoordinatorCompleted, isTrue,
-            reason: 'ResumeCoordinator must complete even on catastrophic failure');
+            reason:
+                'ResumeCoordinator must complete even on catastrophic failure');
         expect(uiIdx, lessThan(resumeIdx),
-            reason: 'UI error must be emitted before ResumeCoordinator.complete');
+            reason:
+                'UI error must be emitted before ResumeCoordinator.complete');
       });
     });
 
     // ── Group 6: MICRO-BUILD 462E-A.5.3.2 — Semantic Invariants & Repair Lifecycle ──
     group('Group 6: Semantic Invariants & Repair Lifecycle (462E-A.5.3.2)', () {
-
       setUp(() => ExternalToolLinkEngine.clearDecisionCache());
       tearDown(() => ExternalToolLinkEngine.clearDecisionCache());
 
       // ── 6a: infusion intent routing ──────────────────────────────────────────
-      test('6a. "Como titular noradrenalina em bomba de infusão?" '
+      test(
+          '6a. "Como titular noradrenalina em bomba de infusão?" '
           '→ intent=infusion → toRouterTask()=infusao_ev', () {
         const prompt = 'Como titular noradrenalina em bomba de infusão?';
-        final decision = ExternalToolLinkEngine.resolveDecision('req_6a', prompt);
+        final decision =
+            ExternalToolLinkEngine.resolveDecision('req_6a', prompt);
 
         expect(decision, isNotNull,
             reason: 'infusion prompt must yield a canonical decision');
         expect(decision!.intent, equals(ExternalToolIntent.infusion),
-            reason: '"titular" + "bomba de infusão" → ExternalToolIntent.infusion');
+            reason:
+                '"titular" + "bomba de infusão" → ExternalToolIntent.infusion');
         expect(decision.toRouterTask(), equals('infusao_ev'),
             reason: 'infusion intent must map to "infusao_ev"');
       });
 
       // ── 6b: dilution intent routing ──────────────────────────────────────────
-      test('6b. "Como diluir noradrenalina e preparar o volume final?" '
+      test(
+          '6b. "Como diluir noradrenalina e preparar o volume final?" '
           '→ intent=dilution → toRouterTask()=diluicao_ev', () {
         const prompt = 'Como diluir noradrenalina e preparar o volume final?';
-        final decision = ExternalToolLinkEngine.resolveDecision('req_6b', prompt);
+        final decision =
+            ExternalToolLinkEngine.resolveDecision('req_6b', prompt);
 
         expect(decision, isNotNull,
             reason: 'dilution prompt must yield a canonical decision');
@@ -766,28 +820,31 @@ void main() {
       });
 
       // ── 6c: Case A — Successful repair lifecycle ─────────────────────────────
-      test('6c. Case A: Successful repair — repairCalls==1, '
+      test(
+          '6c. Case A: Successful repair — repairCalls==1, '
           'incompletePersistenceCalls==0, repairedPersistenceCalls==1, '
           'payloadReadyCalls==1, coordinatorCompleteCalls==1', () async {
-        const truncatedText = 'Velocidade: **55–7';       // H3 high-confidence
-        const repairedText  = 'Velocidade: **55–75 mL/h**. Titular conforme resposta clínica.';
+        const truncatedText = 'Velocidade: **55–7'; // H3 high-confidence
+        const repairedText =
+            'Velocidade: **55–75 mL/h**. Titular conforme resposta clínica.';
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
         final repairEngine = _MockRepairEngine(
             (_) => TruncationRepairResult.repaired(repairedText));
 
         final result = await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_6c_repair',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_6c_repair',
         );
 
         // repairCalls == 1: repair engine called exactly once
         expect(repairEngine.callCount, equals(1),
-            reason: 'repair must be called exactly once (AT MOST ONCE per requestId)');
+            reason:
+                'repair must be called exactly once (AT MOST ONCE per requestId)');
         // incompletePersistenceCalls == 0: raw truncated text never persisted
         expect(sink.savedTexts.any((t) => t == truncatedText), isFalse,
             reason: 'raw truncated text must never be persisted');
@@ -807,53 +864,60 @@ void main() {
       });
 
       // ── 6d: Case B — Catastrophic failure lifecycle ──────────────────────────
-      test('6d. Case B: Catastrophic failure — SessionDedup.save() never invoked, '
+      test(
+          '6d. Case B: Catastrophic failure — SessionDedup.save() never invoked, '
           'AiFailed(retryable:false) emitted, cacheSize==0', () async {
         const truncatedText = 'Velocidade: **55–7'; // H3 high-confidence
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
-        final repairEngine = _MockRepairEngine(
-            (_) => TruncationRepairResult.catastrophicFailure(
+        final repairEngine = _MockRepairEngine((_) =>
+            TruncationRepairResult.catastrophicFailure(
                 'repair_proxy_failed: catastrophic'));
 
         final result = await _runFinalizationPipeline(
-          rawText:      truncatedText,
+          rawText: truncatedText,
           repairEngine: repairEngine,
-          sink:         sink,
-          coordinator:  coordinator,
-          requestId:    'req_6d_failure',
+          sink: sink,
+          coordinator: coordinator,
+          requestId: 'req_6d_failure',
         );
 
         // SessionDedup.save() never invoked — sink.saveCount == 0
         expect(sink.saveCount, equals(0),
-            reason: 'SessionDedup.save() must never be invoked on catastrophic failure');
+            reason:
+                'SessionDedup.save() must never be invoked on catastrophic failure');
         // AiFailed(retryable: false) → droppedPayload==true, completed==false
         expect(result.droppedPayload, isTrue,
-            reason: 'DROP_PAYLOAD must be triggered — AiFailed(retryable:false)');
+            reason:
+                'DROP_PAYLOAD must be triggered — AiFailed(retryable:false)');
         expect(result.completed, isFalse,
-            reason: 'pipeline must NOT complete successfully on catastrophic failure');
+            reason:
+                'pipeline must NOT complete successfully on catastrophic failure');
         // cacheSize == 0: cache cleared (ExternalToolLinkEngine cleared in setUp)
         expect(ExternalToolLinkEngine.decisionCacheSize, equals(0),
-            reason: 'cache must be empty — no residual entries after DROP_PAYLOAD');
+            reason:
+                'cache must be empty — no residual entries after DROP_PAYLOAD');
         // EXT_TOOL card never rendered
         expect(coordinator.extToolCardRendered, isFalse,
             reason: 'EXT_TOOL_PAYLOAD_READY must NOT fire on DROP_PAYLOAD');
         // ResumeCoordinator still fires (no orphan request)
         expect(coordinator.completed, isTrue,
-            reason: 'ResumeCoordinator.complete() must still fire on DROP_PAYLOAD');
+            reason:
+                'ResumeCoordinator.complete() must still fire on DROP_PAYLOAD');
       });
 
       // ── 6e: Case C — Concurrency cancellation lifecycle ──────────────────────
-      test('6e. Case C: Concurrency cancellation — lateRepairIgnored=true, '
+      test(
+          '6e. Case C: Concurrency cancellation — lateRepairIgnored=true, '
           '0 persistence entries, coordinator cleanly closes', () async {
         // Simulate async repair loop mid-run cancellation via controller flag
         bool cancelled = false;
         bool lateRepairIgnored = false;
-        int persistenceCalls = 0;
+
         bool coordinatorClosed = false;
 
-        final sink        = _MockPersistenceSink();
+        final sink = _MockPersistenceSink();
         final coordinator = _MockResumeCoordinator();
 
         // Simulate repair that runs after cancellation was signalled
@@ -870,7 +934,7 @@ void main() {
             // Drop — do NOT persist, do NOT render card
           } else {
             sink.save('late_repaired_text');
-            persistenceCalls = sink.saveCount;
+
             coordinator.renderExtToolCard();
           }
 
@@ -891,7 +955,8 @@ void main() {
         expect(coordinatorClosed, isTrue,
             reason: 'coordinator must close cleanly after cancellation');
         expect(coordinator.completed, isTrue,
-            reason: 'ResumeCoordinator.complete() must be called even on cancel');
+            reason:
+                'ResumeCoordinator.complete() must be called even on cancel');
         // EXT_TOOL card not rendered
         expect(coordinator.extToolCardRendered, isFalse,
             reason: 'EXT_TOOL_PAYLOAD_READY must not fire on cancelled repair');

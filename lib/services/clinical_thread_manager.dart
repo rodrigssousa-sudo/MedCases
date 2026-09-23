@@ -742,7 +742,7 @@ static const _kNewCaseSignals = <String>[
         _activeTopic.isNotEmpty &&
         _lastActivityMs > 0 &&
         (now - _lastActivityMs) > kThreadTimeoutMs) {
-      final oldTopic = _activeTopic;
+
       _startNewThread(q, now);
       return ClinicalThreadStatus(
         action: ThreadAction.newThread,

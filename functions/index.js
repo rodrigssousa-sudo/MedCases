@@ -1,3 +1,4 @@
+const console = require('./private_logger');
 // MEDCASES_SHADOW_OBSERVATION_S1_IMPORT_BEGIN
 const {
   createClinicalShadowObservationS1Runtime,
@@ -46,6 +47,7 @@ const { defineSecret } = require('firebase-functions/params');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const admin      = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const { singleProfileEmail } = require('./profile_email_boundary');
 const https      = require('https');
 const crypto     = require('crypto');
 
@@ -282,10 +284,10 @@ exports.onUserApproved = onDocumentUpdated(
     if (before.status === 'blocked') return null; // tratado por onUserUnblocked
 
     const userName  = after.displayName || 'Médico(a)';
-    const userEmail = after.email       || '';
+    const userEmail = singleProfileEmail(after.email);
     const userLang  = after.lang        || 'pt';
 
-    if (!userEmail) { console.log('Usuário sem e-mail, ignorando.'); return null; }
+    if (!userEmail) { console.warn('PROFILE_EMAIL_INVALID'); return null; }
 
     const transporter = getTransporter(GMAIL_PASS.value());
     if (!transporter) return null;
@@ -320,10 +322,10 @@ exports.onUserUnblocked = onDocumentUpdated(
     if (before.status !== 'blocked' || after.status !== 'approved') return null;
 
     const userName  = after.displayName || 'Médico(a)';
-    const userEmail = after.email       || '';
+    const userEmail = singleProfileEmail(after.email);
     const userLang  = after.lang        || 'pt';
 
-    if (!userEmail) return null;
+    if (!userEmail) { console.warn('PROFILE_EMAIL_INVALID'); return null; }
 
     const transporter = getTransporter(GMAIL_PASS.value());
     if (!transporter) return null;
@@ -386,14 +388,17 @@ const PAID_PROXY_ALLOWED_ORIGINS = [
 /**
  * Resolve a origem CORS para o response.
  * - Se a origem do request está na allowlist → reflete ela (necessário para Auth header).
- * - Se é localhost / 127.0.0.1 (qualquer porta) → permite para debug local.
+ * - Loopback exige NODE_ENV explicitamente development/local; demais ambientes negam.
  * - Caso contrário → não emite o header (browser bloqueará).
  */
 function resolveCorsOrigin(reqOrigin) {
   if (!reqOrigin) return null;
   if (PAID_PROXY_ALLOWED_ORIGINS.includes(reqOrigin)) return reqOrigin;
-  // Permite qualquer porta de localhost para desenvolvimento local
-  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(reqOrigin)) return reqOrigin;
+  // Preserve the existing local matcher, gated only by server-owned environment.
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(reqOrigin)) {
+    const localCorsEnabled = ['development', 'local'].includes(process.env.NODE_ENV);
+    return localCorsEnabled ? reqOrigin : null;
+  }
   return null;
 }
 
@@ -1132,7 +1137,7 @@ exports.geminiPaidProxy = onRequest(
     const idToken = authHeader.split('Bearer ')[1];
     let decodedToken;
     try {
-      decodedToken = await admin.auth().verifyIdToken(idToken);
+      decodedToken = await admin.auth().verifyIdToken(idToken, true);
     } catch (e) {
       console.warn('[PAID_PROXY] token inválido:', e.code);
       res.status(401).json({ error: 'invalid_token' });
@@ -2944,7 +2949,7 @@ exports.atenderConsultaIAStream = onRequest(
     const idToken = authHeader.slice(7).trim();
     let decodedToken;
     try {
-      decodedToken = await admin.auth().verifyIdToken(idToken);
+      decodedToken = await admin.auth().verifyIdToken(idToken, true);
     } catch (err) {
       console.warn('[STREAM_CF] Token inválido:', err.code);
       res.status(401).json({ error: 'invalid_token' });
@@ -3680,7 +3685,7 @@ exports.gptProxyStream = onRequest(
     const idToken = authHeader.slice(7).trim();
     let decodedToken;
     try {
-      decodedToken = await admin.auth().verifyIdToken(idToken);
+      decodedToken = await admin.auth().verifyIdToken(idToken, true);
     } catch (err) {
       console.warn('[GPT_SSE_CF] token_invalid:', err.code);
       return res.status(401).json({ error: 'invalid_token' });

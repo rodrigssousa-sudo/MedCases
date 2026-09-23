@@ -1,3 +1,5 @@
+import '../architecture/architectural_runtime_harness.dart';
+import '../tools/tools_hub_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -38,26 +40,13 @@ void main() {
     hepato = read('lib/screens/hepatology_tools_screen.dart');
   });
 
-  test('subnav Ferramentas segue geometria canônica MedCases', () {
-    final row = classBlock(tools, '_ToolsTabRow');
-    final tab = classBlock(tools, '_ToolsFlatTabState');
-    final tabWidget = classBlock(tools, '_ToolsFlatTab');
-
-    expect(row, contains('height: 40'));
-    expect(row, contains('Color(0xFF252930)'));
-    expect(row, contains('Color(0xFFE7EBEF)'));
-    expect(row, contains('width: 0.7'));
-    expect(row,
-        contains("['Nefrología', 'Cardio', 'Electrolitos', 'Hepatología']"));
-    expect(row,
-        contains("['Nefrologia', 'Cardio', 'Eletrólitos', 'Hepatologia']"));
-    expect(row, contains('Icons.favorite_border'));
-    expect(tabWidget, contains('final IconData icon;'));
-    expect(tab, contains('softWrap: false'));
-    expect(tab, contains('textAlign: TextAlign.center'));
-    expect(tab, contains('fontSize: 12'));
-    expect(tab, contains('height: 2'));
-    expect(tab, contains('widget.tabCtrl.animateTo(widget.index)'));
+  testWidgets('hub produtivo preserva geometria, paleta e rotas PT/ES',
+      (tester) async {
+    for (final dark in [false, true]) {
+      for (final es in [false, true]) {
+        await verifyToolsHub(tester, dark: dark, isEs: es);
+      }
+    }
   });
 
   test('importar paciente fica compacto e sem escala interna', () {
@@ -69,17 +58,9 @@ void main() {
     expect(owner, contains('onTap: onTap'));
   });
 
-  test('Nefro e Hepato removem faixas grandes de seção', () {
-    for (final source in [nefro, hepato]) {
-      final section = classBlock(source, '_SectionLabel');
-      expect(section, contains('fontSize: 12.5'));
-      expect(section, contains('letterSpacing: 0.75'));
-      expect(section, isNot(contains('textAlign: TextAlign.center')));
-      expect(section, isNot(contains('final band =')));
-
-      final body = classBlock(source, '_InputCard');
-      expect(body, contains('color: Colors.transparent'));
-      expect(body, contains('width: 0.7'));
+  testWidgets("Nefro e Hepato removem faixas grandes de seção", (tester) async {
+    for (final dark in [false, true]) {
+      await verifyAdaptiveScoreInputs(tester, dark: dark);
     }
   });
 

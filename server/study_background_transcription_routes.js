@@ -1,7 +1,8 @@
+const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
 
 const crypto = require('crypto');
-const {assertUsageReservation}=require('./usage_reservation_guard');
+const {assertUsageReservation,usageReceipt}=require('./usage_reservation_guard');
 const express = require('express');
 const { getApps } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
@@ -218,12 +219,14 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
 
         const locale = req.body?.locale === 'es' ? 'es' : 'pt';
         const sourceId = String(req.body?.sourceId || '').slice(0, 160);
-        const jobId = crypto.randomUUID().replace(/-/g, '');
+        const jobId = crypto.createHash('sha256').update(JSON.stringify(usage)).digest('hex');
         const now = Date.now();
         const exp = now + JOB_TTL_MS;
 
         const db = getFirestore(rt.app);
         const jobRef = db.collection(COLLECTION).doc(jobId);
+        const reservation = await db.collection('usageReservations').doc(usageReceipt(usage).id).get();
+        if (expectedSegments !== (reservation.data().executionCount || 1)) return res.status(403).json({error:'execution_plan_mismatch'});
         await jobRef.set({
           uid,
           usage,
@@ -317,9 +320,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
             return { state: 'done', transcript: current.transcript };
           }
 
-          const leaseUntilMs =
-            current?.leaseUntil?.toMillis?.() || 0;
-          if (current?.state === 'processing' && leaseUntilMs > Date.now()) {
+          if (current?.state === 'processing') {
             return { state: 'busy' };
           }
 
@@ -351,12 +352,18 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
           req.headers['x-medcases-audio-mime'] || 'audio/mp4',
         ).slice(0, 80);
 
-        const transcript = await transcribeBuffer(
+        const owner = new MonthlyUsageOwner({db});
+        const receipt = usageReceipt(job.usage);
+        const claimed = await owner.claimExecution(grant.uid,receipt,index);
+        if (!claimed.claimed) return res.status(409).json({error:'execution_already_claimed'});
+        // At-most-once after upstream dispatch, including unknown network outcome.
+        let transcript;
+        try { transcript = await transcribeBuffer(
           rt.openAiKey,
           body,
           mimeType,
           index,
-        );
+        ); } finally { await owner.completeExecution(grant.uid,receipt,index); }
 
         await segmentRef.set(
           {

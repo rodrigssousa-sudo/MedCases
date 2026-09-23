@@ -75,7 +75,7 @@ void main() {
       source,
       contains('WebViewController.fromPlatformCreationParams(params)'),
     );
-    expect(source, contains('WebViewWidget(controller: _controller!)'));
+    expect(source, contains('WebViewWidget(controller: _controller)'));
     expect(source, contains('Icons.close_rounded'));
   });
 }

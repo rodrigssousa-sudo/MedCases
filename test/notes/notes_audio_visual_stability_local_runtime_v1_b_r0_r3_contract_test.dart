@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,21 +20,14 @@ void main() {
     expect(longForm, isA<StatefulWidget>());
   });
 
-  test('workspace patches the real parent palette owner', () {
+  test('current workspace uses Study owner and legacy menu stays retired', () {
     final main = _read('lib/main.dart');
-
-    final stateStart = main.indexOf('class _NotesAudioWorkspaceState');
-    final audioStart = main.indexOf(
-      'class _NotesAudioWorkspaceAudio extends StatelessWidget',
-    );
-
-    expect(stateStart, greaterThanOrEqualTo(0));
-    expect(audioStart, greaterThan(stateStart));
-
-    final stateSlice = main.substring(stateStart, audioStart);
-
-    expect(stateSlice, contains('Color(0xFFC6CED9)'));
-    expect(stateSlice, contains('Color(0xFF52606D)'));
+    final start = main.indexOf('class _NotesAudioWorkspaceState');
+    expect(start, isNonNegative);
+    final end = main.indexOf('\nclass ', start + 1);
+    final owner = main.substring(start, end < 0 ? main.length : end);
+    expect(owner, contains('StudyWorkspaceScreen('));
+    expect(main, isNot(contains('class _NotesAudioWorkspaceAudio')));
   });
 
   test('consent surface has explicit MedCases colors and no button glow', () {
@@ -50,30 +44,12 @@ void main() {
     expect(consent, isNot(contains('BoxShadow(')));
   });
 
-  test('both mode cards enter local runtime only after consent', () {
-    final main = _read('lib/main.dart');
-
-    expect(
-      main,
-      contains('ClinicalLongFormRemoteAudioConsentUi.showIfNeeded('),
-    );
-    expect(main, contains("mode: 'Consulta clínica'"));
-    expect(
-      main,
-      contains(
-        "mode: isEs ? 'Clase / audio largo' : 'Aula / áudio longo'",
-      ),
-    );
-    expect(main, contains('longForm: false'));
-    expect(main, contains('longForm: true'));
-    expect(
-      main,
-      contains('NotesAudioConsultationLocalRuntimeScreen(isEs: isEs)'),
-    );
-    expect(
-      main,
-      contains('NotesAudioLongFormLocalRuntimeScreen(isEs: isEs)'),
-    );
+  testWidgets('Study notice accepts or denies before local recording entry',
+      (tester) async {
+    await verifyStudyNotice(tester, accept: false);
+    await verifyStudyNotice(tester, accept: true);
+    final main = File('lib/main.dart').readAsStringSync();
+    expect(main, isNot(contains('class _NotesAudioWorkspaceAudio')));
   });
 
   test('consultation runtime reuses certified ClinicalRecorderService API', () {
@@ -101,7 +77,10 @@ void main() {
     expect(runtime, contains('RecordLongFormAudioProvider'));
     expect(runtime, contains('ClinicalLongFormSessionDirectoryLayout'));
     expect(runtime, contains('ClinicalLongFormRecordingSession'));
-    expect(runtime, contains('getTemporaryDirectory()'));
+    expect(runtime, contains('getApplicationSupportDirectory()'));
+    expect(runtime, contains('medcases_study_recorded_audio_state'));
+    expect(runtime, contains('sessionId: sessionId'));
+    expect(runtime, contains('await layout.ensureDirectories()'));
     expect(runtime, contains('layout.segmentFile(0).path'));
     expect(runtime, contains('session.shouldRotate(now)'));
     expect(runtime, contains('session.reachedMaxDuration(now)'));

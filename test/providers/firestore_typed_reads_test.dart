@@ -352,6 +352,12 @@ class _StubHistoryProvider {
 // controls completely.  No Firebase, no SharedPreferences, no widgets.
 // ─────────────────────────────────────────────────────────────────────────────
 class _MockAppProvider extends AppProvider {
+  // This fixture tests loader algebra/latching, with an authenticated caller
+  // supplied by the harness. Real owner-switch rejection has separate tests in
+  // security_remediation_test.dart and is not bypassed by production code.
+  @override
+  bool isCurrentSession(String? uid, int epoch) => epoch == sessionEpoch;
+
   /// Inject the next fetch result via this completer before calling
   /// loadAiSessionsTypedForUi().  Each test controls the timing and value.
   Completer<_FirestoreLoadResult<List<Map<String, dynamic>>>> pendingFetch =

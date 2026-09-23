@@ -1,26 +1,15 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('Consulta and long-form cards enter certified consent gate', () {
+  testWidgets('Study notice accepts or denies before local recording entry',
+      (tester) async {
+    await verifyStudyNotice(tester, accept: false);
+    await verifyStudyNotice(tester, accept: true);
     final main = File('lib/main.dart').readAsStringSync();
-
-    expect(
-      main,
-      contains('ClinicalLongFormRemoteAudioConsentUi.showIfNeeded('),
-    );
-    expect(main, contains("mode: 'Consulta clínica',"));
-    expect(
-      main,
-      contains(
-        "mode: isEs ? 'Clase / audio largo' : 'Aula / áudio longo',",
-      ),
-    );
-    expect(main, contains("'Configurar consentimento'"));
-    expect(main, contains("'Configurar consentimiento'"));
-    expect(main, contains('final VoidCallback onTap;'));
-    expect(main, contains('Icon(Icons.chevron_right_rounded'));
+    expect(main, isNot(contains('class _NotesAudioWorkspaceAudio')));
   });
 
   test('production audio guards remain off', () {

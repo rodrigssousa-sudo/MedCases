@@ -121,6 +121,7 @@ private final class MedCasesLongFormAtRestChannel {
     "retentionMetadata",
     "transportPlaintextStaging",
     "premiumDrugCatalog",
+    "privateUserData",
   ]
 
   static func register(messenger: FlutterBinaryMessenger) {
@@ -573,12 +574,12 @@ private final class MedCasesLongFormAtRestChannel {
       throw BridgeFailure(code: "ios_logical_name_invalid")
     }
 
-    if assetKind == "premiumDrugCatalog" {
+    if assetKind == "premiumDrugCatalog" || assetKind == "privateUserData" {
       guard let uid = Auth.auth().currentUser?.uid else {
         throw BridgeFailure(code: "catalog_auth_required")
       }
       let owner = SHA256.hash(data: Data(uid.utf8)).map { String(format: "%02x", $0) }.joined()
-      guard sessionId == owner, keyId == "catalog." + String(owner.prefix(48)) else {
+      guard sessionId == owner, keyId == (assetKind == "privateUserData" ? "private." : "catalog.") + String(owner.prefix(48)) else {
         throw BridgeFailure(code: "catalog_owner_mismatch")
       }
     }

@@ -20,7 +20,7 @@ void main() {
       'Free60 projection exactly matches canonical source, not cardinality only',
       () {
     final source = jsonDecode(File(
-            '/private/tmp/medcases-calculadora-r1-canonical-20260921/gateway/data/free60_allowlist.v2.json')
+            '${Platform.environment['MEDCASES_CALCULATOR_ROOT'] ?? '${Directory.current.parent.path}/medcases-calculadora'}/gateway/data/free60_allowlist.v2.json')
         .readAsStringSync()) as Map;
     expect(
         freeDrugCanonicalIds, (source['ids'] as List).cast<String>().toSet());

@@ -753,6 +753,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       await EntitlementService.instance.refreshAuthoritativeTier();
       transcriptionUsage = await MonthlyUsageLedger.instance.begin(
           operationId: 'recorded-$sourceId',
+          executionCount: handoff.segments.length,
           kinds: {UsageKind.transcription},
           maximumMs: handoff.segments
               .fold<int>(0, (sum, segment) => sum + segment.activeDurationMs));
@@ -790,6 +791,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
             sourceId: sourceId,
             type: StudySourceType.recordedAudio,
             usageReservation: transcriptionUsage,
+            executionIndex: segment.index,
             fileName: 'segment_${segment.index}.m4a',
             mimeType: 'audio/mp4',
             bytes: Uint8List.fromList(bytes),

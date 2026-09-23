@@ -61,6 +61,7 @@ final class StudyMultimodalExtractionService {
     required bool isEs,
     int? audioDurationMs,
     UsageReservation? usageReservation,
+    int executionIndex = 0,
   }) async {
     final audio = type == StudySourceType.uploadedAudio ||
         type == StudySourceType.recordedAudio;
@@ -146,6 +147,7 @@ Devuelve SOLO JSON válido:
             uri,
             headers: <String, String>{
               'content-type': 'application/json',
+              if (audio) 'X-MedCases-Execution-Index': '$executionIndex',
               if (audio) ...?usage?.serverHeaders
             },
             body: jsonEncode(body),

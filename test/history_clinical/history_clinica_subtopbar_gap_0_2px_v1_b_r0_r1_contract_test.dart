@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -10,38 +11,17 @@ void main() {
   });
 
   group('Historia Clinica subtopbar 0.2px safety gap V1-B-R0-R1', () {
-    test('uses exact screen-specific 0.2px gap after the 48px topbar', () {
-      expect(
-        history,
-        contains(
-          'MEDCASES_HISTORIA_CLINICA_SUBTOPBAR_GAP_0_2PX_V1_B_R0_R1',
-        ),
-      );
-
+    testWidgets('48px reserve meets the current 40px strip without the retired gap', (tester) async {
+      expect(history, contains('MEDCASES_HISTORIA_CLINICA_SUBTOPBAR_GAP_0_2PX_V1_B_R0_R1'));
       final reserve = history.indexOf('const SizedBox(height: 48)');
-      final gap = history.indexOf('const SizedBox(height: 0.2)', reserve);
-      final nav = history.indexOf('_HcTabRow(', gap);
-
       expect(reserve, greaterThanOrEqualTo(0));
-      expect(gap, greaterThan(reserve));
-      expect(nav, greaterThan(gap));
+      final nav = history.indexOf('_HcTabRow(', reserve);
+      expect(nav, greaterThan(reserve));
+      await verifyHistoryNavigation(tester);
     });
 
-    test('keeps the homologated segmented structure intact', () {
-      for (final token in <String>[
-        'MEDCASES_HISTORIA_CLINICA_SUBTOPBAR_STRUCTURAL_PARITY_AVALIACAO_V1_B_R0_R1',
-        'const Color(0xFFEFF2F5)',
-        'const Color(0xFF2D3340)',
-        'height: 44',
-        'padding: const EdgeInsets.symmetric(horizontal: 8)',
-        'padding: const EdgeInsets.symmetric(horizontal: 12)',
-        'right: BorderSide(',
-        'width: isActive ? 2 : 0.7',
-        'fontSize: 11',
-        'height: 1',
-      ]) {
-        expect(history, contains(token), reason: token);
-      }
+    testWidgets('current equal segments retain selection, divider and navigation', (tester) async {
+      await verifyHistoryNavigation(tester, dark: true);
     });
 
     test('does not alter the retained History card contract', () {

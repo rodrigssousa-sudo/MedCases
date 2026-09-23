@@ -21,3 +21,25 @@ test('existing-app registration retains Firebase middleware and UID resource bou
  assert.equal((await invoke('B','/v1beta/models/gemini-2.5-flash:generateContent',{contents:[{parts:[{fileData:{fileUri:'https://generativelanguage.googleapis.com/v1beta/files/example'}}]}]})).code,502);
  assert.equal((await invoke('A','/v1beta/files/example',{},'GET')).code,200);
 });
+
+test('audio generation claims once across direct requests and bound uploaded references',async()=>{
+ const {MonthlyUsageOwner}=require('../monthly_usage_owner');
+ const rows=new Map([['users/A',{plan:'free'}]]);let queue=Promise.resolve();
+ const ref=path=>({path,get:async()=>({exists:rows.has(path),data:()=>structuredClone(rows.get(path))}),set:async v=>rows.set(path,structuredClone(v))});
+ const db={collection:c=>({doc:id=>ref(c+'/'+id)}),runTransaction(action){const run=queue.then(async()=>{const staged=new Map();const value=await action({get:r=>r.get(),set:(r,v)=>staged.set(r.path,structuredClone(v))});for(const [k,v]of staged)rows.set(k,v);return value;});queue=run.catch(()=>{});return run;}};
+ const reservation=await new MonthlyUsageOwner({db}).reserve('A',{operationId:'audio',kinds:['transcription'],maximumMs:60000});
+ const usage={'x-medcases-usage-reservation':reservation.id,'x-medcases-usage-attempt':reservation.attempt};
+ let handler,generations=0;
+ registerProviderTransport({app:{use:(_p,_a,_l,h)=>handler=h},express:{json:()=> (req,res,next)=>next()},authenticate:()=>{},limiter:()=>{},db,keyProvider:()=> 'synthetic-server-only',fetchImpl:async url=>{if(String(url).includes('generateContent'))generations++;return new Response('{"candidates":[]}',{status:200,headers:{'content-type':'application/json'}});}});
+ async function call(body,headers=usage,path='/v1beta/models/gemini-2.5-flash:generateContent',method='POST'){
+  const res={code:200,status(c){this.code=c;return this;},json(v){this.body=v;return this;},send(v){this.body=v;return this;},end(){},on(){},setHeader(){}};
+  await handler({auth:{uid:'A'},path,method,headers,query:{},body},res);return res;
+ }
+ const audio={contents:[{parts:[{inlineData:{mimeType:'audio/mp4',data:'synthetic'}}]}]};
+ const result=await Promise.all([call(audio),call(audio)]);assert.equal(result.filter(r=>r.code===200).length,1);assert.equal(generations,1);
+ await db.collection('providerResourceOwnership').doc(resourceKey('A','files/audio')).set({uid:'A',usage});
+ const replay=await call({contents:[{parts:[{fileData:{fileUri:'https://generativelanguage.googleapis.com/v1beta/files/audio'}}]}]},{});
+ assert.notEqual(replay.code,200);assert.equal(generations,1);
+ assert.equal((await call({}, {}, '/v1beta/files/audio','DELETE')).code,200);
+ assert.equal(generations,1);
+});

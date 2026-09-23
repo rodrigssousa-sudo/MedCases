@@ -806,7 +806,7 @@ class _ExamField extends StatelessWidget {
   final int maxLines;
   final ValueChanged<String> onChanged;
   final FocusNode? focusNode;
-  final TextInputType keyboardType;
+  final TextInputType keyboardType = TextInputType.text;
   final TextInputAction? textInputAction;
   final ValueChanged<String>? onSubmitted;
 
@@ -818,7 +818,7 @@ class _ExamField extends StatelessWidget {
     this.maxLines = 1,
     required this.onChanged,
     this.focusNode,
-    this.keyboardType = TextInputType.text,
+
     this.textInputAction,
     this.onSubmitted,
   });

@@ -1,3 +1,4 @@
+const console = require('./private_logger');
 /**
  * ═══════════════════════════════════════════════════════════════════════════
  * MedCases Pro — AI Gateway Server  v3.0.0  (Build 155)
@@ -874,8 +875,8 @@ async function relayStream(res, body, apiKey, attempt = 0) {
       return _sendSseError(res, 'api_key_invalid');
     }
     if (fetchResp.status === 400) {
-      const errBody = await fetchResp.text().catch(() => '');
-      log.error('Gemini 400 Bad Request:', errBody.slice(0, 300));
+      await fetchResp.body?.cancel();
+      log.error('GEMINI_BAD_REQUEST');
       cleanup();
       return _sendSseError(res, 'bad_request');
     }
@@ -1223,7 +1224,13 @@ app.use(helmet({
 
 app.use(cors({
   origin: (origin, cb) => {
-    // Permite: domínio configurado, localhost (dev) e null (apps nativas)
+    // Loopback is available only under explicit sovereign local configuration.
+    // Deny before ALLOWED_ORIGIN so a production misconfiguration cannot allow it.
+    const localCorsEnabled = ['development', 'local'].includes(process.env.NODE_ENV);
+    const loopback = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin || '');
+    if (loopback && !localCorsEnabled) {
+      return cb(new Error('Not allowed by CORS'));
+    }
     const allowed = [
       ALLOWED_ORIGIN,
       'http://localhost',
@@ -1277,6 +1284,12 @@ require('./provider_transport_routes').registerProviderTransport({
   limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
   db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
   keyProvider:()=>GEMINI_API_KEY,
+});
+
+require('./clinical_content_routes').registerClinicalContentRoutes({
+  app, authenticate: authenticateFirebaseToken,
+  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
+  db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
 });
 
 app.use(express.json({ limit: '512kb' }));

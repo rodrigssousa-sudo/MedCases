@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -41,6 +42,13 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final main = File('lib/main.dart').readAsStringSync();
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
@@ -98,7 +106,7 @@ void main() {
       expect(nav, contains('BoxConstraints(minWidth: 112)'));
       expect(nav, contains('FontWeight.w700'));
       expect(nav, contains('bottom: 9'));
-      expect(nav, contains('Color(0xFF10B981)'));
+      expect(nav, contains('Color(0xFF0D6B57)'));
       expect(nav, contains('onTap: () => onSelect(i)'));
 
       expect(nav, isNot(contains('onHorizontalDrag')));

@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -61,12 +62,10 @@ void main() {
     expect(owner, contains('height: 44,'));
   });
 
-  test('editor mantém respiro superior e inferior', () {
+  testWidgets('editor mantém respiro superior e inferior', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryKeyboard(tester);
     final owner = classSlice(history, '_HistoryEditorState');
-    expect(
-      owner,
-      contains('MediaQuery.viewInsetsOf(context).bottom > 0 ? 30 : 26'),
-    );
     expect(owner, contains('_micBarExpanded ? 164.0 : 104.0'));
     expect(owner, contains(': 64.0;'));
   });
@@ -84,7 +83,9 @@ void main() {
     expect(ecg, contains('Colors.white30'));
   });
 
-  test('picker fica flat e grafite', () {
+  testWidgets('picker fica flat e grafite', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryOcrPicker(tester);
     final modal = classSlice(recorder, '_OcrScannerModalState');
     final sourceButton = classSlice(recorder, '_OcrSourceBtn');
 
@@ -93,7 +94,6 @@ void main() {
     expect(modal, contains('indent: 36'));
     expect(modal, isNot(contains('indent: 56')));
     expect(sourceButton, isNot(contains('Container(')));
-    expect(sourceButton, contains('Color(0xFF10B981)'));
   });
 
   test('câmera, galeria e OCR permanecem conectados', () {

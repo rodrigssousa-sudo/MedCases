@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +12,13 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria section cards final V1-B-R0', () {
@@ -19,7 +27,8 @@ void main() {
       final section = classBlock(tools, '_PedFlatSection');
 
       expect(section, contains('width: double.infinity'));
-      expect(section, contains('padding: const EdgeInsets.fromLTRB(13, 10, 13, 10)'));
+      expect(section,
+          contains('padding: const EdgeInsets.fromLTRB(17, 10, 17, 10)'));
       expect(
         section,
         contains(
@@ -28,11 +37,9 @@ void main() {
       );
       expect(
         section,
-        contains(
-          'c.dark ? const Color(0xFF374151) : const Color(0xFFD8DEE7)',
-        ),
+        isNot(contains('border: Border.all(')),
       );
-      expect(section, contains('width: 0.7'));
+      expect(section, contains('Container(height: 0.7, color: c.border)'));
       expect(section, contains('BorderRadius.circular(8)'));
 
       expect(section, isNot(contains('BoxShadow')));

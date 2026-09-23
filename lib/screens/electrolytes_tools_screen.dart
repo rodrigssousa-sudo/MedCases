@@ -36,7 +36,7 @@ import '../design_system/tokens/med_spacing.dart';
 const _kBg = Color(0xFF1A1D23);
 const _kSurface = Color(0xFF252930);
 const _kBorder = Color(0xFF374151);
-const _kCyan = Color(0xFF0D6B57);
+
 // BUILD 450: Azul Petróleo — substitui neon no Light Mode
 const _kPetroleo = Color(0xFF1A365D);
 const _kGreen = Color(0xFF0D6B57);
@@ -1049,100 +1049,7 @@ class _ElectroBodyState extends State<_ElectroBody>
 // ─────────────────────────────────────────────────────────────────────────────
 // Header
 // ─────────────────────────────────────────────────────────────────────────────
-class _ElectroHeader extends StatelessWidget {
-  final bool isEs;
-  final Color surf, bord, txt, sub;
-  const _ElectroHeader({
-    required this.isEs,
-    required this.surf,
-    required this.bord,
-    required this.txt,
-    required this.sub,
-  });
 
-  // TOOLS V1-H-R1: header plano unificado
-  // TOOLS V1-H-R1: subtítulo branco
-
-  @override
-  Widget build(
-          BuildContext
-              context) => /* MEDCASES_TOOLS_V1_H_R12_R5_BACKGROUND_ONLY_EXTENSION */
-      SizedBox(
-        height: 68,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              left: -MedSpacing.screenHorizontalPadding,
-              right: -MedSpacing.screenHorizontalPadding,
-              top: -32,
-              height: 32,
-              child: IgnorePointer(
-                child: ColoredBox(
-                  color: surf,
-                ),
-              ),
-            ),
-            Positioned(
-              left: -MedSpacing.screenHorizontalPadding,
-              right: -MedSpacing.screenHorizontalPadding,
-              top: 0,
-              bottom: 0,
-              child: SizedBox(
-                width: MediaQuery.sizeOf(context).width,
-                child: SizedBox(
-                  width: MediaQuery.sizeOf(context).width,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(MedSpacing.screenHorizontalPadding, 14, MedSpacing.screenHorizontalPadding, 14),
-                    decoration: BoxDecoration(
-                      color: surf,
-                      border: Border(
-                        bottom: BorderSide(color: bord),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        // TOOLS V1-H-R1: ícone sem box secundário
-                        const Icon(Icons.science_rounded,
-                            color: _kPetroleo, size: 20),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                isEs
-                                    ? 'ELECTROLITOS Y GASOMETRÍA'
-                                    : 'ELETRÓLITOS E GASOMETRIA',
-                                style: TextStyle(
-                                  color: txt,
-                                  fontSize: MedTypography.internalTitleSize,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                isEs
-                                    ? 'Déficit HCO₃ · Gasometría · Brecha Aniónica · Na/Ca Corregido'
-                                    : 'Déficit HCO₃ · Gasometria · Brecha Aniônica · Na/Ca Corrigido',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: MedTypography.auxiliarySize) /* MEDCASES_TOOLS_V1_H_R9_CANONICAL_HEADER_STYLE */,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Results Section

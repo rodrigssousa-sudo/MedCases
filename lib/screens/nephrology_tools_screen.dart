@@ -43,7 +43,7 @@ import '../design_system/tokens/med_spacing.dart';
 const _kBg = Color(0xFF1A1D23);
 const _kSurface = Color(0xFF252930);
 const _kBorder = Color(0xFF374151);
-const _kCyan = Color(0xFF0D6B57);
+
 // BUILD 450: Azul Petróleo — substitui neon no Light Mode
 const _kPetroleo = Color(0xFF1A365D);
 const _kGreen = Color(0xFF0D6B57);
@@ -862,70 +862,7 @@ class _NephrologyBodyState extends State<_NephrologyBody>
 // ─────────────────────────────────────────────────────────────────────────────
 // Header
 // ─────────────────────────────────────────────────────────────────────────────
-class _Header extends StatelessWidget {
-  final bool isEs, dark;
-  final Color txt, sub;
-  const _Header({
-    required this.isEs,
-    required this.dark,
-    required this.txt,
-    required this.sub,
-  });
 
-  // TOOLS V1-H-R1: header plano unificado
-  // TOOLS V1-H-R1: subtítulo branco
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: dark ? _kSurface : Colors.white,
-        border: Border(
-          bottom: BorderSide(color: dark ? _kBorder : const Color(0xFFE2E8F0)),
-        ),
-      ),
-      padding: const EdgeInsets.fromLTRB(
-        MedSpacing.screenHorizontalPadding,
-        14,
-        MedSpacing.screenHorizontalPadding,
-        14,
-      ),
-      child: Row(
-        children: [
-          // TOOLS V1-H-R1: ícone sem box secundário
-          const Icon(Icons.water_drop_rounded, color: _kPetroleo, size: 20),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isEs ? 'FUNCIÓN RENAL' : 'FUNÇÃO RENAL',
-                  style: TextStyle(
-                    color: txt,
-                    fontSize: MedTypography.internalTitleSize,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  isEs
-                      ? 'CKD-EPI · Cockcroft-Gault · KDIGO · FeNa'
-                      : 'CKD-EPI · Cockcroft-Gault · KDIGO · FeNa',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: MedTypography.auxiliarySize,
-                  ) /* MEDCASES_TOOLS_V1_H_R9_CANONICAL_HEADER_STYLE */,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Input Section

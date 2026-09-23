@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,6 +10,13 @@ String classBlock(String s, String name) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   test('Pediatria uses 12px subnav label', () {
@@ -29,11 +37,11 @@ void main() {
       () {
     final state = classBlock(tools, '_PediatricsTabContentState');
     expect(state,
-        contains('padding: const EdgeInsets.fromLTRB(19.2, 0.1, 19.2, 100)'));
+        contains('padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)'));
     expect(
         state,
         isNot(contains(
-            'padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)')));
+            'padding: const EdgeInsets.fromLTRB(19.2, 0.1, 19.2, 100)')));
   });
 
   test('PT ES routes and pediatric clinical engines remain', () {

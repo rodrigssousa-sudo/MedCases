@@ -26,7 +26,7 @@ import 'package:medcases/services/ai_stream/sse_parser.dart';
 /// Converte uma string SSE bruta em Stream<List<int>> de chunks arbitrários.
 Stream<List<int>> chunkStream(String raw, {int chunkSize = 999}) async* {
   final bytes = utf8.encode(raw);
-  int offset  = 0;
+  int offset = 0;
   while (offset < bytes.length) {
     final end = (offset + chunkSize).clamp(0, bytes.length);
     yield bytes.sublist(offset, end);
@@ -84,7 +84,8 @@ void main() {
     });
 
     test('parseia dois eventos no mesmo chunk de 5 bytes', () async {
-      const raw = 'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":1,"delta":"AB"}\n\n'
+      const raw =
+          'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":1,"delta":"AB"}\n\n'
           'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":2,"delta":"CD"}\n\n';
       final events = await collectEvents(raw, chunkSize: 5);
       expect(events, hasLength(2));
@@ -134,15 +135,16 @@ void main() {
     test('emoji dividido entre dois chunks', () async {
       // 🩺 = 4 bytes: F0 9F A9 BA
       // Dividir no meio: [F0 9F] + [A9 BA] + resto do evento
-      const prefix = 'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":1,"delta":"';
+      const prefix =
+          'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":1,"delta":"';
       const suffix = '"}\n\n';
-      const emoji  = '🩺';
-      final full   = prefix + emoji + suffix;
-      final bytes  = utf8.encode(full);
+      const emoji = '🩺';
+      final full = prefix + emoji + suffix;
+      final bytes = utf8.encode(full);
 
       // Encontrar posição do emoji e cortar no meio
       final emojiStart = utf8.encode(prefix).length;
-      final cut        = emojiStart + 2; // corta no meio dos 4 bytes do emoji
+      final cut = emojiStart + 2; // corta no meio dos 4 bytes do emoji
 
       // Stream que emite dois chunks: primeiro 2 bytes do emoji, depois o resto
       Stream<List<int>> splitStream() async* {
@@ -150,16 +152,15 @@ void main() {
         yield bytes.sublist(cut);
       }
 
-      final events = await collectEvents(
+      await collectEvents(
         utf8.decode(bytes), // fallback se splitStream não funcionar
         chunkSize: cut,
       );
 
       // Verificar com stream dividido diretamente no parser
       final parser2 = SseParser();
-      final events2 = await splitStream()
-          .transform(parser2.transformer)
-          .toList();
+      final events2 =
+          await splitStream().transform(parser2.transformer).toList();
       parser2.dispose();
 
       expect(events2, hasLength(1));
@@ -168,10 +169,11 @@ void main() {
 
     test('ç fragmentado entre chunks', () async {
       // ç = C3 A7 (2 bytes UTF-8)
-      const text   = 'Coração';
-      const prefix = 'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":1,"delta":"';
-      final full   = prefix + text + '"}\n\n';
-      final bytes  = utf8.encode(full);
+      const text = 'Coração';
+      const prefix =
+          'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":1,"delta":"';
+      final full = prefix + text + '"}\n\n';
+      final bytes = utf8.encode(full);
 
       // Cortar em algum ponto onde há um ç (antes de 'ção')
       final cutAt = utf8.encode(prefix + 'Cora').length;
@@ -182,9 +184,7 @@ void main() {
       }
 
       final parser = SseParser();
-      final events = await splitStream()
-          .transform(parser.transformer)
-          .toList();
+      final events = await splitStream().transform(parser.transformer).toList();
       parser.dispose();
 
       expect(events, hasLength(1));
@@ -192,15 +192,18 @@ void main() {
     });
 
     test('resposta de 1000+ chars aparece em múltiplos chunks', () async {
-      final longText = List.generate(50, (i) => 'Fragmento $i de resposta clínica. ').join();
-      final events   = <String>[];
+      final longText =
+          List.generate(50, (i) => 'Fragmento $i de resposta clínica. ').join();
 
       // Simular 50 text_delta events, cada um com um fragmento
       final rawBuffer = StringBuffer();
       for (int i = 0; i < 50; i++) {
         final delta = 'Fragmento $i de resposta clínica. ';
-        final json  = jsonEncode({
-          'requestId': 'r1', 'attempt': 2, 'sequence': i + 1, 'delta': delta,
+        final json = jsonEncode({
+          'requestId': 'r1',
+          'attempt': 2,
+          'sequence': i + 1,
+          'delta': delta,
         });
         rawBuffer.write('event: text_delta\ndata: $json\n\n');
       }
@@ -218,13 +221,12 @@ void main() {
 
   group('SseParser — erros de protocolo', () {
     test('JSON inválido → SseParseError emitido (não silencioso)', () async {
-      const raw =
-          'event: text_delta\ndata: {BROKEN JSON!!!}\n\n'
+      const raw = 'event: text_delta\ndata: {BROKEN JSON!!!}\n\n'
           'event: text_delta\ndata: {"requestId":"r1","attempt":2,"sequence":2,"delta":"OK"}\n\n';
 
       final parser = SseParser();
-      final events  = <SseEvent>[];
-      final errors  = <SseParseError>[];
+      final events = <SseEvent>[];
+      final errors = <SseParseError>[];
 
       parser.errors.listen(errors.add);
       await chunkStream(raw).transform(parser.transformer).forEach(events.add);
@@ -242,11 +244,16 @@ void main() {
   group('SseEventFilter — descarte de fragmentos', () {
     test('descarta event com requestId diferente', () {
       final filter = SseEventFilter(requestId: 'r1', expectedAttempt: 2);
-      final event  = SseEvent(
-        type:    'text_delta',
-        id:      '1',
+      final event = SseEvent(
+        type: 'text_delta',
+        id: '1',
         dataRaw: '{"requestId":"r_OTHER","attempt":2,"sequence":1,"delta":"X"}',
-        data:    {'requestId': 'r_OTHER', 'attempt': 2, 'sequence': 1, 'delta': 'X'},
+        data: {
+          'requestId': 'r_OTHER',
+          'attempt': 2,
+          'sequence': 1,
+          'delta': 'X'
+        },
       );
       final verdict = filter.accept(event);
       expect(verdict.accepted, isFalse);
@@ -255,11 +262,11 @@ void main() {
 
     test('descarta event com attempt anterior', () {
       final filter = SseEventFilter(requestId: 'r1', expectedAttempt: 2);
-      final event  = SseEvent(
-        type:    'text_delta',
-        id:      '1',
+      final event = SseEvent(
+        type: 'text_delta',
+        id: '1',
         dataRaw: '{"requestId":"r1","attempt":1,"sequence":5,"delta":"X"}',
-        data:    {'requestId': 'r1', 'attempt': 1, 'sequence': 5, 'delta': 'X'},
+        data: {'requestId': 'r1', 'attempt': 1, 'sequence': 5, 'delta': 'X'},
       );
       final verdict = filter.accept(event);
       expect(verdict.accepted, isFalse);
@@ -270,16 +277,18 @@ void main() {
       final filter = SseEventFilter(requestId: 'r1', expectedAttempt: 2);
 
       final e1 = SseEvent(
-        type:    'text_delta', id: '1',
+        type: 'text_delta',
+        id: '1',
         dataRaw: '{}',
-        data:    {'requestId': 'r1', 'attempt': 2, 'sequence': 5, 'delta': 'A'},
+        data: {'requestId': 'r1', 'attempt': 2, 'sequence': 5, 'delta': 'A'},
       );
       filter.accept(e1); // aceita seq=5, atualiza _lastAccepted=5
 
       final e2 = SseEvent(
-        type:    'text_delta', id: '2',
+        type: 'text_delta',
+        id: '2',
         dataRaw: '{}',
-        data:    {'requestId': 'r1', 'attempt': 2, 'sequence': 5, 'delta': 'B'},
+        data: {'requestId': 'r1', 'attempt': 2, 'sequence': 5, 'delta': 'B'},
       );
       final verdict = filter.accept(e2);
       expect(verdict.accepted, isFalse);
@@ -291,13 +300,17 @@ void main() {
 
       // Aceitar seq=10
       filter.accept(SseEvent(
-        type: 'text_delta', id: '10', dataRaw: '{}',
+        type: 'text_delta',
+        id: '10',
+        dataRaw: '{}',
         data: {'requestId': 'r1', 'attempt': 2, 'sequence': 10, 'delta': 'X'},
       ));
 
       // Rejeitar seq=7 (inferior)
       final verdict = filter.accept(SseEvent(
-        type: 'text_delta', id: '7', dataRaw: '{}',
+        type: 'text_delta',
+        id: '7',
+        dataRaw: '{}',
         data: {'requestId': 'r1', 'attempt': 2, 'sequence': 7, 'delta': 'Y'},
       ));
       expect(verdict.accepted, isFalse);
@@ -305,10 +318,16 @@ void main() {
 
     test('aceita attempt correto com requestId correto', () {
       final filter = SseEventFilter(requestId: 'req_abc', expectedAttempt: 2);
-      final event  = SseEvent(
-        type:    'text_delta', id: '1',
+      final event = SseEvent(
+        type: 'text_delta',
+        id: '1',
         dataRaw: '{}',
-        data:    {'requestId': 'req_abc', 'attempt': 2, 'sequence': 1, 'delta': 'Hello'},
+        data: {
+          'requestId': 'req_abc',
+          'attempt': 2,
+          'sequence': 1,
+          'delta': 'Hello'
+        },
       );
       final verdict = filter.accept(event);
       expect(verdict.accepted, isTrue);
@@ -319,24 +338,41 @@ void main() {
 
       // attempt=1 → rejeitado
       final e1 = SseEvent(
-        type: 'text_delta', id: '1', dataRaw: '{}',
-        data: {'requestId': 'r1', 'attempt': 1, 'sequence': 3, 'delta': 'Gemini'},
+        type: 'text_delta',
+        id: '1',
+        dataRaw: '{}',
+        data: {
+          'requestId': 'r1',
+          'attempt': 1,
+          'sequence': 3,
+          'delta': 'Gemini'
+        },
       );
       expect(filter.accept(e1).accepted, isFalse);
 
       // attempt=2 → aceito
       final e2 = SseEvent(
-        type: 'text_delta', id: '2', dataRaw: '{}',
+        type: 'text_delta',
+        id: '2',
+        dataRaw: '{}',
         data: {'requestId': 'r1', 'attempt': 2, 'sequence': 1, 'delta': 'GPT'},
       );
       expect(filter.accept(e2).accepted, isTrue);
     });
 
     test('requestId antigo ignorado', () {
-      final filter = SseEventFilter(requestId: 'req_CURRENT', expectedAttempt: 2);
-      final event  = SseEvent(
-        type: 'text_delta', id: '1', dataRaw: '{}',
-        data: {'requestId': 'req_OLD', 'attempt': 2, 'sequence': 1, 'delta': 'X'},
+      final filter =
+          SseEventFilter(requestId: 'req_CURRENT', expectedAttempt: 2);
+      final event = SseEvent(
+        type: 'text_delta',
+        id: '1',
+        dataRaw: '{}',
+        data: {
+          'requestId': 'req_OLD',
+          'attempt': 2,
+          'sequence': 1,
+          'delta': 'X'
+        },
       );
       expect(filter.accept(event).accepted, isFalse);
     });
@@ -348,7 +384,8 @@ void main() {
       expect(79 >= 80, isFalse);
     });
 
-    test('EOF sem transport_done → AiFailed local criado pelo cliente', () async {
+    test('EOF sem transport_done → AiFailed local criado pelo cliente',
+        () async {
       // Simular SSE que fecha sem transport_done
       const raw = 'event: text_delta\n'
           'data: {"requestId":"r1","attempt":2,"sequence":1,"delta":"Iniciar norepinefrina"}\n'
@@ -367,16 +404,14 @@ void main() {
       // não esperando o stream completo.
       // Deterministic sequential-indices oracle — zero DateTime calls.
 
-      final controller       = StreamController<List<int>>();
-      final parser           = SseParser();
-      final chunkBuffer      = <SseEvent>[];
-      final received         = Completer<void>();
+      final controller = StreamController<List<int>>();
+      final parser = SseParser();
+      final chunkBuffer = <SseEvent>[];
+      final received = Completer<void>();
       // ORACLE: tracks execution order of key stream lifecycle events.
       final List<String> executionOrderLog = [];
 
-      final sub = controller.stream
-          .transform(parser.transformer)
-          .listen((e) {
+      final sub = controller.stream.transform(parser.transformer).listen((e) {
         chunkBuffer.add(e);
         // Record first_chunk token exactly once — on the first emission.
         if (executionOrderLog.isEmpty) {
@@ -397,7 +432,8 @@ void main() {
 
       // Stream is still open here — incremental emission verified.
       expect(chunkBuffer, isNotEmpty,
-          reason: 'Parser must emit events incrementally, before stream closes.');
+          reason:
+              'Parser must emit events incrementally, before stream closes.');
 
       // Close the stream; signal terminal phase.
       await controller.close();
@@ -423,7 +459,7 @@ void main() {
       // Verificar a constante estática da feature flag
       // (O valor real é definido em provider_router_service.dart)
       // Este teste valida que a arquitetura suporta o kill switch
-      const flagTrue  = true;
+      const flagTrue = true;
       const flagFalse = false;
       expect(flagTrue, isNot(equals(flagFalse)));
     });

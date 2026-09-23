@@ -51,7 +51,8 @@ void main() {
       expect(source, contains('const SizedBox(height: 4)'));
     });
     test('R8 geometry and routes remain', () {
-      expect(source, contains('EdgeInsets.fromLTRB(0.7, 0, 0.7, 112 + safeBottom)'));
+      expect(source,
+          contains('EdgeInsets.fromLTRB(0.7, 0, 0.7, 112 + safeBottom)'));
       expect(source, contains('crossAxisCount: 2'));
       expect(source, contains('crossAxisSpacing: 3'));
       expect(source, contains('mainAxisSpacing: 3'));
@@ -61,9 +62,8 @@ void main() {
       expect(source, contains('_unifiedSimulationCategoryIndex(item.id)'));
       expect(source, contains('buckets[categoryIndex].add(item.id)'));
     });
-    test('legacy emoji helper remains preserved but hub uses SVG call-site',
-        () {
-      expect(source, contains('String _simulationGroupEmoji(String title)'));
+    test('canonical SVG owner replaces the unreferenced emoji helper', () {
+      expect(source, contains('String _simulationGroupSvgAsset(String title)'));
       expect(
           source, contains('emoji: _simulationGroupSvgAsset(group.titlePt),'));
       expect(

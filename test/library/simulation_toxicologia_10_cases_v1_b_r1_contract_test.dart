@@ -1,3 +1,4 @@
+import 'package:medcases/providers/app_provider.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -33,11 +34,9 @@ void main() {
     });
 
     test('original 10 remain narrative, unique and in Toxicologia', () {
-      final narrative = between(
-        library,
-        'static const Set<String> _casoNarrativoIds = {',
-        'static const List<_GrupoConfig> _gruposSimulacao = [',
-      );
+      final provider = AppProvider();
+      addTearDown(provider.dispose);
+      final narrative = provider.protocolsDB.map((p) => p.id).toList();
       final groups = between(
         library,
         'static const List<_GrupoConfig> _gruposSimulacao = [',
@@ -49,7 +48,7 @@ void main() {
       final toxicology = groups.substring(left, right);
       expect(originalIds.toSet(), hasLength(10));
       for (final id in originalIds) {
-        expect(narrative, contains("'$id'"), reason: id);
+        expect(narrative.where((i) => i == id), hasLength(1), reason: id);
         expect(toxicology, contains("'$id'"), reason: id);
         expect("id: '$id'".allMatches(protocols).length, 1, reason: id);
       }

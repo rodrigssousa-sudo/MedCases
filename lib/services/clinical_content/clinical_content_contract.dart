@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cryptography/dart.dart';
 
 const clinicalDomains = <String, String>{
+  'therapeuticProtocols': 'clinical_protocol_registry',
   'guides': 'clinical_guides',
   'drugs': 'medcases-calculadora',
   'protocols': 'clinical_protocol_registry',

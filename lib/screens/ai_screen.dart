@@ -1,3 +1,5 @@
+import '../services/plantao_knowledge/remote_knowledge_resolver.dart';
+import 'ai/widgets/therapeutic_options_view.dart';
 import 'upgrade_screen.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_AI
 import 'dart:async';
@@ -293,6 +295,10 @@ class _AiScreenState extends State<AiScreen> {
   // Usada no dispose() sem consultar ancestrais de um elemento desativado.
   AppProvider? _appProviderRef;
   final List<_ChatMsg> _messages = [];
+  final Map<String, TherapeuticOptionSession> _therapeuticSessions = {};
+  final Map<String, Map<String,dynamic>> _therapeuticPrimary = {};
+  final Map<String,List<Map<String,dynamic>>> _therapeuticOptions={};
+  final Map<String,String> _therapeuticContexts={};
   bool _thinking = false;
   bool _hasFocus = false;
   bool _aiError = false;
@@ -2510,6 +2516,7 @@ class _AiScreenState extends State<AiScreen> {
     bool fromButton = false,
     String? userDisplayText,
     String? providerInputOverride,
+    bool therapeuticAlternatives = false,
     PlantaoContinuationType continuationType =
         PlantaoContinuationType.freeFollowUp,
     List<PlantaoSection> requestedSections = const <PlantaoSection>[],
@@ -2530,6 +2537,7 @@ class _AiScreenState extends State<AiScreen> {
         fromButton: fromButton,
         userDisplayText: userDisplayText,
         providerInputOverride: providerInputOverride,
+        therapeuticAlternatives: therapeuticAlternatives,
         continuationType: continuationType,
         requestedSections: requestedSections,
       );
@@ -2743,6 +2751,7 @@ class _AiScreenState extends State<AiScreen> {
     bool fromButton = false,
     String? userDisplayText,
     String? providerInputOverride,
+    bool therapeuticAlternatives = false,
     PlantaoContinuationType continuationType =
         PlantaoContinuationType.freeFollowUp,
     List<PlantaoSection> requestedSections = const <PlantaoSection>[],
@@ -3018,6 +3027,8 @@ class _AiScreenState extends State<AiScreen> {
                   studyMode: requestLongResponse)
               : trimmed;
 
+      RemoteKnowledgeResolver? knowledgeResolver;
+      KnowledgeResolution? knowledgeResolution;
       // M56C_MACHINE_NATIVE_REGISTRY_PREFETCH — Plantão only.
       // Existing provider argument captured structurally; no variable-name dependency.
       final m56cBaseProviderInput = providerInput;
@@ -3026,6 +3037,14 @@ class _AiScreenState extends State<AiScreen> {
           ? await PlantaoMachineNativeContextPrefetch.instance.prefetchAttested(
               userText: m56cBaseProviderInput,
               language: p.lang,
+              supplementalEvidence: (internal) async {
+                final key = internal.canonicalPathologyKey ?? internal.protocolKey;
+                if (key == null || !_ownsUiRequest(requestSnapshot, p)) return '';
+                knowledgeResolver = await p.plantaoKnowledgeResolver();
+                knowledgeResolution = await knowledgeResolver?.resolve(key);
+                if (!_ownsUiRequest(requestSnapshot, p)) return '';
+                return knowledgeResolution?.promptContext(p.lang, alternatives:therapeuticAlternatives) ?? '';
+              },
             )
           : null;
       if (!_ownsUiRequest(requestSnapshot, p)) return;
@@ -3158,6 +3177,7 @@ class _AiScreenState extends State<AiScreen> {
         plantaoPersistenceEligibilityGate:
             !requestLongResponse ? m77PlantaoPersistenceEligibilityGate : null,
         visibleUserInput: trimmed,
+        preserveClinicalContext: therapeuticAlternatives,
         userDisplayText: normalizedUserDisplayText.isNotEmpty
             ? normalizedUserDisplayText
             : null,
@@ -3934,6 +3954,14 @@ class _AiScreenState extends State<AiScreen> {
               _fadingInMsgId = streamingMsgIdx >= 0 ? null : newBubbleMsgId;
             });
 
+            if (!requestLongResponse && committedAiMessageId != null &&
+                knowledgeResolver != null && knowledgeResolution?.protocol != null) {
+              unawaited(_attachTherapeuticOptions(
+                committedAiMessageId!, p.currentRequestId, requestSnapshot,
+                p, knowledgeResolver!, knowledgeResolution!, m56cBaseProviderInput, therapeuticAlternatives,
+                finalText.contains('[REMOTE_EVIDENCE_CONFLICT:${knowledgeResolution!.protocol!.id}]')));
+            }
+
             // M74B_POST_FINAL_PRESENTATION_RECONCILIATION_V1
             // Capture correlation while AppProvider is still executing
             // the terminal UI callback and before request release.
@@ -4281,6 +4309,52 @@ class _AiScreenState extends State<AiScreen> {
       Future.delayed(const Duration(milliseconds: 300), () {
         if (_ownsUiRequest(requestSnapshot, p)) _sendGuard = false;
       });
+    }
+  }
+
+  Future<void> _attachTherapeuticOptions(String messageId, String requestId,
+      AiUiRequestSnapshot owner, AppProvider p, RemoteKnowledgeResolver resolver,
+      KnowledgeResolution resolution, String clinicalContext, bool alternatives, bool evidenceConflict) async {
+    final session=TherapeuticOptionSession(
+      resolver:resolver,resolution:resolution,language:p.lang,
+      ownsRequest:()=>mounted && _ownsUiRequest(owner,p) && p.currentRequestId==requestId,
+      safetyAllows:(text)=>p.authorizesPracticalPrescription(requestId,text),
+      lookupDrug:(id)async=>(await p.lookupAiCanonicalDrug(id))!=null,
+      // Existing grounding runs in the canonical provider pipeline. Its explicit
+      // conflict signal may deny a protocol, never authorize or rewrite it.
+      externalConflictDetected:()=>evidenceConflict || _messages.any((m)=>m.id==messageId &&
+        m.text.contains('[REMOTE_EVIDENCE_CONFLICT:${resolution.protocol!.id}]')),
+      refreshEvidence:()async=>const [],
+    );
+    final options=await session.options(alternatives:alternatives);
+    if(!mounted||!session.current||options.isEmpty)return;
+    setState(() {
+      _therapeuticSessions.clear();_therapeuticPrimary.clear();_therapeuticOptions.clear();_therapeuticContexts.clear();
+      _therapeuticSessions[messageId]=session;
+      _therapeuticPrimary[messageId]=options.first;
+      _therapeuticOptions[messageId]=options;
+      _therapeuticContexts[messageId]=clinicalContext;
+    });
+  }
+
+  Future<void> _copyTherapeuticOption(String messageId,String? optionId) async {
+    final session=_therapeuticSessions[messageId];
+    final id=optionId??_therapeuticPrimary[messageId]?['optionId'] as String?;
+    final text=session==null||id==null?null:await session.copy(id);
+    if(!mounted)return;
+    if(text==null||session?.current!=true) {
+      final es=context.read<AppProvider>().lang=='es';
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(es
+        ?'Prescripción no disponible: faltan datos o validación clínica.'
+        :'Prescrição indisponível: faltam dados ou validação clínica.')));
+      return;
+    }
+    try {
+      await Clipboard.setData(ClipboardData(text:text));
+      session!.resolver.event('COPY_SUCCESS',optionId:id,language:session.language);
+    } catch (_) {
+      session?.resolver.event('COPY_FAILED',optionId:id);
+      if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('COPIAR: indisponível / no disponible')));
     }
   }
 
@@ -4826,13 +4900,21 @@ class _AiScreenState extends State<AiScreen> {
                 if (useGuardiaPresentation)
                   GuardiaClinicalResponseView(
                     key: ValueKey('guardia_${msg.id}'),
-                    rawText: cleanDisplayText,
+                    rawText: cleanDisplayText.replaceAll(RegExp(r'\[REMOTE_EVIDENCE_CONFLICT:[A-Za-z0-9_.:-]+\]'),
+                      p.lang=='es'?'Conflicto entre fuentes: requiere revisión; no se autorizó copiar este protocolo.':'Conflito entre fontes: requer revisão; a cópia deste protocolo não foi autorizada.'),
                     output: msg.clinicalOutput,
                     dark: dark,
                     languageCode: p.lang,
                     userText: precedingUserText,
                     userInitiatedByAction: precedingUserWasAction,
-                    onCopy: () => _copyMsg(cleanDisplayText),
+                    onCopy: () => _copyTherapeuticOption(msg.id,null),
+                    therapeuticOptions: _therapeuticSessions[msg.id]?.current==true && _therapeuticPrimary[msg.id]!=null
+                      ? TherapeuticOptionsView(session:_therapeuticSessions[msg.id]!,options:_therapeuticOptions[msg.id]!,
+                          onCopy:(id)=>_copyTherapeuticOption(msg.id,id),
+                          onAlternatives:()=>_sendDebounced(_therapeuticContexts[msg.id]!,p,
+                            sourceMode:AiRequestMode.plantao,fromButton:true,
+                            userDisplayText:p.lang=='es'?'Ver otras opciones terapéuticas':'Ver outras opções terapêuticas',
+                            providerInputOverride:_therapeuticContexts[msg.id],therapeuticAlternatives:true)) : null,
                     ttsPlaying: _ttsPlayingIndex == i,
                     ttsReady: _ttsReady,
                     onTts: _ttsReady

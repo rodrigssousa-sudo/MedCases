@@ -1,3 +1,4 @@
+import 'services/private_log_boundary.dart';
 import 'testimonials/testimonial_entry.dart';
 import 'testimonials/testimonial_screen.dart';
 import 'dart:async';
@@ -15,21 +16,21 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // BUILD 280: sincronização nativa splash iOS — elimina blink/flash (Guideline 2.1)
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'
-    show Timestamp, FirebaseFirestore, Settings;
+    show FirebaseFirestore, Settings;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'firebase_options.dart';
-import 'theme/app_theme.dart';
+
 import 'providers/app_provider.dart';
 import 'providers/ui_provider.dart'; // BUILD 326: sub-provider de UI
-import 'providers/ai_chat_provider.dart'; // BUILD 326: sub-provider de IA/chat
+ // BUILD 326: sub-provider de IA/chat
 import 'providers/tools_state_provider.dart'; // BUILD 445: estado clínico compartilhado
 import 'services/auth_service.dart';
 import 'services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
@@ -41,7 +42,7 @@ import 'screens/drugs_screen.dart';
 import 'screens/protocols_screen.dart';
 import 'screens/tools_screen.dart';
 import 'screens/ai_screen.dart';
-import 'screens/admin_screen.dart';
+
 import 'screens/history_screen.dart';
 import 'screens/maintenance_screen.dart';
 import 'screens/cases_screen.dart';
@@ -58,8 +59,6 @@ import 'screens/vaccines_screen.dart';
 import 'screens/avaliacao_screen.dart';
 import 'screens/laboratory_screen.dart'
     show LaboratoryMainShellWorkspace, LaboratorySessionBridge;
-import 'screens/remote_audio_consent_sheet.dart';
-import 'screens/notes_audio_local_runtime_screen.dart';
 import 'screens/calculadora_screen.dart' show CalculadoraScreen;
 import 'services/firestore_service.dart';
 import 'services/activity_service.dart';
@@ -80,7 +79,9 @@ import 'widgets/medcases_webview_screen.dart'; // BUILD 323 — MANDATO 2: in-ap
 import 'platform/web_impl.dart' if (dart.library.io) 'platform/web_stub.dart'
     as webPlatform;
 
-Future<void> main() async {
+Future<void> main() => runWithPrivateLogBoundary(_main);
+
+Future<void> _main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
     // Diagnóstico temporário: imprime o stack completo mesmo em erros repetidos.
     FlutterError.dumpErrorToConsole(details, forceReport: true);
@@ -299,6 +300,9 @@ Future<void> _bootInBackground(AppProvider provider) async {
   //     e já tem cache habilitado por padrão. Não chamar settings= na Web evita
   //     o erro "FirebaseException: Cache size must be between 1 MB and 100 MB" (Web SDK).
   //
+  // SECURITY SEC-005: retained for existing offline AI/history/internacion reads.
+  // SDK cache is OS/app-sandbox protected, NOT encrypted by our AES-GCM layer.
+  // Additional app PHI caches use PrivateUserCache; never duplicate plaintext.
   // NOTA: esta configuração NÃO afeta as Firestore Rules — é apenas cache local.
   // A leitura dos dados ainda exige autenticação válida (ver _waitForAuth()).
   try {
@@ -1655,11 +1659,7 @@ class _PendingScreenState extends State<_PendingScreen> {
     }
   }
 
-  bool get _isEs {
-    // Lê idioma da sessão; não temos AppProvider aqui (pré-auth)
-    // Usa detecção simples baseada no locale do dispositivo como fallback
-    return false; // padrão pt-BR para este contexto
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -6310,7 +6310,6 @@ class _DrawerRow extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String title;
-  final String? subtitle;
   final bool dark;
   final Color textCol;
   final Color subCol;
@@ -6326,7 +6325,6 @@ class _DrawerRow extends StatelessWidget {
     required this.textCol,
     required this.subCol,
     required this.onTap,
-    this.subtitle,
     this.trailing,
     this.showDivider = true,
   });
@@ -6362,17 +6360,6 @@ class _DrawerRow extends StatelessWidget {
                         letterSpacing: -0.05,
                       ),
                     ),
-                    if (subtitle != null) ...[
-                      const SizedBox(height: 1),
-                      Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: 9.66,
-                          fontWeight: FontWeight.w400,
-                          color: subCol,
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),
@@ -6591,191 +6578,10 @@ class _OnOffToggle extends StatelessWidget {
 // ── Bloco "Acesso Rápido" do Drawer ───────────────────────────────────────────
 // 4 atalhos para as principais telas: usa MainShell.pendingTab para navegar
 // sem precisar de onTabChange. Zero lógica de permissão.
-class _DrawerQuickAccess extends StatelessWidget {
-  final AppProvider p;
-  final bool dark;
-  final VoidCallback onClose;
 
-  const _DrawerQuickAccess({
-    required this.p,
-    required this.dark,
-    required this.onClose,
-  });
-
-  void _go(BuildContext context, int tab) {
-    onClose();
-    // Post-frame para garantir que o drawer fechou antes de mudar de tab
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      MainShell.pendingTab.value = tab;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isEs = p.lang == 'es';
-    final textCol = dark ? const Color(0xFFEEEEEE) : const Color(0xFF0F1116);
-    final subCol =
-        dark ? Colors.white.withOpacity(0.36) : const Color(0xFF9AA0A8);
-    final divider = dark ? const Color(0xFF1A2E22) : const Color(0xFFF0EDE8);
-
-    return _DrawerBlock(
-      dividerColor: divider,
-      children: [
-        // Nova Consulta → tab 0 (HomeScreen)
-        _DrawerRow(
-          icon: Icons.medical_services_outlined,
-          iconColor: const Color(0xFF0D6B57),
-          title: isEs ? 'Nueva Consulta' : 'Nova Consulta',
-          subtitle: isEs ? 'Iniciar caso clínico' : 'Iniciar caso clínico',
-          dark: dark,
-          textCol: textCol,
-          subCol: subCol,
-          onTap: () => _go(context, 0),
-        ),
-        // Assistente IA → tab 2
-        _DrawerRow(
-          icon: Icons.smart_toy_outlined,
-          iconColor: const Color(0xFF8B5CF6),
-          title: isEs ? 'Asistente IA' : 'Assistente IA',
-          subtitle: isEs ? 'IA Clínica de bolsillo' : 'IA Clínica de bolso',
-          dark: dark,
-          textCol: textCol,
-          subCol: subCol,
-          onTap: () => _go(context, 2),
-        ),
-        // PROTOCOLOS — visível apenas na Web (Apple 1.4.1: oculto no iOS)
-        if (kIsWeb) ...[
-          _DrawerRow(
-            icon: Icons.assignment_outlined,
-            iconColor: const Color(0xFF0EA5E9),
-            title: isEs ? 'Protocolos' : 'Protocolos',
-            subtitle: isEs ? 'Guías y directrices' : 'Rx e diretrizes',
-            dark: dark,
-            textCol: textCol,
-            subCol: subCol,
-            onTap: () => _go(context, 1),
-          ),
-          // FARMACOLOGIA — visível apenas na Web (Apple 1.4.1: oculto no iOS)
-          _DrawerRow(
-            icon: Icons.medication_outlined,
-            iconColor: const Color(0xFFF59E0B),
-            title: isEs ? 'Farmacología' : 'Farmacologia',
-            subtitle: isEs ? 'Base de medicamentos' : 'Base de medicamentos',
-            dark: dark,
-            textCol: textCol,
-            subCol: subCol,
-            showDivider: false,
-            onTap: () => _go(context, 1),
-          ),
-        ],
-      ],
-    );
-  }
-}
 
 // ── Header do app ─────────────────────────────────────────────────────────────
-class _AppHeader extends StatelessWidget {
-  final ValueChanged<int> onTabChange;
-  final int currentTab;
-  const _AppHeader({required this.onTabChange, required this.currentTab});
 
-  @override
-  Widget build(BuildContext context) {
-    // context.select — rebuild apenas quando userName ou lang muda
-    final userName = context.select<AppProvider, String>((p) => p.userName);
-    final lang = context.select<AppProvider, String>((p) => p.lang);
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF1A1D23), Color(0xFF252930), Color(0xFF252930)],
-          stops: [0.0, 0.5, 1.0],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.38),
-            blurRadius: 20,
-            offset: const Offset(0, 5),
-          ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.12),
-            blurRadius: 32,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 11, 14, 13),
-          child: Row(children: [
-            // Logo clicável
-            GestureDetector(
-              onTap: () => onTabChange(0),
-              child: const BrandMark(small: true),
-            ),
-            const SizedBox(width: 12),
-            // Nome + subtítulo
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    userName.isNotEmpty ? userName : 'MedCases IA',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF0D6B57),
-                      letterSpacing: -0.2,
-                      height: 1.1,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    lang == 'es'
-                        ? 'Apoyo clínico educativo'
-                        : 'Apoio clínico educacional',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.white.withOpacity(0.48),
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            // Botão hamburguer — limpo, sem badge de idioma
-            GestureDetector(
-              onTap: () => Scaffold.of(context).openEndDrawer(),
-              child: Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white.withOpacity(0.07),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.13),
-                    width: 1,
-                  ),
-                ),
-                child: const Icon(
-                  Icons.menu_rounded,
-                  size: 20,
-                  color: Color(0xFFFFE8A6),
-                ),
-              ),
-            ),
-          ]),
-        ),
-      ),
-    );
-  }
-}
 
 // ── Sobre o App — sheet institucional (Apple 1.5.0) ──────────────────────────
 // Usa DraggableScrollableSheet para garantir que header+X fiquem sempre fixos
@@ -7209,10 +7015,8 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
   // MEDCASES_PROFILE_ACCOUNT_UI_V2_B_R1
   static const _green = Color(0xFF0D6B57);
   static const _pageDark = Color(0xFF0F1116);
-  static const _surfaceDark = Color(0xFF181D25);
   static const _borderDark = Color(0xFF374151);
   static const _pageLight = Color(0xFFECF0F4);
-  static const _surfaceLight = Color(0xFFFFFFFF);
   static const _borderLight = Color(0xFFE2E7EC);
 
   late final TextEditingController _nameCtrl;
@@ -7596,7 +7400,7 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
   }
 
   Widget _avatarCard() {
-    final surface = dark ? _surfaceDark : _surfaceLight;
+
     final border = dark ? _borderDark : _borderLight;
     final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
     final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
@@ -8416,101 +8220,7 @@ class _FeedbackSheet extends StatelessWidget {
 }
 
 // ── Confirmação de envio ──────────────────────────────────────────────────────
-class _SuccessView extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  final VoidCallback onClose;
-  const _SuccessView({
-    required this.dark,
-    required this.isEs,
-    required this.onClose,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    final bg = dark ? const Color(0xFF1C1C1E) : Colors.white;
-    final textCol = dark ? Colors.white : const Color(0xFF1A1D23);
-    final subCol = dark ? const Color(0xFF8E8E93) : const Color(0xFF6B7280);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle bar
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(top: 12, bottom: 32),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: dark ? const Color(0xFF48484A) : const Color(0xFFD1D5DB),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
-          // Ícone de sucesso
-          Container(
-            width: 72,
-            height: 71,
-            decoration: BoxDecoration(
-              color: const Color(0xFF7C3AED).withOpacity(0.12),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.mark_email_read_rounded,
-                color: Color(0xFF7C3AED), size: 36),
-          ),
-          const SizedBox(height: 20),
-
-          Text(
-            isEs ? '¡Listo!' : 'Pronto!',
-            style: TextStyle(
-                fontSize: 22, fontWeight: FontWeight.w900, color: textCol),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              isEs
-                  ? 'Tu app de correo se abrió con el mensaje. Solo envíalo y listo — ¡gracias por tu feedback!'
-                  : 'Seu app de e-mail abriu com a mensagem pronta. Só enviar — obrigado pelo feedback!',
-              style: TextStyle(fontSize: 14, color: subCol, height: 1.5),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 32),
-
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: onClose,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7C3AED),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                elevation: 0,
-              ),
-              child: Text(
-                isEs
-                    ? 'Cerrar'
-                    : 'Fechar', // BUILD 334-FORENSE: hardcode PT corrigido
-                style:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PAINEL LATERAL RETRÁTIL — ANOTAÇÕES
@@ -8543,7 +8253,7 @@ class _NotesAudioWorkspaceState extends State<_NotesAudioWorkspace> {
     final isEs = p.lang == 'es';
 
     final page = dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
-    final surface = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
+
     final subnav = dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
     final border = dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
     final text = dark ? const Color(0xFF0D6B57) : const Color(0xFF0D6B57);
@@ -8775,370 +8485,13 @@ class _NotesAudioWorkspaceTab extends StatelessWidget {
   }
 }
 
-class _NotesAudioWorkspaceAudio extends StatelessWidget {
-  const _NotesAudioWorkspaceAudio({
-    required this.isEs,
-    required this.page,
-    required this.surface,
-    required this.border,
-    required this.text,
-    required this.sub,
-    required this.accent,
-  });
 
-  final bool isEs;
-  final Color page;
-  final Color surface;
-  final Color border;
-  final Color text;
-  final Color sub;
-  final Color accent;
 
-  Future<void> _requestPurposeSpecificConsent(
-    BuildContext context, {
-    required String mode,
-    required bool longForm,
-  }) async {
-    final accepted = await ClinicalLongFormRemoteAudioConsentUi.showIfNeeded(
-      context,
-      language: isEs ? 'es' : 'pt',
-    );
 
-    if (!context.mounted || !accepted) {
-      return;
-    }
 
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        settings: RouteSettings(name: 'notes_audio_local:$mode'),
-        builder: (_) => longForm
-            ? NotesAudioLongFormLocalRuntimeScreen(isEs: isEs)
-            : NotesAudioConsultationLocalRuntimeScreen(isEs: isEs),
-      ),
-    );
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: page,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(1, 1, 1, 124),
-        children: [
-          _NotesAudioHero(
-            isEs: isEs,
-            surface: surface,
-            border: border,
-            text: text,
-            sub: sub,
-            accent: accent,
-          ),
-          const SizedBox(height: 8),
-          _NotesAudioModeCard(
-            icon: Icons.medical_services_outlined,
-            title: 'Consulta clínica',
-            subtitle: isEs
-                ? 'Captura de voz para transcripción y organización de la historia clínica.'
-                : 'Captura de voz para transcrição e organização da história clínica.',
-            badge: 'Consulta',
-            lockedLabel: isEs ? 'Local y privado' : 'Local e privado',
-            onTap: () => _requestPurposeSpecificConsent(
-              context,
-              mode: 'Consulta clínica',
-              longForm: false,
-            ),
-            surface: surface,
-            border: border,
-            text: text,
-            sub: sub,
-            accent: accent,
-          ),
-          const SizedBox(height: 6),
-          _NotesAudioModeCard(
-            icon: Icons.school_outlined,
-            title: isEs ? 'Clase / audio largo' : 'Aula / áudio longo',
-            subtitle: isEs
-                ? 'Grabación segmentada, transcripción cronológica, revisión y borrado del audio tras confirmar.'
-                : 'Gravação segmentada, transcrição cronológica, revisão e exclusão do áudio após confirmar.',
-            badge: isEs ? 'Modo estudio' : 'Modo estudo',
-            lockedLabel: isEs ? 'Local y privado' : 'Local e privado',
-            onTap: () => _requestPurposeSpecificConsent(
-              context,
-              mode: isEs ? 'Clase / audio largo' : 'Aula / áudio longo',
-              longForm: true,
-            ),
-            surface: surface,
-            border: border,
-            text: text,
-            sub: sub,
-            accent: accent,
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
-}
 
-class _NotesAudioHero extends StatelessWidget {
-  const _NotesAudioHero({
-    required this.isEs,
-    required this.surface,
-    required this.border,
-    required this.text,
-    required this.sub,
-    required this.accent,
-  });
 
-  final bool isEs;
-  final Color surface;
-  final Color border;
-  final Color text;
-  final Color sub;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 13, 14, 13),
-      decoration: BoxDecoration(
-        color: surface,
-        borderRadius: BorderRadius.circular(8),
-        border: null,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: accent.withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(Icons.graphic_eq_rounded, size: 23, color: accent),
-          ),
-          const SizedBox(width: 11),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        isEs ? 'Audio y transcripción' : 'Áudio e transcrição',
-                        style: TextStyle(
-                          color: text,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: -0.1,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  isEs
-                      ? 'Un espacio para consulta, clases y transcripciones con revisión antes de guardar.'
-                      : 'Um espaço para consulta, aulas e transcrições com revisão antes de salvar.',
-                  style: TextStyle(
-                    color: sub,
-                    fontSize: 10.5,
-                    height: 1.3,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NotesAudioModeCard extends StatelessWidget {
-  const _NotesAudioModeCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.badge,
-    required this.lockedLabel,
-    required this.onTap,
-    required this.surface,
-    required this.border,
-    required this.text,
-    required this.sub,
-    required this.accent,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final String badge;
-  final String lockedLabel;
-  final VoidCallback onTap;
-  final Color surface;
-  final Color border;
-  final Color text;
-  final Color sub;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(12, 11, 10, 11),
-        decoration: BoxDecoration(
-          color: surface,
-          borderRadius: BorderRadius.circular(8),
-          border: null,
-        ),
-        child: Row(
-          children: [
-            SizedBox(width: 32, child: Icon(icon, size: 19, color: accent)),
-            const SizedBox(width: 7),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: text,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: sub,
-                      fontSize: 10.5,
-                      height: 1.3,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: accent.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(99),
-                        ),
-                        child: Text(
-                          badge,
-                          style: TextStyle(
-                            color: accent,
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: Text(
-                          lockedLabel,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: sub,
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right_rounded, size: 18, color: sub),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _NotesAudioWorkspaceHistory extends StatelessWidget {
-  const _NotesAudioWorkspaceHistory({
-    required this.isEs,
-    required this.page,
-    required this.surface,
-    required this.border,
-    required this.text,
-    required this.sub,
-    required this.accent,
-  });
-
-  final bool isEs;
-  final Color page;
-  final Color surface;
-  final Color border;
-  final Color text;
-  final Color sub;
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: page,
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(1, 1, 1, 124),
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(8),
-              border: null,
-            ),
-            child: Column(
-              children: [
-                Icon(Icons.history_rounded, size: 30, color: accent),
-                const SizedBox(height: 9),
-                Text(
-                  isEs
-                      ? 'Sin transcripciones confirmadas'
-                      : 'Nenhuma transcrição confirmada',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: text,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  isEs
-                      ? 'Las sesiones aparecerán aquí después de la revisión y confirmación del usuario.'
-                      : 'As sessões aparecerão aqui depois da revisão e confirmação do usuário.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: sub,
-                    fontSize: 10.5,
-                    height: 1.35,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 void showNotesSheet(BuildContext context) {
   showModalBottomSheet(
@@ -9942,7 +9295,7 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
 
       CalculadoraScreen.requestCacheRefresh();
 
-      if (!mounted) return;
+      if (!mounted || !ctx.mounted) return;
       ScaffoldMessenger.of(ctx)
         ..clearSnackBars()
         ..showSnackBar(
@@ -9959,7 +9312,7 @@ class _OfflineDrawerCardState extends State<_OfflineDrawerCard> {
           ),
         );
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted || !ctx.mounted) return;
       ScaffoldMessenger.of(ctx)
         ..clearSnackBars()
         ..showSnackBar(

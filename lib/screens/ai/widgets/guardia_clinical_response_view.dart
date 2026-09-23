@@ -14,6 +14,7 @@ const bool _typedTreatmentVisualEnabledByDefault = bool.fromEnvironment(
 String _guardiaUtf16Safe(String value) => WellFormedUtf16.normalize(value);
 
 class GuardiaClinicalResponseView extends StatefulWidget {
+  final Widget? therapeuticOptions;
   final String rawText;
   final String userText;
   final bool userInitiatedByAction;
@@ -33,6 +34,7 @@ class GuardiaClinicalResponseView extends StatefulWidget {
   const GuardiaClinicalResponseView({
     super.key,
     required this.rawText,
+    this.therapeuticOptions,
     this.userText = '',
     this.userInitiatedByAction = false,
     required this.dark,
@@ -444,7 +446,8 @@ class _GuardiaClinicalResponseViewState
             for (final item in displayImmediate)
               _BulletLine(text: item, palette: palette),
           ],
-          if (allowMedicationPresentation && useTypedTreatmentVisual) ...[
+          if (allowMedicationPresentation && widget.therapeuticOptions != null) widget.therapeuticOptions!,
+          if (allowMedicationPresentation && widget.therapeuticOptions == null && useTypedTreatmentVisual) ...[
             if (content.hasContentBeforeMedication) const SizedBox(height: 20),
             ClinicalTreatmentPresentationShadowView(
               key: const ValueKey('guardia_typed_treatment_section'),
@@ -454,6 +457,7 @@ class _GuardiaClinicalResponseViewState
             ),
           ],
           if (allowMedicationPresentation &&
+              widget.therapeuticOptions == null &&
               !useTypedTreatmentVisual &&
               content.hasMedication) ...[
             if (content.hasContentBeforeMedication) const SizedBox(height: 20),
@@ -2569,7 +2573,7 @@ class _FooterActions extends StatelessWidget {
               ),
               const SizedBox(width: 3),
               Text(
-                'Copiar',
+                'COPIAR',
                 style: TextStyle(
                   fontSize: 10,
                   color: palette.textMuted.withValues(alpha: 0.42),

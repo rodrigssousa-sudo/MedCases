@@ -103,6 +103,7 @@ final class _StudyEducationalSegmentProvider
         sourceId: sourceId,
         type: StudySourceType.uploadedAudio,
         usageReservation: usageReservation,
+        executionIndex: request.segmentIndex,
         fileName:
             'segment_${request.segmentIndex.toString().padLeft(5, '0')}.m4a',
         mimeType: 'audio/mp4',
@@ -228,6 +229,7 @@ final class StudyImportedAudioPipeline {
     await EntitlementService.instance.refreshAuthoritativeTier();
     final usage = await MonthlyUsageLedger.instance.begin(
         operationId: 'study-import-$jobId',
+        executionCount: segments.length,
         kinds: {UsageKind.transcription},
         maximumMs: durationMs);
     var usageCompleted = false;

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
 
-import '../../../../design_system/foundation/med_typography.dart';
+
 class SoapEvaluacion extends StatefulWidget {
   final EvaluacionData data;
   final ValueChanged<EvaluacionData> onChanged;
@@ -239,11 +239,5 @@ Widget build(BuildContext context) {
     );
   }
 
-  IconData _iconForEstado(EstadoClinical e) {
-    switch (e) {
-      case EstadoClinical.mejorando:  return Icons.trending_up_rounded;
-      case EstadoClinical.estable:    return Icons.trending_flat_rounded;
-      case EstadoClinical.empeorando: return Icons.trending_down_rounded;
-    }
-  }
+
 }

@@ -1,3 +1,6 @@
+import 'home_composition_runtime_harness.dart';
+import 'package:flutter/material.dart';
+import 'package:medcases/home_v2/components/home_v2_modules_view.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -96,21 +99,16 @@ void main() {
       );
     });
 
-    test('cluster clínico para utilidades usa 3 px', () {
-      final shell = classBlock(
-        home,
-        '_HomeV2VisualShell',
-      );
-
-      expect(
-        shell
-                .split(
-                  'const SizedBox(height: 3)',
-                )
-                .length -
-            1,
-        1,
-      );
+    testWidgets(
+        'cluster clínico e utilidades mantêm o divisor produtivo de 0,55 px',
+        (tester) async {
+      await verifyHomeComposition(tester, verifyMounted: () {
+        final clinical = find.byType(HomeV2ClinicalGrid).first;
+        final utility = find.byType(HomeV2UtilityRow);
+        expect(
+            tester.getTopLeft(utility).dy - tester.getBottomLeft(clinical).dy,
+            closeTo(0.55, 0.001));
+      });
     });
 
     test('utilidades para Mi Guardia usa 5 px', () {
@@ -180,55 +178,40 @@ void main() {
   });
 
   group('Cluster clínico', () {
-    test('Fármacos e grade continuam unificados', () {
-      expect(
-        modules,
-        contains(
-          'class HomeV2ClinicalSurface '
-          'extends StatelessWidget',
-        ),
-      );
-
-      expect(
-        home,
-        contains('HomeV2ClinicalSurface('),
-      );
-
-      expect(
-        home.split('embedded: true').length - 1,
-        2,
-      );
+    testWidgets(
+        'Fármacos e grades compartilham o owner produtivo sem perder módulos',
+        (tester) async {
+      await verifyHomeComposition(tester, verifyMounted: () {
+        expect(find.byType(HomeV2PrimaryClinicalCard), findsOneWidget);
+        expect(find.byType(HomeV2ClinicalGrid), findsNWidgets(2));
+        final primary = find.byType(HomeV2PrimaryClinicalCard);
+        final clinical = find.byType(HomeV2ClinicalGrid).first;
+        expect(tester.getBottomLeft(primary).dy,
+            closeTo(tester.getTopLeft(clinical).dy, 0.001));
+        expect(
+            tester
+                .widgetList<HomeV2ClinicalGrid>(find.byType(HomeV2ClinicalGrid))
+                .map((g) => g.section),
+            [
+              HomeV2ClinicalGridSection.toolsHistory,
+              HomeV2ClinicalGridSection.patientPediatrics
+            ]);
+      });
     });
 
-    test('divisor principal usa o perfil interno', () {
-      final clinicalSurface = classBlock(
-        modules,
-        'HomeV2ClinicalSurface',
-      );
-
+    testWidgets('surface atual preserva filhos e espaçamento interno',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+          home: Scaffold(
+              body: HomeV2ClinicalSurface(
+                  dark: false,
+                  primary: const SizedBox(key: ValueKey('primary'), height: 10),
+                  grid: const SizedBox(key: ValueKey('grid'), height: 10)))));
       expect(
-        clinicalSurface,
-        contains(
-          'const _ClinicalHorizontalDivider()',
-        ),
-      );
-
-      expect(
-        clinicalSurface,
-        isNot(contains('height: 1')),
-      );
-
-      // Conta somente montagens com vírgula.
-      // A declaração do construtor termina em ponto e vírgula.
-      expect(
-        modules
-                .split(
-                  'const _ClinicalHorizontalDivider(),',
-                )
-                .length -
-            1,
-        2,
-      );
+          tester.getTopLeft(find.byKey(const ValueKey('grid'))).dy -
+              tester.getBottomLeft(find.byKey(const ValueKey('primary'))).dy,
+          3);
+      expect(tester.takeException(), isNull);
     });
   });
 

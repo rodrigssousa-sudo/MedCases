@@ -1,3 +1,4 @@
+import 'home_utility_guardia_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -165,88 +166,14 @@ void main() {
         },
       );
 
-      test(
-        'exibe o SVG oficial sem card',
-        () {
-          final surface = classBlock(
-            modules,
-            'HomeV2GuardiaSurface',
-          );
+      testWidgets('exibe o SVG oficial atual sem tintagem', (tester) async {
+        await verifyGuardiaRuntime(tester);
+      });
 
-          expect(
-            surface,
-            contains(
-              'SvgPicture.asset(',
-            ),
-          );
-
-          expect(
-            surface,
-            contains(
-              'assets/icons/home_v2/'
-              'ic_plantao.svg',
-            ),
-          );
-
-          expect(
-            surface,
-            contains(
-              'HomeV2IconPalette.'
-              'plantao(dark)',
-            ),
-          );
-
-          expect(
-            surface,
-            contains('width: 26.4'),
-          );
-
-          expect(
-            surface,
-            contains('height: 26.4'),
-          );
-
-          expect(
-            surface,
-            isNot(
-              contains('_ModuleIcon('),
-            ),
-          );
-
-          expect(
-            surface,
-            isNot(
-              contains(
-                'palette.surfaceStrong',
-              ),
-            ),
-          );
-        },
-      );
-
-      test(
-        'mantém _ModuleIcon compartilhado intacto',
-        () {
-          final moduleIcon = classBlock(
-            modules,
-            '_ModuleIcon',
-          );
-
-          expect(
-            moduleIcon,
-            contains(
-              'color: palette.surfaceStrong',
-            ),
-          );
-
-          expect(
-            moduleIcon,
-            contains(
-              'border: Border.all(',
-            ),
-          );
-        },
-      );
+      testWidgets('owner atual preserva ícone, título e callback em ES escuro',
+          (tester) async {
+        await verifyGuardiaRuntime(tester, dark: true, isEs: true);
+      });
 
       test(
         'CTA possui somente um sinal de adição',

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import '../home_v2/home_release_runtime_harness.dart';
 
 String _read(String path) => File(path).readAsStringSync();
 
@@ -20,26 +21,6 @@ String _section(
   }
 
   return source.substring(start, end);
-}
-
-int _occurrences(String source, Pattern pattern) {
-  if (pattern is RegExp) {
-    return pattern.allMatches(source).length;
-  }
-
-  final value = pattern.toString();
-  if (value.isEmpty) return 0;
-
-  var count = 0;
-  var offset = 0;
-
-  while (true) {
-    final index = source.indexOf(value, offset);
-    if (index < 0) return count;
-
-    count++;
-    offset = index + value.length;
-  }
 }
 
 void main() {
@@ -438,12 +419,14 @@ void main() {
       );
     });
 
-    test('Timer usa alerta audível de lock screen sem full-screen invasivo', () {
+    test('Timer usa alerta audível de lock screen sem full-screen invasivo',
+        () {
       expect(service, contains("static const _chShift"));
       expect(service, contains("'medcases_shift'"));
       expect(service, contains('final isShiftTimer = channel == _chShift'));
       expect(service, contains('NotificationVisibility.public'));
-      expect(service, contains('fullScreenIntent:   isShiftTimer ? false : true'));
+      expect(
+          service, contains('fullScreenIntent:   isShiftTimer ? false : true'));
       expect(service, contains('AndroidNotificationCategory.alarm'));
       expect(service, contains('playSound:          true'));
       expect(service, contains("sound:             'default'"));
@@ -535,7 +518,7 @@ void main() {
       expect(bridge, contains('_startTimer(seconds, timerLabel)'));
     });
 
-    test('Timer usa a paleta verde da Home V2 e remove o roxo legado', () {
+    testWidgets('Timer usa a paleta verde da Home V2 e remove o roxo legado', (tester) async {
       final sheetStart = home.indexOf(
         'class _PomodoroSheetState extends State<_PomodoroSheet>',
       );
@@ -557,7 +540,7 @@ void main() {
       expect(sheet, contains("'Programar revisión'"));
       expect(sheet, contains("'Revisão programada'"));
       expect(sheet, contains("'Revisión programada'"));
-      expect(sheet, contains('OutlinedButton.icon('));
+      await verifyRealTimer(tester);
       expect(sheet, isNot(contains('0xFF7C3AED')));
 
       expect(

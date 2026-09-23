@@ -1206,44 +1206,7 @@ String soapResumidoString(
   const dash = '-----------------------------------------';
 
   // ── Helper: quebra texto e grava bullets indentados ────────────────────────
-  void addCompact(String field, {String indent = '  '}) {
-    if (field.trim().isEmpty) return;
-    if (RegExp(r'\d+[\.\)]\s+').hasMatch(field)) {
-      for (final item in splitNumberedList(field)) {
-        final clean = item.replaceFirst(RegExp(r'^[-•*]\s*'), '').trim();
-        if (clean.isNotEmpty) buf.writeln('$indent• $clean');
-      }
-      return;
-    }
-    final lines = field
-        .split('\n')
-        .map((l) => l.trim())
-        .where((l) => l.isNotEmpty)
-        .toList();
-    if (lines.length > 1) {
-      for (final l in lines) {
-        final clean = l.replaceFirst(RegExp(r'^[-•*]\s*'), '').trim();
-        if (clean.isNotEmpty) buf.writeln('$indent• $clean');
-      }
-      return;
-    }
-    // Build 203 FIX DT-011: lookahead maiúscula para não fragmentar abreviações
-    // médicas (P.A., Dr., E.V., sat., Amp., etc.) em bullets separados.
-    final sentences = field
-        .split(RegExp(r'\.\s+(?=[A-ZÁÉÍÓÚÀÂÊÔÃÕÜ])'))
-        .map((s) => s.trim())
-        .where((s) => s.isNotEmpty)
-        .toList();
-    if (sentences.length > 1) {
-      for (final sent in sentences) {
-        final clean = sent.replaceFirst(RegExp(r'^[-•*]\s*'), '').trim();
-        if (clean.isNotEmpty) buf.writeln('$indent• $clean');
-      }
-      return;
-    }
-    final clean = field.replaceFirst(RegExp(r'^[-•*]\s*'), '').trim();
-    if (clean.isNotEmpty) buf.writeln('$indent• $clean');
-  }
+
 
   // ── Frame superior ──────────────────────────────────────────────────────────
   buf.writeln(sep);

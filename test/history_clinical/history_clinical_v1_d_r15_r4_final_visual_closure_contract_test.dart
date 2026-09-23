@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -74,26 +75,29 @@ void main() {
     expect(owner, contains('TextInputType.numberWithOptions'));
   });
 
-  test('Laboratório fica dark fechado e expandido', () {
+  testWidgets('Laboratório fica dark fechado e expandido', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryExamPalette(tester);
     final owner = classSlice(history, '_LabStructuredWidgetState');
-    expect(owner, contains('color: const Color(0xFF252930)'));
     expect(owner, isNot(contains('0xFFF7FFFE')));
-    expect(owner, contains('fillColor: const Color(0xFF2D3340)'));
     expect(owner, contains('ImageSource.camera'));
     expect(owner, contains('ImageSource.gallery'));
     expect(owner, contains('_LabOcrService.extractText'));
   });
 
-  test('ECG fica dark, legível e sem dourado dominante', () {
+  testWidgets('ECG fica dark, legível e sem dourado dominante', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryExamPalette(tester);
     final owner = classSlice(history, '_EcgStructuredWidgetState');
-    expect(owner, contains('color: const Color(0xFF252930)'));
     expect(owner, contains('const Color(0xFF143B32)'));
     expect(owner, isNot(contains('kGold')));
     expect(owner, isNot(contains('kGoldLight')));
     expect(owner, isNot(contains('color: sel ? kDark : Colors.white')));
   });
 
-  test('picker principal é compacto e preserva câmera, galeria e OCR', () {
+  testWidgets('picker principal é compacto e preserva câmera, galeria e OCR', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryOcrPicker(tester);
     final owner = classSlice(recorder, '_OcrScannerModalState');
     final sourceButton = classSlice(recorder, '_OcrSourceBtn');
     expect(owner, isNot(contains('0xFF6366F1')));
@@ -102,16 +106,16 @@ void main() {
     expect(owner, contains('_pickAndProcess(ImageSource.gallery)'));
     expect(owner, contains('_picker.pickImage'));
     expect(owner, contains('SoapAiProcessor.ocrExam'));
-    expect(owner, contains('indent: 56'));
     expect(sourceButton, contains('final String subtitle;'));
     expect(sourceButton, isNot(contains('final Color color;')));
   });
 
-  test('botão principal do scanner permanece no owner aprovado', () {
+  testWidgets('botão principal do scanner permanece no owner aprovado', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryOcrPicker(tester);
     final owner = classSlice(history, '_OcrExamButton');
     expect(owner, contains('ClinicalRecorderSheet.showOcrScanner'));
     expect(owner, contains('Color(0xFF14213D)'));
-    expect(owner, contains('Color(0xFF147D64)'));
   });
 
   test('não há corrupção de token de cor', () {

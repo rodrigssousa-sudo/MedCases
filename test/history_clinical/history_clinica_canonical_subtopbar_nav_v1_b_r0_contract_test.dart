@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -61,7 +62,10 @@ void main() {
       expect(row, contains('height: 20'));
     });
 
-    test('MIS HCs PUBLICAS and +NUEVA are three equal real tabs', () {
+    testWidgets('MIS HCs PUBLICAS and +NUEVA are three equal real tabs', (tester) async {
+    // The live owner now has a 40px strip and entitlement-gated creation.
+    // Verify geometry, selection and navigation instead of retired markers.
+    await verifyHistoryNavigation(tester);
       expect(RegExp(r'\bExpanded\(').allMatches(row).length, 3);
       expect(RegExp(r'\b_HcFlatTab\(').allMatches(row).length, 3);
 
@@ -72,7 +76,9 @@ void main() {
       expect(row, contains('index: 0'));
       expect(row, contains('index: 1'));
       expect(row, contains('index: 2'));
-      expect(row, contains('onTap: onNew'));
+      expect(row, contains('consumeClinicalHistoryCreationAllowance()'));
+      expect(row, contains('if (!decision.allowed)'));
+      expect(row, contains('onNew();'));
     });
 
     test('shared flat-tab owner retains current active visual grammar', () {

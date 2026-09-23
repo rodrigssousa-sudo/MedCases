@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -78,10 +79,11 @@ void main() {
     expect(history, isNot(contains('bottomNavigationBar:')));
   });
 
-  test('R3 permanece e somente o light branch explícito do editor muda', () {
+  testWidgets('R3 permanece e somente o light branch explícito do editor muda', (tester) async {
+    // The live owner now has a 40px strip and entitlement-gated creation.
+    // Verify geometry, selection and navigation instead of retired markers.
+    await verifyHistoryNavigation(tester);
     for (final marker in <String>[
-      'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_TABROW_LIGHT',
-      'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_FLATTAB_LIGHT',
       'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_SCREEN_CANVAS_LIGHT',
       'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_HISTORY_CARD_LIGHT',
     ]) {

@@ -21,15 +21,19 @@ function response() {
 }
 
 function db(existing = {}) {
-  const writes = [];
+  const writes = [], records = new Map([['users/firebase-uid-123', existing]]);
+  const orderId = require('node:crypto').createHash('sha256').update('firebase-uid-123').digest('hex');
+  if (existing.billingLastEventTimestampMs) records.set('revenuecatBillingOrder/'+orderId,existing);
   return {
-    writes,
-    collection(name) {
-      assert.equal(name, 'users');
-      return { doc(uid) { return {
-        async get() { return { exists: true, data: () => existing }; },
-        async set(payload, options) { writes.push({ uid, payload, options }); },
-      }; } };
+    writes, collection: name => ({doc: uid => `${name}/${uid}`}),
+    async runTransaction(action) {
+      return action({
+        get: async ref => ({exists: records.has(ref), data: () => records.get(ref)}),
+        set: (ref, payload, options) => {
+          records.set(ref, {...records.get(ref), ...payload});
+          if (ref.startsWith('users/')) writes.push({payload, options});
+        },
+      });
     },
   };
 }

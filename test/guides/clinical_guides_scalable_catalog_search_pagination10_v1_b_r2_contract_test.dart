@@ -1,3 +1,4 @@
+import 'guide_runtime_fixture.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -14,24 +15,7 @@ void main() {
     expect(firestore, contains('guides.take(guidesPortalPageSize)'));
   });
 
-  test('Next page uses cursor and next ten only', () {
-    final firestore = File(
-      'lib/services/firestore_service.dart',
-    ).readAsStringSync();
-    final library = File('lib/screens/library_screen.dart').readAsStringSync();
-
-    expect(firestore, contains('loadNextPublishedGuidesPage'));
-    expect(firestore, contains('.startAfter(<Object?>[cursor])'));
-    expect(
-      library,
-      contains('page.length >= FirestoreService.guidesPortalPageSize'),
-    );
-    expect(
-      library,
-      contains('notification.metrics.extentAfter < cardWidth * 0.75'),
-    );
-    expect(library, contains('onLoadMore: _loadMoreGuides'));
-  });
+  testPagination();
 
   test('Pagination deduplicates and stays newest-first', () {
     final library = File('lib/screens/library_screen.dart').readAsStringSync();

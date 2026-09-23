@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -70,14 +71,15 @@ void main() {
     inlineChat = source('lib/home_v2/components/chat/inline_chat_view.dart');
   });
 
-  test('rota, footer e baselines anteriores permanecem', () {
+  testWidgets('rota, footer e baselines anteriores permanecem', (tester) async {
+    // The live owner now has a 40px strip and entitlement-gated creation.
+    // Verify geometry, selection and navigation instead of retired markers.
+    await verifyHistoryNavigation(tester);
     expect(RegExp(r'\bHistoryScreen\s*\(').allMatches(mainSource).length, 1);
     expect(
         mainSource, contains('class _FloatingFooter extends StatefulWidget'));
     expect(history, isNot(contains('_FloatingFooter(')));
     for (final marker in <String>[
-      'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_TABROW_LIGHT',
-      'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_FLATTAB_LIGHT',
       'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_SCREEN_CANVAS_LIGHT',
       'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R3_HISTORY_CARD_LIGHT',
       'HISTORY_CLINICAL_INTERNAL_TABS_V1_C_R6_HISTORYEDITORSTATE_LIGHT',
@@ -166,10 +168,11 @@ void main() {
       'widget.onBack': 2,
       'widget.onEdit': 4,
       'widget.onDelete': 3,
-      'SttHelper': 19,
+      'SttHelper.start(': 3,
+      'SttHelper.stop(': 10,
       'AiService.chat(': 2,
       'FirebaseFirestore': 0,
-      'Navigator': 14,
+      'Navigator': 18,
       'Clipboard': 2,
       'TextEditingController': 77,
       'FocusNode': 23,

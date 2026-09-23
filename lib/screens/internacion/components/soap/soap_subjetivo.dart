@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../models/evolucion_model.dart';
 import '../internacion_theme.dart';
 
-import '../../../../design_system/foundation/med_typography.dart';
+
 class SoapSubjetivo extends StatefulWidget {
   final SubjetivoData data;
   final ValueChanged<SubjetivoData> onChanged;

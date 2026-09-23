@@ -1,3 +1,8 @@
+import '../services/plantao_knowledge/remote_knowledge_resolver.dart';
+import '../services/plantao_knowledge/private_knowledge_snapshot_store.dart';
+import '../services/provider_gateway_http.dart' show gatewayBase;
+import '../services/private_session_epoch.dart';
+import '../services/private_user_cache.dart';
 import '../services/medcases_feature_authorization.dart';
 import '../services/canonical_free_discovery.dart';
 import '../services/canonical_drug_library.dart';
@@ -402,6 +407,51 @@ class AppProvider extends ChangeNotifier {
   // _writeBackFrozen: set true on FsWriteAuthDenied/FsWriteFailure;
   //   prevents further background write-backs until the session is re-validated.
   // _lastVerified* snapshots: restored on write failure (revert path).
+  bool _privateStateDisposed = false;
+  int get _sessionEpoch => PrivateSessionEpoch.current;
+  int get sessionEpoch => _sessionEpoch;
+  bool isCurrentSession(String? uid, int epoch) =>
+      !_privateStateDisposed && epoch == _sessionEpoch && _currentUser?.uid == uid;
+
+  @override
+  void dispose() {
+    _privateStateDisposed = true;
+    _invalidatePrivateSession();
+    cancelAiStream();
+    super.dispose();
+  }
+
+  void _invalidatePrivateSession() {
+    PrivateSessionEpoch.invalidate();
+    _historyLoadGeneration++;
+    _sessionsLoadGeneration++;
+    _aiSummaryLoadGeneration++;
+    _aiSummaryLoadInFlight = null;
+    _aiSummaryLoadUid = null;
+    _localAiSessionIndex.clear();
+    _localAiSessionSummaries.clear();
+    _persistedExchangeIds.clear();
+    _historyLoadInFlight = null;
+    _historyLoadUid = null;
+    _sessionsLoadInFlight = null;
+    _sessionsLoadUid = null;
+    _authConvergenceInFlight = null;
+    _authConvergenceUid = null;
+    _firestoreSyncFuture = null;
+    _firestoreSyncUid = null;
+    _lastVerifiedHistories = [];
+    _lastVerifiedFavDrugs = {};
+    _lastVerifiedFavProtocols = {};
+    _lastVerifiedFavPrescriptions = {};
+    _lastVerifiedFavCases = {};
+    _myHistories = [];
+    _plantaoPatients = [];
+    _customCases = [];
+    _writeBackFrozen = false;
+    _stopUsageTimer();
+    _cancelHistoriesStream();
+  }
+
   bool _writeBackFrozen = false;
   Set<String> _lastVerifiedFavDrugs = {};
   Set<String> _lastVerifiedFavProtocols = {};
@@ -657,6 +707,16 @@ class AppProvider extends ChangeNotifier {
   final ClinicalSessionMemory _sessionMemory = ClinicalSessionMemory();
   final Map<String, ClinicalRequestContext> _clinicalSafetyByRequest = {};
 
+  /// Reuses the exact existing safety context; remote publication is never
+  /// inserted into its medicationAuthorized/authorizedPolicy evidence.
+  bool authorizesPracticalPrescription(String requestId, String text) {
+    final snapshot = _clinicalSafetyByRequest[requestId];
+    return snapshot != null && snapshot.mode == AiRequestMode.plantao &&
+        snapshot.uid == (_currentUser?.uid ?? '') &&
+        snapshot.ownsRequest?.call() == true &&
+        ClinicalSafetyFlow(snapshot).terminal(text).allowed;
+  }
+
   /// Last presentation gate, after UI-specific clinical transformations.
   String guardAiClinicalPresentation(
       String requestId, String text, AiRequestMode mode) {
@@ -904,6 +964,7 @@ class AppProvider extends ChangeNotifier {
   // ── Login com usuário do Firebase ─────────────────────────────────────────
   Future<void> setUser(UserModel user) {
     if (_currentUser?.uid != user.uid) {
+      _invalidatePrivateSession();
       if (_currentUser != null) EntitlementService.instance.resetToFree();
       _clearRemoteClinicalContent();
       resetAiSessionFull();
@@ -934,6 +995,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> _setUserImpl(UserModel user) async {
+    final epoch = _sessionEpoch;
     // ── BUILD 463-A.1.1: Auth Convergence Boot-Lock (RIGID INVARIANT) ────
     //
     // INVARIANT: authReady is reached IF AND ONLY IF
@@ -986,12 +1048,14 @@ class AppProvider extends ChangeNotifier {
         _darkMode = user.darkMode;
         _firebaseReady = true;
         await _loadFromLocal(uid: user.uid);
+        if (epoch != _sessionEpoch) return;
         await _loadAiKeyFromFirestore(user.uid).timeout(
           const Duration(seconds: 2),
           onTimeout: () {
-            _aiKeyLoading = false;
+            if (epoch == _sessionEpoch) _aiKeyLoading = false;
           },
         );
+        if (epoch != _sessionEpoch) return;
         if (_firestoreSyncFuture == null || _firestoreSyncUid != user.uid) {
           _firestoreSyncUid = user.uid;
           _firestoreSyncFuture = _syncFromFirestore(user.uid);
@@ -1002,7 +1066,7 @@ class AppProvider extends ChangeNotifier {
                 _webSsGet('medcases_gsi_pending') == 'true');
         Future.delayed(
           _hasPendingOAuth ? const Duration(seconds: 1) : Duration.zero,
-          checkGeminiSession,
+          () { if (epoch == _sessionEpoch) checkGeminiSession(); },
         );
         _startUsageTimer(user.uid);
         FirestoreService.incrementLoginCount(user.uid);
@@ -1018,6 +1082,7 @@ class AppProvider extends ChangeNotifier {
             .first
             .timeout(const Duration(seconds: 5), onTimeout: () => null);
       } catch (e) {
+      if (epoch != _sessionEpoch) return;
         debugPrint(
           '[AUTH_CONVERGENCE][WAITING_FOR_SDK] latch error: $e — '
           'falling back to currentUser',
@@ -1045,6 +1110,7 @@ class AppProvider extends ChangeNotifier {
         }
       }
 
+      if (epoch != _sessionEpoch) return;
       // ── Terminal state determination ───────────────────────────────────
       if (fbSdkUser == null) {
         // STABLE_LOGGED_OUT: hydration complete, no Firebase user found.
@@ -1069,9 +1135,9 @@ class AppProvider extends ChangeNotifier {
         );
         _currentAuthBarrierState = AppAuthBarrierState.authMismatch;
 
-        // Full wipe of local state — all identity artefacts purged.
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.clear();
+        // Preserve encrypted histories; clear session credentials only.
+        await AuthService.clearSession();
+        if (_sessionEpoch != epoch + 1) return;
         if (kIsWeb) {
           try {
             _webRemoveLS('medcases_gak');
@@ -1108,6 +1174,7 @@ class AppProvider extends ChangeNotifier {
       }
     } catch (e) {
       if (e is SecuritySyndicationException) rethrow;
+      if (epoch != _sessionEpoch) return;
       // Unexpected exception during latch — AUTH_ERROR terminal state.
       // NOT degraded authReady: barrier stays at authFailed.
       debugPrint(
@@ -1117,6 +1184,7 @@ class AppProvider extends ChangeNotifier {
       _currentAuthBarrierState = AppAuthBarrierState.authFailed;
     }
 
+    if (epoch != _sessionEpoch) return;
     if (_currentUser?.uid != user.uid) {
       _clearRemoteClinicalContent();
       resetAiSessionFull();
@@ -1132,6 +1200,7 @@ class AppProvider extends ChangeNotifier {
 
     // 1️⃣ Carrega cache local IMEDIATAMENTE — app responde sem esperar rede
     await _loadFromLocal(uid: user.uid);
+        if (epoch != _sessionEpoch) return;
 
     // 2️⃣ Carrega chaves do Firestore com AWAIT — timeout reduzido para 2s.
     //    GeminiService.initFromStorage() já foi chamado em _bootInBackground()
@@ -1140,10 +1209,11 @@ class AppProvider extends ChangeNotifier {
     await _loadAiKeyFromFirestore(user.uid).timeout(
       const Duration(seconds: 2),
       onTimeout: () {
-        _aiKeyLoading = false;
+        if (epoch == _sessionEpoch) _aiKeyLoading = false;
       },
     );
 
+    if (epoch != _sessionEpoch) return;
     // 3️⃣ Sincroniza Firestore em background — não bloqueia a UI.
     // BUILD 290: guarda o Future para que checkGeminiSession() possa fazer
     // await determinístico sem polling ou delay artificial.
@@ -1174,7 +1244,7 @@ class AppProvider extends ChangeNotifier {
               seconds: 1,
             ) // dá tempo ao fetch tokeninfo JS completar
           : Duration.zero,
-      checkGeminiSession,
+      () { if (epoch == _sessionEpoch) checkGeminiSession(); },
     );
 
     // 6️⃣ Inicia contador de tempo de uso
@@ -1267,6 +1337,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   void clearUser() {
+    _invalidatePrivateSession();
     EntitlementService.instance.resetToFree();
     _clearRemoteClinicalContent();
     resetAiSessionFull();
@@ -1336,16 +1407,23 @@ class AppProvider extends ChangeNotifier {
   //  2. users/{uid}/prefs/settings.openAiKey → chave individual (legado / admin)
   //  3. SharedPreferences local → fallback offline
   Future<void> _loadAiKeyFromFirestore(String uid) async {
+    final epoch = _sessionEpoch;
     _openAiKey = '';
     try {
       final prefs = await SharedPreferences.getInstance();
+      if (!isCurrentSession(uid, epoch)) return;
       await prefs.remove(_k('openAiKey', uid));
+      if (!isCurrentSession(uid, epoch)) return;
       await prefs.remove('openAiKey');
+      if (!isCurrentSession(uid, epoch)) return;
       await GeminiService.initFromStorage();
+      if (!isCurrentSession(uid, epoch)) return;
       unawaited(refreshCanonicalDrugDiscovery());
     } finally {
-      _aiKeyLoading = false;
-      notifyListeners();
+      if (isCurrentSession(uid, epoch)) {
+        _aiKeyLoading = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -1354,6 +1432,7 @@ class AppProvider extends ChangeNotifier {
   // MERGE STRATEGY: une Firestore + local para nunca perder favoritos.
   // Se Firestore retorna vazio mas local tem dados, o resultado final = local.
   Future<void> _syncFromFirestore(String uid) async {
+    final epoch = _sessionEpoch;
     // BUILD 290: SYNC_TRACE — instrumentação científica para isolar
     // short-circuits e silent exceptions. Cada await tem marcador próprio.
     debugPrint(
@@ -1407,6 +1486,7 @@ class AppProvider extends ChangeNotifier {
         FirestoreService.loadFavPrescriptionsTyped(uid),
         FirestoreService.loadFavCasesTyped(uid),
       ).wait;
+      if (!isCurrentSession(uid, epoch)) return;
 
       debugPrint(
         '[SYNC_TRACE][STEP1_OK] Favoritos carregados (typed): '
@@ -1464,6 +1544,7 @@ class AppProvider extends ChangeNotifier {
         '[SYNC_TRACE][STEP2] Carregando casos customizados (typed)...',
       );
       final casesTyped = await FirestoreService.loadCasesTyped(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       if (casesTyped.isSuccess) {
         _customCases = casesTyped.dataOrElse([]);
       } else if (casesTyped.shouldFreezeLocalCache) {
@@ -1482,6 +1563,7 @@ class AppProvider extends ChangeNotifier {
 
       debugPrint('[SYNC_TRACE][STEP3] Persistindo cache local...');
       await _saveLocal();
+      if (!isCurrentSession(uid, epoch)) return;
       debugPrint('[SYNC_TRACE][STEP3_OK] Cache local salvo.');
 
       // Re-salva no Firestore se o merge adicionou itens que estavam só no local.
@@ -1530,11 +1612,14 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> _syncRecentsFromFirestore(String uid) async {
+    final epoch = _sessionEpoch;
     try {
       final remote = await FirestoreService.loadRecents(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       if (remote.isEmpty) return;
       // Mescla: une remote + local (sem duplicatas)
       final prefs = await SharedPreferences.getInstance();
+      if (!isCurrentSession(uid, epoch)) return;
       final local = prefs.getStringList(_recentKey(uid)) ?? [];
       final merged = <String>[];
       final seen = <String>{};
@@ -1554,12 +1639,15 @@ class AppProvider extends ChangeNotifier {
   // BUILD 463-A.1.2: Migrated from deprecated loadHistories() to loadHistoriesTyped().
   // Unwraps algebraic variants: success→write cache, authDenied/offline→freeze cache.
   Future<void> _syncHistoriesFromFirestore(String uid) async {
+    final epoch = _sessionEpoch;
     try {
       final result = await FirestoreService.loadHistoriesTyped(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       if (result.isSuccess) {
         _myHistories = result.dataOrElse([]);
         notifyListeners();
         await _saveHistoriesLocal(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       } else if (result.shouldFreezeLocalCache) {
         // authDenied or offline: retain current in-memory state, do not overwrite cache.
         debugPrint(
@@ -1572,6 +1660,7 @@ class AppProvider extends ChangeNotifier {
         _myHistories = [];
         notifyListeners();
         await _saveHistoriesLocal(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       }
     } catch (_) {}
   }
@@ -1586,8 +1675,10 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> _loadFromLocal({String? uid}) async {
+    final epoch = _sessionEpoch;
     try {
       final p = await SharedPreferences.getInstance();
+      if (epoch != _sessionEpoch) return;
 
       // Preferências globais (independentes de usuário)
       // BUILD 310 DIRETRIZ 0: cold-start sem idioma salvo → 'es' obrigatório.
@@ -1597,6 +1688,7 @@ class AppProvider extends ChangeNotifier {
       if (savedLang == null) {
         _lang = 'es';
         await p.setString('lang', 'es');
+        if (epoch != _sessionEpoch) return;
       } else {
         _lang = savedLang;
       }
@@ -1609,13 +1701,19 @@ class AppProvider extends ChangeNotifier {
         await p.remove(_k('openAiKey', uid));
       }
 
+      if (uid != null) {
+      if (!isCurrentSession(uid, epoch)) return;
+      final privateHistories = await PrivateUserCache.instance.read(uid, 'myHistories');
+      if (!isCurrentSession(uid, epoch)) return;
+      final privateCases = await PrivateUserCache.instance.read(uid, 'customCases');
+      if (!isCurrentSession(uid, epoch)) return;
+      final privatePatients = await PrivateUserCache.instance.read(uid, 'plantaoPatients');
+      if (!isCurrentSession(uid, epoch)) return;
       // Dados por usuário (se uid disponível usa cache dedicado)
       final favKey = _k('favDrugs', uid);
       final protKey = _k('favProtocols', uid);
       final prescKey = _k('favPrescriptions', uid);
-      final caseKey = _k('customCases', uid);
       final favCaseKey = _k('favCases', uid);
-      final histKey = _k('myHistories', uid);
 
       _favDrugs = (p.getStringList(favKey) ?? p.getStringList('favDrugs') ?? [])
           .toSet();
@@ -1646,12 +1744,12 @@ class AppProvider extends ChangeNotifier {
       _pinnedCalcIds = rawPinnedCalcs
           .where((id) => !_kForbiddenPinnedCalcIds.contains(id))
           .toList();
-      _plantaoPatients = (p.getStringList(_k('plantaoPatients', uid)) ?? [])
+      _plantaoPatients = (privatePatients == null ? <String>[] : (jsonDecode(privatePatients) as List).cast<String>())
           .map(PlantaoPatient.fromRaw)
           .whereType<PlantaoPatient>()
           .toList();
 
-      final casesJson = p.getString(caseKey) ?? p.getString('customCases');
+      final casesJson = privateCases;
       if (casesJson != null) {
         try {
           final decoded = jsonDecode(casesJson);
@@ -1671,7 +1769,7 @@ class AppProvider extends ChangeNotifier {
       }
 
       // Histórias clínicas em cache
-      final histJson = p.getString(histKey);
+      final histJson = privateHistories;
       if (histJson != null) {
         try {
           final decoded = jsonDecode(histJson);
@@ -1689,7 +1787,9 @@ class AppProvider extends ChangeNotifier {
           }
         } catch (_) {}
       }
+      }
     } catch (_) {}
+    if (epoch != _sessionEpoch) return;
     // BUILD 326: sincroniza UiProvider com valores carregados do SharedPreferences.
     uiProvider.syncValues(
       lang: _lang,
@@ -1804,9 +1904,15 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> _saveLocal({String? uid}) async {
+    final epoch = _sessionEpoch;
+    final owner = uid ?? _currentUser?.uid;
+    final casesSnapshot = jsonEncode(_customCases.map((c) => c.toJson()).toList());
     final u = uid ?? _currentUser?.uid;
+    final drugs = _favDrugs.toList(), protocols = _favProtocols.toList();
+    final prescriptions = _favPrescriptions.toList(), cases = _favCases.toList();
     try {
       final p = await SharedPreferences.getInstance();
+      if (!isCurrentSession(owner, epoch)) return;
       await p.setString('lang', _lang);
       await p.setBool('darkMode', _darkMode);
       await p.setBool('hapticEnabled', _hapticEnabled);
@@ -1814,29 +1920,33 @@ class AppProvider extends ChangeNotifier {
       if (u != null) {
         await p.remove(_k('openAiKey', u));
       }
-      await p.setStringList(_k('favDrugs', u), _favDrugs.toList());
-      await p.setStringList(_k('favProtocols', u), _favProtocols.toList());
+      if (!isCurrentSession(owner, epoch)) return;
+      await p.setStringList(_k('favDrugs', u), drugs);
+      if (!isCurrentSession(owner, epoch)) return;
+      await p.setStringList(_k('favProtocols', u), protocols);
+      if (!isCurrentSession(owner, epoch)) return;
       await p.setStringList(
         _k('favPrescriptions', u),
-        _favPrescriptions.toList(),
+        prescriptions,
       );
-      await p.setStringList(_k('favCases', u), _favCases.toList());
-      await p.setString(
-        _k('customCases', u),
-        jsonEncode(_customCases.map((c) => c.toJson()).toList()),
-      );
+      if (!isCurrentSession(owner, epoch)) return;
+      await p.setStringList(_k('favCases', u), cases);
+      if (!isCurrentSession(owner, epoch)) return;
+      if (u != null) await PrivateUserCache.instance.write(
+        u, 'customCases', casesSnapshot);
     } catch (_) {}
   }
 
   // Salva apenas as histórias no cache (chamado após sync ou write)
   Future<void> _saveHistoriesLocal(String uid) async {
+    final epoch = _sessionEpoch;
+    if (!isCurrentSession(uid, epoch)) return;
+    final snapshot = jsonEncode(_myHistories.map((h) => h.toJson()).toList());
     try {
-      final p = await SharedPreferences.getInstance();
-      await p.setString(
-        _k('myHistories', uid),
-        jsonEncode(_myHistories.map((h) => h.toJson()).toList()),
-      );
-    } catch (_) {}
+      await PrivateUserCache.instance.write(uid, 'myHistories', snapshot);
+    } catch (_) {
+      debugPrint('PRIVATE_CACHE_WRITE_FAILED');
+    }
   }
 
   // ── i18n helpers ──────────────────────────────────────────────────────────
@@ -2259,6 +2369,7 @@ class AppProvider extends ChangeNotifier {
   // ─────────────────────────────────────────────────────────────────────────
 
   void toggleFavDrug(String id) {
+    final epoch = _sessionEpoch;
     _snapshotFavourites();
     if (_favDrugs.contains(id))
       _favDrugs.remove(id);
@@ -2272,6 +2383,7 @@ class AppProvider extends ChangeNotifier {
       FirestoreService.saveFavoritesTyped(uid, 'drugs', snapshot).then((
         result,
       ) {
+        if (!isCurrentSession(uid, epoch)) return;
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavDrug');
         }
@@ -2280,6 +2392,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   void toggleFavProtocol(String id) {
+    final epoch = _sessionEpoch;
     _snapshotFavourites();
     if (_favProtocols.contains(id))
       _favProtocols.remove(id);
@@ -2293,6 +2406,7 @@ class AppProvider extends ChangeNotifier {
       FirestoreService.saveFavoritesTyped(uid, 'protocols', snapshot).then((
         result,
       ) {
+        if (!isCurrentSession(uid, epoch)) return;
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavProtocol');
         }
@@ -2301,6 +2415,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   void toggleFavPrescription(String id) {
+    final epoch = _sessionEpoch;
     _snapshotFavourites();
     if (_favPrescriptions.contains(id))
       _favPrescriptions.remove(id);
@@ -2314,6 +2429,7 @@ class AppProvider extends ChangeNotifier {
       FirestoreService.saveFavoritesTyped(uid, 'prescriptions', snapshot).then((
         result,
       ) {
+        if (!isCurrentSession(uid, epoch)) return;
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavPrescription');
         }
@@ -2322,6 +2438,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   void toggleFavCase(String id) {
+    final epoch = _sessionEpoch;
     _snapshotFavourites();
     if (_favCases.contains(id))
       _favCases.remove(id);
@@ -2335,6 +2452,7 @@ class AppProvider extends ChangeNotifier {
       FirestoreService.saveFavoritesTyped(uid, 'fav_cases', snapshot).then((
         result,
       ) {
+        if (!isCurrentSession(uid, epoch)) return;
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onFavWriteFailure(result, 'toggleFavCase');
         }
@@ -2492,14 +2610,19 @@ class AppProvider extends ChangeNotifier {
   // Persiste o estado do plantão em SharedPreferences (local, sem Firestore)
   void _savePlantaoLocal() {
     final uid = _currentUser?.uid;
-    SharedPreferences.getInstance().then((p) {
-      p.setStringList(_k('pinnedDrugs', uid), _pinnedDrugIds);
-      p.setStringList(_k('pinnedCalcs', uid), _pinnedCalcIds);
-      p.setStringList(
-        _k('plantaoPatients', uid),
-        _plantaoPatients.map((pt) => pt.toRaw()).toList(),
-      );
-    }).catchError((_) {});
+    final epoch = _sessionEpoch;
+    if (uid == null) return;
+    final patients = jsonEncode(_plantaoPatients.map((pt) => pt.toRaw()).toList());
+    final drugs = List<String>.from(_pinnedDrugIds);
+    final calcs = List<String>.from(_pinnedCalcIds);
+    SharedPreferences.getInstance().then((p) async {
+      if (!isCurrentSession(uid, epoch)) return;
+      await p.setStringList(_k('pinnedDrugs', uid), drugs);
+      if (!isCurrentSession(uid, epoch)) return;
+      await p.setStringList(_k('pinnedCalcs', uid), calcs);
+      if (!isCurrentSession(uid, epoch)) return;
+      await PrivateUserCache.instance.write(uid, 'plantaoPatients', patients);
+    }).catchError((_) { debugPrint('PRIVATE_CACHE_WRITE_FAILED'); });
   }
 
   // ── Recentes — chave prefixada por uid para sobreviver a logout/login ─────
@@ -2511,17 +2634,20 @@ class AppProvider extends ChangeNotifier {
   /// Registra um item como recente (type|id|title), com chave por uid.
   /// Dual-write: SharedPreferences (offline) + Firestore (cross-device).
   Future<void> registerRecent(String type, String id, String title) async {
+    final epoch = _sessionEpoch;
+    final uid = _currentUser?.uid;
     try {
       final prefs = await SharedPreferences.getInstance();
-      final key = _recentKey(_currentUser?.uid);
+      if (!isCurrentSession(uid, epoch)) return;
+      final key = _recentKey(uid);
       final raw = prefs.getStringList(key) ?? [];
       final entry = '$type|$id|$title';
       raw.removeWhere((e) => e.startsWith('$type|$id|'));
       raw.insert(0, entry);
       final updated = raw.take(20).toList();
       await prefs.setStringList(key, updated);
+      if (!isCurrentSession(uid, epoch)) return;
       // Sincroniza com Firestore em background
-      final uid = _currentUser?.uid;
       if (uid != null && uid.isNotEmpty) {
         FirestoreService.saveRecents(uid, updated).catchError((_) {});
       }
@@ -2531,15 +2657,18 @@ class AppProvider extends ChangeNotifier {
   /// Lê a lista de recentes do usuário atual.
   /// Prioridade: Firestore (cross-device) → SharedPreferences (offline).
   Future<List<Map<String, String>>> loadRecents() async {
+    final epoch = _sessionEpoch;
+    final uid = _currentUser?.uid;
     try {
-      final uid = _currentUser?.uid;
 
       // 1º tenta Firestore
       if (uid != null && uid.isNotEmpty) {
         final remote = await FirestoreService.loadRecents(uid);
+        if (!isCurrentSession(uid, epoch)) return [];
         if (remote.isNotEmpty) {
           // Atualiza cache local com dados do servidor
           final prefs = await SharedPreferences.getInstance();
+      if (!isCurrentSession(uid, epoch)) return [];
           await prefs.setStringList(_recentKey(uid), remote);
           return remote
               .map((e) {
@@ -2558,7 +2687,8 @@ class AppProvider extends ChangeNotifier {
 
       // Fallback: SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      final key = _recentKey(_currentUser?.uid);
+      if (!isCurrentSession(uid, epoch)) return [];
+      final key = _recentKey(uid);
       final raw = prefs.getStringList(key) ?? [];
 
       // Migra dados locais para Firestore se não havia nada remoto
@@ -2620,12 +2750,14 @@ class AppProvider extends ChangeNotifier {
   //   [UI_GATEWAY][HomeInlineChat] auth_boundary_active: degraded_wait
   Future<FirestoreLoadResult<List<ClinicalHistoryModel>>>
       loadHistoriesTypedForUi(String uid) async {
+    final epoch = _sessionEpoch;
     // Reuse in-flight future for the same uid (single-flight latch).
     if (_historyLoadInFlight != null && _historyLoadUid == uid) {
       debugPrint(
         '[APP_PROVIDER][loadHistoriesTypedForUi] uid=[redacted] → reusing in-flight future',
       );
-      return _historyLoadInFlight!;
+      final result = await _historyLoadInFlight!;
+      return isCurrentSession(uid, epoch) ? result : FirestoreLoadResult.authDenied();
     }
 
     // New uid or explicit invalidation — bump generation.
@@ -2650,7 +2782,7 @@ class AppProvider extends ChangeNotifier {
 
     // Stale-epoch guard: if generation was bumped by a newer call while we
     // were awaiting, discard this result entirely.
-    if (_historyLoadGeneration != myGeneration) {
+    if (!isCurrentSession(uid, epoch) || _historyLoadGeneration != myGeneration) {
       debugPrint(
         '[APP_PROVIDER][loadHistoriesTypedForUi] uid=[redacted] '
         'STALE_EPOCH dropped: myGen=$myGeneration currentGen=$_historyLoadGeneration',
@@ -2729,6 +2861,7 @@ class AppProvider extends ChangeNotifier {
     String uid, {
     String caller = 'unknown',
   }) async {
+    final epoch = _sessionEpoch;
     // Stable per-instance hash for log correlation across concurrent calls.
     final String instanceId = hashCode.toRadixString(16);
 
@@ -2745,6 +2878,9 @@ class AppProvider extends ChangeNotifier {
         reusedResult = await _sessionsLoadInFlight!;
       } catch (e) {
         reusedResult = FirestoreLoadResult.failure(e);
+      }
+      if (!isCurrentSession(uid, epoch)) {
+        return const UiLoadDiscarded(reason: 'STALE_USER_OPERATION');
       }
       return UiLoadApplied(reusedResult);
     }
@@ -2785,6 +2921,9 @@ class AppProvider extends ChangeNotifier {
     // identity matches). We therefore use the generation counter as the sole
     // stale-epoch discriminant here to avoid a false-discard of a successful,
     // current-epoch load caused by the null-after-drain value of _sessionsLoadUid.
+    if (!isCurrentSession(uid, epoch)) {
+      return const UiLoadDiscarded(reason: 'STALE_USER_OPERATION');
+    }
     if (_sessionsLoadGeneration != generation) {
       debugPrint(
         '[APP_PROVIDER][loadAiSessionsTypedForUi] '
@@ -2813,20 +2952,24 @@ class AppProvider extends ChangeNotifier {
   //   offline    → freeze: retain current in-memory state, show warning badge
   //   failure    → freeze: retain current in-memory state
   Future<void> loadHistories() async {
+    final epoch = _sessionEpoch;
     if (_currentUser == null) return;
     final uid = _currentUser!.uid;
     try {
       final result = await FirestoreService.loadHistoriesTyped(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       if (result.isSuccess) {
         // Remote data received → replace + persist
         _myHistories = result.dataOrElse([]);
         notifyListeners();
         await _saveHistoriesLocal(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       } else if (result.isEmpty) {
         // Remote authoritative empty → clear + persist
         _myHistories = [];
         notifyListeners();
         await _saveHistoriesLocal(uid);
+      if (!isCurrentSession(uid, epoch)) return;
       } else if (result.shouldFreezeLocalCache) {
         // authDenied / offline / failure → freeze: retain existing data
         debugPrint(
@@ -2855,9 +2998,11 @@ class AppProvider extends ChangeNotifier {
     // FETCH-ON-AUTH-RESOLVED: esta função é chamada em setUser() APÓS a chave
     //   de auth ser carregada (_loadAiKeyFromFirestore) — garantia de que o
     //   Firestore Rules já validou a permissão antes do primeiro .listen().
-    await _historiesStreamSub?.cancel();
+    await _cancelHistoriesStream();
+    if (!isCurrentSession(uid, epoch)) return;
     _historiesStreamSub = FirestoreService.streamHistories(uid).listen(
       (list) {
+        if (!isCurrentSession(uid, epoch)) return;
         _myHistories = list;
         notifyListeners();
         _saveHistoriesLocal(uid).catchError((_) {});
@@ -2870,11 +3015,13 @@ class AppProvider extends ChangeNotifier {
 
   /// Cancela o stream de histórias (chamado no logout).
   Future<void> _cancelHistoriesStream() async {
-    await _historiesStreamSub?.cancel();
+    final subscription = _historiesStreamSub;
     _historiesStreamSub = null;
+    await subscription?.cancel();
   }
 
   Future<void> saveHistory(ClinicalHistoryModel h) async {
+    final epoch = _sessionEpoch;
     if (_currentUser == null) return;
     final uid = _currentUser!.uid;
 
@@ -2913,11 +3060,13 @@ class AppProvider extends ChangeNotifier {
 
     // ── 4. Persiste no cache local e notifica UI ─────────────────────────────
     await _saveHistoriesLocal(uid);
+      if (!isCurrentSession(uid, epoch)) return;
     notifyListeners();
 
     // ── 5. Sincroniza com Firestore em background via typed barrier ──────────
     if (!_writeBackFrozen) {
       FirestoreService.saveHistoryTyped(uid, h).then((payload) {
+        if (!isCurrentSession(uid, epoch)) return;
         final result = payload.result;
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onHistoryWriteFailure(result, 'saveHistory');
@@ -2947,6 +3096,7 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> deleteHistory(String id, {bool wasPublic = false}) async {
+    final epoch = _sessionEpoch;
     if (_currentUser == null) return;
     final uid = _currentUser!.uid;
 
@@ -2958,6 +3108,7 @@ class AppProvider extends ChangeNotifier {
     _publicHistories.removeWhere((h) => h.id == id);
     // Atualiza cache local imediatamente
     await _saveHistoriesLocal(uid);
+      if (!isCurrentSession(uid, epoch)) return;
     notifyListeners();
 
     // Sincroniza deleção com Firestore via typed barrier
@@ -2965,6 +3116,7 @@ class AppProvider extends ChangeNotifier {
       FirestoreService.deleteHistoryTyped(uid, id, wasPublic: wasPublic).then((
         result,
       ) {
+        if (!isCurrentSession(uid, epoch)) return;
         if (result is FsWriteAuthDenied || result is FsWriteFailure) {
           _onHistoryWriteFailure(result, 'deleteHistory');
         }
@@ -3151,6 +3303,8 @@ class AppProvider extends ChangeNotifier {
   Future<void> rebuildAiHistoryFromMessagesAsync(
     List<Map<String, String>> messages,
   ) async {
+    final epoch = _sessionEpoch;
+    final uid = _currentUser?.uid;
     final syncFuture = _firestoreSyncFuture;
     if (syncFuture != null) {
       try {
@@ -3167,6 +3321,7 @@ class AppProvider extends ChangeNotifier {
         debugPrint('[BUILD293][rebuildAiHistory] sync error (non-fatal): $e');
       }
     }
+    if (!isCurrentSession(uid, epoch)) return;
     rebuildAiHistoryFromMessages(messages);
   }
 
@@ -5330,6 +5485,27 @@ class AppProvider extends ChangeNotifier {
     );
   }
 
+  Future<RemoteKnowledgeResolver?> plantaoKnowledgeResolver() async {
+    final uid = _currentUser?.uid;
+    final epoch = _sessionEpoch;
+    if (uid == null || !EntitlementService.instance.isPremium) return null;
+    if (_remoteClinicalContent == null) {
+      final gateway = ClinicalContentGateway(
+        baseUri: Uri.parse('$gatewayBase/api/clinical-content/'),
+        store: PrivateKnowledgeSnapshotStore(uid),
+        sessionScope: '$uid:$epoch',
+        currentSessionScope: () => '${_currentUser?.uid}:$_sessionEpoch',
+        canReadDomain: (domain) => EntitlementService.instance.isPremium,
+        tokenProvider: () async => await FirebaseAuth.instance.currentUser?.getIdToken() ?? '',
+        timeout: const Duration(seconds: 3),
+      );
+      configureRemoteClinicalContent(gateway);
+    }
+    if (_currentUser?.uid != uid || _sessionEpoch != epoch) return null;
+    return RemoteKnowledgeResolver(_remoteClinicalContent!.gateway,
+      telemetry:(event)=>debugPrint('[REMOTE_KNOWLEDGE] ${jsonEncode(event)}'));
+  }
+
   Future<ContentSyncResult> synchronizeRemoteClinicalContent() async {
     final platform = _remoteClinicalContent;
     if (platform == null) {
@@ -6472,6 +6648,7 @@ class AppProvider extends ChangeNotifier {
     required String assistantOutput,
     String? userDisplayText,
   }) async {
+    final epoch = _sessionEpoch;
     final safetyContext =
         context.clinicalContext ?? _clinicalSafetyByRequest[context.requestId];
     if (safetyContext == null ||
@@ -6593,6 +6770,7 @@ class AppProvider extends ChangeNotifier {
         userDisplayTextFull: safeUserDisplayText,
       );
 
+      if (!isCurrentSession(context.uid, epoch)) return const SessionPersistSkipped('STALE_USER_OPERATION');
       // ── PILLAR 2: Strict permission-denied isolation ───────────────────────
       // CRITICAL: permission-denied is a SECURITY ARCHITECTURE LOCK.
       // It MUST NOT be treated as an offline state or queued for retry.
@@ -6847,6 +7025,7 @@ class AppProvider extends ChangeNotifier {
   int _aiSummaryLoadGeneration = 0;
 
   Future<void> loadAndMergeAiSessionSummaries(String uid) async {
+    final epoch = _sessionEpoch;
     final instanceId = hashCode.toRadixString(16);
 
     if (_aiSummaryLoadInFlight != null && _aiSummaryLoadUid == uid) {
@@ -6869,7 +7048,7 @@ class AppProvider extends ChangeNotifier {
           FirestoreService.loadLegacyAiSessionsTyped(uid),
         ]);
 
-        if (_aiSummaryLoadGeneration != generation ||
+        if (!isCurrentSession(uid, epoch) || _aiSummaryLoadGeneration != generation ||
             _aiSummaryLoadUid != uid) {
           debugPrint(
             '[HISTORY_REPOSITORY][LOAD] '
@@ -7679,6 +7858,7 @@ class AppProvider extends ChangeNotifier {
     required void Function(String errorMsg) onError,
     bool Function()? requestStillCurrent,
     String? visibleUserInput,
+    bool preserveClinicalContext = false,
     String? userDisplayText,
     bool longResponse = false, // Motor de Partida (Build 149)
     bool canonicalPlantaoWiring = false,
@@ -7997,6 +8177,7 @@ class AppProvider extends ChangeNotifier {
       onStructuredDone: onStructuredDone,
       onError: onError,
       visibleUserInput: visibleUserInput,
+      preserveClinicalContext: preserveClinicalContext,
       userDisplayText: userDisplayText,
       longResponse: longResponse,
       canonicalPlantaoAttestation: canonicalPlantaoAttestation,
@@ -8020,6 +8201,7 @@ class AppProvider extends ChangeNotifier {
         onStructuredDone,
     required void Function(String errorMsg) onError,
     String? visibleUserInput,
+    bool preserveClinicalContext = false,
     bool longResponse = false, // Motor de Partida (Build 149)
     bool fromButton =
         false, // BUILD 262: true = Quick Action button tap (follow-up clinical turn)
@@ -8084,6 +8266,7 @@ class AppProvider extends ChangeNotifier {
           bufferedOnError.call(errorMsg);
         },
         visibleUserInput: visibleUserInput,
+      preserveClinicalContext: preserveClinicalContext,
         longResponse: longResponse,
         fromButton: fromButton,
         pipelineRequestId: pipelineRequestId,
@@ -8111,6 +8294,7 @@ class AppProvider extends ChangeNotifier {
         onStructuredDone,
     required void Function(String errorMsg) onError,
     String? visibleUserInput,
+    bool preserveClinicalContext = false,
     String? userDisplayText,
     bool longResponse = false, // Motor de Partida (Build 149)
     PlantaoCanonicalRuntimeAttestation? canonicalPlantaoAttestation,
@@ -8124,6 +8308,8 @@ class AppProvider extends ChangeNotifier {
     Iterable<PlantaoSection> shadowRequestedSections = const <PlantaoSection>[],
     AiProviderEffectPolicy phase3kEffectPolicy = AiProviderEffectPolicy.legacy,
   }) async {
+    final requestSessionEpoch = _sessionEpoch;
+    final requestSessionUid = _currentUser?.uid;
     final requestMode =
         longResponse ? AiRequestMode.estudo : AiRequestMode.plantao;
 
@@ -8259,7 +8445,7 @@ class AppProvider extends ChangeNotifier {
       final existing = safetyContext;
       if (existing != null) return existing;
       final query = persistedUserInput;
-      final newPatient = RegExp(
+      final newPatient = !(preserveClinicalContext && fromButton) && RegExp(
               r'\b(?:novo paciente|nova paciente|outro paciente|nuevo paciente|nueva paciente|otro paciente|new patient|novo caso|nuevo caso)\b',
               caseSensitive: false)
           .hasMatch(query);
@@ -8462,7 +8648,7 @@ class AppProvider extends ChangeNotifier {
         );
         // Id Guard: só age se este request ainda é o ativo (não foi completado
         // nem invalidado por um request mais recente do mesmo usuário).
-        if (_activeRequestId != thisRequestId) {
+        if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
           debugPrint(
             '[AI_RESUME][BUILD320] STALE drop: requestId=$thisRequestId '
             'activeId=$_activeRequestId — resume timeout ignored',
@@ -8616,7 +8802,7 @@ class AppProvider extends ChangeNotifier {
         final snapshot = safetyContext;
         if (snapshot == null ||
             snapshot.uid != (_currentUser?.uid ?? '') ||
-            _activeRequestId != thisRequestId) {
+            (!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
           return;
         }
         final medicationClaims = <String>[
@@ -8872,7 +9058,7 @@ class AppProvider extends ChangeNotifier {
             'removed=$removed reason=${qaThreadStatus.reason}',
           );
         }
-        if (_activeRequestId != thisRequestId ||
+        if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId) ||
             activeSessionCtx.uid != (_currentUser?.uid ?? '')) {
           return false;
         }
@@ -8987,7 +9173,7 @@ class AppProvider extends ChangeNotifier {
           _activeGptClient?.cancel(reason: reason);
           _activeGptClient = null;
 
-          if (_activeRequestId != thisRequestId) {
+          if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
             return;
           }
 
@@ -9010,7 +9196,7 @@ class AppProvider extends ChangeNotifier {
               maxOutputTokens: longResponse ? 2500 : 3200,
             );
 
-            if (_activeRequestId != thisRequestId) {
+            if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
               return;
             }
 
@@ -9177,7 +9363,7 @@ class AppProvider extends ChangeNotifier {
         _gptStreamSub = qaStream.listen(
           (AiEvent event) async {
             // Guard: descarta eventos de requestId obsoleto
-            if (_activeRequestId != thisRequestId) {
+            if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
               debugPrint(
                 '[AI_E2E][STALE_DROP] requestId=$thisRequestId '
                 'activeId=$_activeRequestId event=${event.runtimeType}',
@@ -9327,7 +9513,7 @@ class AppProvider extends ChangeNotifier {
                   );
 
                   // Validar requestId pós-sanitize (guard de stale state)
-                  if (_activeRequestId != thisRequestId) {
+                  if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
                     debugPrint(
                       '[AI_E2E][POST_SANITIZE_STALE] requestId=$thisRequestId '
                       'activeId=$_activeRequestId — descartado após sanitize',
@@ -9640,7 +9826,7 @@ class AppProvider extends ChangeNotifier {
           'reason=${threadStatus.reason}',
         );
       }
-      if (_activeRequestId != thisRequestId ||
+      if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId) ||
           activeSessionCtx.uid != (_currentUser?.uid ?? '')) {
         return false;
       }
@@ -9874,6 +10060,7 @@ class AppProvider extends ChangeNotifier {
       /// Returns false when another path already owns the terminal — caller must
       /// silent-abort: drop the payload, cancel any pending timers, return immediately.
       bool tryAcquireTerminalOwnership([String source = 'unknown']) {
+        if (!isCurrentSession(requestSessionUid, requestSessionEpoch)) return false;
         if (_hasTerminalOwnershipAcquired) {
           // Delegate to transaction for structured telemetry emission.
           _freeStreamTxn.tryAcquireOwnership(source);
@@ -9940,7 +10127,7 @@ class AppProvider extends ChangeNotifier {
         // Returns false when stale-guard dropped the call or fallback itself failed
         // silently — caller must then execute its own release + complete sequence.
         // BUILD 320: Id Guard — PRÉ-CHAMADA: descarta se requestId já foi invalidado
-        if (_activeRequestId != thisRequestId) {
+        if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
           debugPrint(
             '[BUILD320][STALE_GUARD] tryPaidFallback PRE-CALL drop: '
             'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
@@ -9966,7 +10153,7 @@ class AppProvider extends ChangeNotifier {
           }
 
           // PRE-CALL Id Guard Layer 2 (BUILD 320 pattern preservado)
-          if (_activeRequestId != thisRequestId) {
+          if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
             debugPrint(
               '[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 PRE-CALL drop: '
               'reason=$reason activeId=$_activeRequestId',
@@ -9999,7 +10186,7 @@ class AppProvider extends ChangeNotifier {
           );
 
           // POST-AWAIT Id Guard Layer 2 (BUILD 320 pattern preservado)
-          if (_activeRequestId != thisRequestId) {
+          if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
             debugPrint(
               '[BUILD320][STALE_GUARD] tryPaidFallback LAYER2 POST-AWAIT drop: '
               'reason=$reason activeId=$_activeRequestId textLen=${gptResult.text.length} '
@@ -10116,7 +10303,7 @@ class AppProvider extends ChangeNotifier {
         // ── FIM BUILD 321: Layer 2 ────────────────────────────────────────────
 
         // BUILD 320: Id Guard — PRÉ-CHAMADA Layer 3 (Gemini Paid)
-        if (_activeRequestId != thisRequestId) {
+        if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
           debugPrint(
             '[BUILD320][STALE_GUARD] tryPaidFallback LAYER3 PRE-CALL drop: '
             'reason=$reason activeId=$_activeRequestId — gemini paid suppressed',
@@ -10156,7 +10343,7 @@ class AppProvider extends ChangeNotifier {
         // Cenário: RESUME_COORDINATOR disparou onTimeout durante o await → zerou
         // _activeRequestId → resposta tardia do Proxy chegou → sem este guard,
         // wrappedOnDone chamaria setState num contexto já descartado → crash.
-        if (_activeRequestId != thisRequestId) {
+        if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
           debugPrint(
             '[BUILD320][STALE_GUARD] tryPaidFallback POST-AWAIT drop: '
             'reason=$reason requestId=$requestId thisRequestId=$thisRequestId '
@@ -10489,7 +10676,7 @@ class AppProvider extends ChangeNotifier {
           '-> Direcionando para Canal Dedicado',
         );
         // PRE-CALL Id Guard (BUILD 320 pattern)
-        if (_activeRequestId != thisRequestId) {
+        if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
           debugPrint(
             '[BUILD323][BYPASS_GUARD] massive_payload PRE-CALL drop: '
             'activeId=$_activeRequestId thisRequestId=$thisRequestId',
@@ -11173,7 +11360,7 @@ class AppProvider extends ChangeNotifier {
               unawaited(() async {
                 // Pequeno delay para deixar a rede respirar antes do retry
                 await Future<void>.delayed(const Duration(milliseconds: 800));
-                if (_activeRequestId != thisRequestId) {
+                if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
                   debugPrint(
                     '[BUILD432][AUTO_RETRY] requestId invalidado durante '
                     'delay → retry cancelado',

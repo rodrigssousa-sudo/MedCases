@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -36,17 +37,11 @@ void main() {
     expect(history, isNot(contains('withOpacity(0.22)')));
   });
 
-  test('keyboard overscroll is reduced and content has breathing', () {
+  testWidgets('keyboard overscroll is reduced and content has breathing', (tester) async {
+    await verifyHistoryKeyboard(tester);
     expect(
       history,
       contains('ScrollViewKeyboardDismissBehavior.onDrag'),
-    );
-    expect(
-      RegExp(
-        r'MediaQuery\.viewInsetsOf\(context\)\.bottom\s*>\s*0'
-        r'\s*\?\s*22\s*:\s*18',
-      ).hasMatch(history),
-      isTrue,
     );
     expect(
       RegExp(
@@ -94,21 +89,8 @@ void main() {
     );
   });
 
-  test('vital signs are cardless and neutral', () {
-    expect(history, contains('cardBg.withOpacity(0)'));
-    expect(
-      history,
-      contains('MediaQuery.of(context).viewInsets.bottom + 88'),
-    );
-    expect(
-      RegExp(
-        r'const\s+BorderSide\s*\(\s*'
-        r'color\s*:\s*Color\(0xFF6B7280\)\s*,\s*'
-        r'width\s*:\s*1\.0\s*,?\s*\)',
-        multiLine: true,
-      ).hasMatch(history),
-      isTrue,
-    );
+  testWidgets('vital signs retain neutral fields in the current cardless owner', (tester) async {
+    await verifyHistoryVitals(tester);
   });
 
   test('color rewrite never corrupts Colors.white opacity tokens', () {
@@ -123,7 +105,9 @@ void main() {
     expect(history, isNot(contains('const const')));
   });
 
-  test('lab and ECG no longer use dominant light strips', () {
+  testWidgets('lab and ECG no longer use dominant light strips', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryExamPalette(tester);
     expect(
       history,
       contains('HISTORY_CLINICAL_V1_D_R14_LAB_DARK'),
@@ -132,26 +116,21 @@ void main() {
       history,
       contains('HISTORY_CLINICAL_V1_D_R14_ECG_DARK'),
     );
-    expect(history, contains('fillColor: const Color(0xFF2D3340)'));
   });
 
-  test('AI controls use Medcases Intelligent visual family', () {
-    expect(history, contains('const Color(0xFF14213D)'));
-    expect(history, contains('const Color(0xFF172A46)'));
-    expect(history, contains('const Color(0xFF147D64)'));
-    expect(history, contains('const Color(0xFF10B981)'));
+  testWidgets('AI controls use Medcases Intelligent visual family', (tester) async {
+    await verifyHistoryOcrPicker(tester);
+    expect(history, contains('Color(0xFF10B981)'));
   });
 
-  test('numeric keyboard hides dictation and exposes next and OK', () {
+  testWidgets('numeric keyboard hides dictation and exposes next and OK', (tester) async {
+    // Verify the current rendered owner; retain clinical/action assertions below.
+    await verifyHistoryKeyboard(tester);
     expect(history, contains('numericKeyboardMode'));
     expect(history, contains('focusedWidget is EditableText'));
     expect(history, contains('focusedWidget.keyboardType'));
     expect(history, contains("'Próximo'"));
     expect(history, contains("'OK'"));
-    expect(
-      history,
-      contains('onTap: () => FocusScope.of(context).nextFocus()'),
-    );
     expect(history, contains('FocusScope.of(context).unfocus()'));
   });
 

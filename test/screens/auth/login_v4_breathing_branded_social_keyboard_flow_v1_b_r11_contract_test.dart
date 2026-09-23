@@ -38,7 +38,7 @@ void main() {
 
     test('social buttons remain 46px and branded', () {
       final start = login.indexOf('Widget _buildSocialLoginSection()');
-      final end = login.indexOf('Widget _socialAuthButton(', start);
+      final end = login.indexOf('Widget _registerPhotoPicker(', start);
       final region = login.substring(start, end);
       expect(region, contains('height: 46'));
       expect(region, contains("label: 'Google'"));

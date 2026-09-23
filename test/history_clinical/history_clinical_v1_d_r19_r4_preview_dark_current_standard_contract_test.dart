@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -51,7 +52,6 @@ void main() {
   late String section;
   late String item;
   late String highlight;
-  late String meta;
 
   setUpAll(() {
     history = File(
@@ -62,7 +62,6 @@ void main() {
     section = classSlice(history, '_PreviewSection');
     item = classSlice(history, '_PreviewItem');
     highlight = classSlice(history, '_PreviewItemHighlight');
-    meta = classSlice(history, '_MetaChip');
   });
 
   test('superfície raiz é grafite e usa o novo raio', () {
@@ -92,9 +91,9 @@ void main() {
     expect(highlight, contains('left: BorderSide('));
   });
 
-  test('metadados usam superfície discreta', () {
-    expect(meta, contains('Color(0xFF2D3340)'));
-    expect(meta, contains('Color(0xFF374151)'));
+  testWidgets('metadados usam superfície discreta', (tester) async {
+    // Metadata now uses the flat _PHItem owner, not retired _MetaChip boxes.
+    await verifyHistoryPreviewMetadata(tester);
   });
 
   test('conteúdo e comportamento produtivos permanecem', () {

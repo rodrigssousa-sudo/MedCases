@@ -42,13 +42,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>MedCases Pro uses the camera exclusively to allow healthcare professionals to photograph laboratory reports and clinical exam results for automatic AI-assisted data extraction. Images are processed only within the app and are never stored or shared with third parties.</string>
+	<string>MedCases uses photos and documents you select to extract the information you request. Selected content may be securely transmitted to MedCases remote processing infrastructure and contracted AI processing providers for this purpose.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>MedCases Pro uses the microphone for clinical dictation and audio recording features. Dictation may use iOS speech recognition. Optional remote transcription requires separate explicit consent and remains disabled unless required privacy and retention controls are satisfied.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>MedCases Pro may save app-generated images — such as clinical tracking charts or protocol screenshots — directly to your photo library, only when you explicitly request it.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>MedCases Pro requests access to your photo library so healthcare professionals can attach relevant clinical images — such as photos of lesions, exam results, or medical documents — directly to patient notes. Images are used exclusively within the app and are not shared with third parties.</string>
+	<string>MedCases uses photos and documents you select to extract the information you request. Selected content may be securely transmitted to MedCases remote processing infrastructure and contracted AI processing providers for this purpose.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>MedCases Pro uses iOS speech recognition to convert clinical dictation to text when the professional manually activates dictation. Optional remote long-form transcription is a separate feature and requires separate explicit consent before any remote audio processing.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

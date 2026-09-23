@@ -63,7 +63,7 @@ SCHEMA JSON obrigatório:
       );
 
       if (result.isError) {
-        debugPrint('[SoapAI] Erro Gemini: ${result.text}');
+        debugPrint('SOAP_PROVIDER_REJECTED');
         return SoapData(
             rawTranscript: rawTranscript, subjective: rawTranscript);
       }
@@ -178,7 +178,7 @@ REGRAS:
         }
         return 'Não foi possível extrair texto do exame.';
       } else {
-        debugPrint('[OcrExam] HTTP ${response.statusCode}: ${response.body}');
+        debugPrint('OCR_PROVIDER_REJECTED status=${response.statusCode}');
         return 'Erro ao processar exame (${response.statusCode}). Tente novamente.';
       }
     } catch (e) {

@@ -75,6 +75,7 @@ private object MedCasesLongFormAtRestChannel {
         "retentionMetadata",
         "transportPlaintextStaging",
         "premiumDrugCatalog",
+        "privateUserData",
     )
 
     fun register(
@@ -510,7 +511,7 @@ private object MedCasesLongFormAtRestChannel {
             throw BridgeFailure("android_logical_name_invalid")
         }
 
-        if (assetKind == "premiumDrugCatalog") {
+        if (assetKind == "premiumDrugCatalog" || assetKind == "privateUserData") {
             // Firebase Auth is already supplied by the Flutter Firebase plugin.
             // Reflection avoids adding a second native dependency/version owner.
             val authType = Class.forName("com.google.firebase.auth.FirebaseAuth")
@@ -521,7 +522,7 @@ private object MedCasesLongFormAtRestChannel {
                 .getMethod("getUid").invoke(user) as String
             val owner = java.security.MessageDigest.getInstance("SHA-256")
                 .digest(uid.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
-            if (sessionId != owner || keyId != "catalog." + owner.take(48)) {
+            if (sessionId != owner || keyId != (if (assetKind == "privateUserData") "private." else "catalog.") + owner.take(48)) {
                 throw BridgeFailure("catalog_owner_mismatch")
             }
         }

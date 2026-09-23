@@ -1,6 +1,7 @@
+const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
 const crypto=require('node:crypto');
-const {assertUsageReservation,containsAudio}=require('./usage_reservation_guard');
+const {assertUsageReservation,containsAudio,usageReceipt}=require('./usage_reservation_guard');
 const {Readable,Transform}=require('node:stream');
 const {pipeline}=require('node:stream/promises');
 const HOST='https://generativelanguage.googleapis.com';
@@ -19,15 +20,16 @@ function registerProviderTransport({app,express,authenticate,limiter,db,keyProvi
  const record=(uid,name)=>db.collection('providerResourceOwnership').doc(resourceKey(uid,name));
  const owns=async(uid,name)=>{const s=await record(uid,name).get();
   if(!s.exists||s.data().uid!==uid)return false;
-  if(s.data().usage)await assertUsageReservation(db,uid,s.data().usage);
+  // Resource cleanup/read remains owner-bound after terminal quota settlement.
   return true;};
- async function checkReferences(uid,value){
+ async function checkReferences(uid,value,bindings){
   if(!value||typeof value!=='object')return;
   for(const [key,item]of Object.entries(value)){
    if(['fileUri','file_uri'].includes(key)){
     const u=new URL(item);if(u.origin!==HOST||!/^\/v1beta\/files\/[\w-]+$/.test(u.pathname)||!await owns(uid,u.pathname.slice(8)))throw Error('RESOURCE_NOT_OWNED');
-   }else if(key==='cachedContent') {if(typeof item!=='string'||!await owns(uid,item))throw Error('RESOURCE_NOT_OWNED');}
-   else if(item&&typeof item==='object')await checkReferences(uid,item);
+    const bound=await record(uid,u.pathname.slice(8)).get();if(bound.data().usage)bindings.push(bound.data().usage);
+   }else if(key==='cachedContent') {if(typeof item!=='string'||!await owns(uid,item))throw Error('RESOURCE_NOT_OWNED');const bound=await record(uid,item).get();if(bound.data().usage)bindings.push(bound.data().usage);}
+   else if(item&&typeof item==='object')await checkReferences(uid,item,bindings);
   }
  }
  const parse=express.json({limit:'28mb'});
@@ -36,6 +38,7 @@ function registerProviderTransport({app,express,authenticate,limiter,db,keyProvi
   const key=keyProvider();if(!key)return res.status(503).json({error:'PROVIDER_NOT_CONFIGURED'});
   const abort=new AbortController();const timeout=setTimeout(()=>abort.abort(),15*60*1000);
   res.on('close',()=>abort.abort());
+  let execution=null;
   try{
    let target,body,usage=null;const headers={};
    const ticket=/^\/upload-ticket\/([a-f0-9-]+)$/.exec(req.path);
@@ -56,7 +59,11 @@ function registerProviderTransport({app,express,authenticate,limiter,db,keyProvi
     if(/^\/v1beta\/(files|cachedContents)\//.test(req.path)&&!await owns(uid,req.path.slice(8)))return res.status(403).json({error:'RESOURCE_NOT_OWNED'});
     if(containsAudio(req.body)||String(req.headers['x-goog-upload-header-content-type']||'').startsWith('audio/')||req.headers['x-medcases-usage-reservation'])
       usage=await assertUsageReservation(db,uid,req.headers);
-    await checkReferences(uid,req.body);
+    const bindings=[];await checkReferences(uid,req.body,bindings);
+    for(const bound of bindings){
+      if(usage&&JSON.stringify(usage)!==JSON.stringify(bound))throw Error('USAGE_BINDING_MISMATCH');
+      usage=await assertUsageReservation(db,uid,bound);
+    }
     if(req.path==='/v1beta/cachedContents'&&req.body?.model!=='models/gemini-2.5-flash')return res.status(403).json({error:'PROVIDER_MODEL_NOT_ALLOWED'});
     target=new URL(req.path,HOST);if(req.query.alt==='sse')target.searchParams.set('alt','sse');
     if(req.method==='POST')body=JSON.stringify(req.body??{});
@@ -64,6 +71,13 @@ function registerProviderTransport({app,express,authenticate,limiter,db,keyProvi
     for(const h of ['x-goog-upload-protocol','x-goog-upload-command','x-goog-upload-header-content-length','x-goog-upload-header-content-type'])if(req.headers[h])headers[h]=req.headers[h];
    }
    headers['x-goog-api-key']=key;
+   if(usage && /:(generateContent|streamGenerateContent)$/.test(req.path)){
+    const owner=new MonthlyUsageOwner({db}),receipt=usageReceipt(usage);
+    const index=Number(req.headers['x-medcases-execution-index']||0);
+    const claim=await owner.claimExecution(uid,receipt,index);
+    if(!claim.claimed)return res.status(409).json({error:'EXECUTION_ALREADY_CLAIMED',state:claim.state});
+    execution={owner,receipt,index};
+   }
    const response=await fetchImpl(target,{method:req.method,headers,body,duplex:'half',signal:abort.signal,redirect:'error'});
    res.status(response.status);
    const uploadUrl=response.headers.get('x-goog-upload-url');
@@ -80,7 +94,7 @@ function registerProviderTransport({app,express,authenticate,limiter,db,keyProvi
    if(response.ok){try{const payload=JSON.parse(text);const name=payload.file?.name??payload.name;if(typeof name==='string'&&/^(files|cachedContents)\/[\w-]+$/.test(name))await record(uid,name).set({uid,name,usage,createdAt:Date.now()});}catch(e){if(e instanceof SyntaxError){}else throw e;}}
    res.send(text);
   }catch(_){if(!res.headersSent)res.status(502).json({error:'PROVIDER_TRANSPORT_FAILED'});else res.end();}
-  finally{clearTimeout(timeout);}
+  finally{clearTimeout(timeout);if(execution)await execution.owner.completeExecution(uid,execution.receipt,execution.index).catch(()=>{});}
  });
 }
 module.exports={allowedPath,resourceKey,registerProviderTransport};

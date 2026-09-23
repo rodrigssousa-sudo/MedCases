@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/clinical_guide_article.dart';
+import '../widgets/clinical_guide_share_button.dart';
 
 class ClinicalGuideArticleScreen extends StatelessWidget {
   const ClinicalGuideArticleScreen({
@@ -33,6 +34,8 @@ class ClinicalGuideArticleScreen extends StatelessWidget {
             _ArticleTopBar(
               title: _isEs ? 'Guía clínica' : 'Guia clínico',
               dark: dark,
+              shareAction:
+                  ClinicalGuideShareButton(guide: guide, language: lang),
               onBack: () => Navigator.of(context).maybePop(),
             ),
             Expanded(
@@ -208,11 +211,13 @@ class _ArticleTopBar extends StatelessWidget {
     required this.title,
     required this.dark,
     required this.onBack,
+    required this.shareAction,
   });
 
   final String title;
   final bool dark;
   final VoidCallback onBack;
+  final Widget shareAction;
 
   @override
   Widget build(BuildContext context) {
@@ -224,8 +229,8 @@ class _ArticleTopBar extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         color: dark
-            ? const Color(0xFF1A1D23).withOpacity(0.92)
-            : Colors.white.withOpacity(0.92),
+            ? const Color(0xFF1A1D23).withAlpha(235)
+            : Colors.white.withAlpha(235),
         border: Border(
           bottom: BorderSide(
             color: divider,
@@ -236,6 +241,7 @@ class _ArticleTopBar extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
+          Positioned(right: 4, top: 0, child: shareAction),
           Positioned(
             left: 8,
             top: 6,

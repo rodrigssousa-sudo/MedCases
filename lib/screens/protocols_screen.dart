@@ -57,8 +57,10 @@ void showProtocolDetail(
       protocol: protocol,
       simulationContext: simulationContext,
     ),
-  ).then((_) => _registerRecentIfStayed(
-      context, 'protocol', protocol.id, title, openedAt));
+  ).then((_) {
+    if (!context.mounted) return;
+    _registerRecentIfStayed(context, 'protocol', protocol.id, title, openedAt);
+  });
 }
 
 // Busca protocolo por ID no provider e abre o detalhe direto
@@ -1359,10 +1361,7 @@ class _GroupSheet extends StatelessWidget {
     return Color.fromARGB(255, r, g, b);
   }
 
-  Color get _severityColor {
-    // Cor de severidade adaptada ao tema
-    return iconColor;
-  }
+
 
   @override
   Widget build(BuildContext context) {

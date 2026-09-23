@@ -23,7 +23,7 @@ void main() {
 
     test('Google and Apple remain one side-by-side branded row at 46px', () {
       final start = source.indexOf('Widget _buildSocialLoginSection()');
-      final end = source.indexOf('Widget _socialAuthButton(', start);
+      final end = source.indexOf('Widget _registerPhotoPicker(', start);
       expect(start, greaterThanOrEqualTo(0));
       expect(end, greaterThan(start));
       final region = source.substring(start, end);

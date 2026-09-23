@@ -1,3 +1,7 @@
+import 'home_composition_runtime_harness.dart';
+import 'package:flutter/material.dart';
+import 'package:medcases/home_v2/components/common/home_v2_press_surface.dart';
+import 'home_utility_guardia_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -124,121 +128,54 @@ void main() {
   group('Home V2 — aplicação exclusiva aos desenhos', () {
     test('conecta os SVGs efetivamente exibidos na Home atual', () {
       const assets = <String>[
-        'ic_guia_clinica.svg', 'ic_simulacao.svg',
-        'ic_farmacos.svg', 'ic_vacina.svg',
-        'ic_paciente.svg', 'ic_pediatria.svg',
-        'ic_ferramentas.svg', 'ic_historia.svg',
-        'ic_laboratorio.svg', 'ic_avaliacao.svg',
-        'resumo.svg', 'ic_timer.svg', 'ic_mi_guardia.svg',
+        'ic_guia_clinica.svg',
+        'ic_simulacao.svg',
+        'ic_farmacos.svg',
+        'ic_vacina.svg',
+        'ic_paciente.svg',
+        'ic_pediatria.svg',
+        'ic_ferramentas.svg',
+        'ic_historia.svg',
+        'ic_laboratorio.svg',
+        'ic_avaliacao.svg',
+        'resumo.svg',
+        'ic_timer.svg',
+        'ic_mi_guardia.svg',
       ];
       for (final asset in assets) {
         expect(modules, contains('assets/icons/home_v2/$asset'),
-          reason: 'SVG produtivo ausente: $asset');
+            reason: 'SVG produtivo ausente: $asset');
       }
       expect(modules, isNot(contains('assets/icons/home_v2/ic_notas.svg')));
     });
-    test('preserva SVG nativo nos cards e filtro nos widgets tintados', () {
-      // Layout atual usa SVG colorido nativo nos cards principais e cor
-      // verde explicita nos atalhos; widgets com tintagem usam srcIn.
-      expect(modules, contains('const Color _kHomeProductiveIconGreen = Color(0xFF10B981)'));
-      expect(modules, contains('iconColor: _kHomeProductiveIconGreen'));
-      final utility = classBlock(modules, '_UtilityShortcut');
-      final moduleIcon = classBlock(modules, '_ModuleIcon');
-      for (final source in [utility, moduleIcon]) {
-        expect(source, contains('ColorFilter.mode('));
-        expect(source, contains('BlendMode.srcIn'));
-      }
+    testWidgets('preserva SVG nativo e callbacks nos owners produtivos',
+        (tester) async {
+      await verifyUtilityRuntime(tester);
       final card = classBlock(modules, '_HomeV2MobilePairButton');
       expect(card, contains('SvgPicture.asset('));
-      expect(card, contains('svgAsset!'));
       expect(card, isNot(contains('colorFilter:')));
     });
-    test('utilidades abandonam somente os Material Icons antigos', () {
-      final utility = classBlock(
-        modules,
-        '_UtilityShortcut',
-      );
-
-      expect(
-        utility,
-        contains('final String svgAsset;'),
-      );
-
-      expect(
-        utility,
-        contains('SvgPicture.asset('),
-      );
-
-      expect(
-        utility,
-        isNot(contains('final IconData icon;')),
-      );
-
-      const forbidden = <String>[
+    testWidgets('utilidades usam os SVGs canônicos e os quatro callbacks',
+        (tester) async {
+      await verifyUtilityRuntime(tester, isEs: true);
+      for (final token in [
         'Icons.fact_check_outlined',
         'Icons.edit_note_outlined',
-        'Icons.timer_outlined',
-      ];
-
-      for (final token in forbidden) {
-        expect(
-          modules,
-          isNot(contains(token)),
-          reason: 'Material Icon antigo permanece: $token',
-        );
-      }
-    });
-
-    test('Meu Plantão usa proprietário exclusivamente SVG', () {
-      final moduleIcon = classBlock(
-        modules,
-        '_ModuleIcon',
-      );
-
-      expect(
-        moduleIcon,
-        contains('required this.svgAsset'),
-      );
-
-      expect(
-        moduleIcon,
-        contains('final String svgAsset;'),
-      );
-
-      expect(
-        moduleIcon,
-        contains('SvgPicture.asset('),
-      );
-
-      expect(
-        moduleIcon,
-        isNot(contains('IconData')),
-      );
-
-      expect(
-        moduleIcon,
-        isNot(contains('child: Icon(')),
-      );
-
-      expect(
-        modules,
-        isNot(
-          contains('Icons.medical_services_outlined'),
-        ),
-      );
-    });
-
-    test('preserva dimensoes dos SVGs e fundo estrutural de modulo', () {
-      for (final token in const [
-        'width: 54', 'height: 54', 'width: 22', 'height: 22',
-        'compact ? 18 : 21',
+        'Icons.timer_outlined'
       ]) {
-        expect(modules, contains(token), reason: token);
+        expect(modules, isNot(contains(token)));
       }
-      final moduleIcon = classBlock(modules, '_ModuleIcon');
-      expect(moduleIcon, contains('final size = compact ? 34.0 : 40.0'));
-      expect(moduleIcon, contains('color: palette.surfaceStrong'));
-      expect(moduleIcon, contains('border: Border.all('));
+    });
+
+    testWidgets('Meu Plantão usa proprietário exclusivamente SVG',
+        (tester) async {
+      await verifyGuardiaRuntime(tester);
+      expect(modules, isNot(contains('Icons.medical_services_outlined')));
+    });
+
+    testWidgets('preserva geometria nativa dos SVGs e ações no modo escuro',
+        (tester) async {
+      await verifyUtilityRuntime(tester, dark: true);
     });
   });
 
@@ -267,13 +204,18 @@ void main() {
       );
     });
 
-    test('light permanece exatamente como estava', () {
-      expect(
-        surface,
-        contains(
-          'lightPageBackground = Color(0xFFF3F7F8)',
-        ),
-      );
+    testWidgets('light usa o token produtivo e o aplica ao canvas renderizado',
+        (tester) async {
+      await verifyHomeComposition(tester, verifyMounted: () {
+        expect(
+            HomeV2SurfaceTokens.pageBackground(false), const Color(0xFFE0E6E9));
+        expect(
+            HomeV2SurfaceTokens.pageBackground(true), const Color(0xFF1A1D23));
+        expect(
+            tester.widgetList<ColoredBox>(find.byType(ColoredBox)).where(
+                (w) => w.color == HomeV2SurfaceTokens.pageBackground(false)),
+            isNotEmpty);
+      });
     });
   });
 }

@@ -1,0 +1,843 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Explicit release/security gate. Historical artifacts are documentation, not production inputs. Any new Functions test must be classified; none silently omitted.",
+  "categories": [
+    "security",
+    "billing",
+    "auth",
+    "quota",
+    "email",
+    "clinical-runtime",
+    "provider",
+    "firestore",
+    "remote-control-plane"
+  ],
+  "releaseFunctions": [
+    {
+      "file": "functions/test/admin_ai_rate_card_usage_metadata_v1.contract.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/admin_ai_telemetry_v1.contract.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_cohort_rollout.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_config_reader_legacy_adapter.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_config_refresh_before_execution_gate.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_foundation.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gemini31_flash_lite_paid_cross_provider_shadow_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gemini31_flash_lite_paid_protected_clinical_default_deny.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gemini31_paid_inert_index_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gemini31_paid_synthetic_only_uid_scoped_guard.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_luna_inert_index_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_luna_plantao_primary_shadow_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_luna_protected_clinical_default_deny.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_luna_synthetic_only_uid_scoped_guard.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_luna_telemetry_cost_validator_failure_taxonomy.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_terra_inert_index_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_terra_plantao_complex_escalation_shadow_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_terra_protected_clinical_default_deny.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt56_terra_synthetic_only_uid_scoped_guard.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt5_nano_max_output_clamp_1024.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt5_nano_plantao_router_inert_index_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt5_nano_plantao_router_real_shadow_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt5_nano_protected_clinical_default_deny.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt5_nano_protected_policy_index_wiring.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_gpt5_nano_synthetic_only_guard.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_legacy_live_parity_planner.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_legacy_parity_execution_gate.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_next_model_shadow_observer_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_next_model_shadow_routing_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_plantao_live_authority_index_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_plantao_live_authority_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_protected_clinical_data_policy_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_protected_clinical_data_policy_v2.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_server_deidentified_clinical_fact_projection_owner_v2.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_server_deidentified_clinical_projection_owner_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_shadow_bridge.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_terra_clinical_escalation_policy_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_terra_escalation_stabilization_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_terra_server_side_escalation_policy_inert_index_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_control_plane_v2_terra_stabilization_inert_index_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/ai_remote_router_config_reader_v1.contract.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/ai_remote_router_shadow_v1.contract.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/global_clinical_context_build21_index_wiring_hard_off.contract.test.js",
+      "category": "clinical-runtime",
+      "suite": "CURRENT_CLINICAL_CONTRACT_TESTS"
+    },
+    {
+      "file": "functions/test/global_clinical_context_remote_build1_test.js",
+      "category": "clinical-runtime",
+      "suite": "CURRENT_CLINICAL_CONTRACT_TESTS"
+    },
+    {
+      "file": "functions/test/global_clinical_context_remote_build2_test.js",
+      "category": "clinical-runtime",
+      "suite": "CURRENT_CLINICAL_CONTRACT_TESTS"
+    },
+    {
+      "file": "functions/test/global_clinical_context_remote_build3_test.js",
+      "category": "clinical-runtime",
+      "suite": "CURRENT_CLINICAL_CONTRACT_TESTS"
+    },
+    {
+      "file": "functions/test/global_clinical_context_remote_build4a_test.js",
+      "category": "clinical-runtime",
+      "suite": "CURRENT_CLINICAL_CONTRACT_TESTS"
+    },
+    {
+      "file": "functions/test/global_clinical_context_remote_build5_test.js",
+      "category": "clinical-runtime",
+      "suite": "CURRENT_CLINICAL_CONTRACT_TESTS"
+    },
+    {
+      "file": "functions/test/global_clinical_context_remote_build6_test.js",
+      "category": "clinical-runtime",
+      "suite": "CURRENT_CLINICAL_CONTRACT_TESTS"
+    },
+    {
+      "file": "functions/test/nodemailer_security.test.js",
+      "category": "email",
+      "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/openai_responses_stream.integration.test.js",
+      "category": "provider",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/structured_output_stream.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_exchange_endpoint_inert_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_exchange_inert_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_nonpublic_runtime_readiness_canary_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_pending_grant_active_claimed_consumed_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_physical_canary_http_server_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_physical_canary_orchestrator_inert_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_refresh_token_project_vault_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_runtime_adapters_flow_guard_project_validation_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_runtime_composition_endpoint_wiring_inert_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_runtime_pending_grant_kms_bridge_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_token_exchange_secret_bound_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_two_phase_http_server_wiring_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/study_google_ai_oauth_two_phase_pending_encrypted_grant_v1.contract.test.js",
+      "category": "remote-control-plane",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/shadow_decommission.test.js",
+      "category": "clinical-runtime",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/shadow_handler_parity.test.js",
+      "category": "provider",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/release_manifest.test.js",
+      "category": "security",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/cors_release_policy.test.js",
+      "category": "security",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    }
+  ],
+  "historicalPipelineArchaeology": [
+    {
+      "file": "functions/test/global_clinical_context_build10_normalizer_owner_audit.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_additional_owner_inventory.local.json",
+        "functions/clinical_context/generated/clinical_registry_normalized_candidates.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase3_normalized_candidates.local.json",
+        "functions/clinical_context/generated/clinical_registry_structured_source_proofs.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build11_schema_mapper_owner_proofs.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_additional_owner_source_proofs.local.json",
+        "functions/clinical_context/generated/clinical_registry_candidate_schema_families.local.json",
+        "functions/clinical_context/generated/clinical_registry_normalized_candidates.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase4_schema_proofs.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build12_unambiguous_compiler.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase5_unambiguous.local.json",
+        "functions/clinical_context/generated/clinical_registry_unambiguous_compiled.local.json",
+        "functions/clinical_context/generated/clinical_registry_unambiguous_qualification.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build13_legacy_semantics.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_legacy_compatibility_candidates.local.json",
+        "functions/clinical_context/generated/clinical_registry_legacy_consumer_proofs.local.json",
+        "functions/clinical_context/generated/clinical_registry_legacy_pt_es_semantics.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase6_legacy_semantics.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build15_legacy_compatibility.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_legacy_remote_compatibility.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build16_compatibility_shadow_bridge.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build17_backend_shadow_factory_e2e.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build19_runtime_seam_adapter.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build25_request_context_bridge.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build8_seed_extractor_contract_test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_migration_inventory.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase1_identity_protocol.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_build9_structured_source_proofs.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase1_identity_protocol.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase2_proofs.local.json",
+        "functions/clinical_context/generated/clinical_registry_structured_source_proofs.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild30a_backend_identity_protocol_wiring.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild30b_app_payload_backend_e2e.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild31_remote_registry_bundle.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_legacy_remote_compatibility.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild32_machine_native_recompilation.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_legacy_remote_compatibility.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild33_machine_native_mass_gapfill.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_legacy_remote_compatibility.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild34_bulk_machine_content.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_legacy_remote_compatibility.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase10.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild35_bulk_machine_actions.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_registry_legacy_remote_compatibility.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_authoring_manifest.phase11.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase10.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase11.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild36_shadow_observation_canary_prep.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_firestore_write_batches.phase13.local.json",
+        "functions/clinical_context/generated/clinical_firestore_write_payload.phase13.local.json",
+        "functions/clinical_context/generated/clinical_shadow_observation_callsite_plan.phase13.local.json",
+        "functions/clinical_context/generated/clinical_shadow_observation_canary_plan.phase13.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild37_shadow_s1.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_shadow_observation_s1_registry_index.phase14.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild41_classification_01.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "../clinical_context/generated/clinical_machine_classifications.m41_01.local.json",
+        "../clinical_context/generated/clinical_registry_machine_native_supplement.phase15_m41.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_macrobuild43_classification_02_and_94.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "../clinical_context/generated/clinical_machine_classifications.consolidated94.phase17.local.json",
+        "../clinical_context/generated/clinical_machine_classifications.m41_01.local.json",
+        "../clinical_context/generated/clinical_machine_classifications.m43_02.local.json",
+        "../clinical_context/generated/clinical_registry_machine_native_supplement.phase17_classification94.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_superbuild44_management270.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_machine_classifications.consolidated94.phase17.local.json",
+        "functions/clinical_context/generated/clinical_machine_management.global270.phase18.local.json",
+        "functions/clinical_context/generated/clinical_management_authoring_evidence.global270.phase18.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase18_management270.local.json",
+        "functions/clinical_context/generated/clinical_registry_seed.phase7_legacy_compatibility.local.json",
+        "functions/clinical_context/generated/global_clinical_context_superbuild44_management270_report.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_superbuild46_management_critical18.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_machine_management.authoritative18.phase19.local.json",
+        "functions/clinical_context/generated/clinical_management_authoring_evidence.authoritative18.phase19.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase19_management270_authoritative18.local.json",
+        "functions/clinical_context/generated/global_clinical_context_superbuild46_management_critical18_report.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_superbuild47_management_next57.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_machine_management.authoritative18.phase19.local.json",
+        "functions/clinical_context/generated/clinical_machine_management.authoritative75.phase20.local.json",
+        "functions/clinical_context/generated/clinical_management_authoring_evidence.authoritative75.phase20.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase20_management270_authoritative75.local.json",
+        "functions/clinical_context/generated/global_clinical_context_superbuild47_management_next57_report.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_superbuild48_management_next75.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_machine_management.authoritative150.phase21.local.json",
+        "functions/clinical_context/generated/clinical_machine_management.authoritative75.phase20.local.json",
+        "functions/clinical_context/generated/clinical_management_authoring_evidence.authoritative150.phase21.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase21_management270_authoritative150.local.json",
+        "functions/clinical_context/generated/global_clinical_context_superbuild48_management_next75_report.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_superbuild49_management210.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_machine_management.authoritative150.phase21.local.json",
+        "functions/clinical_context/generated/clinical_machine_management.authoritative210.phase22.local.json",
+        "functions/clinical_context/generated/clinical_management_authoring_evidence.authoritative210.phase22.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase22_management270_authoritative210.local.json",
+        "functions/clinical_context/generated/global_clinical_context_superbuild49_management_next60_report.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_superbuild50_management270.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_machine_management.authoritative210.phase22.local.json",
+        "functions/clinical_context/generated/clinical_machine_management.authoritative270.phase23.local.json",
+        "functions/clinical_context/generated/clinical_management_authoring_evidence.authoritative270.phase23.local.json",
+        "functions/clinical_context/generated/clinical_registry_machine_native_supplement.phase23_management270_authoritative270.local.json",
+        "functions/clinical_context/generated/global_clinical_context_superbuild50_management_final60_report.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    },
+    {
+      "file": "functions/test/global_clinical_context_superbuild51_registry_shadow270.contract.test.js",
+      "suite": "HISTORICAL_PIPELINE_ARCHAEOLOGY_TESTS",
+      "disposition": "HISTORICAL_NON_RELEASE",
+      "artifactReferences": [
+        "functions/clinical_context/generated/clinical_firestore_write_batches.phase24_authoritative270.local.json",
+        "functions/clinical_context/generated/clinical_firestore_write_payload.phase24_authoritative270.local.json",
+        "functions/clinical_context/generated/clinical_registry_remote_snapshot.phase24_authoritative270.local.json",
+        "functions/clinical_context/generated/clinical_shadow_global_validation.phase24.local.json",
+        "functions/clinical_context/generated/global_clinical_context_superbuild51_registry_shadow_report.local.json"
+      ],
+      "rationale": "Historical staged-generation evidence is absent from release source/history. No productive index.js import path loads these artifacts after S1 decommission. Assertions preserved verbatim; not replaced with later snapshot. Current runtime, disabled shadow and security contracts remain in release suites."
+    }
+  ],
+  "releaseGroups": [
+    {
+      "id": "functions",
+      "runtime": "node",
+      "files": [
+        "functions/test/admin_ai_rate_card_usage_metadata_v1.contract.test.js",
+        "functions/test/admin_ai_telemetry_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_cohort_rollout.contract.test.js",
+        "functions/test/ai_control_plane_v2_config_reader_legacy_adapter.contract.test.js",
+        "functions/test/ai_control_plane_v2_config_refresh_before_execution_gate.contract.test.js",
+        "functions/test/ai_control_plane_v2_foundation.contract.test.js",
+        "functions/test/ai_control_plane_v2_gemini31_flash_lite_paid_cross_provider_shadow_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gemini31_flash_lite_paid_protected_clinical_default_deny.contract.test.js",
+        "functions/test/ai_control_plane_v2_gemini31_paid_inert_index_wiring_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gemini31_paid_synthetic_only_uid_scoped_guard.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_luna_inert_index_wiring_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_luna_plantao_primary_shadow_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_luna_protected_clinical_default_deny.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_luna_synthetic_only_uid_scoped_guard.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_luna_telemetry_cost_validator_failure_taxonomy.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_terra_inert_index_wiring_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_terra_plantao_complex_escalation_shadow_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_terra_protected_clinical_default_deny.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt56_terra_synthetic_only_uid_scoped_guard.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt5_nano_max_output_clamp_1024.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt5_nano_plantao_router_inert_index_wiring_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt5_nano_plantao_router_real_shadow_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt5_nano_protected_clinical_default_deny.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt5_nano_protected_policy_index_wiring.contract.test.js",
+        "functions/test/ai_control_plane_v2_gpt5_nano_synthetic_only_guard.contract.test.js",
+        "functions/test/ai_control_plane_v2_legacy_live_parity_planner.contract.test.js",
+        "functions/test/ai_control_plane_v2_legacy_parity_execution_gate.contract.test.js",
+        "functions/test/ai_control_plane_v2_next_model_shadow_observer_wiring_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_next_model_shadow_routing_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_plantao_live_authority_index_wiring_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_plantao_live_authority_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_protected_clinical_data_policy_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_protected_clinical_data_policy_v2.contract.test.js",
+        "functions/test/ai_control_plane_v2_server_deidentified_clinical_fact_projection_owner_v2.contract.test.js",
+        "functions/test/ai_control_plane_v2_server_deidentified_clinical_projection_owner_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_shadow_bridge.contract.test.js",
+        "functions/test/ai_control_plane_v2_terra_clinical_escalation_policy_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_terra_escalation_stabilization_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_terra_server_side_escalation_policy_inert_index_wiring_v1.contract.test.js",
+        "functions/test/ai_control_plane_v2_terra_stabilization_inert_index_wiring_v1.contract.test.js",
+        "functions/test/ai_remote_router_config_reader_v1.contract.test.js",
+        "functions/test/ai_remote_router_shadow_v1.contract.test.js",
+        "functions/test/global_clinical_context_build21_index_wiring_hard_off.contract.test.js",
+        "functions/test/global_clinical_context_remote_build1_test.js",
+        "functions/test/global_clinical_context_remote_build2_test.js",
+        "functions/test/global_clinical_context_remote_build3_test.js",
+        "functions/test/global_clinical_context_remote_build4a_test.js",
+        "functions/test/global_clinical_context_remote_build5_test.js",
+        "functions/test/global_clinical_context_remote_build6_test.js",
+        "functions/test/nodemailer_security.test.js",
+        "functions/test/openai_responses_stream.integration.test.js",
+        "functions/test/structured_output_stream.test.js",
+        "functions/test/study_google_ai_oauth_exchange_endpoint_inert_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_exchange_inert_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_nonpublic_runtime_readiness_canary_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_pending_grant_active_claimed_consumed_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_physical_canary_http_server_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_physical_canary_orchestrator_inert_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_refresh_token_project_vault_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_runtime_adapters_flow_guard_project_validation_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_runtime_composition_endpoint_wiring_inert_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_runtime_pending_grant_kms_bridge_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_token_exchange_secret_bound_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_two_phase_http_server_wiring_v1.contract.test.js",
+        "functions/test/study_google_ai_oauth_two_phase_pending_encrypted_grant_v1.contract.test.js",
+        "functions/test/shadow_decommission.test.js",
+        "functions/test/shadow_handler_parity.test.js",
+        "functions/test/release_manifest.test.js",
+        "functions/test/cors_release_policy.test.js"
+      ]
+    },
+    {
+      "id": "server-security",
+      "runtime": "node",
+      "categories": [
+        "billing",
+        "auth",
+        "quota",
+        "provider",
+        "security"
+      ],
+      "files": [
+        "server/test/audio_transcription_routes_test.js",
+        "server/test/calculator_entitlement_session_test.js",
+        "server/test/calculator_session_routes_test.js",
+        "server/test/client_security_boundary_test.js",
+        "server/test/entitlement_webview_actions_test.js",
+        "server/test/final_entitlement_contract_test.js",
+        "server/test/final_mcc1_webview_expiry_test.js",
+        "server/test/monthly_usage_owner_test.js",
+        "server/test/monthly_usage_routes_test.js",
+        "server/test/offline_entitlement_lease_test.js",
+        "server/test/provider_transport_routes_test.js",
+        "server/test/revenuecat_webhook_routes_test.js",
+        "server/test/security_auth_test.js",
+        "server/test/study_background_transcription_routes_contract_test.js",
+        "server/test/usage_reservation_guard_test.js",
+        "server/test/clinical_content_routes_test.js",
+        "server/test/cors_release_policy_test.js"
+      ]
+    },
+    {
+      "id": "firestore",
+      "runtime": "node",
+      "categories": [
+        "firestore",
+        "billing"
+      ],
+      "files": [
+        "test/testimonials_rules/testimonials.test.mjs",
+        "test/testimonials_rules/security-remediation.mjs"
+      ],
+      "requires": "Local Firestore emulator 127.0.0.1:8787; no production project."
+    },
+    {
+      "id": "flutter-security",
+      "runtime": "flutter",
+      "categories": [
+        "security",
+        "clinical-runtime",
+        "auth"
+      ],
+      "files": [
+        "test/security_remediation_test.dart",
+        "test/services/provider_gateway_http_test.dart",
+        "test/services/calculator_origin_policy_test.dart",
+        "test/services/feature_authorization_test.dart",
+        "test/services/final_release_cache_test.dart",
+        "test/services/clinical_content/clinical_content_foundation_test.dart",
+        "test/services/clinical_content/remote_logout_closure_test.dart",
+        "test/services/ai_mode_isolation_test.dart",
+        "test/services/final_entitlement_matrix_test.dart",
+        "test/services/entitlement_service_contract_test.dart",
+        "test/services/entitlement_integration_closure_test.dart",
+        "test/providers/firestore_typed_reads_test.dart",
+        "test/services/ai/safety/clinical_safety_flow_integration_test.dart",
+        "test/services/ai_pipeline/plantao/plantao_drug_identity_provenance_binding_shadow_adapter_test.dart"
+      ]
+    },
+    {
+      "id": "browser-security",
+      "runtime": "flutter",
+      "platform": "chrome",
+      "categories": [
+        "security"
+      ],
+      "files": [
+        "test/services/private_cache_web_test.dart",
+        "test/services/canonical_catalog_web_cipher_test.dart"
+      ]
+    }
+  ],
+  "historicalInvocation": "node functions/test/run_release_tests.js --historical (explicitly non-release; authentic historical fixtures required, failures remain visible)",
+  "temporaryDerivedArtifacts": "The four mechanically proven phase1/2 files are TEST_TEMP_ONLY; never prerequisites for the release gate."
+}

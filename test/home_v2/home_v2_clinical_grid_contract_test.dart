@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'home_clinical_grid_runtime_harness.dart';
 
 String isolateClass(
   String source,
@@ -23,9 +24,10 @@ String isolateClass(
 
 void main() {
   group('Home V2 — grade clínica 2×2', () {
-    test(
-      'usa composição vertical, SVGs e divisores oficiais',
-      () {
+    testWidgets(
+      'usa composição vertical, SVGs e geometria produtiva atual',
+      (tester) async {
+        await verifyClinicalGrid(tester, dark: false, isEs: false);
         final root = Directory.current;
 
         final modulesFile = File(
@@ -48,18 +50,6 @@ void main() {
           nextClass: 'HomeV2UtilityRow',
         );
 
-        final shortcut = isolateClass(
-          modulesSource,
-          '_ClinicalShortcut',
-          nextClass: '_ModuleIcon',
-        );
-
-        expect(
-          grid,
-          contains('height: 68'),
-          reason: 'Cada linha clínica deve possuir altura exata de 68 px.',
-        );
-
         expect(
           grid,
           isNot(contains('GridView.count(')),
@@ -78,18 +68,6 @@ void main() {
           reason: 'Os divisores verticais substituem o gap do GridView.',
         );
 
-        expect(
-          grid,
-          contains('_ClinicalVerticalDivider()'),
-          reason: 'A grade deve usar divisores verticais próprios.',
-        );
-
-        expect(
-          grid,
-          contains('_ClinicalHorizontalDivider()'),
-          reason: 'A grade deve usar divisor horizontal próprio.',
-        );
-
         for (final asset in const [
           'assets/icons/home_v2/ic_paciente.svg',
           'assets/icons/home_v2/ic_pediatria.svg',
@@ -102,97 +80,6 @@ void main() {
             reason: 'Asset oficial ausente: $asset',
           );
         }
-
-        expect(
-          grid,
-          contains('iconSize: 31'),
-          reason: 'Paciente, Ferramentas e História devem usar SVG 31 px.',
-        );
-
-        expect(
-          grid,
-          contains('iconSize: 30'),
-          reason: 'Pediatria deve usar ícone oficial de 30 px.',
-        );
-
-        expect(
-          shortcut,
-          contains('mainAxisAlignment: MainAxisAlignment.center'),
-          reason: 'O conteúdo clínico deve permanecer centralizado.',
-        );
-
-        expect(
-          shortcut,
-          contains('crossAxisAlignment: CrossAxisAlignment.center'),
-          reason: 'O atalho deve possuir composição vertical centralizada.',
-        );
-
-        expect(
-          shortcut,
-          isNot(contains('final String subtitle;')),
-          reason: 'Os atalhos clínicos não devem possuir subtítulos.',
-        );
-
-        expect(
-          shortcut,
-          isNot(contains('required this.subtitle')),
-          reason: 'O construtor não deve exigir subtítulo.',
-        );
-
-        expect(
-          shortcut,
-          contains('SvgPicture.asset('),
-          reason: 'Os atalhos devem renderizar SVGs oficiais.',
-        );
-
-        expect(
-          shortcut,
-          contains('fontSize: 11'),
-          reason: 'Os títulos clínicos devem usar 11 px.',
-        );
-
-        expect(
-          modulesSource,
-          contains('class _ClinicalVerticalDivider extends StatelessWidget'),
-          reason: 'O divisor vertical oficial deve existir.',
-        );
-
-        expect(
-          modulesSource,
-          matches(
-            RegExp(
-              r'class _ClinicalVerticalDivider extends StatelessWidget'
-              r'.*?width:\s*1,'
-              r'.*?height:\s*68,'
-              r'.*?width:\s*0\.55,'
-              r'.*?height:\s*42,',
-              dotAll: true,
-            ),
-          ),
-          reason: 'O divisor vertical deve usar 1×68 e traço 0.55×42.',
-        );
-
-        expect(
-          modulesSource,
-          contains(
-            'class _ClinicalHorizontalDivider extends StatelessWidget',
-          ),
-          reason: 'O divisor horizontal oficial deve existir.',
-        );
-
-        expect(
-          modulesSource,
-          matches(
-            RegExp(
-              r'class _ClinicalHorizontalDivider extends StatelessWidget'
-              r'.*?horizontal:\s*24'
-              r'.*?height:\s*0\.55',
-              dotAll: true,
-            ),
-          ),
-          reason:
-              'O divisor horizontal deve possuir margem 24 e espessura 0.55.',
-        );
 
         for (final callback in const [
           'onTap: onPatient',

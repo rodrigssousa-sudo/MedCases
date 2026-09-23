@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +11,13 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria final Light surface contrast V1-B-R0', () {
@@ -26,7 +34,7 @@ void main() {
       expect(
         nav,
         contains(
-          'dark ? const Color(0xFF2D3340) : const Color(0xFFFFFFFF)',
+          'dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF)',
         ),
       );
     });
@@ -35,9 +43,8 @@ void main() {
       final input = classBlock(tools, '_PedCompactInput');
       expect(
         input,
-        contains(
-          'dark ? const Color(0xFF1F232A) : const Color(0xFFFFFFFF)',
-        ),
+        matches(RegExp(
+            r'dark\s*\? const Color\(0xFF1F232A\)\s*: const Color\(0xFFFFFFFF\)')),
       );
       expect(input, contains('height: 40'));
     });
@@ -59,10 +66,11 @@ void main() {
       expect(state, contains('const SizedBox(height: 0)'));
       expect(
         state,
-        contains('padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)'),
+        contains('padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)'),
       );
-      expect(nav, contains('height: 44'));
-      expect(nav, contains('width: active ? 2 : 0.7'));
+      expect(nav, contains('height: 40'));
+      expect(nav,
+          contains('child: Container(width: 0.7, height: 20, color: divider)'));
 
       for (final name in <String>[
         '_PedMetricRow',

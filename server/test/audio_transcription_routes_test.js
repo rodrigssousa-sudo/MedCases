@@ -44,7 +44,13 @@ async function withServer({ env, fetchImpl }, action) {
   };
 
   const usageState={uid:'firebase-test-user-001',state:'reserved',attempt:'fixture-attempt',kinds:['transcription'],maximumMs:60000};
-  const db={collection:name=>({doc:id=>({get:async()=>({exists:name==='usageReservations'&&id==='a'.repeat(64),data:()=>usageState})})})};
+  const records=new Map();let queue=Promise.resolve();
+  const db={collection:name=>({doc:id=>({path:`${name}/${id}`,get:async()=>({exists:name==='usageReservations'&&id==='a'.repeat(64),data:()=>usageState})})}),
+    runTransaction(action){const pending=queue.then(async()=>action({
+      get:async ref=>({exists:ref.path==='usageReservations/'+'a'.repeat(64)||records.has(ref.path),data:()=>structuredClone(ref.path.startsWith('usageReservations/')?usageState:records.get(ref.path))}),
+      set:(ref,data)=>{if(ref.path.startsWith('usageReservations/'))Object.assign(usageState,data);else records.set(ref.path,data);},
+    }));queue=pending.catch(()=>{});return pending;}};
+
   const runtimeSurface = registerAudioTranscriptionRoutes({
     app,
     authenticateFirebaseToken: firebaseAuthStub,
@@ -320,5 +326,17 @@ test('missing receipt cannot create audio grant; completed receipt cannot execut
   const g=await grant(base);assert.equal(g.response.status,200);usageState.state='completed';
   const response=await fetch(`${base}/api/ai/audio/transcriptions`,{method:'POST',headers:{Authorization:`Bearer ${g.json.accessToken}`,'X-MedCases-Idempotency-Key':'session_audio_001:segment:0','X-MedCases-Audio-Retention':'transient-delete'},body:transcriptionForm()});
   assert.equal(response.status,403);assert.equal(calls,0);
+ });
+});
+
+test('parallel same grant cannot execute upstream twice and completion cannot reopen',async()=>{
+ const f=fixture();let calls=0;
+ await withServer({env:f.env,fetchImpl:async()=>{calls++;return new Response(JSON.stringify({text:'synthetic transcript'}),{status:200,headers:{'Content-Type':'application/json'}});}},async({base,usageState})=>{
+  const g=await grant(base);assert.equal(g.response.status,200);
+  const execute=()=>fetch(`${base}/api/ai/audio/transcriptions`,{method:'POST',headers:{Authorization:`Bearer ${g.json.accessToken}`,'X-MedCases-Idempotency-Key':'session_audio_001:segment:0','X-MedCases-Audio-Retention':'transient-delete'},body:transcriptionForm()});
+  const responses=await Promise.all([execute(),execute()]);
+  assert.equal(responses.filter(r=>r.status===200).length,1);
+  assert.equal(calls,1);assert.equal(usageState.state,'completed');
+  assert.notEqual((await execute()).status,200);assert.equal(calls,1);
  });
 });

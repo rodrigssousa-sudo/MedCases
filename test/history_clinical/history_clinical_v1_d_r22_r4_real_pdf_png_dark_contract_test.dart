@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -114,9 +115,9 @@ void main() {
     expect(pdf, contains('color: #C5A365 !important'));
     expect(pdf, contains('border-radius: 0 !important'));
   });
-  test('canvas real de PNG não possui documento branco', () {
+  testWidgets('canvas real de PNG não possui documento branco', (tester) async {
     expect(build, contains('HISTORY_CLINICAL_V1_D_R22_R4_REAL_PNG_DARK'));
-    expect(build, contains('color: const Color(0xFF1A1D23)'));
+    await verifyHistoryPngCanvas(tester);
     final printStart =
         build.indexOf('HISTORY_CLINICAL_V1_D_R22_R4_REAL_PNG_DARK');
     final actionsStart =

@@ -51,7 +51,8 @@ class MonthlyUsageLedger {
           {required String operationId,
           required Set<UsageKind> kinds,
           required int maximumMs,
-          bool allowPartial = false}) =>
+          bool allowPartial = false,
+          int executionCount = 1}) =>
       _serialized(() async {
         final owner = uid();
         if (owner == null || owner.isEmpty)
@@ -90,6 +91,7 @@ class MonthlyUsageLedger {
             'kinds': kinds.map((k) => k.name).toList(),
             'maximumMs': maximumMs,
             'allowPartial': allowPartial,
+            'executionCount': executionCount,
           });
           if (uid() != owner) throw StateError('USAGE_USER_CHANGED');
           grant = receipt['maximumMs'] as int;

@@ -705,8 +705,8 @@ const _kSections = <_Section>[
 class _AssessmentVisualScale {
   const _AssessmentVisualScale._();
 
-  static const double screenTitle = 16.0;
-  static const double tabLabel = 11.0;
+
+
   static const double fieldHint = 11.0;
   static const double sectionLabel = 10.0;
   static const double clinicalOption = 12.5;

@@ -237,28 +237,7 @@ class ExternalToolLinkEngine {
       LinkedHashMap<String, ExternalToolDecision>();
   static const int _maxDecisionCacheEntries = 200;
 
-  /// Registra uma decisão no cache e emite telemetria [EXT_TOOL_DECISION].
-  /// Somente emite a telemetria se a chave ainda não estava no cache (primeira
-  /// computação). Side-effects posteriores com a mesma chave são silenciados.
-  static ExternalToolDecision _cacheDecision(ExternalToolDecision decision) {
-    final key = decision.decisionKey;
-    if (_decisionCache.containsKey(key)) {
-      // Cache hit: retorna estado existente sem re-executar side-effects.
-      return _decisionCache[key]!;
-    }
-    // Cache miss: primeira computação — emite telemetria e armazena.
-    _decisionCache[key] = decision;
-    // ignore: avoid_print
-    print('[EXT_TOOL_DECISION] requestId=${decision.requestId} '
-        'intent=${decision.intent.name} '
-        'primaryDrug=${decision.primaryDrug} '
-        'secondaryDrug=${decision.secondaryDrug ?? "none"} '
-        'targetTab=${decision.targetTab} '
-        'source=${decision.source} '
-        'decisionKey=$key '
-        'computedOnce=true');
-    return decision;
-  }
+
 
   /// Emite telemetria de renderização do card (widget paint loop).
   /// Deve ser chamado dentro do widget build — NUNCA confundir com [EXT_TOOL_DECISION].

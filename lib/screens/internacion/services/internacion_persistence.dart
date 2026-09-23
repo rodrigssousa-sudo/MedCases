@@ -268,7 +268,7 @@ class InternacionPersistence {
   // Build 207: helpers locais imunes à minificação dart2js.
   // Nenhum 'as Map<String, dynamic>' — usa 'is Map' estrutural.
   static Map<String, dynamic> _safe(dynamic v) =>
-      (v is Map) ? Map<String, dynamic>.from(v as Map) : {};
+      (v is Map) ? Map<String, dynamic>.from(v) : {};
 
   static String _str(dynamic v, [String fallback = '']) {
     if (v == null) return fallback;
@@ -400,7 +400,7 @@ class InternacionPersistence {
         historial: historialList
             .map((e) {
               if (e is Map) {
-                return _evolFromJson(Map<String, dynamic>.from(e as Map));
+                return _evolFromJson(Map<String, dynamic>.from(e));
               }
               return null;
             })

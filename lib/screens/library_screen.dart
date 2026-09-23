@@ -813,144 +813,18 @@ class _LibraryTopbarContent extends StatelessWidget {
 // Posição: logo abaixo da Topbar, no topo do corpo rolável.
 // Cores adaptativas: dark → texto branco; light → texto preto.
 // ─────────────────────────────────────────────────────────────────────────────
-class _LibTabRow extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  final TabController tabCtrl;
 
-  const _LibTabRow({
-    required this.dark,
-    required this.isEs,
-    required this.tabCtrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1A1D23) : Colors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: dark ? const Color(0xFF2D3340) : const Color(0xFFE5E7EB),
-            width: 0.5,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-        child: Row(
-          children: [
-            Expanded(
-              child: _LibFlatTab(
-                label: isEs ? 'GUÍAS PDF' : 'GUIAS PDF',
-                index: 0,
-                tabCtrl: tabCtrl,
-                dark: dark,
-              ),
-            ),
-            _LibTabDivider(dark: dark),
-            Expanded(
-              child: _LibFlatTab(
-                label: isEs ? 'CASOS DE ESTUDIO' : 'CASOS DE ESTUDO',
-                index: 1,
-                tabCtrl: tabCtrl,
-                dark: dark,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS: tab flat minimalista + divisória fio — BUILD 331
 // Cores adaptativas: dark → branco/branco60; light → preto/preto45.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Divisória vertical fio entre as abas — 1×14px, adaptativa dark/light.
-class _LibTabDivider extends StatelessWidget {
-  final bool dark;
-  const _LibTabDivider({this.dark = true});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 14,
-      color: dark ? Colors.white24 : Colors.black12,
-    );
-  }
-}
 
-/// Tab flat minimalista — underline ciano quando ativa, texto dark/light.
-class _LibFlatTab extends StatefulWidget {
-  final String label;
-  final int index;
-  final TabController tabCtrl;
-  final bool dark;
-  const _LibFlatTab({
-    required this.label,
-    required this.index,
-    required this.tabCtrl,
-    this.dark = true,
-  });
-  @override
-  State<_LibFlatTab> createState() => _LibFlatTabState();
-}
 
-class _LibFlatTabState extends State<_LibFlatTab> {
-  @override
-  void initState() {
-    super.initState();
-    widget.tabCtrl.addListener(_onTabChange);
-  }
 
-  void _onTabChange() {
-    if (mounted) setState(() {});
-  }
 
-  @override
-  void dispose() {
-    widget.tabCtrl.removeListener(_onTabChange);
-    super.dispose();
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    final isActive = widget.tabCtrl.index == widget.index;
-    // BUILD 331: dark → branco; light → preto — máxima hierarquia de leitura
-    final activeColor = widget.dark ? Colors.white : const Color(0xFF0F1116);
-    final inactiveColor = widget.dark
-        ? Colors.white60
-        : const Color(0xFF0F1116).withOpacity(0.45);
-    return GestureDetector(
-      onTap: () => widget.tabCtrl.animateTo(widget.index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          border: Border(
-            bottom: isActive
-                ? const BorderSide(color: Color(0xFF0D6B57), width: 2.0)
-                : BorderSide.none,
-          ),
-        ),
-        child: Text(
-          widget.label,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: isActive ? activeColor : inactiveColor,
-            letterSpacing: 0.3,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 // ABA 0 — Guias PDF (inalterada)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -992,10 +866,10 @@ class _GuidesTab extends StatelessWidget {
     // MEDCASES_GUIA_CLINICA_COMPACT_CLINICAL_HUB_V1_B_R0
     final hasSearch = searchCtrl.text.isNotEmpty;
     final safeBottom = MediaQuery.paddingOf(context).bottom;
-    final primary = dark ? Colors.white : const Color(0xFF05070A);
-    final secondary = dark ? const Color(0xFFCBD5E1) : const Color(0xFF59636E);
-    final surface = dark ? const Color(0xFF252930) : Colors.white;
-    final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
+
+
+
+
 
     final bodySliver = loading
         ? const SliverFillRemaining(
@@ -1122,52 +996,8 @@ String _simulationGroupSvgAsset(String title) {
   return 'assets/icons/simulation/sim_outros.svg';
 }
 
-String _simulationGroupEmoji(String title) {
-  final value = title.toLowerCase();
-  if (value.contains('emerg')) return '🚨';
-  if (value.contains('cardio')) return '🫀';
-  if (value.contains('neuro')) return '🧠';
-  if (value.contains('pneumo') || value.contains('respirat')) return '🫁';
-  if (value.contains('infecto')) return '🦠';
-  if (value.contains('gastro')) return '🩺';
-  if (value.contains('hepato')) return '🧪';
-  if (value.contains('endocr') || value.contains('metab')) return '🧬';
-  if (value.contains('nefro') || value.contains('eletr')) return '💧';
-  if (value.contains('pedi')) return '🧒';
-  if (value.contains('gine') || value.contains('obst')) return '🤰';
-  if (value.contains('trauma') || value.contains('cirurg')) return '🩹';
-  if (value.contains('hemato')) return '🩸';
-  if (value.contains('psiqui')) return '🧠';
-  if (value.contains('tox')) return '☣️';
-  if (value.contains('orl')) return '👂';
-  if (value.contains('outros') || value.contains('otros')) return '⚕️';
-  return '⚕️';
-}
 
-String _simulationCategoryEmoji(int index) {
-  switch (index) {
-    case 1:
-      return '🚨';
-    case 2:
-      return '🫀';
-    case 3:
-      return '🫁';
-    case 4:
-      return '🧪';
-    case 5:
-      return '🩺';
-    case 6:
-      return '🦠';
-    case 7:
-      return '⚠️';
-    case 8:
-      return '📋';
-    case 9:
-      return '🧒';
-    default:
-      return '⚕️';
-  }
-}
+
 
 class _SimulationPlainHeader extends StatelessWidget {
   final bool dark;
@@ -1238,74 +1068,7 @@ class _CasosDeEstudoTab extends StatefulWidget {
 
 class _CasosDeEstudoTabState extends State<_CasosDeEstudoTab> {
   // ── IDs que são "Casos Clínicos Narrativos" (mantidos da lógica original) ──
-  static const Set<String> _casoNarrativoIds = {
-    'caso_enxaqueca_aura', 'caso_avc_isquemico', 'caso_status_epilepticus',
-    'caso_stemi', 'caso_icc_descompensada', 'caso_tep_alto_risco',
-    'caso_pac_grave',
-    'caso_cistite_aguda', 'caso_itu_recorrente', 'caso_sepse_idoso',
-    'caso_cetoacidose_diabetica', 'caso_anafilaxia_grave', 'caso_hda_varicosa',
-    'pancreatitis_aguda_005', 'diarrea_aguda_009', 'hda_ulcera_peptica_013',
-    'hdb_sangrado_rectal_014', 'diverticulitis_aguda_015',
-    'sindrome_ascitico_debut_016', 'sindrome_ascitico_edematoso_017',
-    'hepatitis_b_aguda_detallada_2026', 'hepatitis_c_cronica_detallada_2026',
-    'gripe_influenza_010',
-    'rinosinusitis_aguda_007', 'faringitis_estreptococica_008',
-    'faringitis_viral_011', 'faringitis_bacteriana_012',
-    // IDs que antes figuravam apenas na aba Protocolos — agora absorbidos aqui
-    'iam_congestao', 'choque_cardiogenico', 'anafilaxia', 'tpsv', 'fa_aguda',
-    'crise_hipertensiva', 'avc_hemorragico', 'asma_grave', 'dpoc_exacerbacao',
-    'tep_agudo', 'sepse', 'cad_shh', 'pcr_adulto', 'hda_varizeal',
-    'avc_isquemico', 'status_epilepticus', 'meningite_bacteriana',
-    'cetoacidose_diabetica', 'tromboembolismo_pulmonar', 'pneumonia_grave',
-    'choque_septico_avancado', 'hiperpotassemia_grave', 'intoxicacao_exogena',
-    'pancreatite_aguda_grave', 'hda_nao_varicosa', 'lesao_renal_aguda',
-    'coagulacao_intravascular', 'politrauma_atls', 'eclampsia_hellp',
-    'crise_adrenal', 'agitacao_psicomotora', 'neutropenia_febril',
-    'pcr_pediatrica', 'bronquiolite_aguda', 'laringite_estridulosa',
-    'intox_paracetamol', 'intox_opioides', 'crise_tireotoxica',
-    'hipoglicemia_grave', 'apendicite_aguda',
-    'iam_supra', 'crise_convulsiva', 'intoxicacao_overdose',
-    // MEDCASES_SIMULACOES_TOXICOLOGIA_10_CASES_V1_B_R1
-    'intox_benzodiazepinas',
-    'intox_organofosforados',
-    'intox_triciclicos',
-    'intox_betabloqueadores',
-    'intox_monoxido_carbono',
-    'intox_metanol_etilenoglicol',
-    // MEDCASES_TOXICOLOGIA_HIPOXIA_TOXICA_10_NEW_CASES_2026
-    'intox_co2_espaco_confinado',
-    'intox_cianeto',
-    'intox_fumaca_co_cianeto',
-    'metahemoglobinemia_adquirida',
-    'metahemoglobinemia_dapsona',
-    'metahemoglobinemia_nitrito_nitrato',
-    'metahemoglobinemia_anestesico_local',
-    'metahemoglobinemia_anilina_nitrobenzeno',
-    'intox_sulfeto_hidrogenio',
-    'intox_cloreto_metileno',
-    // MEDCASES_TOXICOLOGIA_30_COMPLETE_2026
-    'intox_salicilatos',
-    'intox_bloqueadores_canal_calcio',
-    'intox_digoxina_glicosideos',
-    'intox_litio',
-    'intox_valproato',
-    'intox_ferro',
-    'intox_isoniazida',
-    'intox_cocaina_simpaticomimeticos',
-    'sindrome_serotoninergica',
-    'intox_anestesico_local_last',
-    // MEDCASES_TOXICOLOGIA_LATAM_VENOMS_BOTULISM_10_NEW_CASES_2026
-    'botulismo_neuroparalitico',
-    'ofidismo_bothrops_alternatus_yarara',
-    'ofidismo_bothrops_jararaca_jararacucu',
-    'ofidismo_crotalus_durissus',
-    'ofidismo_micrurus_coral',
-    'escorpionismo_tityus_argentina',
-    'escorpionismo_tityus_brasil',
-    'araneismo_loxosceles',
-    'araneismo_phoneutria',
-    'araneismo_latrodectus',
-  };
+
 
   // ── Grupos para sub-segmento "Simulações" (casos narrativos) ─────────────
   // BUILD 331: cores dark premium — sem pastéis, tema escuro MedCases Pro.
@@ -2948,80 +2711,11 @@ class _GuideCard extends StatelessWidget {
     required this.onOpen,
   });
 
-  Color get _categoryColor {
-    switch (guide.category) {
-      case 'Emergência':
-        return const Color(0xFFEF4444);
-      case 'Cardiologia':
-        return const Color(0xFFEC4899);
-      case 'Infectologia':
-        return const Color(0xFF10B981);
-      case 'Pediatria':
-        return const Color(0xFF3B82F6);
-      case 'Neurologia':
-        return const Color(0xFF8B5CF6);
-      case 'Pneumologia':
-        return const Color(0xFF06B6D4);
-      case 'UTI / Intensivismo':
-        return const Color(0xFFF97316);
-      case 'Farmacologia':
-        return const Color(0xFFA855F7);
-      default:
-        return dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
-    }
-  }
 
-  String _categoryLabel(bool isEs) {
-    if (!isEs) return guide.category;
 
-    switch (guide.category) {
-      case 'Geral':
-        return 'General';
-      case 'Emergência':
-        return 'Urgencias';
-      case 'Cardiologia':
-        return 'Cardiología';
-      case 'Infectologia':
-        return 'Infectología';
-      case 'Pediatria':
-        return 'Pediatría';
-      case 'Neurologia':
-        return 'Neurología';
-      case 'Pneumologia':
-        return 'Neumología';
-      case 'UTI / Intensivismo':
-        return 'UCI / Intensivismo';
-      case 'Farmacologia':
-        return 'Farmacología';
-      default:
-        return guide.category;
-    }
-  }
 
-  Widget _thumbnailFallback({
-    required Color accent,
-    required Color surfaceSoft,
-    required Color border,
-  }) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surfaceSoft,
-        borderRadius: BorderRadius.circular(7),
-        border: Border.all(color: border, width: 0.7),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Positioned(
-            left: 9,
-            top: 9,
-            child: Container(width: 18, height: 2, color: accent),
-          ),
-          Center(child: Icon(Icons.menu_book_rounded, size: 27, color: accent)),
-        ],
-      ),
-    );
-  }
+
+
 
   // MEDCASES_GUIDE_PDF_SHARE_CARD_ACTION_V1_B_R1
   Future<void> _sharePdf(
@@ -3630,131 +3324,3 @@ class _EmptyState extends StatelessWidget {
 // ABA GENERAL — BUILD 277-CROMATICO
 // Overview / landing tab with key library information
 // ─────────────────────────────────────────────────────────────────────────────
-class _GeneralTab extends StatelessWidget {
-  final bool dark;
-  final bool isEs;
-  const _GeneralTab({required this.dark, required this.isEs});
-
-  @override
-  Widget build(BuildContext context) {
-    final bg = dark ? const Color(0xFF1A1D23) : const Color(0xFFF7F8FA);
-    final card = dark ? const Color(0xFF22262F) : Colors.white;
-    final text1 = dark ? Colors.white : const Color(0xFF0F1116);
-    final text2 = dark ? Colors.white54 : Colors.black54;
-
-    final items = [
-      _GenItem(
-        icon: Icons.picture_as_pdf_rounded,
-        color: const Color(0xFF1E3A5F),
-        title: isEs ? 'Guías PDF Clínicas' : 'Guias PDF Clínicos',
-        subtitle: isEs
-            ? 'Protocolos clínicos en formato PDF de alta calidad.'
-            : 'Protocolos clínicos em formato PDF de alta qualidade.',
-      ),
-      _GenItem(
-        icon: Icons.school_rounded,
-        color: const Color(0xFF065F45),
-        title: isEs ? 'Casos de Estudio' : 'Casos de Estudo',
-        subtitle: isEs
-            ? 'Casos clínicos reales con discusión diagnóstica.'
-            : 'Casos clínicos reais com discussão diagnóstica.',
-      ),
-      // BUILD 282 ORDEM 5: 'Actualización continua' e 'Fuentes científicas' REMOVIDOS
-      // Guideline Apple 2.1: não oferecer funcionalidades sem backend implementado.
-    ];
-
-    return ColoredBox(
-      color: bg,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              isEs ? 'Bienvenido a la Biblioteca' : 'Bem-vindo à Biblioteca',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: text1,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              isEs
-                  ? 'Acceda a guías, protocolos y casos de estudio clínico.'
-                  : 'Acesse guias, protocolos e casos de estudo clínico.',
-              style: TextStyle(fontSize: 13, color: text2),
-            ),
-            const SizedBox(height: 20),
-            ...items.map(
-              (item) => Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: card,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: dark
-                        ? Colors.white.withOpacity(0.06)
-                        : Colors.black.withOpacity(0.06),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: item.color.withOpacity(dark ? 0.22 : 0.12),
-                      ),
-                      child: Icon(item.icon, color: item.color, size: 22),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.title,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              color: text1,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            item.subtitle,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: text2,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GenItem {
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String subtitle;
-  const _GenItem({
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.subtitle,
-  });
-}

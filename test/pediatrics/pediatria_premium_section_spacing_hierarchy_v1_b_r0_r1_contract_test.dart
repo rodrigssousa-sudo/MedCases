@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -10,20 +11,27 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria premium final hierarchy V1-B-R0-R1', () {
     test('uses one pixel between cards without moving their outer edges', () {
       expect(
         classBlock(tools, '_PedSectionGap'),
-        contains('SizedBox(height: 1)'),
+        contains('SizedBox(height: 3)'),
       );
 
       final state = classBlock(tools, '_PediatricsTabContentState');
       expect(
         state,
         contains(
-          'padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)',
+          'padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)',
         ),
       );
       expect(state, contains('const SizedBox(height: 0)'));
@@ -34,7 +42,7 @@ void main() {
 
       expect(
         section,
-        contains('padding: const EdgeInsets.fromLTRB(13, 10, 13, 10)'),
+        contains('padding: const EdgeInsets.fromLTRB(17, 10, 17, 10)'),
       );
       expect(
         section,
@@ -93,9 +101,10 @@ void main() {
 
     test('preserves canonical subnav and clinical engines', () {
       final nav = classBlock(tools, '_PediatTabRow');
-      expect(nav, contains('height: 44'));
-      expect(nav, contains('right: i < sections.length - 1'));
-      expect(nav, contains('width: active ? 2 : 0.7'));
+      expect(nav, contains('height: 40'));
+      expect(nav, contains('if (i < sections.length - 1)'));
+      expect(nav,
+          contains('child: Container(width: 0.7, height: 20, color: divider)'));
 
       for (final token in <String>[
         'PediatricGrowthEngineV2026',

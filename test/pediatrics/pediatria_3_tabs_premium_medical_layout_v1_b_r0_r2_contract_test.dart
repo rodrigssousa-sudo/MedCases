@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +22,13 @@ String methodBlock(String source, String signature, String endSignature) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria 3 tabs premium medical layout V1-B-R0-R2', () {
@@ -129,7 +137,7 @@ void main() {
     test('shell clinical engines and localization stay frozen', () {
       for (final token in <String>[
         'const SizedBox(height: 0),',
-        'padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)',
+        'padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)',
         'PediatricGrowthEngineV2026',
         'PediatricRenalEngineV2026',
         'BrightonPewsEngineV2026',

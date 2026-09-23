@@ -735,6 +735,7 @@ Future<void> showUpgradeScreen(BuildContext context, {String lang = 'es'}) {
     await EntitlementService.instance.refreshAuthoritativeTier();
     if (!context.mounted || EntitlementService.instance.isPremium) return;
     final navigator = Navigator.of(context);
+    if (!navigator.mounted) return;
     final localizations = MaterialLocalizations.of(context);
     final height = MediaQuery.sizeOf(context).height * 0.92;
     // Equivalent modal defaults to showModalBottomSheet, but retain the route

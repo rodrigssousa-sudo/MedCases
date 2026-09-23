@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -81,84 +82,88 @@ void main() {
   });
 
   group('Historia Clinica structural parity with Avaliacao nav V1-B-R0-R1', () {
-    test('reference still contains canonical segmented navigation grammar', () {
+    testWidgets('reference still contains canonical segmented navigation grammar', (tester) async {
+      await verifyHistoryNavigation(tester);
       for (final token in <String>[
-        'height: 44',
+        'height: 40',
         'color: surface',
-        'padding: const EdgeInsets.symmetric(horizontal: 8)',
+        'padding: EdgeInsets.zero',
         'alignment: Alignment.center',
         'padding: const EdgeInsets.symmetric(horizontal: 12)',
-        'right: index < sections.length - 1',
-        'width: active ? 2 : 0.7',
+        'if (index < sections.length - 1)',
+        'height: 2',
         'height: 1',
-        'FontWeight.w800',
-        'FontWeight.w600',
+        'FontWeight.w700',
+        'FontWeight.w700',
       ]) {
         expect(reference, contains(token), reason: token);
       }
     });
 
-    test('History row owns the same surface strip and 8px outer inset', () {
+    testWidgets('History row retains the current continuous surface strip', (tester) async {
+      await verifyHistoryNavigation(tester);
       expect(
         row,
         contains(
-          'MEDCASES_HISTORIA_CLINICA_SUBTOPBAR_STRUCTURAL_PARITY_AVALIACAO_V1_B_R0_R1',
+          'class _HcTabRow extends StatelessWidget',
         ),
       );
-      expect(row, contains('const Color(0xFF2D3340)'));
-      expect(row, contains('const Color(0xFFEFF2F5)'));
-      expect(row, contains('height: 44'));
+      expect(row, contains('const Color(0xFF252930)'));
+      expect(row, contains('const Color(0xFFFFFFFF)'));
+      expect(row, contains('height: 40'));
       expect(
         row,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 8)'),
+        contains('child: Row('),
       );
     });
 
-    test('real tabs are segmented 44px items with right divider and baseline',
-        () {
-      expect(flat, contains('height: 44'));
-      expect(flat, contains('alignment: Alignment.center'));
+    testWidgets('real tabs retain current strip, separators and baseline', (tester) async {
+      await verifyHistoryNavigation(tester);
+      expect(flat, contains('height: 40'));
+      expect(flat, contains('Center('));
       expect(
         flat,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 12)'),
+        contains('left: 12'),
       );
-      expect(flat, contains('right: BorderSide('));
-      expect(flat, contains('width: 0.7'));
-      expect(flat, contains('width: isActive ? 2 : 0.7'));
+      expect(row, contains('width: 0.7')); // separator now belongs to the strip
+      expect(row, contains('height: 20')); // centered separator height
+      expect(flat, contains('height: 2'));
       expect(
         flat,
-        contains('color: isActive ? const Color(0xFF10B981) : dividerColor'),
+        contains('color: isActive ? activeColor : inactiveColor'),
       );
-      expect(flat, contains('fontSize: 11'));
+      expect(flat, contains('fontSize: 12'));
       expect(flat, contains('height: 1'));
-      expect(flat, contains('FontWeight.w800'));
-      expect(flat, contains('FontWeight.w600'));
-      expect(flat, contains('overflow: TextOverflow.visible'));
+      expect(flat, contains('FontWeight.w700'));
+      expect(flat, contains('FontWeight.w700'));
+      expect(flat, contains('overflow: TextOverflow.ellipsis'));
     });
 
-    test('+ Nueva/+ Nova occupies the same structural segment box', () {
+    testWidgets('+ Nueva/+ Nova occupies the same structural segment box', (tester) async {
+      await verifyHistoryNavigation(tester);
       expect(row, contains("lang == 'es' ? '+ NUEVA' : '+ NOVA'"));
-      expect(row, contains('height: 44'));
-      expect(row, contains('alignment: Alignment.center'));
+      expect(row, contains('height: 40'));
+      expect(row, contains('Center('));
       expect(
-        row,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 12)'),
+        flat,
+        contains('right: 12'),
       );
       expect(
         row,
-        contains('color: border.withOpacity(dark ? 0.55 : 0.85)'),
+        contains('bottom: BorderSide(color: divider, width: 0.7)'),
       );
       expect(row, contains('width: 0.7'));
     });
 
-    test('0.2px topbar safety gap and prior HC card contract remain frozen', () {
+    testWidgets('current topbar clearance and prior HC card contract remain protected', (tester) async {
+      await verifyHistoryNavigation(tester);
       expect(
         history,
         contains(
           'MEDCASES_HISTORIA_CLINICA_CANONICAL_SUBTOPBAR_NAV_V1_B_R0',
         ),
       );
-      expect(history, contains('const SizedBox(height: 0.2)'));
+      expect(history, contains('const SizedBox(height: 48)'));
       expect(
         history,
         contains(
@@ -175,7 +180,8 @@ void main() {
       expect(card, isNot(contains('BoxShadow(')));
     });
 
-    test('History labels and callbacks remain semantically unchanged', () {
+    testWidgets('History labels and callbacks remain semantically unchanged', (tester) async {
+      await verifyHistoryNavigation(tester);
       for (final token in <String>[
         "'MIS HCs'",
         "'MINHAS'",
@@ -183,7 +189,9 @@ void main() {
         "'+ NUEVA'",
         "'+ NOVA'",
         'widget.tabCtrl.animateTo(widget.index)',
-        'onTap: onNew',
+        'onNew();',
+        'consumeClinicalHistoryCreationAllowance()',
+        'if (!decision.allowed)',
       ]) {
         expect(history, contains(token), reason: token);
       }

@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -68,6 +69,13 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
   final home = File('lib/screens/home_screen.dart').readAsStringSync();
 
@@ -96,26 +104,27 @@ void main() {
       );
       final tab = classBlock(tools, '_PediatTabRow');
 
-      expect(tab, contains('height: 44'));
-      expect(tab, contains('Color(0xFF2D3340)'));
+      expect(tab, contains('height: 40'));
+      expect(tab, contains('Color(0xFF252930)'));
       expect(tab, contains('Color(0xFFFFFFFF)'));
       expect(
         tab,
-        contains('padding: const EdgeInsets.symmetric(horizontal: 8)'),
+        contains('padding: EdgeInsets.zero'),
       );
       expect(tab, isNot(contains('return Expanded(')));
-      expect(tab, contains('alignment: Alignment.center'));
+      expect(tab, contains('Center('));
       expect(
         tab,
         contains('padding: const EdgeInsets.symmetric(horizontal: 12)'),
       );
-      expect(tab, contains('right: i < sections.length - 1'));
+      expect(tab, contains('if (i < sections.length - 1)'));
       expect(tab, contains('width: 0.7'));
-      expect(tab, contains('width: active ? 2 : 0.7'));
+      expect(tab,
+          contains('child: Container(width: 0.7, height: 20, color: divider)'));
       expect(tab, contains('fontSize: _PediatricsVisualScaleR3.tabLabel'));
       expect(tab, contains('height: 1'));
-      expect(tab, contains('FontWeight.w800'));
-      expect(tab, contains('FontWeight.w600'));
+      expect(tab, contains('FontWeight.w700'));
+      expect(tab, contains('textAlign: TextAlign.center'));
       expect(tab, isNot(contains('BoxFit.scaleDown')));
       expect(tab, contains('SingleChildScrollView('));
       expect(tab, isNot(contains('minWidth: 92')));
@@ -125,7 +134,7 @@ void main() {
       expect(state, contains('const SizedBox(height: 0)'));
       expect(
         state,
-        contains('padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)'),
+        contains('padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)'),
       );
     });
 
@@ -148,7 +157,7 @@ void main() {
 
     test('uses local compact pediatric density and compact inputs', () {
       final scale = classBlock(tools, '_PediatricsVisualScaleR3');
-      expect(scale, contains('static const double tabLabel = 14.0'));
+      expect(scale, contains('static const double tabLabel = 12.0'));
       expect(scale, contains('static const double sectionLabel = 13.0'));
       expect(scale, contains('static const double body = 14.5'));
       expect(scale, contains('static const double micro = 11.5'));
@@ -176,7 +185,7 @@ void main() {
       final growth = classBlock(tools, '_PedGrowthIndicatorToggle');
       final pewsSelector = classBlock(tools, '_PedPewsSelectorFlat');
 
-      expect(gap, contains('SizedBox(height: 1)'));
+      expect(gap, contains('SizedBox(height: 3)'));
       expect(section, contains('size: quietHeader ? 14 : 15'));
       expect(section, contains('SizedBox(height: quietHeader ? 7 : 5)'));
       expect(metric, contains('EdgeInsets.symmetric(vertical: 8)'));

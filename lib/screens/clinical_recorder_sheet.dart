@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+import '../services/canonical_catalog_cipher.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_3A_V2_B_R1_GENERIC_CONTEXTS
 // clinical_recorder_sheet.dart
 //
@@ -1558,16 +1560,41 @@ class _OcrScannerModalState extends State<_OcrScannerModal> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickAndProcess(ImageSource source) async {
+    final provider = context.read<AppProvider>();
+    final uid = provider.currentUser?.uid;
+    final epoch = provider.sessionEpoch;
+    if (uid == null) return;
+    bool current() => mounted && provider.isCurrentSession(uid, epoch);
     try {
+      final prefs = await SharedPreferences.getInstance();
+      if (!mounted || !current()) return;
+      final consentKey = 'remote_image_consent.v1.${catalogUidHash(uid)}';
+      if (prefs.getBool(consentKey) != true) {
+        final es = widget.lang == 'es';
+        final accepted = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
+          title: Text(es ? 'Procesamiento remoto de imágenes' : 'Processamento remoto de imagens'),
+          content: Text(es
+              ? 'La imagen que seleccione se enviará a la infraestructura remota de MedCases y a proveedores contratados de IA para extraer la información solicitada. ¿Desea continuar?'
+              : 'A imagem selecionada será enviada à infraestrutura remota do MedCases e a fornecedores contratados de IA para extrair as informações solicitadas. Deseja continuar?'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(es ? 'Cancelar' : 'Cancelar')),
+            TextButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(es ? 'Continuar' : 'Continuar')),
+          ],
+        ));
+        if (!current() || accepted != true) return;
+        await prefs.setBool(consentKey, true);
+        if (!current()) return;
+      }
       final XFile? file = await _picker.pickImage(
         source: source,
         imageQuality: 90,
         maxWidth: 2048,
         maxHeight: 2048,
       );
-      if (file == null) return;
+      if (!current() || file == null) return;
 
       final bytes = await file.readAsBytes();
+      if (!current()) return;
       setState(() {
         _isProcessing = true;
         _result = '';
@@ -1575,13 +1602,13 @@ class _OcrScannerModalState extends State<_OcrScannerModal> {
 
       final text = await SoapAiProcessor.ocrExam(bytes, lang: widget.lang);
 
-      if (!mounted) return;
+      if (!current()) return;
       setState(() {
         _isProcessing = false;
         _result = text;
       });
     } catch (e) {
-      if (!mounted) return;
+      if (!current()) return;
       setState(() {
         _isProcessing = false;
         _result = widget.lang == 'es'

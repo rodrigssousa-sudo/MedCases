@@ -86,40 +86,60 @@ function createRevenueCatWebhookHandler({
     }
 
     const userRef = db.collection('users').doc(state.uid);
-    let snap;
-    try { snap = await userRef.get(); }
-    catch (_) { return res.status(503).json({ ok: false, error: 'REVENUECAT_USER_LOOKUP_FAILED' }); }
-
-    if (!snap || snap.exists !== true) {
-      return res.status(404).json({ ok: false, error: 'REVENUECAT_FIREBASE_USER_NOT_FOUND' });
-    }
-
-    const current = typeof snap.data === 'function' ? (snap.data() || {}) : {};
-    const previousTs = Number(current.billingLastEventTimestampMs ?? 0);
-    if (Number.isFinite(previousTs) && previousTs > state.eventTimestampMs) {
-      return res.status(200).json({ ok: true, ignored: true, reason: 'stale_event' });
-    }
-
+    // Identity is taken only from the authenticated provider event. No client
+    // can read or write this ledger through Firestore Rules.
+    const identity = crypto.createHash('sha256').update(state.eventId).digest('hex');
+    const ledgerRef = db.collection('revenuecatEventLedger').doc(identity);
+    const orderRef = db.collection('revenuecatBillingOrder').doc(crypto.createHash('sha256').update(state.uid).digest('hex'));
+    const fingerprint = crypto.createHash('sha256')
+      .update(JSON.stringify({...state, active: undefined})).digest('hex');
     try {
-      await userRef.set({
-        billingEntitlementActive: state.active,
-        billingEntitlementId: PREMIUM_ENTITLEMENT,
-        billingEntitlementExpiresAtMs: state.effectiveExpiresAtMs,
-        billingProvider: 'revenuecat',
-        billingProductId: state.productId,
-        billingPeriodType: state.periodType,
-        billingStore: state.store,
-        billingEnvironment: state.environment,
-        billingLastEventType: state.type,
-        billingLastEventId: state.eventId,
-        billingLastEventTimestampMs: state.eventTimestampMs,
-        billingUpdatedAtMs: nowMsProvider(),
-      }, { merge: true });
+      const result = await db.runTransaction(async (tx) => {
+        const [snap, processed, order] = await Promise.all([tx.get(userRef), tx.get(ledgerRef), tx.get(orderRef)]);
+        if (processed.exists) {
+          if (processed.data().fingerprint !== fingerprint) {
+            return { status: 409, body: { ok: false, error: 'REVENUECAT_EVENT_IDENTITY_CONFLICT' } };
+          }
+          return { body: { ok: true, ignored: true, reason: 'duplicate_event' } };
+        }
+        if (!snap.exists) {
+          return { status: 404, body: { ok: false, error: 'REVENUECAT_FIREBASE_USER_NOT_FOUND' } };
+        }
+        const current = order.exists ? order.data() : {};
+        const previousTs = Number(current.billingLastEventTimestampMs ?? 0);
+        if (!Number.isFinite(previousTs)) throw new Error('CORRUPT_BILLING_ORDER');
+        // For identical timestamps revocation wins, regardless of arrival order.
+        const rank = (type) => ['REFUND', 'EXPIRATION'].includes(type) ? 1 : 0;
+        const stale = previousTs > state.eventTimestampMs ||
+          (previousTs === state.eventTimestampMs &&
+            (rank(current.billingLastEventType) > rank(state.type) ||
+             (rank(current.billingLastEventType) === rank(state.type) &&
+              String(current.billingLastEventId || '') >= state.eventId)));
+        if (!stale) {
+          tx.set(orderRef, {uid:state.uid, billingLastEventTimestampMs:state.eventTimestampMs,
+            billingLastEventType:state.type, billingLastEventId:state.eventId});
+          tx.set(userRef, {
+            billingEntitlementActive: state.active,
+            billingEntitlementId: PREMIUM_ENTITLEMENT,
+            billingEntitlementExpiresAtMs: state.effectiveExpiresAtMs,
+            billingProvider: 'revenuecat', billingProductId: state.productId,
+            billingPeriodType: state.periodType, billingStore: state.store,
+            billingEnvironment: state.environment, billingLastEventType: state.type,
+            billingLastEventId: state.eventId,
+            billingLastEventTimestampMs: state.eventTimestampMs,
+            billingUpdatedAtMs: nowMsProvider(),
+          }, { merge: true });
+        }
+        tx.set(ledgerRef, { uid: state.uid, fingerprint, eventId: state.eventId,
+          eventTimestampMs: state.eventTimestampMs, result: stale ? 'stale' : 'applied',
+          processedAtMs: nowMsProvider() });
+        return { body: stale ? { ok: true, ignored: true, reason: 'stale_event' } :
+          { ok: true, uid: state.uid, active: state.active } };
+      });
+      return res.status(result.status || 200).json(result.body);
     } catch (_) {
-      return res.status(503).json({ ok: false, error: 'REVENUECAT_ENTITLEMENT_WRITE_FAILED' });
+      return res.status(503).json({ ok: false, error: 'REVENUECAT_TRANSACTION_FAILED' });
     }
-
-    return res.status(200).json({ ok: true, uid: state.uid, active: state.active });
   };
 }
 

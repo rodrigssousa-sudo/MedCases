@@ -1,3 +1,4 @@
+import '../plantao_knowledge/remote_knowledge.dart';
 import '../../models/protocol_model.dart';
 import '../../models/clinical_case_model.dart';
 import 'clinical_content_contract.dart';
@@ -111,6 +112,10 @@ class ClinicalContentModels {
 
   static void validate(String domain, Map<String, dynamic> envelope) {
     final item = ClinicalContentItem(envelope);
+    if (domain == therapeuticProtocolDomain) {
+      final protocol = RemoteKnowledgeProtocol.parse(item.payload);
+      requireContent(protocol.id == item.canonicalId, 'MODEL_ID_MISMATCH');
+    }
     if (domain == 'protocols') protocol(item);
     if (domain == 'cases') clinicalCase(item);
     if (domain == 'guides') {

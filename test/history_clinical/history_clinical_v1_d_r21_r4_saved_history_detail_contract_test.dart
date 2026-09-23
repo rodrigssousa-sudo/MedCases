@@ -1,3 +1,4 @@
+import 'history_release_runtime_harness.dart';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -113,13 +114,13 @@ void main() {
     hero = classBlock(history, '_HistoryHeroHeader');
     compact = classBlock(history, '_HistoryHeroHeaderCompact');
     badge = classBlock(history, '_PatientBadge');
-    detailCard = classBlock(history, '_DetailCard');
-    sectionBlock = classBlock(history, '_SectionBlock');
-    allergy = classBlock(history, '_AllergyBanner');
-    diagnosis = classBlock(history, '_DxBanner');
-    outcome = classBlock(history, '_OutcomeBadge');
+    detailCard = classBlock(history, '_PngSection');
+    sectionBlock = classBlock(history, '_PngField');
+    allergy = classBlock(history, '_PngAllergyField');
+    diagnosis = classBlock(history, '_PngDxSection');
+    outcome = classBlock(history, '_PngOutcomeBadge');
     drugs = classBlock(history, '_DrugChips');
-    evolution = classBlock(history, '_EvolutionSection');
+    evolution = classBlock(history, '_PngEvolution');
   });
 
   test('história salva aberta recebe raiz grafite', () {
@@ -132,7 +133,9 @@ void main() {
     expect(build, contains('Color(0xFF1A1D23)'));
   });
 
-  test('topbar mostra voltar título paciente e editar', () {
+  testWidgets('topbar mostra voltar título paciente e editar', (tester) async {
+    // The saved detail now renders the same canonical PNG document widgets.
+    await verifyHistoryPngCanvas(tester);
     expect(
       history,
       contains('HISTORY_CLINICAL_V1_D_R21_SAVED_DETAIL_TOPBAR'),
@@ -142,28 +145,32 @@ void main() {
     expect(hero, contains('onPressed: onBack'));
     expect(hero, contains('history.displayTitle'));
     expect(hero, contains("_hcT(lang, 'tab_title')"));
-    expect(hero, contains('patientItems'));
+    expect(hero, contains('patientSummary'));
     expect(hero, contains('onPressed: onEdit'));
     expect(compact, contains('_HistoryHeroHeader('));
   });
 
-  test('topbar e metadados não usam visual legado', () {
+  testWidgets('topbar e metadados não usam visual legado', (tester) async {
+    // The saved detail now renders the same canonical PNG document widgets.
+    await verifyHistoryPngCanvas(tester);
     expect(hero, isNot(contains('LinearGradient')));
     expect(hero, isNot(contains('BoxShadow')));
     expect(hero, isNot(contains('medical_information_rounded')));
     expect(badge, isNot(contains('BoxDecoration')));
     expect(badge, isNot(contains('borderRadius')));
-    expect(badge, contains('ColoredBox(color: accent)'));
+    expect(badge, contains('color: accent'));
   });
 
-  test('seções principais usam superfície contínua e texto claro', () {
+  testWidgets('seções principais usam superfície contínua e texto claro', (tester) async {
+    // The saved detail now renders the same canonical PNG document widgets.
+    await verifyHistoryPngCanvas(tester);
     expect(
       history,
       contains('HISTORY_CLINICAL_V1_D_R21_R3_DETAIL_CARD_CONTINUOUS'),
     );
     expect(detailCard, isNot(contains('Colors.white')));
     expect(detailCard, isNot(contains('BoxShadow')));
-    expect(detailCard, contains('Color(0xFF374151)'));
+    expect(detailCard, contains('_PngDivider()'));
     expect(
       history,
       contains('HISTORY_CLINICAL_V1_D_R21_R3_SECTION_BLOCK_FLAT'),
@@ -172,39 +179,46 @@ void main() {
     expect(sectionBlock, contains('Color(0xFFE8F0EC)'));
   });
 
-  test('alergia diagnóstico e desfecho ficam dark sem perder semântica', () {
+  testWidgets('alergia diagnóstico e desfecho ficam dark sem perder semântica', (tester) async {
+    // The saved detail now renders the same canonical PNG document widgets.
+    await verifyHistoryPngCanvas(tester);
     expect(allergy, contains('Color(0xFF252930)'));
-    expect(allergy, contains('Color(0xFFEF4444)'));
+    expect(allergy, contains('Color(0xFFDC2626'));
     expect(allergy, isNot(contains('BoxShadow')));
     expect(
       history,
       contains('HISTORY_CLINICAL_V1_D_R21_R3_DX_DARK_SEMANTIC'),
     );
-    expect(diagnosis, contains('final bgColor = const Color(0xFF252930)'));
-    expect(diagnosis, contains('dx_final_label'));
-    expect(diagnosis, contains('dx_working_label'));
+    expect(diagnosis, contains('Color(0xFF252930)'));
+    expect(diagnosis, contains('final_.isNotEmpty'));
+    expect(diagnosis, contains('working.isNotEmpty'));
     expect(diagnosis, isNot(contains('BoxShadow')));
     expect(outcome, contains('Color(0xFF252930)'));
-    expect(outcome, contains('outcome_title'));
+    expect(outcome, contains('labels[outcome] ?? outcome'));
   });
 
-  test('fármacos e evolução salva preservam dados e recebem dark', () {
+  testWidgets('fármacos e evolução salva preservam dados e recebem dark', (tester) async {
+    // The saved detail now renders the same canonical PNG document widgets.
+    await verifyHistoryPngCanvas(tester);
     expect(drugs, contains('p.drugsDB'));
     expect(drugs, contains('firstOrNull'));
     expect(drugs, contains('drug?.name ?? id'));
     expect(drugs, contains('Color(0xFF252930)'));
-    expect(evolution, contains('evolutions.map'));
-    expect(evolution, contains('DateTime.tryParse'));
-    expect(evolution, contains('e.text'));
-    expect(evolution, contains('context.read<AppProvider>().lang'));
+    expect(find.text('CAMPO_TESTE_EVOLUCAO'), findsOneWidget);
+    expect(build, contains('history.evolutions.map'));
+    expect(build, contains('DateTime.tryParse'));
+    expect(build, contains('text: e.text'));
+    expect(build, contains('p.lang'));
     expect(evolution, contains('Color(0xFFE8F0EC)'));
   });
 
-  test('ações inferiores permanecem dark', () {
+  testWidgets('ações inferiores permanecem dark', (tester) async {
+    // The saved detail now renders the same canonical PNG document widgets.
+    await verifyHistoryPngCanvas(tester);
     final start = build.indexOf('onTap: _copy');
     expect(start, greaterThanOrEqualTo(0));
     final actions = build.substring(start);
-    expect(actions, contains('Color(0xFF252930)'));
+    expect(actions, contains('color: Colors.transparent'));
     expect(actions, contains('Color(0xFF374151)'));
     expect(actions, isNot(contains('BoxShadow')));
     expect(actions, isNot(contains('LinearGradient')));

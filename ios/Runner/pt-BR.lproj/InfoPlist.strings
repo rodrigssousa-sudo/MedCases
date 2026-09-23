@@ -6,7 +6,7 @@
  */
 
 /* ── Câmera ─────────────────────────────────────────────────────────────── */
-"NSCameraUsageDescription" = "O MedCases Pro usa a câmera exclusivamente para que profissionais de saúde possam fotografar laudos laboratoriais e resultados de exames clínicos para extração automática de dados com auxílio de IA. As imagens são processadas apenas dentro do app e nunca são armazenadas ou compartilhadas com terceiros.";
+"NSCameraUsageDescription" = "O MedCases utiliza as fotos e documentos que você seleciona para extrair as informações solicitadas. O conteúdo selecionado pode ser transmitido de forma segura à infraestrutura remota do MedCases e a fornecedores contratados de processamento de IA para essa finalidade.";
 
 /* ── Microfone ─────────────────────────────────────────────────────────── */
 "NSMicrophoneUsageDescription" = "O MedCases Pro usa o microfone para ditado clínico e recursos de gravação de áudio. O ditado pode utilizar o reconhecimento de voz do iOS. A transcrição remota opcional exige consentimento explícito separado e permanece desativada até que os controles exigidos de privacidade e retenção sejam atendidos.";
@@ -15,7 +15,7 @@
 "NSSpeechRecognitionUsageDescription" = "O MedCases Pro utiliza o reconhecimento de voz do iOS para converter ditado clínico em texto quando o profissional ativa manualmente o ditado. A transcrição remota opcional de áudio longo é um recurso separado e exige consentimento explícito específico antes de qualquer processamento remoto.";
 
 /* ── Biblioteca de Fotos (leitura) ────────────────────────────────────── */
-"NSPhotoLibraryUsageDescription" = "O MedCases Pro solicita acesso à sua biblioteca de fotos para que o profissional de saúde possa anexar imagens clínicas — como fotografias de lesões, resultados de exames ou documentos médicos — diretamente às anotações e fichas de pacientes. As imagens são usadas exclusivamente dentro do app e não são compartilhadas com terceiros.";
+"NSPhotoLibraryUsageDescription" = "O MedCases utiliza as fotos e documentos que você seleciona para extrair as informações solicitadas. O conteúdo selecionado pode ser transmitido de forma segura à infraestrutura remota do MedCases e a fornecedores contratados de processamento de IA para essa finalidade.";
 
 /* ── Biblioteca de Fotos (escrita/salvar) ─────────────────────────────── */
 "NSPhotoLibraryAddUsageDescription" = "O MedCases Pro pode salvar imagens geradas pelo app — como gráficos de acompanhamento clínico ou capturas de protocolos — diretamente na sua biblioteca de fotos, somente quando você solicitar explicitamente.";

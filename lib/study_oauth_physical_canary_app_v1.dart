@@ -39,7 +39,6 @@ class _StudyOAuthPhysicalCanaryPageState
   List<String> _projectIds = const <String>[];
   String? _selectedProjectId;
   String? _selectionId;
-  int? _selectionExpiresAtMs;
 
   Future<void> _runCanary() async {
     if (_running || _oauthAttempted || _selectionId != null) {
@@ -63,7 +62,7 @@ class _StudyOAuthPhysicalCanaryPageState
         _projectIds = result.discoveredProjectIds;
         _selectedProjectId = null;
         _selectionId = result.selectionId;
-        _selectionExpiresAtMs = result.selectionExpiresAtMs;
+
 
         if (result.completed) {
           _status = 'PASS: OAuth físico concluído.';
@@ -123,7 +122,7 @@ class _StudyOAuthPhysicalCanaryPageState
           _projectIds = result.discoveredProjectIds;
         }
         _selectionId = null;
-        _selectionExpiresAtMs = null;
+
 
         _status = result.completed
             ? 'PASS: seleção concluída sem novo OAuth.'
@@ -135,7 +134,7 @@ class _StudyOAuthPhysicalCanaryPageState
       }
       setState(() {
         _selectionId = null;
-        _selectionExpiresAtMs = null;
+
         _status = 'Falha segura na continuação. '
             'Não execute um novo OAuth sem diagnóstico.';
       });

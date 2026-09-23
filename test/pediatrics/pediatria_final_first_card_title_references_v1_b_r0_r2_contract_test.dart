@@ -1,3 +1,4 @@
+import '../architecture/architectural_runtime_harness.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +11,13 @@ String classBlock(String source, String className) {
 }
 
 void main() {
+  testWidgets('current rendered geometry and navigation contract',
+      (tester) async {
+    for (final dark in [false, true]) {
+      await verifyPediatricGeometry(tester, dark: dark);
+    }
+    await verifyPediatricShell(tester);
+  });
   final tools = File('lib/screens/tools_screen.dart').readAsStringSync();
 
   group('Pediatria final first-card title references V1-B-R0-R2', () {
@@ -20,7 +28,7 @@ void main() {
       expect(
         state,
         contains(
-          'padding: const EdgeInsets.fromLTRB(0.1, 0.1, 0.1, 100)',
+          'padding: const EdgeInsets.fromLTRB(0.5, 0.1, 0.5, 100)',
         ),
       );
     });
@@ -72,11 +80,11 @@ void main() {
 
       expect(
         card,
-        contains('padding: const EdgeInsets.fromLTRB(13, 10, 13, 10)'),
+        contains('padding: const EdgeInsets.fromLTRB(17, 10, 17, 10)'),
       );
       expect(
         classBlock(tools, '_PedSectionGap'),
-        contains('SizedBox(height: 1)'),
+        contains('SizedBox(height: 3)'),
       );
     });
 
