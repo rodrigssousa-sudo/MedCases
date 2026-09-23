@@ -2,6 +2,7 @@
 // Strict, bounded subset used by the app: PCM WAV and one AAC-LC MP4 track.
 // No container duration is billing authority. Samples are decoded in an isolated
 // worker; tables are checked here before allocations by a third-party decoder.
+const {scanMp4}=require('./iso_bmff_boxes');
 const MAX_BYTES=25*1024*1024, MAX_DURATION_MS=15*60*1000, MAX_FRAMES=50000;
 function fail(){throw Error('MEDIA_INVALID_OR_UNSUPPORTED');}
 function structure(bytes){
@@ -16,8 +17,9 @@ function structure(bytes){
   if(b.readUInt16LE(fmt)!==1||![1,2].includes(channels)||rate<8000||rate>48000||![8,16,24,32].includes(bits)||align!==channels*bits/8||b.readUInt32LE(fmt+8)!==rate*align||data.length%align)fail();
   const durationMs=Math.ceil(data.length/align/rate*1000);if(durationMs<=0||durationMs>MAX_DURATION_MS)fail();return {kind:'wav',durationMs};
  }
+ scanMp4(b);
  const found=new Map(),mdats=[];let tracks=0,boxes=0;
- function walk(start,end,depth=0){if(depth>10)fail();for(let p=start;p<end;){if(++boxes>1000||p+8>end)fail();let n=b.readUInt32BE(p),h=8;const t=b.toString('ascii',p+4,p+8);if(n===1){if(p+16>end)fail();const big=b.readBigUInt64BE(p+8);if(big>BigInt(MAX_BYTES))fail();n=Number(big);h=16;}if(n<h||p+n>end)fail();const a=p+h,z=p+n;
+ function walk(start,end,depth=0){if(depth>10)fail();for(let p=start;p<end;){if(++boxes>1000||p+8>end)fail();let n=b.readUInt32BE(p),h=8;const t=b.toString('ascii',p+4,p+8);if(n===1){if(p+16>end)fail();const big=b.readBigUInt64BE(p+8);if(big>BigInt(MAX_BYTES))fail();n=Number(big);h=16;}if(n===0){if(depth!==0||t!=='mdat')fail();n=end-p;}if(n<h||p+n>end)fail();const a=p+h,z=p+n;
   if(t==='mdat')mdats.push([a,z]);if(t==='trak'&&++tracks>1)fail();
   if(['ftyp','mdhd','hdlr','stsz','stco','co64','stsc','stts','esds','stsd'].includes(t)){if(found.has(t))fail();found.set(t,{a,z});}
   if(['moov','trak','mdia','minf','stbl'].includes(t))walk(a,z,depth+1);

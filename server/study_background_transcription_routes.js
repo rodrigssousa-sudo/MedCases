@@ -1,4 +1,5 @@
-const {inspectAudio,combineProofs,digest}=require('./audio_media_budget');
+const {classifyBinary,assertBinaryBinding}=require('./binary_media_classifier');
+const {combineProofs,digest}=require('./audio_media_budget');
 const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
 
@@ -108,7 +109,8 @@ function validIndex(value, expected) {
   return Number.isInteger(n) && n >= 0 && n < expected;
 }
 
-async function transcribeBuffer(openAiKey, body, mimeType, index) {
+async function transcribeBuffer(openAiKey, body, mimeType, index, binaryProof) {
+  assertBinaryBinding(binaryProof,body);
   const form = new FormData();
   form.append('model', MODEL);
   form.append(
@@ -355,7 +357,9 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
 
         const owner = new MonthlyUsageOwner({db});
         const receipt = usageReceipt(job.usage);
-        const media = combineProofs([await inspectAudio(body)],digest(JSON.stringify({jobId,index,mimeType})));
+        const binaryProof=await classifyBinary(body);
+        if(binaryProof.classification!=='SUPPORTED_AUDIO')throw Error('AUDIO_TYPE_INVALID');
+        const media = combineProofs([binaryProof.audioProof],digest(JSON.stringify({jobId,index,mimeType})));
         const claimed = await owner.claimExecution(grant.uid,receipt,index,media);
         if (!claimed.claimed) return res.status(409).json({error:'execution_already_claimed'});
         // At-most-once after upstream dispatch, including unknown network outcome.
@@ -363,8 +367,9 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
         try { transcript = await transcribeBuffer(
           rt.openAiKey,
           body,
-          mimeType,
+          binaryProof.mimeType,
           index,
+          binaryProof,
         ); } finally { await owner.completeExecution(grant.uid,receipt,index); }
 
         await segmentRef.set(

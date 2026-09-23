@@ -1,4 +1,5 @@
-const {inspectAudio,combineProofs,digest}=require('./audio_media_budget');
+const {classifyBinary,assertBinaryBinding}=require('./binary_media_classifier');
+const {combineProofs,digest}=require('./audio_media_budget');
 const {assertUsageReservation,usageReceipt}=require('./usage_reservation_guard');
 const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
@@ -424,10 +425,11 @@ async function readBoundedText(response, maximumBytes) {
 }
 
 async function callOpenAiTranscription(runtime, parsed) {
+  assertBinaryBinding(parsed.binaryProof,parsed.audioBuffer);
   const form = new FormData();
   form.append(
     'file',
-    new Blob([parsed.audioBuffer], { type: 'audio/mp4' }),
+    new Blob([parsed.audioBuffer], { type: parsed.binaryProof.mimeType }),
     parsed.filename,
   );
   form.append('model', TRANSCRIPTION_MODEL);
@@ -681,7 +683,9 @@ function registerAudioTranscriptionRoutes({
 
         const owner = new MonthlyUsageOwner({db});
         const receipt = usageReceipt(claims.usage);
-        const media = combineProofs([await inspectAudio(audioBuffer)],digest(JSON.stringify({sessionId:parsed.sessionId,idempotencyKey:parsed.idempotencyKey,model:parsed.model,language:parsed.language,prompt:parsed.prompt})));
+        parsed.binaryProof=await classifyBinary(audioBuffer);
+        if(parsed.binaryProof.classification!=='SUPPORTED_AUDIO')throw new AudioBackendError('audio_type_invalid',415);
+        const media = combineProofs([parsed.binaryProof.audioProof],digest(JSON.stringify({sessionId:parsed.sessionId,idempotencyKey:parsed.idempotencyKey,model:parsed.model,language:parsed.language,prompt:parsed.prompt})));
         const claimed = await owner.claimExecution(claims.uid, receipt, 0, media);
         if (!claimed.claimed) throw new AudioBackendError('audio_execution_already_claimed',409);
         execution = {owner, receipt, uid:claims.uid};

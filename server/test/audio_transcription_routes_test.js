@@ -340,3 +340,15 @@ test('parallel same grant cannot execute upstream twice and completion cannot re
   assert.notEqual((await execute()).status,200);assert.equal(calls,1);
  });
 });
+for (const scenario of ['invalid-media','under-reserved','valid-media']) {
+ test('R3 multipart productive boundary '+scenario,async()=>{
+  const f=fixture();let calls=0;
+  await withServer({env:f.env,fetchImpl:async()=>{calls++;return new Response('{"text":"TECHNICAL_TRANSCRIPT"}',{headers:{'content-type':'application/json'}})}},async({base,usageState})=>{
+   if(scenario==='under-reserved')usageState.maximumMs=1;
+   const g=await grant(base);assert.equal(g.response.status,200);
+   const bytes=scenario==='invalid-media'?Buffer.from('INVALID_TECHNICAL_MEDIA'):fs.readFileSync(require('node:path').join(__dirname,'fixtures/silence-4s-aac.m4a'));
+   const result=await fetch(base+'/api/ai/audio/transcriptions',{method:'POST',headers:{Authorization:'Bearer '+g.json.accessToken,'X-MedCases-Idempotency-Key':'session_audio_001:segment:0','X-MedCases-Audio-Retention':'transient-delete'},body:transcriptionForm({bytes})});
+   assert.equal(calls,scenario==='valid-media'?1:0);assert.equal(result.status===200,scenario==='valid-media');
+  });
+ });
+}

@@ -49,6 +49,26 @@ class MonthlyUsageOwner {
    return {state:'completed',chargedMs:charge};
   });
  }
+ // Preparatory provider operations share one immutable media/slot binding.
+ // Each stage is single-flight and charges the reserved budget before dispatch;
+ // final generation consumes the same measured duration, never a second credit.
+ async authorizeMediaStage(uid,{id,attempt},index,media,stage){
+  if(!/^[a-f0-9]{64}$/.test(id)||!Number.isInteger(index)||index<0||!['upload','cache','countTokens'].includes(stage)||!validProof(media))throw Error('INVALID_MEDIA_STAGE');
+  return this.db.runTransaction(async tx=>{
+   const key=hash(`${id}:${attempt}:${index}`),ref=this.db.collection('usageReservations').doc(id),binding=this.db.collection('usageMediaBindings').doc(key),execution=this.db.collection('usageExecutions').doc(key);
+   const [snap,prior,exec]=await Promise.all([tx.get(ref),tx.get(binding),tx.get(execution)]);
+   if(!snap.exists||snap.data().uid!==uid)throw Error('RESERVATION_NOT_OWNED');
+   const op=snap.data();if(op.attempt!==attempt||!['reserved','executing'].includes(op.state)||!op.kinds.includes('transcription')||index>=(op.executionCount||1)||exec.exists)throw Error('MEDIA_STAGE_NOT_AUTHORIZED');
+   const old=prior.exists?prior.data():null;
+   if(old&&(old.mediaHash!==media.sha256||old.durationMs!==media.durationMs))throw Error('MEDIA_STAGE_BINDING_CONFLICT');
+   if(old?.stages?.[stage]){if(old.stages[stage]!==media.requestHash)throw Error('MEDIA_STAGE_REQUEST_CONFLICT');return {claimed:false};}
+   const used=op.authorizedMediaMs||0,extra=old?0:media.durationMs;
+   if(!Number.isSafeInteger(used)||used<0||extra>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
+   tx.set(ref,{...op,state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+extra});
+   tx.set(binding,{uid,id,attempt,index,mediaHash:media.sha256,durationMs:media.durationMs,stages:{...(old?.stages||{}),[stage]:media.requestHash}});
+   return {claimed:true};
+  });
+ }
  // Only server execution paths can claim work. A finite plan is fixed when the
  // reservation is created; each slot is single-use across ALL providers.
  async claimExecution(uid,{id,attempt},index=0,media){
@@ -56,7 +76,8 @@ class MonthlyUsageOwner {
   return this.db.runTransaction(async tx=>{
    const ref=this.db.collection('usageReservations').doc(id);
    const execution=this.db.collection('usageExecutions').doc(hash(`${id}:${attempt}:${index}`));
-   const [snap,prior]=await Promise.all([tx.get(ref),tx.get(execution)]);
+   const binding=this.db.collection('usageMediaBindings').doc(hash(`${id}:${attempt}:${index}`));
+   const [snap,prior,staged]=await Promise.all([tx.get(ref),tx.get(execution),tx.get(binding)]);
    if(!snap.exists||snap.data().uid!==uid)throw Error('RESERVATION_NOT_OWNED');
    const op=snap.data();if(op.attempt!==attempt)throw Error('STALE_ATTEMPT');
    if(prior.exists) {
@@ -65,9 +86,10 @@ class MonthlyUsageOwner {
    }
    if(!['reserved','executing'].includes(op.state)||index>=(op.executionCount||1)||!op.kinds.includes('transcription'))throw Error('EXECUTION_NOT_AUTHORIZED');
    if(!validProof(media))throw Error('MEDIA_PROOF_REQUIRED');
-   const used=op.authorizedMediaMs||0;
-   if(!Number.isSafeInteger(used)||used<0||media.durationMs>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
-   tx.set(ref,{...op,state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+media.durationMs});
+   if(staged.exists&&(staged.data().mediaHash!==media.sha256||staged.data().durationMs!==media.durationMs))throw Error('MEDIA_STAGE_BINDING_CONFLICT');
+   const used=op.authorizedMediaMs||0,extra=staged.exists?0:media.durationMs;
+   if(!Number.isSafeInteger(used)||used<0||extra>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
+   tx.set(ref,{...op,state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+extra});
    tx.set(execution,{uid,id,attempt,index,mediaHash:media.sha256,requestHash:media.requestHash,durationMs:media.durationMs,state:'executing',startedAt:this.now()});
    return {claimed:true,state:'executing'};
   });

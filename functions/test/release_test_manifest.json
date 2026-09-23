@@ -850,6 +850,13 @@
       "files": [
         "server/test/security_r2_test.js"
       ]
+    },
+    {
+      "id": "r3-media-discovery",
+      "runtime": "node",
+      "files": [
+        "server/test/media_discovery_r3_test.js"
+      ]
     }
   ],
   "historicalInvocation": "node functions/test/run_release_tests.js --historical (explicitly non-release; authentic historical fixtures required, failures remain visible)",

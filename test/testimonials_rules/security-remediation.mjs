@@ -32,6 +32,14 @@ try{
  await assertFails(setDoc(doc(b,'users/audit-a/clinical_histories/new2'),{synthetic:true}));pass('cross owner private create denied');
  for(const key of billing){const uid='create-'+key,db=env.authenticatedContext(uid).firestore();await assertFails(setDoc(doc(db,'users',uid),{[key]:true}));pass('billing create denied '+key);}
  // PF-002: retain own-session lifecycle without permitting ownership transfer.
+ for(const name of ['usageMediaBindings','providerResourceOwnership']) {
+  await env.withSecurityRulesDisabled(async c=>setDoc(doc(c.firestore(),name,'r3-proof'),{uid:'audit-a',classification:'SUPPORTED_AUDIO'}));
+  for(const db of [a,b,env.unauthenticatedContext().firestore()]) {
+   const ref=doc(db,name,'r3-proof');
+   for(const operation of [()=>getDoc(ref),()=>updateDoc(ref,{classification:'SUPPORTED_IMAGE'}),()=>deleteDoc(ref),()=>setDoc(doc(db,name,'forged'),{uid:'audit-a'})])await assertFails(operation());
+  }
+  pass('R3 server-owned certificate/slot collection protected '+name);
+ }
  const legacy=doc(a,'sessions','r2-owned');
  await assertSucceeds(setDoc(legacy,{userId:'audit-a',technical:'TEST'}));pass('legacy owner create');
  await assertSucceeds(getDoc(legacy));pass('legacy owner read');
