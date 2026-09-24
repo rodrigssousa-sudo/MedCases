@@ -15,6 +15,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import 'dart:async';
+import '../widgets/medcases_audio_recorder_view.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -80,11 +81,8 @@ class ClinicalRecorderSheet {
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (_) => _RecorderPage(
-          mode: mode,
-          lang: lang,
-          onSoapData: onSoapData,
-        ),
+        builder: (_) =>
+            _RecorderPage(mode: mode, lang: lang, onSoapData: onSoapData),
       ),
     );
   }
@@ -131,14 +129,10 @@ class _FlowSelectionModal extends StatelessWidget {
     final media = MediaQuery.of(context);
 
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: media.size.height * 0.86,
-      ),
+      constraints: BoxConstraints(maxHeight: media.size.height * 0.86),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: EdgeInsets.fromLTRB(
         16,
@@ -239,11 +233,8 @@ class _FlowSelectionModal extends StatelessWidget {
       context,
       MaterialPageRoute(
         fullscreenDialog: true,
-        builder: (_) => _RecorderPage(
-          mode: mode,
-          lang: lang,
-          onSoapData: onSoapData,
-        ),
+        builder: (_) =>
+            _RecorderPage(mode: mode, lang: lang, onSoapData: onSoapData),
       ),
     );
   }
@@ -321,11 +312,7 @@ class _FlowOption extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,
-                child: Icon(
-                  iconData,
-                  size: 20,
-                  color: iconColor,
-                ),
+                child: Icon(iconData, size: 20, color: iconColor),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -355,12 +342,14 @@ class _FlowOption extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF0E8000)
-                                  .withOpacity(dark ? 0.11 : 0.08),
+                              color: const Color(
+                                0xFF0E8000,
+                              ).withOpacity(dark ? 0.11 : 0.08),
                               borderRadius: BorderRadius.circular(5),
                               border: Border.all(
-                                color:
-                                    const Color(0xFF0E8000).withOpacity(0.42),
+                                color: const Color(
+                                  0xFF0E8000,
+                                ).withOpacity(0.42),
                                 width: 0.7,
                               ),
                             ),
@@ -393,11 +382,7 @@ class _FlowOption extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 7),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 18,
-                color: chevronColor,
-              ),
+              Icon(Icons.chevron_right_rounded, size: 18, color: chevronColor),
             ],
           ),
         ),
@@ -687,14 +672,6 @@ class _RecorderPageState extends State<_RecorderPage>
                 ? const Color(0xFF10B981)
                 : const Color(0xFF8B95A3)));
 
-    final statusLabel = _isProcessing
-        ? (widget.lang == 'es' ? 'PROCESANDO IA' : 'PROCESSANDO IA')
-        : (_isPaused
-            ? 'PAUSADO'
-            : (_isRecording
-                ? (widget.lang == 'es' ? 'ESCUCHANDO' : 'ESCUTANDO')
-                : (widget.lang == 'es' ? 'PREPARANDO' : 'PREPARANDO')));
-
     final liveLabel = _isProcessing
         ? 'IA'
         : (_isPaused ? 'PAUSA' : (widget.lang == 'es' ? 'EN VIVO' : 'AO VIVO'));
@@ -702,13 +679,6 @@ class _RecorderPageState extends State<_RecorderPage>
     final visibleSoundLevel = (!_isProcessing && !_isPaused && _isRecording)
         ? _soundLevel.clamp(0.0, 1.0).toDouble()
         : 0.0;
-
-    double meterHeight(int index) {
-      if (visibleSoundLevel <= 0.02) return 3.0;
-      final amplified =
-          (visibleSoundLevel * (1.1 + index * 0.28)).clamp(0.0, 1.0).toDouble();
-      return 3.0 + amplified * (index.isEven ? 8.0 : 11.0);
-    }
 
     final confirmedText =
         isBlocks ? _transcript.trim() : _confirmedTranscript.trim();
@@ -732,17 +702,11 @@ class _RecorderPageState extends State<_RecorderPage>
             width: 36,
             height: 36,
             child: IconButton(
-              constraints: const BoxConstraints.tightFor(
-                width: 36,
-                height: 36,
-              ),
+              constraints: const BoxConstraints.tightFor(width: 36, height: 36),
               padding: EdgeInsets.zero,
               tooltip: widget.lang == 'es' ? 'Cerrar' : 'Fechar',
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.close_rounded,
-                size: 20,
-              ),
+              icon: const Icon(Icons.close_rounded, size: 20),
             ),
           ),
         ),
@@ -754,17 +718,11 @@ class _RecorderPageState extends State<_RecorderPage>
                   : 'Gravação Clínica'),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0.7),
-          child: Container(
-            height: 0.7,
-            color: soapShellDivider,
-          ),
+          child: Container(height: 0.7, color: soapShellDivider),
         ),
       ),
       body: Column(
@@ -775,72 +733,11 @@ class _RecorderPageState extends State<_RecorderPage>
             decoration: BoxDecoration(
               color: soapShellBackground,
               border: Border(
-                bottom: BorderSide(
-                  color: soapShellDivider,
-                  width: 0.7,
-                ),
+                bottom: BorderSide(color: soapShellDivider, width: 0.7),
               ),
             ),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 7),
-                    Text(
-                      statusLabel,
-                      style: TextStyle(
-                        color: statusColor,
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.55,
-                      ),
-                    ),
-                    if (!_isProcessing && !_isPaused && _isRecording) ...[
-                      const SizedBox(width: 9),
-                      SizedBox(
-                        height: 14,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: List.generate(5, (index) {
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 90),
-                              curve: Curves.easeOut,
-                              width: 2.5,
-                              height: meterHeight(index),
-                              margin: EdgeInsets.only(
-                                right: index == 4 ? 0 : 2.5,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF10B981).withOpacity(
-                                  visibleSoundLevel > 0.04 ? 0.95 : 0.34,
-                                ),
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            );
-                          }),
-                        ),
-                      ),
-                    ],
-                    const Spacer(),
-                    Text(
-                      ClinicalRecorderService.formatTime(_elapsedSec),
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 7),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(2),
                   child: LinearProgressIndicator(
@@ -854,7 +751,7 @@ class _RecorderPageState extends State<_RecorderPage>
                     minHeight: 3,
                   ),
                 ),
-// Blocos SOAP: chips de navegação
+                // Blocos SOAP: chips de navegação
                 if (isBlocks) ...[
                   const SizedBox(height: 12),
                   SizedBox(
@@ -873,7 +770,9 @@ class _RecorderPageState extends State<_RecorderPage>
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: dark
                                   ? (isActive
@@ -916,10 +815,7 @@ class _RecorderPageState extends State<_RecorderPage>
               decoration: BoxDecoration(
                 color: cardBg,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: soapShellDivider,
-                  width: 0.7,
-                ),
+                border: Border.all(color: soapShellDivider, width: 0.7),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -944,9 +840,7 @@ class _RecorderPageState extends State<_RecorderPage>
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: statusColor.withOpacity(
-                            dark ? 0.10 : 0.07,
-                          ),
+                          color: statusColor.withOpacity(dark ? 0.10 : 0.07),
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(
                             color: statusColor.withOpacity(0.30),
@@ -1002,8 +896,9 @@ class _RecorderPageState extends State<_RecorderPage>
                                   Text(
                                     partialText,
                                     style: TextStyle(
-                                      color: const Color(0xFF10B981)
-                                          .withOpacity(dark ? 0.88 : 0.92),
+                                      color: const Color(
+                                        0xFF10B981,
+                                      ).withOpacity(dark ? 0.88 : 0.92),
                                       fontSize: 14,
                                       height: 1.5,
                                       fontWeight: FontWeight.w500,
@@ -1023,12 +918,14 @@ class _RecorderPageState extends State<_RecorderPage>
                                   10,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF10B981)
-                                      .withOpacity(dark ? 0.055 : 0.045),
+                                  color: const Color(
+                                    0xFF10B981,
+                                  ).withOpacity(dark ? 0.055 : 0.045),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: const Color(0xFF10B981)
-                                        .withOpacity(0.18),
+                                    color: const Color(
+                                      0xFF10B981,
+                                    ).withOpacity(0.18),
                                     width: 0.7,
                                   ),
                                 ),
@@ -1039,10 +936,9 @@ class _RecorderPageState extends State<_RecorderPage>
                                       width: 32,
                                       height: 32,
                                       decoration: BoxDecoration(
-                                        color:
-                                            const Color(0xFF10B981).withOpacity(
-                                          dark ? 0.10 : 0.08,
-                                        ),
+                                        color: const Color(
+                                          0xFF10B981,
+                                        ).withOpacity(dark ? 0.10 : 0.08),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
@@ -1101,156 +997,47 @@ class _RecorderPageState extends State<_RecorderPage>
               ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              safeBottom + 10,
-            ),
-            decoration: BoxDecoration(
-              color: soapShellBackground,
-              border: Border(
-                top: BorderSide(
-                  color: soapShellDivider,
-                  width: 0.7,
+          Flexible(
+            flex: 2,
+            child: SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(16, 8, 16, safeBottom + 10),
+                decoration: BoxDecoration(
+                  color: soapShellBackground,
+                  border: Border(
+                    top: BorderSide(color: soapShellDivider, width: 0.7),
+                  ),
+                ),
+                child: MedCasesAudioRecorderView(
+                  isEs: widget.lang == 'es',
+                  state: _isProcessing
+                      ? AudioRecorderPresentation.processing
+                      : _isPaused
+                          ? AudioRecorderPresentation.paused
+                          : _isRecording
+                              ? AudioRecorderPresentation.recording
+                              : AudioRecorderPresentation.idle,
+                  duration: Duration(seconds: _elapsedSec),
+                  waveform: MedCasesAudioWaveform(level: visibleSoundLevel),
+                  showPause: true,
+                  pauseIsResume: _isPaused,
+                  onPause: _isProcessing ? null : _togglePause,
+                  onResume: _isProcessing ? null : _togglePause,
+                  onCancel: () => Navigator.pop(context),
+                  finishLabel: isBlocks && !isLastBlock
+                      ? (widget.lang == 'es' ? 'Siguiente' : 'Próximo')
+                      : (widget.lang == 'es' ? 'Procesar' : 'Processar'),
+                  onFinish: isBlocks && !isLastBlock
+                      ? (_isProcessing ? null : _nextSoapBlock)
+                      : (_isProcessing || !hasTranscript
+                          ? null
+                          : _finishRecording),
                 ),
               ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _ControlBtn(
-                  icon: Icons.close_rounded,
-                  label: widget.lang == 'es' ? 'Cancelar' : 'Cancelar',
-                  color: const Color(0xFFEF4444),
-                  onTap: () => Navigator.pop(context),
-                ),
-                Semantics(
-                  button: true,
-                  label: _isPaused
-                      ? (widget.lang == 'es'
-                          ? 'Reanudar grabación'
-                          : 'Retomar gravação')
-                      : (widget.lang == 'es'
-                          ? 'Pausar grabación'
-                          : 'Pausar gravação'),
-                  child: GestureDetector(
-                    onTap: _isProcessing ? null : _togglePause,
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _isProcessing
-                            ? (dark
-                                ? const Color(0xFF2D3340)
-                                : const Color(0xFFD8E0E7))
-                            : (_isPaused
-                                ? (dark
-                                    ? const Color(0xFF252930)
-                                    : Colors.white)
-                                : const Color(0xFF10B981)),
-                        border: Border.all(
-                          color: _isProcessing
-                              ? soapShellDivider
-                              : const Color(0xFF10B981),
-                          width: _isPaused ? 1 : 0.8,
-                        ),
-                      ),
-                      child: Icon(
-                        _isPaused ? Icons.mic_rounded : Icons.pause_rounded,
-                        color: _isProcessing
-                            ? subColor
-                            : (_isPaused
-                                ? const Color(0xFF10B981)
-                                : Colors.white),
-                        size: 27,
-                      ),
-                    ),
-                  ),
-                ),
-                if (isBlocks && !isLastBlock)
-                  _ControlBtn(
-                    icon: Icons.skip_next_rounded,
-                    label: widget.lang == 'es' ? 'Próximo' : 'Próximo',
-                    color: const Color(0xFF0D6B57),
-                    onTap: _isProcessing ? null : _nextSoapBlock,
-                  )
-                else
-                  _ControlBtn(
-                    icon: Icons.check_rounded,
-                    label: widget.lang == 'es' ? 'Procesar' : 'Processar',
-                    color: const Color(0xFF0D6B57),
-                    onTap: _isProcessing || !hasTranscript
-                        ? null
-                        : _finishRecording,
-                  ),
-              ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ControlBtn extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback? onTap;
-
-  const _ControlBtn({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // MEDCASES_HC_CAPTURE_PREMIUM_CONTROL_BUTTON_V1_B_R0
-    final enabled = onTap != null;
-    final effectiveColor = enabled ? color : color.withOpacity(0.36);
-
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: effectiveColor.withOpacity(0.10),
-                border: Border.all(
-                  color: effectiveColor.withOpacity(0.46),
-                  width: 0.8,
-                ),
-              ),
-              child: Icon(
-                icon,
-                color: effectiveColor,
-                size: 20,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: effectiveColor,
-                fontSize: 10.5,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -1332,7 +1119,9 @@ class _SoapReviewPageState extends State<_SoapReviewPage> {
             label: Text(
               l == 'es' ? 'Confirmar' : 'Confirmar',
               style: const TextStyle(
-                  color: Color(0xFF0D6B57), fontWeight: FontWeight.w700),
+                color: Color(0xFF0D6B57),
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
@@ -1347,8 +1136,9 @@ class _SoapReviewPageState extends State<_SoapReviewPage> {
             decoration: BoxDecoration(
               color: const Color(0xFF6366F1).withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
-              border:
-                  Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
+              border: Border.all(
+                color: const Color(0xFF6366F1).withOpacity(0.3),
+              ),
             ),
             child: Row(
               children: [
@@ -1359,43 +1149,54 @@ class _SoapReviewPageState extends State<_SoapReviewPage> {
                     l == 'es'
                         ? 'La IA estructuró la transcripción. Revise y edite los campos antes de confirmar.'
                         : 'A IA estruturou a transcrição. Revise e edite os campos antes de confirmar.',
-                    style:
-                        const TextStyle(fontSize: 13, color: Color(0xFF818CF8)),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF818CF8),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
           _SoapField(
-              label: '🗣️ ${l == 'es' ? 'Subjetivo' : 'Subjetivo'}',
-              ctrl: _ctrls['subjective']!,
-              dark: dark),
+            label: '🗣️ ${l == 'es' ? 'Subjetivo' : 'Subjetivo'}',
+            ctrl: _ctrls['subjective']!,
+            dark: dark,
+          ),
           _SoapField(
-              label: '🩺 ${l == 'es' ? 'Objetivo' : 'Objetivo'}',
-              ctrl: _ctrls['objective']!,
-              dark: dark),
+            label: '🩺 ${l == 'es' ? 'Objetivo' : 'Objetivo'}',
+            ctrl: _ctrls['objective']!,
+            dark: dark,
+          ),
           _SoapField(
-              label: '🧠 ${l == 'es' ? 'Evaluación' : 'Avaliação'}',
-              ctrl: _ctrls['assessment']!,
-              dark: dark),
+            label: '🧠 ${l == 'es' ? 'Evaluación' : 'Avaliação'}',
+            ctrl: _ctrls['assessment']!,
+            dark: dark,
+          ),
           _SoapField(
-              label: '📋 ${l == 'es' ? 'Plan' : 'Plano'}',
-              ctrl: _ctrls['plan']!,
-              dark: dark),
+            label: '📋 ${l == 'es' ? 'Plan' : 'Plano'}',
+            ctrl: _ctrls['plan']!,
+            dark: dark,
+          ),
           _SoapField(
-              label: '💊 ${l == 'es' ? 'Medicaciones' : 'Medicações'}',
-              ctrl: _ctrls['medications']!,
-              dark: dark),
+            label: '💊 ${l == 'es' ? 'Medicaciones' : 'Medicações'}',
+            ctrl: _ctrls['medications']!,
+            dark: dark,
+          ),
           _SoapField(
-              label: '🔬 ${l == 'es' ? 'Exámenes' : 'Exames'}',
-              ctrl: _ctrls['exams']!,
-              dark: dark),
+            label: '🔬 ${l == 'es' ? 'Exámenes' : 'Exames'}',
+            ctrl: _ctrls['exams']!,
+            dark: dark,
+          ),
           const SizedBox(height: 16),
 
           // Transcrição bruta (colapsável)
           if (widget.soap.rawTranscript.isNotEmpty)
             _RawTranscriptCard(
-                raw: widget.soap.rawTranscript, dark: dark, lang: l),
+              raw: widget.soap.rawTranscript,
+              dark: dark,
+              lang: l,
+            ),
 
           const SizedBox(height: 24),
           SizedBox(
@@ -1407,15 +1208,18 @@ class _SoapReviewPageState extends State<_SoapReviewPage> {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
+                  borderRadius: BorderRadius.circular(14),
+                ),
               ),
               icon: const Icon(Icons.save_rounded),
               label: Text(
                 l == 'es'
                     ? 'Confirmar e ingresar al prontuario'
                     : 'Confirmar e inserir no prontuário',
-                style:
-                    const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),
@@ -1431,8 +1235,11 @@ class _SoapField extends StatelessWidget {
   final TextEditingController ctrl;
   final bool dark;
 
-  const _SoapField(
-      {required this.label, required this.ctrl, required this.dark});
+  const _SoapField({
+    required this.label,
+    required this.ctrl,
+    required this.dark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1488,8 +1295,11 @@ class _RawTranscriptCard extends StatefulWidget {
   final String raw;
   final bool dark;
   final String lang;
-  const _RawTranscriptCard(
-      {required this.raw, required this.dark, required this.lang});
+  const _RawTranscriptCard({
+    required this.raw,
+    required this.dark,
+    required this.lang,
+  });
 
   @override
   State<_RawTranscriptCard> createState() => _RawTranscriptCardState();
@@ -1633,9 +1443,10 @@ class _OcrScannerModalState extends State<_OcrScannerModal> {
               Text(
                 l == 'es' ? 'Escanear Examen' : 'Escanear Exame',
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    color: textColor),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: textColor,
+                ),
               ),
             ],
           ),
@@ -1716,8 +1527,9 @@ class _OcrScannerModalState extends State<_OcrScannerModal> {
                       _result = '';
                     }),
                     icon: const Icon(Icons.refresh_rounded),
-                    label:
-                        Text(l == 'es' ? 'Nuevo escaneo' : 'Novo escaneamento'),
+                    label: Text(
+                      l == 'es' ? 'Nuevo escaneo' : 'Novo escaneamento',
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1770,11 +1582,7 @@ class _OcrSourceBtn extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 12),
           child: Row(
             children: [
-              Icon(
-                icon,
-                size: 21,
-                color: const Color(0xFF0D6B57),
-              ),
+              Icon(icon, size: 21, color: const Color(0xFF0D6B57)),
               const SizedBox(width: 13),
               Expanded(
                 child: Column(
