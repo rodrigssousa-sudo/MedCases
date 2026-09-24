@@ -72,6 +72,7 @@ const express    = require('express');
 const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
+const {resolveRateLimitClientKey} = require('./rate_limit_client_key');
 const { registerAudioTranscriptionRoutes } = require('./audio_transcription_routes');
 const { registerCalculatorSessionRoutes } = require('./calculator_session_routes');
 const { registerRevenueCatWebhookRoutes } = require('./revenuecat_webhook_routes');
@@ -1281,7 +1282,7 @@ registerAudioTranscriptionRoutes({
 
 require('./provider_transport_routes').registerProviderTransport({
   app, express, authenticate: authenticateFirebaseToken,
-  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
+  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false,keyGenerator:resolveRateLimitClientKey}),
   db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
   keyProvider:()=>GEMINI_API_KEY,
 });
@@ -1289,14 +1290,14 @@ require('./provider_transport_routes').registerProviderTransport({
 require('./clinical_content_routes').registerClinicalContentRoutes({
   repository: require('./clinical_content_repository').createClinicalContentRepository(),
   app, authenticate: authenticateFirebaseToken,
-  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
+  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false,keyGenerator:resolveRateLimitClientKey}),
   db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
 });
 
 app.use(express.json({ limit: '512kb' }));
 require('./monthly_usage_routes').registerMonthlyUsageRoutes({
   app, authenticate: authenticateFirebaseToken,
-  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false}),
+  limiter: rateLimit({windowMs:60000,max:60,standardHeaders:true,legacyHeaders:false,keyGenerator:resolveRateLimitClientKey}),
   db: require('firebase-admin/firestore').getFirestore(firebaseAdminApp),
 });
 
@@ -1319,6 +1320,7 @@ app.use('/api/ai', authenticateFirebaseToken);
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 
 const streamLimiter = rateLimit({
+  keyGenerator: resolveRateLimitClientKey,
   windowMs:         60_000,         // janela de 1 minuto
   max:              60,             // 60 req/min por IP (1/s médio)
   standardHeaders:  true,

@@ -4,6 +4,8 @@ const {assertUsageReservation,usageReceipt}=require('./usage_reservation_guard')
 const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 'use strict';
 
+const {resolveRateLimitClientKey} = require('./rate_limit_client_key');
+
 const crypto = require('crypto');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -570,6 +572,7 @@ function registerAudioTranscriptionRoutes({
 
   const runtime = createRuntime({ env, fetchImpl, now });
   const limiter = rateLimit({
+    keyGenerator: resolveRateLimitClientKey,
     windowMs: 60_000,
     max: 30,
     standardHeaders: true,
