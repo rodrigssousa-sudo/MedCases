@@ -64,3 +64,17 @@ header .language-toggle:hover{color:#ffc858}
 
 .team-section{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 48px;max-width:1200px}.team-section>.section-head{grid-column:1/-1;margin-bottom:0}.team-member{display:flex;align-items:center;gap:20px;min-width:0}.team-portrait{width:96px;height:96px;flex:0 0 96px;border-radius:50%;overflow:hidden;background:#343434}.team-portrait img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 8%;transform:scale(2);transform-origin:50% 18%}.team-member[aria-labelledby="ariani-name"] .team-portrait img{transform:scale(1.45);transform-origin:50% 20%}.team-bio{min-width:0;flex:1}.team-bio h3{font-size:clamp(21px,2.2vw,28px);line-height:1.2;letter-spacing:-.5px;color:#f5f3ed;margin:0 0 10px;padding-bottom:9px;border-bottom:1px solid #ffffff20}.team-role{font-size:14px;line-height:1.45;font-weight:600;color:#f5f3ed;margin:0 0 5px}.team-specialties{font-size:13px;line-height:1.6;color:#b7bec7;margin:0}@media(max-width:700px){.team-section{grid-template-columns:1fr;gap:26px}.team-member{gap:16px}.team-portrait{width:80px;height:80px;flex-basis:80px}.team-bio h3{font-size:22px}.team-role{font-size:13px}.team-specialties{font-size:12px}}
 .footer-copyright{margin:10px 0 0;font-size:11px;line-height:1.6;color:#aeb4be}.footer-identity{display:flex;flex-direction:column;align-items:flex-start}
+
+/* Prelogin refinement: balanced actions and official store badges. */
+.hero .actions{margin-top:28px;gap:16px;align-items:center}
+.hero .actions .btn{min-height:52px;padding:15px 26px;box-shadow:0 8px 24px #0003;transition:transform .18s,box-shadow .18s}
+.hero .actions .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px #0005}
+.header-actions .header-login{border:1px solid #ffffff30;border-radius:9px;padding:0 18px;min-height:42px;font-weight:600;background:#ffffff06;transition:background .18s,border-color .18s}
+.header-actions .header-login:hover{background:#ffffff0d;border-color:#ffc85880}
+.hero .store-downloads{display:flex;align-items:center;gap:14px;margin-top:22px;padding:0;flex-wrap:wrap}
+.hero .store-link{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:8px;transition:transform .18s,filter .18s}
+.hero .store-link img{height:46px;width:auto;max-width:100%}
+.hero .store-link:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.hero .store-link:focus-visible,.header-login:focus-visible,.hero .btn:focus-visible{outline:2px solid #ffc858;outline-offset:5px}
+@media(max-width:700px){.hero .actions{margin-top:24px}.hero .actions .btn{min-height:50px}.hero .store-downloads{gap:12px;margin-top:20px}.hero .store-link img{height:42px}.header-actions .header-login{padding:0 12px;min-height:40px}}
+@media(prefers-reduced-motion:reduce){.hero .actions .btn,.hero .store-link,.header-actions .header-login{transition:none}.hero .actions .btn:hover,.hero .store-link:hover{transform:none}}

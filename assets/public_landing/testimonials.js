@@ -21,7 +21,7 @@
     status.textContent = texts[state];
     document.querySelectorAll('[data-featured-label]').forEach(el => el.textContent = es ? 'Destacado' : 'Destaque');
     const android = document.querySelector('[data-store="android"]');
-    if (android) android.setAttribute('aria-label', es ? 'Google Play: enlace no disponible' : 'Google Play: link indisponível');
+    if (android) android.setAttribute('aria-label', es ? 'Descargar en Google Play' : 'Baixar no Google Play');
   }
   const send = type => window.parent.postMessage(JSON.stringify({type, language: document.documentElement.lang}), window.location.origin);
   button.addEventListener('click', () => {
