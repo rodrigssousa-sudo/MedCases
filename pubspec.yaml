@@ -1,7 +1,7 @@
 name: medcases
 description: "MedCases Pro"
 publish_to: 'none'
-version: 7.0.2+1704
+version: 7.0.2+1706
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

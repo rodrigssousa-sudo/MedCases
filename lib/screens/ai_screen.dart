@@ -1,6 +1,5 @@
 import '../services/plantao_knowledge/remote_knowledge_resolver.dart';
 import 'ai/widgets/therapeutic_options_view.dart';
-import 'upgrade_screen.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_AI
 import 'dart:async';
 import '../services/ai_pipeline/ai_request_contract.dart';
@@ -40,6 +39,7 @@ import 'ai/widgets/google_auth_barrier_card.dart';
 import 'ai/widgets/wa_header.dart';
 import 'ai/widgets/empty_chat.dart';
 import 'ai/widgets/ai_error_banner.dart';
+import 'ai/widgets/ai_failure_message.dart';
 import '../widgets/error_state_widget.dart' show InlineConnectionBanner;
 import '../services/clinical_tts_service.dart';
 import 'dart:convert';
@@ -2909,6 +2909,7 @@ class _AiScreenState extends State<AiScreen> {
 
     // ── Índice da bolha de streaming (-1 = não iniciada ainda) ──────────────
     int streamingMsgIdx = -1;
+    final failureState = AiFailureState();
     // M56B_BUFFERED_FINAL_COMMIT
     // Provider SSE remains real-time internally. Plantão exposes no
     // provisional clinical tokens; terminal validated text owns first render.
@@ -2979,6 +2980,47 @@ class _AiScreenState extends State<AiScreen> {
         );
         return true;
       }());
+    }
+
+    void presentFailure(String raw) {
+      if (!mounted || uiRequestGeneration != _aiUiRequestGeneration ||
+          !_ownsUiRequest(requestSnapshot, p)) {
+        return;
+      }
+      debugPrint('[AI_PRESENTATION_ERROR] $raw');
+      final failure = failureState.accept(raw);
+      clearTerminalGapIndicator(reason: 'error', rebuild: false);
+      _sendGuard = false;
+      _streamingTextNotifier?.dispose();
+      _streamingTextNotifier = null;
+      if (committedAiMessageId != null) {
+        final committedIndex = _messages.indexWhere(
+          (message) => message.id == committedAiMessageId,
+        );
+        if (committedIndex >= 0) streamingMsgIdx = committedIndex;
+      }
+      committedAiMessageId = null;
+      committedAiMessageText = null;
+      setState(() {
+        _thinking = false;
+        _isStreaming = false;
+        _aiError = false;
+        _networkError = false;
+        final text = failure.text(p.lang);
+        if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
+          _messages[streamingMsgIdx] = _ChatMsg.withId(
+            mode: requestMode, id: _messages[streamingMsgIdx].id,
+            role: 'ai', text: text,
+          );
+        } else {
+          streamingMsgIdx = _messages.length;
+          _messages.add(_ChatMsg(mode: requestMode, role: 'ai', text: text));
+        }
+        _lastAiIndex = streamingMsgIdx;
+        _scrollGeneration++;
+      });
+      _scrollDown(force: true);
+      _saveCurrentSessionToHistory(p);
     }
 
     void armTerminalGapIndicator() {
@@ -3186,6 +3228,10 @@ class _AiScreenState extends State<AiScreen> {
         shadowContinuationType: continuationType,
         shadowRequestedSections: requestedSections,
         onChunk: (accumulated) {
+          if (failureState.current != null ||
+              AiFailureMessage.recognize(accumulated) != null) {
+            return;
+          }
           if (!mounted ||
               uiRequestGeneration != _aiUiRequestGeneration ||
               !_ownsUiRequest(requestSnapshot, p)) {
@@ -3427,6 +3473,12 @@ class _AiScreenState extends State<AiScreen> {
             return;
           }
 
+          if (AiFailureMessage.recognize(finalText) != null) {
+            presentFailure(finalText);
+            return;
+          }
+          if (failureState.current != null) return;
+
           assert(() {
             if (!requestLongResponse) {
               debugPrint(
@@ -3488,6 +3540,11 @@ class _AiScreenState extends State<AiScreen> {
               normalizedFinalText.contains('verifique sua rede') ||
               normalizedFinalText.contains('ia indisponível') ||
               normalizedFinalText.contains('ia indisponible');
+
+          if (isKeyError || isNetErr) {
+            presentFailure(finalText);
+            return;
+          }
 
           // ── BUILD 244B: safe-card path — caminho limpo antes de isNetErr ─────
           // Detecta safe-card de timeout pelo prefixo canônico (AppProvider).
@@ -3552,33 +3609,7 @@ class _AiScreenState extends State<AiScreen> {
           //   garantem que o maxScrollExtent está totalmente estabilizado
           //   antes do scroll final — elimina o congelamento mid-screen.
 
-          if (isNetErr) {
-            // Casos de erro: mantenha comportamento original para evitar regressão
-            // Build 188: descarta notifier de streaming no caso de erro de rede
-            _streamingTextNotifier?.dispose();
-            _streamingTextNotifier = null;
-            setState(() {
-              _thinking = false;
-              _isStreaming = false;
-              _aiError = isKeyError;
-              _networkError = isNetErr;
-              // ── NETWORK SAFETY: erro de rede no onDone ───────────────────
-              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
-                _messages.removeAt(streamingMsgIdx);
-                streamingMsgIdx = -1;
-              }
-              if (_messages.isNotEmpty &&
-                  _messages.last.role == 'user' &&
-                  _messages.last.text == trimmed) {
-                _messages.removeLast();
-              }
-              _scrollGeneration++;
-              _lastAiIndex = _messages.length;
-              _messages.add(
-                  _ChatMsg(mode: requestMode, role: 'ai', text: finalText));
-            });
-            _scrollDown(force: true);
-          } else {
+          {
             // ── Build 134: enforceMedicalFormat — camada final de segurança ──
             // Aplicado AQUI, no texto final definitivo, antes de commitar na UI.
             // Não aplicado em onChunk (streaming parcial) para evitar artefatos.
@@ -3914,6 +3945,11 @@ class _AiScreenState extends State<AiScreen> {
               requestMode,
             );
 
+            if (AiFailureMessage.recognize(safeFinalText) != null) {
+              presentFailure(safeFinalText);
+              return;
+            }
+
             setState(() {
               _thinking = false;
               _isStreaming =
@@ -4036,6 +4072,7 @@ class _AiScreenState extends State<AiScreen> {
           }
         },
         onStructuredDone: (finalText, clinicalOutput) {
+          if (failureState.current != null) return;
           if (mounted &&
               uiRequestGeneration == _aiUiRequestGeneration &&
               _ownsUiRequest(requestSnapshot, p)) {
@@ -4169,16 +4206,9 @@ class _AiScreenState extends State<AiScreen> {
           // Build 188: descarta notifier de streaming no onError
           _streamingTextNotifier?.dispose();
           _streamingTextNotifier = null;
-          // ── BUILD 309 M4: AUTH_REQUIRED — NUNCA renderizar como bubble ────
-          // Provider emite AUTH_REQUIRED quando o Factor3 guard bloqueia.
-          // Suprimimos a bolha vermelha e abrimos o modal de conexão.
-          if (errorMsg == 'FREE_AI_STUDY_DAILY_LIMIT_REACHED' ||
-              errorMsg == 'FREE_PLANTAO_DAILY_LIMIT_REACHED') {
-            setState(() {
-              _thinking = false;
-              _isStreaming = false;
-            });
-            unawaited(showUpgradeScreen(context, lang: p.lang));
+          // Authentication keeps its existing connection flow.
+          if (failureState.current != null &&
+              (errorMsg == 'AUTH_REQUIRED' || errorMsg.isEmpty)) {
             return;
           }
           if (errorMsg == 'AUTH_REQUIRED') {
@@ -4212,64 +4242,7 @@ class _AiScreenState extends State<AiScreen> {
             });
             return;
           }
-          final isKeyError =
-              errorMsg.startsWith('ERRO') && errorMsg.contains('API');
-          // Detecta erro de rede — NÃO usa errorMsg.contains('🚨') como critério
-          // pois 🚨 é também marcador de seção clínica válida.
-          // Usamos apenas keywords textuais específicas de mensagens de erro de rede.
-          final normalizedErrorMessage = errorMsg.toLowerCase();
-          final isNetErr = normalizedErrorMessage.contains('sem conex') ||
-              normalizedErrorMessage.contains('sin conex') ||
-              normalizedErrorMessage.contains('timeout') ||
-              normalizedErrorMessage.contains('falha na conex') ||
-              normalizedErrorMessage.contains('falla de red') ||
-              normalizedErrorMessage.contains('conexão necessária') ||
-              normalizedErrorMessage.contains('conexión requerida') ||
-              normalizedErrorMessage.contains('verifique sua conex') ||
-              normalizedErrorMessage.contains('verifique sua rede') ||
-              normalizedErrorMessage.contains('ia indisponível') ||
-              normalizedErrorMessage.contains('ia indisponible');
-          setState(() {
-            _thinking = false;
-            _isStreaming = false;
-            _aiError = isKeyError;
-            _networkError = isNetErr;
-            _scrollGeneration++;
-
-            if (isNetErr) {
-              // ── NETWORK SAFETY: erro de rede no onError ──────────────────
-              // Remove bolha parcial de streaming — nunca exibir dados antigos
-              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
-                _messages.removeAt(streamingMsgIdx);
-                streamingMsgIdx = -1;
-              }
-              // Remove mensagem do usuário — não deixar pergunta sem resposta
-              if (_messages.isNotEmpty &&
-                  _messages.last.role == 'user' &&
-                  _messages.last.text == trimmed) {
-                _messages.removeLast();
-              }
-              // Injeta Alerta Clínico como bolha da IA
-              _lastAiIndex = _messages.length;
-              _messages
-                  .add(_ChatMsg(mode: requestMode, role: 'ai', text: errorMsg));
-            } else {
-              // Erro não-rede (API key, quota, etc.) — substitui ou adiciona bolha
-              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
-                _messages[streamingMsgIdx] = _ChatMsg.withId(
-                  mode: requestMode,
-                  id: _messages[streamingMsgIdx].id,
-                  role: 'ai',
-                  text: errorMsg,
-                );
-              } else {
-                _lastAiIndex = _messages.length;
-                _messages.add(
-                    _ChatMsg(mode: requestMode, role: 'ai', text: errorMsg));
-              }
-            }
-          });
-          _scrollDown(force: true);
+          presentFailure(errorMsg);
         },
       );
     } on Exception catch (e) {
@@ -4279,30 +4252,7 @@ class _AiScreenState extends State<AiScreen> {
           !_ownsUiRequest(requestSnapshot, p)) {
         return;
       }
-      _sendGuard = false;
-      // Build 188: descarta notifier de streaming em exceção não tratada
-      _streamingTextNotifier?.dispose();
-      _streamingTextNotifier = null;
-      final errStr = e.toString().toLowerCase();
-      final isNetworkException = errStr.contains('socket') ||
-          errStr.contains('timeout') ||
-          errStr.contains('connection') ||
-          errStr.contains('network') ||
-          errStr.contains('unreachable');
-      setState(() {
-        _thinking = false;
-        _isStreaming = false;
-        _networkError = isNetworkException;
-        _aiError = !isNetworkException;
-        if (isNetworkException) {
-          // Remove mensagem do usuário se não houve resposta
-          if (_messages.isNotEmpty &&
-              _messages.last.role == 'user' &&
-              _messages.last.text == trimmed) {
-            _messages.removeLast();
-          }
-        }
-      });
+      presentFailure(e.toString());
     } finally {
       // Libera o guard após a resposta chegar (ou em erro)
       // Pequeno delay para absorver double-tap acidental
@@ -4787,6 +4737,14 @@ class _AiScreenState extends State<AiScreen> {
                 animate: false,
               ),
             ),
+          );
+        }
+
+        // Also protects restored legacy errors before any Markdown transforms.
+        final failure = AiFailureMessage.recognize(msg.text);
+        if (failure != null) {
+          return AiFailureBubble(
+            key: ValueKey('ai_failure_${msg.id}'), failure: failure, lang: p.lang,
           );
         }
 
