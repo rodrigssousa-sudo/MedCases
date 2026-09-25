@@ -3118,53 +3118,47 @@ class _AiScreenState extends State<AiScreen> {
         return true;
       }());
 
-      // M59_MACHINE_NATIVE_REGISTRY_FAIL_CLOSED_BEFORE_PROVIDER
-      // A recognized high-specificity clinical phenotype must never fall back
-      // to the historical Plantão authority merely because a registry read
-      // failed. This is a non-clinical availability message, not a treatment.
-      if (!requestLongResponse &&
+      // M59_MACHINE_NATIVE_REGISTRY_DEGRADED_PROVIDER_V2
+      //
+      // Registry indisponível NÃO elimina mais o turno.
+      // O provider continua em modo degradado, porém sem autorização
+      // para inventar dose, via, intervalo ou conduta específica não validada.
+      final m59RegistryDegradedMode = !requestLongResponse &&
           m56cMachineContext.registryReadFailed &&
-          m56cMachineContext.canonicalPathologyKey != null) {
-        final m59RegistryFailureText = p.lang == 'es'
-            ? 'VALIDACIÓN CLÍNICA\n\n'
-                'No fue posible cargar la base clínica machine-native necesaria para validar esta respuesta. Para evitar mostrar una conducta incompleta o no validada, MedCases bloqueó la generación clínica de este turno. Intenta nuevamente cuando la base esté disponible.'
-            : 'VALIDAÇÃO CLÍNICA\n\n'
-                'Não foi possível carregar a base clínica machine-native necessária para validar esta resposta. Para evitar exibir uma conduta incompleta ou não validada, o MedCases bloqueou a geração clínica deste turno. Tente novamente quando a base estiver disponível.';
+          m56cMachineContext.canonicalPathologyKey != null;
 
-        assert(() {
-          debugPrint(
-            '[M59_REGISTRY_FAIL_CLOSED] '
-            'beforeProvider=true '
-            'pathology=${m56cMachineContext.canonicalPathologyKey} '
-            'reason=${m56cMachineContext.reason}',
-          );
-          return true;
-        }());
-
-        if (mounted &&
-            uiRequestGeneration == _aiUiRequestGeneration &&
-            _ownsUiRequest(requestSnapshot, p)) {
-          _streamingTextNotifier?.dispose();
-          _streamingTextNotifier = null;
-          setState(() {
-            _thinking = false;
-            _isStreaming = false;
-            _scrollGeneration++;
-            _lastAiIndex = _messages.length;
-            _messages.add(_ChatMsg(
-                mode: requestMode, role: 'ai', text: m59RegistryFailureText));
-          });
-          _scrollDown(force: true);
-        }
-        return;
+      if (m59RegistryDegradedMode) {
+        debugPrint(
+          '[M59_REGISTRY_DEGRADED] '
+          'beforeProvider=false '
+          'pathology=${m56cMachineContext.canonicalPathologyKey} '
+          'reason=${m56cMachineContext.reason}',
+        );
       }
+
+      final m59ProviderInput = m59RegistryDegradedMode
+          ? '$m56cProviderInput\n\n'
+              '[MEDCASES DEGRADED CLINICAL MODE]\n'
+              'The machine-native registry required for deterministic validation '
+              'is temporarily unavailable. You MUST still answer the user with '
+              'useful general clinical information. Preserve definition, '
+              'assessment, differential diagnosis, relevant tests, red flags, '
+              'monitoring and general management principles. Do NOT invent or '
+              'state exact medication doses, routes, frequencies, renal/hepatic '
+              'adjustments or high-risk treatment directives unless they are '
+              'already explicitly supported by validated context present in this '
+              'prompt. State limitations briefly when a specific therapeutic '
+              'detail cannot be validated.'
+          : m56cProviderInput;
 
       // M77_R8_PRE_PERSIST_MACHINE_GATE_V1
       // Pure eligibility mirror of the final machine-native commit gate.
       // It performs no provider/network call and prevents critical output from
       // being persisted before the UI fail-closed decision is applied.
       bool m77PlantaoPersistenceEligibilityGate(String candidateText) {
-        if (requestLongResponse || !m56cMachineContext.authoritative) {
+        if (requestLongResponse ||
+            m59RegistryDegradedMode ||
+            !m56cMachineContext.authoritative) {
           return true;
         }
 
@@ -3211,7 +3205,7 @@ class _AiScreenState extends State<AiScreen> {
 
       if (!_ownsUiRequest(requestSnapshot, p)) return;
       await p.sendAiMessage(
-        m56cProviderInput,
+        m59ProviderInput,
         // M71_CANONICAL_PLANTAO_CALL_AUTHORIZATION_V1
         requestStillCurrent: () => _ownsUiRequest(requestSnapshot, p),
         canonicalPlantaoWiring: true,
@@ -3695,7 +3689,9 @@ class _AiScreenState extends State<AiScreen> {
                 userText: trimmed,
                 rawText: safeFinalText,
                 language: p.lang,
-                contextPack: m56cMachineContext.contextPack,
+                contextPack: m59RegistryDegradedMode
+                    ? null
+                    : m56cMachineContext.contextPack,
                 enforceRequiredActions: m64EnforceHistoricalRequiredActions,
               );
               // M62_MACHINE_NATIVE_EVIDENCE_BACKED_REQUIRED_PROJECTOR_RUNTIME_V1
@@ -3706,6 +3702,7 @@ class _AiScreenState extends State<AiScreen> {
               final m62GatePass1 = m56bGlobalGate;
               var m62EffectiveGate = m56bGlobalGate;
               if (!requestLongResponse &&
+                  !m59RegistryDegradedMode &&
                   m56cMachineContext.authoritative &&
                   m56bGlobalGate.hasCriticalIssue) {
                 m62EffectiveGate = PlantaoGlobalClinicalResponseGate
@@ -3754,6 +3751,7 @@ class _AiScreenState extends State<AiScreen> {
                 userText: trimmed,
                 language: p.lang,
                 enabled: !requestLongResponse &&
+                    !m59RegistryDegradedMode &&
                     m56cMachineContext.authoritative &&
                     !m56bGlobalGate.hasCriticalIssue &&
                     !m62EffectiveGate.hasCriticalIssue &&
@@ -3779,40 +3777,55 @@ class _AiScreenState extends State<AiScreen> {
               // M58_MACHINE_NATIVE_FINAL_COMMIT_FAIL_CLOSED
               // Never commit a provider proposal that violates a critical
               // authoritative machine-native clinical rule.
+              final m58EffectiveGate = m62MachineProjectionApplied
+                  ? m62EffectiveGate
+                  : m56bGlobalGate;
+
+              // M58_DEGRADED_ANSWER_INSTEAD_OF_FULL_BLOCK_V2
+              //
+              // Critical findings still protect unsafe details, but no longer
+              // erase the complete answer.
               final m58BlockUnsafeClinicalCommit = !requestLongResponse &&
+                  !m59RegistryDegradedMode &&
                   m56cMachineContext.authoritative &&
-                  (m62MachineProjectionApplied
-                      ? m62EffectiveGate.hasCriticalIssue
-                      : m56bGlobalGate.hasCriticalIssue);
+                  m58EffectiveGate.hasCriticalIssue;
+
               if (m58BlockUnsafeClinicalCommit) {
-                safeFinalText = p.lang == 'es'
-                    ? 'VALIDACIÓN CLÍNICA\n\n'
-                        'La respuesta generada fue bloqueada porque no cumplió una regla clínica obligatoria del contexto MedCases. No se mostrará una conducta clínica incompleta o contradictoria. Vuelve a enviar la consulta para regenerar una respuesta validable.'
-                    : 'VALIDAÇÃO CLÍNICA\n\n'
-                        'A resposta gerada foi bloqueada porque não cumpriu uma regra clínica obrigatória do contexto MedCases. Uma conduta clínica incompleta ou contraditória não será exibida. Envie novamente a consulta para gerar uma resposta validável.';
+                final degraded =
+                    PlantaoGlobalClinicalResponseGate
+                        .degradeCriticalResultForPresentation(
+                  result: m58EffectiveGate,
+                  language: p.lang,
+                );
+
+                safeFinalText = degraded.finalText;
+
                 assert(() {
                   debugPrint(
                     '[M58_FINAL_COMMIT_GUARD] '
-                    'blocked=true reason=critical_machine_gate',
+                    'blocked=false degraded=true '
+                    'reason=critical_machine_gate '
+                    'issues=${m58EffectiveGate.issues.length}',
                   );
                   return true;
                 }());
               } else {
-                safeFinalText = m62MachineProjectionApplied
-                    ? m62EffectiveGate.finalText
-                    : m56bGlobalGate.finalText;
-                // M73B_M62_SAFE_FINAL_CONTRACT_PRESERVATION_V1
+                safeFinalText = m58EffectiveGate.finalText;
+
                 if (m73bRichPhaseCompletion.applied) {
                   safeFinalText = m73bRichPhaseCompletion.text;
                 }
+
                 assert(() {
                   debugPrint(
                     '[M58_FINAL_COMMIT_GUARD] '
-                    'blocked=false reason=machine_gate_pass',
+                    'blocked=false degraded=false '
+                    'reason=machine_gate_pass_or_registry_degraded',
                   );
                   return true;
                 }());
               }
+
               final m71dEffectiveGlobalGate = m62MachineProjectionApplied
                   ? m62EffectiveGate
                   : m56bGlobalGate;

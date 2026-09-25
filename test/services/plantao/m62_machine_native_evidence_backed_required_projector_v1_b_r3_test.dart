@@ -42,18 +42,20 @@ const physicalRawEs = '''
 PlantaoGlobalClinicalGateResult pass1(
   String raw,
   PlantaoGlobalClinicalContextPack pack,
-) => PlantaoGlobalClinicalResponseGate.finalizeForPresentation(
-  userText: physicalCaseEs,
-  rawText: raw,
-  language: 'es',
-  contextPack: pack,
-);
+) =>
+    PlantaoGlobalClinicalResponseGate.finalizeForPresentation(
+      userText: physicalCaseEs,
+      rawText: raw,
+      language: 'es',
+      contextPack: pack,
+    );
 
 PlantaoGlobalClinicalGateResult repair(
   PlantaoGlobalClinicalGateResult initial,
   PlantaoGlobalClinicalContextPack pack,
 ) =>
-    PlantaoGlobalClinicalResponseGate.repairEvidenceBackedRequiredActionsForPresentation(
+    PlantaoGlobalClinicalResponseGate
+        .repairEvidenceBackedRequiredActionsForPresentation(
       userText: physicalCaseEs,
       language: 'es',
       pass1: initial,
@@ -66,18 +68,19 @@ PlantaoGlobalClinicalContextPack fixturePack({
   List<String> classificationDependencies = const <String>[],
   List<String> scoreDependencies = const <String>[],
   bool authoritative = true,
-}) => PlantaoGlobalClinicalContextPack(
-  pathologyKey: 'fixture',
-  protocolKey: 'fixture::protocol',
-  guidelineVersion: '2026.09',
-  clinicalReviewDate: '2026-09-01',
-  requiredActions: required,
-  prohibitedActions: prohibited,
-  conditionalActions: const <String>[],
-  classificationDependencies: classificationDependencies,
-  scoreDependencies: scoreDependencies,
-  authoritative: authoritative,
-);
+}) =>
+    PlantaoGlobalClinicalContextPack(
+      pathologyKey: 'fixture',
+      protocolKey: 'fixture::protocol',
+      guidelineVersion: '2026.09',
+      clinicalReviewDate: '2026-09-01',
+      requiredActions: required,
+      prohibitedActions: prohibited,
+      conditionalActions: const <String>[],
+      classificationDependencies: classificationDependencies,
+      scoreDependencies: scoreDependencies,
+      authoritative: authoritative,
+    );
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -196,7 +199,8 @@ void main() {
       expect(finalResult.hasCriticalIssue, isTrue);
     });
 
-    test('negated required action cannot be projected into a positive action', () {
+    test('negated required action cannot be projected into a positive action',
+        () {
       const required =
           'Administrar adrenalina IM 0,01 mg/kg de la solución 1 mg/mL en la cara anterolateral del muslo; máximo 0,5 mg en el adulto.';
       final pack = fixturePack(required: const <String>[required]);
@@ -299,19 +303,32 @@ void main() {
 
         final guardWindow = source.substring(m58, visible);
         expect(guardWindow, contains('m56cMachineContext.authoritative'));
-        expect(guardWindow, contains('m56bGlobalGate.hasCriticalIssue'));
-        expect(guardWindow, contains('m62EffectiveGate.hasCriticalIssue'));
+        expect(guardWindow, contains('m58EffectiveGate'));
+        expect(guardWindow, contains('m58EffectiveGate.hasCriticalIssue'));
         expect(
           guardWindow,
-          contains('blocked=true reason=critical_machine_gate'),
+          contains('degradeCriticalResultForPresentation'),
         );
-        expect(guardWindow, contains('blocked=false reason=machine_gate_pass'));
         expect(
           guardWindow,
-          contains('safeFinalText = m62MachineProjectionApplied'),
+          contains('blocked=false degraded=true'),
         );
-        expect(guardWindow, contains('? m62EffectiveGate.finalText'));
-        expect(guardWindow, contains(': m56bGlobalGate.finalText;'));
+        expect(
+          guardWindow,
+          contains('reason=critical_machine_gate'),
+        );
+        expect(
+          guardWindow,
+          contains('blocked=false degraded=false'),
+        );
+        expect(
+          guardWindow,
+          contains('reason=machine_gate_pass_or_registry_degraded'),
+        );
+        expect(
+          guardWindow,
+          contains('safeFinalText = m58EffectiveGate.finalText'),
+        );
       },
     );
   });

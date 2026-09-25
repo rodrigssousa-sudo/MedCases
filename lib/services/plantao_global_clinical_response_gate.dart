@@ -121,6 +121,118 @@ class PlantaoGlobalClinicalResponseGate {
     );
   }
 
+  // M78_SAFE_DEGRADED_CLINICAL_PRESENTATION_V1
+  //
+  // Critical validation findings limit specificity instead of deleting the
+  // entire answer. Structural issues preserve the provider text. Missing
+  // required treatment removes treatment/immediate sections. Explicitly
+  // prohibited positive recommendations are removed line-by-line using the
+  // same semantic matcher that detected them.
+  static PlantaoGlobalClinicalGateResult degradeCriticalResultForPresentation({
+    required PlantaoGlobalClinicalGateResult result,
+    required String language,
+  }) {
+    if (!result.hasCriticalIssue) return result;
+
+    final criticalIssues = result.issues
+        .where((issue) => issue.critical)
+        .toList(growable: false);
+    final criticalCodes = criticalIssues.map((issue) => issue.code).toSet();
+
+    var text = result.finalText.trim();
+
+    final prohibitedIssues = criticalIssues
+        .where((issue) => issue.code == 'prohibited_action_present')
+        .toList(growable: false);
+
+    if (text.isNotEmpty && prohibitedIssues.isNotEmpty) {
+      final kept = <String>[];
+
+      for (final line in text.split('\n')) {
+        final foldedLine = _fold(line).trim();
+
+        final prohibited = prohibitedIssues.any((issue) {
+          final needle = _fold(issue.detail).trim();
+          if (needle.isEmpty || foldedLine.isEmpty) return false;
+
+          return _containsClinicalAction(
+            foldedLine,
+            needle,
+            requirePositiveRecommendation: true,
+          );
+        });
+
+        if (!prohibited) kept.add(line);
+      }
+
+      text = kept.join('\n').trim();
+    }
+
+    // A missing mandatory machine-native action means the treatment plan is
+    // not complete enough to present as actionable management. Preserve
+    // diagnosis, classification, exams, monitoring, red flags and limitations,
+    // but suppress the treatment/immediate sections until they can be validated.
+    if (criticalCodes.contains('required_action_missing') && text.isNotEmpty) {
+      text = _stripActionableTreatmentSections(text);
+    }
+
+    final isEs = language.toLowerCase().startsWith('es');
+
+    final clinicallyRestricted =
+        criticalCodes.contains('required_action_missing') ||
+        criticalCodes.contains('prohibited_action_present');
+
+    if (text.isEmpty) {
+      text = isEs
+          ? 'Respuesta clínica general\n\n'
+                'No fue posible validar una conducta terapéutica específica en '
+                'este turno. Puedes utilizar la evaluación clínica general, los '
+                'diagnósticos diferenciales, los estudios, las señales de alarma '
+                'y la monitorización disponibles; vuelve a solicitar el punto '
+                'terapéutico específico para una nueva validación.'
+          : 'Resposta clínica geral\n\n'
+                'Não foi possível validar uma conduta terapêutica específica '
+                'neste turno. Você pode utilizar a avaliação clínica geral, os '
+                'diagnósticos diferenciais, os exames, os sinais de alarme e a '
+                'monitorização disponíveis; solicite novamente o ponto '
+                'terapêutico específico para uma nova validação.';
+    } else if (clinicallyRestricted) {
+      final notice = isEs
+          ? 'Nota de validación: se omitió una parte terapéutica específica '
+                'que no pudo validarse de forma determinística en este turno.'
+          : 'Nota de validação: uma parte terapêutica específica que não pôde '
+                'ser validada de forma determinística neste turno foi omitida.';
+
+      text = '$text\n\n$notice';
+    }
+
+    return PlantaoGlobalClinicalGateResult(
+      finalText: text,
+      issues: result.issues,
+      projected: true,
+      machineAuthorityEvaluated: result.machineAuthorityEvaluated,
+    );
+  }
+
+  static String _stripActionableTreatmentSections(String text) {
+    final out = <String>[];
+    var suppress = false;
+
+    for (final line in text.split('\n')) {
+      final key = _sectionKey(line.trim());
+
+      if (key != null) {
+        suppress = key == 'immediate' || key == 'treatment';
+        if (!suppress) out.add(line);
+        continue;
+      }
+
+      if (!suppress) out.add(line);
+    }
+
+    return out.join('\n').trim();
+  }
+
   // M70B_CROSS_SECTION_DETAILED_REGIMEN_DEDUP_V1
   // Conservative post-provider normalization: remove from Conducta/Conduta
   // inmediata only regimen fragments already present in Tratamiento/Tratamento
