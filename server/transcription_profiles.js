@@ -37,4 +37,11 @@ function selectedProvider(env, uid) {
   if (!env.ASSEMBLYAI_API_KEY) throw Error('ASSEMBLYAI_NOT_CONFIGURED');
   return 'assemblyai';
 }
-module.exports={PROFILES, profileOptions, selectedProvider};
+function providerGateError(error) {
+  if(error?.message==='ASSEMBLYAI_PHI_PRODUCTION_BLOCKED')
+    return {code:error.message,error:error.message,retryable:false};
+  if(error?.message==='ASSEMBLYAI_NOT_CONFIGURED')
+    return {code:'TRANSCRIPTION_UNAVAILABLE',error:'TRANSCRIPTION_UNAVAILABLE',retryable:true};
+  return null;
+}
+module.exports={PROFILES, profileOptions, selectedProvider, providerGateError};

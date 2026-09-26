@@ -26,7 +26,7 @@ const {createTranscriptionTempStorage} = require('./transcription_temp_storage')
 const {TranscriptionDurableQueue, canonical} = require('./transcription_durable_queue');
 const {AssemblyAiProvider,LegacyTranscriptionProvider} = require('./assemblyai_provider');
 const {MedCasesTranscriptionService} = require('./medcases_transcription_service');
-const {selectedProvider,profileOptions} = require('./transcription_profiles');
+const {selectedProvider,profileOptions,providerGateError} = require('./transcription_profiles');
 let durableQueue;
 function queue() {
   if (durableQueue) return durableQueue;
@@ -230,21 +230,23 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
     '/api/ai/study/background-transcription/jobs',
     express.json({ limit: '32kb' }),
     async (req, res) => {
+      let uid, usage, db;
       try {
         const rt = runtime();
         if (!rt.enabled || !queue()) {
           return res.status(503).json({ error: 'study_background_disabled' });
         }
 
-        const uid = await firebaseUid(req, rt.app);
-        const usage = await assertUsageReservation(getFirestore(rt.app),uid,req.headers);
+        uid = await firebaseUid(req, rt.app);
+        db = getFirestore(rt.app);
+        usage = await assertUsageReservation(db,uid,req.headers);
         const expectedSegments = Number(req.body?.expectedSegments);
         if (
           !Number.isInteger(expectedSegments) ||
           expectedSegments < 1 ||
           expectedSegments > MAX_SEGMENTS
         ) {
-          return res.status(400).json({ error: 'expected_segments_invalid' });
+          throw Error('EXPECTED_SEGMENTS_INVALID');
         }
 
         const locale = req.body?.locale === 'es' ? 'es' : 'pt';
@@ -253,11 +255,15 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
         const now = Date.now();
         const exp = now + JOB_TTL_MS;
 
-        const db = getFirestore(rt.app);
         const jobRef = db.collection(COLLECTION).doc(jobId);
         const reservation = await db.collection('usageReservations').doc(usageReceipt(usage).id).get();
-        if (expectedSegments !== (reservation.data().executionCount || 1)) return res.status(403).json({error:'execution_plan_mismatch'});
+        if (expectedSegments !== (reservation.data().executionCount || 1)) throw Error('EXECUTION_PLAN_MISMATCH');
         await db.runTransaction(async tx => {
+          // Release and create conflict on the same reservation read.
+          const receipt=usageReceipt(usage);
+          const current=await tx.get(db.collection('usageReservations').doc(receipt.id));
+          const allocation=current.data();
+          if(!allocation || allocation.uid!==uid || allocation.attempt!==receipt.attempt || !['reserved','executing'].includes(allocation.state))throw Error('SERVER_QUOTA_RESERVATION_INVALID');
           const existing = await tx.get(jobRef);
           if (existing.exists) {
             const value = existing.data();
@@ -306,9 +312,13 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
             `/api/ai/study/background-transcription/jobs/${jobId}`,
         });
       } catch (error) {
-        return res.status(401).json({
-          error: String(error?.message || 'study_job_create_failed'),
-        });
+        if(db&&uid&&usage)await new MonthlyUsageOwner({db}).failBeforeExecution(uid,usageReceipt(usage)).catch(()=>{});
+        const gate=providerGateError(error);
+        if(gate)return res.status(gate.retryable?503:403).json(gate);
+        const auth=/^(AUTH_REQUIRED|SERVER_QUOTA_RESERVATION_REQUIRED|SERVER_QUOTA_RESERVATION_INVALID)$/.test(error?.message||'');
+        const invalid=['EXPECTED_SEGMENTS_INVALID','EXECUTION_PLAN_MISMATCH'].includes(error?.message);
+        const code=auth?'AUTH_FAILURE':invalid?error.message:'JOB_CREATE_FAILED';
+        return res.status(auth?401:invalid?400:503).json({code,error:code,retryable:!auth&&!invalid});
       }
     },
   );

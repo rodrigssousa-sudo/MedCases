@@ -148,6 +148,18 @@ class MonthlyUsageOwner {
    const op=snap.data();if(op.attempt!==attempt)throw Error('STALE_ATTEMPT');
    if(op.state==='server_verified_failed')return {state:op.state,chargedMs:0};
    if(op.state!=='reserved')throw Error('BILLABLE_EXECUTION_STARTED');
+   if(op.chargedMs!==0 || (op.authorizedMediaMs||0)!==0 || (op.completedExecutions||0)!==0)throw Error('RELEASE_EVIDENCE_AMBIGUOUS');
+   if(op.kinds.includes('transcription')) {
+    const usage={'x-medcases-usage-reservation':id,'x-medcases-usage-attempt':attempt};
+    const path=`_study_background_transcription_jobs/${hash(JSON.stringify(usage))}`;
+    // Missing parent documents alone do not prove that a worker never ran.
+    const checks=await Promise.all([
+     tx.get(this.db.collection('_study_background_transcription_jobs').doc(hash(JSON.stringify(usage)))),
+     ...['segments','logical'].map(name=>tx.get(this.db.collection(`${path}/${name}`).limit(1))),
+     ...['usageExecutions','usageMediaBindings'].map(name=>tx.get(this.db.collection(name).where('id','==',id).limit(1)))
+    ]);
+    if(checks[0].exists || checks.slice(1).some(s=>s.docs.length))throw Error('RELEASE_EVIDENCE_AMBIGUOUS');
+   }
    const bucket=this.db.collection('monthlyUsage').doc(op.bucketId),bs=await tx.get(bucket);
    if(!bs.exists)throw Error('BUCKET_MISSING');const data=bs.data();
    for(const kind of op.kinds){data.totals[kind]-=op.maximumMs;if(data.totals[kind]<0)throw Error('CORRUPT_USAGE');}
