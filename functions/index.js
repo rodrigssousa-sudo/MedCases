@@ -1,3 +1,4 @@
+const {runPlantaoCanonicalStream} = require('./plantao_canonical_stream');
 const console = require('./private_logger');
 // MEDCASES_SHADOW_OBSERVATION_S1_IMPORT_BEGIN
 const {
@@ -3619,15 +3620,17 @@ const GPT_STREAM_ALLOWED_ORIGINS = new Set([
   'https://medcases-pro.firebaseapp.com',
 ]);
 
+// Separate authenticated endpoints share only transport/auth infrastructure.
+// Study keeps its existing model path; Plantão cannot execute it.
 exports.gptProxyStream = onRequest(
-  {
-    region:         'us-central1',
-    secrets:        [OPENAI_KEY],
-    timeoutSeconds: 120,
-    memory:         '512MiB',
-    cors:           false, // BUILD 462E-A.1: CORS gerenciado manualmente abaixo
-  },
-  async (req, res) => {
+  {region: 'us-central1', secrets: [OPENAI_KEY], timeoutSeconds: 120, memory: '512MiB', cors: false},
+  async (req, res) => handleGptStream(req, res, false),
+);
+exports.plantaoProxyStream = onRequest(
+  {region: 'us-central1', secrets: [OPENAI_KEY, GEMINI_PAID_KEY], timeoutSeconds: 120, memory: '512MiB', cors: false},
+  async (req, res) => handleGptStream(req, res, true),
+);
+async function handleGptStream(req, res, canonicalPlantao) {
     const startMs = Date.now();
 
     // ── BUILD 462E-A.1 — CORS: aplicar ANTES de autenticação e de toda resposta ──
@@ -3701,6 +3704,8 @@ exports.gptProxyStream = onRequest(
     const requestId       = String(data.requestId    || `req_cf_${startMs}`);
     const mode            = String(data.mode         || 'plantao');
     const maxOutputTokens = parseInt(data.maxOutputTokens, 10) || 800;
+    if (canonicalPlantao && mode !== 'plantao') return res.status(400).json({error:'mode_mismatch'});
+    if (!canonicalPlantao && mode === 'plantao') return res.status(409).json({error:'plantao_route_retired'});
 
     if (payloadUid && payloadUid !== callerUid) {
       return res.status(403).json({ error: 'permission_denied' });
@@ -3778,6 +3783,35 @@ exports.gptProxyStream = onRequest(
     }, 15000);
 
     try {
+      if (canonicalPlantao) {
+        let escalationPolicy = null;
+        try {
+          const state = await getV2ConfigStateForExecution({firestore: admin.firestore(), env: process.env});
+          escalationPolicy = state?.config?.plantao?.clinicalEscalation || null;
+        } catch (_) { /* Missing policy leaves Terra ineligible, not the answer. */ }
+        const result = await runPlantaoCanonicalStream({
+          query: safeUserMessage,
+          language: String(data.lang || 'es').startsWith('pt') ? 'pt' : 'es',
+          internalContext: safeSystemPrompt,
+          history: rawHistory,
+          openAiKey,
+          geminiKey: GEMINI_PAID_KEY.value(),
+          signal: abortController.signal,
+          escalationPolicy,
+          requestId,
+          maxOutputTokens: Math.min(6000, Math.max(1600, maxOutputTokens)),
+          onEvent: (event, payload) => {
+            if (event === 'text_delta') deltaCount++;
+            if (!res.writableEnded) sendSseEvent(res, event, payload);
+          },
+        });
+        completedNormally = true;
+        if (!res.writableEnded) sendSseEvent(res, 'transport_done', {
+          requestId, attempt: 2, ...result, structuredOutputs: false,
+          durationMs: Date.now() - startMs, deltaCount,
+        });
+        return;
+      }
       // ── EVENTO started ────────────────────────────────────────────────────
       sendSseEvent(res, 'started', {
         requestId,
@@ -3890,8 +3924,7 @@ exports.gptProxyStream = onRequest(
       clearInterval(heartbeat);
       if (!res.writableEnded) res.end();
     }
-  }
-);
+}
 
 
 // ============================================================================

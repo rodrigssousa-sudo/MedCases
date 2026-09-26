@@ -55,7 +55,10 @@ for(const endpoint of ['gemini','openai'])for(const [name,fixture]of Object.entr
  test('observer seam parity '+endpoint+' '+name,{timeout:5000},async()=>{
   const after=await execute(endpoint,'disabled',fixture);
   for(const mode of ['fulfilled','rejected','pending'])assert.deepEqual(after,await execute(endpoint,mode,fixture));
-  assert.equal(after.calls.length,['blocked','wrongUid'].includes(name)?0:1);
+  const retired = endpoint === 'openai' && !fixture.study;
+  assert.equal(after.calls.length,retired || ['blocked','wrongUid'].includes(name)?0:1);
+  if (retired && !fixture.wrongUid) assert.equal(after.output.status,409);
+  if (retired) assert.equal(after.writes.length,0);
   if(after.calls.length && !fixture.providerError)assert.ok(after.writes.some(x=>x.name==='admin_ai_usage_events'),'productive usage telemetry retained');
  });
 }
