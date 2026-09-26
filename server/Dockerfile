@@ -17,6 +17,9 @@ RUN npm ci --omit=dev --no-audit --no-fund
 # ── Stage 2: runtime ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS runtime
 
+# Controlled, streaming assembly of physical capture files into one WAV.
+RUN apk add --no-cache ffmpeg
+
 # Cria usuário não-root para segurança
 RUN addgroup -g 1001 -S nodejs && \
     adduser  -u 1001 -S medcases -G nodejs

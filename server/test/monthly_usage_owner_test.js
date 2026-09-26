@@ -5,7 +5,7 @@ const {MonthlyUsageOwner}=require('../monthly_usage_owner');
 // A shared serial transaction adapter models two independent server workers.
 // Firestore production uses runTransaction; no emulator/deployment is claimed.
 function database(){const records=new Map([['users/A',{plan:'free'}],['users/B',{plan:'premium'}]]);let queue=Promise.resolve();
- return {records,collection:name=>({doc:id=>`${name}/${id}`}),runTransaction(action){const run=queue.then(async()=>{const staged=new Map();const result=await action({get:async ref=>({exists:records.has(ref),data:()=>structuredClone(records.get(ref))}),set:(ref,data)=>staged.set(ref,structuredClone(data))});for(const [k,v]of staged)records.set(k,v);return result;});queue=run.catch(()=>{});return run;}};}
+ return {records,collection:name=>({doc:id=>`${name}/${id}`,where(field,op,value){const query={name,filters:[[field,value]],where(f,o,v){this.filters.push([f,v]);return this;}};return query;}}),runTransaction(action){const run=queue.then(async()=>{const staged=new Map();const result=await action({get:async ref=>typeof ref==='string'?({exists:records.has(ref),data:()=>structuredClone(records.get(ref))}):({docs:[...records].filter(([k,v])=>k.startsWith(ref.name+'/')&&ref.filters.every(([f,x])=>v[f]===x)).map(([k,v])=>({data:()=>structuredClone(v)}))}),set:(ref,data)=>staged.set(ref,structuredClone(data))});for(const [k,v]of staged)records.set(k,v);return result;});queue=run.catch(()=>{});return run;}};}
 const req=(operationId,maximumMs=60000)=>({operationId,maximumMs,kinds:['recording']});
 test('two server workers cannot exceed account quota; preferences/reinstall are irrelevant',async()=>{
  const db=database();const a=new MonthlyUsageOwner({db}),b=new MonthlyUsageOwner({db});
@@ -37,8 +37,8 @@ for(const state of ['TRIAL','PAID','CANCELLED_STILL_ACTIVE','EXPIRED'])test(`sov
  const owner=new MonthlyUsageOwner({db,now:()=>now});const minutes=state==='EXPIRED'?15:240;
  await owner.reserve('A',req('limit',minutes*60000));await assert.rejects(owner.reserve('A',req('overflow',1)),/LIMIT/);
 });
-test('Free transcription limit is 30 minutes, independent of device',async()=>{
- const owner=new MonthlyUsageOwner({db:database()});await owner.reserve('A',{...req('trans',30*60000),kinds:['transcription']});
+test('Free transcription limit is 15 minutes, independent of device',async()=>{
+ const owner=new MonthlyUsageOwner({db:database()});await owner.reserve('A',{...req('trans',15*60000),kinds:['transcription']});
  await assert.rejects(owner.reserve('A',{...req('overflow',1),kinds:['transcription']}),/LIMIT/);
 });
 
@@ -64,4 +64,15 @@ test('server verified failure before work can release, but never reopen attempt'
  assert.equal((await owner.reserve('A',req('failed',900000))).state,'server_verified_failed');
  await assert.rejects(owner.claimExecution('A',r),/NOT_AUTHORIZED/);
  await owner.reserve('A',req('new',900000));
+});
+
+for(const [uid,limit] of [['A',900000],['B',5400000]])test(`balance ${uid} uses cumulative authoritative allowance`,async()=>{
+ const db=database(),owner=new MonthlyUsageOwner({db});
+ assert.equal((await owner.balance(uid)).remainingMs,limit);
+ const r=await owner.reserve(uid,{...req('first',60000),kinds:['transcription']});
+ let b=await owner.balance(uid);assert.equal(b.remainingMs,limit-60000);assert.equal(b.reservedMs,60000);assert.equal(b.usedMs,0);
+ await owner.finish(uid,{...r,actualMs:60000,success:false});
+ b=await new MonthlyUsageOwner({db}).balance(uid);assert.equal(b.remainingMs,limit-60000);assert.equal(b.usedMs,60000);assert.equal(b.reservedMs,0);
+ await owner.reserve(uid,{...req('second',60000),kinds:['transcription']});
+ assert.equal((await owner.balance(uid)).remainingMs,limit-120000);
 });

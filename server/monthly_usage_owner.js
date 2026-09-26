@@ -2,7 +2,7 @@
 const {validProof}=require('./audio_media_budget');
 const crypto=require('node:crypto');
 const {resolveMedCasesTier}=require('./calculator_entitlement_session');
-const LIMITS=Object.freeze({free:{recording:15*60000,transcription:30*60000},premium:{recording:240*60000,transcription:90*60000}});
+const LIMITS=Object.freeze({free:{recording:15*60000,transcription:15*60000},premium:{recording:240*60000,transcription:90*60000}});
 const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
 function validateRequest({operationId,kinds,maximumMs,executionCount=1}){
  if(!Number.isInteger(executionCount)||executionCount<1||executionCount>64)throw Error('INVALID_EXECUTION_COUNT');
@@ -11,6 +11,36 @@ function validateRequest({operationId,kinds,maximumMs,executionCount=1}){
 // uid MUST be supplied by the authenticated route, never the submitted body.
 class MonthlyUsageOwner {
  constructor({db,now=()=>Date.now()}){this.db=db;this.now=now;}
+ // A read-only transaction returns the same account/month used by reserve.
+ // totals already includes reservations: subtracting them again would double count.
+ async balance(uid){
+  if(typeof uid!=='string'||!uid)throw Error('AUTH_REQUIRED');
+  const now=this.now(),month=new Date(now).toISOString().slice(0,7);
+  const bucketId=hash(`${uid}\n${month}`);
+  return this.db.runTransaction(async tx=>{
+   const [user,bucket,operations]=await Promise.all([
+    tx.get(this.db.collection('users').doc(uid)),
+    tx.get(this.db.collection('monthlyUsage').doc(bucketId)),
+    tx.get(this.db.collection('usageReservations').where('uid','==',uid).where('month','==',month))
+   ]);
+   if(!user.exists)throw Error('AUTH_REQUIRED');
+   const tier=resolveMedCasesTier(user.data(),now).tier;
+   const total=bucket.exists?bucket.data().totals.transcription:0;
+   if(!Number.isSafeInteger(total)||total<0)throw Error('CORRUPT_USAGE');
+   let reservedMs=0;
+   for(const doc of operations.docs){
+    const op=doc.data();
+    if(op.state==='reserved'&&op.kinds.includes('transcription')){
+     if(!Number.isSafeInteger(op.maximumMs)||op.maximumMs<0)throw Error('CORRUPT_USAGE');
+     reservedMs+=op.maximumMs;
+    }
+   }
+   if(reservedMs>total)throw Error('CORRUPT_USAGE');
+   const allowanceMs=LIMITS[tier].transcription;
+   return {month,tier,allowanceMs,usedMs:total-reservedMs,reservedMs,
+    remainingMs:Math.max(0,allowanceMs-total)};
+  });
+ }
  async reserve(uid,request){
   if(typeof uid!=='string'||!uid)throw Error('AUTH_REQUIRED');validateRequest(request);
   const now=this.now(),month=new Date(now).toISOString().slice(0,7);

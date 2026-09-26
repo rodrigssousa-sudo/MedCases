@@ -22,6 +22,23 @@ const LEASE_MS = 3 * 60 * 1000;
 const OPENAI_TIMEOUT_MS = 150000;
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/audio/transcriptions';
 const MODEL = 'gpt-transcribe';
+const {createTranscriptionTempStorage} = require('./transcription_temp_storage');
+const {TranscriptionDurableQueue, canonical} = require('./transcription_durable_queue');
+const {AssemblyAiProvider,LegacyTranscriptionProvider} = require('./assemblyai_provider');
+const {MedCasesTranscriptionService} = require('./medcases_transcription_service');
+const {selectedProvider,profileOptions} = require('./transcription_profiles');
+let durableQueue;
+function queue() {
+  if (durableQueue) return durableQueue;
+  const rt = runtime(), storage = createTranscriptionTempStorage();
+  if (!rt.enabled || !storage) return null;
+  const legacy = new LegacyTranscriptionProvider((body,mime,index,proof)=>transcribeBuffer(rt.openAiKey,body,mime,index,proof));
+  const providers={legacy};
+  if(process.env.ASSEMBLYAI_API_KEY) providers.assemblyai=new AssemblyAiProvider({apiKey:process.env.ASSEMBLYAI_API_KEY});
+  durableQueue = new TranscriptionDurableQueue({db:getFirestore(rt.app),storage,
+    centralService:new MedCasesTranscriptionService({providers}),transcribe:legacy.transcribe});
+  return durableQueue;
+}
 
 function base64urlJson(value) {
   return Buffer.from(JSON.stringify(value), 'utf8').toString('base64url');
@@ -74,7 +91,8 @@ function runtime() {
     secret,
     openAiKey,
     app: apps.length > 0 ? apps[0] : null,
-    enabled: secret.length >= 32 && openAiKey.length >= 20 && apps.length > 0,
+    enabled: secret.length >= 32 && apps.length > 0 &&
+      (openAiKey.length >= 20 || (process.env.ASSEMBLYAI_TRANSCRIPTION_ENABLED==='true' && Boolean(process.env.ASSEMBLYAI_API_KEY))),
   };
 }
 
@@ -116,7 +134,7 @@ async function transcribeBuffer(openAiKey, body, mimeType, index, binaryProof) {
   form.append(
     'file',
     new Blob([body], { type: mimeType || 'audio/mp4' }),
-    `segment_${index}.m4a`,
+    `segment_${index}.${mimeType === 'audio/wav' ? 'wav' : 'm4a'}`,
   );
   form.append(
     'prompt',
@@ -144,10 +162,18 @@ async function transcribeBuffer(openAiKey, body, mimeType, index, binaryProof) {
 }
 
 async function deleteJobTree(db, jobRef) {
+  const current=(await jobRef.get()).data();
+  if(current?.provider==='assemblyai')return queue().logical.cancel(jobRef);
   const segments = await jobRef.collection('segments').get();
   let batch = db.batch();
   let count = 0;
   for (const doc of segments.docs) {
+    const value = doc.data();
+    if (value.objectKey) {
+      const storage = createTranscriptionTempStorage();
+      if (!storage) throw Error('TEMP_STORAGE_UNAVAILABLE');
+      await storage.remove(value.objectKey);
+    }
     batch.delete(doc.ref);
     count += 1;
     if (count >= 400) {
@@ -178,7 +204,7 @@ async function cleanupExpiredJobs() {
   }
 }
 
-function registerStudyBackgroundTranscriptionRoutes(app) {
+function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) {
   if (!app || typeof app.get !== 'function') {
     throw new Error('study_background_router_app_invalid');
   }
@@ -188,11 +214,12 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
     (req, res) => {
       const rt = runtime();
       res.status(200).json({
-        enabled: rt.enabled,
+        enabled: rt.enabled && Boolean(queue()),
         schemaVersion: 1,
         maxSegments: MAX_SEGMENTS,
         maxSegmentBytes: MAX_AUDIO_BYTES,
-        audioPersistence: false,
+        audioPersistence: Boolean(queue()),
+        uploadAcknowledgement: queue() ? 'durable-queue-202' : 'unavailable',
         transcriptCheckpoint: 'firestore-transient',
         model: MODEL,
       });
@@ -205,7 +232,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
     async (req, res) => {
       try {
         const rt = runtime();
-        if (!rt.enabled) {
+        if (!rt.enabled || !queue()) {
           return res.status(503).json({ error: 'study_background_disabled' });
         }
 
@@ -230,17 +257,33 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
         const jobRef = db.collection(COLLECTION).doc(jobId);
         const reservation = await db.collection('usageReservations').doc(usageReceipt(usage).id).get();
         if (expectedSegments !== (reservation.data().executionCount || 1)) return res.status(403).json({error:'execution_plan_mismatch'});
-        await jobRef.set({
+        await db.runTransaction(async tx => {
+          const existing = await tx.get(jobRef);
+          if (existing.exists) {
+            const value = existing.data();
+            if(value.deleted)throw Error('study_job_deleted');
+            if (value.uid !== uid || value.expectedSegments !== expectedSegments) throw Error('study_job_binding_invalid');
+            tx.set(jobRef, {expiresAt:Timestamp.fromMillis(exp)}, {merge:true});
+            return;
+          }
+          tx.set(jobRef, {
           uid,
+          ownerUid:uid,
+          sessionId:sourceId,
+          provider:selectedProvider(process.env,uid),
+          mode:req.body?.mode || 'studyRecording',
+          conversation:req.body?.conversation === true,
           usage,
           expectedSegments,
           locale,
           sourceId,
           educationalOnly: true,
-          state: 'active',
+          state: 'queued',
+          workerPending: false,
           createdAt: Timestamp.fromMillis(now),
           updatedAt: Timestamp.fromMillis(now),
           expiresAt: Timestamp.fromMillis(exp),
+          });
         });
 
         const grant = signGrant(rt.secret, {
@@ -272,6 +315,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
 
   app.put(
     '/api/ai/study/background-transcription/jobs/:jobId/segments/:index',
+    (req, _res, next) => {req.receivedAt = Date.now(); next();},
     express.raw({
       type: 'application/octet-stream',
       limit: `${MAX_AUDIO_BYTES}b`,
@@ -280,7 +324,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
       let body = null;
       try {
         const rt = runtime();
-        if (!rt.enabled) {
+        if (!rt.enabled || !queue()) {
           return res.status(503).json({ error: 'study_background_disabled' });
         }
 
@@ -307,6 +351,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
           return res.status(404).json({ error: 'study_job_missing' });
         }
         const job = jobSnap.data();
+        if(job.deleted)return res.status(410).json({error:'study_job_deleted'});
         if (
           job.uid !== grant.uid ||
           Number(job.expectedSegments) !== expected
@@ -314,93 +359,20 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
           return res.status(403).json({ error: 'study_job_binding_invalid' });
         }
 
-        await assertUsageReservation(db, grant.uid, job.usage || {});
-        const segmentRef = jobRef.collection('segments').doc(String(index));
-        const leaseResult = await db.runTransaction(async (tx) => {
-          const snap = await tx.get(segmentRef);
-          const current = snap.exists ? snap.data() : null;
-          if (current?.state === 'done' && current?.transcript) {
-            return { state: 'done', transcript: current.transcript };
-          }
-
-          if (current?.state === 'processing') {
-            return { state: 'busy' };
-          }
-
-          tx.set(
-            segmentRef,
-            {
-              index,
-              state: 'processing',
-              leaseUntil: Timestamp.fromMillis(Date.now() + LEASE_MS),
-              updatedAt: Timestamp.now(),
-            },
-            { merge: true },
-          );
-          return { state: 'claimed' };
-        });
-
-        if (leaseResult.state === 'done') {
-          return res.status(200).json({
-            segmentIndex: index,
-            transcript: leaseResult.transcript,
-            idempotent: true,
-          });
+        const existing = await jobRef.collection('segments').doc(String(index)).get();
+        const value = existing.exists ? existing.data() : {};
+        // Existing completed/active work is readable after its reservation settles.
+        // New execution still goes through the unchanged reservation/owner guards.
+        if (!(value.state === 'done' || ['processing','queued','uploading'].includes(value.state))) {
+          await assertUsageReservation(db, grant.uid, job.usage || {});
         }
-        if (leaseResult.state === 'busy') {
-          return res.status(409).json({ error: 'segment_processing' });
-        }
-
-        const mimeType = String(
-          req.headers['x-medcases-audio-mime'] || 'audio/mp4',
-        ).slice(0, 80);
-
-        const owner = new MonthlyUsageOwner({db});
-        const receipt = usageReceipt(job.usage);
-        const binaryProof=await classifyBinary(body);
-        if(binaryProof.classification!=='SUPPORTED_AUDIO')throw Error('AUDIO_TYPE_INVALID');
-        const media = combineProofs([binaryProof.audioProof],digest(JSON.stringify({jobId,index,mimeType})));
-        const claimed = await owner.claimExecution(grant.uid,receipt,index,media);
-        if (!claimed.claimed) return res.status(409).json({error:'execution_already_claimed'});
-        // At-most-once after upstream dispatch, including unknown network outcome.
-        let transcript;
-        try { transcript = await transcribeBuffer(
-          rt.openAiKey,
-          body,
-          binaryProof.mimeType,
-          index,
-          binaryProof,
-        ); } finally { await owner.completeExecution(grant.uid,receipt,index); }
-
-        await segmentRef.set(
-          {
-            index,
-            state: 'done',
-            transcript,
-            resultRef: crypto
-              .createHash('sha256')
-              .update(`${jobId}:${index}`)
-              .digest('hex'),
-            leaseUntil: null,
-            completedAt: Timestamp.now(),
-            updatedAt: Timestamp.now(),
-          },
-          { merge: true },
-        );
-        await jobRef.set(
-          { updatedAt: Timestamp.now() },
-          { merge: true },
-        );
-
-        return res.status(200).json({
-          segmentIndex: index,
-          transcript,
-          idempotent: false,
-        });
+        const result = await queue().enqueue(jobRef, job, index, body, req.receivedAt || Date.now());
+        if (result.state === 'terminal_error') return res.status(409).json({error:'EXECUTION_RESULT_UNAVAILABLE', retryable:false});
+        return res.status(result.state === 'completed' ? 200 : 202).json({segmentIndex:index, ...result});
       } catch (error) {
-        return res.status(502).json({
-          error: String(error?.message || 'study_segment_failed'),
-        });
+        const binding = /binding|grant|identity|RESERVATION|QUOTA/.test(error.message || '');
+        return res.status(binding ? 403 : error.message === 'SEGMENT_CONTENT_CONFLICT' ? 409 : 503)
+          .json({error:binding ? 'study_authorization_failed' : 'UPLOAD_PROCESSING_FAILED', retryable:!binding});
       } finally {
         if (Buffer.isBuffer(body)) {
           body.fill(0);
@@ -414,7 +386,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
     async (req, res) => {
       try {
         const rt = runtime();
-        if (!rt.enabled) {
+        if (!rt.enabled || !queue()) {
           return res.status(503).json({ error: 'study_background_disabled' });
         }
         const grant = studyAuthorization(req, rt.secret);
@@ -430,10 +402,14 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
           return res.status(404).json({ error: 'study_job_missing' });
         }
         const job = jobSnap.data();
+        if(job.deleted)return res.status(410).json({error:'study_job_deleted'});
         if (job.uid !== grant.uid) {
           return res.status(403).json({ error: 'study_job_binding_invalid' });
         }
 
+        const before = await jobRef.collection('segments').get();
+        for (const doc of before.docs) await queue().recover(jobRef, job, doc.ref);
+        const aggregate = await queue().aggregate(jobRef, job);
         const segmentSnap = await jobRef.collection('segments').get();
         const transcripts = segmentSnap.docs
           .map((doc) => doc.data())
@@ -448,7 +424,16 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
         return res.status(200).json({
           jobId,
           expectedSegments,
+          state: aggregate.state,
           completedSegments: transcripts.length,
+          failedSegments: aggregate.failed,
+          pendingSegments: Math.max(0, expectedSegments-transcripts.length-aggregate.failed),
+          segments: segmentSnap.docs.map(doc => {
+            const v=doc.data(); const status=job.provider==='assemblyai'&&['retryable_error','terminal_error'].includes(aggregate.state)?aggregate.state:canonical(v);
+            return {segmentIndex:v.index, state:['retryable_error','terminal_error'].includes(status)?'failed':status,
+              canonicalState:status, retryable:v.retryable ?? status==='retryable_error', errorCategory:v.errorCategory || null,
+              timings:v.timings || {}, attemptCount:v.attemptCount || 0};
+          }),
           complete: transcripts.length === expectedSegments,
           transcripts,
         });
@@ -465,7 +450,7 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
     async (req, res) => {
       try {
         const rt = runtime();
-        if (!rt.enabled) {
+        if (!rt.enabled || !queue()) {
           return res.status(503).json({ error: 'study_background_disabled' });
         }
         const grant = studyAuthorization(req, rt.secret);
@@ -491,12 +476,17 @@ function registerStudyBackgroundTranscriptionRoutes(app) {
     },
   );
 
+  if(startWorker){
+  const workerTimer = setInterval(() => { queue()?.tick().catch(() => {}); }, 3000);
+  workerTimer.unref?.();
   const timer = setInterval(() => {
     cleanupExpiredJobs().catch(() => {});
   }, 30 * 60 * 1000);
   if (typeof timer.unref === 'function') {
     timer.unref();
   }
+  }
+  return queue();
 }
 
 module.exports = {
