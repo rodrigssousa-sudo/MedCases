@@ -27,12 +27,19 @@ function profileOptions({mode, locale='pt', conversation=false, speakersExpected
   }
   return request;
 }
-function selectedProvider(env, uid) {
+function selectedProvider(env, uid, now=Date.now()) {
   if (env.ASSEMBLYAI_TRANSCRIPTION_ENABLED !== 'true') return 'legacy';
   // Server-controlled gate. A client cannot self-declare audio as synthetic.
   if (env.ASSEMBLYAI_CLINICAL_PHI_APPROVED !== 'true') {
     const syntheticOwners=String(env.ASSEMBLYAI_SYNTHETIC_OWNER_UIDS || '').split(',').map(v=>v.trim()).filter(Boolean);
-    if (!syntheticOwners.includes(uid)) throw Error('ASSEMBLYAI_PHI_PRODUCTION_BLOCKED');
+    // Temporary owner-only synthetic homologation. Server runtime alone grants
+    // it; missing/invalid/expired configuration fails closed without a deploy.
+    const testOwner=env.ASSEMBLYAI_HOMOLOGATION_OWNER_UID;
+    const until=Date.parse(env.ASSEMBLYAI_HOMOLOGATION_UNTIL || '');
+    const homologation=typeof uid==='string' && uid.length>0 &&
+      typeof testOwner==='string' && uid===testOwner &&
+      Number.isFinite(until) && Number.isFinite(now) && now<until;
+    if (!syntheticOwners.includes(uid) && !homologation) throw Error('ASSEMBLYAI_PHI_PRODUCTION_BLOCKED');
   }
   if (!env.ASSEMBLYAI_API_KEY) throw Error('ASSEMBLYAI_NOT_CONFIGURED');
   return 'assemblyai';

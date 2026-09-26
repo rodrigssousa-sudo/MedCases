@@ -4,7 +4,7 @@ const crypto=require('node:crypto'),fs=require('node:fs'),path=require('node:pat
 const {createRequire}=require('node:module');
 const {MonthlyUsageOwner}=require('../monthly_usage_owner');
 const {registerMonthlyUsageRoutes}=require('../monthly_usage_routes');
-const {providerGateError}=require('../transcription_profiles');
+const {providerGateError,selectedProvider}=require('../transcription_profiles');
 const hash=v=>crypto.createHash('sha256').update(v).digest('hex');
 function database(){
  const rows=new Map([['users/owner',{plan:'premium'}],['users/free',{plan:'free'}]]);let tail=Promise.resolve();
@@ -79,3 +79,23 @@ test('job creation winning prevents release; replay never creates a second job',
  await assert.rejects(owner.failBeforeExecution('owner',r),/AMBIGUOUS/);assert.equal((await owner.balance('owner')).reservedMs,94547);
 });
 test('provider error contract never exposes environment or raw server errors',()=>{assert.equal(providerGateError(Error('SECRET_INTERNAL_DETAIL')),null);const e=providerGateError(Error('ASSEMBLYAI_NOT_CONFIGURED'));assert.equal(e.code,'TRANSCRIPTION_UNAVAILABLE');assert.equal(e.retryable,true);});
+
+test('temporary homologation is exact UID only and expires fail-closed',()=>{
+ const now=Date.parse('2026-09-26T17:00:00Z'),env={ASSEMBLYAI_TRANSCRIPTION_ENABLED:'true',ASSEMBLYAI_CLINICAL_PHI_APPROVED:'false',ASSEMBLYAI_API_KEY:'test-only',ASSEMBLYAI_HOMOLOGATION_OWNER_UID:'owner',ASSEMBLYAI_HOMOLOGATION_UNTIL:'2026-09-26T19:00:00Z'};
+ assert.equal(selectedProvider(env,'owner',now),'assemblyai');
+ for(const uid of ['other','owner-extra',' owner','',undefined])assert.throws(()=>selectedProvider(env,uid,now),/PHI_PRODUCTION_BLOCKED/);
+ for(const until of ['',undefined,'not-a-date','2026-09-26T17:00:00Z','2026-09-26T16:59:59Z'])assert.throws(()=>selectedProvider({...env,ASSEMBLYAI_HOMOLOGATION_UNTIL:until},'owner',now),/PHI_PRODUCTION_BLOCKED/);
+ assert.throws(()=>selectedProvider(env,'owner',Date.parse(env.ASSEMBLYAI_HOMOLOGATION_UNTIL)),/PHI_PRODUCTION_BLOCKED/);
+ assert.throws(()=>selectedProvider({...env,ASSEMBLYAI_API_KEY:''},'owner',now),/NOT_CONFIGURED/);
+ assert.equal(selectedProvider({...env,ASSEMBLYAI_TRANSCRIPTION_ENABLED:'false'},'owner',now),'legacy');
+});
+test('homologation uses authenticated UID before quota; cannot bypass limits or forge owner',async t=>{
+ environment(t);const keys=['ASSEMBLYAI_HOMOLOGATION_OWNER_UID','ASSEMBLYAI_HOMOLOGATION_UNTIL'],prior=Object.fromEntries(keys.map(k=>[k,process.env[k]]));t.after(()=>{for(const k of keys)if(prior[k]===undefined)delete process.env[k];else process.env[k]=prior[k];});
+ Object.assign(process.env,{ASSEMBLYAI_HOMOLOGATION_OWNER_UID:'owner',ASSEMBLYAI_HOMOLOGATION_UNTIL:new Date(Date.now()+60000).toISOString()});
+ const db=database(),routes=usageRoutes(db);let res=response();await routes.get('/api/usage/eligibility')({auth:{uid:'owner'},headers:{},body:{}},res);assert.equal(res.code,200);
+ res=response();await routes.get('/api/usage/reserve')({auth:{uid:'free'},headers:{},body:{...request('forged'),uid:'owner'}},res);assert.equal(res.code,403);assert.equal([...db.rows.keys()].filter(k=>k.startsWith('usageReservations/')).length,0);
+ for(let n=0;n<2;n++){res=response();await routes.get('/api/usage/reserve')({auth:{uid:'owner'},headers:{},body:request('same-test',5400000)},res);assert.equal(res.code,200);}
+ assert.equal([...db.rows.keys()].filter(k=>k.startsWith('usageReservations/')).length,1);
+ res=response();await routes.get('/api/usage/reserve')({auth:{uid:'owner'},headers:{},body:request('over-quota',1)},res);assert.equal(res.code,429);
+ process.env.ASSEMBLYAI_HOMOLOGATION_UNTIL=new Date(Date.now()-1).toISOString();res=response();await routes.get('/api/usage/eligibility')({auth:{uid:'owner'},headers:{},body:{}},res);assert.equal(res.code,403);assert.equal(res.body.retryable,false);
+});
