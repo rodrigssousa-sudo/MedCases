@@ -3723,7 +3723,9 @@ async function handleGptStream(req, res, canonicalPlantao) {
       const db      = admin.firestore();
       const userDoc = await db.doc(`users/${callerUid}`).get();
       const status  = userDoc.exists ? (userDoc.data().status || '') : '';
-      if (status !== 'approved') {
+      if (status !== 'approved' && !(canonicalPlantao &&
+          require('./plantao_qa_authorization').isScopedPlantaoQaAuthorized(
+            decodedToken, 'plantaoProxyStream'))) {
         return res.status(403).json({ error: 'not_approved' });
       }
     } catch (err) {
