@@ -23,7 +23,7 @@ function harness(observerMode,fixture={}){
  context.require=id=>{
   if(id==='firebase-admin')return admin;
   if(id==='./plantao_qa_authorization') {const policy=realRequire(id);return {isScopedPlantaoQaAuthorized:(t,e)=>policy.isScopedPlantaoQaAuthorized(t,e,1700000000000)};}
-  if(id==='./plantao_canonical_stream')return {runPlantaoCanonicalStream:async()=>{calls.push({provider:'canonical'});return {text:'Synthetic response',model:'gpt-5.6-luna',fallbackUsed:false};}};
+  if(id==='./plantao_canonical_stream')return {runPlantaoCanonicalStream:async options=>{calls.push({provider:'canonical'});if(options.answerContract)options.onEvent('canonical_snapshot',{requestId:'fixed-request',attempt:2,snapshot:{synthetic:true}});return {text:'Synthetic response',model:'gpt-5.6-luna',fallbackUsed:false};}};
   if(id==='firebase-functions/v2/firestore')return{onDocumentCreated:register,onDocumentUpdated:register,onDocumentDeleted:register};
   if(id==='firebase-functions/v2/https')return{onCall:register,onRequest:register,HttpsError};
   if(id==='firebase-functions/v2/scheduler')return{onSchedule:register};
@@ -41,7 +41,7 @@ function harness(observerMode,fixture={}){
 }
 async function execute(endpoint,observerMode,fixture){
  const h=harness(observerMode,fixture);
- const data={uid:fixture.wrongUid?'other-user':'fixture-user',userMessage:' synthetic request ',systemPrompt:' synthetic safety instructions ',history:[{role:'user',content:'synthetic history'}],longResponse:fixture.study||false,mode:fixture.study?'study':'plantao',requestId:'fixed-request'};
+ const data={uid:fixture.wrongUid?'other-user':'fixture-user',userMessage:' synthetic request ',systemPrompt:' synthetic safety instructions ',history:[{role:'user',content:'synthetic history'}],longResponse:fixture.study||false,mode:fixture.study?'study':'plantao',requestId:'fixed-request',...(fixture.typed?{answerContract:require('../plantao_clinical_snapshot').VERSION}:{}),...(fixture.reuseKey?{canonicalReuseKey:fixture.reuseKey}:{})};
  let output;
  if(endpoint==='gemini'){
   try{output=await h.handlers.atenderConsultaIA({auth:fixture.noAuth?null:{uid:'fixture-user'},data});}catch(e){output={error:e.code,message:e.message};}
@@ -60,4 +60,18 @@ test('real handler admits scoped QA only in Plantao',async()=>{
 });
 test('real handler denies ordinary and invalid token/UID before provider',async()=>{
  for(const f of [{},{qa:true,revoked:true},{qa:true,wrongUid:true}]){const r=await execute('plantao','disabled',f);assert.ok([401,403].includes(r.output.status));assert.equal(r.calls.length,0);}
+});
+
+
+test('canonical reuse still passes real handler auth and never writes clinical storage',async()=>{
+ const first=await execute('plantao','disabled',{qa:true,typed:true});
+ const frame=first.output.chunks.find(c=>c.includes('event: canonical_snapshot'));
+ const reuseKey=JSON.parse(frame.split('data: ')[1].trim()).reuseKey;
+ assert.match(reuseKey,/^[a-f0-9]{64}$/);
+ const r=await execute('plantao','disabled',{qa:true,typed:true,reuseKey});
+ assert.equal(r.output.status,200);assert.equal(r.calls.length,0);assert.equal(r.writes.length,0);assert.equal(r.auth.length,1);assert.ok(r.output.chunks.join('').includes('canonical_reuse'));
+ for(const fixture of [{typed:true,reuseKey},{qa:true,typed:true,reuseKey,revoked:true},{qa:true,typed:true,reuseKey,wrongUid:true}]){
+   const denied=await execute('plantao','disabled',fixture);assert.ok([401,403].includes(denied.output.status));assert.equal(denied.calls.length,0);assert.ok(!denied.output.chunks.join('').includes('canonical_reuse'));
+ }
+ const changed=await execute('plantao','disabled',{qa:true,typed:true,reuseKey:'stale'});assert.equal(changed.calls.length,1);
 });

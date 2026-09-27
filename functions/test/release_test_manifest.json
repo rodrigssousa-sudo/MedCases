@@ -377,6 +377,16 @@
       "file": "functions/test/plantao_qa_handler_test.js",
       "category": "auth",
       "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/plantao_clinical_snapshot_test.js",
+      "category": "clinical-runtime",
+      "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/plantao_snapshot_identity_test.js",
+      "category": "clinical-runtime",
+      "suite": "RELEASE_RUNTIME_TESTS"
     }
   ],
   "historicalPipelineArchaeology": [
@@ -778,7 +788,9 @@
         "functions/test/gpt_optional_grounding_test.js",
         "functions/test/plantao_canonical_stream_test.js",
         "functions/test/plantao_qa_authorization_test.js",
-        "functions/test/plantao_qa_handler_test.js"
+        "functions/test/plantao_qa_handler_test.js",
+        "functions/test/plantao_clinical_snapshot_test.js",
+        "functions/test/plantao_snapshot_identity_test.js"
       ]
     },
     {

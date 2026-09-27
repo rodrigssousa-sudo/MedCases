@@ -77,9 +77,9 @@ test('canonical handler freezes context before provenance and answer stream', ()
  const source=fs.readFileSync(path.join(__dirname,'../plantao_canonical_stream.js'),'utf8');
  const a=source.indexOf('prepareGroundedRequest({query');
  const b=source.indexOf("onEvent('sources'",a);
- const c=source.indexOf('return streamAnswer({model,snapshot',b);
+ const c=source.indexOf('await streamAnswer({model,snapshot',b);
  assert.ok(a>0 && b>a && c>b);
- assert.ok(source.includes('const system=generationPrompt(snapshot)'));
+ assert.ok(source.includes('generationPrompt(snapshot)'));
  const handler=fs.readFileSync(path.join(__dirname,'../index.js'),'utf8');
  assert.ok(handler.includes('await runPlantaoCanonicalStream({'));
  assert.ok(!handler.includes('const contextSnapshot = await prepareGroundedRequest'));

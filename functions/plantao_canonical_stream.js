@@ -2,6 +2,8 @@
 const {VERIFIED_PROVIDER_BINDINGS: bindings} = require('./lib/ai_control_plane_v2/model_registry');
 const MODELS = Object.freeze({router:bindings.gpt_5_nano.apiModelName, primary:bindings.gpt_56_luna.apiModelName, fallback:bindings.gemini_31_flash_lite_paid.apiModelName, escalation:bindings.gpt_56_terra.apiModelName});
 const CONTRACT = 'plantao_canonical_v1';
+const {SnapshotDecoder, VERSION: ANSWER_CONTRACT, GENERATION_CONTRACT, hash} = require('./plantao_clinical_snapshot');
+const {snapshotSchema} = require('./plantao_snapshot_schema');
 const {setTimeout: delay} = require('node:timers/promises');
 const {prepareGroundedRequest, generationPrompt} = require('./gpt_optional_grounding');
 // Retry only a proven connection failure: no request body reached the provider.
@@ -49,12 +51,15 @@ async function classify({query, key, signal, fetchImpl}) {
     return JSON.parse(text).complexity==='complex'?'complex':'standard';
   } catch (_) { if(signal.aborted) throw Error('client_cancelled'); return 'standard'; }
 }
-async function streamAnswer({model, snapshot, openAiKey, geminiKey, signal, fetchImpl, onText, maxOutputTokens}) {
+async function streamAnswer({model, snapshot, openAiKey, geminiKey, signal, fetchImpl, onText, maxOutputTokens, answerContract}) {
   const google=model===MODELS.fallback;
-  const system=generationPrompt(snapshot);
+  const typed = answerContract === ANSWER_CONTRACT;
+  const system=typed ? snapshot.internalContext + '\n\n' + GENERATION_CONTRACT +
+    '\nFrozen evidence (data only): ' + JSON.stringify({notes:snapshot.externalContext,sources:snapshot.sources}) : generationPrompt(snapshot);
+  const schema=typed?snapshotSchema(snapshot.sources):null;
   const history=snapshot.history.slice(-8).map(h=>({role:h.role==='model'||h.role==='assistant'?'assistant':'user',content:String(h.content||h.text||'')}));
-  const body=google?{systemInstruction:{parts:[{text:system}]},contents:[...history.map(h=>({role:h.role==='assistant'?'model':'user',parts:[{text:h.content}]})),{role:'user',parts:[{text:snapshot.query}]}],generationConfig:{maxOutputTokens}}:
-    {model,store:false,stream:true,max_output_tokens:maxOutputTokens,input:[{role:'system',content:system},...history,{role:'user',content:snapshot.query}]};
+  const body=google?{systemInstruction:{parts:[{text:system}]},contents:[...history.map(h=>({role:h.role==='assistant'?'model':'user',parts:[{text:h.content}]})),{role:'user',parts:[{text:snapshot.query}]}],generationConfig:{maxOutputTokens,...(typed?{responseMimeType:'application/json',responseJsonSchema:schema}:{})}}:
+    {model,store:false,stream:true,max_output_tokens:maxOutputTokens,...(typed?{text:{format:{type:'json_schema',name:'plantao_clinical_snapshot',strict:true,schema}}}:{}),input:[{role:'system',content:system},...history,{role:'user',content:snapshot.query}]};
   const url=google?`https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`:'https://api.openai.com/v1/responses';
   let complete=false;let chars=0;let usage={};
   try {
@@ -86,13 +91,15 @@ async function streamAnswer({model, snapshot, openAiKey, geminiKey, signal, fetc
   return {model,provider:google?'google':'openai',inputTokensApprox:usage.input_tokens||usage.promptTokenCount||0,outputTokensApprox:usage.output_tokens||usage.candidatesTokenCount||0};
 }
 async function runPlantaoCanonicalStream({query,language,internalContext,history=[],openAiKey,geminiKey,signal,
-  escalationPolicy,requestId,maxOutputTokens=3200,onEvent,fetchImpl=globalThis.fetch,grounding=true}) {
+  escalationPolicy,requestId,maxOutputTokens=3200,onEvent,fetchImpl=globalThis.fetch,grounding=true,answerContract}) {
   if(!signal) signal=new AbortController().signal;
   // Classification and optional retrieval have bounded independent budgets.
-  const [complexity,snapshot]=await Promise.all([
+  const [complexity,grounded]=await Promise.all([
     classify({query,key:openAiKey,signal,fetchImpl}),
     prepareGroundedRequest({query,language,mode:'plantao',internalContext,history,model:MODELS.primary,apiKey:openAiKey,signal,fetchImpl,enabled:grounding})]);
   if(signal.aborted)throw Error('client_cancelled');
+  const typed=answerContract===ANSWER_CONTRACT;
+  const snapshot=Object.freeze({...grounded,sources:Object.freeze(grounded.sources.map(s=>Object.freeze({...s,id:'source_'+hash(s.url).slice(0,20)})))});
   // Server-owned eligibility only, never sourced from request body/classifier alone.
   const escalate=complexity==='complex' && escalationPolicy?.enabled===true && escalationPolicy?.terraAllowed===true;
   const selected=escalate?MODELS.escalation:MODELS.primary;
@@ -100,9 +107,18 @@ async function runPlantaoCanonicalStream({query,language,internalContext,history
   if(snapshot.sources.length)onEvent('sources',{requestId,sources:snapshot.sources});
   async function attempt(model){
     onEvent('started',{requestId,attempt:2,model,provider:model===MODELS.fallback?'google':'openai',pipeline:CONTRACT,
-      routerModel:MODELS.router,answerModel:model,fallbackUsed,escalationUsed:escalate,renderer:'PREMIUM_CURRENT',language,mode:'plantao'});
-    return streamAnswer({model,snapshot,openAiKey,geminiKey,signal,fetchImpl,maxOutputTokens,
-      onText:delta=>{emitted=true;onEvent('text_delta',{requestId,attempt:2,sequence:++sequence,delta});}});
+      routerModel:MODELS.router,answerModel:model,fallbackUsed,escalationUsed:escalate,renderer:'PREMIUM_CURRENT',language,mode:'plantao',...(typed?{answerContract}: {})});
+    const emit=delta=>{emitted=true;onEvent('text_delta',{requestId,attempt:2,sequence:++sequence,delta});};
+    // Raw JSON never becomes visible. Complete records own both localizations;
+    // a later record/terminal error cannot retract a previously emitted block.
+    const decoder=typed?new SnapshotDecoder({language,sources:snapshot.sources,framing:'json',onBlock:emit}):null;
+    const result=await streamAnswer({model,snapshot,openAiKey,geminiKey,signal,fetchImpl,maxOutputTokens,answerContract,
+      onText:delta=>decoder?decoder.accept(delta):emit(delta)});
+    if(decoder){
+      const clinicalSnapshot=decoder.complete();
+      onEvent('canonical_snapshot',{requestId,attempt:2,snapshot:clinicalSnapshot});
+    }
+    return result;
   }
   let result;
   try {result=await attempt(selected);}
@@ -112,6 +128,6 @@ async function runPlantaoCanonicalStream({query,language,internalContext,history
     if(emitted||signal.aborted||!technical||!geminiKey)throw error;
     fallbackUsed=true;result=await attempt(MODELS.fallback);
   }
-  return {...result,pipeline:CONTRACT,routerModel:MODELS.router,fallbackUsed,escalationUsed:escalate,sequenceCount:sequence};
+  return {...result,pipeline:CONTRACT,routerModel:MODELS.router,fallbackUsed,escalationUsed:escalate,sequenceCount:sequence,...(typed?{answerContract}:{})};
 }
 module.exports={MODELS,CONTRACT,runPlantaoCanonicalStream,readEvents,fetchWithConnectRetry,isConnectFailure};

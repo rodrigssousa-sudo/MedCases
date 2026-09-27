@@ -3791,8 +3791,29 @@ async function handleGptStream(req, res, canonicalPlantao) {
           const state = await getV2ConfigStateForExecution({firestore: admin.firestore(), env: process.env});
           escalationPolicy = state?.config?.plantao?.clinicalEscalation || null;
         } catch (_) { /* Missing policy leaves Terra ineligible, not the answer. */ }
+        const snapshotModule = require('./plantao_clinical_snapshot');
+        const {requestIdentity, freshnessRequested} = require('./plantao_snapshot_identity');
+        const typedAnswer = data.answerContract === snapshotModule.VERSION;
+        // No clinical response is retained by the Function. Reuse is held in the
+        // existing app session, and every reuse still passes Firebase/QA auth above.
+        const reusable = typedAnswer && !freshnessRequested(safeUserMessage);
+        const reuseKey = reusable ? snapshotModule.snapshotKey(requestIdentity({
+          uid: callerUid, query: safeUserMessage, internalContext: safeSystemPrompt,
+          history: rawHistory, knowledgeVersion: 'request-bound-source-content',
+          policyVersion: snapshotModule.hash({version:'1709', escalationPolicy}),
+        })) : null;
+        if (reuseKey && data.canonicalReuseKey === reuseKey) {
+          sendSseEvent(res, 'canonical_reuse', {requestId, attempt:2, reuseKey,
+            answerContract:snapshotModule.VERSION});
+          completedNormally = true;
+          sendSseEvent(res, 'transport_done', {requestId, attempt:2,
+            pipeline:'plantao_canonical_v1', reused:true, answerContract:snapshotModule.VERSION});
+          return;
+        }
         const result = await runPlantaoCanonicalStream({
           query: safeUserMessage,
+          answerContract: data.answerContract === require('./plantao_clinical_snapshot').VERSION
+              ? data.answerContract : undefined,
           language: String(data.lang || 'es').startsWith('pt') ? 'pt' : 'es',
           internalContext: safeSystemPrompt,
           history: rawHistory,
@@ -3804,7 +3825,8 @@ async function handleGptStream(req, res, canonicalPlantao) {
           maxOutputTokens: Math.min(6000, Math.max(1600, maxOutputTokens)),
           onEvent: (event, payload) => {
             if (event === 'text_delta') deltaCount++;
-            if (!res.writableEnded) sendSseEvent(res, event, payload);
+            if (!res.writableEnded) sendSseEvent(res, event,
+              event === 'canonical_snapshot' ? {...payload, reuseKey} : payload);
           },
         });
         completedNormally = true;

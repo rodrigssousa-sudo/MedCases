@@ -61,3 +61,37 @@ test('proven connect failure retries once within the same deadline',async()=>{
 test('connect retry is bounded to two attempts',async()=>{let calls=0;await assert.rejects(fetchWithConnectRetry(async()=>{calls++;throw connectError();},'fixture',{},async()=>{}));assert.equal(calls,2);});
 test('ambiguous timeout or read error cannot replay a request',async()=>{for(const cause of [{code:'ETIMEDOUT'},{code:'ECONNRESET',syscall:'read'}]){let calls=0;await assert.rejects(fetchWithConnectRetry(async()=>{calls++;throw Object.assign(Error('failure'),{cause});},'fixture',{},async()=>{}));assert.equal(calls,1);}});
 test('cancelled connect failure cannot retry',async()=>{let calls=0;const c=new AbortController();c.abort();await assert.rejects(fetchWithConnectRetry(async()=>{calls++;throw connectError();},'fixture',{signal:c.signal},async()=>{}));assert.equal(calls,1);});
+
+const {VERSION: ANSWER_CONTRACT, renderSnapshot}=require('../plantao_clinical_snapshot');
+const {snapshotSchema}=require('../plantao_snapshot_schema');
+test('provider schema cannot invent references when no verified sources exist',()=>{
+ const variants=snapshotSchema().properties.records.items.anyOf;
+ assert.deepEqual(variants.map(v=>v.properties.type.enum[0]),['title','section']);
+ assert.equal(JSON.stringify(snapshotSchema()).includes('"maxItems"'),false);
+ const references=snapshotSchema([{id:'source_verified'}]).properties.records.items.anyOf[2];
+ assert.deepEqual(references.properties.sourceIds.items.enum,['source_verified']);
+});
+const typedRecords=[{type:'title',id:'synthetic',labels:{pt:'Exemplo sintético',es:'Ejemplo sintético'}},
+ {type:'section',id:'reference_doses',facts:[{id:'reference',action:'explain',polarity:'affirmative',conceptCodes:['synthetic_agent'],conditionCodes:[],slots:[
+ {id:'drug',kind:'clinical_concept',value:'synthetic_agent',labels:{pt:'Agente fictício:',es:'Agente ficticio:'}},
+ {id:'dose',kind:'quantity',value:[{kind:'number',value:'42'},{kind:'unit',value:'mg'},{kind:'unit',value:'IV'}]}]}]}];
+for(const fallback of [false,true])test('canonical wire uses same bound snapshot and pre-completion blocks '+fallback,async()=>{
+ const h=setup({failPrimary:fallback});const original=h.options.fetchImpl;let providerComplete=false;
+ h.options.fetchImpl=async(u,o)=>{
+  const b=JSON.parse(o.body),model=b.model||MODELS.fallback;
+  if(model===MODELS.router || (fallback && model===MODELS.primary))return original(u,o);
+  assert.ok(model===MODELS.fallback?b.generationConfig.responseJsonSchema:b.text.format.schema);
+  const raw=JSON.stringify({records:typedRecords});
+  return{ok:true,body:(async function*(){
+    for(const delta of raw){const event=model===MODELS.fallback?{candidates:[{content:{parts:[{text:delta}]}}]}:{type:'response.output_text.delta',delta};yield Buffer.from('data: '+JSON.stringify(event)+'\n\n');}
+    assert.ok(h.events.some(e=>e.name==='text_delta'));providerComplete=true;
+    yield Buffer.from('data: '+JSON.stringify(model===MODELS.fallback?{candidates:[{finishReason:'STOP'}]}:{type:'response.completed'})+'\n\n');
+  })()};
+ };
+ const r=await runPlantaoCanonicalStream({...h.options,answerContract:ANSWER_CONTRACT});
+ assert.equal(providerComplete,true);assert.equal(r.answerContract,ANSWER_CONTRACT);assert.equal(r.fallbackUsed,fallback);
+ const snap=h.events.find(e=>e.name==='canonical_snapshot').data.snapshot;
+ assert.equal(h.events.filter(e=>e.name==='text_delta').map(e=>e.data.delta).join(''),renderSnapshot(snap,'es').join(''));
+ for(const lang of ['pt','es'])assert.ok(renderSnapshot(snap,lang).join('').includes('42 mg IV'));
+ assert.ok(!h.events.filter(e=>e.name==='text_delta').some(e=>e.data.delta.includes('"slots"')));
+});
