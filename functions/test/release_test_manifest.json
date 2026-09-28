@@ -362,6 +362,16 @@
       "file": "functions/test/callable_security.test.js",
       "category": "security",
       "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/study_canonical_transport.test.js",
+      "category": "provider",
+      "suite": "CURRENT_PROVIDER_TESTS"
+    },
+    {
+      "file": "functions/test/study_qa_canary.test.js",
+      "category": "provider",
+      "suite": "CURRENT_PROVIDER_TESTS"
     }
   ],
   "historicalPipelineArchaeology": [
@@ -760,7 +770,9 @@
         "functions/test/shadow_handler_parity.test.js",
         "functions/test/release_manifest.test.js",
         "functions/test/cors_release_policy.test.js",
-        "functions/test/callable_security.test.js"
+        "functions/test/callable_security.test.js",
+        "functions/test/study_canonical_transport.test.js",
+        "functions/test/study_qa_canary.test.js"
       ]
     },
     {

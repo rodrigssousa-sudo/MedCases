@@ -54,6 +54,7 @@ const crypto     = require('crypto');
 
 // ── FASE 3B: projetor incremental de Structured Outputs ────────────────
 const { IncrementalDisplayTextProjector } = require('./lib/structured_output_stream');
+const { studyCanonicalTransport } = require('./lib/study_canonical_transport');
 
 // ── BUILD 459: Secret dedicado ao motor de IA server-side ────────────────────
 // Configurar: firebase functions:secrets:set GEMINI_AI_KEY
@@ -1155,7 +1156,15 @@ exports.geminiPaidProxy = onRequest(
       res.status(500).json({ error: 'user_check_failed' });
       return;
     }
-    if (!userDoc.exists || userDoc.data().status !== 'approved') {
+    const { studyQaCanaryAllowed } = require('./lib/study_qa_canary');
+    const restrictedStudyQa = studyQaCanaryAllowed({
+      uid,
+      endpoint: 'geminiPaidProxy',
+      body: req.body,
+      start: process.env.STUDY_QA_WINDOW_START,
+      until: process.env.STUDY_QA_WINDOW_UNTIL,
+    });
+    if (!userDoc.exists || (userDoc.data().status !== 'approved' && !restrictedStudyQa)) {
       console.warn('[PAID_PROXY] usuário não aprovado uid=' + uid);
       res.status(403).json({ error: 'user_not_approved' });
       return;
@@ -1248,7 +1257,10 @@ exports.geminiPaidProxy = onRequest(
       // BUILD 267: tools passthrough — suporte a Function Calling
       tools: rawTools,
     } = req.body || {};
-    const maxOutClamped = Math.min(Math.max(Number(rawMaxOut) || 800, 200), 2048);
+    const canonicalStudyTransport = studyCanonicalTransport(req.body);
+    const maxOutClamped = canonicalStudyTransport
+      ? canonicalStudyTransport.maxOutputTokens
+      : Math.min(Math.max(Number(rawMaxOut) || 800, 200), 2048);
     if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
       res.status(400).json({ error: 'invalid_payload' });
       return;
@@ -2056,6 +2068,7 @@ void runGpt5NanoPlantaoRouterRealShadow({
       },
       contents,
       generationConfig: {
+        ...(canonicalStudyTransport?.generationConfig || {}),
         // BUILD 271: temperature agora condicional por modo.
         // Plantão (guardia): 0.2 — mais determinístico, fiel às 21 matrizes sem inventar layouts.
         // Estudo: 0.4 — liberdade clínica guiada para resposta acadêmica completa.
@@ -2082,7 +2095,7 @@ void runGpt5NanoPlantaoRouterRealShadow({
 
     // BUILD 267: tools passthrough — injeta Function Calling schema se enviado pelo cliente.
     // Permite RAG estrutural (function_declarations) quando o Flutter incluir tools no payload.
-    if (rawTools && Array.isArray(rawTools) && rawTools.length > 0) {
+    if (!canonicalStudyTransport && rawTools && Array.isArray(rawTools) && rawTools.length > 0) {
       geminiPayload.tools = rawTools;
     }
 
@@ -2139,8 +2152,10 @@ void runGpt5NanoPlantaoRouterRealShadow({
     }
 
     let parsedText = '';
+    let canonicalFinishReason = '';
     try {
       const parsed = JSON.parse(responseText);
+      canonicalFinishReason = parsed?.candidates?.[0]?.finishReason || '';
 
       // BUILD 312 — Verifica se o Gemini retornou um bloqueio de safety/recitação
       // em vez de texto útil. Isso pode acontecer quando o guardrail interno do
@@ -2241,6 +2256,11 @@ void runGpt5NanoPlantaoRouterRealShadow({
       inputTokensApprox,
       outputTokensApprox,
       durationMs,
+      ...(canonicalStudyTransport ? {canonical: {
+        version: canonicalStudyTransport.version,
+        finishReason: canonicalFinishReason,
+        maxOutputTokens: maxOutClamped,
+      }} : {}),
     });
   }
 );
