@@ -34,6 +34,7 @@ function studyCanonicalCompletion(text, finishReason, localize = false) {
       const type = value === null ? "null" : Array.isArray(value) ? "array" : typeof value;
       if (!(Array.isArray(spec.type) ? spec.type.includes(type) : spec.type === type)) return false;
       if (spec.enum && !spec.enum.includes(value)) return false;
+      if (spec.pattern && !(new RegExp(spec.pattern)).test(value)) return false;
       if (type === "number" && !Number.isFinite(value)) return false;
       if (type === "object") return exact(value, Object.keys(spec.properties)) &&
         Object.entries(spec.properties).every(([k, s]) => valid(value[k], s));
@@ -47,7 +48,9 @@ function studyCanonicalCompletion(text, finishReason, localize = false) {
     if (!labelOK(p.title) || !p.labels.length) return "canonical_invalid_presentation";
     const labels = new Set();
     for (const l of p.labels) {
-      if (!/^[a-z][a-z0-9_]{0,159}$/.test(l.id) || labels.has(l.id) || !labelOK(l.text)) return "canonical_label_binding";
+      if (!/^[a-z][a-z0-9_]{0,159}$/.test(l.id)) return "canonical_invalid_label_id";
+      if (labels.has(l.id)) return "canonical_duplicate_label_id";
+      if (!labelOK(l.text)) return "canonical_unbound_numeric_or_reference_label";
       labels.add(l.id);
     }
     if (localize) return null; // Exact source-ID equality is checked against the immutable client snapshot.
@@ -62,13 +65,13 @@ function studyCanonicalCompletion(text, finishReason, localize = false) {
         if (i.k === "quantity" || i.k === "frequency") {
           if (i.hi !== null && i.hi < i.n) return "canonical_invalid_quantity";
         } else if (!["route", "neutral"].includes(i.k)) {
-          if (!labels.has(i.id)) return "canonical_label_binding";
+          if (!labels.has(i.id)) return "canonical_missing_label";
           consumed.add(i.id);
         }
       }
       if (!f.when.every(id => f.items.some(i => i.id === id && i.k === "condition"))) return "canonical_condition_binding";
     }
-    if (consumed.size !== labels.size) return "canonical_label_binding";
+    if (consumed.size !== labels.size) return "canonical_orphan_label";
     return null;
   } catch { return "canonical_invalid_schema"; }
 }
