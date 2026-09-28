@@ -1,4 +1,4 @@
-const { studyCanonicalTransport } = require('./study_canonical_transport');
+const { studyCanonicalTransport, studyCanonicalCompletion } = require('./study_canonical_transport');
 const console = require('./private_logger');
 /**
  * ═══════════════════════════════════════════════════════════════════════════
@@ -1103,6 +1103,7 @@ async function syncRequest(
     maxTokens = 20,
     temperature = 0.1,
     canonicalTransport = null,
+    canonicalOperation = "generate",
   } = {},
 ) {
   const safeMaxTokens = Math.trunc(
@@ -1167,6 +1168,12 @@ async function syncRequest(
       .map(part => part.text ?? '')
       .join('')
       .trim();
+
+    if (canonicalTransport) {
+      const error = studyCanonicalCompletion(text, data?.candidates?.[0]?.finishReason || '', canonicalOperation === 'localize');
+      if (error) return {error, model, canonical: {version: canonicalTransport.version,
+        finishReason: data?.candidates?.[0]?.finishReason || ''}};
+    }
 
     const providerOutputTokens = Number(
       data?.usageMetadata?.candidatesTokenCount,
@@ -1679,6 +1686,7 @@ app.post('/api/ai/sync', streamLimiter, async (req, res) => {
       maxTokens: resolvedMaxTokens,
       temperature: resolvedTemperature,
       canonicalTransport: studyCanonicalTransport(req.body),
+      canonicalOperation: req.body.studyCanonicalOperation,
     },
   );
 
@@ -1691,6 +1699,7 @@ app.post('/api/ai/sync', streamLimiter, async (req, res) => {
     return res.status(502).json({
       error: result.error,
       model: result.model,
+      ...(result.canonical ? {canonical: result.canonical} : {}),
     });
   }
 

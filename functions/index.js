@@ -54,7 +54,7 @@ const crypto     = require('crypto');
 
 // ── FASE 3B: projetor incremental de Structured Outputs ────────────────
 const { IncrementalDisplayTextProjector } = require('./lib/structured_output_stream');
-const { studyCanonicalTransport } = require('./lib/study_canonical_transport');
+const { studyCanonicalTransport, studyCanonicalCompletion } = require('./lib/study_canonical_transport');
 
 // ── BUILD 459: Secret dedicado ao motor de IA server-side ────────────────────
 // Configurar: firebase functions:secrets:set GEMINI_AI_KEY
@@ -2106,6 +2106,7 @@ void runGpt5NanoPlantaoRouterRealShadow({
     const path = `/v1beta/models/${__effectiveGeminiPaidModel}:generateContent?key=${paidApiKey}`;
     let responseText = '';
     let httpStatus   = 200;
+    const canonicalProviderStarted = Date.now();
 
     try {
       responseText = await new Promise((resolve, reject) => {
@@ -2134,7 +2135,7 @@ void runGpt5NanoPlantaoRouterRealShadow({
     } catch (e) {
       const durationMs = Date.now() - startMs;
       console.error('[PAID_PROXY] requestId=' + requestId + ' error=' + e.message + ' durationMs=' + durationMs);
-      res.status(502).json({ error: 'upstream_error' });
+      res.status(502).json({ error: 'upstream_error', ...(canonicalStudyTransport ? {canonical: {version: canonicalStudyTransport.version, finishReason: '', providerTotalMs: Date.now() - canonicalProviderStarted, error: e.message === 'timeout' ? 'timeout' : 'provider_network_error'}} : {}) });
       return;
     }
 
@@ -2156,6 +2157,15 @@ void runGpt5NanoPlantaoRouterRealShadow({
     try {
       const parsed = JSON.parse(responseText);
       canonicalFinishReason = parsed?.candidates?.[0]?.finishReason || '';
+      if (canonicalStudyTransport) {
+        const wire = (parsed?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+        const error = studyCanonicalCompletion(wire, canonicalFinishReason, req.body.studyCanonicalOperation === 'localize');
+        if (error) {
+          res.status(502).json({error, canonical: {version: canonicalStudyTransport.version,
+            finishReason: canonicalFinishReason, providerTotalMs: Date.now() - canonicalProviderStarted}});
+          return;
+        }
+      }
 
       // BUILD 312 — Verifica se o Gemini retornou um bloqueio de safety/recitação
       // em vez de texto útil. Isso pode acontecer quando o guardrail interno do
@@ -2181,7 +2191,9 @@ void runGpt5NanoPlantaoRouterRealShadow({
         return;
       }
 
-      parsedText = parsed?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      parsedText = canonicalStudyTransport
+        ? (parsed?.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('')
+        : parsed?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     } catch (e) {
       // BUILD 312 — Erro de parse: JSON limpo sem dados internos
       console.error('[PAID_PROXY] parse error requestId=' + requestId);
@@ -2259,6 +2271,7 @@ void runGpt5NanoPlantaoRouterRealShadow({
       ...(canonicalStudyTransport ? {canonical: {
         version: canonicalStudyTransport.version,
         finishReason: canonicalFinishReason,
+        providerTotalMs: durationMs - (canonicalProviderStarted - startMs),
         maxOutputTokens: maxOutClamped,
       }} : {}),
     });

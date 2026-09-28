@@ -7,7 +7,7 @@ const {studyQaCanaryAllowed} = require('../lib/study_qa_canary');
 const start='2026-09-28T00:00:00Z', until='2026-09-28T02:00:00Z';
 const now=Date.parse('2026-09-28T00:30:00Z');
 const qaUid='Wa1AQN8hvCdewLiR2drd01rQo9G3';
-const body={mode:'estudo', studyCanonicalVersion:'study_clinical_snapshot_v1', systemPrompt:'STUDY CANONICAL TRANSPORT v1'};
+const body={mode:'estudo',lang:'es', studyCanonicalVersion:'study_paid_snapshot_v2', systemPrompt:'STUDY PAID CANONICAL v2'};
 const valid={uid:qaUid,endpoint:'geminiPaidProxy',body,start,until,now};
 test('QA is scoped to one verified UID, endpoint, mode, provider and bounded window',()=>{
  assert.equal(studyQaCanaryAllowed(valid),true);

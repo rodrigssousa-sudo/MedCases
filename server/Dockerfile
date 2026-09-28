@@ -31,7 +31,7 @@ COPY --from=deps --chown=medcases:nodejs /app/node_modules ./node_modules
 
 # Copia código-fonte
 COPY --chown=medcases:nodejs *.js ./
-COPY --chown=medcases:nodejs study_canonical_schema_v1.json ./
+COPY --chown=medcases:nodejs study_canonical_schema_v2.json study_canonical_localization_v2.json ./
 
 # Variáveis de ambiente com defaults seguros
 ENV NODE_ENV=production \
