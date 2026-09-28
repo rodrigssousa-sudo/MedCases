@@ -20,7 +20,7 @@ test("actual syncRequest keeps model, timeout and legacy config; canonical adds 
  assert.equal(output.canonical.finishReason,"MAX_TOKENS");
  assert.equal(output.error,"canonical_incomplete_termination");
  assert.equal(calls[1].url,calls[0].url);
- assert.equal(calls[1].body.generationConfig.maxOutputTokens,8192);
+ assert.equal(calls[1].body.generationConfig.maxOutputTokens,12288);
  assert.deepEqual(calls[1].body.generationConfig.responseJsonSchema,require("../study_canonical_schema_v2.json"));
  assert.equal(calls[1].body.generationConfig.temperature,calls[0].body.generationConfig.temperature);
  assert.equal(calls[1].body.contents[0].parts[0].text,"synthetic");

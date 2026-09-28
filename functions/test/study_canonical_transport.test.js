@@ -6,7 +6,7 @@ const request = {mode:"estudo",lang:"es", studyCanonicalVersion:VERSION,
  systemPrompt:"STUDY PAID CANONICAL v2\nClinical policy"};
 test("Study native canonical contract is explicit, complete, and scoped", () => {
  const config=studyCanonicalTransport(request);
- assert.equal(config.maxOutputTokens,8192);
+ assert.equal(config.maxOutputTokens,12288);
  assert.equal(config.generationConfig.responseMimeType,"application/json");
  assert.equal(config.generationConfig.responseJsonSchema.type,"object");
  assert.deepEqual(Object.keys(config).sort(),["generationConfig","maxOutputTokens","version"]);

@@ -16,7 +16,7 @@ function studyCanonicalTransport(body) {
   if (body.studyCanonicalOperation && !["generate", "localize"].includes(body.studyCanonicalOperation)) return null;
   return {
     version: VERSION,
-    maxOutputTokens: localize ? 4096 : 8192,
+    maxOutputTokens: localize ? 4096 : 12288,
     generationConfig: {responseMimeType: "application/json", responseJsonSchema: localize ? localizationSchema : schema},
   };
 }

@@ -2162,7 +2162,9 @@ void runGpt5NanoPlantaoRouterRealShadow({
         const error = studyCanonicalCompletion(wire, canonicalFinishReason, req.body.studyCanonicalOperation === 'localize');
         if (error) {
           res.status(502).json({error, canonical: {version: canonicalStudyTransport.version,
-            finishReason: canonicalFinishReason, providerTotalMs: Date.now() - canonicalProviderStarted}});
+            finishReason: canonicalFinishReason, providerTotalMs: Date.now() - canonicalProviderStarted,
+            outputTokens: parsed?.usageMetadata?.candidatesTokenCount ?? null,
+            thoughtTokens: parsed?.usageMetadata?.thoughtsTokenCount ?? null}});
           return;
         }
       }
