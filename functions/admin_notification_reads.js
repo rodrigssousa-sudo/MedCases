@@ -14,7 +14,7 @@ function createAdminNotificationReads({db,documentId='__name__'}){
   await auth.authorize(uid);if(!['ALL','UNREAD'].includes(filter)||!Number.isInteger(limit)||limit<1||limit>100||(cursor&&!validId(cursor)))throw Error('INVALID_NOTIFICATION_QUERY');
   let q=collection.orderBy(documentId).limit(limit+1);if(cursor)q=q.startAfter(cursor);const snapshot=await q.get(),docs=snapshot.docs.slice(0,limit);
   const receipts=docs.length?await db.getAll(...docs.map(d=>receipt(uid,d.id))):[];
-  const items=docs.map((doc,i)=>{const d=doc.data(),r=receipts[i].data();return {notificationId:doc.id,read:r?.read===true||readBy(d,uid),readAt:milliseconds(r?.readAt),readBy:r?.readBy??(readBy(d,uid)?uid:null),createdAt:milliseconds(d.createdAt),type:typeof d.type==='string'?d.type.slice(0,100):'ADMIN_NOTIFICATION',title:typeof d.title==='string'?d.title.slice(0,200):'Notificação administrativa'};}).filter(d=>filter==='ALL'||!d.read);
+  const items=docs.map((doc,i)=>{const d=doc.data(),r=receipts[i].data();return {notificationId:doc.id,read:r?.read===true||readBy(d,uid),readAt:milliseconds(r?.readAt),readBy:r?.readBy??(readBy(d,uid)?uid:null),createdAt:milliseconds(d.createdAt),type:typeof d.type==='string'?d.type.slice(0,100):'ADMIN_NOTIFICATION',title:d.type==='new_user'?'Novo usuário cadastrado':typeof d.title==='string'?d.title.slice(0,200):typeof d.type==='string'?d.type.slice(0,100):'Notificação administrativa',userName:typeof d.userName==='string'?d.userName.slice(0,120):null};}).filter(d=>filter==='ALL'||!d.read);
   return {items,nextCursor:snapshot.docs.length>limit?docs.at(-1).id:null,unreadCount:await count(uid),filter};
  }
  async function mark(uid,{notificationId,cursor,all=false,requestId}={}){

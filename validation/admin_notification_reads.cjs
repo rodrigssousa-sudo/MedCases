@@ -12,8 +12,8 @@ after(()=>deleteApp(app));
 async function setup(){for(const role of ['admin','supervisor','user'])await db.doc('users/n-'+role).set({role,status:'approved'});for(const d of (await db.collection('admin_notifications').get()).docs)await d.ref.delete();}
 async function seed(id){await db.doc('admin_notifications/'+id).set({title:id,readBy:[],createdAt:Timestamp.now()});}
 test('single read removed from UNREAD; ALL and fresh instance persist canonical receipt without deleting history',async()=>{
- await setup();await seed('one');const r=await api().mark('n-admin',request('one'));assert.equal(r.unreadCount,0);
- assert.equal((await api().page('n-admin')).items.length,0);const all=await api().page('n-admin',{filter:'ALL'});assert.equal(all.items[0].read,true);assert(all.items[0].readAt>0);assert.equal(all.items[0].readBy,'n-admin');assert(all.items[0].createdAt>0);assert((await db.doc('admin_notifications/one').get()).exists);
+ await setup();await seed('one');await db.doc('admin_notifications/one').update({type:'new_user',userName:'Synthetic user'});const r=await api().mark('n-admin',request('one'));assert.equal(r.unreadCount,0);
+ assert.equal((await api().page('n-admin')).items.length,0);const all=await api().page('n-admin',{filter:'ALL'});assert.equal(all.items[0].read,true);assert.equal(all.items[0].title,'Novo usuário cadastrado');assert.equal(all.items[0].userName,'Synthetic user');assert(all.items[0].readAt>0);assert.equal(all.items[0].readBy,'n-admin');assert(all.items[0].createdAt>0);assert((await db.doc('admin_notifications/one').get()).exists);
 });
 test('concurrent double clicks same/different requests: one audit and stable timestamp, no negative count',async()=>{
  await setup();await seed('double');const r=request('double');await Promise.all(Array.from({length:2},()=>api().mark('n-admin',r)));

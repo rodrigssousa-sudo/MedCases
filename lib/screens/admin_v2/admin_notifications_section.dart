@@ -64,7 +64,8 @@ class _AdminNotificationsSectionState extends State<AdminNotificationsSection> {
   }
 
   Future<void> _mark({String? id, bool all = false}) async {
-    if (widget.readOnly || _busy || (_pending != null && (id != null || all))) return;
+    if (widget.readOnly || _busy || (_pending != null && (id != null || all)))
+      return;
     _pending ??= {
       'requestId': _requestId(),
       'all': all,
@@ -165,7 +166,12 @@ class _AdminNotificationsSectionState extends State<AdminNotificationsSection> {
                         fontWeight: row['read'] == true
                             ? FontWeight.normal
                             : FontWeight.bold)),
-                subtitle: Text(row['read'] == true ? 'Lida' : 'Não lida'),
+                subtitle: Text([
+                  if (row['userName'] is String &&
+                      (row['userName'] as String).isNotEmpty)
+                    row['userName'] as String,
+                  row['read'] == true ? 'Lida' : 'Não lida'
+                ].join(' · ')),
                 trailing: row['read'] == true
                     ? const Chip(label: Text('Lida'))
                     : widget.readOnly
