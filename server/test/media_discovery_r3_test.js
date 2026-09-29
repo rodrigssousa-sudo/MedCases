@@ -71,7 +71,7 @@ test('ambiguous binary aliases and multiple part alternatives denied',async()=>{
 for(const budget of [null,1,5000])test('background production segment handler central classifier budget='+budget,async()=>{
  const vm=require('node:vm'),{createRequire}=require('node:module'),crypto=require('node:crypto');
  const file=path.resolve(__dirname,'../study_background_transcription_routes.js'),real=createRequire(file),db=database();
- const baseCollection=db.collection.bind(db);db.collection=name=>({doc:id=>{const ref=baseCollection(name).doc(id);ref.id=id;ref.collection=child=>db.collection(name+'/'+id+'/'+child);ref.set=async(v,opt)=>db.data.set(ref.path,opt?.merge?{...db.data.get(ref.path),...v}:v);return ref;}});
+ const baseCollection=db.collection.bind(db);db.collection=name=>({...baseCollection(name),doc:id=>{const ref=baseCollection(name).doc(id);ref.id=id;ref.collection=child=>db.collection(name+'/'+id+'/'+child);ref.set=async(v,opt)=>db.data.set(ref.path,opt?.merge?{...db.data.get(ref.path),...v}:v);return ref;}});
  const h={db},usage=budget===null?null:await reservation(h,budget),jobId='technical_job_123456';
  db.data.set('_study_background_transcription_jobs/'+jobId,{uid:'A',expectedSegments:1,usage});
  const secret='TECHNICAL_GRANT_SECRET_abcdefghijklmnopqrstuvwxyz',encoded=Buffer.from(JSON.stringify({scope:'study-background-transcription-v1',uid:'A',jobId,expectedSegments:1,exp:Date.now()+60000})).toString('base64url'),token=encoded+'.'+crypto.createHmac('sha256',secret).update(encoded).digest('base64url');

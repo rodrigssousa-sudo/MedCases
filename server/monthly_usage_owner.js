@@ -1,6 +1,7 @@
 'use strict';
 const {validProof}=require('./audio_media_budget');
 const crypto=require('node:crypto');
+const manual=require('./manual_transcription_time');
 const {resolveMedCasesTier}=require('./calculator_entitlement_session');
 const LIMITS=Object.freeze({free:{recording:15*60000,transcription:15*60000},premium:{recording:240*60000,transcription:90*60000}});
 const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -18,10 +19,11 @@ class MonthlyUsageOwner {
   const now=this.now(),month=new Date(now).toISOString().slice(0,7);
   const bucketId=hash(`${uid}\n${month}`);
   return this.db.runTransaction(async tx=>{
-   const [user,bucket,operations]=await Promise.all([
+   const [user,bucket,operations,manualState]=await Promise.all([
     tx.get(this.db.collection('users').doc(uid)),
     tx.get(this.db.collection('monthlyUsage').doc(bucketId)),
-    tx.get(this.db.collection('usageReservations').where('uid','==',uid).where('month','==',month))
+    tx.get(this.db.collection('usageReservations').where('uid','==',uid).where('month','==',month)),
+    manual.readAvailable(this.db,tx,uid,now)
    ]);
    if(!user.exists)throw Error('AUTH_REQUIRED');
    const tier=resolveMedCasesTier(user.data(),now).tier;
@@ -32,13 +34,22 @@ class MonthlyUsageOwner {
     const op=doc.data();
     if(op.state==='reserved'&&op.kinds.includes('transcription')){
      if(!Number.isSafeInteger(op.maximumMs)||op.maximumMs<0)throw Error('CORRUPT_USAGE');
-     reservedMs+=op.maximumMs;
+     reservedMs+=op.baseReservedSeconds!=null?Math.round(op.baseReservedSeconds*1000):op.maximumMs;
     }
    }
    if(reservedMs>total)throw Error('CORRUPT_USAGE');
-   const allowanceMs=LIMITS[tier].transcription;
-   return {month,tier,allowanceMs,usedMs:total-reservedMs,reservedMs,
-    remainingMs:Math.max(0,allowanceMs-total)};
+   const baseAllowanceMs=LIMITS[tier].transcription;
+   const manualUsedMs=bucket.exists?(bucket.data().manualUsedMs||0):0;
+   if(!Number.isSafeInteger(manualUsedMs)||manualUsedMs<0)throw Error('CORRUPT_USAGE');
+   const baseReservedMs=reservedMs,baseUsedMs=total-baseReservedMs;
+   const baseRemainingMs=Math.max(0,baseAllowanceMs-total);
+   reservedMs+=manualState.reservedMs;
+   const usedMs=baseUsedMs+manualUsedMs;
+   const remainingMs=baseRemainingMs+manualState.availableMs;
+   // Legacy aggregate stays arithmetically consistent. Base entitlement is explicit and unchanged.
+   const allowanceMs=usedMs+reservedMs+remainingMs;
+   return {month,tier,allowanceMs,usedMs,reservedMs,remainingMs,baseAllowanceMs,baseUsedMs,baseReservedMs,baseRemainingMs,
+    manualUsedMs,manualReservedMs:manualState.reservedMs,manualRemainingMs:manualState.availableMs};
   });
  }
  async reserve(uid,request){
@@ -55,12 +66,17 @@ class MonthlyUsageOwner {
    const old=opSnap.exists?opSnap.data():null;
    const fingerprint=hash(JSON.stringify({kinds:[...request.kinds].sort(),maximumMs:request.maximumMs,executionCount:request.executionCount||1}));
    if(old&&old.fingerprint!==fingerprint)throw Error('IDEMPOTENCY_CONFLICT');
-   if(old)return {id:operationKey,attempt:old.attempt,maximumMs:old.maximumMs,month,state:old.state};
-   const maximumMs=Math.min(request.maximumMs,...request.kinds.map(k=>limits[k]-totals[k]));
+   if(old)return {id:operationKey,attempt:old.attempt,maximumMs:old.maximumMs,month,state:old.state,baseReservedSeconds:old.baseReservedSeconds??(old.kinds.includes('transcription')?old.maximumMs/1000:0),manualReservedSeconds:old.manualReservedSeconds??0};
+   const manualState=request.kinds.includes('transcription')?await manual.readAvailable(this.db,tx,uid,now):{records:[],availableMs:0};
+   const maximumMs=Math.min(request.maximumMs,...request.kinds.map(k=>Math.max(0,limits[k]-totals[k])+(k==='transcription'?manualState.availableMs:0)));
    if(maximumMs<=0||(!request.allowPartial&&maximumMs<request.maximumMs))throw Error('MONTHLY_USAGE_LIMIT');
-   const attempt=crypto.randomUUID();for(const kind of request.kinds)totals[kind]+=maximumMs;
-   tx.set(bucket,{uid,month,totals});tx.set(operation,{uid,bucketId,month,attempt,fingerprint,kinds:request.kinds,maximumMs,chargedMs:0,executionCount:request.executionCount||1,completedExecutions:0,state:'reserved',createdAt:now});
-   return {id:operationKey,attempt,maximumMs,month,state:'reserved'};
+   const baseMs=request.kinds.includes('transcription')?Math.min(maximumMs,Math.max(0,limits.transcription-totals.transcription)):0;
+   const manualMs=request.kinds.includes('transcription')?maximumMs-baseMs:0;
+   const manualAllocations=manual.allocation(manualState,manualMs,now);
+   const attempt=crypto.randomUUID();for(const kind of request.kinds)totals[kind]+=kind==='transcription'?baseMs:maximumMs;
+   manual.reserve(tx,this.db,manualState,manualAllocations);
+   tx.set(bucket,{...(bucketSnap.exists?bucketSnap.data():{}),uid,month,totals});tx.set(operation,{uid,bucketId,month,attempt,fingerprint,baseReservedSeconds:baseMs/1000,manualReservedSeconds:manualMs/1000,manualAllocations,manualTimeState:manualMs?'reserved':'none',kinds:request.kinds,maximumMs,chargedMs:0,executionCount:request.executionCount||1,completedExecutions:0,state:'reserved',createdAt:now});
+   return {id:operationKey,attempt,maximumMs,month,state:'reserved',baseReservedSeconds:baseMs/1000,manualReservedSeconds:manualMs/1000};
   });
  }
  async finish(uid,{id,attempt,actualMs,success}){
@@ -75,7 +91,10 @@ class MonthlyUsageOwner {
    if(!snap.exists)throw Error('BUCKET_MISSING');const data=snap.data();// Client-reported outcomes are acknowledgements, never refund authority.
    const charge=op.maximumMs;
    for(const kind of op.kinds){data.totals[kind]-=op.maximumMs-charge;if(data.totals[kind]<0)throw Error('CORRUPT_USAGE');}
-   tx.set(bucket,data);tx.set(ref,{...op,state:'completed',chargedMs:charge,finishedAt:this.now()});
+   const settle=await manual.prepareSettlement(this.db,tx,op,id,this.now(),true);
+   if(op.manualTimeState==='reserved')data.manualUsedMs=(data.manualUsedMs||0)+Math.round(op.manualReservedSeconds*1000);
+   settle();
+   tx.set(bucket,data);tx.set(ref,{...op,manualTimeState:op.manualTimeState==='reserved'?'consumed':op.manualTimeState||'none',state:'completed',chargedMs:charge,finishedAt:this.now()});
    return {state:'completed',chargedMs:charge};
   });
  }
@@ -94,7 +113,11 @@ class MonthlyUsageOwner {
    if(old?.stages?.[stage]){if(old.stages[stage]!==media.requestHash)throw Error('MEDIA_STAGE_REQUEST_CONFLICT');return {claimed:false};}
    const used=op.authorizedMediaMs||0,extra=old?0:media.durationMs;
    if(!Number.isSafeInteger(used)||used<0||extra>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
-   tx.set(ref,{...op,state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+extra});
+   const settle=await manual.prepareSettlement(this.db,tx,op,id,this.now(),true);
+   let manualBucket=null;
+   if(op.manualTimeState==='reserved'){const b=await tx.get(this.db.collection('monthlyUsage').doc(op.bucketId));if(!b.exists)throw Error('BUCKET_MISSING');manualBucket=b.data();manualBucket.manualUsedMs=(manualBucket.manualUsedMs||0)+Math.round(op.manualReservedSeconds*1000);}
+   settle();if(manualBucket)tx.set(this.db.collection('monthlyUsage').doc(op.bucketId),manualBucket);
+   tx.set(ref,{...op,manualTimeState:op.manualTimeState==='reserved'?'consumed':op.manualTimeState||'none',state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+extra});
    tx.set(binding,{uid,id,attempt,index,mediaHash:media.sha256,durationMs:media.durationMs,stages:{...(old?.stages||{}),[stage]:media.requestHash}});
    return {claimed:true};
   });
@@ -119,7 +142,11 @@ class MonthlyUsageOwner {
    if(staged.exists&&(staged.data().mediaHash!==media.sha256||staged.data().durationMs!==media.durationMs))throw Error('MEDIA_STAGE_BINDING_CONFLICT');
    const used=op.authorizedMediaMs||0,extra=staged.exists?0:media.durationMs;
    if(!Number.isSafeInteger(used)||used<0||extra>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
-   tx.set(ref,{...op,state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+extra});
+   const settle=await manual.prepareSettlement(this.db,tx,op,id,this.now(),true);
+   let manualBucket=null;
+   if(op.manualTimeState==='reserved'){const b=await tx.get(this.db.collection('monthlyUsage').doc(op.bucketId));if(!b.exists)throw Error('BUCKET_MISSING');manualBucket=b.data();manualBucket.manualUsedMs=(manualBucket.manualUsedMs||0)+Math.round(op.manualReservedSeconds*1000);}
+   settle();if(manualBucket)tx.set(this.db.collection('monthlyUsage').doc(op.bucketId),manualBucket);
+   tx.set(ref,{...op,manualTimeState:op.manualTimeState==='reserved'?'consumed':op.manualTimeState||'none',state:'executing',chargedMs:op.maximumMs,authorizedMediaMs:used+extra});
    tx.set(execution,{uid,id,attempt,index,mediaHash:media.sha256,requestHash:media.requestHash,durationMs:media.durationMs,state:'executing',startedAt:this.now()});
    return {claimed:true,state:'executing'};
   });
@@ -162,8 +189,9 @@ class MonthlyUsageOwner {
    }
    const bucket=this.db.collection('monthlyUsage').doc(op.bucketId),bs=await tx.get(bucket);
    if(!bs.exists)throw Error('BUCKET_MISSING');const data=bs.data();
-   for(const kind of op.kinds){data.totals[kind]-=op.maximumMs;if(data.totals[kind]<0)throw Error('CORRUPT_USAGE');}
-   tx.set(bucket,data);tx.set(ref,{...op,state:'server_verified_failed',chargedMs:0,finishedAt:this.now()});
+   for(const kind of op.kinds){data.totals[kind]-=kind==='transcription'&&op.baseReservedSeconds!=null?Math.round(op.baseReservedSeconds*1000):op.maximumMs;if(data.totals[kind]<0)throw Error('CORRUPT_USAGE');}
+   const settle=await manual.prepareSettlement(this.db,tx,op,id,this.now(),false);settle();
+   tx.set(bucket,data);tx.set(ref,{...op,manualTimeState:op.manualTimeState==='reserved'?'released':op.manualTimeState||'none',state:'server_verified_failed',chargedMs:0,finishedAt:this.now()});
    return {state:'server_verified_failed',chargedMs:0};
   });
  }

@@ -4,8 +4,7 @@ const {test}=require('node:test');const assert=require('node:assert/strict');
 const {MonthlyUsageOwner}=require('../monthly_usage_owner');
 // A shared serial transaction adapter models two independent server workers.
 // Firestore production uses runTransaction; no emulator/deployment is claimed.
-function database(){const records=new Map([['users/A',{plan:'free'}],['users/B',{plan:'premium'}]]);let queue=Promise.resolve();
- return {records,collection:name=>({doc:id=>`${name}/${id}`,where(field,op,value){const query={name,filters:[[field,value]],where(f,o,v){this.filters.push([f,v]);return this;}};return query;}}),runTransaction(action){const run=queue.then(async()=>{const staged=new Map();const result=await action({get:async ref=>typeof ref==='string'?({exists:records.has(ref),data:()=>structuredClone(records.get(ref))}):({docs:[...records].filter(([k,v])=>k.startsWith(ref.name+'/')&&ref.filters.every(([f,x])=>v[f]===x)).map(([k,v])=>({data:()=>structuredClone(v)}))}),set:(ref,data)=>staged.set(ref,structuredClone(data))});for(const [k,v]of staged)records.set(k,v);return result;});queue=run.catch(()=>{});return run;}};}
+const {database}=require('./transaction_fixture');
 const req=(operationId,maximumMs=60000)=>({operationId,maximumMs,kinds:['recording']});
 test('two server workers cannot exceed account quota; preferences/reinstall are irrelevant',async()=>{
  const db=database();const a=new MonthlyUsageOwner({db}),b=new MonthlyUsageOwner({db});

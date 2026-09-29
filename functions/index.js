@@ -4920,3 +4920,6 @@ void __medcasesCreatePhase7ProtocolLoader;
 void __medcasesCreateClinicalRuntimeIdentityProtocolComposition;
 // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_IMPORTS_END
 /* MEDCASES_CLINICAL_CONTEXT_SOURCE_WIRING_V1_END */
+
+// Restricted Admin manual transcription time and metadata.
+Object.assign(exports, require('./admin_control_exports')(admin));

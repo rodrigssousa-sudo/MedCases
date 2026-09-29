@@ -1,3 +1,4 @@
+import 'control_center_section.dart';
 import 'dart:convert';
 import 'dart:ui' show ImageFilter;
 
@@ -289,6 +290,10 @@ class _CenteredProgress extends StatelessWidget {
 // ADMIN_V2_FINAL_AUDIT_ALERTS_V1
 // ADMIN_V2_AI_COSTS_V2: GPT + Gemini observability, secure GPT unlock and expanded metrics.
 enum _AdminSection {
+  credits,
+  creditLedger,
+  controlAudit,
+
   dashboard,
   users,
   subscriptions,
@@ -357,6 +362,13 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
     );
 
     switch (_section) {
+      case _AdminSection.credits:
+        return ControlCenterSection(key: const ValueKey('credits'), table: 'credits', title: 'Tempo adicional', readOnly: widget.currentAdmin.isSupervisor);
+      case _AdminSection.creditLedger:
+        return ControlCenterSection(key: const ValueKey('creditLedger'), table: 'ledger', title: 'Histórico de tempo', readOnly: true);
+      case _AdminSection.controlAudit:
+        return ControlCenterSection(key: const ValueKey('controlAudit'), table: 'audit', title: 'Auditoria de tempo', readOnly: true);
+
       case _AdminSection.dashboard:
         return const _Dashboard();
       case _AdminSection.errors:
@@ -399,6 +411,10 @@ case _AdminSection.aiCosts:
 
   String _sectionTitle(_AdminSection section) {
     switch (section) {
+      case _AdminSection.credits: return 'Tempo adicional';
+      case _AdminSection.creditLedger: return 'Histórico de tempo';
+      case _AdminSection.controlAudit: return 'Auditoria de tempo';
+
       case _AdminSection.dashboard:
         return 'Dashboard';
       case _AdminSection.users:
@@ -447,6 +463,9 @@ class _AdminSidebar extends StatelessWidget {
       (_AdminSection.content, Icons.menu_book_outlined, 'Conteúdo'),
       (_AdminSection.communication, Icons.campaign_outlined, 'Comunicação'),
       (_AdminSection.audit, Icons.fact_check_outlined, 'Auditoria'),
+      (_AdminSection.credits, Icons.more_time, 'Tempo adicional'),
+      (_AdminSection.creditLedger, Icons.receipt_long_outlined, 'Histórico de tempo'),
+      (_AdminSection.controlAudit, Icons.history, 'Auditoria de tempo'),
       (_AdminSection.settings, Icons.settings_outlined, 'Configurações'),
     ];
 
@@ -476,6 +495,9 @@ class _AdminSidebar extends StatelessWidget {
                 children: [
                   for (final item in currentAdmin.isSupervisor
                       ? items.where((item) =>
+                          item.$1 == _AdminSection.credits ||
+                          item.$1 == _AdminSection.creditLedger ||
+                          item.$1 == _AdminSection.controlAudit ||
                           item.$1 == _AdminSection.errors ||
                           item.$1 == _AdminSection.support ||
                           item.$1 == _AdminSection.communication ||

@@ -1,0 +1,9 @@
+# Manual transcription time
+
+Base limits remain in MonthlyUsageOwner.LIMITS. Manual credits add only transcription time. Reserve writes base totals, credit allocations and reservation in one Firestore transaction. Production measured-media proof and budget guards remain mandatory. Billable execution settles manual allocations exactly once; only server-verified pre-execution failure releases a reservation. Revocation and expiry retain in-flight allocations. Ledger and audit events are append-only server writes.
+
+Run `npm --prefix functions run test:release:functions`, Flutter `test/admin`, and the gateway monthly usage/media/security regression tests. Run `firebase emulators:exec --only firestore --project demo-admin-manual-time --config validation/firebase.json 'node --test server/test/manual_time_firestore_test.js'` separately for concurrent Firestore tests. Never use production credentials or real users for these fixtures.
+
+Deploy only adminControlCenter, adminExpireManualTime, the ai-gateway service and medcases-pro-admin Hosting. Create the two additive indexes in manual_time_indexes.json before gateway promotion. Existing production rules deny direct client access to the new collections; no rule replacement is required. The callable exposes only credits/ledger/audit reads and grant/revoke operations, authorized from the current user role document. Supervisor is read-only.
+
+Rollback requires preserving the deployed candidate while any manual reservation is outstanding: reverting to code that ignores manual allocations would corrupt settlement. Before any gateway rollback after real manual use, disable new grants and reconcile pending manual reservations with this owner implementation. Before any real manual grants, reverting to the prior pinned gateway branch is safe. Hosting can revert independently; do not delete credit, ledger, audit or idempotency records.
