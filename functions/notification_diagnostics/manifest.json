@@ -1,0 +1,12 @@
+{
+  "delivery": {
+    "file": "native_notifications.js",
+    "beforeSha256": "69e386cba16a1f2baf91f56c9388beeeb84b6442c1c1633adb5b4efb07789e89",
+    "afterSha256": "390ac624782921c28410b0c5f5b10e997a0276ef6fb07926715e003a1123509b"
+  },
+  "register": {
+    "file": "native_notifications.js",
+    "beforeSha256": "600e96b1d840751d991d09e132378e5df10a5a4ce94f04610ac88b014cbeafe6",
+    "afterSha256": "4335566540680f5c6a12321edfddc42847dfe5d2f299fef9598e1090fb228590"
+  }
+}

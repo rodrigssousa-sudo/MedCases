@@ -1,0 +1,40 @@
+--- a/native_notifications.js
++++ b/native_notifications.js
+@@ -1,5 +1,16 @@
+ 'use strict';
+ const {events,hash,payload,eligible}=require('./native_notification_contract');
++function sendReason(code) {
++ return ({'messaging/registration-token-not-registered':'FCM_UNREGISTERED',
++ 'messaging/invalid-registration-token':'FCM_INVALID_ARGUMENT',
++ 'messaging/third-party-auth-error':'APNS_AUTH_FAILED',
++ 'messaging/authentication-error':'FCM_AUTH_ERROR',
++ 'messaging/mismatched-credential':'FCM_AUTH_ERROR',
++ 'messaging/message-rate-exceeded':'PROVIDER_RATE_LIMIT',
++ 'messaging/quota-exceeded':'PROVIDER_RATE_LIMIT',
++ 'messaging/invalid-argument':'FCM_INVALID_ARGUMENT',
++ 'messaging/server-unavailable':'DELIVERY_FUNCTION_ERROR'})[code] || 'UNKNOWN_PROVIDER_FAILURE';
++}
+ /** Server-owned device registry and outbox. No clinical content is copied. */
+ function createNativeNotifications({db,messaging,serverTimestamp}) {
+  async function register(uid,input) {
+@@ -67,16 +78,16 @@
+    });
+    if(!claimed)continue;
+    try {
+-    await messaging.send(payload(event,claimed));
+-    await receipt.update({state:'sent',updatedAt:serverTimestamp()});
++    const messageId=await messaging.send(payload(event,claimed));
++    await receipt.update({state:'sent',reasonCode:'SEND_ACCEPTED',...(typeof messageId==='string'?{providerMessageId:messageId}:{}),updatedAt:serverTimestamp()});
+    }catch(e){
+     // Ambiguous sends are not blindly retried: prevents duplicate delivery.
+     const invalid=['messaging/registration-token-not-registered','messaging/invalid-registration-token'].includes(e.code);
+-    await receipt.update({state:invalid?'invalid_token':'send_uncertain',updatedAt:serverTimestamp()});
++    await receipt.update({state:invalid?'invalid_token':'send_uncertain',reasonCode:sendReason(e.code),updatedAt:serverTimestamp()});
+     if(invalid)await device.ref.update({enabled:false,token:null,updatedAt:serverTimestamp()});
+    }
+   }
+  }
+  return {register,unregister,enqueue,dispatch};
+ }
+-module.exports={createNativeNotifications};
++module.exports={createNativeNotifications,sendReason};
