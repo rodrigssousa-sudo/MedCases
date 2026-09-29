@@ -90,3 +90,22 @@ test('real revoke versus reserve race cannot revoke in-flight time',async()=>{
  if(results[0].status==='fulfilled'){assert.equal(d.remainingSeconds,60);assert.equal(d.reservedSeconds,60);await owner.failBeforeExecution(uid,results[0].value);assert.equal((await db.doc('adminManualCredits/'+c.creditId).get()).data().remainingSeconds,0);}
  else {assert.match(results[0].reason.message,/MONTHLY_USAGE_LIMIT/);assert.equal(d.remainingSeconds,0);}
 });
+test('verified media intent golden 20s settles atomically on Firestore',async()=>{
+ const {uid,owner}=await setup();
+ const req={...request('verified-golden',900000),verifiedMediaOnly:true};
+ const r=await owner.reserve(uid,req);assert.equal((await owner.balance(uid)).remainingMs,900000);
+ const p=await proof(20000);const claims=await Promise.all(Array.from({length:4},()=>owner.claimExecution(uid,r,0,p)));
+ assert.equal(claims.filter(x=>x.claimed).length,1);
+ assert.equal((await owner.balance(uid)).reservedMs,20000);
+ await Promise.all(Array.from({length:4},()=>owner.completeExecution(uid,r)));
+ const b=await owner.balance(uid);assert.equal(b.usedMs,20000);assert.equal(b.remainingMs,880000);assert.equal(b.reservedMs,0);
+});
+test('verified base/manual allocation survives credit expiry while reserved',async()=>{
+ const {uid,owner}=await setup();await grant(uid,120);
+ const a=await owner.reserve(uid,{...request('base',900000),verifiedMediaOnly:true});await owner.claimExecution(uid,a,0,await proof(900000));await owner.completeExecution(uid,a);
+ const r=await owner.reserve(uid,{...request('manual',900000),verifiedMediaOnly:true});await owner.claimExecution(uid,r,0,await proof(20000));
+ const credits=await db.collection('adminManualCredits').where('userId','==',uid).get();
+ for(const c of credits.docs)await c.ref.update({expiresAt:1});
+ await owner.completeExecution(uid,r);
+ const b=await owner.balance(uid);assert.equal(b.manualUsedMs,20000);assert.equal(b.manualReservedMs,0);assert.equal(b.manualRemainingMs,0);
+});

@@ -32,7 +32,7 @@ class MonthlyUsageOwner {
    let reservedMs=0;
    for(const doc of operations.docs){
     const op=doc.data();
-    if(op.state==='reserved'&&op.kinds.includes('transcription')){
+    if((op.state==='reserved'||op.verifiedMediaOnly&&op.state==='executing')&&op.kinds.includes('transcription')){
      if(!Number.isSafeInteger(op.maximumMs)||op.maximumMs<0)throw Error('CORRUPT_USAGE');
      reservedMs+=op.baseReservedSeconds!=null?Math.round(op.baseReservedSeconds*1000):op.maximumMs;
     }
@@ -54,6 +54,7 @@ class MonthlyUsageOwner {
  }
  async reserve(uid,request){
   if(typeof uid!=='string'||!uid)throw Error('AUTH_REQUIRED');validateRequest(request);
+  if(request.verifiedMediaOnly===true && (request.kinds.length!==1 || request.kinds[0]!=='transcription'))throw Error('INVALID_USAGE_REQUEST');
   const now=this.now(),month=new Date(now).toISOString().slice(0,7);
   const bucketId=hash(`${uid}\n${month}`),operationKey=hash(`${bucketId}\n${request.operationId}`);
   const bucket=this.db.collection('monthlyUsage').doc(bucketId),operation=this.db.collection('usageReservations').doc(operationKey);
@@ -64,9 +65,18 @@ class MonthlyUsageOwner {
    const totals=bucketSnap.exists?bucketSnap.data().totals:{recording:0,transcription:0};
    for(const k of ['recording','transcription'])if(!Number.isSafeInteger(totals[k])||totals[k]<0)throw Error('CORRUPT_USAGE');
    const old=opSnap.exists?opSnap.data():null;
-   const fingerprint=hash(JSON.stringify({kinds:[...request.kinds].sort(),maximumMs:request.maximumMs,executionCount:request.executionCount||1}));
+   const fingerprint=hash(JSON.stringify({kinds:[...request.kinds].sort(),maximumMs:request.maximumMs,executionCount:request.executionCount||1,...(request.verifiedMediaOnly===true?{verifiedMediaOnly:true}:{})}));
    if(old&&old.fingerprint!==fingerprint)throw Error('IDEMPOTENCY_CONFLICT');
-   if(old)return {id:operationKey,attempt:old.attempt,maximumMs:old.maximumMs,month,state:old.state,baseReservedSeconds:old.baseReservedSeconds??(old.kinds.includes('transcription')?old.maximumMs/1000:0),manualReservedSeconds:old.manualReservedSeconds??0};
+   if(old)return {...(old.verifiedMediaOnly?{verifiedMediaOnly:true}:{}),id:operationKey,attempt:old.attempt,maximumMs:old.maximumMs,month,state:old.state,baseReservedSeconds:old.baseReservedSeconds??(old.kinds.includes('transcription')?old.maximumMs/1000:0),manualReservedSeconds:old.manualReservedSeconds??0};
+   if(request.verifiedMediaOnly===true){
+    // Upload authorization only. No capacity is held or consumed until a
+    // server-created media proof reaches claimExecution/authorizeMediaStage.
+    const attempt=crypto.randomUUID(),maximumMs=request.maximumMs;
+    tx.set(operation,{uid,bucketId,month,attempt,fingerprint,kinds:['transcription'],maximumMs,
+     verifiedMediaOnly:true,baseReservedSeconds:0,manualReservedSeconds:0,manualAllocations:[],manualTimeState:'none',
+     chargedMs:0,executionCount:request.executionCount||1,completedExecutions:0,state:'reserved',createdAt:now});
+    return {id:operationKey,attempt,maximumMs,month,state:'reserved',verifiedMediaOnly:true};
+   }
    const manualState=request.kinds.includes('transcription')?await manual.readAvailable(this.db,tx,uid,now):{records:[],availableMs:0};
    const maximumMs=Math.min(request.maximumMs,...request.kinds.map(k=>Math.max(0,limits[k]-totals[k])+(k==='transcription'?manualState.availableMs:0)));
    if(maximumMs<=0||(!request.allowPartial&&maximumMs<request.maximumMs))throw Error('MONTHLY_USAGE_LIMIT');
@@ -79,6 +89,27 @@ class MonthlyUsageOwner {
    return {id:operationKey,attempt,maximumMs,month,state:'reserved',baseReservedSeconds:baseMs/1000,manualReservedSeconds:manualMs/1000};
   });
  }
+ async prepareVerifiedAllocation(tx,op,extra){
+  if(!Number.isSafeInteger(extra)||extra<0)throw Error('MEDIA_PROOF_REQUIRED');
+  if(!extra)return {fields:{},write:()=>{}};
+  const bucket=this.db.collection('monthlyUsage').doc(op.bucketId);
+  const [user,bs,available]=await Promise.all([tx.get(this.db.collection('users').doc(op.uid)),tx.get(bucket),manual.readAvailable(this.db,tx,op.uid,this.now())]);
+  if(!user.exists)throw Error('AUTH_REQUIRED');
+  const totals=bs.exists?bs.data().totals:{recording:0,transcription:0};
+  if(!Number.isSafeInteger(totals.transcription)||totals.transcription<0)throw Error('CORRUPT_USAGE');
+  const baseRemaining=Math.max(0,LIMITS[resolveMedCasesTier(user.data(),this.now()).tier].transcription-totals.transcription);
+  if(extra>baseRemaining+available.availableMs)throw Error('TRANSCRIPTION_LIMIT_REACHED');
+  const base=Math.min(extra,baseRemaining),additional=extra-base;
+  const selected=manual.allocation(available,additional,this.now());
+  const allocations=(op.manualAllocations||[]).map(a=>({...a}));
+  for(const a of selected){const prior=allocations.find(b=>b.creditId===a.creditId);if(prior)prior.amountMs+=a.amountMs;else allocations.push(a);}
+  return {fields:{baseReservedSeconds:(op.baseReservedSeconds||0)+base/1000,
+    manualReservedSeconds:(op.manualReservedSeconds||0)+additional/1000,manualAllocations:allocations,
+    manualTimeState:allocations.length?'reserved':'none'},write:()=>{
+     manual.reserve(tx,this.db,available,selected);
+     tx.set(bucket,{...(bs.exists?bs.data():{}),uid:op.uid,month:op.month,totals:{...totals,transcription:totals.transcription+base}});
+    }};
+ }
  async finish(uid,{id,attempt,actualMs,success}){
   if(!/^[a-f0-9]{64}$/.test(id)||!Number.isSafeInteger(actualMs)||actualMs<0||typeof success!=='boolean')throw Error('INVALID_USAGE_RESULT');
   return this.db.runTransaction(async tx=>{
@@ -86,6 +117,11 @@ class MonthlyUsageOwner {
    if(!snapshot.exists||snapshot.data().uid!==uid)throw Error('RESERVATION_NOT_OWNED');
    const op=snapshot.data();if(op.attempt!==attempt)throw Error('STALE_ATTEMPT');
    if(['completed','server_verified_failed','executing'].includes(op.state))return {state:op.state,chargedMs:op.chargedMs};
+   if(op.verifiedMediaOnly){
+    // No execution and no server proof: close only the uncharged intent.
+    tx.set(ref,{...op,state:'completed',finishedAt:this.now()});
+    return {state:'completed',chargedMs:0};
+   }
    if(actualMs>op.maximumMs)throw Error('USAGE_OUT_OF_BOUNDS');
    const bucket=this.db.collection('monthlyUsage').doc(op.bucketId),snap=await tx.get(bucket);
    if(!snap.exists)throw Error('BUCKET_MISSING');const data=snap.data();// Client-reported outcomes are acknowledgements, never refund authority.
@@ -113,6 +149,13 @@ class MonthlyUsageOwner {
    if(old?.stages?.[stage]){if(old.stages[stage]!==media.requestHash)throw Error('MEDIA_STAGE_REQUEST_CONFLICT');return {claimed:false};}
    const used=op.authorizedMediaMs||0,extra=old?0:media.durationMs;
    if(!Number.isSafeInteger(used)||used<0||extra>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
+   if(op.verifiedMediaOnly){
+    const allocation=await this.prepareVerifiedAllocation(tx,op,extra);
+    allocation.write();
+    tx.set(ref,{...op,...allocation.fields,state:'executing',authorizedMediaMs:used+extra});
+    tx.set(binding,{uid,id,attempt,index,mediaHash:media.sha256,durationMs:media.durationMs,stages:{...(old?.stages||{}),[stage]:media.requestHash}});
+    return {claimed:true};
+   }
    const settle=await manual.prepareSettlement(this.db,tx,op,id,this.now(),true);
    let manualBucket=null;
    if(op.manualTimeState==='reserved'){const b=await tx.get(this.db.collection('monthlyUsage').doc(op.bucketId));if(!b.exists)throw Error('BUCKET_MISSING');manualBucket=b.data();manualBucket.manualUsedMs=(manualBucket.manualUsedMs||0)+Math.round(op.manualReservedSeconds*1000);}
@@ -142,6 +185,13 @@ class MonthlyUsageOwner {
    if(staged.exists&&(staged.data().mediaHash!==media.sha256||staged.data().durationMs!==media.durationMs))throw Error('MEDIA_STAGE_BINDING_CONFLICT');
    const used=op.authorizedMediaMs||0,extra=staged.exists?0:media.durationMs;
    if(!Number.isSafeInteger(used)||used<0||extra>op.maximumMs-used)throw Error('MEDIA_EXCEEDS_RESERVED_BUDGET');
+   if(op.verifiedMediaOnly){
+    const allocation=await this.prepareVerifiedAllocation(tx,op,extra);
+    allocation.write();
+    tx.set(ref,{...op,...allocation.fields,state:'executing',authorizedMediaMs:used+extra});
+    tx.set(execution,{uid,id,attempt,index,mediaHash:media.sha256,requestHash:media.requestHash,durationMs:media.durationMs,state:'executing',startedAt:this.now()});
+    return {claimed:true,state:'executing'};
+   }
    const settle=await manual.prepareSettlement(this.db,tx,op,id,this.now(),true);
    let manualBucket=null;
    if(op.manualTimeState==='reserved'){const b=await tx.get(this.db.collection('monthlyUsage').doc(op.bucketId));if(!b.exists)throw Error('BUCKET_MISSING');manualBucket=b.data();manualBucket.manualUsedMs=(manualBucket.manualUsedMs||0)+Math.round(op.manualReservedSeconds*1000);}
@@ -161,6 +211,20 @@ class MonthlyUsageOwner {
    if(work.data().state==='completed')return {state:op.state,chargedMs:op.chargedMs};
    const completedExecutions=(op.completedExecutions||0)+1;
    const state=completedExecutions===(op.executionCount||1)?'completed':'executing';
+   if(op.verifiedMediaOnly){
+    const charge=op.authorizedMediaMs||0;
+    if(state==='completed'){
+     const bucket=this.db.collection('monthlyUsage').doc(op.bucketId),bs=await tx.get(bucket);
+     if(!bs.exists)throw Error('BUCKET_MISSING');
+     const settle=await manual.prepareSettlement(this.db,tx,op,id,this.now(),true);
+     const data=bs.data();data.manualUsedMs=(data.manualUsedMs||0)+Math.round(op.manualReservedSeconds*1000);
+     settle();tx.set(bucket,data);
+    }
+    tx.set(execution,{...work.data(),state:'completed',finishedAt:this.now()});
+    tx.set(ref,{...op,completedExecutions,state,chargedMs:state==='completed'?charge:0,
+      manualTimeState:state==='completed'&&op.manualTimeState==='reserved'?'consumed':op.manualTimeState});
+    return {state,chargedMs:state==='completed'?charge:0};
+   }
    tx.set(execution,{...work.data(),state:'completed',finishedAt:this.now()});
    tx.set(ref,{...op,completedExecutions,state,chargedMs:op.maximumMs});
    return {state,chargedMs:op.maximumMs};
@@ -186,6 +250,10 @@ class MonthlyUsageOwner {
      ...['usageExecutions','usageMediaBindings'].map(name=>tx.get(this.db.collection(name).where('id','==',id).limit(1)))
     ]);
     if(checks[0].exists || checks.slice(1).some(s=>s.docs.length))throw Error('RELEASE_EVIDENCE_AMBIGUOUS');
+   }
+   if(op.verifiedMediaOnly){
+    tx.set(ref,{...op,state:'server_verified_failed',chargedMs:0,finishedAt:this.now()});
+    return {state:'server_verified_failed',chargedMs:0};
    }
    const bucket=this.db.collection('monthlyUsage').doc(op.bucketId),bs=await tx.get(bucket);
    if(!bs.exists)throw Error('BUCKET_MISSING');const data=bs.data();

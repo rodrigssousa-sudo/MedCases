@@ -195,7 +195,8 @@ class TranscriptionDurableQueue {
     } catch (error) {
       if (!durable) {
         const unsafe = dispatched || /EXECUTION_|AUDIO_TYPE_|MEDIA_|RESERVATION_|SERVER_QUOTA_/.test(error.message || '');
-        const category = /^openai_transcription_[0-9]{3}$/.test(error.message || '')
+        const quotaFailure = ['TRANSCRIPTION_LIMIT_REACHED','RATE_LIMITED','CONCURRENT_RESERVATION_LIMIT'].includes(error.message);
+        const category = quotaFailure ? error.message : /^openai_transcription_[0-9]{3}$/.test(error.message || '')
           ? error.message.toUpperCase() : unsafe ? 'EXECUTION_RESULT_UNAVAILABLE' : 'TEMP_STORAGE_FAILED';
         await ref.set({state:unsafe ? 'terminal_error':'retryable_error', retryable:!unsafe,
           errorCategory:category, updatedAt:now(), lastProgressAt:now(), leaseUntil:null}, {merge:true});

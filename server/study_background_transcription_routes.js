@@ -216,6 +216,7 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
       res.status(200).json({
         enabled: rt.enabled && Boolean(queue()),
         schemaVersion: 1,
+        verifiedMediaAccounting: true,
         maxSegments: MAX_SEGMENTS,
         maxSegmentBytes: MAX_AUDIO_BYTES,
         audioPersistence: Boolean(queue()),

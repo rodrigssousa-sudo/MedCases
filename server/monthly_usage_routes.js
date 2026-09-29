@@ -22,9 +22,10 @@ function registerMonthlyUsageRoutes({app,authenticate,limiter,db}) {
      await owner.failBeforeExecution(uid,{id,attempt}).catch(()=>{});
     return res.status(gate.retryable?503:403).json(gate);
    }
-   const known=new Set(['AUTH_REQUIRED','INVALID_USAGE_REQUEST','INVALID_USAGE_RESULT','IDEMPOTENCY_CONFLICT','MONTHLY_USAGE_LIMIT','RESERVATION_NOT_OWNED','STALE_ATTEMPT','USAGE_OUT_OF_BOUNDS']);
-   const code=known.has(error.message)?error.message:'USAGE_UNAVAILABLE';
-   return res.status(code==='MONTHLY_USAGE_LIMIT'?429:code==='AUTH_REQUIRED'?401:code==='USAGE_UNAVAILABLE'?503:400).json({error:code});
+   const known=new Set(['AUTH_REQUIRED','INVALID_USAGE_REQUEST','INVALID_USAGE_RESULT','IDEMPOTENCY_CONFLICT','MONTHLY_USAGE_LIMIT','TRANSCRIPTION_LIMIT_REACHED','RATE_LIMITED','CONCURRENT_RESERVATION_LIMIT','RESERVATION_NOT_OWNED','STALE_ATTEMPT','USAGE_OUT_OF_BOUNDS']);
+   let code=known.has(error.message)?error.message:'USAGE_UNAVAILABLE';
+   if(code==='MONTHLY_USAGE_LIMIT' && req.body?.kinds?.length===1 && req.body.kinds[0]==='transcription')code='TRANSCRIPTION_LIMIT_REACHED';
+   return res.status(['MONTHLY_USAGE_LIMIT','TRANSCRIPTION_LIMIT_REACHED','RATE_LIMITED','CONCURRENT_RESERVATION_LIMIT'].includes(code)?429:code==='AUTH_REQUIRED'?401:code==='USAGE_UNAVAILABLE'?503:400).json({error:code});
   }
  });
 }
