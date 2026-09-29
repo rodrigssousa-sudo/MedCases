@@ -4923,3 +4923,6 @@ void __medcasesCreateClinicalRuntimeIdentityProtocolComposition;
 
 // Restricted Admin manual transcription time and metadata.
 Object.assign(exports, require('./admin_control_exports')(admin));
+
+// Administrative metadata and audited operations; independent of clinical runtime.
+Object.assign(exports, require("./admin_operations_exports")(admin));

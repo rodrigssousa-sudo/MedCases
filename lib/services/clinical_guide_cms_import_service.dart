@@ -94,8 +94,12 @@ class ClinicalGuideCmsImportService {
   };
 
   static ClinicalGuideCmsImportPackage parseBytes(Uint8List bytes) {
-    final text = utf8.decode(bytes, allowMalformed: false);
-    return parseJson(text);
+    try {
+      final text = utf8.decode(bytes, allowMalformed: false);
+      return parseJson(text.startsWith('\uFEFF') ? text.substring(1) : text);
+    } on FormatException {
+      throw const ClinicalGuideCmsImportException('CMS_ENCODING_INVALID: use UTF-8.');
+    }
   }
 
   static ClinicalGuideCmsImportPackage parseJson(String source) {

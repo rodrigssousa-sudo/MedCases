@@ -177,12 +177,12 @@ void main() {
 
       expect(source, contains('Importar CMS JSON'));
       expect(source, contains('ClinicalGuideCmsImportService.parseBytes'));
-      expect(source, contains("allowedExtensions: const ['json']"));
+      expect(source, contains("const ['json']"));
       expect(source, contains('_applyImportedLocale(_pt, imported.pt)'));
       expect(source, contains('_applyImportedLocale(_es, imported.es)'));
       expect(source, contains('MedCases Clinical Editorial'));
 
-      expect(source, contains("allowedExtensions: const ['pdf']"));
+      expect(source, contains("const ['pdf']"));
       expect(source, contains('PDF PT opcional'));
       expect(source, contains('PDF ES opcional'));
 

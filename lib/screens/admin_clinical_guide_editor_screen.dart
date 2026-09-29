@@ -1,3 +1,6 @@
+import 'package:cloud_functions/cloud_functions.dart';
+import 'dart:math';
+import '../services/admin/admin_file_reader.dart';
 import 'dart:typed_data';
 import 'dart:ui' show ImageFilter;
 
@@ -49,6 +52,7 @@ class _AdminClinicalGuideEditorScreenState
   bool _saving = false;
   double _progress = 0;
   String? _error;
+  String _uploadStage = 'Selecionado';
   String? _cmsImportFileName;
   String? _cmsImportNotice;
 
@@ -109,9 +113,8 @@ class _AdminClinicalGuideEditorScreenState
           'title': legacy.title,
           'subtitle': legacy.subtitle,
           'summary': legacy.summary,
-          'bodyBlocks': legacy.bodyBlocks
-              .map((block) => block.toJson())
-              .toList(),
+          'bodyBlocks':
+              legacy.bodyBlocks.map((block) => block.toJson()).toList(),
           'references': legacy.references,
           'pdfUrl': legacy.pdfUrl,
         });
@@ -136,7 +139,7 @@ class _AdminClinicalGuideEditorScreenState
       setState(() {});
     } catch (e) {
       if (mounted) {
-        setState(() => _error = 'Não foi possível carregar o conteúdo: $e');
+        setState(() => _error = 'GUIDE_READ_FAILED — tente carregar novamente.');
       }
     } finally {
       if (mounted) setState(() => _loadingExisting = false);
@@ -228,24 +231,46 @@ class _AdminClinicalGuideEditorScreenState
     }
   }
 
+  Future<Uint8List?> _readPickedFile(PlatformFile file, int maxBytes) async {
+    try {
+      final data = await AdminFileReader.read(file, maxBytes: maxBytes);
+      if (mounted) { setState(() => _uploadStage = 'Validado'); }
+      return data;
+    } on AdminFileReadException catch (e) {
+      if (mounted)
+        setState(() => _error =
+            'Falha de leitura: ${e.reasonCode}. Selecione o arquivo novamente.');
+      return null;
+    }
+  }
+
+  Future<FilePickerResult?> _pickAdminFile(List<String> extensions) async {
+    try {
+      return await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: extensions,
+        allowMultiple: false,
+        withData: false,
+        withReadStream: true,
+      );
+    } catch (_) {
+      if (mounted) {
+        setState(() =>
+            _error = 'FILE_PICKER_FAILED. Selecione o arquivo novamente.');
+      }
+      return null;
+    }
+  }
+
   Future<void> _pickCmsJson() async {
     FocusScope.of(context).unfocus();
 
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['json'],
-      allowMultiple: false,
-      withData: true,
-    );
+    final result = await _pickAdminFile(const ['json']);
     if (result == null || result.files.isEmpty) return;
 
     final file = result.files.single;
-    final bytes = file.bytes;
-
-    if (bytes == null) {
-      setState(() => _error = 'Não foi possível ler o arquivo CMS JSON.');
-      return;
-    }
+    final bytes = await _readPickedFile(file, 10 * 1024 * 1024);
+    if (!mounted || bytes == null) return;
 
     ClinicalGuideCmsImportPackage imported;
     try {
@@ -253,8 +278,8 @@ class _AdminClinicalGuideEditorScreenState
     } on ClinicalGuideCmsImportException catch (e) {
       setState(() => _error = 'Importação bloqueada: ${e.message}');
       return;
-    } catch (e) {
-      setState(() => _error = 'Importação bloqueada: $e');
+    } catch (_) {
+      setState(() => _error = 'Importação bloqueada: CMS_PARSE_FAILED.');
       return;
     }
 
@@ -262,8 +287,8 @@ class _AdminClinicalGuideEditorScreenState
     final authorToApply = imported.authors.trim().isNotEmpty
         ? imported.authors.trim()
         : (_authorsCtrl.text.trim().isNotEmpty
-              ? _authorsCtrl.text.trim()
-              : 'MedCases Clinical Editorial');
+            ? _authorsCtrl.text.trim()
+            : 'MedCases Clinical Editorial');
 
     if (!mounted) return;
 
@@ -350,30 +375,22 @@ class _AdminClinicalGuideEditorScreenState
       _versionCtrl.text = imported.version.toString();
 
       _cmsImportFileName = file.name;
-      _cmsImportNotice =
-          suggestedCategory == null && imported.specialty.trim().isNotEmpty
+      _cmsImportNotice = suggestedCategory == null &&
+              imported.specialty.trim().isNotEmpty
           ? 'CMS importado. Revise a categoria: '
-                '"${imported.specialty}" não correspondeu automaticamente.'
+              '"${imported.specialty}" não correspondeu automaticamente.'
           : 'CMS importado e validado. Confira o preview antes de publicar.';
       _error = null;
     });
   }
 
   Future<void> _pickCover() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp'],
-      allowMultiple: false,
-      withData: true,
-    );
+    final result = await _pickAdminFile(const ['jpg', 'jpeg', 'png', 'webp']);
     if (result == null || result.files.isEmpty) return;
 
     final file = result.files.single;
-    final bytes = file.bytes;
-    if (bytes == null) {
-      setState(() => _error = 'Não foi possível ler a imagem selecionada.');
-      return;
-    }
+    final bytes = await _readPickedFile(file, _maxCoverBytes);
+    if (!mounted || bytes == null) return;
     if (bytes.lengthInBytes > _maxCoverBytes) {
       setState(() => _error = 'A imagem de capa deve ter no máximo 5 MB.');
       return;
@@ -387,20 +404,12 @@ class _AdminClinicalGuideEditorScreenState
   }
 
   Future<void> _pickPdf(_LocaleDraft draft) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['pdf'],
-      allowMultiple: false,
-      withData: true,
-    );
+    final result = await _pickAdminFile(const ['pdf']);
     if (result == null || result.files.isEmpty) return;
 
     final file = result.files.single;
-    final bytes = file.bytes;
-    if (bytes == null) {
-      setState(() => _error = 'Não foi possível ler o PDF selecionado.');
-      return;
-    }
+    final bytes = await _readPickedFile(file, _maxPdfBytes);
+    if (!mounted || bytes == null) return;
     if (bytes.lengthInBytes > _maxPdfBytes) {
       setState(() => _error = 'Cada PDF deve ter no máximo 25 MB.');
       return;
@@ -481,6 +490,14 @@ class _AdminClinicalGuideEditorScreenState
     );
   }
 
+  late final String _saveId = widget.guide?.id ??
+      List.generate(
+          24,
+          (_) => Random.secure()
+              .nextInt(256)
+              .toRadixString(16)
+              .padLeft(2, '0')).join();
+
   Future<void> _save({required bool publish}) async {
     FocusScope.of(context).unfocus();
 
@@ -497,8 +514,34 @@ class _AdminClinicalGuideEditorScreenState
       }
     }
 
+    String reason = '';
+    final approved = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+                title: Text(publish
+                    ? 'Confirmar revisão PT/ES e publicação'
+                    : 'Salvar rascunho'),
+                content: TextField(
+                    onChanged: (v) => reason = v,
+                    maxLength: 500,
+                    decoration: const InputDecoration(
+                        labelText: 'Justificativa obrigatória')),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Cancelar')),
+                  FilledButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Confirmar'))
+                ]));
+    if (approved != true || !mounted) return;
+    if (reason.trim().length < 5) {
+      setState(() => _error = 'REASON_REQUIRED');
+      return;
+    }
     setState(() {
       _saving = true;
+      _uploadStage = 'Enviando';
       _progress = 0;
       _error = null;
     });
@@ -532,9 +575,11 @@ class _AdminClinicalGuideEditorScreenState
         draft.pdfUrl = uploaded.url;
       }
 
+      if (mounted) { setState(() => _uploadStage = 'Processando'); }
       final parsedVersion = int.tryParse(_versionCtrl.text.trim()) ?? 1;
       final savedId = await ClinicalGuidesEditorialService.saveBilingualGuide(
-        id: widget.guide?.id ?? '',
+        id: _saveId,
+        reason: reason.trim(),
         specialty: _category,
         authors: _authorsCtrl.text.trim(),
         year: _yearCtrl.text.trim(),
@@ -547,7 +592,7 @@ class _AdminClinicalGuideEditorScreenState
       );
 
       if (!mounted) return;
-      setState(() => _progress = 1);
+      setState(() { _progress = 1; _uploadStage = 'Pronto'; });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -559,8 +604,15 @@ class _AdminClinicalGuideEditorScreenState
         ),
       );
       Navigator.of(context).pop(savedId.isNotEmpty);
+    } on AdminFileReadException catch (e) {
+      if (mounted) { setState(() => _error = e.reasonCode); }
+    } on FirebaseFunctionsException catch (e) {
+      final code = e.message ?? e.code;
+      if (mounted) { setState(() => _error = RegExp(r'^[A-Z_]+$').hasMatch(code) ? code : 'GUIDE_SAVE_FAILED'); }
     } catch (e) {
-      if (mounted) setState(() => _error = 'Falha ao salvar: $e');
+      if (mounted)
+        setState(() => _error =
+            'GUIDE_SAVE_FAILED — verifique a conexão e tente novamente. O mesmo arquivo e guia serão reutilizados.');
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -793,6 +845,7 @@ class _AdminClinicalGuideEditorScreenState
                             onPickPdf: () => _pickPdf(_draft),
                           ),
                         ),
+                        Text(_error == null ? _uploadStage : 'Erro'),
                         if (_saving) ...[
                           const SizedBox(height: 10),
                           LinearProgressIndicator(
@@ -903,8 +956,8 @@ class _BlockDraft {
     required this.type,
     String titleValue = '',
     String textValue = '',
-  }) : title = TextEditingController(text: titleValue),
-       text = TextEditingController(text: textValue);
+  })  : title = TextEditingController(text: titleValue),
+        text = TextEditingController(text: textValue);
 
   factory _BlockDraft.fromMap(Map<String, dynamic> map) {
     final type = map['type']?.toString().trim() ?? 'paragraph';
@@ -973,9 +1026,8 @@ class _EditorGlassTopbar extends StatelessWidget {
     final glassColor = dark
         ? const Color(0xFF161B22).withOpacity(0.58)
         : Colors.white.withOpacity(0.56);
-    final borderColor = dark
-        ? Colors.white.withOpacity(0.13)
-        : Colors.white.withOpacity(0.78);
+    final borderColor =
+        dark ? Colors.white.withOpacity(0.13) : Colors.white.withOpacity(0.78);
     final liquidTop = Colors.white.withOpacity(dark ? 0.10 : 0.46);
     final liquidMid = Colors.white.withOpacity(dark ? 0.025 : 0.12);
 
@@ -1388,8 +1440,8 @@ class _LanguageButton extends StatelessWidget {
                 color: active
                     ? Colors.white
                     : (ready
-                          ? const Color(0xFF059669)
-                          : const Color(0xFF94A3B8)),
+                        ? const Color(0xFF059669)
+                        : const Color(0xFF94A3B8)),
               ),
             ],
           ),
@@ -1539,9 +1591,8 @@ class _LocaleEditor extends StatelessWidget {
                 color: dark ? const Color(0xFF1C2026) : const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: dark
-                      ? const Color(0xFF3B424D)
-                      : const Color(0xFFD5DDE4),
+                  color:
+                      dark ? const Color(0xFF3B424D) : const Color(0xFFD5DDE4),
                   width: 0.8,
                 ),
               ),
@@ -1673,8 +1724,8 @@ class _LocaleEditor extends StatelessWidget {
                       (draft.pdfUrl.isNotEmpty
                           ? (isEs ? 'PDF ES anexado' : 'PDF PT anexado')
                           : (isEs
-                                ? 'PDF ES opcional · até 25 MB'
-                                : 'PDF PT opcional · até 25 MB')),
+                              ? 'PDF ES opcional · até 25 MB'
+                              : 'PDF PT opcional · até 25 MB')),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),

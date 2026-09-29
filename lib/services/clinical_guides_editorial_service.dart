@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'clinical_content/clinical_content_gateway.dart';
@@ -269,6 +270,7 @@ class ClinicalGuidesEditorialService {
     required Map<String, dynamic> es,
     required bool published,
     required String adminName,
+    String reason = '',
   }) async {
     final now = DateTime.now().toUtc().toIso8601String();
     final cleanPt = _cleanLocalePayload(pt, 'pt');
@@ -335,12 +337,20 @@ class ClinicalGuidesEditorialService {
     };
 
     final cleanId = id.trim();
-    if (cleanId.isEmpty) {
-      final ref = await _collection.add(data);
-      return ref.id;
+    if (cleanId.isEmpty) throw StateError('GUIDE_ID_REQUIRED');
+    final result = await FirebaseFunctions.instanceFor(region: 'us-central1')
+        .httpsCallable('adminOperations')
+        .call<dynamic>({
+      'operation': 'saveGuide',
+      'payload': {
+        'targetId': cleanId,
+        'reason': reason,
+        'data': data,
+      }
+    });
+    if ((result.data as Map)['readback'] != true) {
+      throw StateError('GUIDE_READBACK_FAILED');
     }
-
-    await _collection.doc(cleanId).set(data, SetOptions(merge: true));
     return cleanId;
   }
 

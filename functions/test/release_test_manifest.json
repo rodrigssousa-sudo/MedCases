@@ -367,6 +367,11 @@
       "file": "functions/test/admin_control_center.test.js",
       "category": "security",
       "suite": "CURRENT_SECURITY_TESTS"
+    },
+    {
+      "file": "functions/test/admin_operations_contract.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
     }
   ],
   "historicalPipelineArchaeology": [
@@ -766,7 +771,8 @@
         "functions/test/release_manifest.test.js",
         "functions/test/cors_release_policy.test.js",
         "functions/test/callable_security.test.js",
-        "functions/test/admin_control_center.test.js"
+        "functions/test/admin_control_center.test.js",
+        "functions/test/admin_operations_contract.test.js"
       ]
     },
     {

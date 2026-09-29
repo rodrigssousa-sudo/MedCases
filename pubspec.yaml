@@ -23,6 +23,7 @@ dependencies:
 
   # HTTP
   http: 1.5.0
+  crypto: 3.0.7
 
   # URL launcher (web navigation)
   url_launcher: 6.3.1

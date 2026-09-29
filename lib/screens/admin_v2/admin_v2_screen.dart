@@ -1,5 +1,8 @@
+import 'admin_operations_section.dart';
 import 'control_center_section.dart';
 import 'dart:convert';
+import 'dart:math';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'dart:ui' show ImageFilter;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -290,6 +293,16 @@ class _CenteredProgress extends StatelessWidget {
 // ADMIN_V2_FINAL_AUDIT_ALERTS_V1
 // ADMIN_V2_AI_COSTS_V2: GPT + Gemini observability, secure GPT unlock and expanded metrics.
 enum _AdminSection {
+  pathologyInventory,
+  drugInventory,
+  operationalJobs,
+  serviceHealth,
+  transcriptionMetadata,
+  releaseInventory,
+  deploymentInventory,
+  notificationMetadata,
+  campaignDrafts,
+
   credits,
   creditLedger,
   controlAudit,
@@ -362,46 +375,127 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
     );
 
     switch (_section) {
+      case _AdminSection.pathologyInventory:
+        return AdminOperationsSection(
+            key: const ValueKey('pathologyInventory'),
+            table: 'pathologies',
+            title: 'Patologias',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.drugInventory:
+        return AdminOperationsSection(
+            key: const ValueKey('drugInventory'),
+            table: 'drugs',
+            title: 'Fármacos',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.operationalJobs:
+        return AdminOperationsSection(
+            key: const ValueKey('operationalJobs'),
+            table: 'jobs',
+            title: 'Jobs',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.serviceHealth:
+        return AdminOperationsSection(
+            key: const ValueKey('serviceHealth'),
+            table: 'health',
+            title: 'Serviços',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.transcriptionMetadata:
+        return AdminOperationsSection(
+            key: const ValueKey('transcriptionMetadata'),
+            table: 'transcriptions',
+            title: 'Transcrições',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.releaseInventory:
+        return AdminOperationsSection(
+            key: const ValueKey('releaseInventory'),
+            table: 'releases',
+            title: 'Releases',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.deploymentInventory:
+        return AdminOperationsSection(
+            key: const ValueKey('deploymentInventory'),
+            table: 'deploys',
+            title: 'Deploys',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.notificationMetadata:
+        return AdminOperationsSection(
+            key: const ValueKey('notificationMetadata'),
+            table: 'notifications',
+            title: 'Notificações',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+      case _AdminSection.campaignDrafts:
+        return AdminOperationsSection(
+            key: const ValueKey('campaignDrafts'),
+            table: 'campaigns',
+            title: 'Campanhas PT/ES',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
+
       case _AdminSection.credits:
-        return ControlCenterSection(key: const ValueKey('credits'), table: 'credits', title: 'Tempo adicional', readOnly: widget.currentAdmin.isSupervisor);
+        return ControlCenterSection(
+            key: const ValueKey('credits'),
+            table: 'credits',
+            title: 'Tempo adicional',
+            readOnly: widget.currentAdmin.isSupervisor);
       case _AdminSection.creditLedger:
-        return ControlCenterSection(key: const ValueKey('creditLedger'), table: 'ledger', title: 'Histórico de tempo', readOnly: true);
+        return ControlCenterSection(
+            key: const ValueKey('creditLedger'),
+            table: 'ledger',
+            title: 'Histórico de tempo',
+            readOnly: true);
       case _AdminSection.controlAudit:
-        return ControlCenterSection(key: const ValueKey('controlAudit'), table: 'audit', title: 'Auditoria de tempo', readOnly: true);
+        return ControlCenterSection(
+            key: const ValueKey('controlAudit'),
+            table: 'audit',
+            title: 'Auditoria de tempo',
+            readOnly: true);
 
       case _AdminSection.dashboard:
-        return const _Dashboard();
+        return const AdminOperationsSection(
+            table: 'overview', title: 'Dashboard');
       case _AdminSection.errors:
-        return _ErrorsHealthCenterSection(
-          currentAdmin: widget.currentAdmin,
-        );
-            // ADMIN_V2_SUPPORT_TICKET_FOUNDATION_V2_B_R1
+        return AdminOperationsSection(
+            table: 'incidents',
+            title: 'Incidentes',
+            readOnly: widget.currentAdmin.isSupervisor);
+      // ADMIN_V2_SUPPORT_TICKET_FOUNDATION_V2_B_R1
       case _AdminSection.support:
         return SupportAdminSection(
           currentAdmin: widget.currentAdmin,
         );
-case _AdminSection.aiCosts:
-        return _AiCostsSection(
-          currentAdmin: widget.currentAdmin,
-        );
+      case _AdminSection.aiCosts:
+        return const AdminOperationsSection(
+            table: 'ai', title: 'IA — HOME / STUDY / PLANTAO');
       case _AdminSection.subscriptions:
-        return _SubscriptionsRevenueSection(allowed: _isMaster);
+        return const AdminOperationsSection(
+            table: 'users', title: 'Premium / VIP — somente leitura');
       case _AdminSection.users:
-        return _UsersManagementSection(
-          currentAdmin: widget.currentAdmin,
-        );
+        return AdminOperationsSection(
+            table: 'users',
+            title: 'Usuários',
+            readOnly: widget.currentAdmin.isSupervisor,
+            master: _isMaster);
       case _AdminSection.content:
         return _ContentGuidesSection(
           currentAdmin: widget.currentAdmin,
         );
       case _AdminSection.communication:
-        return _CommunicationSection(
-          currentAdmin: widget.currentAdmin,
-        );
+        return AdminOperationsSection(
+            key: const ValueKey('communicationDrafts'),
+            table: 'campaigns',
+            title: 'Comunicação — rascunhos auditados',
+            readOnly: widget.currentAdmin.isSupervisor);
       case _AdminSection.audit:
-        return _AuditAlertsSection(
-          currentAdmin: widget.currentAdmin,
-        );
+        return const AdminOperationsSection(
+            table: 'audit', title: 'Auditoria central');
       case _AdminSection.settings:
         return _SettingsSection(
           currentAdmin: widget.currentAdmin,
@@ -411,9 +505,31 @@ case _AdminSection.aiCosts:
 
   String _sectionTitle(_AdminSection section) {
     switch (section) {
-      case _AdminSection.credits: return 'Tempo adicional';
-      case _AdminSection.creditLedger: return 'Histórico de tempo';
-      case _AdminSection.controlAudit: return 'Auditoria de tempo';
+      case _AdminSection.pathologyInventory:
+        return 'Patologias';
+      case _AdminSection.drugInventory:
+        return 'Fármacos';
+      case _AdminSection.operationalJobs:
+        return 'Jobs';
+      case _AdminSection.serviceHealth:
+        return 'Serviços';
+      case _AdminSection.transcriptionMetadata:
+        return 'Transcrições';
+      case _AdminSection.releaseInventory:
+        return 'Releases';
+      case _AdminSection.deploymentInventory:
+        return 'Deploys';
+      case _AdminSection.notificationMetadata:
+        return 'Notificações';
+      case _AdminSection.campaignDrafts:
+        return 'Campanhas PT/ES';
+
+      case _AdminSection.credits:
+        return 'Tempo adicional';
+      case _AdminSection.creditLedger:
+        return 'Histórico de tempo';
+      case _AdminSection.controlAudit:
+        return 'Auditoria de tempo';
 
       case _AdminSection.dashboard:
         return 'Dashboard';
@@ -425,9 +541,9 @@ case _AdminSection.aiCosts:
         return 'IA & Custos';
       case _AdminSection.errors:
         return 'Erros & Saúde';
-            case _AdminSection.support:
+      case _AdminSection.support:
         return 'Suporte';
-case _AdminSection.content:
+      case _AdminSection.content:
         return 'Conteúdo';
       case _AdminSection.communication:
         return 'Comunicação';
@@ -437,7 +553,6 @@ case _AdminSection.content:
         return 'Configurações';
     }
   }
-
 }
 
 // ADMIN_V2_LEGACY_BRIDGE_FINAL_REMOVAL_V1
@@ -454,6 +569,31 @@ class _AdminSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const items = <(_AdminSection, IconData, String)>[
+      (
+        _AdminSection.pathologyInventory,
+        Icons.view_list_outlined,
+        'Patologias'
+      ),
+      (_AdminSection.drugInventory, Icons.view_list_outlined, 'Fármacos'),
+      (_AdminSection.operationalJobs, Icons.view_list_outlined, 'Jobs'),
+      (_AdminSection.serviceHealth, Icons.view_list_outlined, 'Serviços'),
+      (
+        _AdminSection.transcriptionMetadata,
+        Icons.view_list_outlined,
+        'Transcrições'
+      ),
+      (_AdminSection.releaseInventory, Icons.view_list_outlined, 'Releases'),
+      (_AdminSection.deploymentInventory, Icons.view_list_outlined, 'Deploys'),
+      (
+        _AdminSection.notificationMetadata,
+        Icons.view_list_outlined,
+        'Notificações'
+      ),
+      (
+        _AdminSection.campaignDrafts,
+        Icons.view_list_outlined,
+        'Campanhas PT/ES'
+      ),
       (_AdminSection.dashboard, Icons.dashboard_outlined, 'Dashboard'),
       (_AdminSection.users, Icons.group_outlined, 'Usuários'),
       (_AdminSection.subscriptions, Icons.credit_card_outlined, 'Assinaturas'),
@@ -464,7 +604,11 @@ class _AdminSidebar extends StatelessWidget {
       (_AdminSection.communication, Icons.campaign_outlined, 'Comunicação'),
       (_AdminSection.audit, Icons.fact_check_outlined, 'Auditoria'),
       (_AdminSection.credits, Icons.more_time, 'Tempo adicional'),
-      (_AdminSection.creditLedger, Icons.receipt_long_outlined, 'Histórico de tempo'),
+      (
+        _AdminSection.creditLedger,
+        Icons.receipt_long_outlined,
+        'Histórico de tempo'
+      ),
       (_AdminSection.controlAudit, Icons.history, 'Auditoria de tempo'),
       (_AdminSection.settings, Icons.settings_outlined, 'Configurações'),
     ];
@@ -493,16 +637,7 @@ class _AdminSidebar extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 children: [
-                  for (final item in currentAdmin.isSupervisor
-                      ? items.where((item) =>
-                          item.$1 == _AdminSection.credits ||
-                          item.$1 == _AdminSection.creditLedger ||
-                          item.$1 == _AdminSection.controlAudit ||
-                          item.$1 == _AdminSection.errors ||
-                          item.$1 == _AdminSection.support ||
-                          item.$1 == _AdminSection.communication ||
-                          item.$1 == _AdminSection.settings)
-                      : items)
+                  for (final item in items)
                     _SidebarItem(
                       icon: item.$2,
                       label: item.$3,
@@ -1389,46 +1524,6 @@ class _AdminUsersRestLoader {
     }
 
     return '';
-  }
-
-  static Future<void> deleteDocument(String documentPath) async {
-    final safePath = documentPath.trim();
-    if (safePath.isEmpty) {
-      throw StateError('Caminho do documento ausente.');
-    }
-
-    if (_auditActorUid.isNotEmpty) {
-      await patchDocumentFields(
-        safePath,
-        const <String, dynamic>{'_adminAuditDelete': true},
-      );
-    }
-
-    final token = await _resolveToken();
-    final uri = Uri.parse('$_documentsBase/$safePath');
-
-    var response = await http.delete(
-      uri,
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode == 401) {
-      final refreshed =
-          await FirebaseAuth.instance.currentUser?.getIdToken(true);
-      if (refreshed != null && refreshed.isNotEmpty) {
-        response = await http.delete(
-          uri,
-          headers: {'Authorization': 'Bearer $refreshed'},
-        );
-      }
-    }
-
-    if (response.statusCode != 200) {
-      throw StateError(
-        'Falha ao excluir documento '
-        '(HTTP ${response.statusCode}).',
-      );
-    }
   }
 
   static Future<void> patchDocumentFields(
@@ -3401,7 +3496,8 @@ class _AiCostsOperationalSources extends StatelessWidget {
             ),
             const Divider(height: 22, color: Color(0xFFE8ECF0)),
             _AiCostsSourceRow(label: 'Modelo mais usado (24h)', value: primary),
-            _AiCostsSourceRow(label: 'Outro modelo observado (24h)', value: fallback),
+            _AiCostsSourceRow(
+                label: 'Outro modelo observado (24h)', value: fallback),
             _AiCostsSourceRow(label: 'Base da leitura', value: routing),
             const SizedBox(height: 6),
             const Text(
@@ -5316,7 +5412,6 @@ class _AuditAlertsBundle {
   final String? auditUnavailable;
 }
 
-
 // ADMIN_V2_ACTIONABLE_ALERTS_NOTIFICATION_IDENTITY_V1
 class _AuditAlert {
   const _AuditAlert({
@@ -5384,7 +5479,6 @@ class _AuditAlertMetrics extends StatelessWidget {
   }
 }
 
-
 class _AuditAlertRow extends StatelessWidget {
   const _AuditAlertRow({required this.alert});
 
@@ -5393,8 +5487,7 @@ class _AuditAlertRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final critical = alert.severity == 'critical';
-    final color =
-        critical ? const Color(0xFFB42318) : const Color(0xFF9A6700);
+    final color = critical ? const Color(0xFFB42318) : const Color(0xFF9A6700);
     final background =
         critical ? const Color(0xFFFFF1F0) : const Color(0xFFFFF8E8);
 
@@ -5410,9 +5503,7 @@ class _AuditAlertRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            critical
-                ? Icons.error_outline_rounded
-                : Icons.info_outline_rounded,
+            critical ? Icons.error_outline_rounded : Icons.info_outline_rounded,
             size: 18,
             color: color,
           ),
@@ -5599,7 +5690,6 @@ class _AuditData {
     return '${two(local.day)}/${two(local.month)} ${two(local.hour)}:${two(local.minute)}';
   }
 
-
   static List<_AuditAlert> alertsFor(
     _AuditAlertsBundle bundle,
     String adminUid,
@@ -5656,8 +5746,7 @@ class _AuditData {
         title: '$pushErrors campanha(s) push com falha',
         source: 'global_push_campaigns',
         sourceLabel: 'Comunicação > Push global',
-        detail:
-            'Uma ou mais campanhas de push terminaram com status de erro.',
+        detail: 'Uma ou mais campanhas de push terminaram com status de erro.',
         resolution:
             'Como resolver: abra Comunicação > Push global e revise o Histórico '
             'de push para identificar a campanha e o status retornado.',
@@ -5688,8 +5777,7 @@ class _AuditData {
         title: 'Modo de manutenção ativo',
         source: 'app_config/maintenance',
         sourceLabel: 'Configurações > Sistema',
-        detail:
-            'O aplicativo está em modo de manutenção para usuários comuns.',
+        detail: 'O aplicativo está em modo de manutenção para usuários comuns.',
         resolution:
             'Como resolver: abra Configurações > Sistema. Se a manutenção não '
             'for intencional, desative o modo e salve o estado.',
@@ -6209,6 +6297,55 @@ class _SettingsSectionState extends State<_SettingsSection> {
     );
   }
 
+  Map<String, dynamic>? _configPending;
+  Future<void> _saveAuditedConfig(
+      String target, Map<String, dynamic> value) async {
+    if (_configPending == null) {
+      String reason = '';
+      final ok = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                  title: const Text('Justificativa da alteração'),
+                  content:
+                      TextField(onChanged: (v) => reason = v, maxLength: 500),
+                  actions: [
+                    TextButton(
+                        onPressed: () => Navigator.pop(ctx, false),
+                        child: const Text('Cancelar')),
+                    FilledButton(
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: const Text('Confirmar'))
+                  ]));
+      if (ok != true || reason.trim().length < 5)
+        throw StateError('REASON_REQUIRED');
+      _configPending = {
+        'action': target.startsWith('app_config')
+            ? 'saveMaintenance'
+            : 'saveAppUpdate',
+        'targetId': target.split('/').last,
+        'value': value,
+        'reason': reason.trim(),
+        'requestId': List.generate(
+            24,
+            (_) => Random.secure()
+                .nextInt(256)
+                .toRadixString(16)
+                .padLeft(2, '0')).join()
+      };
+    }
+    try {
+      await AdminOperationsApi().call('mutate', _configPending!);
+      _configPending = null;
+    } on FirebaseFunctionsException catch (e) {
+      if (['permission-denied', 'invalid-argument', 'unauthenticated']
+          .contains(e.code)) {
+        _configPending = null;
+      }
+      throw StateError(
+          'CONFIG_SAVE_FAILED — ${e.code}; tente confirmar novamente.');
+    }
+  }
+
   Future<void> _saveMaintenance() async {
     if (!_isMaster || _busy) return;
 
@@ -6249,7 +6386,7 @@ class _SettingsSectionState extends State<_SettingsSection> {
     });
 
     try {
-      await _AdminUsersRestLoader.patchDocumentFields(
+      await _saveAuditedConfig(
         'app_config/maintenance',
         <String, dynamic>{
           'enabled': _maintenanceEnabled,
@@ -6341,7 +6478,7 @@ class _SettingsSectionState extends State<_SettingsSection> {
     });
 
     try {
-      await _AdminUsersRestLoader.patchDocumentFields(
+      await _saveAuditedConfig(
         'app_updates/current',
         <String, dynamic>{
           'version': version,
@@ -7659,7 +7796,6 @@ class _CommunicationPanePicker extends StatelessWidget {
   }
 }
 
-
 class _AdminNotificationCard extends StatelessWidget {
   const _AdminNotificationCard({
     required this.row,
@@ -7724,8 +7860,7 @@ class _AdminNotificationCard extends StatelessWidget {
                   ? Icons.notifications_none_rounded
                   : Icons.notifications_active_rounded,
               size: 18,
-              color:
-                  read ? const Color(0xFF87919C) : const Color(0xFFB7791F),
+              color: read ? const Color(0xFF87919C) : const Color(0xFFB7791F),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -8082,18 +8217,16 @@ class _ContentGuidesSectionState extends State<_ContentGuidesSection> {
     super.dispose();
   }
 
+  String? _guideCursor, _guideNext;
   Future<List<Map<String, dynamic>>> _load() async {
-    final rows = await _AdminUsersRestLoader.listCollection(
-      'clinical_guides',
-    );
-
-    rows.sort((a, b) {
-      final aDate = _GuideData.dateOf(a);
-      final bDate = _GuideData.dateOf(b);
-      return bDate.compareTo(aDate);
+    final page = await AdminOperationsApi().call('page', {
+      'table': 'guides',
+      'limit': 30,
+      if (_guideCursor != null) 'cursor': _guideCursor,
     });
-
-    return rows;
+    _guideNext = page['nextCursor'] as String?;
+    return List<Map<String, dynamic>>.from((page['items'] as List)
+        .map((dynamic row) => Map<String, dynamic>.from(row as Map)));
   }
 
   void _reload() {
@@ -8192,6 +8325,23 @@ class _ContentGuidesSectionState extends State<_ContentGuidesSection> {
               ),
             ),
             const SizedBox(height: 12),
+            const Text('Métricas e filtros desta página (até 30 guias).'),
+            Row(children: [
+              if (_guideNext != null)
+                TextButton(
+                    onPressed: () {
+                      _guideCursor = _guideNext;
+                      _reload();
+                    },
+                    child: const Text('Próxima página')),
+              if (_guideCursor != null)
+                TextButton(
+                    onPressed: () {
+                      _guideCursor = null;
+                      _reload();
+                    },
+                    child: const Text('Primeira página')),
+            ]),
             _GuideMetricGrid(metrics: metrics),
             const SizedBox(height: 12),
             _GuideToolbar(
@@ -8312,40 +8462,7 @@ class _ContentGuidesSectionState extends State<_ContentGuidesSection> {
   }
 
   Future<void> _togglePublished(_GuideData guide) async {
-    if (!_canMutate || _busyId != null || guide.id.isEmpty) return;
-
-    if (!guide.isPublished) {
-      await _openCmsEditor(guide);
-      return;
-    }
-
-    setState(() {
-      _busyId = guide.id;
-      _actionError = null;
-    });
-
-    try {
-      await _AdminUsersRestLoader.patchDocumentFields(
-        'clinical_guides/${guide.id}',
-        <String, dynamic>{
-          'isPublished': false,
-          'updatedAt': DateTime.now(),
-          'updatedBy': widget.currentAdmin.uid,
-        },
-      );
-
-      if (!mounted) return;
-      setState(() {
-        _busyId = null;
-        _future = _load();
-      });
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _busyId = null;
-        _actionError = error.toString();
-      });
-    }
+    await _openCmsEditor(guide);
   }
 
   Future<void> _editGuide(_GuideData guide) async {
@@ -8427,54 +8544,9 @@ class _ContentGuidesSectionState extends State<_ContentGuidesSection> {
   }
 
   Future<void> _deleteGuide(_GuideData guide) async {
-    if (!_canMutate || _busyId != null || guide.id.isEmpty) return;
-
-    final confirmed = await showDialog<bool>(
-          context: context,
-          builder: (dialogContext) => AlertDialog(
-            title: const Text('Excluir Guia Clínico?'),
-            content: Text(
-              'O registro "${guide.title}" será removido do Firestore. '
-              'O arquivo físico no Storage permanece preservado nesta '
-              'etapa e será tratado junto com a migração de upload.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: const Text('Cancelar'),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(dialogContext, true),
-                child: const Text('Excluir registro'),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-
-    if (!confirmed || !mounted) return;
-
-    setState(() {
-      _busyId = guide.id;
-      _actionError = null;
-    });
-
-    try {
-      await _AdminUsersRestLoader.deleteDocument(
-        'clinical_guides/${guide.id}',
-      );
-
-      if (!mounted) return;
-      setState(() {
-        _busyId = null;
-        _future = _load();
-      });
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _busyId = null;
-        _actionError = error.toString();
-      });
+    if (mounted) {
+      setState(
+          () => _actionError = 'GUIDE_DELETE_DISABLED — histórico preservado.');
     }
   }
 }
@@ -8518,10 +8590,6 @@ class _GuideData {
       ),
     );
   }
-
-  static DateTime dateOf(Map<String, dynamic> data) =>
-      _date(data['uploadedAt'] ?? data['createdAt']) ??
-      DateTime.fromMillisecondsSinceEpoch(0);
 
   static String _text(dynamic value) => value?.toString().trim() ?? '';
 
@@ -8798,16 +8866,6 @@ class _GuideOperationalCard extends StatelessWidget {
                     value: 'publish',
                     child: Text(
                       guide.isPublished ? 'Despublicar' : 'Publicar no CMS',
-                    ),
-                  ),
-                  const PopupMenuDivider(),
-                  const PopupMenuItem(
-                    value: 'delete',
-                    child: Text(
-                      'Excluir registro',
-                      style: TextStyle(
-                        color: Color(0xFFB42318),
-                      ),
                     ),
                   ),
                 ],
@@ -9167,8 +9225,7 @@ class _ErrorsHealthCenterSectionState
           if (status == 'investigating')
             'acknowledgedBy': widget.currentAdmin.uid,
           if (status == 'investigating') 'acknowledgedAt': DateTime.now(),
-          'resolvedBy':
-              status == 'resolved' ? widget.currentAdmin.uid : null,
+          'resolvedBy': status == 'resolved' ? widget.currentAdmin.uid : null,
           'resolvedAt': status == 'resolved' ? DateTime.now() : null,
         },
       );

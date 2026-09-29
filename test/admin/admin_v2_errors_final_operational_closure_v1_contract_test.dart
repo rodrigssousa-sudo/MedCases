@@ -7,7 +7,7 @@ void main() {
 
   final requiredAdmin = <String>[
     'ADMIN_V2_ERRORS_FINAL_OPERATIONAL_CLOSURE_V1',
-    'return _ErrorsHealthCenterSection(',
+    "table: 'incidents'",
     "const allowedStatuses = <String>{'open', 'investigating', 'resolved'};",
     "'Reabrir incidente'",
     "incident.status != 'open'",

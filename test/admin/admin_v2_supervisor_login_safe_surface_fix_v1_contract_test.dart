@@ -12,11 +12,7 @@ void main() {
     'ADMIN_V2_SUPERVISOR_LOGIN_SAFE_SURFACE_FIX_V1',
     'if (!admin.isAdmin && !admin.isSupervisor)',
     'Supervisor/Admin/Master',
-    'widget.currentAdmin.isSupervisor',
-    'for (final item in currentAdmin.isSupervisor',
-    'item.\$1 == _AdminSection.errors',
-    'item.\$1 == _AdminSection.communication',
-    'item.\$1 == _AdminSection.settings',
+    'readOnly: widget.currentAdmin.isSupervisor',
     "'SUPERVISOR'",
   ]) {
     if (!admin.contains(token)) {
@@ -59,7 +55,7 @@ void main() {
 
   print('ADMIN_V2_SUPERVISOR_LOGIN_SAFE_SURFACE_FIX_V1_CONTRACT=PASS');
   print('SUPERVISOR_LOGIN_ALLOWED=PASS');
-  print('SUPERVISOR_SURFACE_LIMITED=PASS');
+  print('SUPERVISOR_READ_ONLY_SURFACE=PASS');
   print('ADMIN_MASTER_ORIGINAL_NAV_PRESERVED=PASS');
   print('SUPERVISOR_ROLE_MODEL_UNCHANGED=PASS');
   print('SUPERVISOR_RULES_PRESERVED=PASS');

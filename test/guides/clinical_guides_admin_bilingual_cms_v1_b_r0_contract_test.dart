@@ -96,9 +96,9 @@ void main() {
     expect(source, contains('Publicar PT + ES'));
     expect(
       source,
-      contains("allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp']"),
+      contains("const ['jpg', 'jpeg', 'png', 'webp']"),
     );
-    expect(source, contains("allowedExtensions: const ['pdf']"));
+    expect(source, contains("const ['pdf']"));
 
     for (final type in const [
       "'heading'",
