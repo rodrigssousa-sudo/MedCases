@@ -309,8 +309,8 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                           isExpanded: true,
                           initialValue: value,
                           items: choices
-                              .map((v) =>
-                                  DropdownMenuItem(value: v, child: Text(v)))
+                              .map((v) => DropdownMenuItem(
+                                  value: v, child: Text(adminLabel(v))))
                               .toList(),
                           onChanged: (v) => update(() => value = v!)),
                       TextField(
@@ -361,8 +361,8 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                             'NEW_FEATURE_AVAILABLE',
                             'GLOBAL_ENGAGEMENT_REMINDER'
                           ]
-                              .map((e) =>
-                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .map((e) => DropdownMenuItem(
+                                  value: e, child: Text(adminLabel(e))))
                               .toList(),
                           onChanged: (v) => event = v!),
                       for (final k in [
@@ -543,7 +543,10 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                 'notification',
                 'sync',
                 'guide'
-              ].map((v) => DropdownMenuItem(value: v, child: Text(v))).toList(),
+              ]
+                  .map((v) =>
+                      DropdownMenuItem(value: v, child: Text(adminLabel(v))))
+                  .toList(),
               onChanged: (v) {
                 _jobType = v!;
                 _cursor = null;
