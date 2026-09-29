@@ -28,12 +28,15 @@ void main() {
                 table: 'credits',
                 title: 'Tempo adicional',
                 readOnly: false,
+                initialUser: const {
+                  'id': 'synthetic',
+                  'name': 'QA',
+                  'email': 'qa@example.invalid'
+                },
                 api: api))));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Conceder tempo'));
     await tester.pumpAndSettle();
-    await tester.enterText(
-        find.widgetWithText(TextField, 'UID do usuário'), 'synthetic');
     await tester.enterText(
         find.widgetWithText(TextField, 'Minutos adicionais'), '10');
     await tester.enterText(

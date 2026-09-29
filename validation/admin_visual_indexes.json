@@ -1,0 +1,10 @@
+{
+  "indexes": [
+    {"collectionGroup":"admin_ai_usage_events","queryScope":"COLLECTION","fields":[{"fieldPath":"mode","order":"ASCENDING"},{"fieldPath":"createdAt","order":"ASCENDING"}]},
+    {"collectionGroup":"admin_ai_usage_events","queryScope":"COLLECTION","fields":[{"fieldPath":"success","order":"ASCENDING"},{"fieldPath":"createdAt","order":"ASCENDING"}]},
+    {"collectionGroup":"admin_ai_usage_events","queryScope":"COLLECTION","fields":[{"fieldPath":"createdAt","order":"ASCENDING"},{"fieldPath":"durationMs","order":"ASCENDING"}]},
+    {"collectionGroup":"usageReservations","queryScope":"COLLECTION","fields":[{"fieldPath":"kinds","arrayConfig":"CONTAINS"},{"fieldPath":"state","order":"ASCENDING"},{"fieldPath":"createdAt","order":"ASCENDING"}]},
+    {"collectionGroup":"usageReservations","queryScope":"COLLECTION","fields":[{"fieldPath":"kinds","arrayConfig":"CONTAINS"},{"fieldPath":"state","order":"ASCENDING"},{"fieldPath":"createdAt","order":"ASCENDING"},{"fieldPath":"chargedMs","order":"ASCENDING"}]},
+    {"collectionGroup":"adminManualCredits","queryScope":"COLLECTION","fields":[{"fieldPath":"grantedAt","order":"ASCENDING"},{"fieldPath":"amountSeconds","order":"ASCENDING"}]}
+  ]
+}

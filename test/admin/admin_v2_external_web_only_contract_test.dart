@@ -8,7 +8,7 @@ void main() {
   final runtime = source.substring(source.indexOf('  Widget _buildSection()'), source.indexOf('class _AdminSidebar'));
   test('users and entitlement use metadata callable without billing writes', () {
     expect(runtime, contains("table: 'users'"));
-    expect(runtime, contains('Premium / VIP — somente leitura'));
+    expect(runtime, contains('Assinaturas & Planos'));
     expect(runtime, isNot(contains('return _UsersManagementSection(')));
     expect(runtime, isNot(contains('return _SubscriptionsRevenueSection(')));
   });

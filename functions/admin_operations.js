@@ -1,5 +1,6 @@
 'use strict';
 const {createHash}=require('node:crypto');
+const {Filter}=require('firebase-admin/firestore');
 const {createAdminControlCenter}=require('./admin_control_center');
 const digest=x=>createHash('sha256').update(x).digest('hex');
 const SPECS=Object.freeze({
@@ -17,7 +18,7 @@ const SPECS=Object.freeze({
  deploys:['adminDeploymentInventory','service revision commit status traffic createdAt'],
  notifications:['notificationDeliveries','notificationId state createdAt updatedAt reasonCode openedAt deepLinkSuccess'],
  notificationOutbox:['notificationOutbox','userId eventType resourceId createdAt'],
- campaigns:['adminEngagementDrafts','eventType status createdAt createdBy updatedAt maxPerWeek'],
+ campaigns:['adminEngagementDrafts','eventType status createdAt createdBy updatedAt maxPerWeek destination audience schedule'],
  guides:['clinical_guides','title version language status isPublished updatedAt uploadedAt uploadedBy reviewer reviewDate']
 });
 const SERVICES=['App backend','Firebase','Functions','Study primary','Study Luna fallback','Plantão','AssemblyAI','Storage','Notifications','Guide/CMS','content sync'];
@@ -30,14 +31,26 @@ function createAdminOperations({db,documentId='__name__',now=()=>Date.now(),getA
  const auth=createAdminControlCenter({db,documentId,now});
  async function page(uid,{table,limit=30,cursor,field,value}={}){
   await auth.authorize(uid);const spec=SPECS[table];if(!spec)throw Error('UNKNOWN_TABLE');if(!Number.isInteger(limit)||limit<1||limit>100)throw Error('INVALID_PAGE_SIZE');
+  if(table==='users'&&field==='auto'&&value){field=value.includes('@')?'email':'name';}
   let q=db.collection(spec[0]);
-  if(value){const allowed=table==='users'?['uid','email','name','status','plan']:table==='ai'?['mode']:table==='jobs'?['type']:[];if(!allowed.includes(field)||typeof value!=='string'||value.length>180)throw Error('INVALID_FILTER');q=q.where(field==='uid'?documentId:field,'==',value);}
+  if(value){const allowed=table==='users'?['uid','email','name','status','plan']:table==='ai'?['mode']:table==='jobs'?['type']:[];if(!allowed.includes(field)||typeof value!=='string'||value.length>180)throw Error('INVALID_FILTER');q=field==='name'?q.where(Filter.or(Filter.where('name','==',value),Filter.where('displayName','==',value))):q.where(field==='uid'?documentId:field,'==',value);}
   q=q.orderBy(documentId).limit(limit+1);if(cursor)q=q.startAfter(id(cursor));
   const result=await q.get(),docs=result.docs.slice(0,limit);
   const count=await db.collection(spec[0]).count().get();
   let metrics;
   if(table==='notifications'){const entries=await Promise.all(['sent','invalid_token','send_uncertain','sending'].map(async state=>[state,(await db.collection('notificationDeliveries').where('state','==',state).count().get()).data().count]));metrics={...Object.fromEntries(entries),devices:(await db.collection('notificationDevices').count().get()).data().count,opened:'UNKNOWN',deepLinkSuccess:'UNKNOWN'};}
-  return {...(metrics?{metrics}:{}),total:count.data().count,items:docs.map(d=>table==='users'?userProjection(d):projection(d,spec[1])),nextCursor:result.docs.length>limit?docs.at(-1).id:null,source:spec[0],sourceState:result.empty?'NO_RECORDS_SOURCE_UNVERIFIED':'AVAILABLE'};
+  const items=docs.map(d=>table==='users'?userProjection(d):projection(d,spec[1]));
+  if(table==='audit'){
+   const ids=[...new Set(items.flatMap(r=>[r.actorUid,r.targetType==='user'?r.targetId:null]).filter(Boolean))];
+   const chunks=await Promise.all([ids.slice(0,100),ids.slice(100)].filter(x=>x.length).map(ids=>identities(uid,{ids})));const map=new Map(chunks.flatMap(x=>x.items).map(u=>[u.id,u]));
+   for(const row of items){row.actorName=map.get(row.actorUid)?.name??null;row.targetName=map.get(row.targetId)?.name??null;}
+  }
+  return {...(metrics?{metrics}:{}),total:count.data().count,items,nextCursor:result.docs.length>limit?docs.at(-1).id:null,source:spec[0],sourceState:result.empty?'NO_RECORDS_SOURCE_UNVERIFIED':'AVAILABLE'};
+ }
+ async function identities(uid,{ids}={}){
+  await auth.authorize(uid);if(!Array.isArray(ids)||ids.length>100)throw Error('INVALID_IDS');const unique=[...new Set(ids.map(id))];
+  const docs=unique.length?await db.getAll(...unique.map(x=>db.collection('users').doc(x))):[];
+  return {items:docs.filter(d=>d.exists).map(d=>({id:d.id,name:d.data().name||d.data().displayName||'Usuário',email:d.data().email||null}))};
  }
  async function detail(uid,{userId}){
   await auth.authorize(uid);id(userId);const ref=db.collection('users').doc(userId),snap=await ref.get();if(!snap.exists)throw Error('NOT_FOUND');
@@ -97,13 +110,14 @@ function createAdminOperations({db,documentId='__name__',now=()=>Date.now(),getA
    }else{
     if(!['NEW_FEATURE_AVAILABLE','GLOBAL_ENGAGEMENT_REMINDER'].includes(input.eventType))throw Error('INVALID_EVENT');
     for(const lang of ['pt','es']){const text=input[lang];if(!text||typeof text.title!=='string'||!text.title.trim()||text.title.length>120||typeof text.body!=='string'||!text.body.trim()||text.body.length>500)throw Error('PT_ES_REQUIRED');}
+    for(const field of ['destination','audience','schedule'])if(input[field]!==undefined&&(typeof input[field]!=='string'||input[field].length>500))throw Error('INVALID_DRAFT_FIELD');
     ref=db.collection('adminEngagementDrafts').doc(targetId);const s=await tx.get(ref);if(s.exists&&s.data().status!=='DRAFT')throw Error('CAMPAIGN_NOT_DRAFT');before={status:s.exists?s.data().status:'ABSENT'};
-    after={eventType:input.eventType,pt:{title:input.pt.title,body:input.pt.body},es:{title:input.es.title,body:input.es.body},status:'DRAFT',maxPerWeek:3,respectOptOut:true,respectQuietHours:true,respectLocale:true,dispatchEnabled:false,createdAt:s.exists?s.data().createdAt:time,createdBy:s.exists?s.data().createdBy:uid,updatedAt:time};targetType='campaign';
+    after={destination:input.destination||'Home',audience:input.audience||'',schedule:input.schedule||'',eventType:input.eventType,pt:{title:input.pt.title,body:input.pt.body},es:{title:input.es.title,body:input.es.body},status:'DRAFT',maxPerWeek:3,respectOptOut:true,respectQuietHours:true,respectLocale:true,dispatchEnabled:false,createdAt:s.exists?s.data().createdAt:time,createdBy:s.exists?s.data().createdBy:uid,updatedAt:time};targetType='campaign';
    }
    const result={targetId,action,status:after.status??'UPDATED'};
    tx.set(ref,after,{merge:true});tx.create(db.collection('adminControlAudit').doc(key),{actorUid:uid,action,targetType,targetId,reason:reason.trim(),beforeMetadata:before,afterMetadata:targetType==='configuration'?{enabled:after.enabled??null,active:after.active??null,version:after.version??null}:action==='saveCampaignDraft'?{status:'DRAFT',eventType:after.eventType,maxPerWeek:3}:after,timestamp:time,requestId});tx.create(req,{fingerprint,result,createdAt:time});return result;
   });
  }
- return {page,detail,overview,mutate};
+ return {page,detail,overview,mutate,identities};
 }
 module.exports={createAdminOperations,SPECS,SERVICES,projection,userProjection};

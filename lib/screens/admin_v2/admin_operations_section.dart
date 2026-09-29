@@ -1,4 +1,7 @@
 import 'dart:math';
+import 'admin_visual_widgets.dart';
+import 'admin_dashboard_section.dart';
+import 'control_center_section.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
@@ -19,10 +22,12 @@ class AdminOperationsSection extends StatefulWidget {
       required this.title,
       this.readOnly = true,
       this.master = false,
-      this.api});
+      this.api,
+      this.creditApi});
   final String table, title;
   final bool readOnly, master;
   final AdminOperationsApi? api;
+  final AdminControlApi? creditApi;
   @override
   State<AdminOperationsSection> createState() => _AdminOperationsSectionState();
 }
@@ -30,7 +35,7 @@ class AdminOperationsSection extends StatefulWidget {
 class _AdminOperationsSectionState extends State<AdminOperationsSection> {
   late final _api = widget.api ?? AdminOperationsApi();
   final _search = TextEditingController();
-  String _field = 'email';
+  String _field = 'auto';
   String _jobType = 'transcription';
   String get _table => widget.table == 'jobs' && _jobType == 'transcription'
       ? 'transcriptions'
@@ -80,7 +85,6 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
   }
 
   void _reload() => setState(_load);
-  String _text(dynamic x) => x == null ? 'UNKNOWN' : x.toString();
   Future<void> _detail(Map<String, dynamic> row) async {
     await showDialog<void>(
         context: context,
@@ -93,24 +97,127 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                         builder: (context, s) {
                           if (s.hasError)
                             return const Text(
-                                'USER_DETAIL_UNAVAILABLE — tente novamente.');
+                                'Não foi possível carregar o perfil. Tente novamente.');
                           if (!s.hasData)
                             return const Center(
                                 child: CircularProgressIndicator());
+                          final d = s.data!;
                           return SingleChildScrollView(
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
-                                  children: s.data!.entries
-                                      .map((e) => SelectableText(
-                                          '${e.key}: ${_text(e.value)}'))
-                                      .toList()));
+                                  children: [
+                                Text(
+                                    adminText(d['name'] ?? d['displayName'],
+                                        'Usuário'),
+                                    style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold)),
+                                Text(adminText(d['email'])),
+                                const SizedBox(height: 12),
+                                Wrap(spacing: 8, children: [
+                                  AdminBadge(d['entitlementLabel']),
+                                  AdminBadge(d['status'])
+                                ]),
+                                const SizedBox(height: 20),
+                                AdminKpis({
+                                  'Plano atual':
+                                      adminText(d['entitlementLabel']),
+                                  'Transcrição disponível':
+                                      'Consultar saldo no app',
+                                  'Tempo extra':
+                                      adminMinutes(d['manualAvailableSeconds']),
+                                  'Uso manual mensal': d['manualConsumedMs']
+                                          is num
+                                      ? adminMinutes(
+                                          (d['manualConsumedMs'] as num) / 1000)
+                                      : 'Sem dados',
+                                  'Último acesso': adminDate(d['lastSeenAt']),
+                                  'Dispositivos': adminText(d['deviceCount'])
+                                }),
+                                const SizedBox(height: 20),
+                                Wrap(spacing: 8, runSpacing: 8, children: [
+                                  if (!widget.readOnly)
+                                    FilledButton.icon(
+                                        onPressed: () => _userCredits(
+                                            d, 'credits',
+                                            grant: true),
+                                        icon: const Icon(Icons.more_time),
+                                        label: const Text('Conceder tempo')),
+                                  OutlinedButton(
+                                      onPressed: () =>
+                                          _userCredits(d, 'ledger'),
+                                      child: const Text('Ver uso')),
+                                  OutlinedButton(
+                                      onPressed: () =>
+                                          _userCredits(d, 'credits'),
+                                      child: const Text('Ver histórico')),
+                                  OutlinedButton(
+                                      onPressed: () =>
+                                          _userCredits(d, 'ledger'),
+                                      child: const Text('Ver auditoria')),
+                                  if (!widget.readOnly)
+                                    OutlinedButton(
+                                        onPressed: () => _change(
+                                            d,
+                                            'setUserStatus',
+                                            ['approved', 'blocked', 'pending']),
+                                        child: const Text('Atualizar status')),
+                                  if (widget.master && !widget.readOnly)
+                                    OutlinedButton(
+                                        onPressed: () => _change(
+                                            d,
+                                            'setUserRole',
+                                            ['user', 'supervisor', 'admin']),
+                                        child: const Text('Permissões')),
+                                  const Tooltip(
+                                      message:
+                                          'VIP não possui contrato de concessão administrativa habilitado. RevenueCat permanece inalterado.',
+                                      child: OutlinedButton(
+                                          onPressed: null,
+                                          child:
+                                              Text('Conceder / remover VIP')))
+                                ]),
+                                const SizedBox(height: 12),
+                                const Text(
+                                    'VIP: condição interna separada. Este painel não altera cobrança ou assinatura.'),
+                                AdminTechnical(d)
+                              ]));
                         })),
                 actions: [
                   TextButton(
                       onPressed: () => Navigator.pop(ctx),
                       child: const Text('Fechar'))
                 ]));
+  }
+
+  Future<void> _userCredits(Map<String, dynamic> user, String table,
+      {bool grant = false}) async {
+    await showDialog<void>(
+        context: context,
+        builder: (ctx) => Dialog(
+            child: SizedBox(
+                width: 1000,
+                height: 650,
+                child: Column(children: [
+                  Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                          tooltip: 'Fechar',
+                          onPressed: () => Navigator.pop(ctx),
+                          icon: const Icon(Icons.close))),
+                  Expanded(
+                      child: ControlCenterSection(
+                          table: table,
+                          title: table == 'credits'
+                              ? 'Tempo adicional'
+                              : 'Histórico de uso',
+                          readOnly: widget.readOnly,
+                          initialUser: user,
+                          autoOpenGrant: grant,
+                          operationsApi: _api,
+                          api: widget.creditApi))
+                ]))));
   }
 
   Future<void> _change(
@@ -122,8 +229,10 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
             builder: (ctx, update) => AlertDialog(
                     title: const Text('Alteração administrativa'),
                     content: Column(mainAxisSize: MainAxisSize.min, children: [
-                      Text('Destino: ${row['id']}'),
+                      Text(
+                          'Usuário: ${adminText(row['name'] ?? row['displayName'] ?? row['email'], 'Selecionado')}'),
                       DropdownButtonFormField<String>(
+                          isExpanded: true,
                           initialValue: value,
                           items: choices
                               .map((v) =>
@@ -172,6 +281,7 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                         child:
                             Column(mainAxisSize: MainAxisSize.min, children: [
                       DropdownButtonFormField<String>(
+                          isExpanded: true,
                           initialValue: event,
                           items: [
                             'NEW_FEATURE_AVAILABLE',
@@ -186,12 +296,26 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                         'ptBody',
                         'esTitle',
                         'esBody',
+                        'destination',
+                        'audience',
+                        'schedule',
                         'reason'
                       ])
                         TextField(
                             onChanged: (v) => values[k] = v,
                             maxLength: k.endsWith('Title') ? 120 : 500,
-                            decoration: InputDecoration(labelText: k)),
+                            decoration: InputDecoration(
+                                labelText: const {
+                              'ptTitle': 'Título PT',
+                              'ptBody': 'Mensagem PT',
+                              'esTitle': 'Título ES',
+                              'esBody': 'Mensagem ES',
+                              'destination':
+                                  'Destino (Home, Feature ou deep link)',
+                              'audience': 'Público pretendido',
+                              'schedule': 'Agenda pretendida (opcional)',
+                              'reason': 'Justificativa'
+                            }[k])),
                       const Text(
                           'Limite 3/semana/dispositivo; opt-out, silêncio e idioma obrigatórios. Disparo desativado.'),
                     ]))),
@@ -208,6 +332,9 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
       'action': 'saveCampaignDraft',
       'targetId': DateTime.now().microsecondsSinceEpoch.toString(),
       'eventType': event,
+      'destination': values['destination'] ?? 'Home',
+      'audience': values['audience'] ?? '',
+      'schedule': values['schedule'] ?? '',
       'reason': values['reason'] ?? '',
       'pt': {'title': values['ptTitle'] ?? '', 'body': values['ptBody'] ?? ''},
       'es': {'title': values['esTitle'] ?? '', 'body': values['esBody'] ?? ''}
@@ -257,31 +384,82 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
         Row(children: [
           Expanded(
               child: Text(widget.title,
-                  style: Theme.of(context).textTheme.headlineSmall)),
+                  style: const TextStyle(
+                      fontSize: 26, fontWeight: FontWeight.w700))),
           IconButton(
               tooltip: 'Atualizar',
               onPressed: _reload,
               icon: const Icon(Icons.refresh))
         ]),
-        const Text(
-            'Metadados operacionais. Ausência de fonte ou sinal verificado é apresentada como UNKNOWN.'),
-        if (['pathologies', 'drugs'].contains(widget.table))
-          const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                  'Somente leitura da fonte canônica. Sem upload, publicação clínica ou autorização de cálculo por este painel.')),
-        if (widget.table == 'campaigns')
+        const SizedBox(height: 8),
+        if (widget.table == 'ai') ...[
           const Text(
-              'Rascunhos PT/ES; envio desativado até integração verificada de opt-out, horário silencioso e limite de 3 por semana/dispositivo.'),
-        if (widget.table == 'jobs')
+              'Eventos históricos observados. Os modelos abaixo não definem a configuração ativa.'),
+          const AdminDashboardSection(compact: true),
+          DropdownButtonFormField<String>(
+              isExpanded: true,
+              items: ['home', 'study', 'plantao']
+                  .map((v) =>
+                      DropdownMenuItem(value: v, child: Text(v.toUpperCase())))
+                  .toList(),
+              decoration: const InputDecoration(labelText: 'Modo'),
+              onChanged: (v) {
+                _field = 'mode';
+                _search.text = v!;
+                _cursor = null;
+                _reload();
+              })
+        ],
+        if (widget.table == 'users')
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Wrap(spacing: 12, runSpacing: 12, children: [
+                SizedBox(
+                    width: 360,
+                    child: TextField(
+                        controller: _search,
+                        decoration: const InputDecoration(
+                            labelText: 'Buscar por nome ou e-mail',
+                            prefixIcon: Icon(Icons.search)),
+                        onSubmitted: (_) {
+                          _cursor = null;
+                          _reload();
+                        })),
+                FilledButton(
+                    onPressed: () {
+                      _cursor = null;
+                      _reload();
+                    },
+                    child: const Text('Buscar')),
+                SizedBox(
+                    width: 210,
+                    child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        initialValue: _field,
+                        decoration:
+                            const InputDecoration(labelText: 'Busca avançada'),
+                        items: const [
+                          DropdownMenuItem(
+                              value: 'auto', child: Text('Nome ou e-mail')),
+                          DropdownMenuItem(value: 'uid', child: Text('UID')),
+                          DropdownMenuItem(
+                              value: 'status', child: Text('Status')),
+                          DropdownMenuItem(value: 'plan', child: Text('Plano'))
+                        ],
+                        onChanged: (v) => setState(() => _field = v!)))
+              ])),
+        if (widget.table == 'campaigns') ...[
           const Text(
-              'Inspeção de metadados. Ações de execução ficam indisponíveis quando o owner do job não fornece contrato administrativo idempotente.'),
-        if (widget.table == 'campaigns' && !widget.readOnly)
-          TextButton(
-              onPressed: _busy || _pending != null ? null : _campaign,
-              child: const Text('Novo rascunho PT/ES')),
+              'Campanhas bilíngues · até 3 por semana/dispositivo · envio ainda desativado'),
+          if (!widget.readOnly)
+            TextButton.icon(
+                onPressed: _busy || _pending != null ? null : _campaign,
+                icon: const Icon(Icons.add),
+                label: const Text('Nova campanha'))
+        ],
         if (widget.table == 'jobs')
           DropdownButtonFormField<String>(
+              isExpanded: true,
               initialValue: _jobType,
               items: [
                 'transcription',
@@ -303,50 +481,6 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
               trailing: TextButton(
                   onPressed: _busy ? null : () => _mutate({}),
                   child: const Text('Confirmar resultado'))),
-        if (widget.table == 'ai')
-          DropdownButtonFormField<String>(
-              items: ['home', 'study', 'plantao']
-                  .map((v) =>
-                      DropdownMenuItem(value: v, child: Text(v.toUpperCase())))
-                  .toList(),
-              decoration: const InputDecoration(labelText: 'Modo'),
-              onChanged: (v) {
-                _field = 'mode';
-                _search.text = v!;
-                _cursor = null;
-                _reload();
-              }),
-        if (widget.table == 'users')
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Wrap(spacing: 16, runSpacing: 12, children: [
-                SizedBox(
-                    width: 170,
-                    child: DropdownButtonFormField<String>(
-                        initialValue: _field,
-                        items: ['uid', 'email', 'name', 'status', 'plan']
-                            .map((v) =>
-                                DropdownMenuItem(value: v, child: Text(v)))
-                            .toList(),
-                        onChanged: (v) => setState(() => _field = v!))),
-                SizedBox(
-                    width: 380,
-                    child: TextField(
-                        controller: _search,
-                        decoration: const InputDecoration(
-                            labelText:
-                                'Busca exata — UID, email, nome, status ou plano'),
-                        onSubmitted: (_) {
-                          _cursor = null;
-                          _reload();
-                        })),
-                FilledButton(
-                    onPressed: () {
-                      _cursor = null;
-                      _reload();
-                    },
-                    child: const Text('Buscar'))
-              ])),
         FutureBuilder<Map<String, dynamic>>(
             future: _page,
             builder: (context, s) {
@@ -354,114 +488,260 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                 return const Padding(
                     padding: EdgeInsets.all(24),
                     child: Text(
-                        'ADMIN_READ_UNAVAILABLE — atualize para tentar novamente.'));
+                        'Não foi possível atualizar os dados. Tente novamente.'));
               if (!s.hasData)
                 return const Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Center(child: CircularProgressIndicator()));
+                    padding: EdgeInsets.all(32),
+                    child: LinearProgressIndicator());
               final d = s.data!,
-                  rows = List<Map<String, dynamic>>.from((_overview
-                          ? d['services']
-                          : d['items'] as dynamic ?? <dynamic>[])
-                      .map((dynamic r) => Map<String, dynamic>.from(r as Map)));
+                  rows = List<Map<String, dynamic>>.from(
+                      ((_overview ? d['services'] : d['items']) as List? ?? [])
+                          .map((x) => Map<String, dynamic>.from(x as Map)));
+              final users = widget.table == 'users';
               return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (d['metrics'] is Map) ...[
-                      for (final e in (d['metrics'] as Map).entries)
-                        Text('${e.key}: ${e.value}')
-                    ],
-                    if (_overview) Text('Usuários: ${d['users']}'),
-                    if (!_overview)
-                      Text(
-                          'Fonte: ${d['source']} · ${d['sourceState']} · Total: ${d['total'] ?? 'UNKNOWN'}'),
+                    if (_overview)
+                      AdminKpis({
+                        'Serviços saudáveis': rows
+                            .where((r) => r['state'] == 'HEALTHY')
+                            .length
+                            .toString(),
+                        'Serviços degradados': rows
+                            .where((r) => r['state'] == 'DEGRADED')
+                            .length
+                            .toString(),
+                        'Sem sinal recente': rows
+                            .where((r) => r['state'] == 'UNKNOWN')
+                            .length
+                            .toString()
+                      }),
                     if (rows.isEmpty)
-                      const Padding(
-                          padding: EdgeInsets.all(24),
-                          child: Text(
-                              'Nenhum registro disponível. Integração/estado: UNKNOWN até haver fonte verificada.')),
-                    for (final row in rows)
+                      Padding(
+                          padding: const EdgeInsets.all(40),
+                          child: Column(children: [
+                            const Icon(Icons.inbox_outlined,
+                                size: 36, color: Color(0xff94a3b8)),
+                            const SizedBox(height: 12),
+                            Text(widget.table == 'incidents'
+                                ? 'Nenhum incidente registrado.'
+                                : widget.table == 'campaigns'
+                                    ? 'Nenhuma campanha criada ainda.'
+                                    : users
+                                        ? 'Nenhum usuário neste filtro.'
+                                        : 'Sem dados disponíveis'),
+                            const Text(
+                                'Atualize ou ajuste os filtros para consultar novamente.',
+                                style: TextStyle(color: Color(0xff64748b)))
+                          ])),
+                    if (rows.isNotEmpty)
                       Card(
-                          child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    for (final e in row.entries)
-                                      SelectableText(
-                                          '${e.key}: ${_text(e.value)}'),
-                                    if (widget.table == 'users')
-                                      Wrap(spacing: 8, children: [
-                                        TextButton(
-                                            onPressed: () => _detail(row),
-                                            child: const Text('Detalhe e uso')),
-                                        if (!widget.readOnly) ...[
-                                          TextButton(
-                                              onPressed:
-                                                  _busy || _pending != null
-                                                      ? null
-                                                      : () => _change(row,
-                                                              'setUserStatus', [
-                                                            'approved',
-                                                            'blocked',
-                                                            'pending'
-                                                          ]),
-                                              child: const Text('Status')),
-                                          if (widget.master)
-                                            TextButton(
-                                                onPressed:
-                                                    _busy || _pending != null
-                                                        ? null
-                                                        : () => _change(row,
-                                                                'setUserRole', [
-                                                              'user',
-                                                              'supervisor',
-                                                              'admin'
-                                                            ]),
-                                                child: const Text('Papel'))
-                                        ]
-                                      ]),
-                                    if (_table == 'transcriptions' &&
-                                        !widget.readOnly &&
-                                        row['state'] == 'retryable_error')
-                                      TextButton(
-                                          onPressed: _busy || _pending != null
-                                              ? null
-                                              : () => _change(
-                                                  row,
-                                                  'retryTranscription',
-                                                  ['Retomar job existente']),
-                                          child: const Text(
-                                              'Solicitar retomada segura')),
-                                    if (widget.table == 'incidents' &&
-                                        !widget.readOnly)
-                                      TextButton(
-                                          onPressed: _busy || _pending != null
-                                              ? null
-                                              : () => _change(
-                                                      row, 'setIncidentState', [
-                                                    'open',
-                                                    'acknowledged',
-                                                    'resolved'
-                                                  ]),
-                                          child:
-                                              const Text('Atualizar incidente'))
-                                  ]))),
-                    if (d['nextCursor'] != null)
-                      TextButton(
-                          onPressed: () {
-                            _cursor = d['nextCursor'] as String;
-                            _reload();
-                          },
-                          child: const Text('Próxima página')),
-                    if (_cursor != null)
-                      TextButton(
-                          onPressed: () {
-                            _cursor = null;
-                            _reload();
-                          },
-                          child: const Text('Primeira página'))
+                          color: Colors.white,
+                          child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: DataTable(
+                                  headingRowColor: const WidgetStatePropertyAll(
+                                      Color(0xfff1f5f9)),
+                                  columns: [
+                                    if (users)
+                                      ...[
+                                        'Nome',
+                                        'E-mail',
+                                        'Plano',
+                                        'Status',
+                                        'Último acesso',
+                                        'Uso',
+                                        'Ações'
+                                      ].map((x) => DataColumn(label: Text(x)))
+                                    else
+                                      ..._columns().map(
+                                          (x) => DataColumn(label: Text(x)))
+                                  ],
+                                  rows: rows
+                                      .map((r) => DataRow(
+                                          cells: users
+                                              ? [
+                                                  DataCell(Text(adminText(
+                                                      r['name'] ??
+                                                          r['displayName'],
+                                                      'Usuário'))),
+                                                  DataCell(Text(
+                                                      adminText(r['email']))),
+                                                  DataCell(AdminBadge(
+                                                      r['entitlementLabel'] ??
+                                                          r['plan'])),
+                                                  DataCell(
+                                                      AdminBadge(r['status'])),
+                                                  DataCell(Text(adminDate(
+                                                      r['lastSeenAt']))),
+                                                  DataCell(TextButton(
+                                                      onPressed: () =>
+                                                          _detail(r),
+                                                      child: const Text(
+                                                          'Ver uso'))),
+                                                  DataCell(TextButton(
+                                                      onPressed: () =>
+                                                          _detail(r),
+                                                      child: const Text('Ver')))
+                                                ]
+                                              : _cells(r)))
+                                      .toList()))),
+                    const SizedBox(height: 16),
+                    Wrap(spacing: 12, children: [
+                      if (_cursor != null)
+                        TextButton(
+                            onPressed: () {
+                              _cursor = null;
+                              _reload();
+                            },
+                            child: const Text('Primeira página')),
+                      if (d['nextCursor'] != null)
+                        OutlinedButton(
+                            onPressed: () {
+                              _cursor = d['nextCursor'] as String;
+                              _reload();
+                            },
+                            child: const Text('Próxima página'))
+                    ]),
+                    AdminTechnical({
+                      'source': d['source'],
+                      'sourceState': d['sourceState'],
+                      'total': d['total']
+                    })
                   ]);
             })
       ]);
+  List<String> _columns() => widget.table == 'ai'
+      ? [
+          'Modo',
+          'Provider',
+          'Modelo · histórico',
+          'Latência',
+          'Status',
+          'Horário',
+          'Detalhes'
+        ]
+      : widget.table == 'audit'
+          ? ['Data', 'Administrador', 'Ação', 'Usuário', 'Detalhes']
+          : ['pathologies', 'drugs'].contains(widget.table)
+              ? [
+                  'Nome',
+                  'Idiomas',
+                  'Versão',
+                  'Status',
+                  'Revisor',
+                  'Atualização',
+                  'Detalhes'
+                ]
+              : widget.table == 'incidents'
+                  ? [
+                      'Serviço',
+                      'Ocorrência',
+                      'Quantidade',
+                      'Última ocorrência',
+                      'Status',
+                      'Ações'
+                    ]
+                  : ['Nome / serviço', 'Status', 'Atualização', 'Ações'];
+  List<DataCell> _cells(Map<String, dynamic> r) {
+    final detail = DataCell(TextButton(
+        onPressed: () => showDialog<void>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                    title: const Text('Detalhes'),
+                    content: SizedBox(
+                        width: 650,
+                        child: SingleChildScrollView(child: AdminTechnical(r))),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Fechar'))
+                    ])),
+        child: const Text('Ver metadata')));
+    if (widget.table == 'ai')
+      return [
+        DataCell(Text(adminText(r['mode'], 'Não informado'))),
+        DataCell(Text(adminText(r['provider']))),
+        DataCell(Text(adminText(r['model']))),
+        DataCell(Text(r['durationMs'] is num
+            ? '${((r['durationMs'] as num) / 1000).toStringAsFixed(1)} s'
+            : 'Sem dados')),
+        DataCell(AdminBadge(r['success'] ?? r['status'])),
+        DataCell(Text(adminDate(r['createdAt']))),
+        detail
+      ];
+    if (widget.table == 'audit')
+      return [
+        DataCell(Text(adminDate(r['timestamp']))),
+        DataCell(Text(adminText(r['actorName'], 'Administrador'))),
+        DataCell(Text(adminLabel(r['action']))),
+        DataCell(Text(adminText(r['targetName'], '—'))),
+        detail
+      ];
+    if (widget.table == 'incidents')
+      return [
+        DataCell(Text(
+            adminText(r['service'] ?? r['module'], 'Serviço não informado'))),
+        DataCell(Text(RegExp(r'^HTTP[_ ]?\d{3}$')
+                .hasMatch(r['errorCode']?.toString() ?? '')
+            ? r['errorCode'].toString().replaceAll('_', ' ')
+            : 'Ocorrência técnica')),
+        DataCell(Text(adminText(r['count'] ?? r['frequency']))),
+        DataCell(Text(
+            adminDate(r['lastSeenAt'] ?? r['lastSeen'] ?? r['updatedAt']))),
+        DataCell(AdminBadge(r['status'])),
+        DataCell(Row(children: [
+          detail.child,
+          if (!widget.readOnly)
+            TextButton(
+                onPressed: () => _change(r, 'setIncidentState',
+                    ['open', 'acknowledged', 'resolved']),
+                child: const Text('Investigar'))
+        ]))
+      ];
+    if (['pathologies', 'drugs'].contains(widget.table))
+      return [
+        DataCell(Text(adminText(r['namePt'] ?? r['nameEs']))),
+        DataCell(Text([
+          if (r['namePt'] != null) 'PT',
+          if (r['nameEs'] != null) 'ES'
+        ].join(' / '))),
+        DataCell(Text(adminText(r['version']))),
+        DataCell(AdminBadge(r['status'] ?? r['syncStatus'])),
+        DataCell(Text(adminText(r['reviewer']))),
+        DataCell(Text(adminDate(r['lastUpdated']))),
+        detail
+      ];
+    return [
+      DataCell(Text(adminText(
+          r['namePt'] ??
+              r['nameEs'] ??
+              r['service'] ??
+              r['title'] ??
+              r['type'] ??
+              r['platform'] ??
+              r['provider'],
+          _table == 'transcriptions' ? 'Gravação' : 'Registro'))),
+      DataCell(AdminBadge(r['status'] ?? r['state'] ?? r['syncStatus'])),
+      DataCell(Text(adminDate(r['updatedAt'] ??
+          r['lastUpdated'] ??
+          r['createdAt'] ??
+          r['observedAt']))),
+      DataCell(Row(children: [
+        detail.child,
+        if (widget.table == 'incidents' && !widget.readOnly)
+          TextButton(
+              onPressed: () => _change(
+                  r, 'setIncidentState', ['open', 'acknowledged', 'resolved']),
+              child: const Text('Investigar')),
+        if (_table == 'transcriptions' &&
+            !widget.readOnly &&
+            r['state'] == 'retryable_error')
+          TextButton(
+              onPressed: () =>
+                  _change(r, 'retryTranscription', ['Retomar job existente']),
+              child: const Text('Retomar'))
+      ]))
+    ];
+  }
 }

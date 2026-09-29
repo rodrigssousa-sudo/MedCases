@@ -24,14 +24,14 @@ void main() {
     "(_AdminSection.dashboard, Icons.dashboard_outlined, 'Dashboard')",
     "(_AdminSection.users, Icons.group_outlined, 'Usuários')",
     "(_AdminSection.subscriptions, Icons.credit_card_outlined, 'Assinaturas')",
-    "(_AdminSection.aiCosts, Icons.auto_awesome_outlined, 'IA & Custos')",
-    "(_AdminSection.errors, Icons.monitor_heart_outlined, 'Erros')",
+    "(_AdminSection.aiCosts, Icons.insights_outlined, 'IA & Custos')",
+    "(_AdminSection.errors, Icons.monitor_heart_outlined, 'Erros & Saúde')",
     "(_AdminSection.content, Icons.menu_book_outlined, 'Conteúdo')",
-    "(_AdminSection.communication, Icons.campaign_outlined, 'Comunicação')",
+    "(_AdminSection.communication, Icons.notifications_outlined, 'Comunicação')",
     "(_AdminSection.audit, Icons.fact_check_outlined, 'Auditoria')",
     "(_AdminSection.settings, Icons.settings_outlined, 'Configurações')",
   ]) {
-    if (!admin.contains(token)) {
+    if (!admin.replaceAll(RegExp(r'\s+'), '').contains(token.replaceAll(RegExp(r'\s+'), ''))) {
       throw StateError('Original Admin/Master nav lost: $token');
     }
   }

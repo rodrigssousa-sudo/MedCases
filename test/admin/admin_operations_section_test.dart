@@ -14,6 +14,14 @@ class FakeApi extends AdminOperationsApi {
       throw Exception('network');
     }
     if (op == 'mutate') return {'status': 'UPDATED'};
+    if (op == 'detail')
+      return {
+        'id': 'fixture',
+        'name': 'QA',
+        'email': 'qa@example.invalid',
+        'status': 'pending',
+        'role': 'user'
+      };
     if (op == 'overview')
       return {
         'users': 1,
@@ -42,8 +50,8 @@ void main() {
                 table: 'users', title: 'Users', api: api))));
     await t.pumpAndSettle();
     expect(find.text('Papel'), findsNothing);
-    expect(find.text('Status'), findsNothing);
-    expect(find.text('Detalhe e uso'), findsOneWidget);
+    expect(find.text('Atualizar status'), findsNothing);
+    expect(find.text('Ver'), findsOneWidget);
   });
   testWidgets('server cursor and exact search sent to backend', (t) async {
     final api = FakeApi();
@@ -84,10 +92,16 @@ void main() {
             body: AdminOperationsSection(
                 table: 'users', title: 'Users', readOnly: false, api: api))));
     await t.pumpAndSettle();
-    await t.tap(find.text('Status'));
+    await t.ensureVisible(find.text('Ver'));
+    await t.tap(find.text('Ver'));
+    await t.pumpAndSettle();
+    await t.ensureVisible(find.text('Atualizar status'));
+    await t.tap(find.text('Atualizar status'));
     await t.pumpAndSettle();
     await t.enterText(find.byType(TextField).last, 'Synthetic support');
     await t.tap(find.text('Confirmar'));
+    await t.pumpAndSettle();
+    await t.tap(find.text('Fechar'));
     await t.pumpAndSettle();
     final first = api.calls.firstWhere((r) => r['operation'] == 'mutate');
     await t.tap(find.text('Confirmar resultado'));
@@ -106,7 +120,7 @@ void main() {
                 readOnly: false,
                 api: api))));
     await t.pumpAndSettle();
-    expect(find.text('Novo rascunho PT/ES'), findsOneWidget);
+    expect(find.text('Nova campanha'), findsOneWidget);
     expect(find.text('Enviar'), findsNothing);
   });
 }

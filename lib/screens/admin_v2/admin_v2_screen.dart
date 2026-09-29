@@ -1,3 +1,7 @@
+import 'admin_dashboard_section.dart';
+import 'admin_overview_cards.dart';
+import 'admin_visual_widgets.dart';
+import 'admin_workspace_tabs.dart';
 import 'admin_notifications_section.dart';
 import 'admin_operations_section.dart';
 import 'control_center_section.dart';
@@ -339,9 +343,7 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
   @override
   void initState() {
     super.initState();
-    _section = widget.currentAdmin.isSupervisor
-        ? _AdminSection.errors
-        : _AdminSection.dashboard;
+    _section = _AdminSection.dashboard;
   }
 
   bool get _isMaster => widget.currentAdmin.isMaster;
@@ -405,12 +407,25 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
             readOnly: widget.currentAdmin.isSupervisor,
             master: _isMaster);
       case _AdminSection.transcriptionMetadata:
-        return AdminOperationsSection(
-            key: const ValueKey('transcriptionMetadata'),
-            table: 'transcriptions',
-            title: 'Transcrições',
-            readOnly: widget.currentAdmin.isSupervisor,
-            master: _isMaster);
+        return AdminWorkspaceTabs(labels: const [
+          'Transcrições',
+          'Créditos',
+          'Histórico',
+          'Auditoria de tempo'
+        ], children: [
+          AdminOperationsSection(
+              table: 'transcriptions',
+              title: 'Transcrições',
+              readOnly: widget.currentAdmin.isSupervisor),
+          ControlCenterSection(
+              table: 'credits',
+              title: 'Tempo adicional',
+              readOnly: widget.currentAdmin.isSupervisor),
+          const ControlCenterSection(
+              table: 'ledger', title: 'Histórico de tempo'),
+          const ControlCenterSection(
+              table: 'audit', title: 'Auditoria de tempo')
+        ]);
       case _AdminSection.releaseInventory:
         return AdminOperationsSection(
             key: const ValueKey('releaseInventory'),
@@ -460,13 +475,19 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
             readOnly: true);
 
       case _AdminSection.dashboard:
-        return const AdminOperationsSection(
-            table: 'overview', title: 'Dashboard');
+        return const SingleChildScrollView(child: AdminDashboardSection());
       case _AdminSection.errors:
-        return AdminOperationsSection(
-            table: 'incidents',
-            title: 'Incidentes',
-            readOnly: widget.currentAdmin.isSupervisor);
+        return AdminWorkspaceTabs(labels: const [
+          'Incidentes',
+          'Saúde dos serviços'
+        ], children: [
+          AdminOperationsSection(
+              table: 'incidents',
+              title: 'Erros & Saúde',
+              readOnly: widget.currentAdmin.isSupervisor),
+          const AdminOperationsSection(
+              table: 'health', title: 'Saúde dos serviços')
+        ]);
       // ADMIN_V2_SUPPORT_TICKET_FOUNDATION_V2_B_R1
       case _AdminSection.support:
         return SupportAdminSection(
@@ -476,8 +497,12 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
         return const AdminOperationsSection(
             table: 'ai', title: 'IA — HOME / STUDY / PLANTAO');
       case _AdminSection.subscriptions:
-        return const AdminOperationsSection(
-            table: 'users', title: 'Premium / VIP — somente leitura');
+        return const Column(children: [
+          AdminOverviewCards(content: false),
+          Expanded(
+              child: AdminOperationsSection(
+                  table: 'users', title: 'Assinaturas & Planos'))
+        ]);
       case _AdminSection.users:
         return AdminOperationsSection(
             table: 'users',
@@ -485,14 +510,42 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
             readOnly: widget.currentAdmin.isSupervisor,
             master: _isMaster);
       case _AdminSection.content:
-        return _ContentGuidesSection(
-          currentAdmin: widget.currentAdmin,
-        );
+        return AdminWorkspaceTabs(labels: const [
+          'Visão geral',
+          'Guias',
+          'Patologias',
+          'Fármacos'
+        ], children: [
+          const SingleChildScrollView(child: AdminOverviewCards(content: true)),
+          _ContentGuidesSection(currentAdmin: widget.currentAdmin),
+          const AdminOperationsSection(
+              table: 'pathologies', title: 'Patologias'),
+          const AdminOperationsSection(table: 'drugs', title: 'Fármacos')
+        ]);
       case _AdminSection.communication:
-        return AdminNotificationsSection(readOnly: widget.currentAdmin.isSupervisor);
+        return AdminWorkspaceTabs(labels: const [
+          'Notificações administrativas',
+          'Campanhas / Push',
+          'Entregas'
+        ], children: [
+          AdminNotificationsSection(readOnly: widget.currentAdmin.isSupervisor),
+          AdminOperationsSection(
+              table: 'campaigns',
+              title: 'Campanhas PT/ES',
+              readOnly: widget.currentAdmin.isSupervisor),
+          const AdminOperationsSection(
+              table: 'notifications', title: 'Entregas de push')
+        ]);
       case _AdminSection.audit:
-        return const AdminOperationsSection(
-            table: 'audit', title: 'Auditoria central');
+        return const AdminWorkspaceTabs(labels: [
+          'Auditoria',
+          'Releases',
+          'Deploys'
+        ], children: [
+          AdminOperationsSection(table: 'audit', title: 'Auditoria central'),
+          AdminOperationsSection(table: 'releases', title: 'Releases'),
+          AdminOperationsSection(table: 'deploys', title: 'Deploys')
+        ]);
       case _AdminSection.settings:
         return _SettingsSection(
           currentAdmin: widget.currentAdmin,
@@ -566,47 +619,25 @@ class _AdminSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const items = <(_AdminSection, IconData, String)>[
-      (
-        _AdminSection.pathologyInventory,
-        Icons.view_list_outlined,
-        'Patologias'
-      ),
-      (_AdminSection.drugInventory, Icons.view_list_outlined, 'Fármacos'),
-      (_AdminSection.operationalJobs, Icons.view_list_outlined, 'Jobs'),
-      (_AdminSection.serviceHealth, Icons.view_list_outlined, 'Serviços'),
-      (
-        _AdminSection.transcriptionMetadata,
-        Icons.view_list_outlined,
-        'Transcrições'
-      ),
-      (_AdminSection.releaseInventory, Icons.view_list_outlined, 'Releases'),
-      (_AdminSection.deploymentInventory, Icons.view_list_outlined, 'Deploys'),
-      (
-        _AdminSection.notificationMetadata,
-        Icons.view_list_outlined,
-        'Notificações'
-      ),
-      (
-        _AdminSection.campaignDrafts,
-        Icons.view_list_outlined,
-        'Campanhas PT/ES'
-      ),
       (_AdminSection.dashboard, Icons.dashboard_outlined, 'Dashboard'),
       (_AdminSection.users, Icons.group_outlined, 'Usuários'),
       (_AdminSection.subscriptions, Icons.credit_card_outlined, 'Assinaturas'),
-      (_AdminSection.aiCosts, Icons.auto_awesome_outlined, 'IA & Custos'),
-      (_AdminSection.errors, Icons.monitor_heart_outlined, 'Erros'),
-      (_AdminSection.support, Icons.support_agent_outlined, 'Suporte'),
-      (_AdminSection.content, Icons.menu_book_outlined, 'Conteúdo'),
-      (_AdminSection.communication, Icons.campaign_outlined, 'Comunicação'),
-      (_AdminSection.audit, Icons.fact_check_outlined, 'Auditoria'),
-      (_AdminSection.credits, Icons.more_time, 'Tempo adicional'),
+      (_AdminSection.aiCosts, Icons.insights_outlined, 'IA & Custos'),
       (
-        _AdminSection.creditLedger,
-        Icons.receipt_long_outlined,
-        'Histórico de tempo'
+        _AdminSection.transcriptionMetadata,
+        Icons.mic_none,
+        'Transcrições / Créditos'
       ),
-      (_AdminSection.controlAudit, Icons.history, 'Auditoria de tempo'),
+      (_AdminSection.content, Icons.menu_book_outlined, 'Conteúdo'),
+      (_AdminSection.support, Icons.support_agent_outlined, 'Suporte'),
+      (
+        _AdminSection.communication,
+        Icons.notifications_outlined,
+        'Comunicação'
+      ),
+      (_AdminSection.operationalJobs, Icons.work_outline, 'Jobs'),
+      (_AdminSection.errors, Icons.monitor_heart_outlined, 'Erros & Saúde'),
+      (_AdminSection.audit, Icons.fact_check_outlined, 'Auditoria'),
       (_AdminSection.settings, Icons.settings_outlined, 'Configurações'),
     ];
 
@@ -5675,6 +5706,7 @@ class _AuditData {
   static DateTime dateOf(dynamic value) {
     if (value is DateTime) return value;
     if (value is Timestamp) return value.toDate();
+    if (value is num) return DateTime.fromMillisecondsSinceEpoch(value.toInt());
     return DateTime.tryParse(value?.toString() ?? '') ??
         DateTime.fromMillisecondsSinceEpoch(0);
   }
@@ -8112,6 +8144,7 @@ class _CommunicationData {
   static DateTime dateOf(dynamic value) {
     if (value is DateTime) return value;
     if (value is Timestamp) return value.toDate();
+    if (value is num) return DateTime.fromMillisecondsSinceEpoch(value.toInt());
     return DateTime.tryParse(value?.toString() ?? '') ??
         DateTime.fromMillisecondsSinceEpoch(0);
   }
@@ -8413,21 +8446,83 @@ class _ContentGuidesSectionState extends State<_ContentGuidesSection> {
                 ),
               )
             else
-              Column(
-                children: [
-                  for (var i = 0; i < visible.length; i++) ...[
-                    _GuideOperationalCard(
-                      guide: visible[i],
-                      canMutate: _canMutate,
-                      busy: _busyId == visible[i].id,
-                      onEdit: () => _editGuide(visible[i]),
-                      onTogglePublished: () => _togglePublished(visible[i]),
-                      onDelete: () => _deleteGuide(visible[i]),
-                    ),
-                    if (i != visible.length - 1) const SizedBox(height: 9),
-                  ],
-                ],
-              ),
+              Card(
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                          columns: [
+                            for (final label in [
+                              'Nome',
+                              'Idioma',
+                              'Versão',
+                              'Status',
+                              'Atualização',
+                              'Ações'
+                            ])
+                              DataColumn(label: Text(label))
+                          ],
+                          rows: visible.map((guide) {
+                            final metadata = rows.firstWhere(
+                                (r) => r['id'] == guide.id,
+                                orElse: () => {});
+                            return DataRow(cells: [
+                              DataCell(Text(guide.title)),
+                              DataCell(Text(adminText(metadata['language']))),
+                              DataCell(Text(adminText(metadata['version']))),
+                              DataCell(AdminBadge(guide.isPublished
+                                  ? 'Publicado'
+                                  : 'Rascunho')),
+                              DataCell(Text(adminDate(metadata['updatedAt'] ??
+                                  metadata['uploadedAt']))),
+                              DataCell(Row(children: [
+                                if (_canMutate)
+                                  TextButton(
+                                      onPressed: () => _editGuide(guide),
+                                      child: const Text('Editar')),
+                                TextButton(
+                                    onPressed: () => showDialog<void>(
+                                        context: context,
+                                        builder: (ctx) => AlertDialog(
+                                                title: Text(guide.title),
+                                                content: SizedBox(
+                                                    width: 650,
+                                                    child: SingleChildScrollView(
+                                                        child:
+                                                            Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                          _GuideOperationalCard(
+                                                              guide: guide,
+                                                              canMutate:
+                                                                  _canMutate,
+                                                              busy: _busyId ==
+                                                                  guide.id,
+                                                              onEdit: () =>
+                                                                  _editGuide(
+                                                                      guide),
+                                                              onTogglePublished:
+                                                                  () =>
+                                                                      _togglePublished(
+                                                                          guide),
+                                                              onDelete: () =>
+                                                                  _deleteGuide(
+                                                                      guide)),
+                                                          AdminTechnical(
+                                                              metadata)
+                                                        ]))),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(ctx),
+                                                      child:
+                                                          const Text('Fechar'))
+                                                ])),
+                                    child: const Text('Detalhes'))
+                              ]))
+                            ]);
+                          }).toList()))),
           ],
         );
       },
@@ -8599,6 +8694,7 @@ class _GuideData {
   static DateTime? _date(dynamic value) {
     if (value is DateTime) return value;
     if (value is Timestamp) return value.toDate();
+    if (value is num) return DateTime.fromMillisecondsSinceEpoch(value.toInt());
     return DateTime.tryParse(value?.toString() ?? '');
   }
 }
@@ -9340,6 +9436,7 @@ class _IncidentData {
   static DateTime? _date(dynamic value) {
     if (value is DateTime) return value;
     if (value is Timestamp) return value.toDate();
+    if (value is num) return DateTime.fromMillisecondsSinceEpoch(value.toInt());
     return DateTime.tryParse(value?.toString() ?? '');
   }
 }
