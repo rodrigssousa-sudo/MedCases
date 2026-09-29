@@ -26,7 +26,7 @@ function id(x){if(typeof x!=='string'||!x.trim()||x.length>180||/[\/\x00-\x1f]/.
 function scalar(v){if(v===null||typeof v==='boolean'||typeof v==='number'&&Number.isFinite(v))return v;if(typeof v==='string')return v.slice(0,500);if(v?.toMillis)return v.toMillis();return 'UNKNOWN';}
 function projection(doc,fields){const d=doc.data();const out={id:doc.id,...Object.fromEntries(fields.split(' ').filter(k=>d[k]!==undefined).map(k=>[k,scalar(d[k])]))};
  if(fields.includes('actorUid'))for(const k of ['beforeMetadata','afterMetadata'])if(d[k]&&typeof d[k]==='object')out[k]=Object.fromEntries(Object.entries(d[k]).filter(([key])=>'role status version remainingSeconds reservedSeconds amountSeconds grantedSeconds revokedSeconds maxPerWeek eventType workerPending reviewer reviewDate creditId enabled active'.split(' ').includes(key)).map(([key,v])=>[key,scalar(v)]));return out;}
-function userProjection(doc){const x=projection(doc,SPECS.users[1]);const d=doc.data();x.entitlementLabel=d.isPartner===true?'VIP':['internal','special'].includes(d.plan)?d.plan.toUpperCase():['premium','pro','paid'].includes(d.plan)||d.billingEntitlementActive===true?'PREMIUM':d.plan==='free'?'FREE':'UNKNOWN';return x;}
+function userProjection(doc){const x=projection(doc,SPECS.users[1]);const d=doc.data();const grants=d.entitlements||{};x.manualPremiumActive=grants.adminPremium?.source==='admin_manual_v1'&&grants.adminPremium.active===true&&(grants.adminPremium.expiresAt==null||grants.adminPremium.expiresAt>Date.now());x.manualVipActive=grants.adminVip?.source==='admin_manual_v1'&&grants.adminVip.active===true&&(grants.adminVip.expiresAt==null||grants.adminVip.expiresAt>Date.now());x.entitlementLabel=x.manualVipActive?'VIP':x.manualPremiumActive?'PREMIUM MANUAL':d.isPartner===true?'VIP':['internal','special'].includes(d.plan)?d.plan.toUpperCase():['premium','pro','paid'].includes(d.plan)||d.billingEntitlementActive===true?'PREMIUM':d.plan==='free'?'FREE':'UNKNOWN';return x;}
 function createAdminOperations({db,documentId='__name__',now=()=>Date.now(),getAuthUser=async()=>{throw Error('AUTH_IDENTITY_UNAVAILABLE');}}){
  const auth=createAdminControlCenter({db,documentId,now});
  async function page(uid,{table,limit=30,cursor,field,value}={}){
@@ -67,14 +67,25 @@ function createAdminOperations({db,documentId='__name__',now=()=>Date.now(),getA
  }
  async function mutate(uid,input){
   await auth.authorize(uid,true);const {action,requestId,targetId,reason}=input;id(requestId);id(targetId);if(typeof reason!=='string'||reason.trim().length<5||reason.length>500)throw Error('REASON_REQUIRED');
-  if(!['setUserStatus','setUserRole','setIncidentState','saveCampaignDraft','retryTranscription','saveMaintenance','saveAppUpdate'].includes(action))throw Error('UNSUPPORTED_ACTION');
+  if(!['setUserStatus','setUserRole','setManualPremium','setVip','setIncidentState','saveCampaignDraft','retryTranscription','saveMaintenance','saveAppUpdate'].includes(action))throw Error('UNSUPPORTED_ACTION');
   const targetIdentity=action.startsWith('setUser')?await getAuthUser(targetId):null;
   if(targetIdentity&&Object.entries(targetIdentity.customClaims||{}).some(([k,v])=>['admin','master','supervisor','role'].includes(k)&&v))throw Error('CLAIM_MANAGED_ACCOUNT');
   const key=digest(`${uid}:${requestId}`),fingerprint=digest(JSON.stringify(Object.keys(input).sort().map(k=>[k,input[k]])));
   return db.runTransaction(async tx=>{
    const role=await auth.authorize(uid,true,tx),req=db.collection('adminOperationRequests').doc(key),prior=await tx.get(req);if(prior.exists){if(prior.data().fingerprint!==fingerprint)throw Error('IDEMPOTENCY_CONFLICT');return prior.data().result;}
    const time=now();let before={},after={},targetType,ref;
-   if(action.startsWith('setUser')){
+   if(['setManualPremium','setVip'].includes(action)){
+    if(role!=='master')throw Error('MASTER_REQUIRED');
+    if(typeof input.enabled!=='boolean')throw Error('INVALID_ACCESS_STATE');
+    if(input.expiresAt!=null&&(!Number.isSafeInteger(input.expiresAt)||input.expiresAt<=time))throw Error('INVALID_EXPIRY');
+    ref=db.collection('users').doc(targetId);const snapshot=await tx.get(ref);if(!snapshot.exists)throw Error('NOT_FOUND');
+    const d=snapshot.data(),key=action==='setVip'?'adminVip':'adminPremium';
+    const entitlements=d.entitlements&&typeof d.entitlements==='object'?d.entitlements:{};
+    before={enabled:entitlements[key]?.active===true};
+    after={entitlements:{...entitlements,[key]:{active:input.enabled,expiresAt:input.enabled?(input.expiresAt??null):null,source:'admin_manual_v1',grantedBy:uid,updatedAt:time}}};
+    if(action==='setVip'){after.isPartner=input.enabled;after.partnerTitle=input.enabled?'VIP':null;}
+    targetType='user';
+   }else if(action.startsWith('setUser')){
     ref=db.collection('users').doc(targetId);const s=await tx.get(ref);if(!s.exists)throw Error('NOT_FOUND');const d=s.data();if(targetId===uid||d.role==='master')throw Error('PROTECTED_ACCOUNT');
     if(action==='setUserRole'){if(role!=='master')throw Error('MASTER_REQUIRED');if(!['user','supervisor','admin'].includes(input.value))throw Error('INVALID_ROLE');before={role:d.role??'user'};after={role:input.value};}
     else {if(d.role==='admin'&&role!=='master')throw Error('MASTER_REQUIRED');if(!['approved','blocked','pending'].includes(input.value))throw Error('INVALID_STATUS');before={status:d.status??'UNKNOWN'};after={status:input.value};}
@@ -115,7 +126,7 @@ function createAdminOperations({db,documentId='__name__',now=()=>Date.now(),getA
     after={destination:input.destination||'Home',audience:input.audience||'',schedule:input.schedule||'',eventType:input.eventType,pt:{title:input.pt.title,body:input.pt.body},es:{title:input.es.title,body:input.es.body},status:'DRAFT',maxPerWeek:3,respectOptOut:true,respectQuietHours:true,respectLocale:true,dispatchEnabled:false,createdAt:s.exists?s.data().createdAt:time,createdBy:s.exists?s.data().createdBy:uid,updatedAt:time};targetType='campaign';
    }
    const result={targetId,action,status:after.status??'UPDATED'};
-   tx.set(ref,after,{merge:true});tx.create(db.collection('adminControlAudit').doc(key),{actorUid:uid,action,targetType,targetId,reason:reason.trim(),beforeMetadata:before,afterMetadata:targetType==='configuration'?{enabled:after.enabled??null,active:after.active??null,version:after.version??null}:action==='saveCampaignDraft'?{status:'DRAFT',eventType:after.eventType,maxPerWeek:3}:after,timestamp:time,requestId});tx.create(req,{fingerprint,result,createdAt:time});return result;
+   tx.set(ref,after,{merge:true});tx.create(db.collection('adminControlAudit').doc(key),{actorUid:uid,action,targetType,targetId,reason:reason.trim(),beforeMetadata:before,afterMetadata:['setManualPremium','setVip'].includes(action)?{enabled:input.enabled,expiresAt:input.expiresAt??null}:targetType==='configuration'?{enabled:after.enabled??null,active:after.active??null,version:after.version??null}:action==='saveCampaignDraft'?{status:'DRAFT',eventType:after.eventType,maxPerWeek:3}:after,timestamp:time,requestId});tx.create(req,{fingerprint,result,createdAt:time});return result;
   });
  }
  return {page,detail,overview,mutate,identities};

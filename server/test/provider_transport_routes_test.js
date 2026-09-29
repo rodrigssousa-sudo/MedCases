@@ -25,9 +25,7 @@ test('existing-app registration retains Firebase middleware and UID resource bou
 
 test('audio generation claims once across direct requests and bound uploaded references',async()=>{
  const {MonthlyUsageOwner}=require('../monthly_usage_owner');
- const rows=new Map([['users/A',{plan:'free'}]]);let queue=Promise.resolve();
- const ref=path=>({path,get:async()=>({exists:rows.has(path),data:()=>structuredClone(rows.get(path))}),set:async v=>rows.set(path,structuredClone(v))});
- const db={collection:c=>({doc:id=>ref(c+'/'+id)}),runTransaction(action){const run=queue.then(async()=>{const staged=new Map();const value=await action({get:r=>r.get(),set:(r,v)=>staged.set(r.path,structuredClone(v))});for(const [k,v]of staged)rows.set(k,v);return value;});queue=run.catch(()=>{});return run;}};
+ const db=require('./transaction_fixture').database([['users/A',{plan:'free'}]]);
  const reservation=await new MonthlyUsageOwner({db}).reserve('A',{operationId:'audio',kinds:['transcription'],maximumMs:60000});
  const usage={'x-medcases-usage-reservation':reservation.id,'x-medcases-usage-attempt':reservation.attempt};
  let handler,generations=0;

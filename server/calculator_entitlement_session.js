@@ -56,6 +56,12 @@ function safeEqualBase64Url(left, right) {
 }
 
 function resolveMedCasesTier(userDoc = {}, nowMs = Date.now()) {
+  // Manual grants are separate from billing and are server-managed protected fields.
+  for (const key of ['adminVip','adminPremium']) {
+    const grant=userDoc.entitlements?.[key];
+    if(grant?.source==='admin_manual_v1'&&grant.active===true&&(grant.expiresAt===null||(Number.isSafeInteger(grant.expiresAt)&&grant.expiresAt>nowMs)))
+      return Object.freeze({tier:'premium',source:'server_admin_manual',expiresAt:grant.expiresAt});
+  }
   const plan = normalized(userDoc.plan);
   const subscriptionStatus = normalized(userDoc.subscriptionStatus);
 
@@ -147,7 +153,9 @@ function issueCalculatorSession({
     iat: now,
     exp: entitlement.source === 'server_revenuecat_entitlement'
       ? Math.min(now + ttl, Math.floor(Number(userDoc.billingEntitlementExpiresAtMs) / 1000))
-      : now + ttl,
+      : entitlement.source==='server_admin_manual'&&entitlement.expiresAt!==null
+        ? Math.min(now+ttl,Math.floor(entitlement.expiresAt/1000))
+        : now + ttl,
     jti: clean(sessionId) || crypto.randomUUID(),
   });
 

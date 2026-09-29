@@ -1,6 +1,6 @@
 # Admin visual control center
 
-Default route is Dashboard. Operational views use paginated metadata, human-readable dates, status badges, and collapsed technical details. User search accepts exact email, name or displayName; UID is an advanced option. Granting time uses the selected user's internal ID and the existing idempotent, atomic credit API. VIP and subscription mutation remain unavailable because no approved entitlement write contract exists.
+Default route is Dashboard. Operational views use paginated metadata, human-readable dates, status badges, and collapsed technical details. User search accepts exact email, name or displayName; UID is an advanced option. Granting time uses the selected user's internal ID and the existing idempotent, atomic credit API. Master can grant/revoke manual Premium and VIP with a reason and optional expiration. Protected users.entitlements adminPremium/adminVip grants are separate from billing. Revocation never cancels a valid purchased subscription. Session/offline validity is at most 10 minutes and capped by manual grant expiry. Existing Free/Premium allowance amounts are unchanged. Admin/Supervisor cannot write these grants.
 
 ## Metric provenance
 
@@ -19,3 +19,7 @@ Campaign destination/audience/schedule are draft metadata only. Existing dispatc
 ## Validation
 
 Run test/admin and test/guides, Functions release tests, validation/admin_visual_metrics.cjs and existing notification/RBAC/guide tests in Firestore emulator. server/test/manual_time_firestore_test.js covers real transactional contention without production grants. Analyzer must have zero errors/warnings. Deployment scope: adminOperations and medcases-pro-admin Hosting only; no mobile or quota changes.
+
+## Master access extension
+
+Owner explicitly requested approval/blocking, manual Premium/VIP, extra time and Admin/Supervisor roles. Manual grants use the already-protected `entitlements` profile map; existing Firestore rules deny self-creation/update and non-Master client privilege writes. The callable enforces Master on every transaction, mandatory reason, idempotency and audit. No grant is made during deployment. Existing purchased entitlements remain authoritative when no manual grant is active. Mobile consumes the same signed session contract; no mobile rebuild is required. Gateway change is limited to the existing tier resolver and session expiry cap. RevenueCat webhook, plan amounts and atomic reservation owner remain unchanged.

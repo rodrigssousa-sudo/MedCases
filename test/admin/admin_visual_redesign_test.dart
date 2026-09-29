@@ -111,6 +111,36 @@ void main() {
     expect(credits.writes.single['amountSeconds'], 300);
     expect(t.takeException(), isNull);
   });
+  testWidgets(
+      'Master can manage manual Premium with selected identity and reason',
+      (t) async {
+    await t.binding.setSurfaceSize(const Size(1440, 1000));
+    addTearDown(() => t.binding.setSurfaceSize(null));
+    final api = VisualApi();
+    await t.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: AdminOperationsSection(
+                table: 'users',
+                title: 'Usuários',
+                readOnly: false,
+                master: true,
+                api: api))));
+    await t.pumpAndSettle();
+    await t.tap(find.text('Ver'));
+    await t.pumpAndSettle();
+    await t.tap(find.text('Gerenciar Premium'));
+    await t.pumpAndSettle();
+    await t.enterText(
+        find.widgetWithText(TextField, 'Justificativa obrigatória'),
+        'QA manual access');
+    await t.tap(find.text('Confirmar acesso'));
+    await t.pumpAndSettle();
+    final mutation = api.calls.lastWhere((r) => r['op'] == 'mutate');
+    expect(mutation['action'], 'setManualPremium');
+    expect(mutation['targetId'], 'hidden-uid');
+    expect(mutation['enabled'], true);
+    expect(t.takeException(), isNull);
+  });
   test('dates and operations are human readable', () {
     expect(adminDate(1790688066779), isNot(contains('1790688066779')));
     expect(adminLabel('markNotificationRead'), 'Notificação marcada como lida');

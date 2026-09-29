@@ -40,3 +40,17 @@ test('campaign destination/schedule remain bounded draft metadata without dispat
  await ops.mutate('admin',input);const d=(await db.doc('adminEngagementDrafts/draft').get()).data();assert.equal(d.destination,'Home');assert.equal(d.audience,'QA');assert.equal(d.dispatchEnabled,false);assert.equal(d.status,'DRAFT');
  await assert.rejects(ops.mutate('admin',{...input,requestId:'invalid',audience:42}),/INVALID_DRAFT_FIELD/);
 });
+test('Master manual access is idempotent, audited, separate from billing, and denied to Admin',async()=>{
+ await db.doc('users/master').set({role:'master',status:'approved'});
+ await db.doc('users/person').set({role:'user',plan:'free',billingEntitlementActive:false},{merge:true});
+ const input={action:'setManualPremium',targetId:'person',requestId:'manual-premium',enabled:true,reason:'Synthetic access validation'};
+ await assert.rejects(ops.mutate('admin',input),/MASTER_REQUIRED/);
+ await Promise.all(Array.from({length:5},()=>ops.mutate('master',input)));
+ const user=(await db.doc('users/person').get()).data();assert.equal(user.plan,'free');assert.equal(user.billingEntitlementActive,false);assert.equal(user.entitlements.adminPremium.active,true);
+ assert.equal((await db.collection('adminControlAudit').where('requestId','==','manual-premium').get()).size,1);
+ await assert.rejects(ops.mutate('master',{...input,enabled:false}),/IDEMPOTENCY_CONFLICT/);
+ await ops.mutate('master',{...input,action:'setVip',requestId:'vip'});
+ await ops.mutate('master',{...input,enabled:false,requestId:'revoke'});
+ const revoked=(await db.doc('users/person').get()).data();assert.equal(revoked.entitlements.adminPremium.active,false);assert.equal(revoked.entitlements.adminVip.active,true);assert.equal(revoked.isPartner,true);
+ await assert.rejects(ops.mutate('master',{...input,requestId:'expiry',expiresAt:1}),/INVALID_EXPIRY/);
+});

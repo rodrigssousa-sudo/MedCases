@@ -41,6 +41,8 @@ String adminLabel(dynamic value) =>
       'markNotificationRead': 'Notificação marcada como lida',
       'markAllNotificationsRead': 'Notificações marcadas como lidas',
       'grantCredit': 'Tempo adicional concedido',
+      'setManualPremium': 'Premium manual atualizado',
+      'setVip': 'VIP atualizado',
       'revokeCredit': 'Saldo disponível revogado',
       'setUserStatus': 'Status do usuário atualizado',
       'setUserRole': 'Permissão atualizada',

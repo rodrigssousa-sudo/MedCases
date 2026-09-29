@@ -170,17 +170,22 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                                             'setUserRole',
                                             ['user', 'supervisor', 'admin']),
                                         child: const Text('Permissões')),
-                                  const Tooltip(
-                                      message:
-                                          'VIP não possui contrato de concessão administrativa habilitado. RevenueCat permanece inalterado.',
-                                      child: OutlinedButton(
-                                          onPressed: null,
-                                          child:
-                                              Text('Conceder / remover VIP')))
+                                  if (widget.master && !widget.readOnly) ...[
+                                    OutlinedButton(
+                                        onPressed: () => _access(d, false),
+                                        child: const Text('Gerenciar Premium')),
+                                    OutlinedButton(
+                                        onPressed: () => _access(d, true),
+                                        child: Text(
+                                            (d['manualVipActive'] == true ||
+                                                    d['isPartner'] == true)
+                                                ? 'Remover VIP'
+                                                : 'Conceder VIP'))
+                                  ]
                                 ]),
                                 const SizedBox(height: 12),
                                 const Text(
-                                    'VIP: condição interna separada. Este painel não altera cobrança ou assinatura.'),
+                                    'Premium/VIP manual é separado da assinatura paga. Remover a concessão não cancela compras nas lojas. Atualiza no próximo refresh de acesso do app (até 10 minutos).'),
                                 AdminTechnical(d)
                               ]));
                         })),
@@ -189,6 +194,75 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                       onPressed: () => Navigator.pop(ctx),
                       child: const Text('Fechar'))
                 ]));
+  }
+
+  Future<void> _access(Map<String, dynamic> user, bool vip) async {
+    var enabled = !(vip
+        ? (user['manualVipActive'] == true || user['isPartner'] == true)
+        : user['manualPremiumActive'] == true);
+    String reason = '';
+    DateTime? expiry;
+    final ok = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => StatefulBuilder(
+            builder: (ctx, update) => AlertDialog(
+                    title: Text(
+                        vip ? 'Gerenciar VIP' : 'Gerenciar Premium manual'),
+                    content: SizedBox(
+                        width: 480,
+                        child: SingleChildScrollView(
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                              Text(adminText(
+                                  user['name'] ?? user['displayName'],
+                                  'Usuário')),
+                              Text(adminText(user['email'])),
+                              SwitchListTile(
+                                  title: const Text('Concessão manual ativa'),
+                                  value: enabled,
+                                  onChanged: (v) => update(() => enabled = v)),
+                              const Text(
+                                  'Não cobra nem cancela assinaturas Apple/Google. Os limites padrão do plano são preservados.'),
+                              if (enabled)
+                                TextButton(
+                                    onPressed: () async {
+                                      final d = await showDatePicker(
+                                          context: ctx,
+                                          firstDate: DateTime.now()
+                                              .add(const Duration(days: 1)),
+                                          lastDate: DateTime.now()
+                                              .add(const Duration(days: 3650)));
+                                      if (d != null) update(() => expiry = d);
+                                    },
+                                    child: Text(expiry == null
+                                        ? 'Validade opcional'
+                                        : adminDate(
+                                            expiry!.toIso8601String()))),
+                              TextField(
+                                  maxLength: 500,
+                                  onChanged: (v) => reason = v,
+                                  decoration: const InputDecoration(
+                                      labelText: 'Justificativa obrigatória'))
+                            ]))),
+                    actions: [
+                      TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: const Text('Cancelar')),
+                      FilledButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: const Text('Confirmar acesso'))
+                    ])));
+    if (ok != true || !mounted) return;
+    await _mutate({
+      'action': vip ? 'setVip' : 'setManualPremium',
+      'targetId': user['id'],
+      'enabled': enabled,
+      'reason': reason,
+      if (enabled && expiry != null) 'expiresAt': expiry!.millisecondsSinceEpoch
+    });
+    if (mounted && _pending == null) Navigator.pop(context);
   }
 
   Future<void> _userCredits(Map<String, dynamic> user, String table,

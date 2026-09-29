@@ -33,3 +33,8 @@ test('legacy read updates append only own UID; stale array cannot erase confirme
  await assertFails(updateDoc(a,{readBy:['admin','other-admin','someone-else']}));
  await assertFails(updateDoc(a,{readBy:[]}));
 });
+test('manual entitlement fields cannot be forged by normal or Supervisor clients',async()=>{
+ const e=await ready();
+ for(const uid of ['normal','supervisor'])await assertFails(updateDoc(doc(e.authenticatedContext(uid).firestore(),'users',uid),{entitlements:{adminPremium:{active:true,source:'admin_manual_v1',expiresAt:null}}}));
+ await assertFails(setDoc(doc(e.authenticatedContext('fresh-user').firestore(),'users','fresh-user'),{plan:'free',role:'user',entitlements:{adminVip:{active:true,source:'admin_manual_v1',expiresAt:null}}}));
+});

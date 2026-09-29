@@ -497,11 +497,14 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
         return const AdminOperationsSection(
             table: 'ai', title: 'IA — HOME / STUDY / PLANTAO');
       case _AdminSection.subscriptions:
-        return const Column(children: [
-          AdminOverviewCards(content: false),
+        return Column(children: [
+          const AdminOverviewCards(content: false),
           Expanded(
               child: AdminOperationsSection(
-                  table: 'users', title: 'Assinaturas & Planos'))
+                  table: 'users',
+                  title: 'Assinaturas & Planos',
+                  master: _isMaster,
+                  readOnly: widget.currentAdmin.isSupervisor))
         ]);
       case _AdminSection.users:
         return AdminOperationsSection(
