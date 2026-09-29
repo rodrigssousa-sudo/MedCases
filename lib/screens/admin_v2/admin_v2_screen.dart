@@ -1,3 +1,4 @@
+import 'admin_notifications_section.dart';
 import 'admin_operations_section.dart';
 import 'control_center_section.dart';
 import 'dart:convert';
@@ -488,11 +489,7 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
           currentAdmin: widget.currentAdmin,
         );
       case _AdminSection.communication:
-        return AdminOperationsSection(
-            key: const ValueKey('communicationDrafts'),
-            table: 'campaigns',
-            title: 'Comunicação — rascunhos auditados',
-            readOnly: widget.currentAdmin.isSupervisor);
+        return AdminNotificationsSection(readOnly: widget.currentAdmin.isSupervisor);
       case _AdminSection.audit:
         return const AdminOperationsSection(
             table: 'audit', title: 'Auditoria central');

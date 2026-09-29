@@ -50,3 +50,27 @@ backfilled with invented reasons.
 Run Functions release suite, Flutter Admin/guides suite and the Firestore emulator
 suite `validation/admin_phase2_firestore.cjs`, plus the unchanged manual ledger
 concurrency suite. No real credits, clinical publications or campaigns are needed.
+
+## Notification acknowledgement
+
+The Communication route now uses `AdminNotificationsSection` and authenticated
+`adminOperations.notificationPage` / `notificationRead` calls. There is no
+Firestore listener in this view. Request epochs discard late page responses;
+confirmed receipt IDs remain read in local state. UNREAD is the default filter.
+The ALL filter retains the row with a read badge and no acknowledgement action.
+Counts come from the backend; the client never subtracts optimistically.
+
+Canonical per-administrator receipts live in `adminNotificationReads`, keyed by
+SHA-256 of UID and notification ID, with notificationId/read/readAt/readBy/createdAt.
+`readAt` is a server timestamp and `readBy` is the authenticated UID. The source
+`admin_notifications.readBy` array is retained for older clients and updated
+atomically with the receipt. Direct legacy updates may only append the caller's
+UID and may never remove previous acknowledgements. History is never deleted.
+
+Single-read and batches of at most 100 source documents use transactions and
+idempotency receipts. Network retries reuse the request ID. Mark-all continues
+with a cursor and a new request ID for each confirmed batch. Concurrent new
+notifications may remain unread; the counter is read back from persisted state.
+The page scans at most 30 source records (maximum configurable 100), so an empty
+UNREAD page can still have a next-page action. Reads are private to each admin.
+Supervisor remains read-only. Tests use synthetic Firestore emulator records.

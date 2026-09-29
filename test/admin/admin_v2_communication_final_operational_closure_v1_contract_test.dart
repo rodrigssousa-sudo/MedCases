@@ -99,7 +99,9 @@ void main() {
   if (!notifications.contains(
         'allow read:   if isAdmin() || isSupervisor();',
       ) ||
-      !notifications.contains('allow update: if isAdmin();')) {
+      !notifications.contains('allow update: if isAdmin()') ||
+      !notifications.contains('readBy.hasAll') ||
+      !notifications.contains('hasOnly([request.auth.uid])')) {
     throw StateError('Admin notifications role contract failed');
   }
 

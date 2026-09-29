@@ -688,7 +688,13 @@ service cloud.firestore {
       // Cloud Functions/Admin SDK bypass rules. Client-side arbitrary
       // notifications from ordinary authenticated users are forbidden.
       allow create: if isAdmin();
-      allow update: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.readBy is list
+        && request.resource.data.readBy.hasAll(resource.data.get('readBy', []))
+        && request.resource.data.readBy.toSet()
+          .difference(resource.data.get('readBy', []).toSet()).hasOnly([request.auth.uid])
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['readBy', '_adminAuditBy', '_adminAuditEmail', '_adminAuditAt']);
       allow delete: if isAdmin();
     }
 
