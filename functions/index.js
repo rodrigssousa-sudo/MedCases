@@ -4926,3 +4926,6 @@ Object.assign(exports, require('./admin_control_exports')(admin));
 
 // Administrative metadata and audited operations; independent of clinical runtime.
 Object.assign(exports, require("./admin_operations_exports")(admin));
+
+// Metadata inventory only; clinical repositories remain authoritative.
+Object.assign(exports, require("./content_inventory/exports")(admin));

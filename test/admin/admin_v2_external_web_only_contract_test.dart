@@ -34,7 +34,11 @@ void main() {
     expect(runtime, isNot(contains('return _CommunicationSection(')));
   });
   test('new inventories, jobs, audit and health have distinct routes', () {
-    for (final table in ['pathologies','drugs','jobs','audit','health','transcriptions','releases','deploys','notifications']) {
+    expect(runtime, contains("kind: 'pathologies'"));
+    expect(runtime, contains("kind: 'drugs'"));
+    expect(runtime, contains('ContentInventorySection'));
+    expect(runtime, contains('ContentInventoryOverview'));
+    for (final table in ['jobs','audit','health','transcriptions','releases','deploys','notifications']) {
       expect(runtime, contains("table: '$table'"));
     }
   });

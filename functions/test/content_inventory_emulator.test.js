@@ -1,0 +1,33 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict');
+const {createInventory,ROOT}=require('../content_inventory/store');
+const m=require('../content_inventory/model');
+const enabled=Boolean(process.env.FIRESTORE_EMULATOR_HOST);
+test('real Firestore sync atomicity, preservation, RBAC, pagination, filters and idempotency',{skip:!enabled},async()=>{
+ const admin=require('firebase-admin'),app=admin.initializeApp({projectId:'demo-content-inventory'},'inventory-test');const db=app.firestore();
+ const source={repository:'https://github.com/example/source',revision:'a'.repeat(40)};
+ let rows=Array.from({length:35},(_,i)=>m.drug({id:`fixture_${i}`,name:{pt:`Nome ${i}`,es:`Nombre ${i}`},pt:{dose:'fixture'},es:{dose:'fixture'}},source,`${i}.json`,'blob',new Set()));
+ let fail=false,tick=1000;
+ const runtime=createInventory({db,documentId:admin.firestore.FieldPath.documentId(),now:()=>++tick,loadSource:async()=>{if(fail)throw Error('SOURCE_HTTP_503');return {source,rows,itemsRead:rows.length,sourceMode:'FIXTURE',sourceVersion:source.revision};}});
+ for(const role of ['master','admin','supervisor','user'])await db.collection('users').doc(role).set({role,status:'approved'});
+ const first=await runtime.sync('drugs'),second=await runtime.sync('drugs');assert.equal(first.generation,second.generation);assert.equal(second.total,35);
+ for(const role of ['master','admin','supervisor']){const page=await runtime.read(role,{kind:'drugs'});assert.equal(page.rows.length,30);assert(page.nextCursor);assert(!page.rows[0].searchFacets);}
+ await assert.rejects(runtime.read('user',{kind:'drugs'}),/ADMIN_ACCESS_DENIED/);
+ await db.collection('users').doc('blocked').set({role:'master',status:'blocked'});await assert.rejects(runtime.read('blocked',{kind:'drugs'}),/ADMIN_ACCESS_DENIED/);
+ const page=await runtime.read('master',{kind:'drugs'}),next=await runtime.read('master',{kind:'drugs',cursor:page.nextCursor,generation:page.generation});assert.equal(next.rows.length,5);assert(!page.rows.some(a=>next.rows.some(b=>a.recordId===b.recordId)));
+ const filter=await runtime.read('master',{kind:'drugs',filter:'NEEDS_REVIEW',search:'Nóme 12'});assert.equal(filter.rows.length,1);
+ const detail=await runtime.read('master',{kind:'drugs',action:'detail',recordId:filter.rows[0].recordId});assert.equal(detail.row.canonicalId,'fixture_12');
+ fail=true;await assert.rejects(runtime.sync('drugs'),/SOURCE_HTTP_503/);assert.equal((await runtime.read('master',{kind:'drugs'})).generation,first.generation);fail=false;
+ rows=rows.slice(1);await runtime.sync('drugs');const missing=await runtime.read('master',{kind:'drugs',filter:'SYNC_ERROR'});assert.equal(missing.rows.length,1);assert.equal(missing.rows[0].missingInSource,true);assert.equal((await runtime.read('master',{kind:'drugs'})).meta.counts.total,35);
+ const hist=await runtime.read('master',{kind:'drugs',action:'history'});assert(hist.runs.some(r=>r.state==='FAILED'));assert(hist.runs.some(r=>r.itemsCreatedInReadModel===0));
+ const before=(await db.collection(ROOT).doc('drugs').get()).data();await db.collection(ROOT).doc('drugs').set({lease:'other',leaseUntil:9999999},{merge:true});await assert.rejects(runtime.sync('drugs'),/SYNC_ALREADY_RUNNING/);await db.collection(ROOT).doc('drugs').set(before);
+ await assert.rejects(runtime.read('master',{kind:'drugs',action:'publish'}),/INVALID_INVENTORY_ACTION/);
+ const activeBefore=(await runtime.read('master',{kind:'drugs'})).generation;
+ rows=Array.from({length:220},(_,i)=>m.drug({id:`new_${i}`,name:{pt:'Novo',es:'Nuevo'}},source,`new_${i}.json`,'newblob',new Set()));
+ let batches=0;
+ const wrapped={collection:db.collection.bind(db),runTransaction:db.runTransaction.bind(db),batch:()=>{const batch=db.batch(),commit=batch.commit.bind(batch);batch.commit=()=>{if(++batches===2)throw Error('SYNTHETIC_WRITE_FAILURE');return commit();};return batch;}};
+ const partial=createInventory({db:wrapped,loadSource:async()=>({source,rows,itemsRead:rows.length,sourceMode:'FIXTURE',sourceVersion:source.revision})});
+ await assert.rejects(partial.sync('drugs'),/SYNTHETIC_WRITE_FAILURE/);
+ assert.equal((await runtime.read('master',{kind:'drugs'})).generation,activeBefore);
+ await app.delete();
+});
