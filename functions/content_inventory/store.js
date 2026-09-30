@@ -11,23 +11,30 @@ function createInventory({db,loadSource,now=()=>Date.now(),documentId='__name__'
   const prior=await db.runTransaction(async tx=>{const d=await tx.get(ref),old=d.data()||{};if(old.leaseUntil>startedAt)throw Error('SYNC_ALREADY_RUNNING');tx.set(ref,{lease,leaseUntil:startedAt+20*60*1000},{merge:true});return old;});
   const runRef=ref.collection('runs').doc(lease);
   await runRef.set({syncId:lease,type:kind,startedAt,state:'RUNNING'});
+  let stage='READ_CURRENT';
   try {
    const oldRows=prior.generation?(await ref.collection('generations').doc(prior.generation).collection('items').get()).docs.map(d=>d.data()):[];
+   stage='READ_SOURCE';
    const loaded=await loadSource(kind,{previous:oldRows}),oldMap=new Map(oldRows.map(x=>[x.recordId,x]));
    const seen=new Set(loaded.rows.map(x=>x.recordId));
    const missing=oldRows.filter(x=>!seen.has(x.recordId)).map(x=>({...x,missingInSource:true,syncStatus:'MISSING_IN_SOURCE'}));
+   stage='PROJECT_METADATA';
    const rows=classify([...loaded.rows,...missing]).map(x=>({...x,firstIndexedAt:oldMap.get(x.recordId)?.firstIndexedAt||startedAt,lastSeenSourceVersion:x.missingInSource?x.lastSeenSourceVersion:loaded.source.revision,lastSyncAt:startedAt}));
    const fingerprint=hash(rows.map(({lastSyncAt,firstIndexedAt,...r})=>r));
    const generation=hash(`${loaded.source.revision}:${fingerprint}`).slice(0,40);
    const items=ref.collection('generations').doc(generation).collection('items');
+   stage='WRITE_STAGING';
    if(generation!==prior.generation){
-    for(let i=0;i<rows.length;i+=100){const batch=db.batch();for(const row of rows.slice(i,i+100))batch.set(items.doc(row.recordId),row);await batch.commit();}
+    // Firestore transaction accounting includes index entries for prefix facets.
+    // Keep staging batches small; the published generation remains atomic.
+    for(let i=0;i<rows.length;i+=10){const batch=db.batch();for(const row of rows.slice(i,i+10))batch.set(items.doc(row.recordId),row);await batch.commit();}
    }
+   stage='PUBLISH_POINTER';
    const completedAt=now(),counts=summary(rows);
    await db.runTransaction(async tx=>{const cur=(await tx.get(ref)).data();if(cur.lease!==lease)throw Error('SYNC_LEASE_LOST');tx.set(ref,{generation,fingerprint,source:loaded.source,sourceMode:loaded.sourceMode,sourceVersion:loaded.sourceVersion,counts,sourceCount:loaded.itemsRead,lastSyncAt:completedAt,syncState:'SYNCED',lease:null,leaseUntil:0},{merge:true});
     tx.set(runRef,{completedAt,state:'COMPLETE',sourceVersion:loaded.source.revision,itemsRead:loaded.itemsRead,itemsCreatedInReadModel:rows.filter(x=>!oldMap.has(x.recordId)).length,itemsUpdatedInReadModel:generation===prior.generation?0:rows.filter(x=>oldMap.has(x.recordId)&&!x.missingInSource).length,mismatches:missing.length,comparison:{MISSING_IN_ADMIN:rows.filter(x=>!oldMap.has(x.recordId)).length,MISSING_IN_SOURCE:missing.length,VERSION_MISMATCH:loaded.rows.filter(x=>oldMap.has(x.recordId)&&oldMap.get(x.recordId).version!==x.version).length,SYNC_MISMATCH:oldRows.filter(x=>x.syncStatus!=='SYNCED').length},errors:0,generation},{merge:true});});
    return {kind,generation,...counts};
-  }catch(e){const code=/^[A-Z_0-9]+$/.test(e.message)?e.message:'SYNC_FAILED';await db.runTransaction(async tx=>{const cur=(await tx.get(ref)).data();if(cur.lease===lease)tx.set(ref,{syncState:'SYNC_ERROR',lastErrorCode:code,lease:null,leaseUntil:0},{merge:true});tx.set(runRef,{completedAt:now(),state:'FAILED',errors:1,reasonCode:code},{merge:true});});throw Error(code);}
+  }catch(e){const code=/^[A-Z_0-9]+$/.test(e.message)?e.message:Number.isInteger(e.code)?`SYNC_STORAGE_${e.code}`:'SYNC_FAILED';console.error(JSON.stringify({event:'CONTENT_INVENTORY_SYNC_FAILED',kind,stage,reasonCode:code,errorClass:e instanceof TypeError?'TypeError':e instanceof RangeError?'RangeError':'Error',errorFingerprint:hash(e.message||'').slice(0,16),storageDiagnostics:{requestTooLarge:/request.*(large|size)|maximum.*request/i.test(e.message||''),indexEntries:/index.*entr/i.test(e.message||''),indexSize:/index.*(size|bytes)/i.test(e.message||''),documentSize:/document.*(size|large)/i.test(e.message||''),nestedArray:/nested.*array/i.test(e.message||''),invalidField:/field.*(invalid|path)/i.test(e.message||''),transactionSize:/transaction.*(size|large)/i.test(e.message||'')}}));await db.runTransaction(async tx=>{const cur=(await tx.get(ref)).data();if(cur.lease===lease)tx.set(ref,{syncState:'SYNC_ERROR',lastErrorCode:code,lastErrorStage:stage,lease:null,leaseUntil:0},{merge:true});tx.set(runRef,{completedAt:now(),state:'FAILED',errors:1,reasonCode:code,stage},{merge:true});});throw Error(code);}
  }
  const publicRow=({searchFacets,aliases,sortName,...r})=>r;
  async function read(uid,p={}) {
