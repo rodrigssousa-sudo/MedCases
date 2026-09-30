@@ -20,6 +20,56 @@ String adminMinutes(dynamic seconds) =>
     seconds is num ? '${(seconds / 60).toStringAsFixed(1)} min' : 'Sem dados';
 String adminLabel(dynamic value) =>
     const <String, String>{
+      'SYNCED': 'Sincronizado',
+      'PUBLISHED': 'Publicado',
+      'APPROVED': 'Aprovado',
+      'DRAFT': 'Rascunho',
+      'CANCELLED': 'Cancelado',
+      'REQUESTED': 'Solicitado',
+      'UPLOADING': 'Enviando',
+      'PROCESSING': 'Processando',
+      'COMPLETED': 'Concluído',
+      'FAILED': 'Falhou',
+      'RECOVERABLE_FAILED': 'Aguardando retomada',
+      'PERSISTING': 'Finalizando',
+      'MEDIA_UPLOAD_STARTED': 'Envio iniciado',
+      'MEDIA_UPLOAD_COMPLETED': 'Envio concluído',
+      'MEDIA_PROOF_FAILED': 'Falha ao verificar áudio',
+      'DURATION_VERIFIED': 'Duração verificada',
+      'ELIGIBILITY_CHECKED': 'Acesso verificado',
+      'QUOTA_RESERVED': 'Tempo reservado',
+      'JOB_CREATED': 'Processamento criado',
+      'ASSEMBLYAI_SUBMITTED': 'Enviado para transcrição',
+      'ASSEMBLYAI_COMPLETED': 'Transcrição concluída',
+      'TRANSCRIPT_FETCHED': 'Texto recebido',
+      'RESERVATION_CONSUMED': 'Consumo confirmado',
+      'PUSH_CREATED': 'Notificação preparada',
+      'UI_UPDATED': 'Atualização entregue',
+      'ATTEMPT_CREATED': 'Tentativa registrada',
+      'MEDIA_PROOF_CREATED': 'Verificação do áudio',
+      'SOURCE_SAVED': 'Áudio salvo',
+      'TRANSCRIPTION_REQUESTED': 'Transcrição solicitada',
+      'ASSEMBLYAI_PROCESSING': 'Transcrição em processamento',
+      'TRANSCRIPT_PERSISTED': 'Transcrição salva',
+      'home': 'Home',
+      'study': 'Estudo',
+      'plantao': 'Plantão',
+      'transcription': 'Transcrição',
+      'summary': 'Resumo',
+      'analysis': 'Análise',
+      'content': 'Conteúdo',
+      'notification': 'Notificação',
+      'sync': 'Sincronização',
+      'guide': 'Guia',
+      'SUPORTE': 'Suporte',
+      'SOCIO': 'Sócio',
+      'EQUIPE': 'Equipe',
+      'MARKETING': 'Marketing',
+      'UNIVERSIDADE': 'Universidade',
+      'INFLUENCER': 'Influenciador',
+      'TESTE_INTERNO': 'Teste interno',
+      'OUTRO': 'Outro',
+      'grantManualTime': 'Tempo adicional concedido',
       'approved': 'Ativo',
       'blocked': 'Bloqueado',
       'pending': 'Pendente',
@@ -66,7 +116,6 @@ String adminLabel(dynamic value) =>
       'RESERVE': 'Reserva',
       'EXPIRE': 'Expiração',
       'REVOKE': 'Revogação',
-      'DRAFT': 'Rascunho',
       'true': 'Sucesso',
       'false': 'Falha'
     }[value?.toString()] ??
@@ -78,8 +127,14 @@ class AdminBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = value?.toString().toLowerCase() ?? '';
-    final color = ['healthy', 'approved', 'completed', 'true', 'active']
-            .contains(s)
+    final color = [
+      'healthy',
+      'approved',
+      'completed',
+      'true',
+      'active',
+      'synced'
+    ].contains(s)
         ? const Color(0xff167d62)
         : ['fail', 'failed', 'false', 'blocked', 'terminal_error'].contains(s)
             ? const Color(0xffbc3844)
@@ -126,7 +181,7 @@ class AdminKpis extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, c) {
         final cols = c.maxWidth > 1100
-            ? 4
+            ? 6
             : c.maxWidth > 620
                 ? 3
                 : 2;
@@ -137,7 +192,7 @@ class AdminKpis extends StatelessWidget {
             children: items.entries
                 .map((e) => Container(
                     width: width,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
@@ -193,7 +248,7 @@ class AdminChart extends StatelessWidget {
             const SizedBox(
                 height: 100,
                 child: Center(
-                    child: Text('Sem dados disponíveis',
+                    child: Text('Dados insuficientes',
                         style: TextStyle(color: Color(0xff64748b)))))
           else
             SizedBox(
@@ -298,4 +353,61 @@ Future<Map<String, dynamic>?> pickAdminUser(
                         onPressed: () => Navigator.pop(ctx),
                         child: const Text('Cancelar'))
                   ])));
+}
+
+/// Operational metadata only; never renders an arbitrary payload in the overview.
+class AdminRecordDetail extends StatelessWidget {
+  const AdminRecordDetail(this.data, {super.key});
+  final Map<String, dynamic> data;
+  @override
+  Widget build(BuildContext context) {
+    final timeline =
+        data['timeline'] is List ? data['timeline'] as List : const [];
+    final fields = <String, String>{
+      if (data['userName'] != null) 'Usuário': adminText(data['userName']),
+      if (data['userEmail'] != null) 'E-mail': adminText(data['userEmail']),
+      if (data['actorName'] != null)
+        'Administrador': adminText(data['actorName']),
+      if (data['action'] != null) 'Ação': adminLabel(data['action']),
+      if (data['service'] != null) 'Serviço': adminLabel(data['service']),
+      if (data['durationMs'] is num)
+        'Duração': adminMinutes((data['durationMs'] as num) / 1000),
+      if (data['amountSeconds'] is num)
+        'Tempo': adminMinutes(data['amountSeconds']),
+      if (data['category'] != null) 'Categoria': adminLabel(data['category']),
+      if (data['lastStage'] != null) 'Etapa': adminLabel(data['lastStage']),
+      if (data['createdAt'] != null) 'Criado em': adminDate(data['createdAt']),
+      if (data['updatedAt'] != null)
+        'Atualizado em': adminDate(data['updatedAt']),
+      if (data['timestamp'] != null) 'Data': adminDate(data['timestamp']),
+      if (data['expiresAt'] != null) 'Expira em': adminDate(data['expiresAt']),
+    };
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      AdminBadge(data['status'] ?? data['state'] ?? data['success']),
+      const SizedBox(height: 16),
+      for (final field in fields.entries)
+        Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SizedBox(
+                  width: 130,
+                  child: Text(field.key,
+                      style: const TextStyle(color: Color(0xff64748b)))),
+              Expanded(child: SelectableText(field.value)),
+            ])),
+      if (timeline.isNotEmpty) ...[
+        const Divider(),
+        const Text('Histórico da tentativa',
+            style: TextStyle(fontWeight: FontWeight.w700)),
+        for (final event in timeline.whereType<Map>())
+          ListTile(
+              dense: true,
+              leading: const Icon(Icons.history, size: 18),
+              title: Text(adminLabel(event['stage'] ?? event['state'])),
+              subtitle: Text(adminDate(
+                  event['at'] ?? event['timestamp'] ?? event['createdAt']))),
+      ],
+      AdminTechnical(data),
+    ]);
+  }
 }

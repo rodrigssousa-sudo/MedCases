@@ -462,7 +462,7 @@ class _ControlCenterSectionState extends State<ControlCenterSection> {
                                                         AlertDialog(
                                                             title: const Text(
                                                                 'Detalhes do evento'),
-                                                            content: SizedBox(width: 600, child: SingleChildScrollView(child: AdminTechnical(r))),
+                                                            content: SizedBox(width: 600, child: SingleChildScrollView(child: AdminRecordDetail(r))),
                                                             actions: [
                                                               TextButton(
                                                                   onPressed: () =>
@@ -473,7 +473,7 @@ class _ControlCenterSectionState extends State<ControlCenterSection> {
                                                                       'Fechar'))
                                                             ])),
                                                 child:
-                                                    const Text('Ver metadata')),
+                                                    const Text('Ver detalhes')),
                                             if (widget.table == 'credits' &&
                                                 !widget.readOnly)
                                               TextButton(

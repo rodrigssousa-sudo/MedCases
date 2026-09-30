@@ -113,7 +113,7 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
         builder: (ctx) => AlertDialog(
                 title: const Text('Detalhe operacional'),
                 content: SizedBox(
-                    width: 650,
+                    width: 850,
                     child: FutureBuilder<Map<String, dynamic>>(
                         future: _api.call('detail', {'userId': row['id']}),
                         builder: (context, s) {
@@ -149,11 +149,12 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                                       'Consultar saldo no app',
                                   'Tempo extra':
                                       adminMinutes(d['manualAvailableSeconds']),
-                                  'Uso manual mensal': d['manualConsumedMs']
-                                          is num
-                                      ? adminMinutes(
-                                          (d['manualConsumedMs'] as num) / 1000)
-                                      : 'Sem dados',
+                                  'Uso mensal · tempo extra':
+                                      d['manualConsumedMs'] is num
+                                          ? adminMinutes(
+                                              (d['manualConsumedMs'] as num) /
+                                                  1000)
+                                          : 'Sem dados',
                                   'Último acesso': adminDate(d['lastSeenAt']),
                                   'Dispositivos': adminText(d['deviceCount'])
                                 }),
@@ -491,7 +492,7 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
         if (widget.table == 'ai') ...[
           const Text(
               'Eventos históricos observados. Os modelos abaixo não definem a configuração ativa.'),
-          const AdminDashboardSection(compact: true),
+          AdminDashboardSection(compact: true, api: _api),
           DropdownButtonFormField<String>(
               isExpanded: true,
               items: ['home', 'study', 'plantao']
@@ -535,41 +536,41 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                         decoration:
                             const InputDecoration(labelText: 'Busca avançada'),
                         items: widget.table == 'transcriptionAttempts'
-                          ? const [
-                              DropdownMenuItem(
-                                value: 'auto',
-                                child: Text('Nome ou e-mail'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'sourceId',
-                                child: Text('Fonte'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'attemptId',
-                                child: Text('Tentativa'),
-                              ),
-                              DropdownMenuItem(
-                                  value: 'jobId', child: Text('Job')),
-                              DropdownMenuItem(
-                                value: 'state',
-                                child: Text('Estado'),
-                              ),
-                            ]
-                          : const [
-                              DropdownMenuItem(
-                                value: 'auto',
-                                child: Text('Nome ou e-mail'),
-                              ),
-                              DropdownMenuItem(
-                                  value: 'uid', child: Text('UID')),
-                              DropdownMenuItem(
-                                value: 'status',
-                                child: Text('Status'),
-                              ),
-                              DropdownMenuItem(
-                                  value: 'plan', child: Text('Plano')),
-                            ],
-                      onChanged: (v) => setState(() => _field = v!)))
+                            ? const [
+                                DropdownMenuItem(
+                                  value: 'auto',
+                                  child: Text('Nome ou e-mail'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'sourceId',
+                                  child: Text('Fonte'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'attemptId',
+                                  child: Text('Tentativa'),
+                                ),
+                                DropdownMenuItem(
+                                    value: 'jobId', child: Text('Job')),
+                                DropdownMenuItem(
+                                  value: 'state',
+                                  child: Text('Estado'),
+                                ),
+                              ]
+                            : const [
+                                DropdownMenuItem(
+                                  value: 'auto',
+                                  child: Text('Nome ou e-mail'),
+                                ),
+                                DropdownMenuItem(
+                                    value: 'uid', child: Text('UID')),
+                                DropdownMenuItem(
+                                  value: 'status',
+                                  child: Text('Status'),
+                                ),
+                                DropdownMenuItem(
+                                    value: 'plan', child: Text('Plano')),
+                              ],
+                        onChanged: (v) => setState(() => _field = v!)))
               ])),
         if (widget.table == 'campaigns') ...[
           const Text(
@@ -642,6 +643,25 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                             .length
                             .toString()
                       }),
+                    if (_overview) ...[
+                      const SizedBox(height: 16),
+                      AdminChart(
+                          title: 'Saúde dos serviços',
+                          values: {
+                            for (final state in [
+                              'HEALTHY',
+                              'DEGRADED',
+                              'FAIL',
+                              'UNKNOWN'
+                            ])
+                              adminLabel(state): rows
+                                  .where((r) => r['state'] == state)
+                                  .length
+                                  .toDouble(),
+                          },
+                          caption:
+                              'Sinais verificados; ausência de sinal permanece sem dados'),
+                    ],
                     if (rows.isEmpty)
                       Padding(
                           padding: const EdgeInsets.all(40),
@@ -666,6 +686,10 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                           child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: DataTable(
+                                  dataRowMinHeight: 56,
+                                  dataRowMaxHeight: 64,
+                                  headingRowHeight: 40,
+                                  columnSpacing: 24,
                                   headingRowColor: const WidgetStatePropertyAll(
                                       Color(0xfff1f5f9)),
                                   columns: [
@@ -737,58 +761,66 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                   ]);
             })
       ]);
-  List<String> _columns() => widget.table == 'ai'
-      ? [
-          'Modo',
-          'Provider',
-          'Modelo · histórico',
-          'Latência',
-          'Status',
-          'Horário',
-          'Detalhes'
-        ]
-      : widget.table == 'audit'
-          ? ['Data', 'Administrador', 'Ação', 'Usuário', 'Detalhes']
-          : ['pathologies', 'drugs'].contains(widget.table)
-              ? [
-                  'Nome',
-                  'Idiomas',
-                  'Versão',
-                  'Status',
-                  'Revisor',
-                  'Atualização',
-                  'Detalhes'
-                ]
-              : widget.table == 'incidents'
+  List<String> _columns() => _table == 'transcriptionAttempts'
+      ? ['Usuário', 'Duração', 'Estado', 'Etapa', 'Atualização', 'Ações']
+      : widget.table == 'ai'
+          ? [
+              'Modo',
+              'Provider',
+              'Modelo · histórico',
+              'Latência',
+              'Status',
+              'Horário',
+              'Detalhes'
+            ]
+          : widget.table == 'audit'
+              ? ['Data', 'Administrador', 'Ação', 'Usuário', 'Detalhes']
+              : ['pathologies', 'drugs'].contains(widget.table)
                   ? [
-                      'Serviço',
-                      'Ocorrência',
-                      'Quantidade',
-                      'Última ocorrência',
+                      'Nome',
+                      'Idiomas',
+                      'Versão',
                       'Status',
-                      'Ações'
+                      'Revisor',
+                      'Atualização',
+                      'Detalhes'
                     ]
-                  : ['Nome / serviço', 'Status', 'Atualização', 'Ações'];
+                  : widget.table == 'incidents'
+                      ? [
+                          'Serviço',
+                          'Ocorrência',
+                          'Quantidade',
+                          'Última ocorrência',
+                          'Status',
+                          'Ações'
+                        ]
+                      : ['Nome / serviço', 'Status', 'Atualização', 'Ações'];
   List<DataCell> _cells(Map<String, dynamic> r) {
     final detail = DataCell(TextButton(
         onPressed: () => showDialog<void>(
             context: context,
-            builder: (ctx) => AlertDialog(
+            builder: (ctx) =>
+                AlertDialog(
                     title: const Text('Detalhes'),
                     content: SizedBox(
                         width: 650,
-                        child: SingleChildScrollView(child: AdminTechnical(r))),
+                        child:
+                            SingleChildScrollView(child: AdminRecordDetail(r))),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(ctx),
                           child: const Text('Fechar'))
                     ])),
-        child: const Text('Ver metadata')));
+        child: const Text('Ver detalhes')));
     if (widget.table == 'ai')
       return [
         DataCell(Text(adminText(r['mode'], 'Não informado'))),
         DataCell(Text(adminText(r['provider']))),
-        DataCell(Text(adminText(r['model']))),
+        DataCell(Row(children: [
+          Text(adminText(r['model'])),
+          const SizedBox(width: 8),
+          const AdminBadge('Histórico')
+        ])),
         DataCell(Text(r['durationMs'] is num
             ? '${((r['durationMs'] as num) / 1000).toStringAsFixed(1)} s'
             : 'Sem dados')),
@@ -850,7 +882,11 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
             ],
           ),
         ),
+        DataCell(Text(r['durationMs'] is num
+            ? adminMinutes((r['durationMs'] as num) / 1000)
+            : 'Não informado')),
         DataCell(AdminBadge(r['state'])),
+        DataCell(Text(adminLabel(r['lastStage']))),
         DataCell(Text(adminDate(r['updatedAt'] ?? r['createdAt']))),
         detail,
       ];

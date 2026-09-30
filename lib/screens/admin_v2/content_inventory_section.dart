@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'admin_operations_section.dart';
+import 'admin_visual_widgets.dart';
 
 /// Metadata projection. There is intentionally no clinical write action.
 class ContentInventorySection extends StatefulWidget {
@@ -171,13 +172,23 @@ class _ContentInventorySectionState extends State<ContentInventorySection> {
                             'Somente leitura. A fonte clínica permanece no repositório.'),
                         const SizedBox(height: 16),
                         for (final field in labels.entries)
-                          if (row.containsKey(field.key))
+                          if (row.containsKey(field.key) &&
+                              ![
+                                'canonicalId',
+                                'sourceVersion',
+                                'sourceMode',
+                                'technicalMapping',
+                                'exactIdDuplicates',
+                                'exactNameDuplicates',
+                                'possibleAliasDuplicates'
+                              ].contains(field.key))
                             Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: SelectableText(
-                                    '${field.value}\n${_value(row[field.key])}')),
+                                    '${field.value}\n${field.key == 'reviewDate' ? adminDate(row[field.key]) : _value(row[field.key])}')),
                         Text(
-                            'Fila derivada: ${(row['queueReasons'] as List? ?? []).map((e) => _filters[e] ?? e).join(', ')}'),
+                            'Pendências: ${(row['queueReasons'] as List? ?? []).map((e) => _filters[e] ?? 'Revisão necessária').join(', ')}'),
+                        AdminTechnical(row),
                       ]))),
               actions: [
                 TextButton(
@@ -189,7 +200,9 @@ class _ContentInventorySectionState extends State<ContentInventorySection> {
                       final uri = Uri.tryParse('${row['sourceUrl']}');
                       if (uri != null &&
                           uri.scheme == 'https' &&
-                          uri.host == 'github.com') { await launchUrl(uri); }
+                          uri.host == 'github.com') {
+                        await launchUrl(uri);
+                      }
                     },
                     child: const Text('Abrir fonte')),
                 TextButton(
@@ -207,138 +220,222 @@ class _ContentInventorySectionState extends State<ContentInventorySection> {
     final rows = (_result['rows'] as List? ?? [])
         .map((e) => Map<String, dynamic>.from(e as Map))
         .toList();
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Padding(
-          padding: const EdgeInsets.all(20),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Expanded(
-                  child: Text(
-                      drugs
-                          ? 'Fármacos · inventário canônico'
-                          : 'Patologias · inventário canônico',
-                      style: Theme.of(context).textTheme.titleLarge)),
-              IconButton(
-                  tooltip: 'Atualizar leitura',
-                  onPressed: _loading ? null : () => _load(reset: true),
-                  icon: const Icon(Icons.refresh)),
-              TextButton(
-                  onPressed: _history, child: const Text('Histórico de sync'))
-            ]),
-            const Text(
-                'Metadata da fonte oficial. Sem edição, aprovação ou publicação clínica pelo Admin.'),
-            const SizedBox(height: 12),
-            Wrap(spacing: 8, runSpacing: 8, children: [
-              for (final entry in {
-                'total': 'Total',
-                'ptEs': 'PT + ES',
-                if (drugs) 'gold33Complete': 'Gold33 homologado',
-                'approved': 'Aprovados',
-                'pending': 'Pendentes',
-                'withoutReview': 'Sem revisão',
-                'outdated': 'Desatualizados',
-                'syncErrors': 'Erros de sync',
-                'possibleDuplicates': 'Duplicados a revisar'
-              }.entries)
-                Chip(
-                    label: Text('${entry.value}: ${counts[entry.key] ?? '—'}')),
-            ]),
-            const SizedBox(height: 12),
-            Wrap(spacing: 12, runSpacing: 12, children: [
-              SizedBox(
-                  width: 310,
-                  child: TextField(
-                      controller: _search,
-                      onSubmitted: (_) => _load(reset: true),
-                      decoration: InputDecoration(
-                          labelText: 'Buscar por nome PT/ES ou ID',
-                          helperText: 'Busca pelo início do nome ou ID',
-                          suffixIcon: IconButton(
-                              onPressed: () => _load(reset: true),
-                              icon: const Icon(Icons.search))))),
-              SizedBox(
-                  width: 310,
-                  child: DropdownButtonFormField<String>(
-                      initialValue: _filter,
-                      isExpanded: true,
-                      decoration: const InputDecoration(
-                          labelText:
-                              'Inventário / o que falta / fila do agente'),
-                      items: _filters.entries
-                          .where((e) =>
-                              drugs ||
-                              ![
-                                'GOLD33_COMPLETE',
-                                'GOLD33_INCOMPLETE',
-                                'CALCULATION_BLOCKED',
-                                'CLINICAL_CONTENT_PENDING'
-                              ].contains(e.key))
-                          .map((e) => DropdownMenuItem(
-                              value: e.key,
-                              child: Text(e.value,
-                                  overflow: TextOverflow.ellipsis)))
-                          .toList(),
-                      onChanged: (v) {
-                        if (v != null) {
-                          _filter = v;
-                          _load(reset: true);
-                        }
-                      })),
-            ]),
-            const SizedBox(height: 8),
-            Text(
-                'Sync: ${meta['syncState'] ?? 'Aguardando leitura'} · Fila derivada: ${drugs ? 'DRUG_AGENT_QUEUE' : 'PATHOLOGY_AGENT_QUEUE'}'),
-            if (_filter == 'NEW')
-              const Text(
-                  'Nenhuma lista oficial de expansão foi validada. Não inferimos novos itens.'),
-          ])),
-      if (_loading) const LinearProgressIndicator(),
-      if (_failed)
+    return LayoutBuilder(builder: (context, constraints) {
+      final desktop = constraints.maxWidth >= 900;
+      Widget search() => TextField(
+          controller: _search,
+          onSubmitted: (_) => _load(reset: true),
+          decoration: InputDecoration(
+              isDense: true,
+              hintText: 'Buscar por nome PT/ES ou ID',
+              prefixIcon: const Icon(Icons.search, size: 20),
+              suffixIcon: IconButton(
+                  tooltip: 'Buscar',
+                  onPressed: () => _load(reset: true),
+                  icon: const Icon(Icons.arrow_forward, size: 18))));
+      Widget filter() => DropdownButtonFormField<String>(
+          initialValue: _filter,
+          isExpanded: true,
+          decoration:
+              const InputDecoration(isDense: true, labelText: 'Filtro / fila'),
+          items: _filters.entries
+              .where((e) =>
+                  drugs ||
+                  ![
+                    'GOLD33_COMPLETE',
+                    'GOLD33_INCOMPLETE',
+                    'CALCULATION_BLOCKED',
+                    'CLINICAL_CONTENT_PENDING'
+                  ].contains(e.key))
+              .map((e) => DropdownMenuItem(
+                  value: e.key,
+                  child: Text(e.value, overflow: TextOverflow.ellipsis)))
+              .toList(),
+          onChanged: (v) {
+            if (v != null) {
+              _filter = v;
+              _load(reset: true);
+            }
+          });
+      Widget actions() => Row(mainAxisSize: MainAxisSize.min, children: [
+            Tooltip(
+                message:
+                    'Atualizar leitura da fonte; não modifica conteúdo clínico',
+                child: IconButton(
+                    onPressed: _loading ? null : () => _load(reset: true),
+                    icon: const Icon(Icons.sync))),
+            TextButton(
+                onPressed: _history, child: const Text('Histórico de sync')),
+          ]);
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        // This compact toolbar stays outside the scrolling list.
         Padding(
-            padding: const EdgeInsets.all(20),
-            child: TextButton(
-                onPressed: () => _load(),
-                child: const Text(
-                    'Falha ao consultar o inventário. Tentar novamente'))),
-      Expanded(
-          child: rows.isEmpty && !_loading
-              ? const Center(child: Text('Nenhum item para este filtro.'))
-              : ListView.builder(
-                  itemCount: rows.length,
-                  itemBuilder: (context, i) {
-                    final row = rows[i];
-                    return Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 4),
-                        child: ListTile(
-                            onTap: () => _detail(row),
-                            title: Text(_value(row['displayName'])),
-                            subtitle: Text(
-                                '${_value(row['nameEs'])}\n${row['canonicalId']} · PT: ${_value(row['ptAvailable'])} · ES: ${_value(row['esAvailable'])}\n${row['withoutReview'] == true ? 'Sem revisão registrada' : 'Revisão registrada'} · ${_value(row['status'])}'),
-                            isThreeLine: true,
-                            trailing: const Icon(Icons.chevron_right)));
-                  })),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        TextButton(
-            onPressed: _loading || _pages.isEmpty
-                ? null
-                : () {
-                    _cursor = _pages.removeLast();
-                    _load();
-                  },
-            child: const Text('Anterior')),
-        TextButton(
-            onPressed: _loading || _result['nextCursor'] == null
-                ? null
-                : () {
-                    _pages.add(_cursor);
-                    _cursor = _result['nextCursor'] as String;
-                    _load();
-                  },
-            child: const Text('Próxima'))
-      ]),
-    ]);
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Expanded(
+                    child: Text(drugs ? 'Fármacos' : 'Patologias',
+                        style: Theme.of(context).textTheme.titleLarge)),
+                AdminBadge(meta['syncState']),
+              ]),
+              const SizedBox(height: 8),
+              SizedBox(
+                  height: 30,
+                  child: ListView(scrollDirection: Axis.horizontal, children: [
+                    for (final entry in {
+                      'total': 'Total',
+                      'ptEs': 'PT + ES',
+                      'approved': 'Aprovados',
+                      'pending': 'Pendentes',
+                      'withoutReview': 'Sem revisão',
+                      'outdated': 'Desatualizados',
+                      'syncErrors': 'Erros de sync',
+                      'possibleDuplicates': 'Duplicados a revisar',
+                      if (drugs) 'gold33Complete': 'Gold33 homologado',
+                    }.entries)
+                      Padding(
+                          padding: const EdgeInsets.only(right: 14),
+                          child: Center(
+                              child: Text(
+                                  '${entry.value}: ${counts[entry.key] ?? '—'}',
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600))))
+                  ])),
+              const SizedBox(height: 8),
+              if (desktop)
+                Row(children: [
+                  Expanded(child: search()),
+                  const SizedBox(width: 12),
+                  SizedBox(width: 270, child: filter()),
+                  const SizedBox(width: 8),
+                  actions(),
+                ])
+              else ...[
+                search(),
+                const SizedBox(height: 12),
+                filter(),
+                actions()
+              ],
+              if (_filter == 'NEW')
+                const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: Text('Nenhuma lista oficial de expansão validada.')),
+            ])),
+        SizedBox(
+            height: 2,
+            child: _loading ? const LinearProgressIndicator() : null),
+        if (_failed)
+          TextButton(
+              onPressed: () => _load(),
+              child: const Text(
+                  'Falha ao consultar o inventário. Tentar novamente')),
+        if (desktop)
+          Container(
+              color: const Color(0xffeef2f6),
+              height: 32,
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: const Row(children: [
+                Expanded(
+                    flex: 4,
+                    child: Text('Nome',
+                        style: TextStyle(fontWeight: FontWeight.w600))),
+                SizedBox(width: 90, child: Text('Idiomas')),
+                Expanded(flex: 2, child: Text('Status')),
+                Expanded(flex: 2, child: Text('Revisão')),
+                SizedBox(width: 120, child: Text('Sincronização')),
+                SizedBox(width: 28),
+              ])),
+        Expanded(
+            child: rows.isEmpty && !_loading
+                ? const Center(child: Text('Nenhum item para este filtro.'))
+                : ListView.builder(
+                    itemExtent: desktop ? 56 : 72,
+                    itemCount: rows.length,
+                    itemBuilder: (context, i) {
+                      final row = rows[i];
+                      return Material(
+                          color:
+                              i.isEven ? Colors.white : const Color(0xfff8fafc),
+                          child: InkWell(
+                              key: ValueKey('inventory-row-$i'),
+                              onTap: () => _detail(row),
+                              child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 28),
+                                  child: Row(children: [
+                                    Expanded(
+                                        flex: 4,
+                                        child: Tooltip(
+                                            message: _value(row['displayName']),
+                                            child: Text(
+                                                _value(row['displayName']),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w600)))),
+                                    SizedBox(
+                                        width: 90,
+                                        child: Text([
+                                          if (row['ptAvailable'] == true) 'PT',
+                                          if (row['esAvailable'] == true) 'ES',
+                                        ].join(' / '))),
+                                    if (desktop) ...[
+                                      Expanded(
+                                          flex: 2,
+                                          child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child:
+                                                  AdminBadge(row['status']))),
+                                      Expanded(
+                                          flex: 2,
+                                          child: Text(
+                                              row['withoutReview'] == true
+                                                  ? 'A revisar'
+                                                  : 'Registrada',
+                                              style: const TextStyle(
+                                                  fontSize: 12))),
+                                      SizedBox(
+                                          width: 120,
+                                          child: Text(
+                                              adminLabel(row['syncStatus']),
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  fontSize: 12))),
+                                    ],
+                                    const Icon(Icons.chevron_right, size: 20),
+                                  ]))));
+                    })),
+        SizedBox(
+            height: 44,
+            child: Row(children: [
+              const SizedBox(width: 20),
+              Text('${rows.length} itens nesta página',
+                  style: const TextStyle(fontSize: 12)),
+              const Spacer(),
+              TextButton(
+                  onPressed: _loading || _pages.isEmpty
+                      ? null
+                      : () {
+                          _cursor = _pages.removeLast();
+                          _load();
+                        },
+                  child: const Text('Anterior')),
+              TextButton(
+                  onPressed: _loading || _result['nextCursor'] == null
+                      ? null
+                      : () {
+                          _pages.add(_cursor);
+                          _cursor = _result['nextCursor'] as String;
+                          _load();
+                        },
+                  child: const Text('Próxima')),
+              const SizedBox(width: 16),
+            ])),
+      ]);
+    });
   }
 }
 
@@ -346,30 +443,98 @@ class ContentInventoryOverview extends StatefulWidget {
   const ContentInventoryOverview({super.key, this.api});
   final AdminOperationsApi? api;
   @override
-  State<ContentInventoryOverview> createState() => _ContentInventoryOverviewState();
+  State<ContentInventoryOverview> createState() =>
+      _ContentInventoryOverviewState();
 }
+
 class _ContentInventoryOverviewState extends State<ContentInventoryOverview> {
-  late Future<List<Map<String,dynamic>>> _data;
+  late Future<List<Map<String, dynamic>>> _data;
   @override
-  void initState(){super.initState();_refresh();}
-  void _refresh(){final api=widget.api??AdminOperationsApi();_data=Future.wait(['drugs','pathologies'].map((kind)=>api.call('inventory',{'kind':kind,'limit':1})));}
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  void _refresh() {
+    final api = widget.api ?? AdminOperationsApi();
+    _data = Future.wait(['drugs', 'pathologies']
+        .map((kind) => api.call('inventory', {'kind': kind, 'limit': 1})));
+  }
+
   @override
-  Widget build(BuildContext context)=>FutureBuilder<List<Map<String,dynamic>>>(future:_data,builder:(context,snapshot){
-    if(snapshot.hasError)return Center(child:TextButton(onPressed:()=>setState(_refresh),child:const Text('Não foi possível carregar o inventário. Tentar novamente')));
-    if(!snapshot.hasData)return const Center(child:CircularProgressIndicator());
-    return ListView(padding:const EdgeInsets.all(24),children:[
-      Row(children:[Expanded(child:Text('Conteúdo · visão canônica',style:Theme.of(context).textTheme.headlineSmall)),IconButton(onPressed:()=>setState(_refresh),tooltip:'Atualizar',icon:const Icon(Icons.refresh))]),
-      const Text('O Admin acompanha as fontes oficiais. Revisão, publicação e autorização de cálculo permanecem independentes.'),
-      for(var i=0;i<2;i++)Card(margin:const EdgeInsets.only(top:20),child:Padding(padding:const EdgeInsets.all(20),child:Builder(builder:(context){
-        final meta=Map<String,dynamic>.from(snapshot.data![i]['meta'] as Map? ?? {}),counts=Map<String,dynamic>.from(meta['counts'] as Map? ?? {});
-        return Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(i==0?'Fármacos':'Patologias',style:Theme.of(context).textTheme.titleLarge),const SizedBox(height:12),
-          Wrap(spacing:12,runSpacing:8,children:[for(final e in {'total':'Total','ptEs':'PT + ES','approved':'Aprovados','pending':'Pendentes',if(i==0)'gold33Complete':'Gold33 homologado','withoutReview':'Sem revisão','outdated':'Desatualizados','syncErrors':'Erros de sync','possibleDuplicates':'Itens duplicados a revisar'}.entries)Chip(label:Text('${e.value}: ${counts[e.key]??'—'}'))]),
-          const SizedBox(height:12),Text('Sincronização: ${meta['syncState']??'Não executada'}'),
-          if(i==1)const Text('O registro identificado contém rascunhos locais; presença no inventário não significa publicação clínica.'),
-          const Text('As abas de Fármacos e Patologias incluem busca, o que falta, fila derivada e histórico.'),
-        ]);
-      }))),
-      const Padding(padding:EdgeInsets.only(top:20),child:Text('Precisa criar: nenhuma lista oficial de expansão validada. Nenhum item foi inventado ou criado automaticamente.')),
-    ]);
-  });
+  Widget build(BuildContext context) =>
+      FutureBuilder<List<Map<String, dynamic>>>(
+          future: _data,
+          builder: (context, snapshot) {
+            if (snapshot.hasError)
+              return Center(
+                  child: TextButton(
+                      onPressed: () => setState(_refresh),
+                      child: const Text(
+                          'Não foi possível carregar o inventário. Tentar novamente')));
+            if (!snapshot.hasData)
+              return const Center(child: CircularProgressIndicator());
+            return ListView(padding: const EdgeInsets.all(24), children: [
+              Row(children: [
+                Expanded(
+                    child: Text('Conteúdo · visão canônica',
+                        style: Theme.of(context).textTheme.headlineSmall)),
+                IconButton(
+                    onPressed: () => setState(_refresh),
+                    tooltip: 'Atualizar',
+                    icon: const Icon(Icons.refresh))
+              ]),
+              const Text(
+                  'O Admin acompanha as fontes oficiais. Revisão, publicação e autorização de cálculo permanecem independentes.'),
+              for (var i = 0; i < 2; i++)
+                Card(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Builder(builder: (context) {
+                          final meta = Map<String, dynamic>.from(
+                                  snapshot.data![i]['meta'] as Map? ?? {}),
+                              counts = Map<String, dynamic>.from(
+                                  meta['counts'] as Map? ?? {});
+                          return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(i == 0 ? 'Fármacos' : 'Patologias',
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge),
+                                const SizedBox(height: 12),
+                                Wrap(spacing: 12, runSpacing: 8, children: [
+                                  for (final e in {
+                                    'total': 'Total',
+                                    'ptEs': 'PT + ES',
+                                    'approved': 'Aprovados',
+                                    'pending': 'Pendentes',
+                                    if (i == 0)
+                                      'gold33Complete': 'Gold33 homologado',
+                                    'withoutReview': 'Sem revisão',
+                                    'outdated': 'Desatualizados',
+                                    'syncErrors': 'Erros de sync',
+                                    'possibleDuplicates':
+                                        'Itens duplicados a revisar'
+                                  }.entries)
+                                    Chip(
+                                        label: Text(
+                                            '${e.value}: ${counts[e.key] ?? '—'}'))
+                                ]),
+                                const SizedBox(height: 12),
+                                Text(
+                                    'Sincronização: ${meta['syncState'] ?? 'Não executada'}'),
+                                if (i == 1)
+                                  const Text(
+                                      'O registro identificado contém rascunhos locais; presença no inventário não significa publicação clínica.'),
+                                const Text(
+                                    'As abas de Fármacos e Patologias incluem busca, o que falta, fila derivada e histórico.'),
+                              ]);
+                        }))),
+              const Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: Text(
+                      'Precisa criar: nenhuma lista oficial de expansão validada. Nenhum item foi inventado ou criado automaticamente.')),
+            ]);
+          });
 }

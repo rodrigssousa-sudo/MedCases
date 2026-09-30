@@ -89,7 +89,7 @@ class _AdminDashboardSectionState extends State<AdminDashboardSection> {
                     onPressed: () => setState(load),
                     icon: const Icon(Icons.refresh))
               ]),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               AdminKpis({
                 'Usuários totais': n(d['total']),
                 'Ativos hoje': n(d['activeToday']),
@@ -106,6 +106,7 @@ class _AdminDashboardSectionState extends State<AdminDashboardSection> {
                 'Home hoje': n(d['modes']?['home']),
                 'Custo IA hoje': 'Sem dados',
                 'Custo IA · 7 dias': 'Sem dados',
+                'Custo IA · 30 dias': 'Sem dados',
                 'Custo transcrição': 'Sem dados',
                 'Erros IA hoje': n(d['errorsToday']),
                 'Jobs falhos': n(d['failedJobs']),
@@ -164,7 +165,8 @@ class _AdminDashboardSectionState extends State<AdminDashboardSection> {
                       values: {
                         for (final p in providers)
                           if (p['cost'] is num)
-                            '${p['provider']}': (p['cost'] as num).toDouble()
+                            '${p['provider']}${p['model'] == null ? '' : ' / ${p['model']}'}':
+                                (p['cost'] as num).toDouble()
                       },
                       caption:
                           'Estimativa USD · últimas 24h · não representa routing ativo'),
