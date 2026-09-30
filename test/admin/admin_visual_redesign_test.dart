@@ -141,6 +141,19 @@ void main() {
     expect(mutation['enabled'], true);
     expect(t.takeException(), isNull);
   });
+  testWidgets('record overview hides technical IDs and exposes readable dates and stages', (t) async {
+    await t.pumpWidget(const MaterialApp(home: Scaffold(body: SingleChildScrollView(child: AdminRecordDetail({
+      'id': 'hidden-record-id', 'userName': 'QA', 'state': 'COMPLETED',
+      'durationMs': 60000, 'createdAt': 1790688066779,
+      'timeline': [{'stage': 'TRANSCRIPT_PERSISTED', 'at': 1790688066779}],
+    })))));
+    await t.pumpAndSettle();
+    expect(find.text('hidden-record-id'), findsNothing);
+    expect(find.text('Concluído'), findsOneWidget);
+    expect(find.text('Transcrição salva'), findsOneWidget);
+    expect(find.text('1.0 min'), findsOneWidget);
+    expect(find.text('1790688066779'), findsNothing);
+  });
   test('dates and operations are human readable', () {
     expect(adminDate(1790688066779), isNot(contains('1790688066779')));
     expect(adminLabel('markNotificationRead'), 'Notificação marcada como lida');

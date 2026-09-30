@@ -64,7 +64,7 @@ void main() {
   testWidgets(
       'both inventories show eight complete rows with compact pinned toolbar',
       (t) async {
-    await t.binding.setSurfaceSize(const Size(1200, 900));
+    await t.binding.setSurfaceSize(const Size(1432, 794));
     addTearDown(() => t.binding.setSurfaceSize(null));
     for (final kind in ['drugs', 'pathologies']) {
       await t.pumpWidget(MaterialApp(
@@ -79,7 +79,7 @@ void main() {
       for (var i = 0; i < 8; i++) {
         final rect = t.getRect(find.byKey(ValueKey('inventory-row-$i')));
         expect(rect.height, 56);
-        expect(rect.bottom, lessThanOrEqualTo(856));
+        expect(rect.bottom, lessThanOrEqualTo(750));
       }
       expect(find.textContaining('technical-secret-id'), findsNothing);
       final top = t.getTopLeft(find.byType(TextField));
