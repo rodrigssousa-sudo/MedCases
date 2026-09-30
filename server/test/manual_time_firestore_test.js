@@ -2,7 +2,19 @@
 const {test,after}=require('node:test'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 if(!process.env.FIRESTORE_EMULATOR_HOST)throw Error('EMULATOR_REQUIRED');
 const {initializeApp,deleteApp}=require('firebase-admin/app');const app=initializeApp({projectId:'demo-admin-manual-time'});
-const db=require('firebase-admin/firestore').getFirestore(app);const {MonthlyUsageOwner,LIMITS}=require('../monthly_usage_owner');
+const db=require('firebase-admin/firestore').getFirestore(app);
+// Emulator 1.21 can close a contended transaction with INVALID_ARGUMENT
+// instead of ABORTED. Retry only that exact emulator transport failure, using
+// a fresh transaction. Production code and all accounting assertions are intact.
+const transact=db.runTransaction.bind(db);
+db.runTransaction=async(...args)=>{
+ for(let attempt=0;;attempt++){
+  try{return await transact(...args);}catch(error){
+   if(attempt>=2||error.code!==3||error.details!=='Transaction is invalid or closed.')throw error;
+  }
+ }
+};
+const {MonthlyUsageOwner,LIMITS}=require('../monthly_usage_owner');
 const {proof}=require('./media_fixture');
 const {createAdminControlCenter}=require('../../functions/admin_control_center');
 const control=createAdminControlCenter({db});
