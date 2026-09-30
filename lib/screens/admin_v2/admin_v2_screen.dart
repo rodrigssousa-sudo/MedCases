@@ -1,3 +1,4 @@
+import 'content_inventory_section.dart';
 import 'admin_dashboard_section.dart';
 import 'admin_overview_cards.dart';
 import 'admin_visual_widgets.dart';
@@ -379,19 +380,9 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
 
     switch (_section) {
       case _AdminSection.pathologyInventory:
-        return AdminOperationsSection(
-            key: const ValueKey('pathologyInventory'),
-            table: 'pathologies',
-            title: 'Patologias',
-            readOnly: widget.currentAdmin.isSupervisor,
-            master: _isMaster);
+        return const ContentInventorySection(key: ValueKey('pathologyInventory'), kind: 'pathologies');
       case _AdminSection.drugInventory:
-        return AdminOperationsSection(
-            key: const ValueKey('drugInventory'),
-            table: 'drugs',
-            title: 'Fármacos',
-            readOnly: widget.currentAdmin.isSupervisor,
-            master: _isMaster);
+        return const ContentInventorySection(key: ValueKey('drugInventory'), kind: 'drugs');
       case _AdminSection.operationalJobs:
         return AdminOperationsSection(
             key: const ValueKey('operationalJobs'),
@@ -523,11 +514,10 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
           'Patologias',
           'Fármacos'
         ], children: [
-          const SingleChildScrollView(child: AdminOverviewCards(content: true)),
+          const ContentInventoryOverview(),
           _ContentGuidesSection(currentAdmin: widget.currentAdmin),
-          const AdminOperationsSection(
-              table: 'pathologies', title: 'Patologias'),
-          const AdminOperationsSection(table: 'drugs', title: 'Fármacos')
+          const ContentInventorySection(kind: 'pathologies'),
+          const ContentInventorySection(kind: 'drugs')
         ]);
       case _AdminSection.communication:
         return AdminWorkspaceTabs(labels: const [
