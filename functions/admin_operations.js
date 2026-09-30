@@ -8,6 +8,7 @@ const SPECS=Object.freeze({
  pathologies:['adminContentInventoryPathologies','canonicalId namePt nameEs version status lastUpdated reviewer reviewDate sourceRepository sourceRevision syncStatus'],
  drugs:['adminContentInventoryDrugs','canonicalId namePt nameEs version status gold33Status lastUpdated reviewer reviewDate sourceRepository sourceRevision syncStatus calculationAuthorized approvalState restrictions'],
  jobs:['adminOperationalJobs','type owner sourceId status createdAt startedAt completedAt attempts lastErrorCode retrySupported cancelSupported'],
+ transcriptionAttempts:['transcriptionAttempts','userId attemptId sourceId sessionId jobId durationMs fileSize provider state lastStage reasonCode platform appVersion buildNumber createdAt updatedAt finishedAt'],
  transcriptions:['_study_background_transcription_jobs','uid sourceId sessionId state status durationMs provider createdAt completedAt errorCode expectedSegments'],
  incidents:['admin_incidents','service module reasonCode errorCode version appVersion frequency count lastSeen lastSeenAt status updatedAt updatedBy'],
  audit:['adminControlAudit','actorUid action targetType targetId reason timestamp requestId'],
@@ -33,13 +34,26 @@ function createAdminOperations({db,documentId='__name__',now=()=>Date.now(),getA
   await auth.authorize(uid);const spec=SPECS[table];if(!spec)throw Error('UNKNOWN_TABLE');if(!Number.isInteger(limit)||limit<1||limit>100)throw Error('INVALID_PAGE_SIZE');
   if(table==='users'&&field==='auto'&&value){field=value.includes('@')?'email':'name';}
   let q=db.collection(spec[0]);
-  if(value){const allowed=table==='users'?['uid','email','name','status','plan']:table==='ai'?['mode']:table==='jobs'?['type']:[];if(!allowed.includes(field)||typeof value!=='string'||value.length>180)throw Error('INVALID_FILTER');q=field==='name'?q.where(Filter.or(Filter.where('name','==',value),Filter.where('displayName','==',value))):q.where(field==='uid'?documentId:field,'==',value);}
+  if(table==='transcriptionAttempts'&&value&&field==='auto'){
+   if(typeof value!=='string'||value.length>180)throw Error('INVALID_FILTER');
+   const users=await (value.includes('@')?db.collection('users').where('email','==',value.trim().toLowerCase()):db.collection('users').where(Filter.or(Filter.where('name','==',value.trim()),Filter.where('displayName','==',value.trim())))).limit(30).get();
+   if(users.empty)return {total:0,items:[],nextCursor:null,source:spec[0],sourceState:'AVAILABLE'};
+   q=q.where('userId','in',users.docs.map(d=>d.id));value=null;
+  }
+  if(value){const allowed=table==='users'?['uid','email','name','status','plan']:table==='ai'?['mode']:table==='jobs'?['type']:table==='transcriptionAttempts'?['userId','sourceId','attemptId','jobId','state']:[];if(!allowed.includes(field)||typeof value!=='string'||value.length>180)throw Error('INVALID_FILTER');q=field==='name'?q.where(Filter.or(Filter.where('name','==',value),Filter.where('displayName','==',value))):q.where(field==='uid'?documentId:field,'==',value);}
+  const countQuery=table==='transcriptionAttempts'?q:db.collection(spec[0]);
   q=q.orderBy(documentId).limit(limit+1);if(cursor)q=q.startAfter(id(cursor));
   const result=await q.get(),docs=result.docs.slice(0,limit);
-  const count=await db.collection(spec[0]).count().get();
+  const count=await countQuery.count().get();
   let metrics;
   if(table==='notifications'){const entries=await Promise.all(['sent','invalid_token','send_uncertain','sending'].map(async state=>[state,(await db.collection('notificationDeliveries').where('state','==',state).count().get()).data().count]));metrics={...Object.fromEntries(entries),devices:(await db.collection('notificationDevices').count().get()).data().count,opened:'UNKNOWN',deepLinkSuccess:'UNKNOWN'};}
   const items=docs.map(d=>table==='users'?userProjection(d):projection(d,spec[1]));
+  if(table==='transcriptionAttempts'){
+   const ids=[...new Set(items.map(r=>r.userId).filter(Boolean))];
+   const people=await identities(uid,{ids});const map=new Map(people.items.map(u=>[u.id,u]));
+   for(const row of items){row.userName=map.get(row.userId)?.name||'Usuário';row.userEmail=map.get(row.userId)?.email||null;}
+   for(let i=0;i<items.length;i++){const events=docs[i].data().timeline;items[i].timeline=Array.isArray(events)?events.slice(-24).map(e=>Object.fromEntries(['state','stage','reasonCode','at','origin','applied'].filter(k=>e[k]!==undefined).map(k=>[k,scalar(e[k])]))):[];}
+  }
   if(table==='audit'){
    const ids=[...new Set(items.flatMap(r=>[r.actorUid,r.targetType==='user'?r.targetId:null]).filter(Boolean))];
    const chunks=await Promise.all([ids.slice(0,100),ids.slice(100)].filter(x=>x.length).map(ids=>identities(uid,{ids})));const map=new Map(chunks.flatMap(x=>x.items).map(u=>[u.id,u]));

@@ -4,8 +4,9 @@ const MAX_TOP_LEVEL_BOXES = 256;
 const MAX_PARSE_OPERATIONS = 2048;
 const BRANDS = new Set(['M4A ', 'isom', 'iso2', 'mp41', 'mp42']);
 function invalid() { throw Error('INVALID_BINARY_STRUCTURE'); }
-function scanMp4(bytes) {
-  if (!Buffer.isBuffer(bytes) || !bytes.length || bytes.length > MAX_DISCOVERY_BYTES) invalid();
+function scanMp4(bytes, {longRecording=false}={}) {
+  const maxBytes=longRecording?64*1024*1024:MAX_DISCOVERY_BYTES;
+  if (!Buffer.isBuffer(bytes) || !bytes.length || bytes.length > maxBytes) invalid();
   const boxes = []; let offset = 0, operations = 0;
   while (offset < bytes.length) {
     if (++operations > MAX_PARSE_OPERATIONS || boxes.length >= MAX_TOP_LEVEL_BOXES || offset + 8 > bytes.length) invalid();
@@ -15,7 +16,7 @@ function scanMp4(bytes) {
     if (size === 1) {
       if (offset + 16 > bytes.length) invalid();
       const extended = bytes.readBigUInt64BE(offset + 8);
-      if (extended > BigInt(MAX_DISCOVERY_BYTES)) invalid();
+      if (extended > BigInt(maxBytes)) invalid();
       size = Number(extended); header = 16;
     } else if (size === 0) {
       // Only a terminal mdat extending to EOF is accepted in this subset.

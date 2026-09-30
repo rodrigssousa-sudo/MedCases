@@ -1,0 +1,30 @@
+'use strict';
+const {test,after}=require('node:test'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+if(process.env.FIRESTORE_EMULATOR_HOST!=='127.0.0.1:8189')throw Error('LOCAL_EMULATOR_REQUIRED');
+const {initializeApp,deleteApp}=require('firebase-admin/app');
+const app=initializeApp({projectId:'demo-transcription-observability'});
+const db=require('firebase-admin/firestore').getFirestore(app);
+const {createAdminOperations}=require('../../functions/admin_operations');
+const {TranscriptionAttemptLedger}=require('../transcription_attempt_ledger');
+const api=createAdminOperations({db}),ledger=new TranscriptionAttemptLedger({db});
+const prefix='qa-'+crypto.randomUUID(),admin=prefix+'-admin',uid=prefix+'-user';
+after(()=>deleteApp(app));
+test('Admin attempt metadata, filtered count, identity and ignored timeout survive Firestore reload',async()=>{
+ await db.doc('users/'+admin).set({role:'admin',status:'approved'});
+ await db.doc('users/'+uid).set({role:'user',status:'approved',email:prefix+'@example.invalid',name:'Synthetic QA'});
+ const m={attemptId:prefix,sourceId:prefix,sessionId:prefix,platform:'ios',locale:'es',appVersion:'7.0.2',buildNumber:'1709'};
+ await ledger.create(uid,m);
+ await ledger.advance(uid,m.attemptId,{eventId:'job',state:'JOB_CREATED'});
+ await ledger.advance(uid,m.attemptId,{eventId:'timeout',state:'FAILED',reasonCode:'CLIENT_TIMEOUT'},{origin:'client'});
+ // Adversarial fields must never enter the metadata projection.
+ await ledger.ref(uid,m.attemptId).set({transcript:'DO_NOT_RETURN',token:'DO_NOT_RETURN'},{merge:true});
+ await assert.rejects(api.page(uid,{table:'transcriptionAttempts'}),/ADMIN_ACCESS_DENIED/);
+ const result=await api.page(admin,{table:'transcriptionAttempts',field:'auto',value:prefix+'@example.invalid'});
+ assert.equal(result.total,1);assert.equal(result.items.length,1);
+ assert.equal(result.items[0].state,'JOB_CREATED');assert.equal(result.items[0].userName,'Synthetic QA');
+ assert.equal(result.items[0].timeline.at(-1).applied,false);
+ assert.equal(result.items[0].timeline.at(-1).reasonCode,'CLIENT_TIMEOUT');
+ assert(!JSON.stringify(result).includes('DO_NOT_RETURN'));
+ const again=await createAdminOperations({db}).page(admin,{table:'transcriptionAttempts',field:'sourceId',value:prefix});
+ assert.equal(again.total,1);assert.equal(again.items[0].attemptId,prefix);
+});

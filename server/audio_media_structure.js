@@ -5,9 +5,11 @@
 const {scanMp4}=require('./iso_bmff_boxes');
 const MAX_BYTES=25*1024*1024, MAX_DURATION_MS=15*60*1000, MAX_FRAMES=50000;
 function fail(){throw Error('MEDIA_INVALID_OR_UNSUPPORTED');}
-function structure(bytes){
+function structure(bytes,{longRecording=false}={}){
+ const maxBytes=longRecording?64*1024*1024:MAX_BYTES, maxDuration=longRecording?90*60*1000:MAX_DURATION_MS, maxFrames=longRecording?253126:MAX_FRAMES;
  const b=Buffer.from(bytes.buffer,bytes.byteOffset,bytes.byteLength);
- if(!b.length||b.length>MAX_BYTES)fail();
+ if(!b.length||b.length>maxBytes)fail();
+ if(longRecording&&b[0]===255)return require('./adts_recording_structure').adtsRecordingStructure(b,{maxFrames,maxDuration});
  if(b.toString('ascii',0,4)==='RIFF'){
   if(b.length<44||b.readUInt32LE(4)+8!==b.length||b.toString('ascii',8,12)!=='WAVE')fail();
   let fmt=null,data=null;
@@ -15,11 +17,11 @@ function structure(bytes){
    if(t==='fmt '){if(fmt||n!==16)fail();fmt=p+8;}if(t==='data'){if(data)fail();data={offset:p+8,length:n};}p=end+(n%2);if(p>b.length)fail();}
   if(fmt===null||!data||!data.length)fail();const channels=b.readUInt16LE(fmt+2),rate=b.readUInt32LE(fmt+4),bits=b.readUInt16LE(fmt+14),align=b.readUInt16LE(fmt+12);
   if(b.readUInt16LE(fmt)!==1||![1,2].includes(channels)||rate<8000||rate>48000||![8,16,24,32].includes(bits)||align!==channels*bits/8||b.readUInt32LE(fmt+8)!==rate*align||data.length%align)fail();
-  const durationMs=Math.ceil(data.length/align/rate*1000);if(durationMs<=0||durationMs>MAX_DURATION_MS)fail();return {kind:'wav',durationMs};
+  const durationMs=Math.ceil(data.length/align/rate*1000);if(durationMs<=0||durationMs>maxDuration)fail();return {kind:'wav',durationMs};
  }
- scanMp4(b);
+ scanMp4(b,{longRecording});
  const found=new Map(),mdats=[];let tracks=0,boxes=0;
- function walk(start,end,depth=0){if(depth>10)fail();for(let p=start;p<end;){if(++boxes>1000||p+8>end)fail();let n=b.readUInt32BE(p),h=8;const t=b.toString('ascii',p+4,p+8);if(n===1){if(p+16>end)fail();const big=b.readBigUInt64BE(p+8);if(big>BigInt(MAX_BYTES))fail();n=Number(big);h=16;}if(n===0){if(depth!==0||t!=='mdat')fail();n=end-p;}if(n<h||p+n>end)fail();const a=p+h,z=p+n;
+ function walk(start,end,depth=0){if(depth>10)fail();for(let p=start;p<end;){if(++boxes>1000||p+8>end)fail();let n=b.readUInt32BE(p),h=8;const t=b.toString('ascii',p+4,p+8);if(n===1){if(p+16>end)fail();const big=b.readBigUInt64BE(p+8);if(big>BigInt(maxBytes))fail();n=Number(big);h=16;}if(n===0){if(depth!==0||t!=='mdat')fail();n=end-p;}if(n<h||p+n>end)fail();const a=p+h,z=p+n;
   if(t==='mdat')mdats.push([a,z]);if(t==='trak'&&++tracks>1)fail();
   if(['ftyp','mdhd','hdlr','stsz','stco','co64','stsc','stts','esds','stsd'].includes(t)){if(found.has(t))fail();found.set(t,{a,z});}
   if(['moov','trak','mdia','minf','stbl'].includes(t))walk(a,z,depth+1);
@@ -36,7 +38,7 @@ function structure(bytes){
  }}descriptors(e.a+4,e.z);
  if(!asc)fail();const object=asc[0]>>3,index=((asc[0]&7)<<1)|(asc[1]>>7),channels=(asc[1]>>3)&15,rate=[96000,88200,64000,48000,44100,32000,24000,22050,16000,12000,11025,8000,7350][index];
  if(object!==2||![1,2].includes(channels)||!rate||rate<8000||rate>48000||(asc[1]&7)!==0)fail();
- const sz=get('stsz');if(sz.a+12>sz.z)fail();const fixed=b.readUInt32BE(sz.a+4),count=b.readUInt32BE(sz.a+8);if(!count||count>MAX_FRAMES||sz.a+12+(fixed?0:count*4)!==sz.z)fail();
+ const sz=get('stsz');if(sz.a+12>sz.z)fail();const fixed=b.readUInt32BE(sz.a+4),count=b.readUInt32BE(sz.a+8);if(!count||count>maxFrames||sz.a+12+(fixed?0:count*4)!==sz.z)fail();
  const sizes=Array.from({length:count},(_,i)=>fixed||b.readUInt32BE(sz.a+12+i*4));if(sizes.some(n=>!n||n>65536))fail();
  const sc=get('stsc');if(sc.a+8>sc.z)fail();const scn=b.readUInt32BE(sc.a+4);if(!scn||scn>count||sc.a+8+scn*12!==sc.z)fail();const map=[];for(let i=0;i<scn;i++){const p=sc.a+8+i*12,first=b.readUInt32BE(p),per=b.readUInt32BE(p+4),desc=b.readUInt32BE(p+8);if(!first||!per||per>count||desc!==1||(i===0?first!==1:first<=map[i-1].first))fail();map.push({first,per});}
  const co=found.get('stco')||get('co64'),wide=found.has('co64'),step=wide?8:4;if(co.a+8>co.z)fail();const cn=b.readUInt32BE(co.a+4);if(!cn||cn>count||co.a+8+cn*step!==co.z)fail();const frames=[];let si=0,mi=0,last=0;
@@ -46,6 +48,6 @@ function structure(bytes){
  // per access unit. Movie header/edit-list duration is never used for quota.
  const md=get('mdhd'),ver=b[md.a],tp=md.a+(ver===1?20:ver===0?12:NaN);if(!Number.isFinite(tp)||tp+4>md.z||b.readUInt32BE(tp)!==rate)fail();
  const st=get('stts');if(st.a+8>st.z)fail();const sn=b.readUInt32BE(st.a+4);if(!sn||sn>count||st.a+8+sn*8!==st.z)fail();let total=0;for(let i=0;i<sn;i++){const p=st.a+8+i*8,n=b.readUInt32BE(p),delta=b.readUInt32BE(p+4);if(!n||delta<1||delta>1024)fail();total+=n;}if(total!==count)fail();
- const upperMs=Math.ceil(count*1024/rate*1000);if(upperMs>MAX_DURATION_MS)fail();return {kind:'aac',asc,frames,rate,channels,upperMs};
+ const upperMs=Math.ceil(count*1024/rate*1000);if(upperMs>maxDuration)fail();return {kind:'aac',asc,frames,rate,channels,upperMs};
 }
 module.exports={structure,MAX_BYTES,MAX_DURATION_MS};

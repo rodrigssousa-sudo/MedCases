@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'admin_visual_widgets.dart';
 import 'admin_dashboard_section.dart';
@@ -41,6 +42,9 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
       ? 'transcriptions'
       : widget.table;
   String? _cursor;
+  Timer? _attemptPoll;
+  int _attemptPollCount = 0;
+  int _pageLoads = 0;
   Map<String, dynamic>? _pending;
   bool _busy = false;
   late Future<Map<String, dynamic>> _page;
@@ -49,6 +53,21 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
   void initState() {
     super.initState();
     _load();
+    _startAttemptPolling();
+  }
+
+  void _startAttemptPolling() {
+    _attemptPoll?.cancel();
+    _attemptPollCount = 0;
+    if (widget.table == 'transcriptionAttempts') {
+      _attemptPoll = Timer.periodic(const Duration(seconds: 30), (timer) {
+        if (!mounted || ++_attemptPollCount > 10) {
+          timer.cancel();
+          return;
+        }
+        if (!_busy && _pageLoads == 0) _reload();
+      });
+    }
   }
 
   @override
@@ -59,16 +78,19 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
       _search.clear();
       _pending = null;
       _load();
+      _startAttemptPolling();
     }
   }
 
   @override
   void dispose() {
+    _attemptPoll?.cancel();
     _search.dispose();
     super.dispose();
   }
 
   void _load() {
+    _pageLoads++;
     _page = _api.call(_overview ? 'overview' : 'page', {
       'table': _table,
       if (widget.table == 'jobs' && _jobType != 'transcription') ...{
@@ -81,7 +103,7 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
         'field': _field,
         'value': _search.text.trim()
       }
-    });
+    }).whenComplete(() => _pageLoads--);
   }
 
   void _reload() => setState(_load);
@@ -484,7 +506,7 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                 _reload();
               })
         ],
-        if (widget.table == 'users')
+        if (widget.table == 'users' || widget.table == 'transcriptionAttempts')
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: Wrap(spacing: 12, runSpacing: 12, children: [
@@ -512,15 +534,42 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
                         initialValue: _field,
                         decoration:
                             const InputDecoration(labelText: 'Busca avançada'),
-                        items: const [
-                          DropdownMenuItem(
-                              value: 'auto', child: Text('Nome ou e-mail')),
-                          DropdownMenuItem(value: 'uid', child: Text('UID')),
-                          DropdownMenuItem(
-                              value: 'status', child: Text('Status')),
-                          DropdownMenuItem(value: 'plan', child: Text('Plano'))
-                        ],
-                        onChanged: (v) => setState(() => _field = v!)))
+                        items: widget.table == 'transcriptionAttempts'
+                          ? const [
+                              DropdownMenuItem(
+                                value: 'auto',
+                                child: Text('Nome ou e-mail'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'sourceId',
+                                child: Text('Fonte'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'attemptId',
+                                child: Text('Tentativa'),
+                              ),
+                              DropdownMenuItem(
+                                  value: 'jobId', child: Text('Job')),
+                              DropdownMenuItem(
+                                value: 'state',
+                                child: Text('Estado'),
+                              ),
+                            ]
+                          : const [
+                              DropdownMenuItem(
+                                value: 'auto',
+                                child: Text('Nome ou e-mail'),
+                              ),
+                              DropdownMenuItem(
+                                  value: 'uid', child: Text('UID')),
+                              DropdownMenuItem(
+                                value: 'status',
+                                child: Text('Status'),
+                              ),
+                              DropdownMenuItem(
+                                  value: 'plan', child: Text('Plano')),
+                            ],
+                      onChanged: (v) => setState(() => _field = v!)))
               ])),
         if (widget.table == 'campaigns') ...[
           const Text(
@@ -789,6 +838,23 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
         DataCell(Text(adminDate(r['lastUpdated']))),
         detail
       ];
+    if (_table == 'transcriptionAttempts') {
+      return [
+        DataCell(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(adminText(r['userName'], 'Usuário')),
+              Text(adminText(r['userEmail'])),
+            ],
+          ),
+        ),
+        DataCell(AdminBadge(r['state'])),
+        DataCell(Text(adminDate(r['updatedAt'] ?? r['createdAt']))),
+        detail,
+      ];
+    }
     return [
       DataCell(Text(adminText(
           r['namePt'] ??

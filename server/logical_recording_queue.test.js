@@ -54,3 +54,23 @@ test('worker whose lease was replaced cannot persist a submission intent',async(
  await assert.rejects(worker.guardedRef(f.jobRef,ref,'expired-owner').set({submissionIntent:true},{merge:true}),/WORKER_LEASE_LOST/);
  assert.equal((await ref.get()).data().submissionIntent,undefined);assert.equal(f.submissions(),0);
 });
+test('binary proof rejection stops before provider and preserves uploaded bytes',async()=>{
+ const f=setup();await f.queue.enqueue(f.jobRef,f.job,0,wav(),Date.now());const worker=f.build();worker.assemble=async()=>{throw Error('BINARY_INVALID');};
+ for(let i=0;i<8;i++)await worker.process(f.jobRef,(await f.jobRef.get()).data());
+ const root=(await f.jobRef.get()).data(),logical=(await f.jobRef.collection('logical').doc('recording').get()).data();
+ assert.equal(root.errorCategory,'MEDIA_PROOF_FAILED');assert.equal(root.workerPending,false);assert.equal(logical.claimCount,1);assert.equal(f.submissions(),0);assert.equal(f.objects.size,1);
+});
+test('five transient failures suspend the same job without removing audio',async()=>{
+ const f=setup();await f.queue.enqueue(f.jobRef,f.job,0,wav(),Date.now());const worker=f.build();worker.assemble=async()=>{throw Error('AccessDenied');};
+ for(let i=0;i<8;i++)await worker.process(f.jobRef,(await f.jobRef.get()).data());
+ const root=(await f.jobRef.get()).data(),logical=(await f.jobRef.collection('logical').doc('recording').get()).data();
+ assert.equal(root.workerPending,false);assert.equal(logical.retrySuspended,true);assert.equal(logical.claimCount,5);assert.equal(f.objects.size,1);assert.equal(f.submissions(),0);
+});
+test('settlement failure preserves transcript and never announces completion early',async()=>{
+ const f=setup();await f.queue.enqueue(f.jobRef,f.job,0,wav(),Date.now());const complete=f.owner.completeExecution;let fail=true;
+ f.owner.completeExecution=async(...args)=>{if(fail)throw Error('SIMULATED_ACCOUNTING_UNAVAILABLE');return complete(...args);};
+ const worker=f.build();await worker.process(f.jobRef,f.job);await worker.process(f.jobRef,f.job);
+ assert.notEqual((await f.jobRef.get()).data().state,'completed');assert.equal((await f.jobRef.get()).data().errorCategory,'ACCOUNTING_FINALIZATION_FAILED');assert.equal((await f.segment.get()).data().state,'done');assert(f.objects.size>0);
+ fail=false;await worker.process(f.jobRef,f.job);await worker.process(f.jobRef,f.job);
+ assert.equal((await f.jobRef.get()).data().state,'completed');assert.equal(f.submissions(),1);assert.equal(f.settled(),1);
+});

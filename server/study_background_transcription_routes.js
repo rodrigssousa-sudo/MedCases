@@ -13,6 +13,10 @@ const {
   Timestamp,
 } = require('firebase-admin/firestore');
 
+const {sourceBindingRef,assertSameJob}=require('./transcription_job_binding');
+const {uploadAdmission}=require('./transcription_upload_admission');
+const {TranscriptionAttemptLedger}=require('./transcription_attempt_ledger');
+const {assertNewLogicalPipeline}=require('./transcription_pipeline_contract');
 const COLLECTION = '_study_background_transcription_jobs';
 const GRANT_SCOPE = 'study-background-transcription-v1';
 const MAX_SEGMENTS = 64;
@@ -209,6 +213,8 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
     throw new Error('study_background_router_app_invalid');
   }
 
+  require('./transcription_attempt_routes').registerTranscriptionAttemptRoutes(app,{authenticate:req=>firebaseUid(req,runtime().app),getDb:()=>getFirestore(runtime().app)});
+
   app.get(
     '/api/ai/study/background-transcription/capabilities',
     (req, res) => {
@@ -216,6 +222,9 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
       res.status(200).json({
         enabled: rt.enabled && Boolean(queue()),
         schemaVersion: 1,
+        singleAudioVersion: 1,
+        maxSingleAudioBytes: 64*1024*1024,
+        maxSingleAudioDurationMs: 90*60*1000,
         verifiedMediaAccounting: true,
         maxSegments: MAX_SEGMENTS,
         maxSegmentBytes: MAX_AUDIO_BYTES,
@@ -231,7 +240,7 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
     '/api/ai/study/background-transcription/jobs',
     express.json({ limit: '32kb' }),
     async (req, res) => {
-      let uid, usage, db;
+      let uid, usage, db, requestedJobRef;
       try {
         const rt = runtime();
         if (!rt.enabled || !queue()) {
@@ -250,6 +259,11 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
           throw Error('EXPECTED_SEGMENTS_INVALID');
         }
 
+        if(req.body?.singleAudio===true && expectedSegments!==1)throw Error('SINGLE_AUDIO_BINDING_INVALID');
+        if(req.body?.singleAudio===true && selectedProvider(process.env,uid)!=='assemblyai')throw Error('SINGLE_AUDIO_PROVIDER_UNAVAILABLE');
+        const attemptId=req.body?.attemptId;
+        if(req.body?.singleAudio===true && !attemptId)throw Error('INVALID_ATTEMPT_ID');
+        if(attemptId){const attempt=await new TranscriptionAttemptLedger({db}).ref(uid,attemptId).get();if(!attempt.exists||attempt.data().sourceId!==req.body.sourceId)throw Error('ATTEMPT_NOT_OWNED');}
         const locale = req.body?.locale === 'es' ? 'es' : 'pt';
         const sourceId = String(req.body?.sourceId || '').slice(0, 160);
         const jobId = crypto.createHash('sha256').update(JSON.stringify(usage)).digest('hex');
@@ -257,6 +271,7 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
         const exp = now + JOB_TTL_MS;
 
         const jobRef = db.collection(COLLECTION).doc(jobId);
+        requestedJobRef=jobRef;
         const reservation = await db.collection('usageReservations').doc(usageReceipt(usage).id).get();
         if (expectedSegments !== (reservation.data().executionCount || 1)) throw Error('EXECUTION_PLAN_MISMATCH');
         await db.runTransaction(async tx => {
@@ -265,16 +280,21 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
           const current=await tx.get(db.collection('usageReservations').doc(receipt.id));
           const allocation=current.data();
           if(!allocation || allocation.uid!==uid || allocation.attempt!==receipt.attempt || !['reserved','executing'].includes(allocation.state))throw Error('SERVER_QUOTA_RESERVATION_INVALID');
+          const sourceRef=req.body?.singleAudio===true?sourceBindingRef(db,uid,sourceId):null;
+          const source=sourceRef?await tx.get(sourceRef):null;
+          if(source?.exists&&source.data().jobId!==jobId)throw Error('SOURCE_JOB_ALREADY_EXISTS');
           const existing = await tx.get(jobRef);
           if (existing.exists) {
             const value = existing.data();
-            if(value.deleted)throw Error('study_job_deleted');
-            if (value.uid !== uid || value.expectedSegments !== expectedSegments) throw Error('study_job_binding_invalid');
+            assertSameJob(value,{uid,sourceId,expectedSegments,singleAudio:req.body?.singleAudio,attemptId});
             tx.set(jobRef, {expiresAt:Timestamp.fromMillis(exp)}, {merge:true});
             return;
           }
+          await assertNewLogicalPipeline(tx,db,usage,expectedSegments);
+          if(sourceRef)tx.set(sourceRef,{uid,sourceId,jobId,createdAt:Timestamp.fromMillis(now)});
           tx.set(jobRef, {
           uid,
+          ...(attemptId?{attemptId}:{}),
           ownerUid:uid,
           sessionId:sourceId,
           provider:selectedProvider(process.env,uid),
@@ -282,6 +302,7 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
           conversation:req.body?.conversation === true,
           usage,
           expectedSegments,
+          ...(req.body?.singleAudio===true?{singleAudio:true}:{}),
           locale,
           sourceId,
           educationalOnly: true,
@@ -293,6 +314,7 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
           });
         });
 
+        if(attemptId){const ledger=new TranscriptionAttemptLedger({db});await ledger.bind(uid,attemptId,{jobId,provider:'assemblyai'});await ledger.advance(uid,attemptId,{eventId:'job-created',state:'JOB_CREATED'});}
         const grant = signGrant(rt.secret, {
           scope: GRANT_SCOPE,
           jobId,
@@ -313,11 +335,18 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
             `/api/ai/study/background-transcription/jobs/${jobId}`,
         });
       } catch (error) {
-        if(db&&uid&&usage)await new MonthlyUsageOwner({db}).failBeforeExecution(uid,usageReceipt(usage)).catch(()=>{});
+        // An ambiguous response/metadata failure after create must not release
+        // the reservation of a durable job that can still execute.
+        if(db&&uid&&usage){
+          try {
+            const remoteExists=requestedJobRef ? (await requestedJobRef.get()).exists : false;
+            if(!remoteExists)await new MonthlyUsageOwner({db}).failBeforeExecution(uid,usageReceipt(usage));
+          } catch (_) { /* Preserve the receipt when ownership cannot be read. */ }
+        }
         const gate=providerGateError(error);
         if(gate)return res.status(gate.retryable?503:403).json(gate);
         const auth=/^(AUTH_REQUIRED|SERVER_QUOTA_RESERVATION_REQUIRED|SERVER_QUOTA_RESERVATION_INVALID)$/.test(error?.message||'');
-        const invalid=['EXPECTED_SEGMENTS_INVALID','EXECUTION_PLAN_MISMATCH'].includes(error?.message);
+        const invalid=['EXPECTED_SEGMENTS_INVALID','EXECUTION_PLAN_MISMATCH','SINGLE_AUDIO_BINDING_INVALID','INVALID_ATTEMPT_ID','TRANSCRIPTION_PIPELINE_CONFLICT','SOURCE_JOB_ALREADY_EXISTS'].includes(error?.message);
         const code=auth?'AUTH_FAILURE':invalid?error.message:'JOB_CREATE_FAILED';
         return res.status(auth?401:invalid?400:503).json({code,error:code,retryable:!auth&&!invalid});
       }
@@ -327,9 +356,20 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
   app.put(
     '/api/ai/study/background-transcription/jobs/:jobId/segments/:index',
     (req, _res, next) => {req.receivedAt = Date.now(); next();},
+    uploadAdmission({authorize:async req=>{
+      const rt=runtime();
+      if(!rt.enabled||!queue())throw Error('UNAVAILABLE');
+      const grant=studyAuthorization(req,rt.secret);
+      const id=String(req.params.jobId||'');
+      if(!validJobId(id)||grant.jobId!==id||!validIndex(Number(req.params.index),Number(grant.expectedSegments)))throw Error('BINDING_INVALID');
+      const snap=await getFirestore(rt.app).collection(COLLECTION).doc(id).get();
+      const job=snap.data();
+      if(!job||job.deleted||job.uid!==grant.uid||job.expectedSegments!==Number(grant.expectedSegments))throw Error('BINDING_INVALID');
+      return id;
+    }}),
     express.raw({
       type: 'application/octet-stream',
-      limit: `${MAX_AUDIO_BYTES}b`,
+      limit: `${64*1024*1024}b`,
     }),
     async (req, res) => {
       let body = null;
@@ -351,7 +391,7 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
         }
 
         body = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
-        if (body.length < 1 || body.length > MAX_AUDIO_BYTES) {
+        if (body.length < 1 || body.length > 64*1024*1024) {
           return res.status(413).json({ error: 'segment_size_invalid' });
         }
 
@@ -363,6 +403,7 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
         }
         const job = jobSnap.data();
         if(job.deleted)return res.status(410).json({error:'study_job_deleted'});
+        if(body && body.length>(job.singleAudio===true?64*1024*1024:MAX_AUDIO_BYTES))return res.status(413).json({error:'segment_size_invalid'});
         if (
           job.uid !== grant.uid ||
           Number(job.expectedSegments) !== expected
@@ -377,7 +418,10 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
         if (!(value.state === 'done' || ['processing','queued','uploading'].includes(value.state))) {
           await assertUsageReservation(db, grant.uid, job.usage || {});
         }
+        const ledger=job.attemptId?new TranscriptionAttemptLedger({db}):null;
+        if(ledger)await ledger.advance(job.uid,job.attemptId,{eventId:'upload-started',state:'UPLOADING'});
         const result = await queue().enqueue(jobRef, job, index, body, req.receivedAt || Date.now());
+        if(ledger&&job.singleAudio===true){await ledger.bind(job.uid,job.attemptId,{fileSize:body.length});await ledger.advance(job.uid,job.attemptId,{eventId:'upload-durable',state:'UPLOADED'});}
         if (result.state === 'terminal_error') return res.status(409).json({error:'EXECUTION_RESULT_UNAVAILABLE', retryable:false});
         return res.status(result.state === 'completed' ? 200 : 202).json({segmentIndex:index, ...result});
       } catch (error) {
@@ -391,6 +435,17 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
       }
     },
   );
+
+  app.post('/api/ai/study/background-transcription/jobs/:jobId/retry', express.json({limit:'1kb'}), async(req,res)=>{
+    try{
+      const rt=runtime();if(!rt.enabled||!queue())return res.status(503).json({error:'study_background_disabled'});
+      const grant=studyAuthorization(req,rt.secret),jobId=String(req.params.jobId||'');
+      if(!validJobId(jobId)||grant.jobId!==jobId)return res.status(403).json({error:'study_job_binding_invalid'});
+      const db=getFirestore(rt.app);
+      const result=await require('./transcription_retry').resumeTranscriptionJob({db,jobRef:db.collection(COLLECTION).doc(jobId),uid:grant.uid,expectedSegments:Number(grant.expectedSegments),requestId:req.body?.requestId});
+      return res.json(result);
+    }catch(error){const code=error.message==='RETRY_COOLDOWN'?'RETRY_COOLDOWN':'RETRY_NOT_ACCEPTED';return res.status(code==='RETRY_COOLDOWN'?429:403).json({error:code});}
+  });
 
   app.get(
     '/api/ai/study/background-transcription/jobs/:jobId',
@@ -441,8 +496,8 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
           pendingSegments: Math.max(0, expectedSegments-transcripts.length-aggregate.failed),
           segments: segmentSnap.docs.map(doc => {
             const v=doc.data(); const status=job.provider==='assemblyai'&&['retryable_error','terminal_error'].includes(aggregate.state)?aggregate.state:canonical(v);
-            return {segmentIndex:v.index, state:['retryable_error','terminal_error'].includes(status)?'failed':status,
-              canonicalState:status, retryable:v.retryable ?? status==='retryable_error', errorCategory:v.errorCategory || null,
+            return {segmentIndex:v.index, hasDurableAudio:Boolean(v.objectKey)||v.state==='done', state:['retryable_error','terminal_error'].includes(status)?'failed':status,
+              canonicalState:status, retryable:v.retryable ?? status==='retryable_error', errorCategory:job.errorCategory || v.errorCategory || null,
               timings:v.timings || {}, attemptCount:v.attemptCount || 0};
           }),
           complete: transcripts.length === expectedSegments,
@@ -490,6 +545,14 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
   if(startWorker){
   const workerTimer = setInterval(() => { queue()?.tick().catch(() => {}); }, 3000);
   workerTimer.unref?.();
+  let expiringAttempts=false;
+  const attemptTimer=setInterval(async()=>{
+   if(expiringAttempts)return;expiringAttempts=true;
+   try{await new TranscriptionAttemptLedger({db:getFirestore(runtime().app)}).expireUnbound();}
+   catch(_){console.warn('[TranscriptionAttempts] ATTEMPT_RECONCILIATION_UNAVAILABLE');}
+   finally{expiringAttempts=false;}
+  },60000);
+  attemptTimer.unref?.();
   const timer = setInterval(() => {
     cleanupExpiredJobs().catch(() => {});
   }, 30 * 60 * 1000);

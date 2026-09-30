@@ -408,11 +408,15 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
             master: _isMaster);
       case _AdminSection.transcriptionMetadata:
         return AdminWorkspaceTabs(labels: const [
-          'Transcrições',
+          'Tentativas',
+          'Jobs / transcrições',
           'Créditos',
           'Histórico',
           'Auditoria de tempo'
         ], children: [
+          const AdminOperationsSection(
+              table: 'transcriptionAttempts',
+              title: 'Tentativas de transcrição'),
           AdminOperationsSection(
               table: 'transcriptions',
               title: 'Transcrições',
