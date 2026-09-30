@@ -16,6 +16,7 @@ const {
 const {sourceBindingRef,assertSameJob}=require('./transcription_job_binding');
 const {uploadAdmission}=require('./transcription_upload_admission');
 const {TranscriptionAttemptLedger}=require('./transcription_attempt_ledger');
+const {StudyArtifactAttemptLedger}=require('./study_artifact_attempt_ledger');
 const {assertNewLogicalPipeline}=require('./transcription_pipeline_contract');
 const COLLECTION = '_study_background_transcription_jobs';
 const GRANT_SCOPE = 'study-background-transcription-v1';
@@ -548,7 +549,8 @@ function registerStudyBackgroundTranscriptionRoutes(app, {startWorker=true}={}) 
   let expiringAttempts=false;
   const attemptTimer=setInterval(async()=>{
    if(expiringAttempts)return;expiringAttempts=true;
-   try{await new TranscriptionAttemptLedger({db:getFirestore(runtime().app)}).expireUnbound();}
+   try{await new TranscriptionAttemptLedger({db:getFirestore(runtime().app)}).expireUnbound();
+    await new StudyArtifactAttemptLedger({db:getFirestore(runtime().app)}).expirePending();}
    catch(_){console.warn('[TranscriptionAttempts] ATTEMPT_RECONCILIATION_UNAVAILABLE');}
    finally{expiringAttempts=false;}
   },60000);

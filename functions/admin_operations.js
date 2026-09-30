@@ -7,7 +7,7 @@ const SPECS=Object.freeze({
  users:['users','email name displayName status plan subscriptionStatus role locale createdAt lastSeenAt isPartner partnerTitle'],
  pathologies:['adminContentInventoryPathologies','canonicalId namePt nameEs version status lastUpdated reviewer reviewDate sourceRepository sourceRevision syncStatus'],
  drugs:['adminContentInventoryDrugs','canonicalId namePt nameEs version status gold33Status lastUpdated reviewer reviewDate sourceRepository sourceRevision syncStatus calculationAuthorized approvalState restrictions'],
- jobs:['adminOperationalJobs','type owner sourceId status createdAt startedAt completedAt attempts lastErrorCode retrySupported cancelSupported'],
+ jobs:['adminOperationalJobs','type owner sourceId studyId attemptId artifactId status stage platform locale appVersion buildNumber createdAt startedAt updatedAt completedAt attempts lastErrorCode retrySupported cancelSupported'],
  transcriptionAttempts:['transcriptionAttempts','userId attemptId sourceId sessionId jobId durationMs fileSize provider state lastStage reasonCode platform appVersion buildNumber createdAt updatedAt finishedAt'],
  transcriptions:['_study_background_transcription_jobs','uid sourceId sessionId state status durationMs provider createdAt completedAt errorCode expectedSegments'],
  incidents:['admin_incidents','service module reasonCode errorCode version appVersion frequency count lastSeen lastSeenAt status updatedAt updatedBy'],
@@ -48,6 +48,11 @@ function createAdminOperations({db,documentId='__name__',now=()=>Date.now(),getA
   let metrics;
   if(table==='notifications'){const entries=await Promise.all(['sent','invalid_token','send_uncertain','sending'].map(async state=>[state,(await db.collection('notificationDeliveries').where('state','==',state).count().get()).data().count]));metrics={...Object.fromEntries(entries),devices:(await db.collection('notificationDevices').count().get()).data().count,opened:'UNKNOWN',deepLinkSuccess:'UNKNOWN'};}
   const items=docs.map(d=>table==='users'?userProjection(d):projection(d,spec[1]));
+  if(table==='jobs'){
+   const ids=[...new Set(items.map(r=>r.owner).filter(Boolean))];
+   const people=await identities(uid,{ids});const map=new Map(people.items.map(u=>[u.id,u]));
+   for(const row of items){row.userName=map.get(row.owner)?.name||'Usuário';row.userEmail=map.get(row.owner)?.email||null;}
+  }
   if(table==='transcriptionAttempts'){
    const ids=[...new Set(items.map(r=>r.userId).filter(Boolean))];
    const people=await identities(uid,{ids});const map=new Map(people.items.map(u=>[u.id,u]));

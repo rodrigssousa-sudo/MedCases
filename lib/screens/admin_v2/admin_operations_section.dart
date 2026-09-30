@@ -588,6 +588,8 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
               items: [
                 'transcription',
                 'summary',
+                'visual',
+                'oral',
                 'analysis',
                 'content',
                 'notification',
@@ -887,6 +889,18 @@ class _AdminOperationsSectionState extends State<AdminOperationsSection> {
             : 'Não informado')),
         DataCell(AdminBadge(r['state'])),
         DataCell(Text(adminLabel(r['lastStage']))),
+        DataCell(Text(adminDate(r['updatedAt'] ?? r['createdAt']))),
+        detail,
+      ];
+    }
+    if (_table == 'jobs') {
+      return [
+        DataCell(Column(mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('${adminLabel(r['type'])} · ${adminText(r['userName'], 'Usuário')}'),
+          Text(adminText(r['userEmail'])),
+        ])),
+        DataCell(AdminBadge(r['status'])),
         DataCell(Text(adminDate(r['updatedAt'] ?? r['createdAt']))),
         detail,
       ];
