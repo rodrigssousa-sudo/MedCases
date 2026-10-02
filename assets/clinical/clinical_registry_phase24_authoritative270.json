@@ -26562,6 +26562,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "862d3e00a057918a3def7d30d1c7917223aa3b4e458f819967318d12d092e04b",
       "canonicalPathologyKey": "iam_supra",
       "contentKey": "legacy_protocol_content::iam_supra",
       "enabled": true,
@@ -26576,40 +26577,122 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🚨 ACTIVAR PROTOCOLO IAM: alertar hemodinámica + cardiólogo de guardia INMEDIATAMENTE",
-              "⏱️ META: ICP en <90 min del 1er contacto médico (IAMCEST confirmado)",
-              "1. AAS 300 mg VO (masticar) + Ticagrelor 180 mg VO (o Clopidogrel 600 mg si contraindicación)",
-              "2. Anticoagulación: Heparina no fraccionada 60–70 UI/kg IV (max 5.000 UI bolo pre-ICP)",
-              "3. O2 SOLO si SpO2 <90% — hiperoxia es perjudicial en el IAM",
-              "4. Nitrato sublingual si PA sistólica >90 mmHg y SIN IAM de VD (CONTRAINDICADO en VD)",
-              "5. Morfina 2–4 mg IV si dolor intenso refractario (con cautela — puede enmascarar síntomas)",
-              "6. Betabloqueador IV (metoprolol 5 mg IV) SOLO si: taquicardia + PA estable + sin signos de congestión",
-              "7. Monitorización: ECG continuo + oximetría + PA no invasiva + acceso venoso doble",
-              "8. Fibrinólisis (si ICP no disponible en <120 min): Tenecteplase ajustado al peso IV bolo"
+              "**1. Reconocer y activar la red.** Sospecha de IAMCEST: registrar inicio de síntomas y primer contacto médico, ECG de 12 derivaciones dentro de 10 min, activar cardiología/hemodinamia y definir traslado. ABCDE, monitor cardíaco/desfibrilador disponible y acceso IV. Buscar shock, edema pulmonar, arritmia y complicación mecánica. Preguntar peso, edad, alergias, sangrado/ACV/cirugía recientes, anticoagulantes y PDE5. No esperar troponina ante ECG diagnóstico. BRI nuevo aislado no indica automáticamente fibrinólisis. [R1,R4]",
+              "**2. Elegir reperfusión.** PCI primaria: meta contacto–dispositivo ≤90 min en centro con PCI, ≤120 min con traslado. Síntomas <12 h + demora prevista >120 min: evaluar fibrinólisis si es elegible; meta diagnóstico–bolo <10 min. Trasladar inmediatamente tras el fibrinolítico. Shock/isquemia persistente/inestabilidad: revascularización urgente. Nunca fibrinólisis por sospecha de disección aórtica o simple elevación de troponina. [R1,R4]",
+              "**3. AAS y P2Y12 — elegir según la estrategia.** AAS: 300 mg VO masticable/no entérico de carga; después 75–100 mg VO/día, salvo contraindicación. PCI primaria: ticagrelor 180 mg VO de carga, después 90 mg VO cada 12 h. Contraindicado en sangrado activo, hemorragia intracraneal previa, disfunción hepática grave y uso de inhibidores potentes del CYP3A4; revisar interacciones. Clopidogrel es alternativa si ticagrelor/prasugrel no son adecuados/disponibles: 600 mg VO de carga en PCI primaria, después 75 mg/día, con precaución en personas mayores. Fibrinólisis: clopidogrel 300 mg VO de carga si <75 años, después 75 mg/día; ≥75 años: iniciar 75 mg VO sin carga. El corte ≥75 sin carga es la elección conservadora de esta guía, respaldada por el texto ACC/AHA y el protocolo NHS Highland; la tabla ACC/AHA y la ficha usan >75, diferencia que no debe aplicarse automáticamente. No iniciar ticagrelor/prasugrel como cotratamiento inmediato de fibrinólisis ni duplicar cargas sin comprobar dosis previas. [R1,R6,R9,R10,R13]",
+              "**4. Anticoagulación — esquemas alternativos, no acumulativos.** HNF en PCI primaria sin anticoagulación previa: 70–100 UI/kg IV, con ACT guiado por hemodinamia; ajustar si ya recibió anticoagulante. HNF con fibrinólisis: 60 UI/kg IV, máximo 4.000 UI; después 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar al aPTT terapéutico del protocolo. La corrección ACC/AHA indica aPTT 50–70 s en este contexto; validar con el ensayo/nomograma local. Comprobar concentración de la ampolla y preparación estandarizada: no convertir UI/h a mL/h sin concentración final. [R1,R2]",
+              "Enoxaparina con fibrinólisis, ClCr ≥30 mL/min: <75 años, 30 mg IV + 1 mg/kg SC, después 1 mg/kg SC cada 12 h; máximo 100 mg en cada una de las primeras 2 dosis SC. ≥75 años: sin bolo IV; 0,75 mg/kg SC cada 12 h, máximo 75 mg en cada una de las primeras 2 dosis SC. Asociar temporalmente al fibrinolítico según protocolo; la ficha permite entre 15 min antes y 30 min después del inicio de fibrinólisis. ClCr 15–<30 mL/min: 1 mg/kg SC cada 24 h, cualquier edad; mantener 30 mg IV inicial sólo si <75 años. ClCr <15 mL/min: enoxaparina no recomendada; definir alternativa monitorizada. Duración: hasta revascularización o alta, máximo 8 días, según estrategia y protocolo. Nunca IM. Confirmar presentación: jeringas Clexane de 100 mg/mL no son intercambiables por volumen con 150 mg/mL. [R1,R4,R8]",
+              "Si PCI tras enoxaparina: comprobar última dosis y número de dosis SC; <8 h, generalmente sin dosis adicional. El esquema ACC/AHA para 8–12 h o sólo 1 dosis SC previa indica enoxaparina 0,3 mg/kg IV — NO 0,3 mg fijos. Intervalos mayores requieren definición por hemodinamia, sin repetición empírica. Para este pequeño bolo, la ficha describe dilución a 3 mg/mL en solución salina 0,9% o glucosa 5%. Usar preparación validada por farmacia, comprobar dosis, concentración y volumen final; no improvisar dilución. Administrar 0,1 mL/kg únicamente con esta concentración. Usar vía compatible, no mezclar con otros fármacos. [R1,R3,R8]",
+              "**5. Tenecteplasa — sólo si fibrinólisis indicada y checklist autorizado.** Bolo único IV en aproximadamente 10 s. Dosis por peso si <75 años: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. En ≥75 años, considerar media dosis según estrategia de la red: respectivamente 15; 17,5; 20; 22,5; 25 mg. Este corte conservador sigue NHS Highland; ESC recomienda considerar media dosis en >75 años y la ficha advierte riesgo aumentado, sin reducción obligatoria. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL del solvente suministrado resulta en 5 mg/mL: dosis completas = 6; 7; 8; 9; 10 mL; medias dosis = 3; 3,5; 4; 4,5; 5 mL. No usar esquema/presentación de ACV; no intercambiar unidades entre fibrinolíticos. La ficha citada autoriza IAM hasta 6 h; uso entre 6–12 h de la ventana de la guía exige verificar registro y protocolo locales. [R4,R7,R13]",
+              "Checklist obligatorio: hemorragia intracraneal previa/ACV de origen desconocido, ACV isquémico/AIT en los últimos 6 meses según Metalyse, sangrado importante/coagulopatía, anticoagulación oral efectiva, lesión del SNC, cirugía/trauma importante en los últimos 2 meses, trauma craneal, hipertensión grave no controlada, neoplasia hemorrágica, hepatopatía grave, endocarditis/pericarditis, pancreatitis, úlcera gastrointestinal activa, aneurisma/malformación y demencia constan en la ficha. Evaluar también disección aórtica, embarazo, RCP traumática, punciones y otros riesgos. Esta lista no sustituye el checklist completo de la presentación disponible. Si está contraindicado, activar PCI/traslado; no eludir la contraindicación. [R1,R7]",
+              "**6. Síntomas y oxigenación.** Oxígeno si SpO₂ <90%, titular a ≥90%; no rutinario si ≥90%. Nitroglicerina: 0,4 mg SL (1 aplicación de 400 microgramos), puede repetir cada 5 min, máximo 3 aplicaciones/1,2 mg, sólo con estabilidad y sin contraindicación. Evitar en infarto de VD, PAS <90 mmHg o descenso >30 mmHg del basal; no usar tras avanafil <12 h, sildenafil/vardenafil <24 h o tadalafil <48 h, ni con riociguat. Dolor refractario exige reevaluar reperfusión; opioide IV sólo si necesario, titulado con monitorización de ventilación/presión y atención al retraso de absorción del P2Y12. No aplicar paquete MONA automático. [R1,R11]",
+              "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]"
             ],
             "pt": [
-              "🚨 ATIVAR PROTOCOLO IAM: alertar hemodinâmica + cardiologista de plantão IMEDIATAMENTE",
-              "⏱️ META: ICP em <90 min do 1º contato médico (IAMCSST confirmado)",
-              "1. AAS 300 mg VO (mastigar) + Ticagrelor 180 mg VO (ou Clopidogrel 600 mg se contraindicação)",
-              "2. Anticoagulação: Heparina não fracionada 60–70 UI/kg IV (max 5.000 UI bolus pré-ICP)",
-              "3. O2 APENAS se SpO2 <90% — hiperóxia é prejudicial no IAM",
-              "4. Nitrato sublingual se PA sistólica >90 mmHg e SEM IAM de VD (CONTRAINDICADO em VD)",
-              "5. Morfina 2–4 mg IV se dor intensa refratária (com cautela — pode mascarar sintomas)",
-              "6. Beta-bloqueador IV (metoprolol 5 mg IV) APENAS se: taquicardia + PA estável + sem sinais de congestão",
-              "7. Monitorização: ECG contínuo + oxímetria + PA não invasiva + acesso venoso duplo",
-              "8. Fibrinólise (se ICP indisponível em <120 min): Tenecteplase peso-ajustada IV bolus"
+              "**1. Reconhecer e ativar a rede.** Suspeita de IAMCSST: registrar início dos sintomas e primeiro contato médico, ECG de 12 derivações em até 10 min, acionar cardiologia/hemodinâmica e definir transporte. ABCDE, monitor cardíaco/desfibrilador disponível e acesso IV. Procurar choque, edema pulmonar, arritmia e complicação mecânica. Perguntar peso, idade, alergias, sangramento/AVC/cirurgia recentes, anticoagulantes e PDE5. Não esperar troponina no ECG diagnóstico. BRE novo isolado não é indicação automática de fibrinólise. [R1,R4]",
+              "**2. Escolher reperfusão.** PCI primária: meta contato–dispositivo ≤90 min no centro com PCI, ≤120 min com transferência. Sintomas <12 h + atraso previsto >120 min: avaliar fibrinólise se elegível; meta diagnóstico–bolo <10 min. Transferir imediatamente após fibrinolítico. Choque/isquemia persistente/instabilidade: revascularização urgente. Nunca fibrinólise para suspeita de dissecção de aorta ou simples elevação de troponina. [R1,R4]",
+              "**3. AAS e P2Y12 — escolher pelo caminho.** AAS: 300 mg VO mastigável/não entérico como carga; depois 75–100 mg VO/dia, salvo contraindicação. PCI primária: ticagrelor 180 mg VO de carga, depois 90 mg VO a cada 12 h. Contraindicado em sangramento ativo, hemorragia intracraniana prévia, disfunção hepática grave e uso de inibidores fortes do CYP3A4; revisar interações. Clopidogrel é alternativa quando ticagrelor/prasugrel não forem adequados/disponíveis: 600 mg VO de carga na PCI primária, depois 75 mg/dia, com cautela nos idosos. Fibrinólise: clopidogrel 300 mg VO de carga se <75 anos, depois 75 mg/dia; ≥75 anos: iniciar 75 mg VO sem carga. O corte ≥75 sem carga é a escolha conservadora deste guia, apoiada no texto da ACC/AHA e no protocolo NHS Highland; a tabela ACC/AHA e a bula usam >75, diferença que não deve ser aplicada de forma automática. Não iniciar ticagrelor/prasugrel como cotratamento imediato da fibrinólise nem duplicar cargas sem conferir doses já dadas. [R1,R6,R9,R10,R13]",
+              "**4. Anticoagulação — esquemas alternativos, não cumulativos.** HNF na PCI primária, sem anticoagulação prévia: 70–100 UI/kg IV, com ACT guiado pela hemodinâmica; ajustar se anticoagulante já administrado. HNF com fibrinólise: 60 UI/kg IV, máximo 4.000 UI; depois 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar ao aPTT terapêutico do protocolo. A correção ACC/AHA indica aPTT 50–70 s nesse contexto; validar com o ensaio/nomograma local. Conferir concentração da ampola e preparo padronizado: não converter UI/h em mL/h sem a concentração final. [R1,R2]",
+              "Enoxaparina com fibrinólise, ClCr ≥30 mL/min: <75 anos, 30 mg IV + 1 mg/kg SC, depois 1 mg/kg SC a cada 12 h; máximo 100 mg em cada uma das primeiras 2 doses SC. ≥75 anos: sem bolo IV; 0,75 mg/kg SC a cada 12 h, máximo 75 mg em cada uma das primeiras 2 doses SC. Associar temporalmente ao fibrinolítico conforme protocolo; a bula permite entre 15 min antes e 30 min depois do início da fibrinólise. ClCr 15–<30 mL/min: 1 mg/kg SC a cada 24 h, qualquer idade; manter 30 mg IV inicial apenas se <75 anos. ClCr <15 mL/min: enoxaparina não recomendada; definir alternativa monitorizada. Duração: até revascularização ou alta, no máximo 8 dias, conforme estratégia e protocolo. Nunca IM. Confirmar apresentação: seringas Clexane de 100 mg/mL não são intercambiáveis por volume com 150 mg/mL. [R1,R4,R8]",
+              "Se PCI após enoxaparina: conferir última dose e o número de doses SC; <8 h, geralmente sem dose adicional. O esquema ACC/AHA para 8–12 h ou apenas 1 dose SC prévia prevê enoxaparina 0,3 mg/kg IV — NÃO 0,3 mg fixos. Intervalos maiores exigem definição pela hemodinâmica, sem repetição empírica. Para esse pequeno bolo, a bula descreve diluição a 3 mg/mL em SF 0,9% ou glicose 5%. Usar preparo validado pela farmácia, conferir dose, concentração e volume final; não improvisar diluição. Administrar 0,1 mL/kg somente nessa concentração. Usar linha compatível, não misturar com outros fármacos. [R1,R3,R8]",
+              "**5. Tenecteplase — somente se fibrinólise indicada e checklist liberado.** Bolo único IV em aproximadamente 10 s. Dose por peso se <75 anos: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. Em ≥75 anos, considerar meia dose pela estratégia da rede: respectivamente 15; 17,5; 20; 22,5; 25 mg. Esse corte conservador segue NHS Highland; ESC recomenda considerar meia dose em >75 anos e a bula alerta para risco aumentado, sem redução obrigatória. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL do solvente fornecido resulta em 5 mg/mL: doses completas = 6; 7; 8; 9; 10 mL; meias doses = 3; 3,5; 4; 4,5; 5 mL. Não usar esquema/presentação de AVC; não trocar unidades entre fibrinolíticos. A bula citada autoriza IAM até 6 h; uso entre 6–12 h da janela de diretriz exige verificar registro e protocolo locais. [R4,R7,R13]",
+              "Checklist obrigatório: hemorragia intracraniana prévia/AVC de origem desconhecida, AVC isquêmico/AIT nos últimos 6 meses conforme Metalyse, sangramento importante/coagulopatia, anticoagulação oral efetiva, lesão do SNC, cirurgia/trauma importante nos últimos 2 meses, trauma craniano, hipertensão grave não controlada, neoplasia hemorrágica, hepatopatia grave, endocardite/pericardite, pancreatite, úlcera gastrointestinal ativa, aneurisma/malformação e demência constam da ficha. Avaliar também dissecção de aorta, gestação, RCP traumática, punções e demais riscos. Esta lista não dispensa o checklist completo da apresentação disponível. Se contraindicado, acionar PCI/transferência; não contornar contraindicação. [R1,R7]",
+              "**6. Sintomas e oxigenação.** Oxigênio se SpO₂ <90%, titular para ≥90%; não rotina se ≥90%. Nitroglicerina: 0,4 mg SL (1 jato de 400 microgramas), pode repetir a cada 5 min, máximo 3 jatos/1,2 mg, somente com estabilidade e sem contraindicação. Evitar em infarto de VD, PAS <90 mmHg ou queda >30 mmHg do basal; não usar após avanafil <12 h, sildenafil/vardenafil <24 h ou tadalafil <48 h, nem com riociguat. Dor refratária exige reavaliar reperfusão; opioide IV apenas se necessário, titulado com monitorização de ventilação/pressão e atenção ao atraso de absorção do P2Y12. Não usar pacote MONA automático. [R1,R11]",
+              "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "1811119112cc75d8e9ec11082ef8c32f46e572888d95213db26e8636a9ab4c0e",
+            "blockSha256": "53f52799ef7486e5721cb109bc8ee5e6bd462411cd571351fa1295c83ef5ea7f",
             "innerFamilyId": "bebb9a8886914d04",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::iam_supra",
             "sourceExpressionSha256": "57d74167accbc1cc664cbfa9dd5837fcbfda49d428edc9b62759f17cbef03232"
           }
+        },
+        "approvedClinicalPayload": {
+          "es": {
+            "plantao": "**1. Reconocer y activar la red.** Sospecha de IAMCEST: registrar inicio de síntomas y primer contacto médico, ECG de 12 derivaciones dentro de 10 min, activar cardiología/hemodinamia y definir traslado. ABCDE, monitor cardíaco/desfibrilador disponible y acceso IV. Buscar shock, edema pulmonar, arritmia y complicación mecánica. Preguntar peso, edad, alergias, sangrado/ACV/cirugía recientes, anticoagulantes y PDE5. No esperar troponina ante ECG diagnóstico. BRI nuevo aislado no indica automáticamente fibrinólisis. [R1,R4]\n\n**2. Elegir reperfusión.** PCI primaria: meta contacto–dispositivo ≤90 min en centro con PCI, ≤120 min con traslado. Síntomas <12 h + demora prevista >120 min: evaluar fibrinólisis si es elegible; meta diagnóstico–bolo <10 min. Trasladar inmediatamente tras el fibrinolítico. Shock/isquemia persistente/inestabilidad: revascularización urgente. Nunca fibrinólisis por sospecha de disección aórtica o simple elevación de troponina. [R1,R4]\n\n**3. AAS y P2Y12 — elegir según la estrategia.** AAS: 300 mg VO masticable/no entérico de carga; después 75–100 mg VO/día, salvo contraindicación. PCI primaria: ticagrelor 180 mg VO de carga, después 90 mg VO cada 12 h. Contraindicado en sangrado activo, hemorragia intracraneal previa, disfunción hepática grave y uso de inhibidores potentes del CYP3A4; revisar interacciones. Clopidogrel es alternativa si ticagrelor/prasugrel no son adecuados/disponibles: 600 mg VO de carga en PCI primaria, después 75 mg/día, con precaución en personas mayores. Fibrinólisis: clopidogrel 300 mg VO de carga si <75 años, después 75 mg/día; ≥75 años: iniciar 75 mg VO sin carga. El corte ≥75 sin carga es la elección conservadora de esta guía, respaldada por el texto ACC/AHA y el protocolo NHS Highland; la tabla ACC/AHA y la ficha usan >75, diferencia que no debe aplicarse automáticamente. No iniciar ticagrelor/prasugrel como cotratamiento inmediato de fibrinólisis ni duplicar cargas sin comprobar dosis previas. [R1,R6,R9,R10,R13]\n\n**4. Anticoagulación — esquemas alternativos, no acumulativos.** HNF en PCI primaria sin anticoagulación previa: 70–100 UI/kg IV, con ACT guiado por hemodinamia; ajustar si ya recibió anticoagulante. HNF con fibrinólisis: 60 UI/kg IV, máximo 4.000 UI; después 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar al aPTT terapéutico del protocolo. La corrección ACC/AHA indica aPTT 50–70 s en este contexto; validar con el ensayo/nomograma local. Comprobar concentración de la ampolla y preparación estandarizada: no convertir UI/h a mL/h sin concentración final. [R1,R2]\n\nEnoxaparina con fibrinólisis, ClCr ≥30 mL/min: <75 años, 30 mg IV + 1 mg/kg SC, después 1 mg/kg SC cada 12 h; máximo 100 mg en cada una de las primeras 2 dosis SC. ≥75 años: sin bolo IV; 0,75 mg/kg SC cada 12 h, máximo 75 mg en cada una de las primeras 2 dosis SC. Asociar temporalmente al fibrinolítico según protocolo; la ficha permite entre 15 min antes y 30 min después del inicio de fibrinólisis. ClCr 15–<30 mL/min: 1 mg/kg SC cada 24 h, cualquier edad; mantener 30 mg IV inicial sólo si <75 años. ClCr <15 mL/min: enoxaparina no recomendada; definir alternativa monitorizada. Duración: hasta revascularización o alta, máximo 8 días, según estrategia y protocolo. Nunca IM. Confirmar presentación: jeringas Clexane de 100 mg/mL no son intercambiables por volumen con 150 mg/mL. [R1,R4,R8]\n\nSi PCI tras enoxaparina: comprobar última dosis y número de dosis SC; <8 h, generalmente sin dosis adicional. El esquema ACC/AHA para 8–12 h o sólo 1 dosis SC previa indica enoxaparina 0,3 mg/kg IV — NO 0,3 mg fijos. Intervalos mayores requieren definición por hemodinamia, sin repetición empírica. Para este pequeño bolo, la ficha describe dilución a 3 mg/mL en solución salina 0,9% o glucosa 5%. Usar preparación validada por farmacia, comprobar dosis, concentración y volumen final; no improvisar dilución. Administrar 0,1 mL/kg únicamente con esta concentración. Usar vía compatible, no mezclar con otros fármacos. [R1,R3,R8]\n\n**5. Tenecteplasa — sólo si fibrinólisis indicada y checklist autorizado.** Bolo único IV en aproximadamente 10 s. Dosis por peso si <75 años: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. En ≥75 años, considerar media dosis según estrategia de la red: respectivamente 15; 17,5; 20; 22,5; 25 mg. Este corte conservador sigue NHS Highland; ESC recomienda considerar media dosis en >75 años y la ficha advierte riesgo aumentado, sin reducción obligatoria. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL del solvente suministrado resulta en 5 mg/mL: dosis completas = 6; 7; 8; 9; 10 mL; medias dosis = 3; 3,5; 4; 4,5; 5 mL. No usar esquema/presentación de ACV; no intercambiar unidades entre fibrinolíticos. La ficha citada autoriza IAM hasta 6 h; uso entre 6–12 h de la ventana de la guía exige verificar registro y protocolo locales. [R4,R7,R13]\n\nChecklist obligatorio: hemorragia intracraneal previa/ACV de origen desconocido, ACV isquémico/AIT en los últimos 6 meses según Metalyse, sangrado importante/coagulopatía, anticoagulación oral efectiva, lesión del SNC, cirugía/trauma importante en los últimos 2 meses, trauma craneal, hipertensión grave no controlada, neoplasia hemorrágica, hepatopatía grave, endocarditis/pericarditis, pancreatitis, úlcera gastrointestinal activa, aneurisma/malformación y demencia constan en la ficha. Evaluar también disección aórtica, embarazo, RCP traumática, punciones y otros riesgos. Esta lista no sustituye el checklist completo de la presentación disponible. Si está contraindicado, activar PCI/traslado; no eludir la contraindicación. [R1,R7]\n\n**6. Síntomas y oxigenación.** Oxígeno si SpO₂ <90%, titular a ≥90%; no rutinario si ≥90%. Nitroglicerina: 0,4 mg SL (1 aplicación de 400 microgramos), puede repetir cada 5 min, máximo 3 aplicaciones/1,2 mg, sólo con estabilidad y sin contraindicación. Evitar en infarto de VD, PAS <90 mmHg o descenso >30 mmHg del basal; no usar tras avanafil <12 h, sildenafil/vardenafil <24 h o tadalafil <48 h, ni con riociguat. Dolor refractario exige reevaluar reperfusión; opioide IV sólo si necesario, titulado con monitorización de ventilación/presión y atención al retraso de absorción del P2Y12. No aplicar paquete MONA automático. [R1,R11]\n\n**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]",
+            "study": "**Concepto y mecanismo.** El IAM con elevación del ST (IAMCEST/STEMI) es un diagnóstico operativo que exige reconocer rápidamente una posible oclusión coronaria y organizar la reperfusión. La elevación del ST no demuestra por sí sola la etiología ni sustituye el diagnóstico final. La Quinta Definición Universal de 2026 distingue IAM primario, secundario y relacionado con procedimientos; la lesión miocárdica aguda implica elevación/descenso de troponina, con al menos un valor superior al percentil 99 del ensayo, usando límites específicos por sexo. El infarto requiere un contexto de isquemia; no denominar IAM a toda troponina elevada. En la emergencia con ECG diagnóstico, no esperar biomarcadores para reperfundir. Esta guía trata adultos, principalmente IAM aterotrombótico; disección coronaria espontánea, embolia y vasoespasmo requieren evaluación etiológica propia. [R1,R5]\n\n**Clínica y riesgo.** Puede haber dolor/presión torácica, irradiación, disnea, sudoración, náuseas o síncope. Mujeres, personas mayores y pacientes con diabetes pueden presentar síntomas menos típicos; la ausencia de dolor no excluye IAM. Evaluar tabaquismo, hipertensión, diabetes, dislipidemia y enfermedad coronaria previa. Hipoperfusión, edema pulmonar, arritmia sostenida, bloqueo avanzado o soplo nuevo sugieren complicaciones y requieren respuesta inmediata. [R1,R4]\n\n**Diagnóstico.** ECG de 12 derivaciones obtenido e interpretado dentro de los 10 min del primer contacto médico. Elevación nueva en el punto J en al menos 2 derivaciones contiguas: ≥1 mm, excepto V2–V3; allí, varones ≥40 años: ≥2 mm; varones <40 años: ≥2,5 mm; mujeres: ≥1,5 mm. Interpretar con la clínica y los patrones que dificultan el ECG. BRI nuevo/presuntamente nuevo aislado NO confirma STEMI. La sospecha persistente de oclusión, aun sin elevación típica, exige evaluación especializada urgente. Repetir ECG si persisten/recurren síntomas o hay deterioro; usar V7–V9 ante sospecha posterior y V3R/V4R en infarto inferior. Solicitar troponina seriada, hemograma/plaquetas, creatinina, electrolitos y coagulación según contexto. El ecocardiograma evalúa función ventricular y complicaciones mecánicas sin retrasar la reperfusión. [R1,R4]\n\n**Diferenciales y clasificación clínica.** Considerar disección aórtica, TEP, miopericarditis, Takotsubo y cambios no isquémicos del ST. Dolor abrupto, asimetría de pulsos, déficit neurológico o sospecha de disección aórtica impiden trombólisis automática. Killip describe insuficiencia cardíaca: I sin signos; II congestión leve/moderada; III edema pulmonar; IV shock cardiogénico. Los puntajes pronósticos no deben retrasar la reperfusión. [R1,R4]\n\n**Reperfusión.** Preferir angioplastia primaria. Según ACC/AHA 2025, buscar primer contacto médico–primer dispositivo ≤90 min en la atención directa a un centro con PCI y ≤120 min cuando se requiere traslado. Con síntomas <12 h y demora prevista >120 min, considerar fibrinólisis sólo si es elegible, sin contraindicaciones, seguida de traslado inmediato. La meta ESC diagnóstico–bolo fibrinolítico es <10 min; corresponde a un reloj diferente del contacto–dispositivo. Shock/inestabilidad o isquemia persistente requieren revascularización urgente independientemente del tiempo de inicio. Entre 12–24 h, PCI es razonable; no indicar rutinariamente la apertura de una arteria ocluida en un paciente estable, asintomático, >24 h, sin isquemia persistente, insuficiencia cardíaca aguda grave o arritmia amenazante. [R1,R4]\n\n**Fármacos y seguridad.** Usar los esquemas completos del Modo Guardia, eligiendo la estrategia de reperfusión antes del P2Y12 y el anticoagulante. AAS asociado a un P2Y12 y anticoagulación parenteral son bases del tratamiento cuando no están contraindicados. Ticagrelor es una opción preferente en PCI; clopidogrel acompaña la fibrinólisis. No asociar HNF y enoxaparina rutinariamente ni usar fondaparinux como único anticoagulante durante PCI. El oxígeno no es rutinario con SpO₂ ≥90%. Nitratos y opioides alivian síntomas, no sustituyen reperfusión; los opioides pueden retrasar la absorción del P2Y12. [R1,R4,R9,R10]\n\n**Complicaciones, monitorización y destino.** Monitorizar ritmo, presión, SpO₂, dolor, perfusión, diuresis y sangrado; controlar hemoglobina/plaquetas y función renal. Soplo nuevo, shock o edema pulmonar abrupto requieren ecocardiograma urgente y evaluación de rotura septal, insuficiencia mitral aguda o rotura de pared. Internación con monitorización y cardiología; UTI/unidad coronaria si está inestable. Reevaluar reperfusión tras fibrinólisis; el fracaso exige PCI de rescate, no repetir el fibrinolítico. [R1,R4,R6]\n\n**Seguimiento y prevención.** Tras estabilizar, estatina de alta intensidad, rehabilitación cardíaca, abandono del tabaco y control de factores de riesgo. DAPT por al menos 12 meses es el esquema habitual si no existe alto riesgo hemorrágico; adaptar con cardiología ante sangrado, necesidad de anticoagulación oral o estrategias de reducción de DAPT. Considerar betabloqueante y bloqueo del sistema renina–angiotensina según función ventricular, presión y contraindicaciones; evitar iniciar betabloqueantes en shock/insuficiencia cardíaca aguda descompensada. Planificar controles, adherencia, signos de alarma y perfil lipídico tras modificar el tratamiento. El alta no es una decisión de la atención inicial de esta guía. [R1,R4,R6]\n\n**Poblaciones especiales.** Personas mayores: la edad no excluye reperfusión; evaluar fragilidad, sangrado y ajustes del Modo Guardia. Renal: calcular ClCr para enoxaparina; no sustituirlo automáticamente por eGFR. Hepático: ticagrelor contraindicado en disfunción grave; enoxaparina requiere precaución, sin reducción empírica validada. Embarazo/puerperio: activar equipo cardio-obstétrico, considerar disección coronaria espontánea y realizar estrategia invasiva cuando corresponda; no extrapolar automáticamente el esquema aterotrombótico a SCAD. La fibrinólisis no es rutinaria en el embarazo, pero puede ser alternativa excepcional si la PCI oportuna es imposible, con decisión especializada y evaluación del riesgo hemorrágico. Lactancia: revisar cada medicamento; la ficha de tenecteplasa recomienda decidir sobre interrupción durante las primeras 24 h. Pediatría: fuera del alcance, sin extrapolación de dosis adultas. [R7,R8,R9,R12]\n\n**Errores a evitar.** No retrasar reperfusión por troponina, puntaje o estudios electivos; no trombolizar sólo por BRI nuevo; no usar dosis de ACV para IAM; no interpretar toda elevación del ST/troponina como aterotrombosis; no administrar nitratos en infarto de VD/hipotensión o tras PDE5; no omitir edad, peso, función renal, anticoagulación previa y horarios de las dosis. [R1,R4,R7,R8,R11]"
+          },
+          "owner": "iam_supra",
+          "preservedRuntimeIds": [
+            "iam_supra"
+          ],
+          "pt": {
+            "plantao": "**1. Reconhecer e ativar a rede.** Suspeita de IAMCSST: registrar início dos sintomas e primeiro contato médico, ECG de 12 derivações em até 10 min, acionar cardiologia/hemodinâmica e definir transporte. ABCDE, monitor cardíaco/desfibrilador disponível e acesso IV. Procurar choque, edema pulmonar, arritmia e complicação mecânica. Perguntar peso, idade, alergias, sangramento/AVC/cirurgia recentes, anticoagulantes e PDE5. Não esperar troponina no ECG diagnóstico. BRE novo isolado não é indicação automática de fibrinólise. [R1,R4]\n\n**2. Escolher reperfusão.** PCI primária: meta contato–dispositivo ≤90 min no centro com PCI, ≤120 min com transferência. Sintomas <12 h + atraso previsto >120 min: avaliar fibrinólise se elegível; meta diagnóstico–bolo <10 min. Transferir imediatamente após fibrinolítico. Choque/isquemia persistente/instabilidade: revascularização urgente. Nunca fibrinólise para suspeita de dissecção de aorta ou simples elevação de troponina. [R1,R4]\n\n**3. AAS e P2Y12 — escolher pelo caminho.** AAS: 300 mg VO mastigável/não entérico como carga; depois 75–100 mg VO/dia, salvo contraindicação. PCI primária: ticagrelor 180 mg VO de carga, depois 90 mg VO a cada 12 h. Contraindicado em sangramento ativo, hemorragia intracraniana prévia, disfunção hepática grave e uso de inibidores fortes do CYP3A4; revisar interações. Clopidogrel é alternativa quando ticagrelor/prasugrel não forem adequados/disponíveis: 600 mg VO de carga na PCI primária, depois 75 mg/dia, com cautela nos idosos. Fibrinólise: clopidogrel 300 mg VO de carga se <75 anos, depois 75 mg/dia; ≥75 anos: iniciar 75 mg VO sem carga. O corte ≥75 sem carga é a escolha conservadora deste guia, apoiada no texto da ACC/AHA e no protocolo NHS Highland; a tabela ACC/AHA e a bula usam >75, diferença que não deve ser aplicada de forma automática. Não iniciar ticagrelor/prasugrel como cotratamento imediato da fibrinólise nem duplicar cargas sem conferir doses já dadas. [R1,R6,R9,R10,R13]\n\n**4. Anticoagulação — esquemas alternativos, não cumulativos.** HNF na PCI primária, sem anticoagulação prévia: 70–100 UI/kg IV, com ACT guiado pela hemodinâmica; ajustar se anticoagulante já administrado. HNF com fibrinólise: 60 UI/kg IV, máximo 4.000 UI; depois 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar ao aPTT terapêutico do protocolo. A correção ACC/AHA indica aPTT 50–70 s nesse contexto; validar com o ensaio/nomograma local. Conferir concentração da ampola e preparo padronizado: não converter UI/h em mL/h sem a concentração final. [R1,R2]\n\nEnoxaparina com fibrinólise, ClCr ≥30 mL/min: <75 anos, 30 mg IV + 1 mg/kg SC, depois 1 mg/kg SC a cada 12 h; máximo 100 mg em cada uma das primeiras 2 doses SC. ≥75 anos: sem bolo IV; 0,75 mg/kg SC a cada 12 h, máximo 75 mg em cada uma das primeiras 2 doses SC. Associar temporalmente ao fibrinolítico conforme protocolo; a bula permite entre 15 min antes e 30 min depois do início da fibrinólise. ClCr 15–<30 mL/min: 1 mg/kg SC a cada 24 h, qualquer idade; manter 30 mg IV inicial apenas se <75 anos. ClCr <15 mL/min: enoxaparina não recomendada; definir alternativa monitorizada. Duração: até revascularização ou alta, no máximo 8 dias, conforme estratégia e protocolo. Nunca IM. Confirmar apresentação: seringas Clexane de 100 mg/mL não são intercambiáveis por volume com 150 mg/mL. [R1,R4,R8]\n\nSe PCI após enoxaparina: conferir última dose e o número de doses SC; <8 h, geralmente sem dose adicional. O esquema ACC/AHA para 8–12 h ou apenas 1 dose SC prévia prevê enoxaparina 0,3 mg/kg IV — NÃO 0,3 mg fixos. Intervalos maiores exigem definição pela hemodinâmica, sem repetição empírica. Para esse pequeno bolo, a bula descreve diluição a 3 mg/mL em SF 0,9% ou glicose 5%. Usar preparo validado pela farmácia, conferir dose, concentração e volume final; não improvisar diluição. Administrar 0,1 mL/kg somente nessa concentração. Usar linha compatível, não misturar com outros fármacos. [R1,R3,R8]\n\n**5. Tenecteplase — somente se fibrinólise indicada e checklist liberado.** Bolo único IV em aproximadamente 10 s. Dose por peso se <75 anos: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. Em ≥75 anos, considerar meia dose pela estratégia da rede: respectivamente 15; 17,5; 20; 22,5; 25 mg. Esse corte conservador segue NHS Highland; ESC recomenda considerar meia dose em >75 anos e a bula alerta para risco aumentado, sem redução obrigatória. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL do solvente fornecido resulta em 5 mg/mL: doses completas = 6; 7; 8; 9; 10 mL; meias doses = 3; 3,5; 4; 4,5; 5 mL. Não usar esquema/presentação de AVC; não trocar unidades entre fibrinolíticos. A bula citada autoriza IAM até 6 h; uso entre 6–12 h da janela de diretriz exige verificar registro e protocolo locais. [R4,R7,R13]\n\nChecklist obrigatório: hemorragia intracraniana prévia/AVC de origem desconhecida, AVC isquêmico/AIT nos últimos 6 meses conforme Metalyse, sangramento importante/coagulopatia, anticoagulação oral efetiva, lesão do SNC, cirurgia/trauma importante nos últimos 2 meses, trauma craniano, hipertensão grave não controlada, neoplasia hemorrágica, hepatopatia grave, endocardite/pericardite, pancreatite, úlcera gastrointestinal ativa, aneurisma/malformação e demência constam da ficha. Avaliar também dissecção de aorta, gestação, RCP traumática, punções e demais riscos. Esta lista não dispensa o checklist completo da apresentação disponível. Se contraindicado, acionar PCI/transferência; não contornar contraindicação. [R1,R7]\n\n**6. Sintomas e oxigenação.** Oxigênio se SpO₂ <90%, titular para ≥90%; não rotina se ≥90%. Nitroglicerina: 0,4 mg SL (1 jato de 400 microgramas), pode repetir a cada 5 min, máximo 3 jatos/1,2 mg, somente com estabilidade e sem contraindicação. Evitar em infarto de VD, PAS <90 mmHg ou queda >30 mmHg do basal; não usar após avanafil <12 h, sildenafil/vardenafil <24 h ou tadalafil <48 h, nem com riociguat. Dor refratária exige reavaliar reperfusão; opioide IV apenas se necessário, titulado com monitorização de ventilação/pressão e atenção ao atraso de absorção do P2Y12. Não usar pacote MONA automático. [R1,R11]\n\n**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]",
+            "study": "**Conceito e mecanismo.** IAM com supra de ST (IAMCSST/STEMI) é um diagnóstico operacional que exige reconhecer rapidamente possível oclusão coronária e organizar reperfusão. Supra de ST não demonstra, sozinho, a etiologia nem substitui o diagnóstico final. A Quinta Definição Universal de 2026 distingue IAM primário, secundário e relacionado a procedimentos; lesão miocárdica aguda envolve elevação/queda da troponina, com pelo menos um valor acima do percentil 99 do ensaio, usando limites específicos por sexo. Infarto exige contexto de isquemia; não chamar toda troponina elevada de IAM. Na emergência com ECG diagnóstico, não esperar biomarcadores para reperfundir. Este guia trata adultos, principalmente IAM aterotrombótico; dissecção coronária espontânea, embolia e vasoespasmo exigem avaliação etiológica própria. [R1,R5]\n\n**Clínica e risco.** Dor/pressão torácica, irradiação, dispneia, sudorese, náuseas ou síncope podem ocorrer. Mulheres, idosos e pessoas com diabetes podem apresentar sintomas menos típicos; ausência de dor não exclui IAM. Avaliar tabagismo, hipertensão, diabetes, dislipidemia e doença coronária prévia. Hipoperfusão, edema pulmonar, arritmia sustentada, bloqueio avançado ou novo sopro sugerem complicação e demandam resposta imediata. [R1,R4]\n\n**Diagnóstico.** ECG de 12 derivações obtido e interpretado em até 10 min do primeiro contato médico. Supra novo no ponto J em pelo menos 2 derivações contíguas: ≥1 mm, exceto V2–V3; nestas, homens ≥40 anos: ≥2 mm; homens <40 anos: ≥2,5 mm; mulheres: ≥1,5 mm. Interpretar com clínica e padrões que dificultam o ECG. BRE novo/presumivelmente novo isolado NÃO confirma STEMI. Persistência da suspeita de oclusão, mesmo sem supra típico, exige avaliação especializada urgente. Repetir ECG se sintomas persistirem/recorrerem ou houver deterioração; usar V7–V9 na suspeita posterior e V3R/V4R no infarto inferior. Coletar troponina seriada, hemograma/plaquetas, creatinina, eletrólitos e coagulação conforme contexto. Ecocardiograma avalia função ventricular e complicações mecânicas, sem atrasar reperfusão. [R1,R4]\n\n**Diferenciais e classificação clínica.** Considerar dissecção de aorta, TEP, miopericardite, Takotsubo e alterações não isquêmicas do ST. Dor abrupta, assimetria de pulsos, déficit neurológico ou suspeita de dissecção de aorta impedem trombólise automática. Killip descreve insuficiência cardíaca: I sem sinais; II congestão leve/moderada; III edema pulmonar; IV choque cardiogênico. Escores prognósticos não devem atrasar reperfusão. [R1,R4]\n\n**Reperfusão.** Preferir angioplastia primária. Pela diretriz ACC/AHA 2025, buscar primeiro contato médico–primeiro dispositivo ≤90 min no atendimento direto a centro com PCI e ≤120 min quando houver transferência. Em sintomas <12 h e atraso previsto >120 min, considerar fibrinólise somente se elegível, sem contraindicações, seguida de transferência imediata. A meta ESC diagnóstico–bolo do fibrinolítico é <10 min; é um relógio diferente do contato–dispositivo. Choque/instabilidade ou isquemia persistente exigem revascularização urgente independentemente do tempo de início. Entre 12–24 h, PCI é razoável; não indicar rotineiramente abertura de artéria ocluída em estável, assintomático, >24 h, sem isquemia persistente, insuficiência cardíaca aguda grave ou arritmia ameaçadora. [R1,R4]\n\n**Fármacos e segurança.** Usar os esquemas completos do Modo Plantão, escolhendo a estratégia de reperfusão antes do P2Y12 e anticoagulante. AAS associado a um P2Y12 e anticoagulação parenteral são bases do tratamento quando não contraindicados. Ticagrelor é opção preferencial na PCI; clopidogrel acompanha fibrinólise. Não associar HNF e enoxaparina rotineiramente nem usar fondaparinux como único anticoagulante durante PCI. Oxigênio não é rotina com SpO₂ ≥90%. Nitratos e opioides tratam sintomas, não substituem reperfusão; opioides podem retardar absorção do P2Y12. [R1,R4,R9,R10]\n\n**Complicações, monitorização e destino.** Monitorizar ritmo, pressão, SpO₂, dor, perfusão, diurese e sangramento; verificar hemoglobina/plaquetas e função renal. Novo sopro, choque ou edema pulmonar abrupto requerem ecocardiograma urgente e avaliação de ruptura septal, insuficiência mitral aguda ou ruptura de parede. Internação em unidade com monitorização e cardiologia; UTI/unidade coronariana se instável. Reavaliar reperfusão após fibrinólise; falha exige PCI de resgate, não repetição do fibrinolítico. [R1,R4,R6]\n\n**Seguimento e prevenção.** Após estabilização, estatina de alta intensidade, reabilitação cardíaca, cessação do tabagismo e controle de fatores de risco. DAPT por pelo menos 12 meses é o padrão se não houver alto risco hemorrágico; adaptar com cardiologia quando houver sangramento, necessidade de anticoagulação oral ou estratégias de redução de DAPT. Considerar betabloqueador e bloqueio do sistema renina–angiotensina conforme função ventricular, pressão e contraindicações; evitar início de betabloqueador no choque/insuficiência cardíaca aguda descompensada. Planejar retorno, adesão, sintomas de alarme e perfil lipídico após mudança de tratamento. Alta não é decisão do atendimento inicial deste guia. [R1,R4,R6]\n\n**Populações especiais.** Idosos: idade não exclui reperfusão; avaliar fragilidade, sangramento e ajustes descritos no Plantão. Renal: calcular ClCr para enoxaparina; não substituir automaticamente por eGFR. Hepático: ticagrelor contraindicado em disfunção grave; enoxaparina exige cautela, sem redução empírica validada. Gestação/puerpério: acionar equipe cardio-obstétrica, considerar dissecção coronária espontânea e realizar estratégia invasiva quando indicada; não extrapolar automaticamente o esquema aterotrombótico para SCAD. Fibrinólise não é rotina na gestação, mas pode ser alternativa excepcional se PCI oportuna for impossível, com decisão especializada e risco hemorrágico. Lactação: revisar cada medicamento; a ficha de tenecteplase recomenda decidir sobre interrupção nas primeiras 24 h. Pediatria: fora do escopo, sem extrapolação de doses adultas. [R7,R8,R9,R12]\n\n**Armadilhas.** Não atrasar reperfusão por troponina, escore ou exames eletivos; não trombolisar apenas por BRE novo; não usar doses de AVC para IAM; não tratar todo supra/troponina como aterotrombose; não administrar nitrato em infarto de VD/hipotensão ou após PDE5; não omitir idade, peso, função renal, uso prévio de anticoagulantes e horário das doses. [R1,R4,R7,R8,R11]"
+          },
+          "references": [
+            {
+              "id": "R1",
+              "title": "ACC/AHA/ACEP/NAEMSP/SCAI — Acute Coronary Syndromes, final 2025, versão online corrigida",
+              "url": "https://www.jacc.org/doi/10.1016/j.jacc.2024.11.009"
+            },
+            {
+              "id": "R2",
+              "title": "AHA — Correção 2025: HNF com fibrinólise, aPTT 50–70 s",
+              "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001346"
+            },
+            {
+              "id": "R3",
+              "title": "AHA — Correção novembro 2025: enoxaparina IV 0,3 mg/kg para PCI",
+              "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001397"
+            },
+            {
+              "id": "R4",
+              "title": "ESC — Acute Coronary Syndromes, final 2023, vigente",
+              "url": "https://academic.oup.com/eurheartj/article/44/38/3720/7243210"
+            },
+            {
+              "id": "R5",
+              "title": "ESC/ACC/AHA/WHF — Fifth Universal Definition of Myocardial Infarction, final 2026",
+              "url": "https://academic.oup.com/eurheartj/advance-article/doi/10.1093/eurheartj/ehag101/8766309"
+            },
+            {
+              "id": "R6",
+              "title": "NICE NG185 — Acute coronary syndromes, recomendações vigentes",
+              "url": "https://www.nice.org.uk/guidance/ng185/chapter/recommendations"
+            },
+            {
+              "id": "R7",
+              "title": "Boehringer Ingelheim — Metalyse 50 mg, SmPC setembro 2026",
+              "url": "https://www.medicines.org.uk/emc/product/3013/smpc"
+            },
+            {
+              "id": "R8",
+              "title": "Sanofi — Clexane seringas, SmPC vigente 2026",
+              "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+            },
+            {
+              "id": "R9",
+              "title": "AstraZeneca — Brilique 90 mg, SmPC maio 2026",
+              "url": "https://www.medicines.org.uk/emc/product/2692/smpc"
+            },
+            {
+              "id": "R10",
+              "title": "Clopidogrel 75 mg — SmPC vigente consultado",
+              "url": "https://www.medicines.org.uk/emc/product/5207/smpc"
+            },
+            {
+              "id": "R11",
+              "title": "Aspire Pharma — Glytrin 400 microgramas, SmPC 2023 vigente",
+              "url": "https://www.medicines.org.uk/emc/product/6692/smpc"
+            },
+            {
+              "id": "R12",
+              "title": "ESC — Cardiovascular disease and pregnancy, final 2025",
+              "url": "https://academic.oup.com/eurheartj/article/46/43/4462/8234487"
+            },
+            {
+              "id": "R13",
+              "title": "NHS Highland — ACS, protocolo adulto revisado janeiro 2025, revisão prevista 2028",
+              "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/cardiovascular/ischaemic-heart-disease-guidelines/acute-coronary-syndrome-acs-guidelines/"
+            }
+          ],
+          "version": "JIT-2026-10-02-v1.0"
         },
         "classification": {
           "compatibilityKind": "localized_classification_payload",
@@ -26621,25 +26704,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 IAMCEST anterior extenso: V1–V6 + aVL → rama descendente anterior proximal → mayor área en riesgo",
-              "🔴 IAMCEST inferior: DII, DIII, aVF → coronaria derecha o Cx dominante → evaluar VD obligatoriamente",
-              "🟠 IAMCEST lateral: DI, aVL, V5–V6 → Cx o diagonal → área menor, mejor pronóstico",
-              "🔴 IAMCEST de VD: supra en V1 + supra en V4R → EVITAR nitratos; volumen con cautela",
-              "🔴 IAMCEST posterior: infra en V1–V3 + supra en V7–V9 → derivaciones posteriores obligatorias"
+              "**Diagnóstico.** ECG de 12 derivaciones obtenido e interpretado dentro de los 10 min del primer contacto médico. Elevación nueva en el punto J en al menos 2 derivaciones contiguas: ≥1 mm, excepto V2–V3; allí, varones ≥40 años: ≥2 mm; varones <40 años: ≥2,5 mm; mujeres: ≥1,5 mm. Interpretar con la clínica y los patrones que dificultan el ECG. BRI nuevo/presuntamente nuevo aislado NO confirma STEMI. La sospecha persistente de oclusión, aun sin elevación típica, exige evaluación especializada urgente. Repetir ECG si persisten/recurren síntomas o hay deterioro; usar V7–V9 ante sospecha posterior y V3R/V4R en infarto inferior. Solicitar troponina seriada, hemograma/plaquetas, creatinina, electrolitos y coagulación según contexto. El ecocardiograma evalúa función ventricular y complicaciones mecánicas sin retrasar la reperfusión. [R1,R4]"
             ],
             "pt": [
-              "🔴 IAMCSST anterior extenso: V1–V6 + aVL → ramo descendente anterior proximal → maior área em risco",
-              "🔴 IAMCSST inferior: DII, DIII, aVF → coronária direita ou Cx dominante → avaliar VD obrigatoriamente",
-              "🟠 IAMCSST lateral: DI, aVL, V5–V6 → Cx ou diagonal → área menor, melhor prognóstico",
-              "🔴 IAMCSST de VD: supra em V1 + supra em V4R → EVITAR nitratos; volume com cautela",
-              "🔴 IAMCSST posterior: infra em V1–V3 + supra em V7–V9 → derivações posteriores obrigatórias"
+              "**Diagnóstico.** ECG de 12 derivações obtido e interpretado em até 10 min do primeiro contato médico. Supra novo no ponto J em pelo menos 2 derivações contíguas: ≥1 mm, exceto V2–V3; nestas, homens ≥40 anos: ≥2 mm; homens <40 anos: ≥2,5 mm; mulheres: ≥1,5 mm. Interpretar com clínica e padrões que dificultam o ECG. BRE novo/presumivelmente novo isolado NÃO confirma STEMI. Persistência da suspeita de oclusão, mesmo sem supra típico, exige avaliação especializada urgente. Repetir ECG se sintomas persistirem/recorrerem ou houver deterioração; usar V7–V9 na suspeita posterior e V3R/V4R no infarto inferior. Coletar troponina seriada, hemograma/plaquetas, creatinina, eletrólitos e coagulação conforme contexto. Ecocardiograma avalia função ventricular e complicações mecânicas, sem atrasar reperfusão. [R1,R4]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "1811119112cc75d8e9ec11082ef8c32f46e572888d95213db26e8636a9ab4c0e",
+            "blockSha256": "53f52799ef7486e5721cb109bc8ee5e6bd462411cd571351fa1295c83ef5ea7f",
             "innerFamilyId": "887ed42639c98891",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::iam_supra",
@@ -26650,9 +26725,10 @@
       "protocolKey": "legacy_protocol::iam_supra",
       "source": "legacyCompatibility.recordsByPathology",
       "sourceMode": "verbatim_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
+      "approvedClinicalPayloadSha256": "862d3e00a057918a3def7d30d1c7917223aa3b4e458f819967318d12d092e04b",
       "canonicalPathologyKey": "iam_supra",
       "contentKey": "legacy_classification_content::iam_supra",
       "enabled": true,
@@ -26666,25 +26742,17 @@
         "finalMachineRegistryDocument": false,
         "locales": {
           "es": [
-            "🔴 IAMCEST anterior extenso: V1–V6 + aVL → rama descendente anterior proximal → mayor área en riesgo",
-            "🔴 IAMCEST inferior: DII, DIII, aVF → coronaria derecha o Cx dominante → evaluar VD obligatoriamente",
-            "🟠 IAMCEST lateral: DI, aVL, V5–V6 → Cx o diagonal → área menor, mejor pronóstico",
-            "🔴 IAMCEST de VD: supra en V1 + supra en V4R → EVITAR nitratos; volumen con cautela",
-            "🔴 IAMCEST posterior: infra en V1–V3 + supra en V7–V9 → derivaciones posteriores obligatorias"
+            "**Diagnóstico.** ECG de 12 derivaciones obtenido e interpretado dentro de los 10 min del primer contacto médico. Elevación nueva en el punto J en al menos 2 derivaciones contiguas: ≥1 mm, excepto V2–V3; allí, varones ≥40 años: ≥2 mm; varones <40 años: ≥2,5 mm; mujeres: ≥1,5 mm. Interpretar con la clínica y los patrones que dificultan el ECG. BRI nuevo/presuntamente nuevo aislado NO confirma STEMI. La sospecha persistente de oclusión, aun sin elevación típica, exige evaluación especializada urgente. Repetir ECG si persisten/recurren síntomas o hay deterioro; usar V7–V9 ante sospecha posterior y V3R/V4R en infarto inferior. Solicitar troponina seriada, hemograma/plaquetas, creatinina, electrolitos y coagulación según contexto. El ecocardiograma evalúa función ventricular y complicaciones mecánicas sin retrasar la reperfusión. [R1,R4]"
           ],
           "pt": [
-            "🔴 IAMCSST anterior extenso: V1–V6 + aVL → ramo descendente anterior proximal → maior área em risco",
-            "🔴 IAMCSST inferior: DII, DIII, aVF → coronária direita ou Cx dominante → avaliar VD obrigatoriamente",
-            "🟠 IAMCSST lateral: DI, aVL, V5–V6 → Cx ou diagonal → área menor, melhor prognóstico",
-            "🔴 IAMCSST de VD: supra em V1 + supra em V4R → EVITAR nitratos; volume com cautela",
-            "🔴 IAMCSST posterior: infra em V1–V3 + supra em V7–V9 → derivações posteriores obrigatórias"
+            "**Diagnóstico.** ECG de 12 derivações obtido e interpretado em até 10 min do primeiro contato médico. Supra novo no ponto J em pelo menos 2 derivações contíguas: ≥1 mm, exceto V2–V3; nestas, homens ≥40 anos: ≥2 mm; homens <40 anos: ≥2,5 mm; mulheres: ≥1,5 mm. Interpretar com clínica e padrões que dificultam o ECG. BRE novo/presumivelmente novo isolado NÃO confirma STEMI. Persistência da suspeita de oclusão, mesmo sem supra típico, exige avaliação especializada urgente. Repetir ECG se sintomas persistirem/recorrerem ou houver deterioração; usar V7–V9 na suspeita posterior e V3R/V4R no infarto inferior. Coletar troponina seriada, hemograma/plaquetas, creatinina, eletrólitos e coagulação conforme contexto. Ecocardiograma avalia função ventricular e complicações mecânicas, sem atrasar reperfusão. [R1,R4]"
           ]
         },
         "machineRuleInferencePerformed": false,
         "ptEsStructuralParity": true,
         "schemaVersion": "legacy_localized_payload_v1",
         "sourceProof": {
-          "blockSha256": "1811119112cc75d8e9ec11082ef8c32f46e572888d95213db26e8636a9ab4c0e",
+          "blockSha256": "53f52799ef7486e5721cb109bc8ee5e6bd462411cd571351fa1295c83ef5ea7f",
           "innerFamilyId": "887ed42639c98891",
           "legacyField": "classification",
           "protocolKey": "legacy_protocol::iam_supra",
@@ -26694,7 +26762,7 @@
       "protocolKey": "legacy_protocol::iam_supra",
       "source": "legacyCompatibility.recordsByPathology.classification",
       "sourceMode": "verbatim_classification_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "canonicalPathologyKey": "ileo_paralitico",
@@ -40088,12 +40156,13 @@
       "aliases": [
         "iam_supra"
       ],
+      "approvedClinicalPayloadSha256": "862d3e00a057918a3def7d30d1c7917223aa3b4e458f819967318d12d092e04b",
       "canonicalKey": "iam_supra",
       "displayLabel": "iam_supra",
       "enabled": true,
       "priority": 100,
       "source": {
-        "blockSha256": "1811119112cc75d8e9ec11082ef8c32f46e572888d95213db26e8636a9ab4c0e",
+        "blockSha256": "53f52799ef7486e5721cb109bc8ee5e6bd462411cd571351fa1295c83ef5ea7f",
         "file": "lib/data/protocols_database.dart",
         "line": 27457,
         "sourceGroup": "ProtocolModel",
@@ -40103,7 +40172,7 @@
       "strongAliases": [
         "iam_supra"
       ],
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "aliases": [
@@ -68583,13 +68652,14 @@
       "visibleCutoverEligible": false
     },
     {
+      "approvedClinicalPayloadSha256": "862d3e00a057918a3def7d30d1c7917223aa3b4e458f819967318d12d092e04b",
       "authoringStatus": "AUTHORITATIVE_CURRENT_ENABLED_LOCAL_DRAFT",
       "canonicalPathologyKey": "iam_supra",
       "classificationActionRef": null,
       "classificationDependencies": [
         "FIFTH_UDMI_2026_IDENTITY_DOES_NOT_REPLACE_ACS_REPERFUSION_STATE"
       ],
-      "clinicalReviewDate": "2026-08-31",
+      "clinicalReviewDate": "2026-10-02",
       "clinicalSemanticInferencePerformed": false,
       "clinicalState": {
         "canonicalPathologyKey": "iam_supra",
@@ -68600,74 +68670,75 @@
         },
         "protocolKey": "legacy_protocol::iam_supra"
       },
-      "conditionalActions": [
-        {
-          "es": "Si la ICP primaria no puede realizarse en tiempo adecuado y el paciente está dentro de ventana/sin contraindicación, evaluar fibrinólisis y traslado a centro con ICP según la guía.",
-          "key": "fibrinolysis",
-          "pt": "Se ICP primária não puder ser realizada em tempo adequado e o paciente estiver dentro da janela/sem contraindicação, avaliar fibrinólise e transferência para centro com ICP conforme guideline.",
-          "when": "pci_not_timely_and_fibrinolysis_eligible"
-        },
-        {
-          "es": "Ticagrelor o prasugrel se prefieren a clopidogrel en pacientes con SCA sometidos a ICP cuando son elegibles; seleccionar el agente por contraindicaciones y contexto.",
-          "key": "p2y12",
-          "pt": "Ticagrelor ou prasugrel são preferidos a clopidogrel em pacientes com ACS submetidos a PCI quando elegíveis; selecionar o agente pelas contraindicações e pelo contexto.",
-          "when": "pci_and_p2y12_eligible"
-        }
-      ],
+      "conditionalActions": [],
       "contraindicatedActions": [
         {
-          "es": "Evitar nitrato en hipotensión/shock y cuando haya infarto de VD con dependencia de precarga.",
-          "key": "no_nitrate_rv_shock",
-          "pt": "Evitar nitrato em hipotensão/choque e quando houver infarto de VD com dependência de pré-carga."
-        },
-        {
-          "es": "No usar oxígeno suplementario de rutina en paciente normoxémico; indicarlo según hipoxemia/compromiso respiratorio.",
-          "key": "no_routine_oxygen",
-          "pt": "Não usar oxigênio suplementar de rotina em paciente normoxêmico; indicar conforme hipoxemia/compromisso respiratório."
-        },
-        {
-          "es": "En shock cardiogénico, no realizar rutinariamente ICP inmediata de vasos no culpables en el mismo procedimiento.",
-          "key": "no_routine_multivessel_shock_pci",
-          "pt": "No choque cardiogênico, não realizar rotineiramente PCI imediata de vasos não culpados no mesmo procedimento."
+          "es": "Checklist obligatorio: hemorragia intracraneal previa/ACV de origen desconocido, ACV isquémico/AIT en los últimos 6 meses según Metalyse, sangrado importante/coagulopatía, anticoagulación oral efectiva, lesión del SNC, cirugía/trauma importante en los últimos 2 meses, trauma craneal, hipertensión grave no controlada, neoplasia hemorrágica, hepatopatía grave, endocarditis/pericarditis, pancreatitis, úlcera gastrointestinal activa, aneurisma/malformación y demencia constan en la ficha. Evaluar también disección aórtica, embarazo, RCP traumática, punciones y otros riesgos. Esta lista no sustituye el checklist completo de la presentación disponible. Si está contraindicado, activar PCI/traslado; no eludir la contraindicación. [R1,R7]",
+          "key": "approved_contra",
+          "pt": "Checklist obrigatório: hemorragia intracraniana prévia/AVC de origem desconhecida, AVC isquêmico/AIT nos últimos 6 meses conforme Metalyse, sangramento importante/coagulopatia, anticoagulação oral efetiva, lesão do SNC, cirurgia/trauma importante nos últimos 2 meses, trauma craniano, hipertensão grave não controlada, neoplasia hemorrágica, hepatopatia grave, endocardite/pericardite, pancreatite, úlcera gastrointestinal ativa, aneurisma/malformação e demência constam da ficha. Avaliar também dissecção de aorta, gestação, RCP traumática, punções e demais riscos. Esta lista não dispensa o checklist completo da apresentação disponível. Se contraindicado, acionar PCI/transferência; não contornar contraindicação. [R1,R7]"
         }
       ],
-      "definitiveActions": [
-        {
-          "es": "Realizar revascularización coronaria según anatomía y estrategia; en shock cardiogénico, priorizar revascularización emergente del vaso culpable.",
-          "key": "revascularization",
-          "pt": "Realizar revascularização coronariana conforme anatomia e estratégia; em choque cardiogênico, priorizar revascularização emergente do vaso culpado."
-        }
-      ],
+      "definitiveActions": [],
       "dependsOn": {},
       "enabled": true,
       "escalationCriteria": [
         {
-          "es": "Shock, arritmia maligna, edema pulmonar, isquemia persistente o fallo de reperfusión exigen escalamiento inmediato.",
-          "key": "shock",
-          "pt": "Choque, arritmia maligna, edema pulmonar, isquemia persistente ou falha de reperfusão exigem escalonamento imediato."
+          "es": "**2. Elegir reperfusión.** PCI primaria: meta contacto–dispositivo ≤90 min en centro con PCI, ≤120 min con traslado. Síntomas <12 h + demora prevista >120 min: evaluar fibrinólisis si es elegible; meta diagnóstico–bolo <10 min. Trasladar inmediatamente tras el fibrinolítico. Shock/isquemia persistente/inestabilidad: revascularización urgente. Nunca fibrinólisis por sospecha de disección aórtica o simple elevación de troponina. [R1,R4]",
+          "key": "approved_reperf",
+          "pt": "**2. Escolher reperfusão.** PCI primária: meta contato–dispositivo ≤90 min no centro com PCI, ≤120 min com transferência. Sintomas <12 h + atraso previsto >120 min: avaliar fibrinólise se elegível; meta diagnóstico–bolo <10 min. Transferir imediatamente após fibrinolítico. Choque/isquemia persistente/instabilidade: revascularização urgente. Nunca fibrinólise para suspeita de dissecção de aorta ou simples elevação de troponina. [R1,R4]"
         }
       ],
-      "guidelineVersion": "ACC_AHA_ACS_2025_STEMI",
+      "guidelineVersion": "ACC_AHA_ACS_2025_CORRECTED_UDMI_2026",
       "initialActions": [
         {
-          "es": "Activar estrategia de reperfusión de inmediato; priorizar ICP primaria cuando esté disponible dentro de la estrategia recomendada.",
-          "key": "activate_reperfusion",
-          "pt": "Ativar estratégia de reperfusão imediatamente; priorizar ICP primária quando disponível dentro da estratégia recomendada."
+          "es": "**1. Reconocer y activar la red.** Sospecha de IAMCEST: registrar inicio de síntomas y primer contacto médico, ECG de 12 derivaciones dentro de 10 min, activar cardiología/hemodinamia y definir traslado. ABCDE, monitor cardíaco/desfibrilador disponible y acceso IV. Buscar shock, edema pulmonar, arritmia y complicación mecánica. Preguntar peso, edad, alergias, sangrado/ACV/cirugía recientes, anticoagulantes y PDE5. No esperar troponina ante ECG diagnóstico. BRI nuevo aislado no indica automáticamente fibrinólisis. [R1,R4]",
+          "key": "approved_0",
+          "pt": "**1. Reconhecer e ativar a rede.** Suspeita de IAMCSST: registrar início dos sintomas e primeiro contato médico, ECG de 12 derivações em até 10 min, acionar cardiologia/hemodinâmica e definir transporte. ABCDE, monitor cardíaco/desfibrilador disponível e acesso IV. Procurar choque, edema pulmonar, arritmia e complicação mecânica. Perguntar peso, idade, alergias, sangramento/AVC/cirurgia recentes, anticoagulantes e PDE5. Não esperar troponina no ECG diagnóstico. BRE novo isolado não é indicação automática de fibrinólise. [R1,R4]"
         },
         {
-          "es": "Administrar AAS si no hay contraindicación y definir inhibidor P2Y12 según estrategia de reperfusión/PCI, riesgo hemorrágico y contraindicaciones.",
-          "key": "aspirin",
-          "pt": "Administrar AAS se não houver contraindicação e definir inibidor P2Y12 segundo estratégia de reperfusão/PCI, risco hemorrágico e contraindicações."
+          "es": "**2. Elegir reperfusión.** PCI primaria: meta contacto–dispositivo ≤90 min en centro con PCI, ≤120 min con traslado. Síntomas <12 h + demora prevista >120 min: evaluar fibrinólisis si es elegible; meta diagnóstico–bolo <10 min. Trasladar inmediatamente tras el fibrinolítico. Shock/isquemia persistente/inestabilidad: revascularización urgente. Nunca fibrinólisis por sospecha de disección aórtica o simple elevación de troponina. [R1,R4]",
+          "key": "approved_1",
+          "pt": "**2. Escolher reperfusão.** PCI primária: meta contato–dispositivo ≤90 min no centro com PCI, ≤120 min com transferência. Sintomas <12 h + atraso previsto >120 min: avaliar fibrinólise se elegível; meta diagnóstico–bolo <10 min. Transferir imediatamente após fibrinolítico. Choque/isquemia persistente/instabilidade: revascularização urgente. Nunca fibrinólise para suspeita de dissecção de aorta ou simples elevação de troponina. [R1,R4]"
         },
         {
-          "es": "Usar anticoagulación según estrategia invasiva/reperfusión y características del paciente.",
-          "key": "anticoagulation",
-          "pt": "Usar anticoagulação conforme estratégia invasiva/reperfusão e características do paciente."
+          "es": "**3. AAS y P2Y12 — elegir según la estrategia.** AAS: 300 mg VO masticable/no entérico de carga; después 75–100 mg VO/día, salvo contraindicación. PCI primaria: ticagrelor 180 mg VO de carga, después 90 mg VO cada 12 h. Contraindicado en sangrado activo, hemorragia intracraneal previa, disfunción hepática grave y uso de inhibidores potentes del CYP3A4; revisar interacciones. Clopidogrel es alternativa si ticagrelor/prasugrel no son adecuados/disponibles: 600 mg VO de carga en PCI primaria, después 75 mg/día, con precaución en personas mayores. Fibrinólisis: clopidogrel 300 mg VO de carga si <75 años, después 75 mg/día; ≥75 años: iniciar 75 mg VO sin carga. El corte ≥75 sin carga es la elección conservadora de esta guía, respaldada por el texto ACC/AHA y el protocolo NHS Highland; la tabla ACC/AHA y la ficha usan >75, diferencia que no debe aplicarse automáticamente. No iniciar ticagrelor/prasugrel como cotratamiento inmediato de fibrinólisis ni duplicar cargas sin comprobar dosis previas. [R1,R6,R9,R10,R13]",
+          "key": "approved_2",
+          "pt": "**3. AAS e P2Y12 — escolher pelo caminho.** AAS: 300 mg VO mastigável/não entérico como carga; depois 75–100 mg VO/dia, salvo contraindicação. PCI primária: ticagrelor 180 mg VO de carga, depois 90 mg VO a cada 12 h. Contraindicado em sangramento ativo, hemorragia intracraniana prévia, disfunção hepática grave e uso de inibidores fortes do CYP3A4; revisar interações. Clopidogrel é alternativa quando ticagrelor/prasugrel não forem adequados/disponíveis: 600 mg VO de carga na PCI primária, depois 75 mg/dia, com cautela nos idosos. Fibrinólise: clopidogrel 300 mg VO de carga se <75 anos, depois 75 mg/dia; ≥75 anos: iniciar 75 mg VO sem carga. O corte ≥75 sem carga é a escolha conservadora deste guia, apoiada no texto da ACC/AHA e no protocolo NHS Highland; a tabela ACC/AHA e a bula usam >75, diferença que não deve ser aplicada de forma automática. Não iniciar ticagrelor/prasugrel como cotratamento imediato da fibrinólise nem duplicar cargas sem conferir doses já dadas. [R1,R6,R9,R10,R13]"
         },
         {
-          "es": "Iniciar estatina de alta intensidad salvo contraindicación.",
-          "key": "statin",
-          "pt": "Iniciar estatina de alta intensidade salvo contraindicação."
+          "es": "**4. Anticoagulación — esquemas alternativos, no acumulativos.** HNF en PCI primaria sin anticoagulación previa: 70–100 UI/kg IV, con ACT guiado por hemodinamia; ajustar si ya recibió anticoagulante. HNF con fibrinólisis: 60 UI/kg IV, máximo 4.000 UI; después 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar al aPTT terapéutico del protocolo. La corrección ACC/AHA indica aPTT 50–70 s en este contexto; validar con el ensayo/nomograma local. Comprobar concentración de la ampolla y preparación estandarizada: no convertir UI/h a mL/h sin concentración final. [R1,R2]",
+          "key": "approved_3",
+          "pt": "**4. Anticoagulação — esquemas alternativos, não cumulativos.** HNF na PCI primária, sem anticoagulação prévia: 70–100 UI/kg IV, com ACT guiado pela hemodinâmica; ajustar se anticoagulante já administrado. HNF com fibrinólise: 60 UI/kg IV, máximo 4.000 UI; depois 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar ao aPTT terapêutico do protocolo. A correção ACC/AHA indica aPTT 50–70 s nesse contexto; validar com o ensaio/nomograma local. Conferir concentração da ampola e preparo padronizado: não converter UI/h em mL/h sem a concentração final. [R1,R2]"
+        },
+        {
+          "es": "Enoxaparina con fibrinólisis, ClCr ≥30 mL/min: <75 años, 30 mg IV + 1 mg/kg SC, después 1 mg/kg SC cada 12 h; máximo 100 mg en cada una de las primeras 2 dosis SC. ≥75 años: sin bolo IV; 0,75 mg/kg SC cada 12 h, máximo 75 mg en cada una de las primeras 2 dosis SC. Asociar temporalmente al fibrinolítico según protocolo; la ficha permite entre 15 min antes y 30 min después del inicio de fibrinólisis. ClCr 15–<30 mL/min: 1 mg/kg SC cada 24 h, cualquier edad; mantener 30 mg IV inicial sólo si <75 años. ClCr <15 mL/min: enoxaparina no recomendada; definir alternativa monitorizada. Duración: hasta revascularización o alta, máximo 8 días, según estrategia y protocolo. Nunca IM. Confirmar presentación: jeringas Clexane de 100 mg/mL no son intercambiables por volumen con 150 mg/mL. [R1,R4,R8]",
+          "key": "approved_4",
+          "pt": "Enoxaparina com fibrinólise, ClCr ≥30 mL/min: <75 anos, 30 mg IV + 1 mg/kg SC, depois 1 mg/kg SC a cada 12 h; máximo 100 mg em cada uma das primeiras 2 doses SC. ≥75 anos: sem bolo IV; 0,75 mg/kg SC a cada 12 h, máximo 75 mg em cada uma das primeiras 2 doses SC. Associar temporalmente ao fibrinolítico conforme protocolo; a bula permite entre 15 min antes e 30 min depois do início da fibrinólise. ClCr 15–<30 mL/min: 1 mg/kg SC a cada 24 h, qualquer idade; manter 30 mg IV inicial apenas se <75 anos. ClCr <15 mL/min: enoxaparina não recomendada; definir alternativa monitorizada. Duração: até revascularização ou alta, no máximo 8 dias, conforme estratégia e protocolo. Nunca IM. Confirmar apresentação: seringas Clexane de 100 mg/mL não são intercambiáveis por volume com 150 mg/mL. [R1,R4,R8]"
+        },
+        {
+          "es": "Si PCI tras enoxaparina: comprobar última dosis y número de dosis SC; <8 h, generalmente sin dosis adicional. El esquema ACC/AHA para 8–12 h o sólo 1 dosis SC previa indica enoxaparina 0,3 mg/kg IV — NO 0,3 mg fijos. Intervalos mayores requieren definición por hemodinamia, sin repetición empírica. Para este pequeño bolo, la ficha describe dilución a 3 mg/mL en solución salina 0,9% o glucosa 5%. Usar preparación validada por farmacia, comprobar dosis, concentración y volumen final; no improvisar dilución. Administrar 0,1 mL/kg únicamente con esta concentración. Usar vía compatible, no mezclar con otros fármacos. [R1,R3,R8]",
+          "key": "approved_5",
+          "pt": "Se PCI após enoxaparina: conferir última dose e o número de doses SC; <8 h, geralmente sem dose adicional. O esquema ACC/AHA para 8–12 h ou apenas 1 dose SC prévia prevê enoxaparina 0,3 mg/kg IV — NÃO 0,3 mg fixos. Intervalos maiores exigem definição pela hemodinâmica, sem repetição empírica. Para esse pequeno bolo, a bula descreve diluição a 3 mg/mL em SF 0,9% ou glicose 5%. Usar preparo validado pela farmácia, conferir dose, concentração e volume final; não improvisar diluição. Administrar 0,1 mL/kg somente nessa concentração. Usar linha compatível, não misturar com outros fármacos. [R1,R3,R8]"
+        },
+        {
+          "es": "**5. Tenecteplasa — sólo si fibrinólisis indicada y checklist autorizado.** Bolo único IV en aproximadamente 10 s. Dosis por peso si <75 años: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. En ≥75 años, considerar media dosis según estrategia de la red: respectivamente 15; 17,5; 20; 22,5; 25 mg. Este corte conservador sigue NHS Highland; ESC recomienda considerar media dosis en >75 años y la ficha advierte riesgo aumentado, sin reducción obligatoria. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL del solvente suministrado resulta en 5 mg/mL: dosis completas = 6; 7; 8; 9; 10 mL; medias dosis = 3; 3,5; 4; 4,5; 5 mL. No usar esquema/presentación de ACV; no intercambiar unidades entre fibrinolíticos. La ficha citada autoriza IAM hasta 6 h; uso entre 6–12 h de la ventana de la guía exige verificar registro y protocolo locales. [R4,R7,R13]",
+          "key": "approved_6",
+          "pt": "**5. Tenecteplase — somente se fibrinólise indicada e checklist liberado.** Bolo único IV em aproximadamente 10 s. Dose por peso se <75 anos: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. Em ≥75 anos, considerar meia dose pela estratégia da rede: respectivamente 15; 17,5; 20; 22,5; 25 mg. Esse corte conservador segue NHS Highland; ESC recomenda considerar meia dose em >75 anos e a bula alerta para risco aumentado, sem redução obrigatória. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL do solvente fornecido resulta em 5 mg/mL: doses completas = 6; 7; 8; 9; 10 mL; meias doses = 3; 3,5; 4; 4,5; 5 mL. Não usar esquema/presentação de AVC; não trocar unidades entre fibrinolíticos. A bula citada autoriza IAM até 6 h; uso entre 6–12 h da janela de diretriz exige verificar registro e protocolo locais. [R4,R7,R13]"
+        },
+        {
+          "es": "Checklist obligatorio: hemorragia intracraneal previa/ACV de origen desconocido, ACV isquémico/AIT en los últimos 6 meses según Metalyse, sangrado importante/coagulopatía, anticoagulación oral efectiva, lesión del SNC, cirugía/trauma importante en los últimos 2 meses, trauma craneal, hipertensión grave no controlada, neoplasia hemorrágica, hepatopatía grave, endocarditis/pericarditis, pancreatitis, úlcera gastrointestinal activa, aneurisma/malformación y demencia constan en la ficha. Evaluar también disección aórtica, embarazo, RCP traumática, punciones y otros riesgos. Esta lista no sustituye el checklist completo de la presentación disponible. Si está contraindicado, activar PCI/traslado; no eludir la contraindicación. [R1,R7]",
+          "key": "approved_7",
+          "pt": "Checklist obrigatório: hemorragia intracraniana prévia/AVC de origem desconhecida, AVC isquêmico/AIT nos últimos 6 meses conforme Metalyse, sangramento importante/coagulopatia, anticoagulação oral efetiva, lesão do SNC, cirurgia/trauma importante nos últimos 2 meses, trauma craniano, hipertensão grave não controlada, neoplasia hemorrágica, hepatopatia grave, endocardite/pericardite, pancreatite, úlcera gastrointestinal ativa, aneurisma/malformação e demência constam da ficha. Avaliar também dissecção de aorta, gestação, RCP traumática, punções e demais riscos. Esta lista não dispensa o checklist completo da apresentação disponível. Se contraindicado, acionar PCI/transferência; não contornar contraindicação. [R1,R7]"
+        },
+        {
+          "es": "**6. Síntomas y oxigenación.** Oxígeno si SpO₂ <90%, titular a ≥90%; no rutinario si ≥90%. Nitroglicerina: 0,4 mg SL (1 aplicación de 400 microgramos), puede repetir cada 5 min, máximo 3 aplicaciones/1,2 mg, sólo con estabilidad y sin contraindicación. Evitar en infarto de VD, PAS <90 mmHg o descenso >30 mmHg del basal; no usar tras avanafil <12 h, sildenafil/vardenafil <24 h o tadalafil <48 h, ni con riociguat. Dolor refractario exige reevaluar reperfusión; opioide IV sólo si necesario, titulado con monitorización de ventilación/presión y atención al retraso de absorción del P2Y12. No aplicar paquete MONA automático. [R1,R11]",
+          "key": "approved_8",
+          "pt": "**6. Sintomas e oxigenação.** Oxigênio se SpO₂ <90%, titular para ≥90%; não rotina se ≥90%. Nitroglicerina: 0,4 mg SL (1 jato de 400 microgramas), pode repetir a cada 5 min, máximo 3 jatos/1,2 mg, somente com estabilidade e sem contraindicação. Evitar em infarto de VD, PAS <90 mmHg ou queda >30 mmHg do basal; não usar após avanafil <12 h, sildenafil/vardenafil <24 h ou tadalafil <48 h, nem com riociguat. Dor refratária exige reavaliar reperfusão; opioide IV apenas se necessário, titulado com monitorização de ventilação/pressão e atenção ao atraso de absorção do P2Y12. Não usar pacote MONA automático. [R1,R11]"
+        },
+        {
+          "es": "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]",
+          "key": "approved_9",
+          "pt": "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
         }
       ],
       "label": "authoritative_current_management",
@@ -68682,9 +68753,9 @@
       "managementRuleKey": "m46::iam_supra::authoritative_current_management",
       "monitoring": [
         {
-          "es": "ECG continuo, signos vitales, isquemia recurrente, arritmias, congestión/shock y complicaciones de reperfusión/antitrombóticos.",
-          "key": "monitor",
-          "pt": "ECG contínuo, sinais vitais, isquemia recorrente, arritmias, congestão/choque e complicações de reperfusão/antitrombóticos."
+          "es": "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]",
+          "key": "approved_monitor",
+          "pt": "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
         }
       ],
       "payload": {
@@ -68692,7 +68763,7 @@
         "classificationDependencies": [
           "FIFTH_UDMI_2026_IDENTITY_DOES_NOT_REPLACE_ACS_REPERFUSION_STATE"
         ],
-        "clinicalReviewDate": "2026-08-31",
+        "clinicalReviewDate": "2026-10-02",
         "clinicalState": {
           "canonicalPathologyKey": "iam_supra",
           "key": "authoritative_current_management_active_local_draft",
@@ -68702,72 +68773,73 @@
           },
           "protocolKey": "legacy_protocol::iam_supra"
         },
-        "conditionalActions": [
-          {
-            "es": "Si la ICP primaria no puede realizarse en tiempo adecuado y el paciente está dentro de ventana/sin contraindicación, evaluar fibrinólisis y traslado a centro con ICP según la guía.",
-            "key": "fibrinolysis",
-            "pt": "Se ICP primária não puder ser realizada em tempo adequado e o paciente estiver dentro da janela/sem contraindicação, avaliar fibrinólise e transferência para centro com ICP conforme guideline.",
-            "when": "pci_not_timely_and_fibrinolysis_eligible"
-          },
-          {
-            "es": "Ticagrelor o prasugrel se prefieren a clopidogrel en pacientes con SCA sometidos a ICP cuando son elegibles; seleccionar el agente por contraindicaciones y contexto.",
-            "key": "p2y12",
-            "pt": "Ticagrelor ou prasugrel são preferidos a clopidogrel em pacientes com ACS submetidos a PCI quando elegíveis; selecionar o agente pelas contraindicações e pelo contexto.",
-            "when": "pci_and_p2y12_eligible"
-          }
-        ],
+        "conditionalActions": [],
         "contraindicatedActions": [
           {
-            "es": "Evitar nitrato en hipotensión/shock y cuando haya infarto de VD con dependencia de precarga.",
-            "key": "no_nitrate_rv_shock",
-            "pt": "Evitar nitrato em hipotensão/choque e quando houver infarto de VD com dependência de pré-carga."
-          },
-          {
-            "es": "No usar oxígeno suplementario de rutina en paciente normoxémico; indicarlo según hipoxemia/compromiso respiratorio.",
-            "key": "no_routine_oxygen",
-            "pt": "Não usar oxigênio suplementar de rotina em paciente normoxêmico; indicar conforme hipoxemia/compromisso respiratório."
-          },
-          {
-            "es": "En shock cardiogénico, no realizar rutinariamente ICP inmediata de vasos no culpables en el mismo procedimiento.",
-            "key": "no_routine_multivessel_shock_pci",
-            "pt": "No choque cardiogênico, não realizar rotineiramente PCI imediata de vasos não culpados no mesmo procedimento."
+            "es": "Checklist obligatorio: hemorragia intracraneal previa/ACV de origen desconocido, ACV isquémico/AIT en los últimos 6 meses según Metalyse, sangrado importante/coagulopatía, anticoagulación oral efectiva, lesión del SNC, cirugía/trauma importante en los últimos 2 meses, trauma craneal, hipertensión grave no controlada, neoplasia hemorrágica, hepatopatía grave, endocarditis/pericarditis, pancreatitis, úlcera gastrointestinal activa, aneurisma/malformación y demencia constan en la ficha. Evaluar también disección aórtica, embarazo, RCP traumática, punciones y otros riesgos. Esta lista no sustituye el checklist completo de la presentación disponible. Si está contraindicado, activar PCI/traslado; no eludir la contraindicación. [R1,R7]",
+            "key": "approved_contra",
+            "pt": "Checklist obrigatório: hemorragia intracraniana prévia/AVC de origem desconhecida, AVC isquêmico/AIT nos últimos 6 meses conforme Metalyse, sangramento importante/coagulopatia, anticoagulação oral efetiva, lesão do SNC, cirurgia/trauma importante nos últimos 2 meses, trauma craniano, hipertensão grave não controlada, neoplasia hemorrágica, hepatopatia grave, endocardite/pericardite, pancreatite, úlcera gastrointestinal ativa, aneurisma/malformação e demência constam da ficha. Avaliar também dissecção de aorta, gestação, RCP traumática, punções e demais riscos. Esta lista não dispensa o checklist completo da apresentação disponível. Se contraindicado, acionar PCI/transferência; não contornar contraindicação. [R1,R7]"
           }
         ],
-        "definitiveActions": [
-          {
-            "es": "Realizar revascularización coronaria según anatomía y estrategia; en shock cardiogénico, priorizar revascularización emergente del vaso culpable.",
-            "key": "revascularization",
-            "pt": "Realizar revascularização coronariana conforme anatomia e estratégia; em choque cardiogênico, priorizar revascularização emergente do vaso culpado."
-          }
-        ],
+        "definitiveActions": [],
         "escalationCriteria": [
           {
-            "es": "Shock, arritmia maligna, edema pulmonar, isquemia persistente o fallo de reperfusión exigen escalamiento inmediato.",
-            "key": "shock",
-            "pt": "Choque, arritmia maligna, edema pulmonar, isquemia persistente ou falha de reperfusão exigem escalonamento imediato."
+            "es": "**2. Elegir reperfusión.** PCI primaria: meta contacto–dispositivo ≤90 min en centro con PCI, ≤120 min con traslado. Síntomas <12 h + demora prevista >120 min: evaluar fibrinólisis si es elegible; meta diagnóstico–bolo <10 min. Trasladar inmediatamente tras el fibrinolítico. Shock/isquemia persistente/inestabilidad: revascularización urgente. Nunca fibrinólisis por sospecha de disección aórtica o simple elevación de troponina. [R1,R4]",
+            "key": "approved_reperf",
+            "pt": "**2. Escolher reperfusão.** PCI primária: meta contato–dispositivo ≤90 min no centro com PCI, ≤120 min com transferência. Sintomas <12 h + atraso previsto >120 min: avaliar fibrinólise se elegível; meta diagnóstico–bolo <10 min. Transferir imediatamente após fibrinolítico. Choque/isquemia persistente/instabilidade: revascularização urgente. Nunca fibrinólise para suspeita de dissecção de aorta ou simples elevação de troponina. [R1,R4]"
           }
         ],
-        "guidelineVersion": "ACC_AHA_ACS_2025_STEMI",
+        "guidelineVersion": "ACC_AHA_ACS_2025_CORRECTED_UDMI_2026",
         "initialActions": [
           {
-            "es": "Activar estrategia de reperfusión de inmediato; priorizar ICP primaria cuando esté disponible dentro de la estrategia recomendada.",
-            "key": "activate_reperfusion",
-            "pt": "Ativar estratégia de reperfusão imediatamente; priorizar ICP primária quando disponível dentro da estratégia recomendada."
+            "es": "**1. Reconocer y activar la red.** Sospecha de IAMCEST: registrar inicio de síntomas y primer contacto médico, ECG de 12 derivaciones dentro de 10 min, activar cardiología/hemodinamia y definir traslado. ABCDE, monitor cardíaco/desfibrilador disponible y acceso IV. Buscar shock, edema pulmonar, arritmia y complicación mecánica. Preguntar peso, edad, alergias, sangrado/ACV/cirugía recientes, anticoagulantes y PDE5. No esperar troponina ante ECG diagnóstico. BRI nuevo aislado no indica automáticamente fibrinólisis. [R1,R4]",
+            "key": "approved_0",
+            "pt": "**1. Reconhecer e ativar a rede.** Suspeita de IAMCSST: registrar início dos sintomas e primeiro contato médico, ECG de 12 derivações em até 10 min, acionar cardiologia/hemodinâmica e definir transporte. ABCDE, monitor cardíaco/desfibrilador disponível e acesso IV. Procurar choque, edema pulmonar, arritmia e complicação mecânica. Perguntar peso, idade, alergias, sangramento/AVC/cirurgia recentes, anticoagulantes e PDE5. Não esperar troponina no ECG diagnóstico. BRE novo isolado não é indicação automática de fibrinólise. [R1,R4]"
           },
           {
-            "es": "Administrar AAS si no hay contraindicación y definir inhibidor P2Y12 según estrategia de reperfusión/PCI, riesgo hemorrágico y contraindicaciones.",
-            "key": "aspirin",
-            "pt": "Administrar AAS se não houver contraindicação e definir inibidor P2Y12 segundo estratégia de reperfusão/PCI, risco hemorrágico e contraindicações."
+            "es": "**2. Elegir reperfusión.** PCI primaria: meta contacto–dispositivo ≤90 min en centro con PCI, ≤120 min con traslado. Síntomas <12 h + demora prevista >120 min: evaluar fibrinólisis si es elegible; meta diagnóstico–bolo <10 min. Trasladar inmediatamente tras el fibrinolítico. Shock/isquemia persistente/inestabilidad: revascularización urgente. Nunca fibrinólisis por sospecha de disección aórtica o simple elevación de troponina. [R1,R4]",
+            "key": "approved_1",
+            "pt": "**2. Escolher reperfusão.** PCI primária: meta contato–dispositivo ≤90 min no centro com PCI, ≤120 min com transferência. Sintomas <12 h + atraso previsto >120 min: avaliar fibrinólise se elegível; meta diagnóstico–bolo <10 min. Transferir imediatamente após fibrinolítico. Choque/isquemia persistente/instabilidade: revascularização urgente. Nunca fibrinólise para suspeita de dissecção de aorta ou simples elevação de troponina. [R1,R4]"
           },
           {
-            "es": "Usar anticoagulación según estrategia invasiva/reperfusión y características del paciente.",
-            "key": "anticoagulation",
-            "pt": "Usar anticoagulação conforme estratégia invasiva/reperfusão e características do paciente."
+            "es": "**3. AAS y P2Y12 — elegir según la estrategia.** AAS: 300 mg VO masticable/no entérico de carga; después 75–100 mg VO/día, salvo contraindicación. PCI primaria: ticagrelor 180 mg VO de carga, después 90 mg VO cada 12 h. Contraindicado en sangrado activo, hemorragia intracraneal previa, disfunción hepática grave y uso de inhibidores potentes del CYP3A4; revisar interacciones. Clopidogrel es alternativa si ticagrelor/prasugrel no son adecuados/disponibles: 600 mg VO de carga en PCI primaria, después 75 mg/día, con precaución en personas mayores. Fibrinólisis: clopidogrel 300 mg VO de carga si <75 años, después 75 mg/día; ≥75 años: iniciar 75 mg VO sin carga. El corte ≥75 sin carga es la elección conservadora de esta guía, respaldada por el texto ACC/AHA y el protocolo NHS Highland; la tabla ACC/AHA y la ficha usan >75, diferencia que no debe aplicarse automáticamente. No iniciar ticagrelor/prasugrel como cotratamiento inmediato de fibrinólisis ni duplicar cargas sin comprobar dosis previas. [R1,R6,R9,R10,R13]",
+            "key": "approved_2",
+            "pt": "**3. AAS e P2Y12 — escolher pelo caminho.** AAS: 300 mg VO mastigável/não entérico como carga; depois 75–100 mg VO/dia, salvo contraindicação. PCI primária: ticagrelor 180 mg VO de carga, depois 90 mg VO a cada 12 h. Contraindicado em sangramento ativo, hemorragia intracraniana prévia, disfunção hepática grave e uso de inibidores fortes do CYP3A4; revisar interações. Clopidogrel é alternativa quando ticagrelor/prasugrel não forem adequados/disponíveis: 600 mg VO de carga na PCI primária, depois 75 mg/dia, com cautela nos idosos. Fibrinólise: clopidogrel 300 mg VO de carga se <75 anos, depois 75 mg/dia; ≥75 anos: iniciar 75 mg VO sem carga. O corte ≥75 sem carga é a escolha conservadora deste guia, apoiada no texto da ACC/AHA e no protocolo NHS Highland; a tabela ACC/AHA e a bula usam >75, diferença que não deve ser aplicada de forma automática. Não iniciar ticagrelor/prasugrel como cotratamento imediato da fibrinólise nem duplicar cargas sem conferir doses já dadas. [R1,R6,R9,R10,R13]"
           },
           {
-            "es": "Iniciar estatina de alta intensidad salvo contraindicación.",
-            "key": "statin",
-            "pt": "Iniciar estatina de alta intensidade salvo contraindicação."
+            "es": "**4. Anticoagulación — esquemas alternativos, no acumulativos.** HNF en PCI primaria sin anticoagulación previa: 70–100 UI/kg IV, con ACT guiado por hemodinamia; ajustar si ya recibió anticoagulante. HNF con fibrinólisis: 60 UI/kg IV, máximo 4.000 UI; después 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar al aPTT terapéutico del protocolo. La corrección ACC/AHA indica aPTT 50–70 s en este contexto; validar con el ensayo/nomograma local. Comprobar concentración de la ampolla y preparación estandarizada: no convertir UI/h a mL/h sin concentración final. [R1,R2]",
+            "key": "approved_3",
+            "pt": "**4. Anticoagulação — esquemas alternativos, não cumulativos.** HNF na PCI primária, sem anticoagulação prévia: 70–100 UI/kg IV, com ACT guiado pela hemodinâmica; ajustar se anticoagulante já administrado. HNF com fibrinólise: 60 UI/kg IV, máximo 4.000 UI; depois 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar ao aPTT terapêutico do protocolo. A correção ACC/AHA indica aPTT 50–70 s nesse contexto; validar com o ensaio/nomograma local. Conferir concentração da ampola e preparo padronizado: não converter UI/h em mL/h sem a concentração final. [R1,R2]"
+          },
+          {
+            "es": "Enoxaparina con fibrinólisis, ClCr ≥30 mL/min: <75 años, 30 mg IV + 1 mg/kg SC, después 1 mg/kg SC cada 12 h; máximo 100 mg en cada una de las primeras 2 dosis SC. ≥75 años: sin bolo IV; 0,75 mg/kg SC cada 12 h, máximo 75 mg en cada una de las primeras 2 dosis SC. Asociar temporalmente al fibrinolítico según protocolo; la ficha permite entre 15 min antes y 30 min después del inicio de fibrinólisis. ClCr 15–<30 mL/min: 1 mg/kg SC cada 24 h, cualquier edad; mantener 30 mg IV inicial sólo si <75 años. ClCr <15 mL/min: enoxaparina no recomendada; definir alternativa monitorizada. Duración: hasta revascularización o alta, máximo 8 días, según estrategia y protocolo. Nunca IM. Confirmar presentación: jeringas Clexane de 100 mg/mL no son intercambiables por volumen con 150 mg/mL. [R1,R4,R8]",
+            "key": "approved_4",
+            "pt": "Enoxaparina com fibrinólise, ClCr ≥30 mL/min: <75 anos, 30 mg IV + 1 mg/kg SC, depois 1 mg/kg SC a cada 12 h; máximo 100 mg em cada uma das primeiras 2 doses SC. ≥75 anos: sem bolo IV; 0,75 mg/kg SC a cada 12 h, máximo 75 mg em cada uma das primeiras 2 doses SC. Associar temporalmente ao fibrinolítico conforme protocolo; a bula permite entre 15 min antes e 30 min depois do início da fibrinólise. ClCr 15–<30 mL/min: 1 mg/kg SC a cada 24 h, qualquer idade; manter 30 mg IV inicial apenas se <75 anos. ClCr <15 mL/min: enoxaparina não recomendada; definir alternativa monitorizada. Duração: até revascularização ou alta, no máximo 8 dias, conforme estratégia e protocolo. Nunca IM. Confirmar apresentação: seringas Clexane de 100 mg/mL não são intercambiáveis por volume com 150 mg/mL. [R1,R4,R8]"
+          },
+          {
+            "es": "Si PCI tras enoxaparina: comprobar última dosis y número de dosis SC; <8 h, generalmente sin dosis adicional. El esquema ACC/AHA para 8–12 h o sólo 1 dosis SC previa indica enoxaparina 0,3 mg/kg IV — NO 0,3 mg fijos. Intervalos mayores requieren definición por hemodinamia, sin repetición empírica. Para este pequeño bolo, la ficha describe dilución a 3 mg/mL en solución salina 0,9% o glucosa 5%. Usar preparación validada por farmacia, comprobar dosis, concentración y volumen final; no improvisar dilución. Administrar 0,1 mL/kg únicamente con esta concentración. Usar vía compatible, no mezclar con otros fármacos. [R1,R3,R8]",
+            "key": "approved_5",
+            "pt": "Se PCI após enoxaparina: conferir última dose e o número de doses SC; <8 h, geralmente sem dose adicional. O esquema ACC/AHA para 8–12 h ou apenas 1 dose SC prévia prevê enoxaparina 0,3 mg/kg IV — NÃO 0,3 mg fixos. Intervalos maiores exigem definição pela hemodinâmica, sem repetição empírica. Para esse pequeno bolo, a bula descreve diluição a 3 mg/mL em SF 0,9% ou glicose 5%. Usar preparo validado pela farmácia, conferir dose, concentração e volume final; não improvisar diluição. Administrar 0,1 mL/kg somente nessa concentração. Usar linha compatível, não misturar com outros fármacos. [R1,R3,R8]"
+          },
+          {
+            "es": "**5. Tenecteplasa — sólo si fibrinólisis indicada y checklist autorizado.** Bolo único IV en aproximadamente 10 s. Dosis por peso si <75 años: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. En ≥75 años, considerar media dosis según estrategia de la red: respectivamente 15; 17,5; 20; 22,5; 25 mg. Este corte conservador sigue NHS Highland; ESC recomienda considerar media dosis en >75 años y la ficha advierte riesgo aumentado, sin reducción obligatoria. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL del solvente suministrado resulta en 5 mg/mL: dosis completas = 6; 7; 8; 9; 10 mL; medias dosis = 3; 3,5; 4; 4,5; 5 mL. No usar esquema/presentación de ACV; no intercambiar unidades entre fibrinolíticos. La ficha citada autoriza IAM hasta 6 h; uso entre 6–12 h de la ventana de la guía exige verificar registro y protocolo locales. [R4,R7,R13]",
+            "key": "approved_6",
+            "pt": "**5. Tenecteplase — somente se fibrinólise indicada e checklist liberado.** Bolo único IV em aproximadamente 10 s. Dose por peso se <75 anos: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. Em ≥75 anos, considerar meia dose pela estratégia da rede: respectivamente 15; 17,5; 20; 22,5; 25 mg. Esse corte conservador segue NHS Highland; ESC recomenda considerar meia dose em >75 anos e a bula alerta para risco aumentado, sem redução obrigatória. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL do solvente fornecido resulta em 5 mg/mL: doses completas = 6; 7; 8; 9; 10 mL; meias doses = 3; 3,5; 4; 4,5; 5 mL. Não usar esquema/presentação de AVC; não trocar unidades entre fibrinolíticos. A bula citada autoriza IAM até 6 h; uso entre 6–12 h da janela de diretriz exige verificar registro e protocolo locais. [R4,R7,R13]"
+          },
+          {
+            "es": "Checklist obligatorio: hemorragia intracraneal previa/ACV de origen desconocido, ACV isquémico/AIT en los últimos 6 meses según Metalyse, sangrado importante/coagulopatía, anticoagulación oral efectiva, lesión del SNC, cirugía/trauma importante en los últimos 2 meses, trauma craneal, hipertensión grave no controlada, neoplasia hemorrágica, hepatopatía grave, endocarditis/pericarditis, pancreatitis, úlcera gastrointestinal activa, aneurisma/malformación y demencia constan en la ficha. Evaluar también disección aórtica, embarazo, RCP traumática, punciones y otros riesgos. Esta lista no sustituye el checklist completo de la presentación disponible. Si está contraindicado, activar PCI/traslado; no eludir la contraindicación. [R1,R7]",
+            "key": "approved_7",
+            "pt": "Checklist obrigatório: hemorragia intracraniana prévia/AVC de origem desconhecida, AVC isquêmico/AIT nos últimos 6 meses conforme Metalyse, sangramento importante/coagulopatia, anticoagulação oral efetiva, lesão do SNC, cirurgia/trauma importante nos últimos 2 meses, trauma craniano, hipertensão grave não controlada, neoplasia hemorrágica, hepatopatia grave, endocardite/pericardite, pancreatite, úlcera gastrointestinal ativa, aneurisma/malformação e demência constam da ficha. Avaliar também dissecção de aorta, gestação, RCP traumática, punções e demais riscos. Esta lista não dispensa o checklist completo da apresentação disponível. Se contraindicado, acionar PCI/transferência; não contornar contraindicação. [R1,R7]"
+          },
+          {
+            "es": "**6. Síntomas y oxigenación.** Oxígeno si SpO₂ <90%, titular a ≥90%; no rutinario si ≥90%. Nitroglicerina: 0,4 mg SL (1 aplicación de 400 microgramos), puede repetir cada 5 min, máximo 3 aplicaciones/1,2 mg, sólo con estabilidad y sin contraindicación. Evitar en infarto de VD, PAS <90 mmHg o descenso >30 mmHg del basal; no usar tras avanafil <12 h, sildenafil/vardenafil <24 h o tadalafil <48 h, ni con riociguat. Dolor refractario exige reevaluar reperfusión; opioide IV sólo si necesario, titulado con monitorización de ventilación/presión y atención al retraso de absorción del P2Y12. No aplicar paquete MONA automático. [R1,R11]",
+            "key": "approved_8",
+            "pt": "**6. Sintomas e oxigenação.** Oxigênio se SpO₂ <90%, titular para ≥90%; não rotina se ≥90%. Nitroglicerina: 0,4 mg SL (1 jato de 400 microgramas), pode repetir a cada 5 min, máximo 3 jatos/1,2 mg, somente com estabilidade e sem contraindicação. Evitar em infarto de VD, PAS <90 mmHg ou queda >30 mmHg do basal; não usar após avanafil <12 h, sildenafil/vardenafil <24 h ou tadalafil <48 h, nem com riociguat. Dor refratária exige reavaliar reperfusão; opioide IV apenas se necessário, titulado com monitorização de ventilação/pressão e atenção ao atraso de absorção do P2Y12. Não usar pacote MONA automático. [R1,R11]"
+          },
+          {
+            "es": "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]",
+            "key": "approved_9",
+            "pt": "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
           }
         ],
         "legacyNavigationReference": {
@@ -68778,26 +68850,109 @@
         },
         "monitoring": [
           {
-            "es": "ECG continuo, signos vitales, isquemia recurrente, arritmias, congestión/shock y complicaciones de reperfusión/antitrombóticos.",
-            "key": "monitor",
-            "pt": "ECG contínuo, sinais vitais, isquemia recorrente, arritmias, congestão/choque e complicações de reperfusão/antitrombóticos."
+            "es": "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]",
+            "key": "approved_monitor",
+            "pt": "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
           }
         ],
         "provenance": [
           {
             "automaticPromotion": false,
             "managementAuthorityValidated": true,
-            "title": "2025 ACC/AHA/ACEP/NAEMSP/SCAI Acute Coronary Syndromes Guideline",
+            "title": "ACC/AHA/ACEP/NAEMSP/SCAI — Acute Coronary Syndromes, final 2025, versão online corrigida",
             "type": "guideline",
-            "url": "https://professional.heart.org/en/science-news/2025-guideline-for-the-management-of-patients-with-acute-coronary-syndromes/top-things-to-know",
-            "year": 2025
+            "url": "https://www.jacc.org/doi/10.1016/j.jacc.2024.11.009"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA — Correção 2025: HNF com fibrinólise, aPTT 50–70 s",
+            "type": "guideline",
+            "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001346"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA — Correção novembro 2025: enoxaparina IV 0,3 mg/kg para PCI",
+            "type": "guideline",
+            "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001397"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "ESC — Acute Coronary Syndromes, final 2023, vigente",
+            "type": "guideline",
+            "url": "https://academic.oup.com/eurheartj/article/44/38/3720/7243210"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "ESC/ACC/AHA/WHF — Fifth Universal Definition of Myocardial Infarction, final 2026",
+            "type": "guideline",
+            "url": "https://academic.oup.com/eurheartj/advance-article/doi/10.1093/eurheartj/ehag101/8766309"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "NICE NG185 — Acute coronary syndromes, recomendações vigentes",
+            "type": "guideline",
+            "url": "https://www.nice.org.uk/guidance/ng185/chapter/recommendations"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Boehringer Ingelheim — Metalyse 50 mg, SmPC setembro 2026",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/3013/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Sanofi — Clexane seringas, SmPC vigente 2026",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AstraZeneca — Brilique 90 mg, SmPC maio 2026",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/2692/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Clopidogrel 75 mg — SmPC vigente consultado",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/5207/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Aspire Pharma — Glytrin 400 microgramas, SmPC 2023 vigente",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/6692/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "ESC — Cardiovascular disease and pregnancy, final 2025",
+            "type": "guideline",
+            "url": "https://academic.oup.com/eurheartj/article/46/43/4462/8234487"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "NHS Highland — ACS, protocolo adulto revisado janeiro 2025, revisão prevista 2028",
+            "type": "guideline",
+            "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/cardiovascular/ischaemic-heart-disease-guidelines/acute-coronary-syndrome-acs-guidelines/"
           }
         ],
         "reassessment": [
           {
-            "es": "Reevaluar reperfusión, dolor/isquemia, Killip, sangrado y necesidad de soporte circulatorio.",
-            "key": "reassess",
-            "pt": "Reavaliar reperfusão, dor/isquemia, Killip, sangramento e necessidade de suporte circulatório."
+            "es": "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]",
+            "key": "approved_reassess",
+            "pt": "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
           }
         ],
         "requiredFacts": [
@@ -68819,18 +68974,101 @@
         {
           "automaticPromotion": false,
           "managementAuthorityValidated": true,
-          "title": "2025 ACC/AHA/ACEP/NAEMSP/SCAI Acute Coronary Syndromes Guideline",
+          "title": "ACC/AHA/ACEP/NAEMSP/SCAI — Acute Coronary Syndromes, final 2025, versão online corrigida",
           "type": "guideline",
-          "url": "https://professional.heart.org/en/science-news/2025-guideline-for-the-management-of-patients-with-acute-coronary-syndromes/top-things-to-know",
-          "year": 2025
+          "url": "https://www.jacc.org/doi/10.1016/j.jacc.2024.11.009"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA — Correção 2025: HNF com fibrinólise, aPTT 50–70 s",
+          "type": "guideline",
+          "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001346"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA — Correção novembro 2025: enoxaparina IV 0,3 mg/kg para PCI",
+          "type": "guideline",
+          "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001397"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "ESC — Acute Coronary Syndromes, final 2023, vigente",
+          "type": "guideline",
+          "url": "https://academic.oup.com/eurheartj/article/44/38/3720/7243210"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "ESC/ACC/AHA/WHF — Fifth Universal Definition of Myocardial Infarction, final 2026",
+          "type": "guideline",
+          "url": "https://academic.oup.com/eurheartj/advance-article/doi/10.1093/eurheartj/ehag101/8766309"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "NICE NG185 — Acute coronary syndromes, recomendações vigentes",
+          "type": "guideline",
+          "url": "https://www.nice.org.uk/guidance/ng185/chapter/recommendations"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Boehringer Ingelheim — Metalyse 50 mg, SmPC setembro 2026",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/3013/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Sanofi — Clexane seringas, SmPC vigente 2026",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/4499/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AstraZeneca — Brilique 90 mg, SmPC maio 2026",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/2692/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Clopidogrel 75 mg — SmPC vigente consultado",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/5207/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Aspire Pharma — Glytrin 400 microgramas, SmPC 2023 vigente",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/6692/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "ESC — Cardiovascular disease and pregnancy, final 2025",
+          "type": "guideline",
+          "url": "https://academic.oup.com/eurheartj/article/46/43/4462/8234487"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "NHS Highland — ACS, protocolo adulto revisado janeiro 2025, revisão prevista 2028",
+          "type": "guideline",
+          "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/cardiovascular/ischaemic-heart-disease-guidelines/acute-coronary-syndrome-acs-guidelines/"
         }
       ],
       "provenancePolicy": "AUTHORITATIVE_CURRENT_OR_FAIL_CLOSED",
       "reassessment": [
         {
-          "es": "Reevaluar reperfusión, dolor/isquemia, Killip, sangrado y necesidad de soporte circulatorio.",
-          "key": "reassess",
-          "pt": "Reavaliar reperfusão, dor/isquemia, Killip, sangramento e necessidade de suporte circulatório."
+          "es": "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]",
+          "key": "approved_reassess",
+          "pt": "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
         }
       ],
       "requiredFacts": [
@@ -68869,7 +69107,7 @@
         "sourceBlockSha256": "89a90ca3cca31f939c9ec99ece3dc796893b3a9b23a00b72cc7e9543b0e0f3f4",
         "superbuild46Authoring": true
       },
-      "version": "2026.08.31-m46.0",
+      "version": "JIT-2026-10-02-v1.0",
       "visibleCutoverEligible": false
     },
     {
@@ -109737,6 +109975,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "862d3e00a057918a3def7d30d1c7917223aa3b4e458f819967318d12d092e04b",
       "canonicalPathologyKey": "iam_supra",
       "enabled": true,
       "legacyCompatibility": {
@@ -109750,35 +109989,35 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🚨 ACTIVAR PROTOCOLO IAM: alertar hemodinámica + cardiólogo de guardia INMEDIATAMENTE",
-              "⏱️ META: ICP en <90 min del 1er contacto médico (IAMCEST confirmado)",
-              "1. AAS 300 mg VO (masticar) + Ticagrelor 180 mg VO (o Clopidogrel 600 mg si contraindicación)",
-              "2. Anticoagulación: Heparina no fraccionada 60–70 UI/kg IV (max 5.000 UI bolo pre-ICP)",
-              "3. O2 SOLO si SpO2 <90% — hiperoxia es perjudicial en el IAM",
-              "4. Nitrato sublingual si PA sistólica >90 mmHg y SIN IAM de VD (CONTRAINDICADO en VD)",
-              "5. Morfina 2–4 mg IV si dolor intenso refractario (con cautela — puede enmascarar síntomas)",
-              "6. Betabloqueador IV (metoprolol 5 mg IV) SOLO si: taquicardia + PA estable + sin signos de congestión",
-              "7. Monitorización: ECG continuo + oximetría + PA no invasiva + acceso venoso doble",
-              "8. Fibrinólisis (si ICP no disponible en <120 min): Tenecteplase ajustado al peso IV bolo"
+              "**1. Reconocer y activar la red.** Sospecha de IAMCEST: registrar inicio de síntomas y primer contacto médico, ECG de 12 derivaciones dentro de 10 min, activar cardiología/hemodinamia y definir traslado. ABCDE, monitor cardíaco/desfibrilador disponible y acceso IV. Buscar shock, edema pulmonar, arritmia y complicación mecánica. Preguntar peso, edad, alergias, sangrado/ACV/cirugía recientes, anticoagulantes y PDE5. No esperar troponina ante ECG diagnóstico. BRI nuevo aislado no indica automáticamente fibrinólisis. [R1,R4]",
+              "**2. Elegir reperfusión.** PCI primaria: meta contacto–dispositivo ≤90 min en centro con PCI, ≤120 min con traslado. Síntomas <12 h + demora prevista >120 min: evaluar fibrinólisis si es elegible; meta diagnóstico–bolo <10 min. Trasladar inmediatamente tras el fibrinolítico. Shock/isquemia persistente/inestabilidad: revascularización urgente. Nunca fibrinólisis por sospecha de disección aórtica o simple elevación de troponina. [R1,R4]",
+              "**3. AAS y P2Y12 — elegir según la estrategia.** AAS: 300 mg VO masticable/no entérico de carga; después 75–100 mg VO/día, salvo contraindicación. PCI primaria: ticagrelor 180 mg VO de carga, después 90 mg VO cada 12 h. Contraindicado en sangrado activo, hemorragia intracraneal previa, disfunción hepática grave y uso de inhibidores potentes del CYP3A4; revisar interacciones. Clopidogrel es alternativa si ticagrelor/prasugrel no son adecuados/disponibles: 600 mg VO de carga en PCI primaria, después 75 mg/día, con precaución en personas mayores. Fibrinólisis: clopidogrel 300 mg VO de carga si <75 años, después 75 mg/día; ≥75 años: iniciar 75 mg VO sin carga. El corte ≥75 sin carga es la elección conservadora de esta guía, respaldada por el texto ACC/AHA y el protocolo NHS Highland; la tabla ACC/AHA y la ficha usan >75, diferencia que no debe aplicarse automáticamente. No iniciar ticagrelor/prasugrel como cotratamiento inmediato de fibrinólisis ni duplicar cargas sin comprobar dosis previas. [R1,R6,R9,R10,R13]",
+              "**4. Anticoagulación — esquemas alternativos, no acumulativos.** HNF en PCI primaria sin anticoagulación previa: 70–100 UI/kg IV, con ACT guiado por hemodinamia; ajustar si ya recibió anticoagulante. HNF con fibrinólisis: 60 UI/kg IV, máximo 4.000 UI; después 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar al aPTT terapéutico del protocolo. La corrección ACC/AHA indica aPTT 50–70 s en este contexto; validar con el ensayo/nomograma local. Comprobar concentración de la ampolla y preparación estandarizada: no convertir UI/h a mL/h sin concentración final. [R1,R2]",
+              "Enoxaparina con fibrinólisis, ClCr ≥30 mL/min: <75 años, 30 mg IV + 1 mg/kg SC, después 1 mg/kg SC cada 12 h; máximo 100 mg en cada una de las primeras 2 dosis SC. ≥75 años: sin bolo IV; 0,75 mg/kg SC cada 12 h, máximo 75 mg en cada una de las primeras 2 dosis SC. Asociar temporalmente al fibrinolítico según protocolo; la ficha permite entre 15 min antes y 30 min después del inicio de fibrinólisis. ClCr 15–<30 mL/min: 1 mg/kg SC cada 24 h, cualquier edad; mantener 30 mg IV inicial sólo si <75 años. ClCr <15 mL/min: enoxaparina no recomendada; definir alternativa monitorizada. Duración: hasta revascularización o alta, máximo 8 días, según estrategia y protocolo. Nunca IM. Confirmar presentación: jeringas Clexane de 100 mg/mL no son intercambiables por volumen con 150 mg/mL. [R1,R4,R8]",
+              "Si PCI tras enoxaparina: comprobar última dosis y número de dosis SC; <8 h, generalmente sin dosis adicional. El esquema ACC/AHA para 8–12 h o sólo 1 dosis SC previa indica enoxaparina 0,3 mg/kg IV — NO 0,3 mg fijos. Intervalos mayores requieren definición por hemodinamia, sin repetición empírica. Para este pequeño bolo, la ficha describe dilución a 3 mg/mL en solución salina 0,9% o glucosa 5%. Usar preparación validada por farmacia, comprobar dosis, concentración y volumen final; no improvisar dilución. Administrar 0,1 mL/kg únicamente con esta concentración. Usar vía compatible, no mezclar con otros fármacos. [R1,R3,R8]",
+              "**5. Tenecteplasa — sólo si fibrinólisis indicada y checklist autorizado.** Bolo único IV en aproximadamente 10 s. Dosis por peso si <75 años: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. En ≥75 años, considerar media dosis según estrategia de la red: respectivamente 15; 17,5; 20; 22,5; 25 mg. Este corte conservador sigue NHS Highland; ESC recomienda considerar media dosis en >75 años y la ficha advierte riesgo aumentado, sin reducción obligatoria. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL del solvente suministrado resulta en 5 mg/mL: dosis completas = 6; 7; 8; 9; 10 mL; medias dosis = 3; 3,5; 4; 4,5; 5 mL. No usar esquema/presentación de ACV; no intercambiar unidades entre fibrinolíticos. La ficha citada autoriza IAM hasta 6 h; uso entre 6–12 h de la ventana de la guía exige verificar registro y protocolo locales. [R4,R7,R13]",
+              "Checklist obligatorio: hemorragia intracraneal previa/ACV de origen desconocido, ACV isquémico/AIT en los últimos 6 meses según Metalyse, sangrado importante/coagulopatía, anticoagulación oral efectiva, lesión del SNC, cirugía/trauma importante en los últimos 2 meses, trauma craneal, hipertensión grave no controlada, neoplasia hemorrágica, hepatopatía grave, endocarditis/pericarditis, pancreatitis, úlcera gastrointestinal activa, aneurisma/malformación y demencia constan en la ficha. Evaluar también disección aórtica, embarazo, RCP traumática, punciones y otros riesgos. Esta lista no sustituye el checklist completo de la presentación disponible. Si está contraindicado, activar PCI/traslado; no eludir la contraindicación. [R1,R7]",
+              "**6. Síntomas y oxigenación.** Oxígeno si SpO₂ <90%, titular a ≥90%; no rutinario si ≥90%. Nitroglicerina: 0,4 mg SL (1 aplicación de 400 microgramos), puede repetir cada 5 min, máximo 3 aplicaciones/1,2 mg, sólo con estabilidad y sin contraindicación. Evitar en infarto de VD, PAS <90 mmHg o descenso >30 mmHg del basal; no usar tras avanafil <12 h, sildenafil/vardenafil <24 h o tadalafil <48 h, ni con riociguat. Dolor refractario exige reevaluar reperfusión; opioide IV sólo si necesario, titulado con monitorización de ventilación/presión y atención al retraso de absorción del P2Y12. No aplicar paquete MONA automático. [R1,R11]",
+              "**7. Reevaluar y derivar.** ECG y evaluación clínica a los 60–90 min tras fibrinólisis; resolución del ST <50%, dolor persistente/recurrente o inestabilidad sugieren fracaso: PCI de rescate inmediata. No repetir fibrinólisis. Si reperfusión exitosa y estable, angiografía en 2–24 h; no dar alta tras aliviar el dolor. Monitorizar ritmo/presión/SpO₂/perfusión/sangrado, hemoglobina/plaquetas y función renal; cefalea intensa o déficit neurológico tras lítico exige respuesta urgente por posible hemorragia intracraneal. Comunicar en el traslado todos los fármacos, dosis y horarios. Embarazo/puerperio, hepatopatía grave, ClCr <15, HIT o anticoagulación oral previa requieren plan especializado; no extrapolar dosis adultas a niños. [R1,R4,R6,R8,R12]"
             ],
             "pt": [
-              "🚨 ATIVAR PROTOCOLO IAM: alertar hemodinâmica + cardiologista de plantão IMEDIATAMENTE",
-              "⏱️ META: ICP em <90 min do 1º contato médico (IAMCSST confirmado)",
-              "1. AAS 300 mg VO (mastigar) + Ticagrelor 180 mg VO (ou Clopidogrel 600 mg se contraindicação)",
-              "2. Anticoagulação: Heparina não fracionada 60–70 UI/kg IV (max 5.000 UI bolus pré-ICP)",
-              "3. O2 APENAS se SpO2 <90% — hiperóxia é prejudicial no IAM",
-              "4. Nitrato sublingual se PA sistólica >90 mmHg e SEM IAM de VD (CONTRAINDICADO em VD)",
-              "5. Morfina 2–4 mg IV se dor intensa refratária (com cautela — pode mascarar sintomas)",
-              "6. Beta-bloqueador IV (metoprolol 5 mg IV) APENAS se: taquicardia + PA estável + sem sinais de congestão",
-              "7. Monitorização: ECG contínuo + oxímetria + PA não invasiva + acesso venoso duplo",
-              "8. Fibrinólise (se ICP indisponível em <120 min): Tenecteplase peso-ajustada IV bolus"
+              "**1. Reconhecer e ativar a rede.** Suspeita de IAMCSST: registrar início dos sintomas e primeiro contato médico, ECG de 12 derivações em até 10 min, acionar cardiologia/hemodinâmica e definir transporte. ABCDE, monitor cardíaco/desfibrilador disponível e acesso IV. Procurar choque, edema pulmonar, arritmia e complicação mecânica. Perguntar peso, idade, alergias, sangramento/AVC/cirurgia recentes, anticoagulantes e PDE5. Não esperar troponina no ECG diagnóstico. BRE novo isolado não é indicação automática de fibrinólise. [R1,R4]",
+              "**2. Escolher reperfusão.** PCI primária: meta contato–dispositivo ≤90 min no centro com PCI, ≤120 min com transferência. Sintomas <12 h + atraso previsto >120 min: avaliar fibrinólise se elegível; meta diagnóstico–bolo <10 min. Transferir imediatamente após fibrinolítico. Choque/isquemia persistente/instabilidade: revascularização urgente. Nunca fibrinólise para suspeita de dissecção de aorta ou simples elevação de troponina. [R1,R4]",
+              "**3. AAS e P2Y12 — escolher pelo caminho.** AAS: 300 mg VO mastigável/não entérico como carga; depois 75–100 mg VO/dia, salvo contraindicação. PCI primária: ticagrelor 180 mg VO de carga, depois 90 mg VO a cada 12 h. Contraindicado em sangramento ativo, hemorragia intracraniana prévia, disfunção hepática grave e uso de inibidores fortes do CYP3A4; revisar interações. Clopidogrel é alternativa quando ticagrelor/prasugrel não forem adequados/disponíveis: 600 mg VO de carga na PCI primária, depois 75 mg/dia, com cautela nos idosos. Fibrinólise: clopidogrel 300 mg VO de carga se <75 anos, depois 75 mg/dia; ≥75 anos: iniciar 75 mg VO sem carga. O corte ≥75 sem carga é a escolha conservadora deste guia, apoiada no texto da ACC/AHA e no protocolo NHS Highland; a tabela ACC/AHA e a bula usam >75, diferença que não deve ser aplicada de forma automática. Não iniciar ticagrelor/prasugrel como cotratamento imediato da fibrinólise nem duplicar cargas sem conferir doses já dadas. [R1,R6,R9,R10,R13]",
+              "**4. Anticoagulação — esquemas alternativos, não cumulativos.** HNF na PCI primária, sem anticoagulação prévia: 70–100 UI/kg IV, com ACT guiado pela hemodinâmica; ajustar se anticoagulante já administrado. HNF com fibrinólise: 60 UI/kg IV, máximo 4.000 UI; depois 12 UI/kg/h IV, máximo inicial 1.000 UI/h, ajustar ao aPTT terapêutico do protocolo. A correção ACC/AHA indica aPTT 50–70 s nesse contexto; validar com o ensaio/nomograma local. Conferir concentração da ampola e preparo padronizado: não converter UI/h em mL/h sem a concentração final. [R1,R2]",
+              "Enoxaparina com fibrinólise, ClCr ≥30 mL/min: <75 anos, 30 mg IV + 1 mg/kg SC, depois 1 mg/kg SC a cada 12 h; máximo 100 mg em cada uma das primeiras 2 doses SC. ≥75 anos: sem bolo IV; 0,75 mg/kg SC a cada 12 h, máximo 75 mg em cada uma das primeiras 2 doses SC. Associar temporalmente ao fibrinolítico conforme protocolo; a bula permite entre 15 min antes e 30 min depois do início da fibrinólise. ClCr 15–<30 mL/min: 1 mg/kg SC a cada 24 h, qualquer idade; manter 30 mg IV inicial apenas se <75 anos. ClCr <15 mL/min: enoxaparina não recomendada; definir alternativa monitorizada. Duração: até revascularização ou alta, no máximo 8 dias, conforme estratégia e protocolo. Nunca IM. Confirmar apresentação: seringas Clexane de 100 mg/mL não são intercambiáveis por volume com 150 mg/mL. [R1,R4,R8]",
+              "Se PCI após enoxaparina: conferir última dose e o número de doses SC; <8 h, geralmente sem dose adicional. O esquema ACC/AHA para 8–12 h ou apenas 1 dose SC prévia prevê enoxaparina 0,3 mg/kg IV — NÃO 0,3 mg fixos. Intervalos maiores exigem definição pela hemodinâmica, sem repetição empírica. Para esse pequeno bolo, a bula descreve diluição a 3 mg/mL em SF 0,9% ou glicose 5%. Usar preparo validado pela farmácia, conferir dose, concentração e volume final; não improvisar diluição. Administrar 0,1 mL/kg somente nessa concentração. Usar linha compatível, não misturar com outros fármacos. [R1,R3,R8]",
+              "**5. Tenecteplase — somente se fibrinólise indicada e checklist liberado.** Bolo único IV em aproximadamente 10 s. Dose por peso se <75 anos: <60 kg: 30 mg; 60–<70: 35 mg; 70–<80: 40 mg; 80–<90: 45 mg; ≥90: 50 mg. Em ≥75 anos, considerar meia dose pela estratégia da rede: respectivamente 15; 17,5; 20; 22,5; 25 mg. Esse corte conservador segue NHS Highland; ESC recomenda considerar meia dose em >75 anos e a bula alerta para risco aumentado, sem redução obrigatória. Confirmar protocolo local antes de administrar. Metalyse 50 mg + 10 mL do solvente fornecido resulta em 5 mg/mL: doses completas = 6; 7; 8; 9; 10 mL; meias doses = 3; 3,5; 4; 4,5; 5 mL. Não usar esquema/presentação de AVC; não trocar unidades entre fibrinolíticos. A bula citada autoriza IAM até 6 h; uso entre 6–12 h da janela de diretriz exige verificar registro e protocolo locais. [R4,R7,R13]",
+              "Checklist obrigatório: hemorragia intracraniana prévia/AVC de origem desconhecida, AVC isquêmico/AIT nos últimos 6 meses conforme Metalyse, sangramento importante/coagulopatia, anticoagulação oral efetiva, lesão do SNC, cirurgia/trauma importante nos últimos 2 meses, trauma craniano, hipertensão grave não controlada, neoplasia hemorrágica, hepatopatia grave, endocardite/pericardite, pancreatite, úlcera gastrointestinal ativa, aneurisma/malformação e demência constam da ficha. Avaliar também dissecção de aorta, gestação, RCP traumática, punções e demais riscos. Esta lista não dispensa o checklist completo da apresentação disponível. Se contraindicado, acionar PCI/transferência; não contornar contraindicação. [R1,R7]",
+              "**6. Sintomas e oxigenação.** Oxigênio se SpO₂ <90%, titular para ≥90%; não rotina se ≥90%. Nitroglicerina: 0,4 mg SL (1 jato de 400 microgramas), pode repetir a cada 5 min, máximo 3 jatos/1,2 mg, somente com estabilidade e sem contraindicação. Evitar em infarto de VD, PAS <90 mmHg ou queda >30 mmHg do basal; não usar após avanafil <12 h, sildenafil/vardenafil <24 h ou tadalafil <48 h, nem com riociguat. Dor refratária exige reavaliar reperfusão; opioide IV apenas se necessário, titulado com monitorização de ventilação/pressão e atenção ao atraso de absorção do P2Y12. Não usar pacote MONA automático. [R1,R11]",
+              "**7. Reavaliar e encaminhar.** ECG e avaliação clínica em 60–90 min após fibrinólise; resolução de ST <50%, dor persistente/recorrente ou instabilidade sugerem falha: PCI de resgate imediata. Não repetir fibrinólise. Se reperfusão bem-sucedida e estável, angiografia em 2–24 h; não dar alta após melhora da dor. Monitorizar ritmo/pressão/SpO₂/perfusão/sangramento, hemoglobina/plaquetas e função renal; cefaleia intensa ou déficit neurológico após lítico exige resposta urgente para hemorragia intracraniana. Informar na transferência todos os fármacos, doses e horários. Gestação/puerpério, hepatopatia grave, ClCr <15, HIT ou anticoagulação oral prévia exigem plano especializado; não extrapolar doses adultas para crianças. [R1,R4,R6,R8,R12]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "1811119112cc75d8e9ec11082ef8c32f46e572888d95213db26e8636a9ab4c0e",
+            "blockSha256": "53f52799ef7486e5721cb109bc8ee5e6bd462411cd571351fa1295c83ef5ea7f",
             "innerFamilyId": "bebb9a8886914d04",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::iam_supra",
@@ -109795,25 +110034,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 IAMCEST anterior extenso: V1–V6 + aVL → rama descendente anterior proximal → mayor área en riesgo",
-              "🔴 IAMCEST inferior: DII, DIII, aVF → coronaria derecha o Cx dominante → evaluar VD obligatoriamente",
-              "🟠 IAMCEST lateral: DI, aVL, V5–V6 → Cx o diagonal → área menor, mejor pronóstico",
-              "🔴 IAMCEST de VD: supra en V1 + supra en V4R → EVITAR nitratos; volumen con cautela",
-              "🔴 IAMCEST posterior: infra en V1–V3 + supra en V7–V9 → derivaciones posteriores obligatorias"
+              "**Diagnóstico.** ECG de 12 derivaciones obtenido e interpretado dentro de los 10 min del primer contacto médico. Elevación nueva en el punto J en al menos 2 derivaciones contiguas: ≥1 mm, excepto V2–V3; allí, varones ≥40 años: ≥2 mm; varones <40 años: ≥2,5 mm; mujeres: ≥1,5 mm. Interpretar con la clínica y los patrones que dificultan el ECG. BRI nuevo/presuntamente nuevo aislado NO confirma STEMI. La sospecha persistente de oclusión, aun sin elevación típica, exige evaluación especializada urgente. Repetir ECG si persisten/recurren síntomas o hay deterioro; usar V7–V9 ante sospecha posterior y V3R/V4R en infarto inferior. Solicitar troponina seriada, hemograma/plaquetas, creatinina, electrolitos y coagulación según contexto. El ecocardiograma evalúa función ventricular y complicaciones mecánicas sin retrasar la reperfusión. [R1,R4]"
             ],
             "pt": [
-              "🔴 IAMCSST anterior extenso: V1–V6 + aVL → ramo descendente anterior proximal → maior área em risco",
-              "🔴 IAMCSST inferior: DII, DIII, aVF → coronária direita ou Cx dominante → avaliar VD obrigatoriamente",
-              "🟠 IAMCSST lateral: DI, aVL, V5–V6 → Cx ou diagonal → área menor, melhor prognóstico",
-              "🔴 IAMCSST de VD: supra em V1 + supra em V4R → EVITAR nitratos; volume com cautela",
-              "🔴 IAMCSST posterior: infra em V1–V3 + supra em V7–V9 → derivações posteriores obrigatórias"
+              "**Diagnóstico.** ECG de 12 derivações obtido e interpretado em até 10 min do primeiro contato médico. Supra novo no ponto J em pelo menos 2 derivações contíguas: ≥1 mm, exceto V2–V3; nestas, homens ≥40 anos: ≥2 mm; homens <40 anos: ≥2,5 mm; mulheres: ≥1,5 mm. Interpretar com clínica e padrões que dificultam o ECG. BRE novo/presumivelmente novo isolado NÃO confirma STEMI. Persistência da suspeita de oclusão, mesmo sem supra típico, exige avaliação especializada urgente. Repetir ECG se sintomas persistirem/recorrerem ou houver deterioração; usar V7–V9 na suspeita posterior e V3R/V4R no infarto inferior. Coletar troponina seriada, hemograma/plaquetas, creatinina, eletrólitos e coagulação conforme contexto. Ecocardiograma avalia função ventricular e complicações mecânicas, sem atrasar reperfusão. [R1,R4]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "1811119112cc75d8e9ec11082ef8c32f46e572888d95213db26e8636a9ab4c0e",
+            "blockSha256": "53f52799ef7486e5721cb109bc8ee5e6bd462411cd571351fa1295c83ef5ea7f",
             "innerFamilyId": "887ed42639c98891",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::iam_supra",
@@ -109823,16 +110054,30 @@
       },
       "priority": 100,
       "protocolKey": "legacy_protocol::iam_supra",
-      "referenceUrls": [],
+      "referenceUrls": [
+        "https://www.jacc.org/doi/10.1016/j.jacc.2024.11.009",
+        "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001346",
+        "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001397",
+        "https://academic.oup.com/eurheartj/article/44/38/3720/7243210",
+        "https://academic.oup.com/eurheartj/advance-article/doi/10.1093/eurheartj/ehag101/8766309",
+        "https://www.nice.org.uk/guidance/ng185/chapter/recommendations",
+        "https://www.medicines.org.uk/emc/product/3013/smpc",
+        "https://www.medicines.org.uk/emc/product/4499/smpc",
+        "https://www.medicines.org.uk/emc/product/2692/smpc",
+        "https://www.medicines.org.uk/emc/product/5207/smpc",
+        "https://www.medicines.org.uk/emc/product/6692/smpc",
+        "https://academic.oup.com/eurheartj/article/46/43/4462/8234487",
+        "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/cardiovascular/ischaemic-heart-disease-guidelines/acute-coronary-syndrome-acs-guidelines/"
+      ],
       "source": {
-        "blockSha256": "1811119112cc75d8e9ec11082ef8c32f46e572888d95213db26e8636a9ab4c0e",
+        "blockSha256": "53f52799ef7486e5721cb109bc8ee5e6bd462411cd571351fa1295c83ef5ea7f",
         "file": "lib/data/protocols_database.dart",
         "line": 27457,
         "sourceGroup": "ProtocolModel",
         "sourceKey": "iam_supra",
         "strategy": "generic_constructor"
       },
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "canonicalPathologyKey": "ileo_paralitico",

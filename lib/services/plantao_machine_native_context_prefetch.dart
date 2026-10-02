@@ -859,7 +859,10 @@ class PlantaoMachineNativeContextPrefetch {
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] ==
             'fa9fc47cfff6ca9cacb72bda2a9558ffcf2c647a942e23b2cbeeed92e2abc946';
-    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep;
+    final approvedIam = key == 'iam_supra' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == '862d3e00a057918a3def7d30d1c7917223aa3b4e458f819967318d12d092e04b';
+    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam;
     final clinicalTextLimit = completeApprovedPayload ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
@@ -934,7 +937,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
-            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep) ? 24000 : (approvedG02 ? 18000 : 6000),
+            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam) ? 24000 : (approvedG02 ? 18000 : 6000),
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(

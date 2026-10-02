@@ -200,6 +200,16 @@ class ClinicalReferenceResolver {
       final title = protocol.getField(protocol.title, lang);
       final protocolReferences = protocol.getList(protocol.references, lang);
 
+      if (protocol.id == 'iam_supra' &&
+          protocolReferences.any((r) => r.contains('ehag101/8766309'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
       final curatedReferences = _curatedReferencesForDomain(domain);
       final candidateReferences = <String>[
         ...curatedReferences,
