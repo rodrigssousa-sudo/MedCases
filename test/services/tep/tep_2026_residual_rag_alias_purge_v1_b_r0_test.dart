@@ -32,11 +32,11 @@ void main() {
 
         for (final token in <String>[
           'AHA/ACC 2026',
-          'B1 — TEP subsegmentar',
-          'C2 — VD anormal OU',
-          'C3 — VD anormal E',
-          'D2 — choque normotensivo',
-          'E2 — choque cardiogênico refratário',
+          'B1 subsegmentar',
+          'C2 VD anormal OU biomarcador anormal',
+          'C3 ambos anormais',
+          'D2 choque normotensivo',
+          'E2 choque refratário ou parada cardíaca',
           'modificador R',
           '10.1016/j.jacc.2026.06.033',
         ]) {

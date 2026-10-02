@@ -51,7 +51,7 @@ void main() {
       );
 
       expect(block, contains('AHA/ACC 2026'));
-      expect(block, contains('JACC Correction 2026'));
+      expect(block, contains('JACC — Correção de 11 agosto 2026'));
       expect(block, isNot(contains('TEP maciço')));
       expect(block, isNot(contains('TEP submaciço')));
       expect(block, isNot(contains('ESC TEP 2019')));
@@ -70,11 +70,11 @@ void main() {
 
       for (final token in <String>[
         'AHA/ACC 2026',
-        'B1 — TEP subsegmentar',
-        'C2 — VD anormal OU',
-        'C3 — VD anormal E',
-        'D2 — choque normotensivo',
-        'E2 — choque cardiogênico refratário',
+        'B1 subsegmentar',
+        'C2 VD anormal OU biomarcador anormal',
+        'C3 ambos anormais',
+        'D2 choque normotensivo',
+        'E2 choque refratário ou parada cardíaca',
         'modificador R',
         '10.1016/j.jacc.2026.06.033',
       ]) {
@@ -86,7 +86,7 @@ void main() {
       expect(block, isNot(contains('Intermediário-baixo:')));
     });
 
-    test('shared resolver PE case is 2026-only authority set', () {
+    test('shared resolver PE case uses final 2026 authority and verified dosing sources', () {
       final start = resolver.indexOf("case 'pulmonary_embolism':");
       expect(start, greaterThanOrEqualTo(0));
       final next = resolver.indexOf("\n      case '", start + 10);
@@ -95,8 +95,8 @@ void main() {
         next > start ? next : (start + 3000).clamp(0, resolver.length),
       );
 
-      expect(block, contains('Acute Pulmonary Embolism Guideline (2026)'));
-      expect(block, contains('10.1161/CIR.0000000000001415'));
+      expect(block, contains('Acute Pulmonary Embolism in Adults, final 2026'));
+      expect(block, contains('https://www.medicines.org.uk/emc/product/10361/smpc'));
       expect(block, contains('10.1016/j.jacc.2025.11.005'));
       expect(block, contains('10.1016/j.jacc.2026.06.033'));
       expect(block, isNot(contains('ESC/ERS')));
