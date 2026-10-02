@@ -880,7 +880,13 @@ class PlantaoMachineNativeContextPrefetch {
     final approvedStatus = key == 'status_epilepticus' &&
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] == '758a9931e273c472c367835ebe5b8041a249ada115e76a164f3d26ea1828fb6f';
-    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus;
+    final approvedHypo = key == 'hipoglicemia_grave' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == '44493a22ea957fedc2be99e3bc135e098c72a912b75899634004ba57af7ef6c5';
+    final approvedEap = key == 'edema_agudo_pulmao' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == '0b9f8fabc6598b964edc9d7161b71f49f56da555a7cbecc59055f6d3652963f7';
+    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap;
     final clinicalTextLimit = completeApprovedPayload ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
@@ -955,7 +961,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
-            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus) ? 24000 : (approvedG02 ? 18000 : 6000),
+            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap) ? 24000 : (approvedG02 ? 18000 : 6000),
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(

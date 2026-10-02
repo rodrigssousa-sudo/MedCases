@@ -270,6 +270,26 @@ class ClinicalReferenceResolver {
         );
       }
 
+      if (protocol.id == 'hipoglicemia_grave' &&
+          protocolReferences.any((r) => r.contains('diabetesjournals.org'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
+      if (protocol.id == 'edema_agudo_pulmao' &&
+          protocolReferences.any((r) => r.contains('escardio.org'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
       final curatedReferences = _curatedReferencesForDomain(domain);
       final candidateReferences = <String>[
         ...curatedReferences,
