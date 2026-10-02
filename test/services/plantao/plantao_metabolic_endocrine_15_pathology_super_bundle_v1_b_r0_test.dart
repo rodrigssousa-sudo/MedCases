@@ -69,15 +69,15 @@ void main() {
     });
 
     test('hyperkalemia separates membrane stabilization shift and removal', () {
-      expect(source, contains('calcio IV estabiliza membrana, mas NAO reduz K'));
-      expect(source, contains('insulina + glicose e beta2-agonista'));
-      expect(source, contains('Bicarbonato NAO e tratamento rotineiro salvo acidose metabolica relevante'));
-      expect(source, contains('hemodialise na hipercalemia grave/refrataria'));
+      expect(source, contains('Cálcio combate a toxicidade cardíaca, mas não reduz K⁺'));
+      expect(source, contains('Insulina e salbutamol redistribuem K⁺ temporariamente'));
+      expect(source, contains('Bicarbonato IV não é rotina'));
+      expect(source, contains('Hipercalemia grave em paciente em hemodiálise requer diálise urgente'));
     });
 
     test('hyperkalemia includes rebound monitoring and rejects number only authority', () {
-      expect(source, contains('Repetir K para detectar rebote'));
-      expect(source, contains('Nao usar numero isolado como unica autoridade'));
+      expect(source, contains('A resposta inicial pode ser seguida de rebote'));
+      expect(source, contains('Não administrar cálcio automaticamente apenas pelo número de K⁺'));
     });
 
     test('hypokalemia prefers oral and never IV push', () {

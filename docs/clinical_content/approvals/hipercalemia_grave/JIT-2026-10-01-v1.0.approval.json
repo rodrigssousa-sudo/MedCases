@@ -1,0 +1,9 @@
+{
+  "command": "GUIA APROVADO: Hipercalemia grave JIT-2026-10-01-v1.0",
+  "version": "JIT-2026-10-01-v1.0",
+  "owner": "hipercalemia_grave",
+  "approvedClinicalPayloadSha256": "a0320ddac42bbe1c8d22ad52ba98414685b9c70605403b5a1e8cd31ad980c93f",
+  "recordedAt": "2026-10-01 18:21:27 UTC",
+  "reviewer": "user",
+  "clinicalEditsAfterApproval": false
+}

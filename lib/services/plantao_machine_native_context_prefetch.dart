@@ -836,24 +836,32 @@ class PlantaoMachineNativeContextPrefetch {
       rule?['reviewedAt'],
       protocol?['reviewedAt'],
     ]);
+    // Exact approved G02 release: preserve complete dose and monitoring text.
+    // Other owners and older remote records keep their existing bounds.
+    final approvedG02 =
+        (key == 'hipercalemia_grave' || key == 'hiperpotassemia_grave') &&
+        rule?['version'] == 'JIT-2026-10-01-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] ==
+            'a0320ddac42bbe1c8d22ad52ba98414685b9c70605403b5a1e8cd31ad980c93f';
+    final clinicalTextLimit = approvedG02 ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
       'initialActions',
       'definitiveActions',
-    ], locale);
+    ], locale, maxTextLength: clinicalTextLimit);
     final prohibited = _merge(rule, const <String>[
       'contraindicatedActions',
       'prohibitedActions',
-    ], locale);
+    ], locale, maxTextLength: clinicalTextLimit);
     final conditional = _merge(rule, const <String>[
       'conditionalActions',
-    ], locale);
+    ], locale, maxTextLength: clinicalTextLimit);
     final requiredFacts = _list(rule?['requiredFacts']);
-    final monitoring = _merge(rule, const <String>['monitoring'], locale);
-    final reassessment = _merge(rule, const <String>['reassessment'], locale);
+    final monitoring = _merge(rule, const <String>['monitoring'], locale, maxTextLength: clinicalTextLimit);
+    final reassessment = _merge(rule, const <String>['reassessment'], locale, maxTextLength: clinicalTextLimit);
     final escalation = _merge(rule, const <String>[
       'escalationCriteria',
-    ], locale);
+    ], locale, maxTextLength: clinicalTextLimit);
     final classDeps = <String>{
       ..._list(rule?['classificationDependencies']),
       for (final r in rows[1])
@@ -909,6 +917,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
+            maxPromptLength: approvedG02 ? 18000 : 6000,
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(
@@ -1020,8 +1029,9 @@ class PlantaoMachineNativeContextPrefetch {
   static List<String> _merge(
     Map<String, dynamic>? row,
     List<String> keys,
-    String locale,
-  ) {
+    String locale, {
+    int maxTextLength = 360,
+  }) {
     if (row == null) return const <String>[];
     final out = <String>{};
     for (final key in keys) {
@@ -1029,7 +1039,7 @@ class PlantaoMachineNativeContextPrefetch {
       final payload = row['payload'];
       final fallback = payload is Map ? payload[key] : null;
       final value = _hasClinicalValue(topLevel) ? topLevel : fallback;
-      out.addAll(_clinical(value, locale));
+      out.addAll(_clinical(value, locale, maxTextLength));
     }
     return out.take(24).toList(growable: false);
   }
@@ -1042,26 +1052,26 @@ class PlantaoMachineNativeContextPrefetch {
     return true;
   }
 
-  static Iterable<String> _clinical(Object? value, String locale) sync* {
+  static Iterable<String> _clinical(Object? value, String locale, int maxTextLength) sync* {
     if (value is String) {
       final text = value.trim();
-      if (text.isNotEmpty) yield _cut(text, 360);
+      if (text.isNotEmpty) yield _cut(text, maxTextLength);
       return;
     }
     if (value is Iterable) {
       for (final item in value) {
-        yield* _clinical(item, locale);
+        yield* _clinical(item, locale, maxTextLength);
       }
       return;
     }
     if (value is Map) {
       if (value.containsKey(locale)) {
-        yield* _clinical(value[locale], locale);
+        yield* _clinical(value[locale], locale, maxTextLength);
         return;
       }
       final fallbackLocale = locale == 'es' ? 'pt' : 'es';
       if (value.containsKey(fallbackLocale)) {
-        yield* _clinical(value[fallbackLocale], locale);
+        yield* _clinical(value[fallbackLocale], locale, maxTextLength);
         return;
       }
       for (final key in const <String>[
@@ -1073,7 +1083,7 @@ class PlantaoMachineNativeContextPrefetch {
         'name',
       ]) {
         if (value.containsKey(key)) {
-          yield* _clinical(value[key], locale);
+          yield* _clinical(value[key], locale, maxTextLength);
         }
       }
     }
@@ -1105,6 +1115,7 @@ class PlantaoMachineNativeContextPrefetch {
     required List<String> monitoring,
     required List<String> reassessment,
     required List<String> escalation,
+    int maxPromptLength = 6000,
   }) {
     final es = language.toLowerCase().startsWith('es');
     final value = <String>[
@@ -1131,7 +1142,7 @@ class PlantaoMachineNativeContextPrefetch {
           : 'INSTRUÇÃO: use este contexto clínico autoritativo para validar prioridade, contraindicações, condicionais, classificação e atualização. Não exponha este bloco interno.',
       '[/MEDCASES_MACHINE_NATIVE_CONTEXT_V1]',
     ].join('\n');
-    return _cut(value, 6000);
+    return _cut(value, maxPromptLength);
   }
 
   static bool _bounded(String h, String n) {

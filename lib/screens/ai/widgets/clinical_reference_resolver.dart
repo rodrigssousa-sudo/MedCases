@@ -6367,9 +6367,17 @@ class ClinicalReferenceResolver {
 
       case 'hyperkalemia_ukka_2023':
         return const <String>[
-          'UK Kidney Association — Management of Hyperkalaemia in Adults (2023; review due 2026) — https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0',
-          'UK Kidney Association — Hyperkalaemia Clinical Practice Guideline PDF (2023) — https://www.ukkidney.org/sites/renal.org/files/FINAL%20VERSION%20-%20UKKA%20CLINICAL%20PRACTICE%20GUIDELINE%20-%20MANAGEMENT%20OF%20HYPERKALAEMIA%20IN%20ADULTS%20-%20191223_0.pdf',
-          'UK Kidney Association — Hyperkalaemia in Hospital recommendations (current 2023 guideline framework) — https://guidelines.ukkidney.org/hyperkalaemia/11-1-ii-hyperkalaemia-in-hospital/11-1-9-ii-hyperkalaemia-in-hospital-21-1-21-4/',
+          '[R1] UK Kidney Association — Management of Hyperkalaemia in Adults, atualização final de julho/2026; adultos; documento normativo principal. A página oficial substitui o PDF anterior por esta atualização. https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0',
+          '[R2] Resuscitation Council UK — Special circumstances, guideline final de 2025; emergência e ressuscitação; confirmação de doses e separação do contexto de PCR. https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/special-circumstances-guidelines',
+          '[R3] MHRA — alerta de segurança de 2023 sobre subdose de gluconato de cálcio; equivalência, velocidade e repetição. https://www.gov.uk/drug-safety-update/calcium-chloride-calcium-gluconate-potential-risk-of-underdosing-with-calcium-gluconate-in-severe-hyperkalaemia',
+          '[R4] KDIGO — CKD Guideline 2024, final e ainda vigente; prevenção de recorrência e preservação de terapias cardiorrenais quando possível. https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf',
+          '[R5] KDIGO Conference — Acute hyperkalemia in the emergency department, 2020; consenso de apoio, não uma nova guideline; diagnóstico e limitações do ECG. https://pmc.ncbi.nlm.nih.gov/articles/PMC7448835/',
+          '[R6] EMA — Lokelma, informação regulatória consultada; página atualizada em setembro/2026; doses, preparo, interações e gestação/lactação. https://www.ema.europa.eu/en/documents/product-information/lokelma-epar-product-information_en.pdf',
+          '[R7] American Heart Association — Special Circumstances, guideline final de 2025; PCR e intoxicação digitálica. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation',
+          '[R8] Norfolk and Norwich NHS — Hyperkalaemia in Adults, aprovado em agosto/2024, revisão prevista em agosto/2027; protocolo institucional de apoio ao preparo de insulina/glicose. https://www.nnuh.nhs.uk/publication/download/hyperkalaemia-in-adults-jcg0020-v6/',
+          '[R9] Novo Nordisk — Actrapid SmPC, versão disponibilizada de novembro/2022; fonte regulatória para concentração, vias e populações especiais, não para definir a dose de hipercalemia. https://www.medicines.org.uk/emc/product/3849/smpc',
+          '[R10] Hameln — Calcium Gluconate 10% SmPC, junho/2023; preparo, contraindicações, gestação e precauções. https://www.medicines.org.uk/emc/product/6264/smpc',
+          '[R11] Veltassa SmPC, janeiro/2025; início de ação, limitações e segurança do patirômero. https://www.medicines.org.uk/emc/product/779/smpc',
         ];
 
       case 'hyponatremia_european_2014':

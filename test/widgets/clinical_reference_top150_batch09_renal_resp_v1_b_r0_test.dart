@@ -28,7 +28,7 @@ void main() {
       (id: 'ANEMIACKD', query: 'anemia na doença renal crônica', answer: 'ANEMIA NA DRC — abordagem clínica', authority: 'KDIGO', year: '2026'),
       (id: 'NS', query: 'síndrome nefrótica infantil', answer: 'SÍNDROME NEFRÓTICA PEDIÁTRICA', authority: 'KDIGO', year: '2025'),
       (id: 'STONE', query: 'cálculo renal', answer: 'NEFROLITÍASE — abordagem clínica', authority: 'AUA', year: '2026'),
-      (id: 'K', query: 'hipercalemia aguda', answer: 'HIPERCALEMIA — abordagem clínica', authority: 'UK Kidney Association', year: '2023'),
+      (id: 'K', query: 'hipercalemia aguda', answer: 'HIPERCALEMIA — abordagem clínica', authority: 'UK Kidney Association', year: '2026'),
       (id: 'NA', query: 'hiponatremia', answer: 'HIPONATREMIA — abordagem clínica', authority: 'European', year: '2014'),
       (id: 'PH', query: 'hipertensão pulmonar', answer: 'HIPERTENSÃO PULMONAR — abordagem clínica', authority: 'ESC/ERS', year: '2022'),
       (id: 'BE', query: 'bronquiectasia', answer: 'BRONQUIECTASIA — abordagem clínica', authority: 'ERS', year: '2025'),

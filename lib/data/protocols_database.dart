@@ -6083,278 +6083,148 @@ const List<ProtocolModel> protocolsDatabase = [
   ProtocolModel(
     id: 'hiperpotassemia_grave',
     title: {
-      'pt': 'Hiperpotassemia Grave (K+ ≥6,0 mEq/L)',
-      'es': 'Hiperpotasemia Grave (K+ ≥6,0 mEq/L)',
+      'pt': 'Hipercalemia grave',
+      'es': 'Hiperpotasemia grave',
     },
     severity: {
       'pt': '🔴 Crítico — Emergência Eletrolítica Cardíaca',
       'es': '🔴 Crítico — Emergencia Electrolítica Cardíaca',
     },
+    recognize: {
+      'pt': '**Reconhecer e acionar ajuda.** K⁺ ≥6,5 mmol/L é emergência, mesmo com ECG normal. Arritmia, bradicardia importante, QRS alargado, síncope, instabilidade ou fraqueza/paralisia exigem atendimento imediato. Se perder o pulso, iniciar suporte avançado de vida e protocolo específico de PCR; não usar este fluxo de paciente com pulso como prescrição de PCR. [R2,R7]',
+      'es': '**Reconocer y solicitar ayuda.** K⁺ ≥6,5 mmol/L es una emergencia, incluso con ECG normal. Arritmia, bradicardia importante, QRS ancho, síncope, inestabilidad o debilidad/parálisis requieren atención inmediata. Si pierde el pulso, iniciar soporte vital avanzado y protocolo específico de paro cardíaco; no utilizar este algoritmo del paciente con pulso como prescripción para el paro. [R2,R7]',
+    },
     definition: {
-      'pt':
-          'Hiperpotassemia: K+ sérico >5,5 mEq/L; grave: K+ ≥6,0 mEq/L; ameaçadora à vida: K+ ≥7,0 mEq/L ou alterações ECG. Fisiopatologia: hiperdepolarização da membrana cardíaca → instabilidade elétrica → arritmias fatais (FV/assistolia). Causas: IRC (mais comum), IECA/ARA2, poupadores de potássio (espironolactona), AINE, hemólise, acidose, rabdomiólise, hipoaldosteronismo, insuficiência adrenal. Emergência quando ECG alterado independentemente do nível sérico.',
-      'es':
-          'Hiperpotasemia: K+ sérico >5,5 mEq/L; grave: K+ ≥6,0 mEq/L; amenaza la vida: K+ ≥7,0 mEq/L o alteraciones ECG. Fisiopatología: hiperdepolarización de la membrana cardíaca → inestabilidad eléctrica → arritmias fatales. Causas: IRC (más común), IECA/ARA2, espironolactona, AINE, hemólisis, acidosis, rabdomiólisis.',
+      'pt': '**PT — Modo Estudo**\n\n**Escopo e conceito.** Adultos ≥18 anos. Hipercalemia é elevação do potássio extracelular. Adota-se a classificação UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L e mEq/L são numericamente equivalentes. Toxicidade elétrica ou deterioração clínica exige ação urgente mesmo abaixo do limiar de gravidade. [R1]',
+      'es': '**ES — Modo Estudio**\n\n**Alcance y concepto.** Adultos ≥18 años. La hiperpotasemia es la elevación del potasio extracelular. Se adopta la clasificación UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L y mEq/L son numéricamente equivalentes. La toxicidad eléctrica o el deterioro clínico exige actuar de urgencia incluso por debajo del umbral de gravedad. [R1]',
     },
     classification: {
       'pt': [
-        '🔴 Emergência com ECG alterado (QRS largo, onda sinusoidal, FV/assistolia): gluconato Ca2+ imediato + medidas de shift + diálise emergente',
-        '🔴 K+ ≥7,0 mEq/L sem ECG típico: tratar como emergência (ECG pode normalizar tardiamente)',
-        '🟠 K+ 6,0–6,9 mEq/L com ondas T apiculadas: shift K+ intracelular + ECG contínuo + remoção',
-        '🟡 K+ 5,5–5,9 mEq/L assintomático: tratar causa, resina de troca, restricção dietética de K+',
+        '**Escopo e conceito.** Adultos ≥18 anos. Hipercalemia é elevação do potássio extracelular. Adota-se a classificação UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L e mEq/L são numericamente equivalentes. Toxicidade elétrica ou deterioração clínica exige ação urgente mesmo abaixo do limiar de gravidade. [R1]',
       ],
       'es': [
-        '🔴 Emergencia con ECG alterado (QRS ancho, onda sinusoidal, FV/asistolia): gluconato Ca2+ inmediato + medidas de shift + diálisis emergente',
-        '🔴 K+ ≥7,0 mEq/L sin ECG típico: tratar como emergencia',
-        '🟠 K+ 6,0–6,9 mEq/L con ondas T picudas: shift K+ intracelular + ECG continuo',
-        '🟡 K+ 5,5–5,9 mEq/L asintomático: tratar causa, resina de intercambio',
+        '**Alcance y concepto.** Adultos ≥18 años. La hiperpotasemia es la elevación del potasio extracelular. Se adopta la clasificación UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L y mEq/L son numéricamente equivalentes. La toxicidad eléctrica o el deterioro clínico exige actuar de urgencia incluso por debajo del umbral de gravedad. [R1]',
       ],
     },
-    severityCriteria: {
-      'pt': [
-        'K+ ≥7,0 mEq/L: risco iminente de FV independente do ECG',
-        'QRS >120 ms: condução grave comprometida',
-        'Padrão sinusoidal (onda P ausente + QRS muito largo + T apiculada): FV iminente',
-        'Bloqueio sinoatrial ou BAV avançado: condução comprometida',
-        'Taquicardia ventricular ou FV em contexto de hiperpotassemia',
-        'K+ crescente sem resposta ao tratamento em 1h: refratário → diálise urgente',
-      ],
-      'es': [
-        'K+ ≥7,0 mEq/L: riesgo inminente de FV',
-        'QRS >120 ms: conducción gravemente comprometida',
-        'Patrón sinusoidal (onda P ausente + QRS muy ancho + T picuda): FV inminente',
-        'BAV avanzado: conducción comprometida',
-        'TV o FV en contexto de hiperpotasemia',
-      ],
-    },
-    redFlags: {
-      'pt': [
-        '🔴 ECG: padrão sinusoidal ou QRS >160 ms → gluconato de cálcio IV EM BOLUS + preparar para PCR',
-        '🔴 Intoxicação digitálica concomitante: NÃO dar gluconato de cálcio (precipita FV fatal) → usar NaHCO3 + diálise',
-        '🔴 K+ >7,0 mEq/L: diálise de emergência; não esperar reversão completa com tratamentos clínicos',
-        '🟠 Hipopotassemia paradoxal pós-tratamento: insulina + salbutamol podem causar hipocalemia grave',
-        '🟡 IRC avançada com K+ progressivo: diálise eletiva antes da emergência',
-        '🟡 Pseudohiperpotassemia: hemólise in vitro; repetir K+ em tubo seco novo antes de tratar',
-      ],
-      'es': [
-        '🔴 ECG: patrón sinusoidal o QRS >160 ms → gluconato de calcio IV EN BOLO + preparar PCR',
-        '🔴 Intoxicación digitálica concomitante: NO dar gluconato de calcio → NaHCO3 + diálisis',
-        '🔴 K+ >7,0 mEq/L: diálisis de emergencia',
-        '🟠 Hipopotasemia paradójica post-tratamiento: insulina + salbutamol pueden causar hipopotasemia grave',
-        '🟡 Pseudohiperpotasemia: hemólisis in vitro; repetir K+ antes de tratar',
-      ],
+    physiopathology: {
+      'pt': '**Mecanismo e apresentação.** A alteração do potencial de membrana compromete condução cardíaca e função muscular. Pode haver fraqueza, parestesias, paralisia, palpitações, síncope ou ausência de sintomas. Ondas T apiculadas, perda de onda P, prolongamento PR, alargamento QRS, bradicardia e arritmias podem ocorrer sem sequência previsível. ECG normal não exclui perigo. [R5]',
+      'es': '**Mecanismo y presentación.** La alteración del potencial de membrana compromete la conducción cardíaca y la función muscular. Puede haber debilidad, parestesias, parálisis, palpitaciones, síncope o ausencia de síntomas. Ondas T picudas, pérdida de onda P, prolongación PR, ensanchamiento QRS, bradicardia y arritmias pueden aparecer sin una secuencia predecible. Un ECG normal no excluye peligro. [R5]',
     },
     differentialDiagnosis: {
       'pt': [
-        'Pseudohiperpotassemia: hemólise no tubo, leucocitose extrema >100.000, trombocitose >1.000.000 — colher de novo sem torniquete',
-        'Acidose metabólica grave: H+ entra na célula, K+ sai — tratar a acidose corrige K+',
-        'Insuficiência adrenal/hipoaldosteronismo: ACTH, mineralocorticoide deficiente; cortisol baixo',
-        'Síndrome de lise tumoral: ácido úrico, fósforo e K+ elevados; creatinina em ascensão',
-        'Rabdomiólise: CPK elevada, mioglobinúria, K+ saindo da célula muscular',
+        '**Causas e diagnóstico diferencial.** Investigar lesão renal aguda, doença renal crônica, diálise perdida, deficiência de insulina, acidose, rabdomiólise, lise tumoral e hipoaldosteronismo. Rever suplementos/sais dietéticos de potássio, IECA/BRA, antagonistas mineralocorticoides, anti-inflamatórios e trimetoprim. Diferenciar pseudohipercalemia por hemólise da amostra, coleta inadequada, trombocitose ou leucocitose; repetir coleta quando suspeita, sem atrasar tratamento do paciente instável. [R5,R8]',
       ],
       'es': [
-        'Pseudohiperpotasemia: hemólisis en el tubo, leucocitosis extrema, trombocitosis',
-        'Acidosis metabólica grave: tratar la acidosis corrige K+',
-        'Insuficiencia adrenal/hipoaldosteronismo: cortisol bajo',
-        'Síndrome de lisis tumoral: ácido úrico, fósforo y K+ elevados',
-        'Rabdomiólisis: CPK elevada, mioglobinuria',
-      ],
-    },
-    exams: {
-      'pt': [
-        'K+ sérico URGENTE — repetir em tubo seco novo se suspeita de hemólise/pseudohiperpotassemia',
-        'ECG 12 derivações IMEDIATO — alterações: T apiculada (>5,5), PR longo, QRS largo, onda sinusoidal',
-        'Gasometria venosa — acidose metabólica (K+ sai da célula com H+ entrando)',
-        'Função renal (BUN/creatinina) — IRC como causa mais comum',
-        'Glicemia — hipoglicemia antes do tratamento com insulina',
-        'Na+ e Cl- — síndrome anion gap: acidose orgânica',
-        'CPK + mioglobina urinária — rabdomiólise como causa',
-        'Cortisol basal — insuficiência adrenal',
-        'Ácido úrico + fósforo + LDH — síndrome de lise tumoral',
-        'Hemograma — leucocitose extrema pode causar pseudohiperpotassemia',
-      ],
-      'es': [
-        'K+ sérico URGENTE — repetir si sospecha hemólisis',
-        'ECG 12 derivaciones INMEDIATO — T picuda, PR largo, QRS ancho, onda sinusoidal',
-        'Gasometría venosa — acidosis metabólica',
-        'Función renal (BUN/creatinina)',
-        'Glucemia — hipoglucemia antes del tratamiento con insulina',
-        'CPK + mioglobina urinaria — rabdomiólisis',
-        'Cortisol basal — insuficiencia adrenal',
+        '**Causas y diagnóstico diferencial.** Investigar lesión renal aguda, enfermedad renal crónica, sesión de diálisis omitida, déficit de insulina, acidosis, rabdomiólisis, lisis tumoral e hipoaldosteronismo. Revisar suplementos/sustitutos de sal con potasio, IECA/ARA-II, antagonistas mineralocorticoides, antiinflamatorios y trimetoprima. Diferenciar pseudohiperpotasemia por hemólisis de la muestra, extracción inadecuada, trombocitosis o leucocitosis; repetir la extracción si se sospecha, sin retrasar el tratamiento del paciente inestable. [R5,R8]',
       ],
     },
     objectives: {
       'pt': [
-        'K+ <6,0 mEq/L em 2h (meta imediata); K+ <5,5 mEq/L antes da alta',
-        'ECG normalizado (QRS <120 ms, T apiculada resolvida)',
-        'Ausência de arritmias cardíacas',
-        'Causa identificada e corrigida (suspensão de IECA, diálise em IRC)',
-        'Glicemia >70 mg/dL durante e após insulina',
+        '**Princípios terapêuticos.** Cálcio combate a toxicidade cardíaca, mas não reduz K⁺. Insulina e salbutamol redistribuem K⁺ temporariamente. Diálise, eliminação urinária quando viável e ligantes intestinais removem potássio. A resposta inicial pode ser seguida de rebote. A atualização UKKA de julho/2026 mantém a sugestão de cálcio com alterações eletrocardiográficas, agora com recomendação 2C; não implica benefício de mortalidade comprovado. As doses operacionais constam no Modo Plantão. [R1,R2]',
       ],
       'es': [
-        'K+ <6,0 mEq/L en 2 h; K+ <5,5 mEq/L antes del alta',
-        'ECG normalizado (QRS <120 ms)',
-        'Ausencia de arritmias cardíacas',
-        'Causa identificada y corregida',
-        'Glucemia >70 mg/dL durante y después de insulina',
+        '**Principios terapéuticos.** El calcio contrarresta la toxicidad cardíaca, pero no disminuye K⁺. La insulina y el salbutamol redistribuyen K⁺ transitoriamente. La diálisis, la eliminación urinaria cuando sea viable y los captadores intestinales eliminan potasio. Tras la respuesta inicial puede producirse rebote. La actualización UKKA de julio/2026 mantiene la sugerencia de calcio con alteraciones electrocardiográficas, ahora con recomendación 2C; no implica un beneficio demostrado sobre la mortalidad. Las dosis operativas figuran en el Modo Guardia. [R1,R2]',
       ],
     },
-    actions: {
+    scenarios: {
       'pt': [
-        '1. ECG 12 derivações IMEDIATO — qualquer alteração = tratar como emergência',
-        '2. Se ECG alterado (QRS largo, onda sinusoidal) OU K+ ≥7,0: Gluconato de Cálcio 1 g (10 mL de 10%) IV em 2–3 min — estabilização de membrana (início imediato, dura 30–60 min); repetir se sem melhora em 5 min. EXCEÇÃO: toxicidade digitálica → NÃO usar cálcio',
-        '3. Shift K+ para intracelular: Insulina Regular 10 UI IV + Glicose 50% 50 mL (ou SG 10% 250 mL) — onset 15–30 min, duração 4–6h',
-        '4. Salbutamol nebulização 10–20 mg (agonista β2): shift K+ intracelular adicional 0,5–1 mEq/L (início 30 min)',
-        '5. Bicarbonato de Sódio 1–2 mEq/kg IV: APENAS se acidose metabólica grave (pH <7,2) — eficácia limitada isolado',
-        '6. Remoção de K+: Patirômero 8,4 g VO (mais rápido) OU SPS (resina) VO (início 1–4h) — apenas para remoção lenta',
-        '7. Hemodiálise de emergência: K+ >7,0 refratário, anúria, lesão renal aguda grave — remoção imediata eficaz',
-        '8. Suspender TODAS as drogas hiperpotassemiantes: IECA, ARA2, espironolactona, eplerenona, AINEs, suplementos de K+',
+        '**Limites e populações especiais.**\n- Crianças/neonatos: este esquema adulto não se aplica.\n- Idosos, baixo peso, doença renal ou hepática: maior atenção à hipoglicemia e ao balanço hídrico. Não aplicar redução automática de insulina apenas pela creatinina; eventual individualização exige protocolo e supervisão. [R8,R9]\n- Gestação: envolver obstetrícia/nefromedicina; cálcio exige indicação clínica e vigilância de calcemia. A experiência com insulina na gestação não valida automaticamente todo este esquema para gestantes. Preferir evitar ciclossilicato de zircônio sódico e patirômero na gestação; a informação EMA permite ciclossilicato na lactação. [R6,R9,R10,R11]\n- Cetoacidose diabética: usar protocolo específico e evitar sobreposição inadvertida de esquemas de insulina. [R8]\n- Suspeita de toxicidade digitálica: acionar toxicologia e priorizar Fab antidigoxina quando houver toxicidade ameaçadora à vida. Cálcio requer avaliação especializada e consideração das restrições da bula; não afirmar que necessariamente causa fibrilação fatal. Diálise não é tratamento eficaz para eliminar digoxina. [R7,R10]',
       ],
       'es': [
-        '1. ECG 12 derivaciones INMEDIATO',
-        '2. Si ECG alterado o K+ ≥7,0: Gluconato de Calcio 1 g IV en 2–3 min; repetir si sin mejora en 5 min. EXCEPCIÓN: toxicidad digitálica → NO usar calcio',
-        '3. Shift K+ intracelular: Insulina Regular 10 UI IV + Glucosa 50% 50 mL — inicio 15–30 min',
-        '4. Salbutamol nebulización 10–20 mg (agonista β2): shift K+ adicional 0,5–1 mEq/L',
-        '5. Bicarbonato de Sodio 1–2 mEq/kg IV: SOLO si acidosis metabólica grave (pH <7,2)',
-        '6. Eliminación K+: Patirómero 8,4 g VO O SPS (resina) VO',
-        '7. Hemodiálisis de emergencia: K+ >7,0 refractario, anuria, IRA grave',
-        '8. Suspender drogas hiperpotasiemiantes: IECA, ARA2, espironolactona, AINE',
-      ],
-    },
-    drugsFirstLine: {
-      'pt': [
-        'Gluconato de cálcio 10% — 10 mL (1 g) IV em 2–3 min; estabilização de membrana; NÃO reduz K+ sérico; duração 30–60 min; repetir se ECG não melhora em 5 min',
-        'Insulina Regular — 10 UI IV + Glicose 50% 50 mL; shift K+ de 0,6–1 mEq/L; onset 15–30 min; duração 4–6h; monitorar glicemia',
-        'Salbutamol nebulização — 10–20 mg; shift K+ 0,5–1 mEq/L adicional; início 30 min; seguro para combinar com insulina',
-        'Bicarbonato de sódio — 50–100 mEq IV; APENAS se pH <7,2; efeito limitado isolado em hiperpotassemia sem acidose',
-      ],
-      'es': [
-        'Gluconato de calcio 10% — 10 mL IV en 2–3 min; estabilización de membrana; NO reduce K+ sérico',
-        'Insulina Regular — 10 UI IV + Glucosa 50% 50 mL; shift K+ 0,6–1 mEq/L',
-        'Salbutamol nebulización — 10–20 mg; shift K+ 0,5–1 mEq/L adicional',
-        'Bicarbonato de sodio — SOLO si pH <7,2',
-      ],
-    },
-    drugsSecondLine: {
-      'pt': [
-        'Patirômero (Veltassa) — 8,4 g VO 1×/dia (resina de troca mais tolerada, menos constipação)',
-        'SPS (poliestireno sulfonato de sódio) — 15–60 g VO ou enema (início 1–4h; necrose intestinal se usado com sorbitol)',
-        'Fludrocortisona — 0,1–0,2 mg VO/dia (hipoaldosteronismo; deficiência de mineralocorticoide)',
-        'Hemodiálise — método mais eficaz; K+ alvo 3,5–4,5 ao final; indicada se K+ >7, IRA, oligúria, ECG grave',
-        'Furosemida — 40–80 mg IV (aumento da excreção renal de K+; só eficaz se função renal preservada)',
-      ],
-      'es': [
-        'Patirómero (Veltassa) — 8,4 g VO 1×/día (resina de intercambio más tolerada)',
-        'SPS (poliestireno sulfonato de sodio) — 15–60 g VO o enema',
-        'Fludrocortisona — 0,1–0,2 mg VO/día (hipoaldosteronismo)',
-        'Hemodiálisis — método más eficaz; indicada si K+ >7, IRA',
-        'Furosemida — 40–80 mg IV (solo si función renal preservada)',
-      ],
-    },
-    drugsContraindicated: {
-      'pt': [
-        'Gluconato de cálcio em toxicidade digitálica: precipita FV e assistolia (cálcio + digoxina = perigoso)',
-        'IECA + ARA2 + poupadores de K+ simultâneos (tripla bloqueio SRAA): hiperpotassemia grave e refratária',
-        'SPS com sorbitol: risco de necrose intestinal isquêmica',
-        'Resinas de troca como tratamento isolado de emergência (K+ >7 com ECG): ação lenta, ineficaz na agudeza',
-        'Insulina sem monitorização de glicemia: hipoglicemia grave',
-      ],
-      'es': [
-        'Gluconato de calcio en toxicidad digitálica: precipita FV y asistolia',
-        'IECA + ARA2 + ahorradores K+ simultáneos: hiperpotasemia grave y refractaria',
-        'SPS con sorbitol: riesgo de necrosis intestinal isquémica',
-        'Resinas de intercambio como tratamiento aislado de emergencia (K+ >7 con ECG): acción lenta',
-        'Insulina sin monitorización de glucemia: hipoglucemia grave',
-      ],
-    },
-    monitoring: {
-      'pt': [
-        'ECG contínuo durante toda a fase aguda — monitorar evolução das alterações',
-        'K+ sérico a cada 1–2h durante tratamento (risco de hipocalemia pós-insulina/salbutamol)',
-        'Glicemia a cada 30 min após insulina (hipoglicemia frequente em 1–3h)',
-        'PA e FC contínuos',
-        'Diurese horária: avaliar função renal e resposta a furosemida',
-        'Gasometria venosa a cada 2–4h se acidose',
-        'Repetir ECG 30 min após gluconato de cálcio: confirmar melhora',
-      ],
-      'es': [
-        'ECG continuo durante toda la fase aguda',
-        'K+ sérico cada 1–2 h (riesgo hipopotasemia post-insulina)',
-        'Glucemia cada 30 min tras insulina',
-        'PA y FC continuos',
-        'Diuresis horaria: evaluar función renal',
-        'Gasometría venosa cada 2–4 h si acidosis',
+        '**Límites y poblaciones especiales.**\n- Niños/neonatos: este esquema adulto no se aplica.\n- Personas mayores, bajo peso, enfermedad renal o hepática: mayor atención a la hipoglucemia y al balance hídrico. No reducir automáticamente la insulina solo por la creatinina; cualquier individualización exige protocolo y supervisión. [R8,R9]\n- Embarazo: involucrar obstetricia/nefrología; el calcio requiere indicación clínica y vigilancia de la calcemia. La experiencia con insulina durante el embarazo no valida automáticamente todo este esquema para embarazadas. Preferir evitar ciclosilicato de zirconio sódico y patiromer durante el embarazo; la información EMA permite ciclosilicato durante la lactancia. [R6,R9,R10,R11]\n- Cetoacidosis diabética: utilizar un protocolo específico y evitar la superposición inadvertida de esquemas de insulina. [R8]\n- Sospecha de toxicidad digitálica: consultar toxicología y priorizar Fab antidigoxina ante toxicidad potencialmente mortal. El calcio requiere evaluación especializada y consideración de las restricciones de la ficha técnica; no afirmar que necesariamente provoca fibrilación fatal. La diálisis no es un tratamiento eficaz para eliminar digoxina. [R7,R10]',
       ],
     },
     complications: {
       'pt': [
-        'FV/assistolia: progressão de hiperpotassemia grave sem tratamento',
-        'Hipocalemia pós-tratamento: insulina + salbutamol → K+ <3,0 mEq/L',
-        'Hipoglicemia: insulina sem monitorização de glicemia',
-        'Necrose intestinal: SPS com sorbitol',
-        'Hipercalcemia: excesso de gluconato de cálcio em IRA',
+        '**Complicações, evolução e prevenção.** Arritmias e parada cardíaca são riscos da doença; hipoglicemia, hipocalemia, extravasamento e sobrecarga são riscos do tratamento. Após estabilização, corrigir a causa, revisar dieta e medicamentos e programar controle laboratorial. Suspensão aguda de medicamentos contribuintes não significa retirada permanente de IECA/BRA: reconsiderar sua indicação cardiorrenal e estratégias para prevenir recorrência. [R4]',
       ],
       'es': [
-        'FV/asistolia: progresión sin tratamiento',
-        'Hipopotasemia post-tratamiento: insulina + salbutamol → K+ <3,0 mEq/L',
-        'Hipoglucemia: insulina sin monitorización',
-        'Necrosis intestinal: SPS con sorbitol',
+        '**Complicaciones, evolución y prevención.** Las arritmias y el paro cardíaco son riesgos de la enfermedad; la hipoglucemia, hipopotasemia, extravasación y sobrecarga son riesgos del tratamiento. Tras estabilizar, corregir la causa, revisar alimentación y medicamentos y programar controles de laboratorio. La suspensión aguda de fármacos contribuyentes no implica retirar definitivamente IECA/ARA-II: reconsiderar su indicación cardiorrenal y las estrategias para prevenir recurrencias. [R4]',
       ],
     },
-    doNotDo: {
+    actions: {
       'pt': [
-        'NÃO dar gluconato de cálcio em intoxicação digitálica (FV fatal)',
-        'NÃO tratar K+ elevado sem fazer ECG primeiro (emergência baseada no ECG, não no número)',
-        'NÃO usar resinas como única medida em K+ >7 com ECG alterado (ação muito lenta)',
-        'NÃO dar insulina sem checar glicemia e sem SG disponível (hipoglicemia fatal)',
-        'NÃO usar SPS com sorbitol (necrose intestinal)',
-        'NÃO esquecer de suspender TODAS as drogas hiperpotassemiantes (IECA, ARA2, espironolactona)',
-        'NÃO confiar em pseudonormalização do ECG sem tratar (K+ intracelular ainda depletado)',
+        '**PT — Modo Plantão**\n\n**Reconhecer e acionar ajuda.** K⁺ ≥6,5 mmol/L é emergência, mesmo com ECG normal. Arritmia, bradicardia importante, QRS alargado, síncope, instabilidade ou fraqueza/paralisia exigem atendimento imediato. Se perder o pulso, iniciar suporte avançado de vida e protocolo específico de PCR; não usar este fluxo de paciente com pulso como prescrição de PCR. [R2,R7]',
+        '**Avaliação simultânea.** ABCDE, monitor cardíaco, acesso venoso e ECG de 12 derivações. Colher K⁺, glicemia, creatinina/ureia, eletrólitos e gasometria; acrescentar hemograma e exames etiológicos conforme suspeita. Verificar diurese, volemia, última diálise, fármacos e doses já administradas. Uma coleta confirmatória não deve atrasar tratamento diante de toxicidade ou instabilidade. [R5,R8]',
+        '**Proteger o coração quando houver alterações de ECG atribuíveis à hipercalemia.**\n\n| Situação | Dose e administração |\n|---|---|\n| Paciente com pulso, fora de peri-PCR | Gluconato de cálcio 10%: 30 mL IV em 10 minutos, com ECG contínuo. |\n| Peri-PCR | Cloreto de cálcio 10%: 10 mL IV em 5 minutos; preferir acesso central já disponível. |\n\nSão alternativas, não doses cumulativas de rotina. Os volumes não são intercambiáveis. Inspecionar o acesso para extravasamento; não misturar com bicarbonato na mesma solução. Reavaliar o ECG e considerar nova dose se a toxicidade persistir 5–10 minutos após completar a dose ou recidivar. Não estabelecer um máximo universal de três doses; repetição exige reavaliação e controle de cálcio. Não administrar cálcio automaticamente apenas pelo número de K⁺ em paciente estável com ECG normal. Rever a situação digitálica descrita acima. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hipercalemia grave, administrar insulina regular/solúvel **10 unidades IV + glicose 25 g**. Uma preparação protocolizada é **50 mL de glicose 50% com 10 unidades de insulina**, em **15 minutos**, por bomba e acesso apropriado. Usar seringa de insulina graduada em unidades e dupla checagem; confirmar que a apresentação de glicose permite essa administração. Solução hipertônica exige vigilância de flebite/extravasamento. Alternativas de glicose que fornecem 25 g: **125 mL a 20% ou 250 mL a 10%**, preparadas conforme protocolo institucional. [R8]\n\nMedir glicemia antes. Corrigir hipoglicemia antes da insulina. Se glicemia inicial **<126 mg/dL (7,0 mmol/L)**, seguir com **glicose 10% a 50 mL/h durante 5 horas**, ajustando às medições e à condição volêmica. Não programar repetição automática de insulina sem reavaliar K⁺, glicemia e doses anteriores. [R2,R9]\n\nAdicionar **salbutamol 10–20 mg nebulizado**, sem usá-lo como monoterapia. Conferir a concentração disponível: na apresentação **5 mg/2,5 mL**, 10 mg correspondem a 5 mL e 20 mg a 10 mL. Vigiar taquicardia, arritmia e sintomas isquêmicos. [R1,R2]',
+        '**Remover K⁺ e tratar a causa.**\n- Acionar nefrologia precocemente. Hipercalemia grave em paciente em hemodiálise requer diálise urgente. Considerar terapia renal substitutiva se persistência/recorrência apesar das medidas, oligúria/anúria ou incapacidade de eliminar K⁺; não esperar obrigatoriamente K⁺ >7. [R1]\n- Se via oral segura e disponível, considerar **ciclossilicato de zircônio sódico 10 g VO, três vezes ao dia**, até correção, por no máximo **72 horas** nessa fase. Suspender/reavaliar se hipocalemia. Preparar em aproximadamente **45 mL de água**. Não substitui estabilização ou diálise; vigiar edema e revisar interações, separando **2 horas** de tacrolimo e medicamentos com absorção dependente do pH. [R6]\n- Patirômero pode ser adjuvante selecionado: início de ação **4–7 horas**; dose inicial adulta **8,4 g VO uma vez ao dia**, separada **3 horas** dos outros medicamentos orais. Não é resgate imediato. Monitorar magnésio e tolerância gastrointestinal. [R11]\n- Diurético apenas se houver possibilidade de resposta renal e situação volêmica apropriada; dose individualizada. Bicarbonato IV não é rotina: considerar conforme acidose e avaliação especializada, sem esquema fixo baseado apenas no pH. Resinas de poliestireno não compõem o resgate de rotina. Interromper fontes de K⁺ e rever medicamentos contribuintes. [R8,R11]',
+        '**Monitorizar e definir destino.** ECG contínuo; acompanhar sinais vitais, acesso venoso e diurese. Repetir K⁺ pelo menos em **1, 2, 4, 6 e 24 horas**, antecipando se instabilidade. Glicemia basal (**0**) e aos **30, 60, 90, 120, 180, 240, 300 e 360 minutos** após administração de insulina; manter vigilância por pelo menos **6 horas** após cada administração, prolongando conforme risco ou hipoglicemia. Tratar imediatamente glicemia **<72 mg/dL (4,0 mmol/L)** ou sintomas. [R1]\n\nManter hipercalemia grave em ambiente hospitalar monitorizado. Acionar UTI diante de comprometimento ABCDE, arritmia/instabilidade ou resposta insuficiente. Alta somente após controle sustentado, causa abordada, ausência de necessidade de resgate e plano definido de repetição laboratorial; uma única dosagem melhor ou ECG normal não basta. [R8]',
       ],
       'es': [
-        'NO dar gluconato de calcio en intoxicación digitálica (FV fatal)',
-        'NO tratar K+ elevado sin hacer ECG primero',
-        'NO usar resinas como única medida con K+ >7 y ECG alterado',
-        'NO dar insulina sin verificar glucemia y sin SG disponible',
-        'NO usar SPS con sorbitol',
-        'NO olvidar suspender drogas hiperpotasiemiantes',
+        '**ES — Modo Guardia**\n\n**Reconocer y solicitar ayuda.** K⁺ ≥6,5 mmol/L es una emergencia, incluso con ECG normal. Arritmia, bradicardia importante, QRS ancho, síncope, inestabilidad o debilidad/parálisis requieren atención inmediata. Si pierde el pulso, iniciar soporte vital avanzado y protocolo específico de paro cardíaco; no utilizar este algoritmo del paciente con pulso como prescripción para el paro. [R2,R7]',
+        '**Evaluación simultánea.** ABCDE, monitor cardíaco, acceso venoso y ECG de 12 derivaciones. Solicitar K⁺, glucemia, creatinina/urea, electrolitos y gasometría; agregar hemograma y estudios etiológicos según la sospecha. Evaluar diuresis, volemia, última diálisis, fármacos y dosis ya administradas. Una muestra confirmatoria no debe retrasar el tratamiento ante toxicidad o inestabilidad. [R5,R8]',
+        '**Proteger el corazón cuando existan alteraciones de ECG atribuibles a hiperpotasemia.**\n\n| Situación | Dosis y administración |\n|---|---|\n| Paciente con pulso, fuera de situación de periparo | Gluconato de calcio 10%: 30 mL IV en 10 minutos, con ECG continuo. |\n| Periparo | Cloruro de calcio 10%: 10 mL IV en 5 minutos; preferir un acceso central ya disponible. |\n\nSon alternativas, no dosis acumulativas de rutina. Los volúmenes no son intercambiables. Inspeccionar el acceso para detectar extravasación; no mezclar con bicarbonato en la misma solución. Reevaluar el ECG y considerar otra dosis si la toxicidad persiste 5–10 minutos después de completar la dosis o reaparece. No establecer un máximo universal de tres dosis; repetir exige reevaluación y control de calcio. No administrar calcio automáticamente solo por el valor de K⁺ en un paciente estable con ECG normal. Revisar la situación digitálica descrita arriba. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hiperpotasemia grave, administrar insulina regular/soluble **10 unidades IV + glucosa 25 g**. Una preparación protocolizada es **50 mL de glucosa 50% con 10 unidades de insulina**, en **15 minutos**, mediante bomba y acceso apropiado. Utilizar jeringa de insulina graduada en unidades y doble verificación; confirmar que la presentación de glucosa permite esta administración. La solución hipertónica exige vigilancia de flebitis/extravasación. Alternativas de glucosa que aportan 25 g: **125 mL al 20% o 250 mL al 10%**, preparadas según protocolo institucional. [R8]\n\nMedir la glucemia antes. Corregir la hipoglucemia antes de la insulina. Si la glucemia inicial es **<126 mg/dL (7,0 mmol/L)**, continuar con **glucosa 10% a 50 mL/h durante 5 horas**, ajustando según las mediciones y el estado de volumen. No programar repeticiones automáticas de insulina sin reevaluar K⁺, glucemia y dosis previas. [R2,R9]\n\nAgregar **salbutamol 10–20 mg nebulizado**, sin usarlo como monoterapia. Verificar la concentración disponible: en la presentación **5 mg/2,5 mL**, 10 mg corresponden a 5 mL y 20 mg a 10 mL. Vigilar taquicardia, arritmia y síntomas isquémicos. [R1,R2]',
+        '**Eliminar K⁺ y tratar la causa.**\n- Consultar nefrología precozmente. La hiperpotasemia grave en un paciente en hemodiálisis requiere diálisis urgente. Considerar terapia de reemplazo renal si persiste/recurre pese a las medidas, hay oliguria/anuria o incapacidad para eliminar K⁺; no esperar obligatoriamente K⁺ >7. [R1]\n- Si la vía oral es segura y está disponible, considerar **ciclosilicato de zirconio sódico 10 g VO, tres veces al día**, hasta la corrección, por un máximo de **72 horas** en esta fase. Suspender/reevaluar si aparece hipopotasemia. Preparar en aproximadamente **45 mL de agua**. No reemplaza estabilización ni diálisis; vigilar edema y revisar interacciones, separando **2 horas** de tacrolimus y medicamentos con absorción dependiente del pH. [R6]\n- Patiromer puede ser un adyuvante seleccionado: inicio de acción **4–7 horas**; dosis inicial adulta **8,4 g VO una vez al día**, separada **3 horas** de otros medicamentos orales. No es rescate inmediato. Controlar magnesio y tolerancia gastrointestinal. [R11]\n- Diurético solo si existe posibilidad de respuesta renal y un estado de volumen apropiado; dosis individualizada. Bicarbonato IV no es rutinario: considerar según acidosis y evaluación especializada, sin esquema fijo basado únicamente en el pH. Las resinas de poliestireno no integran el rescate de rutina. Suspender fuentes de K⁺ y revisar fármacos contribuyentes. [R8,R11]',
+        '**Monitorizar y definir destino.** ECG continuo; controlar signos vitales, acceso venoso y diuresis. Repetir K⁺ al menos a las **1, 2, 4, 6 y 24 horas**, antes si hay inestabilidad. Glucemia basal (**0**) y a los **30, 60, 90, 120, 180, 240, 300 y 360 minutos** después de administrar insulina; mantener vigilancia durante al menos **6 horas** después de cada administración, prolongándola según el riesgo o la hipoglucemia. Tratar inmediatamente glucemia **<72 mg/dL (4,0 mmol/L)** o síntomas. [R1]\n\nMantener la hiperpotasemia grave en un ámbito hospitalario monitorizado. Solicitar cuidados intensivos ante compromiso ABCDE, arritmia/inestabilidad o respuesta insuficiente. Alta solo tras control sostenido, causa abordada, ausencia de necesidad de rescate y un plan definido de controles de laboratorio; un único valor mejor o un ECG normal no son suficientes. [R8]',
       ],
     },
-    pearls: {
+    exams: {
       'pt': [
-        'Pérola 1 — ECG > número: K+ 6,8 com ECG normal é menos urgente que K+ 5,8 com QRS largo; o ECG decide o grau de urgência',
-        'Pérola 2 — Sequência terapêutica mnemônica C-BIG-K-D: Calcium (estabiliza membrana), Bicarbonate + Insulin + Glucose + Kayexalate (shift/remoção), Dialysis (remoção definitiva)',
-        'Pérola 3 — Gluconato de cálcio NÃO reduz K+ sérico: apenas estabiliza a membrana por 30–60 min; sempre combinar com medidas de shift (insulina + salbutamol)',
-        'Pérola 4 — Salbutamol subestimado: 10–20 mg nebulizado reduz K+ 0,5–1 mEq/L em 30 min; sem risco de hipoglicemia; fácil de administrar',
-        'Pérola 5 — Hipocalemia pós-tratamento: monitorar K+ a cada 1–2h; insulina + salbutamol podem baixar K+ para 2,5–3,0 mEq/L exigindo reposição',
-        'Pérola 6 — Pseudohiperpotassemia: hemólise no tubo (K+ 7,0 com ECG normal) — repetir em tubo novo coletado sem garrote antes de tratar emergencialmente',
+        '**Avaliação simultânea.** ABCDE, monitor cardíaco, acesso venoso e ECG de 12 derivações. Colher K⁺, glicemia, creatinina/ureia, eletrólitos e gasometria; acrescentar hemograma e exames etiológicos conforme suspeita. Verificar diurese, volemia, última diálise, fármacos e doses já administradas. Uma coleta confirmatória não deve atrasar tratamento diante de toxicidade ou instabilidade. [R5,R8]',
       ],
       'es': [
-        'Perla 1 — ECG > número: K+ 6,8 con ECG normal menos urgente que K+ 5,8 con QRS ancho',
-        'Perla 2 — Secuencia mnemónica C-BIG-K-D: Calcio, Bicarbonato + Insulina + Glucosa + Kayexalate, Diálisis',
-        'Perla 3 — Gluconato calcio NO reduce K+ sérico: solo estabiliza membrana 30–60 min',
-        'Perla 4 — Salbutamol subestimado: 10–20 mg nebulizado reduce K+ 0,5–1 mEq/L en 30 min',
-        'Perla 5 — Hipopotasemia post-tratamiento: insulina + salbutamol pueden bajar K+ a 2,5–3,0 mEq/L',
+        '**Evaluación simultánea.** ABCDE, monitor cardíaco, acceso venoso y ECG de 12 derivaciones. Solicitar K⁺, glucemia, creatinina/urea, electrolitos y gasometría; agregar hemograma y estudios etiológicos según la sospecha. Evaluar diuresis, volemia, última diálisis, fármacos y dosis ya administradas. Una muestra confirmatoria no debe retrasar el tratamiento ante toxicidad o inestabilidad. [R5,R8]',
       ],
     },
-    references: {
+    drugsFirstLine: {
       'pt': [
-        'Kovesdy CP. Management of hyperkalaemia in chronic kidney disease. Nat Rev Nephrol. 2014;10(11):653–662.',
-        'Alfonzo AVM et al. Treatment of hyperkalaemia in adults: A clinical practice guideline. J Ren Care. 2010.',
-        'Peacock WF et al. Sodium zirconium cyclosilicate in hyperkalemia. NEJM. 2015;372(3):222–231.',
-        'Pitt B et al. Evaluation of patiromer in heart failure patients with hyperkalemia. Lancet. 2015.',
-        'UpToDate: Treatment and prevention of hyperkalemia in adults. 2024.',
+        '**Proteger o coração quando houver alterações de ECG atribuíveis à hipercalemia.**\n\n| Situação | Dose e administração |\n|---|---|\n| Paciente com pulso, fora de peri-PCR | Gluconato de cálcio 10%: 30 mL IV em 10 minutos, com ECG contínuo. |\n| Peri-PCR | Cloreto de cálcio 10%: 10 mL IV em 5 minutos; preferir acesso central já disponível. |\n\nSão alternativas, não doses cumulativas de rotina. Os volumes não são intercambiáveis. Inspecionar o acesso para extravasamento; não misturar com bicarbonato na mesma solução. Reavaliar o ECG e considerar nova dose se a toxicidade persistir 5–10 minutos após completar a dose ou recidivar. Não estabelecer um máximo universal de três doses; repetição exige reavaliação e controle de cálcio. Não administrar cálcio automaticamente apenas pelo número de K⁺ em paciente estável com ECG normal. Rever a situação digitálica descrita acima. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hipercalemia grave, administrar insulina regular/solúvel **10 unidades IV + glicose 25 g**. Uma preparação protocolizada é **50 mL de glicose 50% com 10 unidades de insulina**, em **15 minutos**, por bomba e acesso apropriado. Usar seringa de insulina graduada em unidades e dupla checagem; confirmar que a apresentação de glicose permite essa administração. Solução hipertônica exige vigilância de flebite/extravasamento. Alternativas de glicose que fornecem 25 g: **125 mL a 20% ou 250 mL a 10%**, preparadas conforme protocolo institucional. [R8]\n\nMedir glicemia antes. Corrigir hipoglicemia antes da insulina. Se glicemia inicial **<126 mg/dL (7,0 mmol/L)**, seguir com **glicose 10% a 50 mL/h durante 5 horas**, ajustando às medições e à condição volêmica. Não programar repetição automática de insulina sem reavaliar K⁺, glicemia e doses anteriores. [R2,R9]\n\nAdicionar **salbutamol 10–20 mg nebulizado**, sem usá-lo como monoterapia. Conferir a concentração disponível: na apresentação **5 mg/2,5 mL**, 10 mg correspondem a 5 mL e 20 mg a 10 mL. Vigiar taquicardia, arritmia e sintomas isquêmicos. [R1,R2]',
       ],
       'es': [
-        'Kovesdy CP. Management of hyperkalaemia in CKD. Nat Rev Nephrol. 2014;10(11):653–662.',
-        'UpToDate: Treatment and prevention of hyperkalemia in adults. 2024.',
+        '**Proteger el corazón cuando existan alteraciones de ECG atribuibles a hiperpotasemia.**\n\n| Situación | Dosis y administración |\n|---|---|\n| Paciente con pulso, fuera de situación de periparo | Gluconato de calcio 10%: 30 mL IV en 10 minutos, con ECG continuo. |\n| Periparo | Cloruro de calcio 10%: 10 mL IV en 5 minutos; preferir un acceso central ya disponible. |\n\nSon alternativas, no dosis acumulativas de rutina. Los volúmenes no son intercambiables. Inspeccionar el acceso para detectar extravasación; no mezclar con bicarbonato en la misma solución. Reevaluar el ECG y considerar otra dosis si la toxicidad persiste 5–10 minutos después de completar la dosis o reaparece. No establecer un máximo universal de tres dosis; repetir exige reevaluación y control de calcio. No administrar calcio automáticamente solo por el valor de K⁺ en un paciente estable con ECG normal. Revisar la situación digitálica descrita arriba. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hiperpotasemia grave, administrar insulina regular/soluble **10 unidades IV + glucosa 25 g**. Una preparación protocolizada es **50 mL de glucosa 50% con 10 unidades de insulina**, en **15 minutos**, mediante bomba y acceso apropiado. Utilizar jeringa de insulina graduada en unidades y doble verificación; confirmar que la presentación de glucosa permite esta administración. La solución hipertónica exige vigilancia de flebitis/extravasación. Alternativas de glucosa que aportan 25 g: **125 mL al 20% o 250 mL al 10%**, preparadas según protocolo institucional. [R8]\n\nMedir la glucemia antes. Corregir la hipoglucemia antes de la insulina. Si la glucemia inicial es **<126 mg/dL (7,0 mmol/L)**, continuar con **glucosa 10% a 50 mL/h durante 5 horas**, ajustando según las mediciones y el estado de volumen. No programar repeticiones automáticas de insulina sin reevaluar K⁺, glucemia y dosis previas. [R2,R9]\n\nAgregar **salbutamol 10–20 mg nebulizado**, sin usarlo como monoterapia. Verificar la concentración disponible: en la presentación **5 mg/2,5 mL**, 10 mg corresponden a 5 mL y 20 mg a 10 mL. Vigilar taquicardia, arritmia y síntomas isquémicos. [R1,R2]',
+      ],
+    },
+    drugsConditional: {
+      'pt': [
+        '**Remover K⁺ e tratar a causa.**\n- Acionar nefrologia precocemente. Hipercalemia grave em paciente em hemodiálise requer diálise urgente. Considerar terapia renal substitutiva se persistência/recorrência apesar das medidas, oligúria/anúria ou incapacidade de eliminar K⁺; não esperar obrigatoriamente K⁺ >7. [R1]\n- Se via oral segura e disponível, considerar **ciclossilicato de zircônio sódico 10 g VO, três vezes ao dia**, até correção, por no máximo **72 horas** nessa fase. Suspender/reavaliar se hipocalemia. Preparar em aproximadamente **45 mL de água**. Não substitui estabilização ou diálise; vigiar edema e revisar interações, separando **2 horas** de tacrolimo e medicamentos com absorção dependente do pH. [R6]\n- Patirômero pode ser adjuvante selecionado: início de ação **4–7 horas**; dose inicial adulta **8,4 g VO uma vez ao dia**, separada **3 horas** dos outros medicamentos orais. Não é resgate imediato. Monitorar magnésio e tolerância gastrointestinal. [R11]\n- Diurético apenas se houver possibilidade de resposta renal e situação volêmica apropriada; dose individualizada. Bicarbonato IV não é rotina: considerar conforme acidose e avaliação especializada, sem esquema fixo baseado apenas no pH. Resinas de poliestireno não compõem o resgate de rotina. Interromper fontes de K⁺ e rever medicamentos contribuintes. [R8,R11]',
+      ],
+      'es': [
+        '**Eliminar K⁺ y tratar la causa.**\n- Consultar nefrología precozmente. La hiperpotasemia grave en un paciente en hemodiálisis requiere diálisis urgente. Considerar terapia de reemplazo renal si persiste/recurre pese a las medidas, hay oliguria/anuria o incapacidad para eliminar K⁺; no esperar obligatoriamente K⁺ >7. [R1]\n- Si la vía oral es segura y está disponible, considerar **ciclosilicato de zirconio sódico 10 g VO, tres veces al día**, hasta la corrección, por un máximo de **72 horas** en esta fase. Suspender/reevaluar si aparece hipopotasemia. Preparar en aproximadamente **45 mL de agua**. No reemplaza estabilización ni diálisis; vigilar edema y revisar interacciones, separando **2 horas** de tacrolimus y medicamentos con absorción dependiente del pH. [R6]\n- Patiromer puede ser un adyuvante seleccionado: inicio de acción **4–7 horas**; dosis inicial adulta **8,4 g VO una vez al día**, separada **3 horas** de otros medicamentos orales. No es rescate inmediato. Controlar magnesio y tolerancia gastrointestinal. [R11]\n- Diurético solo si existe posibilidad de respuesta renal y un estado de volumen apropiado; dosis individualizada. Bicarbonato IV no es rutinario: considerar según acidosis y evaluación especializada, sin esquema fijo basado únicamente en el pH. Las resinas de poliestireno no integran el rescate de rutina. Suspender fuentes de K⁺ y revisar fármacos contribuyentes. [R8,R11]',
+      ],
+    },
+    monitoring: {
+      'pt': [
+        '**Monitorizar e definir destino.** ECG contínuo; acompanhar sinais vitais, acesso venoso e diurese. Repetir K⁺ pelo menos em **1, 2, 4, 6 e 24 horas**, antecipando se instabilidade. Glicemia basal (**0**) e aos **30, 60, 90, 120, 180, 240, 300 e 360 minutos** após administração de insulina; manter vigilância por pelo menos **6 horas** após cada administração, prolongando conforme risco ou hipoglicemia. Tratar imediatamente glicemia **<72 mg/dL (4,0 mmol/L)** ou sintomas. [R1]\n\nManter hipercalemia grave em ambiente hospitalar monitorizado. Acionar UTI diante de comprometimento ABCDE, arritmia/instabilidade ou resposta insuficiente. Alta somente após controle sustentado, causa abordada, ausência de necessidade de resgate e plano definido de repetição laboratorial; uma única dosagem melhor ou ECG normal não basta. [R8]',
+      ],
+      'es': [
+        '**Monitorizar y definir destino.** ECG continuo; controlar signos vitales, acceso venoso y diuresis. Repetir K⁺ al menos a las **1, 2, 4, 6 y 24 horas**, antes si hay inestabilidad. Glucemia basal (**0**) y a los **30, 60, 90, 120, 180, 240, 300 y 360 minutos** después de administrar insulina; mantener vigilancia durante al menos **6 horas** después de cada administración, prolongándola según el riesgo o la hipoglucemia. Tratar inmediatamente glucemia **<72 mg/dL (4,0 mmol/L)** o síntomas. [R1]\n\nMantener la hiperpotasemia grave en un ámbito hospitalario monitorizado. Solicitar cuidados intensivos ante compromiso ABCDE, arritmia/inestabilidad o respuesta insuficiente. Alta solo tras control sostenido, causa abordada, ausencia de necesidad de rescate y un plan definido de controles de laboratorio; un único valor mejor o un ECG normal no son suficientes. [R8]',
       ],
     },
     avoid: {
-      'pt':
-          'EVITAR: gluconato de cálcio em intoxicação digitálica (precipita arritmias fatais). Não tratar hiperpotassemia leve assintomática sem ECG. Não usar resinas como única medida em K+ >7 com alterações ECG (demora). Bicarbonato: eficácia limitada na ausência de acidose. Evitar IECA + ARA II + espironolactona juntos (tripla bloqueio do SRAA).',
-      'es':
-          'EVITAR: gluconato de calcio en intoxicación digitálica (arritmias fatales). No usar resinas como única medida con K+ >7 y alteraciones ECG. Bicarbonato: eficacia limitada sin acidosis.',
+      'pt': 'Diurético apenas se houver possibilidade de resposta renal e situação volêmica apropriada; dose individualizada. Bicarbonato IV não é rotina: considerar conforme acidose e avaliação especializada, sem esquema fixo baseado apenas no pH. Resinas de poliestireno não compõem o resgate de rotina. Interromper fontes de K⁺ e rever medicamentos contribuintes. [R8,R11]',
+      'es': 'Diurético solo si existe posibilidad de respuesta renal y un estado de volumen apropiado; dosis individualizada. Bicarbonato IV no es rutinario: considerar según acidosis y evaluación especializada, sin esquema fijo basado únicamente en el pH. Las resinas de poliestireno no integran el rescate de rutina. Suspender fuentes de K⁺ y revisar fármacos contribuyentes. [R8,R11]',
+    },
+    references: {
+      'pt': [
+        '[R1] UK Kidney Association — Management of Hyperkalaemia in Adults, atualização final de julho/2026; adultos; documento normativo principal. A página oficial substitui o PDF anterior por esta atualização. https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0',
+        '[R2] Resuscitation Council UK — Special circumstances, guideline final de 2025; emergência e ressuscitação; confirmação de doses e separação do contexto de PCR. https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/special-circumstances-guidelines',
+        '[R3] MHRA — alerta de segurança de 2023 sobre subdose de gluconato de cálcio; equivalência, velocidade e repetição. https://www.gov.uk/drug-safety-update/calcium-chloride-calcium-gluconate-potential-risk-of-underdosing-with-calcium-gluconate-in-severe-hyperkalaemia',
+        '[R4] KDIGO — CKD Guideline 2024, final e ainda vigente; prevenção de recorrência e preservação de terapias cardiorrenais quando possível. https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf',
+        '[R5] KDIGO Conference — Acute hyperkalemia in the emergency department, 2020; consenso de apoio, não uma nova guideline; diagnóstico e limitações do ECG. https://pmc.ncbi.nlm.nih.gov/articles/PMC7448835/',
+        '[R6] EMA — Lokelma, informação regulatória consultada; página atualizada em setembro/2026; doses, preparo, interações e gestação/lactação. https://www.ema.europa.eu/en/documents/product-information/lokelma-epar-product-information_en.pdf',
+        '[R7] American Heart Association — Special Circumstances, guideline final de 2025; PCR e intoxicação digitálica. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation',
+        '[R8] Norfolk and Norwich NHS — Hyperkalaemia in Adults, aprovado em agosto/2024, revisão prevista em agosto/2027; protocolo institucional de apoio ao preparo de insulina/glicose. https://www.nnuh.nhs.uk/publication/download/hyperkalaemia-in-adults-jcg0020-v6/',
+        '[R9] Novo Nordisk — Actrapid SmPC, versão disponibilizada de novembro/2022; fonte regulatória para concentração, vias e populações especiais, não para definir a dose de hipercalemia. https://www.medicines.org.uk/emc/product/3849/smpc',
+        '[R10] Hameln — Calcium Gluconate 10% SmPC, junho/2023; preparo, contraindicações, gestação e precauções. https://www.medicines.org.uk/emc/product/6264/smpc',
+        '[R11] Veltassa SmPC, janeiro/2025; início de ação, limitações e segurança do patirômero. https://www.medicines.org.uk/emc/product/779/smpc',
+      ],
+      'es': [
+        '[R1] UK Kidney Association — Management of Hyperkalaemia in Adults, atualização final de julho/2026; adultos; documento normativo principal. A página oficial substitui o PDF anterior por esta atualização. https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0',
+        '[R2] Resuscitation Council UK — Special circumstances, guideline final de 2025; emergência e ressuscitação; confirmação de doses e separação do contexto de PCR. https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/special-circumstances-guidelines',
+        '[R3] MHRA — alerta de segurança de 2023 sobre subdose de gluconato de cálcio; equivalência, velocidade e repetição. https://www.gov.uk/drug-safety-update/calcium-chloride-calcium-gluconate-potential-risk-of-underdosing-with-calcium-gluconate-in-severe-hyperkalaemia',
+        '[R4] KDIGO — CKD Guideline 2024, final e ainda vigente; prevenção de recorrência e preservação de terapias cardiorrenais quando possível. https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf',
+        '[R5] KDIGO Conference — Acute hyperkalemia in the emergency department, 2020; consenso de apoio, não uma nova guideline; diagnóstico e limitações do ECG. https://pmc.ncbi.nlm.nih.gov/articles/PMC7448835/',
+        '[R6] EMA — Lokelma, informação regulatória consultada; página atualizada em setembro/2026; doses, preparo, interações e gestação/lactação. https://www.ema.europa.eu/en/documents/product-information/lokelma-epar-product-information_en.pdf',
+        '[R7] American Heart Association — Special Circumstances, guideline final de 2025; PCR e intoxicação digitálica. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation',
+        '[R8] Norfolk and Norwich NHS — Hyperkalaemia in Adults, aprovado em agosto/2024, revisão prevista em agosto/2027; protocolo institucional de apoio ao preparo de insulina/glicose. https://www.nnuh.nhs.uk/publication/download/hyperkalaemia-in-adults-jcg0020-v6/',
+        '[R9] Novo Nordisk — Actrapid SmPC, versão disponibilizada de novembro/2022; fonte regulatória para concentração, vias e populações especiais, não para definir a dose de hipercalemia. https://www.medicines.org.uk/emc/product/3849/smpc',
+        '[R10] Hameln — Calcium Gluconate 10% SmPC, junho/2023; preparo, contraindicações, gestação e precauções. https://www.medicines.org.uk/emc/product/6264/smpc',
+        '[R11] Veltassa SmPC, janeiro/2025; início de ação, limitações e segurança do patirômero. https://www.medicines.org.uk/emc/product/779/smpc',
+      ],
     },
     drugs: ['bicarbonato_sodio', 'insulina_regular', 'cloreto_potassio'],
   ),
@@ -10016,62 +9886,148 @@ drugs: ['midazolam', 'diazepam', 'noradrenalina'],
   ProtocolModel(
     id: 'hipercalemia_grave',
     title: {
-      'pt': 'Hipercalemia Grave — Manejo de Urgência',
-      'es': 'Hipercalemia Grave — Manejo de Urgencia',
+      'pt': 'Hipercalemia grave',
+      'es': 'Hiperpotasemia grave',
     },
-    severity: {'pt': 'Crítico', 'es': 'Crítico'},
-    definition: {
-      'pt':
-          'Emergência eletrolítica definida por K⁺ ≥6,0 mEq/L (ou ≥5,5 com alterações eletrocardiográficas). Causa principal de morte: fibrilação ventricular e assistolia por toxicidade cardíaca do hiperpotássio. Causas: IRA/DRC, IECA/BRA, espironolactona, destruição celular (rabdomiólise, hemólise).',
-      'es':
-          'Emergencia electrolítica con K⁺ ≥6,0 mEq/L (o ≥5,5 con alteraciones ECG). Principal causa de muerte: fibrilación ventricular y asistolia. Causas: IRA/ERC, IECAs/BRA, espironolactona, destrucción celular.',
+    severity: {
+      'pt': '🔴 Crítico — Emergência Eletrolítica Cardíaca',
+      'es': '🔴 Crítico — Emergencia Electrolítica Cardíaca',
     },
     recognize: {
-      'pt':
-          'K⁺ sérico ≥6,0 mEq/L (ou ≥5,5 com ECG alterado). ECG (alterações progressivas): ondas T apiculadas/simétricas (K⁺ 5,5–6,5) → alargamento do PR, achatamento P → QRS alargado → padrão sinusoidal (K⁺ >7) → FV/assistolia. Sintomas: fraqueza muscular, paralisia flácida ascendente, parestesias, palpitações. Causas comuns: IRA oligo-anúrica, DRC avançada, IECA+BRA+espironolactona, rabdomiólise, hemólise intravascular, síndrome de lise tumoral.',
-      'es':
-          'K⁺ sérico ≥6,0 mEq/L (o ≥5,5 con ECG alterado). ECG: ondas T picudas/simétricas → PR alargado, P achatada → QRS ancho → patrón sinusoidal (K⁺ >7) → FV/asistolia. Síntomas: debilidad muscular, parálisis flácida, parestesias.',
+      'pt': '**Reconhecer e acionar ajuda.** K⁺ ≥6,5 mmol/L é emergência, mesmo com ECG normal. Arritmia, bradicardia importante, QRS alargado, síncope, instabilidade ou fraqueza/paralisia exigem atendimento imediato. Se perder o pulso, iniciar suporte avançado de vida e protocolo específico de PCR; não usar este fluxo de paciente com pulso como prescrição de PCR. [R2,R7]',
+      'es': '**Reconocer y solicitar ayuda.** K⁺ ≥6,5 mmol/L es una emergencia, incluso con ECG normal. Arritmia, bradicardia importante, QRS ancho, síncope, inestabilidad o debilidad/parálisis requieren atención inmediata. Si pierde el pulso, iniciar soporte vital avanzado y protocolo específico de paro cardíaco; no utilizar este algoritmo del paciente con pulso como prescripción para el paro. [R2,R7]',
+    },
+    definition: {
+      'pt': '**PT — Modo Estudo**\n\n**Escopo e conceito.** Adultos ≥18 anos. Hipercalemia é elevação do potássio extracelular. Adota-se a classificação UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L e mEq/L são numericamente equivalentes. Toxicidade elétrica ou deterioração clínica exige ação urgente mesmo abaixo do limiar de gravidade. [R1]',
+      'es': '**ES — Modo Estudio**\n\n**Alcance y concepto.** Adultos ≥18 años. La hiperpotasemia es la elevación del potasio extracelular. Se adopta la clasificación UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L y mEq/L son numéricamente equivalentes. La toxicidad eléctrica o el deterioro clínico exige actuar de urgencia incluso por debajo del umbral de gravedad. [R1]',
+    },
+    classification: {
+      'pt': [
+        '**Escopo e conceito.** Adultos ≥18 anos. Hipercalemia é elevação do potássio extracelular. Adota-se a classificação UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L e mEq/L são numericamente equivalentes. Toxicidade elétrica ou deterioração clínica exige ação urgente mesmo abaixo do limiar de gravidade. [R1]',
+      ],
+      'es': [
+        '**Alcance y concepto.** Adultos ≥18 años. La hiperpotasemia es la elevación del potasio extracelular. Se adopta la clasificación UKKA: leve 5,5–5,9; moderada 6,0–6,4; grave ≥6,5 mmol/L. Para K⁺, mmol/L y mEq/L son numéricamente equivalentes. La toxicidad eléctrica o el deterioro clínico exige actuar de urgencia incluso por debajo del umbral de gravedad. [R1]',
+      ],
+    },
+    physiopathology: {
+      'pt': '**Mecanismo e apresentação.** A alteração do potencial de membrana compromete condução cardíaca e função muscular. Pode haver fraqueza, parestesias, paralisia, palpitações, síncope ou ausência de sintomas. Ondas T apiculadas, perda de onda P, prolongamento PR, alargamento QRS, bradicardia e arritmias podem ocorrer sem sequência previsível. ECG normal não exclui perigo. [R5]',
+      'es': '**Mecanismo y presentación.** La alteración del potencial de membrana compromete la conducción cardíaca y la función muscular. Puede haber debilidad, parestesias, parálisis, palpitaciones, síncope o ausencia de síntomas. Ondas T picudas, pérdida de onda P, prolongación PR, ensanchamiento QRS, bradicardia y arritmias pueden aparecer sin una secuencia predecible. Un ECG normal no excluye peligro. [R5]',
+    },
+    differentialDiagnosis: {
+      'pt': [
+        '**Causas e diagnóstico diferencial.** Investigar lesão renal aguda, doença renal crônica, diálise perdida, deficiência de insulina, acidose, rabdomiólise, lise tumoral e hipoaldosteronismo. Rever suplementos/sais dietéticos de potássio, IECA/BRA, antagonistas mineralocorticoides, anti-inflamatórios e trimetoprim. Diferenciar pseudohipercalemia por hemólise da amostra, coleta inadequada, trombocitose ou leucocitose; repetir coleta quando suspeita, sem atrasar tratamento do paciente instável. [R5,R8]',
+      ],
+      'es': [
+        '**Causas y diagnóstico diferencial.** Investigar lesión renal aguda, enfermedad renal crónica, sesión de diálisis omitida, déficit de insulina, acidosis, rabdomiólisis, lisis tumoral e hipoaldosteronismo. Revisar suplementos/sustitutos de sal con potasio, IECA/ARA-II, antagonistas mineralocorticoides, antiinflamatorios y trimetoprima. Diferenciar pseudohiperpotasemia por hemólisis de la muestra, extracción inadecuada, trombocitosis o leucocitosis; repetir la extracción si se sospecha, sin retrasar el tratamiento del paciente inestable. [R5,R8]',
+      ],
+    },
+    objectives: {
+      'pt': [
+        '**Princípios terapêuticos.** Cálcio combate a toxicidade cardíaca, mas não reduz K⁺. Insulina e salbutamol redistribuem K⁺ temporariamente. Diálise, eliminação urinária quando viável e ligantes intestinais removem potássio. A resposta inicial pode ser seguida de rebote. A atualização UKKA de julho/2026 mantém a sugestão de cálcio com alterações eletrocardiográficas, agora com recomendação 2C; não implica benefício de mortalidade comprovado. As doses operacionais constam no Modo Plantão. [R1,R2]',
+      ],
+      'es': [
+        '**Principios terapéuticos.** El calcio contrarresta la toxicidad cardíaca, pero no disminuye K⁺. La insulina y el salbutamol redistribuyen K⁺ transitoriamente. La diálisis, la eliminación urinaria cuando sea viable y los captadores intestinales eliminan potasio. Tras la respuesta inicial puede producirse rebote. La actualización UKKA de julio/2026 mantiene la sugerencia de calcio con alteraciones electrocardiográficas, ahora con recomendación 2C; no implica un beneficio demostrado sobre la mortalidad. Las dosis operativas figuran en el Modo Guardia. [R1,R2]',
+      ],
+    },
+    scenarios: {
+      'pt': [
+        '**Limites e populações especiais.**\n- Crianças/neonatos: este esquema adulto não se aplica.\n- Idosos, baixo peso, doença renal ou hepática: maior atenção à hipoglicemia e ao balanço hídrico. Não aplicar redução automática de insulina apenas pela creatinina; eventual individualização exige protocolo e supervisão. [R8,R9]\n- Gestação: envolver obstetrícia/nefromedicina; cálcio exige indicação clínica e vigilância de calcemia. A experiência com insulina na gestação não valida automaticamente todo este esquema para gestantes. Preferir evitar ciclossilicato de zircônio sódico e patirômero na gestação; a informação EMA permite ciclossilicato na lactação. [R6,R9,R10,R11]\n- Cetoacidose diabética: usar protocolo específico e evitar sobreposição inadvertida de esquemas de insulina. [R8]\n- Suspeita de toxicidade digitálica: acionar toxicologia e priorizar Fab antidigoxina quando houver toxicidade ameaçadora à vida. Cálcio requer avaliação especializada e consideração das restrições da bula; não afirmar que necessariamente causa fibrilação fatal. Diálise não é tratamento eficaz para eliminar digoxina. [R7,R10]',
+      ],
+      'es': [
+        '**Límites y poblaciones especiales.**\n- Niños/neonatos: este esquema adulto no se aplica.\n- Personas mayores, bajo peso, enfermedad renal o hepática: mayor atención a la hipoglucemia y al balance hídrico. No reducir automáticamente la insulina solo por la creatinina; cualquier individualización exige protocolo y supervisión. [R8,R9]\n- Embarazo: involucrar obstetricia/nefrología; el calcio requiere indicación clínica y vigilancia de la calcemia. La experiencia con insulina durante el embarazo no valida automáticamente todo este esquema para embarazadas. Preferir evitar ciclosilicato de zirconio sódico y patiromer durante el embarazo; la información EMA permite ciclosilicato durante la lactancia. [R6,R9,R10,R11]\n- Cetoacidosis diabética: utilizar un protocolo específico y evitar la superposición inadvertida de esquemas de insulina. [R8]\n- Sospecha de toxicidad digitálica: consultar toxicología y priorizar Fab antidigoxina ante toxicidad potencialmente mortal. El calcio requiere evaluación especializada y consideración de las restricciones de la ficha técnica; no afirmar que necesariamente provoca fibrilación fatal. La diálisis no es un tratamiento eficaz para eliminar digoxina. [R7,R10]',
+      ],
+    },
+    complications: {
+      'pt': [
+        '**Complicações, evolução e prevenção.** Arritmias e parada cardíaca são riscos da doença; hipoglicemia, hipocalemia, extravasamento e sobrecarga são riscos do tratamento. Após estabilização, corrigir a causa, revisar dieta e medicamentos e programar controle laboratorial. Suspensão aguda de medicamentos contribuintes não significa retirada permanente de IECA/BRA: reconsiderar sua indicação cardiorrenal e estratégias para prevenir recorrência. [R4]',
+      ],
+      'es': [
+        '**Complicaciones, evolución y prevención.** Las arritmias y el paro cardíaco son riesgos de la enfermedad; la hipoglucemia, hipopotasemia, extravasación y sobrecarga son riesgos del tratamiento. Tras estabilizar, corregir la causa, revisar alimentación y medicamentos y programar controles de laboratorio. La suspensión aguda de fármacos contribuyentes no implica retirar definitivamente IECA/ARA-II: reconsiderar su indicación cardiorrenal y las estrategias para prevenir recurrencias. [R4]',
+      ],
     },
     actions: {
       'pt': [
-        '1. ECG IMEDIATO + MONITOR CARDÍACO CONTÍNUO — qualquer alteração de ECG = emergência cardíaca imediata',
-        '2. K⁺ >6,5 mEq/L OU alterações no ECG: ESTABILIZAR MEMBRANA CARDÍACA (PASSO 1):',
-        '   → Gluconato de Cálcio 10%: 10 mL IV em 2–3 min (onset: 1–3 min; duração: 30–60 min)',
-        '   → Repetir em 5 min se sem melhora do ECG; máximo 3 doses',
-        '3. REDISTRIBUIÇÃO INTRACELULAR DE K⁺ — shift (PASSO 2, início: 15–30 min):',
-        '   → Insulina Regular 10 UI IV + Glicose 50% 50 mL IV (JUNTOS; monitorar glicemia a cada 30–60 min)',
-        '   → Salbutamol nebulizado 10–20 mg (agonista β2, sinérgico com insulina; pode causar taquicardia)',
-        '   → Bicarbonato de Sódio 50–100 mEq IV: apenas se acidose metabólica (pH <7,2) — efeito limitado isolado',
-        '4. ELIMINAÇÃO DE K⁺ DO ORGANISMO — remoção (PASSO 3):',
-        '   → Furosemida 40–80 mg IV (eficaz se débito urinário preservado)',
-        '   → Patirômero 8,4 g VO ou SPS (Sorcal) 15 g VO — início 2–6h (não usar como única medida em crise)',
-        '   → HEMODIÁLISE URGENTE: K⁺ >7 mEq/L, IRA oligo-anúrica, instabilidade hemodinâmica, refratário',
-        '5. SUSPENDER IMEDIATAMENTE: IECA, BRA, espironolactona, eplerenona, trimetoprim, AINEs, suplementos de K⁺',
-        '6. Identificar e tratar causa: rabdomiólise (hidratação intensa), hemólise, lise tumoral',
-        '7. Reavaliar K⁺ sérico a cada 1–2h até <5,5 mEq/L e ECG normalizado',
+        '**PT — Modo Plantão**\n\n**Reconhecer e acionar ajuda.** K⁺ ≥6,5 mmol/L é emergência, mesmo com ECG normal. Arritmia, bradicardia importante, QRS alargado, síncope, instabilidade ou fraqueza/paralisia exigem atendimento imediato. Se perder o pulso, iniciar suporte avançado de vida e protocolo específico de PCR; não usar este fluxo de paciente com pulso como prescrição de PCR. [R2,R7]',
+        '**Avaliação simultânea.** ABCDE, monitor cardíaco, acesso venoso e ECG de 12 derivações. Colher K⁺, glicemia, creatinina/ureia, eletrólitos e gasometria; acrescentar hemograma e exames etiológicos conforme suspeita. Verificar diurese, volemia, última diálise, fármacos e doses já administradas. Uma coleta confirmatória não deve atrasar tratamento diante de toxicidade ou instabilidade. [R5,R8]',
+        '**Proteger o coração quando houver alterações de ECG atribuíveis à hipercalemia.**\n\n| Situação | Dose e administração |\n|---|---|\n| Paciente com pulso, fora de peri-PCR | Gluconato de cálcio 10%: 30 mL IV em 10 minutos, com ECG contínuo. |\n| Peri-PCR | Cloreto de cálcio 10%: 10 mL IV em 5 minutos; preferir acesso central já disponível. |\n\nSão alternativas, não doses cumulativas de rotina. Os volumes não são intercambiáveis. Inspecionar o acesso para extravasamento; não misturar com bicarbonato na mesma solução. Reavaliar o ECG e considerar nova dose se a toxicidade persistir 5–10 minutos após completar a dose ou recidivar. Não estabelecer um máximo universal de três doses; repetição exige reavaliação e controle de cálcio. Não administrar cálcio automaticamente apenas pelo número de K⁺ em paciente estável com ECG normal. Rever a situação digitálica descrita acima. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hipercalemia grave, administrar insulina regular/solúvel **10 unidades IV + glicose 25 g**. Uma preparação protocolizada é **50 mL de glicose 50% com 10 unidades de insulina**, em **15 minutos**, por bomba e acesso apropriado. Usar seringa de insulina graduada em unidades e dupla checagem; confirmar que a apresentação de glicose permite essa administração. Solução hipertônica exige vigilância de flebite/extravasamento. Alternativas de glicose que fornecem 25 g: **125 mL a 20% ou 250 mL a 10%**, preparadas conforme protocolo institucional. [R8]\n\nMedir glicemia antes. Corrigir hipoglicemia antes da insulina. Se glicemia inicial **<126 mg/dL (7,0 mmol/L)**, seguir com **glicose 10% a 50 mL/h durante 5 horas**, ajustando às medições e à condição volêmica. Não programar repetição automática de insulina sem reavaliar K⁺, glicemia e doses anteriores. [R2,R9]\n\nAdicionar **salbutamol 10–20 mg nebulizado**, sem usá-lo como monoterapia. Conferir a concentração disponível: na apresentação **5 mg/2,5 mL**, 10 mg correspondem a 5 mL e 20 mg a 10 mL. Vigiar taquicardia, arritmia e sintomas isquêmicos. [R1,R2]',
+        '**Remover K⁺ e tratar a causa.**\n- Acionar nefrologia precocemente. Hipercalemia grave em paciente em hemodiálise requer diálise urgente. Considerar terapia renal substitutiva se persistência/recorrência apesar das medidas, oligúria/anúria ou incapacidade de eliminar K⁺; não esperar obrigatoriamente K⁺ >7. [R1]\n- Se via oral segura e disponível, considerar **ciclossilicato de zircônio sódico 10 g VO, três vezes ao dia**, até correção, por no máximo **72 horas** nessa fase. Suspender/reavaliar se hipocalemia. Preparar em aproximadamente **45 mL de água**. Não substitui estabilização ou diálise; vigiar edema e revisar interações, separando **2 horas** de tacrolimo e medicamentos com absorção dependente do pH. [R6]\n- Patirômero pode ser adjuvante selecionado: início de ação **4–7 horas**; dose inicial adulta **8,4 g VO uma vez ao dia**, separada **3 horas** dos outros medicamentos orais. Não é resgate imediato. Monitorar magnésio e tolerância gastrointestinal. [R11]\n- Diurético apenas se houver possibilidade de resposta renal e situação volêmica apropriada; dose individualizada. Bicarbonato IV não é rotina: considerar conforme acidose e avaliação especializada, sem esquema fixo baseado apenas no pH. Resinas de poliestireno não compõem o resgate de rotina. Interromper fontes de K⁺ e rever medicamentos contribuintes. [R8,R11]',
+        '**Monitorizar e definir destino.** ECG contínuo; acompanhar sinais vitais, acesso venoso e diurese. Repetir K⁺ pelo menos em **1, 2, 4, 6 e 24 horas**, antecipando se instabilidade. Glicemia basal (**0**) e aos **30, 60, 90, 120, 180, 240, 300 e 360 minutos** após administração de insulina; manter vigilância por pelo menos **6 horas** após cada administração, prolongando conforme risco ou hipoglicemia. Tratar imediatamente glicemia **<72 mg/dL (4,0 mmol/L)** ou sintomas. [R1]\n\nManter hipercalemia grave em ambiente hospitalar monitorizado. Acionar UTI diante de comprometimento ABCDE, arritmia/instabilidade ou resposta insuficiente. Alta somente após controle sustentado, causa abordada, ausência de necessidade de resgate e plano definido de repetição laboratorial; uma única dosagem melhor ou ECG normal não basta. [R8]',
       ],
       'es': [
-        '1. ECG INMEDIATO + MONITOR CARDÍACO CONTINUO — cualquier alteración = emergencia cardíaca',
-        '2. K⁺ >6,5 mEq/L O alteraciones ECG: ESTABILIZAR MEMBRANA (PASO 1):',
-        '   → Gluconato de Calcio 10%: 10 mL IV en 2–3 min; repetir en 5 min si sin mejoría (máx. 3 dosis)',
-        '3. REDISTRIBUCIÓN INTRACELULAR (PASO 2, inicio: 15–30 min):',
-        '   → Insulina Regular 10 UI IV + Glucosa 50% 50 mL IV (JUNTOS; monitorar glucemia)',
-        '   → Salbutamol nebulizado 10–20 mg (sinérgico con insulina)',
-        '   → Bicarbonato de Sodio 50–100 mEq IV: solo si acidosis (pH <7,2)',
-        '4. ELIMINACIÓN DE K⁺ (PASO 3):',
-        '   → Furosemida 40–80 mg IV (si diuresis preservada)',
-        '   → Patirómero 8,4 g VO — inicio 2–6 h',
-        '   → HEMODIÁLISIS URGENTE: K⁺ >7, IRA oligoanúrica, inestabilidad, refractario',
-        '5. SUSPENDER INMEDIATAMENTE: IECAs, BRA, espironolactona, AINEs, suplementos K⁺',
-        '6. Identificar y tratar causa',
-        '7. Reevaluar K⁺ c/1–2 h hasta <5,5 mEq/L',
+        '**ES — Modo Guardia**\n\n**Reconocer y solicitar ayuda.** K⁺ ≥6,5 mmol/L es una emergencia, incluso con ECG normal. Arritmia, bradicardia importante, QRS ancho, síncope, inestabilidad o debilidad/parálisis requieren atención inmediata. Si pierde el pulso, iniciar soporte vital avanzado y protocolo específico de paro cardíaco; no utilizar este algoritmo del paciente con pulso como prescripción para el paro. [R2,R7]',
+        '**Evaluación simultánea.** ABCDE, monitor cardíaco, acceso venoso y ECG de 12 derivaciones. Solicitar K⁺, glucemia, creatinina/urea, electrolitos y gasometría; agregar hemograma y estudios etiológicos según la sospecha. Evaluar diuresis, volemia, última diálisis, fármacos y dosis ya administradas. Una muestra confirmatoria no debe retrasar el tratamiento ante toxicidad o inestabilidad. [R5,R8]',
+        '**Proteger el corazón cuando existan alteraciones de ECG atribuibles a hiperpotasemia.**\n\n| Situación | Dosis y administración |\n|---|---|\n| Paciente con pulso, fuera de situación de periparo | Gluconato de calcio 10%: 30 mL IV en 10 minutos, con ECG continuo. |\n| Periparo | Cloruro de calcio 10%: 10 mL IV en 5 minutos; preferir un acceso central ya disponible. |\n\nSon alternativas, no dosis acumulativas de rutina. Los volúmenes no son intercambiables. Inspeccionar el acceso para detectar extravasación; no mezclar con bicarbonato en la misma solución. Reevaluar el ECG y considerar otra dosis si la toxicidad persiste 5–10 minutos después de completar la dosis o reaparece. No establecer un máximo universal de tres dosis; repetir exige reevaluación y control de calcio. No administrar calcio automáticamente solo por el valor de K⁺ en un paciente estable con ECG normal. Revisar la situación digitálica descrita arriba. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hiperpotasemia grave, administrar insulina regular/soluble **10 unidades IV + glucosa 25 g**. Una preparación protocolizada es **50 mL de glucosa 50% con 10 unidades de insulina**, en **15 minutos**, mediante bomba y acceso apropiado. Utilizar jeringa de insulina graduada en unidades y doble verificación; confirmar que la presentación de glucosa permite esta administración. La solución hipertónica exige vigilancia de flebitis/extravasación. Alternativas de glucosa que aportan 25 g: **125 mL al 20% o 250 mL al 10%**, preparadas según protocolo institucional. [R8]\n\nMedir la glucemia antes. Corregir la hipoglucemia antes de la insulina. Si la glucemia inicial es **<126 mg/dL (7,0 mmol/L)**, continuar con **glucosa 10% a 50 mL/h durante 5 horas**, ajustando según las mediciones y el estado de volumen. No programar repeticiones automáticas de insulina sin reevaluar K⁺, glucemia y dosis previas. [R2,R9]\n\nAgregar **salbutamol 10–20 mg nebulizado**, sin usarlo como monoterapia. Verificar la concentración disponible: en la presentación **5 mg/2,5 mL**, 10 mg corresponden a 5 mL y 20 mg a 10 mL. Vigilar taquicardia, arritmia y síntomas isquémicos. [R1,R2]',
+        '**Eliminar K⁺ y tratar la causa.**\n- Consultar nefrología precozmente. La hiperpotasemia grave en un paciente en hemodiálisis requiere diálisis urgente. Considerar terapia de reemplazo renal si persiste/recurre pese a las medidas, hay oliguria/anuria o incapacidad para eliminar K⁺; no esperar obligatoriamente K⁺ >7. [R1]\n- Si la vía oral es segura y está disponible, considerar **ciclosilicato de zirconio sódico 10 g VO, tres veces al día**, hasta la corrección, por un máximo de **72 horas** en esta fase. Suspender/reevaluar si aparece hipopotasemia. Preparar en aproximadamente **45 mL de agua**. No reemplaza estabilización ni diálisis; vigilar edema y revisar interacciones, separando **2 horas** de tacrolimus y medicamentos con absorción dependiente del pH. [R6]\n- Patiromer puede ser un adyuvante seleccionado: inicio de acción **4–7 horas**; dosis inicial adulta **8,4 g VO una vez al día**, separada **3 horas** de otros medicamentos orales. No es rescate inmediato. Controlar magnesio y tolerancia gastrointestinal. [R11]\n- Diurético solo si existe posibilidad de respuesta renal y un estado de volumen apropiado; dosis individualizada. Bicarbonato IV no es rutinario: considerar según acidosis y evaluación especializada, sin esquema fijo basado únicamente en el pH. Las resinas de poliestireno no integran el rescate de rutina. Suspender fuentes de K⁺ y revisar fármacos contribuyentes. [R8,R11]',
+        '**Monitorizar y definir destino.** ECG continuo; controlar signos vitales, acceso venoso y diuresis. Repetir K⁺ al menos a las **1, 2, 4, 6 y 24 horas**, antes si hay inestabilidad. Glucemia basal (**0**) y a los **30, 60, 90, 120, 180, 240, 300 y 360 minutos** después de administrar insulina; mantener vigilancia durante al menos **6 horas** después de cada administración, prolongándola según el riesgo o la hipoglucemia. Tratar inmediatamente glucemia **<72 mg/dL (4,0 mmol/L)** o síntomas. [R1]\n\nMantener la hiperpotasemia grave en un ámbito hospitalario monitorizado. Solicitar cuidados intensivos ante compromiso ABCDE, arritmia/inestabilidad o respuesta insuficiente. Alta solo tras control sostenido, causa abordada, ausencia de necesidad de rescate y un plan definido de controles de laboratorio; un único valor mejor o un ECG normal no son suficientes. [R8]',
+      ],
+    },
+    exams: {
+      'pt': [
+        '**Avaliação simultânea.** ABCDE, monitor cardíaco, acesso venoso e ECG de 12 derivações. Colher K⁺, glicemia, creatinina/ureia, eletrólitos e gasometria; acrescentar hemograma e exames etiológicos conforme suspeita. Verificar diurese, volemia, última diálise, fármacos e doses já administradas. Uma coleta confirmatória não deve atrasar tratamento diante de toxicidade ou instabilidade. [R5,R8]',
+      ],
+      'es': [
+        '**Evaluación simultánea.** ABCDE, monitor cardíaco, acceso venoso y ECG de 12 derivaciones. Solicitar K⁺, glucemia, creatinina/urea, electrolitos y gasometría; agregar hemograma y estudios etiológicos según la sospecha. Evaluar diuresis, volemia, última diálisis, fármacos y dosis ya administradas. Una muestra confirmatoria no debe retrasar el tratamiento ante toxicidad o inestabilidad. [R5,R8]',
+      ],
+    },
+    drugsFirstLine: {
+      'pt': [
+        '**Proteger o coração quando houver alterações de ECG atribuíveis à hipercalemia.**\n\n| Situação | Dose e administração |\n|---|---|\n| Paciente com pulso, fora de peri-PCR | Gluconato de cálcio 10%: 30 mL IV em 10 minutos, com ECG contínuo. |\n| Peri-PCR | Cloreto de cálcio 10%: 10 mL IV em 5 minutos; preferir acesso central já disponível. |\n\nSão alternativas, não doses cumulativas de rotina. Os volumes não são intercambiáveis. Inspecionar o acesso para extravasamento; não misturar com bicarbonato na mesma solução. Reavaliar o ECG e considerar nova dose se a toxicidade persistir 5–10 minutos após completar a dose ou recidivar. Não estabelecer um máximo universal de três doses; repetição exige reavaliação e controle de cálcio. Não administrar cálcio automaticamente apenas pelo número de K⁺ em paciente estável com ECG normal. Rever a situação digitálica descrita acima. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hipercalemia grave, administrar insulina regular/solúvel **10 unidades IV + glicose 25 g**. Uma preparação protocolizada é **50 mL de glicose 50% com 10 unidades de insulina**, em **15 minutos**, por bomba e acesso apropriado. Usar seringa de insulina graduada em unidades e dupla checagem; confirmar que a apresentação de glicose permite essa administração. Solução hipertônica exige vigilância de flebite/extravasamento. Alternativas de glicose que fornecem 25 g: **125 mL a 20% ou 250 mL a 10%**, preparadas conforme protocolo institucional. [R8]\n\nMedir glicemia antes. Corrigir hipoglicemia antes da insulina. Se glicemia inicial **<126 mg/dL (7,0 mmol/L)**, seguir com **glicose 10% a 50 mL/h durante 5 horas**, ajustando às medições e à condição volêmica. Não programar repetição automática de insulina sem reavaliar K⁺, glicemia e doses anteriores. [R2,R9]\n\nAdicionar **salbutamol 10–20 mg nebulizado**, sem usá-lo como monoterapia. Conferir a concentração disponível: na apresentação **5 mg/2,5 mL**, 10 mg correspondem a 5 mL e 20 mg a 10 mL. Vigiar taquicardia, arritmia e sintomas isquêmicos. [R1,R2]',
+      ],
+      'es': [
+        '**Proteger el corazón cuando existan alteraciones de ECG atribuibles a hiperpotasemia.**\n\n| Situación | Dosis y administración |\n|---|---|\n| Paciente con pulso, fuera de situación de periparo | Gluconato de calcio 10%: 30 mL IV en 10 minutos, con ECG continuo. |\n| Periparo | Cloruro de calcio 10%: 10 mL IV en 5 minutos; preferir un acceso central ya disponible. |\n\nSon alternativas, no dosis acumulativas de rutina. Los volúmenes no son intercambiables. Inspeccionar el acceso para detectar extravasación; no mezclar con bicarbonato en la misma solución. Reevaluar el ECG y considerar otra dosis si la toxicidad persiste 5–10 minutos después de completar la dosis o reaparece. No establecer un máximo universal de tres dosis; repetir exige reevaluación y control de calcio. No administrar calcio automáticamente solo por el valor de K⁺ en un paciente estable con ECG normal. Revisar la situación digitálica descrita arriba. [R2,R3,R10]',
+        '**Redistribuir K⁺.** Para hiperpotasemia grave, administrar insulina regular/soluble **10 unidades IV + glucosa 25 g**. Una preparación protocolizada es **50 mL de glucosa 50% con 10 unidades de insulina**, en **15 minutos**, mediante bomba y acceso apropiado. Utilizar jeringa de insulina graduada en unidades y doble verificación; confirmar que la presentación de glucosa permite esta administración. La solución hipertónica exige vigilancia de flebitis/extravasación. Alternativas de glucosa que aportan 25 g: **125 mL al 20% o 250 mL al 10%**, preparadas según protocolo institucional. [R8]\n\nMedir la glucemia antes. Corregir la hipoglucemia antes de la insulina. Si la glucemia inicial es **<126 mg/dL (7,0 mmol/L)**, continuar con **glucosa 10% a 50 mL/h durante 5 horas**, ajustando según las mediciones y el estado de volumen. No programar repeticiones automáticas de insulina sin reevaluar K⁺, glucemia y dosis previas. [R2,R9]\n\nAgregar **salbutamol 10–20 mg nebulizado**, sin usarlo como monoterapia. Verificar la concentración disponible: en la presentación **5 mg/2,5 mL**, 10 mg corresponden a 5 mL y 20 mg a 10 mL. Vigilar taquicardia, arritmia y síntomas isquémicos. [R1,R2]',
+      ],
+    },
+    drugsConditional: {
+      'pt': [
+        '**Remover K⁺ e tratar a causa.**\n- Acionar nefrologia precocemente. Hipercalemia grave em paciente em hemodiálise requer diálise urgente. Considerar terapia renal substitutiva se persistência/recorrência apesar das medidas, oligúria/anúria ou incapacidade de eliminar K⁺; não esperar obrigatoriamente K⁺ >7. [R1]\n- Se via oral segura e disponível, considerar **ciclossilicato de zircônio sódico 10 g VO, três vezes ao dia**, até correção, por no máximo **72 horas** nessa fase. Suspender/reavaliar se hipocalemia. Preparar em aproximadamente **45 mL de água**. Não substitui estabilização ou diálise; vigiar edema e revisar interações, separando **2 horas** de tacrolimo e medicamentos com absorção dependente do pH. [R6]\n- Patirômero pode ser adjuvante selecionado: início de ação **4–7 horas**; dose inicial adulta **8,4 g VO uma vez ao dia**, separada **3 horas** dos outros medicamentos orais. Não é resgate imediato. Monitorar magnésio e tolerância gastrointestinal. [R11]\n- Diurético apenas se houver possibilidade de resposta renal e situação volêmica apropriada; dose individualizada. Bicarbonato IV não é rotina: considerar conforme acidose e avaliação especializada, sem esquema fixo baseado apenas no pH. Resinas de poliestireno não compõem o resgate de rotina. Interromper fontes de K⁺ e rever medicamentos contribuintes. [R8,R11]',
+      ],
+      'es': [
+        '**Eliminar K⁺ y tratar la causa.**\n- Consultar nefrología precozmente. La hiperpotasemia grave en un paciente en hemodiálisis requiere diálisis urgente. Considerar terapia de reemplazo renal si persiste/recurre pese a las medidas, hay oliguria/anuria o incapacidad para eliminar K⁺; no esperar obligatoriamente K⁺ >7. [R1]\n- Si la vía oral es segura y está disponible, considerar **ciclosilicato de zirconio sódico 10 g VO, tres veces al día**, hasta la corrección, por un máximo de **72 horas** en esta fase. Suspender/reevaluar si aparece hipopotasemia. Preparar en aproximadamente **45 mL de agua**. No reemplaza estabilización ni diálisis; vigilar edema y revisar interacciones, separando **2 horas** de tacrolimus y medicamentos con absorción dependiente del pH. [R6]\n- Patiromer puede ser un adyuvante seleccionado: inicio de acción **4–7 horas**; dosis inicial adulta **8,4 g VO una vez al día**, separada **3 horas** de otros medicamentos orales. No es rescate inmediato. Controlar magnesio y tolerancia gastrointestinal. [R11]\n- Diurético solo si existe posibilidad de respuesta renal y un estado de volumen apropiado; dosis individualizada. Bicarbonato IV no es rutinario: considerar según acidosis y evaluación especializada, sin esquema fijo basado únicamente en el pH. Las resinas de poliestireno no integran el rescate de rutina. Suspender fuentes de K⁺ y revisar fármacos contribuyentes. [R8,R11]',
+      ],
+    },
+    monitoring: {
+      'pt': [
+        '**Monitorizar e definir destino.** ECG contínuo; acompanhar sinais vitais, acesso venoso e diurese. Repetir K⁺ pelo menos em **1, 2, 4, 6 e 24 horas**, antecipando se instabilidade. Glicemia basal (**0**) e aos **30, 60, 90, 120, 180, 240, 300 e 360 minutos** após administração de insulina; manter vigilância por pelo menos **6 horas** após cada administração, prolongando conforme risco ou hipoglicemia. Tratar imediatamente glicemia **<72 mg/dL (4,0 mmol/L)** ou sintomas. [R1]\n\nManter hipercalemia grave em ambiente hospitalar monitorizado. Acionar UTI diante de comprometimento ABCDE, arritmia/instabilidade ou resposta insuficiente. Alta somente após controle sustentado, causa abordada, ausência de necessidade de resgate e plano definido de repetição laboratorial; uma única dosagem melhor ou ECG normal não basta. [R8]',
+      ],
+      'es': [
+        '**Monitorizar y definir destino.** ECG continuo; controlar signos vitales, acceso venoso y diuresis. Repetir K⁺ al menos a las **1, 2, 4, 6 y 24 horas**, antes si hay inestabilidad. Glucemia basal (**0**) y a los **30, 60, 90, 120, 180, 240, 300 y 360 minutos** después de administrar insulina; mantener vigilancia durante al menos **6 horas** después de cada administración, prolongándola según el riesgo o la hipoglucemia. Tratar inmediatamente glucemia **<72 mg/dL (4,0 mmol/L)** o síntomas. [R1]\n\nMantener la hiperpotasemia grave en un ámbito hospitalario monitorizado. Solicitar cuidados intensivos ante compromiso ABCDE, arritmia/inestabilidad o respuesta insuficiente. Alta solo tras control sostenido, causa abordada, ausencia de necesidad de rescate y un plan definido de controles de laboratorio; un único valor mejor o un ECG normal no son suficientes. [R8]',
       ],
     },
     avoid: {
-      'pt':
-          'EVITAR gluconato de cálcio em intoxicação digitálica (precipita arritmias ventriculares refratárias — usar Digibind se disponível). Resinas de troca (patirômero, SPS): efeito lento (2–6h) — nunca usar como única medida em emergência. Bicarbonato isolado: eficácia muito limitada sem acidose concomitante. Glicose sem insulina NÃO faz shift de K⁺ (usar sempre juntos). Hemodiálise: não atrasar se IRA oligo-anúrica ou K⁺ >7 refratário.',
-      'es':
-          'EVITAR gluconato de calcio en intoxicación digitálica (arritmias refractarias — usar Digibind). Resinas: efecto lento — nunca como única medida en emergencia. Bicarbonato aislado: eficacia limitada. Glucosa sin insulina NO hace shift de K⁺. No demorar hemodiálisis si IRA oligoanúrica.',
+      'pt': 'Diurético apenas se houver possibilidade de resposta renal e situação volêmica apropriada; dose individualizada. Bicarbonato IV não é rotina: considerar conforme acidose e avaliação especializada, sem esquema fixo baseado apenas no pH. Resinas de poliestireno não compõem o resgate de rotina. Interromper fontes de K⁺ e rever medicamentos contribuintes. [R8,R11]',
+      'es': 'Diurético solo si existe posibilidad de respuesta renal y un estado de volumen apropiado; dosis individualizada. Bicarbonato IV no es rutinario: considerar según acidosis y evaluación especializada, sin esquema fijo basado únicamente en el pH. Las resinas de poliestireno no integran el rescate de rutina. Suspender fuentes de K⁺ y revisar fármacos contribuyentes. [R8,R11]',
+    },
+    references: {
+      'pt': [
+        '[R1] UK Kidney Association — Management of Hyperkalaemia in Adults, atualização final de julho/2026; adultos; documento normativo principal. A página oficial substitui o PDF anterior por esta atualização. https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0',
+        '[R2] Resuscitation Council UK — Special circumstances, guideline final de 2025; emergência e ressuscitação; confirmação de doses e separação do contexto de PCR. https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/special-circumstances-guidelines',
+        '[R3] MHRA — alerta de segurança de 2023 sobre subdose de gluconato de cálcio; equivalência, velocidade e repetição. https://www.gov.uk/drug-safety-update/calcium-chloride-calcium-gluconate-potential-risk-of-underdosing-with-calcium-gluconate-in-severe-hyperkalaemia',
+        '[R4] KDIGO — CKD Guideline 2024, final e ainda vigente; prevenção de recorrência e preservação de terapias cardiorrenais quando possível. https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf',
+        '[R5] KDIGO Conference — Acute hyperkalemia in the emergency department, 2020; consenso de apoio, não uma nova guideline; diagnóstico e limitações do ECG. https://pmc.ncbi.nlm.nih.gov/articles/PMC7448835/',
+        '[R6] EMA — Lokelma, informação regulatória consultada; página atualizada em setembro/2026; doses, preparo, interações e gestação/lactação. https://www.ema.europa.eu/en/documents/product-information/lokelma-epar-product-information_en.pdf',
+        '[R7] American Heart Association — Special Circumstances, guideline final de 2025; PCR e intoxicação digitálica. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation',
+        '[R8] Norfolk and Norwich NHS — Hyperkalaemia in Adults, aprovado em agosto/2024, revisão prevista em agosto/2027; protocolo institucional de apoio ao preparo de insulina/glicose. https://www.nnuh.nhs.uk/publication/download/hyperkalaemia-in-adults-jcg0020-v6/',
+        '[R9] Novo Nordisk — Actrapid SmPC, versão disponibilizada de novembro/2022; fonte regulatória para concentração, vias e populações especiais, não para definir a dose de hipercalemia. https://www.medicines.org.uk/emc/product/3849/smpc',
+        '[R10] Hameln — Calcium Gluconate 10% SmPC, junho/2023; preparo, contraindicações, gestação e precauções. https://www.medicines.org.uk/emc/product/6264/smpc',
+        '[R11] Veltassa SmPC, janeiro/2025; início de ação, limitações e segurança do patirômero. https://www.medicines.org.uk/emc/product/779/smpc',
+      ],
+      'es': [
+        '[R1] UK Kidney Association — Management of Hyperkalaemia in Adults, atualização final de julho/2026; adultos; documento normativo principal. A página oficial substitui o PDF anterior por esta atualização. https://www.ukkidney.org/health-professionals/guidelines/treatment-acute-hyperkalaemia-adults-0',
+        '[R2] Resuscitation Council UK — Special circumstances, guideline final de 2025; emergência e ressuscitação; confirmação de doses e separação do contexto de PCR. https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/special-circumstances-guidelines',
+        '[R3] MHRA — alerta de segurança de 2023 sobre subdose de gluconato de cálcio; equivalência, velocidade e repetição. https://www.gov.uk/drug-safety-update/calcium-chloride-calcium-gluconate-potential-risk-of-underdosing-with-calcium-gluconate-in-severe-hyperkalaemia',
+        '[R4] KDIGO — CKD Guideline 2024, final e ainda vigente; prevenção de recorrência e preservação de terapias cardiorrenais quando possível. https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf',
+        '[R5] KDIGO Conference — Acute hyperkalemia in the emergency department, 2020; consenso de apoio, não uma nova guideline; diagnóstico e limitações do ECG. https://pmc.ncbi.nlm.nih.gov/articles/PMC7448835/',
+        '[R6] EMA — Lokelma, informação regulatória consultada; página atualizada em setembro/2026; doses, preparo, interações e gestação/lactação. https://www.ema.europa.eu/en/documents/product-information/lokelma-epar-product-information_en.pdf',
+        '[R7] American Heart Association — Special Circumstances, guideline final de 2025; PCR e intoxicação digitálica. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation',
+        '[R8] Norfolk and Norwich NHS — Hyperkalaemia in Adults, aprovado em agosto/2024, revisão prevista em agosto/2027; protocolo institucional de apoio ao preparo de insulina/glicose. https://www.nnuh.nhs.uk/publication/download/hyperkalaemia-in-adults-jcg0020-v6/',
+        '[R9] Novo Nordisk — Actrapid SmPC, versão disponibilizada de novembro/2022; fonte regulatória para concentração, vias e populações especiais, não para definir a dose de hipercalemia. https://www.medicines.org.uk/emc/product/3849/smpc',
+        '[R10] Hameln — Calcium Gluconate 10% SmPC, junho/2023; preparo, contraindicações, gestação e precauções. https://www.medicines.org.uk/emc/product/6264/smpc',
+        '[R11] Veltassa SmPC, janeiro/2025; início de ação, limitações e segurança do patirômero. https://www.medicines.org.uk/emc/product/779/smpc',
+      ],
     },
     drugs: [
       'bicarbonato_sodio',
