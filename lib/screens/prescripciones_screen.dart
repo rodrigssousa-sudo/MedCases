@@ -3582,44 +3582,7 @@ MONITOREO: Ca iónico c/4–6h · ECG continuo durante infusión.
     subtitle: 'Hidrocortisona EV de urgencia · reposición salina',
     category: 'Endocrinología',
     icon: Icons.medical_services_rounded,
-    content: '''CRISIS ADRENAL: emergencia endocrinológica.
-→ Hipotensión refractaria + antecedente de insuficiencia suprarrenal o corticoterapia crónica.
-
-CUADRO CLÍNICO:
-• Hipotensión severa, shock (PAM <65 mmHg).
-• Náuseas, vómitos, dolor abdominal.
-• Astenia extrema, confusión, coma.
-• Fiebre, hipoglucemia, hiponatremia, hipercalemia.
-• Factor precipitante: infección, cirugía, trauma, suspensión brusca de corticoides.
-
-TRATAMIENTO INMEDIATO:
-1. Acceso EV + extracción de cortisol basal (NO esperar resultado).
-2. Hidrocortisona (1° elección):
-   → 100 mg EV en bolo inmediato.
-   → Luego 50–100 mg EV c/6–8h o BIC 200 mg/día.
-   → Dexametasona 4 mg EV puede usarse si no hay hidrocortisona
-      (no interfiere con test cortisol, pero sin efecto mineralocorticoide).
-
-3. Reposición hídrica:
-   SF 0,9% 1 L EV en 30–60 min → repetir según respuesta.
-   Objetivo PAM >65 mmHg.
-
-4. Glucosa:
-   Dextrose 50%: 40–80 mL EV si hipoglucemia sintomática.
-   Mantenimiento: SG 5% o 10% según glucemia.
-
-5. Tratar causa precipitante (ATB si infección, etc.).
-
-REDUCCIÓN PROGRESIVA DE DOSIS:
-• Cuando estable: reducir hidrocortisona 50% c/24–48h.
-• Volver a dosis fisiológica (15–25 mg/día VO) cuando tolere oral.
-• Agregar fludrocortisona 0,1 mg/día VO (mineralocorticoide)
-  cuando dosis de hidrocortisona <50 mg/día.
-
-EVITAR: hipoglucemia, hiponatremia, drogas que aumentan catabolismo.
-
----
-⚕ Modelo educativo — adaptar al paciente.''',
+    content: "**1 — Sospechar y pedir ayuda.** Hipotensión/shock, vómitos, debilidad o confusión en paciente con insuficiencia adrenal o exposición reciente a corticoides: tratar sin esperar estudios. La ausencia de hiperpotasemia no excluye. Este esquema es para adultos de 18 años o más. [R2,R4,R6]\n\n**2 — ABCDE y muestras sin demora.** Evaluar vía aérea, respiración, circulación y conciencia; obtener acceso IV y glucemia inmediata. Extraer cortisol/ACTH antes del corticoide solo si no retrasa su administración, además de electrolitos y función renal. [R6]\n\n**3 — Hidrocortisona ahora.** 100 mg IV inmediatamente; IM si no hay acceso IV. Solu-Cortef/Pfizer 100 mg: reconstituir con hasta 2 mL de agua para inyectables y administrar IV en 1–10 min; usar inmediatamente. Verificar la ficha de la presentación local. [R2,R3,R5]\n\n**4 — Mantenimiento sin interrupción.** Hidrocortisona 200 mg IV a lo largo de 24 h por infusión continua O 50 mg IV/IM cada 6 h. No sumar los esquemas. Preparación y tiempo de uso/recambio de bolsas requieren validación farmacéutica específica; no asumir estabilidad de una bolsa durante 24 h. [R2,R3,R5]\n\n**5 — Reponer volumen y reevaluar.** NaCl 0,9%, 1 L IV en 30 min según NICE; individualizar en adultos mayores e insuficiencia cardíaca/renal. Reevaluar perfusión y signos de sobrecarga; líquidos posteriores guiados por hemodinamia y electrolitos. [R1,R6,R10]\n\n**6 — Corregir hipoglucemia.** Tratamiento inmediato según protocolo hospitalario. En adulto con diabetes y deglución insegura, referencia JBDS: glucosa 10%, 200 mL IV en 15 min; medir nuevamente la glucemia 10 min después de tratar y repetir según respuesta/protocolo. En adultos sin diabetes, confirmar el esquema local. Vigilar el acceso y evitar administrar inadvertidamente toda una bolsa mayor. [R7]\n\n**7 — Vigilar respuesta y complicaciones.** Controlar frecuentemente presión, frecuencia cardíaca, conciencia, diuresis/balance, sodio, potasio y glucemia. Evitar la sobrecorrección del sodio; hiponatremia grave e hiperpotasemia con repercusión siguen protocolos específicos. [R1,R6]\n\n**8 — Tratar el desencadenante y escalar.** Investigar/tratar infección, hemorragia, omisión de corticoides y otras causas asociadas. Shock persistente o deterioro: cuidados intensivos. Solicitar endocrinología; el corticoide no sustituye el tratamiento de causas coexistentes. [R1,R4,R6]\n\n**9 — Transición solo tras recuperación.** Estable y absorbiendo por vía oral: hidrocortisona al menos 40 mg/día VO en 2–4 tomas hasta resolución del desencadenante y estabilidad; después reducir con especialista. Fludrocortisona solo si está indicada en la primaria, cuando hidrocortisona sea inferior a 50 mg/día. [R1,R4,R6,R9]\n\n**10 — Poblaciones especiales y alta segura.** Embarazo: hidrocortisona y equipo obstétrico/endócrino. No extrapolar dosis a pediatría; consultar BSPED. Alta con reposición definida, reglas de estrés, tarjeta, kit IM y entrenamiento; no suspender corticoides abruptamente. [R2,R3,R5,R8]",
   ),
 
   _PrescriptionModel(

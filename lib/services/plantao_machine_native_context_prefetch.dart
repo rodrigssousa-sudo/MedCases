@@ -865,7 +865,10 @@ class PlantaoMachineNativeContextPrefetch {
     final approvedMeningitis = key == 'meningite_bacteriana' &&
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] == 'f7f6f23280323514d7727df2809dc1d31c78f1b5f029ede4c8848b4e59d7c68f';
-    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis;
+    final approvedAdrenal = key == 'crise_adrenal' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == 'ffc8ec30fed24efda7b9001f6a056c5301d5ff2a1dda9c187f59823310cc72d7';
+    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal;
     final clinicalTextLimit = completeApprovedPayload ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
@@ -940,7 +943,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
-            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis) ? 24000 : (approvedG02 ? 18000 : 6000),
+            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal) ? 24000 : (approvedG02 ? 18000 : 6000),
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(
