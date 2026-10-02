@@ -7975,9 +7975,7 @@ class ClinicalReferenceResolver {
         ];
 
       case 'anaphylaxis':
-        return const <String>[
-          'AAAAI/ACAAI JTFPP — Anaphylaxis: 2023 Practice Parameter Update',
-        ];
+        return const <String>["[R1] ASCIA — Acute Management of Anaphylaxis, living guideline 2026 https://allergy.org.au/hp/anaphylaxis/acute-management-guidelines", "[R2] ASCIA — Adrenaline doses for anaphylaxis, 2026 https://allergy.org.au/images/ASCIA_HP_Adrenaline_Doses_Anaphylaxis_2026.pdf", "[R3] RCUK — Resuscitation Guidelines 2025: Special circumstances https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/special-circumstances-guidelines", "[R4] RCUK — Emergency treatment of anaphylaxis, May 2021 https://www.resus.org.uk/sites/default/files/2021-05/Emergency%20Treatment%20of%20Anaphylaxis%20May%202021_0.pdf", "[R5] RCUK — Refractory anaphylaxis algorithm, 2021 https://www.resus.org.uk/sites/default/files/2021-04/Refractory%20anaphylaxis%20algorithm%202021.pdf", "[R6] WAO — Anaphylaxis Guidance 2020; DOI 10.1016/j.waojou.2020.100472 https://www.allergyfoundation.co.za/wp-content/uploads/2021/05/PIIS1939455120303756.pdf", "[R7] AAAAI/ACAAI — Anaphylaxis: a 2023 practice parameter update https://www.aaaai.org/Aaaai/media/Media-Library-PDFs/Allergist%20Resources/Statements%20and%20Practice%20Parameters/Anaphylaxis-Practice-Paramaters-2023.pdf", "[R8] Australian Commission — Acute Anaphylaxis Clinical Care Standard https://www.safetyandquality.gov.au/clinical-care-standards/acute-anaphylaxis", "[R9] ASCIA — Acute Management of Anaphylaxis in Pregnancy https://allergy.org.au/hp/anaphylaxis/acute-management-in-pregnancy-guidelines", "[R10] Viatris — EpiPen 0.3 mg, Summary of Product Characteristics https://www.medicines.org.uk/emc/product/4289/smpc"];
 
       default:
         return const <String>[];

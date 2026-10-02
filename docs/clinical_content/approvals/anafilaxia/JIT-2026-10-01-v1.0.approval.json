@@ -1,0 +1,10 @@
+{
+  "owner": "anafilaxia",
+  "version": "JIT-2026-10-01-v1.0",
+  "approvalCommand": "GUIA APROVADO: Anafilaxia JIT-2026-10-01-v1.0",
+  "approvedAt": "2026-10-02T02:36:53.133947+00:00",
+  "reviewer": "human user",
+  "APPROVED_CLINICAL_PAYLOAD_SHA256": "b0f5c313ea7e41f703e5d7c3699c71eda138093c7d9b4ff8bcf9159a6a3e43fb",
+  "approvedClinicalPayloadSha256": "b0f5c313ea7e41f703e5d7c3699c71eda138093c7d9b4ff8bcf9159a6a3e43fb",
+  "humanGate": "PASS"
+}
