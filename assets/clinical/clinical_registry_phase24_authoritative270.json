@@ -29998,6 +29998,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "f7f6f23280323514d7727df2809dc1d31c78f1b5f029ede4c8848b4e59d7c68f",
       "canonicalPathologyKey": "meningite_bacteriana",
       "contentKey": "legacy_protocol_content::meningite_bacteriana",
       "enabled": true,
@@ -30012,36 +30013,187 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "1. Dexametasona 0,15 mg/kg IV (máx. 10 mg) — ANTES o JUNTO con el 1er antibiótico",
-              "2. Ceftriaxona 2 g IV c/12 h — cobertura neumococo + meningococo",
-              "3. Ampicilina 2 g IV c/4 h — añadir si >50 años, gestante, inmunosuprimido (Listeria)",
-              "4. Hemocultivos (2 pares) antes del ATB — máx. 5 min (no retrasar ATB)",
-              "5. TC cráneo ANTES de PL: solo si Glasgow <13, papiledema, déficit focal, convulsión",
-              "6. PL lo antes posible: LCR para bioquímica, citología, Gram, cultivo",
-              "7. Soporte: cabecera 30°, electrolitos, control de PA y fiebre, Foley",
-              "8. Manitol 20% 0,5–1 g/kg IV si signos de herniación"
+              "**1. Reconocer y derivar.** ADULTO, meningitis comunitaria fuera de epidemia. Sospechar con fiebre, cefalea, rigidez de nuca o alteración de conciencia; no exigir todos los signos. Púrpura, shock, convulsión, focalidad o descenso de conciencia = emergencia de alta gravedad. Internar/trasladar inmediatamente a un servicio con soporte; activar infectología y UTI según gravedad. Preguntar inicio, antibiótico previo, alergia y reacción, embarazo, edad, inmunosupresión, enfermedad renal/hepática, otitis/sinusitis y cirugía/derivación reciente. El escenario posneuroquirúrgico o pediátrico requiere otro protocolo. [R1,R2,R3]",
+              "**2. ABCDE y estudios simultáneos.** Evaluar/proteger vía aérea, ventilación, perfusión, glucemia, Glasgow/pupilas, focalidad, convulsiones y púrpura; tratar inestabilidad inmediatamente. Obtener hemocultivos antes del antibiótico si no demora; hemograma, glucosa, creatinina/electrolitos, proteína C reactiva/procalcitonina, lactato/coagulación según gravedad, PCR sanguínea cuando esté disponible. Un marcador normal no excluye. Sospecha meningocócica: precauciones estándar + gotitas, mantenidas hasta 24 h de antibiótico eficaz. [R1,R2,R10]",
+              "**3. Antibiótico sin demora.** Iniciar inmediatamente, hasta 1 hora del ingreso hospitalario como objetivo; no esperar TC, punción ni resultado. Función renal conservada: CEFTRIAXONA 2 g IV cada 12 h (4 g/día). En la presentación Reig Jofre 2 g: 40 mL de diluyente sin calcio, como NaCl 0,9% o glucosa 5%, volumen resultante aproximado 41 mL, infusión ≥30 min. Verificar ficha local; nunca Ringer/Hartmann, calcio simultáneo, mezcla con vancomicina ni lidocaína IV. [R1,R2,R3,R5]",
+              "**4. Cobertura adicional cuando esté indicada.** AMPICILINA 2 g IV cada 4 h (12 g/día) si >60 años, embarazo o inmunocompromiso, incluidos diabetes, enfermedad renal terminal, hepatopatía avanzada y trastorno por consumo de alcohol. Ceftriaxona sola no cubre Listeria. Ejemplo solo para ampicilina 2 g Eugia referenciada: 14,8 mL de agua estéril para inyección; IV directa lentamente ≥10–15 min; verificar presentación, no extrapolar vial de 500 mg. VANCOMICINA adicional según resistencia neumocócica local: 15–20 mg/kg/dosis IV cada 8–12 h por peso total, hasta 2 g por dosis de mantenimiento, ajustando por función renal/niveles. Nunca rutina adulta cada 6 h. [R1,R3,R6,R7]",
+              "**5. Seguridad de vancomicina y ajustes.** Presentación hameln 500 mg: 10 mL de agua para inyección produce 50 mg/mL; después diluir a concentración final habitual 2,5–5 mg/mL. Infusión ≥60 min Y ≤10 mg/min (1 g: ≥100 min); nunca bolo, IM o VO para tratar meningitis. Monitorear creatinina, diuresis, concentraciones séricas y reacción a la infusión; ajustar mantenimiento en AKI/diálisis con farmacia/infectología. Ampicilina también requiere ajuste renal. Si depuración <10 mL/min, la ficha de ceftriaxona limita 2 g/día: resolver inmediatamente el esquema meníngeo con especialista, sin reducir automáticamente la cobertura del SNC. Alergia grave a betalactámicos: alternativa inmediata con infectología, sin cambio automático a meropenem. [R2,R5,R6,R8]",
+              "**6. Dexametasona cuando corresponda.** Fuerte sospecha bacteriana comunitaria en el escenario descrito, sin VIH avanzado: DEXAMETASONA 10 mg IV cada 6 h, antes/junto con el primer antibiótico, sin demorarlo. Hasta 4 días si neumococo/Hib; suspender si causa no bacteriana u otro agente; sin agente, discutir continuidad. Demora <12 h: dar lo antes posible según NICE; demora ≥12 h: decisión especializada, incluido el límite exacto de 12 h no definido por la fuente. Verificar equivalencia base/fosfato y ficha antes de calcular mL; monitorear glucemia. No aplicar automáticamente a meningococcemia aislada, epidemia meningocócica, criptococosis o VIH avanzado. [R1,R2,R3,R12,R13]",
+              "**7. Punción y TC: decidir sin retrasar antibiótico.** Punción antes del antibiótico solo si es segura y rápida. No realizar TC de rutina. Imagen antes: Glasgow <10, focalidad/pares craneales, papiledema, convulsión reciente en adulto, inmunocompromiso grave; incluir pupilas/posturas anormales, sospecha de masa y conciencia en descenso rápido/progresivo. No puncionar con inestabilidad no tratada, riesgo hemorrágico, púrpura extensa/progresiva o infección local. Una TC normal no elimina contraindicaciones persistentes. Si se posterga punción, tratar primero y realizar cuando sea segura. LCR: células/diferencial, proteínas, glucosa con glucemia inmediatamente previa, Gram, cultivo/antibiograma y PCR. [R1,R2]",
+              "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+              "**9. Revisar terapia y duración.** Desescalar por agente/sensibilidad y evolución con infectología. OMS en enfermedad no complicada: neumococo 10–14 días, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sin agente, considerar 7 días solo con recuperación clínica y fiebre/signos vitales/conciencia normalizados durante ≥48 h; es opción condicional OMS, sin suspensión automática. NICE recomienda 10 días si LCR bacteriano y cultivo/PCR sanguínea negativos: seguir protocolo local/documentar decisión especializada. Falta de recuperación o complicación exige prolongar/reinvestigar. [R1,R2]",
+              "**10. Prevención y alta hospitalaria.** No dar alta inicial con sospecha fuerte. Notificar según jurisdicción; salud pública define contactos y profilaxis meningocócica rápida, independientemente de vacunación. Adulto elegible: CEFTRIAXONA 250 mg IM una vez (preferida en embarazo), o CIPROFLOXACINO 500 mg VO una vez solo según resistencia local, o RIFAMPICINA 600 mg VO cada 12 h durante 2 días como alternativa seleccionada; cipro/rifampicina no son de rutina en embarazo; revisar interacciones de rifampicina. No tratar contactos casuales ni aplicar a toda meningitis. Antes del alta evaluar secuelas y organizar rehabilitación/audiología: dentro de 4 semanas de estar apto para examen; revisión adulta a las 4–6 semanas del alta. Embarazo/lactancia: evaluar riesgos específicos con obstetricia/farmacia; ninguna dosis pediátrica autorizada por esta guía. [R1,R2,R8,R9,R10,R11]"
             ],
             "pt": [
-              "1. Dexametasona 0,15 mg/kg IV (máx. 10 mg) — ANTES ou JUNTO com o 1º antibiótico",
-              "2. Ceftriaxona 2 g IV 12/12h — cobertura pneumo + meningo",
-              "3. Ampicilina 2 g IV 4/4h — adicionar se >50 anos, gestante, imunossuprimido (Listeria)",
-              "4. Hemoculturas (2 pares) antes do ATB — máximo 5 min (não retardar ATB)",
-              "5. TC crânio ANTES da PL: apenas se Glasgow <13, papiledema, déficit focal, convulsão",
-              "6. PL o mais cedo possível (após TC se indicada): LCR para bioquímica, citologia, Gram, cultura",
-              "7. Suporte: cabeceira 30°, correção de eletrólitos, controle de PA e febre, Foley",
-              "8. Manitol 20% 0,5–1 g/kg IV se sinais de herniação (pupila midriática, Cushing)"
+              "**1. Reconhecer e encaminhar.** ADULTO, meningite comunitária fora de epidemia. Suspeitar com febre, cefaleia, rigidez cervical ou alteração da consciência; não exigir todos os sinais. Púrpura, choque, convulsão, focalidade ou queda da consciência = emergência de alta gravidade. Internar/transferir imediatamente a serviço com capacidade de suporte; acionar infectologia e UTI conforme gravidade. Perguntar início, antibiótico prévio, alergia e reação, gestação, idade, imunossupressão, doença renal/hepática, otite/sinusite e cirurgia/derivação recente. Cenário pós-neurocirúrgico ou pediátrico requer outro protocolo. [R1,R2,R3]",
+              "**2. ABCDE e exames simultâneos.** Avaliar/proteger via aérea, ventilação, perfusão, glicemia, Glasgow/pupilas, focalidade, convulsões e púrpura; tratar instabilidade imediatamente. Obter hemoculturas antes de antibiótico se isso não atrasar; hemograma, glicose, creatinina/eletrólitos, PCR/procalcitonina, lactato/coagulação conforme gravidade, PCR sanguínea quando disponível. Marcador normal não exclui. Suspeita meningocócica: precauções padrão + gotículas, mantidas até 24 h de antibiótico eficaz. [R1,R2,R10]",
+              "**3. Antibiótico sem atraso.** Iniciar imediatamente, até 1 hora da chegada hospitalar como meta; não esperar TC, punção ou resultado. Função renal preservada: CEFTRIAXONA 2 g IV a cada 12 h (4 g/dia). Na apresentação Reig Jofre 2 g: 40 mL de diluente sem cálcio, como NaCl 0,9% ou glicose 5%, volume resultante aproximado 41 mL, infusão ≥30 min. Conferir bula local; nunca Ringer/Hartmann, cálcio simultâneo, mistura com vancomicina ou lidocaína IV. [R1,R2,R3,R5]",
+              "**4. Cobertura adicional quando indicada.** AMPICILINA 2 g IV a cada 4 h (12 g/dia) se >60 anos, gestação ou imunocomprometimento, incluindo diabetes, doença renal terminal, hepatopatia avançada e uso problemático de álcool. Ceftriaxona isolada não cobre Listeria. Exemplo apenas para ampicilina 2 g Eugia referenciada: 14,8 mL de água estéril para injeção; IV direta lentamente ≥10–15 min; conferir apresentação, não extrapolar frasco 500 mg. VANCOMICINA adicional conforme resistência pneumocócica local: 15–20 mg/kg/dose IV a cada 8–12 h pelo peso total, até 2 g por dose de manutenção, ajustando por função renal/níveis. Nunca rotina adulta a cada 6 h. [R1,R3,R6,R7]",
+              "**5. Segurança da vancomicina e ajustes.** Apresentação hameln 500 mg: 10 mL de água para injeção produz 50 mg/mL; depois diluir para concentração usual final 2,5–5 mg/mL. Infusão ≥60 min E ≤10 mg/min (1 g: ≥100 min); nunca bolus, IM ou VO para tratar meningite. Monitorar creatinina, diurese, níveis séricos e reação de infusão; ajustar manutenção em AKI/diálise com farmácia/infectologia. Ampicilina também exige ajuste renal. Se depuração <10 mL/min, a bula de ceftriaxona limita 2 g/dia: resolver imediatamente o esquema meníngeo com especialista, sem reduzir automaticamente a cobertura do SNC. Alergia grave a betalactâmicos: alternativa imediata com infectologia, sem troca automática por meropenem. [R2,R5,R6,R8]",
+              "**6. Dexametasona quando aplicável.** Forte suspeita bacteriana comunitária no cenário descrito, sem HIV avançado: DEXAMETASONA 10 mg IV a cada 6 h, antes/junto do primeiro antibiótico, sem retardá-lo. Até 4 dias se pneumococo/Hib; suspender se causa não bacteriana ou outro agente; sem agente, discutir continuidade. Atraso <12 h: dar assim que possível segundo NICE; atraso ≥12 h: decisão especializada, incluindo limite exato de 12 h não definido pela fonte. Conferir equivalência base/fosfato e bula antes de calcular mL; monitorar glicemia. Não aplicar automaticamente a meningococcemia isolada, epidemia meningocócica, criptococose ou HIV avançado. [R1,R2,R3,R12,R13]",
+              "**7. Punção e TC: decidir sem atrasar antibiótico.** Punção antes do antibiótico apenas se segura e rápida. Não fazer TC rotineira. Imagem antes: Glasgow <10, focalidade/pares cranianos, papiledema, convulsão recente no adulto, imunocomprometimento grave; incluir pupilas/posturas anormais, suspeita de massa e consciência em queda rápida/progressiva. Não puncionar com instabilidade não tratada, risco hemorrágico, púrpura extensa/progressiva ou infecção local. TC normal não elimina contraindicações persistentes. Se punção adiada, tratar primeiro e realizar quando segura. Líquor: células/diferencial, proteína, glicose com glicemia imediatamente prévia, Gram, cultura/antibiograma e PCR. [R1,R2]",
+              "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]",
+              "**9. Rever terapia e duração.** Descalonar por agente/suscetibilidade e evolução com infectologia. OMS em doença não complicada: pneumococo 10–14 dias, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sem agente, considerar 7 dias somente com recuperação clínica e febre/sinais vitais/consciência normalizados por ≥48 h; é opção condicional OMS, sem suspensão automática. NICE recomenda 10 dias se líquor bacteriano e cultura/PCR sanguínea negativos: seguir protocolo local/documentar decisão especializada. Falta de recuperação ou complicação exige prolongar/reinvestigar. [R1,R2]",
+              "**10. Prevenção e saída hospitalar.** Não dar alta inicial com suspeita forte. Notificar conforme jurisdição; saúde pública define contatos e profilaxia meningocócica rápida, independentemente da vacinação. Adulto elegível: CEFTRIAXONA 250 mg IM uma vez (preferida na gestação), ou CIPROFLOXACINO 500 mg VO uma vez somente conforme resistência local, ou RIFAMPICINA 600 mg VO a cada 12 h por 2 dias como alternativa selecionada; cipro/rifampicina não são rotina na gestação; revisar interações da rifampicina. Não tratar contato casual nem aplicar a toda meningite. Antes da alta avaliar sequelas e organizar reabilitação/audiologia: até 4 semanas de estar apto ao exame; revisão adulta em 4–6 semanas após alta. Gestação/lactação: avaliar riscos específicos com obstetrícia/farmácia; nenhuma dose pediátrica autorizada por este guia. [R1,R2,R8,R9,R10,R11]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "516ecc3c8dac131cdaab66b1b8bc1684e1294a6be50f75b0a7f3084c7d9dc90f",
+            "blockSha256": "f6ae5a01143dacc7249ccb866b65e591f37f01bbf29431df5c6871bfa1d48b25",
             "innerFamilyId": "baac9f456434744d",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::meningite_bacteriana",
             "sourceExpressionSha256": "f0cab1337ba48f55095984813f77602a4551aa9925cd44ee438059c11ab0d04a"
           }
+        },
+        "approvedClinicalPayload": {
+          "es": {
+            "plantao": "**1. Reconocer y derivar.** ADULTO, meningitis comunitaria fuera de epidemia. Sospechar con fiebre, cefalea, rigidez de nuca o alteración de conciencia; no exigir todos los signos. Púrpura, shock, convulsión, focalidad o descenso de conciencia = emergencia de alta gravedad. Internar/trasladar inmediatamente a un servicio con soporte; activar infectología y UTI según gravedad. Preguntar inicio, antibiótico previo, alergia y reacción, embarazo, edad, inmunosupresión, enfermedad renal/hepática, otitis/sinusitis y cirugía/derivación reciente. El escenario posneuroquirúrgico o pediátrico requiere otro protocolo. [R1,R2,R3]\n\n**2. ABCDE y estudios simultáneos.** Evaluar/proteger vía aérea, ventilación, perfusión, glucemia, Glasgow/pupilas, focalidad, convulsiones y púrpura; tratar inestabilidad inmediatamente. Obtener hemocultivos antes del antibiótico si no demora; hemograma, glucosa, creatinina/electrolitos, proteína C reactiva/procalcitonina, lactato/coagulación según gravedad, PCR sanguínea cuando esté disponible. Un marcador normal no excluye. Sospecha meningocócica: precauciones estándar + gotitas, mantenidas hasta 24 h de antibiótico eficaz. [R1,R2,R10]\n\n**3. Antibiótico sin demora.** Iniciar inmediatamente, hasta 1 hora del ingreso hospitalario como objetivo; no esperar TC, punción ni resultado. Función renal conservada: CEFTRIAXONA 2 g IV cada 12 h (4 g/día). En la presentación Reig Jofre 2 g: 40 mL de diluyente sin calcio, como NaCl 0,9% o glucosa 5%, volumen resultante aproximado 41 mL, infusión ≥30 min. Verificar ficha local; nunca Ringer/Hartmann, calcio simultáneo, mezcla con vancomicina ni lidocaína IV. [R1,R2,R3,R5]\n\n**4. Cobertura adicional cuando esté indicada.** AMPICILINA 2 g IV cada 4 h (12 g/día) si >60 años, embarazo o inmunocompromiso, incluidos diabetes, enfermedad renal terminal, hepatopatía avanzada y trastorno por consumo de alcohol. Ceftriaxona sola no cubre Listeria. Ejemplo solo para ampicilina 2 g Eugia referenciada: 14,8 mL de agua estéril para inyección; IV directa lentamente ≥10–15 min; verificar presentación, no extrapolar vial de 500 mg. VANCOMICINA adicional según resistencia neumocócica local: 15–20 mg/kg/dosis IV cada 8–12 h por peso total, hasta 2 g por dosis de mantenimiento, ajustando por función renal/niveles. Nunca rutina adulta cada 6 h. [R1,R3,R6,R7]\n\n**5. Seguridad de vancomicina y ajustes.** Presentación hameln 500 mg: 10 mL de agua para inyección produce 50 mg/mL; después diluir a concentración final habitual 2,5–5 mg/mL. Infusión ≥60 min Y ≤10 mg/min (1 g: ≥100 min); nunca bolo, IM o VO para tratar meningitis. Monitorear creatinina, diuresis, concentraciones séricas y reacción a la infusión; ajustar mantenimiento en AKI/diálisis con farmacia/infectología. Ampicilina también requiere ajuste renal. Si depuración <10 mL/min, la ficha de ceftriaxona limita 2 g/día: resolver inmediatamente el esquema meníngeo con especialista, sin reducir automáticamente la cobertura del SNC. Alergia grave a betalactámicos: alternativa inmediata con infectología, sin cambio automático a meropenem. [R2,R5,R6,R8]\n\n**6. Dexametasona cuando corresponda.** Fuerte sospecha bacteriana comunitaria en el escenario descrito, sin VIH avanzado: DEXAMETASONA 10 mg IV cada 6 h, antes/junto con el primer antibiótico, sin demorarlo. Hasta 4 días si neumococo/Hib; suspender si causa no bacteriana u otro agente; sin agente, discutir continuidad. Demora <12 h: dar lo antes posible según NICE; demora ≥12 h: decisión especializada, incluido el límite exacto de 12 h no definido por la fuente. Verificar equivalencia base/fosfato y ficha antes de calcular mL; monitorear glucemia. No aplicar automáticamente a meningococcemia aislada, epidemia meningocócica, criptococosis o VIH avanzado. [R1,R2,R3,R12,R13]\n\n**7. Punción y TC: decidir sin retrasar antibiótico.** Punción antes del antibiótico solo si es segura y rápida. No realizar TC de rutina. Imagen antes: Glasgow <10, focalidad/pares craneales, papiledema, convulsión reciente en adulto, inmunocompromiso grave; incluir pupilas/posturas anormales, sospecha de masa y conciencia en descenso rápido/progresivo. No puncionar con inestabilidad no tratada, riesgo hemorrágico, púrpura extensa/progresiva o infección local. Una TC normal no elimina contraindicaciones persistentes. Si se posterga punción, tratar primero y realizar cuando sea segura. LCR: células/diferencial, proteínas, glucosa con glucemia inmediatamente previa, Gram, cultivo/antibiograma y PCR. [R1,R2]\n\n**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]\n\n**9. Revisar terapia y duración.** Desescalar por agente/sensibilidad y evolución con infectología. OMS en enfermedad no complicada: neumococo 10–14 días, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sin agente, considerar 7 días solo con recuperación clínica y fiebre/signos vitales/conciencia normalizados durante ≥48 h; es opción condicional OMS, sin suspensión automática. NICE recomienda 10 días si LCR bacteriano y cultivo/PCR sanguínea negativos: seguir protocolo local/documentar decisión especializada. Falta de recuperación o complicación exige prolongar/reinvestigar. [R1,R2]\n\n**10. Prevención y alta hospitalaria.** No dar alta inicial con sospecha fuerte. Notificar según jurisdicción; salud pública define contactos y profilaxis meningocócica rápida, independientemente de vacunación. Adulto elegible: CEFTRIAXONA 250 mg IM una vez (preferida en embarazo), o CIPROFLOXACINO 500 mg VO una vez solo según resistencia local, o RIFAMPICINA 600 mg VO cada 12 h durante 2 días como alternativa seleccionada; cipro/rifampicina no son de rutina en embarazo; revisar interacciones de rifampicina. No tratar contactos casuales ni aplicar a toda meningitis. Antes del alta evaluar secuelas y organizar rehabilitación/audiología: dentro de 4 semanas de estar apto para examen; revisión adulta a las 4–6 semanas del alta. Embarazo/lactancia: evaluar riesgos específicos con obstetricia/farmacia; ninguna dosis pediátrica autorizada por esta guía. [R1,R2,R8,R9,R10,R11]",
+            "study": "**Concepto y alcance.** La meningitis bacteriana aguda es una emergencia infecciosa de las meninges y del espacio subaracnoideo. La respuesta inflamatoria puede producir edema, alteración de la perfusión cerebral, lesión neuronal y sepsis. Esta guía aborda ADULTOS con infección adquirida en la comunidad, fuera de epidemias. No aplicar sus dosis a niños; la meningitis neonatal/pediátrica, posneuroquirúrgica, asociada a derivaciones o traumatismo penetrante requiere un protocolo propio. [R1,R3]\n\n**Etiología, riesgos y presentación.** Neumococo y meningococo son agentes relevantes; considerar Hib según vacunación y epidemiología. Listeria requiere cobertura adicional cuando exista riesgo: edad >60 años, embarazo o inmunocompromiso; la OMS incluye diabetes, enfermedad renal terminal, hepatopatía crónica avanzada, trastorno por consumo de alcohol, VIH avanzado, cáncer, trasplante y tratamiento inmunosupresor. Ceftriaxona no cubre Listeria. Fiebre, cefalea, rigidez de nuca y alteración de conciencia/cognición constituyen una combinación de alarma; la ausencia de cualquiera de estos componentes no excluye la enfermedad, especialmente en mayores o inmunocomprometidos. Petequias/púrpura, shock, convulsión, déficit focal y descenso de conciencia indican gravedad. No exigir una “tríada completa” para tratar. [R1,R2]\n\n**Diagnóstico y estudios.** Integrar clínica, sangre y LCR. Obtener hemocultivos antes del antibiótico cuando no provoque demora relevante; solicitar hemograma, glucosa, función renal, electrolitos, proteína C reactiva/procalcitonina y, según gravedad, lactato y coagulación. La PCR molecular en sangre/LCR ayuda a identificar el agente cuando está disponible. LCR: recuento/diferencial celular, proteínas, glucosa con glucemia obtenida inmediatamente antes de la punción, Gram, cultivo/antibiograma y PCR. Neutrofilia, proteínas elevadas y glucosa reducida apoyan etiología bacteriana, pero no constituyen puntos de corte absolutos que confirmen o excluyan aisladamente meningitis. El antibiótico previo reduce el rendimiento; cultivo/Gram negativos o marcadores inflamatorios normales no excluyen. Considerar encefalitis, meningitis viral, tuberculosa/criptocócica, absceso, hemorragia subaracnoidea y causas no infecciosas según el cuadro. Aciclovir no es de rutina para toda meningitis: usar el protocolo específico si hay fuerte sospecha de encefalitis herpética. [R1,R2,R3,R12]\n\n**Punción lumbar e imagen.** Punción antes del antibiótico si es segura y no retrasa el tratamiento; si se posterga, realizarla en cuanto sea segura. La TC no es de rutina antes de la punción. Según OMS, obtener imagen antes si Glasgow <10, focalidad, déficit de pares craneales, papiledema, convulsión de inicio reciente en adulto o inmunocompromiso grave. NICE añade atención a pupilas anormales, posturas anormales, lesión expansiva en evolución y descenso progresivo/sostenido o rápido de conciencia. Estabilizar vía aérea, respiración, shock, convulsiones y riesgo hemorrágico; no puncionar con púrpura extensa/progresiva o infección local. Una TC normal no habilita automáticamente la punción si persisten señales de riesgo. Si imagen/punción demora, obtener sangre e iniciar tratamiento primero. [R1,R2]\n\n**Tratamiento antimicrobiano inicial.** Iniciar IV inmediatamente ante sospecha fuerte, con objetivo de hasta 1 hora del ingreso hospitalario; no esperar LCR, TC, traslado ni resultado microbiológico. Adulto con función renal conservada: CEFTRIAXONA 2 g IV cada 12 h (4 g/día). Añadir AMPICILINA 2 g IV cada 4 h (12 g/día) ante los riesgos de Listeria descritos. Considerar VANCOMICINA adicional en alta prevalencia local de neumococo resistente a penicilina o cefalosporina de tercera generación, según protocolo de resistencia/evaluación infectológica: inicio 15–20 mg/kg por dosis, por peso corporal total, IV cada 8–12 h, hasta 2 g por dosis de mantenimiento, con ajuste por función renal y concentraciones séricas. No prescribir 15–20 mg/kg cada 6 h como rutina adulta ni usar vancomicina sola para cobertura empírica. Esquemas y dosis corresponden al contexto especificado; Listeria confirmada exige tratamiento dirigido con ampicilina/amoxicilina y discusión de asociación, no ceftriaxona sola. La alergia grave a betalactámicos requiere una alternativa elegida inmediatamente con especialista; no sustituir automáticamente por meropenem. Cefotaxima puede ser alternativa según protocolo hospitalario validado. [R1,R2,R3,R5,R6]\n\n**Preparación y monitoreo de fármacos.** Verificar presentación, dosis en masa, diluyente, volumen final y compatibilidad. Ejemplo limitado al vial de ceftriaxona 2 g Reig Jofre: añadir 40 mL de solución sin calcio, como NaCl 0,9% o glucosa 5%; volumen resultante aproximado 41 mL; infundir en al menos 30 min. No aplicar esta preparación a otra marca sin verificar ficha técnica; no usar Ringer/Hartmann, mezclar con calcio o vancomicina, ni administrar solución con lidocaína por vía IV. En la presentación de ampicilina 2 g Eugia referenciada, añadir 14,8 mL de agua estéril para inyección para administración IV directa y administrar lentamente en al menos 10–15 min; la administración rápida puede causar convulsiones. No extrapolar la dilución del vial de 500 mg. Vancomicina 500 mg hameln: reconstituir con 10 mL de agua para inyección, obteniendo 50 mg/mL, y DILUIR antes de infundir; concentración final habitual 2,5–5 mg/mL. Cumplir simultáneamente tiempo ≥60 min y velocidad ≤10 mg/min: 1 g requiere al menos 100 min. Nunca bolo o IM; vancomicina oral no trata esta infección sistémica. Monitorear reacción a la infusión, creatinina, diuresis y concentraciones séricas; iniciar monitoreo temprano, más frecuente si está inestable, e individualizar exposición con infectología/farmacia. No trasladar automáticamente el objetivo AUC del protocolo MRSA al neumococo. [R5,R6,R7]\n\n**Dexametasona adyuvante.** En adulto con fuerte sospecha de meningitis bacteriana comunitaria en el escenario descrito y sin VIH avanzado: DEXAMETASONA 10 mg IV cada 6 h, primera dosis inmediatamente antes o junto con el primer antibiótico, sin retrasar el antibiótico. Continuar hasta 4 días si neumococo o Hib; suspender si el LCR descarta etiología bacteriana o se identifica otro agente. Sin agente identificado, decidir continuidad con infectología. Si no se administró inicialmente, no afirmar “beneficio cero”: NICE recomienda darla lo antes posible cuando la demora es <12 h; si ≥12 h, decisión individual con especialista, incluido el límite de 12 h que no fue especificado por la guía. Confirmar en la presentación local la expresión en dexametasona base/fosfato y la equivalencia de dosis antes de convertir a mL; no asumir que todas las ampollas son iguales. Monitorear glucemia y efectos adversos. No aplicar este esquema a meningococcemia aislada, epidemia meningocócica, meningitis criptocócica o VIH avanzado sin evaluación específica. [R1,R2,R3,R12,R13]\n\n**Duración y desescalada.** Revisar agente, sensibilidad, respuesta y complicaciones diariamente. Para enfermedad no complicada, OMS indica neumococo 10–14 días; meningococo 5–7; Hib 7–10; estreptococo del grupo B 14–21; Listeria 21 días. No extrapolar estas duraciones a absceso, ventriculitis, foco persistente o inmunocompromiso complejo. Sin agente identificado, OMS 2025 permite considerar suspensión después de 7 días SOLO con recuperación clínica: fiebre, signos vitales y alteración de conciencia resueltos, estado mental normal por al menos 48 h. NICE 2024 mantiene 10 días cuando el LCR sugiere bacteria y cultivo/PCR sanguínea son negativos. En esta guía, la opción OMS es condicional y exige decisión infectológica/documentación; no crear suspensión automática al séptimo día, y respetar el protocolo local que adopte 10 días. Sin recuperación, prolongar y reinvestigar, incluida nueva punción si es segura. [R1,R2]\n\n**Soporte, complicaciones y poblaciones especiales.** Internación, monitoreo neurológico/hemodinámico e infectología para todo caso sospechoso relevante. Shock, insuficiencia respiratoria, coma, convulsiones persistentes o sospecha de herniación requieren cuidados intensivos urgentes. Corregir hipovolemia y alteraciones electrolíticas con reevaluación; no restringir líquidos de rutina. La hiponatremia requiere esclarecer causa/gravedad, sin asumir SIADH ni tratar solo por un punto de corte de sodio. Osmoterapia no es de rutina; amenaza de herniación admite una medida temporal orientada por cuidados intensivos/neurocirugía, sin demorar medidas definitivas. El deterioro exige reevaluación/imagen urgente, sin espera fija de 24–48 h. En lesión renal, ajustar ampicilina y vancomicina por función/niveles; no usar intervalos fijos en AKI/diálisis. La ficha de ceftriaxona limita a 2 g/día si depuración de creatinina <10 mL/min: como difiere del esquema meníngeo de 4 g/día, resolver inmediatamente con infectología/farmacia, sin simple reducción que comprometa el SNC. Compromiso renal y hepático asociado requiere monitoreo estrecho. El embarazo añade riesgo de Listeria y requiere obstetricia; no demorar el tratamiento materno necesario. En lactancia, evaluar ficha técnica, riesgo/beneficio y posibles efectos en el lactante. Las personas mayores pueden presentar signos atípicos y depuración reducida. Pediatría: protocolo propio, sin extrapolar estas dosis. [R1,R2,R5,R6,R8,R13]\n\n**Seguimiento y prevención.** Antes del alta, evaluar déficit neurológico, audición, cognición y funcionalidad y organizar rehabilitación. NICE: evaluación audiológica dentro de 4 semanas de estar apto para el examen, preferentemente antes del alta; revisión médica del adulto a las 4–6 semanas del alta. Indicar consulta urgente por fiebre recurrente, empeoramiento neurológico, convulsión o nueva pérdida auditiva. Sospecha meningocócica: precauciones estándar + gotitas hasta 24 h de antibiótico eficaz y notificación/salud pública según jurisdicción. Los contactos cercanos de enfermedad meningocócica invasiva necesitan profilaxis rápida, independientemente de vacunación: en adulto elegible, ceftriaxona 250 mg IM dosis única; ciprofloxacino 500 mg VO dosis única solo si es apropiado a la resistencia local; rifampicina 600 mg VO cada 12 h durante 2 días como alternativa seleccionada. Embarazo: preferir ceftriaxona; no usar cipro/rifampicina de rutina para profilaxis. Rifampicina interactúa con anticonceptivos, anticoagulantes y antiepilépticos. Definir contacto con vigilancia (conviviente/exposición directa a secreciones, incluido procedimiento de vía aérea sin protección); no tratar indiscriminadamente a todos los profesionales ni contactos casuales. No aplicar profilaxis meningocócica a toda meningitis bacteriana. Vacunación e investigación de recurrencia/inmunodeficiencia según agente y programa local. [R1,R2,R9,R10,R11]"
+          },
+          "owner": "meningite_bacteriana",
+          "preservedRuntimeIds": [
+            "meningite_bacteriana"
+          ],
+          "pt": {
+            "plantao": "**1. Reconhecer e encaminhar.** ADULTO, meningite comunitária fora de epidemia. Suspeitar com febre, cefaleia, rigidez cervical ou alteração da consciência; não exigir todos os sinais. Púrpura, choque, convulsão, focalidade ou queda da consciência = emergência de alta gravidade. Internar/transferir imediatamente a serviço com capacidade de suporte; acionar infectologia e UTI conforme gravidade. Perguntar início, antibiótico prévio, alergia e reação, gestação, idade, imunossupressão, doença renal/hepática, otite/sinusite e cirurgia/derivação recente. Cenário pós-neurocirúrgico ou pediátrico requer outro protocolo. [R1,R2,R3]\n\n**2. ABCDE e exames simultâneos.** Avaliar/proteger via aérea, ventilação, perfusão, glicemia, Glasgow/pupilas, focalidade, convulsões e púrpura; tratar instabilidade imediatamente. Obter hemoculturas antes de antibiótico se isso não atrasar; hemograma, glicose, creatinina/eletrólitos, PCR/procalcitonina, lactato/coagulação conforme gravidade, PCR sanguínea quando disponível. Marcador normal não exclui. Suspeita meningocócica: precauções padrão + gotículas, mantidas até 24 h de antibiótico eficaz. [R1,R2,R10]\n\n**3. Antibiótico sem atraso.** Iniciar imediatamente, até 1 hora da chegada hospitalar como meta; não esperar TC, punção ou resultado. Função renal preservada: CEFTRIAXONA 2 g IV a cada 12 h (4 g/dia). Na apresentação Reig Jofre 2 g: 40 mL de diluente sem cálcio, como NaCl 0,9% ou glicose 5%, volume resultante aproximado 41 mL, infusão ≥30 min. Conferir bula local; nunca Ringer/Hartmann, cálcio simultâneo, mistura com vancomicina ou lidocaína IV. [R1,R2,R3,R5]\n\n**4. Cobertura adicional quando indicada.** AMPICILINA 2 g IV a cada 4 h (12 g/dia) se >60 anos, gestação ou imunocomprometimento, incluindo diabetes, doença renal terminal, hepatopatia avançada e uso problemático de álcool. Ceftriaxona isolada não cobre Listeria. Exemplo apenas para ampicilina 2 g Eugia referenciada: 14,8 mL de água estéril para injeção; IV direta lentamente ≥10–15 min; conferir apresentação, não extrapolar frasco 500 mg. VANCOMICINA adicional conforme resistência pneumocócica local: 15–20 mg/kg/dose IV a cada 8–12 h pelo peso total, até 2 g por dose de manutenção, ajustando por função renal/níveis. Nunca rotina adulta a cada 6 h. [R1,R3,R6,R7]\n\n**5. Segurança da vancomicina e ajustes.** Apresentação hameln 500 mg: 10 mL de água para injeção produz 50 mg/mL; depois diluir para concentração usual final 2,5–5 mg/mL. Infusão ≥60 min E ≤10 mg/min (1 g: ≥100 min); nunca bolus, IM ou VO para tratar meningite. Monitorar creatinina, diurese, níveis séricos e reação de infusão; ajustar manutenção em AKI/diálise com farmácia/infectologia. Ampicilina também exige ajuste renal. Se depuração <10 mL/min, a bula de ceftriaxona limita 2 g/dia: resolver imediatamente o esquema meníngeo com especialista, sem reduzir automaticamente a cobertura do SNC. Alergia grave a betalactâmicos: alternativa imediata com infectologia, sem troca automática por meropenem. [R2,R5,R6,R8]\n\n**6. Dexametasona quando aplicável.** Forte suspeita bacteriana comunitária no cenário descrito, sem HIV avançado: DEXAMETASONA 10 mg IV a cada 6 h, antes/junto do primeiro antibiótico, sem retardá-lo. Até 4 dias se pneumococo/Hib; suspender se causa não bacteriana ou outro agente; sem agente, discutir continuidade. Atraso <12 h: dar assim que possível segundo NICE; atraso ≥12 h: decisão especializada, incluindo limite exato de 12 h não definido pela fonte. Conferir equivalência base/fosfato e bula antes de calcular mL; monitorar glicemia. Não aplicar automaticamente a meningococcemia isolada, epidemia meningocócica, criptococose ou HIV avançado. [R1,R2,R3,R12,R13]\n\n**7. Punção e TC: decidir sem atrasar antibiótico.** Punção antes do antibiótico apenas se segura e rápida. Não fazer TC rotineira. Imagem antes: Glasgow <10, focalidade/pares cranianos, papiledema, convulsão recente no adulto, imunocomprometimento grave; incluir pupilas/posturas anormais, suspeita de massa e consciência em queda rápida/progressiva. Não puncionar com instabilidade não tratada, risco hemorrágico, púrpura extensa/progressiva ou infecção local. TC normal não elimina contraindicações persistentes. Se punção adiada, tratar primeiro e realizar quando segura. Líquor: células/diferencial, proteína, glicose com glicemia imediatamente prévia, Gram, cultura/antibiograma e PCR. [R1,R2]\n\n**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]\n\n**9. Rever terapia e duração.** Descalonar por agente/suscetibilidade e evolução com infectologia. OMS em doença não complicada: pneumococo 10–14 dias, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sem agente, considerar 7 dias somente com recuperação clínica e febre/sinais vitais/consciência normalizados por ≥48 h; é opção condicional OMS, sem suspensão automática. NICE recomenda 10 dias se líquor bacteriano e cultura/PCR sanguínea negativos: seguir protocolo local/documentar decisão especializada. Falta de recuperação ou complicação exige prolongar/reinvestigar. [R1,R2]\n\n**10. Prevenção e saída hospitalar.** Não dar alta inicial com suspeita forte. Notificar conforme jurisdição; saúde pública define contatos e profilaxia meningocócica rápida, independentemente da vacinação. Adulto elegível: CEFTRIAXONA 250 mg IM uma vez (preferida na gestação), ou CIPROFLOXACINO 500 mg VO uma vez somente conforme resistência local, ou RIFAMPICINA 600 mg VO a cada 12 h por 2 dias como alternativa selecionada; cipro/rifampicina não são rotina na gestação; revisar interações da rifampicina. Não tratar contato casual nem aplicar a toda meningite. Antes da alta avaliar sequelas e organizar reabilitação/audiologia: até 4 semanas de estar apto ao exame; revisão adulta em 4–6 semanas após alta. Gestação/lactação: avaliar riscos específicos com obstetrícia/farmácia; nenhuma dose pediátrica autorizada por este guia. [R1,R2,R8,R9,R10,R11]",
+            "study": "**Conceito e escopo.** Meningite bacteriana aguda é uma emergência infecciosa das meninges e do espaço subaracnoide. A resposta inflamatória pode produzir edema, alteração da perfusão cerebral, lesão neuronal e sepse. Este guia aborda ADULTOS com infecção adquirida na comunidade, fora de epidemias. Não aplicar suas doses a crianças; meningite neonatal/pediátrica, pós-neurocirurgia, associada a derivação ou trauma penetrante exige protocolo próprio. [R1,R3]\n\n**Etiologia, riscos e apresentação.** Pneumococo e meningococo são agentes relevantes; considerar Hib conforme vacinação e epidemiologia. Listeria requer cobertura adicional quando houver risco: idade >60 anos, gestação ou imunocomprometimento; a OMS inclui diabetes, doença renal terminal, doença hepática crônica avançada, uso problemático de álcool, HIV avançado, câncer, transplante e tratamento imunossupressor. Ceftriaxona não cobre Listeria. Febre, cefaleia, rigidez cervical e alteração de consciência/cognição constituem uma combinação de alarme; ausência de qualquer componente não exclui a doença, especialmente em idosos ou imunocomprometidos. Petéquias/púrpura, choque, convulsão, déficit focal e queda da consciência indicam gravidade. Não exigir uma “tríade completa” para tratar. [R1,R2]\n\n**Diagnóstico e exames.** Integrar clínica, sangue e líquor. Obter hemoculturas antes do antibiótico quando isso não causar atraso relevante; solicitar hemograma, glicose, função renal, eletrólitos, PCR/procalcitonina e, conforme gravidade, lactato e coagulação. PCR molecular em sangue/líquor ajuda a identificar o agente quando disponível. Líquor: contagem/diferencial celular, proteína, glicose com glicemia colhida imediatamente antes da punção, Gram, cultura/antibiograma e PCR. Neutrofilia, proteína elevada e glicose reduzida apoiam etiologia bacteriana, mas não constituem um conjunto de cortes absolutos que confirme ou exclua isoladamente meningite. Antibiótico prévio reduz rendimento; cultura/Gram negativos ou marcadores inflamatórios normais não excluem. Considerar encefalite, meningite viral, tuberculosa/criptocócica, abscesso, hemorragia subaracnoide e causas não infecciosas conforme o quadro. Aciclovir não é rotina para toda meningite: usar o protocolo específico se houver forte suspeita de encefalite herpética. [R1,R2,R3,R12]\n\n**Punção lombar e imagem.** Punção antes do antibiótico se for segura e não atrasar o tratamento; se adiada, realizar assim que houver segurança. TC não é rotina antes da punção. Pela OMS, obter imagem antes se Glasgow <10, focalidade, déficit de nervos cranianos, papiledema, convulsão de início recente em adulto ou imunocomprometimento grave. NICE acrescenta atenção a pupilas anormais, posturas anormais, lesão expansiva em evolução e queda progressiva/sustentada ou rápida da consciência. Estabilizar via aérea, respiração, choque, convulsões e risco hemorrágico; não puncionar com púrpura extensa/progressiva ou infecção no local. TC normal não libera automaticamente punção diante de sinais de risco persistentes. Se imagem/punção atrasar, colher sangue e iniciar tratamento primeiro. [R1,R2]\n\n**Tratamento antimicrobiano inicial.** Iniciar IV imediatamente diante de suspeita forte, com meta de até 1 hora da chegada hospitalar; não esperar líquor, TC, transferência ou resultado microbiológico. Adulto com função renal preservada: CEFTRIAXONA 2 g IV a cada 12 h (4 g/dia). Acrescentar AMPICILINA 2 g IV a cada 4 h (12 g/dia) nos riscos de Listeria descritos acima. Considerar VANCOMICINA adicional em alta prevalência local de pneumococo resistente à penicilina ou cefalosporina de terceira geração, conforme protocolo de resistência/avaliação infectológica: início 15–20 mg/kg por dose, pelo peso corporal total, IV a cada 8–12 h, até 2 g por dose de manutenção, com ajuste por função renal e níveis séricos. Não prescrever 15–20 mg/kg a cada 6 h como rotina adulta nem usar vancomicina isolada para cobertura empírica. Esquemas e doses referem-se ao contexto especificado; Listeria confirmada exige tratamento dirigido com ampicilina/amoxicilina e discussão de associação, não ceftriaxona isolada. Alergia grave a betalactâmicos exige alternativa escolhida imediatamente com especialista; não substituir automaticamente por meropenem. Cefotaxima pode ser alternativa conforme protocolo hospitalar validado. [R1,R2,R3,R5,R6]\n\n**Preparo e monitorização dos fármacos.** Conferir apresentação, dose em massa, diluente, volume final e compatibilidade. Exemplo restrito ao frasco de ceftriaxona 2 g Reig Jofre: adicionar 40 mL de solução sem cálcio, como NaCl 0,9% ou glicose 5%; volume resultante aproximado 41 mL; infundir em pelo menos 30 min. Não aplicar esse preparo a outra marca sem conferir bula; não usar Ringer/Hartmann, misturar com cálcio ou vancomicina, nem administrar solução com lidocaína por via IV. Na apresentação de ampicilina 2 g Eugia referenciada, adicionar 14,8 mL de água estéril para injeção para administração IV direta e administrar lentamente em pelo menos 10–15 min; administração rápida pode causar convulsões. Não extrapolar diluição de frasco de 500 mg. Vancomicina 500 mg hameln: reconstituir com 10 mL de água para injeção, obtendo 50 mg/mL, e DILUIR antes de infundir; concentração usual final 2,5–5 mg/mL. Respeitar simultaneamente tempo ≥60 min e velocidade ≤10 mg/min: 1 g exige pelo menos 100 min. Nunca bolus ou IM; vancomicina oral não trata esta infecção sistêmica. Monitorar reação de infusão, creatinina, diurese e concentrações séricas; iniciar monitorização precoce, mais frequente se instável, e individualizar exposição com infectologia/farmácia. Não transpor automaticamente alvo AUC de protocolo MRSA para pneumococo. [R5,R6,R7]\n\n**Dexametasona adjuvante.** Em adulto com forte suspeita de meningite bacteriana comunitária no cenário descrito e sem HIV avançado: DEXAMETASONA 10 mg IV a cada 6 h, primeira dose imediatamente antes ou junto do primeiro antibiótico, sem atrasar o antibiótico. Continuar por até 4 dias se pneumococo ou Hib; interromper se o líquor afastar etiologia bacteriana ou outro agente for identificado. Sem agente identificado, decidir continuidade com infectologia. Se não administrada inicialmente, não declarar “benefício zero”: NICE recomenda administrar assim que possível quando atraso <12 h; se ≥12 h, decisão individual com especialista, incluindo a fronteira de 12 h que não foi especificada pela diretriz. Confirmar na apresentação local a expressão em dexametasona base/fosfato e a equivalência da dose antes de converter para mL; não assumir todas as ampolas iguais. Monitorar glicemia e efeitos adversos. Não aplicar este esquema à meningococcemia isolada, epidemia meningocócica, meningite criptocócica ou HIV avançado sem avaliação específica. [R1,R2,R3,R12,R13]\n\n**Duração e descalonamento.** Rever agente, suscetibilidade, resposta e complicações diariamente. Para doença não complicada, a OMS orienta pneumococo 10–14 dias; meningococo 5–7; Hib 7–10; estreptococo do grupo B 14–21; Listeria 21 dias. Não extrapolar essas durações a abscesso, ventriculite, foco persistente ou imunocomprometimento complexo. Sem agente identificado, a OMS 2025 permite considerar suspensão após 7 dias SOMENTE com recuperação clínica: febre, sinais vitais e alteração de consciência resolvidos, estado mental normal por pelo menos 48 h. NICE 2024 mantém 10 dias quando líquor sugere bactéria e cultura/PCR sanguínea são negativos. Neste guia, a opção OMS é condicional e exige decisão infectológica/documentação; não criar suspensão automática no sétimo dia, e respeitar o protocolo local que adote 10 dias. Sem recuperação, prolongar e reinvestigar, incluindo nova punção se segura. [R1,R2]\n\n**Suporte, complicações e populações especiais.** Internação, monitorização neurológica/hemodinâmica e infectologia para todo caso suspeito relevante. Choque, falência respiratória, coma, convulsões persistentes ou suspeita de herniação exigem terapia intensiva urgente. Corrigir hipovolemia e distúrbios eletrolíticos com reavaliação; não restringir líquidos rotineiramente. Hiponatremia requer esclarecer causa/gravidade, sem assumir SIADH ou tratar apenas por um corte de sódio. Osmoterapia não é rotina; ameaça de herniação admite medida temporária orientada por equipe intensiva/neurocirúrgica, sem atrasar medidas definitivas. Deterioração exige reavaliação/imagem urgente, sem espera fixa de 24–48 h. Na lesão renal, ajustar ampicilina e vancomicina por função/níveis; não usar intervalos fixos em AKI/dialise. Bula de ceftriaxona limita a 2 g/dia se depuração de creatinina <10 mL/min: como isso difere do esquema meníngeo 4 g/dia, resolver imediatamente com infectologia/farmácia, sem simples redução que comprometa o SNC. Comprometimento renal e hepático associados exige monitorização estreita. Gestação adiciona risco de Listeria e requer obstetrícia; necessidade de tratamento materno não deve ser adiada. Na lactação, avaliar bula, risco/benefício e possíveis efeitos no lactente. Idosos podem ter sinais atípicos e depuração reduzida. Pediatria: protocolo próprio, sem extrapolação destas doses. [R1,R2,R5,R6,R8,R13]\n\n**Seguimento e prevenção.** Antes da alta, avaliar déficits neurológicos, audição, cognição e funcionalidade e organizar reabilitação. NICE: avaliação audiológica até 4 semanas após estar apto ao exame, preferencialmente antes da alta; revisão médica do adulto em 4–6 semanas após alta. Orientar retorno urgente por febre recorrente, piora neurológica, convulsão ou nova perda auditiva. Suspeita meningocócica: precauções padrão + gotículas até 24 h de antibiótico eficaz e notificação/saúde pública conforme jurisdição. Contatos próximos de doença meningocócica invasiva precisam profilaxia rápida, independentemente de vacinação: em adulto elegível, ceftriaxona 250 mg IM dose única; ciprofloxacino 500 mg VO dose única somente se apropriado à resistência local; rifampicina 600 mg VO a cada 12 h por 2 dias como alternativa selecionada. Gestação: preferir ceftriaxona; não usar rotineiramente cipro/rifampicina para profilaxia. Rifampicina interage com contraceptivos, anticoagulantes e antiepilépticos. Definir contato com vigilância (domiciliar/exposição direta a secreções, inclusive procedimento de via aérea sem proteção); não tratar indiscriminadamente todos os profissionais ou contatos casuais. Não aplicar profilaxia meningocócica a toda meningite bacteriana. Vacinação e investigação de recorrência/imunodeficiência conforme agente e programa local. [R1,R2,R9,R10,R11]"
+          },
+          "references": [
+            {
+              "authority": "WHO",
+              "id": "R1",
+              "populationScope": "Community-acquired meningitis; children >1 month and adults; adult non-epidemic scope selected",
+              "status": "AUTHORITATIVE_FINAL",
+              "title": "WHO guidelines on meningitis diagnosis, treatment and care",
+              "url": "https://www.who.int/publications/i/item/9789240108042",
+              "verifiedOn": "2026-10-02",
+              "year": 2025
+            },
+            {
+              "authority": "NICE",
+              "id": "R2",
+              "populationScope": "Babies, children and adults; adult recommendations selected",
+              "status": "AUTHORITATIVE_FINAL",
+              "title": "NG240: Meningitis (bacterial) and meningococcal disease: recognition, diagnosis and management",
+              "url": "https://www.nice.org.uk/guidance/ng240/chapter/Recommendations",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            },
+            {
+              "authority": "DGN/AWMF",
+              "id": "R3",
+              "populationScope": "Adult community-acquired meningitis; doses and differential crosscheck; regional empiric breadth not transplanted",
+              "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+              "title": "German guidelines on community-acquired acute bacterial meningitis in adults",
+              "url": "https://link.springer.com/article/10.1186/s42466-023-00264-6",
+              "verifiedOn": "2026-10-02",
+              "year": 2023
+            },
+            {
+              "authority": "AWMF",
+              "id": "R4",
+              "populationScope": "Formal validity verification of R3; not an independent clinical guideline",
+              "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+              "title": "AWMF 030-089 version 6.0: publication and validity until 27 April 2028",
+              "url": "https://www.awmf.org/aktuelles/awmf-aktuell/ambulant-erworbene-bakterielle-meningoenzephalitis-im-erwachsenenalter",
+              "verifiedOn": "2026-10-02",
+              "year": 2023
+            },
+            {
+              "authority": "Reig Jofre UK / emc",
+              "id": "R5",
+              "populationScope": "Product-specific IV preparation, compatibility and special populations",
+              "status": "AUTHORITATIVE_CURRENT_PRODUCT_LABEL",
+              "title": "Ceftriaxone 2 g: Summary of Product Characteristics, revised 22 October 2025",
+              "url": "https://www.medicines.org.uk/emc/product/100175/smpc",
+              "verifiedOn": "2026-10-02",
+              "year": 2025
+            },
+            {
+              "authority": "hameln pharma / emc",
+              "id": "R6",
+              "populationScope": "IV systemic dose/infusion/TDM safety; meningitis indication determined by R1/R3, not an indication claim from this label",
+              "status": "AUTHORITATIVE_CURRENT_PRODUCT_LABEL",
+              "title": "Vancomycin 500 mg: Summary of Product Characteristics, updated 27 March 2026",
+              "url": "https://www.medicines.org.uk/emc/product/15736/smpc",
+              "verifiedOn": "2026-10-02",
+              "year": 2026
+            },
+            {
+              "authority": "Eugia / DailyMed",
+              "id": "R7",
+              "populationScope": "Product-specific adult IV preparation; not ampicillin/sulbactam",
+              "status": "AUTHORITATIVE_CURRENT_PRODUCT_LABEL",
+              "title": "Ampicillin for Injection, USP: text revised January 2024; DailyMed publication 3 August 2026",
+              "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=78988f6a-a73b-4d3b-9a76-d61a748c3c16",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            },
+            {
+              "authority": "Chemidex / emc",
+              "id": "R8",
+              "populationScope": "Renal and pregnancy safety; 2 g q6h label is not selected adult guideline regimen and 500 mg preparation is not transplanted",
+              "status": "AUTHORITATIVE_CURRENT_PRODUCT_LABEL",
+              "title": "Ampicillin 500 mg: Summary of Product Characteristics, revised August 2024",
+              "url": "https://www.medicines.org.uk/emc/product/12892/smpc",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            },
+            {
+              "authority": "CDC",
+              "id": "R9",
+              "populationScope": "Close contacts/prophylaxis, drug interactions and pregnancy cautions",
+              "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+              "title": "Surveillance Manual Chapter 8: Meningococcal Disease, 30 October 2024",
+              "url": "https://www.cdc.gov/surv-manual/php/table-of-contents/chapter-8-meningococcal-disease.html",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            },
+            {
+              "authority": "CDC",
+              "id": "R10",
+              "populationScope": "Droplet precautions, exposure definition and 24-hour infectivity threshold",
+              "status": "AUTHORITATIVE_CURRENT_OFFICIAL_WEB",
+              "title": "Meningococcal Disease: Infection Control in Healthcare Personnel",
+              "url": "https://www.cdc.gov/infection-control/hcp/healthcare-personnel-epidemiology-control/meningococcal-disease.html",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            },
+            {
+              "authority": "CDC MMWR",
+              "id": "R11",
+              "populationScope": "US operational resistance guidance; local epidemiology governs Latin American implementation",
+              "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+              "title": "Selection of antibiotics for meningococcal prophylaxis in areas with ciprofloxacin resistance",
+              "url": "https://www.cdc.gov/mmwr/volumes/73/wr/mm7305a2.htm",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            },
+            {
+              "authority": "NIH",
+              "id": "R12",
+              "populationScope": "HIV-associated cryptococcal differential and prohibition of routine adjunctive corticosteroid; no cryptococcal treatment doses transplanted",
+              "status": "AUTHORITATIVE_LIVING",
+              "title": "Cryptococcosis: updated 29 October 2024, reviewed 16 March 2026",
+              "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cryptococcosis",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            },
+            {
+              "authority": "hameln pharma / emc",
+              "id": "R13",
+              "populationScope": "Base/phosphate concentration distinction and product safety, not meningitis dose source",
+              "status": "AUTHORITATIVE_CURRENT_PRODUCT_LABEL",
+              "title": "Dexamethasone 3.3 mg/mL: Summary of Product Characteristics, updated 11 October 2024",
+              "url": "https://www.medicines.org.uk/emc/product/4659/smpc",
+              "verifiedOn": "2026-10-02",
+              "year": 2024
+            }
+          ],
+          "version": "JIT-2026-10-02-v1.0"
         },
         "classification": {
           "compatibilityKind": "localized_classification_payload",
@@ -30053,23 +30205,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 Meningocócica: petequias/púrpura, progresión rápida, sepsis, mortalidad alta sin ATB inmediato",
-              "🔴 Neumocócica: más común, HTIC frecuente, alta mortalidad — 1ª elección: ceftriaxona + dexametasona",
-              "🟠 Listeria: gestante/inmunosuprimido/>50 años — añadir ampicilina al esquema estándar",
-              "🟡 Gram-negativo (gram-neg hospitalario): post-neurocirugía, trauma — meropenem ± vancomicina"
+              "**Etiología, riesgos y presentación.** Neumococo y meningococo son agentes relevantes; considerar Hib según vacunación y epidemiología. Listeria requiere cobertura adicional cuando exista riesgo: edad >60 años, embarazo o inmunocompromiso; la OMS incluye diabetes, enfermedad renal terminal, hepatopatía crónica avanzada, trastorno por consumo de alcohol, VIH avanzado, cáncer, trasplante y tratamiento inmunosupresor. Ceftriaxona no cubre Listeria. Fiebre, cefalea, rigidez de nuca y alteración de conciencia/cognición constituyen una combinación de alarma; la ausencia de cualquiera de estos componentes no excluye la enfermedad, especialmente en mayores o inmunocomprometidos. Petequias/púrpura, shock, convulsión, déficit focal y descenso de conciencia indican gravedad. No exigir una “tríada completa” para tratar. [R1,R2]"
             ],
             "pt": [
-              "🔴 Meningocócica: petéquias/púrpura, progressão rápida, sepse, mortalidade alta sem ATB imediato",
-              "🔴 Pneumocócica: mais comum, HICP frequente, alta mortalidade — 1ª escolha: ceftriaxona + dexametasona",
-              "🟠 Listeria: gestante/imunossuprimido/>50 anos — adicionar ampicilina ao esquema padrão",
-              "🟡 Gram-negativo (gram-neg hospitalar): pós-neurocirurgia, trauma — meropenem ± vancomicina"
+              "**Etiologia, riscos e apresentação.** Pneumococo e meningococo são agentes relevantes; considerar Hib conforme vacinação e epidemiologia. Listeria requer cobertura adicional quando houver risco: idade >60 anos, gestação ou imunocomprometimento; a OMS inclui diabetes, doença renal terminal, doença hepática crônica avançada, uso problemático de álcool, HIV avançado, câncer, transplante e tratamento imunossupressor. Ceftriaxona não cobre Listeria. Febre, cefaleia, rigidez cervical e alteração de consciência/cognição constituem uma combinação de alarme; ausência de qualquer componente não exclui a doença, especialmente em idosos ou imunocomprometidos. Petéquias/púrpura, choque, convulsão, déficit focal e queda da consciência indicam gravidade. Não exigir uma “tríade completa” para tratar. [R1,R2]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "516ecc3c8dac131cdaab66b1b8bc1684e1294a6be50f75b0a7f3084c7d9dc90f",
+            "blockSha256": "f6ae5a01143dacc7249ccb866b65e591f37f01bbf29431df5c6871bfa1d48b25",
             "innerFamilyId": "ec4c285966e73508",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::meningite_bacteriana",
@@ -30080,9 +30226,10 @@
       "protocolKey": "legacy_protocol::meningite_bacteriana",
       "source": "legacyCompatibility.recordsByPathology",
       "sourceMode": "verbatim_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
+      "approvedClinicalPayloadSha256": "f7f6f23280323514d7727df2809dc1d31c78f1b5f029ede4c8848b4e59d7c68f",
       "canonicalPathologyKey": "meningite_bacteriana",
       "contentKey": "legacy_classification_content::meningite_bacteriana",
       "enabled": true,
@@ -30096,23 +30243,17 @@
         "finalMachineRegistryDocument": false,
         "locales": {
           "es": [
-            "🔴 Meningocócica: petequias/púrpura, progresión rápida, sepsis, mortalidad alta sin ATB inmediato",
-            "🔴 Neumocócica: más común, HTIC frecuente, alta mortalidad — 1ª elección: ceftriaxona + dexametasona",
-            "🟠 Listeria: gestante/inmunosuprimido/>50 años — añadir ampicilina al esquema estándar",
-            "🟡 Gram-negativo (gram-neg hospitalario): post-neurocirugía, trauma — meropenem ± vancomicina"
+            "**Etiología, riesgos y presentación.** Neumococo y meningococo son agentes relevantes; considerar Hib según vacunación y epidemiología. Listeria requiere cobertura adicional cuando exista riesgo: edad >60 años, embarazo o inmunocompromiso; la OMS incluye diabetes, enfermedad renal terminal, hepatopatía crónica avanzada, trastorno por consumo de alcohol, VIH avanzado, cáncer, trasplante y tratamiento inmunosupresor. Ceftriaxona no cubre Listeria. Fiebre, cefalea, rigidez de nuca y alteración de conciencia/cognición constituyen una combinación de alarma; la ausencia de cualquiera de estos componentes no excluye la enfermedad, especialmente en mayores o inmunocomprometidos. Petequias/púrpura, shock, convulsión, déficit focal y descenso de conciencia indican gravedad. No exigir una “tríada completa” para tratar. [R1,R2]"
           ],
           "pt": [
-            "🔴 Meningocócica: petéquias/púrpura, progressão rápida, sepse, mortalidade alta sem ATB imediato",
-            "🔴 Pneumocócica: mais comum, HICP frequente, alta mortalidade — 1ª escolha: ceftriaxona + dexametasona",
-            "🟠 Listeria: gestante/imunossuprimido/>50 anos — adicionar ampicilina ao esquema padrão",
-            "🟡 Gram-negativo (gram-neg hospitalar): pós-neurocirurgia, trauma — meropenem ± vancomicina"
+            "**Etiologia, riscos e apresentação.** Pneumococo e meningococo são agentes relevantes; considerar Hib conforme vacinação e epidemiologia. Listeria requer cobertura adicional quando houver risco: idade >60 anos, gestação ou imunocomprometimento; a OMS inclui diabetes, doença renal terminal, doença hepática crônica avançada, uso problemático de álcool, HIV avançado, câncer, transplante e tratamento imunossupressor. Ceftriaxona não cobre Listeria. Febre, cefaleia, rigidez cervical e alteração de consciência/cognição constituem uma combinação de alarme; ausência de qualquer componente não exclui a doença, especialmente em idosos ou imunocomprometidos. Petéquias/púrpura, choque, convulsão, déficit focal e queda da consciência indicam gravidade. Não exigir uma “tríade completa” para tratar. [R1,R2]"
           ]
         },
         "machineRuleInferencePerformed": false,
         "ptEsStructuralParity": true,
         "schemaVersion": "legacy_localized_payload_v1",
         "sourceProof": {
-          "blockSha256": "516ecc3c8dac131cdaab66b1b8bc1684e1294a6be50f75b0a7f3084c7d9dc90f",
+          "blockSha256": "f6ae5a01143dacc7249ccb866b65e591f37f01bbf29431df5c6871bfa1d48b25",
           "innerFamilyId": "ec4c285966e73508",
           "legacyField": "classification",
           "protocolKey": "legacy_protocol::meningite_bacteriana",
@@ -30122,7 +30263,7 @@
       "protocolKey": "legacy_protocol::meningite_bacteriana",
       "source": "legacyCompatibility.recordsByPathology.classification",
       "sourceMode": "verbatim_classification_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "canonicalPathologyKey": "meningite_pediatrica",
@@ -40997,12 +41138,13 @@
       "aliases": [
         "meningite_bacteriana"
       ],
+      "approvedClinicalPayloadSha256": "f7f6f23280323514d7727df2809dc1d31c78f1b5f029ede4c8848b4e59d7c68f",
       "canonicalKey": "meningite_bacteriana",
       "displayLabel": "meningite_bacteriana",
       "enabled": true,
       "priority": 100,
       "source": {
-        "blockSha256": "516ecc3c8dac131cdaab66b1b8bc1684e1294a6be50f75b0a7f3084c7d9dc90f",
+        "blockSha256": "f6ae5a01143dacc7249ccb866b65e591f37f01bbf29431df5c6871bfa1d48b25",
         "file": "lib/data/protocols_database.dart",
         "line": 4632,
         "sourceGroup": "ProtocolModel",
@@ -41012,7 +41154,7 @@
       "strongAliases": [
         "meningite_bacteriana"
       ],
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "aliases": [
@@ -77258,11 +77400,12 @@
       "visibleCutoverEligible": false
     },
     {
+      "approvedClinicalPayloadSha256": "f7f6f23280323514d7727df2809dc1d31c78f1b5f029ede4c8848b4e59d7c68f",
       "authoringStatus": "AUTHORITATIVE_CURRENT_ENABLED_LOCAL_DRAFT",
       "canonicalPathologyKey": "meningite_bacteriana",
       "classificationActionRef": null,
       "classificationDependencies": [],
-      "clinicalReviewDate": "2026-08-31",
+      "clinicalReviewDate": "2026-10-02",
       "clinicalSemanticInferencePerformed": false,
       "clinicalState": {
         "canonicalPathologyKey": "meningite_bacteriana",
@@ -77273,41 +77416,75 @@
         },
         "protocolKey": "legacy_protocol::meningite_bacteriana"
       },
-      "conditionalActions": [
-        {
-          "es": "El corticoide adyuvante debe seguir la recomendación específica del escenario y administrarse con/antes de la primera dosis antibiótica cuando esté indicado, sin retrasar el antimicrobiano.",
-          "key": "conditional_1",
-          "pt": "Corticoide adjuvante deve seguir a recomendação específica do cenário e ser administrado com/antes da primeira dose antibiótica quando indicado, nunca atrasando o antimicrobiano."
-        }
-      ],
+      "conditionalActions": [],
       "contraindicatedActions": [
         {
-          "es": "No esperar el resultado de LCR para iniciar antibiótico cuando la sospecha clínica es alta y el procedimiento se retrasará.",
-          "key": "contra_1",
-          "pt": "Não aguardar resultado de LCR para iniciar antibiótico quando a suspeita clínica é alta e o procedimento será atrasado."
+          "es": "**5. Seguridad de vancomicina y ajustes.** Presentación hameln 500 mg: 10 mL de agua para inyección produce 50 mg/mL; después diluir a concentración final habitual 2,5–5 mg/mL. Infusión ≥60 min Y ≤10 mg/min (1 g: ≥100 min); nunca bolo, IM o VO para tratar meningitis. Monitorear creatinina, diuresis, concentraciones séricas y reacción a la infusión; ajustar mantenimiento en AKI/diálisis con farmacia/infectología. Ampicilina también requiere ajuste renal. Si depuración <10 mL/min, la ficha de ceftriaxona limita 2 g/día: resolver inmediatamente el esquema meníngeo con especialista, sin reducir automáticamente la cobertura del SNC. Alergia grave a betalactámicos: alternativa inmediata con infectología, sin cambio automático a meropenem. [R2,R5,R6,R8]",
+          "key": "approved_contra",
+          "pt": "**5. Segurança da vancomicina e ajustes.** Apresentação hameln 500 mg: 10 mL de água para injeção produz 50 mg/mL; depois diluir para concentração usual final 2,5–5 mg/mL. Infusão ≥60 min E ≤10 mg/min (1 g: ≥100 min); nunca bolus, IM ou VO para tratar meningite. Monitorar creatinina, diurese, níveis séricos e reação de infusão; ajustar manutenção em AKI/diálise com farmácia/infectologia. Ampicilina também exige ajuste renal. Se depuração <10 mL/min, a bula de ceftriaxona limita 2 g/dia: resolver imediatamente o esquema meníngeo com especialista, sem reduzir automaticamente a cobertura do SNC. Alergia grave a betalactâmicos: alternativa imediata com infectologia, sem troca automática por meropenem. [R2,R5,R6,R8]"
         }
       ],
-      "definitiveActions": [
-        {
-          "es": "Elegir antibióticos según edad, epidemiología, resistencia local y factores de riesgo; ajustar tras identificación microbiológica.",
-          "key": "definitive_1",
-          "pt": "Escolher antibióticos pela idade, epidemiologia, resistência local e fatores de risco; ajustar após identificação microbiológica."
-        }
-      ],
+      "definitiveActions": [],
       "dependsOn": {},
       "enabled": true,
-      "escalationCriteria": [],
-      "guidelineVersion": "WHO_MENINGITIS_2025",
+      "escalationCriteria": [
+        {
+          "es": "**1. Reconocer y derivar.** ADULTO, meningitis comunitaria fuera de epidemia. Sospechar con fiebre, cefalea, rigidez de nuca o alteración de conciencia; no exigir todos los signos. Púrpura, shock, convulsión, focalidad o descenso de conciencia = emergencia de alta gravedad. Internar/trasladar inmediatamente a un servicio con soporte; activar infectología y UTI según gravedad. Preguntar inicio, antibiótico previo, alergia y reacción, embarazo, edad, inmunosupresión, enfermedad renal/hepática, otitis/sinusitis y cirugía/derivación reciente. El escenario posneuroquirúrgico o pediátrico requiere otro protocolo. [R1,R2,R3]",
+          "key": "approved_escalation",
+          "pt": "**1. Reconhecer e encaminhar.** ADULTO, meningite comunitária fora de epidemia. Suspeitar com febre, cefaleia, rigidez cervical ou alteração da consciência; não exigir todos os sinais. Púrpura, choque, convulsão, focalidade ou queda da consciência = emergência de alta gravidade. Internar/transferir imediatamente a serviço com capacidade de suporte; acionar infectologia e UTI conforme gravidade. Perguntar início, antibiótico prévio, alergia e reação, gestação, idade, imunossupressão, doença renal/hepática, otite/sinusite e cirurgia/derivação recente. Cenário pós-neurocirúrgico ou pediátrico requer outro protocolo. [R1,R2,R3]"
+        }
+      ],
+      "guidelineVersion": "WHO_MENINGITIS_2025_NICE_2024_DGN_2023",
       "initialActions": [
         {
-          "es": "Obtener hemocultivos e iniciar antimicrobianos empíricos apropiados rápidamente; no retrasar tratamiento por punción lumbar o neuroimagen cuando exista demora relevante.",
-          "key": "initial_1",
-          "pt": "Obter hemoculturas e iniciar antimicrobianos empíricos apropriados rapidamente; não atrasar tratamento por punção lombar ou neuroimagem quando houver demora relevante."
+          "es": "**1. Reconocer y derivar.** ADULTO, meningitis comunitaria fuera de epidemia. Sospechar con fiebre, cefalea, rigidez de nuca o alteración de conciencia; no exigir todos los signos. Púrpura, shock, convulsión, focalidad o descenso de conciencia = emergencia de alta gravedad. Internar/trasladar inmediatamente a un servicio con soporte; activar infectología y UTI según gravedad. Preguntar inicio, antibiótico previo, alergia y reacción, embarazo, edad, inmunosupresión, enfermedad renal/hepática, otitis/sinusitis y cirugía/derivación reciente. El escenario posneuroquirúrgico o pediátrico requiere otro protocolo. [R1,R2,R3]",
+          "key": "approved_0",
+          "pt": "**1. Reconhecer e encaminhar.** ADULTO, meningite comunitária fora de epidemia. Suspeitar com febre, cefaleia, rigidez cervical ou alteração da consciência; não exigir todos os sinais. Púrpura, choque, convulsão, focalidade ou queda da consciência = emergência de alta gravidade. Internar/transferir imediatamente a serviço com capacidade de suporte; acionar infectologia e UTI conforme gravidade. Perguntar início, antibiótico prévio, alergia e reação, gestação, idade, imunossupressão, doença renal/hepática, otite/sinusite e cirurgia/derivação recente. Cenário pós-neurocirúrgico ou pediátrico requer outro protocolo. [R1,R2,R3]"
         },
         {
-          "es": "Estabilizar vía aérea, circulación, convulsiones y presión intracraneal cuando estén presentes.",
-          "key": "initial_2",
-          "pt": "Estabilizar via aérea, circulação, convulsões e pressão intracraniana quando presentes."
+          "es": "**2. ABCDE y estudios simultáneos.** Evaluar/proteger vía aérea, ventilación, perfusión, glucemia, Glasgow/pupilas, focalidad, convulsiones y púrpura; tratar inestabilidad inmediatamente. Obtener hemocultivos antes del antibiótico si no demora; hemograma, glucosa, creatinina/electrolitos, proteína C reactiva/procalcitonina, lactato/coagulación según gravedad, PCR sanguínea cuando esté disponible. Un marcador normal no excluye. Sospecha meningocócica: precauciones estándar + gotitas, mantenidas hasta 24 h de antibiótico eficaz. [R1,R2,R10]",
+          "key": "approved_1",
+          "pt": "**2. ABCDE e exames simultâneos.** Avaliar/proteger via aérea, ventilação, perfusão, glicemia, Glasgow/pupilas, focalidade, convulsões e púrpura; tratar instabilidade imediatamente. Obter hemoculturas antes de antibiótico se isso não atrasar; hemograma, glicose, creatinina/eletrólitos, PCR/procalcitonina, lactato/coagulação conforme gravidade, PCR sanguínea quando disponível. Marcador normal não exclui. Suspeita meningocócica: precauções padrão + gotículas, mantidas até 24 h de antibiótico eficaz. [R1,R2,R10]"
+        },
+        {
+          "es": "**3. Antibiótico sin demora.** Iniciar inmediatamente, hasta 1 hora del ingreso hospitalario como objetivo; no esperar TC, punción ni resultado. Función renal conservada: CEFTRIAXONA 2 g IV cada 12 h (4 g/día). En la presentación Reig Jofre 2 g: 40 mL de diluyente sin calcio, como NaCl 0,9% o glucosa 5%, volumen resultante aproximado 41 mL, infusión ≥30 min. Verificar ficha local; nunca Ringer/Hartmann, calcio simultáneo, mezcla con vancomicina ni lidocaína IV. [R1,R2,R3,R5]",
+          "key": "approved_2",
+          "pt": "**3. Antibiótico sem atraso.** Iniciar imediatamente, até 1 hora da chegada hospitalar como meta; não esperar TC, punção ou resultado. Função renal preservada: CEFTRIAXONA 2 g IV a cada 12 h (4 g/dia). Na apresentação Reig Jofre 2 g: 40 mL de diluente sem cálcio, como NaCl 0,9% ou glicose 5%, volume resultante aproximado 41 mL, infusão ≥30 min. Conferir bula local; nunca Ringer/Hartmann, cálcio simultâneo, mistura com vancomicina ou lidocaína IV. [R1,R2,R3,R5]"
+        },
+        {
+          "es": "**4. Cobertura adicional cuando esté indicada.** AMPICILINA 2 g IV cada 4 h (12 g/día) si >60 años, embarazo o inmunocompromiso, incluidos diabetes, enfermedad renal terminal, hepatopatía avanzada y trastorno por consumo de alcohol. Ceftriaxona sola no cubre Listeria. Ejemplo solo para ampicilina 2 g Eugia referenciada: 14,8 mL de agua estéril para inyección; IV directa lentamente ≥10–15 min; verificar presentación, no extrapolar vial de 500 mg. VANCOMICINA adicional según resistencia neumocócica local: 15–20 mg/kg/dosis IV cada 8–12 h por peso total, hasta 2 g por dosis de mantenimiento, ajustando por función renal/niveles. Nunca rutina adulta cada 6 h. [R1,R3,R6,R7]",
+          "key": "approved_3",
+          "pt": "**4. Cobertura adicional quando indicada.** AMPICILINA 2 g IV a cada 4 h (12 g/dia) se >60 anos, gestação ou imunocomprometimento, incluindo diabetes, doença renal terminal, hepatopatia avançada e uso problemático de álcool. Ceftriaxona isolada não cobre Listeria. Exemplo apenas para ampicilina 2 g Eugia referenciada: 14,8 mL de água estéril para injeção; IV direta lentamente ≥10–15 min; conferir apresentação, não extrapolar frasco 500 mg. VANCOMICINA adicional conforme resistência pneumocócica local: 15–20 mg/kg/dose IV a cada 8–12 h pelo peso total, até 2 g por dose de manutenção, ajustando por função renal/níveis. Nunca rotina adulta a cada 6 h. [R1,R3,R6,R7]"
+        },
+        {
+          "es": "**5. Seguridad de vancomicina y ajustes.** Presentación hameln 500 mg: 10 mL de agua para inyección produce 50 mg/mL; después diluir a concentración final habitual 2,5–5 mg/mL. Infusión ≥60 min Y ≤10 mg/min (1 g: ≥100 min); nunca bolo, IM o VO para tratar meningitis. Monitorear creatinina, diuresis, concentraciones séricas y reacción a la infusión; ajustar mantenimiento en AKI/diálisis con farmacia/infectología. Ampicilina también requiere ajuste renal. Si depuración <10 mL/min, la ficha de ceftriaxona limita 2 g/día: resolver inmediatamente el esquema meníngeo con especialista, sin reducir automáticamente la cobertura del SNC. Alergia grave a betalactámicos: alternativa inmediata con infectología, sin cambio automático a meropenem. [R2,R5,R6,R8]",
+          "key": "approved_4",
+          "pt": "**5. Segurança da vancomicina e ajustes.** Apresentação hameln 500 mg: 10 mL de água para injeção produz 50 mg/mL; depois diluir para concentração usual final 2,5–5 mg/mL. Infusão ≥60 min E ≤10 mg/min (1 g: ≥100 min); nunca bolus, IM ou VO para tratar meningite. Monitorar creatinina, diurese, níveis séricos e reação de infusão; ajustar manutenção em AKI/diálise com farmácia/infectologia. Ampicilina também exige ajuste renal. Se depuração <10 mL/min, a bula de ceftriaxona limita 2 g/dia: resolver imediatamente o esquema meníngeo com especialista, sem reduzir automaticamente a cobertura do SNC. Alergia grave a betalactâmicos: alternativa imediata com infectologia, sem troca automática por meropenem. [R2,R5,R6,R8]"
+        },
+        {
+          "es": "**6. Dexametasona cuando corresponda.** Fuerte sospecha bacteriana comunitaria en el escenario descrito, sin VIH avanzado: DEXAMETASONA 10 mg IV cada 6 h, antes/junto con el primer antibiótico, sin demorarlo. Hasta 4 días si neumococo/Hib; suspender si causa no bacteriana u otro agente; sin agente, discutir continuidad. Demora <12 h: dar lo antes posible según NICE; demora ≥12 h: decisión especializada, incluido el límite exacto de 12 h no definido por la fuente. Verificar equivalencia base/fosfato y ficha antes de calcular mL; monitorear glucemia. No aplicar automáticamente a meningococcemia aislada, epidemia meningocócica, criptococosis o VIH avanzado. [R1,R2,R3,R12,R13]",
+          "key": "approved_5",
+          "pt": "**6. Dexametasona quando aplicável.** Forte suspeita bacteriana comunitária no cenário descrito, sem HIV avançado: DEXAMETASONA 10 mg IV a cada 6 h, antes/junto do primeiro antibiótico, sem retardá-lo. Até 4 dias se pneumococo/Hib; suspender se causa não bacteriana ou outro agente; sem agente, discutir continuidade. Atraso <12 h: dar assim que possível segundo NICE; atraso ≥12 h: decisão especializada, incluindo limite exato de 12 h não definido pela fonte. Conferir equivalência base/fosfato e bula antes de calcular mL; monitorar glicemia. Não aplicar automaticamente a meningococcemia isolada, epidemia meningocócica, criptococose ou HIV avançado. [R1,R2,R3,R12,R13]"
+        },
+        {
+          "es": "**7. Punción y TC: decidir sin retrasar antibiótico.** Punción antes del antibiótico solo si es segura y rápida. No realizar TC de rutina. Imagen antes: Glasgow <10, focalidad/pares craneales, papiledema, convulsión reciente en adulto, inmunocompromiso grave; incluir pupilas/posturas anormales, sospecha de masa y conciencia en descenso rápido/progresivo. No puncionar con inestabilidad no tratada, riesgo hemorrágico, púrpura extensa/progresiva o infección local. Una TC normal no elimina contraindicaciones persistentes. Si se posterga punción, tratar primero y realizar cuando sea segura. LCR: células/diferencial, proteínas, glucosa con glucemia inmediatamente previa, Gram, cultivo/antibiograma y PCR. [R1,R2]",
+          "key": "approved_6",
+          "pt": "**7. Punção e TC: decidir sem atrasar antibiótico.** Punção antes do antibiótico apenas se segura e rápida. Não fazer TC rotineira. Imagem antes: Glasgow <10, focalidade/pares cranianos, papiledema, convulsão recente no adulto, imunocomprometimento grave; incluir pupilas/posturas anormais, suspeita de massa e consciência em queda rápida/progressiva. Não puncionar com instabilidade não tratada, risco hemorrágico, púrpura extensa/progressiva ou infecção local. TC normal não elimina contraindicações persistentes. Se punção adiada, tratar primeiro e realizar quando segura. Líquor: células/diferencial, proteína, glicose com glicemia imediatamente prévia, Gram, cultura/antibiograma e PCR. [R1,R2]"
+        },
+        {
+          "es": "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+          "key": "approved_7",
+          "pt": "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]"
+        },
+        {
+          "es": "**9. Revisar terapia y duración.** Desescalar por agente/sensibilidad y evolución con infectología. OMS en enfermedad no complicada: neumococo 10–14 días, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sin agente, considerar 7 días solo con recuperación clínica y fiebre/signos vitales/conciencia normalizados durante ≥48 h; es opción condicional OMS, sin suspensión automática. NICE recomienda 10 días si LCR bacteriano y cultivo/PCR sanguínea negativos: seguir protocolo local/documentar decisión especializada. Falta de recuperación o complicación exige prolongar/reinvestigar. [R1,R2]",
+          "key": "approved_8",
+          "pt": "**9. Rever terapia e duração.** Descalonar por agente/suscetibilidade e evolução com infectologia. OMS em doença não complicada: pneumococo 10–14 dias, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sem agente, considerar 7 dias somente com recuperação clínica e febre/sinais vitais/consciência normalizados por ≥48 h; é opção condicional OMS, sem suspensão automática. NICE recomenda 10 dias se líquor bacteriano e cultura/PCR sanguínea negativos: seguir protocolo local/documentar decisão especializada. Falta de recuperação ou complicação exige prolongar/reinvestigar. [R1,R2]"
+        },
+        {
+          "es": "**10. Prevención y alta hospitalaria.** No dar alta inicial con sospecha fuerte. Notificar según jurisdicción; salud pública define contactos y profilaxis meningocócica rápida, independientemente de vacunación. Adulto elegible: CEFTRIAXONA 250 mg IM una vez (preferida en embarazo), o CIPROFLOXACINO 500 mg VO una vez solo según resistencia local, o RIFAMPICINA 600 mg VO cada 12 h durante 2 días como alternativa seleccionada; cipro/rifampicina no son de rutina en embarazo; revisar interacciones de rifampicina. No tratar contactos casuales ni aplicar a toda meningitis. Antes del alta evaluar secuelas y organizar rehabilitación/audiología: dentro de 4 semanas de estar apto para examen; revisión adulta a las 4–6 semanas del alta. Embarazo/lactancia: evaluar riesgos específicos con obstetricia/farmacia; ninguna dosis pediátrica autorizada por esta guía. [R1,R2,R8,R9,R10,R11]",
+          "key": "approved_9",
+          "pt": "**10. Prevenção e saída hospitalar.** Não dar alta inicial com suspeita forte. Notificar conforme jurisdição; saúde pública define contatos e profilaxia meningocócica rápida, independentemente da vacinação. Adulto elegível: CEFTRIAXONA 250 mg IM uma vez (preferida na gestação), ou CIPROFLOXACINO 500 mg VO uma vez somente conforme resistência local, ou RIFAMPICINA 600 mg VO a cada 12 h por 2 dias como alternativa selecionada; cipro/rifampicina não são rotina na gestação; revisar interações da rifampicina. Não tratar contato casual nem aplicar a toda meningite. Antes da alta avaliar sequelas e organizar reabilitação/audiologia: até 4 semanas de estar apto ao exame; revisão adulta em 4–6 semanas após alta. Gestação/lactação: avaliar riscos específicos com obstetrícia/farmácia; nenhuma dose pediátrica autorizada por este guia. [R1,R2,R8,R9,R10,R11]"
         }
       ],
       "label": "authoritative_current_management",
@@ -77322,15 +77499,15 @@
       "managementRuleKey": "m47::meningite_bacteriana::authoritative_current_management",
       "monitoring": [
         {
-          "es": "Conciencia, signos focales, convulsiones, hemodinámica, sodio y complicaciones neurológicas.",
-          "key": "monitor_1",
-          "pt": "Consciência, sinais focais, convulsões, hemodinâmica, sódio e complicações neurológicas."
+          "es": "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+          "key": "approved_monitor",
+          "pt": "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]"
         }
       ],
       "payload": {
         "authoringPolicy": "AUTHORITATIVE_CURRENT_OR_FAIL_CLOSED",
         "classificationDependencies": [],
-        "clinicalReviewDate": "2026-08-31",
+        "clinicalReviewDate": "2026-10-02",
         "clinicalState": {
           "canonicalPathologyKey": "meningite_bacteriana",
           "key": "authoritative_current_management_active_local_draft",
@@ -77340,39 +77517,73 @@
           },
           "protocolKey": "legacy_protocol::meningite_bacteriana"
         },
-        "conditionalActions": [
-          {
-            "es": "El corticoide adyuvante debe seguir la recomendación específica del escenario y administrarse con/antes de la primera dosis antibiótica cuando esté indicado, sin retrasar el antimicrobiano.",
-            "key": "conditional_1",
-            "pt": "Corticoide adjuvante deve seguir a recomendação específica do cenário e ser administrado com/antes da primeira dose antibiótica quando indicado, nunca atrasando o antimicrobiano."
-          }
-        ],
+        "conditionalActions": [],
         "contraindicatedActions": [
           {
-            "es": "No esperar el resultado de LCR para iniciar antibiótico cuando la sospecha clínica es alta y el procedimiento se retrasará.",
-            "key": "contra_1",
-            "pt": "Não aguardar resultado de LCR para iniciar antibiótico quando a suspeita clínica é alta e o procedimento será atrasado."
+            "es": "**5. Seguridad de vancomicina y ajustes.** Presentación hameln 500 mg: 10 mL de agua para inyección produce 50 mg/mL; después diluir a concentración final habitual 2,5–5 mg/mL. Infusión ≥60 min Y ≤10 mg/min (1 g: ≥100 min); nunca bolo, IM o VO para tratar meningitis. Monitorear creatinina, diuresis, concentraciones séricas y reacción a la infusión; ajustar mantenimiento en AKI/diálisis con farmacia/infectología. Ampicilina también requiere ajuste renal. Si depuración <10 mL/min, la ficha de ceftriaxona limita 2 g/día: resolver inmediatamente el esquema meníngeo con especialista, sin reducir automáticamente la cobertura del SNC. Alergia grave a betalactámicos: alternativa inmediata con infectología, sin cambio automático a meropenem. [R2,R5,R6,R8]",
+            "key": "approved_contra",
+            "pt": "**5. Segurança da vancomicina e ajustes.** Apresentação hameln 500 mg: 10 mL de água para injeção produz 50 mg/mL; depois diluir para concentração usual final 2,5–5 mg/mL. Infusão ≥60 min E ≤10 mg/min (1 g: ≥100 min); nunca bolus, IM ou VO para tratar meningite. Monitorar creatinina, diurese, níveis séricos e reação de infusão; ajustar manutenção em AKI/diálise com farmácia/infectologia. Ampicilina também exige ajuste renal. Se depuração <10 mL/min, a bula de ceftriaxona limita 2 g/dia: resolver imediatamente o esquema meníngeo com especialista, sem reduzir automaticamente a cobertura do SNC. Alergia grave a betalactâmicos: alternativa imediata com infectologia, sem troca automática por meropenem. [R2,R5,R6,R8]"
           }
         ],
-        "definitiveActions": [
+        "definitiveActions": [],
+        "escalationCriteria": [
           {
-            "es": "Elegir antibióticos según edad, epidemiología, resistencia local y factores de riesgo; ajustar tras identificación microbiológica.",
-            "key": "definitive_1",
-            "pt": "Escolher antibióticos pela idade, epidemiologia, resistência local e fatores de risco; ajustar após identificação microbiológica."
+            "es": "**1. Reconocer y derivar.** ADULTO, meningitis comunitaria fuera de epidemia. Sospechar con fiebre, cefalea, rigidez de nuca o alteración de conciencia; no exigir todos los signos. Púrpura, shock, convulsión, focalidad o descenso de conciencia = emergencia de alta gravedad. Internar/trasladar inmediatamente a un servicio con soporte; activar infectología y UTI según gravedad. Preguntar inicio, antibiótico previo, alergia y reacción, embarazo, edad, inmunosupresión, enfermedad renal/hepática, otitis/sinusitis y cirugía/derivación reciente. El escenario posneuroquirúrgico o pediátrico requiere otro protocolo. [R1,R2,R3]",
+            "key": "approved_escalation",
+            "pt": "**1. Reconhecer e encaminhar.** ADULTO, meningite comunitária fora de epidemia. Suspeitar com febre, cefaleia, rigidez cervical ou alteração da consciência; não exigir todos os sinais. Púrpura, choque, convulsão, focalidade ou queda da consciência = emergência de alta gravidade. Internar/transferir imediatamente a serviço com capacidade de suporte; acionar infectologia e UTI conforme gravidade. Perguntar início, antibiótico prévio, alergia e reação, gestação, idade, imunossupressão, doença renal/hepática, otite/sinusite e cirurgia/derivação recente. Cenário pós-neurocirúrgico ou pediátrico requer outro protocolo. [R1,R2,R3]"
           }
         ],
-        "escalationCriteria": [],
-        "guidelineVersion": "WHO_MENINGITIS_2025",
+        "guidelineVersion": "WHO_MENINGITIS_2025_NICE_2024_DGN_2023",
         "initialActions": [
           {
-            "es": "Obtener hemocultivos e iniciar antimicrobianos empíricos apropiados rápidamente; no retrasar tratamiento por punción lumbar o neuroimagen cuando exista demora relevante.",
-            "key": "initial_1",
-            "pt": "Obter hemoculturas e iniciar antimicrobianos empíricos apropriados rapidamente; não atrasar tratamento por punção lombar ou neuroimagem quando houver demora relevante."
+            "es": "**1. Reconocer y derivar.** ADULTO, meningitis comunitaria fuera de epidemia. Sospechar con fiebre, cefalea, rigidez de nuca o alteración de conciencia; no exigir todos los signos. Púrpura, shock, convulsión, focalidad o descenso de conciencia = emergencia de alta gravedad. Internar/trasladar inmediatamente a un servicio con soporte; activar infectología y UTI según gravedad. Preguntar inicio, antibiótico previo, alergia y reacción, embarazo, edad, inmunosupresión, enfermedad renal/hepática, otitis/sinusitis y cirugía/derivación reciente. El escenario posneuroquirúrgico o pediátrico requiere otro protocolo. [R1,R2,R3]",
+            "key": "approved_0",
+            "pt": "**1. Reconhecer e encaminhar.** ADULTO, meningite comunitária fora de epidemia. Suspeitar com febre, cefaleia, rigidez cervical ou alteração da consciência; não exigir todos os sinais. Púrpura, choque, convulsão, focalidade ou queda da consciência = emergência de alta gravidade. Internar/transferir imediatamente a serviço com capacidade de suporte; acionar infectologia e UTI conforme gravidade. Perguntar início, antibiótico prévio, alergia e reação, gestação, idade, imunossupressão, doença renal/hepática, otite/sinusite e cirurgia/derivação recente. Cenário pós-neurocirúrgico ou pediátrico requer outro protocolo. [R1,R2,R3]"
           },
           {
-            "es": "Estabilizar vía aérea, circulación, convulsiones y presión intracraneal cuando estén presentes.",
-            "key": "initial_2",
-            "pt": "Estabilizar via aérea, circulação, convulsões e pressão intracraniana quando presentes."
+            "es": "**2. ABCDE y estudios simultáneos.** Evaluar/proteger vía aérea, ventilación, perfusión, glucemia, Glasgow/pupilas, focalidad, convulsiones y púrpura; tratar inestabilidad inmediatamente. Obtener hemocultivos antes del antibiótico si no demora; hemograma, glucosa, creatinina/electrolitos, proteína C reactiva/procalcitonina, lactato/coagulación según gravedad, PCR sanguínea cuando esté disponible. Un marcador normal no excluye. Sospecha meningocócica: precauciones estándar + gotitas, mantenidas hasta 24 h de antibiótico eficaz. [R1,R2,R10]",
+            "key": "approved_1",
+            "pt": "**2. ABCDE e exames simultâneos.** Avaliar/proteger via aérea, ventilação, perfusão, glicemia, Glasgow/pupilas, focalidade, convulsões e púrpura; tratar instabilidade imediatamente. Obter hemoculturas antes de antibiótico se isso não atrasar; hemograma, glicose, creatinina/eletrólitos, PCR/procalcitonina, lactato/coagulação conforme gravidade, PCR sanguínea quando disponível. Marcador normal não exclui. Suspeita meningocócica: precauções padrão + gotículas, mantidas até 24 h de antibiótico eficaz. [R1,R2,R10]"
+          },
+          {
+            "es": "**3. Antibiótico sin demora.** Iniciar inmediatamente, hasta 1 hora del ingreso hospitalario como objetivo; no esperar TC, punción ni resultado. Función renal conservada: CEFTRIAXONA 2 g IV cada 12 h (4 g/día). En la presentación Reig Jofre 2 g: 40 mL de diluyente sin calcio, como NaCl 0,9% o glucosa 5%, volumen resultante aproximado 41 mL, infusión ≥30 min. Verificar ficha local; nunca Ringer/Hartmann, calcio simultáneo, mezcla con vancomicina ni lidocaína IV. [R1,R2,R3,R5]",
+            "key": "approved_2",
+            "pt": "**3. Antibiótico sem atraso.** Iniciar imediatamente, até 1 hora da chegada hospitalar como meta; não esperar TC, punção ou resultado. Função renal preservada: CEFTRIAXONA 2 g IV a cada 12 h (4 g/dia). Na apresentação Reig Jofre 2 g: 40 mL de diluente sem cálcio, como NaCl 0,9% ou glicose 5%, volume resultante aproximado 41 mL, infusão ≥30 min. Conferir bula local; nunca Ringer/Hartmann, cálcio simultâneo, mistura com vancomicina ou lidocaína IV. [R1,R2,R3,R5]"
+          },
+          {
+            "es": "**4. Cobertura adicional cuando esté indicada.** AMPICILINA 2 g IV cada 4 h (12 g/día) si >60 años, embarazo o inmunocompromiso, incluidos diabetes, enfermedad renal terminal, hepatopatía avanzada y trastorno por consumo de alcohol. Ceftriaxona sola no cubre Listeria. Ejemplo solo para ampicilina 2 g Eugia referenciada: 14,8 mL de agua estéril para inyección; IV directa lentamente ≥10–15 min; verificar presentación, no extrapolar vial de 500 mg. VANCOMICINA adicional según resistencia neumocócica local: 15–20 mg/kg/dosis IV cada 8–12 h por peso total, hasta 2 g por dosis de mantenimiento, ajustando por función renal/niveles. Nunca rutina adulta cada 6 h. [R1,R3,R6,R7]",
+            "key": "approved_3",
+            "pt": "**4. Cobertura adicional quando indicada.** AMPICILINA 2 g IV a cada 4 h (12 g/dia) se >60 anos, gestação ou imunocomprometimento, incluindo diabetes, doença renal terminal, hepatopatia avançada e uso problemático de álcool. Ceftriaxona isolada não cobre Listeria. Exemplo apenas para ampicilina 2 g Eugia referenciada: 14,8 mL de água estéril para injeção; IV direta lentamente ≥10–15 min; conferir apresentação, não extrapolar frasco 500 mg. VANCOMICINA adicional conforme resistência pneumocócica local: 15–20 mg/kg/dose IV a cada 8–12 h pelo peso total, até 2 g por dose de manutenção, ajustando por função renal/níveis. Nunca rotina adulta a cada 6 h. [R1,R3,R6,R7]"
+          },
+          {
+            "es": "**5. Seguridad de vancomicina y ajustes.** Presentación hameln 500 mg: 10 mL de agua para inyección produce 50 mg/mL; después diluir a concentración final habitual 2,5–5 mg/mL. Infusión ≥60 min Y ≤10 mg/min (1 g: ≥100 min); nunca bolo, IM o VO para tratar meningitis. Monitorear creatinina, diuresis, concentraciones séricas y reacción a la infusión; ajustar mantenimiento en AKI/diálisis con farmacia/infectología. Ampicilina también requiere ajuste renal. Si depuración <10 mL/min, la ficha de ceftriaxona limita 2 g/día: resolver inmediatamente el esquema meníngeo con especialista, sin reducir automáticamente la cobertura del SNC. Alergia grave a betalactámicos: alternativa inmediata con infectología, sin cambio automático a meropenem. [R2,R5,R6,R8]",
+            "key": "approved_4",
+            "pt": "**5. Segurança da vancomicina e ajustes.** Apresentação hameln 500 mg: 10 mL de água para injeção produz 50 mg/mL; depois diluir para concentração usual final 2,5–5 mg/mL. Infusão ≥60 min E ≤10 mg/min (1 g: ≥100 min); nunca bolus, IM ou VO para tratar meningite. Monitorar creatinina, diurese, níveis séricos e reação de infusão; ajustar manutenção em AKI/diálise com farmácia/infectologia. Ampicilina também exige ajuste renal. Se depuração <10 mL/min, a bula de ceftriaxona limita 2 g/dia: resolver imediatamente o esquema meníngeo com especialista, sem reduzir automaticamente a cobertura do SNC. Alergia grave a betalactâmicos: alternativa imediata com infectologia, sem troca automática por meropenem. [R2,R5,R6,R8]"
+          },
+          {
+            "es": "**6. Dexametasona cuando corresponda.** Fuerte sospecha bacteriana comunitaria en el escenario descrito, sin VIH avanzado: DEXAMETASONA 10 mg IV cada 6 h, antes/junto con el primer antibiótico, sin demorarlo. Hasta 4 días si neumococo/Hib; suspender si causa no bacteriana u otro agente; sin agente, discutir continuidad. Demora <12 h: dar lo antes posible según NICE; demora ≥12 h: decisión especializada, incluido el límite exacto de 12 h no definido por la fuente. Verificar equivalencia base/fosfato y ficha antes de calcular mL; monitorear glucemia. No aplicar automáticamente a meningococcemia aislada, epidemia meningocócica, criptococosis o VIH avanzado. [R1,R2,R3,R12,R13]",
+            "key": "approved_5",
+            "pt": "**6. Dexametasona quando aplicável.** Forte suspeita bacteriana comunitária no cenário descrito, sem HIV avançado: DEXAMETASONA 10 mg IV a cada 6 h, antes/junto do primeiro antibiótico, sem retardá-lo. Até 4 dias se pneumococo/Hib; suspender se causa não bacteriana ou outro agente; sem agente, discutir continuidade. Atraso <12 h: dar assim que possível segundo NICE; atraso ≥12 h: decisão especializada, incluindo limite exato de 12 h não definido pela fonte. Conferir equivalência base/fosfato e bula antes de calcular mL; monitorar glicemia. Não aplicar automaticamente a meningococcemia isolada, epidemia meningocócica, criptococose ou HIV avançado. [R1,R2,R3,R12,R13]"
+          },
+          {
+            "es": "**7. Punción y TC: decidir sin retrasar antibiótico.** Punción antes del antibiótico solo si es segura y rápida. No realizar TC de rutina. Imagen antes: Glasgow <10, focalidad/pares craneales, papiledema, convulsión reciente en adulto, inmunocompromiso grave; incluir pupilas/posturas anormales, sospecha de masa y conciencia en descenso rápido/progresivo. No puncionar con inestabilidad no tratada, riesgo hemorrágico, púrpura extensa/progresiva o infección local. Una TC normal no elimina contraindicaciones persistentes. Si se posterga punción, tratar primero y realizar cuando sea segura. LCR: células/diferencial, proteínas, glucosa con glucemia inmediatamente previa, Gram, cultivo/antibiograma y PCR. [R1,R2]",
+            "key": "approved_6",
+            "pt": "**7. Punção e TC: decidir sem atrasar antibiótico.** Punção antes do antibiótico apenas se segura e rápida. Não fazer TC rotineira. Imagem antes: Glasgow <10, focalidade/pares cranianos, papiledema, convulsão recente no adulto, imunocomprometimento grave; incluir pupilas/posturas anormais, suspeita de massa e consciência em queda rápida/progressiva. Não puncionar com instabilidade não tratada, risco hemorrágico, púrpura extensa/progressiva ou infecção local. TC normal não elimina contraindicações persistentes. Se punção adiada, tratar primeiro e realizar quando segura. Líquor: células/diferencial, proteína, glicose com glicemia imediatamente prévia, Gram, cultura/antibiograma e PCR. [R1,R2]"
+          },
+          {
+            "es": "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+            "key": "approved_7",
+            "pt": "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]"
+          },
+          {
+            "es": "**9. Revisar terapia y duración.** Desescalar por agente/sensibilidad y evolución con infectología. OMS en enfermedad no complicada: neumococo 10–14 días, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sin agente, considerar 7 días solo con recuperación clínica y fiebre/signos vitales/conciencia normalizados durante ≥48 h; es opción condicional OMS, sin suspensión automática. NICE recomienda 10 días si LCR bacteriano y cultivo/PCR sanguínea negativos: seguir protocolo local/documentar decisión especializada. Falta de recuperación o complicación exige prolongar/reinvestigar. [R1,R2]",
+            "key": "approved_8",
+            "pt": "**9. Rever terapia e duração.** Descalonar por agente/suscetibilidade e evolução com infectologia. OMS em doença não complicada: pneumococo 10–14 dias, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sem agente, considerar 7 dias somente com recuperação clínica e febre/sinais vitais/consciência normalizados por ≥48 h; é opção condicional OMS, sem suspensão automática. NICE recomenda 10 dias se líquor bacteriano e cultura/PCR sanguínea negativos: seguir protocolo local/documentar decisão especializada. Falta de recuperação ou complicação exige prolongar/reinvestigar. [R1,R2]"
+          },
+          {
+            "es": "**10. Prevención y alta hospitalaria.** No dar alta inicial con sospecha fuerte. Notificar según jurisdicción; salud pública define contactos y profilaxis meningocócica rápida, independientemente de vacunación. Adulto elegible: CEFTRIAXONA 250 mg IM una vez (preferida en embarazo), o CIPROFLOXACINO 500 mg VO una vez solo según resistencia local, o RIFAMPICINA 600 mg VO cada 12 h durante 2 días como alternativa seleccionada; cipro/rifampicina no son de rutina en embarazo; revisar interacciones de rifampicina. No tratar contactos casuales ni aplicar a toda meningitis. Antes del alta evaluar secuelas y organizar rehabilitación/audiología: dentro de 4 semanas de estar apto para examen; revisión adulta a las 4–6 semanas del alta. Embarazo/lactancia: evaluar riesgos específicos con obstetricia/farmacia; ninguna dosis pediátrica autorizada por esta guía. [R1,R2,R8,R9,R10,R11]",
+            "key": "approved_9",
+            "pt": "**10. Prevenção e saída hospitalar.** Não dar alta inicial com suspeita forte. Notificar conforme jurisdição; saúde pública define contatos e profilaxia meningocócica rápida, independentemente da vacinação. Adulto elegível: CEFTRIAXONA 250 mg IM uma vez (preferida na gestação), ou CIPROFLOXACINO 500 mg VO uma vez somente conforme resistência local, ou RIFAMPICINA 600 mg VO a cada 12 h por 2 dias como alternativa selecionada; cipro/rifampicina não são rotina na gestação; revisar interações da rifampicina. Não tratar contato casual nem aplicar a toda meningite. Antes da alta avaliar sequelas e organizar reabilitação/audiologia: até 4 semanas de estar apto ao exame; revisão adulta em 4–6 semanas após alta. Gestação/lactação: avaliar riscos específicos com obstetrícia/farmácia; nenhuma dose pediátrica autorizada por este guia. [R1,R2,R8,R9,R10,R11]"
           }
         ],
         "legacyNavigationReference": {
@@ -77383,26 +77594,109 @@
         },
         "monitoring": [
           {
-            "es": "Conciencia, signos focales, convulsiones, hemodinámica, sodio y complicaciones neurológicas.",
-            "key": "monitor_1",
-            "pt": "Consciência, sinais focais, convulsões, hemodinâmica, sódio e complicações neurológicas."
+            "es": "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+            "key": "approved_monitor",
+            "pt": "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]"
           }
         ],
         "provenance": [
           {
             "automaticPromotion": false,
             "managementAuthorityValidated": true,
-            "title": "WHO Guidelines on Meningitis Diagnosis, Treatment and Care",
+            "title": "WHO guidelines on meningitis diagnosis, treatment and care",
             "type": "guideline",
-            "url": "https://www.who.int/publications/i/item/9789240108042",
-            "year": 2025
+            "url": "https://www.who.int/publications/i/item/9789240108042"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "NG240: Meningitis (bacterial) and meningococcal disease: recognition, diagnosis and management",
+            "type": "guideline",
+            "url": "https://www.nice.org.uk/guidance/ng240/chapter/Recommendations"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "German guidelines on community-acquired acute bacterial meningitis in adults",
+            "type": "guideline",
+            "url": "https://link.springer.com/article/10.1186/s42466-023-00264-6"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AWMF 030-089 version 6.0: publication and validity until 27 April 2028",
+            "type": "guideline",
+            "url": "https://www.awmf.org/aktuelles/awmf-aktuell/ambulant-erworbene-bakterielle-meningoenzephalitis-im-erwachsenenalter"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Ceftriaxone 2 g: Summary of Product Characteristics, revised 22 October 2025",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/100175/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Vancomycin 500 mg: Summary of Product Characteristics, updated 27 March 2026",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/15736/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Ampicillin for Injection, USP: text revised January 2024; DailyMed publication 3 August 2026",
+            "type": "product_information",
+            "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=78988f6a-a73b-4d3b-9a76-d61a748c3c16"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Ampicillin 500 mg: Summary of Product Characteristics, revised August 2024",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/12892/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Surveillance Manual Chapter 8: Meningococcal Disease, 30 October 2024",
+            "type": "guideline",
+            "url": "https://www.cdc.gov/surv-manual/php/table-of-contents/chapter-8-meningococcal-disease.html"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Meningococcal Disease: Infection Control in Healthcare Personnel",
+            "type": "guideline",
+            "url": "https://www.cdc.gov/infection-control/hcp/healthcare-personnel-epidemiology-control/meningococcal-disease.html"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Selection of antibiotics for meningococcal prophylaxis in areas with ciprofloxacin resistance",
+            "type": "guideline",
+            "url": "https://www.cdc.gov/mmwr/volumes/73/wr/mm7305a2.htm"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Cryptococcosis: updated 29 October 2024, reviewed 16 March 2026",
+            "type": "guideline",
+            "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cryptococcosis"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Dexamethasone 3.3 mg/mL: Summary of Product Characteristics, updated 11 October 2024",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/4659/smpc"
           }
         ],
         "reassessment": [
           {
-            "es": "Reevaluar respuesta clínica y nuevos datos después de cada intervención relevante.",
-            "key": "reassess_1",
-            "pt": "Reavaliar resposta clínica e novos dados após cada intervenção relevante."
+            "es": "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+            "key": "approved_reassess",
+            "pt": "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]"
           }
         ],
         "requiredFacts": [
@@ -77421,18 +77715,101 @@
         {
           "automaticPromotion": false,
           "managementAuthorityValidated": true,
-          "title": "WHO Guidelines on Meningitis Diagnosis, Treatment and Care",
+          "title": "WHO guidelines on meningitis diagnosis, treatment and care",
           "type": "guideline",
-          "url": "https://www.who.int/publications/i/item/9789240108042",
-          "year": 2025
+          "url": "https://www.who.int/publications/i/item/9789240108042"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "NG240: Meningitis (bacterial) and meningococcal disease: recognition, diagnosis and management",
+          "type": "guideline",
+          "url": "https://www.nice.org.uk/guidance/ng240/chapter/Recommendations"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "German guidelines on community-acquired acute bacterial meningitis in adults",
+          "type": "guideline",
+          "url": "https://link.springer.com/article/10.1186/s42466-023-00264-6"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AWMF 030-089 version 6.0: publication and validity until 27 April 2028",
+          "type": "guideline",
+          "url": "https://www.awmf.org/aktuelles/awmf-aktuell/ambulant-erworbene-bakterielle-meningoenzephalitis-im-erwachsenenalter"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Ceftriaxone 2 g: Summary of Product Characteristics, revised 22 October 2025",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/100175/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Vancomycin 500 mg: Summary of Product Characteristics, updated 27 March 2026",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/15736/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Ampicillin for Injection, USP: text revised January 2024; DailyMed publication 3 August 2026",
+          "type": "product_information",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=78988f6a-a73b-4d3b-9a76-d61a748c3c16"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Ampicillin 500 mg: Summary of Product Characteristics, revised August 2024",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/12892/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Surveillance Manual Chapter 8: Meningococcal Disease, 30 October 2024",
+          "type": "guideline",
+          "url": "https://www.cdc.gov/surv-manual/php/table-of-contents/chapter-8-meningococcal-disease.html"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Meningococcal Disease: Infection Control in Healthcare Personnel",
+          "type": "guideline",
+          "url": "https://www.cdc.gov/infection-control/hcp/healthcare-personnel-epidemiology-control/meningococcal-disease.html"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Selection of antibiotics for meningococcal prophylaxis in areas with ciprofloxacin resistance",
+          "type": "guideline",
+          "url": "https://www.cdc.gov/mmwr/volumes/73/wr/mm7305a2.htm"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Cryptococcosis: updated 29 October 2024, reviewed 16 March 2026",
+          "type": "guideline",
+          "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cryptococcosis"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Dexamethasone 3.3 mg/mL: Summary of Product Characteristics, updated 11 October 2024",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/4659/smpc"
         }
       ],
       "provenancePolicy": "AUTHORITATIVE_CURRENT_OR_FAIL_CLOSED",
       "reassessment": [
         {
-          "es": "Reevaluar respuesta clínica y nuevos datos después de cada intervención relevante.",
-          "key": "reassess_1",
-          "pt": "Reavaliar resposta clínica e novos dados após cada intervenção relevante."
+          "es": "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+          "key": "approved_reassess",
+          "pt": "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]"
         }
       ],
       "requiredFacts": [
@@ -77468,7 +77845,7 @@
         "sourceBlockSha256": "12f412be68d3f677f533ca6abf5a4c77d2dff5bc1fca86c9b65fde3c4467f76a",
         "superbuild47Authoring": true
       },
-      "version": "2026.08.31-m47.0",
+      "version": "JIT-2026-10-02-v1.0",
       "visibleCutoverEligible": false
     },
     {
@@ -112890,6 +113267,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "f7f6f23280323514d7727df2809dc1d31c78f1b5f029ede4c8848b4e59d7c68f",
       "canonicalPathologyKey": "meningite_bacteriana",
       "enabled": true,
       "legacyCompatibility": {
@@ -112903,31 +113281,35 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "1. Dexametasona 0,15 mg/kg IV (máx. 10 mg) — ANTES o JUNTO con el 1er antibiótico",
-              "2. Ceftriaxona 2 g IV c/12 h — cobertura neumococo + meningococo",
-              "3. Ampicilina 2 g IV c/4 h — añadir si >50 años, gestante, inmunosuprimido (Listeria)",
-              "4. Hemocultivos (2 pares) antes del ATB — máx. 5 min (no retrasar ATB)",
-              "5. TC cráneo ANTES de PL: solo si Glasgow <13, papiledema, déficit focal, convulsión",
-              "6. PL lo antes posible: LCR para bioquímica, citología, Gram, cultivo",
-              "7. Soporte: cabecera 30°, electrolitos, control de PA y fiebre, Foley",
-              "8. Manitol 20% 0,5–1 g/kg IV si signos de herniación"
+              "**1. Reconocer y derivar.** ADULTO, meningitis comunitaria fuera de epidemia. Sospechar con fiebre, cefalea, rigidez de nuca o alteración de conciencia; no exigir todos los signos. Púrpura, shock, convulsión, focalidad o descenso de conciencia = emergencia de alta gravedad. Internar/trasladar inmediatamente a un servicio con soporte; activar infectología y UTI según gravedad. Preguntar inicio, antibiótico previo, alergia y reacción, embarazo, edad, inmunosupresión, enfermedad renal/hepática, otitis/sinusitis y cirugía/derivación reciente. El escenario posneuroquirúrgico o pediátrico requiere otro protocolo. [R1,R2,R3]",
+              "**2. ABCDE y estudios simultáneos.** Evaluar/proteger vía aérea, ventilación, perfusión, glucemia, Glasgow/pupilas, focalidad, convulsiones y púrpura; tratar inestabilidad inmediatamente. Obtener hemocultivos antes del antibiótico si no demora; hemograma, glucosa, creatinina/electrolitos, proteína C reactiva/procalcitonina, lactato/coagulación según gravedad, PCR sanguínea cuando esté disponible. Un marcador normal no excluye. Sospecha meningocócica: precauciones estándar + gotitas, mantenidas hasta 24 h de antibiótico eficaz. [R1,R2,R10]",
+              "**3. Antibiótico sin demora.** Iniciar inmediatamente, hasta 1 hora del ingreso hospitalario como objetivo; no esperar TC, punción ni resultado. Función renal conservada: CEFTRIAXONA 2 g IV cada 12 h (4 g/día). En la presentación Reig Jofre 2 g: 40 mL de diluyente sin calcio, como NaCl 0,9% o glucosa 5%, volumen resultante aproximado 41 mL, infusión ≥30 min. Verificar ficha local; nunca Ringer/Hartmann, calcio simultáneo, mezcla con vancomicina ni lidocaína IV. [R1,R2,R3,R5]",
+              "**4. Cobertura adicional cuando esté indicada.** AMPICILINA 2 g IV cada 4 h (12 g/día) si >60 años, embarazo o inmunocompromiso, incluidos diabetes, enfermedad renal terminal, hepatopatía avanzada y trastorno por consumo de alcohol. Ceftriaxona sola no cubre Listeria. Ejemplo solo para ampicilina 2 g Eugia referenciada: 14,8 mL de agua estéril para inyección; IV directa lentamente ≥10–15 min; verificar presentación, no extrapolar vial de 500 mg. VANCOMICINA adicional según resistencia neumocócica local: 15–20 mg/kg/dosis IV cada 8–12 h por peso total, hasta 2 g por dosis de mantenimiento, ajustando por función renal/niveles. Nunca rutina adulta cada 6 h. [R1,R3,R6,R7]",
+              "**5. Seguridad de vancomicina y ajustes.** Presentación hameln 500 mg: 10 mL de agua para inyección produce 50 mg/mL; después diluir a concentración final habitual 2,5–5 mg/mL. Infusión ≥60 min Y ≤10 mg/min (1 g: ≥100 min); nunca bolo, IM o VO para tratar meningitis. Monitorear creatinina, diuresis, concentraciones séricas y reacción a la infusión; ajustar mantenimiento en AKI/diálisis con farmacia/infectología. Ampicilina también requiere ajuste renal. Si depuración <10 mL/min, la ficha de ceftriaxona limita 2 g/día: resolver inmediatamente el esquema meníngeo con especialista, sin reducir automáticamente la cobertura del SNC. Alergia grave a betalactámicos: alternativa inmediata con infectología, sin cambio automático a meropenem. [R2,R5,R6,R8]",
+              "**6. Dexametasona cuando corresponda.** Fuerte sospecha bacteriana comunitaria en el escenario descrito, sin VIH avanzado: DEXAMETASONA 10 mg IV cada 6 h, antes/junto con el primer antibiótico, sin demorarlo. Hasta 4 días si neumococo/Hib; suspender si causa no bacteriana u otro agente; sin agente, discutir continuidad. Demora <12 h: dar lo antes posible según NICE; demora ≥12 h: decisión especializada, incluido el límite exacto de 12 h no definido por la fuente. Verificar equivalencia base/fosfato y ficha antes de calcular mL; monitorear glucemia. No aplicar automáticamente a meningococcemia aislada, epidemia meningocócica, criptococosis o VIH avanzado. [R1,R2,R3,R12,R13]",
+              "**7. Punción y TC: decidir sin retrasar antibiótico.** Punción antes del antibiótico solo si es segura y rápida. No realizar TC de rutina. Imagen antes: Glasgow <10, focalidad/pares craneales, papiledema, convulsión reciente en adulto, inmunocompromiso grave; incluir pupilas/posturas anormales, sospecha de masa y conciencia en descenso rápido/progresivo. No puncionar con inestabilidad no tratada, riesgo hemorrágico, púrpura extensa/progresiva o infección local. Una TC normal no elimina contraindicaciones persistentes. Si se posterga punción, tratar primero y realizar cuando sea segura. LCR: células/diferencial, proteínas, glucosa con glucemia inmediatamente previa, Gram, cultivo/antibiograma y PCR. [R1,R2]",
+              "**8. Monitorear y reevaluar.** Seguir signos vitales, conciencia/pupilas/focalidad, convulsiones, diuresis, sodio, función renal y efectos de los medicamentos. Shock, insuficiencia respiratoria, coma o herniación: UTI inmediata. No restringir líquidos ni usar osmoterapia de rutina; amenaza de herniación permite una medida temporal con cuidados intensivos/neurocirugía. Deterioro: investigar inmediatamente complicación, foco o diagnóstico alternativo, sin esperar 24–48 h. Considerar encefalitis/absceso, tuberculosis/criptococosis o hemorragia según el cuadro; aciclovir solo ante fuerte sospecha herpética, por protocolo propio. [R1,R2,R3,R12]",
+              "**9. Revisar terapia y duración.** Desescalar por agente/sensibilidad y evolución con infectología. OMS en enfermedad no complicada: neumococo 10–14 días, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sin agente, considerar 7 días solo con recuperación clínica y fiebre/signos vitales/conciencia normalizados durante ≥48 h; es opción condicional OMS, sin suspensión automática. NICE recomienda 10 días si LCR bacteriano y cultivo/PCR sanguínea negativos: seguir protocolo local/documentar decisión especializada. Falta de recuperación o complicación exige prolongar/reinvestigar. [R1,R2]",
+              "**10. Prevención y alta hospitalaria.** No dar alta inicial con sospecha fuerte. Notificar según jurisdicción; salud pública define contactos y profilaxis meningocócica rápida, independientemente de vacunación. Adulto elegible: CEFTRIAXONA 250 mg IM una vez (preferida en embarazo), o CIPROFLOXACINO 500 mg VO una vez solo según resistencia local, o RIFAMPICINA 600 mg VO cada 12 h durante 2 días como alternativa seleccionada; cipro/rifampicina no son de rutina en embarazo; revisar interacciones de rifampicina. No tratar contactos casuales ni aplicar a toda meningitis. Antes del alta evaluar secuelas y organizar rehabilitación/audiología: dentro de 4 semanas de estar apto para examen; revisión adulta a las 4–6 semanas del alta. Embarazo/lactancia: evaluar riesgos específicos con obstetricia/farmacia; ninguna dosis pediátrica autorizada por esta guía. [R1,R2,R8,R9,R10,R11]"
             ],
             "pt": [
-              "1. Dexametasona 0,15 mg/kg IV (máx. 10 mg) — ANTES ou JUNTO com o 1º antibiótico",
-              "2. Ceftriaxona 2 g IV 12/12h — cobertura pneumo + meningo",
-              "3. Ampicilina 2 g IV 4/4h — adicionar se >50 anos, gestante, imunossuprimido (Listeria)",
-              "4. Hemoculturas (2 pares) antes do ATB — máximo 5 min (não retardar ATB)",
-              "5. TC crânio ANTES da PL: apenas se Glasgow <13, papiledema, déficit focal, convulsão",
-              "6. PL o mais cedo possível (após TC se indicada): LCR para bioquímica, citologia, Gram, cultura",
-              "7. Suporte: cabeceira 30°, correção de eletrólitos, controle de PA e febre, Foley",
-              "8. Manitol 20% 0,5–1 g/kg IV se sinais de herniação (pupila midriática, Cushing)"
+              "**1. Reconhecer e encaminhar.** ADULTO, meningite comunitária fora de epidemia. Suspeitar com febre, cefaleia, rigidez cervical ou alteração da consciência; não exigir todos os sinais. Púrpura, choque, convulsão, focalidade ou queda da consciência = emergência de alta gravidade. Internar/transferir imediatamente a serviço com capacidade de suporte; acionar infectologia e UTI conforme gravidade. Perguntar início, antibiótico prévio, alergia e reação, gestação, idade, imunossupressão, doença renal/hepática, otite/sinusite e cirurgia/derivação recente. Cenário pós-neurocirúrgico ou pediátrico requer outro protocolo. [R1,R2,R3]",
+              "**2. ABCDE e exames simultâneos.** Avaliar/proteger via aérea, ventilação, perfusão, glicemia, Glasgow/pupilas, focalidade, convulsões e púrpura; tratar instabilidade imediatamente. Obter hemoculturas antes de antibiótico se isso não atrasar; hemograma, glicose, creatinina/eletrólitos, PCR/procalcitonina, lactato/coagulação conforme gravidade, PCR sanguínea quando disponível. Marcador normal não exclui. Suspeita meningocócica: precauções padrão + gotículas, mantidas até 24 h de antibiótico eficaz. [R1,R2,R10]",
+              "**3. Antibiótico sem atraso.** Iniciar imediatamente, até 1 hora da chegada hospitalar como meta; não esperar TC, punção ou resultado. Função renal preservada: CEFTRIAXONA 2 g IV a cada 12 h (4 g/dia). Na apresentação Reig Jofre 2 g: 40 mL de diluente sem cálcio, como NaCl 0,9% ou glicose 5%, volume resultante aproximado 41 mL, infusão ≥30 min. Conferir bula local; nunca Ringer/Hartmann, cálcio simultâneo, mistura com vancomicina ou lidocaína IV. [R1,R2,R3,R5]",
+              "**4. Cobertura adicional quando indicada.** AMPICILINA 2 g IV a cada 4 h (12 g/dia) se >60 anos, gestação ou imunocomprometimento, incluindo diabetes, doença renal terminal, hepatopatia avançada e uso problemático de álcool. Ceftriaxona isolada não cobre Listeria. Exemplo apenas para ampicilina 2 g Eugia referenciada: 14,8 mL de água estéril para injeção; IV direta lentamente ≥10–15 min; conferir apresentação, não extrapolar frasco 500 mg. VANCOMICINA adicional conforme resistência pneumocócica local: 15–20 mg/kg/dose IV a cada 8–12 h pelo peso total, até 2 g por dose de manutenção, ajustando por função renal/níveis. Nunca rotina adulta a cada 6 h. [R1,R3,R6,R7]",
+              "**5. Segurança da vancomicina e ajustes.** Apresentação hameln 500 mg: 10 mL de água para injeção produz 50 mg/mL; depois diluir para concentração usual final 2,5–5 mg/mL. Infusão ≥60 min E ≤10 mg/min (1 g: ≥100 min); nunca bolus, IM ou VO para tratar meningite. Monitorar creatinina, diurese, níveis séricos e reação de infusão; ajustar manutenção em AKI/diálise com farmácia/infectologia. Ampicilina também exige ajuste renal. Se depuração <10 mL/min, a bula de ceftriaxona limita 2 g/dia: resolver imediatamente o esquema meníngeo com especialista, sem reduzir automaticamente a cobertura do SNC. Alergia grave a betalactâmicos: alternativa imediata com infectologia, sem troca automática por meropenem. [R2,R5,R6,R8]",
+              "**6. Dexametasona quando aplicável.** Forte suspeita bacteriana comunitária no cenário descrito, sem HIV avançado: DEXAMETASONA 10 mg IV a cada 6 h, antes/junto do primeiro antibiótico, sem retardá-lo. Até 4 dias se pneumococo/Hib; suspender se causa não bacteriana ou outro agente; sem agente, discutir continuidade. Atraso <12 h: dar assim que possível segundo NICE; atraso ≥12 h: decisão especializada, incluindo limite exato de 12 h não definido pela fonte. Conferir equivalência base/fosfato e bula antes de calcular mL; monitorar glicemia. Não aplicar automaticamente a meningococcemia isolada, epidemia meningocócica, criptococose ou HIV avançado. [R1,R2,R3,R12,R13]",
+              "**7. Punção e TC: decidir sem atrasar antibiótico.** Punção antes do antibiótico apenas se segura e rápida. Não fazer TC rotineira. Imagem antes: Glasgow <10, focalidade/pares cranianos, papiledema, convulsão recente no adulto, imunocomprometimento grave; incluir pupilas/posturas anormais, suspeita de massa e consciência em queda rápida/progressiva. Não puncionar com instabilidade não tratada, risco hemorrágico, púrpura extensa/progressiva ou infecção local. TC normal não elimina contraindicações persistentes. Se punção adiada, tratar primeiro e realizar quando segura. Líquor: células/diferencial, proteína, glicose com glicemia imediatamente prévia, Gram, cultura/antibiograma e PCR. [R1,R2]",
+              "**8. Monitorar e reavaliar.** Acompanhar sinais vitais, consciência/pupilas/focalidade, convulsões, diurese, sódio, função renal e efeitos das medicações. Choque, falência respiratória, coma ou herniação: UTI imediata. Não restringir líquidos ou usar osmoterapia de rotina; ameaça de herniação permite medida temporária com equipe intensiva/neurocirúrgica. Deterioração: investigar imediatamente complicação, foco ou diagnóstico alternativo, sem aguardar 24–48 h. Considerar encefalite/abscesso, tuberculose/criptococose ou hemorragia conforme quadro; aciclovir apenas se forte suspeita herpética, pelo protocolo próprio. [R1,R2,R3,R12]",
+              "**9. Rever terapia e duração.** Descalonar por agente/suscetibilidade e evolução com infectologia. OMS em doença não complicada: pneumococo 10–14 dias, meningococo 5–7, Hib 7–10, grupo B 14–21, Listeria 21. Sem agente, considerar 7 dias somente com recuperação clínica e febre/sinais vitais/consciência normalizados por ≥48 h; é opção condicional OMS, sem suspensão automática. NICE recomenda 10 dias se líquor bacteriano e cultura/PCR sanguínea negativos: seguir protocolo local/documentar decisão especializada. Falta de recuperação ou complicação exige prolongar/reinvestigar. [R1,R2]",
+              "**10. Prevenção e saída hospitalar.** Não dar alta inicial com suspeita forte. Notificar conforme jurisdição; saúde pública define contatos e profilaxia meningocócica rápida, independentemente da vacinação. Adulto elegível: CEFTRIAXONA 250 mg IM uma vez (preferida na gestação), ou CIPROFLOXACINO 500 mg VO uma vez somente conforme resistência local, ou RIFAMPICINA 600 mg VO a cada 12 h por 2 dias como alternativa selecionada; cipro/rifampicina não são rotina na gestação; revisar interações da rifampicina. Não tratar contato casual nem aplicar a toda meningite. Antes da alta avaliar sequelas e organizar reabilitação/audiologia: até 4 semanas de estar apto ao exame; revisão adulta em 4–6 semanas após alta. Gestação/lactação: avaliar riscos específicos com obstetrícia/farmácia; nenhuma dose pediátrica autorizada por este guia. [R1,R2,R8,R9,R10,R11]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "516ecc3c8dac131cdaab66b1b8bc1684e1294a6be50f75b0a7f3084c7d9dc90f",
+            "blockSha256": "f6ae5a01143dacc7249ccb866b65e591f37f01bbf29431df5c6871bfa1d48b25",
             "innerFamilyId": "baac9f456434744d",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::meningite_bacteriana",
@@ -112944,23 +113326,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 Meningocócica: petequias/púrpura, progresión rápida, sepsis, mortalidad alta sin ATB inmediato",
-              "🔴 Neumocócica: más común, HTIC frecuente, alta mortalidad — 1ª elección: ceftriaxona + dexametasona",
-              "🟠 Listeria: gestante/inmunosuprimido/>50 años — añadir ampicilina al esquema estándar",
-              "🟡 Gram-negativo (gram-neg hospitalario): post-neurocirugía, trauma — meropenem ± vancomicina"
+              "**Etiología, riesgos y presentación.** Neumococo y meningococo son agentes relevantes; considerar Hib según vacunación y epidemiología. Listeria requiere cobertura adicional cuando exista riesgo: edad >60 años, embarazo o inmunocompromiso; la OMS incluye diabetes, enfermedad renal terminal, hepatopatía crónica avanzada, trastorno por consumo de alcohol, VIH avanzado, cáncer, trasplante y tratamiento inmunosupresor. Ceftriaxona no cubre Listeria. Fiebre, cefalea, rigidez de nuca y alteración de conciencia/cognición constituyen una combinación de alarma; la ausencia de cualquiera de estos componentes no excluye la enfermedad, especialmente en mayores o inmunocomprometidos. Petequias/púrpura, shock, convulsión, déficit focal y descenso de conciencia indican gravedad. No exigir una “tríada completa” para tratar. [R1,R2]"
             ],
             "pt": [
-              "🔴 Meningocócica: petéquias/púrpura, progressão rápida, sepse, mortalidade alta sem ATB imediato",
-              "🔴 Pneumocócica: mais comum, HICP frequente, alta mortalidade — 1ª escolha: ceftriaxona + dexametasona",
-              "🟠 Listeria: gestante/imunossuprimido/>50 anos — adicionar ampicilina ao esquema padrão",
-              "🟡 Gram-negativo (gram-neg hospitalar): pós-neurocirurgia, trauma — meropenem ± vancomicina"
+              "**Etiologia, riscos e apresentação.** Pneumococo e meningococo são agentes relevantes; considerar Hib conforme vacinação e epidemiologia. Listeria requer cobertura adicional quando houver risco: idade >60 anos, gestação ou imunocomprometimento; a OMS inclui diabetes, doença renal terminal, doença hepática crônica avançada, uso problemático de álcool, HIV avançado, câncer, transplante e tratamento imunossupressor. Ceftriaxona não cobre Listeria. Febre, cefaleia, rigidez cervical e alteração de consciência/cognição constituem uma combinação de alarme; ausência de qualquer componente não exclui a doença, especialmente em idosos ou imunocomprometidos. Petéquias/púrpura, choque, convulsão, déficit focal e queda da consciência indicam gravidade. Não exigir uma “tríade completa” para tratar. [R1,R2]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "516ecc3c8dac131cdaab66b1b8bc1684e1294a6be50f75b0a7f3084c7d9dc90f",
+            "blockSha256": "f6ae5a01143dacc7249ccb866b65e591f37f01bbf29431df5c6871bfa1d48b25",
             "innerFamilyId": "ec4c285966e73508",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::meningite_bacteriana",
@@ -112970,16 +113346,30 @@
       },
       "priority": 100,
       "protocolKey": "legacy_protocol::meningite_bacteriana",
-      "referenceUrls": [],
+      "referenceUrls": [
+        "https://www.who.int/publications/i/item/9789240108042",
+        "https://www.nice.org.uk/guidance/ng240/chapter/Recommendations",
+        "https://link.springer.com/article/10.1186/s42466-023-00264-6",
+        "https://www.awmf.org/aktuelles/awmf-aktuell/ambulant-erworbene-bakterielle-meningoenzephalitis-im-erwachsenenalter",
+        "https://www.medicines.org.uk/emc/product/100175/smpc",
+        "https://www.medicines.org.uk/emc/product/15736/smpc",
+        "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=78988f6a-a73b-4d3b-9a76-d61a748c3c16",
+        "https://www.medicines.org.uk/emc/product/12892/smpc",
+        "https://www.cdc.gov/surv-manual/php/table-of-contents/chapter-8-meningococcal-disease.html",
+        "https://www.cdc.gov/infection-control/hcp/healthcare-personnel-epidemiology-control/meningococcal-disease.html",
+        "https://www.cdc.gov/mmwr/volumes/73/wr/mm7305a2.htm",
+        "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cryptococcosis",
+        "https://www.medicines.org.uk/emc/product/4659/smpc"
+      ],
       "source": {
-        "blockSha256": "516ecc3c8dac131cdaab66b1b8bc1684e1294a6be50f75b0a7f3084c7d9dc90f",
+        "blockSha256": "f6ae5a01143dacc7249ccb866b65e591f37f01bbf29431df5c6871bfa1d48b25",
         "file": "lib/data/protocols_database.dart",
         "line": 4632,
         "sourceGroup": "ProtocolModel",
         "sourceKey": "meningite_bacteriana",
         "strategy": "generic_constructor"
       },
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "canonicalPathologyKey": "meningite_pediatrica",

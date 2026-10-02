@@ -210,6 +210,16 @@ class ClinicalReferenceResolver {
         );
       }
 
+      if (protocol.id == 'meningite_bacteriana' &&
+          protocolReferences.any((r) => r.contains('9789240108042'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
       final curatedReferences = _curatedReferencesForDomain(domain);
       final candidateReferences = <String>[
         ...curatedReferences,
