@@ -395,6 +395,8 @@ class ClinicalReferenceResolver {
 
     final arrest =
         containsAny(const <String>[
+          'pcr adulto',
+          'pcr_adulto',
           'parada cardiorrespiratoria',
           'paro cardiorrespiratorio',
           'ressuscitacao',
@@ -7960,9 +7962,7 @@ class ClinicalReferenceResolver {
         ];
 
       case 'resuscitation':
-        return const <String>[
-          'AHA — Guidelines for CPR and Emergency Cardiovascular Care (2025)',
-        ];
+        return const <String>["[R1] AHA — Adult Advanced Life Support, final 2025 https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support", "[R2] AHA — Adult Cardiac Arrest Algorithm, final 2025 https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-CA-LngDscrp-250725-Ed.pdf", "[R3] AHA — Adult Basic Life Support, final 2025 https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-basic-life-support", "[R4] RCUK/ERC — Adult Advanced Life Support, final 2025 https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-advanced-life-support-guidelines", "[R5] AHA — Post-Cardiac Arrest Care, final 2025 https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/post-cardiac-arrest-care", "[R6] AHA — Adult Post-Cardiac Arrest Care Algorithm, final 2025 https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-PCAC-250527.pdf", "[R7] AHA — Special Circumstances of Resuscitation, final 2025 https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation", "[R8] Aguettant — Adrenaline 1 mg/10 mL, SmPC 2019 vigente consultado https://www.medicines.org.uk/emc/product/2024/smpc", "[R9] Hameln — Amiodarone 50 mg/mL, SmPC 2022 vigente consultado https://www.medicines.org.uk/emc/product/3940/smpc", "[R10] RCUK/ERC — Post-resuscitation Care, final 2025 https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/post-resuscitation-care-guidelines", "[R11] RCUK — Adult Post-resuscitation Care Algorithm, atualização final março/2026 https://www.resus.org.uk/sites/default/files/2026-03/RCUK%20G2025%20ADULT%20PRC%20March%20V3.pdf"];
 
       case 'pediatric_resuscitation':
         return const <String>[

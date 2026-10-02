@@ -33163,6 +33163,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "8aa7b5bca4bfa010f4b3900ea7d6781e504dd3c376a56b5db89049ebd0020403",
       "canonicalPathologyKey": "pcr_adulto",
       "contentKey": "legacy_protocol_content::pcr_adulto",
       "enabled": true,
@@ -33177,40 +33178,112 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "1. LLAMAR AYUDA + activar código + desfibrilador + timer",
-              "2. RCP alta calidad: compresiones 5–6 cm, 100–120/min, reexpansión total, mínima interrupción",
-              "3. FV/TVSP (CHOCABLE): Choque 120–200 J bifásico → RCP 2 min → verificar ritmo → repetir",
-              "   → Epinefrina 1 mg IV cada 3–5 min (a partir del 2º choque)",
-              "   → Amiodarona 300 mg IV (FV/TVSP refractaria tras 2º choque) + 150 mg después",
-              "4. AESP/Asistolia (NO CHOCABLE): Epinefrina 1 mg IV INMEDIATAMENTE → RCP 2 min → verificar",
-              "5. Vía aérea: IOT (sin interrumpir RCP) o máscara laríngea — ventilación 10/min",
-              "6. Acceso: periférico o IO si sin acceso",
-              "7. 5H5T: Hipovolemia/Hipoxia/Hidrógeno(acidosis)/Hipo-Hiperpotasemia/Hipotermia | Tensión(neumotórax)/Taponamiento/Trombosis coronaria/Trombosis pulmonar/Tóxicos",
-              "8. ROSC → cuidados post-PCR: PA, SpO2, glucemia, TTM, ECG, angiografía si IAMCEST"
+              "**PCR adulto — Modo Guardia; secuencia AHA 2025**",
+              "**1. Reconocer y movilizar.** Sin respuesta + respiración ausente/anormal; verificar pulso durante un máximo de **10 segundos**. Sin pulso cierto: convocar equipo, iniciar compresiones y traer desfibrilador. Distribuir funciones y registrar horarios/descargas/dosis. [R2,R3]",
+              "**2. RCP.** Compresiones **100–120/min**, profundidad **5–6 cm**, retroceso completo, mínima pausa; cambiar reanimador cada **2 minutos**. Sin vía aérea avanzada: **30:2**. Con vía aérea avanzada: compresiones continuas y **10 ventilaciones/min**, sin hiperventilar. Ventilar con bolsa-máscara y oxígeno; intubación/supraglótica por equipo capacitado, sin retrasar descarga, con capnografía. [R2,R3]",
+              "**3. Desfibrilar FV/TV sin pulso.** Descarga no sincronizada: energía bifásica indicada por el fabricante, por ejemplo **120–200 J**; si se desconoce, máxima disponible. Descargas siguientes iguales o mayores según equipo. Monofásico: **360 J**. Reanudar RCP inmediatamente durante **2 minutos**, luego analizar ritmo; buscar pulso solo si hay ritmo organizado/signos de retorno, durante un máximo de **10 segundos**. No desfibrilar AESP/asistolia. [R1,R2,R3]",
+              "**4. Adrenalina/epinefrina.** Preferir acceso IV; IO si IV no es viable/se demora. **1 mg IV/IO cada 3–5 minutos**: AESP/asistolia lo antes posible; FV/TV sin pulso después de la segunda descarga en esta secuencia AHA. Presentación lista **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Verificar etiqueta; no confundir con **1 mg/mL**. No usar vía endotraqueal rutinariamente. Suspender bolos del paro cuando retorne la circulación. [R1,R2,R8]",
+              "**5. Amiodarona.** FV/TV sin pulso persistente después de la tercera descarga: **300 mg IV/IO en bolo**; si persiste, segunda dosis **150 mg** según algoritmo. Para el concentrado específico **50 mg/mL**, 300 mg = **6 mL** y 150 mg = **3 mL**. La ficha técnica citada indica la dosis inicial diluida en **20 mL de glucosa 5%**, administrada rápidamente durante el paro; no reemplazarla por infusión de taquicardia con pulso. En esta presentación, no diluir en solución fisiológica. Verificar preparación local, inspeccionar solución y mantener monitorización. Lidocaína es alternativa según protocolo validado, sin asociarla automáticamente. [R2,R4,R9]",
+              "**6. Reevaluar causas y seguridad.** Ciclos de RCP de **2 minutos** con ritmo/calidad/causas; tratar causas reversibles en paralelo. No usar calcio, bicarbonato ni magnesio de rutina; las indicaciones específicas exigen protocolo propio. POCUS no debe interrumpir RCP. Considerar ECPR solo en pacientes seleccionados y sistema capacitado. [R1,R4]",
+              "**7. Tras el retorno de la circulación.** Estabilizar ABC; oxígeno **100%** hasta medición fiable, luego **SpO₂ 90–98%** según AHA; evitar hipoxia/hiperoxia y confirmar gasometría cuando corresponda. **PaCO₂ 35–45 mmHg** en paciente comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; convocar intervención coronaria urgente ante elevación persistente del ST, shock cardiogénico, arritmias ventriculares recurrentes/refractarias o isquemia grave. Sin estas condiciones, no indicar angiografía inmediata universal. [R5,R6]",
+              "**8. UCI y temperatura.** Sin respuesta a órdenes tras el retorno: estrategia protocolizada de **32–37,5 °C**, con control durante al menos **36 horas**, incluida prevención de fiebre; no prescribir hipotermia obligatoria de **32–36 °C durante 24 horas**. Evaluar convulsiones/EEG; evitar glucemia **<70 o >180 mg/dL**. Neuropronóstico integrado después de al menos **72 horas de la normotermia**, sin factores de confusión. No aplicar automáticamente criterios prehospitalarios de finalización al paro hospitalario; decisión de un profesional sénior y contextual. [R1,R5,R6]",
+              "**9. Contextos especiales.** En embarazada, aplicar desplazamiento uterino y preparación del parto de reanimación descritos en Estudio; no trasladar al quirófano para retrasar la intervención hospitalaria. Paro pediátrico, trauma, hipotermia y tóxicos siguen protocolos propios. El RCUK posparo utiliza **SpO₂ 94–98%** y su algoritmo de marzo/2026 indica prevención de fiebre durante al menos **72 horas**, distinta del mínimo AHA de **36 horas**; mantener una estrategia institucional coherente, sin interpretar esto como dosis/umbral intercambiable con AHA. [R7,R10,R11]"
             ],
             "pt": [
-              "1. CHAMAR AJUDA + acionar código + desfibrilador + timer",
-              "2. RCP alta qualidade: compressões 5–6 cm, 100–120/min, reexpansão total, mínimo interrupção",
-              "3. FV/TVSP (CHOCÁVEL): Choque 120–200 J bifásico → RCP 2 min → checar ritmo → repetir",
-              "   → Epinefrina 1 mg IV cada 3–5 min (a partir do 2º choque)",
-              "   → Amiodarona 300 mg IV (FV/TVSP refratária após 2º choque) + 150 mg após",
-              "4. AESP/Assistolia (NÃO CHOCÁVEL): Epinefrina 1 mg IV IMEDIATAMENTE → RCP 2 min → checar",
-              "5. Via aérea: IOT (sem interromper RCP) ou máscara laríngea — ventilação 10/min",
-              "6. Acesso: periférico ou IO (intraósseo) se sem acesso — preferir AVP",
-              "7. 5H5T: Hipovolemia/Hipóxia/Hidrogênio(acidose)/Hipo-Hiperpotassemia/Hipotermia | Tensão(pneumotórax)/Tamponamento/Trombose coronária/Trombose pulmonar/Tóxicos",
-              "8. ROSC → cuidados pós-PCR: PA, SpO2, glicemia, TTM, ECG, angiografia se IAMCSST"
+              "**PCR adulto — Modo Plantão; sequência AHA 2025**",
+              "**1. Reconhecer e mobilizar.** Não responsivo + respiração ausente/anormal; verificar pulso por no máximo **10 segundos**. Sem pulso definitivo: chamar equipe, iniciar compressões e trazer desfibrilador. Distribuir funções e registrar horários/choques/doses. [R2,R3]",
+              "**2. RCP.** Compressões **100–120/min**, profundidade **5–6 cm**, retorno completo, mínima pausa; trocar compressor a cada **2 minutos**. Sem via aérea avançada: **30:2**. Com via aérea avançada: compressões contínuas e **10 ventilações/min**, sem hiperventilar. Ventilar com bolsa-máscara e oxigênio; intubação/supraglótica por equipe habilitada, sem atrasar choque, com capnografia. [R2,R3]",
+              "**3. Desfibrilar FV/TV sem pulso.** Choque não sincronizado: energia bifásica indicada pelo fabricante, por exemplo **120–200 J**; se desconhecida, máxima disponível. Choques seguintes iguais ou maiores conforme aparelho. Monofásico: **360 J**. Retomar RCP imediatamente por **2 minutos**, depois analisar ritmo; procurar pulso apenas se ritmo organizado/sinais de retorno, por no máximo **10 segundos**. Não chocar AESP/assistolia. [R1,R2,R3]",
+              "**4. Adrenalina/epinefrina.** Preferir acesso IV; IO se IV inviável/demorado. **1 mg IV/IO a cada 3–5 minutos**: AESP/assistolia o mais cedo possível; FV/TV sem pulso após o segundo choque nesta sequência AHA. Apresentação pronta **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Conferir rótulo; não confundir com **1 mg/mL**. Não usar via endotraqueal rotineiramente. Suspender bolus da PCR quando houver retorno da circulação. [R1,R2,R8]",
+              "**5. Amiodarona.** FV/TV sem pulso persistente após o terceiro choque: **300 mg IV/IO em bolus**; se persistir, segunda dose **150 mg** conforme algoritmo. Para o concentrado específico **50 mg/mL**, 300 mg = **6 mL** e 150 mg = **3 mL**. A bula citada orienta a dose inicial diluída em **20 mL de glicose 5%**, administrada rapidamente na PCR; não substituir por infusão de taquicardia com pulso. Nesta apresentação, não diluir em soro fisiológico. Conferir preparo local, inspecionar solução e manter monitorização. Lidocaína é alternativa conforme protocolo validado, sem associá-la automaticamente. [R2,R4,R9]",
+              "**6. Reavaliar causas e segurança.** Ciclos de RCP de **2 minutos** com ritmo/qualidade/causas; tratar causas reversíveis em paralelo. Não usar cálcio, bicarbonato ou magnésio de rotina; indicações específicas exigem protocolo próprio. POCUS não deve interromper RCP. Considerar ECPR apenas em pacientes selecionados e sistema habilitado. [R1,R4]",
+              "**7. Após retorno da circulação.** Estabilizar ABC; oxigênio **100%** até medida confiável, depois **SpO₂ 90–98%** segundo AHA; evitar hipóxia/hiperóxia e confirmar gasometria quando necessário. **PaCO₂ 35–45 mmHg** em comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; acionar intervenção coronária urgente diante de supra persistente, choque cardiogênico, arritmias ventriculares recorrentes/refratárias ou isquemia grave. Sem essas condições, não indicar angiografia imediata universal. [R5,R6]",
+              "**8. UTI e temperatura.** Sem resposta a comandos após retorno: estratégia protocolizada de **32–37,5 °C**, com controle por pelo menos **36 horas**, incluindo prevenção de febre; não prescrever hipotermia obrigatória de **32–36 °C por 24 horas**. Avaliar convulsões/EEG; evitar glicemia **<70 ou >180 mg/dL**. Neuroprognóstico integrado após pelo menos **72 horas da normotermia**, sem confundidores. Não aplicar automaticamente critérios pré-hospitalares de término à PCR hospitalar; decisão sênior e contextual. [R1,R5,R6]",
+              "**9. Contextos especiais.** Em gestante, aplicar deslocamento uterino e preparação do parto ressuscitativo descritos em Estudo; não transportar ao centro cirúrgico para adiar a intervenção hospitalar. PCR pediátrica, trauma, hipotermia e tóxicos seguem protocolos próprios. O RCUK pós-PCR usa **SpO₂ 94–98%** e seu algoritmo de março/2026 orienta prevenção de febre por pelo menos **72 horas**, distinta do mínimo AHA de **36 horas**; manter uma estratégia institucional coerente, sem interpretar isso como dose/limiar intercambiável com AHA. [R7,R10,R11]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "bc7273175cbca9272572654f59aecfebb48bb74befcade130531a7ed40175eca",
+            "blockSha256": "bf4771399c0e35ecb9146869538b6d32797051573804084690e125923fcd80d5",
             "innerFamilyId": "bebb9a8886914d04",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::pcr_adulto",
             "sourceExpressionSha256": "5bbe5c77e5c8028484070d97bd6a80d65a4eac5fd987ba02c6073b4b4605e480"
           }
+        },
+        "approvedClinicalPayload": {
+          "es": {
+            "plantao": "**PCR adulto — Modo Guardia; secuencia AHA 2025**\n\n**1. Reconocer y movilizar.** Sin respuesta + respiración ausente/anormal; verificar pulso durante un máximo de **10 segundos**. Sin pulso cierto: convocar equipo, iniciar compresiones y traer desfibrilador. Distribuir funciones y registrar horarios/descargas/dosis. [R2,R3]\n\n**2. RCP.** Compresiones **100–120/min**, profundidad **5–6 cm**, retroceso completo, mínima pausa; cambiar reanimador cada **2 minutos**. Sin vía aérea avanzada: **30:2**. Con vía aérea avanzada: compresiones continuas y **10 ventilaciones/min**, sin hiperventilar. Ventilar con bolsa-máscara y oxígeno; intubación/supraglótica por equipo capacitado, sin retrasar descarga, con capnografía. [R2,R3]\n\n**3. Desfibrilar FV/TV sin pulso.** Descarga no sincronizada: energía bifásica indicada por el fabricante, por ejemplo **120–200 J**; si se desconoce, máxima disponible. Descargas siguientes iguales o mayores según equipo. Monofásico: **360 J**. Reanudar RCP inmediatamente durante **2 minutos**, luego analizar ritmo; buscar pulso solo si hay ritmo organizado/signos de retorno, durante un máximo de **10 segundos**. No desfibrilar AESP/asistolia. [R1,R2,R3]\n\n**4. Adrenalina/epinefrina.** Preferir acceso IV; IO si IV no es viable/se demora. **1 mg IV/IO cada 3–5 minutos**: AESP/asistolia lo antes posible; FV/TV sin pulso después de la segunda descarga en esta secuencia AHA. Presentación lista **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Verificar etiqueta; no confundir con **1 mg/mL**. No usar vía endotraqueal rutinariamente. Suspender bolos del paro cuando retorne la circulación. [R1,R2,R8]\n\n**5. Amiodarona.** FV/TV sin pulso persistente después de la tercera descarga: **300 mg IV/IO en bolo**; si persiste, segunda dosis **150 mg** según algoritmo. Para el concentrado específico **50 mg/mL**, 300 mg = **6 mL** y 150 mg = **3 mL**. La ficha técnica citada indica la dosis inicial diluida en **20 mL de glucosa 5%**, administrada rápidamente durante el paro; no reemplazarla por infusión de taquicardia con pulso. En esta presentación, no diluir en solución fisiológica. Verificar preparación local, inspeccionar solución y mantener monitorización. Lidocaína es alternativa según protocolo validado, sin asociarla automáticamente. [R2,R4,R9]\n\n**6. Reevaluar causas y seguridad.** Ciclos de RCP de **2 minutos** con ritmo/calidad/causas; tratar causas reversibles en paralelo. No usar calcio, bicarbonato ni magnesio de rutina; las indicaciones específicas exigen protocolo propio. POCUS no debe interrumpir RCP. Considerar ECPR solo en pacientes seleccionados y sistema capacitado. [R1,R4]\n\n**7. Tras el retorno de la circulación.** Estabilizar ABC; oxígeno **100%** hasta medición fiable, luego **SpO₂ 90–98%** según AHA; evitar hipoxia/hiperoxia y confirmar gasometría cuando corresponda. **PaCO₂ 35–45 mmHg** en paciente comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; convocar intervención coronaria urgente ante elevación persistente del ST, shock cardiogénico, arritmias ventriculares recurrentes/refractarias o isquemia grave. Sin estas condiciones, no indicar angiografía inmediata universal. [R5,R6]\n\n**8. UCI y temperatura.** Sin respuesta a órdenes tras el retorno: estrategia protocolizada de **32–37,5 °C**, con control durante al menos **36 horas**, incluida prevención de fiebre; no prescribir hipotermia obligatoria de **32–36 °C durante 24 horas**. Evaluar convulsiones/EEG; evitar glucemia **<70 o >180 mg/dL**. Neuropronóstico integrado después de al menos **72 horas de la normotermia**, sin factores de confusión. No aplicar automáticamente criterios prehospitalarios de finalización al paro hospitalario; decisión de un profesional sénior y contextual. [R1,R5,R6]\n\n**9. Contextos especiales.** En embarazada, aplicar desplazamiento uterino y preparación del parto de reanimación descritos en Estudio; no trasladar al quirófano para retrasar la intervención hospitalaria. Paro pediátrico, trauma, hipotermia y tóxicos siguen protocolos propios. El RCUK posparo utiliza **SpO₂ 94–98%** y su algoritmo de marzo/2026 indica prevención de fiebre durante al menos **72 horas**, distinta del mínimo AHA de **36 horas**; mantener una estrategia institucional coherente, sin interpretar esto como dosis/umbral intercambiable con AHA. [R7,R10,R11]",
+            "study": "**PCR adulto — Modo Estudio**\n\n**Concepto y reconocimiento.** Emergencia por interrupción de la circulación efectiva, con hipoperfusión cerebral y coronaria. En un adulto que no responde, sin respiración normal o con gasping, el profesional verifica el pulso durante un máximo de **10 segundos**; sin pulso identificado con certeza, inicia RCP. ECG, laboratorio e imágenes no deben retrasarla. Esta guía se dirige a adultos **≥18 años**. [R1,R3]\n\n**Ritmos y causas.** FV/TV sin pulso son desfibrilables; AESP/asistolia no. Buscar hipovolemia, hipoxia, acidosis, hipo/hiperpotasemia, hipotermia, neumotórax a tensión, taponamiento, tóxicos y trombosis coronaria/pulmonar. Un ritmo organizado no demuestra circulación. [R2]\n\n**Estrategia.** RCP y desfibrilación precoz tienen prioridad; los fármacos son coadyuvantes. Se adopta el algoritmo **AHA 2025**: adrenalina después de la segunda descarga y amiodarona después de la tercera. El **ERC/RCUK 2025** inicia adrenalina después de la tercera descarga; no mezclar secuencias. Dosis/preparación figuran en Guardia. [R1,R2,R4]\n\n**Monitorización y estudios.** La capnografía con curva confirma el tubo y evalúa la RCP. ETCO₂ bajo exige revisar calidad y causas; un aumento brusco sugiere retorno de la circulación, sin constituir un diagnóstico aislado. POCUS por un operador experimentado solo si no prolonga las pausas. Tras el retorno, obtener ECG, gasometría, glucemia y electrolitos; imágenes dirigidas a la causa y las complicaciones. [R1,R6]\n\n**Posparo y pronóstico.** Shock, lesión cerebral hipóxico-isquémica y disfunción miocárdica requieren cuidados intensivos. Las metas AHA de oxigenación, perfusión y temperatura figuran en Guardia. El pronóstico neurológico es multimodal y tardío, sin sedación/hipotermia que interfieran; no declarar futilidad por ETCO₂ o duración aislados. Rehabilitación y planificación multidisciplinaria preceden al alta. [R1,R5]\n\n**Poblaciones especiales.** Embarazo: RCP en decúbito supino con desplazamiento uterino manual hacia la izquierda cuando el fondo uterino está a nivel/por encima del ombligo; convocar obstetricia, preparar el parto de reanimación desde el reconocimiento y, sin retorno, procurar completarlo en **5 minutos**, en el lugar del paro hospitalario. Pediatría tiene un owner separado. Hipotermia grave, trauma, intoxicación y poscirugía cardíaca requieren protocolos específicos. [R7,R8]\n\n**Seguridad farmacológica.** No extrapolar los bolos del paro a pacientes con pulso. El esquema se limita a las dosis de rescate del paro; el mantenimiento en insuficiencia renal/hepática tras el retorno debe considerar perfusión, toxicidad, interacciones y la ficha técnica de la presentación. Amiodarona puede causar hipotensión/bradicardia; monitorizar ECG y presión. En la presentación citada, las contraindicaciones habituales tienen una excepción para la reanimación de FV resistente a descargas, incluidas situaciones gestacionales con riesgo vital. Lactancia y mantenimiento requieren revisión individual. [R8,R9]"
+          },
+          "owner": "pcr_adulto",
+          "preservedRuntimeIds": [
+            "pcr_adulto"
+          ],
+          "pt": {
+            "plantao": "**PCR adulto — Modo Plantão; sequência AHA 2025**\n\n**1. Reconhecer e mobilizar.** Não responsivo + respiração ausente/anormal; verificar pulso por no máximo **10 segundos**. Sem pulso definitivo: chamar equipe, iniciar compressões e trazer desfibrilador. Distribuir funções e registrar horários/choques/doses. [R2,R3]\n\n**2. RCP.** Compressões **100–120/min**, profundidade **5–6 cm**, retorno completo, mínima pausa; trocar compressor a cada **2 minutos**. Sem via aérea avançada: **30:2**. Com via aérea avançada: compressões contínuas e **10 ventilações/min**, sem hiperventilar. Ventilar com bolsa-máscara e oxigênio; intubação/supraglótica por equipe habilitada, sem atrasar choque, com capnografia. [R2,R3]\n\n**3. Desfibrilar FV/TV sem pulso.** Choque não sincronizado: energia bifásica indicada pelo fabricante, por exemplo **120–200 J**; se desconhecida, máxima disponível. Choques seguintes iguais ou maiores conforme aparelho. Monofásico: **360 J**. Retomar RCP imediatamente por **2 minutos**, depois analisar ritmo; procurar pulso apenas se ritmo organizado/sinais de retorno, por no máximo **10 segundos**. Não chocar AESP/assistolia. [R1,R2,R3]\n\n**4. Adrenalina/epinefrina.** Preferir acesso IV; IO se IV inviável/demorado. **1 mg IV/IO a cada 3–5 minutos**: AESP/assistolia o mais cedo possível; FV/TV sem pulso após o segundo choque nesta sequência AHA. Apresentação pronta **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Conferir rótulo; não confundir com **1 mg/mL**. Não usar via endotraqueal rotineiramente. Suspender bolus da PCR quando houver retorno da circulação. [R1,R2,R8]\n\n**5. Amiodarona.** FV/TV sem pulso persistente após o terceiro choque: **300 mg IV/IO em bolus**; se persistir, segunda dose **150 mg** conforme algoritmo. Para o concentrado específico **50 mg/mL**, 300 mg = **6 mL** e 150 mg = **3 mL**. A bula citada orienta a dose inicial diluída em **20 mL de glicose 5%**, administrada rapidamente na PCR; não substituir por infusão de taquicardia com pulso. Nesta apresentação, não diluir em soro fisiológico. Conferir preparo local, inspecionar solução e manter monitorização. Lidocaína é alternativa conforme protocolo validado, sem associá-la automaticamente. [R2,R4,R9]\n\n**6. Reavaliar causas e segurança.** Ciclos de RCP de **2 minutos** com ritmo/qualidade/causas; tratar causas reversíveis em paralelo. Não usar cálcio, bicarbonato ou magnésio de rotina; indicações específicas exigem protocolo próprio. POCUS não deve interromper RCP. Considerar ECPR apenas em pacientes selecionados e sistema habilitado. [R1,R4]\n\n**7. Após retorno da circulação.** Estabilizar ABC; oxigênio **100%** até medida confiável, depois **SpO₂ 90–98%** segundo AHA; evitar hipóxia/hiperóxia e confirmar gasometria quando necessário. **PaCO₂ 35–45 mmHg** em comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; acionar intervenção coronária urgente diante de supra persistente, choque cardiogênico, arritmias ventriculares recorrentes/refratárias ou isquemia grave. Sem essas condições, não indicar angiografia imediata universal. [R5,R6]\n\n**8. UTI e temperatura.** Sem resposta a comandos após retorno: estratégia protocolizada de **32–37,5 °C**, com controle por pelo menos **36 horas**, incluindo prevenção de febre; não prescrever hipotermia obrigatória de **32–36 °C por 24 horas**. Avaliar convulsões/EEG; evitar glicemia **<70 ou >180 mg/dL**. Neuroprognóstico integrado após pelo menos **72 horas da normotermia**, sem confundidores. Não aplicar automaticamente critérios pré-hospitalares de término à PCR hospitalar; decisão sênior e contextual. [R1,R5,R6]\n\n**9. Contextos especiais.** Em gestante, aplicar deslocamento uterino e preparação do parto ressuscitativo descritos em Estudo; não transportar ao centro cirúrgico para adiar a intervenção hospitalar. PCR pediátrica, trauma, hipotermia e tóxicos seguem protocolos próprios. O RCUK pós-PCR usa **SpO₂ 94–98%** e seu algoritmo de março/2026 orienta prevenção de febre por pelo menos **72 horas**, distinta do mínimo AHA de **36 horas**; manter uma estratégia institucional coerente, sem interpretar isso como dose/limiar intercambiável com AHA. [R7,R10,R11]",
+            "study": "**PCR adulto — Modo Estudo**\n\n**Conceito e reconhecimento.** Emergência por interrupção da circulação efetiva, com hipoperfusão cerebral e coronária. Em adulto não responsivo, sem respiração normal ou com gasping, o profissional verifica pulso por no máximo **10 segundos**; sem pulso definitivamente identificado, inicia RCP. ECG, laboratório e imagem não devem atrasá-la. Este guia destina-se a adultos **≥18 anos**. [R1,R3]\n\n**Ritmos e causas.** FV/TV sem pulso são chocáveis; AESP/assistolia não. Procurar hipovolemia, hipóxia, acidose, hipo/hipercalemia, hipotermia, pneumotórax hipertensivo, tamponamento, toxinas e trombose coronária/pulmonar. Ritmo organizado não comprova circulação. [R2]\n\n**Estratégia.** RCP e desfibrilação precoce têm prioridade; medicamentos são adjuvantes. Adota-se o algoritmo **AHA 2025**: adrenalina após o segundo choque e amiodarona após o terceiro. O **ERC/RCUK 2025** inicia adrenalina após o terceiro choque; não misturar sequências. Doses/preparo estão no Plantão. [R1,R2,R4]\n\n**Monitorização e exames.** Capnografia com curva confirma o tubo e acompanha RCP. ETCO₂ baixo exige reavaliar qualidade e causas; aumento súbito sugere retorno da circulação, sem substituí-lo por diagnóstico isolado. POCUS por operador experiente só se não prolongar pausas. Após retorno, obter ECG, gasometria, glicemia e eletrólitos; imagem dirigida à causa e às complicações. [R1,R6]\n\n**Pós-PCR e prognóstico.** Choque, lesão cerebral hipóxico-isquêmica e disfunção miocárdica exigem cuidados intensivos. Metas AHA de oxigenação, perfusão e temperatura constam no Plantão. Prognóstico neurológico é multimodal e tardio, sem sedação/hipotermia confundidoras; não declarar futilidade por ETCO₂ ou duração isolados. Reabilitação e planejamento multidisciplinar precedem alta. [R1,R5]\n\n**Populações especiais.** Gestação: RCP em decúbito dorsal com deslocamento uterino manual à esquerda quando fundo uterino ao nível/acima do umbigo; acionar obstetrícia, preparar parto ressuscitativo desde o reconhecimento e, sem retorno, buscar conclusão em **5 minutos**, no local da PCR hospitalar. Pediatria tem owner separado. Hipotermia grave, trauma, intoxicação e pós-cirurgia cardíaca requerem protocolos específicos. [R7,R8]\n\n**Segurança farmacológica.** Não extrapolar bolus da PCR para paciente com pulso. O esquema limita-se às doses de resgate da PCR; manutenção na insuficiência renal/hepática após retorno deve considerar perfusão, toxicidade, interações e a bula da apresentação. Amiodarona pode causar hipotensão/bradicardia; monitorizar ECG e pressão. Na apresentação citada, contraindicações usuais têm exceção para ressuscitação de FV resistente a choques, inclusive circunstâncias gestacionais de risco à vida. Lactação e manutenção demandam revisão individual. [R8,R9]"
+          },
+          "references": [
+            {
+              "id": "R1",
+              "title": "AHA — Adult Advanced Life Support, final 2025",
+              "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support"
+            },
+            {
+              "id": "R2",
+              "title": "AHA — Adult Cardiac Arrest Algorithm, final 2025",
+              "url": "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-CA-LngDscrp-250725-Ed.pdf"
+            },
+            {
+              "id": "R3",
+              "title": "AHA — Adult Basic Life Support, final 2025",
+              "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-basic-life-support"
+            },
+            {
+              "id": "R4",
+              "title": "RCUK/ERC — Adult Advanced Life Support, final 2025",
+              "url": "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-advanced-life-support-guidelines"
+            },
+            {
+              "id": "R5",
+              "title": "AHA — Post-Cardiac Arrest Care, final 2025",
+              "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/post-cardiac-arrest-care"
+            },
+            {
+              "id": "R6",
+              "title": "AHA — Adult Post-Cardiac Arrest Care Algorithm, final 2025",
+              "url": "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-PCAC-250527.pdf"
+            },
+            {
+              "id": "R7",
+              "title": "AHA — Special Circumstances of Resuscitation, final 2025",
+              "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation"
+            },
+            {
+              "id": "R8",
+              "title": "Aguettant — Adrenaline 1 mg/10 mL, SmPC 2019 vigente consultado",
+              "url": "https://www.medicines.org.uk/emc/product/2024/smpc"
+            },
+            {
+              "id": "R9",
+              "title": "Hameln — Amiodarone 50 mg/mL, SmPC 2022 vigente consultado",
+              "url": "https://www.medicines.org.uk/emc/product/3940/smpc"
+            },
+            {
+              "id": "R10",
+              "title": "RCUK/ERC — Post-resuscitation Care, final 2025",
+              "url": "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/post-resuscitation-care-guidelines"
+            },
+            {
+              "id": "R11",
+              "title": "RCUK — Adult Post-resuscitation Care Algorithm, atualização final março/2026",
+              "url": "https://www.resus.org.uk/sites/default/files/2026-03/RCUK%20G2025%20ADULT%20PRC%20March%20V3.pdf"
+            }
+          ],
+          "version": "JIT-2026-10-02-v1.0"
         },
         "classification": {
           "compatibilityKind": "localized_classification_payload",
@@ -33222,23 +33295,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 FV (Fibrilación Ventricular) — ritmo caótico, chocable, supervivencia ↑ con desfibrilación precoz",
-              "🔴 TV sin Pulso — TV monomórfica/polimórfica sin gasto cardíaco, chocable",
-              "🟠 AESP (Actividad Eléctrica Sin Pulso) — ritmo organizado sin pulso; tratar 5H5T",
-              "🟠 Asistolia — ausencia de actividad eléctrica; peor pronóstico; tratar 5H5T"
+              "**Ritmos y causas.** FV/TV sin pulso son desfibrilables; AESP/asistolia no. Buscar hipovolemia, hipoxia, acidosis, hipo/hiperpotasemia, hipotermia, neumotórax a tensión, taponamiento, tóxicos y trombosis coronaria/pulmonar. Un ritmo organizado no demuestra circulación. [R2]"
             ],
             "pt": [
-              "🔴 FV (Fibrilação Ventricular) — ritmo caótico, chocável, sobrevida ↑ com desfibrilação precoce",
-              "🔴 TV sem Pulso — TV monomórfica/polimórfica sem débito cardíaco, chocável",
-              "🟠 AESP (Atividade Elétrica Sem Pulso) — ritmo organizado sem pulso; tratar 5H5T",
-              "🟠 Assistolia — ausência de atividade elétrica; pior prognóstico; tratar 5H5T"
+              "**Ritmos e causas.** FV/TV sem pulso são chocáveis; AESP/assistolia não. Procurar hipovolemia, hipóxia, acidose, hipo/hipercalemia, hipotermia, pneumotórax hipertensivo, tamponamento, toxinas e trombose coronária/pulmonar. Ritmo organizado não comprova circulação. [R2]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "bc7273175cbca9272572654f59aecfebb48bb74befcade130531a7ed40175eca",
+            "blockSha256": "bf4771399c0e35ecb9146869538b6d32797051573804084690e125923fcd80d5",
             "innerFamilyId": "ec4c285966e73508",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::pcr_adulto",
@@ -33249,9 +33316,10 @@
       "protocolKey": "legacy_protocol::pcr_adulto",
       "source": "legacyCompatibility.recordsByPathology",
       "sourceMode": "verbatim_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
+      "approvedClinicalPayloadSha256": "8aa7b5bca4bfa010f4b3900ea7d6781e504dd3c376a56b5db89049ebd0020403",
       "canonicalPathologyKey": "pcr_adulto",
       "contentKey": "legacy_classification_content::pcr_adulto",
       "enabled": true,
@@ -33265,23 +33333,17 @@
         "finalMachineRegistryDocument": false,
         "locales": {
           "es": [
-            "🔴 FV (Fibrilación Ventricular) — ritmo caótico, chocable, supervivencia ↑ con desfibrilación precoz",
-            "🔴 TV sin Pulso — TV monomórfica/polimórfica sin gasto cardíaco, chocable",
-            "🟠 AESP (Actividad Eléctrica Sin Pulso) — ritmo organizado sin pulso; tratar 5H5T",
-            "🟠 Asistolia — ausencia de actividad eléctrica; peor pronóstico; tratar 5H5T"
+            "**Ritmos y causas.** FV/TV sin pulso son desfibrilables; AESP/asistolia no. Buscar hipovolemia, hipoxia, acidosis, hipo/hiperpotasemia, hipotermia, neumotórax a tensión, taponamiento, tóxicos y trombosis coronaria/pulmonar. Un ritmo organizado no demuestra circulación. [R2]"
           ],
           "pt": [
-            "🔴 FV (Fibrilação Ventricular) — ritmo caótico, chocável, sobrevida ↑ com desfibrilação precoce",
-            "🔴 TV sem Pulso — TV monomórfica/polimórfica sem débito cardíaco, chocável",
-            "🟠 AESP (Atividade Elétrica Sem Pulso) — ritmo organizado sem pulso; tratar 5H5T",
-            "🟠 Assistolia — ausência de atividade elétrica; pior prognóstico; tratar 5H5T"
+            "**Ritmos e causas.** FV/TV sem pulso são chocáveis; AESP/assistolia não. Procurar hipovolemia, hipóxia, acidose, hipo/hipercalemia, hipotermia, pneumotórax hipertensivo, tamponamento, toxinas e trombose coronária/pulmonar. Ritmo organizado não comprova circulação. [R2]"
           ]
         },
         "machineRuleInferencePerformed": false,
         "ptEsStructuralParity": true,
         "schemaVersion": "legacy_localized_payload_v1",
         "sourceProof": {
-          "blockSha256": "bc7273175cbca9272572654f59aecfebb48bb74befcade130531a7ed40175eca",
+          "blockSha256": "bf4771399c0e35ecb9146869538b6d32797051573804084690e125923fcd80d5",
           "innerFamilyId": "ec4c285966e73508",
           "legacyField": "classification",
           "protocolKey": "legacy_protocol::pcr_adulto",
@@ -33291,7 +33353,7 @@
       "protocolKey": "legacy_protocol::pcr_adulto",
       "source": "legacyCompatibility.recordsByPathology.classification",
       "sourceMode": "verbatim_classification_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "canonicalPathologyKey": "pcr_pediatrica",
@@ -41874,14 +41936,18 @@
     },
     {
       "aliases": [
-        "pcr_adulto"
+        "pcr_adulto",
+        "pcr adulto",
+        "parada cardiorrespiratoria adulto",
+        "paro cardiorrespiratorio adulto"
       ],
+      "approvedClinicalPayloadSha256": "8aa7b5bca4bfa010f4b3900ea7d6781e504dd3c376a56b5db89049ebd0020403",
       "canonicalKey": "pcr_adulto",
       "displayLabel": "pcr_adulto",
       "enabled": true,
       "priority": 100,
       "source": {
-        "blockSha256": "bc7273175cbca9272572654f59aecfebb48bb74befcade130531a7ed40175eca",
+        "blockSha256": "bf4771399c0e35ecb9146869538b6d32797051573804084690e125923fcd80d5",
         "file": "lib/data/protocols_database.dart",
         "line": 3543,
         "sourceGroup": "ProtocolModel",
@@ -41889,9 +41955,12 @@
         "strategy": "generic_constructor"
       },
       "strongAliases": [
-        "pcr_adulto"
+        "pcr_adulto",
+        "pcr adulto",
+        "parada cardiorrespiratoria adulto",
+        "paro cardiorrespiratorio adulto"
       ],
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "aliases": [
@@ -87425,11 +87494,12 @@
       "visibleCutoverEligible": false
     },
     {
+      "approvedClinicalPayloadSha256": "8aa7b5bca4bfa010f4b3900ea7d6781e504dd3c376a56b5db89049ebd0020403",
       "authoringStatus": "AUTHORITATIVE_CURRENT_ENABLED_LOCAL_DRAFT",
       "canonicalPathologyKey": "pcr_adulto",
       "classificationActionRef": null,
       "classificationDependencies": [],
-      "clinicalReviewDate": "2026-08-31",
+      "clinicalReviewDate": "2026-10-02",
       "clinicalSemanticInferencePerformed": false,
       "clinicalState": {
         "canonicalPathologyKey": "pcr_adulto",
@@ -87440,24 +87510,12 @@
         },
         "protocolKey": "legacy_protocol::pcr_adulto"
       },
-      "conditionalActions": [
-        {
-          "es": "En FV/TV sin pulso refractaria, considerar amiodarona o lidocaína según algoritmo.",
-          "key": "antiarrhythmic",
-          "pt": "Em FV/TV sem pulso refratária, considerar amiodarona ou lidocaína conforme algoritmo.",
-          "when": "shock_refractory_vf_pvt"
-        }
-      ],
+      "conditionalActions": [],
       "contraindicatedActions": [
         {
-          "es": "No usar epinefrina en dosis altas de rutina.",
-          "key": "no_high_dose_epi",
-          "pt": "Não usar epinefrina em alta dose rotineiramente."
-        },
-        {
-          "es": "No sustituir rutinariamente la epinefrina por vasopresina sola o combinada.",
-          "key": "no_vasopressin_substitute",
-          "pt": "Não substituir epinefrina rotineiramente por vasopressina isolada ou combinada."
+          "es": "**6. Reevaluar causas y seguridad.** Ciclos de RCP de **2 minutos** con ritmo/calidad/causas; tratar causas reversibles en paralelo. No usar calcio, bicarbonato ni magnesio de rutina; las indicaciones específicas exigen protocolo propio. POCUS no debe interrumpir RCP. Considerar ECPR solo en pacientes seleccionados y sistema capacitado. [R1,R4]",
+          "key": "approved_adjunct_limits",
+          "pt": "**6. Reavaliar causas e segurança.** Ciclos de RCP de **2 minutos** com ritmo/qualidade/causas; tratar causas reversíveis em paralelo. Não usar cálcio, bicarbonato ou magnésio de rotina; indicações específicas exigem protocolo próprio. POCUS não deve interromper RCP. Considerar ECPR apenas em pacientes selecionados e sistema habilitado. [R1,R4]"
         }
       ],
       "definitiveActions": [],
@@ -87465,27 +87523,67 @@
       "enabled": true,
       "escalationCriteria": [
         {
-          "es": "Tras ROSC, transicionar de inmediato a cuidados posparo estructurados.",
-          "key": "rosc",
-          "pt": "Após ROSC, transicionar imediatamente para cuidados pós-parada estruturados."
+          "es": "**5. Amiodarona.** FV/TV sin pulso persistente después de la tercera descarga: **300 mg IV/IO en bolo**; si persiste, segunda dosis **150 mg** según algoritmo. Para el concentrado específico **50 mg/mL**, 300 mg = **6 mL** y 150 mg = **3 mL**. La ficha técnica citada indica la dosis inicial diluida en **20 mL de glucosa 5%**, administrada rápidamente durante el paro; no reemplazarla por infusión de taquicardia con pulso. En esta presentación, no diluir en solución fisiológica. Verificar preparación local, inspeccionar solución y mantener monitorización. Lidocaína es alternativa según protocolo validado, sin asociarla automáticamente. [R2,R4,R9]",
+          "key": "approved_escalate",
+          "pt": "**5. Amiodarona.** FV/TV sem pulso persistente após o terceiro choque: **300 mg IV/IO em bolus**; se persistir, segunda dose **150 mg** conforme algoritmo. Para o concentrado específico **50 mg/mL**, 300 mg = **6 mL** e 150 mg = **3 mL**. A bula citada orienta a dose inicial diluída em **20 mL de glicose 5%**, administrada rapidamente na PCR; não substituir por infusão de taquicardia com pulso. Nesta apresentação, não diluir em soro fisiológico. Conferir preparo local, inspecionar solução e manter monitorização. Lidocaína é alternativa conforme protocolo validado, sem associá-la automaticamente. [R2,R4,R9]"
+        },
+        {
+          "es": "**Poblaciones especiales.** Embarazo: RCP en decúbito supino con desplazamiento uterino manual hacia la izquierda cuando el fondo uterino está a nivel/por encima del ombligo; convocar obstetricia, preparar el parto de reanimación desde el reconocimiento y, sin retorno, procurar completarlo en **5 minutos**, en el lugar del paro hospitalario. Pediatría tiene un owner separado. Hipotermia grave, trauma, intoxicación y poscirugía cardíaca requieren protocolos específicos. [R7,R8]",
+          "key": "approved_special",
+          "pt": "**Populações especiais.** Gestação: RCP em decúbito dorsal com deslocamento uterino manual à esquerda quando fundo uterino ao nível/acima do umbigo; acionar obstetrícia, preparar parto ressuscitativo desde o reconhecimento e, sem retorno, buscar conclusão em **5 minutos**, no local da PCR hospitalar. Pediatria tem owner separado. Hipotermia grave, trauma, intoxicação e pós-cirurgia cardíaca requerem protocolos específicos. [R7,R8]"
         }
       ],
-      "guidelineVersion": "AHA_ADULT_ALS_2025",
+      "guidelineVersion": "AHA_ACLS_2025_RCUK_POST_ARREST_MARCH_2026",
       "initialActions": [
         {
-          "es": "Iniciar RCP de alta calidad de inmediato y minimizar interrupciones.",
-          "key": "cpr",
-          "pt": "Iniciar RCP de alta qualidade imediatamente e minimizar interrupções."
+          "es": "**PCR adulto — Modo Guardia; secuencia AHA 2025**",
+          "key": "approved_0",
+          "pt": "**PCR adulto — Modo Plantão; sequência AHA 2025**"
         },
         {
-          "es": "Desfibrilar rápidamente FV/TV sin pulso según algoritmo.",
-          "key": "defibrillation",
-          "pt": "Desfibrilar prontamente FV/TV sem pulso conforme algoritmo."
+          "es": "**1. Reconocer y movilizar.** Sin respuesta + respiración ausente/anormal; verificar pulso durante un máximo de **10 segundos**. Sin pulso cierto: convocar equipo, iniciar compresiones y traer desfibrilador. Distribuir funciones y registrar horarios/descargas/dosis. [R2,R3]",
+          "key": "approved_1",
+          "pt": "**1. Reconhecer e mobilizar.** Não responsivo + respiração ausente/anormal; verificar pulso por no máximo **10 segundos**. Sem pulso definitivo: chamar equipe, iniciar compressões e trazer desfibrilador. Distribuir funções e registrar horários/choques/doses. [R2,R3]"
         },
         {
-          "es": "Administrar epinefrina 1 mg IV/IO cada 3–5 min; en ritmo no desfibrilable, darla lo antes posible; en ritmo desfibrilable, después del fracaso de los intentos iniciales de desfibrilación.",
-          "key": "epinephrine",
-          "pt": "Administrar epinefrina 1 mg IV/IO a cada 3–5 min; em ritmo não chocável, dar o mais cedo possível; em ritmo chocável, após falha das tentativas iniciais de desfibrilação."
+          "es": "**2. RCP.** Compresiones **100–120/min**, profundidad **5–6 cm**, retroceso completo, mínima pausa; cambiar reanimador cada **2 minutos**. Sin vía aérea avanzada: **30:2**. Con vía aérea avanzada: compresiones continuas y **10 ventilaciones/min**, sin hiperventilar. Ventilar con bolsa-máscara y oxígeno; intubación/supraglótica por equipo capacitado, sin retrasar descarga, con capnografía. [R2,R3]",
+          "key": "approved_2",
+          "pt": "**2. RCP.** Compressões **100–120/min**, profundidade **5–6 cm**, retorno completo, mínima pausa; trocar compressor a cada **2 minutos**. Sem via aérea avançada: **30:2**. Com via aérea avançada: compressões contínuas e **10 ventilações/min**, sem hiperventilar. Ventilar com bolsa-máscara e oxigênio; intubação/supraglótica por equipe habilitada, sem atrasar choque, com capnografia. [R2,R3]"
+        },
+        {
+          "es": "**3. Desfibrilar FV/TV sin pulso.** Descarga no sincronizada: energía bifásica indicada por el fabricante, por ejemplo **120–200 J**; si se desconoce, máxima disponible. Descargas siguientes iguales o mayores según equipo. Monofásico: **360 J**. Reanudar RCP inmediatamente durante **2 minutos**, luego analizar ritmo; buscar pulso solo si hay ritmo organizado/signos de retorno, durante un máximo de **10 segundos**. No desfibrilar AESP/asistolia. [R1,R2,R3]",
+          "key": "approved_3",
+          "pt": "**3. Desfibrilar FV/TV sem pulso.** Choque não sincronizado: energia bifásica indicada pelo fabricante, por exemplo **120–200 J**; se desconhecida, máxima disponível. Choques seguintes iguais ou maiores conforme aparelho. Monofásico: **360 J**. Retomar RCP imediatamente por **2 minutos**, depois analisar ritmo; procurar pulso apenas se ritmo organizado/sinais de retorno, por no máximo **10 segundos**. Não chocar AESP/assistolia. [R1,R2,R3]"
+        },
+        {
+          "es": "**4. Adrenalina/epinefrina.** Preferir acceso IV; IO si IV no es viable/se demora. **1 mg IV/IO cada 3–5 minutos**: AESP/asistolia lo antes posible; FV/TV sin pulso después de la segunda descarga en esta secuencia AHA. Presentación lista **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Verificar etiqueta; no confundir con **1 mg/mL**. No usar vía endotraqueal rutinariamente. Suspender bolos del paro cuando retorne la circulación. [R1,R2,R8]",
+          "key": "approved_4",
+          "pt": "**4. Adrenalina/epinefrina.** Preferir acesso IV; IO se IV inviável/demorado. **1 mg IV/IO a cada 3–5 minutos**: AESP/assistolia o mais cedo possível; FV/TV sem pulso após o segundo choque nesta sequência AHA. Apresentação pronta **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Conferir rótulo; não confundir com **1 mg/mL**. Não usar via endotraqueal rotineiramente. Suspender bolus da PCR quando houver retorno da circulação. [R1,R2,R8]"
+        },
+        {
+          "es": "**5. Amiodarona.** FV/TV sin pulso persistente después de la tercera descarga: **300 mg IV/IO en bolo**; si persiste, segunda dosis **150 mg** según algoritmo. Para el concentrado específico **50 mg/mL**, 300 mg = **6 mL** y 150 mg = **3 mL**. La ficha técnica citada indica la dosis inicial diluida en **20 mL de glucosa 5%**, administrada rápidamente durante el paro; no reemplazarla por infusión de taquicardia con pulso. En esta presentación, no diluir en solución fisiológica. Verificar preparación local, inspeccionar solución y mantener monitorización. Lidocaína es alternativa según protocolo validado, sin asociarla automáticamente. [R2,R4,R9]",
+          "key": "approved_5",
+          "pt": "**5. Amiodarona.** FV/TV sem pulso persistente após o terceiro choque: **300 mg IV/IO em bolus**; se persistir, segunda dose **150 mg** conforme algoritmo. Para o concentrado específico **50 mg/mL**, 300 mg = **6 mL** e 150 mg = **3 mL**. A bula citada orienta a dose inicial diluída em **20 mL de glicose 5%**, administrada rapidamente na PCR; não substituir por infusão de taquicardia com pulso. Nesta apresentação, não diluir em soro fisiológico. Conferir preparo local, inspecionar solução e manter monitorização. Lidocaína é alternativa conforme protocolo validado, sem associá-la automaticamente. [R2,R4,R9]"
+        },
+        {
+          "es": "**6. Reevaluar causas y seguridad.** Ciclos de RCP de **2 minutos** con ritmo/calidad/causas; tratar causas reversibles en paralelo. No usar calcio, bicarbonato ni magnesio de rutina; las indicaciones específicas exigen protocolo propio. POCUS no debe interrumpir RCP. Considerar ECPR solo en pacientes seleccionados y sistema capacitado. [R1,R4]",
+          "key": "approved_6",
+          "pt": "**6. Reavaliar causas e segurança.** Ciclos de RCP de **2 minutos** com ritmo/qualidade/causas; tratar causas reversíveis em paralelo. Não usar cálcio, bicarbonato ou magnésio de rotina; indicações específicas exigem protocolo próprio. POCUS não deve interromper RCP. Considerar ECPR apenas em pacientes selecionados e sistema habilitado. [R1,R4]"
+        },
+        {
+          "es": "**7. Tras el retorno de la circulación.** Estabilizar ABC; oxígeno **100%** hasta medición fiable, luego **SpO₂ 90–98%** según AHA; evitar hipoxia/hiperoxia y confirmar gasometría cuando corresponda. **PaCO₂ 35–45 mmHg** en paciente comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; convocar intervención coronaria urgente ante elevación persistente del ST, shock cardiogénico, arritmias ventriculares recurrentes/refractarias o isquemia grave. Sin estas condiciones, no indicar angiografía inmediata universal. [R5,R6]",
+          "key": "approved_7",
+          "pt": "**7. Após retorno da circulação.** Estabilizar ABC; oxigênio **100%** até medida confiável, depois **SpO₂ 90–98%** segundo AHA; evitar hipóxia/hiperóxia e confirmar gasometria quando necessário. **PaCO₂ 35–45 mmHg** em comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; acionar intervenção coronária urgente diante de supra persistente, choque cardiogênico, arritmias ventriculares recorrentes/refratárias ou isquemia grave. Sem essas condições, não indicar angiografia imediata universal. [R5,R6]"
+        },
+        {
+          "es": "**8. UCI y temperatura.** Sin respuesta a órdenes tras el retorno: estrategia protocolizada de **32–37,5 °C**, con control durante al menos **36 horas**, incluida prevención de fiebre; no prescribir hipotermia obligatoria de **32–36 °C durante 24 horas**. Evaluar convulsiones/EEG; evitar glucemia **<70 o >180 mg/dL**. Neuropronóstico integrado después de al menos **72 horas de la normotermia**, sin factores de confusión. No aplicar automáticamente criterios prehospitalarios de finalización al paro hospitalario; decisión de un profesional sénior y contextual. [R1,R5,R6]",
+          "key": "approved_8",
+          "pt": "**8. UTI e temperatura.** Sem resposta a comandos após retorno: estratégia protocolizada de **32–37,5 °C**, com controle por pelo menos **36 horas**, incluindo prevenção de febre; não prescrever hipotermia obrigatória de **32–36 °C por 24 horas**. Avaliar convulsões/EEG; evitar glicemia **<70 ou >180 mg/dL**. Neuroprognóstico integrado após pelo menos **72 horas da normotermia**, sem confundidores. Não aplicar automaticamente critérios pré-hospitalares de término à PCR hospitalar; decisão sênior e contextual. [R1,R5,R6]"
+        },
+        {
+          "es": "**9. Contextos especiales.** En embarazada, aplicar desplazamiento uterino y preparación del parto de reanimación descritos en Estudio; no trasladar al quirófano para retrasar la intervención hospitalaria. Paro pediátrico, trauma, hipotermia y tóxicos siguen protocolos propios. El RCUK posparo utiliza **SpO₂ 94–98%** y su algoritmo de marzo/2026 indica prevención de fiebre durante al menos **72 horas**, distinta del mínimo AHA de **36 horas**; mantener una estrategia institucional coherente, sin interpretar esto como dosis/umbral intercambiable con AHA. [R7,R10,R11]",
+          "key": "approved_9",
+          "pt": "**9. Contextos especiais.** Em gestante, aplicar deslocamento uterino e preparação do parto ressuscitativo descritos em Estudo; não transportar ao centro cirúrgico para adiar a intervenção hospitalar. PCR pediátrica, trauma, hipotermia e tóxicos seguem protocolos próprios. O RCUK pós-PCR usa **SpO₂ 94–98%** e seu algoritmo de março/2026 orienta prevenção de febre por pelo menos **72 horas**, distinta do mínimo AHA de **36 horas**; manter uma estratégia institucional coerente, sem interpretar isso como dose/limiar intercambiável com AHA. [R7,R10,R11]"
         }
       ],
       "label": "authoritative_current_management",
@@ -87500,15 +87598,15 @@
       "managementRuleKey": "m46::pcr_adulto::authoritative_current_management",
       "monitoring": [
         {
-          "es": "Monitorizar calidad de RCP, ritmo y signos de ROSC; usar capnografía cuando haya vía aérea avanzada.",
-          "key": "quality",
-          "pt": "Monitorar qualidade da RCP, ritmo e sinais de ROSC; usar capnografia quando via aérea avançada estiver instalada."
+          "es": "**7. Tras el retorno de la circulación.** Estabilizar ABC; oxígeno **100%** hasta medición fiable, luego **SpO₂ 90–98%** según AHA; evitar hipoxia/hiperoxia y confirmar gasometría cuando corresponda. **PaCO₂ 35–45 mmHg** en paciente comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; convocar intervención coronaria urgente ante elevación persistente del ST, shock cardiogénico, arritmias ventriculares recurrentes/refractarias o isquemia grave. Sin estas condiciones, no indicar angiografía inmediata universal. [R5,R6]",
+          "key": "approved_monitor",
+          "pt": "**7. Após retorno da circulação.** Estabilizar ABC; oxigênio **100%** até medida confiável, depois **SpO₂ 90–98%** segundo AHA; evitar hipóxia/hiperóxia e confirmar gasometria quando necessário. **PaCO₂ 35–45 mmHg** em comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; acionar intervenção coronária urgente diante de supra persistente, choque cardiogênico, arritmias ventriculares recorrentes/refratárias ou isquemia grave. Sem essas condições, não indicar angiografia imediata universal. [R5,R6]"
         }
       ],
       "payload": {
         "authoringPolicy": "AUTHORITATIVE_CURRENT_OR_FAIL_CLOSED",
         "classificationDependencies": [],
-        "clinicalReviewDate": "2026-08-31",
+        "clinicalReviewDate": "2026-10-02",
         "clinicalState": {
           "canonicalPathologyKey": "pcr_adulto",
           "key": "authoritative_current_management_active_local_draft",
@@ -87518,50 +87616,78 @@
           },
           "protocolKey": "legacy_protocol::pcr_adulto"
         },
-        "conditionalActions": [
-          {
-            "es": "En FV/TV sin pulso refractaria, considerar amiodarona o lidocaína según algoritmo.",
-            "key": "antiarrhythmic",
-            "pt": "Em FV/TV sem pulso refratária, considerar amiodarona ou lidocaína conforme algoritmo.",
-            "when": "shock_refractory_vf_pvt"
-          }
-        ],
+        "conditionalActions": [],
         "contraindicatedActions": [
           {
-            "es": "No usar epinefrina en dosis altas de rutina.",
-            "key": "no_high_dose_epi",
-            "pt": "Não usar epinefrina em alta dose rotineiramente."
-          },
-          {
-            "es": "No sustituir rutinariamente la epinefrina por vasopresina sola o combinada.",
-            "key": "no_vasopressin_substitute",
-            "pt": "Não substituir epinefrina rotineiramente por vasopressina isolada ou combinada."
+            "es": "**6. Reevaluar causas y seguridad.** Ciclos de RCP de **2 minutos** con ritmo/calidad/causas; tratar causas reversibles en paralelo. No usar calcio, bicarbonato ni magnesio de rutina; las indicaciones específicas exigen protocolo propio. POCUS no debe interrumpir RCP. Considerar ECPR solo en pacientes seleccionados y sistema capacitado. [R1,R4]",
+            "key": "approved_adjunct_limits",
+            "pt": "**6. Reavaliar causas e segurança.** Ciclos de RCP de **2 minutos** com ritmo/qualidade/causas; tratar causas reversíveis em paralelo. Não usar cálcio, bicarbonato ou magnésio de rotina; indicações específicas exigem protocolo próprio. POCUS não deve interromper RCP. Considerar ECPR apenas em pacientes selecionados e sistema habilitado. [R1,R4]"
           }
         ],
         "definitiveActions": [],
         "escalationCriteria": [
           {
-            "es": "Tras ROSC, transicionar de inmediato a cuidados posparo estructurados.",
-            "key": "rosc",
-            "pt": "Após ROSC, transicionar imediatamente para cuidados pós-parada estruturados."
+            "es": "**5. Amiodarona.** FV/TV sin pulso persistente después de la tercera descarga: **300 mg IV/IO en bolo**; si persiste, segunda dosis **150 mg** según algoritmo. Para el concentrado específico **50 mg/mL**, 300 mg = **6 mL** y 150 mg = **3 mL**. La ficha técnica citada indica la dosis inicial diluida en **20 mL de glucosa 5%**, administrada rápidamente durante el paro; no reemplazarla por infusión de taquicardia con pulso. En esta presentación, no diluir en solución fisiológica. Verificar preparación local, inspeccionar solución y mantener monitorización. Lidocaína es alternativa según protocolo validado, sin asociarla automáticamente. [R2,R4,R9]",
+            "key": "approved_escalate",
+            "pt": "**5. Amiodarona.** FV/TV sem pulso persistente após o terceiro choque: **300 mg IV/IO em bolus**; se persistir, segunda dose **150 mg** conforme algoritmo. Para o concentrado específico **50 mg/mL**, 300 mg = **6 mL** e 150 mg = **3 mL**. A bula citada orienta a dose inicial diluída em **20 mL de glicose 5%**, administrada rapidamente na PCR; não substituir por infusão de taquicardia com pulso. Nesta apresentação, não diluir em soro fisiológico. Conferir preparo local, inspecionar solução e manter monitorização. Lidocaína é alternativa conforme protocolo validado, sem associá-la automaticamente. [R2,R4,R9]"
+          },
+          {
+            "es": "**Poblaciones especiales.** Embarazo: RCP en decúbito supino con desplazamiento uterino manual hacia la izquierda cuando el fondo uterino está a nivel/por encima del ombligo; convocar obstetricia, preparar el parto de reanimación desde el reconocimiento y, sin retorno, procurar completarlo en **5 minutos**, en el lugar del paro hospitalario. Pediatría tiene un owner separado. Hipotermia grave, trauma, intoxicación y poscirugía cardíaca requieren protocolos específicos. [R7,R8]",
+            "key": "approved_special",
+            "pt": "**Populações especiais.** Gestação: RCP em decúbito dorsal com deslocamento uterino manual à esquerda quando fundo uterino ao nível/acima do umbigo; acionar obstetrícia, preparar parto ressuscitativo desde o reconhecimento e, sem retorno, buscar conclusão em **5 minutos**, no local da PCR hospitalar. Pediatria tem owner separado. Hipotermia grave, trauma, intoxicação e pós-cirurgia cardíaca requerem protocolos específicos. [R7,R8]"
           }
         ],
-        "guidelineVersion": "AHA_ADULT_ALS_2025",
+        "guidelineVersion": "AHA_ACLS_2025_RCUK_POST_ARREST_MARCH_2026",
         "initialActions": [
           {
-            "es": "Iniciar RCP de alta calidad de inmediato y minimizar interrupciones.",
-            "key": "cpr",
-            "pt": "Iniciar RCP de alta qualidade imediatamente e minimizar interrupções."
+            "es": "**PCR adulto — Modo Guardia; secuencia AHA 2025**",
+            "key": "approved_0",
+            "pt": "**PCR adulto — Modo Plantão; sequência AHA 2025**"
           },
           {
-            "es": "Desfibrilar rápidamente FV/TV sin pulso según algoritmo.",
-            "key": "defibrillation",
-            "pt": "Desfibrilar prontamente FV/TV sem pulso conforme algoritmo."
+            "es": "**1. Reconocer y movilizar.** Sin respuesta + respiración ausente/anormal; verificar pulso durante un máximo de **10 segundos**. Sin pulso cierto: convocar equipo, iniciar compresiones y traer desfibrilador. Distribuir funciones y registrar horarios/descargas/dosis. [R2,R3]",
+            "key": "approved_1",
+            "pt": "**1. Reconhecer e mobilizar.** Não responsivo + respiração ausente/anormal; verificar pulso por no máximo **10 segundos**. Sem pulso definitivo: chamar equipe, iniciar compressões e trazer desfibrilador. Distribuir funções e registrar horários/choques/doses. [R2,R3]"
           },
           {
-            "es": "Administrar epinefrina 1 mg IV/IO cada 3–5 min; en ritmo no desfibrilable, darla lo antes posible; en ritmo desfibrilable, después del fracaso de los intentos iniciales de desfibrilación.",
-            "key": "epinephrine",
-            "pt": "Administrar epinefrina 1 mg IV/IO a cada 3–5 min; em ritmo não chocável, dar o mais cedo possível; em ritmo chocável, após falha das tentativas iniciais de desfibrilação."
+            "es": "**2. RCP.** Compresiones **100–120/min**, profundidad **5–6 cm**, retroceso completo, mínima pausa; cambiar reanimador cada **2 minutos**. Sin vía aérea avanzada: **30:2**. Con vía aérea avanzada: compresiones continuas y **10 ventilaciones/min**, sin hiperventilar. Ventilar con bolsa-máscara y oxígeno; intubación/supraglótica por equipo capacitado, sin retrasar descarga, con capnografía. [R2,R3]",
+            "key": "approved_2",
+            "pt": "**2. RCP.** Compressões **100–120/min**, profundidade **5–6 cm**, retorno completo, mínima pausa; trocar compressor a cada **2 minutos**. Sem via aérea avançada: **30:2**. Com via aérea avançada: compressões contínuas e **10 ventilações/min**, sem hiperventilar. Ventilar com bolsa-máscara e oxigênio; intubação/supraglótica por equipe habilitada, sem atrasar choque, com capnografia. [R2,R3]"
+          },
+          {
+            "es": "**3. Desfibrilar FV/TV sin pulso.** Descarga no sincronizada: energía bifásica indicada por el fabricante, por ejemplo **120–200 J**; si se desconoce, máxima disponible. Descargas siguientes iguales o mayores según equipo. Monofásico: **360 J**. Reanudar RCP inmediatamente durante **2 minutos**, luego analizar ritmo; buscar pulso solo si hay ritmo organizado/signos de retorno, durante un máximo de **10 segundos**. No desfibrilar AESP/asistolia. [R1,R2,R3]",
+            "key": "approved_3",
+            "pt": "**3. Desfibrilar FV/TV sem pulso.** Choque não sincronizado: energia bifásica indicada pelo fabricante, por exemplo **120–200 J**; se desconhecida, máxima disponível. Choques seguintes iguais ou maiores conforme aparelho. Monofásico: **360 J**. Retomar RCP imediatamente por **2 minutos**, depois analisar ritmo; procurar pulso apenas se ritmo organizado/sinais de retorno, por no máximo **10 segundos**. Não chocar AESP/assistolia. [R1,R2,R3]"
+          },
+          {
+            "es": "**4. Adrenalina/epinefrina.** Preferir acceso IV; IO si IV no es viable/se demora. **1 mg IV/IO cada 3–5 minutos**: AESP/asistolia lo antes posible; FV/TV sin pulso después de la segunda descarga en esta secuencia AHA. Presentación lista **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Verificar etiqueta; no confundir con **1 mg/mL**. No usar vía endotraqueal rutinariamente. Suspender bolos del paro cuando retorne la circulación. [R1,R2,R8]",
+            "key": "approved_4",
+            "pt": "**4. Adrenalina/epinefrina.** Preferir acesso IV; IO se IV inviável/demorado. **1 mg IV/IO a cada 3–5 minutos**: AESP/assistolia o mais cedo possível; FV/TV sem pulso após o segundo choque nesta sequência AHA. Apresentação pronta **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Conferir rótulo; não confundir com **1 mg/mL**. Não usar via endotraqueal rotineiramente. Suspender bolus da PCR quando houver retorno da circulação. [R1,R2,R8]"
+          },
+          {
+            "es": "**5. Amiodarona.** FV/TV sin pulso persistente después de la tercera descarga: **300 mg IV/IO en bolo**; si persiste, segunda dosis **150 mg** según algoritmo. Para el concentrado específico **50 mg/mL**, 300 mg = **6 mL** y 150 mg = **3 mL**. La ficha técnica citada indica la dosis inicial diluida en **20 mL de glucosa 5%**, administrada rápidamente durante el paro; no reemplazarla por infusión de taquicardia con pulso. En esta presentación, no diluir en solución fisiológica. Verificar preparación local, inspeccionar solución y mantener monitorización. Lidocaína es alternativa según protocolo validado, sin asociarla automáticamente. [R2,R4,R9]",
+            "key": "approved_5",
+            "pt": "**5. Amiodarona.** FV/TV sem pulso persistente após o terceiro choque: **300 mg IV/IO em bolus**; se persistir, segunda dose **150 mg** conforme algoritmo. Para o concentrado específico **50 mg/mL**, 300 mg = **6 mL** e 150 mg = **3 mL**. A bula citada orienta a dose inicial diluída em **20 mL de glicose 5%**, administrada rapidamente na PCR; não substituir por infusão de taquicardia com pulso. Nesta apresentação, não diluir em soro fisiológico. Conferir preparo local, inspecionar solução e manter monitorização. Lidocaína é alternativa conforme protocolo validado, sem associá-la automaticamente. [R2,R4,R9]"
+          },
+          {
+            "es": "**6. Reevaluar causas y seguridad.** Ciclos de RCP de **2 minutos** con ritmo/calidad/causas; tratar causas reversibles en paralelo. No usar calcio, bicarbonato ni magnesio de rutina; las indicaciones específicas exigen protocolo propio. POCUS no debe interrumpir RCP. Considerar ECPR solo en pacientes seleccionados y sistema capacitado. [R1,R4]",
+            "key": "approved_6",
+            "pt": "**6. Reavaliar causas e segurança.** Ciclos de RCP de **2 minutos** com ritmo/qualidade/causas; tratar causas reversíveis em paralelo. Não usar cálcio, bicarbonato ou magnésio de rotina; indicações específicas exigem protocolo próprio. POCUS não deve interromper RCP. Considerar ECPR apenas em pacientes selecionados e sistema habilitado. [R1,R4]"
+          },
+          {
+            "es": "**7. Tras el retorno de la circulación.** Estabilizar ABC; oxígeno **100%** hasta medición fiable, luego **SpO₂ 90–98%** según AHA; evitar hipoxia/hiperoxia y confirmar gasometría cuando corresponda. **PaCO₂ 35–45 mmHg** en paciente comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; convocar intervención coronaria urgente ante elevación persistente del ST, shock cardiogénico, arritmias ventriculares recurrentes/refractarias o isquemia grave. Sin estas condiciones, no indicar angiografía inmediata universal. [R5,R6]",
+            "key": "approved_7",
+            "pt": "**7. Após retorno da circulação.** Estabilizar ABC; oxigênio **100%** até medida confiável, depois **SpO₂ 90–98%** segundo AHA; evitar hipóxia/hiperóxia e confirmar gasometria quando necessário. **PaCO₂ 35–45 mmHg** em comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; acionar intervenção coronária urgente diante de supra persistente, choque cardiogênico, arritmias ventriculares recorrentes/refratárias ou isquemia grave. Sem essas condições, não indicar angiografia imediata universal. [R5,R6]"
+          },
+          {
+            "es": "**8. UCI y temperatura.** Sin respuesta a órdenes tras el retorno: estrategia protocolizada de **32–37,5 °C**, con control durante al menos **36 horas**, incluida prevención de fiebre; no prescribir hipotermia obligatoria de **32–36 °C durante 24 horas**. Evaluar convulsiones/EEG; evitar glucemia **<70 o >180 mg/dL**. Neuropronóstico integrado después de al menos **72 horas de la normotermia**, sin factores de confusión. No aplicar automáticamente criterios prehospitalarios de finalización al paro hospitalario; decisión de un profesional sénior y contextual. [R1,R5,R6]",
+            "key": "approved_8",
+            "pt": "**8. UTI e temperatura.** Sem resposta a comandos após retorno: estratégia protocolizada de **32–37,5 °C**, com controle por pelo menos **36 horas**, incluindo prevenção de febre; não prescrever hipotermia obrigatória de **32–36 °C por 24 horas**. Avaliar convulsões/EEG; evitar glicemia **<70 ou >180 mg/dL**. Neuroprognóstico integrado após pelo menos **72 horas da normotermia**, sem confundidores. Não aplicar automaticamente critérios pré-hospitalares de término à PCR hospitalar; decisão sênior e contextual. [R1,R5,R6]"
+          },
+          {
+            "es": "**9. Contextos especiales.** En embarazada, aplicar desplazamiento uterino y preparación del parto de reanimación descritos en Estudio; no trasladar al quirófano para retrasar la intervención hospitalaria. Paro pediátrico, trauma, hipotermia y tóxicos siguen protocolos propios. El RCUK posparo utiliza **SpO₂ 94–98%** y su algoritmo de marzo/2026 indica prevención de fiebre durante al menos **72 horas**, distinta del mínimo AHA de **36 horas**; mantener una estrategia institucional coherente, sin interpretar esto como dosis/umbral intercambiable con AHA. [R7,R10,R11]",
+            "key": "approved_9",
+            "pt": "**9. Contextos especiais.** Em gestante, aplicar deslocamento uterino e preparação do parto ressuscitativo descritos em Estudo; não transportar ao centro cirúrgico para adiar a intervenção hospitalar. PCR pediátrica, trauma, hipotermia e tóxicos seguem protocolos próprios. O RCUK pós-PCR usa **SpO₂ 94–98%** e seu algoritmo de março/2026 orienta prevenção de febre por pelo menos **72 horas**, distinta do mínimo AHA de **36 horas**; manter uma estratégia institucional coerente, sem interpretar isso como dose/limiar intercambiável com AHA. [R7,R10,R11]"
           }
         ],
         "legacyNavigationReference": {
@@ -87572,26 +87698,95 @@
         },
         "monitoring": [
           {
-            "es": "Monitorizar calidad de RCP, ritmo y signos de ROSC; usar capnografía cuando haya vía aérea avanzada.",
-            "key": "quality",
-            "pt": "Monitorar qualidade da RCP, ritmo e sinais de ROSC; usar capnografia quando via aérea avançada estiver instalada."
+            "es": "**7. Tras el retorno de la circulación.** Estabilizar ABC; oxígeno **100%** hasta medición fiable, luego **SpO₂ 90–98%** según AHA; evitar hipoxia/hiperoxia y confirmar gasometría cuando corresponda. **PaCO₂ 35–45 mmHg** en paciente comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; convocar intervención coronaria urgente ante elevación persistente del ST, shock cardiogénico, arritmias ventriculares recurrentes/refractarias o isquemia grave. Sin estas condiciones, no indicar angiografía inmediata universal. [R5,R6]",
+            "key": "approved_monitor",
+            "pt": "**7. Após retorno da circulação.** Estabilizar ABC; oxigênio **100%** até medida confiável, depois **SpO₂ 90–98%** segundo AHA; evitar hipóxia/hiperóxia e confirmar gasometria quando necessário. **PaCO₂ 35–45 mmHg** em comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; acionar intervenção coronária urgente diante de supra persistente, choque cardiogênico, arritmias ventriculares recorrentes/refratárias ou isquemia grave. Sem essas condições, não indicar angiografia imediata universal. [R5,R6]"
           }
         ],
         "provenance": [
           {
             "automaticPromotion": false,
             "managementAuthorityValidated": true,
-            "title": "2025 AHA Adult Advanced Life Support",
+            "title": "AHA — Adult Advanced Life Support, final 2025",
             "type": "guideline",
-            "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support",
-            "year": 2025
+            "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA — Adult Cardiac Arrest Algorithm, final 2025",
+            "type": "guideline",
+            "url": "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-CA-LngDscrp-250725-Ed.pdf"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA — Adult Basic Life Support, final 2025",
+            "type": "guideline",
+            "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-basic-life-support"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "RCUK/ERC — Adult Advanced Life Support, final 2025",
+            "type": "guideline",
+            "url": "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-advanced-life-support-guidelines"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA — Post-Cardiac Arrest Care, final 2025",
+            "type": "guideline",
+            "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/post-cardiac-arrest-care"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA — Adult Post-Cardiac Arrest Care Algorithm, final 2025",
+            "type": "guideline",
+            "url": "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-PCAC-250527.pdf"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA — Special Circumstances of Resuscitation, final 2025",
+            "type": "guideline",
+            "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Aguettant — Adrenaline 1 mg/10 mL, SmPC 2019 vigente consultado",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/2024/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Hameln — Amiodarone 50 mg/mL, SmPC 2022 vigente consultado",
+            "type": "product_information",
+            "url": "https://www.medicines.org.uk/emc/product/3940/smpc"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "RCUK/ERC — Post-resuscitation Care, final 2025",
+            "type": "guideline",
+            "url": "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/post-resuscitation-care-guidelines"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "RCUK — Adult Post-resuscitation Care Algorithm, atualização final março/2026",
+            "type": "guideline",
+            "url": "https://www.resus.org.uk/sites/default/files/2026-03/RCUK%20G2025%20ADULT%20PRC%20March%20V3.pdf"
           }
         ],
         "reassessment": [
           {
-            "es": "Buscar y tratar causas reversibles durante la reanimación sin interrumpir RCP/desfibrilación.",
-            "key": "causes",
-            "pt": "Pesquisar e tratar causas reversíveis durante a ressuscitação sem interromper RCP/desfibrilação."
+            "es": "**8. UCI y temperatura.** Sin respuesta a órdenes tras el retorno: estrategia protocolizada de **32–37,5 °C**, con control durante al menos **36 horas**, incluida prevención de fiebre; no prescribir hipotermia obligatoria de **32–36 °C durante 24 horas**. Evaluar convulsiones/EEG; evitar glucemia **<70 o >180 mg/dL**. Neuropronóstico integrado después de al menos **72 horas de la normotermia**, sin factores de confusión. No aplicar automáticamente criterios prehospitalarios de finalización al paro hospitalario; decisión de un profesional sénior y contextual. [R1,R5,R6]",
+            "key": "approved_reassess",
+            "pt": "**8. UTI e temperatura.** Sem resposta a comandos após retorno: estratégia protocolizada de **32–37,5 °C**, com controle por pelo menos **36 horas**, incluindo prevenção de febre; não prescrever hipotermia obrigatória de **32–36 °C por 24 horas**. Avaliar convulsões/EEG; evitar glicemia **<70 ou >180 mg/dL**. Neuroprognóstico integrado após pelo menos **72 horas da normotermia**, sem confundidores. Não aplicar automaticamente critérios pré-hospitalares de término à PCR hospitalar; decisão sênior e contextual. [R1,R5,R6]"
           }
         ],
         "requiredFacts": [
@@ -87610,18 +87805,87 @@
         {
           "automaticPromotion": false,
           "managementAuthorityValidated": true,
-          "title": "2025 AHA Adult Advanced Life Support",
+          "title": "AHA — Adult Advanced Life Support, final 2025",
           "type": "guideline",
-          "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support",
-          "year": 2025
+          "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA — Adult Cardiac Arrest Algorithm, final 2025",
+          "type": "guideline",
+          "url": "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-CA-LngDscrp-250725-Ed.pdf"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA — Adult Basic Life Support, final 2025",
+          "type": "guideline",
+          "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-basic-life-support"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "RCUK/ERC — Adult Advanced Life Support, final 2025",
+          "type": "guideline",
+          "url": "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-advanced-life-support-guidelines"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA — Post-Cardiac Arrest Care, final 2025",
+          "type": "guideline",
+          "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/post-cardiac-arrest-care"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA — Adult Post-Cardiac Arrest Care Algorithm, final 2025",
+          "type": "guideline",
+          "url": "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-PCAC-250527.pdf"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA — Special Circumstances of Resuscitation, final 2025",
+          "type": "guideline",
+          "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Aguettant — Adrenaline 1 mg/10 mL, SmPC 2019 vigente consultado",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/2024/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Hameln — Amiodarone 50 mg/mL, SmPC 2022 vigente consultado",
+          "type": "product_information",
+          "url": "https://www.medicines.org.uk/emc/product/3940/smpc"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "RCUK/ERC — Post-resuscitation Care, final 2025",
+          "type": "guideline",
+          "url": "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/post-resuscitation-care-guidelines"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "RCUK — Adult Post-resuscitation Care Algorithm, atualização final março/2026",
+          "type": "guideline",
+          "url": "https://www.resus.org.uk/sites/default/files/2026-03/RCUK%20G2025%20ADULT%20PRC%20March%20V3.pdf"
         }
       ],
       "provenancePolicy": "AUTHORITATIVE_CURRENT_OR_FAIL_CLOSED",
       "reassessment": [
         {
-          "es": "Buscar y tratar causas reversibles durante la reanimación sin interrumpir RCP/desfibrilación.",
-          "key": "causes",
-          "pt": "Pesquisar e tratar causas reversíveis durante a ressuscitação sem interromper RCP/desfibrilação."
+          "es": "**8. UCI y temperatura.** Sin respuesta a órdenes tras el retorno: estrategia protocolizada de **32–37,5 °C**, con control durante al menos **36 horas**, incluida prevención de fiebre; no prescribir hipotermia obligatoria de **32–36 °C durante 24 horas**. Evaluar convulsiones/EEG; evitar glucemia **<70 o >180 mg/dL**. Neuropronóstico integrado después de al menos **72 horas de la normotermia**, sin factores de confusión. No aplicar automáticamente criterios prehospitalarios de finalización al paro hospitalario; decisión de un profesional sénior y contextual. [R1,R5,R6]",
+          "key": "approved_reassess",
+          "pt": "**8. UTI e temperatura.** Sem resposta a comandos após retorno: estratégia protocolizada de **32–37,5 °C**, com controle por pelo menos **36 horas**, incluindo prevenção de febre; não prescrever hipotermia obrigatória de **32–36 °C por 24 horas**. Avaliar convulsões/EEG; evitar glicemia **<70 ou >180 mg/dL**. Neuroprognóstico integrado após pelo menos **72 horas da normotermia**, sem confundidores. Não aplicar automaticamente critérios pré-hospitalares de término à PCR hospitalar; decisão sênior e contextual. [R1,R5,R6]"
         }
       ],
       "requiredFacts": [
@@ -87657,7 +87921,7 @@
         "sourceBlockSha256": "8f3401fc820585e8c67f1ec8d12973252e9978dc3c5362d1f89b19a393959915",
         "superbuild46Authoring": true
       },
-      "version": "2026.08.31-m46.0",
+      "version": "JIT-2026-10-02-v1.0",
       "visibleCutoverEligible": false
     },
     {
@@ -115245,6 +115509,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "8aa7b5bca4bfa010f4b3900ea7d6781e504dd3c376a56b5db89049ebd0020403",
       "canonicalPathologyKey": "pcr_adulto",
       "enabled": true,
       "legacyCompatibility": {
@@ -115258,35 +115523,35 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "1. LLAMAR AYUDA + activar código + desfibrilador + timer",
-              "2. RCP alta calidad: compresiones 5–6 cm, 100–120/min, reexpansión total, mínima interrupción",
-              "3. FV/TVSP (CHOCABLE): Choque 120–200 J bifásico → RCP 2 min → verificar ritmo → repetir",
-              "   → Epinefrina 1 mg IV cada 3–5 min (a partir del 2º choque)",
-              "   → Amiodarona 300 mg IV (FV/TVSP refractaria tras 2º choque) + 150 mg después",
-              "4. AESP/Asistolia (NO CHOCABLE): Epinefrina 1 mg IV INMEDIATAMENTE → RCP 2 min → verificar",
-              "5. Vía aérea: IOT (sin interrumpir RCP) o máscara laríngea — ventilación 10/min",
-              "6. Acceso: periférico o IO si sin acceso",
-              "7. 5H5T: Hipovolemia/Hipoxia/Hidrógeno(acidosis)/Hipo-Hiperpotasemia/Hipotermia | Tensión(neumotórax)/Taponamiento/Trombosis coronaria/Trombosis pulmonar/Tóxicos",
-              "8. ROSC → cuidados post-PCR: PA, SpO2, glucemia, TTM, ECG, angiografía si IAMCEST"
+              "**PCR adulto — Modo Guardia; secuencia AHA 2025**",
+              "**1. Reconocer y movilizar.** Sin respuesta + respiración ausente/anormal; verificar pulso durante un máximo de **10 segundos**. Sin pulso cierto: convocar equipo, iniciar compresiones y traer desfibrilador. Distribuir funciones y registrar horarios/descargas/dosis. [R2,R3]",
+              "**2. RCP.** Compresiones **100–120/min**, profundidad **5–6 cm**, retroceso completo, mínima pausa; cambiar reanimador cada **2 minutos**. Sin vía aérea avanzada: **30:2**. Con vía aérea avanzada: compresiones continuas y **10 ventilaciones/min**, sin hiperventilar. Ventilar con bolsa-máscara y oxígeno; intubación/supraglótica por equipo capacitado, sin retrasar descarga, con capnografía. [R2,R3]",
+              "**3. Desfibrilar FV/TV sin pulso.** Descarga no sincronizada: energía bifásica indicada por el fabricante, por ejemplo **120–200 J**; si se desconoce, máxima disponible. Descargas siguientes iguales o mayores según equipo. Monofásico: **360 J**. Reanudar RCP inmediatamente durante **2 minutos**, luego analizar ritmo; buscar pulso solo si hay ritmo organizado/signos de retorno, durante un máximo de **10 segundos**. No desfibrilar AESP/asistolia. [R1,R2,R3]",
+              "**4. Adrenalina/epinefrina.** Preferir acceso IV; IO si IV no es viable/se demora. **1 mg IV/IO cada 3–5 minutos**: AESP/asistolia lo antes posible; FV/TV sin pulso después de la segunda descarga en esta secuencia AHA. Presentación lista **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Verificar etiqueta; no confundir con **1 mg/mL**. No usar vía endotraqueal rutinariamente. Suspender bolos del paro cuando retorne la circulación. [R1,R2,R8]",
+              "**5. Amiodarona.** FV/TV sin pulso persistente después de la tercera descarga: **300 mg IV/IO en bolo**; si persiste, segunda dosis **150 mg** según algoritmo. Para el concentrado específico **50 mg/mL**, 300 mg = **6 mL** y 150 mg = **3 mL**. La ficha técnica citada indica la dosis inicial diluida en **20 mL de glucosa 5%**, administrada rápidamente durante el paro; no reemplazarla por infusión de taquicardia con pulso. En esta presentación, no diluir en solución fisiológica. Verificar preparación local, inspeccionar solución y mantener monitorización. Lidocaína es alternativa según protocolo validado, sin asociarla automáticamente. [R2,R4,R9]",
+              "**6. Reevaluar causas y seguridad.** Ciclos de RCP de **2 minutos** con ritmo/calidad/causas; tratar causas reversibles en paralelo. No usar calcio, bicarbonato ni magnesio de rutina; las indicaciones específicas exigen protocolo propio. POCUS no debe interrumpir RCP. Considerar ECPR solo en pacientes seleccionados y sistema capacitado. [R1,R4]",
+              "**7. Tras el retorno de la circulación.** Estabilizar ABC; oxígeno **100%** hasta medición fiable, luego **SpO₂ 90–98%** según AHA; evitar hipoxia/hiperoxia y confirmar gasometría cuando corresponda. **PaCO₂ 35–45 mmHg** en paciente comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; convocar intervención coronaria urgente ante elevación persistente del ST, shock cardiogénico, arritmias ventriculares recurrentes/refractarias o isquemia grave. Sin estas condiciones, no indicar angiografía inmediata universal. [R5,R6]",
+              "**8. UCI y temperatura.** Sin respuesta a órdenes tras el retorno: estrategia protocolizada de **32–37,5 °C**, con control durante al menos **36 horas**, incluida prevención de fiebre; no prescribir hipotermia obligatoria de **32–36 °C durante 24 horas**. Evaluar convulsiones/EEG; evitar glucemia **<70 o >180 mg/dL**. Neuropronóstico integrado después de al menos **72 horas de la normotermia**, sin factores de confusión. No aplicar automáticamente criterios prehospitalarios de finalización al paro hospitalario; decisión de un profesional sénior y contextual. [R1,R5,R6]",
+              "**9. Contextos especiales.** En embarazada, aplicar desplazamiento uterino y preparación del parto de reanimación descritos en Estudio; no trasladar al quirófano para retrasar la intervención hospitalaria. Paro pediátrico, trauma, hipotermia y tóxicos siguen protocolos propios. El RCUK posparo utiliza **SpO₂ 94–98%** y su algoritmo de marzo/2026 indica prevención de fiebre durante al menos **72 horas**, distinta del mínimo AHA de **36 horas**; mantener una estrategia institucional coherente, sin interpretar esto como dosis/umbral intercambiable con AHA. [R7,R10,R11]"
             ],
             "pt": [
-              "1. CHAMAR AJUDA + acionar código + desfibrilador + timer",
-              "2. RCP alta qualidade: compressões 5–6 cm, 100–120/min, reexpansão total, mínimo interrupção",
-              "3. FV/TVSP (CHOCÁVEL): Choque 120–200 J bifásico → RCP 2 min → checar ritmo → repetir",
-              "   → Epinefrina 1 mg IV cada 3–5 min (a partir do 2º choque)",
-              "   → Amiodarona 300 mg IV (FV/TVSP refratária após 2º choque) + 150 mg após",
-              "4. AESP/Assistolia (NÃO CHOCÁVEL): Epinefrina 1 mg IV IMEDIATAMENTE → RCP 2 min → checar",
-              "5. Via aérea: IOT (sem interromper RCP) ou máscara laríngea — ventilação 10/min",
-              "6. Acesso: periférico ou IO (intraósseo) se sem acesso — preferir AVP",
-              "7. 5H5T: Hipovolemia/Hipóxia/Hidrogênio(acidose)/Hipo-Hiperpotassemia/Hipotermia | Tensão(pneumotórax)/Tamponamento/Trombose coronária/Trombose pulmonar/Tóxicos",
-              "8. ROSC → cuidados pós-PCR: PA, SpO2, glicemia, TTM, ECG, angiografia se IAMCSST"
+              "**PCR adulto — Modo Plantão; sequência AHA 2025**",
+              "**1. Reconhecer e mobilizar.** Não responsivo + respiração ausente/anormal; verificar pulso por no máximo **10 segundos**. Sem pulso definitivo: chamar equipe, iniciar compressões e trazer desfibrilador. Distribuir funções e registrar horários/choques/doses. [R2,R3]",
+              "**2. RCP.** Compressões **100–120/min**, profundidade **5–6 cm**, retorno completo, mínima pausa; trocar compressor a cada **2 minutos**. Sem via aérea avançada: **30:2**. Com via aérea avançada: compressões contínuas e **10 ventilações/min**, sem hiperventilar. Ventilar com bolsa-máscara e oxigênio; intubação/supraglótica por equipe habilitada, sem atrasar choque, com capnografia. [R2,R3]",
+              "**3. Desfibrilar FV/TV sem pulso.** Choque não sincronizado: energia bifásica indicada pelo fabricante, por exemplo **120–200 J**; se desconhecida, máxima disponível. Choques seguintes iguais ou maiores conforme aparelho. Monofásico: **360 J**. Retomar RCP imediatamente por **2 minutos**, depois analisar ritmo; procurar pulso apenas se ritmo organizado/sinais de retorno, por no máximo **10 segundos**. Não chocar AESP/assistolia. [R1,R2,R3]",
+              "**4. Adrenalina/epinefrina.** Preferir acesso IV; IO se IV inviável/demorado. **1 mg IV/IO a cada 3–5 minutos**: AESP/assistolia o mais cedo possível; FV/TV sem pulso após o segundo choque nesta sequência AHA. Apresentação pronta **1 mg/10 mL = 0,1 mg/mL**: administrar **10 mL**. Conferir rótulo; não confundir com **1 mg/mL**. Não usar via endotraqueal rotineiramente. Suspender bolus da PCR quando houver retorno da circulação. [R1,R2,R8]",
+              "**5. Amiodarona.** FV/TV sem pulso persistente após o terceiro choque: **300 mg IV/IO em bolus**; se persistir, segunda dose **150 mg** conforme algoritmo. Para o concentrado específico **50 mg/mL**, 300 mg = **6 mL** e 150 mg = **3 mL**. A bula citada orienta a dose inicial diluída em **20 mL de glicose 5%**, administrada rapidamente na PCR; não substituir por infusão de taquicardia com pulso. Nesta apresentação, não diluir em soro fisiológico. Conferir preparo local, inspecionar solução e manter monitorização. Lidocaína é alternativa conforme protocolo validado, sem associá-la automaticamente. [R2,R4,R9]",
+              "**6. Reavaliar causas e segurança.** Ciclos de RCP de **2 minutos** com ritmo/qualidade/causas; tratar causas reversíveis em paralelo. Não usar cálcio, bicarbonato ou magnésio de rotina; indicações específicas exigem protocolo próprio. POCUS não deve interromper RCP. Considerar ECPR apenas em pacientes selecionados e sistema habilitado. [R1,R4]",
+              "**7. Após retorno da circulação.** Estabilizar ABC; oxigênio **100%** até medida confiável, depois **SpO₂ 90–98%** segundo AHA; evitar hipóxia/hiperóxia e confirmar gasometria quando necessário. **PaCO₂ 35–45 mmHg** em comatoso, individualizando acidemia grave; **PAM ≥65 mmHg**. ECG; acionar intervenção coronária urgente diante de supra persistente, choque cardiogênico, arritmias ventriculares recorrentes/refratárias ou isquemia grave. Sem essas condições, não indicar angiografia imediata universal. [R5,R6]",
+              "**8. UTI e temperatura.** Sem resposta a comandos após retorno: estratégia protocolizada de **32–37,5 °C**, com controle por pelo menos **36 horas**, incluindo prevenção de febre; não prescrever hipotermia obrigatória de **32–36 °C por 24 horas**. Avaliar convulsões/EEG; evitar glicemia **<70 ou >180 mg/dL**. Neuroprognóstico integrado após pelo menos **72 horas da normotermia**, sem confundidores. Não aplicar automaticamente critérios pré-hospitalares de término à PCR hospitalar; decisão sênior e contextual. [R1,R5,R6]",
+              "**9. Contextos especiais.** Em gestante, aplicar deslocamento uterino e preparação do parto ressuscitativo descritos em Estudo; não transportar ao centro cirúrgico para adiar a intervenção hospitalar. PCR pediátrica, trauma, hipotermia e tóxicos seguem protocolos próprios. O RCUK pós-PCR usa **SpO₂ 94–98%** e seu algoritmo de março/2026 orienta prevenção de febre por pelo menos **72 horas**, distinta do mínimo AHA de **36 horas**; manter uma estratégia institucional coerente, sem interpretar isso como dose/limiar intercambiável com AHA. [R7,R10,R11]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "bc7273175cbca9272572654f59aecfebb48bb74befcade130531a7ed40175eca",
+            "blockSha256": "bf4771399c0e35ecb9146869538b6d32797051573804084690e125923fcd80d5",
             "innerFamilyId": "bebb9a8886914d04",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::pcr_adulto",
@@ -115303,23 +115568,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 FV (Fibrilación Ventricular) — ritmo caótico, chocable, supervivencia ↑ con desfibrilación precoz",
-              "🔴 TV sin Pulso — TV monomórfica/polimórfica sin gasto cardíaco, chocable",
-              "🟠 AESP (Actividad Eléctrica Sin Pulso) — ritmo organizado sin pulso; tratar 5H5T",
-              "🟠 Asistolia — ausencia de actividad eléctrica; peor pronóstico; tratar 5H5T"
+              "**Ritmos y causas.** FV/TV sin pulso son desfibrilables; AESP/asistolia no. Buscar hipovolemia, hipoxia, acidosis, hipo/hiperpotasemia, hipotermia, neumotórax a tensión, taponamiento, tóxicos y trombosis coronaria/pulmonar. Un ritmo organizado no demuestra circulación. [R2]"
             ],
             "pt": [
-              "🔴 FV (Fibrilação Ventricular) — ritmo caótico, chocável, sobrevida ↑ com desfibrilação precoce",
-              "🔴 TV sem Pulso — TV monomórfica/polimórfica sem débito cardíaco, chocável",
-              "🟠 AESP (Atividade Elétrica Sem Pulso) — ritmo organizado sem pulso; tratar 5H5T",
-              "🟠 Assistolia — ausência de atividade elétrica; pior prognóstico; tratar 5H5T"
+              "**Ritmos e causas.** FV/TV sem pulso são chocáveis; AESP/assistolia não. Procurar hipovolemia, hipóxia, acidose, hipo/hipercalemia, hipotermia, pneumotórax hipertensivo, tamponamento, toxinas e trombose coronária/pulmonar. Ritmo organizado não comprova circulação. [R2]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "bc7273175cbca9272572654f59aecfebb48bb74befcade130531a7ed40175eca",
+            "blockSha256": "bf4771399c0e35ecb9146869538b6d32797051573804084690e125923fcd80d5",
             "innerFamilyId": "ec4c285966e73508",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::pcr_adulto",
@@ -115329,16 +115588,28 @@
       },
       "priority": 100,
       "protocolKey": "legacy_protocol::pcr_adulto",
-      "referenceUrls": [],
+      "referenceUrls": [
+        "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support",
+        "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Accessible/Algorithm-ACLS-CA-LngDscrp-250725-Ed.pdf",
+        "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-basic-life-support",
+        "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-advanced-life-support-guidelines",
+        "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/post-cardiac-arrest-care",
+        "https://cpr.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-PCAC-250527.pdf",
+        "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+        "https://www.medicines.org.uk/emc/product/2024/smpc",
+        "https://www.medicines.org.uk/emc/product/3940/smpc",
+        "https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/post-resuscitation-care-guidelines",
+        "https://www.resus.org.uk/sites/default/files/2026-03/RCUK%20G2025%20ADULT%20PRC%20March%20V3.pdf"
+      ],
       "source": {
-        "blockSha256": "bc7273175cbca9272572654f59aecfebb48bb74befcade130531a7ed40175eca",
+        "blockSha256": "bf4771399c0e35ecb9146869538b6d32797051573804084690e125923fcd80d5",
         "file": "lib/data/protocols_database.dart",
         "line": 3543,
         "sourceGroup": "ProtocolModel",
         "sourceKey": "pcr_adulto",
         "strategy": "generic_constructor"
       },
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-02-v1.0"
     },
     {
       "canonicalPathologyKey": "pcr_pediatrica",

@@ -1,0 +1,9 @@
+{
+  "approvalCommand": "GUIA APROVADO: PCR adulto JIT-2026-10-02-v1.0",
+  "timestamp": "2026-10-02T09:03:50.869393+00:00",
+  "reviewer": "human user",
+  "version": "JIT-2026-10-02-v1.0",
+  "APPROVED_CLINICAL_PAYLOAD_SHA256": "8aa7b5bca4bfa010f4b3900ea7d6781e504dd3c376a56b5db89049ebd0020403",
+  "approvedClinicalPayloadSha256": "8aa7b5bca4bfa010f4b3900ea7d6781e504dd3c376a56b5db89049ebd0020403",
+  "HUMAN_GATE": "PASS"
+}
