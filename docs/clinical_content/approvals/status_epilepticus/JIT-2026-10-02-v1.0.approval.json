@@ -1,0 +1,9 @@
+{
+  "owner": "status_epilepticus",
+  "version": "JIT-2026-10-02-v1.0",
+  "APPROVED_CLINICAL_PAYLOAD_SHA256": "758a9931e273c472c367835ebe5b8041a249ada115e76a164f3d26ea1828fb6f",
+  "timestamp": "2026-10-02T20:15:38.191642+00:00",
+  "humanApprovalText": "GUIA APROVADO: Estado de mal epiléptico JIT-2026-10-02-v1.0",
+  "reviewer": "user",
+  "status": "APPROVED_FOR_RELEASE"
+}

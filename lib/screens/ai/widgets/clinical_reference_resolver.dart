@@ -250,6 +250,26 @@ class ClinicalReferenceResolver {
         );
       }
 
+      if (protocol.id == 'dpoc_exacerbacao' &&
+          protocolReferences.any((r) => r.contains('goldcopd.org'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
+      if (protocol.id == 'status_epilepticus' &&
+          protocolReferences.any((r) => r.contains('neurocriticalcare.org'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
       final curatedReferences = _curatedReferencesForDomain(domain);
       final candidateReferences = <String>[
         ...curatedReferences,

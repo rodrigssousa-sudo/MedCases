@@ -846,28 +846,10 @@ No administrar si: PA >185/110, plaquetas <100k,
   _PrescriptionModel(
     id: 'crisis_convulsiva',
     title: 'Crisis Convulsiva / Status Epiléptico',
-    subtitle: 'Diazepam · Midazolam · Fenitoína · Fenobarbital',
+    subtitle: "Lorazepam · Midazolam · Levetiracetam",
     category: 'Neurología',
     icon: Icons.electric_bolt_rounded,
-    content: '''1ª Línea (0–5 min):
-• Diazepam 10 mg/2 mL
-  Diluir en 8 mL AD → administrar 5 mL EV cada 5–10 min.
-  (Dosis rectal: 0,5 mg/kg en pediatría)
-• Midazolam 5 mg IM/intranasal (si sin acceso venoso)
-
-2ª Línea (si no cede tras 2 dosis BZD):
-• Fenitoína 250 mg/5 mL
-  15–20 mg/kg EV en BIC: máx 50 mg/min.
-  Diluir en SF 0,9% (NO SG — precipita).
-• Fenobarbital 100 mg/mL
-  20 mg/kg EV en BIC: máx 100 mg/min.
-
-Status Epiléptico Refractario:
-• Midazolam en BIC: 0,2 mg/kg bolo → 0,05–0,5 mg/kg/h.
-• UCI: propofol o tiopental.
-
----
-⚕ Modelo educativo — adaptar al paciente.''',
+    content: "**Reconocer y actuar sin esperar.** Adulto con convulsión ≥5 min o crisis repetidas sin recuperación basal: estado epiléptico convulsivo hasta evaluación. Registrar tiempo y convocar a emergencias/neurología. No esperar 30 min ni 40 min para tratar o reconocer refractariedad después del fracaso farmacológico adecuado. [R1,R5]\n\n**ABCDE, glucemia y monitorización.** Proteger de traumatismos, no colocar objetos en la boca. Evaluar vía aérea/ventilación/circulación, oxigenar según necesidad y preparar ventilación asistida. Monitorizar ECG, presión, SpO₂; acceso IV/IO y glucemia inmediata. Corregir hipoglucemia y obtener estudios en paralelo, sin demorar benzodiacepina; investigar causas estructurales, infecciosas, metabólicas, tóxicas y abstinencia. [R1,R4]\n\n**Lorazepam si hay acceso IV.** Lorazepam 0,1 mg/kg IV, máximo 4 mg por dosis, en 2 min. Repetir una vez a los 3–5 min si persiste, contando dosis previas. Para la presentación 4 mg/ml, diluir con igual volumen de NaCl 0,9%, glucosa 5% o agua para inyección: final 2 mg/ml; 4 mg = 2 ml después de diluir. Vigilar apnea/hipotensión; soporte de vía aérea disponible. La presentación citada está contraindicada en insuficiencia hepática grave; seleccionar alternativa apropiada sin demorar el control. [R1,R8]\n\n**Midazolam si no hay acceso IV.** Midazolam 10 mg IM si adulto >40 kg; rango 13–40 kg: 5 mg IM según AES. Presentación inyectable 5 mg/ml: 2 ml y 1 ml, respectivamente. No esperar acceso IV para la primera dosis; no usar lorazepam IM ni presentación en bolsa de infusión como sustitutos de esta vía. Un peso inferior exige protocolo específico. Contar toda dosis prehospitalaria y no repetir benzodiacepinas indefinidamente. [R1,R3,R9]\n\n**Levetiracetam de segunda línea.** Si persiste después de benzodiacepina adecuada, levetiracetam 60 mg/kg IV, máximo 4.500 mg, carga única. Concentrado 500 mg/5 ml = 100 mg/ml. Preparación hospitalaria seleccionada: agregar a bolsa de 100 ml de NaCl 0,9% e infundir en 15 min; para dosis >3.000 mg, retirar 30 ml de la bolsa antes de agregar. Volumen del fármaco = dosis/100 mg/ml; programar bomba según volumen final efectivo. Uso fuera de ficha técnica para estado epiléptico, respaldado por ENLS/ESETT y protocolo NHS; no mezclar la preparación comercial seleccionada con la infusión en 10 min de la formulación de estudio. Si no está disponible/está contraindicado, iniciar una alternativa protocolizada con especialista. [R1,R6,R7,R10]\n\n**Reconocer refractario y convocar a UCI.** Persistencia después de benzodiacepina y segunda línea adecuadas = refractariedad; no esperar un tiempo fijo. UCI/anestesia, intubación/ventilación cuando se necesita y EEG continuo. Midazolam, como opción ENLS en un ámbito capacitado: carga 0,2 mg/kg IV en 2–5 min; iniciar infusión 0,1 mg/kg/h y titular bajo EEG, dentro de 0,05–2 mg/kg/h. No usar el límite superior como dosis inicial. [R1,R2]\n\n**Bomba, concentración y seguridad.** La infusión anestésica continua de midazolam exige paciente intubado/ventilado, monitorización y equipo capacitado. Ejemplo listo para usar verificado: 50 mg/50 ml = 1 mg/ml; no confundir con ampolla 5 mg/ml. Verificar rótulo, dosis en mg/kg/h, concentración real y volumen en ml/h; otra concentración exige preparación validada por farmacia. Vigilar hipotensión, depresión respiratoria y acumulación; no administrar en mg/kg/min por error de unidad. Mantener anticonvulsivante de acción prolongada y plan de retirada gradual. [R1,R9,R13]\n\n**EEG y reevaluación.** El cese motor no demuestra control. Sin mejoría clara en 10 min o con conciencia alterada por >30 min después del cese, considerar EEG continuo urgente; anticipar si hay sospecha. Reevaluar respiración, gases, presión, ritmo, temperatura, electrolitos y causa. Si no hay EEG/UCI, organizar derivación sin interrumpir soporte. [R1,R11]\n\n**Poblaciones y mantenimiento.** Guía para adultos, sin extrapolación pediátrica. Insuficiencia renal: no reducir automáticamente carga de levetiracetam, ajustar mantenimiento. Hepatopatía/adultos mayores: vigilar acumulación de sedantes y contraindicaciones. Después del control, levetiracetam 1.000 mg IV/VO cada 12 h puede ser mantenimiento con función renal normal, individualizado; no recargar automáticamente. Embarazo: tratar la emergencia materna, obstetricia/neurología y evaluar eclampsia; no declarar seguridad absoluta ni reemplazar planificación por rescate. Lactancia después de infusión/dosis repetidas exige evaluación individual y observación del lactante. [R2,R7,R8,R9,R10,R12]\n\n**Destino y documentación.** Evaluación hospitalaria y neurología para todo estado epiléptico; UCI ante persistencia/recurrencia, conciencia comprometida, causa grave o soporte anestésico/ventilatorio. Documentar tiempos, dosis, respuesta y etiología; prevenir aspiración y complicaciones. No indicar alta solo por el cese de los movimientos. Revisar adherencia y plan de emergencia después de estabilizar. Referencias esenciales [R1–R13].",
   ),
 
   _PrescriptionModel(
@@ -979,28 +961,10 @@ UCI / IOT si:
   _PrescriptionModel(
     id: 'epoc_exacerbacion',
     title: 'EPOC — Exacerbación',
-    subtitle: 'Broncodilatadores + Corticoides + ATB',
+    subtitle: "Salbutamol · Ipratropio · Prednisolona · Amoxicilina/clavulánico",
     category: 'Respiratorio',
     icon: Icons.cloud_rounded,
-    content: '''1. Salbutamol 5 mg/mL
-   Micronebulización: 20–40 gotas en 5 mL SF 0,9%.
-   Cada 4–6h.
-
-2. Ipratropio 0,25 mg/mL
-   Micronebulización: 20–40 gotas en 5 mL SF 0,9%.
-   Cada 6–8h.
-
-3. Prednisona 40 mg VO por 5 días.
-   (O Metilprednisolona 40 mg EV cada 6h)
-
-4. Antibioticoterapia (si esputo purulento/fiebre):
-   • Amox + Clavulanato 875/125 mg — 1 comprimido cada 12h × 7 días
-   • Levofloxacina 750 mg — 1 comprimido/día × 7 días
-
-Oxígeno: meta Sat 88–92%.
-
----
-⚕ Modelo educativo — adaptar al paciente.''',
+    content: "**Reconocer y pedir ayuda.** Adulto con aumento agudo de disnea/tos/esputo respecto del basal: evaluar exacerbación de EPOC y buscar una causa coexistente. Agotamiento, confusión, inestabilidad, cianosis, tórax silencioso o protección inadecuada de la vía aérea exigen atención monitorizada y ayuda temprana. No demorar el soporte para completar una escala. [R1,R2]\n\n**ABCDE y estudios inmediatos.** Evaluar vía aérea, ventilación, circulación y conciencia; posicionar, monitorizar SpO₂, frecuencia respiratoria, presión, ECG y obtener acceso venoso según gravedad. Medir glucemia; obtener gasometría arterial registrando oxígeno/FiO₂, hemograma, electrolitos y función renal. Solicitar radiografía de tórax y ECG; investigar neumonía, TEP, síndrome coronario, insuficiencia cardíaca y neumotórax según hallazgos. [R1,R2]\n\n**Oxígeno controlado.** Objetivo inicial SpO₂ 88–92%, con dispositivo titulado y gasometría. Repetir gases a los 30–60 min después de iniciar/aumentar oxígeno o antes si empeora; individualizar el objetivo posterior. No retirar bruscamente el oxígeno ni permitir hipoxemia para evitar CO₂. En shock/peri-paro, reanimar y oxigenar inmediatamente. [R5]\n\n**Salbutamol e ipratropio.** Salbutamol 2,5–5 mg por nebulización; en hospital puede repetirse cada 1 h por 2–3 dosis y luego cada 2–4 h según respuesta y supervisión. Solución verificada: 2,5 mg/2,5 ml = 1 mg/ml, únicamente inhalatoria. Asociar ipratropio 500 microgramos nebulizados, habitualmente cada 6–8 h; 500 microgramos/2 ml = 250 microgramos/ml. Dilución de ipratropio, si se necesita: NaCl 0,9% hasta un volumen final adecuado al nebulizador, habitualmente 2–4 ml. Preferir aire comprimido con oxígeno separado/titulado o aerocámara cuando sea posible. Reevaluar esfuerzo, pulso, potasio y necesidad de nuevas dosis; no inyectar soluciones para nebulización. [R1,R6,R7]\n\n**Prednisolona.** Prednisolona 40 mg VO una vez al día durante 5 días para una exacerbación significativa, según el esquema GOLD adoptado. Comprimidos de 5 mg: 8 comprimidos por dosis; confirmar presentación. Usar vía oral si es posible; controlar glucemia y efectos sistémicos. No prolongar automáticamente ni interrumpir reposición o tratamiento crónico sin evaluar supresión suprarrenal. [R1,R8,R10]\n\n**Antibiótico con indicación.** Indicar según purulencia asociada a otro signo de empeoramiento, cultivo previo relevante o necesidad de ventilación; considerar cultivos y resistencia local. Ejemplo para mayor riesgo de fracaso, VO viable, peso ≥40 kg y depuración >30 ml/min: amoxicilina/clavulanato 500/125 mg VO cada 8 h durante 5 días. Depuración 10–30 ml/min: misma dosis cada 12 h; <10 ml/min: cada 24 h; hemodiálisis requiere esquema propio. Verificar anafilaxia a betalactámicos y hepatotoxicidad previa por la asociación. No aplicar este esquema oral automáticamente a sepsis, neumonía, paciente ventilado o riesgo de Pseudomonas; definir cobertura hospitalaria apropiada. [R1,R3,R9]\n\n**VNI y escalamiento.** Considerar VNI binivel si persiste acidosis respiratoria hipercápnica después del tratamiento inicial: pH ≤7,35 y PaCO₂ >45 mmHg con esfuerzo respiratorio. Son obligatorios un equipo entrenado, monitorización e intubación disponible. pH <7,25 exige mayor vigilancia, no intubación automática. Reevaluar rápidamente gases, frecuencia respiratoria, conciencia y tolerancia. No demorar intubación ante deterioro, vía aérea desprotegida, paro, hipoxemia refractaria o fracaso de VNI. La hipercapnia sin acidosis y Glasgow aislado no determinan una conducta universal. [R4]\n\n**Reevaluación y seguridad.** Revisar la respuesta después de cada intervención; vigilar presión, ritmo, esfuerzo, gases, electrolitos y glucemia. La taquipnea persistente después de mejorar el broncoespasmo puede reflejar lactato asociado a salbutamol, además de otras causas. Evitar hiperoxia, nebulización prolongada accionada por oxígeno sin control, sedación no monitorizada y aminofilina/teofilina IV de rutina. La falta de respuesta exige revisar diagnóstico y destino. [R1,R5,R6]\n\n**Poblaciones especiales.** Las dosis de esta guía son para adultos. Adultos mayores: evaluar fragilidad/interacciones y no excluir UCI por edad aislada. Renal/hepático: ajustar antibiótico y vigilar toxicidad; no inventar ajustes de los demás fármacos. Embarazo: soporte materno inmediato y obstetricia; evaluar beneficio/riesgo de cada medicamento. Lactancia: evaluar exposición y efectos en el lactante. [R2,R6,R7,R8,R9]\n\n**Internación, UCI o alta.** Internar ante insuficiencia respiratoria, comorbilidad/diagnóstico relevante, respuesta insuficiente o imposibilidad de cuidado domiciliario seguro. UCI ante ventilación invasiva, VNI con fracaso/alto riesgo, inestabilidad o deterioro. Alta solo después de mejoría sostenida, soporte y tratamiento viables, técnica inhalatoria verificada, pautas de alarma y seguimiento. No usar un número aislado para autorizar el alta. Referencias esenciales [R1–R10].",
   ),
 
   _PrescriptionModel(

@@ -874,7 +874,13 @@ class PlantaoMachineNativeContextPrefetch {
     final approvedNeutropenia = key == 'neutropenia_febril' &&
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] == 'ff02f59e86320a3159554191a7a4b93f38415e5fc695d636c2f5d5c5f6ff7521';
-    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia;
+    final approvedDpoc = key == 'dpoc_exacerbacao' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == 'ab02bd3fdc779de95ce522525f2d68e3042cb4ade5a35faf238bc90685580966';
+    final approvedStatus = key == 'status_epilepticus' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == '758a9931e273c472c367835ebe5b8041a249ada115e76a164f3d26ea1828fb6f';
+    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus;
     final clinicalTextLimit = completeApprovedPayload ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
@@ -949,7 +955,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
-            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia) ? 24000 : (approvedG02 ? 18000 : 6000),
+            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus) ? 24000 : (approvedG02 ? 18000 : 6000),
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(
