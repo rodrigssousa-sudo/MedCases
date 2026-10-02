@@ -1,3 +1,5 @@
+import 'plantao_avc_approved_medication_identity_guard.dart';
+
 class PlantaoGlobalClinicalContextPack {
   const PlantaoGlobalClinicalContextPack({
     this.pathologyKey,
@@ -89,7 +91,14 @@ class PlantaoGlobalClinicalResponseGate {
     }
 
     final canonicalProjected = _projectCanonicalSections(
-      normalized,
+      PlantaoAvcApprovedMedicationIdentityGuard.preserveName(
+        text: normalized,
+        language: language,
+        authoritative: contextPack?.hasMachineNativeAuthority ?? false,
+        pathologyKey: contextPack?.pathologyKey,
+        guidelineVersion: contextPack?.guidelineVersion,
+        approvedActions: contextPack?.requiredActions ?? const <String>[],
+      ),
       language: language,
     );
     final projected = _m70bDeduplicateDetailedRegimenAcrossSections(

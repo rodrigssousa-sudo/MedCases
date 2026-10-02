@@ -843,7 +843,12 @@ class PlantaoMachineNativeContextPrefetch {
         rule?['version'] == 'JIT-2026-10-01-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] ==
             'a0320ddac42bbe1c8d22ad52ba98414685b9c70605403b5a1e8cd31ad980c93f';
-    final clinicalTextLimit = approvedG02 ? 6000 : 360;
+    final approvedAvc = key == 'avc_isquemico' &&
+        rule?['version'] == 'JIT-2026-10-01-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] ==
+            '1d837b287316d9160010b96bb91e09e3937273fb3632157bcf41af2a0a0ceabd';
+    final completeApprovedPayload = approvedG02 || approvedAvc;
+    final clinicalTextLimit = completeApprovedPayload ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
       'initialActions',
@@ -917,7 +922,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
-            maxPromptLength: approvedG02 ? 18000 : 6000,
+            maxPromptLength: approvedAvc ? 24000 : (approvedG02 ? 18000 : 6000),
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(

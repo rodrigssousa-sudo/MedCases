@@ -1,0 +1,9 @@
+{
+  "command": "GUIA APROVADO: AVC isquêmico JIT-2026-10-01-v1.0",
+  "owner": "avc_isquemico",
+  "version": "JIT-2026-10-01-v1.0",
+  "approvedClinicalPayloadSha256": "1d837b287316d9160010b96bb91e09e3937273fb3632157bcf41af2a0a0ceabd",
+  "recordedAt": "2026-10-02T00:58:16.954858+00:00",
+  "reviewer": "user",
+  "clinicalEditsAfterApproval": false
+}

@@ -3773,6 +3773,9 @@ class ClinicalReferenceResolver {
     }
 
     if (containsAny(const <String>[
+          'avc isquemico',
+          'acv isquemico',
+          'ave isquemico',
           'acidente vascular cerebral isquemico',
           'accidente cerebrovascular isquemico',
           'ictus isquemico',
@@ -5559,11 +5562,7 @@ class ClinicalReferenceResolver {
         ];
 
       case 'acute_ischemic_stroke':
-        return const <String>[
-          'AHA/ASA — Guideline for the Early Management of Acute Ischemic Stroke (2026) — https://professional.heart.org/en/science-news/2026-guideline-for-the-early-management-of-patients-with-acute-ischemic-stroke',
-          'AHA/ASA — Acute Ischemic Stroke guideline hub (2026) — https://professional.heart.org/en/guidelines-statements/2026-guideline-for-the-early-management-of-patients-with-acute-ischemic-strokestr0000000000000513',
-          'AHA/ASA — Full guideline DOI (2026) — https://doi.org/10.1161/STR.0000000000000513',
-        ];
+        return const <String>["[R1] AHA/ASA — Early Management of Acute Ischemic Stroke, 2026; guideline final, versão online corrigida consultada no navegador. https://www.ahajournals.org/doi/10.1161/STR.0000000000000513", "[R2] AHA/ASA — Errata formal, publicada em 27/07/2026; texto integral verificado. https://www.ahajournals.org/doi/10.1161/STR.0000000000000530", "[R3] Canadian Stroke Best Practices — Emergency Department Evaluation and Management, 2022; apoio ao reconhecimento, exames e suporte. Metas pós-trombólise seguem AHA/ASA 2026. https://www.strokebestpractices.ca/recommendations/acute-stroke-management/emergency-department-evaluation-and-management", "[R4] Canadian Stroke Best Practices — Acute Ischemic Stroke Treatment, 2022 e atualização endovascular final de 2025. https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-ischemic-stroke-treatment", "[R5] DailyMed/Genentech — Activase; bula consultada para dose, reconstituição e precauções, sem equiparar sua janela regulatória à guideline. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c669f77c-fa48-478b-a14b-80b20a0139c2", "[R6] EMA — Metalyse; informação do produto atual, seção específica de AVC/25 mg; faixas de peso, preparo, velocidade e populações. https://www.ema.europa.eu/en/documents/product-information/metalyse-epar-product-information_en.pdf", "[R7] FDA — TNKase; bula de 2025 para AVC, faixas de peso, máximo 25 mg, velocidade e janela regulatória. https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/103909s5197lbl.pdf", "[R8] DailyMed — Nicardipine hydrochloride injection; revisão 11/2025; dose, diluição e segurança. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878", "[R9] Canadian Stroke Best Practices — Acute Antithrombotic Therapy, 2022; esquemas de AAS/DAPT e restrição pós-trombólise. https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-antithrombotic-therapy", "[R10] ESO — Expedited recommendation on tenecteplase, 2023; recomendação formal, dose 0,25 mg/kg e contraindicação de usar 0,40 mg/kg no cenário estudado. https://pmc.ncbi.nlm.nih.gov/articles/PMC10069183/", "[R11] Canadian Stroke Best Practices — Acute Stroke Management during Pregnancy, 2018; consenso específico ainda disponibilizado oficialmente, evidência limitada. https://www.strokebestpractices.ca/recommendations/acute-stroke-management-during-pregnancy", "[R12] Canadian Stroke Best Practices — Acute Stroke Unit Care, 2022; internação, avaliação multidisciplinar, disfagia e planejamento. https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-stroke-unit-care"];
 
       case 'chronic_kidney_disease':
         return const <String>[

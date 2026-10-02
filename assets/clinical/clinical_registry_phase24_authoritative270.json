@@ -18576,6 +18576,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "1d837b287316d9160010b96bb91e09e3937273fb3632157bcf41af2a0a0ceabd",
       "canonicalPathologyKey": "avc_isquemico",
       "contentKey": "legacy_protocol_content::avc_isquemico",
       "enabled": true,
@@ -18590,36 +18591,123 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "1. CÓDIGO ACV: TC cráneo SIN CONTRASTE en <25 min de llegada",
-              "2. Glucemia capilar inmediata — tratar hipo/hiperglucemia antes de alteplase",
-              "3. NIHSS; monitorizar ECG, PA, SpO2 (O2 solo si SpO2 <94%)",
-              "4. Alteplase IV 0,9 mg/kg (máx. 90 mg): 10% en bolo 1 min + 90% en 60 min — elegible ≤4,5 h",
-              "5. PA para alteplase: reducir solo si >185/110 — Labetalol 10–20 mg IV o Nicardipina 5 mg/h",
-              "6. Trombectomía mecánica: NIHSS ≥6 + oclusión gran vaso + ventana ≤24 h",
-              "7. No dar AAS/anticoagulación en primeras 24 h post-alteplase",
-              "8. Sin elegibilidad para trombólisis: AAS 300 mg VO + prevención secundaria"
+              "ES — Modo Guardia",
+              "1. Activar código ACV. Registrar inicio/último momento sin síntomas, peso, NIHSS, funcionalidad previa y anticoagulante/última dosis. Evaluar ABC, glucemia, PA, temperatura y oxigenación. Corregir hipoglucemia inmediatamente; el déficit persistente tras la corrección mantiene la investigación de ACV. Obtener hemograma, coagulación, electrolitos y creatinina. Los estudios sin sospecha de alteración relevante no deben demorar la reperfusión. [R1,R3]",
+              "2. Imágenes y decisión en paralelo. TC sin contraste urgente; angio-TC para buscar oclusión y evaluar trombectomía. Contactar al equipo de ACV/neurointervención o telestroke inmediatamente. Antes de la trombólisis, completar la lista institucional actualizada: hemorragia, sangrado activo, coagulopatía, PA no controlada, cirugía/trauma reciente y otras restricciones específicas. El uso reciente de anticoagulante requiere análisis especializado; un INR normal no demuestra ausencia de efecto de un DOAC. No esperar respuesta a la trombólisis para organizar trombectomía/traslado. [R1,R4,R5,R6]",
+              "3. Presión arterial. Antes de trombólisis: PA <185/110 mmHg. Después: mantener <180/105 mmHg durante las primeras 24 horas, evitando el descenso excesivo. No buscar una reducción intensiva de PAS <140 mmHg después de reperfusión. Sin reperfusión, no tratar hipertensión moderada de rutina; PA >220/120 mmHg u otra emergencia orgánica requieren evaluación individual y reducción cautelosa, aproximadamente 15% inicialmente. Corregir hipotensión e hipovolemia. [R1,R3]",
+              "Opción titulable cuando exista indicación y disponibilidad: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h cada 5–15 minutos según respuesta, máximo 15 mg/h. Para la presentación 25 mg/10 mL, diluir con 240 mL de solución compatible, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Utilizar bomba, vigilar PA, frecuencia cardíaca, acceso y volumen. Interrumpir ante hipotensión/taquicardia; contraindicada en estenosis aórtica avanzada. No administrar la ampolla concentrada sin diluir. Otras presentaciones requieren verificación propia. [R8]",
+              "4. Trombólisis — elegir un agente, tras confirmar elegibilidad.\nAlteplasa: 0,9 mg/kg IV, máximo 90 mg; 10% en bolo durante 1 minuto y el 90% restante en infusión durante 60 minutos. Reconstitución a 1 mg/mL según el producto; utilizar bomba y doble verificación de peso, mg, mL y velocidad. [R1,R5]",
+              "Tenecteplasa: la guía recomienda 0,25 mg/kg, máximo 25 mg. Para esta versión, el esquema operativo siguiente adopta los rangos de la tabla 7 de AHA/ASA y de la ficha de Metalyse 25 mg, con concentración final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 y <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 y <80 kg: 20 mg = 4 mL.\nPeso ≥80 y <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar un bolo IV único en aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. No mezclar esta tabla con un cálculo lineal por kg: son metodologías diferentes; confirmar el esquema aprobado en el servicio y la presentación. Peso ≤50 kg requiere evaluación cuidadosa de beneficio/riesgo. La tabla 7 admite, para peso <50 kg conocido con precisión, dosificación por rangos de 1 kg según el protocolo del servicio; no demorar la trombólisis para obtener el peso exacto. No utilizar 0,40 mg/kg ni dosis de IAM. Para Metalyse, utilizar la presentación de 25 mg destinada a ACV; no adaptar automáticamente presentaciones de 40/50 mg. [R1,R6,R7,R10]",
+              "La ventana de la guía es hasta 4,5 horas en pacientes elegibles. La ficha europea de Metalyse contempla esa ventana; la ficha norteamericana de TNKase consultada especifica hasta 3 horas. Verificar autorización local y protocolo; no presentar la indicación de una jurisdicción como autorización universal. No extender el tratamiento por cuenta propia en ACV de inicio desconocido. [R1,R6,R7]",
+              "5. Trombectomía. Derivar inmediatamente ante una oclusión potencialmente tratable, independientemente de la posibilidad de trombólisis. Existe indicación en pacientes seleccionados hasta 24 horas, incluidos determinados núcleos extensos y oclusiones basilares; esto no autoriza tratar toda oclusión de M2 o cualquier paciente con NIHSS ≥6. Si ambos tratamientos están indicados, no demorar uno por el otro. [R1,R4]",
+              "6. Antiagregación. Después de trombólisis, evitar antiagregantes/anticoagulantes durante las primeras 24 horas y obtener imágenes antes de iniciarlos, salvo decisión especializada en una circunstancia excepcional. Sin trombólisis, tras excluir hemorragia y confirmar deglución segura, AAS 160 mg VO es una opción de carga. Si la vía oral no es segura, definir una vía alternativa con el equipo; no administrar comprimidos por vía oral. Para ACV menor no cardioembólico, NIHSS 0–3, bajo riesgo hemorrágico y sin trombólisis, considerar hasta 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de carga, luego AAS 81 mg VO/día + clopidogrel 75 mg VO/día durante 21 días, seguidos de monoterapia; vía oral solo tras evaluar una deglución segura. No aplicar DAPT a todo ACV ni mantenerla indefinidamente. [R9]",
+              "7. Monitorización y reevaluación. Monitor cardíaco y evaluaciones frecuentes de PA y estado neurológico en un área capacitada, después de trombólisis: PA y evaluación neurológica cada 15 minutos durante las primeras 2 horas, cada 30 minutos durante las 6 horas siguientes y cada hora hasta completar 24 horas. Intensificar la vigilancia ante PA >180/105 mmHg o deterioro. Reevaluar después de las intervenciones y ante cualquier cambio. Obtener TC/RM de control en 24 horas antes de antitrombóticos; deterioro, cefalea intensa, vómitos o sangrado requieren imágenes urgentes, sin esperar ese plazo. Corregir glucemia <60 mg/dL; tratar hiperglucemia persistente con objetivo habitual 140–180 mg/dL, evitando control intensivo de 80–130 mg/dL e hipoglucemia. Suplementar oxígeno si hay hipoxemia; no de rutina en pacientes normoxémicos. [R1,R4]",
+              "8. Complicaciones y destino. Sospecha de hemorragia: interrumpir alteplasa si sigue en infusión, activar al equipo especializado, obtener imágenes y estudios hemostáticos e iniciar el protocolo de hemorragia asociada a trombólisis. No repetir tenecteplasa, cuyo bolo ya fue administrado. El angioedema requiere evaluación inmediata de la vía aérea y soporte de emergencia. El deterioro con edema/efecto de masa requiere neurocirugía y cuidados intensivos. Internar en una unidad de ACV; UTI ante inestabilidad o necesidad de soporte intensivo. [R1,R4,R12]",
+              "9. Seguridad antes de dieta y alta. Evaluar deglución antes de agua, alimentos o medicamentos orales. Tratar la fiebre, evitar aspiración e iniciar rehabilitación según estabilidad. Antes del alta, establecer etiología/plan de investigación, antitrombótico, prevención, funcionalidad y seguimiento, con información sobre recurrencia y regreso inmediato. [R1,R12]"
             ],
             "pt": [
-              "1. CÓDIGO AVC: TC crânio SEM CONTRASTE em <25 min da chegada",
-              "2. Glicemia capilar imediata — tratar hipo/hiperglicemia grave antes de alteplase",
-              "3. NIHSS à beira do leito; monitorar ECG, PA, SpO2 (O2 apenas se SpO2 <94%)",
-              "4. Alteplase IV 0,9 mg/kg (máx. 90 mg): 10% em bolo 1 min + 90% em 60 min — elegível ≤4,5h",
-              "5. PA para alteplase: reduzir apenas se >185/110 — Labetalol 10–20 mg IV ou Nicardipina 5 mg/h",
-              "6. Trombectomia mecânica: NIHSS ≥6 + oclusão de grande vaso + janela ≤24h (com imagem favorável)",
-              "7. Não dar AAS/anticoagulação nas primeiras 24h pós-alteplase",
-              "8. Sem elegibilidade para trombólise: AAS 300 mg VO (dose de ataque) + prevenção secundária"
+              "PT — Modo Plantão",
+              "1. Acionar código AVC. Registrar início/último momento bem, peso, NIHSS, funcionalidade prévia e anticoagulante/última dose. Avaliar ABC, glicemia, PA, temperatura e oxigenação. Corrigir hipoglicemia imediatamente; déficit persistente após correção mantém a investigação de AVC. Colher hemograma, coagulação, eletrólitos e creatinina. Exames sem suspeita de alteração relevante não devem atrasar a reperfusão. [R1,R3]",
+              "2. Imagem e decisão em paralelo. TC sem contraste urgente; angio-TC para pesquisa de oclusão e avaliação de trombectomia. Contatar equipe de AVC/neurointervenção ou telestroke imediatamente. Antes da trombólise, completar checklist institucional atualizado: hemorragia, sangramento ativo, coagulopatia, PA não controlada, cirurgia/trauma recente e outras restrições específicas. Uso recente de anticoagulante exige análise especializada; INR normal não demonstra ausência de efeito de DOAC. Não esperar resposta à trombólise para organizar trombectomia/transferência. [R1,R4,R5,R6]",
+              "3. Pressão arterial. Antes de trombólise: PA <185/110 mmHg. Após: manter <180/105 mmHg nas primeiras 24 horas, evitando queda excessiva. Não perseguir redução intensiva de PAS <140 mmHg após reperfusão. Sem reperfusão, não tratar hipertensão moderada de rotina; PA >220/120 mmHg ou outra emergência orgânica exige avaliação individual e redução cautelosa, aproximadamente 15% inicialmente. Corrigir hipotensão e hipovolemia. [R1,R3]",
+              "Opção titulável quando houver indicação e disponibilidade: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h a cada 5–15 minutos conforme resposta, máximo 15 mg/h. Para a apresentação 25 mg/10 mL, diluir com 240 mL de solução compatível, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Usar bomba, vigiar PA, frequência cardíaca, acesso e volume. Interromper se hipotensão/taquicardia; contraindicação em estenose aórtica avançada. Não administrar a ampola concentrada sem diluição. Outras apresentações exigem conferência própria. [R8]",
+              "4. Trombólise — escolher um agente, após elegibilidade.\nAlteplase: 0,9 mg/kg IV, máximo 90 mg; 10% em bolo durante 1 minuto e os 90% restantes em infusão por 60 minutos. Reconstituição a 1 mg/mL conforme o produto; utilizar bomba e dupla conferência de peso, mg, mL e velocidade. [R1,R5]",
+              "Tenecteplase: a guideline recomenda 0,25 mg/kg, máximo 25 mg. Para esta versão, o esquema operacional abaixo adota as faixas da tabela 7 da AHA/ASA e da bula Metalyse 25 mg, com concentração final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 e <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 e <80 kg: 20 mg = 4 mL.\nPeso ≥80 e <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar bolo IV único em aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. Não misturar essa tabela com cálculo linear por kg: são metodologias diferentes; confirmar o esquema aprovado no serviço e a apresentação. Peso ≤50 kg exige avaliação cuidadosa de benefício/risco. A tabela 7 admite, para peso <50 kg precisamente conhecido, dosagem por faixas de 1 kg conforme protocolo do serviço; não atrasar trombólise para obter peso exato. Não usar 0,40 mg/kg nem doses de IAM. Para Metalyse, usar a apresentação de 25 mg destinada a AVC; não adaptar automaticamente apresentações de 40/50 mg. [R1,R6,R7,R10]",
+              "A janela de guideline é até 4,5 horas em pacientes elegíveis. A bula europeia de Metalyse contempla essa janela; a bula norte-americana de TNKase consultada especifica até 3 horas. Conferir autorização local e protocolo; não apresentar a indicação de uma jurisdição como autorização universal. Não estender tratamento por conta própria em AVC de início desconhecido. [R1,R6,R7]",
+              "5. Trombectomia. Encaminhar imediatamente quando houver oclusão potencialmente tratável, independentemente da possibilidade de trombólise. Há indicação em pacientes selecionados até 24 horas, inclusive determinados grandes núcleos e oclusões basilares; isso não autoriza tratar toda oclusão de M2 ou qualquer paciente com NIHSS ≥6. Se ambos os tratamentos forem indicados, não atrasar um pelo outro. [R1,R4]",
+              "6. Antiagregação. Após trombólise, evitar antiagregantes/anticoagulantes nas primeiras 24 horas e obter imagem antes de iniciar, salvo decisão especializada em circunstância excepcional. Sem trombólise, após excluir hemorragia e confirmar deglutição segura, AAS 160 mg VO é uma opção de ataque. Se a via oral não for segura, definir via alternativa com a equipe; não administrar comprimidos por via oral. Para AVC menor não cardioembólico, NIHSS 0–3, baixo risco hemorrágico e sem trombólise, considerar até 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de ataque, depois AAS 81 mg VO/dia + clopidogrel 75 mg VO/dia por 21 dias, seguidos de monoterapia; via oral somente após triagem de deglutição segura. Não aplicar DAPT a todo AVC nem mantê-la indefinidamente. [R9]",
+              "7. Monitorização e reavaliação. Monitor cardíaco e avaliações frequentes de PA e estado neurológico em área capacitada, após trombólise: PA e avaliação neurológica a cada 15 minutos durante as primeiras 2 horas, a cada 30 minutos nas 6 horas seguintes e a cada hora até completar 24 horas. Intensificar a vigilância se PA >180/105 mmHg ou houver deterioração. Reavaliar após intervenções e a qualquer mudança. Obter TC/RM de controle em 24 horas antes de antitrombóticos; deterioração, cefaleia intensa, vômitos ou sangramento exigem imagem urgente, sem esperar esse prazo. Corrigir glicemia <60 mg/dL; tratar hiperglicemia persistente com alvo usual 140–180 mg/dL, evitando controle intensivo de 80–130 mg/dL e hipoglicemia. Suplementar oxigênio se houver hipoxemia; não de rotina no normoxêmico. [R1,R4]",
+              "8. Complicações e destino. Suspeita de hemorragia: interromper alteplase se ainda em infusão, acionar equipe especializada, obter imagem e estudos hemostáticos e iniciar protocolo de hemorragia associada à trombólise. Não repetir tenecteplase, cujo bolo já foi administrado. Angioedema exige avaliação imediata da via aérea e suporte de emergência. Deterioração com edema/efeito de massa exige neurocirurgia e cuidados intensivos. Internar em unidade de AVC; UTI quando houver instabilidade ou necessidade de suporte intensivo. [R1,R4,R12]",
+              "9. Segurança antes de dieta e alta. Triar deglutição antes de água, alimentos ou medicações orais. Tratar febre, evitar aspiração e iniciar reabilitação conforme estabilidade. Antes da alta, estabelecer etiologia/plano de investigação, antitrombótico, prevenção, funcionalidade e seguimento, com orientação sobre recorrência e retorno imediato. [R1,R12]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "c630c66024307c2d4e72d46114439b591b885c03a36154f572b5d07ae7a3499c",
+            "blockSha256": "4cfe0baece7d3e8dfe1add654a094a74ddf0d2b0979e67c0e98105a4dfa9d863",
             "innerFamilyId": "baac9f456434744d",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::avc_isquemico",
             "sourceExpressionSha256": "fc17ae49e2dd2c102b40ffbcc2eec8987ec4e0d5f9ef46c2193d18709e2e371f"
           }
+        },
+        "approvedClinicalPayload": {
+          "es": {
+            "plantao": "ES — Modo Guardia\n\n1. Activar código ACV. Registrar inicio/último momento sin síntomas, peso, NIHSS, funcionalidad previa y anticoagulante/última dosis. Evaluar ABC, glucemia, PA, temperatura y oxigenación. Corregir hipoglucemia inmediatamente; el déficit persistente tras la corrección mantiene la investigación de ACV. Obtener hemograma, coagulación, electrolitos y creatinina. Los estudios sin sospecha de alteración relevante no deben demorar la reperfusión. [R1,R3]\n\n2. Imágenes y decisión en paralelo. TC sin contraste urgente; angio-TC para buscar oclusión y evaluar trombectomía. Contactar al equipo de ACV/neurointervención o telestroke inmediatamente. Antes de la trombólisis, completar la lista institucional actualizada: hemorragia, sangrado activo, coagulopatía, PA no controlada, cirugía/trauma reciente y otras restricciones específicas. El uso reciente de anticoagulante requiere análisis especializado; un INR normal no demuestra ausencia de efecto de un DOAC. No esperar respuesta a la trombólisis para organizar trombectomía/traslado. [R1,R4,R5,R6]\n\n3. Presión arterial. Antes de trombólisis: PA <185/110 mmHg. Después: mantener <180/105 mmHg durante las primeras 24 horas, evitando el descenso excesivo. No buscar una reducción intensiva de PAS <140 mmHg después de reperfusión. Sin reperfusión, no tratar hipertensión moderada de rutina; PA >220/120 mmHg u otra emergencia orgánica requieren evaluación individual y reducción cautelosa, aproximadamente 15% inicialmente. Corregir hipotensión e hipovolemia. [R1,R3]\n\nOpción titulable cuando exista indicación y disponibilidad: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h cada 5–15 minutos según respuesta, máximo 15 mg/h. Para la presentación 25 mg/10 mL, diluir con 240 mL de solución compatible, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Utilizar bomba, vigilar PA, frecuencia cardíaca, acceso y volumen. Interrumpir ante hipotensión/taquicardia; contraindicada en estenosis aórtica avanzada. No administrar la ampolla concentrada sin diluir. Otras presentaciones requieren verificación propia. [R8]\n\n4. Trombólisis — elegir un agente, tras confirmar elegibilidad.\nAlteplasa: 0,9 mg/kg IV, máximo 90 mg; 10% en bolo durante 1 minuto y el 90% restante en infusión durante 60 minutos. Reconstitución a 1 mg/mL según el producto; utilizar bomba y doble verificación de peso, mg, mL y velocidad. [R1,R5]\n\nTenecteplasa: la guía recomienda 0,25 mg/kg, máximo 25 mg. Para esta versión, el esquema operativo siguiente adopta los rangos de la tabla 7 de AHA/ASA y de la ficha de Metalyse 25 mg, con concentración final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 y <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 y <80 kg: 20 mg = 4 mL.\nPeso ≥80 y <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar un bolo IV único en aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. No mezclar esta tabla con un cálculo lineal por kg: son metodologías diferentes; confirmar el esquema aprobado en el servicio y la presentación. Peso ≤50 kg requiere evaluación cuidadosa de beneficio/riesgo. La tabla 7 admite, para peso <50 kg conocido con precisión, dosificación por rangos de 1 kg según el protocolo del servicio; no demorar la trombólisis para obtener el peso exacto. No utilizar 0,40 mg/kg ni dosis de IAM. Para Metalyse, utilizar la presentación de 25 mg destinada a ACV; no adaptar automáticamente presentaciones de 40/50 mg. [R1,R6,R7,R10]\n\nLa ventana de la guía es hasta 4,5 horas en pacientes elegibles. La ficha europea de Metalyse contempla esa ventana; la ficha norteamericana de TNKase consultada especifica hasta 3 horas. Verificar autorización local y protocolo; no presentar la indicación de una jurisdicción como autorización universal. No extender el tratamiento por cuenta propia en ACV de inicio desconocido. [R1,R6,R7]\n\n5. Trombectomía. Derivar inmediatamente ante una oclusión potencialmente tratable, independientemente de la posibilidad de trombólisis. Existe indicación en pacientes seleccionados hasta 24 horas, incluidos determinados núcleos extensos y oclusiones basilares; esto no autoriza tratar toda oclusión de M2 o cualquier paciente con NIHSS ≥6. Si ambos tratamientos están indicados, no demorar uno por el otro. [R1,R4]\n\n6. Antiagregación. Después de trombólisis, evitar antiagregantes/anticoagulantes durante las primeras 24 horas y obtener imágenes antes de iniciarlos, salvo decisión especializada en una circunstancia excepcional. Sin trombólisis, tras excluir hemorragia y confirmar deglución segura, AAS 160 mg VO es una opción de carga. Si la vía oral no es segura, definir una vía alternativa con el equipo; no administrar comprimidos por vía oral. Para ACV menor no cardioembólico, NIHSS 0–3, bajo riesgo hemorrágico y sin trombólisis, considerar hasta 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de carga, luego AAS 81 mg VO/día + clopidogrel 75 mg VO/día durante 21 días, seguidos de monoterapia; vía oral solo tras evaluar una deglución segura. No aplicar DAPT a todo ACV ni mantenerla indefinidamente. [R9]\n\n7. Monitorización y reevaluación. Monitor cardíaco y evaluaciones frecuentes de PA y estado neurológico en un área capacitada, después de trombólisis: PA y evaluación neurológica cada 15 minutos durante las primeras 2 horas, cada 30 minutos durante las 6 horas siguientes y cada hora hasta completar 24 horas. Intensificar la vigilancia ante PA >180/105 mmHg o deterioro. Reevaluar después de las intervenciones y ante cualquier cambio. Obtener TC/RM de control en 24 horas antes de antitrombóticos; deterioro, cefalea intensa, vómitos o sangrado requieren imágenes urgentes, sin esperar ese plazo. Corregir glucemia <60 mg/dL; tratar hiperglucemia persistente con objetivo habitual 140–180 mg/dL, evitando control intensivo de 80–130 mg/dL e hipoglucemia. Suplementar oxígeno si hay hipoxemia; no de rutina en pacientes normoxémicos. [R1,R4]\n\n8. Complicaciones y destino. Sospecha de hemorragia: interrumpir alteplasa si sigue en infusión, activar al equipo especializado, obtener imágenes y estudios hemostáticos e iniciar el protocolo de hemorragia asociada a trombólisis. No repetir tenecteplasa, cuyo bolo ya fue administrado. El angioedema requiere evaluación inmediata de la vía aérea y soporte de emergencia. El deterioro con edema/efecto de masa requiere neurocirugía y cuidados intensivos. Internar en una unidad de ACV; UTI ante inestabilidad o necesidad de soporte intensivo. [R1,R4,R12]\n\n9. Seguridad antes de dieta y alta. Evaluar deglución antes de agua, alimentos o medicamentos orales. Tratar la fiebre, evitar aspiración e iniciar rehabilitación según estabilidad. Antes del alta, establecer etiología/plan de investigación, antitrombótico, prevención, funcionalidad y seguimiento, con información sobre recurrencia y regreso inmediato. [R1,R12]",
+            "study": "ES — Modo Estudio\n\nAlcance y mecanismo. Adultos ≥18 años con sospecha o confirmación de ACV isquémico agudo. La interrupción del flujo arterial produce tejido infartado y tejido potencialmente recuperable; la reperfusión busca preservar la función, con beneficio dependiente del tiempo y de la selección clínica y por imágenes. El AIT es un diagnóstico distinto: los síntomas transitorios no evitan la investigación urgente, y una TC inicial normal no excluye un ACV. [R1,R3]\n\nEtiología y clasificación. Investigar aterosclerosis de grandes arterias, cardioembolia, enfermedad de pequeños vasos y otras causas, como disección. Distinguir circulación anterior y posterior, déficit discapacitante o no discapacitante, oclusión proximal y extensión de la lesión. La NIHSS cuantifica la gravedad, pero un puntaje bajo no excluye afasia discapacitante, pérdida funcional relevante o ACV posterior. La oclusión de M2 no constituye una indicación automática de trombectomía. [R1,R4]\n\nReconocimiento y diagnóstico. Un déficit focal súbito — debilidad, afasia, alteración visual, ataxia o diplopía — requiere código ACV. Determinar inicio o último momento conocido sin síntomas, estado funcional previo, anticoagulantes y última dosis, procedimientos y sangrados recientes. Evaluar ABC, glucemia y NIHSS; obtener TC sin contraste para excluir hemorragia e imagen vascular cuando sea posible un tratamiento endovascular. No esperar RM, ecocardiograma o estudios etiológicos para iniciar decisiones de reperfusión. Los diferenciales incluyen hipoglucemia, crisis epiléptica con déficit posictal, migraña con aura y hemorragia intracraneal. [R1,R3]\n\nReperfusión actual. Ante un déficit discapacitante y elegibilidad confirmada, alteplasa o tenecteplasa son opciones dentro de 4,5 horas del inicio/último momento sin síntomas. El déficit no discapacitante requiere otra evaluación; la trombólisis no es automática, y puede preferirse antiagregación. El inicio desconocido o una ventana extendida requieren selección específica por imágenes y especialista; no alcanza una TC sin hemorragia. La corrección de julio agrega, al criterio de perfusión de 4,5–9 horas, la condición de no elegibilidad para trombectomía. [R1,R2]\n\nTrombectomía. Evaluación urgente de oclusión proximal, incluso en pacientes no elegibles para trombólisis. Existen criterios para pacientes seleccionados hasta 24 horas, incluidos determinados infartos de núcleo extenso y oclusión basilar. No usar solo NIHSS o el reloj como regla universal. TC/angio-TC pueden sostener la selección en determinados escenarios; no exigir perfusión indiscriminadamente si ocasiona demora. Aplicar criterios específicos del centro, revisando extensión, efecto de masa, funcionalidad previa e incertidumbres en poblaciones poco representadas. [R1,R2,R4]\n\nSoporte, complicaciones y prevención. Evitar hipotensión y descensos excesivos de PA, corregir hipoglucemia e hipoxemia, tratar la fiebre e investigar su causa. Hemorragia sintomática, edema cerebral, angioedema, aspiración y recurrencia son complicaciones relevantes. La internación en una unidad de ACV permite vigilancia y rehabilitación precoz. Luego de la fase aguda, definir prevención según la etiología, incluidos el antitrombótico apropiado y el manejo lipídico y de factores de riesgo; no indicar heparina terapéutica de rutina ni un intervalo universal para anticoagulación por FA. El pronóstico depende de gravedad, territorio, reperfusión, complicaciones y funcionalidad previa. [R1,R9,R12]\n\nPoblaciones especiales. Embarazo/puerperio requieren evaluación conjunta de neurología y obstetricia, sin demorar imágenes esenciales; alteplasa y trombectomía pueden considerarse cuando el beneficio justifique los riesgos. La lactancia requiere consultar la información específica del producto, sin inventar un intervalo universal de suspensión. La edad avanzada aislada no debe reemplazar la evaluación individual. La disfunción renal modifica la evaluación de anticoagulantes y del riesgo; la enfermedad hepática con coagulopatía modifica la seguridad. No crear una reducción empírica de dosis trombolítica. Para nicardipina, titular con cautela ante disfunción renal/hepática e insuficiencia cardíaca. Esta guía no contiene prescripción pediátrica. [R1,R5,R6,R8,R11]\n\nErrores frecuentes. No interpretar 185/110 o 180/105 mmHg como valores mínimos que impiden reducir la PA cuando está indicado. Son límites utilizados para seguridad de la reperfusión, respetando la perfusión cerebral. No confundir dosis de ACV con dosis de IAM/TEP, fórmulas por kg con rangos de peso, o una recomendación de guía con la autorización regulatoria de cada presentación. No ofrecer vía oral antes de la evaluación de deglución. El alta requiere estabilidad, investigación y un plan de prevención/seguimiento definidos; no es una consecuencia automática de NIHSS bajo. [R1,R5,R6,R7,R12]"
+          },
+          "owner": "avc_isquemico",
+          "preservedRuntimeIds": [
+            "avc_isquemico"
+          ],
+          "pt": {
+            "plantao": "PT — Modo Plantão\n\n1. Acionar código AVC. Registrar início/último momento bem, peso, NIHSS, funcionalidade prévia e anticoagulante/última dose. Avaliar ABC, glicemia, PA, temperatura e oxigenação. Corrigir hipoglicemia imediatamente; déficit persistente após correção mantém a investigação de AVC. Colher hemograma, coagulação, eletrólitos e creatinina. Exames sem suspeita de alteração relevante não devem atrasar a reperfusão. [R1,R3]\n\n2. Imagem e decisão em paralelo. TC sem contraste urgente; angio-TC para pesquisa de oclusão e avaliação de trombectomia. Contatar equipe de AVC/neurointervenção ou telestroke imediatamente. Antes da trombólise, completar checklist institucional atualizado: hemorragia, sangramento ativo, coagulopatia, PA não controlada, cirurgia/trauma recente e outras restrições específicas. Uso recente de anticoagulante exige análise especializada; INR normal não demonstra ausência de efeito de DOAC. Não esperar resposta à trombólise para organizar trombectomia/transferência. [R1,R4,R5,R6]\n\n3. Pressão arterial. Antes de trombólise: PA <185/110 mmHg. Após: manter <180/105 mmHg nas primeiras 24 horas, evitando queda excessiva. Não perseguir redução intensiva de PAS <140 mmHg após reperfusão. Sem reperfusão, não tratar hipertensão moderada de rotina; PA >220/120 mmHg ou outra emergência orgânica exige avaliação individual e redução cautelosa, aproximadamente 15% inicialmente. Corrigir hipotensão e hipovolemia. [R1,R3]\n\nOpção titulável quando houver indicação e disponibilidade: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h a cada 5–15 minutos conforme resposta, máximo 15 mg/h. Para a apresentação 25 mg/10 mL, diluir com 240 mL de solução compatível, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Usar bomba, vigiar PA, frequência cardíaca, acesso e volume. Interromper se hipotensão/taquicardia; contraindicação em estenose aórtica avançada. Não administrar a ampola concentrada sem diluição. Outras apresentações exigem conferência própria. [R8]\n\n4. Trombólise — escolher um agente, após elegibilidade.\nAlteplase: 0,9 mg/kg IV, máximo 90 mg; 10% em bolo durante 1 minuto e os 90% restantes em infusão por 60 minutos. Reconstituição a 1 mg/mL conforme o produto; utilizar bomba e dupla conferência de peso, mg, mL e velocidade. [R1,R5]\n\nTenecteplase: a guideline recomenda 0,25 mg/kg, máximo 25 mg. Para esta versão, o esquema operacional abaixo adota as faixas da tabela 7 da AHA/ASA e da bula Metalyse 25 mg, com concentração final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 e <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 e <80 kg: 20 mg = 4 mL.\nPeso ≥80 e <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar bolo IV único em aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. Não misturar essa tabela com cálculo linear por kg: são metodologias diferentes; confirmar o esquema aprovado no serviço e a apresentação. Peso ≤50 kg exige avaliação cuidadosa de benefício/risco. A tabela 7 admite, para peso <50 kg precisamente conhecido, dosagem por faixas de 1 kg conforme protocolo do serviço; não atrasar trombólise para obter peso exato. Não usar 0,40 mg/kg nem doses de IAM. Para Metalyse, usar a apresentação de 25 mg destinada a AVC; não adaptar automaticamente apresentações de 40/50 mg. [R1,R6,R7,R10]\n\nA janela de guideline é até 4,5 horas em pacientes elegíveis. A bula europeia de Metalyse contempla essa janela; a bula norte-americana de TNKase consultada especifica até 3 horas. Conferir autorização local e protocolo; não apresentar a indicação de uma jurisdição como autorização universal. Não estender tratamento por conta própria em AVC de início desconhecido. [R1,R6,R7]\n\n5. Trombectomia. Encaminhar imediatamente quando houver oclusão potencialmente tratável, independentemente da possibilidade de trombólise. Há indicação em pacientes selecionados até 24 horas, inclusive determinados grandes núcleos e oclusões basilares; isso não autoriza tratar toda oclusão de M2 ou qualquer paciente com NIHSS ≥6. Se ambos os tratamentos forem indicados, não atrasar um pelo outro. [R1,R4]\n\n6. Antiagregação. Após trombólise, evitar antiagregantes/anticoagulantes nas primeiras 24 horas e obter imagem antes de iniciar, salvo decisão especializada em circunstância excepcional. Sem trombólise, após excluir hemorragia e confirmar deglutição segura, AAS 160 mg VO é uma opção de ataque. Se a via oral não for segura, definir via alternativa com a equipe; não administrar comprimidos por via oral. Para AVC menor não cardioembólico, NIHSS 0–3, baixo risco hemorrágico e sem trombólise, considerar até 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de ataque, depois AAS 81 mg VO/dia + clopidogrel 75 mg VO/dia por 21 dias, seguidos de monoterapia; via oral somente após triagem de deglutição segura. Não aplicar DAPT a todo AVC nem mantê-la indefinidamente. [R9]\n\n7. Monitorização e reavaliação. Monitor cardíaco e avaliações frequentes de PA e estado neurológico em área capacitada, após trombólise: PA e avaliação neurológica a cada 15 minutos durante as primeiras 2 horas, a cada 30 minutos nas 6 horas seguintes e a cada hora até completar 24 horas. Intensificar a vigilância se PA >180/105 mmHg ou houver deterioração. Reavaliar após intervenções e a qualquer mudança. Obter TC/RM de controle em 24 horas antes de antitrombóticos; deterioração, cefaleia intensa, vômitos ou sangramento exigem imagem urgente, sem esperar esse prazo. Corrigir glicemia <60 mg/dL; tratar hiperglicemia persistente com alvo usual 140–180 mg/dL, evitando controle intensivo de 80–130 mg/dL e hipoglicemia. Suplementar oxigênio se houver hipoxemia; não de rotina no normoxêmico. [R1,R4]\n\n8. Complicações e destino. Suspeita de hemorragia: interromper alteplase se ainda em infusão, acionar equipe especializada, obter imagem e estudos hemostáticos e iniciar protocolo de hemorragia associada à trombólise. Não repetir tenecteplase, cujo bolo já foi administrado. Angioedema exige avaliação imediata da via aérea e suporte de emergência. Deterioração com edema/efeito de massa exige neurocirurgia e cuidados intensivos. Internar em unidade de AVC; UTI quando houver instabilidade ou necessidade de suporte intensivo. [R1,R4,R12]\n\n9. Segurança antes de dieta e alta. Triar deglutição antes de água, alimentos ou medicações orais. Tratar febre, evitar aspiração e iniciar reabilitação conforme estabilidade. Antes da alta, estabelecer etiologia/plano de investigação, antitrombótico, prevenção, funcionalidade e seguimento, com orientação sobre recorrência e retorno imediato. [R1,R12]",
+            "study": "PT — Modo Estudo\n\nEscopo e mecanismo. Adultos ≥18 anos com suspeita ou confirmação de AVC isquêmico agudo. A interrupção do fluxo arterial produz tecido infartado e tecido potencialmente recuperável; a reperfusão busca preservar função, com benefício dependente do tempo e da seleção clínica e por imagem. AIT é um diagnóstico distinto: sintomas transitórios não dispensam investigação urgente, e uma TC inicial normal não exclui AVC. [R1,R3]\n\nEtiologia e classificação. Investigar aterosclerose de grandes artérias, cardioembolia, doença de pequenos vasos e outras causas, como dissecção. Distinguir circulação anterior e posterior, déficit incapacitante ou não incapacitante, oclusão proximal e extensão da lesão. NIHSS quantifica gravidade, mas um escore baixo não exclui afasia incapacitante, perda funcional relevante ou AVC posterior. Oclusão de M2 não constitui indicação automática de trombectomia. [R1,R4]\n\nReconhecimento e diagnóstico. Déficit focal súbito — fraqueza, afasia, alteração visual, ataxia ou diplopia — exige código AVC. Determinar início ou último momento conhecido sem sintomas, estado funcional anterior, anticoagulantes e última dose, procedimentos e sangramentos recentes. Avaliar ABC, glicemia e NIHSS; obter TC sem contraste para excluir hemorragia e imagem vascular quando houver possibilidade de tratamento endovascular. Não esperar RM, ecocardiograma ou exames etiológicos para iniciar decisões de reperfusão. Diferenciais incluem hipoglicemia, crise epiléptica com déficit pós-ictal, enxaqueca com aura e hemorragia intracraniana. [R1,R3]\n\nReperfusão atual. Em déficit incapacitante e elegibilidade confirmada, alteplase ou tenecteplase são opções dentro de 4,5 horas do início/último momento bem. Déficit não incapacitante exige outra avaliação; trombólise não é automática, e antiagregação pode ser preferida. Início desconhecido ou janela estendida exige seleção específica por imagem e especialista; não basta uma TC sem hemorragia. A errata de julho acrescenta, ao critério de perfusão de 4,5–9 horas, a condição de não elegibilidade para trombectomia. [R1,R2]\n\nTrombectomia. Avaliação urgente de oclusão proximal, inclusive em pacientes inelegíveis para trombólise. Existem critérios para pacientes selecionados até 24 horas, incluindo determinados infartos de grande núcleo e oclusão basilar. Não usar apenas NIHSS ou relógio como regra universal. TC/angio-TC podem sustentar seleção em determinados cenários; perfusão não deve ser exigida indiscriminadamente se causar atraso. Aplicar critérios específicos do centro, com revisão de extensão, efeito de massa, funcionalidade prévia e incertezas em populações pouco representadas. [R1,R2,R4]\n\nSuporte, complicações e prevenção. Evitar hipotensão e quedas excessivas de PA, corrigir hipoglicemia e hipoxemia, tratar febre e investigar sua causa. Hemorragia sintomática, edema cerebral, angioedema, aspiração e recorrência são complicações relevantes. Internação em unidade de AVC permite vigilância e reabilitação precoce. Após a fase aguda, definir prevenção conforme etiologia, incluindo antitrombótico apropriado, manejo lipídico e de fatores de risco; não indicar heparina terapêutica de rotina nem um intervalo universal para anticoagulação por FA. Prognóstico depende da gravidade, território, reperfusão, complicações e funcionalidade prévia. [R1,R9,R12]\n\nPopulações especiais. Gestação/puerpério requer avaliação conjunta de neurologia e obstetrícia, sem atrasar imagem essencial; alteplase e trombectomia podem ser consideradas quando o benefício justificar os riscos. Lactação exige consulta à informação específica do produto, sem inventar intervalo universal de suspensão. Idade avançada isolada não deve substituir avaliação individual. Disfunção renal modifica avaliação de anticoagulantes e risco; doença hepática com coagulopatia modifica segurança. Não criar redução empírica de dose trombolítica. Para nicardipina, titular com cautela em disfunção renal/hepática e insuficiência cardíaca. Este guia não contém prescrição pediátrica. [R1,R5,R6,R8,R11]\n\nArmadilhas. Não interpretar 185/110 ou 180/105 mmHg como valores mínimos que impedem reduzir PA quando indicada. São limites usados para segurança da reperfusão, respeitando perfusão cerebral. Não confundir doses de AVC com doses de IAM/TEP, fórmulas por kg com faixas de peso, ou recomendação de guideline com autorização regulatória de cada apresentação. Não oferecer via oral antes da triagem de deglutição. Alta exige estabilidade, investigação e plano de prevenção/seguimento definidos; não é consequência automática de NIHSS baixo. [R1,R5,R6,R7,R12]"
+          },
+          "references": [
+            [
+              "R1",
+              "AHA/ASA — Early Management of Acute Ischemic Stroke, 2026; guideline final, versão online corrigida consultada no navegador.",
+              "https://www.ahajournals.org/doi/10.1161/STR.0000000000000513"
+            ],
+            [
+              "R2",
+              "AHA/ASA — Errata formal, publicada em 27/07/2026; texto integral verificado.",
+              "https://www.ahajournals.org/doi/10.1161/STR.0000000000000530"
+            ],
+            [
+              "R3",
+              "Canadian Stroke Best Practices — Emergency Department Evaluation and Management, 2022; apoio ao reconhecimento, exames e suporte. Metas pós-trombólise seguem AHA/ASA 2026.",
+              "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/emergency-department-evaluation-and-management"
+            ],
+            [
+              "R4",
+              "Canadian Stroke Best Practices — Acute Ischemic Stroke Treatment, 2022 e atualização endovascular final de 2025.",
+              "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-ischemic-stroke-treatment"
+            ],
+            [
+              "R5",
+              "DailyMed/Genentech — Activase; bula consultada para dose, reconstituição e precauções, sem equiparar sua janela regulatória à guideline.",
+              "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c669f77c-fa48-478b-a14b-80b20a0139c2"
+            ],
+            [
+              "R6",
+              "EMA — Metalyse; informação do produto atual, seção específica de AVC/25 mg; faixas de peso, preparo, velocidade e populações.",
+              "https://www.ema.europa.eu/en/documents/product-information/metalyse-epar-product-information_en.pdf"
+            ],
+            [
+              "R7",
+              "FDA — TNKase; bula de 2025 para AVC, faixas de peso, máximo 25 mg, velocidade e janela regulatória.",
+              "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/103909s5197lbl.pdf"
+            ],
+            [
+              "R8",
+              "DailyMed — Nicardipine hydrochloride injection; revisão 11/2025; dose, diluição e segurança.",
+              "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878"
+            ],
+            [
+              "R9",
+              "Canadian Stroke Best Practices — Acute Antithrombotic Therapy, 2022; esquemas de AAS/DAPT e restrição pós-trombólise.",
+              "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-antithrombotic-therapy"
+            ],
+            [
+              "R10",
+              "ESO — Expedited recommendation on tenecteplase, 2023; recomendação formal, dose 0,25 mg/kg e contraindicação de usar 0,40 mg/kg no cenário estudado.",
+              "https://pmc.ncbi.nlm.nih.gov/articles/PMC10069183/"
+            ],
+            [
+              "R11",
+              "Canadian Stroke Best Practices — Acute Stroke Management during Pregnancy, 2018; consenso específico ainda disponibilizado oficialmente, evidência limitada.",
+              "https://www.strokebestpractices.ca/recommendations/acute-stroke-management-during-pregnancy"
+            ],
+            [
+              "R12",
+              "Canadian Stroke Best Practices — Acute Stroke Unit Care, 2022; internação, avaliação multidisciplinar, disfagia e planejamento.",
+              "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-stroke-unit-care"
+            ]
+          ],
+          "version": "JIT-2026-10-01-v1.0"
         },
         "classification": {
           "compatibilityKind": "localized_classification_payload",
@@ -18631,23 +18719,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 Gran vaso (M1/M2, carótida, basilar): NIHSS alto, trombectomía indicada ≤24 h",
-              "🟠 Rama cortical: déficit focal moderado, elegible para alteplase ≤4,5 h",
-              "🟡 Lacunar (pequeño vaso): NIHSS bajo, sin gran vaso",
-              "🟢 AIT: déficit <24 h, TC normal; alto riesgo de ACV en 48–72 h"
+              "Etiología y clasificación. Investigar aterosclerosis de grandes arterias, cardioembolia, enfermedad de pequeños vasos y otras causas, como disección. Distinguir circulación anterior y posterior, déficit discapacitante o no discapacitante, oclusión proximal y extensión de la lesión. La NIHSS cuantifica la gravedad, pero un puntaje bajo no excluye afasia discapacitante, pérdida funcional relevante o ACV posterior. La oclusión de M2 no constituye una indicación automática de trombectomía. [R1,R4]"
             ],
             "pt": [
-              "🔴 Grande vaso (M1/M2, carótida, basilar): NIHSS alto, trombectomia indicada ≤24h",
-              "🟠 Ramo cortical: déficit focal moderado, elegível para alteplase ≤4,5h",
-              "🟡 Lacunar (pequeno vaso): NIHSS baixo, sem grande vaso, raro candidato a trombectomia",
-              "🟢 AIT (Ataque Isquêmico Transitório): déficit <24h, TC normal; risco alto de AVC em 48–72h"
+              "Etiologia e classificação. Investigar aterosclerose de grandes artérias, cardioembolia, doença de pequenos vasos e outras causas, como dissecção. Distinguir circulação anterior e posterior, déficit incapacitante ou não incapacitante, oclusão proximal e extensão da lesão. NIHSS quantifica gravidade, mas um escore baixo não exclui afasia incapacitante, perda funcional relevante ou AVC posterior. Oclusão de M2 não constitui indicação automática de trombectomia. [R1,R4]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "c630c66024307c2d4e72d46114439b591b885c03a36154f572b5d07ae7a3499c",
+            "blockSha256": "4cfe0baece7d3e8dfe1add654a094a74ddf0d2b0979e67c0e98105a4dfa9d863",
             "innerFamilyId": "ec4c285966e73508",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::avc_isquemico",
@@ -18658,9 +18740,10 @@
       "protocolKey": "legacy_protocol::avc_isquemico",
       "source": "legacyCompatibility.recordsByPathology",
       "sourceMode": "verbatim_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-01-v1.0"
     },
     {
+      "approvedClinicalPayloadSha256": "1d837b287316d9160010b96bb91e09e3937273fb3632157bcf41af2a0a0ceabd",
       "canonicalPathologyKey": "avc_isquemico",
       "contentKey": "legacy_classification_content::avc_isquemico",
       "enabled": true,
@@ -18674,23 +18757,17 @@
         "finalMachineRegistryDocument": false,
         "locales": {
           "es": [
-            "🔴 Gran vaso (M1/M2, carótida, basilar): NIHSS alto, trombectomía indicada ≤24 h",
-            "🟠 Rama cortical: déficit focal moderado, elegible para alteplase ≤4,5 h",
-            "🟡 Lacunar (pequeño vaso): NIHSS bajo, sin gran vaso",
-            "🟢 AIT: déficit <24 h, TC normal; alto riesgo de ACV en 48–72 h"
+            "Etiología y clasificación. Investigar aterosclerosis de grandes arterias, cardioembolia, enfermedad de pequeños vasos y otras causas, como disección. Distinguir circulación anterior y posterior, déficit discapacitante o no discapacitante, oclusión proximal y extensión de la lesión. La NIHSS cuantifica la gravedad, pero un puntaje bajo no excluye afasia discapacitante, pérdida funcional relevante o ACV posterior. La oclusión de M2 no constituye una indicación automática de trombectomía. [R1,R4]"
           ],
           "pt": [
-            "🔴 Grande vaso (M1/M2, carótida, basilar): NIHSS alto, trombectomia indicada ≤24h",
-            "🟠 Ramo cortical: déficit focal moderado, elegível para alteplase ≤4,5h",
-            "🟡 Lacunar (pequeno vaso): NIHSS baixo, sem grande vaso, raro candidato a trombectomia",
-            "🟢 AIT (Ataque Isquêmico Transitório): déficit <24h, TC normal; risco alto de AVC em 48–72h"
+            "Etiologia e classificação. Investigar aterosclerose de grandes artérias, cardioembolia, doença de pequenos vasos e outras causas, como dissecção. Distinguir circulação anterior e posterior, déficit incapacitante ou não incapacitante, oclusão proximal e extensão da lesão. NIHSS quantifica gravidade, mas um escore baixo não exclui afasia incapacitante, perda funcional relevante ou AVC posterior. Oclusão de M2 não constitui indicação automática de trombectomia. [R1,R4]"
           ]
         },
         "machineRuleInferencePerformed": false,
         "ptEsStructuralParity": true,
         "schemaVersion": "legacy_localized_payload_v1",
         "sourceProof": {
-          "blockSha256": "c630c66024307c2d4e72d46114439b591b885c03a36154f572b5d07ae7a3499c",
+          "blockSha256": "4cfe0baece7d3e8dfe1add654a094a74ddf0d2b0979e67c0e98105a4dfa9d863",
           "innerFamilyId": "ec4c285966e73508",
           "legacyField": "classification",
           "protocolKey": "legacy_protocol::avc_isquemico",
@@ -18700,7 +18777,7 @@
       "protocolKey": "legacy_protocol::avc_isquemico",
       "source": "legacyCompatibility.recordsByPathology.classification",
       "sourceMode": "verbatim_classification_compatibility_wrap",
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-01-v1.0"
     },
     {
       "canonicalPathologyKey": "botulismo_neuroparalitico",
@@ -37610,14 +37687,20 @@
     },
     {
       "aliases": [
-        "avc_isquemico"
+        "avc_isquemico",
+        "AVC isquêmico",
+        "ACV isquémico",
+        "AVE isquêmico",
+        "acidente vascular cerebral isquêmico",
+        "accidente cerebrovascular isquémico"
       ],
+      "approvedClinicalPayloadSha256": "1d837b287316d9160010b96bb91e09e3937273fb3632157bcf41af2a0a0ceabd",
       "canonicalKey": "avc_isquemico",
       "displayLabel": "avc_isquemico",
       "enabled": true,
       "priority": 100,
       "source": {
-        "blockSha256": "c630c66024307c2d4e72d46114439b591b885c03a36154f572b5d07ae7a3499c",
+        "blockSha256": "4cfe0baece7d3e8dfe1add654a094a74ddf0d2b0979e67c0e98105a4dfa9d863",
         "file": "lib/data/protocols_database.dart",
         "line": 4095,
         "sourceGroup": "ProtocolModel",
@@ -37625,9 +37708,14 @@
         "strategy": "generic_constructor"
       },
       "strongAliases": [
-        "avc_isquemico"
+        "avc_isquemico",
+        "AVC isquêmico",
+        "ACV isquémico",
+        "AVE isquêmico",
+        "acidente vascular cerebral isquêmico",
+        "accidente cerebrovascular isquémico"
       ],
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-01-v1.0"
     },
     {
       "aliases": [
@@ -45278,13 +45366,14 @@
       "visibleCutoverEligible": false
     },
     {
+      "approvedClinicalPayloadSha256": "1d837b287316d9160010b96bb91e09e3937273fb3632157bcf41af2a0a0ceabd",
       "authoringStatus": "AUTHORITATIVE_CURRENT_ENABLED_LOCAL_DRAFT",
       "canonicalPathologyKey": "avc_isquemico",
       "classificationActionRef": null,
       "classificationDependencies": [
         "AIS_IS_MULTIDIMENSIONAL;_DO_NOT_REQUIRE_SINGLE_CLASSIFICATION_TO_START_TIME_CRITICAL_CARE"
       ],
-      "clinicalReviewDate": "2026-08-31",
+      "clinicalReviewDate": "2026-10-01",
       "clinicalSemanticInferencePerformed": false,
       "clinicalState": {
         "canonicalPathologyKey": "avc_isquemico",
@@ -45295,64 +45384,90 @@
         },
         "protocolKey": "legacy_protocol::avc_isquemico"
       },
-      "conditionalActions": [
-        {
-          "es": "En inicio desconocido o 4,5–9 h, seleccionar IVT solo en pacientes apropiados mediante criterios de imagen avanzada.",
-          "key": "extended_ivt",
-          "pt": "Em início desconhecido ou 4,5–9 h, selecionar IVT apenas em pacientes apropriados por critérios de imagem avançada.",
-          "when": "unknown_onset_or_4_5_to_9h_with_mismatch"
-        },
-        {
-          "es": "Para déficit no discapacitante dentro de 4,5 h, preferir la estrategia antiplaquetaria dual indicada en lugar de trombólisis cuando corresponda.",
-          "key": "nondisabling_dapt",
-          "pt": "Para déficit não incapacitante dentro de 4,5 h, preferir estratégia antiplquetária dual indicada em vez de trombólise, quando o quadro se enquadrar.",
-          "when": "nondisabling_deficit"
-        }
-      ],
+      "conditionalActions": [],
       "contraindicatedActions": [
         {
-          "es": "No usar argatrobán o eptifibatida como adyuvante rutinario a la trombólisis IV.",
-          "key": "no_adjunct_argatroban_eptifibatide",
-          "pt": "Não usar argatrobana ou eptifibatide como adjuvante de rotina à trombólise IV."
-        },
-        {
-          "es": "No buscar reducción intensiva de PAS <140 mmHg de rutina después de IVT/EVT.",
-          "key": "no_aggressive_sbp_lt140_after_reperfusion",
-          "pt": "Não buscar redução intensiva de PAS <140 mmHg rotineiramente após IVT/EVT."
+          "es": "Errores frecuentes. No interpretar 185/110 o 180/105 mmHg como valores mínimos que impiden reducir la PA cuando está indicado. Son límites utilizados para seguridad de la reperfusión, respetando la perfusión cerebral. No confundir dosis de ACV con dosis de IAM/TEP, fórmulas por kg con rangos de peso, o una recomendación de guía con la autorización regulatoria de cada presentación. No ofrecer vía oral antes de la evaluación de deglución. El alta requiere estabilidad, investigación y un plan de prevención/seguimiento definidos; no es una consecuencia automática de NIHSS bajo. [R1,R5,R6,R7,R12]",
+          "key": "approved_avoid",
+          "pt": "Armadilhas. Não interpretar 185/110 ou 180/105 mmHg como valores mínimos que impedem reduzir PA quando indicada. São limites usados para segurança da reperfusão, respeitando perfusão cerebral. Não confundir doses de AVC com doses de IAM/TEP, fórmulas por kg com faixas de peso, ou recomendação de guideline com autorização regulatória de cada apresentação. Não oferecer via oral antes da triagem de deglutição. Alta exige estabilidade, investigação e plano de prevenção/seguimento definidos; não é consequência automática de NIHSS baixo. [R1,R5,R6,R7,R12]"
         }
       ],
-      "definitiveActions": [
-        {
-          "es": "Realizar EVT en LVO elegible; considerar criterios ampliados, incluidos algunos núcleos grandes, y fuerte indicación en oclusión basilar ≤24 h con NIHSS ≥10.",
-          "key": "evt",
-          "pt": "Realizar EVT em LVO elegível; considerar critérios expandidos, incluindo alguns grandes cores, e forte indicação em oclusão basilar ≤24 h com NIHSS ≥10."
-        }
-      ],
+      "definitiveActions": [],
       "dependsOn": {},
       "enabled": true,
       "escalationCriteria": [
         {
-          "es": "Deterioro neurológico, edema maligno, hemorragia sintomática o inestabilidad exigen escalamiento neurocrítico inmediato.",
-          "key": "deterioration",
-          "pt": "Deterioração neurológica, edema maligno, hemorragia sintomática ou instabilidade exigem escalonamento neurocrítico imediato."
+          "es": "Poblaciones especiales. Embarazo/puerperio requieren evaluación conjunta de neurología y obstetricia, sin demorar imágenes esenciales; alteplasa y trombectomía pueden considerarse cuando el beneficio justifique los riesgos. La lactancia requiere consultar la información específica del producto, sin inventar un intervalo universal de suspensión. La edad avanzada aislada no debe reemplazar la evaluación individual. La disfunción renal modifica la evaluación de anticoagulantes y del riesgo; la enfermedad hepática con coagulopatía modifica la seguridad. No crear una reducción empírica de dosis trombolítica. Para nicardipina, titular con cautela ante disfunción renal/hepática e insuficiencia cardíaca. Esta guía no contiene prescripción pediátrica. [R1,R5,R6,R8,R11]",
+          "key": "approved_special_populations",
+          "pt": "Populações especiais. Gestação/puerpério requer avaliação conjunta de neurologia e obstetrícia, sem atrasar imagem essencial; alteplase e trombectomia podem ser consideradas quando o benefício justificar os riscos. Lactação exige consulta à informação específica do produto, sem inventar intervalo universal de suspensão. Idade avançada isolada não deve substituir avaliação individual. Disfunção renal modifica avaliação de anticoagulantes e risco; doença hepática com coagulopatia modifica segurança. Não criar redução empírica de dose trombolítica. Para nicardipina, titular com cautela em disfunção renal/hepática e insuficiência cardíaca. Este guia não contém prescrição pediátrica. [R1,R5,R6,R8,R11]"
         }
       ],
-      "guidelineVersion": "AHA_ASA_AIS_2026",
+      "guidelineVersion": "AHA_ASA_AIS_2026_CORRECTED_JULY_2026",
       "initialActions": [
         {
-          "es": "Activar código ACV, establecer hora de inicio/último momento bien y obtener neuroimagen urgente sin retrasos evitables.",
-          "key": "stroke_code",
-          "pt": "Ativar código AVC, estabelecer hora de início/último momento bem e obter neuroimagem urgente sem atrasos evitáveis."
+          "es": "ES — Modo Guardia",
+          "key": "approved_0",
+          "pt": "PT — Modo Plantão"
         },
         {
-          "es": "En déficit incapacitante elegible dentro de 4,5 h, usar alteplasa O tenecteplasa según protocolo 2026, independientemente de un NIHSS bajo aislado.",
-          "key": "ivt",
-          "pt": "Em déficit incapacitante elegível dentro de 4,5 h, usar alteplase OU tenecteplase conforme protocolo 2026, independentemente de NIHSS baixo isolado."
+          "es": "1. Activar código ACV. Registrar inicio/último momento sin síntomas, peso, NIHSS, funcionalidad previa y anticoagulante/última dosis. Evaluar ABC, glucemia, PA, temperatura y oxigenación. Corregir hipoglucemia inmediatamente; el déficit persistente tras la corrección mantiene la investigación de ACV. Obtener hemograma, coagulación, electrolitos y creatinina. Los estudios sin sospecha de alteración relevante no deben demorar la reperfusión. [R1,R3]",
+          "key": "approved_1",
+          "pt": "1. Acionar código AVC. Registrar início/último momento bem, peso, NIHSS, funcionalidade prévia e anticoagulante/última dose. Avaliar ABC, glicemia, PA, temperatura e oxigenação. Corrigir hipoglicemia imediatamente; déficit persistente após correção mantém a investigação de AVC. Colher hemograma, coagulação, eletrólitos e creatinina. Exames sem suspeita de alteração relevante não devem atrasar a reperfusão. [R1,R3]"
         },
         {
-          "es": "Buscar oclusión de gran vaso y trasladar/activar trombectomía endovascular cuando sea elegible.",
-          "key": "lvo",
-          "pt": "Pesquisar oclusão de grande vaso e transferir/acionar trombectomia endovascular quando elegível."
+          "es": "2. Imágenes y decisión en paralelo. TC sin contraste urgente; angio-TC para buscar oclusión y evaluar trombectomía. Contactar al equipo de ACV/neurointervención o telestroke inmediatamente. Antes de la trombólisis, completar la lista institucional actualizada: hemorragia, sangrado activo, coagulopatía, PA no controlada, cirugía/trauma reciente y otras restricciones específicas. El uso reciente de anticoagulante requiere análisis especializado; un INR normal no demuestra ausencia de efecto de un DOAC. No esperar respuesta a la trombólisis para organizar trombectomía/traslado. [R1,R4,R5,R6]",
+          "key": "approved_2",
+          "pt": "2. Imagem e decisão em paralelo. TC sem contraste urgente; angio-TC para pesquisa de oclusão e avaliação de trombectomia. Contatar equipe de AVC/neurointervenção ou telestroke imediatamente. Antes da trombólise, completar checklist institucional atualizado: hemorragia, sangramento ativo, coagulopatia, PA não controlada, cirurgia/trauma recente e outras restrições específicas. Uso recente de anticoagulante exige análise especializada; INR normal não demonstra ausência de efeito de DOAC. Não esperar resposta à trombólise para organizar trombectomia/transferência. [R1,R4,R5,R6]"
+        },
+        {
+          "es": "3. Presión arterial. Antes de trombólisis: PA <185/110 mmHg. Después: mantener <180/105 mmHg durante las primeras 24 horas, evitando el descenso excesivo. No buscar una reducción intensiva de PAS <140 mmHg después de reperfusión. Sin reperfusión, no tratar hipertensión moderada de rutina; PA >220/120 mmHg u otra emergencia orgánica requieren evaluación individual y reducción cautelosa, aproximadamente 15% inicialmente. Corregir hipotensión e hipovolemia. [R1,R3]",
+          "key": "approved_3",
+          "pt": "3. Pressão arterial. Antes de trombólise: PA <185/110 mmHg. Após: manter <180/105 mmHg nas primeiras 24 horas, evitando queda excessiva. Não perseguir redução intensiva de PAS <140 mmHg após reperfusão. Sem reperfusão, não tratar hipertensão moderada de rotina; PA >220/120 mmHg ou outra emergência orgânica exige avaliação individual e redução cautelosa, aproximadamente 15% inicialmente. Corrigir hipotensão e hipovolemia. [R1,R3]"
+        },
+        {
+          "es": "Opción titulable cuando exista indicación y disponibilidad: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h cada 5–15 minutos según respuesta, máximo 15 mg/h. Para la presentación 25 mg/10 mL, diluir con 240 mL de solución compatible, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Utilizar bomba, vigilar PA, frecuencia cardíaca, acceso y volumen. Interrumpir ante hipotensión/taquicardia; contraindicada en estenosis aórtica avanzada. No administrar la ampolla concentrada sin diluir. Otras presentaciones requieren verificación propia. [R8]",
+          "key": "approved_4",
+          "pt": "Opção titulável quando houver indicação e disponibilidade: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h a cada 5–15 minutos conforme resposta, máximo 15 mg/h. Para a apresentação 25 mg/10 mL, diluir com 240 mL de solução compatível, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Usar bomba, vigiar PA, frequência cardíaca, acesso e volume. Interromper se hipotensão/taquicardia; contraindicação em estenose aórtica avançada. Não administrar a ampola concentrada sem diluição. Outras apresentações exigem conferência própria. [R8]"
+        },
+        {
+          "es": "4. Trombólisis — elegir un agente, tras confirmar elegibilidad.\nAlteplasa: 0,9 mg/kg IV, máximo 90 mg; 10% en bolo durante 1 minuto y el 90% restante en infusión durante 60 minutos. Reconstitución a 1 mg/mL según el producto; utilizar bomba y doble verificación de peso, mg, mL y velocidad. [R1,R5]",
+          "key": "approved_5",
+          "pt": "4. Trombólise — escolher um agente, após elegibilidade.\nAlteplase: 0,9 mg/kg IV, máximo 90 mg; 10% em bolo durante 1 minuto e os 90% restantes em infusão por 60 minutos. Reconstituição a 1 mg/mL conforme o produto; utilizar bomba e dupla conferência de peso, mg, mL e velocidade. [R1,R5]"
+        },
+        {
+          "es": "Tenecteplasa: la guía recomienda 0,25 mg/kg, máximo 25 mg. Para esta versión, el esquema operativo siguiente adopta los rangos de la tabla 7 de AHA/ASA y de la ficha de Metalyse 25 mg, con concentración final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 y <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 y <80 kg: 20 mg = 4 mL.\nPeso ≥80 y <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar un bolo IV único en aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. No mezclar esta tabla con un cálculo lineal por kg: son metodologías diferentes; confirmar el esquema aprobado en el servicio y la presentación. Peso ≤50 kg requiere evaluación cuidadosa de beneficio/riesgo. La tabla 7 admite, para peso <50 kg conocido con precisión, dosificación por rangos de 1 kg según el protocolo del servicio; no demorar la trombólisis para obtener el peso exacto. No utilizar 0,40 mg/kg ni dosis de IAM. Para Metalyse, utilizar la presentación de 25 mg destinada a ACV; no adaptar automáticamente presentaciones de 40/50 mg. [R1,R6,R7,R10]",
+          "key": "approved_6",
+          "pt": "Tenecteplase: a guideline recomenda 0,25 mg/kg, máximo 25 mg. Para esta versão, o esquema operacional abaixo adota as faixas da tabela 7 da AHA/ASA e da bula Metalyse 25 mg, com concentração final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 e <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 e <80 kg: 20 mg = 4 mL.\nPeso ≥80 e <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar bolo IV único em aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. Não misturar essa tabela com cálculo linear por kg: são metodologias diferentes; confirmar o esquema aprovado no serviço e a apresentação. Peso ≤50 kg exige avaliação cuidadosa de benefício/risco. A tabela 7 admite, para peso <50 kg precisamente conhecido, dosagem por faixas de 1 kg conforme protocolo do serviço; não atrasar trombólise para obter peso exato. Não usar 0,40 mg/kg nem doses de IAM. Para Metalyse, usar a apresentação de 25 mg destinada a AVC; não adaptar automaticamente apresentações de 40/50 mg. [R1,R6,R7,R10]"
+        },
+        {
+          "es": "La ventana de la guía es hasta 4,5 horas en pacientes elegibles. La ficha europea de Metalyse contempla esa ventana; la ficha norteamericana de TNKase consultada especifica hasta 3 horas. Verificar autorización local y protocolo; no presentar la indicación de una jurisdicción como autorización universal. No extender el tratamiento por cuenta propia en ACV de inicio desconocido. [R1,R6,R7]",
+          "key": "approved_7",
+          "pt": "A janela de guideline é até 4,5 horas em pacientes elegíveis. A bula europeia de Metalyse contempla essa janela; a bula norte-americana de TNKase consultada especifica até 3 horas. Conferir autorização local e protocolo; não apresentar a indicação de uma jurisdição como autorização universal. Não estender tratamento por conta própria em AVC de início desconhecido. [R1,R6,R7]"
+        },
+        {
+          "es": "5. Trombectomía. Derivar inmediatamente ante una oclusión potencialmente tratable, independientemente de la posibilidad de trombólisis. Existe indicación en pacientes seleccionados hasta 24 horas, incluidos determinados núcleos extensos y oclusiones basilares; esto no autoriza tratar toda oclusión de M2 o cualquier paciente con NIHSS ≥6. Si ambos tratamientos están indicados, no demorar uno por el otro. [R1,R4]",
+          "key": "approved_8",
+          "pt": "5. Trombectomia. Encaminhar imediatamente quando houver oclusão potencialmente tratável, independentemente da possibilidade de trombólise. Há indicação em pacientes selecionados até 24 horas, inclusive determinados grandes núcleos e oclusões basilares; isso não autoriza tratar toda oclusão de M2 ou qualquer paciente com NIHSS ≥6. Se ambos os tratamentos forem indicados, não atrasar um pelo outro. [R1,R4]"
+        },
+        {
+          "es": "6. Antiagregación. Después de trombólisis, evitar antiagregantes/anticoagulantes durante las primeras 24 horas y obtener imágenes antes de iniciarlos, salvo decisión especializada en una circunstancia excepcional. Sin trombólisis, tras excluir hemorragia y confirmar deglución segura, AAS 160 mg VO es una opción de carga. Si la vía oral no es segura, definir una vía alternativa con el equipo; no administrar comprimidos por vía oral. Para ACV menor no cardioembólico, NIHSS 0–3, bajo riesgo hemorrágico y sin trombólisis, considerar hasta 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de carga, luego AAS 81 mg VO/día + clopidogrel 75 mg VO/día durante 21 días, seguidos de monoterapia; vía oral solo tras evaluar una deglución segura. No aplicar DAPT a todo ACV ni mantenerla indefinidamente. [R9]",
+          "key": "approved_9",
+          "pt": "6. Antiagregação. Após trombólise, evitar antiagregantes/anticoagulantes nas primeiras 24 horas e obter imagem antes de iniciar, salvo decisão especializada em circunstância excepcional. Sem trombólise, após excluir hemorragia e confirmar deglutição segura, AAS 160 mg VO é uma opção de ataque. Se a via oral não for segura, definir via alternativa com a equipe; não administrar comprimidos por via oral. Para AVC menor não cardioembólico, NIHSS 0–3, baixo risco hemorrágico e sem trombólise, considerar até 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de ataque, depois AAS 81 mg VO/dia + clopidogrel 75 mg VO/dia por 21 dias, seguidos de monoterapia; via oral somente após triagem de deglutição segura. Não aplicar DAPT a todo AVC nem mantê-la indefinidamente. [R9]"
+        },
+        {
+          "es": "7. Monitorización y reevaluación. Monitor cardíaco y evaluaciones frecuentes de PA y estado neurológico en un área capacitada, después de trombólisis: PA y evaluación neurológica cada 15 minutos durante las primeras 2 horas, cada 30 minutos durante las 6 horas siguientes y cada hora hasta completar 24 horas. Intensificar la vigilancia ante PA >180/105 mmHg o deterioro. Reevaluar después de las intervenciones y ante cualquier cambio. Obtener TC/RM de control en 24 horas antes de antitrombóticos; deterioro, cefalea intensa, vómitos o sangrado requieren imágenes urgentes, sin esperar ese plazo. Corregir glucemia <60 mg/dL; tratar hiperglucemia persistente con objetivo habitual 140–180 mg/dL, evitando control intensivo de 80–130 mg/dL e hipoglucemia. Suplementar oxígeno si hay hipoxemia; no de rutina en pacientes normoxémicos. [R1,R4]",
+          "key": "approved_10",
+          "pt": "7. Monitorização e reavaliação. Monitor cardíaco e avaliações frequentes de PA e estado neurológico em área capacitada, após trombólise: PA e avaliação neurológica a cada 15 minutos durante as primeiras 2 horas, a cada 30 minutos nas 6 horas seguintes e a cada hora até completar 24 horas. Intensificar a vigilância se PA >180/105 mmHg ou houver deterioração. Reavaliar após intervenções e a qualquer mudança. Obter TC/RM de controle em 24 horas antes de antitrombóticos; deterioração, cefaleia intensa, vômitos ou sangramento exigem imagem urgente, sem esperar esse prazo. Corrigir glicemia <60 mg/dL; tratar hiperglicemia persistente com alvo usual 140–180 mg/dL, evitando controle intensivo de 80–130 mg/dL e hipoglicemia. Suplementar oxigênio se houver hipoxemia; não de rotina no normoxêmico. [R1,R4]"
+        },
+        {
+          "es": "8. Complicaciones y destino. Sospecha de hemorragia: interrumpir alteplasa si sigue en infusión, activar al equipo especializado, obtener imágenes y estudios hemostáticos e iniciar el protocolo de hemorragia asociada a trombólisis. No repetir tenecteplasa, cuyo bolo ya fue administrado. El angioedema requiere evaluación inmediata de la vía aérea y soporte de emergencia. El deterioro con edema/efecto de masa requiere neurocirugía y cuidados intensivos. Internar en una unidad de ACV; UTI ante inestabilidad o necesidad de soporte intensivo. [R1,R4,R12]",
+          "key": "approved_11",
+          "pt": "8. Complicações e destino. Suspeita de hemorragia: interromper alteplase se ainda em infusão, acionar equipe especializada, obter imagem e estudos hemostáticos e iniciar protocolo de hemorragia associada à trombólise. Não repetir tenecteplase, cujo bolo já foi administrado. Angioedema exige avaliação imediata da via aérea e suporte de emergência. Deterioração com edema/efeito de massa exige neurocirurgia e cuidados intensivos. Internar em unidade de AVC; UTI quando houver instabilidade ou necessidade de suporte intensivo. [R1,R4,R12]"
+        },
+        {
+          "es": "9. Seguridad antes de dieta y alta. Evaluar deglución antes de agua, alimentos o medicamentos orales. Tratar la fiebre, evitar aspiración e iniciar rehabilitación según estabilidad. Antes del alta, establecer etiología/plan de investigación, antitrombótico, prevención, funcionalidad y seguimiento, con información sobre recurrencia y regreso inmediato. [R1,R12]",
+          "key": "approved_12",
+          "pt": "9. Segurança antes de dieta e alta. Triar deglutição antes de água, alimentos ou medicações orais. Tratar febre, evitar aspiração e iniciar reabilitação conforme estabilidade. Antes da alta, estabelecer etiologia/plano de investigação, antitrombótico, prevenção, funcionalidade e seguimento, com orientação sobre recorrência e retorno imediato. [R1,R12]"
         }
       ],
       "label": "authoritative_current_management",
@@ -45367,9 +45482,9 @@
       "managementRuleKey": "m46::avc_isquemico::authoritative_current_management",
       "monitoring": [
         {
-          "es": "Monitorizar estado neurológico, PA, glucemia, temperatura, sangrado y complicaciones de reperfusión.",
-          "key": "neuro_monitor",
-          "pt": "Monitorar estado neurológico, PA, glicemia, temperatura, sangramento e complicações de reperfusão."
+          "es": "7. Monitorización y reevaluación. Monitor cardíaco y evaluaciones frecuentes de PA y estado neurológico en un área capacitada, después de trombólisis: PA y evaluación neurológica cada 15 minutos durante las primeras 2 horas, cada 30 minutos durante las 6 horas siguientes y cada hora hasta completar 24 horas. Intensificar la vigilancia ante PA >180/105 mmHg o deterioro. Reevaluar después de las intervenciones y ante cualquier cambio. Obtener TC/RM de control en 24 horas antes de antitrombóticos; deterioro, cefalea intensa, vómitos o sangrado requieren imágenes urgentes, sin esperar ese plazo. Corregir glucemia <60 mg/dL; tratar hiperglucemia persistente con objetivo habitual 140–180 mg/dL, evitando control intensivo de 80–130 mg/dL e hipoglucemia. Suplementar oxígeno si hay hipoxemia; no de rutina en pacientes normoxémicos. [R1,R4]",
+          "key": "approved_monitor",
+          "pt": "7. Monitorização e reavaliação. Monitor cardíaco e avaliações frequentes de PA e estado neurológico em área capacitada, após trombólise: PA e avaliação neurológica a cada 15 minutos durante as primeiras 2 horas, a cada 30 minutos nas 6 horas seguintes e a cada hora até completar 24 horas. Intensificar a vigilância se PA >180/105 mmHg ou houver deterioração. Reavaliar após intervenções e a qualquer mudança. Obter TC/RM de controle em 24 horas antes de antitrombóticos; deterioração, cefaleia intensa, vômitos ou sangramento exigem imagem urgente, sem esperar esse prazo. Corrigir glicemia <60 mg/dL; tratar hiperglicemia persistente com alvo usual 140–180 mg/dL, evitando controle intensivo de 80–130 mg/dL e hipoglicemia. Suplementar oxigênio se houver hipoxemia; não de rotina no normoxêmico. [R1,R4]"
         }
       ],
       "payload": {
@@ -45377,7 +45492,7 @@
         "classificationDependencies": [
           "AIS_IS_MULTIDIMENSIONAL;_DO_NOT_REQUIRE_SINGLE_CLASSIFICATION_TO_START_TIME_CRITICAL_CARE"
         ],
-        "clinicalReviewDate": "2026-08-31",
+        "clinicalReviewDate": "2026-10-01",
         "clinicalState": {
           "canonicalPathologyKey": "avc_isquemico",
           "key": "authoritative_current_management_active_local_draft",
@@ -45387,62 +45502,88 @@
           },
           "protocolKey": "legacy_protocol::avc_isquemico"
         },
-        "conditionalActions": [
-          {
-            "es": "En inicio desconocido o 4,5–9 h, seleccionar IVT solo en pacientes apropiados mediante criterios de imagen avanzada.",
-            "key": "extended_ivt",
-            "pt": "Em início desconhecido ou 4,5–9 h, selecionar IVT apenas em pacientes apropriados por critérios de imagem avançada.",
-            "when": "unknown_onset_or_4_5_to_9h_with_mismatch"
-          },
-          {
-            "es": "Para déficit no discapacitante dentro de 4,5 h, preferir la estrategia antiplaquetaria dual indicada en lugar de trombólisis cuando corresponda.",
-            "key": "nondisabling_dapt",
-            "pt": "Para déficit não incapacitante dentro de 4,5 h, preferir estratégia antiplquetária dual indicada em vez de trombólise, quando o quadro se enquadrar.",
-            "when": "nondisabling_deficit"
-          }
-        ],
+        "conditionalActions": [],
         "contraindicatedActions": [
           {
-            "es": "No usar argatrobán o eptifibatida como adyuvante rutinario a la trombólisis IV.",
-            "key": "no_adjunct_argatroban_eptifibatide",
-            "pt": "Não usar argatrobana ou eptifibatide como adjuvante de rotina à trombólise IV."
-          },
-          {
-            "es": "No buscar reducción intensiva de PAS <140 mmHg de rutina después de IVT/EVT.",
-            "key": "no_aggressive_sbp_lt140_after_reperfusion",
-            "pt": "Não buscar redução intensiva de PAS <140 mmHg rotineiramente após IVT/EVT."
+            "es": "Errores frecuentes. No interpretar 185/110 o 180/105 mmHg como valores mínimos que impiden reducir la PA cuando está indicado. Son límites utilizados para seguridad de la reperfusión, respetando la perfusión cerebral. No confundir dosis de ACV con dosis de IAM/TEP, fórmulas por kg con rangos de peso, o una recomendación de guía con la autorización regulatoria de cada presentación. No ofrecer vía oral antes de la evaluación de deglución. El alta requiere estabilidad, investigación y un plan de prevención/seguimiento definidos; no es una consecuencia automática de NIHSS bajo. [R1,R5,R6,R7,R12]",
+            "key": "approved_avoid",
+            "pt": "Armadilhas. Não interpretar 185/110 ou 180/105 mmHg como valores mínimos que impedem reduzir PA quando indicada. São limites usados para segurança da reperfusão, respeitando perfusão cerebral. Não confundir doses de AVC com doses de IAM/TEP, fórmulas por kg com faixas de peso, ou recomendação de guideline com autorização regulatória de cada apresentação. Não oferecer via oral antes da triagem de deglutição. Alta exige estabilidade, investigação e plano de prevenção/seguimento definidos; não é consequência automática de NIHSS baixo. [R1,R5,R6,R7,R12]"
           }
         ],
-        "definitiveActions": [
-          {
-            "es": "Realizar EVT en LVO elegible; considerar criterios ampliados, incluidos algunos núcleos grandes, y fuerte indicación en oclusión basilar ≤24 h con NIHSS ≥10.",
-            "key": "evt",
-            "pt": "Realizar EVT em LVO elegível; considerar critérios expandidos, incluindo alguns grandes cores, e forte indicação em oclusão basilar ≤24 h com NIHSS ≥10."
-          }
-        ],
+        "definitiveActions": [],
         "escalationCriteria": [
           {
-            "es": "Deterioro neurológico, edema maligno, hemorragia sintomática o inestabilidad exigen escalamiento neurocrítico inmediato.",
-            "key": "deterioration",
-            "pt": "Deterioração neurológica, edema maligno, hemorragia sintomática ou instabilidade exigem escalonamento neurocrítico imediato."
+            "es": "Poblaciones especiales. Embarazo/puerperio requieren evaluación conjunta de neurología y obstetricia, sin demorar imágenes esenciales; alteplasa y trombectomía pueden considerarse cuando el beneficio justifique los riesgos. La lactancia requiere consultar la información específica del producto, sin inventar un intervalo universal de suspensión. La edad avanzada aislada no debe reemplazar la evaluación individual. La disfunción renal modifica la evaluación de anticoagulantes y del riesgo; la enfermedad hepática con coagulopatía modifica la seguridad. No crear una reducción empírica de dosis trombolítica. Para nicardipina, titular con cautela ante disfunción renal/hepática e insuficiencia cardíaca. Esta guía no contiene prescripción pediátrica. [R1,R5,R6,R8,R11]",
+            "key": "approved_special_populations",
+            "pt": "Populações especiais. Gestação/puerpério requer avaliação conjunta de neurologia e obstetrícia, sem atrasar imagem essencial; alteplase e trombectomia podem ser consideradas quando o benefício justificar os riscos. Lactação exige consulta à informação específica do produto, sem inventar intervalo universal de suspensão. Idade avançada isolada não deve substituir avaliação individual. Disfunção renal modifica avaliação de anticoagulantes e risco; doença hepática com coagulopatia modifica segurança. Não criar redução empírica de dose trombolítica. Para nicardipina, titular com cautela em disfunção renal/hepática e insuficiência cardíaca. Este guia não contém prescrição pediátrica. [R1,R5,R6,R8,R11]"
           }
         ],
-        "guidelineVersion": "AHA_ASA_AIS_2026",
+        "guidelineVersion": "AHA_ASA_AIS_2026_CORRECTED_JULY_2026",
         "initialActions": [
           {
-            "es": "Activar código ACV, establecer hora de inicio/último momento bien y obtener neuroimagen urgente sin retrasos evitables.",
-            "key": "stroke_code",
-            "pt": "Ativar código AVC, estabelecer hora de início/último momento bem e obter neuroimagem urgente sem atrasos evitáveis."
+            "es": "ES — Modo Guardia",
+            "key": "approved_0",
+            "pt": "PT — Modo Plantão"
           },
           {
-            "es": "En déficit incapacitante elegible dentro de 4,5 h, usar alteplasa O tenecteplasa según protocolo 2026, independientemente de un NIHSS bajo aislado.",
-            "key": "ivt",
-            "pt": "Em déficit incapacitante elegível dentro de 4,5 h, usar alteplase OU tenecteplase conforme protocolo 2026, independentemente de NIHSS baixo isolado."
+            "es": "1. Activar código ACV. Registrar inicio/último momento sin síntomas, peso, NIHSS, funcionalidad previa y anticoagulante/última dosis. Evaluar ABC, glucemia, PA, temperatura y oxigenación. Corregir hipoglucemia inmediatamente; el déficit persistente tras la corrección mantiene la investigación de ACV. Obtener hemograma, coagulación, electrolitos y creatinina. Los estudios sin sospecha de alteración relevante no deben demorar la reperfusión. [R1,R3]",
+            "key": "approved_1",
+            "pt": "1. Acionar código AVC. Registrar início/último momento bem, peso, NIHSS, funcionalidade prévia e anticoagulante/última dose. Avaliar ABC, glicemia, PA, temperatura e oxigenação. Corrigir hipoglicemia imediatamente; déficit persistente após correção mantém a investigação de AVC. Colher hemograma, coagulação, eletrólitos e creatinina. Exames sem suspeita de alteração relevante não devem atrasar a reperfusão. [R1,R3]"
           },
           {
-            "es": "Buscar oclusión de gran vaso y trasladar/activar trombectomía endovascular cuando sea elegible.",
-            "key": "lvo",
-            "pt": "Pesquisar oclusão de grande vaso e transferir/acionar trombectomia endovascular quando elegível."
+            "es": "2. Imágenes y decisión en paralelo. TC sin contraste urgente; angio-TC para buscar oclusión y evaluar trombectomía. Contactar al equipo de ACV/neurointervención o telestroke inmediatamente. Antes de la trombólisis, completar la lista institucional actualizada: hemorragia, sangrado activo, coagulopatía, PA no controlada, cirugía/trauma reciente y otras restricciones específicas. El uso reciente de anticoagulante requiere análisis especializado; un INR normal no demuestra ausencia de efecto de un DOAC. No esperar respuesta a la trombólisis para organizar trombectomía/traslado. [R1,R4,R5,R6]",
+            "key": "approved_2",
+            "pt": "2. Imagem e decisão em paralelo. TC sem contraste urgente; angio-TC para pesquisa de oclusão e avaliação de trombectomia. Contatar equipe de AVC/neurointervenção ou telestroke imediatamente. Antes da trombólise, completar checklist institucional atualizado: hemorragia, sangramento ativo, coagulopatia, PA não controlada, cirurgia/trauma recente e outras restrições específicas. Uso recente de anticoagulante exige análise especializada; INR normal não demonstra ausência de efeito de DOAC. Não esperar resposta à trombólise para organizar trombectomia/transferência. [R1,R4,R5,R6]"
+          },
+          {
+            "es": "3. Presión arterial. Antes de trombólisis: PA <185/110 mmHg. Después: mantener <180/105 mmHg durante las primeras 24 horas, evitando el descenso excesivo. No buscar una reducción intensiva de PAS <140 mmHg después de reperfusión. Sin reperfusión, no tratar hipertensión moderada de rutina; PA >220/120 mmHg u otra emergencia orgánica requieren evaluación individual y reducción cautelosa, aproximadamente 15% inicialmente. Corregir hipotensión e hipovolemia. [R1,R3]",
+            "key": "approved_3",
+            "pt": "3. Pressão arterial. Antes de trombólise: PA <185/110 mmHg. Após: manter <180/105 mmHg nas primeiras 24 horas, evitando queda excessiva. Não perseguir redução intensiva de PAS <140 mmHg após reperfusão. Sem reperfusão, não tratar hipertensão moderada de rotina; PA >220/120 mmHg ou outra emergência orgânica exige avaliação individual e redução cautelosa, aproximadamente 15% inicialmente. Corrigir hipotensão e hipovolemia. [R1,R3]"
+          },
+          {
+            "es": "Opción titulable cuando exista indicación y disponibilidad: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h cada 5–15 minutos según respuesta, máximo 15 mg/h. Para la presentación 25 mg/10 mL, diluir con 240 mL de solución compatible, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Utilizar bomba, vigilar PA, frecuencia cardíaca, acceso y volumen. Interrumpir ante hipotensión/taquicardia; contraindicada en estenosis aórtica avanzada. No administrar la ampolla concentrada sin diluir. Otras presentaciones requieren verificación propia. [R8]",
+            "key": "approved_4",
+            "pt": "Opção titulável quando houver indicação e disponibilidade: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h a cada 5–15 minutos conforme resposta, máximo 15 mg/h. Para a apresentação 25 mg/10 mL, diluir com 240 mL de solução compatível, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Usar bomba, vigiar PA, frequência cardíaca, acesso e volume. Interromper se hipotensão/taquicardia; contraindicação em estenose aórtica avançada. Não administrar a ampola concentrada sem diluição. Outras apresentações exigem conferência própria. [R8]"
+          },
+          {
+            "es": "4. Trombólisis — elegir un agente, tras confirmar elegibilidad.\nAlteplasa: 0,9 mg/kg IV, máximo 90 mg; 10% en bolo durante 1 minuto y el 90% restante en infusión durante 60 minutos. Reconstitución a 1 mg/mL según el producto; utilizar bomba y doble verificación de peso, mg, mL y velocidad. [R1,R5]",
+            "key": "approved_5",
+            "pt": "4. Trombólise — escolher um agente, após elegibilidade.\nAlteplase: 0,9 mg/kg IV, máximo 90 mg; 10% em bolo durante 1 minuto e os 90% restantes em infusão por 60 minutos. Reconstituição a 1 mg/mL conforme o produto; utilizar bomba e dupla conferência de peso, mg, mL e velocidade. [R1,R5]"
+          },
+          {
+            "es": "Tenecteplasa: la guía recomienda 0,25 mg/kg, máximo 25 mg. Para esta versión, el esquema operativo siguiente adopta los rangos de la tabla 7 de AHA/ASA y de la ficha de Metalyse 25 mg, con concentración final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 y <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 y <80 kg: 20 mg = 4 mL.\nPeso ≥80 y <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar un bolo IV único en aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. No mezclar esta tabla con un cálculo lineal por kg: son metodologías diferentes; confirmar el esquema aprobado en el servicio y la presentación. Peso ≤50 kg requiere evaluación cuidadosa de beneficio/riesgo. La tabla 7 admite, para peso <50 kg conocido con precisión, dosificación por rangos de 1 kg según el protocolo del servicio; no demorar la trombólisis para obtener el peso exacto. No utilizar 0,40 mg/kg ni dosis de IAM. Para Metalyse, utilizar la presentación de 25 mg destinada a ACV; no adaptar automáticamente presentaciones de 40/50 mg. [R1,R6,R7,R10]",
+            "key": "approved_6",
+            "pt": "Tenecteplase: a guideline recomenda 0,25 mg/kg, máximo 25 mg. Para esta versão, o esquema operacional abaixo adota as faixas da tabela 7 da AHA/ASA e da bula Metalyse 25 mg, com concentração final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 e <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 e <80 kg: 20 mg = 4 mL.\nPeso ≥80 e <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar bolo IV único em aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. Não misturar essa tabela com cálculo linear por kg: são metodologias diferentes; confirmar o esquema aprovado no serviço e a apresentação. Peso ≤50 kg exige avaliação cuidadosa de benefício/risco. A tabela 7 admite, para peso <50 kg precisamente conhecido, dosagem por faixas de 1 kg conforme protocolo do serviço; não atrasar trombólise para obter peso exato. Não usar 0,40 mg/kg nem doses de IAM. Para Metalyse, usar a apresentação de 25 mg destinada a AVC; não adaptar automaticamente apresentações de 40/50 mg. [R1,R6,R7,R10]"
+          },
+          {
+            "es": "La ventana de la guía es hasta 4,5 horas en pacientes elegibles. La ficha europea de Metalyse contempla esa ventana; la ficha norteamericana de TNKase consultada especifica hasta 3 horas. Verificar autorización local y protocolo; no presentar la indicación de una jurisdicción como autorización universal. No extender el tratamiento por cuenta propia en ACV de inicio desconocido. [R1,R6,R7]",
+            "key": "approved_7",
+            "pt": "A janela de guideline é até 4,5 horas em pacientes elegíveis. A bula europeia de Metalyse contempla essa janela; a bula norte-americana de TNKase consultada especifica até 3 horas. Conferir autorização local e protocolo; não apresentar a indicação de uma jurisdição como autorização universal. Não estender tratamento por conta própria em AVC de início desconhecido. [R1,R6,R7]"
+          },
+          {
+            "es": "5. Trombectomía. Derivar inmediatamente ante una oclusión potencialmente tratable, independientemente de la posibilidad de trombólisis. Existe indicación en pacientes seleccionados hasta 24 horas, incluidos determinados núcleos extensos y oclusiones basilares; esto no autoriza tratar toda oclusión de M2 o cualquier paciente con NIHSS ≥6. Si ambos tratamientos están indicados, no demorar uno por el otro. [R1,R4]",
+            "key": "approved_8",
+            "pt": "5. Trombectomia. Encaminhar imediatamente quando houver oclusão potencialmente tratável, independentemente da possibilidade de trombólise. Há indicação em pacientes selecionados até 24 horas, inclusive determinados grandes núcleos e oclusões basilares; isso não autoriza tratar toda oclusão de M2 ou qualquer paciente com NIHSS ≥6. Se ambos os tratamentos forem indicados, não atrasar um pelo outro. [R1,R4]"
+          },
+          {
+            "es": "6. Antiagregación. Después de trombólisis, evitar antiagregantes/anticoagulantes durante las primeras 24 horas y obtener imágenes antes de iniciarlos, salvo decisión especializada en una circunstancia excepcional. Sin trombólisis, tras excluir hemorragia y confirmar deglución segura, AAS 160 mg VO es una opción de carga. Si la vía oral no es segura, definir una vía alternativa con el equipo; no administrar comprimidos por vía oral. Para ACV menor no cardioembólico, NIHSS 0–3, bajo riesgo hemorrágico y sin trombólisis, considerar hasta 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de carga, luego AAS 81 mg VO/día + clopidogrel 75 mg VO/día durante 21 días, seguidos de monoterapia; vía oral solo tras evaluar una deglución segura. No aplicar DAPT a todo ACV ni mantenerla indefinidamente. [R9]",
+            "key": "approved_9",
+            "pt": "6. Antiagregação. Após trombólise, evitar antiagregantes/anticoagulantes nas primeiras 24 horas e obter imagem antes de iniciar, salvo decisão especializada em circunstância excepcional. Sem trombólise, após excluir hemorragia e confirmar deglutição segura, AAS 160 mg VO é uma opção de ataque. Se a via oral não for segura, definir via alternativa com a equipe; não administrar comprimidos por via oral. Para AVC menor não cardioembólico, NIHSS 0–3, baixo risco hemorrágico e sem trombólise, considerar até 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de ataque, depois AAS 81 mg VO/dia + clopidogrel 75 mg VO/dia por 21 dias, seguidos de monoterapia; via oral somente após triagem de deglutição segura. Não aplicar DAPT a todo AVC nem mantê-la indefinidamente. [R9]"
+          },
+          {
+            "es": "7. Monitorización y reevaluación. Monitor cardíaco y evaluaciones frecuentes de PA y estado neurológico en un área capacitada, después de trombólisis: PA y evaluación neurológica cada 15 minutos durante las primeras 2 horas, cada 30 minutos durante las 6 horas siguientes y cada hora hasta completar 24 horas. Intensificar la vigilancia ante PA >180/105 mmHg o deterioro. Reevaluar después de las intervenciones y ante cualquier cambio. Obtener TC/RM de control en 24 horas antes de antitrombóticos; deterioro, cefalea intensa, vómitos o sangrado requieren imágenes urgentes, sin esperar ese plazo. Corregir glucemia <60 mg/dL; tratar hiperglucemia persistente con objetivo habitual 140–180 mg/dL, evitando control intensivo de 80–130 mg/dL e hipoglucemia. Suplementar oxígeno si hay hipoxemia; no de rutina en pacientes normoxémicos. [R1,R4]",
+            "key": "approved_10",
+            "pt": "7. Monitorização e reavaliação. Monitor cardíaco e avaliações frequentes de PA e estado neurológico em área capacitada, após trombólise: PA e avaliação neurológica a cada 15 minutos durante as primeiras 2 horas, a cada 30 minutos nas 6 horas seguintes e a cada hora até completar 24 horas. Intensificar a vigilância se PA >180/105 mmHg ou houver deterioração. Reavaliar após intervenções e a qualquer mudança. Obter TC/RM de controle em 24 horas antes de antitrombóticos; deterioração, cefaleia intensa, vômitos ou sangramento exigem imagem urgente, sem esperar esse prazo. Corrigir glicemia <60 mg/dL; tratar hiperglicemia persistente com alvo usual 140–180 mg/dL, evitando controle intensivo de 80–130 mg/dL e hipoglicemia. Suplementar oxigênio se houver hipoxemia; não de rotina no normoxêmico. [R1,R4]"
+          },
+          {
+            "es": "8. Complicaciones y destino. Sospecha de hemorragia: interrumpir alteplasa si sigue en infusión, activar al equipo especializado, obtener imágenes y estudios hemostáticos e iniciar el protocolo de hemorragia asociada a trombólisis. No repetir tenecteplasa, cuyo bolo ya fue administrado. El angioedema requiere evaluación inmediata de la vía aérea y soporte de emergencia. El deterioro con edema/efecto de masa requiere neurocirugía y cuidados intensivos. Internar en una unidad de ACV; UTI ante inestabilidad o necesidad de soporte intensivo. [R1,R4,R12]",
+            "key": "approved_11",
+            "pt": "8. Complicações e destino. Suspeita de hemorragia: interromper alteplase se ainda em infusão, acionar equipe especializada, obter imagem e estudos hemostáticos e iniciar protocolo de hemorragia associada à trombólise. Não repetir tenecteplase, cujo bolo já foi administrado. Angioedema exige avaliação imediata da via aérea e suporte de emergência. Deterioração com edema/efeito de massa exige neurocirurgia e cuidados intensivos. Internar em unidade de AVC; UTI quando houver instabilidade ou necessidade de suporte intensivo. [R1,R4,R12]"
+          },
+          {
+            "es": "9. Seguridad antes de dieta y alta. Evaluar deglución antes de agua, alimentos o medicamentos orales. Tratar la fiebre, evitar aspiración e iniciar rehabilitación según estabilidad. Antes del alta, establecer etiología/plan de investigación, antitrombótico, prevención, funcionalidad y seguimiento, con información sobre recurrencia y regreso inmediato. [R1,R12]",
+            "key": "approved_12",
+            "pt": "9. Segurança antes de dieta e alta. Triar deglutição antes de água, alimentos ou medicações orais. Tratar febre, evitar aspiração e iniciar reabilitação conforme estabilidade. Antes da alta, estabelecer etiologia/plano de investigação, antitrombótico, prevenção, funcionalidade e seguimento, com orientação sobre recorrência e retorno imediato. [R1,R12]"
           }
         ],
         "legacyNavigationReference": {
@@ -45453,26 +45594,102 @@
         },
         "monitoring": [
           {
-            "es": "Monitorizar estado neurológico, PA, glucemia, temperatura, sangrado y complicaciones de reperfusión.",
-            "key": "neuro_monitor",
-            "pt": "Monitorar estado neurológico, PA, glicemia, temperatura, sangramento e complicações de reperfusão."
+            "es": "7. Monitorización y reevaluación. Monitor cardíaco y evaluaciones frecuentes de PA y estado neurológico en un área capacitada, después de trombólisis: PA y evaluación neurológica cada 15 minutos durante las primeras 2 horas, cada 30 minutos durante las 6 horas siguientes y cada hora hasta completar 24 horas. Intensificar la vigilancia ante PA >180/105 mmHg o deterioro. Reevaluar después de las intervenciones y ante cualquier cambio. Obtener TC/RM de control en 24 horas antes de antitrombóticos; deterioro, cefalea intensa, vómitos o sangrado requieren imágenes urgentes, sin esperar ese plazo. Corregir glucemia <60 mg/dL; tratar hiperglucemia persistente con objetivo habitual 140–180 mg/dL, evitando control intensivo de 80–130 mg/dL e hipoglucemia. Suplementar oxígeno si hay hipoxemia; no de rutina en pacientes normoxémicos. [R1,R4]",
+            "key": "approved_monitor",
+            "pt": "7. Monitorização e reavaliação. Monitor cardíaco e avaliações frequentes de PA e estado neurológico em área capacitada, após trombólise: PA e avaliação neurológica a cada 15 minutos durante as primeiras 2 horas, a cada 30 minutos nas 6 horas seguintes e a cada hora até completar 24 horas. Intensificar a vigilância se PA >180/105 mmHg ou houver deterioração. Reavaliar após intervenções e a qualquer mudança. Obter TC/RM de controle em 24 horas antes de antitrombóticos; deterioração, cefaleia intensa, vômitos ou sangramento exigem imagem urgente, sem esperar esse prazo. Corrigir glicemia <60 mg/dL; tratar hiperglicemia persistente com alvo usual 140–180 mg/dL, evitando controle intensivo de 80–130 mg/dL e hipoglicemia. Suplementar oxigênio se houver hipoxemia; não de rotina no normoxêmico. [R1,R4]"
           }
         ],
         "provenance": [
           {
             "automaticPromotion": false,
             "managementAuthorityValidated": true,
-            "title": "2026 AHA/ASA Acute Ischemic Stroke Guideline",
+            "title": "AHA/ASA — Early Management of Acute Ischemic Stroke, 2026; guideline final, versão online corrigida consultada no navegador.",
             "type": "guideline",
-            "url": "https://professional.heart.org/en/science-news/2026-guideline-for-the-early-management-of-patients-with-acute-ischemic-stroke/top-things-to-know",
-            "year": 2026
+            "url": "https://www.ahajournals.org/doi/10.1161/STR.0000000000000513"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "AHA/ASA — Errata formal, publicada em 27/07/2026; texto integral verificado.",
+            "type": "guideline",
+            "url": "https://www.ahajournals.org/doi/10.1161/STR.0000000000000530"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Canadian Stroke Best Practices — Emergency Department Evaluation and Management, 2022; apoio ao reconhecimento, exames e suporte. Metas pós-trombólise seguem AHA/ASA 2026.",
+            "type": "guideline",
+            "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/emergency-department-evaluation-and-management"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Canadian Stroke Best Practices — Acute Ischemic Stroke Treatment, 2022 e atualização endovascular final de 2025.",
+            "type": "guideline",
+            "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-ischemic-stroke-treatment"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "DailyMed/Genentech — Activase; bula consultada para dose, reconstituição e precauções, sem equiparar sua janela regulatória à guideline.",
+            "type": "product_information",
+            "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c669f77c-fa48-478b-a14b-80b20a0139c2"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "EMA — Metalyse; informação do produto atual, seção específica de AVC/25 mg; faixas de peso, preparo, velocidade e populações.",
+            "type": "product_information",
+            "url": "https://www.ema.europa.eu/en/documents/product-information/metalyse-epar-product-information_en.pdf"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "FDA — TNKase; bula de 2025 para AVC, faixas de peso, máximo 25 mg, velocidade e janela regulatória.",
+            "type": "product_information",
+            "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/103909s5197lbl.pdf"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "DailyMed — Nicardipine hydrochloride injection; revisão 11/2025; dose, diluição e segurança.",
+            "type": "product_information",
+            "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Canadian Stroke Best Practices — Acute Antithrombotic Therapy, 2022; esquemas de AAS/DAPT e restrição pós-trombólise.",
+            "type": "guideline",
+            "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-antithrombotic-therapy"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "ESO — Expedited recommendation on tenecteplase, 2023; recomendação formal, dose 0,25 mg/kg e contraindicação de usar 0,40 mg/kg no cenário estudado.",
+            "type": "guideline",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10069183/"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Canadian Stroke Best Practices — Acute Stroke Management during Pregnancy, 2018; consenso específico ainda disponibilizado oficialmente, evidência limitada.",
+            "type": "guideline",
+            "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management-during-pregnancy"
+          },
+          {
+            "automaticPromotion": false,
+            "managementAuthorityValidated": true,
+            "title": "Canadian Stroke Best Practices — Acute Stroke Unit Care, 2022; internação, avaliação multidisciplinar, disfagia e planejamento.",
+            "type": "guideline",
+            "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-stroke-unit-care"
           }
         ],
         "reassessment": [
           {
-            "es": "Reevaluar elegibilidad para reperfusión/EVT según imagen, evolución y tiempo; repetir imagen si hay deterioro.",
-            "key": "reassess",
-            "pt": "Reavaliar elegibilidade de reperfusão/EVT conforme imagem, evolução e tempo; repetir imagem se deterioração."
+            "es": "8. Complicaciones y destino. Sospecha de hemorragia: interrumpir alteplasa si sigue en infusión, activar al equipo especializado, obtener imágenes y estudios hemostáticos e iniciar el protocolo de hemorragia asociada a trombólisis. No repetir tenecteplasa, cuyo bolo ya fue administrado. El angioedema requiere evaluación inmediata de la vía aérea y soporte de emergencia. El deterioro con edema/efecto de masa requiere neurocirugía y cuidados intensivos. Internar en una unidad de ACV; UTI ante inestabilidad o necesidad de soporte intensivo. [R1,R4,R12]",
+            "key": "approved_reassess",
+            "pt": "8. Complicações e destino. Suspeita de hemorragia: interromper alteplase se ainda em infusão, acionar equipe especializada, obter imagem e estudos hemostáticos e iniciar protocolo de hemorragia associada à trombólise. Não repetir tenecteplase, cujo bolo já foi administrado. Angioedema exige avaliação imediata da via aérea e suporte de emergência. Deterioração com edema/efeito de massa exige neurocirurgia e cuidados intensivos. Internar em unidade de AVC; UTI quando houver instabilidade ou necessidade de suporte intensivo. [R1,R4,R12]"
           }
         ],
         "requiredFacts": [
@@ -45497,18 +45714,94 @@
         {
           "automaticPromotion": false,
           "managementAuthorityValidated": true,
-          "title": "2026 AHA/ASA Acute Ischemic Stroke Guideline",
+          "title": "AHA/ASA — Early Management of Acute Ischemic Stroke, 2026; guideline final, versão online corrigida consultada no navegador.",
           "type": "guideline",
-          "url": "https://professional.heart.org/en/science-news/2026-guideline-for-the-early-management-of-patients-with-acute-ischemic-stroke/top-things-to-know",
-          "year": 2026
+          "url": "https://www.ahajournals.org/doi/10.1161/STR.0000000000000513"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "AHA/ASA — Errata formal, publicada em 27/07/2026; texto integral verificado.",
+          "type": "guideline",
+          "url": "https://www.ahajournals.org/doi/10.1161/STR.0000000000000530"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Canadian Stroke Best Practices — Emergency Department Evaluation and Management, 2022; apoio ao reconhecimento, exames e suporte. Metas pós-trombólise seguem AHA/ASA 2026.",
+          "type": "guideline",
+          "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/emergency-department-evaluation-and-management"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Canadian Stroke Best Practices — Acute Ischemic Stroke Treatment, 2022 e atualização endovascular final de 2025.",
+          "type": "guideline",
+          "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-ischemic-stroke-treatment"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "DailyMed/Genentech — Activase; bula consultada para dose, reconstituição e precauções, sem equiparar sua janela regulatória à guideline.",
+          "type": "product_information",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c669f77c-fa48-478b-a14b-80b20a0139c2"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "EMA — Metalyse; informação do produto atual, seção específica de AVC/25 mg; faixas de peso, preparo, velocidade e populações.",
+          "type": "product_information",
+          "url": "https://www.ema.europa.eu/en/documents/product-information/metalyse-epar-product-information_en.pdf"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "FDA — TNKase; bula de 2025 para AVC, faixas de peso, máximo 25 mg, velocidade e janela regulatória.",
+          "type": "product_information",
+          "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/103909s5197lbl.pdf"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "DailyMed — Nicardipine hydrochloride injection; revisão 11/2025; dose, diluição e segurança.",
+          "type": "product_information",
+          "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Canadian Stroke Best Practices — Acute Antithrombotic Therapy, 2022; esquemas de AAS/DAPT e restrição pós-trombólise.",
+          "type": "guideline",
+          "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-antithrombotic-therapy"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "ESO — Expedited recommendation on tenecteplase, 2023; recomendação formal, dose 0,25 mg/kg e contraindicação de usar 0,40 mg/kg no cenário estudado.",
+          "type": "guideline",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10069183/"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Canadian Stroke Best Practices — Acute Stroke Management during Pregnancy, 2018; consenso específico ainda disponibilizado oficialmente, evidência limitada.",
+          "type": "guideline",
+          "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management-during-pregnancy"
+        },
+        {
+          "automaticPromotion": false,
+          "managementAuthorityValidated": true,
+          "title": "Canadian Stroke Best Practices — Acute Stroke Unit Care, 2022; internação, avaliação multidisciplinar, disfagia e planejamento.",
+          "type": "guideline",
+          "url": "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-stroke-unit-care"
         }
       ],
       "provenancePolicy": "AUTHORITATIVE_CURRENT_OR_FAIL_CLOSED",
       "reassessment": [
         {
-          "es": "Reevaluar elegibilidad para reperfusión/EVT según imagen, evolución y tiempo; repetir imagen si hay deterioro.",
-          "key": "reassess",
-          "pt": "Reavaliar elegibilidade de reperfusão/EVT conforme imagem, evolução e tempo; repetir imagem se deterioração."
+          "es": "8. Complicaciones y destino. Sospecha de hemorragia: interrumpir alteplasa si sigue en infusión, activar al equipo especializado, obtener imágenes y estudios hemostáticos e iniciar el protocolo de hemorragia asociada a trombólisis. No repetir tenecteplasa, cuyo bolo ya fue administrado. El angioedema requiere evaluación inmediata de la vía aérea y soporte de emergencia. El deterioro con edema/efecto de masa requiere neurocirugía y cuidados intensivos. Internar en una unidad de ACV; UTI ante inestabilidad o necesidad de soporte intensivo. [R1,R4,R12]",
+          "key": "approved_reassess",
+          "pt": "8. Complicações e destino. Suspeita de hemorragia: interromper alteplase se ainda em infusão, acionar equipe especializada, obter imagem e estudos hemostáticos e iniciar protocolo de hemorragia associada à trombólise. Não repetir tenecteplase, cujo bolo já foi administrado. Angioedema exige avaliação imediata da via aérea e suporte de emergência. Deterioração com edema/efeito de massa exige neurocirurgia e cuidados intensivos. Internar em unidade de AVC; UTI quando houver instabilidade ou necessidade de suporte intensivo. [R1,R4,R12]"
         }
       ],
       "requiredFacts": [
@@ -45550,7 +45843,7 @@
         "sourceBlockSha256": "3698eb48ee03ed37cbe643a97886920dd2968e17d05cee2a0de570826e88271d",
         "superbuild46Authoring": true
       },
-      "version": "2026.08.31-m46.0",
+      "version": "JIT-2026-10-01-v1.0",
       "visibleCutoverEligible": false
     },
     {
@@ -101277,6 +101570,7 @@
       "version": "abc86260cc6f"
     },
     {
+      "approvedClinicalPayloadSha256": "1d837b287316d9160010b96bb91e09e3937273fb3632157bcf41af2a0a0ceabd",
       "canonicalPathologyKey": "avc_isquemico",
       "enabled": true,
       "legacyCompatibility": {
@@ -101290,31 +101584,41 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "1. CÓDIGO ACV: TC cráneo SIN CONTRASTE en <25 min de llegada",
-              "2. Glucemia capilar inmediata — tratar hipo/hiperglucemia antes de alteplase",
-              "3. NIHSS; monitorizar ECG, PA, SpO2 (O2 solo si SpO2 <94%)",
-              "4. Alteplase IV 0,9 mg/kg (máx. 90 mg): 10% en bolo 1 min + 90% en 60 min — elegible ≤4,5 h",
-              "5. PA para alteplase: reducir solo si >185/110 — Labetalol 10–20 mg IV o Nicardipina 5 mg/h",
-              "6. Trombectomía mecánica: NIHSS ≥6 + oclusión gran vaso + ventana ≤24 h",
-              "7. No dar AAS/anticoagulación en primeras 24 h post-alteplase",
-              "8. Sin elegibilidad para trombólisis: AAS 300 mg VO + prevención secundaria"
+              "ES — Modo Guardia",
+              "1. Activar código ACV. Registrar inicio/último momento sin síntomas, peso, NIHSS, funcionalidad previa y anticoagulante/última dosis. Evaluar ABC, glucemia, PA, temperatura y oxigenación. Corregir hipoglucemia inmediatamente; el déficit persistente tras la corrección mantiene la investigación de ACV. Obtener hemograma, coagulación, electrolitos y creatinina. Los estudios sin sospecha de alteración relevante no deben demorar la reperfusión. [R1,R3]",
+              "2. Imágenes y decisión en paralelo. TC sin contraste urgente; angio-TC para buscar oclusión y evaluar trombectomía. Contactar al equipo de ACV/neurointervención o telestroke inmediatamente. Antes de la trombólisis, completar la lista institucional actualizada: hemorragia, sangrado activo, coagulopatía, PA no controlada, cirugía/trauma reciente y otras restricciones específicas. El uso reciente de anticoagulante requiere análisis especializado; un INR normal no demuestra ausencia de efecto de un DOAC. No esperar respuesta a la trombólisis para organizar trombectomía/traslado. [R1,R4,R5,R6]",
+              "3. Presión arterial. Antes de trombólisis: PA <185/110 mmHg. Después: mantener <180/105 mmHg durante las primeras 24 horas, evitando el descenso excesivo. No buscar una reducción intensiva de PAS <140 mmHg después de reperfusión. Sin reperfusión, no tratar hipertensión moderada de rutina; PA >220/120 mmHg u otra emergencia orgánica requieren evaluación individual y reducción cautelosa, aproximadamente 15% inicialmente. Corregir hipotensión e hipovolemia. [R1,R3]",
+              "Opción titulable cuando exista indicación y disponibilidad: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h cada 5–15 minutos según respuesta, máximo 15 mg/h. Para la presentación 25 mg/10 mL, diluir con 240 mL de solución compatible, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Utilizar bomba, vigilar PA, frecuencia cardíaca, acceso y volumen. Interrumpir ante hipotensión/taquicardia; contraindicada en estenosis aórtica avanzada. No administrar la ampolla concentrada sin diluir. Otras presentaciones requieren verificación propia. [R8]",
+              "4. Trombólisis — elegir un agente, tras confirmar elegibilidad.\nAlteplasa: 0,9 mg/kg IV, máximo 90 mg; 10% en bolo durante 1 minuto y el 90% restante en infusión durante 60 minutos. Reconstitución a 1 mg/mL según el producto; utilizar bomba y doble verificación de peso, mg, mL y velocidad. [R1,R5]",
+              "Tenecteplasa: la guía recomienda 0,25 mg/kg, máximo 25 mg. Para esta versión, el esquema operativo siguiente adopta los rangos de la tabla 7 de AHA/ASA y de la ficha de Metalyse 25 mg, con concentración final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 y <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 y <80 kg: 20 mg = 4 mL.\nPeso ≥80 y <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar un bolo IV único en aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. No mezclar esta tabla con un cálculo lineal por kg: son metodologías diferentes; confirmar el esquema aprobado en el servicio y la presentación. Peso ≤50 kg requiere evaluación cuidadosa de beneficio/riesgo. La tabla 7 admite, para peso <50 kg conocido con precisión, dosificación por rangos de 1 kg según el protocolo del servicio; no demorar la trombólisis para obtener el peso exacto. No utilizar 0,40 mg/kg ni dosis de IAM. Para Metalyse, utilizar la presentación de 25 mg destinada a ACV; no adaptar automáticamente presentaciones de 40/50 mg. [R1,R6,R7,R10]",
+              "La ventana de la guía es hasta 4,5 horas en pacientes elegibles. La ficha europea de Metalyse contempla esa ventana; la ficha norteamericana de TNKase consultada especifica hasta 3 horas. Verificar autorización local y protocolo; no presentar la indicación de una jurisdicción como autorización universal. No extender el tratamiento por cuenta propia en ACV de inicio desconocido. [R1,R6,R7]",
+              "5. Trombectomía. Derivar inmediatamente ante una oclusión potencialmente tratable, independientemente de la posibilidad de trombólisis. Existe indicación en pacientes seleccionados hasta 24 horas, incluidos determinados núcleos extensos y oclusiones basilares; esto no autoriza tratar toda oclusión de M2 o cualquier paciente con NIHSS ≥6. Si ambos tratamientos están indicados, no demorar uno por el otro. [R1,R4]",
+              "6. Antiagregación. Después de trombólisis, evitar antiagregantes/anticoagulantes durante las primeras 24 horas y obtener imágenes antes de iniciarlos, salvo decisión especializada en una circunstancia excepcional. Sin trombólisis, tras excluir hemorragia y confirmar deglución segura, AAS 160 mg VO es una opción de carga. Si la vía oral no es segura, definir una vía alternativa con el equipo; no administrar comprimidos por vía oral. Para ACV menor no cardioembólico, NIHSS 0–3, bajo riesgo hemorrágico y sin trombólisis, considerar hasta 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de carga, luego AAS 81 mg VO/día + clopidogrel 75 mg VO/día durante 21 días, seguidos de monoterapia; vía oral solo tras evaluar una deglución segura. No aplicar DAPT a todo ACV ni mantenerla indefinidamente. [R9]",
+              "7. Monitorización y reevaluación. Monitor cardíaco y evaluaciones frecuentes de PA y estado neurológico en un área capacitada, después de trombólisis: PA y evaluación neurológica cada 15 minutos durante las primeras 2 horas, cada 30 minutos durante las 6 horas siguientes y cada hora hasta completar 24 horas. Intensificar la vigilancia ante PA >180/105 mmHg o deterioro. Reevaluar después de las intervenciones y ante cualquier cambio. Obtener TC/RM de control en 24 horas antes de antitrombóticos; deterioro, cefalea intensa, vómitos o sangrado requieren imágenes urgentes, sin esperar ese plazo. Corregir glucemia <60 mg/dL; tratar hiperglucemia persistente con objetivo habitual 140–180 mg/dL, evitando control intensivo de 80–130 mg/dL e hipoglucemia. Suplementar oxígeno si hay hipoxemia; no de rutina en pacientes normoxémicos. [R1,R4]",
+              "8. Complicaciones y destino. Sospecha de hemorragia: interrumpir alteplasa si sigue en infusión, activar al equipo especializado, obtener imágenes y estudios hemostáticos e iniciar el protocolo de hemorragia asociada a trombólisis. No repetir tenecteplasa, cuyo bolo ya fue administrado. El angioedema requiere evaluación inmediata de la vía aérea y soporte de emergencia. El deterioro con edema/efecto de masa requiere neurocirugía y cuidados intensivos. Internar en una unidad de ACV; UTI ante inestabilidad o necesidad de soporte intensivo. [R1,R4,R12]",
+              "9. Seguridad antes de dieta y alta. Evaluar deglución antes de agua, alimentos o medicamentos orales. Tratar la fiebre, evitar aspiración e iniciar rehabilitación según estabilidad. Antes del alta, establecer etiología/plan de investigación, antitrombótico, prevención, funcionalidad y seguimiento, con información sobre recurrencia y regreso inmediato. [R1,R12]"
             ],
             "pt": [
-              "1. CÓDIGO AVC: TC crânio SEM CONTRASTE em <25 min da chegada",
-              "2. Glicemia capilar imediata — tratar hipo/hiperglicemia grave antes de alteplase",
-              "3. NIHSS à beira do leito; monitorar ECG, PA, SpO2 (O2 apenas se SpO2 <94%)",
-              "4. Alteplase IV 0,9 mg/kg (máx. 90 mg): 10% em bolo 1 min + 90% em 60 min — elegível ≤4,5h",
-              "5. PA para alteplase: reduzir apenas se >185/110 — Labetalol 10–20 mg IV ou Nicardipina 5 mg/h",
-              "6. Trombectomia mecânica: NIHSS ≥6 + oclusão de grande vaso + janela ≤24h (com imagem favorável)",
-              "7. Não dar AAS/anticoagulação nas primeiras 24h pós-alteplase",
-              "8. Sem elegibilidade para trombólise: AAS 300 mg VO (dose de ataque) + prevenção secundária"
+              "PT — Modo Plantão",
+              "1. Acionar código AVC. Registrar início/último momento bem, peso, NIHSS, funcionalidade prévia e anticoagulante/última dose. Avaliar ABC, glicemia, PA, temperatura e oxigenação. Corrigir hipoglicemia imediatamente; déficit persistente após correção mantém a investigação de AVC. Colher hemograma, coagulação, eletrólitos e creatinina. Exames sem suspeita de alteração relevante não devem atrasar a reperfusão. [R1,R3]",
+              "2. Imagem e decisão em paralelo. TC sem contraste urgente; angio-TC para pesquisa de oclusão e avaliação de trombectomia. Contatar equipe de AVC/neurointervenção ou telestroke imediatamente. Antes da trombólise, completar checklist institucional atualizado: hemorragia, sangramento ativo, coagulopatia, PA não controlada, cirurgia/trauma recente e outras restrições específicas. Uso recente de anticoagulante exige análise especializada; INR normal não demonstra ausência de efeito de DOAC. Não esperar resposta à trombólise para organizar trombectomia/transferência. [R1,R4,R5,R6]",
+              "3. Pressão arterial. Antes de trombólise: PA <185/110 mmHg. Após: manter <180/105 mmHg nas primeiras 24 horas, evitando queda excessiva. Não perseguir redução intensiva de PAS <140 mmHg após reperfusão. Sem reperfusão, não tratar hipertensão moderada de rotina; PA >220/120 mmHg ou outra emergência orgânica exige avaliação individual e redução cautelosa, aproximadamente 15% inicialmente. Corrigir hipotensão e hipovolemia. [R1,R3]",
+              "Opção titulável quando houver indicação e disponibilidade: nicardipina IV, iniciar 5 mg/h; aumentar 2,5 mg/h a cada 5–15 minutos conforme resposta, máximo 15 mg/h. Para a apresentação 25 mg/10 mL, diluir com 240 mL de solução compatível, como NaCl 0,9%, formando 250 mL a 0,1 mg/mL; 5 mg/h = 50 mL/h. Usar bomba, vigiar PA, frequência cardíaca, acesso e volume. Interromper se hipotensão/taquicardia; contraindicação em estenose aórtica avançada. Não administrar a ampola concentrada sem diluição. Outras apresentações exigem conferência própria. [R8]",
+              "4. Trombólise — escolher um agente, após elegibilidade.\nAlteplase: 0,9 mg/kg IV, máximo 90 mg; 10% em bolo durante 1 minuto e os 90% restantes em infusão por 60 minutos. Reconstituição a 1 mg/mL conforme o produto; utilizar bomba e dupla conferência de peso, mg, mL e velocidade. [R1,R5]",
+              "Tenecteplase: a guideline recomenda 0,25 mg/kg, máximo 25 mg. Para esta versão, o esquema operacional abaixo adota as faixas da tabela 7 da AHA/ASA e da bula Metalyse 25 mg, com concentração final 5 mg/mL:\nPeso <60 kg: 15 mg = 3 mL.\nPeso ≥60 e <70 kg: 17,5 mg = 3,5 mL.\nPeso ≥70 e <80 kg: 20 mg = 4 mL.\nPeso ≥80 e <90 kg: 22,5 mg = 4,5 mL.\nPeso ≥90 kg: 25 mg = 5 mL.\nAdministrar bolo IV único em aproximadamente 5–10 segundos para Metalyse; TNKase especifica 5 segundos. Não misturar essa tabela com cálculo linear por kg: são metodologias diferentes; confirmar o esquema aprovado no serviço e a apresentação. Peso ≤50 kg exige avaliação cuidadosa de benefício/risco. A tabela 7 admite, para peso <50 kg precisamente conhecido, dosagem por faixas de 1 kg conforme protocolo do serviço; não atrasar trombólise para obter peso exato. Não usar 0,40 mg/kg nem doses de IAM. Para Metalyse, usar a apresentação de 25 mg destinada a AVC; não adaptar automaticamente apresentações de 40/50 mg. [R1,R6,R7,R10]",
+              "A janela de guideline é até 4,5 horas em pacientes elegíveis. A bula europeia de Metalyse contempla essa janela; a bula norte-americana de TNKase consultada especifica até 3 horas. Conferir autorização local e protocolo; não apresentar a indicação de uma jurisdição como autorização universal. Não estender tratamento por conta própria em AVC de início desconhecido. [R1,R6,R7]",
+              "5. Trombectomia. Encaminhar imediatamente quando houver oclusão potencialmente tratável, independentemente da possibilidade de trombólise. Há indicação em pacientes selecionados até 24 horas, inclusive determinados grandes núcleos e oclusões basilares; isso não autoriza tratar toda oclusão de M2 ou qualquer paciente com NIHSS ≥6. Se ambos os tratamentos forem indicados, não atrasar um pelo outro. [R1,R4]",
+              "6. Antiagregação. Após trombólise, evitar antiagregantes/anticoagulantes nas primeiras 24 horas e obter imagem antes de iniciar, salvo decisão especializada em circunstância excepcional. Sem trombólise, após excluir hemorragia e confirmar deglutição segura, AAS 160 mg VO é uma opção de ataque. Se a via oral não for segura, definir via alternativa com a equipe; não administrar comprimidos por via oral. Para AVC menor não cardioembólico, NIHSS 0–3, baixo risco hemorrágico e sem trombólise, considerar até 24 horas: AAS 162 mg VO + clopidogrel 300 mg VO de ataque, depois AAS 81 mg VO/dia + clopidogrel 75 mg VO/dia por 21 dias, seguidos de monoterapia; via oral somente após triagem de deglutição segura. Não aplicar DAPT a todo AVC nem mantê-la indefinidamente. [R9]",
+              "7. Monitorização e reavaliação. Monitor cardíaco e avaliações frequentes de PA e estado neurológico em área capacitada, após trombólise: PA e avaliação neurológica a cada 15 minutos durante as primeiras 2 horas, a cada 30 minutos nas 6 horas seguintes e a cada hora até completar 24 horas. Intensificar a vigilância se PA >180/105 mmHg ou houver deterioração. Reavaliar após intervenções e a qualquer mudança. Obter TC/RM de controle em 24 horas antes de antitrombóticos; deterioração, cefaleia intensa, vômitos ou sangramento exigem imagem urgente, sem esperar esse prazo. Corrigir glicemia <60 mg/dL; tratar hiperglicemia persistente com alvo usual 140–180 mg/dL, evitando controle intensivo de 80–130 mg/dL e hipoglicemia. Suplementar oxigênio se houver hipoxemia; não de rotina no normoxêmico. [R1,R4]",
+              "8. Complicações e destino. Suspeita de hemorragia: interromper alteplase se ainda em infusão, acionar equipe especializada, obter imagem e estudos hemostáticos e iniciar protocolo de hemorragia associada à trombólise. Não repetir tenecteplase, cujo bolo já foi administrado. Angioedema exige avaliação imediata da via aérea e suporte de emergência. Deterioração com edema/efeito de massa exige neurocirurgia e cuidados intensivos. Internar em unidade de AVC; UTI quando houver instabilidade ou necessidade de suporte intensivo. [R1,R4,R12]",
+              "9. Segurança antes de dieta e alta. Triar deglutição antes de água, alimentos ou medicações orais. Tratar febre, evitar aspiração e iniciar reabilitação conforme estabilidade. Antes da alta, estabelecer etiologia/plano de investigação, antitrombótico, prevenção, funcionalidade e seguimento, com orientação sobre recorrência e retorno imediato. [R1,R12]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "c630c66024307c2d4e72d46114439b591b885c03a36154f572b5d07ae7a3499c",
+            "blockSha256": "4cfe0baece7d3e8dfe1add654a094a74ddf0d2b0979e67c0e98105a4dfa9d863",
             "innerFamilyId": "baac9f456434744d",
             "legacyField": "actions",
             "protocolKey": "legacy_protocol::avc_isquemico",
@@ -101331,23 +101635,17 @@
           "finalMachineRegistryDocument": false,
           "locales": {
             "es": [
-              "🔴 Gran vaso (M1/M2, carótida, basilar): NIHSS alto, trombectomía indicada ≤24 h",
-              "🟠 Rama cortical: déficit focal moderado, elegible para alteplase ≤4,5 h",
-              "🟡 Lacunar (pequeño vaso): NIHSS bajo, sin gran vaso",
-              "🟢 AIT: déficit <24 h, TC normal; alto riesgo de ACV en 48–72 h"
+              "Etiología y clasificación. Investigar aterosclerosis de grandes arterias, cardioembolia, enfermedad de pequeños vasos y otras causas, como disección. Distinguir circulación anterior y posterior, déficit discapacitante o no discapacitante, oclusión proximal y extensión de la lesión. La NIHSS cuantifica la gravedad, pero un puntaje bajo no excluye afasia discapacitante, pérdida funcional relevante o ACV posterior. La oclusión de M2 no constituye una indicación automática de trombectomía. [R1,R4]"
             ],
             "pt": [
-              "🔴 Grande vaso (M1/M2, carótida, basilar): NIHSS alto, trombectomia indicada ≤24h",
-              "🟠 Ramo cortical: déficit focal moderado, elegível para alteplase ≤4,5h",
-              "🟡 Lacunar (pequeno vaso): NIHSS baixo, sem grande vaso, raro candidato a trombectomia",
-              "🟢 AIT (Ataque Isquêmico Transitório): déficit <24h, TC normal; risco alto de AVC em 48–72h"
+              "Etiologia e classificação. Investigar aterosclerose de grandes artérias, cardioembolia, doença de pequenos vasos e outras causas, como dissecção. Distinguir circulação anterior e posterior, déficit incapacitante ou não incapacitante, oclusão proximal e extensão da lesão. NIHSS quantifica gravidade, mas um escore baixo não exclui afasia incapacitante, perda funcional relevante ou AVC posterior. Oclusão de M2 não constitui indicação automática de trombectomia. [R1,R4]"
             ]
           },
           "machineRuleInferencePerformed": false,
           "ptEsStructuralParity": true,
           "schemaVersion": "legacy_localized_payload_v1",
           "sourceProof": {
-            "blockSha256": "c630c66024307c2d4e72d46114439b591b885c03a36154f572b5d07ae7a3499c",
+            "blockSha256": "4cfe0baece7d3e8dfe1add654a094a74ddf0d2b0979e67c0e98105a4dfa9d863",
             "innerFamilyId": "ec4c285966e73508",
             "legacyField": "classification",
             "protocolKey": "legacy_protocol::avc_isquemico",
@@ -101357,16 +101655,29 @@
       },
       "priority": 100,
       "protocolKey": "legacy_protocol::avc_isquemico",
-      "referenceUrls": [],
+      "referenceUrls": [
+        "https://www.ahajournals.org/doi/10.1161/STR.0000000000000513",
+        "https://www.ahajournals.org/doi/10.1161/STR.0000000000000530",
+        "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/emergency-department-evaluation-and-management",
+        "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-ischemic-stroke-treatment",
+        "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=c669f77c-fa48-478b-a14b-80b20a0139c2",
+        "https://www.ema.europa.eu/en/documents/product-information/metalyse-epar-product-information_en.pdf",
+        "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/103909s5197lbl.pdf",
+        "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878",
+        "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-antithrombotic-therapy",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10069183/",
+        "https://www.strokebestpractices.ca/recommendations/acute-stroke-management-during-pregnancy",
+        "https://www.strokebestpractices.ca/recommendations/acute-stroke-management/acute-stroke-unit-care"
+      ],
       "source": {
-        "blockSha256": "c630c66024307c2d4e72d46114439b591b885c03a36154f572b5d07ae7a3499c",
+        "blockSha256": "4cfe0baece7d3e8dfe1add654a094a74ddf0d2b0979e67c0e98105a4dfa9d863",
         "file": "lib/data/protocols_database.dart",
         "line": 4095,
         "sourceGroup": "ProtocolModel",
         "sourceKey": "avc_isquemico",
         "strategy": "generic_constructor"
       },
-      "version": "abc86260cc6f"
+      "version": "JIT-2026-10-01-v1.0"
     },
     {
       "canonicalPathologyKey": "botulismo_neuroparalitico",
