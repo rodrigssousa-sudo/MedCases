@@ -2165,24 +2165,7 @@ ATB (si tétanos activo):
     subtitle: 'Score MASCC — ATB según riesgo',
     category: 'Infectología',
     icon: Icons.biotech_rounded,
-    content: '''Bajo riesgo (MASCC ≥21) — VO:
-1. Ciprofloxacina 500 mg — 1 comprimido cada 12h × 10–14 días.
-2. Amoxicilina + Clavulanato 875/125 mg cada 12h × 10–14 días.
-
-Alto riesgo (MASCC <21) — EV:
-Dieta supervisada (neutropénico: evitar crudos).
-1. Cefepime 2 g EV cada 8h.
-   O Pip + Tazo 4,5 g EV cada 6h.
-   O Meropenem 1 g EV cada 8h.
-
-Sospecha SAMR/catéter:
-+ Vancomicina 1–2 g EV cada 6h.
-
-Sospecha C. diff:
-+ Metronidazol 400 mg VO cada 8h.
-
----
-⚕ Modelo educativo — adaptar al paciente.''',
+    content: "**Reconocer sin esperar.** Adulto con cáncer, fiebre o signos de infección/sepsis y neutropenia conocida o esperada: emergencia. Criterio convencional: oral ≥38,3 °C una vez o ≥38,0 °C por 1 h; neutrófilos <500/mm³ o descenso a <500/mm³ previsto en 48 h. No esperar fiebre sostenida ni hemograma si hay deterioro; la sepsis puede ser afebril. No aplicar dosis adultas a niños. [R5,R13,R14]\n\n**ABCDE y estudios.** Evaluar perfusión, conciencia, respiración, diuresis, catéter, piel, mucosa y abdomen. Monitorización, acceso IV y soporte según estado. Obtener hemograma, función renal/hepática, electrolitos, lactato y cultivos periféricos/de lúmenes antes del antibiótico si no lo retrasa. No esperar estudios/imágenes. Evitar manipulación rectal; sospechar enterocolitis ante dolor abdominal. [R5,R13,R14]\n\n**Primera dosis.** Iniciar inmediatamente; meta operativa ≤1 h, especialmente en sepsis/inestabilidad. Función renal normal: piperacilina/tazobactam 4,5 g IV cada 6 h O cefepima 2 g IV cada 8 h. Meropenem 1 g IV cada 8 h si está indicado por gravedad/resistencia/microbiología. No escalar automáticamente a todo paciente estable. Alergia grave: alternativa institucional inmediata con especialista, sin agente contraindicado. [R2,R3,R7,R8,R9]\n\n**Preparación segura.** Piperacilina/tazobactam: vial con 20 mL de diluyente compatible, dilución posterior en 50–150 mL e infusión en 30 min. Renapime 2 g: 50 mL de diluyente compatible, aproximadamente 52,8 mL finales/38 mg/mL, infusión 30 min. Meropenem: concentración final 1–20 mg/mL e infusión 15–30 min; 1 g en 100 mL finales = 10 mg/mL. Confirmar ficha de la marca disponible; preparación de inyección no es preparación de infusión. [R7,R8,R9]\n\n**Vancomicina solo si está indicada.** Sospecha/cultivo Gram-positivo relevante o inestabilidad con foco compatible: carga 25–30 mg/kg IV, máximo 3 g; mantenimiento inicial 15–20 mg/kg cada 12 h, máximo 2 g/dosis, con ajuste renal y niveles. Vial 500 mg + 10 mL de agua = concentrado 50 mg/mL; diluir hasta ≤5 mg/mL. Infundir ≤10 mg/min y durante ≥60 min, usando el tiempo mayor. Para MRSA grave, AUC24 400–600 mg·h/L, MIC asumida 1 mg/L. No indicar por catéter presente o fiebre aislada. [R2,R10,R11]\n\n**Riesgo, foco y destino.** Inestabilidad/disfunción orgánica: internación y UCI según necesidad. Alto riesgo incluye neutropenia prevista >7 días, foco grave y comorbilidades. MASCC ≥21 no determina alta solo. CISNE únicamente en tumor sólido aparentemente estable: 0 bajo, 1–2 intermedio, ≥3 alto. Dolor abdominal/perineal exige cobertura anaerobia y estudios; cefepima aislada no proporciona esa cobertura. [R1,R2,R14,R15]\n\n**Reevaluar fiebre persistente.** Repetir evaluación clínica/microbiológica, revisar dosis, función renal, resistencia y control del foco. Fiebre aislada estable no autoriza ampliación automática. Alto riesgo sin profilaxis antifúngica sistémica y fiebre por 72–96 h/recurrencia: estudios y estrategia anticipada o terapia empírica con infectología. Caspofungina, cuando se elige: 70 mg IV de carga, luego 50 mg/día; >80 kg: 70 mg/día; infusión aproximadamente 1 h, no en glucosa. No usar fluconazol como cobertura empírica de mohos. Para el vial de caspofungina 70 mg citado: añadir 10,5 mL de agua para inyectables, obteniendo concentrado 7,2 mg/mL; la ficha indica transferir 10 mL a 250 mL de NaCl 0,9% o Ringer lactato. No calcular extracción solo por el peso nominal del vial; confirmar preparación específica de las dosis de mantenimiento y no mezclar con otros medicamentos. [R1,R12]\n\n**Ajustes y alertas.** Ajustar mantenimiento de betalactámicos/vancomicina a función renal y monitorizar acumulación; cefepima puede causar neurotoxicidad. Evitar meropenem con valproato. Caspofungina: sin ajuste renal habitual; insuficiencia hepática moderada (Child-Pugh 7–9), 35 mg/día tras carga de 70 mg con especialista. Embarazo/lactancia exigen evaluación individual; no amamantar durante caspofungina según ficha. G-CSF no es rutina en el episodio establecido. En terapia renal continua, las membranas derivadas de poliacrilonitrilo pueden adsorber caspofungina: discutir otra membrana o antifúngico; aumentar dosis puede no resolverlo. [R6,R7,R8,R9,R10,R12]\n\n**Desescalar sin regla fija de neutrófilos.** Infección documentada recibe duración dirigida. En fiebre sin foco/infección documentada, considerar retirada tras 3–5 días de apirexia y recuperación clínica según AGIHO, con vigilancia, independientemente de recuperación de neutrófilos. Protocolo ECIL más corto es contextual, no universal. No retirar si hay inestabilidad, fiebre o foco no controlado. [R1,R4,R5]\n\n**Alta solo seleccionada.** Estabilidad y bajo riesgo confirmados, tolerancia oral, apoyo/acceso urgente y seguimiento diario; observar ≥4 h antes de salir. Si no recibió profilaxis con fluoroquinolona y no hay contraindicación: ciprofloxacina 750 mg VO cada 12 h + amoxicilina/clavulanato 875/125 mg VO cada 12 h, con ajuste renal y revisión de interacciones. No usar ciprofloxacina aislada. Dar instrucciones de regreso inmediato por empeoramiento/intolerancia y reevaluar persistencia de fiebre. [R3,R14]",
   ),
 
   _PrescriptionModel(
@@ -3591,48 +3574,7 @@ MONITOREO: Ca iónico c/4–6h · ECG continuo durante infusión.
     subtitle: 'PTU · propranolol · yodo · dexametasona — emergencia endocrina',
     category: 'Endocrinología',
     icon: Icons.local_fire_department_rounded,
-    content: '''TORMENTA TIROIDEA — Score de Burch-Wartofsky ≥45 puntos.
-→ Emergencia endocrinológica con mortalidad del 10–30%.
-
-DESENCADENANTES: cirugía, infección, trauma, parto, amiodarona, contraste yodado.
-
-CUADRO CLÍNICO:
-• Fiebre >38,5°C · taquicardia >140 lpm.
-• Agitación, confusión, psicosis, coma.
-• FA, ICC, hipertensión.
-• Vómitos, diarrea, ictericia.
-
-TRATAMIENTO INMEDIATO:
-1. BLOQUEO DE SÍNTESIS (1° paso — iniciar primero):
-   Propiltiouracilo (PTU): 600 mg VO/SNG dosis de carga
-   → luego 200–300 mg VO c/6h.
-   Metimazol (alternativa): 20–25 mg VO c/6h
-   (EVITAR metimazol en 1° trimestre embarazo).
-
-2. BLOQUEO DE LIBERACIÓN DE YODO (esperar 1h después del PTU):
-   Solución de Lugol (yodo-yoduro): 5–10 gotas VO c/8h.
-   o Yoduro de potasio (SSKI): 5 gotas VO c/6h.
-
-3. BLOQUEO DE CONVERSIÓN T4→T3:
-   Dexametasona 2 mg EV c/6h (también cubre insuf. adrenal relativa).
-   Hidrocortisona 300 mg/día EV (alternativa).
-
-4. BETABLOQUEANTE (control de síntomas simpáticos):
-   Propranolol: 60–80 mg VO c/4–6h.
-   o EV: 0,5–1 mg en 5 min (con monitoreo ECG) → luego 1–2 mg c/15 min.
-   Atenolol 25–50 mg VO (alternativa si broncoespasmo leve).
-   EVITAR betabloqueante si ICC descompensada → usar diltiazem.
-
-5. ANTIPIRÉTICO:
-   Paracetamol 1 g EV c/6h.
-   EVITAR AAS (libera T4 de proteínas transportadoras).
-
-6. SOPORTE:
-   SF 0,9% + glucosa · monitoreo continuo · UTI.
-   Tratamiento de causa desencadenante.
-
----
-⚕ Modelo educativo — adaptar al paciente.''',
+    content: "**Reconocer y activar.** Sospechar crisis tirotóxica ante tirotoxicosis con disfunción neurológica, cardiovascular, térmica o hepática. Activar endocrinología/UCI; los mayores pueden tener cuadro apático. Las dosis de esta guía son adultas, sin extrapolación pediátrica. [R1,R4]\n\n**ABCDE y desencadenante.** Evaluar vía aérea, ventilación, perfusión, conciencia, temperatura y glucemia. Monitor cardíaco, acceso IV, oxígeno si se necesita, líquidos individualizados y enfriamiento. Buscar infección, suspensión del tratamiento, cirugía y exposición al yodo; tratar el desencadenante en paralelo. Shock/insuficiencia respiratoria o cardíaca exige UCI. [R4]\n\n**Estudios sin retrasar.** Obtener TSH, T4 libre/T3, hemograma, electrolitos, glucosa, función renal/hepática, ECG y estudios dirigidos. BWPS ≥45 apoya crisis, 25–44 alerta sobre evolución y <25 no sustituye el juicio; usar ATA corregida en 2025. Sepsis y otros síndromes de hipertermia pueden coexistir o simular el cuadro. [R3,R4]\n\n**Tionamida: elegir una.** Metimazol 60–80 mg TOTALES/24 h VO/sonda, divididos según endocrinología, O PTU 500–1000 mg VO/sonda de carga, seguido de 250 mg cada 4 h. No duplicar fármacos ni transformar dosis diaria de metimazol en carga. Tiroiditis destructiva/hormona exógena no se beneficia de este bloqueo de síntesis. [R1,R2,R8,R9]\n\n**Yoduro después de tionamida.** Si está indicado por la etiología, esperar al menos 1 h: yoduro de potasio 250 mg VO/sonda cada 6 h. SSKI 1 g/mL: 0,25 mL por dosis, medidos y diluidos; no convertir automáticamente a gotas ni sustituir por Lugol en la misma cantidad. Individualizar exposición previa al yodo y embarazo. [R1,R2,R5,R10]\n\n**Hidrocortisona.** Administrar 100 mg IV de carga, luego 50 mg IV cada 6 h; no sumar otros regímenes. Solu-Cortef 100 mg: hasta 2 mL de agua para inyectables; IV en 1–10 min. Confirmar volumen/concentración final para dosis parcial, usar inmediatamente y descartar sobrante. Vigilar glucemia y potasio. [R1,R7]\n\n**Betabloqueo solo si es seguro.** Evaluar perfusión y función ventricular. No administrar esmolol en shock cardiogénico, insuficiencia cardíaca descompensada o hipotensión importante. Si está estable y seleccionado en UCI: esmolol IV, carga opcional 500 microgramos/kg en 1 min si es tolerable; iniciar 50 microgramos/kg/min y titular hasta 200 microgramos/kg/min. Premezcla 10 mg/mL, bomba, ECG y presión continuos; interrumpir/reevaluar si hay deterioro. Otras contraindicaciones de la presentación incluyen bradicardia importante, bloqueo AV avanzado sin marcapasos, crisis asmática, acidosis metabólica, hipertensión pulmonar, feocromocitoma no tratado y verapamilo IV reciente; comprobar la ficha antes del uso. [R1,R6]\n\n**Fiebre y alertas farmacológicas.** Enfriamiento; paracetamol 500–1000 mg VO, mínimo 4 h entre dosis, máximo 4 administraciones y 4 g/24 h. Individualizar bajo peso y hepatopatía. Evitar aspirina. Revisar función renal/hepática y toxicidad de tionamidas; fiebre/dolor de garganta exige interrumpir tionamida y obtener hemograma urgente antes de decidir reinicio; agranulocitosis confirmada exige alternativa especializada. [R8,R9,R11,R12]\n\n**Embarazo y lactancia.** Atención conjunta con obstetricia/endocrinología. PTU preferido antes de 16 semanas; después, no imponer cambio automático. Dosis de crisis y yoduro no heredan automáticamente seguridad de las dosis crónicas en lactancia: definir manejo y evaluación del lactante. No usar radioyodo en embarazo/lactancia. [R5]\n\n**Reevaluar y escalar.** Seguir conciencia, temperatura, ritmo, presión, perfusión, diuresis, glucemia, electrolitos, función orgánica y T4 libre/T3. El empeoramiento exige acción inmediata; investigar absorción, infección, etiología y bajo gasto. Rescate especializado con plasmaféresis/cirugía o soporte circulatorio cuando corresponda; diálisis renal no sustituye plasmaféresis. Sin alta mientras la crisis esté activa. [R1,R4]",
   ),
 
   _PrescriptionModel(

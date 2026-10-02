@@ -868,7 +868,13 @@ class PlantaoMachineNativeContextPrefetch {
     final approvedAdrenal = key == 'crise_adrenal' &&
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] == 'ffc8ec30fed24efda7b9001f6a056c5301d5ff2a1dda9c187f59823310cc72d7';
-    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal;
+    final approvedThyroid = key == 'crise_tireotoxica' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == '5b2ccbf2c20e33d59c2b618d3f9b4a2c409d204dc92dc4c12049d459f6439b28';
+    final approvedNeutropenia = key == 'neutropenia_febril' &&
+        rule?['version'] == 'JIT-2026-10-02-v1.0' &&
+        rule?['approvedClinicalPayloadSha256'] == 'ff02f59e86320a3159554191a7a4b93f38415e5fc695d636c2f5d5c5f6ff7521';
+    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia;
     final clinicalTextLimit = completeApprovedPayload ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
@@ -943,7 +949,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
-            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal) ? 24000 : (approvedG02 ? 18000 : 6000),
+            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia) ? 24000 : (approvedG02 ? 18000 : 6000),
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(

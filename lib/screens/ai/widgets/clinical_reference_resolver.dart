@@ -230,6 +230,26 @@ class ClinicalReferenceResolver {
         );
       }
 
+      if (protocol.id == 'crise_tireotoxica' &&
+          protocolReferences.any((r) => r.contains('10.1530/ETJ-26-0043'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
+      if (protocol.id == 'neutropenia_febril' &&
+          protocolReferences.any((r) => r.contains('10.1016/j.lanepe.2025.101214'))) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
       final curatedReferences = _curatedReferencesForDomain(domain);
       final candidateReferences = <String>[
         ...curatedReferences,

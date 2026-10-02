@@ -1,0 +1,9 @@
+{
+  "owner": "neutropenia_febril",
+  "version": "JIT-2026-10-02-v1.0",
+  "APPROVED_CLINICAL_PAYLOAD_SHA256": "ff02f59e86320a3159554191a7a4b93f38415e5fc695d636c2f5d5c5f6ff7521",
+  "timestamp": "2026-10-02T19:20:48.787513+00:00",
+  "humanApprovalText": "GUIA APROVADO: Neutropenia febril JIT-2026-10-02-v1.0",
+  "reviewer": "user",
+  "status": "APPROVED_FOR_RELEASE"
+}
