@@ -270,6 +270,15 @@ const newPathologyApprovedHashes = <String, String>{
   "hiperparatireoidismo_primario": "ff529b76f454b88a2e09b2911a7ddc5609472da005d983fd6c08dc70eb13b7c2",
   "cetoacidose_alcoolica": "35b2528b5e8194414660f7cb59a5f6f4c63fa4d21a83ff055426f24267a1d82b",
   "osteoporose": "fd10f732256e5965266e4f03dd55a845f73c6905d268829fc5ab34f8f0e0d00d",
+  "intoxicacao_aguda_etanol": "be1cdc0682fdf5bad795a44fb0b52b3f40807d01439e7fc7a769dedd2f9539bc",
+  "intoxicacao_aguda_cannabis": "5fab540993e48c8e6c51c5ba78bfd0fcc2962c3c072882bd03948ab08b63ff7c",
+  "exposicao_causticos_corrosivos": "77218f833901d6258729ab0bbd08901eb7b1024d4c2145e833decde4b5756d94",
+  "intoxicacao_hidrocarbonetos": "007f36e66e100a1259c69087720a5740a8319d3d297c6fcdd109c9b596df1282",
+  "inalacao_cloro_cloraminas": "1f2d062880650c0bc30db56a9adef29216ada32d2acd7a63270a2e5d201b431e",
+  "intoxicacao_rodenticidas_anticoagulantes": "0632f6e5fa5a4c4b9f95919652052702a4ad6ca1280f7a80a9d101bd785de882",
+  "intoxicacao_cogumelos_amatoxinas": "f45ffa7407f077612089cb43258b95254524e30417ff10c627041345d0bc9532",
+  "intoxicacao_plantas_anticolinergicas": "9c1925eac5a5c74de0eaf1e98b562a7e97d1cda0f0bac794fb6370933e678894",
+  "exposicao_plantas_oxalato_insoluvel": "4d49aea5dd000657579ef835a4fcf9cd48a0ab3761eb1c4e60acf51bf0eb7ba0",
 
 };
 
@@ -449,4 +458,17 @@ const newPathologyG05Versions = <String, String>{
   "hiperparatireoidismo_primario": "NEW-JIT-2026-10-03-G05-v1.0",
   "cetoacidose_alcoolica": "NEW-JIT-2026-10-03-G05-v1.0",
   "osteoporose": "NEW-JIT-2026-10-03-G05-v1.0",
+};
+
+// Exact version metadata for the nine approved G06 toxicology owners.
+const newPathologyG06Versions = <String, String>{
+  "intoxicacao_aguda_etanol": "TOX-JIT-2026-10-03-G06-v1.0",
+  "intoxicacao_aguda_cannabis": "TOX-JIT-2026-10-03-G06-v1.0",
+  "exposicao_causticos_corrosivos": "TOX-JIT-2026-10-03-G06-v1.0",
+  "intoxicacao_hidrocarbonetos": "TOX-JIT-2026-10-03-G06-v1.0",
+  "inalacao_cloro_cloraminas": "TOX-JIT-2026-10-03-G06-v1.0",
+  "intoxicacao_rodenticidas_anticoagulantes": "TOX-JIT-2026-10-03-G06-v1.0",
+  "intoxicacao_cogumelos_amatoxinas": "TOX-JIT-2026-10-03-G06-v1.0",
+  "intoxicacao_plantas_anticolinergicas": "TOX-JIT-2026-10-03-G06-v1.0",
+  "exposicao_plantas_oxalato_insoluvel": "TOX-JIT-2026-10-03-G06-v1.0",
 };

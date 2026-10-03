@@ -1,0 +1,166 @@
+{
+  "owner": "intoxicacao_cogumelos_amatoxinas",
+  "title": {
+    "pt": "Intoxicação por cogumelos com amatoxinas",
+    "es": "Intoxicación por hongos con amatoxinas"
+  },
+  "version": "TOX-JIT-2026-10-03-G06-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Intoxicação por cogumelos com amatoxinas",
+      "Intoxicación por hongos con amatoxinas",
+      "intoxicação por Amanita phalloides",
+      "intoxicación por Amanita phalloides",
+      "amatoxin poisoning"
+    ],
+    "distinctScope": "Síndrome hepatotóxica por amatoxinas; não generalizar a todo cogumelo ou criar espécies como owners separados."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Amatoxinas podem causar falência hepática após ingestão de cogumelos silvestres. Cozinhar não torna seguro um cogumelo tóxico. Este owner cobre a síndrome hepatotóxica; não classifica todos os cogumelos como equivalentes.",
+      "es": "Las amatoxinas pueden causar insuficiencia hepática tras ingerir hongos silvestres. Cocinar no vuelve seguro un hongo tóxico. Este owner cubre el síndrome hepatotóxico; no clasifica todos los hongos como equivalentes.",
+      "sources": [
+        "CDCAM",
+        "UPCAM"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Sintomas gastrointestinais começando ou persistindo depois de 6 horas são preocupantes. Melhora transitória pode preceder lesão hepática; pesquisar outras pessoas que compartilharam a refeição.",
+      "es": "Los síntomas gastrointestinales que comienzan o persisten después de 6 horas son preocupantes. Una mejoría transitoria puede preceder la lesión hepática; buscar otras personas que compartieron la comida.",
+      "sources": [
+        "UPCAM"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Registrar horário, espécies suspeitas e fotografias/amostras para identificação especializada. Colher transaminases, INR, glicemia, eletrólitos e função renal seriados. Exames iniciais normais não excluem evolução grave.",
+      "es": "Registrar horario, especies sospechadas y fotografías/muestras para identificación especializada. Obtener transaminasas, INR, glucemia, electrolitos y función renal seriados. Los estudios iniciales normales no excluyen evolución grave.",
+      "sources": [
+        "CDCAM",
+        "CHOPAM"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Acionar centro de toxicologia e hospital com hepatologia precocemente. Repor perdas, corrigir hipoglicemia e acompanhar perfusão; não aguardar confirmação da espécie para organizar tratamento e transferência.",
+      "es": "Convocar al centro de toxicología y hospital con hepatología tempranamente. Reponer pérdidas, corregir hipoglucemia y controlar perfusión; no esperar confirmación de la especie para organizar tratamiento y traslado.",
+      "sources": [
+        "CDCAM",
+        "CHOPAM"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Sob toxicologia, a bula Legalon SIL descreve silibinina 5 mg/kg intravenosa durante 2 horas, seguida de 4 horas sem infusão; repetir para totalizar quatro infusões e 20 mg/kg em 24 horas. Cada frasco corresponde a 350 mg de silibinina: reconstituir em 35 mL de glicose 5% ou cloreto de sódio 0,9% (10 mg/mL) e adicionar a dose ao fluido de infusão. Farmácia deve definir o volume final conforme balanço hídrico.",
+      "es": "Bajo toxicología, la ficha Legalon SIL describe silibinina 5 mg/kg intravenosa durante 2 horas, seguida de 4 horas sin infusión; repetir para completar cuatro infusiones y 20 mg/kg en 24 horas. Cada vial corresponde a 350 mg de silibinina: reconstituir en 35 mL de glucosa 5% o cloruro de sodio 0,9% (10 mg/mL) y añadir la dosis al líquido de infusión. Farmacia debe definir el volumen final según balance hídrico.",
+      "sources": [
+        "SILLBL"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Suspeita de ingestão hepatotóxica não recebe alta apenas pela melhora digestiva. O centro CHOP recomenda estar assintomático e demonstrar transaminases normais em 24–36 horas antes de liberação; individualizar exposições graves ou incertas.",
+      "es": "La sospecha de ingesta hepatotóxica no recibe alta solo por mejoría digestiva. El centro CHOP recomienda estar asintomático y demostrar transaminasas normales a las 24–36 horas antes del alta; individualizar exposiciones graves o inciertas.",
+      "sources": [
+        "CHOPAM"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "INR crescente, hipoglicemia, encefalopatia, acidose, lesão renal ou transaminases em ascensão exigem escalonamento e avaliação precoce de transplante. Não esperar encefalopatia avançada para transferir.",
+      "es": "INR creciente, hipoglucemia, encefalopatía, acidosis, lesión renal o transaminasas en ascenso exigen escalamiento y evaluación temprana de trasplante. No esperar encefalopatía avanzada para trasladar.",
+      "sources": [
+        "CDCAM",
+        "CHOPAM"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças podem ingerir espécies não identificadas e precisam de avaliação específica. Não identificar segurança por aplicativo, fotografia isolada, odor ou sabor. Preservar amostras sem incentivar nova exposição.",
+      "es": "Los niños pueden ingerir especies no identificadas y necesitan evaluación específica. No identificar seguridad mediante una aplicación, fotografía aislada, olor o sabor. Preservar muestras sin incentivar una nueva exposición.",
+      "sources": [
+        "UPCAM",
+        "CDCAM"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "treatment",
+      "pt": "Protocolos de infusão contínua e uso de N-acetilcisteína são decisões especializadas e não devem ser combinados automaticamente com o esquema da bula. Silibinina oral não substitui o produto intravenoso. Disponibilidade local e confirmação da apresentação precisam ser verificadas sem atrasar transferência.",
+      "es": "Los protocolos de infusión continua y uso de N-acetilcisteína son decisiones especializadas y no deben combinarse automáticamente con el esquema de la ficha. La silibinina oral no sustituye el producto intravenoso. Verificar disponibilidad local y presentación sin retrasar el traslado.",
+      "sources": [
+        "CHOPAM",
+        "SILLBL"
+      ],
+      "id": "treatment_9"
+    },
+    {
+      "section": "special",
+      "pt": "A bula recomenda acompanhar eletrólitos, equilíbrio ácido-base e balanço hídrico durante o tratamento. Há poucos dados clínicos em gestação e lactação; discutir risco-benefício individual. Não estabelecer duração fixa: acompanhar resolução clínica e laboratorial com hepatologia.",
+      "es": "La ficha recomienda controlar electrolitos, equilibrio ácido-base y balance hídrico durante el tratamiento. Hay pocos datos clínicos en embarazo y lactancia; discutir el balance individual de riesgos y beneficios. No establecer una duración fija: seguir la resolución clínica y de laboratorio con hepatología.",
+      "sources": [
+        "SILLBL"
+      ],
+      "id": "special_10"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDCAM",
+      "title": "Amanita species mushroom poisonings — Northern California",
+      "url": "https://www.cdc.gov/mmwr/volumes/75/wr/mm7520a2.htm",
+      "authority": "CDC / California Poison Control",
+      "year": 2026,
+      "status": "PRIMARY_SURVEILLANCE_REPORT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "UPCAM",
+      "title": "Mushroom ingestion: diagnosis and management",
+      "url": "https://poisoncontrol.utah.edu/news/2021/08/mushroom-ingestion-diagnosis-and-management",
+      "authority": "Utah Poison Control",
+      "year": 2021,
+      "status": "POISON_CENTER_CLINICAL_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CHOPAM",
+      "title": "Suspected hepatotoxic mushroom ingestion: treatment tips",
+      "url": "https://www.chop.edu/centers-programs/poison-control-center/suspected-hepatotoxic-mushroom-ingestion-quick-treatment-tips",
+      "authority": "Children’s Hospital of Philadelphia Poison Control",
+      "year": "página vigente",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "SILLBL",
+      "title": "Legalon SIL — Fachinformation, junho de 2025",
+      "url": "https://www.fachinfo.de/fi/detail/002481/legalon-r-sil",
+      "authority": "Viatris Healthcare GmbH",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

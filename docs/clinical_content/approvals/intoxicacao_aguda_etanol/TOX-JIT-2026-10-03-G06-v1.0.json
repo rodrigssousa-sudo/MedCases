@@ -1,0 +1,150 @@
+{
+  "owner": "intoxicacao_aguda_etanol",
+  "title": {
+    "pt": "Intoxicação aguda por etanol",
+    "es": "Intoxicación aguda por etanol"
+  },
+  "version": "TOX-JIT-2026-10-03-G06-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Intoxicação aguda por etanol",
+      "Intoxicación aguda por etanol",
+      "intoxicação por álcool",
+      "intoxicación por alcohol",
+      "embriaguez aguda",
+      "intoxicação etílica aguda",
+      "intoxicación etílica aguda",
+      "acute ethanol intoxication"
+    ],
+    "distinctScope": "Intoxicação aguda; não transtorno por uso, abstinência, cetoacidose alcoólica, metanol ou etilenoglicol."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "O etanol deprime o sistema nervoso central. Intoxicação aguda não equivale a transtorno por uso de álcool, abstinência, cetoacidose alcoólica ou intoxicação por metanol; esses quadros podem coexistir.",
+      "es": "El etanol deprime el sistema nervioso central. La intoxicación aguda no equivale a trastorno por consumo de alcohol, abstinencia, cetoacidosis alcohólica o intoxicación por metanol; estos cuadros pueden coexistir.",
+      "sources": [
+        "RCHET",
+        "UKAL"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Priorizar via aérea, ventilação, circulação, temperatura e glicemia. Não atribuir coma ao álcool antes de procurar traumatismo, hipoglicemia, hipóxia, infecção e outras drogas.",
+      "es": "Priorizar vía aérea, ventilación, circulación, temperatura y glucemia. No atribuir el coma al alcohol antes de buscar traumatismo, hipoglucemia, hipoxia, infección y otras drogas.",
+      "sources": [
+        "RCHET",
+        "UKAL"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Reconstruir produto, quantidade, horário e coingestões. Dosagem de etanol pode ajudar, mas não exclui outra causa de alteração mental. Gasometria, eletrólitos, função renal e imagem dependem da gravidade e do exame.",
+      "es": "Reconstruir producto, cantidad, horario y coingestas. La concentración de etanol puede ayudar, pero no excluye otra causa de alteración mental. Gasometría, electrolitos, función renal e imágenes dependen de la gravedad y del examen.",
+      "sources": [
+        "RCHET"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Proteger a via aérea, corrigir hipoglicemia e hipotermia e tratar desidratação quando presente. Soro intravenoso não deve ser usado apenas para acelerar a eliminação do álcool. Evitar sedativos adicionais no paciente com depressão respiratória.",
+      "es": "Proteger la vía aérea, corregir hipoglucemia e hipotermia y tratar deshidratación cuando exista. No usar suero intravenoso solo para acelerar la eliminación del alcohol. Evitar sedantes adicionales en el paciente con depresión respiratoria.",
+      "sources": [
+        "RCHET",
+        "UKAL"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antídoto específico. Tiamina destina-se à deficiência/risco de Wernicke, não a reverter embriaguez: no adulto de alto risco, a diretriz britânica orienta 200–300 mg por via intramuscular ou intravenosa uma vez ao dia durante 3–5 dias. Suspeita de Wernicke exige esquema terapêutico próprio e ambiente monitorado. Não atrasar glicose urgente para administrar tiamina.",
+      "es": "No hay antídoto específico. La tiamina se dirige a la deficiencia/riesgo de Wernicke, no a revertir la embriaguez: en el adulto de alto riesgo, la guía británica indica 200–300 mg por vía intramuscular o intravenosa una vez al día durante 3–5 días. La sospecha de Wernicke exige un esquema terapéutico específico y un entorno monitorizado. No retrasar glucosa urgente para administrar tiamina.",
+      "sources": [
+        "UKAL"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar consciência, ventilação, glicemia e evolução. Alta somente após recuperação clínica sustentada, ausência de lesão ou coingestão relevante e plano seguro de retorno; concentração de álcool isolada não substitui essa avaliação.",
+      "es": "Reevaluar conciencia, ventilación, glucemia y evolución. Alta solo tras recuperación clínica sostenida, ausencia de lesión o coingesta relevante y un plan seguro de regreso; una concentración aislada de alcohol no sustituye esta evaluación.",
+      "sources": [
+        "RCHET",
+        "UKAL"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Apneia, hipoglicemia recorrente, convulsão, déficit focal, trauma, acidose importante ou recuperação inesperadamente lenta exigem investigação e observação hospitalar. Procurar metanol e etilenoglicol quando o produto for desconhecido.",
+      "es": "Apnea, hipoglucemia recurrente, convulsión, déficit focal, trauma, acidosis importante o recuperación inesperadamente lenta exigen evaluación y observación hospitalaria. Buscar metanol y etilenglicol cuando el producto sea desconocido.",
+      "sources": [
+        "RCHET"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças pequenas podem desenvolver hipoglicemia e hipotermia com pequenas exposições: avaliação pediátrica específica. Em uso crônico, planejar risco de abstinência e suporte nutricional. Não aplicar a dose adulta de tiamina à criança; conferir apresentação e preparo intravenoso antes do uso.",
+      "es": "Los niños pequeños pueden desarrollar hipoglucemia e hipotermia con exposiciones pequeñas: evaluación pediátrica específica. En consumo crónico, planificar el riesgo de abstinencia y el apoyo nutricional. No aplicar la dosis adulta de tiamina al niño; verificar presentación y preparación intravenosa antes del uso.",
+      "sources": [
+        "RCHET",
+        "UKAL"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "dose",
+      "pt": "Preparo específico da tiamina 125 mg/mL citada: para via intravenosa, diluir a dose em 50–250 mL de glicose 5% ou cloreto de sódio 0,9% e infundir em 30 minutos. Para via intramuscular, essa apresentação não requer diluição. Conferir outra apresentação antes de converter para volume; manter recursos para tratar anafilaxia.",
+      "es": "Preparación específica de la tiamina de 125 mg/mL citada: para vía intravenosa, diluir la dosis en 50–250 mL de glucosa 5% o cloruro de sodio 0,9% e infundir en 30 minutos. Para vía intramuscular, esta presentación no requiere dilución. Verificar otra presentación antes de convertir a volumen; disponer de recursos para tratar anafilaxia.",
+      "sources": [
+        "THIALBL"
+      ],
+      "id": "dose_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "RCHET",
+      "title": "Ethanol poisoning",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Ethanol_Posioning/",
+      "authority": "Royal Children’s Hospital; população pediátrica",
+      "year": "página vigente",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "UKAL",
+      "title": "Alcohol care in acute hospitals",
+      "url": "https://www.gov.uk/guidance/clinical-guidelines-for-alcohol-treatment/16-alcohol-care-in-acute-hospitals",
+      "authority": "Department of Health and Social Care",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "THIALBL",
+      "title": "Thiamine hydrochloride 125 mg/mL — SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/101445/smpc",
+      "authority": "Fabricante / electronic medicines compendium",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

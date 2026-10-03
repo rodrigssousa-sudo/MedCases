@@ -1,0 +1,134 @@
+{
+  "owner": "intoxicacao_plantas_anticolinergicas",
+  "title": {
+    "pt": "Intoxicação por plantas anticolinérgicas",
+    "es": "Intoxicación por plantas anticolinérgicas"
+  },
+  "version": "TOX-JIT-2026-10-03-G06-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Intoxicação por plantas anticolinérgicas",
+      "Intoxicación por plantas anticolinérgicas",
+      "intoxicação por Datura",
+      "intoxicación por Datura",
+      "intoxicação por Brugmansia",
+      "intoxicación por Brugmansia"
+    ],
+    "distinctScope": "Síndrome antimuscarínica de Datura/Brugmansia; não organofosforados, cocaína ou glicosídeos cardíacos."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Datura e Brugmansia podem causar síndrome antimuscarínica. Não confundir com síndrome colinérgica por pesticidas: neste quadro predominam secura e delirium.",
+      "es": "Datura y Brugmansia pueden causar síndrome antimuscarínico. No confundir con síndrome colinérgico por pesticidas: aquí predominan sequedad y delirium.",
+      "sources": [
+        "RCHANT"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Procurar agitação, alucinações, midríase, boca seca, pele quente, taquicardia e retenção urinária. Avaliar temperatura, glicemia e via aérea.",
+      "es": "Buscar agitación, alucinaciones, midriasis, boca seca, piel caliente, taquicardia y retención urinaria. Evaluar temperatura, glucemia y vía aérea.",
+      "sources": [
+        "RCHANT"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "ECG, eletrólitos e exames conforme gravidade. Diferenciar simpaticomiméticos, síndrome serotoninérgica, sepse e lesão neurológica; investigar coingestões.",
+      "es": "ECG, electrolitos y estudios según gravedad. Diferenciar simpaticomiméticos, síndrome serotoninérgico, sepsis y lesión neurológica; investigar coingestas.",
+      "sources": [
+        "RCHANT"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Ambiente calmo, suporte, resfriamento se hipertermia e tratamento monitorado da agitação/convulsões. Retenção urinária pode agravar delirium.",
+      "es": "Ambiente tranquilo, soporte, enfriamiento si hay hipertermia y tratamiento monitorizado de agitación/convulsiones. La retención urinaria puede agravar el delirium.",
+      "sources": [
+        "RCHANT"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Fisostigmina: apenas para síndrome antimuscarínica pura selecionada, com toxicologista, ECG e recursos de ressuscitação. O guia canadense usa no adulto 0,5 mg intravenoso, repetível após 20–30 minutos conforme resposta, máximo de 2 mg na primeira hora. Para Anticholium 2 mg/5 mL (0,4 mg/mL), administrar sem exceder 1 mg por minuto. Não usar em intoxicação mista/desconhecida, QRS alargado ou distúrbio de condução.",
+      "es": "Fisostigmina: solo para síndrome antimuscarínico puro seleccionado, con toxicólogo, ECG y recursos de reanimación. La guía canadiense usa en adultos 0,5 mg intravenoso, repetible después de 20–30 minutos según respuesta, máximo de 2 mg en la primera hora. Para Anticholium 2 mg/5 mL (0,4 mg/mL), administrar sin superar 1 mg por minuto. No usar en intoxicación mixta/desconocida, QRS ancho o trastorno de conducción.",
+      "sources": [
+        "CAPANT"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar consciência, temperatura, ECG, diurese e lesão muscular. Delirium pode durar dias. Alta exige recuperação sustentada e segurança de seguimento.",
+      "es": "Controlar conciencia, temperatura, ECG, diuresis y lesión muscular. El delirium puede durar días. El alta exige recuperación sostenida y seguridad de seguimiento.",
+      "sources": [
+        "RCHANT"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Convulsão, coma, arritmia, hipertermia ou instabilidade exigem internação. Evitar contenção física prolongada sem tratamento da agitação.",
+      "es": "Convulsión, coma, arritmia, hipertermia o inestabilidad exigen internación. Evitar contención física prolongada sin tratamiento de la agitación.",
+      "sources": [
+        "RCHANT"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "A fonte pediátrica não autoriza extrapolar doses para adultos. Guardar identificação/amostra da planta com segurança e investigar uso intencional após estabilização.",
+      "es": "La fuente pediátrica no autoriza extrapolar dosis a adultos. Conservar identificación/muestra de la planta con seguridad e investigar consumo intencional tras la estabilización.",
+      "sources": [
+        "RCHANT"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Durante administração de fisostigmina, observar continuamente ritmo cardíaco, ventilação, secreções e nível de consciência. Bradicardia, broncoespasmo, broncorreia ou convulsão exigem interrupção e tratamento imediato. Não acrescentar infusão contínua sem protocolo especializado.",
+      "es": "Durante la administración de fisostigmina, observar continuamente ritmo cardíaco, ventilación, secreciones y conciencia. Bradicardia, broncoespasmo, broncorrea o convulsión requieren interrupción y tratamiento inmediato. No agregar infusión continua sin protocolo especializado.",
+      "sources": [
+        "CAPANT"
+      ],
+      "id": "monitoring_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "RCHANT",
+      "title": "Anticholinergic syndrome",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Anticholinergic_Syndrome/",
+      "authority": "Royal Children’s Hospital; pediatria",
+      "year": 2017,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CAPANT",
+      "title": "Physostigmine — Canadian antidote guide",
+      "url": "https://www.ciusss-capitalenationale.gouv.qc.ca/antidotes/physostigmine",
+      "authority": "Centre antipoison du Québec",
+      "year": "página vigente",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

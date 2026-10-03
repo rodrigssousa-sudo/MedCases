@@ -1,0 +1,139 @@
+{
+  "owner": "inalacao_cloro_cloraminas",
+  "title": {
+    "pt": "Lesão inalatória por cloro e cloraminas",
+    "es": "Lesión inhalatoria por cloro y cloraminas"
+  },
+  "version": "TOX-JIT-2026-10-03-G06-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Lesão inalatória por cloro e cloraminas",
+      "Lesión inhalatoria por cloro y cloraminas",
+      "inalação de cloro",
+      "inhalación de cloro",
+      "exposição a cloraminas",
+      "exposición a cloraminas",
+      "chlorine inhalation"
+    ],
+    "distinctScope": "Gases irritantes de limpeza; não CO, CO₂, cianeto, sulfeto de hidrogênio ou lesão térmica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Misturar água sanitária com ácidos pode liberar cloro; com amônia pode produzir cloraminas. São irritantes respiratórios: não confundir com asfixia por CO ou CO₂.",
+      "es": "Mezclar lavandina con ácidos puede liberar cloro; con amoníaco puede producir cloraminas. Son irritantes respiratorios: no confundir con asfixia por CO o CO₂.",
+      "sources": [
+        "CDCCL",
+        "ATCL"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Ardor ocular, lacrimejamento, tosse, sibilância e dispneia após limpeza ou exposição industrial sugerem lesão irritativa. Retirar da área somente com segurança da equipe.",
+      "es": "Ardor ocular, lagrimeo, tos, sibilancias y disnea tras limpieza o exposición industrial sugieren lesión irritativa. Retirar del área solo con seguridad del equipo.",
+      "sources": [
+        "ATCL"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Avaliar oximetria e esforço respiratório; gasometria e radiografia nos casos relevantes. Diagnóstico é clínico e pela exposição; não esperar uma dosagem sanguínea de cloro.",
+      "es": "Evaluar oximetría y esfuerzo respiratorio; gasometría y radiografía en casos relevantes. El diagnóstico es clínico y por la exposición; no esperar una concentración sanguínea de cloro.",
+      "sources": [
+        "ATCL"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Interromper exposição, retirar roupa contaminada e irrigar pele/olhos. Oferecer oxigênio e suporte ventilatório conforme necessidade; broncoespasmo pode exigir broncodilatador inalatório.",
+      "es": "Interrumpir la exposición, retirar ropa contaminada e irrigar piel/ojos. Ofrecer oxígeno y soporte ventilatorio según necesidad; el broncoespasmo puede requerir broncodilatador inhalatorio.",
+      "sources": [
+        "ATCL",
+        "NIOSHCL"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antídoto específico. Irrigar olhos com água por pelo menos 15 minutos e avaliar lesão persistente. Não neutralizar misturas na pele nem indicar bicarbonato nebulizado como tratamento obrigatório.",
+      "es": "No hay antídoto específico. Irrigar los ojos con agua durante al menos 15 minutos y evaluar la lesión persistente. No neutralizar mezclas sobre la piel ni indicar bicarbonato nebulizado como tratamiento obligatorio.",
+      "sources": [
+        "NIOSHCL",
+        "ATCL"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Lesão pulmonar pode progredir após a retirada da fonte. Manter observação quando houver dispneia, tosse intensa ou aperto torácico persistente; orientar retorno por piora respiratória.",
+      "es": "La lesión pulmonar puede progresar tras retirar la fuente. Mantener observación ante disnea, tos intensa u opresión torácica persistente; indicar regreso por empeoramiento respiratorio.",
+      "sources": [
+        "ATCL"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hipoxemia, estridor, edema pulmonar, hemoptise ou fadiga ventilatória exigem internação e possível terapia intensiva. Não entrar em ambiente contaminado para resgate sem proteção adequada.",
+      "es": "Hipoxemia, estridor, edema pulmonar, hemoptisis o fatiga ventilatoria exigen internación y posible terapia intensiva. No ingresar a un ambiente contaminado para rescatar sin protección adecuada.",
+      "sources": [
+        "ATCL",
+        "NIOSHCL"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças e pessoas com doença respiratória podem ser mais vulneráveis. Ingestão de produto cáustico segue também o protocolo de corrosivos; este módulo trata principalmente a exposição inalatória.",
+      "es": "Los niños y las personas con enfermedad respiratoria pueden ser más vulnerables. La ingesta de un producto cáustico también sigue el protocolo de corrosivos; este módulo trata principalmente la exposición inhalatoria.",
+      "sources": [
+        "ATCL"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDCCL",
+      "title": "Chlorine chemical emergency",
+      "url": "https://www.cdc.gov/chemical-emergencies/chemical-fact-sheets/chlorine.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "ATCL",
+      "title": "Medical management guidelines: chlorine",
+      "url": "https://wwwn.cdc.gov/tsp/MMG/MMGDetails.aspx?mmgid=198&toxid=36",
+      "authority": "ATSDR",
+      "year": "página vigente",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NIOSHCL",
+      "title": "Chlorine lung damaging agent",
+      "url": "https://www.cdc.gov/niosh/ershdb/emergencyresponsecard_29750024.html",
+      "authority": "NIOSH",
+      "year": "página vigente",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

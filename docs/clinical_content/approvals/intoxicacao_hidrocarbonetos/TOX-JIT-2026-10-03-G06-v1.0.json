@@ -1,0 +1,117 @@
+{
+  "owner": "intoxicacao_hidrocarbonetos",
+  "title": {
+    "pt": "Intoxicação por hidrocarbonetos",
+    "es": "Intoxicación por hidrocarburos"
+  },
+  "version": "TOX-JIT-2026-10-03-G06-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Intoxicação por hidrocarbonetos",
+      "Intoxicación por hidrocarburos",
+      "ingestão de querosene",
+      "ingestión de queroseno",
+      "intoxicação por gasolina",
+      "intoxicación por gasolina",
+      "hydrocarbon poisoning"
+    ],
+    "distinctScope": "Exposição a derivados de petróleo com risco de aspiração; não intoxicação metabólica por álcoois tóxicos."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Querosene, gasolina e solventes podem causar pneumonite por aspiração; alguns também causam depressão neurológica e arritmias. O risco não é determinado apenas pelo volume ingerido.",
+      "es": "Queroseno, gasolina y solventes pueden causar neumonitis por aspiración; algunos también causan depresión neurológica y arritmias. El riesgo no depende solo del volumen ingerido.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Tosse ou engasgo após ingestão sugerem aspiração. Avaliar respiração, consciência e circulação; identificar composição, via e exposição recreativa.",
+      "es": "Tos o atragantamiento tras la ingesta sugieren aspiración. Evaluar respiración, conciencia y circulación; identificar composición, vía y exposición recreativa.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Exames são guiados por sintomas: oximetria, ECG e avaliação pulmonar; radiografia diante de manifestações respiratórias. Imagem inicial normal não garante ausência de evolução.",
+      "es": "Los estudios se guían por síntomas: oximetría, ECG y evaluación pulmonar; radiografía ante manifestaciones respiratorias. Una imagen inicial normal no garantiza ausencia de evolución.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Retirar da exposição e oferecer suporte ventilatório conforme necessidade. Não induzir vômito nem fazer lavagem gástrica. Carvão ativado aumenta o risco de aspiração e não é indicado.",
+      "es": "Retirar de la exposición y ofrecer soporte ventilatorio según necesidad. No inducir vómito ni realizar lavado gástrico. El carbón activado aumenta el riesgo de aspiración y no está indicado.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antídoto específico. Broncodilatador pode ser necessário se broncoespasmo; não usar antibiótico ou corticoide profilático de rotina para pneumonite química.",
+      "es": "No hay antídoto específico. Puede requerirse broncodilatador si hay broncoespasmo; no usar antibiótico o corticoide profiláctico de rutina para neumonitis química.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Na diretriz pediátrica, observar o assintomático por 6 horas após a exposição antes de considerar alta. Sintomas respiratórios ou neurológicos exigem observação maior/internação; o relógio não substitui evolução clínica.",
+      "es": "En la guía pediátrica, observar al asintomático durante 6 horas tras la exposición antes de considerar el alta. Los síntomas respiratorios o neurológicos exigen mayor observación/internación; el reloj no sustituye la evolución clínica.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hipoxemia, esforço respiratório, convulsão, alteração mental ou arritmia exigem escalonamento. Exposição mista requer protocolo do agente específico.",
+      "es": "Hipoxemia, esfuerzo respiratorio, convulsión, alteración mental o arritmia exigen escalamiento. La exposición mixta requiere el protocolo del agente específico.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "As doses pediátricas não são extrapoladas para adultos nem vice-versa. Confirmar produto com toxicologia e orientar armazenamento seguro; ingestão intencional requer avaliação de risco após estabilização.",
+      "es": "No extrapolar dosis pediátricas a adultos ni viceversa. Confirmar el producto con toxicología y orientar almacenamiento seguro; la ingesta intencional requiere evaluación de riesgo tras la estabilización.",
+      "sources": [
+        "RCHHC"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "RCHHC",
+      "title": "Hydrocarbon poisoning",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Hydrocarbon_Poisoning/",
+      "authority": "Royal Children’s Hospital; pediatria",
+      "year": "página vigente",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

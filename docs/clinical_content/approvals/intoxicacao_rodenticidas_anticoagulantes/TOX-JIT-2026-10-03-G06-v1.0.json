@@ -1,0 +1,116 @@
+{
+  "owner": "intoxicacao_rodenticidas_anticoagulantes",
+  "title": {
+    "pt": "Intoxicação por rodenticidas anticoagulantes",
+    "es": "Intoxicación por rodenticidas anticoagulantes"
+  },
+  "version": "TOX-JIT-2026-10-03-G06-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Intoxicação por rodenticidas anticoagulantes",
+      "Intoxicación por rodenticidas anticoagulantes",
+      "intoxicação por supervarfarina",
+      "intoxicación por superwarfarina",
+      "brodifacoum poisoning",
+      "anticoagulant rodenticide poisoning"
+    ],
+    "distinctScope": "Antagonismo prolongado de vitamina K; não atribuir composição a chumbinho nem equivalência a organofosforados."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Rodenticidas anticoagulantes reduzem a atividade dos fatores dependentes de vitamina K; alguns causam coagulopatia prolongada. Raticida é uma categoria comercial, não um princípio ativo único.",
+      "es": "Los rodenticidas anticoagulantes reducen la actividad de los factores dependientes de vitamina K; algunos causan coagulopatía prolongada. Raticida es una categoría comercial, no un principio activo único.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Identificar embalagem e ingrediente. Procurar equimoses, sangramento de mucosas, hematúria e sintomas de hemorragia interna. Ausência inicial de sangramento não exclui toxicidade tardia.",
+      "es": "Identificar envase e ingrediente. Buscar equimosis, sangrado de mucosas, hematuria y síntomas de hemorragia interna. La ausencia inicial de sangrado no excluye toxicidad tardía.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Colher hemograma e INR. Na ingestão intencional ou de quantidade desconhecida, o manual orienta INR inicial e diário; a alteração pode surgir apenas após 48 horas. INR normal em 48–72 horas reduz muito o risco de hemorragia relevante, desde que não mascarado por vitamina K.",
+      "es": "Obtener hemograma e INR. En ingesta intencional o de cantidad desconocida, el manual indica INR inicial y diario; la alteración puede aparecer recién después de 48 horas. Un INR normal a las 48–72 horas reduce mucho el riesgo de hemorragia relevante, siempre que no esté enmascarado por vitamina K.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Sangramento relevante exige ressuscitação e reversão hospitalar. Não presumir que todo raticida responda a vitamina K: carbamatos, organofosforados, fosfetos e outros agentes exigem condutas distintas.",
+      "es": "El sangrado relevante exige reanimación y reversión hospitalaria. No presumir que todo raticida responde a vitamina K: carbamatos, organofosforados, fosfuros y otros agentes exigen conductas distintas.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Fitomenadiona (vitamina K1) trata coagulopatia confirmada; não usar empiricamente antes de elevação do INR. O manual descreve início no adulto com 10–50 mg por via oral, duas a quatro vezes ao dia, ajustado por toxicologia ao INR e ao agente. Essa faixa não é uma prescrição única e não substitui reversão urgente com fatores na hemorragia grave.",
+      "es": "La fitomenadiona (vitamina K1) trata coagulopatía confirmada; no usar empíricamente antes de la elevación del INR. El manual describe inicio en adultos con 10–50 mg por vía oral, dos a cuatro veces al día, ajustado por toxicología al INR y al agente. Este rango no es una prescripción única y no sustituye la reversión urgente con factores en hemorragia grave.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Pode ser necessário tratamento prolongado por semanas ou meses, com INR seriado e avaliação antes de suspender vitamina K1. Alta requer plano de exames e adesão confiável.",
+      "es": "Puede requerirse tratamiento prolongado durante semanas o meses, con INR seriado y evaluación antes de suspender vitamina K1. El alta requiere un plan de análisis y adherencia fiable.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hemorragia, queda de hemoglobina, instabilidade ou impossibilidade de seguimento exigem avaliação hospitalar. Contatar toxicologia para exposições intencionais ou de identidade incerta.",
+      "es": "Hemorragia, descenso de hemoglobina, inestabilidad o imposibilidad de seguimiento exigen evaluación hospitalaria. Contactar toxicología ante exposiciones intencionales o de identidad incierta.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não extrapolar esquemas adultos para crianças. Chumbinho não identifica composição e não deve ser cadastrado como sinônimo de anticoagulante.",
+      "es": "No extrapolar esquemas adultos a niños. Chumbinho no identifica la composición y no debe registrarse como sinónimo de anticoagulante.",
+      "sources": [
+        "EPAR"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "EPAR",
+      "title": "Pesticide poisoning handbook: rodenticides",
+      "url": "https://www.epa.gov/sites/default/files/documents/rmpp_6thed_ch18_rodenticides.pdf",
+      "authority": "Manual de toxicologia hospedado pela EPA",
+      "year": 2013,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

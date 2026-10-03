@@ -1,0 +1,116 @@
+{
+  "owner": "exposicao_plantas_oxalato_insoluvel",
+  "title": {
+    "pt": "Exposição a plantas com oxalato insolúvel",
+    "es": "Exposición a plantas con oxalato insoluble"
+  },
+  "version": "TOX-JIT-2026-10-03-G06-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Exposição a plantas com oxalato insolúvel",
+      "Exposición a plantas con oxalato insoluble",
+      "exposição a comigo-ninguém-pode",
+      "intoxicación por Dieffenbachia",
+      "exposição a filodendro",
+      "exposición a filodendro"
+    ],
+    "distinctScope": "Irritação local por cristais insolúveis; não nefrotoxicidade por oxalato solúvel/etilenoglicol."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Dieffenbachia e Philodendron contêm cristais de oxalato de cálcio insolúvel que irritam tecidos. Não equivalem a intoxicação sistêmica por oxalato solúvel ou etilenoglicol.",
+      "es": "Dieffenbachia y Philodendron contienen cristales de oxalato de calcio insoluble que irritan tejidos. No equivalen a intoxicación sistémica por oxalato soluble o etilenglicol.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor oral imediata, edema, sialorreia e disfagia após mastigar a planta sugerem irritação. Contato ocular pode lesar a córnea.",
+      "es": "Dolor oral inmediato, edema, sialorrea y disfagia tras masticar la planta sugieren irritación. El contacto ocular puede lesionar la córnea.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar planta e contato; avaliar boca, deglutição, respiração e olhos. Não presumir segurança por um nome popular ambíguo.",
+      "es": "Confirmar planta y contacto; evaluar boca, deglución, respiración y ojos. No presumir seguridad por un nombre popular ambiguo.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Remover resíduos visíveis e enxaguar a boca, cuspindo a água. Não induzir vômito nem forçar líquidos em quem tem dificuldade de engolir.",
+      "es": "Retirar residuos visibles y enjuagar la boca, escupiendo el agua. No inducir vómito ni forzar líquidos en quien tenga dificultad para tragar.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antídoto. Irrigar os olhos com água por pelo menos 15 minutos; dor ou alteração visual persistente requer avaliação. Medidas frias locais podem aliviar irritação oral leve com deglutição preservada.",
+      "es": "No hay antídoto. Irrigar los ojos con agua durante al menos 15 minutos; dolor o alteración visual persistente requiere evaluación. Las medidas frías locales pueden aliviar irritación oral leve con deglución conservada.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar edema, dor e ingestão oral. Alta apenas com melhora e orientações de retorno; sintomas persistentes exigem avaliação presencial.",
+      "es": "Reevaluar edema, dolor e ingesta oral. Alta solo con mejoría e indicaciones de regreso; los síntomas persistentes exigen evaluación presencial.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dispneia, edema importante, sialorreia intensa ou incapacidade de engolir exigem atendimento urgente e avaliação da via aérea.",
+      "es": "Disnea, edema importante, sialorrea intensa o incapacidad para tragar exigen atención urgente y evaluación de la vía aérea.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Manter plantas fora do alcance infantil. Usar luvas ao manusear seiva e lavar pele exposta. Não oferecer alimentos a paciente com disfagia.",
+      "es": "Mantener plantas fuera del alcance infantil. Usar guantes al manipular savia y lavar la piel expuesta. No ofrecer alimentos a pacientes con disfagia.",
+      "sources": [
+        "NCPCOX"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NCPCOX",
+      "title": "Dieffenbachia and Philodendron: popular but poisonous",
+      "url": "https://www.poison.org/articles/dieffenbachia-and-philodendron-202",
+      "authority": "National Capital Poison Center",
+      "year": "página vigente",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}
