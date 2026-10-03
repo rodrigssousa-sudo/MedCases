@@ -7,7 +7,7 @@ const {structure}=require('./audio_media_structure');
 const grow=WebAssembly.Memory.prototype.grow;
 WebAssembly.Memory.prototype.grow=function(pages){if(!Number.isSafeInteger(pages)||pages<0||this.buffer.byteLength+pages*65536>64*1024*1024)throw Error('MEDIA_MEMORY_LIMIT');return grow.call(this,pages);};
 globalThis.fetch=()=>{throw Error('MEDIA_NETWORK_FORBIDDEN');};
-(async()=>{const bytes=Buffer.from(workerData.bytes),s=structure(bytes,{longRecording:workerData.longRecording===true});if(s.kind==='wav'){parentPort.postMessage({durationMs:s.durationMs});return;}
+(async()=>{const bytes=Buffer.from(workerData.bytes),s=structure(bytes,{longRecording:workerData.longRecording===true,continuousRange:workerData.continuousRange===true});if(s.kind==='wav'){parentPort.postMessage({durationMs:s.durationMs});return;}
  const {decoder}=await import('@audio/decode-aac');const dec=await decoder({asc:s.asc});
  try{let samples=0,hasOutput=false;for(const [off,len]of s.frames){const result=dec.decode(bytes.subarray(off,off+len));if(dec.m._aac_error()!==0||dec.m._aac_consumed()!==len||result.errors||!result.channelData||result.channelData.length>s.channels)throw Error('MEDIA_DECODE_INVALID');const n=result.channelData[0]?.length||0;
   // AAC priming can yield no output for the initial access unit; reserve its

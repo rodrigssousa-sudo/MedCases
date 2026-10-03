@@ -3,6 +3,7 @@ const fs=require('node:fs'),crypto=require('node:crypto');
 const {Timestamp}=require('firebase-admin/firestore');
 const {assembleLogicalAudio}=require('./logical_recording_audio');
 const {inspectSingleRecording}=require('./single_recording_audio');
+const {settleRange}=require('./transcription_range_contract');
 const {TranscriptionAttemptLedger}=require('./transcription_attempt_ledger');
 const {storedProof,combineProofs,digest}=require('./audio_media_budget');
 const {usageReceipt}=require('./usage_reservation_guard');
@@ -73,7 +74,7 @@ class LogicalRecordingQueue {
     if(reservation.data()?.uid!==job.uid)throw Error('RESERVATION_NOT_OWNED');
     if(job.singleAudio===true){
      if(job.expectedSegments!==1||segments.length!==1)throw Error('SINGLE_AUDIO_BINDING_INVALID');
-     const inspected=await inspectSingleRecording({storage:this.storage,segment:segments[0],maximumMs:reservation.data().maximumMs});
+     const inspected=await inspectSingleRecording({storage:this.storage,segment:segments[0],maximumMs:reservation.data().maximumMs,transcriptionRange:job.transcriptionRange});
      await this.guardedRef(jobRef,ref,token).set({...inspected,recordingSessionId:job.sessionId||job.sourceId,logicalRecordingId:jobRef.id,ownerUid:job.uid,mode:job.mode,language:job.locale,state:'processing',updatedAt:now()},{merge:true});
     }else{
     const audio=await this.assemble({storage:this.storage,segments,maximumMs:reservation.data().maximumMs});
@@ -90,7 +91,7 @@ class LogicalRecordingQueue {
    stage='QUOTA_RESERVED';
    if(!value.providerTranscriptId){
     for(const p of value.physicalSegments){
-     const proof=combineProofs([storedProof(p,{longRecording:job.singleAudio===true})],digest(JSON.stringify({logicalRecordingId:jobRef.id,index:p.index,sha256:p.sha256})));
+     const proof=combineProofs([storedProof(p,{longRecording:job.singleAudio===true,continuousRange:!!job.transcriptionRange})],digest(JSON.stringify({logicalRecordingId:jobRef.id,index:p.index,sha256:p.sha256})));
      // An already claimed, hash-bound execution resumes this logical job.
      await this.owner.claimExecution(job.uid,usageReceipt(job.usage),p.index,proof);
     }
@@ -151,6 +152,7 @@ class LogicalRecordingQueue {
    }
   }catch(error){error.pipelineStage='ACCOUNTING_FINALIZED';throw error;}
   await jobRef.set({state:'completed',accountingFinalizedAt:now(),updatedAt:now()},{merge:true});
+  await settleRange(this.db,jobRef,job);
   if(ledger)await ledger.advance(job.uid,job.attemptId,{eventId:'completed',state:'COMPLETED'});
   for(const doc of docs){const key=doc.data().objectKey;if(key)await this.storage.remove(key);await doc.ref.set({objectKey:null},{merge:true});}
   if(value.objectKey)await this.storage.remove(value.objectKey);

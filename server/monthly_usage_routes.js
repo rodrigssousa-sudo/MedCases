@@ -3,6 +3,12 @@ const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 const {selectedProvider,providerGateError}=require('./transcription_profiles');
 function registerMonthlyUsageRoutes({app,authenticate,limiter,db}) {
  const owner=new MonthlyUsageOwner({db});
+ if(typeof app.get==='function')app.get('/api/usage/status',authenticate,limiter,async(req,res)=>{
+  res.setHeader('Cache-Control','no-store');
+  if(!req.auth?.uid)return res.status(401).json({error:'AUTH_REQUIRED'});
+  try{return res.json({...await owner.balance(req.auth.uid),serverAuthoritative:true,transcriptionRangeV1:true,maxContinuousTranscriptionDurationMs:10*60*60*1000});}
+  catch{return res.status(503).json({error:'USAGE_UNAVAILABLE'});}
+ });
  for(const action of ['reserve','finish','balance','eligibility']) app.post(`/api/usage/${action}`,authenticate,limiter,async(req,res)=>{
   res.setHeader('Cache-Control','no-store');
   const uid=req.auth?.uid;
@@ -13,7 +19,7 @@ function registerMonthlyUsageRoutes({app,authenticate,limiter,db}) {
     if(action==='eligibility')return res.json({eligible:true});
    }
    const result=await owner[action](uid,req.body||{});
-   return res.json(result);
+   return res.json(action==='balance'?{...result,serverAuthoritative:true,transcriptionRangeV1:true,maxContinuousTranscriptionDurationMs:10*60*60*1000}:result);
   } catch(error) {
    const gate=providerGateError(error);
    if(gate){

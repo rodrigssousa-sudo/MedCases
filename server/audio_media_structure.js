@@ -5,8 +5,8 @@
 const {scanMp4}=require('./iso_bmff_boxes');
 const MAX_BYTES=25*1024*1024, MAX_DURATION_MS=15*60*1000, MAX_FRAMES=50000;
 function fail(){throw Error('MEDIA_INVALID_OR_UNSUPPORTED');}
-function structure(bytes,{longRecording=false}={}){
- const maxBytes=longRecording?64*1024*1024:MAX_BYTES, maxDuration=longRecording?90*60*1000:MAX_DURATION_MS, maxFrames=longRecording?253126:MAX_FRAMES;
+function structure(bytes,{longRecording=false,continuousRange=false}={}){
+ const maxBytes=longRecording?64*1024*1024:MAX_BYTES, maxDuration=continuousRange?10*60*60*1000:longRecording?90*60*1000:MAX_DURATION_MS, maxFrames=continuousRange?1687500:longRecording?253126:MAX_FRAMES;
  const b=Buffer.from(bytes.buffer,bytes.byteOffset,bytes.byteLength);
  if(!b.length||b.length>maxBytes)fail();
  if(longRecording&&b[0]===255)return require('./adts_recording_structure').adtsRecordingStructure(b,{maxFrames,maxDuration});
