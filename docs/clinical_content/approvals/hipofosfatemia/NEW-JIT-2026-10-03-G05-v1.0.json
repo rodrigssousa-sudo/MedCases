@@ -1,0 +1,113 @@
+{
+  "owner": "hipofosfatemia",
+  "title": {
+    "pt": "Hipofosfatemia",
+    "es": "Hipofosfatemia"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hipofosfatemia",
+      "Hipofosfatemia",
+      "hypophosphatemia"
+    ],
+    "distinctScope": "Déficit de fosfato de múltiplas causas; não equivale à síndrome de realimentação como um todo."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Déficit de fosfato pode resultar de perdas ou redistribuição; realimentação, alcoolismo e tratamento de crises metabólicas são contextos relevantes.",
+      "es": "Déficit de fosfato puede resultar de pérdidas o redistribución; realimentación, alcoholismo y tratamiento de crisis metabólicas son contextos relevantes.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Fraqueza, disfunção respiratória ou neurológica podem acompanhar déficit grave; avaliar ingestão recente e comorbidades.",
+      "es": "Debilidad, disfunción respiratoria o neurológica pueden acompañar déficit grave; evaluar ingesta reciente y comorbilidades.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Dosar fosfato, cálcio, magnésio, potássio e função renal; determinar causa e risco de realimentação.",
+      "es": "Medir fosfato, calcio, magnesio, potasio y función renal; determinar causa y riesgo de realimentación.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Reposição oral em situações selecionadas; via intravenosa se grave/sintomática, com prescrição e monitorização hospitalares.",
+      "es": "Reposición oral en situaciones seleccionadas; vía intravenosa si grave/sintomática, con prescripción y vigilancia hospitalarias.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Exemplo hospitalar para fosfato <0,3 mmol/L: glicerofosfato de sódio fornecendo 20 mmol de fosfato, diluído em 500 mL de glicose 5% ou cloreto de sódio 0,9%, durante 12 horas.",
+      "es": "Ejemplo hospitalario para fosfato <0,3 mmol/L: glicerofosfato de sodio aportando 20 mmol de fosfato, diluido en 500 mL de glucosa 5% o cloruro de sodio 0,9%, durante 12 horas.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Rever cálcio, fosfato, sódio, magnésio e potássio a cada 12 horas durante esse esquema; repetir somente conforme resposta e função renal.",
+      "es": "Revisar calcio, fosfato, sodio, magnesio y potasio cada 12 horas durante esta pauta; repetir solo según respuesta y función renal.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Insuficiência respiratória, convulsões, arritmia ou rabdomiólise exigem hospitalização e correção monitorizada.",
+      "es": "Insuficiencia respiratoria, convulsiones, arritmia o rabdomiólisis requieren ingreso y corrección vigilada.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Confirmar sal/concentração: preparações contêm cargas diferentes de sódio ou potássio. Insuficiência renal e restrição hídrica exigem esquema individualizado; não infundir sem diluição.",
+      "es": "Confirmar sal/concentración: preparaciones contienen cargas distintas de sodio o potasio. Insuficiencia renal y restricción hídrica exigen pauta individualizada; no infundir sin dilución.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS",
+      "title": "Hypophosphataemia — adult treatment",
+      "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/fluid-and-electrolytes/treatment-of-low-electrolytes/hypophosphataemia-guidelines/",
+      "authority": "NHS Highland",
+      "year": "consulta 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

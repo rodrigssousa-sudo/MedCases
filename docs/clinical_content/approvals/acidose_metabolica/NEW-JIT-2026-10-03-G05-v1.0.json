@@ -1,0 +1,122 @@
+{
+  "owner": "acidose_metabolica",
+  "title": {
+    "pt": "Acidose metabólica",
+    "es": "Acidosis metabólica"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Acidose metabólica",
+      "Acidosis metabólica",
+      "metabolic acidosis"
+    ],
+    "distinctScope": "Síndrome ácido-base para diagnóstico diferencial; não recadastra CAD ou intoxicações específicas."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Queda primária do bicarbonato decorre de acúmulo de ácidos ou perda de base; acidemia e acidose não são sinônimos quando há distúrbios mistos.",
+      "es": "La caída primaria del bicarbonato resulta de acumulación de ácidos o pérdida de base; acidemia y acidosis no son sinónimos con trastornos mixtos.",
+      "sources": [
+        "SRLF"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar ventilação, perfusão, consciência, glicemia e exposições; respiração profunda pode ser compensação, não ansiedade.",
+      "es": "Evaluar ventilación, perfusión, conciencia, glucemia y exposiciones; respiración profunda puede ser compensación, no ansiedad.",
+      "sources": [
+        "SRLF"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Gasometria, eletrólitos, albumina, lactato, cetonas e função renal orientam causa; interpretar ânion gap corrigido pela albumina e compensação respiratória.",
+      "es": "Gasometría, electrolitos, albúmina, lactato, cetonas y función renal orientan causa; interpretar anión gap corregido por albúmina y compensación respiratoria.",
+      "sources": [
+        "SRLF"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar causa: hipoperfusão, cetose, perda digestiva, insuficiência renal ou intoxicação exigem estratégias diferentes; bicarbonato não é terapia universal.",
+      "es": "Tratar causa: hipoperfusión, cetosis, pérdida digestiva, insuficiencia renal o intoxicación requieren estrategias distintas; bicarbonato no es tratamiento universal.",
+      "sources": [
+        "SRLF"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há dose única de bicarbonato aplicável a toda acidose. Uso selecionado exige cálculo, ventilação adequada e controles; ensaio de 2025 não demonstrou redução de mortalidade na população estudada.",
+      "es": "No existe dosis única de bicarbonato aplicable a toda acidosis. Uso seleccionado exige cálculo, ventilación adecuada y controles; ensayo de 2025 no demostró reducción de mortalidad en población estudiada.",
+      "sources": [
+        "RCT"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Repetir pH, bicarbonato, potássio, lactato/cetonas conforme causa e resposta; corrigir o número sem resolver etiologia é insuficiente.",
+      "es": "Repetir pH, bicarbonato, potasio, lactato/cetonas según causa y respuesta; corregir el número sin resolver etiología es insuficiente.",
+      "sources": [
+        "SRLF"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Acidemia grave, choque, hipercalemia, intoxicação suspeita ou falência renal/respiratória exigem hospital e possível terapia intensiva/diálise.",
+      "es": "Acidemia grave, shock, hiperpotasemia, sospecha de intoxicación o fallo renal/respiratorio requieren hospital y posible cuidados intensivos/diálisis.",
+      "sources": [
+        "SRLF"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Intubação pode retirar compensação ventilatória e precipitar deterioração; planejar ventilação com equipe experiente. Protocolos etiológicos existentes continuam responsáveis por crises específicas.",
+      "es": "La intubación puede retirar compensación ventilatoria y precipitar deterioro; planificar ventilación con equipo experimentado. Los protocolos etiológicos existentes siguen responsables de crisis específicas.",
+      "sources": [
+        "SRLF"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "SRLF",
+      "title": "Diagnosis and management of metabolic acidosis — expert panel",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6695455/",
+      "authority": "SRLF/SFMU",
+      "year": 2019,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "RCT",
+      "title": "BICARICU-2 randomized clinical trial",
+      "url": "https://jamanetwork.com/journals/jama/fullarticle/2840824",
+      "authority": "JAMA",
+      "year": 2025,
+      "status": "PRIMARY_CLINICAL_TRIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

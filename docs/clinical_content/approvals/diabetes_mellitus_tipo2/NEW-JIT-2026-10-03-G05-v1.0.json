@@ -1,0 +1,135 @@
+{
+  "owner": "diabetes_mellitus_tipo2",
+  "title": {
+    "pt": "Diabetes mellitus tipo 2",
+    "es": "Diabetes mellitus tipo 2"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Diabetes mellitus tipo 2",
+      "Diabetes mellitus tipo 2",
+      "DM2",
+      "diabetes tipo 2"
+    ],
+    "distinctScope": "Doença crônica definida; distinta de pré-diabetes e crises hiperglicêmicas. Guia de insulina semanal é editorial farmacológico, não owner da doença."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Resistência à insulina e perda progressiva de função beta levam à hiperglicemia; risco cardiovascular/renal deve orientar tratamento além da glicose.",
+      "es": "Resistencia a insulina y pérdida progresiva de función beta causan hiperglucemia; riesgo cardiovascular/renal debe orientar tratamiento además de glucosa.",
+      "sources": [
+        "ADA",
+        "PHARM"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Poliúria, polidipsia, perda de peso ou achado incidental; no Plantão excluir desidratação, cetose e estado hiperosmolar.",
+      "es": "Poliuria, polidipsia, pérdida de peso o hallazgo incidental; en urgencias excluir deshidratación, cetosis y estado hiperosmolar.",
+      "sources": [
+        "ADA"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Critérios: HbA1c ≥6,5%, jejum ≥126 mg/dL, glicemia após 2 horas de teste com 75 g ≥200 mg/dL, ou casual ≥200 mg/dL com sintomas clássicos. Sem hiperglicemia inequívoca, confirmar.",
+      "es": "Criterios: HbA1c ≥6,5%, ayuno ≥126 mg/dL, glucemia a las 2 horas de prueba con 75 g ≥200 mg/dL, o casual ≥200 mg/dL con síntomas clásicos. Sin hiperglucemia inequívoca, confirmar.",
+      "sources": [
+        "ADA"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Individualizar alimentação, atividade, educação e fármacos; doença cardiovascular, insuficiência cardíaca e renal podem priorizar terapias protetoras independentemente da HbA1c.",
+      "es": "Individualizar alimentación, actividad, educación y fármacos; enfermedad cardiovascular, insuficiencia cardíaca y renal pueden priorizar terapias protectoras independientemente de HbA1c.",
+      "sources": [
+        "PHARM"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto estável selecionado: metformina de liberação imediata 500 mg oral a cada 12 horas com refeições; titular pela tolerância. Não iniciar se filtração 30–45 mL/minuto/1,73 m²; contraindicar abaixo de 30.",
+      "es": "Adulto estable seleccionado: metformina de liberación inmediata 500 mg oral cada 12 horas con comidas; titular según tolerancia. No iniciar con filtración 30–45 mL/minuto/1,73 m²; contraindicar por debajo de 30.",
+      "sources": [
+        "MET"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Rever controle, função renal, hipoglicemia e adesão; organizar avaliação ocular, renal e dos pés. Alta exige plano terapêutico e acesso ao seguimento.",
+      "es": "Revisar control, función renal, hipoglucemia y adherencia; organizar evaluación ocular, renal y de pies. El alta exige plan terapéutico y acceso al seguimiento.",
+      "sources": [
+        "ADA",
+        "PHARM"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Vômitos, cetonemia, respiração profunda, alteração mental ou instabilidade exigem protocolo de crise; não tratar apenas com dose extra de antidiabético oral.",
+      "es": "Vómitos, cetonemia, respiración profunda, alteración mental o inestabilidad exigen protocolo de crisis; no tratar solo con dosis extra de antidiabético oral.",
+      "sources": [
+        "ADA"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Suspender/reavaliar metformina em hipóxia, lesão renal aguda ou doença grave. Gestação, fragilidade e risco de hipoglicemia mudam metas e medicamentos.",
+      "es": "Suspender/reevaluar metformina ante hipoxia, lesión renal aguda o enfermedad grave. Embarazo, fragilidad y riesgo de hipoglucemia cambian metas y medicamentos.",
+      "sources": [
+        "MET",
+        "PHARM"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "ADA",
+      "title": "Diagnosis and classification — Standards of Care",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+      "authority": "ADA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "PHARM",
+      "title": "Pharmacologic approaches — Standards of Care",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S183/163934/9-Pharmacologic-Approaches-to-Glycemic-Treatment",
+      "authority": "ADA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "MET",
+      "title": "Metformin hydrochloride tablets prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=fc466c46-abaa-4675-aef2-4b1a1adfd912",
+      "authority": "DailyMed",
+      "year": 2026,
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

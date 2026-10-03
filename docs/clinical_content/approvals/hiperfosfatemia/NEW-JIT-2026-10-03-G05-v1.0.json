@@ -1,0 +1,125 @@
+{
+  "owner": "hiperfosfatemia",
+  "title": {
+    "pt": "Hiperfosfatemia",
+    "es": "Hiperfosfatemia"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hiperfosfatemia",
+      "Hiperfosfatemia",
+      "hyperphosphatemia"
+    ],
+    "distinctScope": "Excesso de fosfato, distinto da síndrome de lise tumoral e do déficit de fosfato."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Fosfato elevado pode decorrer de retenção renal, lise celular ou carga exógena; alteração aguda difere do manejo crônico da doença renal.",
+      "es": "Fosfato elevado puede deberse a retención renal, lisis celular o carga exógena; alteración aguda difiere del manejo crónico renal.",
+      "sources": [
+        "NICE",
+        "KDIGO"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Revisar função renal, enemas/suplementos, tratamento oncológico e sintomas de hipocalcemia; elevação isolada pode ser assintomática.",
+      "es": "Revisar función renal, enemas/suplementos, tratamiento oncológico y síntomas de hipocalcemia; elevación aislada puede ser asintomática.",
+      "sources": [
+        "KDIGO"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar fosfato e interpretar cálcio, função renal e contexto; investigar lise tumoral ou rabdomiólise quando indicado.",
+      "es": "Confirmar fosfato e interpretar calcio, función renal y contexto; investigar lisis tumoral o rabdomiólisis cuando corresponda.",
+      "sources": [
+        "KDIGO"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suspender cargas inadequadas e tratar causa. Na doença renal crônica, ajustar dieta preservando nutrição, diálise e quelantes conforme especialista.",
+      "es": "Suspender cargas inadecuadas y tratar causa. En enfermedad renal crónica, ajustar dieta preservando nutrición, diálisis y quelantes según especialista.",
+      "sources": [
+        "NICE",
+        "KDIGO"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há dose universal de quelante: escolha e titulação dependem de refeições, fosfato, cálcio e função renal. Não usar quelante como substituto de diálise em emergência.",
+      "es": "No existe dosis universal de quelante: elección y titulación dependen de comidas, fosfato, calcio y función renal. No usar quelante como sustituto de diálisis urgente.",
+      "sources": [
+        "NICE",
+        "KDIGO"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar tendências de fosfato/cálcio e efeitos gastrointestinais; evitar excesso de carga de cálcio em tratamentos crônicos.",
+      "es": "Seguir tendencias de fosfato/calcio y efectos gastrointestinales; evitar exceso de carga de calcio en tratamientos crónicos.",
+      "sources": [
+        "KDIGO"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Tetania, convulsões, arritmia, lesão renal aguda ou suspeita de lise tumoral exigem avaliação hospitalar.",
+      "es": "Tetania, convulsiones, arritmia, lesión renal aguda o sospecha de lisis tumoral requieren evaluación hospitalaria.",
+      "sources": [
+        "KDIGO"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Hipocalcemia associada exige avaliação cuidadosa pelo risco de precipitação cálcio-fosfato. Alta requer causa definida e controle/seguimento renal.",
+      "es": "Hipocalcemia asociada exige evaluación cuidadosa por riesgo de precipitación calcio-fosfato. Alta requiere causa definida y control/seguimiento renal.",
+      "sources": [
+        "KDIGO"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE",
+      "title": "Chronic kidney disease — recommendations",
+      "url": "https://www.nice.org.uk/guidance/ng203/chapter/Recommendations",
+      "authority": "NICE",
+      "year": 2021,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "KDIGO",
+      "title": "CKD-MBD quick reference guide",
+      "url": "https://kdigo.org/wp-content/uploads/2023/05/KDIGO-CKD-MBD-Quick-Reference-Guide-June-2022-Updated.pdf",
+      "authority": "KDIGO",
+      "year": 2022,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

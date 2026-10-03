@@ -1,0 +1,123 @@
+{
+  "owner": "hipertireoidismo",
+  "title": {
+    "pt": "Hipertireoidismo",
+    "es": "Hipertiroidismo"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hipertireoidismo",
+      "Hipertiroidismo",
+      "hyperthyroidism"
+    ],
+    "distinctScope": "Hiperfunção tireoidiana; distinta da tempestade tireotóxica e da tireotoxicose destrutiva transitória."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Produção excessiva de hormônio, como na doença de Graves, difere da liberação por tireoidite; essa distinção determina utilidade de antitireoidiano.",
+      "es": "La producción excesiva de hormona, como en Graves, difiere de liberación por tiroiditis; esa distinción determina utilidad del antitiroideo.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Palpitação, tremor, intolerância ao calor, perda de peso e fraqueza; avaliar ritmo, temperatura e sinais de insuficiência cardíaca.",
+      "es": "Palpitación, temblor, intolerancia al calor, pérdida de peso y debilidad; evaluar ritmo, temperatura y signos de insuficiencia cardíaca.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Dosar TSH, tiroxina livre e triiodotironina conforme resultado; anticorpos e investigação etiológica ajudam a distinguir Graves, nódulos e tireoidite.",
+      "es": "Medir TSH, tiroxina libre y triyodotironina según resultado; anticuerpos y estudio etiológico ayudan a distinguir Graves, nódulos y tiroiditis.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Controlar sintomas e definir terapia etiológica com endocrinologia; antitireoidiano não corrige tireoidite destrutiva e não substitui protocolo de tempestade.",
+      "es": "Controlar síntomas y definir terapia etiológica con endocrinología; antitiroideo no corrige tiroiditis destructiva ni sustituye protocolo de tormenta.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Exemplo de bula para doença leve em adulto: metimazol 15 mg/dia oral, dividido em 3 tomadas a cada 8 horas. Ajustar pela gravidade e exames; não escalar sem avaliação.",
+      "es": "Ejemplo de ficha técnica para enfermedad leve adulta: metimazol 15 mg/día oral, dividido en 3 tomas cada 8 horas. Ajustar según gravedad y pruebas; no aumentar sin evaluación.",
+      "sources": [
+        "MMI"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Avaliar hemograma e função hepática antes de iniciar; orientar suspensão e avaliação urgente se febre/odinofagia ou icterícia durante antitireoidiano.",
+      "es": "Evaluar hemograma y función hepática antes de iniciar; indicar suspensión y evaluación urgente si fiebre/odinofagia o ictericia durante antitiroideo.",
+      "sources": [
+        "NICE",
+        "MMI"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre alta, delirium, taquiarritmia ou falência cardíaca sugerem tempestade tireotóxica e exigem hospitalização; não manejar como quadro estável.",
+      "es": "Fiebre alta, delirio, taquiarritmia o fallo cardíaco sugieren tormenta tiroidea y requieren ingreso; no manejar como cuadro estable.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Metimazol apresenta riscos fetais, especialmente no início da gestação; escolha e troca de fármacos exigem especialista. Agranulocitose é reação potencialmente grave.",
+      "es": "Metimazol presenta riesgos fetales, especialmente al inicio del embarazo; elección y cambio de fármacos requieren especialista. Agranulocitosis es reacción potencialmente grave.",
+      "sources": [
+        "MMI"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE",
+      "title": "Thyroid disease assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng145/chapter/Recommendations",
+      "authority": "NICE",
+      "year": "2019; versão vigente consultada 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "MMI",
+      "title": "Methimazole prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c1e6f1ee-238c-466e-b223-3c3f63dac9ed",
+      "authority": "DailyMed",
+      "year": 2026,
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

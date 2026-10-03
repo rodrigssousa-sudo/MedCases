@@ -1,0 +1,134 @@
+{
+  "owner": "conjuntivite_infecciosa",
+  "title": {
+    "pt": "Conjuntivite infecciosa",
+    "es": "Conjuntivitis infecciosa"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Conjuntivite infecciosa",
+      "Conjuntivitis infecciosa",
+      "conjuntivite aguda",
+      "conjuntivitis aguda"
+    ],
+    "distinctScope": "Inflamação infecciosa conjuntival, distinta de blefarite e olho seco."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Conjuntivite pode ser viral ou bacteriana; alergia é diferencial importante. Antibiótico não trata etiologia viral.",
+      "es": "La conjuntivitis puede ser viral o bacteriana; la alergia es un diferencial importante. El antibiótico no trata la etiología viral.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar secreção, prurido, lateralidade, acuidade visual, dor, fotofobia e uso de lentes; secreção purulenta isolada não identifica o agente.",
+      "es": "Evaluar secreción, prurito, lateralidad, agudeza visual, dolor, fotofobia y lentes; la secreción purulenta aislada no identifica el agente.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico geralmente clínico. Considerar ceratite, uveíte e glaucoma diante de dor ou redução visual; hiperpurulência sugere gonococo.",
+      "es": "Diagnóstico generalmente clínico. Considerar queratitis, uveítis y glaucoma ante dolor o reducción visual; la hiperpurulencia sugiere gonococo.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Higiene das mãos, compressas frias e lágrimas artificiais aliviam sintomas; suspender lentes. Antibiótico tópico é seletivo para provável infecção bacteriana.",
+      "es": "Higiene de manos, compresas frías y lágrimas artificiales alivian síntomas; suspender lentes. El antibiótico tópico es selectivo para probable infección bacteriana.",
+      "sources": [
+        "TX"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Quando indicado: polimixina B 10.000 unidades/mL + trimetoprima 1 mg/mL, 1 gota no olho afetado a cada 3 horas, máximo 6 aplicações/dia, durante 7–10 dias.",
+      "es": "Cuando esté indicado: polimixina B 10.000 unidades/mL + trimetoprima 1 mg/mL, 1 gota en el ojo afectado cada 3 horas, máximo 6 aplicaciones/día, durante 7–10 días.",
+      "sources": [
+        "POLY"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Alta somente sem sinais de ameaça visual; retornar se piorar ou não melhorar. Evitar compartilhar toalhas ou colírios e tocar a ponta do frasco.",
+      "es": "Alta solo sin amenaza visual; volver si empeora o no mejora. Evitar compartir toallas o colirios y tocar la punta del frasco.",
+      "sources": [
+        "TX",
+        "POLY"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor importante, fotofobia, visão reduzida, lesão corneana, recém-nascido ou suspeita gonocócica exigem avaliação urgente; colírio isolado não trata infecção gonocócica.",
+      "es": "Dolor importante, fotofobia, visión reducida, lesión corneal, recién nacido o sospecha gonocócica exigen evaluación urgente; el colirio aislado no trata infección gonocócica.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não iniciar corticoide ocular sem oftalmologista. Usuários de lentes precisam avaliação para ceratite; segurança desta associação não estabelecida abaixo de 2 meses.",
+      "es": "No iniciar corticoide ocular sin oftalmólogo. Usuarios de lentes necesitan evaluación de queratitis; seguridad de esta asociación no establecida por debajo de 2 meses.",
+      "sources": [
+        "CDC",
+        "POLY"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Clinical overview of pink eye",
+      "url": "https://www.cdc.gov/conjunctivitis/hcp/clinical-overview/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "TX",
+      "title": "How to treat pink eye",
+      "url": "https://www.cdc.gov/conjunctivitis/treatment/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "POLY",
+      "title": "Polymyxin B sulfate and trimethoprim ophthalmic solution",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d1f55327-156f-44cd-b0fc-b1a938e8aa73",
+      "authority": "DailyMed",
+      "year": "bula consultada 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

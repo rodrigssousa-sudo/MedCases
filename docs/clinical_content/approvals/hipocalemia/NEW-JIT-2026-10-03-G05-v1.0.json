@@ -1,0 +1,114 @@
+{
+  "owner": "hipocalemia",
+  "title": {
+    "pt": "Hipocalemia / hipopotassemia",
+    "es": "Hipopotasemia"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hipocalemia / hipopotassemia",
+      "Hipopotasemia",
+      "hipopotassemia",
+      "hypokalemia"
+    ],
+    "distinctScope": "Déficit de potássio, não equivale à hipercalemia existente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Potássio baixo decorre de perdas, redistribuição ou ingestão reduzida; déficit de magnésio pode impedir correção.",
+      "es": "Potasio bajo resulta de pérdidas, redistribución o ingesta reducida; déficit de magnesio puede impedir corrección.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar fraqueza, palpitações, função renal e medicamentos. Potássio <2,5 mmol/L ou sintomas importantes aumentam urgência.",
+      "es": "Evaluar debilidad, palpitaciones, función renal y medicamentos. Potasio <2,5 mmol/L o síntomas importantes aumentan urgencia.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar potássio, magnésio, creatinina e contexto ácido-base; realizar eletrocardiograma conforme gravidade e risco arrítmico.",
+      "es": "Confirmar potasio, magnesio, creatinina y contexto ácido-base; realizar electrocardiograma según gravedad y riesgo arrítmico.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Preferir reposição oral se tolerada e sem emergência; tratar causa e magnésio associado. Via intravenosa requer ambiente hospitalar.",
+      "es": "Preferir reposición oral si se tolera y sin urgencia; tratar causa y magnesio asociado. Vía intravenosa requiere entorno hospitalario.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Hipocalemia leve: potássio oral 24 mmol por tomada, 2–3 vezes ao dia, individualizado. Via periférica: solução diluída até 40 mmol/L; velocidade usual não excede 10 mmol/hora.",
+      "es": "Hipopotasemia leve: potasio oral 24 mmol por toma, 2–3 veces al día, individualizado. Vía periférica: solución diluida hasta 40 mmol/L; velocidad habitual no supera 10 mmol/hora.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Repetir potássio e função renal conforme gravidade/reposição; monitorização cardíaca nos casos graves. Concentração da bolsa não informa sozinha a dose total.",
+      "es": "Repetir potasio y función renal según gravedad/reposición; vigilancia cardíaca en casos graves. Concentración de bolsa no informa por sí sola la dosis total.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Arritmia, paralisia, alteração eletrocardiográfica ou déficit grave requerem hospital. Nunca administrar cloreto de potássio concentrado em injeção direta.",
+      "es": "Arritmia, parálisis, alteración electrocardiográfica o déficit grave requieren hospital. Nunca administrar cloruro de potasio concentrado en inyección directa.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Insuficiência renal exige doses menores e controle frequente; formulações orais diferem em mmol por comprimido. Alta exige tendência segura e causa abordada.",
+      "es": "Insuficiencia renal exige dosis menores y control frecuente; formulaciones orales difieren en mmol por comprimido. Alta exige tendencia segura y causa abordada.",
+      "sources": [
+        "SPS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "SPS",
+      "title": "Treating acute hypokalaemia in adults",
+      "url": "https://sps.nhs.uk/articles/hypokalaemia/",
+      "authority": "NHS SPS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

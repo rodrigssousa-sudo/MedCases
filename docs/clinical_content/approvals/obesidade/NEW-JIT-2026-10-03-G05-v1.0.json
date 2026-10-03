@@ -1,0 +1,123 @@
+{
+  "owner": "obesidade",
+  "title": {
+    "pt": "Obesidade",
+    "es": "Obesidad"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Obesidade",
+      "Obesidad",
+      "obesity"
+    ],
+    "distinctScope": "Doença crônica adiposa, sem owner clínico específico."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença crônica multifatorial; avaliar adiposidade e repercussões, sem reduzir cuidado a peso ou culpabilização.",
+      "es": "Enfermedad crónica multifactorial; evaluar adiposidad y repercusiones, sin reducir la atención al peso o culpabilización.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar trajetória ponderal, medicamentos, sono, limitações funcionais e comorbidades; pedir consentimento para abordar peso.",
+      "es": "Registrar trayectoria ponderal, medicamentos, sueño, limitaciones funcionales y comorbilidades; pedir consentimiento para abordar peso.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Interpretar índice de massa corporal com distribuição de gordura, etnia e contexto; investigar diabetes, hipertensão, apneia e causas secundárias quando indicadas.",
+      "es": "Interpretar índice de masa corporal con distribución de grasa, etnia y contexto; investigar diabetes, hipertensión, apnea y causas secundarias cuando corresponda.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Plano longitudinal combina alimentação adequada, atividade possível, apoio comportamental e medicamentos/cirurgia conforme indicação; não iniciar dieta extrema no Plantão.",
+      "es": "Un plan longitudinal combina alimentación adecuada, actividad posible, apoyo conductual y medicamentos/cirugía según indicación; no iniciar dieta extrema en urgencias.",
+      "sources": [
+        "DIET",
+        "NICE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há dose farmacológica universal: formulações e titulações de terapias antiobesidade diferem. Confirmar produto, última aplicação e tolerância antes de renovar ou aumentar.",
+      "es": "No hay dosis farmacológica universal: formulaciones y titulaciones de tratamientos antiobesidad difieren. Confirmar producto, última aplicación y tolerancia antes de renovar o aumentar.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar efeitos adversos, estado nutricional, peso e comorbidades. Encaminhar para seguimento estruturado; obesidade isolada não exige internação.",
+      "es": "Seguir efectos adversos, estado nutricional, peso y comorbilidades. Derivar a seguimiento estructurado; obesidad aislada no exige ingreso.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor abdominal persistente, vômitos/desidratação ou sintomas após cirurgia bariátrica exigem investigar complicações, sem atribuir tudo ao peso.",
+      "es": "Dolor abdominal persistente, vómitos/deshidratación o síntomas tras cirugía bariátrica exigen investigar complicaciones, sin atribuir todo al peso.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação e transtornos alimentares mudam abordagem. Critérios de acesso de uma diretriz nacional não devem virar critérios universais de diagnóstico.",
+      "es": "Embarazo y trastornos alimentarios cambian el abordaje. Criterios de acceso de una guía nacional no deben convertirse en criterios universales de diagnóstico.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE",
+      "title": "Overweight and obesity management — medicines and surgery",
+      "url": "https://www.nice.org.uk/guidance/ng246/chapter/Medicines-and-surgery",
+      "authority": "NICE",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "DIET",
+      "title": "Physical activity and diet",
+      "url": "https://www.nice.org.uk/guidance/ng246/chapter/Physical-activity-and-diet",
+      "authority": "NICE",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,126 @@
+{
+  "owner": "abscesso_cutaneo",
+  "title": {
+    "pt": "Abscesso cutâneo",
+    "es": "Absceso cutáneo"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Abscesso cutâneo",
+      "Absceso cutáneo",
+      "abscesso de pele",
+      "absceso de piel"
+    ],
+    "distinctScope": "Coleção purulenta dérmica; não reutiliza owners de foliculite, cisto, HS ou abscesso perianal."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Coleção purulenta dérmica/subcutânea, frequentemente por Staphylococcus aureus; antibiótico não substitui drenagem de coleção acessível.",
+      "es": "Colección purulenta dérmica/subcutánea, frecuentemente por Staphylococcus aureus; el antibiótico no sustituye el drenaje de una colección accesible.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Procurar flutuação, dor, eritema e drenagem; ultrassom ajuda quando coleção e celulite não são distinguíveis clinicamente.",
+      "es": "Buscar fluctuación, dolor, eritema y drenaje; la ecografía ayuda cuando colección y celulitis no se distinguen clínicamente.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Cultivar pus quando disponível, especialmente em recorrência ou gravidade. Diferenciar cisto inflamado, hidradenite, infecção perianal e necrosante.",
+      "es": "Cultivar pus cuando esté disponible, especialmente en recurrencia o gravedad. Diferenciar quiste inflamado, hidradenitis, infección perianal y necrosante.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Realizar incisão/drenagem com analgesia e técnica adequada. Antibiótico adjuvante depende de gravidade, defesa do hospedeiro e decisão compartilhada; ensaio posterior demonstrou benefício adicional.",
+      "es": "Realizar incisión/drenaje con analgesia y técnica adecuada. El antibiótico adyuvante depende de gravedad, defensas y decisión compartida; un ensayo posterior demostró beneficio adicional.",
+      "sources": [
+        "IDSA",
+        "RCT"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Opção estudada após drenagem em adulto: trimetoprima 320 mg + sulfametoxazol 1.600 mg por via oral a cada 12 horas durante 7 dias; confirmar indicação e ajuste renal.",
+      "es": "Opción estudiada tras drenaje en adulto: trimetoprima 320 mg + sulfametoxazol 1.600 mg por vía oral cada 12 horas durante 7 días; confirmar indicación y ajuste renal.",
+      "sources": [
+        "RCT"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar ferida, febre e extensão; verificar potássio/função renal quando houver risco com trimetoprima. Alta exige controle da coleção e ausência de comprometimento sistêmico.",
+      "es": "Reevaluar herida, fiebre y extensión; comprobar potasio/función renal cuando exista riesgo con trimetoprima. El alta exige control de la colección y ausencia de afectación sistémica.",
+      "sources": [
+        "IDSA",
+        "RCT"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Instabilidade, dor desproporcional, necrose, rápida progressão ou localização profunda exigem cirurgia/hospital; não atrasar controle do foco.",
+      "es": "Inestabilidad, dolor desproporcionado, necrosis, progresión rápida o localización profunda requieren cirugía/hospital; no retrasar control del foco.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, alergia a sulfonamidas, insuficiência renal e interações exigem alternativa individualizada. Não aplicar automaticamente esse regime a crianças ou celulite não purulenta.",
+      "es": "Embarazo, alergia a sulfonamidas, insuficiencia renal e interacciones exigen alternativa individualizada. No aplicar automáticamente este régimen a niños o celulitis no purulenta.",
+      "sources": [
+        "IDSA",
+        "RCT"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "IDSA",
+      "title": "Skin and soft tissue infections",
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "authority": "IDSA",
+      "year": 2014,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "RCT",
+      "title": "Trimethoprim-sulfamethoxazole versus placebo for uncomplicated skin abscess",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/26962903/",
+      "authority": "NEJM — ensaio clínico",
+      "year": 2016,
+      "status": "PRIMARY_CLINICAL_TRIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

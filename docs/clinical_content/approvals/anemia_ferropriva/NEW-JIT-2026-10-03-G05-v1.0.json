@@ -1,0 +1,114 @@
+{
+  "owner": "anemia_ferropriva",
+  "title": {
+    "pt": "Anemia ferropriva",
+    "es": "Anemia ferropénica"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Anemia ferropriva",
+      "Anemia ferropénica",
+      "anemia por deficiência de ferro",
+      "iron deficiency anemia"
+    ],
+    "distinctScope": "Anemia por deficiência de ferro; distinta de intoxicação por ferro e hemorragia aguda."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Depleção de ferro reduz eritropoiese; identificar origem da perda ou má absorção é tão importante quanto repor ferro.",
+      "es": "La depleción de hierro reduce eritropoyesis; identificar origen de pérdida o malabsorción es tan importante como reponer hierro.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Fadiga, palidez, dispneia ao esforço e pica; perguntar sangramento menstrual/digestivo, dieta, doação e medicamentos.",
+      "es": "Fatiga, palidez, disnea de esfuerzo y pica; preguntar sangrado menstrual/digestivo, dieta, donación y medicamentos.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Hemograma, ferritina e saturação de transferrina conforme contexto; inflamação pode elevar ferritina e mascarar déficit. Investigar causa, não apenas microcitose.",
+      "es": "Hemograma, ferritina y saturación de transferrina según contexto; inflamación puede elevar ferritina y enmascarar déficit. Investigar causa, no solo microcitosis.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Ferro oral costuma ser inicial; ferro intravenoso se inadequação/intolerância ou necessidade específica. Homens e mulheres após menopausa exigem atenção a perda gastrointestinal.",
+      "es": "El hierro oral suele ser inicial; hierro intravenoso si inadecuación/intolerancia o necesidad específica. Hombres y mujeres posmenopáusicas exigen atención a pérdida gastrointestinal.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Referência adulta: sal ferroso fornecendo 50–100 mg de ferro elementar oral uma vez ao dia; se intolerância, considerar dias alternados. Massa do sal não equivale a ferro elementar.",
+      "es": "Referencia adulta: sal ferroso aportando 50–100 mg de hierro elemental oral una vez al día; si intolerancia, considerar días alternos. Masa de sal no equivale a hierro elemental.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Rever hemoglobina nas primeiras 4 semanas; usualmente continuar cerca de 3 meses após normalização, conforme reposição de estoques e causa.",
+      "es": "Revisar hemoglobina en primeras 4 semanas; habitualmente continuar unos 3 meses tras normalización, según reposición de depósitos y causa.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Sangramento ativo, dor torácica, síncope ou instabilidade exigem avaliação urgente e decisão individual sobre transfusão, não apenas suplementação.",
+      "es": "Sangrado activo, dolor torácico, síncope o inestabilidad requieren evaluación urgente y decisión individual sobre transfusión, no solo suplementación.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, doença renal e inflamação crônica têm particularidades; resposta ao ferro não elimina necessidade de investigar malignidade/perdas quando indicado.",
+      "es": "Embarazo, enfermedad renal e inflamación crónica tienen particularidades; respuesta al hierro no elimina necesidad de investigar malignidad/pérdidas cuando corresponda.",
+      "sources": [
+        "BSG"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "BSG",
+      "title": "Management of iron deficiency anaemia in adults",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8515119/",
+      "authority": "British Society of Gastroenterology",
+      "year": 2021,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,113 @@
+{
+  "owner": "tricuriase",
+  "title": {
+    "pt": "Tricuríase",
+    "es": "Tricuriasis"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Tricuríase",
+      "Tricuriasis",
+      "Trichuris trichiura"
+    ],
+    "distinctScope": "Helmintíase por Trichuris, sem owner equivalente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção do intestino grosso por Trichuris; carga elevada pode provocar colite, anemia e comprometimento nutricional.",
+      "es": "Infección del intestino grueso por Trichuris; una carga elevada puede causar colitis, anemia y afectación nutricional.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Diarreia persistente, dor e tenesmo em contexto epidemiológico sugerem investigação; prolapso retal pode ocorrer em doença intensa.",
+      "es": "Diarrea persistente, dolor y tenesmo en contexto epidemiológico sugieren investigación; puede aparecer prolapso rectal en enfermedad intensa.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar por pesquisa de ovos nas fezes; avaliar hemograma, hidratação e estado nutricional conforme gravidade.",
+      "es": "Confirmar con búsqueda de huevos en heces; evaluar hemograma, hidratación y estado nutricional según gravedad.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Antiparasitário e correção de repercussões nutricionais; diferenciar outras colites antes de atribuir toda diarreia à parasitose.",
+      "es": "Antiparasitario y corrección de repercusiones nutricionales; diferenciar otras colitis antes de atribuir toda diarrea a parasitosis.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto: albendazol 400 mg por via oral uma vez ao dia durante 3 dias. Não confundir com a dose única usada para ascaridíase.",
+      "es": "Adulto: albendazol 400 mg por vía oral una vez al día durante 3 días. No confundir con la dosis única utilizada para ascariasis.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar sintomas e reinfecção; persistência exige confirmar adesão, agente e necessidade de nova estratégia, sem repetição indefinida.",
+      "es": "Reevaluar síntomas y reinfección; persistencia exige confirmar adherencia, agente y necesidad de nueva estrategia, sin repetición indefinida.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Anemia importante, desidratação, sangramento relevante ou prolapso complicado exigem avaliação hospitalar.",
+      "es": "Anemia importante, deshidratación, sangrado relevante o prolapso complicado requieren evaluación hospitalaria.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestantes e crianças pequenas precisam esquema individualizado; orientar higiene e saneamento para reduzir reinfecção.",
+      "es": "Embarazadas y niños pequeños necesitan pauta individualizada; orientar higiene y saneamiento para reducir reinfección.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Clinical care of soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

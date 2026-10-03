@@ -1,0 +1,115 @@
+{
+  "owner": "doenca_inflamatoria_pelvica",
+  "title": {
+    "pt": "Doença inflamatória pélvica",
+    "es": "Enfermedad inflamatoria pélvica"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Doença inflamatória pélvica",
+      "Enfermedad inflamatoria pélvica",
+      "DIP",
+      "EIP",
+      "pelvic inflammatory disease"
+    ],
+    "distinctScope": "Infecção do trato genital superior; não equivale a cervicite, vaginose ou IST isolada."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção/inflamação do trato genital superior, frequentemente polimicrobiana; atraso terapêutico aumenta risco de infertilidade e gestação ectópica.",
+      "es": "Infección/inflamación del tracto genital superior, frecuentemente polimicrobiana; el retraso terapéutico aumenta riesgo de infertilidad y embarazo ectópico.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor pélvica com dor à mobilização cervical, uterina ou anexial justifica baixo limiar para tratamento presuntivo após avaliar outras causas.",
+      "es": "Dolor pélvico con dolor a movilización cervical, uterina o anexial justifica umbral bajo para tratamiento presuntivo tras evaluar otras causas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Realizar teste de gravidez e testes para gonococo/clamídia; avaliar abscesso por imagem quando indicado. Teste cervical negativo não exclui doença superior.",
+      "es": "Realizar prueba de embarazo y pruebas para gonococo/clamidia; evaluar absceso con imagen cuando corresponda. Una prueba cervical negativa no excluye enfermedad superior.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar precocemente e manejar parceiros; evitar relações até tratamento concluído, resolução dos sintomas e tratamento dos parceiros.",
+      "es": "Tratar precozmente y manejar parejas; evitar relaciones hasta completar tratamiento, resolver síntomas y tratar parejas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Ambulatorial: ceftriaxona 500 mg intramuscular, dose única, mais doxiciclina 100 mg oral a cada 12 horas e metronidazol 500 mg oral a cada 12 horas, ambos durante 14 dias.",
+      "es": "Ambulatorio: ceftriaxona 500 mg intramuscular, dosis única, más doxiciclina 100 mg oral cada 12 horas y metronidazol 500 mg oral cada 12 horas, ambos durante 14 días.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar até 72 horas; sem melhora, internar/reinvestigar. Oferecer testes para HIV/sífilis e seguimento de reinfecção.",
+      "es": "Reevaluar hasta 72 horas; sin mejoría, ingresar/reinvestigar. Ofrecer pruebas de VIH/sífilis y seguimiento de reinfección.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Gravidez, abscesso tubo-ovariano, doença grave, intolerância oral ou impossibilidade de excluir emergência cirúrgica indicam hospitalização.",
+      "es": "Embarazo, absceso tuboovárico, enfermedad grave, intolerancia oral o imposibilidad de excluir urgencia quirúrgica indican hospitalización.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Peso >150 kg com gonorreia documentada: ceftriaxona 1 g na dose única. O regime ambulatorial descrito não é esquema para gestantes.",
+      "es": "Peso >150 kg con gonorrea documentada: ceftriaxona 1 g en dosis única. El régimen ambulatorio descrito no es una pauta para embarazadas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Pelvic inflammatory disease — STI treatment guidelines",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

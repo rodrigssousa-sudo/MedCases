@@ -1,0 +1,124 @@
+{
+  "owner": "febre_maculosa",
+  "title": {
+    "pt": "Febre maculosa e riquetsioses do grupo da febre maculosa",
+    "es": "Fiebre manchada y rickettsiosis del grupo de las fiebres manchadas"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Febre maculosa e riquetsioses do grupo da febre maculosa",
+      "Fiebre manchada y rickettsiosis del grupo de las fiebres manchadas",
+      "rickettsiose",
+      "fiebre maculosa"
+    ],
+    "distinctScope": "Riquetsiose transmitida por carrapato; antimicrobiano imediato próprio."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Riquetsiose transmitida por carrapatos; lesão endotelial pode causar disfunção multiorgânica. História de picada ausente não exclui.",
+      "es": "Rickettsiosis transmitida por garrapatas; lesión endotelial puede causar disfunción multiorgánica. La ausencia de picadura recordada no excluye.",
+      "sources": [
+        "DX"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Febre, cefaleia, mialgia e exposição epidemiológica sustentam suspeita; exantema pode aparecer tarde ou faltar.",
+      "es": "Fiebre, cefalea, mialgia y exposición epidemiológica sustentan sospecha; el exantema puede aparecer tarde o faltar.",
+      "sources": [
+        "DX"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Colher testes conforme fase, hemograma, eletrólitos e função orgânica; sorologia inicial negativa não exclui. Não esperar confirmação para tratar.",
+      "es": "Obtener pruebas según fase, hemograma, electrolitos y función orgánica; serología inicial negativa no excluye. No esperar confirmación para tratar.",
+      "sources": [
+        "DX"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Iniciar doxiciclina imediatamente na suspeita; antibióticos usuais de sepse não garantem cobertura para riquétsias.",
+      "es": "Iniciar doxiciclina inmediatamente ante sospecha; antibióticos habituales de sepsis no garantizan cobertura de rickettsias.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adultos: doxiciclina 100 mg oral ou intravenosa a cada 12 horas; manter pelo menos 3 dias após desaparecer a febre e melhora clínica, com mínimo total de 5–7 dias.",
+      "es": "Adultos: doxiciclina 100 mg oral o intravenosa cada 12 horas; mantener al menos 3 días tras desaparecer fiebre y mejorar clínicamente, con mínimo total de 5–7 días.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar resposta e função renal/hepática, plaquetas e sódio; deterioração exige hospital. Alta apenas se estável, tolerando tratamento e com retorno garantido.",
+      "es": "Reevaluar respuesta y función renal/hepática, plaquetas y sodio; deterioro exige hospital. Alta solo si estable, tolerando tratamiento y con seguimiento garantizado.",
+      "sources": [
+        "CDC",
+        "DX"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Choque, alteração mental, dispneia, sangramento ou oligúria indicam doença grave; atraso de antibiótico aumenta risco.",
+      "es": "Shock, alteración mental, disnea, sangrado u oliguria indican enfermedad grave; retrasar antibiótico aumenta riesgo.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Doxiciclina é recomendada inclusive em gestantes e crianças quando há suspeita desta doença; não trocar automaticamente por risco teórico. Picada assintomática não indica profilaxia rotineira.",
+      "es": "Doxiciclina se recomienda incluso en embarazadas y niños ante sospecha de esta enfermedad; no cambiar automáticamente por riesgo teórico. Picadura asintomática no indica profilaxis rutinaria.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Clinical care of Rocky Mountain spotted fever",
+      "url": "https://www.cdc.gov/rocky-mountain-spotted-fever/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "DX",
+      "title": "Diagnosis and testing",
+      "url": "https://www.cdc.gov/rocky-mountain-spotted-fever/hcp/diagnosis-testing/index.html",
+      "authority": "CDC",
+      "year": "consulta 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

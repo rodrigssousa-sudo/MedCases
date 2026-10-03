@@ -1,0 +1,131 @@
+{
+  "owner": "deficiencia_tiamina_wernicke",
+  "title": {
+    "pt": "Deficiência de tiamina e encefalopatia de Wernicke",
+    "es": "Deficiencia de tiamina y encefalopatía de Wernicke"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Deficiência de tiamina e encefalopatia de Wernicke",
+      "Deficiencia de tiamina y encefalopatía de Wernicke",
+      "Wernicke"
+    ],
+    "distinctScope": "Síndrome por déficit vitamínico, distinta de delirium tremens e encefalopatia hepática."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Déficit de tiamina compromete metabolismo energético cerebral; alcoolismo é fator importante, mas desnutrição de outras causas também pode precipitar doença.",
+      "es": "Déficit de tiamina compromete metabolismo energético cerebral; alcoholismo es factor importante, pero desnutrición por otras causas también puede precipitar enfermedad.",
+      "sources": [
+        "UK"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Confusão, ataxia e alterações oculomotoras são sinais de suspeita; não exigir tríade completa para tratar.",
+      "es": "Confusión, ataxia y alteraciones oculomotoras son signos de sospecha; no exigir tríada completa para tratar.",
+      "sources": [
+        "UK"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico é clínico; avaliar glicemia, magnésio e causas alternativas. Exames não devem atrasar tiamina na suspeita relevante.",
+      "es": "El diagnóstico es clínico; evaluar glucemia, magnesio y causas alternativas. Las pruebas no deben retrasar tiamina ante sospecha relevante.",
+      "sources": [
+        "UK"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Administrar tiamina parenteral e corrigir magnésio; tratar nutrição e doença associada. Hipoglicemia deve ser corrigida imediatamente, sem aguardar tiamina.",
+      "es": "Administrar tiamina parenteral y corregir magnesio; tratar nutrición y enfermedad asociada. La hipoglucemia debe corregirse inmediatamente, sin esperar tiamina.",
+      "sources": [
+        "UK"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Suspeita/diagnóstico em adulto: tiamina 300–500 mg intravenosa 3 vezes ao dia durante 3–5 dias, com revisão diária; persistência pode exigir continuação individualizada.",
+      "es": "Sospecha/diagnóstico adulto: tiamina 300–500 mg intravenosa 3 veces al día durante 3–5 días, con revisión diaria; persistencia puede requerir continuación individualizada.",
+      "sources": [
+        "UK"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar resposta neurológica, magnésio e risco de realimentação; infundir conforme preparação e protocolo, com recursos para tratar anafilaxia.",
+      "es": "Vigilar respuesta neurológica, magnesio y riesgo de realimentación; infundir según preparación y protocolo, con recursos para tratar anafilaxia.",
+      "sources": [
+        "UK"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Suspeita de Wernicke exige tratamento hospitalar; confusão não deve ser atribuída automaticamente a intoxicação ou abstinência.",
+      "es": "Sospecha de Wernicke exige tratamiento hospitalario; confusión no debe atribuirse automáticamente a intoxicación o abstinencia.",
+      "sources": [
+        "UK"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Doses de profilaxia não equivalem às de tratamento. Via oral isolada é inadequada no quadro agudo suspeito; planejar continuidade após terapia parenteral.",
+      "es": "Dosis de profilaxis no equivalen a tratamiento. Vía oral aislada es inadecuada en cuadro agudo sospechoso; planificar continuidad tras terapia parenteral.",
+      "sources": [
+        "UK"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "dose",
+      "pt": "Se utilizada a apresentação de tiamina 125 mg/mL citada: diluir a dose em 50–250 mL de glicose 5% ou cloreto de sódio 0,9% e administrar intravenosamente durante 30 minutos. Isso descreve preparo/velocidade; a indicação determina a dose.",
+      "es": "Si se utiliza la presentación de tiamina 125 mg/mL citada: diluir la dosis en 50–250 mL de glucosa 5% o cloruro de sodio 0,9% y administrar intravenosamente durante 30 minutos. Esto describe preparación/velocidad; la indicación determina la dosis.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "UK",
+      "title": "Alcohol care in acute hospitals — Wernicke treatment",
+      "url": "https://www.gov.uk/guidance/clinical-guidelines-for-alcohol-treatment/16-alcohol-care-in-acute-hospitals",
+      "authority": "UK Department of Health and Social Care",
+      "year": "2025; atualização 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Thiamine hydrochloride 125 mg/mL — SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/101445/smpc",
+      "authority": "emc — informação do fabricante",
+      "year": "consulta 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

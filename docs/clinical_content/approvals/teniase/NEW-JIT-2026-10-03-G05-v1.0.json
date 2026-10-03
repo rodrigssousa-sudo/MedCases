@@ -1,0 +1,124 @@
+{
+  "owner": "teniase",
+  "title": {
+    "pt": "Teníase intestinal",
+    "es": "Teniasis intestinal"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Teníase intestinal",
+      "Teniasis intestinal",
+      "teniasis"
+    ],
+    "distinctScope": "Infecção intestinal pela tênia adulta; não é neurocisticercose."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção intestinal pela tênia adulta; não é neurocisticercose. Identificar espécie ajuda a orientar risco e controle de transmissão.",
+      "es": "Infección intestinal por tenia adulta; no es neurocisticercosis. Identificar especie ayuda a orientar riesgo y control de transmisión.",
+      "sources": [
+        "DX"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Eliminação de proglotes, desconforto abdominal ou infecção assintomática; perguntar convulsões, cefaleia e sintomas visuais antes do tratamento.",
+      "es": "Eliminación de proglótides, molestias abdominales o infección asintomática; preguntar convulsiones, cefalea y síntomas visuales antes del tratamiento.",
+      "sources": [
+        "DX",
+        "TX"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Pesquisar ovos/proglotes em fezes; ovos isolados não distinguem todas as espécies. Sintomas neurológicos exigem investigação específica.",
+      "es": "Buscar huevos/proglótides en heces; huevos aislados no distinguen todas las especies. Los síntomas neurológicos exigen investigación específica.",
+      "sources": [
+        "DX"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar a forma intestinal e orientar higiene, preparo adequado de carnes e manejo epidemiológico; evitar automedicação se suspeita de cisticercose.",
+      "es": "Tratar la forma intestinal y orientar higiene, preparación adecuada de carnes y manejo epidemiológico; evitar automedicación si se sospecha cisticercosis.",
+      "sources": [
+        "TX",
+        "DX"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Praziquantel 5–10 mg/kg por via oral em dose única; 10 mg/kg pode aumentar cura. Confirmar peso e apresentação antes de calcular comprimidos.",
+      "es": "Praziquantel 5–10 mg/kg por vía oral en dosis única; 10 mg/kg puede aumentar curación. Confirmar peso y presentación antes de calcular comprimidos.",
+      "sources": [
+        "TX"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reexaminar fezes após 1 e 3 meses para confirmar eliminação; manter orientação de prevenção de reinfecção.",
+      "es": "Reexaminar heces después de 1 y 3 meses para confirmar eliminación; mantener orientación de prevención de reinfección.",
+      "sources": [
+        "TX"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Convulsão, déficit focal, hipertensão intracraniana ou queixa ocular exigem avaliação antes de antiparasitário, pelo risco de reação inflamatória em cisticercose.",
+      "es": "Convulsión, déficit focal, hipertensión intracraneal o síntomas oculares requieren evaluación antes de antiparasitario, por riesgo de reacción inflamatoria en cisticercosis.",
+      "sources": [
+        "TX"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, lactação e crianças requerem avaliação individual; tratamento intestinal não substitui protocolo de neurocisticercose.",
+      "es": "Embarazo, lactancia y niños requieren evaluación individual; tratamiento intestinal no sustituye protocolo de neurocisticercosis.",
+      "sources": [
+        "TX"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "TX",
+      "title": "Clinical treatment of taeniasis",
+      "url": "https://www.cdc.gov/taeniasis/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "DX",
+      "title": "Clinical overview of taeniasis",
+      "url": "https://www.cdc.gov/taeniasis/hcp/clinical-overview/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

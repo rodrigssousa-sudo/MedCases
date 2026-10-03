@@ -1,0 +1,140 @@
+{
+  "owner": "osteomielite",
+  "title": {
+    "pt": "Osteomielite",
+    "es": "Osteomielitis"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Osteomielite",
+      "Osteomielitis",
+      "osteomyelitis"
+    ],
+    "distinctScope": "Infecção óssea, distinta de artrite séptica e úlcera de pé diabético sem infecção óssea."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção óssea por disseminação hematogênica ou contiguidade; localização, perfusão, material implantado e agente determinam manejo.",
+      "es": "Infección ósea por diseminación hematógena o contigüidad; localización, perfusión, material implantado y agente determinan manejo.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor óssea persistente com fatores de risco exige investigação, mesmo sem febre. Na coluna, examinar força, sensibilidade e esfíncteres.",
+      "es": "Dolor óseo persistente con factores de riesgo exige investigación, incluso sin fiebre. En columna, explorar fuerza, sensibilidad y esfínteres.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Na suspeita vertebral: hemoculturas, marcadores inflamatórios e ressonância. Obter amostra microbiológica adequada quando necessária; swab superficial não define o agente ósseo.",
+      "es": "En sospecha vertebral: hemocultivos, marcadores inflamatorios y resonancia. Obtener muestra microbiológica adecuada cuando sea necesaria; un hisopo superficial no define el agente óseo.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Paciente estável pode aguardar investigação microbiológica orientada. Sepse ou déficit neurológico exigem antibiótico e avaliação cirúrgica imediatos.",
+      "es": "El paciente estable puede esperar investigación microbiológica dirigida. Sepsis o déficit neurológico requieren antibiótico y evaluación quirúrgica inmediatos.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antibiótico/dose universal sem agente, local e função renal. Na maioria das osteomielites vertebrais bacterianas, referência de duração total é 6 semanas, individualizada.",
+      "es": "No existe antibiótico/dosis universal sin agente, localización y función renal. En la mayoría de osteomielitis vertebrales bacterianas, la duración total de referencia es 6 semanas, individualizada.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar dor, função e marcadores; imagem de controle não é automática se melhora clínica. Planejar acesso ao tratamento e acompanhamento especializado.",
+      "es": "Seguir dolor, función y marcadores; la imagen de control no es automática con mejoría clínica. Planificar acceso al tratamiento y seguimiento especializado.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Déficit neurológico novo, instabilidade vertebral, abscesso compressivo ou sepse exigem hospitalização; não aguardar resposta ambulatorial.",
+      "es": "Déficit neurológico nuevo, inestabilidad vertebral, absceso compresivo o sepsis requieren hospitalización; no esperar respuesta ambulatoria.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Esta referência detalha osteomielite vertebral nativa em adultos; não extrapolar duração/regime para próteses, pé diabético, crianças ou tuberculose óssea.",
+      "es": "Esta referencia detalla osteomielitis vertebral nativa en adultos; no extrapolar duración/régimen a prótesis, pie diabético, niños o tuberculosis ósea.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "No pé com suspeita de osteomielite, integrar teste de contato ósseo, radiografia e marcadores; ressonância se dúvida persiste. Cultura óssea, quando indicada, é preferível a swab superficial.",
+      "es": "En pie con sospecha de osteomielitis, integrar prueba de contacto óseo, radiografía y marcadores; resonancia si persiste duda. Cultivo óseo, cuando indicado, es preferible a hisopo superficial.",
+      "sources": [
+        "FOOT"
+      ],
+      "id": "diagnosis_9"
+    },
+    {
+      "section": "special",
+      "pt": "O owner de úlcera do pé diabético continua responsável pelo cuidado da ferida e descarga; esta entrada aborda infecção óssea. Prótese/material, isquemia e necessidade de desbridamento mudam o plano.",
+      "es": "El owner de úlcera de pie diabético sigue responsable de cuidado de herida y descarga; esta entrada aborda infección ósea. Prótesis/material, isquemia y necesidad de desbridamiento cambian el plan.",
+      "sources": [
+        "FOOT"
+      ],
+      "id": "special_10"
+    }
+  ],
+  "references": [
+    {
+      "id": "IDSA",
+      "title": "Native vertebral osteomyelitis in adults",
+      "url": "https://www.idsociety.org/practice-guideline/vertebral-osteomyelitis/",
+      "authority": "IDSA",
+      "year": 2015,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "FOOT",
+      "title": "IWGDF/IDSA diabetes-related foot infections",
+      "url": "https://www.idsociety.org/practice-guideline/diabetic-foot-infections/",
+      "authority": "IWGDF/IDSA",
+      "year": 2023,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

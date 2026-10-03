@@ -1,0 +1,142 @@
+{
+  "owner": "doenca_chagas",
+  "title": {
+    "pt": "Doença de Chagas",
+    "es": "Enfermedad de Chagas"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Doença de Chagas",
+      "Enfermedad de Chagas",
+      "Trypanosoma cruzi",
+      "Chagas"
+    ],
+    "distinctScope": "Tripanossomíase americana, com risco cardíaco/digestivo próprio."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção por Trypanosoma cruzi pode evoluir para cardiomiopatia e doença digestiva; exposição vetorial, oral ou congênita orienta suspeita.",
+      "es": "La infección por Trypanosoma cruzi puede evolucionar a cardiomiopatía y enfermedad digestiva; exposición vectorial, oral o congénita orienta sospecha.",
+      "sources": [
+        "DX"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Na urgência, procurar síncope, palpitações, insuficiência cardíaca ou síndrome febril após exposição; avaliar eletrocardiograma e perfusão.",
+      "es": "En urgencias, buscar síncope, palpitaciones, insuficiencia cardíaca o síndrome febril tras exposición; evaluar electrocardiograma y perfusión.",
+      "sources": [
+        "CARE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Fase aguda: pesquisa parasitológica/molecular conforme acesso. Fase crônica: confirmação sorológica com testes de princípios diferentes; um teste isolado não basta.",
+      "es": "Fase aguda: estudio parasitológico/molecular según acceso. Fase crónica: confirmación serológica con pruebas de principios distintos; una prueba aislada no basta.",
+      "sources": [
+        "DX"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar fase aguda e reativação; indicação na fase crônica depende de idade, estágio e avaliação especializada. Tratar também complicações cardíacas/digestivas.",
+      "es": "Tratar fase aguda y reactivación; indicación en fase crónica depende de edad, estadio y valoración especializada. Tratar también complicaciones cardíacas/digestivas.",
+      "sources": [
+        "CARE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Referência brasileira adulta, quando tratamento etiológico indicado: benznidazol 5 mg/kg/dia oral, em tomadas divididas, por 60 dias. Peso acima de 60 kg requer avaliar esquema limitado a 300 mg/dia com duração individualizada pelo protocolo; não impor teto e duração fixos simultaneamente.",
+      "es": "Referencia brasileña adulta, cuando se indica tratamiento etiológico: benznidazol 5 mg/kg/día oral, en tomas divididas, durante 60 días. Peso superior a 60 kg requiere valorar pauta limitada a 300 mg/día con duración individualizada según protocolo; no imponer techo y duración fijos simultáneamente.",
+      "sources": [
+        "BR"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Antes e durante terapia, avaliar toxicidade cutânea, neurológica, hematológica e hepática conforme fármaco; organizar seguimento longitudinal.",
+      "es": "Antes y durante tratamiento, evaluar toxicidad cutánea, neurológica, hematológica y hepática según fármaco; organizar seguimiento longitudinal.",
+      "sources": [
+        "CARE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Síncope, arritmia sustentada, bloqueio avançado, insuficiência cardíaca ou suspeita de reativação exigem hospital/especialista.",
+      "es": "Síncope, arritmia sostenida, bloqueo avanzado, insuficiencia cardíaca o sospecha de reactivación requieren hospital/especialista.",
+      "sources": [
+        "CARE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação e doença renal/hepática importante alteram elegibilidade; tratamento antiparasitário não reverte automaticamente cardiomiopatia estabelecida.",
+      "es": "Embarazo y enfermedad renal/hepática importante modifican elegibilidad; tratamiento antiparasitario no revierte automáticamente cardiomiopatía establecida.",
+      "sources": [
+        "CARE"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "special",
+      "pt": "Protocolos nacionais podem diferir; não apresentar a referência brasileira como regra argentina. Documentar esquema completo, peso, dose por tomada, duração e monitorização antes de iniciar.",
+      "es": "Los protocolos nacionales pueden diferir; no presentar referencia brasileña como regla argentina. Documentar pauta completa, peso, dosis por toma, duración y vigilancia antes de iniciar.",
+      "sources": [
+        "BR",
+        "CARE"
+      ],
+      "id": "special_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "CARE",
+      "title": "Clinical care of Chagas disease",
+      "url": "https://www.cdc.gov/chagas/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "DX",
+      "title": "Clinical testing and diagnosis for Chagas disease",
+      "url": "https://www.cdc.gov/chagas/hcp/diagnosis-testing/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "BR",
+      "title": "Protocolo clínico e diretrizes terapêuticas da doença de Chagas",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/doenca-de-chagas/protocolo-clinico-e-diretrizes-terapeuticas-para-doenca-de-chagas-_-relatorio-de-recomendacao.pdf/@@download/file",
+      "authority": "Ministério da Saúde Brasil",
+      "year": 2018,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

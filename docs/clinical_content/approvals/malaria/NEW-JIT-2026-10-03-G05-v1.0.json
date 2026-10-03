@@ -1,0 +1,150 @@
+{
+  "owner": "malaria",
+  "title": {
+    "pt": "Malária",
+    "es": "Malaria"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Malária",
+      "Malaria",
+      "paludismo"
+    ],
+    "distinctScope": "Parasitose sanguínea febril, sem owner existente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção por Plasmodium; febre após exposição em área endêmica exige investigação rápida, especialmente para falciparum.",
+      "es": "Infección por Plasmodium; fiebre tras exposición en área endémica exige investigación rápida, especialmente para falciparum.",
+      "sources": [
+        "TABLE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar consciência, perfusão, glicemia, respiração, anemia e função renal. Ausência de padrão periódico de febre não exclui malária.",
+      "es": "Evaluar conciencia, perfusión, glucemia, respiración, anemia y función renal. Ausencia de fiebre periódica no excluye malaria.",
+      "sources": [
+        "CDCIV"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar por gota espessa/esfregaço e quantificar parasitemia; definir espécie e origem geográfica. Suspeita persistente exige repetição diagnóstica orientada.",
+      "es": "Confirmar con gota gruesa/frotis y cuantificar parasitemia; definir especie y origen geográfico. Sospecha persistente exige repetición diagnóstica dirigida.",
+      "sources": [
+        "TABLE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Doença grave requer hospital e artesunato intravenoso, seguido de curso oral completo; infecção por vivax/ovale requer avaliação de cura radical e G6PD.",
+      "es": "Enfermedad grave requiere hospital y artesunato intravenoso, seguido de curso oral completo; infección por vivax/ovale requiere valorar cura radical y G6PD.",
+      "sources": [
+        "CDCIV",
+        "TABLE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com malária grave: artesunato 2,4 mg/kg intravenoso nos tempos 0, 12 e 24 horas; doses posteriores e transição oral dependem da parasitemia e tolerância.",
+      "es": "Adulto con malaria grave: artesunato 2,4 mg/kg intravenoso en tiempos 0, 12 y 24 horas; dosis posteriores y transición oral dependen de parasitemia y tolerancia.",
+      "sources": [
+        "CDCIV"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "dose",
+      "pt": "Opção não complicada em peso ≥35 kg: arteméter 20 mg/lumefantrina 120 mg por comprimido, 4 comprimidos por dose oral nos tempos 0, 8, 24, 36, 48 e 60 horas, com alimento.",
+      "es": "Opción no complicada con peso ≥35 kg: arteméter 20 mg/lumefantrina 120 mg por comprimido, 4 comprimidos por dosis oral en tiempos 0, 8, 24, 36, 48 y 60 horas, con alimento.",
+      "sources": [
+        "TABLE"
+      ],
+      "id": "dose_6"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Controlar parasitemia e função orgânica; após artesunato, vigiar hemólise tardia semanalmente durante 4 semanas. Não liberar sem resposta e seguimento definidos.",
+      "es": "Controlar parasitemia y función orgánica; tras artesunato, vigilar hemólisis tardía semanalmente durante 4 semanas. No dar alta sin respuesta y seguimiento definidos.",
+      "sources": [
+        "CDCIV"
+      ],
+      "id": "monitoring_7"
+    },
+    {
+      "section": "redflags",
+      "pt": "Rebaixamento de consciência, choque, acidose, hipoglicemia, anemia grave ou insuficiência respiratória/renal exigem terapia intensiva conforme gravidade.",
+      "es": "Alteración de conciencia, shock, acidosis, hipoglucemia, anemia grave o insuficiencia respiratoria/renal exigen cuidados intensivos según gravedad.",
+      "sources": [
+        "CDCIV"
+      ],
+      "id": "redflags_8"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, crianças e deficiência de G6PD mudam escolhas. Não extrapolar dose adulta nem iniciar primaquina/tafenoquina sem avaliação apropriada.",
+      "es": "Embarazo, niños y déficit de G6PD cambian las opciones. No extrapolar dosis adulta ni iniciar primaquina/tafenoquina sin evaluación apropiada.",
+      "sources": [
+        "TABLE"
+      ],
+      "id": "special_9"
+    },
+    {
+      "section": "dose",
+      "pt": "Para apresentação FDA citada, após reconstituição com diluente próprio: concentração de 10 mg/mL, administração intravenosa lenta durante 1–2 minutos. Outras apresentações exigem sua própria bula; não reutilizar volumes de reconstituição entre produtos.",
+      "es": "Para presentación FDA citada, tras reconstitución con diluyente propio: concentración de 10 mg/mL, administración intravenosa lenta durante 1–2 minutos. Otras presentaciones requieren ficha propia; no reutilizar volúmenes de reconstitución entre productos.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_10"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDCIV",
+      "title": "Treatment of severe malaria",
+      "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/iv-artesunate-us.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "TABLE",
+      "title": "Malaria treatment tables",
+      "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/appendix-a-treatment-tables.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Artesunate for injection — FDA prescribing information",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2020/213036s000lbl.pdf",
+      "authority": "FDA",
+      "year": 2020,
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

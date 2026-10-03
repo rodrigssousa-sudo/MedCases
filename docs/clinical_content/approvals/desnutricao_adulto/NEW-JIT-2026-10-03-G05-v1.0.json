@@ -1,0 +1,113 @@
+{
+  "owner": "desnutricao_adulto",
+  "title": {
+    "pt": "Desnutrição no adulto",
+    "es": "Desnutrición en el adulto"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Desnutrição no adulto",
+      "Desnutrición en el adulto",
+      "malnutrition"
+    ],
+    "distinctScope": "Doença nutricional abrangente; distinta de anorexia nervosa, sarcopenia e realimentação."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Ingestão/absorção insuficiente ou aumento de necessidades comprometem massa e função; baixo peso não é o único sinal de desnutrição.",
+      "es": "Ingesta/absorción insuficiente o mayores necesidades comprometen masa y función; bajo peso no es el único signo de desnutrición.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar perda de peso involuntária, ingestão recente, dificuldade de deglutição e função; avaliar doença subjacente e acesso a alimentos.",
+      "es": "Registrar pérdida involuntaria de peso, ingesta reciente, dificultad de deglución y función; evaluar enfermedad subyacente y acceso a alimentos.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Triagem nutricional e avaliação multidisciplinar; hemograma, eletrólitos, magnésio/fosfato e função renal conforme contexto. Albumina isolada não define estado nutricional.",
+      "es": "Cribado nutricional y evaluación multidisciplinaria; hemograma, electrolitos, magnesio/fosfato y función renal según contexto. Albúmina aislada no define estado nutricional.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Escolher via oral, enteral ou parenteral conforme segurança e função digestiva; corrigir causa e planejar suporte com nutrição.",
+      "es": "Elegir vía oral, enteral o parenteral según seguridad y función digestiva; corregir causa y planificar soporte con nutrición.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Alto risco de realimentação: iniciar no máximo 10 kcal/kg/dia, aumentando gradualmente; situações extremas exigem ainda menos e monitorização. Não aplicar dieta plena automaticamente.",
+      "es": "Alto riesgo de realimentación: iniciar como máximo 10 kcal/kg/día, aumentando gradualmente; situaciones extremas exigen aún menos y vigilancia. No aplicar dieta completa automáticamente.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar balanço, glicemia, potássio, magnésio e fosfato; suplementar vitaminas/tiamina quando indicado. Reavaliar tolerância antes de aumentar aporte.",
+      "es": "Seguir balance, glucemia, potasio, magnesio y fosfato; suplementar vitaminas/tiamina cuando corresponda. Reevaluar tolerancia antes de aumentar aporte.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Instabilidade, distúrbios eletrolíticos, impossibilidade de alimentação segura ou alto risco de realimentação sem suporte ambulatorial indicam hospital.",
+      "es": "Inestabilidad, alteraciones electrolíticas, imposibilidad de alimentación segura o alto riesgo de realimentación sin soporte ambulatorio indican hospital.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Obesidade não exclui desnutrição; doença renal/hepática e fragilidade modificam metas. Alta exige plano nutricional viável e seguimento.",
+      "es": "Obesidad no excluye desnutrición; enfermedad renal/hepática y fragilidad modifican metas. Alta exige plan nutricional viable y seguimiento.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE",
+      "title": "Nutrition support for adults",
+      "url": "https://www.nice.org.uk/guidance/cg32/chapter/Recommendations",
+      "authority": "NICE",
+      "year": "2006; atualizada 2017",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

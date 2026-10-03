@@ -1,0 +1,133 @@
+{
+  "owner": "diabetes_mellitus_tipo1",
+  "title": {
+    "pt": "Diabetes mellitus tipo 1",
+    "es": "Diabetes mellitus tipo 1"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Diabetes mellitus tipo 1",
+      "Diabetes mellitus tipo 1",
+      "DM1",
+      "diabetes tipo 1"
+    ],
+    "distinctScope": "Deficiência de insulina autoimune; distinta de CAD e diabetes tipo 2."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Deficiência de insulina, usualmente autoimune, requer reposição contínua; pode surgir na idade adulta e não se resume à cetoacidose.",
+      "es": "Déficit de insulina, habitualmente autoinmune, requiere reposición continua; puede aparecer en edad adulta y no se limita a cetoacidosis.",
+      "sources": [
+        "ADA"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Poliúria, sede, emagrecimento e cetose exigem investigação; conferir uso de insulina, bomba, alimentação e doenças intercorrentes.",
+      "es": "Poliuria, sed, adelgazamiento y cetosis exigen investigación; comprobar insulina, bomba, alimentación y enfermedades intercurrentes.",
+      "sources": [
+        "ADA"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar diabetes por critérios glicêmicos e classificar com autoanticorpos/avaliação especializada quando necessário; não adiar insulina diante de deficiência evidente.",
+      "es": "Confirmar diabetes por criterios glucémicos y clasificar con autoanticuerpos/evaluación especializada cuando sea necesario; no retrasar insulina ante déficit evidente.",
+      "sources": [
+        "ADA"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Usar esquema basal/prandial ou bomba com educação. Insulina basal não deve ser simplesmente suspensa durante jejum; ajustar e monitorar.",
+      "es": "Usar pauta basal/prandial o bomba con educación. La insulina basal no debe suspenderse simplemente durante ayuno; ajustar y vigilar.",
+      "sources": [
+        "HOSP"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Referência inicial para adulto metabolicamente estável: aproximadamente 0,5 unidade/kg/dia de insulina total, dividida em basal e prandial; não é dose por aplicação nem esquema de cetoacidose.",
+      "es": "Referencia inicial para adulto metabólicamente estable: aproximadamente 0,5 unidad/kg/día de insulina total, dividida en basal y prandial; no es dosis por aplicación ni pauta de cetoacidosis.",
+      "sources": [
+        "PHARM"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Ajustar por glicemias, carboidratos, exercício, função renal e hipoglicemia. Alta exige insulina disponível, técnica correta e plano para dias de doença/cetonas.",
+      "es": "Ajustar por glucemias, carbohidratos, ejercicio, función renal e hipoglucemia. Alta exige insulina disponible, técnica correcta y plan para días de enfermedad/cetonas.",
+      "sources": [
+        "PHARM",
+        "HOSP"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Cetose com vômitos, acidose, alteração mental ou hipoglicemia recorrente exige manejo urgente; falha de bomba pode precipitar crise rapidamente.",
+      "es": "Cetosis con vómitos, acidosis, alteración mental o hipoglucemia recurrente exige manejo urgente; fallo de bomba puede precipitar crisis rápidamente.",
+      "sources": [
+        "HOSP"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Doses menores podem ser necessárias na remissão inicial, insuficiência renal ou baixa ingestão. Crianças e gestantes exigem equipe e metas específicas.",
+      "es": "Pueden requerirse dosis menores en remisión inicial, insuficiencia renal o baja ingesta. Niños y embarazadas requieren equipo y metas específicas.",
+      "sources": [
+        "PHARM"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "ADA",
+      "title": "Diagnosis and classification — Standards of Care",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+      "authority": "ADA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "PHARM",
+      "title": "Pharmacologic approaches — Standards of Care",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S183/163934/9-Pharmacologic-Approaches-to-Glycemic-Treatment",
+      "authority": "ADA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "HOSP",
+      "title": "Diabetes care in hospital",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S339/163925/16-Diabetes-Care-in-the-Hospital-Standards-of-Care",
+      "authority": "ADA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

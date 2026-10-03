@@ -1,0 +1,115 @@
+{
+  "owner": "caxumba",
+  "title": {
+    "pt": "Caxumba",
+    "es": "Parotiditis epidémica"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Caxumba",
+      "Parotiditis epidémica",
+      "parotidite epidêmica",
+      "paperas",
+      "mumps"
+    ],
+    "distinctScope": "Doença viral sistêmica com parotidite; sem owner correspondente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção viral com parotidite, possível mesmo em vacinados; transmissão respiratória exige medidas de controle.",
+      "es": "Infección viral con parotiditis, posible incluso en vacunados; transmisión respiratoria exige medidas de control.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Aumento doloroso de parótida, febre e mal-estar; examinar bilateralidade e pesquisar dor testicular ou sintomas neurológicos.",
+      "es": "Aumento doloroso de parótida, fiebre y malestar; explorar bilateralidad y buscar dolor testicular o síntomas neurológicos.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Coletar amostra bucal para teste molecular conforme vigilância; sorologia negativa em vacinado não exclui. Diferenciar parotidite bacteriana e cálculo salivar.",
+      "es": "Obtener muestra bucal para prueba molecular según vigilancia; serología negativa en vacunado no excluye. Diferenciar parotiditis bacteriana y cálculo salival.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suporte, hidratação e analgesia; não há antiviral específico. Orientar isolamento e comunicar vigilância conforme regras locais.",
+      "es": "Soporte, hidratación y analgesia; no existe antiviral específico. Orientar aislamiento y comunicar a vigilancia según normas locales.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antibiótico de rotina. Isolar por 5 dias após início da parotidite; medicamento sintomático depende de idade e contraindicações.",
+      "es": "No existe antibiótico rutinario. Aislar durante 5 días tras inicio de parotiditis; medicamento sintomático depende de edad y contraindicaciones.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Alta se hidratado e estável, com retorno por piora. Acompanhar complicações e revisar vacinação de contatos conforme saúde pública.",
+      "es": "Alta si hidratado y estable, con retorno por empeoramiento. Seguir complicaciones y revisar vacunación de contactos según salud pública.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Meningismo, alteração de consciência, dor abdominal intensa, desidratação ou dor testicular importante requerem avaliação urgente.",
+      "es": "Meningismo, alteración de conciencia, dolor abdominal intenso, deshidratación o dolor testicular importante requieren evaluación urgente.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Vacinação prévia não elimina totalmente risco; não usar ausência de parotidite bilateral como exclusão. Medidas de surto são coordenadas pela vigilância.",
+      "es": "La vacunación previa no elimina totalmente el riesgo; no usar ausencia de parotiditis bilateral como exclusión. Las medidas de brote son coordinadas por vigilancia.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Clinical overview of mumps",
+      "url": "https://www.cdc.gov/mumps/hcp/clinical-overview/index.html",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

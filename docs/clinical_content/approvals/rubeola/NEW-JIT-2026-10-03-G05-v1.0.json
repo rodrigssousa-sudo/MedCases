@@ -1,0 +1,122 @@
+{
+  "owner": "rubeola",
+  "title": {
+    "pt": "Rubéola",
+    "es": "Rubéola"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Rubéola",
+      "Rubéola",
+      "rubella"
+    ],
+    "distinctScope": "Exantema viral próprio; distinto do guia de sarampo."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção viral exantemática frequentemente leve; transmissão durante gestação pode causar síndrome da rubéola congênita.",
+      "es": "Infección viral exantemática frecuentemente leve; transmisión durante embarazo puede causar síndrome de rubéola congénita.",
+      "sources": [
+        "ABOUT"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Exantema, adenopatia e artralgia podem ocorrer; perguntar vacinação, viagem, contatos e possibilidade de gestação.",
+      "es": "Pueden presentarse exantema, adenopatías y artralgia; preguntar vacunación, viaje, contactos y posibilidad de embarazo.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico isolado não é confiável; articular confirmação laboratorial com vigilância. Diferenciar sarampo, parvovírus e arboviroses.",
+      "es": "El diagnóstico clínico aislado no es fiable; coordinar confirmación de laboratorio con vigilancia. Diferenciar sarampión, parvovirus y arbovirosis.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suporte e controle de transmissão; não esperar confirmação para proteger gestantes potencialmente expostas.",
+      "es": "Soporte y control de transmisión; no esperar confirmación para proteger embarazadas potencialmente expuestas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antiviral específico. Isolamento por 7 dias após início do exantema; antibióticos não tratam rubéola.",
+      "es": "No existe antiviral específico. Aislamiento durante 7 días tras inicio del exantema; los antibióticos no tratan rubéola.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Seguimento conforme confirmação e exposição; alta clínica não encerra medidas de vigilância. Contatos suscetíveis precisam avaliação vacinal.",
+      "es": "Seguimiento según confirmación y exposición; el alta clínica no finaliza medidas de vigilancia. Contactos susceptibles necesitan evaluación vacunal.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Gestante exposta ou com suspeita necessita avaliação obstétrica/infectológica rápida; sangramento ou sintomas neurológicos exigem hospital.",
+      "es": "Embarazada expuesta o sospechosa necesita evaluación obstétrica/infectológica rápida; sangrado o síntomas neurológicos exigen hospital.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Vacina de vírus vivo não deve ser aplicada durante gestação; planejar imunização de suscetíveis fora desse contexto conforme programa local.",
+      "es": "La vacuna de virus vivo no debe administrarse durante embarazo; planificar inmunización de susceptibles fuera de ese contexto según programa local.",
+      "sources": [
+        "ABOUT"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Clinical overview of rubella",
+      "url": "https://www.cdc.gov/rubella/hcp/clinical-overview/index.html",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "ABOUT",
+      "title": "About rubella",
+      "url": "https://www.cdc.gov/rubella/about/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

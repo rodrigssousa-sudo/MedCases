@@ -1,0 +1,125 @@
+{
+  "owner": "dislipidemia",
+  "title": {
+    "pt": "Dislipidemia",
+    "es": "Dislipidemia"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Dislipidemia",
+      "Dislipidemia",
+      "hiperlipidemia",
+      "dyslipidemia",
+      "hipertrigliceridemia"
+    ],
+    "distinctScope": "Alteração lipídica e risco cardiovascular, incluindo hipertrigliceridemia, sem dividir em aliases."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Alterações de lipoproteínas influenciam risco aterosclerótico; hipertrigliceridemia importante também exige avaliar risco de pancreatite.",
+      "es": "Las alteraciones de lipoproteínas influyen en riesgo aterosclerótico; hipertrigliceridemia importante también exige valorar riesgo de pancreatitis.",
+      "sources": [
+        "ACC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Frequentemente assintomática; registrar doença cardiovascular, história familiar, diabetes, função renal, álcool e medicamentos.",
+      "es": "Frecuentemente asintomática; registrar enfermedad cardiovascular, antecedentes familiares, diabetes, función renal, alcohol y medicamentos.",
+      "sources": [
+        "ACC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Interpretar perfil lipídico no contexto de risco e causas secundárias. Diretriz de 2026 atualiza estratificação e metas; não usar um alvo único para todos.",
+      "es": "Interpretar perfil lipídico según riesgo y causas secundarias. La guía de 2026 actualiza estratificación y metas; no usar un objetivo único para todos.",
+      "sources": [
+        "ACC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Estilo de vida e estatina conforme risco; intensificar com outras terapias quando indicado. Não suspender prevenção secundária sem avaliar motivo.",
+      "es": "Estilo de vida y estatina según riesgo; intensificar con otros tratamientos cuando corresponda. No suspender prevención secundaria sin evaluar motivo.",
+      "sources": [
+        "ACC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Atorvastatina oral: faixa aprovada adulta 10–80 mg uma vez ao dia; selecionar intensidade pelo risco, interações e tolerância, não pelo colesterol isolado.",
+      "es": "Atorvastatina oral: rango aprobado adulto 10–80 mg una vez al día; seleccionar intensidad según riesgo, interacciones y tolerancia, no por colesterol aislado.",
+      "sources": [
+        "STATIN"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar resposta lipídica e adesão; investigar mialgia importante, fraqueza e sinais de hepatotoxicidade. A maior parte do seguimento é ambulatorial.",
+      "es": "Reevaluar respuesta lipídica y adherencia; investigar mialgia importante, debilidad y signos de hepatotoxicidad. La mayor parte del seguimiento es ambulatorio.",
+      "sources": [
+        "STATIN",
+        "ACC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor abdominal com triglicerídeos muito elevados sugere pancreatite; fraqueza intensa/urina escura em uso de estatina exige avaliar rabdomiólise.",
+      "es": "Dolor abdominal con triglicéridos muy elevados sugiere pancreatitis; debilidad intensa/orina oscura tomando estatina exige evaluar rabdomiólisis.",
+      "sources": [
+        "STATIN"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Revisar interações e doença hepática; gestação exige avaliação específica e usual interrupção da estatina, sem aplicar conduta automática a situações excepcionais.",
+      "es": "Revisar interacciones y enfermedad hepática; embarazo exige evaluación específica y suspensión habitual de estatina, sin aplicar conducta automática a situaciones excepcionales.",
+      "sources": [
+        "STATIN"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "ACC",
+      "title": "2026 dyslipidemia guideline — official summary",
+      "url": "https://www.acc.org/About-ACC/Press-Releases/2026/03/13/18/01/ACCAHA-Issue-UpDated-Guideline-for-Managing-Lipids-Cholesterol",
+      "authority": "ACC/AHA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "STATIN",
+      "title": "Atorvastatin calcium prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=faba7fc1-2e08-74ef-e053-6394a90afd04",
+      "authority": "DailyMed",
+      "year": "consulta 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

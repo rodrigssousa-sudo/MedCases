@@ -1,0 +1,125 @@
+{
+  "owner": "infeccao_clostridioides_difficile",
+  "title": {
+    "pt": "Infecção por Clostridioides difficile",
+    "es": "Infección por Clostridioides difficile"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Infecção por Clostridioides difficile",
+      "Infección por Clostridioides difficile",
+      "Clostridium difficile",
+      "C difficile"
+    ],
+    "distinctScope": "Colite toxigênica com diagnóstico e tratamento próprios, não simples diarreia aguda indiferenciada."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Colite por cepas toxigênicas após disbiose; resultado molecular positivo isolado pode representar colonização.",
+      "es": "Colitis por cepas toxigénicas tras disbiosis; un resultado molecular positivo aislado puede representar colonización.",
+      "sources": [
+        "BASE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Suspeitar em diarreia nova inexplicada, especialmente após antibióticos ou internação; avaliar desidratação, dor e distensão.",
+      "es": "Sospechar en diarrea nueva inexplicada, especialmente tras antibióticos o ingreso; evaluar deshidratación, dolor y distensión.",
+      "sources": [
+        "BASE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Testar fezes não formadas quando houver ≥3 evacuações em 24 horas, conforme algoritmo local; não realizar teste de cura em assintomático.",
+      "es": "Analizar heces no formadas cuando haya ≥3 deposiciones en 24 horas, según algoritmo local; no realizar prueba de curación en asintomáticos.",
+      "sources": [
+        "BASE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suspender antibiótico precipitante quando possível, hidratar e aplicar precauções de contato. Selecionar tratamento considerando episódio, gravidade e acesso.",
+      "es": "Suspender antibiótico precipitante cuando sea posible, hidratar y aplicar precauciones de contacto. Seleccionar tratamiento según episodio, gravedad y acceso.",
+      "sources": [
+        "UPDATE",
+        "BASE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Episódio inicial não fulminante em adulto: fidaxomicina 200 mg oral a cada 12 horas durante 10 dias; alternativa, vancomicina 125 mg oral a cada 6 horas durante 10 dias.",
+      "es": "Episodio inicial no fulminante en adulto: fidaxomicina 200 mg oral cada 12 horas durante 10 días; alternativa, vancomicina 125 mg oral cada 6 horas durante 10 días.",
+      "sources": [
+        "UPDATE"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar evacuações, creatinina, leucócitos, eletrólitos e resposta. Recorrência exige nova estratégia; não repetir automaticamente esquema indefinidamente.",
+      "es": "Controlar deposiciones, creatinina, leucocitos, electrolitos y respuesta. La recurrencia exige nueva estrategia; no repetir automáticamente la pauta indefinidamente.",
+      "sources": [
+        "UPDATE",
+        "BASE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hipotensão, choque, íleo ou megacólon definem preocupação com doença fulminante: hospital, cirurgia precoce quando indicada e regime específico; doses acima não bastam.",
+      "es": "Hipotensión, shock, íleo o megacolon indican preocupación por enfermedad fulminante: hospital, cirugía precoz cuando corresponda y régimen específico; las dosis anteriores no bastan.",
+      "sources": [
+        "BASE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Vancomicina intravenosa não substitui a via oral para colite. Pediatria tem critérios próprios porque colonização é frequente nos pequenos.",
+      "es": "La vancomicina intravenosa no sustituye la vía oral para colitis. Pediatría tiene criterios propios porque la colonización es frecuente en pequeños.",
+      "sources": [
+        "BASE"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "UPDATE",
+      "title": "Focused update for management of C. difficile in adults",
+      "url": "https://www.idsociety.org/practice-guideline/clostridioides-difficile-2021-focused-update/",
+      "authority": "SHEA/IDSA",
+      "year": 2021,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "BASE",
+      "title": "Clinical practice guideline for C. difficile infection",
+      "url": "https://www.idsociety.org/practice-guideline/clostridium-difficile/",
+      "authority": "SHEA/IDSA",
+      "year": 2017,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

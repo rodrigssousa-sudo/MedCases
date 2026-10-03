@@ -1,0 +1,131 @@
+{
+  "owner": "criptococose",
+  "title": {
+    "pt": "Criptococose",
+    "es": "Criptococosis"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Criptococose",
+      "Criptococosis",
+      "Cryptococcus"
+    ],
+    "distinctScope": "Micose oportunista sistêmica/meníngea; distinta de meningite bacteriana."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Micose sistêmica com tropismo pelo sistema nervoso; em HIV avançado, cefaleia subaguda pode ocorrer sem meningismo exuberante.",
+      "es": "Micosis sistémica con tropismo por sistema nervioso; en VIH avanzado, cefalea subaguda puede aparecer sin meningismo marcado.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Procurar cefaleia, alteração visual/mental e imunossupressão; avaliar possibilidade de doença pulmonar e disseminada.",
+      "es": "Buscar cefalea, alteración visual/mental e inmunosupresión; evaluar posibilidad de enfermedad pulmonar y diseminada.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Investigar antígeno criptocócico e cultura; na punção lombar, medir pressão de abertura e analisar líquor quando segura.",
+      "es": "Investigar antígeno criptocócico y cultivo; en punción lumbar, medir presión de apertura y analizar líquido cefalorraquídeo cuando sea seguro.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Meningite exige indução, consolidação e manutenção; hipertensão intracraniana sintomática requer punções terapêuticas, não manitol/corticoide de rotina.",
+      "es": "La meningitis exige inducción, consolidación y mantenimiento; hipertensión intracraneal sintomática requiere punciones terapéuticas, no manitol/corticoide rutinario.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com HIV, hospital com monitorização diária: anfotericina B lipossomal 3–4 mg/kg intravenosa uma vez ao dia + flucitosina 25 mg/kg oral a cada 6 horas por 2 semanas; ajustar flucitosina à função renal.",
+      "es": "Adulto con VIH, hospital con vigilancia diaria: anfotericina B liposomal 3–4 mg/kg intravenosa una vez al día + flucitosina 25 mg/kg oral cada 6 horas durante 2 semanas; ajustar flucitosina a función renal.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar creatinina, potássio, magnésio e hemograma; confirmar resposta/cultura antes de transição. Antirretroviral costuma ser adiado 4–6 semanas na doença do sistema nervoso.",
+      "es": "Vigilar creatinina, potasio, magnesio y hemograma; confirmar respuesta/cultivo antes de transición. El antirretroviral suele diferirse 4–6 semanas en enfermedad del sistema nervioso.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Consciência alterada, perda visual, hipertensão intracraniana ou instabilidade exigem hospital especializado; não liberar após apenas melhora da cefaleia.",
+      "es": "Conciencia alterada, pérdida visual, hipertensión intracraneal o inestabilidad requieren hospital especializado; no dar alta solo por mejoría de cefalea.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Formulações de anfotericina não são intercambiáveis por dose. Esquemas de recursos limitados e pacientes sem HIV diferem; não misturar etapas entre protocolos.",
+      "es": "Las formulaciones de anfotericina no son intercambiables por dosis. Regímenes con recursos limitados y pacientes sin VIH difieren; no mezclar etapas entre protocolos.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "dose",
+      "pt": "Na formulação lipossomal citada, diluir em glicose 5% até concentração final de 1–2 mg/mL e infundir inicialmente durante aproximadamente 120 minutos. Não substituir por solução salina; seguir reconstituição e filtro da apresentação.",
+      "es": "En la formulación liposomal citada, diluir en glucosa 5% hasta concentración final de 1–2 mg/mL e infundir inicialmente durante aproximadamente 120 minutos. No sustituir por solución salina; seguir reconstitución y filtro de presentación.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "NIH",
+      "title": "Cryptococcosis",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cryptococcosis",
+      "authority": "NIH",
+      "year": "revista 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Amphotericin B liposome prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a96a734f-d1c4-4d42-93c2-7c336da7f7b9",
+      "authority": "DailyMed",
+      "year": "bula consultada 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

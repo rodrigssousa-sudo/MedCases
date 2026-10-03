@@ -1,0 +1,113 @@
+{
+  "owner": "hipotireoidismo",
+  "title": {
+    "pt": "Hipotireoidismo",
+    "es": "Hipotiroidismo"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hipotireoidismo",
+      "Hipotiroidismo",
+      "hypothyroidism"
+    ],
+    "distinctScope": "Disfunção hormonal crônica; distinta da emergência coma mixedematoso e tireoidites específicas."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Deficiência de hormônios tireoidianos reduz atividade metabólica; distinguir doença primária, central e alterações transitórias da doença aguda.",
+      "es": "El déficit de hormonas tiroideas reduce actividad metabólica; distinguir enfermedad primaria, central y alteraciones transitorias de enfermedad aguda.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Cansaço, frio, constipação e pele seca são inespecíficos; revisar medicamentos, cirurgia tireoidiana e adesão à reposição.",
+      "es": "Cansancio, frío, estreñimiento y piel seca son inespecíficos; revisar medicamentos, cirugía tiroidea y adherencia a reposición.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Interpretar TSH e tiroxina livre em conjunto; suspeita de doença hipofisária não pode ser excluída por TSH normal.",
+      "es": "Interpretar TSH y tiroxina libre conjuntamente; sospecha de enfermedad hipofisaria no puede excluirse por TSH normal.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Levotiroxina é reposição de escolha; hipotireoidismo subclínico exige decisão própria, não tratamento automático por qualquer TSH alterado.",
+      "es": "La levotiroxina es reposición de elección; hipotiroidismo subclínico exige decisión propia, no tratamiento automático por cualquier TSH alterada.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto <65 anos sem doença cardiovascular: considerar levotiroxina 1,6 micrograma/kg/dia oral. A partir de 65 anos ou com doença cardiovascular: iniciar 25–50 microgramas/dia e titular.",
+      "es": "Adulto <65 años sin enfermedad cardiovascular: considerar levotiroxina 1,6 microgramo/kg/día oral. A partir de 65 años o con enfermedad cardiovascular: iniciar 25–50 microgramos/día y titular.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Ajustar por resposta e exames, evitando supressão de TSH. Conferir absorção e interações antes de aumentar dose por aparente falha.",
+      "es": "Ajustar según respuesta y pruebas, evitando supresión de TSH. Comprobar absorción e interacciones antes de aumentar dosis por aparente fallo.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hipotermia, bradicardia importante, hipoventilação ou alteração mental exigem avaliar coma mixedematoso; esquema oral habitual não é tratamento dessa emergência.",
+      "es": "Hipotermia, bradicardia importante, hipoventilación o alteración mental exigen evaluar coma mixedematoso; la pauta oral habitual no trata esa urgencia.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação e hipotireoidismo central requerem abordagem específica; suspeita de insuficiência adrenal deve ser avaliada antes de reposição isolada.",
+      "es": "Embarazo e hipotiroidismo central requieren abordaje específico; sospecha de insuficiencia suprarrenal debe evaluarse antes de reposición aislada.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE",
+      "title": "Thyroid disease assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng145/chapter/Recommendations",
+      "authority": "NICE",
+      "year": "2019; versão vigente consultada 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

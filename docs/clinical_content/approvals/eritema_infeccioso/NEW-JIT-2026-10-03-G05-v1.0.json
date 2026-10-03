@@ -1,0 +1,127 @@
+{
+  "owner": "eritema_infeccioso",
+  "title": {
+    "pt": "Eritema infeccioso e infecção pelo parvovírus B19",
+    "es": "Eritema infeccioso e infección por parvovirus B19"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Eritema infeccioso e infecção pelo parvovírus B19",
+      "Eritema infeccioso e infección por parvovirus B19",
+      "quinta doença",
+      "quinta enfermedad",
+      "parvovirus B19"
+    ],
+    "distinctScope": "Infecção viral própria; não equivale a eritema multiforme ou roséola."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Parvovírus B19 infecta precursores eritroides; pode causar exantema infantil, artralgia no adulto e supressão eritropoiética transitória.",
+      "es": "Parvovirus B19 infecta precursores eritroides; puede causar exantema infantil, artralgia adulta y supresión eritropoyética transitoria.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Eritema facial e exantema rendilhado são típicos em crianças; adultos podem apresentar artralgia sem exantema característico.",
+      "es": "Eritema facial y exantema reticulado son típicos en niños; adultos pueden presentar artralgia sin exantema característico.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Quadro típico leve pode ser clínico; anemia, imunossupressão ou gestação justificam investigação dirigida com hemograma e testes específicos.",
+      "es": "Un cuadro típico leve puede diagnosticarse clínicamente; anemia, inmunosupresión o embarazo justifican estudio dirigido con hemograma y pruebas específicas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suporte e analgesia em imunocompetentes; anemia importante ou persistente exige hematologia e tratamento individualizado.",
+      "es": "Soporte y analgesia en inmunocompetentes; anemia importante o persistente exige hematología y tratamiento individualizado.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe antiviral ou antibiótico rotineiro. Imunoglobulina não é tratamento universal do exantema; seu uso depende de indicação especializada.",
+      "es": "No existe antiviral ni antibiótico rutinario. La inmunoglobulina no es tratamiento universal del exantema; su uso depende de indicación especializada.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Orientar retorno por palidez, dispneia ou prostração; gestantes expostas precisam avaliação e eventual vigilância fetal.",
+      "es": "Indicar retorno por palidez, disnea o postración; embarazadas expuestas necesitan evaluación y posible vigilancia fetal.",
+      "sources": [
+        "PREG",
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Anemia sintomática, crise aplástica em doença hemolítica ou comprometimento fetal exigem avaliação urgente; não assumir exantema sempre benigno.",
+      "es": "Anemia sintomática, crisis aplásica en enfermedad hemolítica o afectación fetal requieren evaluación urgente; no asumir exantema siempre benigno.",
+      "sources": [
+        "CDC",
+        "PREG"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Risco aumenta com hemoglobinopatias e imunossupressão. Infecção gestacional pode causar anemia fetal; risco exige orientação individual, não conclusão automática de dano.",
+      "es": "El riesgo aumenta con hemoglobinopatías e inmunosupresión. La infección gestacional puede causar anemia fetal; el riesgo exige orientación individual, no conclusión automática de daño.",
+      "sources": [
+        "CDC",
+        "PREG"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "About parvovirus B19",
+      "url": "https://www.cdc.gov/parvovirus-b19/about/index.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "PREG",
+      "title": "Parvovirus B19 in pregnancy",
+      "url": "https://www.cdc.gov/parvovirus-b19/about/parvovirus-b19-in-pregnancy.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

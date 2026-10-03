@@ -1,0 +1,125 @@
+{
+  "owner": "resfriado_comum",
+  "title": {
+    "pt": "Resfriado comum",
+    "es": "Resfriado común"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Resfriado comum",
+      "Resfriado común",
+      "rinofaringite aguda",
+      "rinofaringitis aguda",
+      "common cold"
+    ],
+    "distinctScope": "Rinofaringite autolimitada, distinta dos owners específicos de influenza, COVID e faringite. Readback do CMS confirmou guia Síndrome gripal centrado em influenza/antiviral; faringitis_viral_011 é protocolo de faringite com dor de garganta. Esta entrada restringe-se ao resfriado/rinite viral não complicado; não cria owner para influenza nem faringite."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção viral autolimitada das vias aéreas superiores; rinorreia e congestão predominam, sem implicar sinusite bacteriana.",
+      "es": "Infección viral autolimitada de vías respiratorias superiores; predominan rinorrea y congestión, sin implicar sinusitis bacteriana.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar duração, hidratação, sinais vitais e esforço respiratório; sintomas sobrepõem-se a influenza e COVID, especialmente durante circulação comunitária.",
+      "es": "Evaluar duración, hidratación, signos vitales y esfuerzo respiratorio; los síntomas se superponen con influenza y COVID, especialmente durante circulación comunitaria.",
+      "sources": [
+        "COLD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico nos casos leves. Testar influenza/COVID quando o resultado mudar tratamento, sobretudo em pacientes de risco; procurar complicações se houver piora.",
+      "es": "Diagnóstico clínico en casos leves. Investigar influenza/COVID cuando el resultado cambie tratamiento, sobre todo en pacientes de riesgo; buscar complicaciones si empeora.",
+      "sources": [
+        "COLD"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Oferecer líquidos, repouso e solução salina nasal. Antibióticos não encurtam a infecção viral nem previnem suas complicações.",
+      "es": "Ofrecer líquidos, reposo y solución salina nasal. Los antibióticos no acortan la infección viral ni previenen sus complicaciones.",
+      "sources": [
+        "CDC",
+        "COLD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há antiviral específico ou antibiótico para o resfriado comum. Escolher sintomáticos conforme idade e comorbidades; evitar duplicar princípios ativos de antigripais.",
+      "es": "No existe antiviral específico ni antibiótico para el resfriado común. Elegir sintomáticos según edad y comorbilidades; evitar duplicar principios activos de antigripales.",
+      "sources": [
+        "COLD"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Retorno se febre prolongada, sintomas sem melhora ou melhora seguida de piora; avaliar otite, pneumonia e sinusite em vez de repetir tratamento empírico.",
+      "es": "Regreso si fiebre prolongada, síntomas sin mejoría o mejoría seguida de empeoramiento; evaluar otitis, neumonía y sinusitis en vez de repetir tratamiento empírico.",
+      "sources": [
+        "COLD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dificuldade respiratória, desidratação ou descompensação de doença crônica exigem avaliação imediata; alta depende de estabilidade e ingestão adequada.",
+      "es": "Dificultad respiratoria, deshidratación o descompensación de enfermedad crónica requieren evaluación inmediata; el alta depende de estabilidad e ingesta adecuada.",
+      "sources": [
+        "COLD"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não oferecer mel abaixo de 1 ano. Descongestionantes e combinações para tosse não devem ser extrapolados para crianças pequenas ou gestantes.",
+      "es": "No ofrecer miel por debajo de 1 año. Descongestionantes y combinaciones para la tos no deben extrapolarse a niños pequeños o embarazadas.",
+      "sources": [
+        "COLD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Adult outpatient antibiotic prescribing",
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "COLD",
+      "title": "Manage common cold",
+      "url": "https://www.cdc.gov/common-cold/treatment/index.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

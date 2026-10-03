@@ -1,0 +1,113 @@
+{
+  "owner": "ascaridiase",
+  "title": {
+    "pt": "Ascaridíase",
+    "es": "Ascariasis"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Ascaridíase",
+      "Ascariasis",
+      "Ascaris lumbricoides"
+    ],
+    "distinctScope": "Helmintíase por Ascaris, distinta das parasitoses já existentes."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Helmintíase intestinal por Ascaris; carga elevada pode causar obstrução e migração biliar.",
+      "es": "Helmintiasis intestinal por Ascaris; una carga elevada puede causar obstrucción y migración biliar.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pode ser assintomática ou causar desconforto abdominal; sintomas respiratórios transitórios podem ocorrer durante migração larvária.",
+      "es": "Puede ser asintomática o causar molestias abdominales; pueden aparecer síntomas respiratorios transitorios durante migración larvaria.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Pesquisar ovos nas fezes conforme contexto; dor focal ou sinais obstrutivos exigem investigação por imagem e diagnóstico diferencial.",
+      "es": "Buscar huevos en heces según contexto; dolor focal o signos obstructivos exigen imagen y diagnóstico diferencial.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar infecção e orientar saneamento/higiene; abdome agudo não deve ser manejado apenas com vermífugo ambulatorial.",
+      "es": "Tratar infección y orientar saneamiento/higiene; un abdomen agudo no debe manejarse solo con antiparasitario ambulatorio.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com infecção não complicada: albendazol 400 mg por via oral em dose única, com estômago vazio, conforme referência CDC.",
+      "es": "Adulto con infección no complicada: albendazol 400 mg por vía oral en dosis única, con estómago vacío, según referencia CDC.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Avaliar resolução e reinfecção em áreas endêmicas; retorno se vômitos persistentes, dor progressiva ou distensão.",
+      "es": "Evaluar resolución y reinfección en áreas endémicas; retorno si vómitos persistentes, dolor progresivo o distensión.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Obstrução, peritonismo, icterícia febril ou pancreatite suspeita exigem hospital e avaliação cirúrgica/endoscópica.",
+      "es": "Obstrucción, peritonismo, ictericia febril o sospecha de pancreatitis requieren hospital y valoración quirúrgica/endoscópica.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação e crianças pequenas exigem avaliação específica de risco/benefício e autorização local; recomendações de campanhas coletivas não equivalem a prescrição individual.",
+      "es": "Embarazo y niños pequeños exigen evaluación específica de riesgo/beneficio y autorización local; recomendaciones de campañas colectivas no equivalen a prescripción individual.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Clinical care of soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

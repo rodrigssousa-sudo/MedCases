@@ -1,0 +1,124 @@
+{
+  "owner": "bronquite_aguda",
+  "title": {
+    "pt": "Bronquite aguda",
+    "es": "Bronquitis aguda"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Bronquite aguda",
+      "Bronquitis aguda",
+      "acute bronchitis"
+    ],
+    "distinctScope": "Tosse infecciosa aguda sem pneumonia, distinta de exacerbação de DPOC."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Síndrome de tosse aguda, geralmente viral, sem pneumonia. Inflamação brônquica pode prolongar a tosse além dos sintomas nasais.",
+      "es": "Síndrome de tos aguda, generalmente viral, sin neumonía. La inflamación bronquial puede prolongar la tos más que los síntomas nasales.",
+      "sources": [
+        "BRON"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar sinais vitais, saturação e ausculta; investigar dispneia, dor torácica, hemoptise e comorbidades antes de assumir quadro benigno.",
+      "es": "Registrar signos vitales, saturación y auscultación; investigar disnea, dolor torácico, hemoptisis y comorbilidades antes de asumir un cuadro benigno.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Excluir pneumonia: frequência cardíaca ≥100, frequência respiratória ≥24 por minuto, temperatura ≥38 °C ou achados focais aumentam a suspeita; considerar imagem conforme avaliação.",
+      "es": "Excluir neumonía: frecuencia cardíaca ≥100, frecuencia respiratoria ≥24 por minuto, temperatura ≥38 °C o hallazgos focales aumentan sospecha; considerar imagen según evaluación.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Antibióticos não são recomendados na bronquite não complicada, independentemente da duração da tosse. Escarro colorido não comprova infecção bacteriana.",
+      "es": "No se recomiendan antibióticos en bronquitis no complicada, independientemente de la duración de la tos. El esputo coloreado no demuestra infección bacteriana.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há esquema antimicrobiano de rotina. Hidratação, repouso e tratamento sintomático individualizado; não prescrever corticoide ou broncodilatador automaticamente sem outra indicação.",
+      "es": "No existe pauta antimicrobiana rutinaria. Hidratación, reposo y tratamiento sintomático individualizado; no prescribir corticoide o broncodilatador automáticamente sin otra indicación.",
+      "sources": [
+        "CDC",
+        "BRON"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar tosse persistente, recaída ou piora; considerar asma, coqueluche, refluxo e pneumonia. Alta se estável, sem hipoxemia e com retorno orientado.",
+      "es": "Reevaluar tos persistente, recaída o empeoramiento; considerar asma, tosferina, reflujo y neumonía. Alta si estable, sin hipoxemia y con seguimiento indicado.",
+      "sources": [
+        "BRON"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hipoxemia, dispneia progressiva, hemoptise, confusão ou instabilidade exigem avaliação urgente; não rotular como bronquite sem investigação.",
+      "es": "Hipoxemia, disnea progresiva, hemoptisis, confusión o inestabilidad requieren evaluación urgente; no etiquetar como bronquitis sin investigación.",
+      "sources": [
+        "BRON"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Idosos frágeis e imunossuprimidos podem ter pneumonia sem febre. Exacerbação de asma/DPOC e infecções específicas seguem seus próprios protocolos.",
+      "es": "Personas mayores frágiles e inmunodeprimidas pueden tener neumonía sin fiebre. Exacerbación de asma/EPOC e infecciones específicas siguen protocolos propios.",
+      "sources": [
+        "CDC",
+        "BRON"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Adult outpatient antibiotic prescribing",
+      "url": "https://www.cdc.gov/antibiotic-use/hcp/clinical-care/adult-outpatient.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "BRON",
+      "title": "Chest cold — acute bronchitis",
+      "url": "https://www.cdc.gov/acute-bronchitis/about/index.html",
+      "authority": "CDC",
+      "year": "consulta 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

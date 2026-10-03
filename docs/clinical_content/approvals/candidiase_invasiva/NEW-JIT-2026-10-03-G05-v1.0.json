@@ -1,0 +1,160 @@
+{
+  "owner": "candidiase_invasiva",
+  "title": {
+    "pt": "Candidíase invasiva",
+    "es": "Candidiasis invasiva"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Candidíase invasiva",
+      "Candidiasis invasiva",
+      "candidemia"
+    ],
+    "distinctScope": "Candidemia/infecção profunda; não equivale a candidíase oral ou vulvovaginal."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Candidemia e infecção profunda são distintas da candidíase mucosa; colonização isolada não confirma invasão.",
+      "es": "Candidemia e infección profunda son distintas de candidiasis mucosa; la colonización aislada no confirma invasión.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Suspeitar em sepse com fatores como cateter, cirurgia abdominal ou imunossupressão; colher culturas e avaliar foco.",
+      "es": "Sospechar en sepsis con factores como catéter, cirugía abdominal o inmunosupresión; obtener cultivos y evaluar foco.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Hemocultura positiva para Candida exige avaliação clínica, identificação e sensibilidade; procurar focos profundos conforme sinais.",
+      "es": "Hemocultivo positivo para Candida exige evaluación clínica, identificación y sensibilidad; buscar focos profundos según signos.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Equinocandina é opção inicial usual; controlar foco e avaliar remoção de cateter conforme contexto. Descalonar só com estabilidade, sensibilidade e culturas controladas.",
+      "es": "Una equinocandina es opción inicial habitual; controlar foco y valorar retirar catéter según contexto. Desescalar solo con estabilidad, sensibilidad y cultivos controlados.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto não neutropênico: micafungina 100 mg intravenosa uma vez ao dia. Candidemia sem complicação requer pelo menos 14 dias após negativação documentada e resolução dos sintomas.",
+      "es": "Adulto no neutropénico: micafungina 100 mg intravenosa una vez al día. Candidemia sin complicación requiere al menos 14 días tras negativización documentada y resolución de síntomas.",
+      "sources": [
+        "IDSA",
+        "AURIS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Repetir hemoculturas até documentar depuração; monitorar função hepática e interações. Endocardite, olho e outros focos mudam duração e medicamento.",
+      "es": "Repetir hemocultivos hasta documentar aclaramiento; vigilar función hepática e interacciones. Endocarditis, ojo y otros focos cambian duración y medicamento.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Candidemia, choque ou foco profundo requerem manejo hospitalar e infectologia; não tratar como simples candidíase oral.",
+      "es": "Candidemia, shock o foco profundo requieren manejo hospitalario e infectología; no tratar como candidiasis oral simple.",
+      "sources": [
+        "IDSA"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Resistência a antifúngicos pode exigir troca guiada por sensibilidade. Neutropenia, gestação, endocardite e comprometimento ocular exigem regimes próprios; não extrapolar o esquema de candidemia não complicada.",
+      "es": "La resistencia antifúngica puede exigir cambio guiado por sensibilidad. Neutropenia, embarazo, endocarditis y afectación ocular requieren regímenes propios; no extrapolar pauta de candidemia no complicada.",
+      "sources": [
+        "IDSA",
+        "RES"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "dose",
+      "pt": "Micafungina: administrar por infusão durante 1 hora. Seguir diluente e volume da apresentação; concentração superior a 1,5 mg/mL requer cateter central conforme bula. Monitorar reação relacionada à infusão.",
+      "es": "Micafungina: administrar por infusión durante 1 hora. Seguir diluyente y volumen de presentación; concentración superior a 1,5 mg/mL requiere catéter central según ficha técnica. Vigilar reacción relacionada con infusión.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "IDSA",
+      "title": "Management of candidiasis",
+      "url": "https://www.idsociety.org/practice-guideline/candidiasis/",
+      "authority": "IDSA",
+      "year": 2016,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC",
+      "title": "Clinical overview of invasive candidiasis",
+      "url": "https://www.cdc.gov/candidiasis/hcp/clinical-overview/",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "RES",
+      "title": "Drug-resistant candidiasis",
+      "url": "https://www.cdc.gov/candidiasis/antimicrobial-resistance/index.html",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "AURIS",
+      "title": "Clinical treatment of C. auris infections",
+      "url": "https://www.cdc.gov/candida-auris/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Micafungin prescribing information — infusion",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/getFile.cfm?setid=b7217896-fb88-44de-afe4-5b1cfef3d4fc&type=pdf",
+      "authority": "DailyMed",
+      "year": "bula consultada 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

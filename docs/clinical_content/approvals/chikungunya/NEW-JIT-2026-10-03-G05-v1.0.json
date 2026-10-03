@@ -1,0 +1,123 @@
+{
+  "owner": "chikungunya",
+  "title": {
+    "pt": "Chikungunya",
+    "es": "Chikunguña"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Chikungunya",
+      "Chikunguña",
+      "chikungunya fever"
+    ],
+    "distinctScope": "Arbovirose própria, distinta de dengue e zika."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Arbovirose transmitida por Aedes, com artralgia marcante; doença articular pode persistir após a fase febril.",
+      "es": "Arbovirosis transmitida por Aedes, con artralgia marcada; la enfermedad articular puede persistir tras la fase febril.",
+      "sources": [
+        "CHIK"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Febre súbita, poliartralgia e edema articular em contexto epidemiológico são sugestivos; avaliar hidratação e repercussão funcional.",
+      "es": "Fiebre súbita, poliartralgia y edema articular en contexto epidemiológico son sugestivos; evaluar hidratación y repercusión funcional.",
+      "sources": [
+        "CHIK"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Usar teste molecular na fase inicial ou sorologia conforme tempo de doença e disponibilidade; excluir dengue e outras causas febris.",
+      "es": "Usar prueba molecular en fase inicial o serología según tiempo de enfermedad y disponibilidad; descartar dengue y otras causas febriles.",
+      "sources": [
+        "CHIK"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Hidratação e analgesia são a base; não há antiviral específico. Orientar prevenção de picadas e reabilitação gradual após fase aguda.",
+      "es": "Hidratación y analgesia son la base; no existe antiviral específico. Orientar prevención de picaduras y rehabilitación gradual tras fase aguda.",
+      "sources": [
+        "CHIK"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Paracetamol pode ser escolhido conforme peso, função hepática e bula. Evitar anti-inflamatórios enquanto dengue não estiver excluída; não há dose antimicrobiana indicada.",
+      "es": "Puede elegirse paracetamol según peso, función hepática y ficha técnica. Evitar antiinflamatorios mientras no se descarte dengue; no hay dosis antimicrobiana indicada.",
+      "sources": [
+        "WHO",
+        "CHIK"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar dor persistente, limitação funcional e hidratação. Chikungunya confirmada admite avaliação individual de anti-inflamatório para artralgia, exceção explicitada pela OMS.",
+      "es": "Reevaluar dolor persistente, limitación funcional e hidratación. Chikunguña confirmada permite valoración individual de antiinflamatorio para artralgia, excepción explicitada por OMS.",
+      "sources": [
+        "WHO"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Choque, alteração neurológica, dispneia ou incapacidade de hidratação exigem hospitalização; não atribuir deterioração apenas à artralgia.",
+      "es": "Shock, alteración neurológica, disnea o incapacidad de hidratación requieren ingreso; no atribuir deterioro solo a artralgia.",
+      "sources": [
+        "CHIK"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Neonatos, idosos e pessoas com comorbidades merecem maior vigilância. Gestação próxima ao parto exige avaliação obstétrica pelo risco de transmissão neonatal.",
+      "es": "Neonatos, mayores y personas con comorbilidades merecen mayor vigilancia. Embarazo cercano al parto exige valoración obstétrica por riesgo de transmisión neonatal.",
+      "sources": [
+        "CHIK"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO",
+      "title": "Clinical management of arboviral diseases — recommendations and exceptions",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK616306/",
+      "authority": "WHO",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CHIK",
+      "title": "Chikungunya fact sheet",
+      "url": "https://www.who.int/en/news-room/fact-sheets/detail/chikungunya",
+      "authority": "WHO",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

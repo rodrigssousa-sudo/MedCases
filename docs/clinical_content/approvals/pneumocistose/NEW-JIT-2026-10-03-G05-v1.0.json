@@ -1,0 +1,140 @@
+{
+  "owner": "pneumocistose",
+  "title": {
+    "pt": "Pneumocistose",
+    "es": "Neumocistosis"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Pneumocistose",
+      "Neumocistosis",
+      "Pneumocystis jirovecii"
+    ],
+    "distinctScope": "Pneumonia oportunista com terapia própria; distinta de PAC bacteriana e HIV."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Pneumonia oportunista por Pneumocystis jirovecii, relevante em HIV avançado e outras imunossupressões; evolução pode ser subaguda.",
+      "es": "Neumonía oportunista por Pneumocystis jirovecii, relevante en VIH avanzado y otras inmunosupresiones; evolución puede ser subaguda.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dispneia, tosse seca, febre e dessaturação ao esforço sugerem o quadro; avaliar imediatamente oxigenação e trabalho respiratório.",
+      "es": "Disnea, tos seca, fiebre y desaturación con esfuerzo sugieren el cuadro; evaluar inmediatamente oxigenación y trabajo respiratorio.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Imagem torácica e pesquisa em amostra respiratória apoiam diagnóstico; PCR positiva pode refletir colonização. Gasometria ajuda a classificar gravidade.",
+      "es": "Imagen torácica y estudio de muestra respiratoria apoyan diagnóstico; PCR positiva puede reflejar colonización. Gasometría ayuda a clasificar gravedad.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Iniciar terapia na suspeita forte sem esperar todos os resultados; oxigênio e suporte conforme necessidade. Diferenciar tuberculose e outras pneumonias.",
+      "es": "Iniciar tratamiento ante sospecha alta sin esperar todos los resultados; oxígeno y soporte según necesidad. Diferenciar tuberculosis y otras neumonías.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com HIV, moderada/grave: trimetoprima 15–20 mg/kg/dia + sulfametoxazol 75–100 mg/kg/dia intravenosos, divididos a cada 6 ou 8 horas, durante 21 dias; ajustar função renal.",
+      "es": "Adulto con VIH, moderada/grave: trimetoprima 15–20 mg/kg/día + sulfametoxazol 75–100 mg/kg/día intravenosos, divididos cada 6 u 8 horas, durante 21 días; ajustar función renal.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "dose",
+      "pt": "No HIV, PaO2 <70 mmHg ou gradiente alveoloarterial ≥35 mmHg: prednisona oral 40 mg a cada 12 horas nos dias 1–5, 40 mg/dia nos dias 6–10 e 20 mg/dia nos dias 11–21; iniciar até 72 horas.",
+      "es": "En VIH, PaO2 <70 mmHg o gradiente alveoloarterial ≥35 mmHg: prednisona oral 40 mg cada 12 horas en días 1–5, 40 mg/día en días 6–10 y 20 mg/día en días 11–21; iniciar hasta 72 horas.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "dose_6"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar oxigenação, hemograma, função renal e potássio; planejar profilaxia secundária e início oportuno de antirretroviral.",
+      "es": "Vigilar oxigenación, hemograma, función renal y potasio; planificar profilaxis secundaria e inicio oportuno de antirretroviral.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "monitoring_7"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hipoxemia em repouso, fadiga respiratória ou deterioração rápida exigem internação; pneumotórax é possível complicação.",
+      "es": "Hipoxemia en reposo, fatiga respiratoria o deterioro rápido requieren ingreso; el neumotórax es una posible complicación.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "redflags_8"
+    },
+    {
+      "section": "special",
+      "pt": "Dose diária total não é dose por tomada. Evidência de corticoide no HIV não deve ser aplicada automaticamente ao paciente sem HIV.",
+      "es": "La dosis diaria total no es la dosis por toma. La evidencia de corticoide en VIH no debe aplicarse automáticamente a pacientes sin VIH.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "special_9"
+    },
+    {
+      "section": "dose",
+      "pt": "Para formulação intravenosa com trimetoprima 16 mg/mL e sulfametoxazol 80 mg/mL: diluir cada 5 mL em 125 mL de glicose 5% e infundir durante 60–90 minutos. Não administrar concentrado nem em injeção rápida; restrição hídrica exige preparo farmacêutico específico.",
+      "es": "Para formulación intravenosa con trimetoprima 16 mg/mL y sulfametoxazol 80 mg/mL: diluir cada 5 mL en 125 mL de glucosa 5% e infundir durante 60–90 minutos. No administrar concentrado ni en inyección rápida; restricción hídrica exige preparación farmacéutica específica.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_10"
+    }
+  ],
+  "references": [
+    {
+      "id": "NIH",
+      "title": "Pneumocystis pneumonia",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/pneumocystis",
+      "authority": "NIH",
+      "year": "diretriz vigente consultada 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Sulfamethoxazole/trimethoprim injection prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=bf7a0845-de4f-46be-841a-0faf47f8b530",
+      "authority": "DailyMed",
+      "year": "bula consultada 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

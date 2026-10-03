@@ -1,0 +1,144 @@
+{
+  "owner": "cetoacidose_alcoolica",
+  "title": {
+    "pt": "Cetoacidose alcoólica",
+    "es": "Cetoacidosis alcohólica"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Cetoacidose alcoólica",
+      "Cetoacidosis alcohólica",
+      "alcoholic ketoacidosis"
+    ],
+    "distinctScope": "Acidose cetótica associada a álcool/jejum; distinta de CAD e abstinência alcoólica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Jejum/vômitos associados ao uso de álcool favorecem cetogênese e acidose; glicemia pode ser baixa, normal ou discretamente elevada.",
+      "es": "Ayuno/vómitos asociados a alcohol favorecen cetogénesis y acidosis; glucemia puede ser baja, normal o discretamente elevada.",
+      "sources": [
+        "EMJ"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Procurar desidratação, dor abdominal, taquipneia e baixa ingestão; alteração mental exige investigar hipoglicemia, intoxicação, trauma ou outra causa.",
+      "es": "Buscar deshidratación, dolor abdominal, taquipnea y baja ingesta; alteración mental exige investigar hipoglucemia, intoxicación, trauma u otra causa.",
+      "sources": [
+        "EMJ"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Gasometria, ânion gap, beta-hidroxibutirato, lactato, glicemia, eletrólitos e função renal; cetona urinária pode subestimar quadro. Excluir cetoacidose diabética e álcoois tóxicos.",
+      "es": "Gasometría, anión gap, beta-hidroxibutirato, lactato, glucemia, electrolitos y función renal; cetona urinaria puede subestimar cuadro. Excluir cetoacidosis diabética y alcoholes tóxicos.",
+      "sources": [
+        "EMJ"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Corrigir volemia com solução apropriada, administrar tiamina e fornecer glicose para interromper cetogênese com controle eletrolítico; não usar glicose isolada como ressuscitação volêmica.",
+      "es": "Corregir volemia con solución apropiada, administrar tiamina y aportar glucosa para frenar cetogénesis con control electrolítico; no usar glucosa aislada como reanimación de volumen.",
+      "sources": [
+        "EMJ",
+        "UK"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há dose fixa de insulina: geralmente não indicada na forma alcoólica isolada. Tiamina profilática em alto risco: 200–300 mg intravenosa/intramuscular uma vez ao dia durante 3–5 dias; suspeita de Wernicke exige regime terapêutico maior.",
+      "es": "No existe dosis fija de insulina: generalmente no indicada en forma alcohólica aislada. Tiamina profiláctica en alto riesgo: 200–300 mg intravenosa/intramuscular una vez al día durante 3–5 días; sospecha de Wernicke exige régimen terapéutico mayor.",
+      "sources": [
+        "UK",
+        "EMJ"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Repetir glicemia, potássio, magnésio, fosfato e acidose; vigiar abstinência e realimentação. Reposição de glicose pode reduzir eletrólitos.",
+      "es": "Repetir glucemia, potasio, magnesio, fosfato y acidosis; vigilar abstinencia y realimentación. Reposición de glucosa puede reducir electrolitos.",
+      "sources": [
+        "EMJ",
+        "UK"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Acidose importante, distúrbio eletrolítico, hipoglicemia, vômitos persistentes ou diagnóstico incerto exigem internação; não liberar por alcoolemia baixa.",
+      "es": "Acidosis importante, alteración electrolítica, hipoglucemia, vómitos persistentes o diagnóstico incierto requieren ingreso; no dar alta por alcoholemia baja.",
+      "sources": [
+        "EMJ"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Diabetes e uso de inibidor de SGLT2 podem coexistir e mudar tratamento. Não atrasar correção de hipoglicemia enquanto se obtém tiamina.",
+      "es": "Diabetes y uso de inhibidor de SGLT2 pueden coexistir y cambiar tratamiento. No retrasar corrección de hipoglucemia mientras se obtiene tiamina.",
+      "sources": [
+        "EMJ",
+        "UK"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "dose",
+      "pt": "Se utilizada a apresentação de tiamina 125 mg/mL citada: diluir a dose em 50–250 mL de glicose 5% ou cloreto de sódio 0,9% e administrar intravenosamente durante 30 minutos. Isso descreve preparo/velocidade; a indicação determina a dose.",
+      "es": "Si se utiliza la presentación de tiamina 125 mg/mL citada: diluir la dosis en 50–250 mL de glucosa 5% o cloruro de sodio 0,9% y administrar intravenosamente durante 30 minutos. Esto describe preparación/velocidad; la indicación determina la dosis.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "EMJ",
+      "title": "Alcoholic ketoacidosis",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2564331/",
+      "authority": "Emergency Medicine Journal",
+      "year": 2006,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "UK",
+      "title": "Alcohol care in acute hospitals — Wernicke treatment",
+      "url": "https://www.gov.uk/guidance/clinical-guidelines-for-alcohol-treatment/16-alcohol-care-in-acute-hospitals",
+      "authority": "UK Department of Health and Social Care",
+      "year": "2025; atualização 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Thiamine hydrochloride 125 mg/mL — SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/101445/smpc",
+      "authority": "emc — informação do fabricante",
+      "year": "consulta 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

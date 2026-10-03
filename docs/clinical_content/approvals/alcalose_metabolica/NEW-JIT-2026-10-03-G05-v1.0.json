@@ -1,0 +1,113 @@
+{
+  "owner": "alcalose_metabolica",
+  "title": {
+    "pt": "Alcalose metabólica",
+    "es": "Alcalosis metabólica"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Alcalose metabólica",
+      "Alcalosis metabólica",
+      "metabolic alkalosis"
+    ],
+    "distinctScope": "Síndrome ácido-base própria, sem owner equivalente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Elevação primária do bicarbonato exige geração e manutenção da alcalose; depleção de cloreto/potássio e redução de filtração perpetuam o distúrbio.",
+      "es": "La elevación primaria de bicarbonato exige generación y mantenimiento de alcalosis; depleción de cloruro/potasio y menor filtración perpetúan el trastorno.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar vômitos, aspiração gástrica, diuréticos, ingestão de álcali e sinais de depleção ou sobrecarga volêmica.",
+      "es": "Buscar vómitos, aspiración gástrica, diuréticos, ingesta de álcali y signos de depleción o sobrecarga de volumen.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Gasometria, sódio, potássio, cloreto, magnésio e função renal; cloreto urinário ajuda a distinguir mecanismos, mas diurético recente interfere.",
+      "es": "Gasometría, sodio, potasio, cloruro, magnesio y función renal; cloruro urinario ayuda a distinguir mecanismos, pero diurético reciente interfiere.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suspender causa quando possível; repor cloreto/volume se depletado e corrigir potássio. Hipertensão com perdas renais exige investigar mineralocorticoides.",
+      "es": "Suspender causa cuando sea posible; reponer cloruro/volumen si depletado y corregir potasio. Hipertensión con pérdidas renales exige investigar mineralocorticoides.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Volume e potássio são prescritos por déficit e função renal, não por uma dose fixa. Acetazolamida não é rotina universal e pode piorar hipocalemia.",
+      "es": "Volumen y potasio se prescriben según déficit y función renal, no con dosis fija. Acetazolamida no es rutina universal y puede empeorar hipopotasemia.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Repetir eletrólitos e gasometria conforme gravidade; acompanhar balanço, pressão e eletrocardiograma quando indicado.",
+      "es": "Repetir electrolitos y gasometría según gravedad; seguir balance, presión y electrocardiograma cuando corresponda.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Alteração mental, convulsões, arritmia ou alcalemia importante requerem hospital; avaliar distúrbios mistos e necessidade de suporte intensivo.",
+      "es": "Alteración mental, convulsiones, arritmia o alcalemia importante requieren hospital; evaluar trastornos mixtos y necesidad de soporte intensivo.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Insuficiência cardíaca/renal limita expansão com solução salina; não aplicar reposição volêmica automática ao paciente congesto.",
+      "es": "Insuficiencia cardíaca/renal limita expansión con solución salina; no aplicar reposición de volumen automática al paciente congestionado.",
+      "sources": [
+        "AJKD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "AJKD",
+      "title": "Metabolic alkalosis pathogenesis diagnosis and treatment — Core Curriculum",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10947768/",
+      "authority": "AJKD/National Kidney Foundation",
+      "year": 2022,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

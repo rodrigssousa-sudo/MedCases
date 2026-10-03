@@ -1,0 +1,149 @@
+{
+  "owner": "toxoplasmose",
+  "title": {
+    "pt": "Toxoplasmose",
+    "es": "Toxoplasmosis"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Toxoplasmose",
+      "Toxoplasmosis",
+      "Toxoplasma gondii"
+    ],
+    "distinctScope": "Infecção por Toxoplasma; não equivale a infecção pelo HIV."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção por Toxoplasma pode ser assintomática; reativação em imunossupressão causa encefalite. Tratamento depende de órgão e hospedeiro.",
+      "es": "La infección por Toxoplasma puede ser asintomática; reactivación en inmunosupresión causa encefalitis. El tratamiento depende de órgano y huésped.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Em HIV avançado, cefaleia, déficit focal, convulsão ou alteração mental exigem investigação urgente de lesões cerebrais.",
+      "es": "En VIH avanzado, cefalea, déficit focal, convulsión o alteración mental requieren investigación urgente de lesiones cerebrales.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Neuroimagem, sorologia e contexto orientam diagnóstico presuntivo; diferenciar linfoma, tuberculose e outras infecções. Falta de resposta exige reconsideração diagnóstica.",
+      "es": "Neuroimagen, serología y contexto orientan diagnóstico presuntivo; diferenciar linfoma, tuberculosis y otras infecciones. Falta de respuesta exige reconsiderar diagnóstico.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Encefalite exige tratamento específico e planejamento de manutenção; corticoide somente com indicação como efeito de massa clinicamente relevante.",
+      "es": "La encefalitis exige tratamiento específico y planificación de mantenimiento; corticoide solo con indicación como efecto de masa clínicamente relevante.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Encefalite no adulto com HIV: trimetoprima 5 mg/kg + sulfametoxazol 25 mg/kg por dose oral/intravenosa a cada 12 horas, por pelo menos 6 semanas; ajustar função renal.",
+      "es": "Encefalitis en adulto con VIH: trimetoprima 5 mg/kg + sulfametoxazol 25 mg/kg por dosis oral/intravenosa cada 12 horas, durante al menos 6 semanas; ajustar función renal.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar exame neurológico, hemograma, creatinina, potássio e imagem conforme evolução; não encerrar plano sem manutenção e manejo da imunossupressão.",
+      "es": "Seguir examen neurológico, hemograma, creatinina, potasio e imagen según evolución; no finalizar plan sin mantenimiento y manejo de inmunosupresión.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Convulsão, déficit focal, consciência alterada ou hipertensão intracraniana exigem hospitalização; queixa ocular requer avaliação oftalmológica.",
+      "es": "Convulsión, déficit focal, conciencia alterada o hipertensión intracraneal requieren ingreso; síntomas oculares requieren valoración oftalmológica.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "O esquema acima é para encefalite associada ao HIV; não extrapolar para gestação, infecção congênita ou doença ocular. Essas apresentações exigem especialistas.",
+      "es": "La pauta anterior es para encefalitis asociada al VIH; no extrapolar a embarazo, infección congénita o enfermedad ocular. Estas presentaciones requieren especialistas.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "dose",
+      "pt": "Para formulação intravenosa com trimetoprima 16 mg/mL e sulfametoxazol 80 mg/mL: diluir cada 5 mL em 125 mL de glicose 5% e infundir durante 60–90 minutos. Não administrar concentrado nem em injeção rápida; restrição hídrica exige preparo farmacêutico específico.",
+      "es": "Para formulación intravenosa con trimetoprima 16 mg/mL y sulfametoxazol 80 mg/mL: diluir cada 5 mL en 125 mL de glucosa 5% e infundir durante 60–90 minutos. No administrar concentrado ni en inyección rápida; restricción hídrica exige preparación farmacéutica específica.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_9"
+    },
+    {
+      "section": "treatment",
+      "pt": "Linfadenopatia por toxoplasmose em adulto imunocompetente geralmente é autolimitada e raramente exige tratamento. Doença grave/persistente, ocular ou gestacional requer decisão específica; não aplicar automaticamente esquema de encefalite.",
+      "es": "La linfadenopatía por toxoplasmosis en adulto inmunocompetente suele ser autolimitada y rara vez requiere tratamiento. Enfermedad grave/persistente, ocular o gestacional requiere decisión específica; no aplicar automáticamente pauta de encefalitis.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_10"
+    }
+  ],
+  "references": [
+    {
+      "id": "NIH",
+      "title": "Toxoplasma gondii encephalitis",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/toxoplasmosis",
+      "authority": "NIH",
+      "year": "diretriz vigente consultada 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Sulfamethoxazole/trimethoprim injection prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=bf7a0845-de4f-46be-841a-0faf47f8b530",
+      "authority": "DailyMed",
+      "year": "bula consultada 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC",
+      "title": "Clinical care of toxoplasmosis",
+      "url": "https://www.cdc.gov/toxoplasmosis/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

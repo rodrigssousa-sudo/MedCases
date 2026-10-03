@@ -1,0 +1,113 @@
+{
+  "owner": "hiperparatireoidismo_primario",
+  "title": {
+    "pt": "Hiperparatireoidismo primário",
+    "es": "Hiperparatiroidismo primario"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hiperparatireoidismo primário",
+      "Hiperparatiroidismo primario",
+      "primary hyperparathyroidism"
+    ],
+    "distinctScope": "Etiologia hormonal crônica; distinta da crise hipercalcêmica indiferenciada."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Secreção inadequada de paratormônio pode causar hipercalcemia, litíase e perda óssea; não equivale ao hiperparatireoidismo secundário renal.",
+      "es": "Secreción inadecuada de parathormona puede causar hipercalcemia, litiasis y pérdida ósea; no equivale al hiperparatiroidismo secundario renal.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pode ser incidental; investigar cálculos, fratura, poliúria, sede, constipação e sintomas neurocognitivos.",
+      "es": "Puede ser incidental; investigar cálculos, fractura, poliuria, sed, estreñimiento y síntomas neurocognitivos.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Repetir cálcio ajustado por albumina e interpretar PTH concomitante; avaliar função renal, vitamina D e diferenciais, incluindo hipercalcemia hipocalciúrica familiar.",
+      "es": "Repetir calcio ajustado por albúmina e interpretar PTH concomitante; evaluar función renal, vitamina D y diferenciales, incluida hipercalcemia hipocalciúrica familiar.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Encaminhar para avaliação cirúrgica conforme sintomas, lesão de órgão e cálcio; cirurgia é tratamento definitivo quando indicada.",
+      "es": "Derivar a evaluación quirúrgica según síntomas, lesión de órgano y calcio; cirugía es tratamiento definitivo cuando indicada.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há dose universal de cinacalcete/suplementos; terapias não cirúrgicas exigem indicação e monitorização específicas. Bifosfonato para risco ósseo não equivale a cura da hipercalcemia crônica.",
+      "es": "No existe dosis universal de cinacalcet/suplementos; tratamientos no quirúrgicos exigen indicación y vigilancia específicas. Bisfosfonato para riesgo óseo no equivale a curación de hipercalcemia crónica.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar cálcio, função renal, densidade óssea e litíase conforme manejo; manter hidratação apropriada e seguimento endocrinológico.",
+      "es": "Seguir calcio, función renal, densidad ósea y litiasis según manejo; mantener hidratación apropiada y seguimiento endocrinológico.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Alteração mental, desidratação importante, arritmia ou deterioração renal exigem avaliação urgente para crise hipercalcêmica.",
+      "es": "Alteración mental, deshidratación importante, arritmia o deterioro renal exigen evaluación urgente de crisis hipercalcémica.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação exige discussão especializada; não solicitar imagem cervical para substituir diagnóstico bioquímico, pois imagem orienta cirurgia, não confirmação isolada.",
+      "es": "El embarazo exige discusión especializada; no solicitar imagen cervical para sustituir diagnóstico bioquímico, pues imagen orienta cirugía, no confirmación aislada.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE",
+      "title": "Primary hyperparathyroidism",
+      "url": "https://www.nice.org.uk/guidance/ng132/chapter/Recommendations",
+      "authority": "NICE",
+      "year": 2019,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

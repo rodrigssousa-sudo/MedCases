@@ -1,0 +1,113 @@
+{
+  "owner": "prostatite_bacteriana_aguda",
+  "title": {
+    "pt": "Prostatite bacteriana aguda",
+    "es": "Prostatitis bacteriana aguda"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Prostatite bacteriana aguda",
+      "Prostatitis bacteriana aguda",
+      "acute bacterial prostatitis"
+    ],
+    "distinctScope": "Infecção prostática com necessidade de penetração tecidual; distinta de cistite e pielonefrite."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção bacteriana prostática pode causar bacteremia, retenção urinária e abscesso; não equivale à cistite simples.",
+      "es": "La infección bacteriana prostática puede causar bacteriemia, retención urinaria y absceso; no equivale a cistitis simple.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Suspeitar com febre, disúria e dor pélvica/perineal; avaliar estabilidade, retenção e tolerância oral.",
+      "es": "Sospechar ante fiebre, disuria y dolor pélvico/perineal; evaluar estabilidad, retención y tolerancia oral.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Colher urocultura antes do antibiótico sem atrasar tratamento de doença grave; reavaliar resistência e possível abscesso se evolução inadequada.",
+      "es": "Obtener urocultivo antes del antibiótico sin retrasar tratamiento de enfermedad grave; reevaluar resistencia y posible absceso si evolución inadecuada.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Escolher antimicrobiano conforme culturas prévias, resistência local e penetração prostática. Via intravenosa se grave, vômitos ou incapacidade de tratamento oral.",
+      "es": "Elegir antimicrobiano según cultivos previos, resistencia local y penetración prostática. Vía intravenosa si grave, vómitos o imposibilidad de tratamiento oral.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto estável: ciprofloxacino 500 mg por via oral a cada 12 horas durante 14 dias, apenas quando outras opções usuais forem inadequadas; revisar cultura e contraindicações.",
+      "es": "Adulto estable: ciprofloxacino 500 mg por vía oral cada 12 horas durante 14 días, solo cuando otras opciones habituales sean inadecuadas; revisar cultivo y contraindicaciones.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Revisar aos 14 dias para interromper ou estender conforme resposta. Ausência de melhora em 48 horas exige avaliação hospitalar.",
+      "es": "Revisar a los 14 días para suspender o prolongar según respuesta. Ausencia de mejoría en 48 horas exige evaluación hospitalaria.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Sepse, retenção aguda, suspeita de abscesso ou piora clínica requerem internação/urologia; alta somente com estabilidade e seguimento garantido.",
+      "es": "Sepsis, retención aguda, sospecha de absceso o empeoramiento requieren ingreso/urología; alta solo con estabilidad y seguimiento garantizado.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Fluoroquinolonas podem causar lesões tendíneas, neuropatia e efeitos persistentes. Ajustar por função renal; alternativa deve considerar antibiograma e avaliação especializada.",
+      "es": "Las fluoroquinolonas pueden causar lesiones tendinosas, neuropatía y efectos persistentes. Ajustar por función renal; la alternativa debe considerar antibiograma y evaluación especializada.",
+      "sources": [
+        "NG110"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NG110",
+      "title": "Acute prostatitis antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng110/chapter/Recommendations",
+      "authority": "NICE",
+      "year": "2018; alerta de fluoroquinolonas 2024",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

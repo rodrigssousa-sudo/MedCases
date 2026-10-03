@@ -1,0 +1,125 @@
+{
+  "owner": "otite_media_aguda",
+  "title": {
+    "pt": "Otite média aguda",
+    "es": "Otitis media aguda"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Otite média aguda",
+      "Otitis media aguda",
+      "OMA",
+      "acute otitis media"
+    ],
+    "distinctScope": "Infecção aguda do ouvido médio; distinta de efusão sem infecção e mastoidite."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção aguda do ouvido médio, frequentemente após infecção respiratória; efusão isolada não comprova infecção bacteriana.",
+      "es": "Infección aguda del oído medio, frecuentemente tras infección respiratoria; un derrame aislado no confirma infección bacteriana.",
+      "sources": [
+        "NICE91"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Investigar otalgia, febre, otorreia e duração; realizar otoscopia buscando abaulamento timpânico e efusão, não apenas vermelhidão.",
+      "es": "Investigar otalgia, fiebre, otorrea y duración; realizar otoscopia buscando abombamiento timpánico y derrame, no solo enrojecimiento.",
+      "sources": [
+        "NICE91"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diferenciar otite externa, otite com efusão, dor dentária e mastoidite; cultura não é rotineira, mas secreção por perfuração pode ser cultivada.",
+      "es": "Diferenciar otitis externa, otitis con derrame, dolor dental y mastoiditis; el cultivo no es rutinario, pero puede cultivarse secreción por perforación.",
+      "sources": [
+        "NHSOMA"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Controlar dor. Casos leves selecionados permitem observação com retorno garantido; doença sistêmica importante ou risco de complicações favorecem antibiótico imediato.",
+      "es": "Controlar el dolor. Casos leves seleccionados permiten observación con seguimiento garantizado; enfermedad sistémica importante o riesgo de complicaciones favorecen antibiótico inmediato.",
+      "sources": [
+        "NICE91",
+        "NHSOMA"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com indicação de antibiótico: amoxicilina 500 mg por via oral a cada 8 horas durante 5 dias; ajustar por função renal e protocolo local.",
+      "es": "Adulto con indicación de antibiótico: amoxicilina 500 mg por vía oral cada 8 horas durante 5 días; ajustar por función renal y protocolo local.",
+      "sources": [
+        "NHSOMA"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar se houver piora ou ausência de melhora; verificar adesão, diagnóstico e complicações antes de trocar antibiótico. Alta exige analgesia e orientação de retorno.",
+      "es": "Reevaluar si empeora o no mejora; comprobar adherencia, diagnóstico y complicaciones antes de cambiar antibiótico. El alta exige analgesia e instrucciones de retorno.",
+      "sources": [
+        "NICE91"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Edema retroauricular, orelha projetada, paralisia facial, meningismo ou toxemia exigem avaliação hospitalar/otorrinolaringológica urgente.",
+      "es": "Edema retroauricular, pabellón desplazado, parálisis facial, meningismo o toxicidad sistémica requieren evaluación hospitalaria/otorrinolaringológica urgente.",
+      "sources": [
+        "NICE91"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não extrapolar a dose adulta para crianças. Alergia imediata a penicilinas e insuficiência renal exigem escolha individualizada; a diretriz NICE citada é pediátrica.",
+      "es": "No extrapolar la dosis adulta a niños. Alergia inmediata a penicilinas e insuficiencia renal requieren elección individualizada; la guía NICE citada es pediátrica.",
+      "sources": [
+        "NICE91",
+        "NHSOMA"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE91",
+      "title": "Otitis media acute — recommendations",
+      "url": "https://www.nice.org.uk/guidance/ng91/chapter/Recommendations",
+      "authority": "NICE",
+      "year": 2022,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NHSOMA",
+      "title": "Acute otitis media — adult antimicrobial prescribing",
+      "url": "https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-grampian-orkney-shetland/hospital-guidance-for-adults/ear-nose-and-oropharynx/otitis-media-acute/",
+      "authority": "NHS Grampian",
+      "year": "consulta 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

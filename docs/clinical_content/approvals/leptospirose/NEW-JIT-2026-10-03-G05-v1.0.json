@@ -1,0 +1,142 @@
+{
+  "owner": "leptospirose",
+  "title": {
+    "pt": "Leptospirose",
+    "es": "Leptospirosis"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Leptospirose",
+      "Leptospirosis",
+      "doença de Weil",
+      "enfermedad de Weil"
+    ],
+    "distinctScope": "Zoonose associada a água contaminada; não há owner equivalente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Zoonose por contato com água/solo contaminados por urina animal; exposição a enchentes orienta suspeita, mas sua ausência não exclui.",
+      "es": "Zoonosis por contacto con agua/suelo contaminados por orina animal; la exposición a inundaciones orienta sospecha, pero su ausencia no excluye.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Febre, mialgia, cefaleia e sufusão conjuntival podem preceder icterícia, lesão renal ou hemorragia pulmonar.",
+      "es": "Fiebre, mialgia, cefalea y sufusión conjuntival pueden preceder ictericia, lesión renal o hemorragia pulmonar.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Solicitar hemograma, função renal/hepática e eletrólitos; escolher PCR ou sorologia conforme fase. Diferenciar dengue, malária e sepse.",
+      "es": "Solicitar hemograma, función renal/hepática y electrolitos; elegir PCR o serología según fase. Diferenciar dengue, malaria y sepsis.",
+      "sources": [
+        "YB"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Iniciar antibiótico diante de forte suspeita sem aguardar confirmação. Hidratação exige atenção à função renal e pulmonar.",
+      "es": "Iniciar antibiótico ante sospecha alta sin esperar confirmación. La hidratación exige atención a función renal y pulmonar.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com doença leve: doxiciclina 100 mg oral a cada 12 horas durante 7 dias. Doença grave: ceftriaxona 1 g intravenosa a cada 24 horas, em hospital.",
+      "es": "Adulto con enfermedad leve: doxiciclina 100 mg oral cada 12 horas durante 7 días. Enfermedad grave: ceftriaxona 1 g intravenosa cada 24 horas, en hospital.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar diurese, creatinina, potássio, oxigenação e sangramento; vigiar reação de Jarisch–Herxheimer após início do antibiótico.",
+      "es": "Vigilar diuresis, creatinina, potasio, oxigenación y sangrado; observar reacción de Jarisch–Herxheimer tras iniciar antibiótico.",
+      "sources": [
+        "YB"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dispneia, hemoptise, oligúria, icterícia intensa, meningismo ou instabilidade indicam internação; insuficiência respiratória pode evoluir rapidamente.",
+      "es": "Disnea, hemoptisis, oliguria, ictericia intensa, meningismo o inestabilidad indican ingreso; la insuficiencia respiratoria puede evolucionar rápidamente.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestantes e crianças requerem esquema específico; não extrapolar dose adulta. Alta apenas se estável, sem disfunção orgânica e com reavaliação assegurada.",
+      "es": "Embarazadas y niños requieren pauta específica; no extrapolar dosis adulta. Alta solo si estable, sin disfunción orgánica y con reevaluación asegurada.",
+      "sources": [
+        "CDC",
+        "YB"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "dose",
+      "pt": "Ceftriaxona intravenosa em adulto: infundir durante 30 minutos, após reconstituição/diluição compatível. Não misturar com soluções intravenosas contendo cálcio; regras para neonatos são distintas.",
+      "es": "Ceftriaxona intravenosa en adulto: infundir durante 30 minutos, tras reconstitución/dilución compatible. No mezclar con soluciones intravenosas que contengan calcio; reglas para neonatos son distintas.",
+      "sources": [
+        "IV"
+      ],
+      "id": "dose_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Clinical overview of leptospirosis",
+      "url": "https://www.cdc.gov/leptospirosis/hcp/clinical-overview/index.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "YB",
+      "title": "Leptospirosis — Yellow Book",
+      "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/leptospirosis.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IV",
+      "title": "Ceftriaxone prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ddbc3bf6-5bab-4851-ae5a-ef263cd8f255",
+      "authority": "DailyMed",
+      "year": 2026,
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,141 @@
+{
+  "owner": "zika",
+  "title": {
+    "pt": "Infecção pelo vírus Zika",
+    "es": "Infección por el virus del Zika"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Infecção pelo vírus Zika",
+      "Infección por el virus del Zika",
+      "zika virus"
+    ],
+    "distinctScope": "Arbovirose com riscos gestacionais próprios; distinta de dengue e chikungunya."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Arbovirose também transmissível sexualmente e verticalmente; quadro materno leve não exclui risco fetal.",
+      "es": "Arbovirosis también transmisible sexual y verticalmente; un cuadro materno leve no excluye riesgo fetal.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Exantema pruriginoso, conjuntivite não purulenta, artralgia e febre baixa sugerem infecção; registrar exposição e possibilidade de gestação.",
+      "es": "Exantema pruriginoso, conjuntivitis no purulenta, artralgia y febrícula sugieren infección; registrar exposición y posibilidad de embarazo.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Testagem depende de exposição, sintomas e gestação; sorologia pode cruzar com outros flavivírus. Diferenciar dengue, chikungunya e rubéola.",
+      "es": "Las pruebas dependen de exposición, síntomas y embarazo; la serología puede cruzarse con otros flavivirus. Diferenciar dengue, chikunguña y rubéola.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suporte com líquidos e analgesia; não há antiviral específico. Prevenção de picadas e transmissão sexual integra a orientação.",
+      "es": "Soporte con líquidos y analgesia; no existe antiviral específico. Prevenir picaduras y transmisión sexual forma parte de la orientación.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há esquema antimicrobiano. Escolher analgésico conforme peso e contraindicações; evitar anti-inflamatório até excluir dengue.",
+      "es": "No existe pauta antimicrobiana. Elegir analgésico según peso y contraindicaciones; evitar antiinflamatorio hasta descartar dengue.",
+      "sources": [
+        "WHO"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Alta se estável e hidratado, com retorno por piora; gestantes expostas/sintomáticas necessitam seguimento obstétrico e avaliação fetal conforme protocolo vigente.",
+      "es": "Alta si estable e hidratado, con retorno por empeoramiento; embarazadas expuestas/sintomáticas necesitan seguimiento obstétrico y evaluación fetal según protocolo vigente.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Fraqueza progressiva, arreflexia, dificuldade respiratória ou alteração neurológica exigem avaliação urgente para complicações como Guillain–Barré.",
+      "es": "Debilidad progresiva, arreflexia, dificultad respiratoria o alteración neurológica requieren evaluación urgente por complicaciones como Guillain–Barré.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não interpretar teste negativo isolado como exclusão universal. Na infecção confirmada, anti-inflamatório para artralgia é decisão individual, não obrigação terapêutica.",
+      "es": "No interpretar una prueba negativa aislada como exclusión universal. En infección confirmada, el antiinflamatorio para artralgia es decisión individual, no obligación terapéutica.",
+      "sources": [
+        "WHO",
+        "CDC"
+      ],
+      "id": "special_8"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Teste molecular negativo não exclui toda infecção recente; anticorpos podem apresentar reação cruzada. Interpretar a janela diagnóstica e discutir incertezas especialmente na gestação.",
+      "es": "Una prueba molecular negativa no excluye toda infección reciente; anticuerpos pueden presentar reacción cruzada. Interpretar ventana diagnóstica y discutir incertidumbres especialmente en embarazo.",
+      "sources": [
+        "TEST"
+      ],
+      "id": "diagnosis_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO",
+      "title": "Clinical management of arboviral diseases — recommendations and exceptions",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK616306/",
+      "authority": "WHO",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC",
+      "title": "Clinical signs and symptoms of Zika virus disease",
+      "url": "https://www.cdc.gov/zika/hcp/clinical-signs/index.html",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "TEST",
+      "title": "Clinical testing and diagnosis for Zika virus",
+      "url": "https://www.cdc.gov/zika/hcp/diagnosis-testing/",
+      "authority": "CDC",
+      "year": "consulta 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,124 @@
+{
+  "owner": "otite_externa_aguda",
+  "title": {
+    "pt": "Otite externa aguda",
+    "es": "Otitis externa aguda"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Otite externa aguda",
+      "Otitis externa aguda",
+      "ouvido de nadador",
+      "swimmer ear"
+    ],
+    "distinctScope": "Infecção do conduto auditivo externo, sem owner equivalente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Inflamação infecciosa do conduto externo, favorecida por umidade e trauma; manipulação rompe a barreira cutânea.",
+      "es": "Inflamación infecciosa del conducto externo, favorecida por humedad y traumatismo; la manipulación altera la barrera cutánea.",
+      "sources": [
+        "AAO"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor ao mobilizar o pavilhão ou trago, edema e secreção do conduto sugerem o diagnóstico; avaliar membrana timpânica e extensão.",
+      "es": "Dolor al movilizar pabellón o trago, edema y secreción del conducto sugieren el diagnóstico; evaluar tímpano y extensión.",
+      "sources": [
+        "AAO"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diferenciar otite média perfurada, dermatite e otomicose. Diabetes com dor intensa desproporcional exige excluir otite externa necrosante.",
+      "es": "Diferenciar otitis media perforada, dermatitis y otomicosis. Diabetes con dolor intenso desproporcionado exige descartar otitis externa necrosante.",
+      "sources": [
+        "AAO"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratamento tópico e analgesia são a base. Limpeza cuidadosa ou mecha pode melhorar penetração; antibiótico sistêmico não é rotina na doença restrita.",
+      "es": "Tratamiento tópico y analgesia son la base. Limpieza cuidadosa o mecha puede mejorar penetración; el antibiótico sistémico no es rutinario en enfermedad localizada.",
+      "sources": [
+        "AAO"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adultos: ofloxacino otológico 0,3%, 10 gotas no ouvido afetado uma vez ao dia durante 7 dias. Manter o ouvido voltado para cima por 5 minutos.",
+      "es": "Adultos: ofloxacino ótico 0,3%, 10 gotas en el oído afectado una vez al día durante 7 días. Mantener el oído hacia arriba durante 5 minutos.",
+      "sources": [
+        "OFLO"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar ausência de resposta em 48–72 horas: confirmar diagnóstico, adesão e permeabilidade do conduto; manter ouvido seco e evitar cotonetes.",
+      "es": "Reevaluar falta de respuesta en 48–72 horas: confirmar diagnóstico, adherencia y permeabilidad del conducto; mantener oído seco y evitar bastoncillos.",
+      "sources": [
+        "AAO"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Extensão além do conduto, febre sistêmica, neuropatia craniana ou imunossupressão com dor persistente indicam avaliação especializada urgente.",
+      "es": "Extensión fuera del conducto, fiebre sistémica, neuropatía craneal o inmunosupresión con dolor persistente indican evaluación especializada urgente.",
+      "sources": [
+        "AAO"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Se tímpano perfurado ou integridade incerta, escolher preparação não ototóxica. Não usar gotas otológicas nos olhos; doses pediátricas são específicas.",
+      "es": "Con tímpano perforado o integridad incierta, elegir preparación no ototóxica. No usar gotas óticas en los ojos; las dosis pediátricas son específicas.",
+      "sources": [
+        "AAO",
+        "OFLO"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "AAO",
+      "title": "Clinical practice guideline: acute otitis externa",
+      "url": "https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/aoe/",
+      "authority": "AAO-HNS",
+      "year": 2014,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "OFLO",
+      "title": "Ofloxacin otic solution 0.3% — prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=8db221b1-32f3-f6ca-e404-71f56a860d08&type=display",
+      "authority": "DailyMed",
+      "year": "bula consultada 2026",
+      "status": "PRODUCT_OR_REGULATORY_INFORMATION",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

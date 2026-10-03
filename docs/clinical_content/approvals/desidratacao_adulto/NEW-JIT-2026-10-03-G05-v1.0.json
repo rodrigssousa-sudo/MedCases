@@ -1,0 +1,114 @@
+{
+  "owner": "desidratacao_adulto",
+  "title": {
+    "pt": "Desidratação no adulto",
+    "es": "Deshidratación en el adulto"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Desidratação no adulto",
+      "Deshidratación en el adulto",
+      "depleção volêmica",
+      "deshidratación adultos"
+    ],
+    "distinctScope": "Depleção hídrica sem presumir choque; distinta de choque hipovolêmico e desidratação pediátrica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Déficit hídrico e depleção circulatória podem coexistir, mas não são equivalentes; identificar perdas e ingestão insuficiente.",
+      "es": "Déficit hídrico y depleción circulatoria pueden coexistir, pero no son equivalentes; identificar pérdidas e ingesta insuficiente.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar sinais vitais, perfusão, mucosas, consciência, peso, diurese e perdas; nenhum sinal isolado quantifica o déficit com segurança.",
+      "es": "Evaluar signos vitales, perfusión, mucosas, conciencia, peso, diuresis y pérdidas; ningún signo aislado cuantifica el déficit con seguridad.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Eletrólitos, glicemia e função renal conforme gravidade; hipernatremia, hiponatremia e choque exigem protocolos próprios.",
+      "es": "Electrolitos, glucemia y función renal según gravedad; hipernatremia, hiponatremia y shock requieren protocolos propios.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Preferir reposição oral/enteral quando segura e suficiente; via intravenosa se incapacidade ou necessidade circulatória, distinguindo ressuscitação, manutenção e reposição de perdas.",
+      "es": "Preferir reposición oral/enteral cuando sea segura y suficiente; vía intravenosa si incapacidad o necesidad circulatoria, distinguiendo reanimación, mantenimiento y reposición de pérdidas.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Se ressuscitação volêmica indicada: referência adulta de cristaloide 500 mL em menos de 15 minutos, seguida de reavaliação imediata; não repetir automaticamente nem usar como manutenção.",
+      "es": "Si reanimación de volumen indicada: referencia adulta de cristaloide 500 mL en menos de 15 minutos, seguida de reevaluación inmediata; no repetir automáticamente ni usar como mantenimiento.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Controlar perfusão, diurese, balanço, eletrólitos e congestão. Alta exige tolerância oral, causa controlada e retorno orientado.",
+      "es": "Controlar perfusión, diuresis, balance, electrolitos y congestión. Alta exige tolerancia oral, causa controlada y retorno indicado.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Choque, alteração mental, anúria, disnatremia importante ou incapacidade persistente de ingestão indicam hospitalização.",
+      "es": "Shock, alteración mental, anuria, disnatremia importante o incapacidad persistente de ingesta indican ingreso.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Idosos frágeis, cardiopatas e doença renal precisam volumes menores/individualizados e reavaliação frequente; evitar correção rápida não planejada do sódio.",
+      "es": "Mayores frágiles, cardiopatía y enfermedad renal necesitan volúmenes menores/individualizados y reevaluación frecuente; evitar corrección rápida no planificada del sodio.",
+      "sources": [
+        "NICE"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NICE",
+      "title": "Intravenous fluid therapy in adults in hospital",
+      "url": "https://www.nice.org.uk/guidance/cg174/chapter/recommendations",
+      "authority": "NICE",
+      "year": 2017,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

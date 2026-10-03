@@ -1,0 +1,113 @@
+{
+  "owner": "hipermagnesemia",
+  "title": {
+    "pt": "Hipermagnesemia",
+    "es": "Hipermagnesemia"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hipermagnesemia",
+      "Hipermagnesemia",
+      "hypermagnesemia"
+    ],
+    "distinctScope": "Excesso de magnésio, distinto de seu déficit e intoxicações registradas."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Excesso de magnésio geralmente envolve redução de excreção renal e exposição a suplementos, laxantes ou infusões.",
+      "es": "Exceso de magnesio generalmente implica menor excreción renal y exposición a suplementos, laxantes o infusiones.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Procurar hiporreflexia, fraqueza, sonolência, hipotensão e depressão respiratória; revisar todas as fontes de magnésio.",
+      "es": "Buscar hiporreflexia, debilidad, somnolencia, hipotensión y depresión respiratoria; revisar todas las fuentes de magnesio.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Dosar magnésio, cálcio, potássio e função renal; realizar eletrocardiograma e avaliar ventilação/perfusão.",
+      "es": "Medir magnesio, calcio, potasio y función renal; realizar electrocardiograma y evaluar ventilación/perfusión.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suspender magnésio, oferecer suporte respiratório/hemodinâmico e acionar nefrologia; toxicidade grave com insuficiência renal pode exigir diálise.",
+      "es": "Suspender magnesio, ofrecer soporte respiratorio/hemodinámico y consultar nefrología; toxicidad grave con insuficiencia renal puede exigir diálisis.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Toxicidade grave: gluconato de cálcio 10%, 10 mL, diluído em 50 mL de glicose 5%, intravenoso durante 10 minutos, com monitorização e avaliação intensiva.",
+      "es": "Toxicidad grave: gluconato de calcio 10%, 10 mL, diluido en 50 mL de glucosa 5%, intravenoso durante 10 minutos, con vigilancia y valoración intensiva.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Cálcio antagoniza efeitos, mas não remove magnésio. Reavaliar exame neurológico, respiração, eletrocardiograma e concentrações séricas.",
+      "es": "El calcio antagoniza efectos, pero no elimina magnesio. Reevaluar examen neurológico, respiración, electrocardiograma y concentraciones séricas.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Apneia, bloqueio cardíaco, bradicardia importante ou choque requerem tratamento imediato e internação monitorizada.",
+      "es": "Apnea, bloqueo cardíaco, bradicardia importante o shock requieren tratamiento inmediato e ingreso monitorizado.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não intercambiar gluconato e cloreto de cálcio volume por volume. Hidratação/diurético dependem de volemia e função renal; evitar sobrecarga.",
+      "es": "No intercambiar gluconato y cloruro de calcio volumen por volumen. Hidratación/diurético dependen de volemia y función renal; evitar sobrecarga.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS",
+      "title": "Hypermagnasaemia",
+      "url": "https://www.rightdecisions.scot.nhs.uk/electrolyte-disturbance/hypermagnasaemia/",
+      "authority": "NHS Lothian",
+      "year": "consulta 2026",
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

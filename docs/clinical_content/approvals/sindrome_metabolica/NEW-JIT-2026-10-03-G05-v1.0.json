@@ -1,0 +1,123 @@
+{
+  "owner": "sindrome_metabolica",
+  "title": {
+    "pt": "Síndrome metabólica",
+    "es": "Síndrome metabólico"
+  },
+  "version": "NEW-JIT-2026-10-03-G05-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; diferenças pediátricas apenas quando explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Síndrome metabólica",
+      "Síndrome metabólico",
+      "metabolic syndrome"
+    ],
+    "distinctScope": "Agrupamento de critérios cardiometabólicos; não substitui os owners de diabetes e dislipidemia."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Agrupamento de fatores cardiometabólicos aumenta risco cardiovascular e de diabetes; não substitui diagnóstico/tratamento individual dos componentes.",
+      "es": "Agrupación de factores cardiometabólicos aumenta riesgo cardiovascular y diabetes; no sustituye diagnóstico/tratamiento individual de componentes.",
+      "sources": [
+        "OV"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Frequentemente assintomática; avaliar cintura, pressão, glicemia e lipídios em conjunto, além de hábitos e medicamentos.",
+      "es": "Frecuentemente asintomática; evaluar cintura, presión, glucemia y lípidos conjuntamente, además de hábitos y medicamentos.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Considerar conjunto de 3 ou mais componentes: cintura aumentada, triglicerídeos elevados, HDL baixo, pressão elevada e glicemia elevada; pontos de corte de cintura variam por população.",
+      "es": "Considerar conjunto de 3 o más componentes: cintura aumentada, triglicéridos elevados, HDL bajo, presión elevada y glucemia elevada; límites de cintura varían según población.",
+      "sources": [
+        "OV",
+        "NIH"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Plano integrado de alimentação, atividade, cessação do tabaco e tratamento de pressão, glicose e lipídios conforme risco individual.",
+      "es": "Plan integrado de alimentación, actividad, abandono de tabaco y tratamiento de presión, glucosa y lípidos según riesgo individual.",
+      "sources": [
+        "OV"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe medicamento ou dose única para a síndrome; prescrever para cada componente confirmado e revisar interações/adesão.",
+      "es": "No existe medicamento ni dosis única para el síndrome; prescribir para cada componente confirmado y revisar interacciones/adherencia.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar trajetória de peso/cintura, pressão e exames; encaminhar seguimento de atenção primária. Não exigir internação por rótulo isolado.",
+      "es": "Seguir trayectoria de peso/cintura, presión y pruebas; organizar seguimiento de atención primaria. No exigir ingreso por etiqueta aislada.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor torácica, déficit neurológico ou crise hiperglicêmica devem seguir protocolos de emergência, sem serem explicados apenas pela síndrome.",
+      "es": "Dolor torácico, déficit neurológico o crisis hiperglucémica deben seguir protocolos de urgencia, sin explicarse solo por el síndrome.",
+      "sources": [
+        "OV"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Critérios adultos não devem ser extrapolados a crianças; comunicar risco sem estigma e sem confundir associação de fatores com doença aguda.",
+      "es": "Los criterios adultos no deben extrapolarse a niños; comunicar riesgo sin estigma ni confundir asociación de factores con enfermedad aguda.",
+      "sources": [
+        "NIH"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NIH",
+      "title": "Metabolic syndrome — diagnosis",
+      "url": "https://www.nhlbi.nih.gov/health/metabolic-syndrome/diagnosis",
+      "authority": "NHLBI",
+      "year": 2022,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "OV",
+      "title": "What is metabolic syndrome",
+      "url": "https://www.nhlbi.nih.gov/health/metabolic-syndrome",
+      "authority": "NHLBI",
+      "year": 2022,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}
