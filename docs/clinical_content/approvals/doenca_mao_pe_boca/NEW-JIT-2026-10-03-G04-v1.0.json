@@ -1,0 +1,135 @@
+{
+  "owner": "doenca_mao_pe_boca",
+  "title": {
+    "pt": "Doença mão-pé-boca",
+    "es": "Enfermedad de manos, pies y boca"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Principalmente crianças; adultos e gestação separados",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Doença mão-pé-boca",
+      "Enfermedad de manos, pies y boca"
+    ],
+    "distinctScope": "Síndrome enteroviral com lesões orais/acrais; não herpes, varicela ou aftas recorrentes."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção viral contagiosa, comum na infância, com lesões orais e acras. Pode afetar adultos e não equivale à febre aftosa dos animais. Transmissão ocorre por secreções, fezes e contato com lesões ou superfícies contaminadas.",
+      "es": "Infección viral contagiosa, frecuente en la infancia, con lesiones orales y acrales. Puede afectar adultos y no equivale a fiebre aftosa de animales. La transmisión ocurre por secreciones, heces y contacto con lesiones o superficies contaminadas.",
+      "sources": [
+        "CDC_MB",
+        "NHS_MB"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Febre, odinofagia, úlceras orais dolorosas e exantema em mãos e pés sugerem a doença; nádegas também podem ser afetadas. A dor na boca pode reduzir ingestão e causar desidratação.",
+      "es": "Fiebre, odinofagia, úlceras orales dolorosas y exantema en manos y pies sugieren la enfermedad; los glúteos también pueden afectarse. El dolor bucal puede reducir ingesta y causar deshidratación.",
+      "sources": [
+        "NHS_MB",
+        "CDC_MS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico usualmente clínico em apresentação típica. Avaliar gravidade e diferenciar varicela, outras viroses e causas perigosas de febre com exantema; exames dependem de dúvida diagnóstica ou complicações.",
+      "es": "Diagnóstico habitualmente clínico en presentación típica. Evaluar gravedad y diferenciar varicela, otras virosis y causas peligrosas de fiebre con exantema; los estudios dependen de duda diagnóstica o complicaciones.",
+      "sources": [
+        "CDC_MS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Oferecer líquidos frescos e alimentos macios, controlar dor e higiene de mãos. Antibióticos não tratam o vírus; não há antiviral rotineiro para apresentação não complicada.",
+      "es": "Ofrecer líquidos frescos y alimentos blandos, controlar dolor e higiene de manos. Los antibióticos no tratan el virus; no hay antiviral rutinario para presentación no complicada.",
+      "sources": [
+        "NHS_MB",
+        "CDC_MB"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Analgésico ou antitérmico pediátrico depende de peso, idade, concentração do produto e contraindicações. Não há dose antimicrobiana de rotina; não improvisar unidades, volumes ou frequência para a criança.",
+      "es": "El analgésico o antitérmico pediátrico depende de peso, edad, concentración del producto y contraindicaciones. No existe dosis antimicrobiana de rutina; no improvisar unidades, volúmenes ni frecuencia para el niño.",
+      "sources": [
+        "NHS_MB"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "A maioria melhora em 7–10 dias. Monitorar ingestão e diurese; se não melhorar nesse período, reavaliar. Higienizar mãos e superfícies, sobretudo após troca de fraldas, reduz transmissão.",
+      "es": "La mayoría mejora en 7–10 días. Controlar ingesta y diuresis; si no mejora en ese período, reevaluar. Higienizar manos y superficies, especialmente después de cambiar pañales, reduce transmisión.",
+      "sources": [
+        "CDC_MB",
+        "NHS_MB"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Incapacidade de beber, oligúria, letargia, rigidez de nuca ou alteração neurológica exigem avaliação urgente. Não presumir evolução benigna diante de comprometimento sistêmico.",
+      "es": "Incapacidad para beber, oliguria, letargo, rigidez de nuca o alteración neurológica requieren evaluación urgente. No presumir evolución benigna ante afectación sistémica.",
+      "sources": [
+        "CDC_MS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Lactentes pequenos e imunossuprimidos precisam de vigilância maior. Gestante exposta ou com sintomas deve procurar orientação, especialmente perto do parto. Não utilizar formulações para úlcera oral sem verificar segurança etária.",
+      "es": "Los lactantes pequeños e inmunosuprimidos necesitan mayor vigilancia. La embarazada expuesta o sintomática debe consultar, especialmente cerca del parto. No utilizar formulaciones para úlcera oral sin verificar seguridad etaria.",
+      "sources": [
+        "CDC_MS",
+        "NHS_MB"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS_MB",
+      "title": "Hand, foot and mouth disease",
+      "url": "https://www.nhs.uk/conditions/hand-foot-mouth-disease/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_MB",
+      "title": "About hand foot and mouth disease",
+      "url": "https://www.cdc.gov/hand-foot-mouth/about/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_MS",
+      "title": "HFMD symptoms and complications",
+      "url": "https://www.cdc.gov/hand-foot-mouth/signs-symptoms/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

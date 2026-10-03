@@ -1,0 +1,127 @@
+{
+  "owner": "xerose_cutanea",
+  "title": {
+    "pt": "Xerose cutânea",
+    "es": "Xerosis cutánea"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Xerose cutânea",
+      "Xerosis cutánea"
+    ],
+    "distinctScope": "Ressecamento de barreira sem obrigatoriedade de eczema; distinto de dermatite atópica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Ressecamento por alteração da barreira cutânea; clima seco, banhos quentes, detergentes e envelhecimento podem contribuir.",
+      "es": "Sequedad por alteración de la barrera cutánea; clima seco, baños calientes, detergentes y envejecimiento pueden contribuir.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pele áspera, descamação, prurido e fissuras; pesquisar produtos usados e presença de inflamação, infecção ou sintomas sistêmicos.",
+      "es": "Piel áspera, descamación, prurito y fisuras; investigar productos usados y presencia de inflamación, infección o síntomas sistémicos.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; diferenciar eczema e dermatite de contato. Exames dependem de suspeita clínica, não do ressecamento isolado.",
+      "es": "Diagnóstico clínico; diferenciar eczema y dermatitis de contacto. Los estudios dependen de sospecha clínica, no de sequedad aislada.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Banho e limpeza suaves; aplicar emoliente frequentemente, especialmente após banho. Escolher creme ou pomada conforme intensidade e tolerância.",
+      "es": "Baño y limpieza suaves; aplicar emolientes frecuentemente, especialmente después del baño. Elegir crema o pomada según intensidad y tolerancia.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Emoliente não tem duração fixa; reaplicar conforme ressecamento e produto. Corticoide somente se houver dermatose inflamatória diagnosticada.",
+      "es": "El emoliente no tiene duración fija; reaplicar según sequedad y producto. Corticoide solamente ante dermatosis inflamatoria diagnosticada.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar fissuras, prurido e adesão; persistência exige investigar causa. Evitar produtos perfumados que agravem irritação.",
+      "es": "Reevaluar fisuras, prurito y adherencia; persistencia exige investigar causa. Evitar productos perfumados que agraven irritación.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Secreção, dor crescente e eritema progressivo sugerem infecção; prurido generalizado desproporcional requer revisão diagnóstica.",
+      "es": "Secreción, dolor creciente y eritema progresivo sugieren infección; prurito generalizado desproporcionado requiere revisión diagnóstica.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Emolientes acumulados nas roupas aumentam risco de incêndio: afastar chamas e cigarros. Crianças e idosos precisam de produtos e apoio apropriados.",
+      "es": "Emolientes acumulados en ropa aumentan riesgo de incendio: alejar llamas y cigarrillos. Niños y mayores necesitan productos y apoyo adecuados.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "AAD",
+      "title": "Dry skin: diagnosis and treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/dry-skin-treatment",
+      "authority": "AAD",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Emollients",
+      "url": "https://www.nhs.uk/tests-and-treatments/emollients/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,129 @@
+{
+  "owner": "queimadura_solar",
+  "title": {
+    "pt": "Queimadura solar",
+    "es": "Quemadura solar"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Queimadura solar",
+      "Quemadura solar"
+    ],
+    "distinctScope": "Lesão cutânea por radiação ultravioleta; não golpe de calor sistêmico."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Exposição solar excessiva causa inflamação e dano cutâneo; episódios de queimadura contribuem para risco futuro de câncer da pele.",
+      "es": "La exposición solar excesiva causa inflamación y daño cutáneo; las quemaduras contribuyen al riesgo futuro de cáncer de piel.",
+      "sources": [
+        "NHS",
+        "PLY"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pele quente e dolorosa nas áreas expostas, às vezes com bolhas; avaliar hidratação, extensão, febre, tontura e estado geral.",
+      "es": "Piel caliente y dolorosa en áreas expuestas, a veces con ampollas; evaluar hidratación, extensión, fiebre, mareos y estado general.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico por exposição e exame; diferenciar reação fototóxica. Sintomas sistêmicos exigem avaliar doença relacionada ao calor.",
+      "es": "Diagnóstico por exposición y examen; diferenciar reacción fototóxica. Los síntomas sistémicos exigen evaluar enfermedad relacionada con calor.",
+      "sources": [
+        "NHS",
+        "PLY"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Retirar do sol, resfriar suavemente, hidratar e cobrir; não usar gelo direto nem romper bolhas. Evitar nova exposição até recuperação.",
+      "es": "Retirar del sol, enfriar suavemente, hidratar y cubrir; no usar hielo directo ni romper ampollas. Evitar nueva exposición hasta recuperación.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Paracetamol pode aliviar dor conforme idade, peso e bula; não definir dose única para adultos e crianças. Não indicar antibiótico profilático.",
+      "es": "Paracetamol puede aliviar dolor según edad, peso y prospecto; no definir dosis única para adultos y niños. No indicar antibióticos profilácticos.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar dor, bolhas e ingestão de líquidos; piora ou infecção exige atendimento. Orientar prevenção com roupas e fotoproteção.",
+      "es": "Reevaluar dolor, ampollas e ingesta de líquidos; empeoramiento o infección exige atención. Orientar prevención con ropa y fotoprotección.",
+      "sources": [
+        "NHS",
+        "PLY"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Bolhas extensas, edema, vômitos, cefaleia, tontura ou febre requerem avaliação; confusão ou colapso exige emergência.",
+      "es": "Ampollas extensas, edema, vómitos, cefalea, mareos o fiebre requieren evaluación; confusión o colapso exige atención de emergencia.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Bebês ou crianças com queimadura solar precisam de avaliação médica; gestação e doença renal exigem revisão individual dos analgésicos.",
+      "es": "Bebés o niños con quemadura solar necesitan evaluación médica; embarazo y enfermedad renal requieren revisar analgésicos individualmente.",
+      "sources": [
+        "NHS",
+        "PLY"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS",
+      "title": "Sunburn",
+      "url": "https://www.nhs.uk/conditions/sunburn/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PLY",
+      "title": "Sunburn: patient leaflet",
+      "url": "https://www.plymouthhospitals.nhs.uk/display-pil/pil-sunburn-6025",
+      "authority": "NHS Plymouth",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,129 @@
+{
+  "owner": "milia",
+  "title": {
+    "pt": "Mília",
+    "es": "Milia"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Recém-nascidos, crianças e adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Mília",
+      "Milia"
+    ],
+    "distinctScope": "Pequenos cistos superficiais de queratina; não cisto epidermoide profundo ou acne comedonal."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Pequenos cistos superficiais contendo queratina; comuns em recém-nascidos e também presentes em adultos, inclusive após dano cutâneo.",
+      "es": "Pequeños quistes superficiales con queratina; frecuentes en recién nacidos y también en adultos, incluso tras daño cutáneo.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pápulas brancas ou amareladas, uniformes, geralmente em face e pálpebras, sem inflamação importante.",
+      "es": "Pápulas blancas o amarillentas uniformes, generalmente en cara y párpados, sin inflamación importante.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; diferenciar comedões, molusco e outras pápulas se aparência não for típica. Não realizar exames de rotina.",
+      "es": "Diagnóstico clínico; diferenciar comedones, molusco y otras pápulas si el aspecto no es típico. No realizar estudios rutinarios.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Observar e explicar benignidade; na maioria dos bebês há resolução espontânea. Não espremer nem perfurar.",
+      "es": "Observar y explicar benignidad; en la mayoría de bebés se resuelve espontáneamente. No apretar ni perforar.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe necessidade habitual de medicamento; em adultos incomodados pode-se discutir extração profissional estéril, sem intervenção caseira.",
+      "es": "No suelen necesitar medicamentos; adultos con molestias pueden considerar extracción profesional estéril, sin intervención casera.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar se persistente ou após procedimento; irritação, infecção e cicatriz são riscos de manipulação.",
+      "es": "Controlar si persiste o tras procedimiento; irritación, infección y cicatrices son riesgos de manipulación.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre, vesículas, dor ou criança com mau estado geral exigem avaliar outro diagnóstico; não atribuir sinais sistêmicos à milia.",
+      "es": "Fiebre, vesículas, dolor o niño con mal estado general exigen evaluar otro diagnóstico; no atribuir signos sistémicos a milia.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Em recém-nascidos evitar medicamentos e remoção; perto dos olhos, qualquer procedimento requer profissional habilitado.",
+      "es": "En recién nacidos evitar medicamentos y extracción; cerca de los ojos, todo procedimiento requiere profesional capacitado.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Milia",
+      "url": "https://www.pcds.org.uk/clinical-guidance/milia",
+      "authority": "PCDS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Rashes in babies and children: milia",
+      "url": "https://www.nhs.uk/symptoms/rashes-babies-and-children/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

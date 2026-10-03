@@ -17,9 +17,9 @@ class _FileBundle extends CachingAssetBundle {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  test('G02 expands to380 and preserves HOLD exclusion', () {
-    expect(protocolsDatabase.length, 380);
-    expect(protocolsDatabase.map((p) => p.id).toSet().length, 380);
+  test('G02 expands to430 and preserves HOLD exclusion', () {
+    expect(protocolsDatabase.length, 430);
+    expect(protocolsDatabase.map((p) => p.id).toSet().length, 430);
     for (final id in ['epididimite_orquite', 'abrasao_corneana']) {
       expect(protocolsDatabase.any((p) => p.id == id), false);
     }

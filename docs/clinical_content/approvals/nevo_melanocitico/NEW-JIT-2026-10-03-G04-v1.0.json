@@ -1,0 +1,140 @@
+{
+  "owner": "nevo_melanocitico",
+  "title": {
+    "pt": "Nevo melanocítico",
+    "es": "Nevo melanocítico"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Nevo melanocítico"
+    ],
+    "distinctScope": "Owner único para nevos melanocíticos; não contar subtipos como novos ou tratar melanoma como nevo."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Proliferação benigna de melanócitos; nevos comuns surgem frequentemente na infância ou juventude. Não são sinônimo de melanoma.",
+      "es": "Proliferación benigna de melanocitos; los nevos comunes aparecen frecuentemente en infancia o juventud. No son sinónimo de melanoma.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Lesões planas ou elevadas geralmente simétricas e estáveis; examinar padrão global e lesão diferente das demais, não apenas tamanho.",
+      "es": "Lesiones planas o elevadas generalmente simétricas y estables; examinar patrón global y lesiones distintas de las demás, no solamente tamaño.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico e dermatoscopia por profissional capacitado; lesão suspeita requer avaliação e histologia apropriada, não diagnóstico por fotografia isolada.",
+      "es": "Diagnóstico clínico y dermatoscopia por profesional capacitado; lesiones sospechosas requieren evaluación e histología apropiada, no diagnóstico por fotografía aislada.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Fotoproteção e auto-observação; não remover todos os nevos preventivamente. Intervenção em nevo benigno pode ser considerada por trauma ou incômodo.",
+      "es": "Fotoprotección y autoobservación; no extirpar todos los nevos preventivamente. Intervenir en nevos benignos por traumatismos o molestias seleccionados.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há medicamento indicado para eliminar nevo. Evitar clareador, ácido ou destruição empírica que impeça adequada avaliação histológica.",
+      "es": "No hay medicamento indicado para eliminar nevos. Evitar aclarantes, ácidos o destrucción empírica que impida evaluación histológica adecuada.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Registrar alterações e fotografias quando indicado; monitorização especializada depende de risco individual, número e aparência dos nevos.",
+      "es": "Registrar cambios y fotografías cuando corresponda; la vigilancia especializada depende de riesgo individual, número y aspecto de nevos.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Mudança de forma ou cor, crescimento, sangramento ou lesão diferente das demais exige avaliação oportuna; suspeita de melanoma requer via prioritária.",
+      "es": "Cambio de forma o color, crecimiento, sangrado o lesión distinta de las demás exige evaluación oportuna; sospecha de melanoma requiere derivación prioritaria.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Nevo congênito extenso ou múltiplo em crianças pode requerer avaliação específica; não extrapolar orientação dos nevos adquiridos típicos.",
+      "es": "Nevos congénitos extensos o múltiples en niños pueden requerir evaluación específica; no extrapolar indicaciones de nevos adquiridos típicos.",
+      "sources": [
+        "PCDS",
+        "CMN"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Common melanocytic naevi",
+      "url": "https://www.pcds.org.uk/clinical-guidance/moles",
+      "authority": "PCDS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Moles",
+      "url": "https://www.nhs.uk/conditions/moles/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "CMN",
+      "title": "Congenital melanocytic naevus — pediatric scope",
+      "url": "https://www.pcds.org.uk/clinical-guidance/congenital-melanocytic-naevus",
+      "authority": "PCDS / Great Ormond Street Hospital",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "publicationDateConfirmed": true
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,131 @@
+{
+  "owner": "dermatite_contato",
+  "title": {
+    "pt": "Dermatite de contato",
+    "es": "Dermatitis de contacto"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Dermatite de contato",
+      "Dermatitis de contacto",
+      "eczema de contato",
+      "dermatitis de contacto alérgica",
+      "dermatitis de contacto irritativa"
+    ],
+    "distinctScope": "Owner único para dermatite de contato alérgica e irritativa; não criar owners separados para cada sítio ou agente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Eczema por exposição externa: irritação causa dano direto da barreira; alergia de contato é resposta imunológica a um sensibilizante.",
+      "es": "Eczema por exposición externa: la irritación daña directamente la barrera; la alergia de contacto es una respuesta inmunológica a un sensibilizante.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Prurido, fissuras, eritema e vesículas acompanham a distribuição da exposição; pesquisar ocupação, cosméticos, metais, detergentes e trabalho com água.",
+      "es": "Prurito, fisuras, eritema y vesículas siguen la distribución de la exposición; investigar ocupación, cosméticos, metales, detergentes y trabajo con agua.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Relacionar cronologia e exposições; diferenciar eczema atópico, dermatofitose e infecção. Teste de contato investiga alergia tardia quando persistente ou incerta.",
+      "es": "Relacionar cronología y exposiciones; diferenciar eczema atópico, dermatofitosis e infección. Las pruebas epicutáneas investigan alergia tardía si persiste o hay incertidumbre.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Retirar o agente, reduzir contato e restaurar a barreira com emolientes; medidas ocupacionais e proteção adequada são parte essencial do tratamento.",
+      "es": "Retirar el agente, reducir contacto y restaurar la barrera con emolientes; las medidas laborales y protección adecuada son parte esencial del tratamiento.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Corticoide tópico pode controlar inflamação; prescrever potência, área e duração conforme gravidade e local. Corticoide oral não é tratamento habitual.",
+      "es": "El corticoide tópico puede controlar la inflamación; prescribir potencia, zona y duración según gravedad y localización. El corticoide oral no es habitual.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar melhora após afastamento do agente e efeitos tópicos; persistência, recorrência ou incapacidade laboral indicam dermatologia e investigação dirigida.",
+      "es": "Reevaluar mejoría al evitar el agente y efectos tópicos; persistencia, recurrencia o incapacidad laboral indican dermatología e investigación dirigida.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Bolhas extensas, dor intensa, infecção ou exposição química corrosiva exigem avaliação urgente; dispneia após exposição deve ser tratada como emergência própria.",
+      "es": "Ampollas extensas, dolor intenso, infección o exposición química corrosiva requieren evaluación urgente; disnea tras exposición debe abordarse como una emergencia específica.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Face, pálpebras e crianças precisam de menor risco de atrofia; escolher tratamentos apropriados na gestação, sem assumir segurança por serem tópicos.",
+      "es": "Cara, párpados y niños requieren minimizar el riesgo de atrofia; seleccionar tratamientos adecuados durante el embarazo, sin presumir seguridad por ser tópicos.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS",
+      "title": "Contact dermatitis",
+      "url": "https://www.nhs.uk/conditions/contact-dermatitis/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PCDS",
+      "title": "Contact allergic dermatitis",
+      "url": "https://www.pcds.org.uk/clinical-guidance/eczema-contact-allergic-dermatitis-including-latex-and-rubber-allergy",
+      "authority": "PCDS",
+      "year": 2022,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

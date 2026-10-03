@@ -1,0 +1,129 @@
+{
+  "owner": "doenca_pilonidal",
+  "title": {
+    "pt": "Doença pilonidal",
+    "es": "Enfermedad pilonidal"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Doença pilonidal",
+      "Enfermedad pilonidal"
+    ],
+    "distinctScope": "Doença de sulcos/pelos interglúteos; não abscesso perianal/fístula anal."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Inflamação associada a pelos na prega interglútea pode formar orifícios, trajetos e abscesso; localização é distinta da doença perianal.",
+      "es": "La inflamación asociada con pelos en el pliegue interglúteo puede formar orificios, trayectos y abscesos; la localización difiere de enfermedad perianal.",
+      "sources": [
+        "NHS",
+        "NTH"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor ou nódulo no alto da prega, com secreção, sangue ou abscesso; avaliar febre, recorrência e dificuldade para sentar.",
+      "es": "Dolor o nódulo arriba del pliegue, con secreción, sangre o absceso; evaluar fiebre, recurrencia y dificultad para sentarse.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico pelo exame local; verificar localização e diferenciar abscesso perianal e hidradenite. Imagem não é rotina na apresentação típica.",
+      "es": "Diagnóstico por examen local; verificar localización y diferenciar absceso perianal e hidradenitis. Las imágenes no son rutina en presentación típica.",
+      "sources": [
+        "NHS",
+        "NTH"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Assintomático sem infecção pode ser observado com higiene. Abscesso doloroso geralmente requer drenagem; doença recorrente exige avaliar procedimento definitivo.",
+      "es": "Asintomático sin infección puede observarse con higiene. Un absceso doloroso suele requerir drenaje; la enfermedad recurrente exige evaluar procedimiento definitivo.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Antibiótico não substitui drenagem quando necessária; sua indicação e esquema dependem de infecção e contexto. Analgesia é individualizada.",
+      "es": "Los antibióticos no sustituyen drenaje cuando es necesario; indicación y esquema dependen de infección y contexto. La analgesia se individualiza.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Planejar curativos e acompanhamento da ferida; observar recorrência. Não recomendar raspagem agressiva ou procedimento caseiro sem avaliação.",
+      "es": "Planificar curaciones y seguimiento de heridas; observar recurrencia. No recomendar afeitado agresivo ni procedimientos caseros sin evaluación.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor intensa, febre, abscesso ou inflamação progressiva requerem atendimento oportuno; deterioração sistêmica exige escalonamento hospitalar.",
+      "es": "Dolor intenso, fiebre, absceso o inflamación progresiva requieren atención oportuna; deterioro sistémico exige escalamiento hospitalario.",
+      "sources": [
+        "NHS",
+        "NTH"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Procedimentos dependem de extensão, recorrência, cicatrização e risco anestésico; diabetes ou imunossupressão justificam vigilância e planejamento próprios.",
+      "es": "Los procedimientos dependen de extensión, recurrencia, cicatrización y riesgo anestésico; diabetes o inmunosupresión justifican vigilancia y planificación específicas.",
+      "sources": [
+        "NHS",
+        "NTH"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS",
+      "title": "Pilonidal sinus",
+      "url": "https://www.nhs.uk/conditions/pilonidal-sinus/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NTH",
+      "title": "Excision of pilonidal sinus",
+      "url": "https://www.nth.nhs.uk/resources/excision-of-pilonidal-sinus/",
+      "authority": "NHS NorthTees",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

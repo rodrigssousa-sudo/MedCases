@@ -1,0 +1,141 @@
+{
+  "owner": "hidradenite_supurativa",
+  "title": {
+    "pt": "Hidradenite supurativa",
+    "es": "Hidradenitis supurativa"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hidradenite supurativa",
+      "Hidradenitis supurativa",
+      "acne inversa"
+    ],
+    "distinctScope": "Doença inflamatória folicular crônica com túneis/cicatrizes; não acne vulgar, foliculite ou abscesso isolado."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença inflamatória crônica folicular, também chamada acne inversa; nódulos recorrentes em dobras podem evoluir para túneis e cicatrizes.",
+      "es": "Enfermedad inflamatoria folicular crónica, también llamada acné inversa; nódulos recurrentes en pliegues pueden evolucionar a túneles y cicatrices.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Examinar axilas, virilhas e região anogenital; documentar dor, abscessos, drenagem, recorrência e cicatrizes. Não atribuir a falta de higiene.",
+      "es": "Examinar axilas, ingles y zona anogenital; documentar dolor, abscesos, drenaje, recurrencia y cicatrices. No atribuirlo a falta de higiene.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico combina lesões típicas, locais típicos e recorrência; diferenciar furúnculos isolados, doença pilonidal e doença perianal de Crohn.",
+      "es": "El diagnóstico clínico combina lesiones típicas, localizaciones típicas y recurrencia; diferenciar forúnculos aislados, enfermedad pilonidal y enfermedad perianal de Crohn.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Controlar dor, atrito e feridas; apoiar cessação do tabagismo e manejo do peso. Tratamento combina controle inflamatório e cirurgia de túneis selecionados.",
+      "es": "Controlar dolor, roce y heridas; apoyar abandono del tabaco y manejo del peso. El tratamiento combina control inflamatorio y cirugía de túneles seleccionados.",
+      "sources": [
+        "S2KTX",
+        "BAD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Clindamicina tópica a 1%: duas vezes por dia durante a exacerbação, por até 12 semanas, em doença leve ou moderada sem túneis drenantes; reavaliar resposta e resistência. Antibióticos sistêmicos ou biológicos dependem de atividade e gravidade, com acompanhamento especializado.",
+      "es": "Clindamicina tópica al 1%: dos veces por día durante la exacerbación, hasta 12 semanas, en enfermedad leve o moderada sin túneles drenantes; reevaluar respuesta y resistencia. Antibióticos sistémicos o biológicos dependen de actividad y gravedad, con seguimiento especializado.",
+      "sources": [
+        "S2KTX"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar lesões inflamatórias, túneis, dor e qualidade de vida; revisar resistência e toxicidade terapêutica. Drenagem isolada não controla doença crônica.",
+      "es": "Controlar lesiones inflamatorias, túneles, dolor y calidad de vida; revisar resistencia y toxicidad terapéutica. El drenaje aislado no controla enfermedad crónica.",
+      "sources": [
+        "S2KTX",
+        "BAD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre ou deterioração sistêmica exige avaliar infecção secundária; doença extensa, dor incapacitante ou lesão ulcerada persistente requer avaliação especializada.",
+      "es": "Fiebre o deterioro sistémico exige evaluar infección secundaria; enfermedad extensa, dolor incapacitante o lesión ulcerada persistente requiere evaluación especializada.",
+      "sources": [
+        "BAD",
+        "S2KTX"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, crianças e imunossupressão exigem seleção específica; antes de biológicos, avaliar infecção e contraindicações conforme medicamento e protocolo local.",
+      "es": "Embarazo, niños e inmunosupresión requieren selección específica; antes de biológicos evaluar infecciones y contraindicaciones según medicamento y protocolo local.",
+      "sources": [
+        "S2KTX",
+        "BAD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "S2K26",
+      "title": "European S2k guideline: epidemiology, diagnosis and clinical assessment",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42610770/",
+      "authority": "European HS Foundation",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "BIBLIOGRAPHIC_METADATA_AND_ABSTRACT_ONLY"
+    },
+    {
+      "id": "S2KTX",
+      "title": "European S2k guideline part2: treatment",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12023723/",
+      "authority": "European HS Foundation",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL_GUIDELINE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "BAD",
+      "title": "Hidradenitis suppurativa",
+      "url": "https://www.bad.org.uk/pils/hidradenitis-suppurativa",
+      "authority": "BAD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

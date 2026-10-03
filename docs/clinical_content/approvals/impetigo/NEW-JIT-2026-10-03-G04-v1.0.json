@@ -1,0 +1,126 @@
+{
+  "owner": "impetigo",
+  "title": {
+    "pt": "Impetigo",
+    "es": "Impétigo"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e crianças; exemplo numérico tópico adulto",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Impetigo",
+      "Impétigo"
+    ],
+    "distinctScope": "Infecção epidérmica superficial por estafilococo/estreptococo; distinta de celulite e foliculite."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção bacteriana superficial contagiosa da pele, favorecida por escoriações e dermatoses. Formas não bolhosa e bolhosa pertencem ao mesmo owner; não equivalem à celulite profunda.",
+      "es": "Infección bacteriana superficial contagiosa de piel, favorecida por excoriaciones y dermatosis. Las formas no ampollosa y ampollosa pertenecen al mismo owner; no equivalen a celulitis profunda.",
+      "sources": [
+        "NHS_I",
+        "NICE_I"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Lesões superficiais com crostas amareladas sugerem a forma não bolhosa; bolhas flácidas sugerem forma bolhosa. Avaliar extensão, febre, comorbidades e sinais de infecção mais profunda.",
+      "es": "Las lesiones superficiales con costras amarillentas sugieren la forma no ampollosa; ampollas flácidas sugieren forma ampollosa. Evaluar extensión, fiebre, comorbilidades y signos de infección más profunda.",
+      "sources": [
+        "NHS_I"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico geralmente clínico. Falha, recorrência ou suspeita de resistência justificam coleta de material para cultura conforme contexto. Diferenciar herpes, dermatite e celulite antes de repetir antibióticos.",
+      "es": "Diagnóstico generalmente clínico. Fracaso, recurrencia o sospecha de resistencia justifican obtener material para cultivo según contexto. Diferenciar herpes, dermatitis y celulitis antes de repetir antibióticos.",
+      "sources": [
+        "NHS_I",
+        "NICE_I"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Higienizar suavemente e evitar compartilhar toalhas. Doença localizada não bolhosa pode receber tratamento tópico; bolhosa, extensa, sistêmica ou de alto risco pode exigir antibiótico oral. Não combinar tópico e oral rotineiramente.",
+      "es": "Higienizar suavemente y evitar compartir toallas. La enfermedad localizada no ampollosa puede recibir tratamiento tópico; ampollosa, extensa, sistémica o de alto riesgo puede requerir antibiótico oral. No combinar tópico y oral rutinariamente.",
+      "sources": [
+        "NICE_I"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Exemplo tópico NICE para adulto com impetigo não bolhoso localizado, quando antibiótico tópico é indicado e resistência à opção preferencial torna mupirocina apropriada: mupirocina 2%, aplicar três vezes ao dia durante 5 dias. Escolha deve considerar resistência e protocolo local.",
+      "es": "Ejemplo tópico NICE para adulto con impétigo no ampolloso localizado, cuando se indica antibiótico tópico y resistencia a la opción preferida hace adecuada mupirocina: mupirocina 2%, aplicar tres veces al día durante 5 días. La elección debe considerar resistencia y protocolo local.",
+      "sources": [
+        "NICE_I"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar se piorar durante tratamento ou não melhorar ao final. Recorrência pode exigir investigação de colonização; não prolongar indefinidamente antibióticos tópicos, pelo risco de resistência.",
+      "es": "Reevaluar si empeora durante tratamiento o no mejora al finalizar. La recurrencia puede requerir investigación de colonización; no prolongar indefinidamente antibióticos tópicos, por riesgo de resistencia.",
+      "sources": [
+        "NHS_I",
+        "NICE_I"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre importante, deterioração sistêmica, eritema rapidamente progressivo, dor intensa ou comprometimento ocular exigem avaliação urgente para infecção complicada; não manejar apenas com pomada.",
+      "es": "Fiebre importante, deterioro sistémico, eritema rápidamente progresivo, dolor intenso o afectación ocular requieren evaluación urgente por infección complicada; no manejar únicamente con pomada.",
+      "sources": [
+        "NHS_I",
+        "NICE_I"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Lactentes e imunossuprimidos exigem avaliação clínica. Para crianças, antibioticoterapia sistêmica depende de peso e idade; gestação, alergias e resistência modificam a seleção. O exemplo adulto não autoriza uso pediátrico automático.",
+      "es": "Lactantes e inmunosuprimidos requieren evaluación clínica. En niños, la antibioticoterapia sistémica depende de peso y edad; embarazo, alergias y resistencia modifican la selección. El ejemplo adulto no autoriza uso pediátrico automático.",
+      "sources": [
+        "NHS_I",
+        "NICE_I"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS_I",
+      "title": "Impetigo",
+      "url": "https://www.nhs.uk/conditions/impetigo/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NICE_I",
+      "title": "Impetigo antimicrobial prescribing: NG153",
+      "url": "https://www.nice.org.uk/guidance/ng153/chapter/Recommendations",
+      "authority": "NICE",
+      "year": 2020,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

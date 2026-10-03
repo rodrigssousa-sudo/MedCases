@@ -1,0 +1,164 @@
+{
+  "owner": "covid19",
+  "title": {
+    "pt": "COVID-19",
+    "es": "COVID-19"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "COVID-19",
+      "infecção SARS-CoV-2"
+    ],
+    "distinctScope": "Infecção pelo SARS-CoV-2; não influenza, resfriado comum ou PAC genérica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção por SARS-CoV-2 com espectro de doença respiratória leve a comprometimento sistêmico. Idade avançada, imunossupressão e comorbidades aumentam risco de progressão; vacinação não elimina a necessidade de avaliação individual.",
+      "es": "Infección por SARS-CoV-2 con espectro de enfermedad respiratoria leve a afectación sistémica. Edad avanzada, inmunosupresión y comorbilidades aumentan el riesgo de progresión; la vacunación no elimina la necesidad de evaluación individual.",
+      "sources": [
+        "WHO_CV",
+        "CDC_CV"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar início dos sintomas, dispneia, tolerância à ingestão, saturação e fatores de risco. Considerar pneumonia, influenza e outras causas; a avaliação de gravidade orienta atendimento ambulatorial ou hospitalar.",
+      "es": "Registrar inicio de síntomas, disnea, tolerancia a la ingesta, saturación y factores de riesgo. Considerar neumonía, influenza y otras causas; la evaluación de gravedad orienta atención ambulatoria u hospitalaria.",
+      "sources": [
+        "WHO_CV"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar por teste virológico apropriado sem atrasar avaliação de pessoa de alto risco. Antígeno negativo isolado pode exigir repetição ou teste molecular conforme contexto e método.",
+      "es": "Confirmar mediante prueba virológica apropiada sin retrasar la evaluación de una persona de alto riesgo. Un antígeno negativo aislado puede requerir repetición o prueba molecular según contexto y método.",
+      "sources": [
+        "CDC_CV",
+        "CDC_TEST"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Oferecer cuidado sintomático e avaliar antiviral precoce em quem tem alto risco. Nirmatrelvir associado a ritonavir deve começar até 5 dias do início; remdesivir ambulatorial é alternativa por 3 dias consecutivos, iniciado até 7 dias.",
+      "es": "Ofrecer cuidado sintomático y evaluar antiviral temprano en personas con alto riesgo. Nirmatrelvir asociado a ritonavir debe comenzar hasta 5 días del inicio; remdesivir ambulatorio es alternativa durante 3 días consecutivos, iniciado hasta 7 días.",
+      "sources": [
+        "CDC_CV",
+        "IDSA_CV"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Paxlovid em adulto elegível, com filtração glomerular estimada de pelo menos 60 mL por minuto: nirmatrelvir 300 mg junto com ritonavir 100 mg por via oral duas vezes ao dia durante 5 dias. Revisar obrigatoriamente todos os medicamentos e interações antes da prescrição.",
+      "es": "Paxlovid en adulto elegible, con filtración glomerular estimada de al menos 60 mL por minuto: nirmatrelvir 300 mg junto con ritonavir 100 mg por vía oral dos veces al día durante 5 días. Revisar obligatoriamente todos los medicamentos e interacciones antes de prescribir.",
+      "sources": [
+        "FDA_P",
+        "IDSA_CV"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "dose",
+      "pt": "Bula FDA 2026: filtração de 30 a menos de 60 mL por minuto — nirmatrelvir 150 mg com ritonavir 100 mg duas vezes ao dia por 5 dias. Abaixo de 30 mL por minuto, inclusive hemodiálise — no dia 1, 300 mg com 100 mg uma vez; nos dias 2–5, 150 mg com 100 mg uma vez ao dia; administrar após hemodiálise nos dias de sessão. Todas as doses são por via oral.",
+      "es": "Ficha FDA 2026: filtración de 30 a menos de 60 mL por minuto — nirmatrelvir 150 mg con ritonavir 100 mg dos veces al día durante 5 días. Menos de 30 mL por minuto, incluso hemodiálisis — el día 1, 300 mg con 100 mg una vez; los días 2–5, 150 mg con 100 mg una vez al día; administrar después de hemodiálisis los días de sesión. Todas las dosis son por vía oral.",
+      "sources": [
+        "FDA_P"
+      ],
+      "id": "dose_6"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar dispneia, hidratação, efeitos adversos e piora após melhora. Explicar medidas de prevenção de transmissão conforme normas locais; sintomas persistentes exigem avaliação própria.",
+      "es": "Reevaluar disnea, hidratación, efectos adversos y empeoramiento después de mejoría. Explicar medidas para prevenir transmisión según normas locales; los síntomas persistentes requieren evaluación propia.",
+      "sources": [
+        "WHO_CV",
+        "CDC_CV"
+      ],
+      "id": "monitoring_7"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hipoxemia, dificuldade respiratória importante, alteração de consciência, dor torácica persistente ou incapacidade de hidratação exigem avaliação urgente. Não atrasar suporte respiratório para buscar antiviral oral.",
+      "es": "Hipoxemia, dificultad respiratoria importante, alteración de conciencia, dolor torácico persistente o incapacidad de hidratación requieren evaluación urgente. No retrasar soporte respiratorio para buscar antiviral oral.",
+      "sources": [
+        "WHO_CV",
+        "IDSA_CV"
+      ],
+      "id": "redflags_8"
+    },
+    {
+      "section": "special",
+      "pt": "Paxlovid não é recomendado na insuficiência hepática grave. Gestação e pediatria exigem avaliação específica e critérios regulatórios locais; o esquema adulto não é dose infantil. A informação renal da bula atual prevalece sobre páginas gerais desatualizadas.",
+      "es": "Paxlovid no se recomienda en insuficiencia hepática grave. Embarazo y pediatría requieren evaluación específica y criterios regulatorios locales; el esquema adulto no es dosis infantil. La información renal de la ficha actual prevalece sobre páginas generales desactualizadas.",
+      "sources": [
+        "FDA_P",
+        "IDSA_CV"
+      ],
+      "id": "special_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_CV",
+      "title": "Coronavirus disease",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/coronavirus-disease-(covid-19)",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_CV",
+      "title": "COVID-19: tratamento ambulatorial",
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "FDA_P",
+      "title": "Paxlovid: informação de prescrição revisada em fevereiro de 2026",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=8a99d6d6-fd9e-45bb-b1bf-48c7f761232a",
+      "authority": "FDA / DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "IDSA_CV",
+      "title": "COVID-19 treatment and management living guideline",
+      "url": "https://www.idsociety.org/practice-guideline/covid-19-guideline-treatment-and-management/",
+      "authority": "IDSA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_TEST",
+      "title": "Overview of Testing for SARS-CoV-2",
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/overview-testing-sars-cov-2.html",
+      "authority": "CDC",
+      "year": "edição vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

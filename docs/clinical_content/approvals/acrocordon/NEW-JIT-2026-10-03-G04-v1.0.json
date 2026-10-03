@@ -1,0 +1,133 @@
+{
+  "owner": "acrocordon",
+  "title": {
+    "pt": "Acrocórdon",
+    "es": "Acrocordón"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Acrocórdon",
+      "Acrocordón",
+      "fibroma mole",
+      "skin tag"
+    ],
+    "distinctScope": "Pólipo fibroepitelial benigno; não verruga viral ou ceratose seborreica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Pólipo cutâneo fibroepitelial benigno, comum em pescoço e dobras; costuma ser assintomático e não corresponde a verruga infecciosa.",
+      "es": "Pólipo cutáneo fibroepitelial benigno, frecuente en cuello y pliegues; suele ser asintomático y no corresponde a verruga infecciosa.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Lesão macia e pediculada, da cor da pele ou pigmentada; pode irritar ao contato com roupa ou colar.",
+      "es": "Lesión blanda y pediculada, del color de la piel o pigmentada; puede irritarse con ropa o collares.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico quando típico; diferenciar nevo pediculado e neurofibroma. Pigmentação ou morfologia suspeita necessita avaliação antes de remoção.",
+      "es": "Diagnóstico clínico cuando es típico; diferenciar nevo pediculado y neurofibroma. Pigmentación o morfología sospechosa necesita evaluación antes de extirpar.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Observar se não incomoda; remoção profissional por excisão ou método apropriado pode ser considerada quando houver atrito ou incômodo.",
+      "es": "Observar si no molesta; considerar extirpación profesional o método apropiado ante roce o molestias.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há medicamento oral indicado. Não usar produtos para verrugas nem cortar, amarrar ou cauterizar em casa.",
+      "es": "No hay medicamento oral indicado. No usar productos para verrugas ni cortar, atar o cauterizar en casa.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Após remoção, acompanhar ferida e sinais de infecção; confirmar histologia se aparência ou diagnóstico exigir. Novas lesões podem surgir.",
+      "es": "Tras extirpar, controlar herida y signos de infección; confirmar histología si aspecto o diagnóstico lo requieren. Pueden aparecer nuevas lesiones.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Mudança suspeita, ulceração ou sangramento sem trauma exige revisão diagnóstica; não assumir que todo nódulo pediculado é acrocórdon.",
+      "es": "Cambio sospechoso, ulceración o sangrado sin traumatismo exige revisar diagnóstico; no presumir que todo nódulo pediculado sea acrocordón.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Procedimentos devem considerar local, cicatrização e risco hemorrágico; lesão genital ou muito atípica deve ser avaliada especificamente.",
+      "es": "Los procedimientos deben considerar localización, cicatrización y riesgo hemorrágico; evaluar específicamente lesiones genitales o muy atípicas.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Skin tag",
+      "url": "https://www.pcds.org.uk/clinical-guidance/skin-tag",
+      "authority": "PCDS",
+      "year": 2021,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Skin tags",
+      "url": "https://www.nhs.uk/conditions/skin-tags/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

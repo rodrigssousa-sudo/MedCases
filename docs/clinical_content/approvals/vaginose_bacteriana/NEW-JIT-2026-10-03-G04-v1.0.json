@@ -1,0 +1,144 @@
+{
+  "owner": "vaginose_bacteriana",
+  "title": {
+    "pt": "Vaginose bacteriana",
+    "es": "Vaginosis bacteriana"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultas; gestação separada",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Vaginose bacteriana",
+      "Vaginosis bacteriana"
+    ],
+    "distinctScope": "Disbiose vaginal com abordagem própria; não candidíase, tricomoníase ou infecção sistêmica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Disbiose vaginal com redução de lactobacilos e predomínio de bactérias anaeróbias. Não equivale à tricomoníase nem à candidíase; recorrência é comum.",
+      "es": "Disbiosis vaginal con reducción de lactobacilos y predominio de bacterias anaerobias. No equivale a tricomoniasis ni candidiasis; la recurrencia es frecuente.",
+      "sources": [
+        "WHO_B"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Corrimento fino e homogêneo com odor característico sugere o diagnóstico. Prurido intenso, úlceras, sangramento ou dor pélvica importante requerem investigar outras causas, inclusive infecções sexualmente transmissíveis.",
+      "es": "La secreción fina y homogénea con olor característico sugiere el diagnóstico. Prurito intenso, úlceras, sangrado o dolor pélvico importante requieren investigar otras causas, incluso infecciones de transmisión sexual.",
+      "sources": [
+        "WHO_B",
+        "CDC_B"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnosticar por avaliação clínica e critérios de Amsel ou microscopia com escore de Nugent; testes moleculares podem ajudar em pessoas sintomáticas. Cultura de Gardnerella isolada não estabelece o diagnóstico.",
+      "es": "Diagnosticar mediante evaluación clínica y criterios de Amsel o microscopía con puntuación de Nugent; las pruebas moleculares pueden ayudar en personas sintomáticas. Un cultivo aislado de Gardnerella no establece el diagnóstico.",
+      "sources": [
+        "CDC_B",
+        "WHO_B"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar pessoas sintomáticas, evitar duchas e produtos intravaginais irritantes e avaliar infecções associadas conforme risco. Antifúngico isolado não trata vaginose bacteriana.",
+      "es": "Tratar a personas sintomáticas, evitar duchas y productos intravaginales irritantes y evaluar infecciones asociadas según riesgo. Un antifúngico aislado no trata la vaginosis bacteriana.",
+      "sources": [
+        "WHO_B"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Esquema oral de referência para adultas: metronidazol 500 mg por via oral duas vezes ao dia durante 7 dias. Selecionar via e alternativa conforme contraindicações, tolerabilidade e disponibilidade local.",
+      "es": "Esquema oral de referencia para adultas: metronidazol 500 mg por vía oral dos veces al día durante 7 días. Seleccionar vía y alternativa según contraindicaciones, tolerabilidad y disponibilidad local.",
+      "sources": [
+        "CDC_B",
+        "WHO_VAG"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Se resolver, seguimento rotineiro imediato não é necessário; retornar se recidivar. ACOG 2025 orienta considerar tratamento concomitante de parceiros para reduzir recorrência, especialmente em doença recorrente, mediante avaliação clínica.",
+      "es": "Si se resuelve, no es necesario un seguimiento rutinario inmediato; consultar si recidiva. ACOG 2025 orienta considerar tratamiento concomitante de parejas para reducir recurrencia, especialmente en enfermedad recurrente, mediante evaluación clínica.",
+      "sources": [
+        "CDC_B",
+        "ACOG_B"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre, dor abdominal ou pélvica, gestação com sinais de complicação ou comprometimento sistêmico exigem avaliação urgente. Vaginose isolada não deve explicar esses achados sem investigação.",
+      "es": "Fiebre, dolor abdominal o pélvico, embarazo con signos de complicación o afectación sistémica requieren evaluación urgente. La vaginosis aislada no debe explicar estos hallazgos sin investigación.",
+      "sources": [
+        "WHO_B"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestantes sintomáticas devem ser avaliadas e tratadas; não extrapolar alternativas sem segurança gestacional. Revisar hepatopatia, alergias e interações medicamentosas, incluindo anticoagulantes.",
+      "es": "Las embarazadas sintomáticas deben ser evaluadas y tratadas; no extrapolar alternativas sin seguridad gestacional. Revisar hepatopatía, alergias e interacciones farmacológicas, incluidos anticoagulantes.",
+      "sources": [
+        "CDC_B",
+        "WHO_VAG"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_B",
+      "title": "Bacterial vaginosis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/bacterial-vaginosis",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_B",
+      "title": "Bacterial vaginosis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "WHO_VAG",
+      "title": "Recommendations: trichomoniasis, candidiasis and bacterial vaginosis",
+      "url": "https://www.who.int/publications/i/item/9789240096370",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "ACOG_B",
+      "title": "Vaginitis: atualização sobre parceiros",
+      "url": "https://www.acog.org/womens-health/faqs/vaginitis",
+      "authority": "ACOG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

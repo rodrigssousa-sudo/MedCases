@@ -1,0 +1,127 @@
+{
+  "owner": "melasma",
+  "title": {
+    "pt": "Melasma",
+    "es": "Melasma"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Melasma"
+    ],
+    "distinctScope": "Hipermelanose facial adquirida; distinta de hiperpigmentação após lesão inflamatória."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Hiperpigmentação adquirida, geralmente simétrica na face; luz solar, predisposição e hormônios influenciam a produção e distribuição de melanina.",
+      "es": "Hiperpigmentación adquirida, generalmente simétrica en la cara; luz solar, predisposición y hormonas influyen en producción y distribución de melanina.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Máculas castanhas centrofaciais ou malares, sem sintomas relevantes; perguntar sobre gravidez, anticoncepcionais, exposição solar e uso de clareadores.",
+      "es": "Máculas marrones centrofaciales o malares, sin síntomas importantes; preguntar por embarazo, anticonceptivos, exposición solar y uso de aclarantes.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; diferenciar hiperpigmentação pós-inflamatória, lentigos e ocronose. Lesão isolada irregular ou progressiva requer investigação própria.",
+      "es": "Diagnóstico clínico; diferenciar hiperpigmentación posinflamatoria, lentigos y ocronosis. Una lesión aislada irregular o progresiva requiere estudio específico.",
+      "sources": [
+        "PCDS",
+        "AAD"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Fotoproteção diária é central: sombra, chapéu e protetor adequado; produtos com cor e óxidos de ferro ajudam a proteger da luz visível.",
+      "es": "La fotoprotección diaria es central: sombra, sombrero y protector adecuado; productos con color y óxidos de hierro ayudan frente a la luz visible.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Hidroquinona e combinações tópicas são opções supervisionadas, com duração individualizada; não usar clareadores clandestinos nem combinar corticoides sem prescrição.",
+      "es": "Hidroquinona y combinaciones tópicas son opciones supervisadas, con duración individualizada; no usar aclarantes clandestinos ni combinar corticoides sin prescripción.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Explicar resposta lenta e recorrência; monitorar irritação e pigmentação paradoxal. Procedimentos podem piorar pigmentação e requerem seleção dermatológica.",
+      "es": "Explicar respuesta lenta y recaídas; controlar irritación y pigmentación paradójica. Los procedimientos pueden empeorar pigmentación y requieren selección dermatológica.",
+      "sources": [
+        "AAD",
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Não é emergência na apresentação típica. Mudança suspeita, ulceração ou sangramento demanda avaliação para outro diagnóstico, em vez de intensificar clareador.",
+      "es": "No es una emergencia en presentación típica. Cambio sospechoso, ulceración o sangrado requiere evaluar otro diagnóstico, en vez de intensificar aclarantes.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Na gestação, priorizar fotoproteção e revisar medicamentos com obstetrícia ou dermatologia; não iniciar retinoides ou tratamento sistêmico cosmético automaticamente.",
+      "es": "Durante el embarazo priorizar fotoprotección y revisar medicamentos con obstetricia o dermatología; no iniciar retinoides ni tratamiento sistémico cosmético automáticamente.",
+      "sources": [
+        "AAD",
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Melasma (chloasma)",
+      "url": "https://pcds.org.uk/clinical-guidance/melasma-syn-chloasma1",
+      "authority": "PCDS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "AAD",
+      "title": "Melasma: diagnosis and treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/melasma-treatment",
+      "authority": "AAD",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,141 @@
+{
+  "owner": "dermatite_seborreica",
+  "title": {
+    "pt": "Dermatite seborreica",
+    "es": "Dermatitis seborreica"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Dermatite seborreica",
+      "Dermatitis seborreica",
+      "caspa",
+      "dermatitis seborreica"
+    ],
+    "distinctScope": "Dermatose inflamatória de áreas seborreicas; diferente de ceratose seborreica e pitiríase versicolor."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Dermatose inflamatória recorrente de áreas seborreicas, associada à resposta a Malassezia; não equivale à pitiríase versicolor nem à ceratose seborreica.",
+      "es": "Dermatosis inflamatoria recurrente de áreas seborreicas, relacionada con respuesta a Malassezia; no equivale a pitiriasis versicolor ni a queratosis seborreica.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Descamação e eritema no couro cabeludo, sobrancelhas, sulcos nasolabiais e região retroauricular; pesquisar prurido e extensão para face e tronco.",
+      "es": "Descamación y eritema en cuero cabelludo, cejas, surcos nasolabiales y región retroauricular; investigar prurito y extensión a cara y tronco.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; diferenciar psoríase, dermatite de contato e dermatofitose. Doença grave ou atípica requer investigar contexto e comorbidades.",
+      "es": "Diagnóstico clínico; diferenciar psoriasis, dermatitis de contacto y dermatofitosis. La enfermedad grave o atípica requiere investigar contexto y comorbilidades.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Antifúngicos tópicos e higiene suave controlam as lesões; anti-inflamatório tópico breve pode ser necessário. Evitar corticoide facial potente prolongado.",
+      "es": "Antifúngicos tópicos e higiene suave controlan lesiones; puede requerirse antiinflamatorio tópico breve. Evitar corticoides faciales potentes prolongados.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Cetoconazol xampu a 2% para adulto: duas vezes por semana durante 2–4 semanas; deixar agir 3–5 minutos e enxaguar. Manutenção pode ser uma vez a cada 1–2 semanas.",
+      "es": "Ketoconazol champú al 2% para adultos: dos veces por semana durante 2–4 semanas; dejar actuar 3–5 minutos y enjuagar. Mantenimiento posible una vez cada 1–2 semanas.",
+      "sources": [
+        "NHS",
+        "SMPC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar irritação, resposta e recorrência; ausência de melhora sugere revisar diagnóstico e adesão. Manutenção não significa aplicação diária indefinida.",
+      "es": "Reevaluar irritación, respuesta y recaídas; falta de mejoría sugiere revisar diagnóstico y adherencia. Mantenimiento no significa aplicación diaria indefinida.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre, secreção purulenta, dor importante ou eritema rapidamente progressivo não são típicos; avaliar infecção secundária ou outro diagnóstico.",
+      "es": "Fiebre, secreción purulenta, dolor importante o eritema rápidamente progresivo no son típicos; evaluar infección secundaria u otro diagnóstico.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Lactentes precisam de orientação própria para crosta láctea; não aplicar automaticamente o esquema adulto. Evitar contato do xampu com olhos.",
+      "es": "Los lactantes requieren orientación específica para costra láctea; no aplicar automáticamente el esquema adulto. Evitar el contacto del champú con los ojos.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Seborrhoeic eczema",
+      "url": "https://www.pcds.org.uk/clinical-guidance/seborrhoeic-eczema",
+      "authority": "PCDS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "How and when to use ketoconazole",
+      "url": "https://www.nhs.uk/medicines/ketoconazole/how-and-when-to-use-ketoconazole/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "SMPC",
+      "title": "Nizoral 2% shampoo — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/6456/smpc",
+      "authority": "Thornton & Ross / emc",
+      "year": 2024,
+      "status": "APPROVED_PRODUCT_LABEL_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "publicationDateConfirmed": true
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

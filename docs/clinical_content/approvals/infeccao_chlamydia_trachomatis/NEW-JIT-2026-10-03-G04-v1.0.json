@@ -1,0 +1,136 @@
+{
+  "owner": "infeccao_chlamydia_trachomatis",
+  "title": {
+    "pt": "Infecção por Chlamydia trachomatis",
+    "es": "Infección por Chlamydia trachomatis"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Infecção por Chlamydia trachomatis",
+      "Infección por Chlamydia trachomatis",
+      "clamídia",
+      "clamidia"
+    ],
+    "distinctScope": "Owner etiológico clamidiano; distinto de gonorreia e síndromes urinárias genéricas."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção bacteriana sexualmente transmissível frequentemente assintomática. Pode causar uretrite, cervicite e proctite; o comprometimento genital ascendente pode levar a infertilidade e gestação ectópica.",
+      "es": "Infección bacteriana de transmisión sexual frecuentemente asintomática. Puede causar uretritis, cervicitis y proctitis; la afectación genital ascendente puede provocar infertilidad y embarazo ectópico.",
+      "sources": [
+        "WHO_C"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Investigar disúria, corrimento, sangramento pós-coito e dor pélvica, além dos sítios de exposição. Dor escrotal ou pélvica não deve ser automaticamente rotulada como infecção não complicada.",
+      "es": "Investigar disuria, secreción, sangrado poscoital y dolor pélvico, además de los sitios de exposición. El dolor escrotal o pélvico no debe etiquetarse automáticamente como infección no complicada.",
+      "sources": [
+        "WHO_C"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Usar teste molecular em amostra adequada ao sítio exposto. Avaliar gonorreia, sífilis e HIV. Proctite importante e suspeita de linfogranuloma venéreo exigem investigação e tratamento próprios.",
+      "es": "Utilizar prueba molecular en una muestra adecuada al sitio expuesto. Evaluar gonorrea, sífilis y VIH. La proctitis importante y la sospecha de linfogranuloma venéreo requieren investigación y tratamiento propios.",
+      "sources": [
+        "WHO_C",
+        "CDC_C"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar a infecção e os parceiros indicados. Evitar relações até completar o esquema de 7 dias, resolver sintomas e tratar parceiros; após dose única, aguardar 7 dias.",
+      "es": "Tratar la infección y las parejas indicadas. Evitar relaciones hasta completar el esquema de 7 días, resolver síntomas y tratar parejas; después de dosis única, esperar 7 días.",
+      "sources": [
+        "CDC_C"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto não gestante com infecção não complicada: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias. Na gestação, o CDC recomenda azitromicina 1 g por via oral em dose única.",
+      "es": "Adulto no embarazado con infección no complicada: doxiciclina 100 mg por vía oral dos veces al día durante 7 días. En el embarazo, CDC recomienda azitromicina 1 g por vía oral en dosis única.",
+      "sources": [
+        "CDC_C",
+        "WHO_STI"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Repetir teste em aproximadamente 3 meses para detectar reinfecção. Na gestação, confirmar cura por teste molecular aproximadamente 4 semanas após completar tratamento; teste muito precoce pode permanecer positivo por material não viável.",
+      "es": "Repetir prueba aproximadamente a los 3 meses para detectar reinfección. En el embarazo, confirmar curación mediante prueba molecular aproximadamente 4 semanas después de completar tratamiento; una prueba demasiado precoz puede seguir positiva por material no viable.",
+      "sources": [
+        "CDC_C"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor pélvica com febre, dor testicular aguda ou piora sistêmica exigem excluir doença inflamatória pélvica, epididimite e torção testicular. Esses quadros não usam simplesmente o esquema não complicado.",
+      "es": "Dolor pélvico con fiebre, dolor testicular agudo o deterioro sistémico requieren descartar enfermedad inflamatoria pélvica, epididimitis y torsión testicular. Estos cuadros no utilizan simplemente el esquema no complicado.",
+      "sources": [
+        "CDC_C",
+        "WHO_C"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Infecção neonatal, crianças e linfogranuloma venéreo exigem protocolo específico. Revisar tolerabilidade, interações e adesão; não usar o esquema adulto como dose pediátrica.",
+      "es": "La infección neonatal, los niños y el linfogranuloma venéreo requieren protocolo específico. Revisar tolerabilidad, interacciones y adherencia; no utilizar el esquema adulto como dosis pediátrica.",
+      "sources": [
+        "CDC_C",
+        "WHO_C"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_C",
+      "title": "Chlamydia",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/chlamydia",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_C",
+      "title": "Chlamydial infections",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "WHO_STI",
+      "title": "Updated recommendations: gonorrhoea, chlamydia, syphilis and partner services",
+      "url": "https://www.who.int/publications/i/item/9789240090767",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

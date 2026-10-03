@@ -1,0 +1,143 @@
+{
+  "owner": "herpes_genital",
+  "title": {
+    "pt": "Herpes genital",
+    "es": "Herpes genital"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Herpes genital"
+    ],
+    "distinctScope": "Síndrome genital por HSV; distinta de herpes labial recorrente, sem replicar a pauta labial."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção genital por HSV com latência neural e possibilidade de reativação. Pode haver transmissão sem lesões visíveis; antivirais controlam manifestações, mas não erradicam o vírus.",
+      "es": "Infección genital por HSV con latencia neural y posibilidad de reactivación. Puede transmitirse sin lesiones visibles; los antivirales controlan manifestaciones, pero no erradican el virus.",
+      "sources": [
+        "WHO_H"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Vesículas ou úlceras dolorosas, ardor e disúria sugerem herpes, mas a apresentação pode ser atípica. Diferenciar primeiro episódio, recorrência e doença extensa em imunossuprimidos.",
+      "es": "Vesículas o úlceras dolorosas, ardor y disuria sugieren herpes, pero la presentación puede ser atípica. Diferenciar primer episodio, recurrencia y enfermedad extensa en inmunosuprimidos.",
+      "sources": [
+        "WHO_H"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar lesões por teste molecular para HSV quando disponível. Resultado negativo em lesão antiga não exclui herpes. Avaliar sífilis e oferecer teste para HIV; sorologia isolada não identifica toda úlcera atual.",
+      "es": "Confirmar lesiones mediante prueba molecular para HSV cuando esté disponible. Un resultado negativo en lesión antigua no descarta herpes. Evaluar sífilis y ofrecer prueba de VIH; la serología aislada no identifica toda úlcera actual.",
+      "sources": [
+        "CDC_H"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar o primeiro episódio, controlar dor e orientar abstinência durante lesões ou pródromos. Supressão contínua depende de recorrências, impacto e decisão compartilhada; preservativos reduzem, mas não eliminam transmissão.",
+      "es": "Tratar el primer episodio, controlar dolor e indicar abstinencia durante lesiones o pródromos. La supresión continua depende de recurrencias, impacto y decisión compartida; los preservativos reducen, pero no eliminan transmisión.",
+      "sources": [
+        "CDC_H",
+        "WHO_H"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com primeiro episódio genital e função renal adequada: aciclovir 400 mg por via oral três vezes ao dia durante 7–10 dias. Se cicatrização incompleta, reavaliar extensão do tratamento; não usar automaticamente este esquema para recorrência ou supressão.",
+      "es": "Adulto con primer episodio genital y función renal adecuada: aciclovir 400 mg por vía oral tres veces al día durante 7–10 días. Si la cicatrización es incompleta, reevaluar extensión del tratamiento; no utilizar automáticamente este esquema para recurrencia o supresión.",
+      "sources": [
+        "CDC_H",
+        "NIH_H"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar cicatrização, hidratação, efeitos adversos e adesão. Lesões persistentes em imunossuprimido requerem investigação de resistência e diagnóstico diferencial, em vez de escalonamento empírico indefinido.",
+      "es": "Reevaluar cicatrización, hidratación, efectos adversos y adherencia. Las lesiones persistentes en inmunosuprimidos requieren investigación de resistencia y diagnóstico diferencial, en vez de escalamiento empírico indefinido.",
+      "sources": [
+        "CDC_H",
+        "NIH_H"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Retenção urinária, meningismo, alteração de consciência, doença disseminada ou impossibilidade de ingestão exigem avaliação hospitalar. Doença grave pode exigir aciclovir intravenoso com monitorização própria.",
+      "es": "Retención urinaria, meningismo, alteración de conciencia, enfermedad diseminada o imposibilidad de ingesta requieren evaluación hospitalaria. La enfermedad grave puede requerir aciclovir intravenoso con monitorización específica.",
+      "sources": [
+        "CDC_H"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Na gestação, comunicar obstetrícia pelo risco neonatal, especialmente aquisição perto do parto. Crianças, imunossuprimidos e insuficiência renal exigem esquema individual; aciclovir precisa de ajuste renal conforme bula.",
+      "es": "Durante el embarazo, informar a obstetricia por el riesgo neonatal, especialmente adquisición cerca del parto. Niños, inmunosuprimidos e insuficiencia renal requieren esquema individual; aciclovir necesita ajuste renal según ficha técnica.",
+      "sources": [
+        "WHO_H",
+        "CDC_H",
+        "FDA_ACY"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_H",
+      "title": "Herpes simplex virus",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/herpes-simplex-virus",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_H",
+      "title": "Genital herpes",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NIH_H",
+      "title": "Herpes simplex virus: adultos e adolescentes com HIV",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/herpes-simplex",
+      "authority": "NIH",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "FDA_ACY",
+      "title": "Acyclovir tablets — prescribing information; renal adjustment",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=e186fdc9-b60e-4280-8d60-36cae9f2838f&type=display",
+      "authority": "FDA / DailyMed",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,135 @@
+{
+  "owner": "candidiase_vulvovaginal",
+  "title": {
+    "pt": "Candidíase vulvovaginal",
+    "es": "Candidiasis vulvovaginal"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultas; gestação separada",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Candidíase vulvovaginal",
+      "Candidiasis vulvovaginal"
+    ],
+    "distinctScope": "Doença mucosa vulvovaginal; distinta dos owners candidíase oral e intertrigo cutâneo, com avaliação e esquema próprios."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção sintomática vulvovaginal por Candida, geralmente Candida albicans. Colonização sem sintomas não exige tratamento. Não equivale à candidíase oral nem ao intertrigo cutâneo.",
+      "es": "Infección sintomática vulvovaginal por Candida, generalmente Candida albicans. La colonización sin síntomas no requiere tratamiento. No equivale a candidiasis oral ni a intertrigo cutáneo.",
+      "sources": [
+        "WHO_V",
+        "CDC_V"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Prurido vulvar, eritema, ardor, disúria externa e corrimento espesso são possíveis, mas não específicos. Recorrência, imunossupressão e gravidade modificam a avaliação e o esquema.",
+      "es": "Prurito vulvar, eritema, ardor, disuria externa y secreción espesa son posibles, pero no específicos. La recurrencia, inmunosupresión y gravedad modifican la evaluación y el esquema.",
+      "sources": [
+        "WHO_V",
+        "CDC_V"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Combinar sintomas e exame com microscopia vaginal; se negativa com suspeita persistente, considerar cultura. Casos complicados requerem identificação de espécie; diferenciar vaginose, tricomoníase e dermatite de contato.",
+      "es": "Combinar síntomas y examen con microscopía vaginal; si es negativa con sospecha persistente, considerar cultivo. Los casos complicados requieren identificación de especie; diferenciar vaginosis, tricomoniasis y dermatitis de contacto.",
+      "sources": [
+        "CDC_V"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Para episódio não complicado, selecionar azol vaginal ou opção oral adequada. Não tratar parceiros assintomáticos rotineiramente; evitar sucessivas automedicações sem confirmar a causa.",
+      "es": "Para episodio no complicado, seleccionar azol vaginal u opción oral adecuada. No tratar rutinariamente parejas asintomáticas; evitar automedicaciones sucesivas sin confirmar la causa.",
+      "sources": [
+        "CDC_V"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulta não gestante com episódio não complicado: fluconazol 150 mg por via oral em dose única é uma opção. Não aplicar este esquema à gestação, doença grave, recorrente ou por espécie resistente.",
+      "es": "Adulta no embarazada con episodio no complicado: fluconazol 150 mg por vía oral en dosis única es una opción. No aplicar este esquema al embarazo, enfermedad grave, recurrente o por especie resistente.",
+      "sources": [
+        "CDC_V",
+        "WHO_VAG"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Persistência ou retorno dos sintomas requerem exame e confirmação, não repetição automática de fluconazol. Avaliar diabetes, imunossupressão, espécie não albicans e resistência quando pertinentes.",
+      "es": "La persistencia o el retorno de síntomas requieren examen y confirmación, no repetición automática de fluconazol. Evaluar diabetes, inmunosupresión, especie no albicans y resistencia cuando corresponda.",
+      "sources": [
+        "WHO_V",
+        "CDC_V"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre, dor pélvica importante, ulceração ou comprometimento sistêmico não são típicos de candidíase não complicada: investigar outras causas e encaminhar conforme gravidade.",
+      "es": "Fiebre, dolor pélvico importante, ulceración o afectación sistémica no son típicos de candidiasis no complicada: investigar otras causas y derivar según gravedad.",
+      "sources": [
+        "WHO_V"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Na gestação, usar apenas azóis tópicos durante 7 dias conforme CDC; evitar fluconazol oral. Revisar interações, risco hepático e função renal antes de terapias sistêmicas ou prolongadas.",
+      "es": "Durante el embarazo, utilizar únicamente azoles tópicos durante 7 días según CDC; evitar fluconazol oral. Revisar interacciones, riesgo hepático y función renal antes de tratamientos sistémicos o prolongados.",
+      "sources": [
+        "CDC_V",
+        "WHO_VAG"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_V",
+      "title": "Candidiasis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/candidiasis-(yeast-infection)",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_V",
+      "title": "Vulvovaginal candidiasis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "WHO_VAG",
+      "title": "Recommendations: trichomoniasis, candidiasis and bacterial vaginosis",
+      "url": "https://www.who.int/publications/i/item/9789240096370",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

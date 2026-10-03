@@ -1,0 +1,133 @@
+{
+  "owner": "calos_calosidades",
+  "title": {
+    "pt": "Calos e calosidades",
+    "es": "Callos y callosidades"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Calos e calosidades",
+      "Callos y callosidades",
+      "clavo plantar",
+      "callos",
+      "calos"
+    ],
+    "distinctScope": "Hiperqueratose localizada por pressão/fricção sem úlcera; não pé diabético ulcerado, lesão por pressão ou verruga."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Hiperqueratose por pressão ou atrito: calo tem núcleo localizado, enquanto calosidade é mais difusa. Não são infecções.",
+      "es": "Hiperqueratosis por presión o roce: el callo tiene núcleo localizado, mientras la callosidad es más difusa. No son infecciones.",
+      "sources": [
+        "NHS",
+        "CORN"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Espessamento em pontos de pressão, com desconforto ao caminhar; avaliar calçado, deformidades, sensibilidade, circulação e integridade da pele.",
+      "es": "Engrosamiento en puntos de presión, con molestias al caminar; evaluar calzado, deformidades, sensibilidad, circulación e integridad cutánea.",
+      "sources": [
+        "NHS",
+        "CORN"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; diferenciar verruga plantar, corpo estranho e úlcera. Ferida aberta ou infecção não deve ser classificada como simples calo.",
+      "es": "Diagnóstico clínico; diferenciar verruga plantar, cuerpo extraño y úlcera. Heridas abiertas o infección no deben clasificarse como simple callo.",
+      "sources": [
+        "NHS",
+        "CORN"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Reduzir pressão com calçado adequado e proteção; emolientes e podologia podem aliviar. Tratar fator mecânico para evitar recorrência.",
+      "es": "Reducir presión con calzado adecuado y protección; emolientes y podología pueden aliviar. Tratar el factor mecánico para evitar recurrencia.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Queratolíticos dependem do produto e avaliação; não cortar lesão nem usar ácido indiscriminadamente. Diabetes e má circulação contraindicam autotratamento destrutivo.",
+      "es": "Los queratolíticos dependen del producto y evaluación; no cortar lesiones ni usar ácido indiscriminadamente. Diabetes y mala circulación contraindican autotratamiento destructivo.",
+      "sources": [
+        "NHS",
+        "CORN"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar dor, pontos de pressão e pele; recorrência é comum se o fator persistir. Encaminhar quando autocuidado seguro não resolver.",
+      "es": "Reevaluar dolor, puntos de presión y piel; la recurrencia es común si persiste el factor. Derivar cuando no mejore con autocuidado seguro.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Sangramento, secreção, dor importante ou ulceração exige avaliação; pé com neuropatia, isquemia ou diabetes merece atendimento precoce.",
+      "es": "Sangrado, secreción, dolor importante o ulceración exige evaluación; pie con neuropatía, isquemia o diabetes merece atención precoz.",
+      "sources": [
+        "NHS",
+        "CORN"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Pacientes com diabetes ou circulação comprometida devem procurar profissional em vez de manipular; idosos frágeis podem precisar de auxílio preventivo.",
+      "es": "Pacientes con diabetes o circulación comprometida deben consultar en vez de manipular; mayores frágiles pueden necesitar ayuda preventiva.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS",
+      "title": "Corns and calluses",
+      "url": "https://www.nhs.uk/conditions/corns-and-calluses/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "CORN",
+      "title": "Corns and calluses referral criteria",
+      "url": "https://rms.cornwall.nhs.uk/primary_care_clinical_referral_criteria/rms/primary_care_clinical_referral_criteria/dermatology/corns_and_calluses",
+      "authority": "NHS Cornwall",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,147 @@
+{
+  "owner": "dermatofitose_cutanea",
+  "title": {
+    "pt": "Dermatofitose cutânea",
+    "es": "Dermatofitosis cutánea"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Dermatofitose cutânea",
+      "Dermatofitosis cutánea",
+      "tinha cutânea",
+      "tiña cutánea"
+    ],
+    "distinctScope": "Owner cutâneo por dermatófitos; não pitiríase versicolor por Malassezia ou onicomicose já existente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção fúngica por dermatófitos que acomete pele e, em algumas apresentações, cabelos. Não é causada por vermes e não equivale à pitiríase versicolor por Malassezia. Onicomicose mantém owner próprio.",
+      "es": "Infección fúngica por dermatofitos que afecta piel y, en algunas presentaciones, cabello. No es causada por gusanos y no equivale a pitiriasis versicolor por Malassezia. La onicomicosis mantiene owner propio.",
+      "sources": [
+        "WHO_D"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Lesão pruriginosa descamativa com borda ativa pode sugerir tinha; pés e pregas podem ter apresentação diferente. Examinar extensão, cabelo, contatos, animais e uso prévio de corticoide.",
+      "es": "Una lesión pruriginosa descamativa con borde activo puede sugerir tiña; pies y pliegues pueden presentar aspecto diferente. Examinar extensión, cabello, contactos, animales y uso previo de corticoide.",
+      "sources": [
+        "WHO_D"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "O diagnóstico pode ser clínico; raspado para microscopia e cultura ajuda quando atípico, persistente ou antes de tratamento sistêmico. Diferenciar eczema, psoríase, candidíase e pitiríase versicolor.",
+      "es": "El diagnóstico puede ser clínico; raspado para microscopía y cultivo ayuda si es atípico, persistente o antes de tratamiento sistémico. Diferenciar eccema, psoriasis, candidiasis y pitiriasis versicolor.",
+      "sources": [
+        "WHO_D",
+        "NHS_D"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Doença cutânea localizada costuma responder a antifúngico tópico e cuidado para manter a área seca. Couro cabeludo ou doença extensa pode exigir tratamento sistêmico. Evitar corticoide isolado, que pode mascarar e piorar a infecção.",
+      "es": "La enfermedad cutánea localizada suele responder a antifúngico tópico y cuidado para mantener seca la zona. El cuero cabelludo o la enfermedad extensa pueden requerir tratamiento sistémico. Evitar corticoide aislado, que puede enmascarar y empeorar la infección.",
+      "sources": [
+        "WHO_D",
+        "NHS_D"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Exemplo para pele, conforme produto e indicação: clotrimazol creme externo 1%, camada fina duas ou três vezes ao dia durante 2–4 semanas. Esse esquema não trata tinha do couro cabeludo nem deve ser aplicado como dose de comprimido.",
+      "es": "Ejemplo para piel, según producto e indicación: clotrimazol crema externa 1%, capa fina dos o tres veces al día durante 2–4 semanas. Este esquema no trata tiña del cuero cabelludo ni debe aplicarse como dosis de comprimido.",
+      "sources": [
+        "NHS_CLO"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Se não melhorar após 7 dias de creme, ou houver progressão, reavaliar diagnóstico, adesão e necessidade de exame. Evitar compartilhar toalhas e roupas e investigar fonte de reinfecção quando pertinente.",
+      "es": "Si no mejora después de 7 días de crema, o hay progresión, reevaluar diagnóstico, adherencia y necesidad de estudio. Evitar compartir toallas y ropa e investigar fuente de reinfección cuando corresponda.",
+      "sources": [
+        "NHS_CLO",
+        "NHS_D"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Inflamação dolorosa do couro cabeludo com tumefação, pus ou perda de cabelo sugere apresentação inflamatória e exige avaliação rápida. Febre, celulite ou doença extensa em imunossuprimido demandam escalonamento.",
+      "es": "La inflamación dolorosa del cuero cabelludo con tumefacción, pus o pérdida de cabello sugiere presentación inflamatoria y requiere evaluación rápida. Fiebre, celulitis o enfermedad extensa en inmunosuprimido requieren escalamiento.",
+      "sources": [
+        "WHO_D",
+        "PCDS_CAP"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças com acometimento capilar precisam de esquema sistêmico específico, não apenas creme. Na gestação, hepatopatia ou insuficiência renal, avaliar segurança e interações antes de escolher antifúngico sistêmico.",
+      "es": "Los niños con afectación capilar necesitan esquema sistémico específico, no solamente crema. En embarazo, hepatopatía o insuficiencia renal, evaluar seguridad e interacciones antes de elegir antifúngico sistémico.",
+      "sources": [
+        "WHO_D",
+        "NHS_D",
+        "PCDS_CAP"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_D",
+      "title": "Ringworm",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/ringworm-(tinea)",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NHS_D",
+      "title": "Ringworm",
+      "url": "https://www.nhs.uk/conditions/ringworm/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NHS_CLO",
+      "title": "Clotrimazole: dose e uso de creme externo",
+      "url": "https://www.nhs.uk/medicines/clotrimazole/",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "PCDS_CAP",
+      "title": "Tinea capitis — kerion and urgent treatment",
+      "url": "https://www.pcds.org.uk/clinical-guidance/tinea-capitis-scalp?setclose=1",
+      "authority": "Primary Care Dermatology Society",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

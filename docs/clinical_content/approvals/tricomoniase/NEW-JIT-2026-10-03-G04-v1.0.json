@@ -1,0 +1,133 @@
+{
+  "owner": "tricomoniase",
+  "title": {
+    "pt": "Tricomoníase",
+    "es": "Tricomoniasis"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Tricomoníase",
+      "Tricomoniasis"
+    ],
+    "distinctScope": "Infecção pelo protozoário T. vaginalis; não vaginose ou candidíase."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção sexualmente transmissível pelo protozoário Trichomonas vaginalis. Pode ser assintomática em qualquer sexo e persistir com transmissão e reinfecção se parceiros não forem tratados.",
+      "es": "Infección de transmisión sexual por el protozoo Trichomonas vaginalis. Puede ser asintomática en cualquier sexo y persistir con transmisión y reinfección si las parejas no reciben tratamiento.",
+      "sources": [
+        "WHO_T"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Corrimento, odor, prurido, irritação e disúria são apresentações possíveis; homens podem ter uretrite. Aparência do corrimento sozinha não distingue tricomoníase, vaginose e candidíase.",
+      "es": "Secreción, olor, prurito, irritación y disuria son presentaciones posibles; los hombres pueden tener uretritis. El aspecto de la secreción por sí solo no distingue tricomoniasis, vaginosis y candidiasis.",
+      "sources": [
+        "WHO_T"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Preferir teste molecular quando disponível. Microscopia a fresco negativa não exclui infecção por sensibilidade limitada. Avaliar outras infecções sexualmente transmissíveis e possibilidade de gestação.",
+      "es": "Preferir prueba molecular cuando esté disponible. La microscopía en fresco negativa no descarta infección por su sensibilidad limitada. Evaluar otras infecciones de transmisión sexual y posibilidad de embarazo.",
+      "sources": [
+        "CDC_T",
+        "WHO_T"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar paciente e parceiros simultaneamente e evitar relações até finalizar tratamento e resolver sintomas. Metronidazol vaginal não substitui o tratamento sistêmico para tricomoníase.",
+      "es": "Tratar paciente y parejas simultáneamente y evitar relaciones hasta finalizar tratamiento y resolver síntomas. El metronidazol vaginal no sustituye el tratamiento sistémico de tricomoniasis.",
+      "sources": [
+        "CDC_T"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Referência OMS 2024 para adultos e adolescentes, inclusive gestantes: metronidazol 500 mg por via oral duas vezes ao dia durante 7 dias. O CDC mantém dose única de 2 g para homens; essa diferença territorial não deve ser misturada ao esquema OMS adotado aqui.",
+      "es": "Referencia OMS 2024 para adultos y adolescentes, incluso embarazadas: metronidazol 500 mg por vía oral dos veces al día durante 7 días. CDC mantiene dosis única de 2 g para hombres; esta diferencia territorial no debe mezclarse con el esquema OMS adoptado aquí.",
+      "sources": [
+        "WHO_VAG",
+        "CDC_T"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar persistência para distinguir reinfecção, adesão inadequada e resistência antes de aumentar dose. Pelo CDC, repetir teste em mulheres sexualmente ativas aproximadamente em 3 meses.",
+      "es": "Reevaluar persistencia para distinguir reinfección, adherencia inadecuada y resistencia antes de aumentar dosis. Según CDC, repetir prueba en mujeres sexualmente activas aproximadamente a los 3 meses.",
+      "sources": [
+        "CDC_T"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre, dor pélvica relevante, dor testicular ou gravidez com sintomas importantes exigem avaliação de outras causas e complicações. Não atribuir sinais sistêmicos apenas à tricomoníase.",
+      "es": "Fiebre, dolor pélvico importante, dolor testicular o embarazo con síntomas relevantes requieren evaluación de otras causas y complicaciones. No atribuir signos sistémicos únicamente a tricomoniasis.",
+      "sources": [
+        "WHO_T"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Revisar alergia a nitroimidazóis, hepatopatia e interações antes de prescrever. Tinidazol não deve ser usado na gestação. Crianças exigem avaliação própria, inclusive do contexto de transmissão.",
+      "es": "Revisar alergia a nitroimidazoles, hepatopatía e interacciones antes de prescribir. No debe utilizarse tinidazol durante el embarazo. Los niños requieren evaluación propia, incluso del contexto de transmisión.",
+      "sources": [
+        "WHO_VAG",
+        "CDC_T"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_T",
+      "title": "Trichomoniasis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/trichomoniasis",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_T",
+      "title": "Trichomoniasis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "WHO_VAG",
+      "title": "Recommendations: trichomoniasis, candidiasis and bacterial vaginosis",
+      "url": "https://www.who.int/publications/i/item/9789240096370",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

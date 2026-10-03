@@ -1,0 +1,126 @@
+{
+  "owner": "hiperpigmentacao_pos_inflamatoria",
+  "title": {
+    "pt": "Hiperpigmentação pós-inflamatória",
+    "es": "Hiperpigmentación posinflamatoria"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hiperpigmentação pós-inflamatória",
+      "Hiperpigmentación posinflamatoria"
+    ],
+    "distinctScope": "Sequela pigmentária após inflamação/trauma; distinta de melasma e vitiligo."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Aumento de pigmentação após inflamação ou trauma, especialmente em pele mais pigmentada; pode persistir após resolução da doença inicial.",
+      "es": "Aumento de pigmentación tras inflamación o traumatismo, especialmente en piel más pigmentada; puede persistir después de resolver la enfermedad inicial.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Máculas escuras nos locais de acne, eczema ou lesão prévia; perguntar sobre procedimentos, irritantes e produtos de clareamento.",
+      "es": "Máculas oscuras donde hubo acné, eczema o lesión previa; preguntar por procedimientos, irritantes y productos aclarantes.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico pela relação com inflamação prévia; diferenciar melasma, lentigos, ocronose e outras pigmentações. Lesão isolada suspeita exige avaliação própria.",
+      "es": "Diagnóstico por relación con inflamación previa; diferenciar melasma, lentigos, ocronosis y otras pigmentaciones. Lesiones aisladas sospechosas exigen evaluación específica.",
+      "sources": [
+        "PCDS",
+        "AAD"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Controlar a causa e evitar nova irritação; fotoproteção, incluindo proteção da luz visível, ajuda a prevenir persistência e piora.",
+      "es": "Controlar la causa y evitar nueva irritación; fotoprotección, incluida luz visible, ayuda a prevenir persistencia y empeoramiento.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Agentes tópicos podem ser selecionados por dermatologia; não há esquema único. Evitar produtos clandestinos, corticoides ocultos e tratamentos agressivos.",
+      "es": "Dermatología puede seleccionar agentes tópicos; no hay esquema único. Evitar productos clandestinos, corticoides ocultos y tratamientos agresivos.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Explicar recuperação lenta, frequentemente em meses; monitorar irritação e escurecimento paradoxal. Procedimentos podem desencadear nova hiperpigmentação.",
+      "es": "Explicar recuperación lenta, frecuentemente en meses; controlar irritación y oscurecimiento paradójico. Los procedimientos pueden desencadenar nueva hiperpigmentación.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Mudança irregular, crescimento, sangramento ou pigmentação sem causa clara requer revisão diagnóstica; não tratar toda mancha como sequela benigna.",
+      "es": "Cambios irregulares, crecimiento, sangrado o pigmentación sin causa clara requieren revisar diagnóstico; no tratar toda mancha como secuela benigna.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação e crianças requerem selecionar produtos especificamente; não usar retinoides ou clareadores sem revisão de segurança e indicação.",
+      "es": "Embarazo y niños requieren selección específica de productos; no usar retinoides ni aclarantes sin revisar seguridad e indicación.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "AAD",
+      "title": "How to fade dark spots in darker skin tones",
+      "url": "https://www.aad.org/public/everyday-care/skin-care-secrets/routine/fade-dark-spots",
+      "authority": "AAD",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PCDS",
+      "title": "Hyperpigmentation of face and neck",
+      "url": "https://www.pcds.org.uk/clinical-guidance/melasma-syn-chloasma-and-other-causes-of-facial-hyperpigmentation",
+      "authority": "PCDS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

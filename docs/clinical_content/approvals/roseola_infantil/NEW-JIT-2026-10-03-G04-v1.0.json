@@ -1,0 +1,138 @@
+{
+  "owner": "roseola_infantil",
+  "title": {
+    "pt": "Roséola infantil",
+    "es": "Roséola infantil"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Lactentes e crianças pequenas; imunossupressão separada",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Roséola infantil",
+      "exantema súbito",
+      "sexta doença"
+    ],
+    "distinctScope": "Exantema súbito associado a HHV-6/7; distinto de varicela e convulsão febril como manifestação."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Exantema viral comum em lactentes e crianças pequenas, associado a herpesvírus humanos. O diagnóstico deve considerar a evolução clínica; febre no lactente não deve ser antecipadamente atribuída à roséola.",
+      "es": "Exantema viral frecuente en lactantes y niños pequeños, asociado a herpesvirus humanos. El diagnóstico debe considerar la evolución clínica; la fiebre en lactante no debe atribuirse anticipadamente a roséola.",
+      "sources": [
+        "NHS_RO",
+        "NHS_RASH"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Febre inicial seguida de exantema, frequentemente no tronco e quando a febre diminui, sugere roséola. Avaliar estado geral, respiração, hidratação e comportamento antes de considerar cuidado domiciliar.",
+      "es": "La fiebre inicial seguida de exantema, frecuentemente en tronco y cuando disminuye la fiebre, sugiere roséola. Evaluar estado general, respiración, hidratación y conducta antes de considerar cuidado domiciliario.",
+      "sources": [
+        "NHS_RO",
+        "NHS_RASH"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico geralmente clínico após evolução típica. Durante a fase febril, excluir outras causas conforme idade e sinais, inclusive infecção urinária ou infecção invasiva. Exantema não branqueável exige outra avaliação.",
+      "es": "Diagnóstico generalmente clínico después de evolución típica. Durante la fase febril, descartar otras causas según edad y signos, incluso infección urinaria o infección invasiva. El exantema que no blanquea requiere otra evaluación.",
+      "sources": [
+        "NHS_F",
+        "NHS_RASH"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Criança clinicamente estável pode receber líquidos, repouso e tratamento do desconforto. Antibiótico e antiviral não fazem parte do manejo rotineiro da apresentação não complicada.",
+      "es": "Un niño clínicamente estable puede recibir líquidos, reposo y tratamiento de molestias. Antibiótico y antiviral no forman parte del manejo rutinario de la presentación no complicada.",
+      "sources": [
+        "NHS_RO"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Antitérmico deve ser selecionado pela idade, peso e concentração. Não combinar ou alternar paracetamol e ibuprofeno sem orientação profissional; não utilizar ácido acetilsalicílico em crianças.",
+      "es": "El antitérmico debe seleccionarse según edad, peso y concentración. No combinar ni alternar paracetamol e ibuprofeno sin indicación profesional; no utilizar ácido acetilsalicílico en niños.",
+      "sources": [
+        "NHS_RO",
+        "NHS_F"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar ingestão, diurese e capacidade de despertar e interagir. Febre por 5 dias ou mais exige reavaliação, mesmo se o exantema parecer compatível; orientar retorno claro aos cuidadores.",
+      "es": "Controlar ingesta, diuresis y capacidad para despertar e interactuar. Fiebre durante 5 días o más requiere reevaluación, aunque el exantema parezca compatible; indicar claramente cuándo volver a consultar a los cuidadores.",
+      "sources": [
+        "NHS_RO",
+        "NHS_F"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Convulsão nova, dificuldade respiratória, sonolência difícil de reverter, rigidez de nuca, exantema não branqueável ou desidratação importante exigem atendimento urgente. Não aguardar desaparecimento da febre para buscar ajuda.",
+      "es": "Convulsión nueva, dificultad respiratoria, somnolencia difícil de revertir, rigidez de nuca, exantema que no blanquea o deshidratación importante requieren atención urgente. No esperar a que desaparezca la fiebre para buscar ayuda.",
+      "sources": [
+        "NHS_RO",
+        "NHS_F"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Em bebê abaixo de 3 meses com temperatura de 38 °C ou mais, procurar avaliação urgente. Imunossuprimidos expostos ou sintomáticos exigem avaliação específica; não aplicar o manejo domiciliar habitual indiscriminadamente.",
+      "es": "En bebé menor de 3 meses con temperatura de 38 °C o más, buscar evaluación urgente. Los inmunosuprimidos expuestos o sintomáticos requieren evaluación específica; no aplicar indiscriminadamente el manejo domiciliario habitual.",
+      "sources": [
+        "NHS_RO",
+        "NHS_F"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS_RO",
+      "title": "Roseola",
+      "url": "https://www.nhs.uk/conditions/roseola/",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NHS_F",
+      "title": "High temperature in children",
+      "url": "https://www.nhs.uk/conditions/fever-in-children/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NHS_RASH",
+      "title": "Rash and fever pathway: differential of viral exanthems",
+      "url": "https://cdn.healthiertogether.nhs.uk/docs/681a0346e0dd08daa58f1997_CS45385_NHS_Rash_Pathway_Acute_Hospital_Setting_Mar_18_final.pdf",
+      "authority": "NHS",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

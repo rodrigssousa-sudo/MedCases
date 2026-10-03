@@ -1,0 +1,129 @@
+{
+  "owner": "angioma_rubi",
+  "title": {
+    "pt": "Angioma rubi",
+    "es": "Angioma rubí"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Angioma rubi",
+      "Angioma rubí",
+      "angioma cereja",
+      "cherry angioma"
+    ],
+    "distinctScope": "Pápula vascular benigna; não nevo melanocítico ou malformação vascular."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Proliferação vascular cutânea benigna adquirida; pápulas rubi tornam-se mais numerosas com a idade e não requerem tratamento habitual.",
+      "es": "Proliferación vascular cutánea benigna adquirida; las pápulas rubí aumentan con la edad y no suelen necesitar tratamiento.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pápulas vermelhas ou violáceas, sobretudo no tronco; trauma pode provocar sangramento e trombose pode escurecer a lesão.",
+      "es": "Pápulas rojas o violáceas, especialmente en tronco; el traumatismo puede causar sangrado y trombosis puede oscurecer la lesión.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico e dermatoscópico; lacunas vasculares apoiam diagnóstico. Diferenciar angiokeratoma, granuloma piogênico e melanoma quando atípico.",
+      "es": "Diagnóstico clínico y dermatoscópico; lagunas vasculares apoyan diagnóstico. Diferenciar angioqueratoma, granuloma piógeno y melanoma si es atípico.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Observar se típico e assintomático; lesão que sangra ou sofre atrito pode ser removida por profissional, com histologia conforme indicação.",
+      "es": "Observar si es típico y asintomático; lesiones que sangran o sufren roce pueden extirparse profesionalmente, con histología según indicación.",
+      "sources": [
+        "PCDS",
+        "PIL"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há tratamento farmacológico rotineiro. Não usar cauterizantes caseiros; métodos de remoção exigem diagnóstico e seleção profissional.",
+      "es": "No hay tratamiento farmacológico rutinario. No usar cauterizantes caseros; los métodos de extracción exigen diagnóstico y selección profesional.",
+      "sources": [
+        "PIL"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Após intervenção, controlar ferida e sangramento; pigmentação e cicatriz devem ser discutidas antes de procedimentos por motivo estético.",
+      "es": "Tras intervención controlar herida y sangrado; discutir pigmentación y cicatrices antes de procedimientos estéticos.",
+      "sources": [
+        "PIL"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Cores ou vasos dermatoscópicos atípicos exigem avaliação para melanoma; sangramento persistente requer controle e revisão diagnóstica.",
+      "es": "Colores o vasos dermatoscópicos atípicos exigen evaluar melanoma; sangrado persistente requiere control y revisión diagnóstica.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Risco de sangramento e cicatrização deve ser considerado individualmente; hemangiomas infantis e malformações vasculares têm avaliação própria.",
+      "es": "Individualizar riesgo de sangrado y cicatrización; hemangiomas infantiles y malformaciones vasculares requieren evaluación específica.",
+      "sources": [
+        "PCDS",
+        "PIL"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Cherry angioma",
+      "url": "https://www.pcds.org.uk/clinical-guidance/cherry-angioma-syn-campbell-de-morgan-spot",
+      "authority": "PCDS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PIL",
+      "title": "Angioma: patient information",
+      "url": "https://www.pcds.org.uk/patient-info-leaflets/angioma",
+      "authority": "PCDS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

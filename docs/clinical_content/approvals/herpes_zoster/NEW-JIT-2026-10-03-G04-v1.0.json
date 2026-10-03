@@ -1,0 +1,134 @@
+{
+  "owner": "herpes_zoster",
+  "title": {
+    "pt": "Herpes zoster",
+    "es": "Herpes zóster"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Herpes-zóster",
+      "Herpes zóster"
+    ],
+    "distinctScope": "Reativação dermatomérica de VZV; distinta de primo-infecção varicela e herpes simples."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Reativação do vírus varicela-zoster, latente após infecção primária. Aumenta com idade e imunossupressão. Não equivale à varicela nem ao herpes genital.",
+      "es": "Reactivación del virus varicela-zóster, latente tras la infección primaria. Aumenta con edad e inmunosupresión. No equivale a varicela ni a herpes genital.",
+      "sources": [
+        "WHO_Z"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor, parestesia e vesículas agrupadas em distribuição unilateral dermatomérica sugerem zoster. Examinar olhos, nariz, ouvido, face e extensão das lesões; perguntar sobre imunossupressão.",
+      "es": "Dolor, parestesias y vesículas agrupadas en distribución unilateral dermatomérica sugieren zóster. Examinar ojos, nariz, oído, cara y extensión de lesiones; preguntar por inmunosupresión.",
+      "sources": [
+        "WHO_Z",
+        "NHS_Z"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico geralmente clínico; teste de lesão para VZV ajuda em apresentação atípica. Diferenciar herpes simples, dermatite de contato e causas de dor sem exantema, sem presumir zoster em toda dor unilateral.",
+      "es": "Diagnóstico generalmente clínico; la prueba de lesión para VZV ayuda en presentación atípica. Diferenciar herpes simple, dermatitis de contacto y causas de dolor sin exantema, sin presumir zóster en todo dolor unilateral.",
+      "sources": [
+        "WHO_Z"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Avaliar antiviral precoce e analgesia individual. Benefício é maior quando iniciado nas primeiras 72 horas; apresentação tardia de alto risco exige avaliação, sem descartar tratamento automaticamente. Manter lesões limpas, secas e cobertas.",
+      "es": "Evaluar antiviral temprano y analgesia individual. El beneficio es mayor si se inicia en las primeras 72 horas; una presentación tardía de alto riesgo requiere evaluación, sin descartar tratamiento automáticamente. Mantener lesiones limpias, secas y cubiertas.",
+      "sources": [
+        "WHO_Z",
+        "NHS_Z"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto imunocompetente com indicação de tratamento e função renal normal: valaciclovir 1 g por via oral três vezes ao dia durante 7 dias. Insuficiência renal exige reduzir dose ou ampliar intervalo conforme tabela da bula.",
+      "es": "Adulto inmunocompetente con indicación de tratamiento y función renal normal: valaciclovir 1 g por vía oral tres veces al día durante 7 días. La insuficiencia renal requiere reducir dosis o ampliar intervalo según tabla de la ficha técnica.",
+      "sources": [
+        "FDA_Z"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar dor, novas lesões, cicatrização e efeitos adversos. Neuralgia pós-herpética pode persistir após a pele cicatrizar. Orientar prevenção de exposição de gestantes suscetíveis, recém-nascidos e imunossuprimidos.",
+      "es": "Controlar dolor, nuevas lesiones, cicatrización y efectos adversos. La neuralgia posherpética puede persistir después de cicatrizar la piel. Indicar prevención de exposición de embarazadas susceptibles, recién nacidos e inmunosuprimidos.",
+      "sources": [
+        "WHO_Z"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Lesões perioculares ou no nariz, alteração visual, dor otológica com paralisia facial, disseminação, sintomas neurológicos ou imunossupressão importante exigem avaliação urgente especializada.",
+      "es": "Lesiones perioculares o en nariz, alteración visual, dolor ótico con parálisis facial, diseminación, síntomas neurológicos o inmunosupresión importante requieren evaluación urgente especializada.",
+      "sources": [
+        "NHS_Z",
+        "WHO_Z"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Idosos e pessoas desidratadas ou com doença renal têm maior risco de toxicidade renal e neurológica por valaciclovir. Gestação, pediatria e imunossupressão não devem receber automaticamente o esquema do adulto imunocompetente.",
+      "es": "Adultos mayores y personas deshidratadas o con enfermedad renal tienen mayor riesgo de toxicidad renal y neurológica por valaciclovir. Embarazo, pediatría e inmunosupresión no deben recibir automáticamente el esquema del adulto inmunocompetente.",
+      "sources": [
+        "FDA_Z",
+        "NHS_Z"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_Z",
+      "title": "Shingles",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/shingles-(herpes-zoster)",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NHS_Z",
+      "title": "Shingles",
+      "url": "https://www.nhs.uk/conditions/shingles/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "FDA_Z",
+      "title": "Valtrex: informação de prescrição",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=56a62c21-bead-4f3b-a24e-c3fd0b4a732f",
+      "authority": "FDA / DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

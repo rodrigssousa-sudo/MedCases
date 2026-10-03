@@ -1,0 +1,129 @@
+{
+  "owner": "vitiligo",
+  "title": {
+    "pt": "Vitiligo",
+    "es": "Vitíligo"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Vitiligo",
+      "Vitíligo"
+    ],
+    "distinctScope": "Despigmentação por perda de melanócitos; não pitiríase versicolor nem hiperpigmentação."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Perda de melanócitos causa despigmentação adquirida, frequentemente autoimune; não é infecção nem contagioso e pode ter impacto psicológico importante.",
+      "es": "La pérdida de melanocitos causa despigmentación adquirida, frecuentemente autoinmune; no es una infección ni contagiosa y puede afectar psicológicamente.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Máculas brancas bem delimitadas, usualmente sem descamação, em face, mãos e outras áreas; examinar pelos, mucosas e progressão recente.",
+      "es": "Máculas blancas delimitadas, habitualmente sin descamación, en cara, manos y otras áreas; examinar pelo, mucosas y progresión reciente.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico apoiado por lâmpada de Wood; diferenciar pitiríase versicolor, hipopigmentação pós-inflamatória e hanseníase se houver perda de sensibilidade.",
+      "es": "Diagnóstico clínico apoyado por lámpara de Wood; diferenciar pitiriasis versicolor, hipopigmentación posinflamatoria y lepra si hay pérdida de sensibilidad.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Fotoproteção, camuflagem e apoio psicológico; discutir tratamento tópico ou fototerapia conforme atividade, extensão, local e preferência, sem prometer repigmentação completa.",
+      "es": "Fotoprotección, camuflaje y apoyo psicológico; discutir tratamiento tópico o fototerapia según actividad, extensión, zona y preferencia, sin prometer repigmentación completa.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Corticoides tópicos ou tacrolimo podem ser selecionados; potência, concentração e duração variam entre face, corpo e crianças. Não aplicar um esquema universal.",
+      "es": "Pueden seleccionarse corticoides tópicos o tacrolimus; potencia, concentración y duración varían entre cara, cuerpo y niños. No aplicar un esquema universal.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Registrar imagens, atividade e resposta; investigar associação tireoidiana conforme avaliação. Monitorar atrofia por corticoide e sofrimento emocional.",
+      "es": "Registrar imágenes, actividad y respuesta; investigar asociación tiroidea según evaluación. Controlar atrofia por corticoides y sufrimiento emocional.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Progressão rápida merece dermatologia prioritária. Lesão com perda de sensibilidade ou padrão atípico requer reconsiderar diagnóstico antes de tratar como vitiligo.",
+      "es": "La progresión rápida requiere dermatología prioritaria. Una lesión con pérdida de sensibilidad o patrón atípico exige reconsiderar el diagnóstico antes de tratar vitiligo.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças e gestantes precisam de plano próprio. Medicamentos especializados dependem de indicação e autorização local; não usar doses adultas automaticamente.",
+      "es": "Niños y embarazadas requieren un plan específico. Los medicamentos especializados dependen de indicación y autorización local; no usar dosis adultas automáticamente.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Vitiligo",
+      "url": "https://www.pcds.org.uk/clinical-guidance/vitiligo",
+      "authority": "PCDS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Vitiligo",
+      "url": "https://www.nhs.uk/conditions/vitiligo/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

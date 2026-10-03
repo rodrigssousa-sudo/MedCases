@@ -1,0 +1,128 @@
+{
+  "owner": "dermatite_atopica",
+  "title": {
+    "pt": "Dermatite atópica",
+    "es": "Dermatitis atópica"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Dermatite atópica",
+      "Dermatitis atópica"
+    ],
+    "distinctScope": "Eczema atópico com alteração de barreira; não dermatite alérgica/irritativa de contato."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Inflamação cutânea crônica com disfunção da barreira e prurido; história atópica é frequente, mas não é requisito isolado para diagnóstico.",
+      "es": "Inflamación cutánea crónica con disfunción de la barrera y prurito; los antecedentes atópicos son frecuentes, pero no constituyen un requisito diagnóstico aislado.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar prurido, xerose, eczema flexural, sono e extensão; em crianças a distribuição varia com a idade. Eritema pode ser discreto em pele escura.",
+      "es": "Evaluar prurito, xerosis, eczema flexural, sueño y extensión; en niños la distribución varía con la edad. El eritema puede ser sutil en piel oscura.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico e exclusão de dermatite de contato, escabiose e infecções. Testes alérgicos indiscriminados não definem a causa de todo eczema.",
+      "es": "Diagnóstico clínico y exclusión de dermatitis de contacto, escabiosis e infecciones. Los estudios alérgicos indiscriminados no identifican la causa de todos los eczemas.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Emolientes e cuidados da barreira são a base; anti-inflamatórios tópicos controlam exacerbações. Doença resistente pode exigir fototerapia ou terapia sistêmica especializada.",
+      "es": "Emolientes y cuidado de la barrera son la base; antiinflamatorios tópicos controlan exacerbaciones. La enfermedad resistente puede requerir fototerapia o tratamiento sistémico especializado.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Corticoide tópico com potência e duração adequadas ao local e idade; inibidores de calcineurina são alternativas selecionadas. Corticoides sistêmicos não são recomendados como rotina.",
+      "es": "Corticoide tópico con potencia y duración apropiadas para zona y edad; los inhibidores de calcineurina son alternativas seleccionadas. No recomendar corticoides sistémicos de rutina.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar prurido, sono, adesão e atrofia cutânea; recorrência exige plano de manutenção. Não prescrever antibiótico apenas por eczema sem infecção clínica.",
+      "es": "Reevaluar prurito, sueño, adherencia y atrofia cutánea; las recaídas requieren mantenimiento. No prescribir antibióticos solamente por eczema sin infección clínica.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Vesículas dolorosas monomórficas, erosões e febre sugerem eczema herpético: avaliação urgente. Infecção disseminada ou deterioração sistêmica também exige escalonamento.",
+      "es": "Vesículas dolorosas monomorfas, erosiones y fiebre sugieren eczema herpético: evaluación urgente. Infección diseminada o deterioro sistémico también requieren escalamiento.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Em crianças, gestantes e lactantes usar seleção específica de medicamentos e áreas tratadas; imunomoduladores sistêmicos requerem rastreamento e avaliação renal ou hepática conforme o fármaco.",
+      "es": "En niños, embarazadas y lactantes seleccionar medicamentos y áreas específicamente; los inmunomoduladores sistémicos requieren evaluación y controles renales o hepáticos según el fármaco.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "AAD",
+      "title": "Atopic dermatitis clinical guideline — current recommendations and focused update",
+      "url": "https://www.aad.org/member/clinical-quality/guidelines/atopic-dermatitis",
+      "authority": "AAD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Atopic eczema",
+      "url": "https://www.nhs.uk/conditions/atopic-eczema/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

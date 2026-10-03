@@ -1,0 +1,129 @@
+{
+  "owner": "dermatite_periorificial",
+  "title": {
+    "pt": "Dermatite periorificial",
+    "es": "Dermatitis periorificial"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Dermatite periorificial",
+      "Dermatitis periorificial",
+      "dermatite perioral",
+      "dermatitis perioral"
+    ],
+    "distinctScope": "Erupção papular periorificial, frequentemente ligada a corticoide facial; distinta de acne e rosácea."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Erupção inflamatória papular ao redor de boca, nariz ou olhos; corticoides faciais e produtos irritantes podem desencadear ou perpetuar lesões.",
+      "es": "Erupción inflamatoria papular alrededor de boca, nariz u ojos; los corticoides faciales y productos irritantes pueden desencadenar o perpetuar lesiones.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pápulas pequenas semelhantes entre si, ardor e descamação; a margem labial costuma estar poupada. Investigar uso direto ou transferência de corticoide.",
+      "es": "Pápulas pequeñas semejantes entre sí, ardor y descamación; suele respetarse el borde labial. Investigar uso directo o transferencia de corticoides.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; diferenciar rosácea, acne, dermatite de contato e infecção. Comedões, flushing predominante ou achados atípicos sugerem alternativa.",
+      "es": "Diagnóstico clínico; diferenciar rosácea, acné, dermatitis de contacto e infección. Comedones, rubor predominante o hallazgos atípicos sugieren otra causa.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suspender produtos desencadeantes e orientar cuidado facial mínimo. Retirada de corticoide pode causar rebote temporário; planejar retirada conforme exposição prévia.",
+      "es": "Suspender productos desencadenantes y orientar cuidado facial mínimo. Retirar corticoides puede provocar rebote transitorio; planificarlo según la exposición previa.",
+      "sources": [
+        "PCDS",
+        "PIL"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Casos leves podem receber antibiótico tópico; doença mais importante pode exigir tetraciclina oral selecionada. Formulação e esquema dependem de idade e contraindicações.",
+      "es": "Casos leves pueden recibir antibiótico tópico; enfermedad más importante puede requerir tetraciclina oral seleccionada. Formulación y esquema dependen de edad y contraindicaciones.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar resposta e irritação; não reiniciar corticoide facial para controlar rebote. Falha persistente ou diagnóstico incerto justificam dermatologia.",
+      "es": "Reevaluar respuesta e irritación; no reiniciar corticoides faciales para controlar el rebote. Persistencia o diagnóstico incierto justifican dermatología.",
+      "sources": [
+        "PCDS",
+        "PIL"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor ocular, alteração visual, febre ou inflamação intensa requerem avaliação dirigida; não atribuir esses achados automaticamente à erupção periorificial.",
+      "es": "Dolor ocular, alteración visual, fiebre o inflamación intensa requieren evaluación dirigida; no atribuir automáticamente esos hallazgos a la erupción periorificial.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação e crianças alteram a seleção antibiótica; não usar tetraciclinas na gestação. Não extrapolar esquemas adultos para apresentações pediátricas.",
+      "es": "El embarazo y los niños modifican la selección antibiótica; no usar tetraciclinas en el embarazo. No extrapolar esquemas adultos a presentaciones pediátricas.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Perioral/periocular dermatitis",
+      "url": "https://www.pcds.org.uk/clinical-guidance/perioral-dermatitis-periocular-dermatitis-syn-periorifacial-dermatitis",
+      "authority": "PCDS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PIL",
+      "title": "Perioral dermatitis",
+      "url": "https://www.pcds.org.uk/patient-info-leaflets/perioral-dermatitis",
+      "authority": "PCDS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

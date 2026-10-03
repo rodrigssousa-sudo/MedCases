@@ -1,0 +1,138 @@
+{
+  "owner": "alopecia_areata",
+  "title": {
+    "pt": "Alopecia areata",
+    "es": "Alopecia areata"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Alopecia areata"
+    ],
+    "distinctScope": "Alopecia autoimune não cicatricial; totalis/universalis ficam neste owner, sem incremento de quota."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Alopecia autoimune não cicatricial, geralmente em placas; pode afetar couro cabeludo, sobrancelhas e outros pelos, com evolução variável e recorrente.",
+      "es": "Alopecia autoinmune no cicatricial, generalmente en placas; puede afectar cuero cabelludo, cejas y otros pelos, con evolución variable y recurrente.",
+      "sources": [
+        "BADPIL"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Placas lisas com orifícios foliculares preservados; procurar pelos em ponto de exclamação, alterações ungueais, extensão e impacto psicológico.",
+      "es": "Placas lisas con orificios foliculares conservados; buscar pelos en signo de exclamación, alteraciones ungueales, extensión e impacto psicológico.",
+      "sources": [
+        "BADPIL"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico, eventualmente tricoscópico. Descamação e pelos quebrados em criança sugerem dermatofitose; distribuição irregular pode indicar tricotilomania.",
+      "es": "Diagnóstico clínico, eventualmente tricoscópico. Descamación y pelos rotos en niños sugieren dermatofitosis; distribución irregular puede indicar tricotilomanía.",
+      "sources": [
+        "BADPIL"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Observar ou tratar conforme extensão e impacto. Corticoides tópicos ou intralesionais e tratamentos sistêmicos especializados são opções selecionadas.",
+      "es": "Observar o tratar según extensión e impacto. Corticoides tópicos o intralesionales y tratamientos sistémicos especializados son opciones seleccionadas.",
+      "sources": [
+        "BADSUM",
+        "BADPIL"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe posologia universal para corticoide intralesional ou inibidor de JAK; concentração, dose, idade elegível e monitorização dependem da indicação.",
+      "es": "No existe posología universal para corticoides intralesionales o inhibidores de JAK; concentración, dosis, edad elegible y monitorización dependen de la indicación.",
+      "sources": [
+        "BADSUM",
+        "BADPIL"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Registrar recuperação, fotografias e efeitos adversos; recaída é possível mesmo após resposta. Oferecer apoio e camuflagem.",
+      "es": "Registrar recuperación, fotografías y efectos adversos; puede recaer incluso tras responder. Ofrecer apoyo y camuflaje.",
+      "sources": [
+        "BADPIL"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Perda extensa, progressão importante, dúvida diagnóstica ou sofrimento emocional relevante justificam encaminhamento; inflamação cicatricial requer rever diagnóstico.",
+      "es": "Pérdida extensa, progresión importante, incertidumbre diagnóstica o sufrimiento emocional relevante justifican derivación; inflamación cicatricial exige revisar diagnóstico.",
+      "sources": [
+        "BADPIL"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças requerem terapias específicas; imunomoduladores exigem avaliação de infecção e contraindicações. Na gestação, revisar qualquer tratamento sistêmico.",
+      "es": "Los niños requieren tratamientos específicos; los inmunomoduladores exigen evaluar infecciones y contraindicaciones. Durante el embarazo revisar cualquier tratamiento sistémico.",
+      "sources": [
+        "BADSUM",
+        "BADPIL"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "BADGL",
+      "title": "Living guideline for alopecia areata",
+      "url": "https://www.bad.org.uk/new-british-association-of-dermatologists-living-guideline-for-managing-people-with-alopecia-areata",
+      "authority": "BAD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "PUBLICATION_METADATA_ONLY"
+    },
+    {
+      "id": "BADPIL",
+      "title": "Alopecia areata",
+      "url": "https://www.bad.org.uk/pils/alopecia-areata",
+      "authority": "BAD",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "BADSUM",
+      "title": "BAD living guideline for alopecia areata 2024 — official recommendations summary",
+      "url": "https://cdn.bad.org.uk/uploads/2021/12/09094658/Alopecia-areata-living-guideline-Presentation.pdf",
+      "authority": "BAD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL_GUIDELINE_SUMMARY",
+      "verifiedAt": "2026-10-03",
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "publicationDateConfirmed": true
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

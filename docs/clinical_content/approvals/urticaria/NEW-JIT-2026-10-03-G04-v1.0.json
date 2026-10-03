@@ -1,0 +1,139 @@
+{
+  "owner": "urticaria",
+  "title": {
+    "pt": "Urticária",
+    "es": "Urticaria"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Urticária",
+      "Urticaria"
+    ],
+    "distinctScope": "Síndrome cutânea com urticas transitórias; inclui formas agudas/crônicas no mesmo owner, sem duplicar anafilaxia."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença mediada por mastócitos, com urticas pruriginosas, angioedema ou ambos. Persistência por mais de 6 semanas caracteriza urticária crônica.",
+      "es": "Enfermedad mediada por mastocitos, con habones pruriginosos, angioedema o ambos. Persistencia durante más de 6 semanas caracteriza urticaria crónica.",
+      "sources": [
+        "INT26"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar duração de cada lesão, medicamentos, infecções e desencadeantes físicos; perguntar primeiro sobre falta de ar, edema de língua e síncope.",
+      "es": "Evaluar duración de cada lesión, medicamentos, infecciones y desencadenantes físicos; preguntar primero por falta de aire, edema lingual y síncope.",
+      "sources": [
+        "INT26"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; investigação da forma crônica é dirigida. Lesões dolorosas persistentes, púrpura ou sintomas sistêmicos exigem diferenciar vasculite e outras causas.",
+      "es": "Diagnóstico clínico; estudiar la forma crónica de manera dirigida. Lesiones dolorosas persistentes, púrpura o síntomas sistémicos requieren diferenciar vasculitis y otras causas.",
+      "sources": [
+        "INT26"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Anti-histamínico H1 de segunda geração é primeira linha. Falha na doença crônica exige escalonamento planejado, evitando corticoide sistêmico prolongado.",
+      "es": "Antihistamínico H1 de segunda generación es primera línea. Fracaso en enfermedad crónica requiere escalamiento planificado, evitando corticoides sistémicos prolongados.",
+      "sources": [
+        "INT26"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Cetirizina: adulto com função renal preservada, 10 mg por via oral uma vez por dia. Ajustar em disfunção renal; aumento de dose não é automedicação.",
+      "es": "Cetirizina: adulto con función renal conservada, 10 mg por vía oral una vez por día. Ajustar en disfunción renal; aumentar dosis no es automedicación.",
+      "sources": [
+        "NHS",
+        "SMPC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar controle, sonolência e qualidade de vida. Especialista pode aumentar anti-histamínico ou selecionar terapias adicionais conforme guideline atual e autorização local.",
+      "es": "Controlar síntomas, somnolencia y calidad de vida. Un especialista puede aumentar antihistamínicos o seleccionar tratamientos adicionales según guía vigente y autorización local.",
+      "sources": [
+        "INT26",
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Comprometimento respiratório ou circulatório com urticária sugere anafilaxia e exige atendimento imediato; anti-histamínico não substitui seu tratamento.",
+      "es": "Compromiso respiratorio o circulatorio con urticaria sugiere anafilaxia y requiere atención inmediata; el antihistamínico no sustituye su tratamiento.",
+      "sources": [
+        "INT26"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Dose pediátrica depende de idade e apresentação; gestação, lactação e doença renal exigem seleção específica. Evitar sedação em atividades de risco.",
+      "es": "La dosis pediátrica depende de edad y presentación; embarazo, lactancia y enfermedad renal requieren selección específica. Evitar sedación en actividades de riesgo.",
+      "sources": [
+        "INT26",
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "INT26",
+      "title": "International guideline for definition, classification, diagnosis and management of urticaria",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13466004/",
+      "authority": "GA2LEN/EDF/APAAACI/AAD/BSACI",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL_GUIDELINE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "How and when to take cetirizine",
+      "url": "https://www.nhs.uk/medicines/cetirizine/how-and-when-to-take-cetirizine/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "SMPC",
+      "title": "Cetirizine 10 mg tablets — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/12956/smpc",
+      "authority": "Milpharm / emc",
+      "year": 2024,
+      "status": "APPROVED_PRODUCT_LABEL_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "publicationDateConfirmed": true
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

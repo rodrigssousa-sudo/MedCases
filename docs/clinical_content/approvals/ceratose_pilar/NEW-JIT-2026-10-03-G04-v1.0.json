@@ -1,0 +1,126 @@
+{
+  "owner": "ceratose_pilar",
+  "title": {
+    "pt": "Ceratose pilar",
+    "es": "Queratosis pilaris"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Ceratose pilar",
+      "Queratosis pilaris"
+    ],
+    "distinctScope": "Tampões foliculares queratóticos benignos; não ceratoses actínica/seborreica ou foliculite."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Retenção de queratina no folículo causa pápulas ásperas; condição benigna comum na infância e adolescência, associada a ressecamento.",
+      "es": "La retención de queratina en el folículo causa pápulas ásperas; condición benigna frecuente en infancia y adolescencia, asociada con sequedad.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pápulas foliculares uniformes em braços e coxas, às vezes face; avaliar textura, eritema e ausência de sinais infecciosos.",
+      "es": "Pápulas foliculares uniformes en brazos y muslos, a veces cara; evaluar textura, eritema y ausencia de signos infecciosos.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico, sem exames rotineiros; diferenciar foliculite com pústulas e outras queratoses se o padrão for atípico.",
+      "es": "Diagnóstico clínico, sin estudios rutinarios; diferenciar foliculitis con pústulas y otras queratosis si el patrón es atípico.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Explicar benignidade e benefício limitado dos tratamentos; emolientes podem melhorar textura. Evitar manipulação agressiva e promessa de cura.",
+      "es": "Explicar benignidad y beneficio limitado de tratamientos; los emolientes pueden mejorar textura. Evitar manipulación agresiva y promesas de curación.",
+      "sources": [
+        "PIL"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Produtos com ureia ou outros queratolíticos podem ser selecionados conforme tolerância; não usar corticoides continuamente devido ao risco de atrofia.",
+      "es": "Seleccionar productos con urea u otros queratolíticos según tolerancia; no utilizar corticoides continuamente por riesgo de atrofia.",
+      "sources": [
+        "PCDS",
+        "PIL"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar irritação e benefício percebido; não prescrever antibiótico para pápulas queratósicas sem infecção clínica.",
+      "es": "Controlar irritación y beneficio percibido; no prescribir antibióticos para pápulas queratósicas sin infección clínica.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Atrofia, perda de pelos, dor, pústulas ou distribuição incomum exigem reconsiderar diagnóstico e avaliar outra dermatose.",
+      "es": "Atrofia, pérdida de pelo, dolor, pústulas o distribución inusual exigen reconsiderar diagnóstico y evaluar otra dermatosis.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Em crianças, preferir cuidado suave e produtos apropriados à idade; queratolíticos podem irritar e não devem ser aplicados indiscriminadamente.",
+      "es": "En niños preferir cuidado suave y productos apropiados para la edad; los queratolíticos pueden irritar y no deben aplicarse indiscriminadamente.",
+      "sources": [
+        "PIL"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Keratosis pilaris",
+      "url": "https://www.pcds.org.uk/clinical-guidance/keratosis-pilaris",
+      "authority": "PCDS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PIL",
+      "title": "Keratosis pilaris: patient information",
+      "url": "https://www.pcds.org.uk/patient-info-leaflets/keratosis-pilaris",
+      "authority": "PCDS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

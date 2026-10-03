@@ -1,0 +1,128 @@
+{
+  "owner": "psoriase",
+  "title": {
+    "pt": "Psoríase",
+    "es": "Psoriasis"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Psoríase",
+      "Psoriasis"
+    ],
+    "distinctScope": "Owner único para psoríase; subtipos não são contados como novas patologias."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença inflamatória imunomediada, crônica e não contagiosa; aceleração da renovação epidérmica produz placas descamativas e pode associar-se a artrite.",
+      "es": "Enfermedad inflamatoria inmunomediada, crónica y no contagiosa; la renovación epidérmica acelerada produce placas descamativas y puede asociarse con artritis.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Examinar placas bem delimitadas, couro cabeludo, cotovelos, joelhos e unhas; perguntar sobre dor articular, rigidez, impacto funcional e tratamento prévio.",
+      "es": "Examinar placas delimitadas, cuero cabelludo, codos, rodillas y uñas; preguntar por dolor articular, rigidez, impacto funcional y tratamiento previo.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico habitualmente clínico. Diferenciar eczema e dermatofitose; avaliar extensão e locais especiais. Biópsia é reservada para incerteza diagnóstica.",
+      "es": "Diagnóstico habitualmente clínico. Diferenciar eczema y dermatofitosis; evaluar extensión y zonas especiales. Reservar biopsia para incertidumbre diagnóstica.",
+      "sources": [
+        "AAD",
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Emolientes e tratamento tópico na doença limitada; fototerapia, tratamentos sistêmicos e biológicos dependem de gravidade, comorbidades e acompanhamento especializado.",
+      "es": "Emolientes y tratamiento tópico en enfermedad limitada; fototerapia, tratamientos sistémicos y biológicos dependen de gravedad, comorbilidades y seguimiento especializado.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Corticoides tópicos e análogos de vitamina D são opções; potência, local, quantidade e duração devem ser prescritos individualmente, evitando corticoide potente prolongado na face.",
+      "es": "Corticoides tópicos y análogos de vitamina D son opciones; prescribir individualmente potencia, zona, cantidad y duración, evitando corticoides potentes prolongados en la cara.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar controle, efeitos adversos, articulações e risco cardiometabólico; recorrência é esperada. Terapias sistêmicas exigem rastreamento e exames específicos.",
+      "es": "Controlar respuesta, efectos adversos, articulaciones y riesgo cardiometabólico; pueden ocurrir recaídas. Los tratamientos sistémicos requieren evaluación y estudios específicos.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Eritrodermia, pustulose disseminada ou febre com doença extensa exigem avaliação hospitalar. Suspeita de artrite deve gerar encaminhamento oportuno.",
+      "es": "Eritrodermia, pustulosis diseminada o fiebre con enfermedad extensa requieren evaluación hospitalaria. La sospecha de artritis exige derivación oportuna.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças, gestação e doença renal ou hepática modificam a seleção sistêmica; não extrapolar doses adultas nem iniciar imunossupressor sem avaliação apropriada.",
+      "es": "Niños, embarazo y enfermedad renal o hepática modifican la selección sistémica; no extrapolar dosis adultas ni iniciar inmunosupresores sin evaluación adecuada.",
+      "sources": [
+        "AAD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "AAD",
+      "title": "Psoriasis clinical guidelines",
+      "url": "https://www.aad.org/member/clinical-quality/guidelines/psoriasis",
+      "authority": "AAD",
+      "year": 2021,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Psoriasis",
+      "url": "https://www.nhs.uk/conditions/psoriasis/",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,143 @@
+{
+  "owner": "acne_vulgar",
+  "title": {
+    "pt": "Acne vulgar",
+    "es": "Acné vulgar"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Acne vulgar",
+      "Acné vulgar",
+      "acne",
+      "acné",
+      "acne vulgaris"
+    ],
+    "distinctScope": "Doença comedonal e inflamatória pilossebácea; não foliculite infecciosa nem acne inversa (hidradenite)."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Inflamação da unidade pilossebácea com obstrução folicular; comedões, pápulas e pústulas predominam na adolescência, mas também ocorrem em adultos.",
+      "es": "Inflamación de la unidad pilosebácea con obstrucción folicular; comedones, pápulas y pústulas predominan en adolescentes, pero también aparecen en adultos.",
+      "sources": [
+        "AAD24",
+        "BAD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar face, tórax e dorso, nódulos, cicatrizes, hiperpigmentação e impacto emocional; lesões inflamatórias profundas indicam maior risco de sequela.",
+      "es": "Evaluar cara, tórax y espalda, nódulos, cicatrices, hiperpigmentación e impacto emocional; lesiones inflamatorias profundas indican mayor riesgo de secuela.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico geralmente clínico. Diferenciar rosácea sem comedões, foliculite e erupções medicamentosas; investigação hormonal depende de sinais de hiperandrogenismo.",
+      "es": "Diagnóstico generalmente clínico. Diferenciar rosácea sin comedones, foliculitis y erupciones medicamentosas; los estudios hormonales dependen de signos de hiperandrogenismo.",
+      "sources": [
+        "AAD24",
+        "BAD"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Combinar mecanismos tópicos, como peróxido de benzoíla e retinoide; limitar antibióticos sistêmicos e associá-los a peróxido de benzoíla, evitando monoterapia antibiótica.",
+      "es": "Combinar mecanismos tópicos, como peróxido de benzoilo y retinoide; limitar antibióticos sistémicos y asociarlos con peróxido de benzoilo, evitando monoterapia antibiótica.",
+      "sources": [
+        "AAD24"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Peróxido de benzoíla tópico: iniciar uma aplicação por dia; aumentar para duas aplicações por dia se tolerado e compatível com a apresentação. Pode irritar e descolorir tecidos.",
+      "es": "Peróxido de benzoilo tópico: iniciar una aplicación por día; aumentar a dos aplicaciones por día si se tolera y corresponde a la presentación. Puede irritar y decolorar telas.",
+      "sources": [
+        "NHSBP"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar adesão, irritação e cicatrização; resposta requer semanas. Isotretinoína é opção especializada para acne grave, cicatricial ou resistente, com monitorização própria.",
+      "es": "Reevaluar adherencia, irritación y cicatrización; la respuesta requiere semanas. Isotretinoína es una opción especializada para acné grave, cicatricial o resistente, con monitorización específica.",
+      "sources": [
+        "AAD24",
+        "BAD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Nódulos ulcerados acompanhados de febre, acometimento rápido ou sofrimento psíquico importante exigem avaliação prioritária; não adiar encaminhamento por cicatrizes progressivas.",
+      "es": "Nódulos ulcerados con fiebre, afectación rápida o sufrimiento psicológico importante requieren evaluación prioritaria; no demorar la derivación ante cicatrices progresivas.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação: não usar isotretinoína; retinoides tópicos e tetraciclinas exigem exclusão conforme contraindicações. Crianças e tratamento sistêmico requerem avaliação e prescrição específicas.",
+      "es": "Embarazo: no utilizar isotretinoína; excluir retinoides tópicos y tetraciclinas según sus contraindicaciones. Niños y tratamiento sistémico requieren evaluación y prescripción específicas.",
+      "sources": [
+        "AAD24",
+        "BAD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "AAD24",
+      "title": "Guidelines of care for the management of acne vulgaris",
+      "url": "https://www.aad.org/member/clinical-quality/guidelines/acne",
+      "authority": "AAD",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_GUIDELINE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHSBP",
+      "title": "Benzoyl peroxide",
+      "url": "https://www.nhs.uk/medicines/benzoyl-peroxide/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "BAD",
+      "title": "Acne",
+      "url": "https://www.bad.org.uk/pils/acne",
+      "authority": "BAD",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

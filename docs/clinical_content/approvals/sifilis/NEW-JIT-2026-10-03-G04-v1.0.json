@@ -1,0 +1,154 @@
+{
+  "owner": "sifilis",
+  "title": {
+    "pt": "Sífilis",
+    "es": "Sífilis"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Sífilis"
+    ],
+    "distinctScope": "Owner único para sífilis; estágios não são contados separadamente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção por Treponema pallidum, transmissível por contato sexual e verticalmente. A ausência de sintomas não exclui infecção; lesões podem desaparecer sem que a doença esteja curada.",
+      "es": "Infección por Treponema pallidum, transmisible por contacto sexual y verticalmente. La ausencia de síntomas no excluye infección; las lesiones pueden desaparecer sin que la enfermedad esté curada.",
+      "sources": [
+        "WHO_S"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Procurar úlcera geralmente indolor, exantema inclusive palmoplantar, lesões mucosas e história de exposição. Classificar estágio, tratamentos anteriores e possibilidade de gestação antes de escolher o esquema.",
+      "es": "Buscar úlcera generalmente indolora, exantema incluso palmoplantar, lesiones mucosas y antecedentes de exposición. Clasificar estadio, tratamientos previos y posibilidad de embarazo antes de elegir el esquema.",
+      "sources": [
+        "WHO_S",
+        "CDC_S"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Combinar teste treponêmico e não treponêmico quantitativo com a história clínica. Um título isolado não determina duração da sífilis latente. Diferenciar herpes genital e outras causas de úlcera.",
+      "es": "Combinar prueba treponémica y no treponémica cuantitativa con los antecedentes clínicos. Un título aislado no determina la duración de la sífilis latente. Diferenciar herpes genital y otras causas de úlcera.",
+      "sources": [
+        "CDC_S",
+        "CDC_L"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar o estágio identificado, oferecer teste para HIV e avaliar parceiros. Explicar reação de Jarisch–Herxheimer, que não equivale automaticamente a alergia à penicilina.",
+      "es": "Tratar el estadio identificado, ofrecer prueba de VIH y evaluar parejas. Explicar la reacción de Jarisch–Herxheimer, que no equivale automáticamente a alergia a la penicilina.",
+      "sources": [
+        "CDC_S",
+        "WHO_STI"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adultos: sífilis primária, secundária ou latente recente — penicilina G benzatina 2,4 milhões de unidades internacionais por via intramuscular, dose única. Latente tardia ou de duração desconhecida — penicilina G benzatina 2,4 milhões de unidades internacionais por via intramuscular uma vez por semana, por 3 doses; total de 7,2 milhões de unidades internacionais.",
+      "es": "Adultos: sífilis primaria, secundaria o latente temprana — penicilina G benzatina 2,4 millones de unidades internacionales por vía intramuscular, dosis única. Latente tardía o de duración desconocida — penicilina G benzatina 2,4 millones de unidades internacionales por vía intramuscular una vez por semana, durante 3 dosis; total de 7,2 millones de unidades internacionales.",
+      "sources": [
+        "CDC_E",
+        "CDC_L"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Registrar título não treponêmico inicial e acompanhar resposta conforme estágio, gestação e risco de reinfecção. Persistência de teste treponêmico positivo não significa, isoladamente, falha terapêutica.",
+      "es": "Registrar título no treponémico inicial y controlar respuesta según estadio, embarazo y riesgo de reinfección. La persistencia de una prueba treponémica positiva no significa, por sí sola, fracaso terapéutico.",
+      "sources": [
+        "CDC_S",
+        "CDC_L"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Alteração visual, perda auditiva, meningismo ou déficit neurológico exigem avaliação urgente para sífilis ocular, otológica ou neurossífilis. O esquema intramuscular acima não trata essas apresentações.",
+      "es": "Alteración visual, pérdida auditiva, meningismo o déficit neurológico requieren evaluación urgente por sífilis ocular, ótica o neurosífilis. El esquema intramuscular anterior no trata estas presentaciones.",
+      "sources": [
+        "CDC_E",
+        "CDC_L"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Na gestação, penicilina é necessária para prevenir sífilis congênita; alergia requer avaliação para dessensibilização. Sífilis congênita e crianças exigem protocolo específico, sem reutilizar doses adultas.",
+      "es": "En el embarazo, la penicilina es necesaria para prevenir sífilis congénita; la alergia requiere evaluación para desensibilización. La sífilis congénita y los niños requieren un protocolo específico, sin reutilizar dosis adultas.",
+      "sources": [
+        "WHO_S",
+        "WHO_STI"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_S",
+      "title": "Syphilis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/syphilis",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_S",
+      "title": "Syphilis: diagnóstico",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_E",
+      "title": "Primary and secondary syphilis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_L",
+      "title": "Latent syphilis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "WHO_STI",
+      "title": "Updated recommendations: gonorrhoea, chlamydia, syphilis and partner services",
+      "url": "https://www.who.int/publications/i/item/9789240090767",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

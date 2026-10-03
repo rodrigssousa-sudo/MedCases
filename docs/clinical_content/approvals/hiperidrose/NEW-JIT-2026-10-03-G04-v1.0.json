@@ -1,0 +1,128 @@
+{
+  "owner": "hiperidrose",
+  "title": {
+    "pt": "Hiperidrose",
+    "es": "Hiperhidrosis"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hiperidrose",
+      "Hiperhidrosis"
+    ],
+    "distinctScope": "Sudorese excessiva primária ou secundária; não doença por calor."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Sudorese excessiva; forma primária costuma ser focal e bilateral, enquanto causas secundárias podem produzir suor generalizado ou noturno.",
+      "es": "Sudoración excesiva; la forma primaria suele ser focal y bilateral, mientras causas secundarias pueden provocar sudor generalizado o nocturno.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar axilas, mãos e pés, início, sono, medicamentos e impacto funcional; sudorese noturna ou início recente exige revisão de causas.",
+      "es": "Evaluar axilas, manos y pies, inicio, sueño, medicamentos e impacto funcional; sudoración nocturna o reciente exige revisar causas.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Forma focal típica é diagnosticada clinicamente; exames são dirigidos por sinais de endocrinopatia, infecção ou doença sistêmica. Diferenciar flushing.",
+      "es": "La forma focal típica se diagnostica clínicamente; dirigir estudios por signos de endocrinopatía, infección o enfermedad sistémica. Diferenciar rubor.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Roupas adequadas e antitranspirante são medidas iniciais; iontoforese para mãos ou pés e toxina botulínica axilar são opções selecionadas.",
+      "es": "Ropa adecuada y antitranspirantes son medidas iniciales; iontoforesis para manos o pies y toxina botulínica axilar son opciones seleccionadas.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Cloreto de alumínio tópico: aplicar à noite na pele seca e lavar pela manhã; frequência e concentração dependem da apresentação e tolerância.",
+      "es": "Cloruro de aluminio tópico: aplicar por la noche sobre piel seca y lavar por la mañana; frecuencia y concentración según presentación y tolerancia.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar irritação e benefício; anticolinérgicos exigem avaliar efeitos adversos. Cirurgia é excepcional por risco de sudorese compensatória, eventualmente grave.",
+      "es": "Controlar irritación y beneficio; los anticolinérgicos exigen evaluar efectos adversos. La cirugía es excepcional por riesgo de sudoración compensatoria, eventualmente grave.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Suor com dor torácica ou síncope exige atendimento urgente; febre, perda de peso e sudorese noturna requerem investigação.",
+      "es": "Sudor con dolor torácico o síncope exige atención urgente; fiebre, pérdida de peso y sudoración nocturna requieren investigación.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Iontoforese requer verificar gestação e dispositivos implantados; crianças e idosos não devem receber automaticamente esquemas anticolinérgicos adultos.",
+      "es": "La iontoforesis requiere verificar embarazo y dispositivos implantados; niños y mayores no deben recibir automáticamente esquemas anticolinérgicos adultos.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Hyperhidrosis",
+      "url": "https://www.pcds.org.uk/clinical-guidance/hyperhidrosis",
+      "authority": "PCDS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Excessive sweating",
+      "url": "https://www.nhs.uk/conditions/excessive-sweating-hyperhidrosis/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,128 @@
+{
+  "owner": "lipoma",
+  "title": {
+    "pt": "Lipoma",
+    "es": "Lipoma"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Lipoma"
+    ],
+    "distinctScope": "Tumor adiposo benigno subcutâneo; não cisto, nódulo cutâneo ou sarcoma."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Tumor benigno de tecido adiposo, geralmente subcutâneo; pode ser único ou múltiplo, com crescimento habitualmente lento.",
+      "es": "Tumor benigno de tejido adiposo, generalmente subcutáneo; puede ser único o múltiple, con crecimiento habitualmente lento.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Nódulo macio, móvel e lobulado com pele preservada; documentar evolução, localização, dor e relação com estruturas profundas.",
+      "es": "Nódulo blando, móvil y lobulado con piel conservada; documentar evolución, localización, dolor y relación con estructuras profundas.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico se típico; diferenciar cisto epidermoide e tumor de partes moles. Achados atípicos podem exigir imagem e especialista.",
+      "es": "Diagnóstico clínico si es típico; diferenciar quiste epidermoide y tumor de partes blandas. Hallazgos atípicos pueden exigir imágenes y especialista.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Observar se assintomático; excisão é opção por dor, compressão ou incômodo. Lesão suspeita deve seguir investigação apropriada antes de remoção.",
+      "es": "Observar si es asintomático; extirpación por dolor, compresión o molestias. Una lesión sospechosa debe seguir investigación apropiada antes de extirparse.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há tratamento farmacológico rotineiro que elimine lipoma; procedimento e anestesia dependem de localização, profundidade e profissional habilitado.",
+      "es": "No hay tratamiento farmacológico rutinario que elimine lipomas; procedimiento y anestesia dependen de localización, profundidad y profesional capacitado.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar mudanças e sintomas; cirurgia exige cuidado anatômico porque extensão pode ser maior que a palpação sugere.",
+      "es": "Controlar cambios y síntomas; la cirugía exige cuidado anatómico porque la extensión puede superar lo sugerido por palpación.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Crescimento rápido, dor nova, fixação ou localização profunda alertam para diagnóstico alternativo; não presumir benignidade sem avaliação.",
+      "es": "Crecimiento rápido, dolor nuevo, fijación o localización profunda alertan sobre otro diagnóstico; no presumir benignidad sin evaluación.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Lesões frontais podem ser profundas; crianças e pacientes com maior risco cirúrgico necessitam planejamento especializado antes de intervenção.",
+      "es": "Lesiones frontales pueden ser profundas; niños y pacientes con mayor riesgo quirúrgico necesitan planificación especializada antes de intervenir.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Lipoma",
+      "url": "https://www.pcds.org.uk/clinical-guidance/lipoma",
+      "authority": "PCDS",
+      "year": 2021,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Lipoma",
+      "url": "https://www.nhs.uk/conditions/lipoma/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

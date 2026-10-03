@@ -1,0 +1,127 @@
+{
+  "owner": "dermatofibroma",
+  "title": {
+    "pt": "Dermatofibroma",
+    "es": "Dermatofibroma"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Dermatofibroma"
+    ],
+    "distinctScope": "Nódulo dérmico benigno com diagnóstico diferencial próprio; não ceratose, nevo ou lipoma."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Lesão fibrosa cutânea benigna, de causa incerta; não equivale ao dermatofibrossarcoma protuberante, apesar da semelhança dos nomes.",
+      "es": "Lesión fibrosa cutánea benigna, de causa incierta; no equivale a dermatofibrosarcoma protuberante, pese a nombres similares.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pápula firme geralmente nos membros; compressão lateral pode produzir depressão central. A palpação complementa inspeção e dermatoscopia.",
+      "es": "Pápula firme generalmente en miembros; la compresión lateral puede producir depresión central. La palpación complementa inspección y dermatoscopia.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico e dermatoscópico por profissional treinado; depressão central não exclui sozinha malignidade. Lesão atípica pode exigir biópsia.",
+      "es": "Diagnóstico clínico y dermatoscópico por profesional entrenado; la depresión central no excluye por sí sola malignidad. Una lesión atípica puede requerir biopsia.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Geralmente observar; intervenção pode ser indicada por dúvida diagnóstica ou sintomas, considerando que a cicatriz pode superar o tamanho da lesão.",
+      "es": "Generalmente observar; intervenir por duda diagnóstica o síntomas considerando que la cicatriz puede superar el tamaño de la lesión.",
+      "sources": [
+        "PCDS",
+        "PIL"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe medicamento de rotina. Evitar destruição de nódulo incerto; histologia deve orientar quando houver suspeita de diagnóstico alternativo.",
+      "es": "No existe medicamento rutinario. Evitar destruir nódulos inciertos; la histología debe orientar cuando se sospeche otro diagnóstico.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Observar mudanças; excisão incompleta pode recidivar. Dermatofibroma típico é benigno, mas essa conclusão depende de diagnóstico correto.",
+      "es": "Observar cambios; la extirpación incompleta puede recidivar. El dermatofibroma típico es benigno, pero esa conclusión depende del diagnóstico correcto.",
+      "sources": [
+        "PCDS",
+        "PIL"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Aparência atípica, nódulo rosado sem padrão habitual ou dúvida com melanoma exigem dermatologia; firmeza isolada não garante benignidade.",
+      "es": "Aspecto atípico, nódulo rosado sin patrón habitual o duda con melanoma exigen dermatología; la firmeza aislada no garantiza benignidad.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Apresentação incomum ou lesões múltiplas requerem revisar contexto; individualizar procedimento conforme localização, cicatrização e risco do paciente.",
+      "es": "Presentación inusual o lesiones múltiples requieren revisar contexto; individualizar procedimientos según localización, cicatrización y riesgo del paciente.",
+      "sources": [
+        "PIL",
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Dermatofibroma (histiocytoma)",
+      "url": "https://www.pcds.org.uk/clinical-guidance/dermatofibroma-syn-histiocytoma",
+      "authority": "PCDS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PIL",
+      "title": "Dermatofibroma: patient information",
+      "url": "https://www.pcds.org.uk/patient-info-leaflets/dermatofibroma",
+      "authority": "PCDS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

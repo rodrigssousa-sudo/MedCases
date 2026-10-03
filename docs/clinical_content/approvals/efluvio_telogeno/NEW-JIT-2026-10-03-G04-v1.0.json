@@ -1,0 +1,127 @@
+{
+  "owner": "efluvio_telogeno",
+  "title": {
+    "pt": "Eflúvio telógeno",
+    "es": "Efluvio telógeno"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Eflúvio telógeno",
+      "Efluvio telógeno"
+    ],
+    "distinctScope": "Queda difusa por transição folicular após desencadeante; não miniaturização ou perda autoimune em placas."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Alteração do ciclo capilar aumenta queda difusa não cicatricial; gatilhos incluem febre, cirurgia, parto, estresse, emagrecimento e medicamentos.",
+      "es": "Una alteración del ciclo capilar aumenta caída difusa no cicatricial; desencadenantes incluyen fiebre, cirugía, parto, estrés, adelgazamiento y medicamentos.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Queda surge meses após o gatilho, com redução global do volume, sem placas completamente calvas; investigar dieta e eventos recentes.",
+      "es": "La caída surge meses después del desencadenante, con reducción global del volumen, sin placas totalmente calvas; investigar dieta y eventos recientes.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Examinar couro cabeludo e padrão; hemograma, ferritina e função tireoidiana podem investigar causas. Diferenciar alopecia androgenética, areata e cicatricial.",
+      "es": "Examinar cuero cabelludo y patrón; hemograma, ferritina y función tiroidea pueden investigar causas. Diferenciar alopecia androgenética, areata y cicatricial.",
+      "sources": [
+        "BAD",
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Corrigir causa identificada e garantir nutrição adequada; explicar recuperação gradual. Não suspender medicamento essencial sem discutir com o prescritor.",
+      "es": "Corregir causa identificada y asegurar nutrición adecuada; explicar recuperación gradual. No suspender medicamentos esenciales sin consultar al prescriptor.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há medicamento universal que acelere a recuperação transitória. Reposição de ferro depende de deficiência documentada, não apenas queda capilar.",
+      "es": "No hay medicamento universal que acelere la recuperación transitoria. Reponer hierro depende de deficiencia documentada, no solamente caída capilar.",
+      "sources": [
+        "BAD",
+        "PCDS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Queda costuma durar 3–6 meses; restauração do volume pode levar mais tempo. Persistência ou padrão diferente exige reavaliar.",
+      "es": "La caída suele durar 3–6 meses; recuperar el volumen puede llevar más tiempo. Persistencia o patrón diferente exige reevaluar.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor, descamação importante, placas ou perda de orifícios foliculares exigem dermatologia; não atribuir alopecia cicatricial a estresse.",
+      "es": "Dolor, descamación importante, placas o pérdida de orificios foliculares exigen dermatología; no atribuir alopecia cicatricial al estrés.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Pós-parto é contexto comum; crianças, idosos e dieta restritiva requerem investigação apropriada. Suplementação não substitui diagnóstico de deficiência.",
+      "es": "El posparto es un contexto común; niños, mayores y dietas restrictivas requieren investigación apropiada. Suplementar no sustituye diagnosticar una deficiencia.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "BAD",
+      "title": "Telogen effluvium",
+      "url": "https://www.bad.org.uk/pils/telogen-effluvium",
+      "authority": "BAD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PCDS",
+      "title": "Alopecia: an overview",
+      "url": "https://www.pcds.org.uk/clinical-guidance/alopecia-an-overview",
+      "authority": "PCDS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

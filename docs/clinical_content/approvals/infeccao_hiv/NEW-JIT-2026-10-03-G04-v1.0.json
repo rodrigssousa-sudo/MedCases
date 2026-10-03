@@ -1,0 +1,136 @@
+{
+  "owner": "infeccao_hiv",
+  "title": {
+    "pt": "Infecção pelo HIV",
+    "es": "Infección por VIH"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Infecção pelo HIV",
+      "Infección por VIH",
+      "HIV",
+      "VIH"
+    ],
+    "distinctScope": "Infecção pelo HIV e manejo longitudinal; referências a HIV em outras patologias não constituem owner equivalente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção pelo vírus da imunodeficiência humana com comprometimento imunológico progressivo sem tratamento. HIV e AIDS não são sinônimos: AIDS corresponde à fase avançada definida por critérios clínicos ou imunológicos.",
+      "es": "Infección por el virus de la inmunodeficiencia humana con deterioro inmunológico progresivo sin tratamiento. VIH y sida no son sinónimos: el sida corresponde a la fase avanzada definida por criterios clínicos o inmunológicos.",
+      "sources": [
+        "WHO_HIV"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Infecção inicial pode ser assintomática ou semelhante a uma virose, com febre, faringite, exantema e adenopatia. Doença avançada pode causar perda de peso e infecções oportunistas; história de exposição orienta investigação.",
+      "es": "La infección inicial puede ser asintomática o similar a una virosis, con fiebre, faringitis, exantema y adenopatías. La enfermedad avanzada puede causar pérdida de peso e infecciones oportunistas; los antecedentes de exposición orientan la investigación.",
+      "sources": [
+        "WHO_HIV"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar diagnóstico por algoritmo validado e obter carga viral, contagem de CD4, hemograma, função renal e hepática, sorologias de hepatites e genotipagem. Suspeita de infecção recente exige considerar janela diagnóstica.",
+      "es": "Confirmar diagnóstico mediante algoritmo validado y obtener carga viral, recuento de CD4, hemograma, función renal y hepática, serologías de hepatitis y genotipificación. La sospecha de infección reciente requiere considerar ventana diagnóstica.",
+      "sources": [
+        "WHO_HIV",
+        "NIH_BASE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Vincular rapidamente ao cuidado e iniciar terapia antirretroviral assim que possível. Muitos resultados podem ser revistos depois do início; suspeita de infecção oportunista grave requer definir timing com equipe especializada.",
+      "es": "Vincular rápidamente al cuidado e iniciar tratamiento antirretroviral lo antes posible. Muchos resultados pueden revisarse después del inicio; la sospecha de infección oportunista grave requiere definir el momento con el equipo especializado.",
+      "sources": [
+        "NIH_BASE"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há combinação ou dose universal: selecionar antirretrovirais pela diretriz vigente, resistência, coinfecção por hepatite B, função renal, interações e uso anterior de profilaxia. Registrar componentes, apresentação e horários completos na prescrição individual.",
+      "es": "No existe combinación o dosis universal: seleccionar antirretrovirales según guía vigente, resistencia, coinfección por hepatitis B, función renal, interacciones y uso previo de profilaxis. Registrar componentes, presentación y horarios completos en la prescripción individual.",
+      "sources": [
+        "NIH_BASE",
+        "NIH_NEW"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar carga viral, adesão, toxicidade e necessidade de prevenção de infecções oportunistas. Supressão viral sustentada com tratamento impede transmissão sexual; isso não significa cura nem dispensa seguimento.",
+      "es": "Controlar carga viral, adherencia, toxicidad y necesidad de prevención de infecciones oportunistas. La supresión viral sostenida con tratamiento impide transmisión sexual; esto no significa curación ni reemplaza seguimiento.",
+      "sources": [
+        "WHO_HIV",
+        "NIH_BASE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dispneia, hipoxemia, meningismo, alteração de consciência, déficit neurológico ou infecção sistêmica grave exigem avaliação urgente para infecções oportunistas e outras emergências.",
+      "es": "Disnea, hipoxemia, meningismo, alteración de conciencia, déficit neurológico o infección sistémica grave requieren evaluación urgente por infecciones oportunistas y otras emergencias.",
+      "sources": [
+        "WHO_HIV"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestantes, crianças, insuficiência renal e coinfecções exigem diretriz própria e equipe especializada. Incorporar aconselhamento sem estigma, vacinação e avaliação de parceiros, saúde mental e barreiras de adesão.",
+      "es": "Embarazadas, niños, insuficiencia renal y coinfecciones requieren guía específica y equipo especializado. Incorporar asesoramiento sin estigma, vacunación y evaluación de parejas, salud mental y barreras de adherencia.",
+      "sources": [
+        "NIH_BASE",
+        "WHO_HIV"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_HIV",
+      "title": "HIV and AIDS",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hiv-aids",
+      "authority": "OMS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NIH_BASE",
+      "title": "Baseline evaluation: atualização de setembro de 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-arv/baseline-evaluation",
+      "authority": "NIH",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NIH_NEW",
+      "title": "Adult and adolescent ARV guidelines: novidades de setembro de 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-arv/whats-new",
+      "authority": "NIH",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

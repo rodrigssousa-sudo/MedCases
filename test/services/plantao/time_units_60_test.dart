@@ -34,7 +34,7 @@ void main() {
     expect(actual, contains('https://www.pcds.org.uk/clinical-guidance/pityriasis-versicolor'));
   });
   for(final id in newPathologyApprovedHashes.keys) {
-    final v=newPathologyG03Versions[id]??newPathologyG02Versions[id]??'NEW-JIT-2026-10-02-v1.0';
+    final v=newPathologyG04Versions[id]??newPathologyG03Versions[id]??newPathologyG02Versions[id]??'NEW-JIT-2026-10-02-v1.0';
     final p=jsonDecode(File('docs/clinical_content/approvals/$id/$v.json').readAsStringSync());
     for(final lang in ['pt','es']) {
       test('$id $lang preserve every number, reference and approved clinical fact', () {

@@ -1,0 +1,128 @@
+{
+  "owner": "onicocriptose",
+  "title": {
+    "pt": "Unha encravada (onicocriptose)",
+    "es": "Uña encarnada (onicocriptosis)"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Unha encravada (onicocriptose)",
+      "Uña encarnada (onicocriptosis)",
+      "uña encarnada",
+      "unha encravada"
+    ],
+    "distinctScope": "Penetração mecânica da borda ungueal; diferente de infecção da dobra ungueal (paroníquia)."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Penetração da borda ungueal na prega lateral provoca inflamação mecânica, geralmente no hálux; pode ocorrer infecção secundária.",
+      "es": "La penetración del borde ungueal en el pliegue lateral provoca inflamación mecánica, generalmente en el hallux; puede ocurrir infección secundaria.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor, edema e sensibilidade junto à borda da unha; pesquisar pus, febre, calçado apertado, corte inadequado e recorrência.",
+      "es": "Dolor, edema y sensibilidad junto al borde ungueal; investigar pus, fiebre, calzado ajustado, corte inadecuado y recurrencia.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico pelo exame da unha; diferenciar paroníquia sem penetração ungueal e lesões periungueais quando o padrão for atípico.",
+      "es": "Diagnóstico por examen de la uña; diferenciar paroniquia sin penetración ungueal y lesiones periungueales si el patrón es atípico.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Casos leves: higiene, secagem e calçado amplo; não escavar cantos. Persistência ou recorrência pode exigir tratamento podológico e procedimento ungueal.",
+      "es": "Casos leves: higiene, secado y calzado amplio; no excavar esquinas. Persistencia o recurrencia puede exigir podología y procedimiento ungueal.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Analgesia depende de idade, peso e contraindicações; antibiótico é considerado diante de infecção, não apenas pela unha encravada.",
+      "es": "La analgesia depende de edad, peso y contraindicaciones; considerar antibióticos ante infección, no solamente por uña encarnada.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar dor e secreção; após resolução, cortar unhas retas e evitar calçado apertado. Procedimentos requerem plano de curativos e seguimento.",
+      "es": "Reevaluar dolor y secreción; tras resolución cortar uñas rectas y evitar calzado ajustado. Los procedimientos requieren curaciones y seguimiento.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Pus, febre ou vermelhidão progressiva exigem atendimento; pé com diabetes, isquemia ou neuropatia precisa de avaliação precoce.",
+      "es": "Pus, fiebre o enrojecimiento progresivo exigen atención; pie con diabetes, isquemia o neuropatía requiere evaluación precoz.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Pacientes com diabetes não devem fazer manipulação invasiva em casa; escolher analgesia e procedimentos conforme riscos individuais.",
+      "es": "Pacientes con diabetes no deben realizar manipulación invasiva en casa; seleccionar analgesia y procedimientos según riesgos individuales.",
+      "sources": [
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS",
+      "title": "Ingrown toenail",
+      "url": "https://www.nhs.uk/conditions/ingrown-toenail/",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PCDS",
+      "title": "Nail disorders",
+      "url": "https://pcds.org.uk/clinical-guidance/nails",
+      "authority": "PCDS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

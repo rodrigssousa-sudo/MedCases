@@ -1,0 +1,125 @@
+{
+  "owner": "varicela",
+  "title": {
+    "pt": "Varicela",
+    "es": "Varicela"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Crianças e adultos; risco gestacional e imunossupressão separados",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Varicela"
+    ],
+    "distinctScope": "Primo-infecção sistêmica pelo VZV; não zóster dermatomérico."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção primária pelo vírus varicela-zoster, muito contagiosa. Difere do zoster, que representa reativação; adultos, gestantes e imunossuprimidos têm maior risco de doença grave.",
+      "es": "Infección primaria por el virus varicela-zóster, muy contagiosa. Difiere del zóster, que representa reactivación; adultos, embarazadas e inmunosuprimidos tienen mayor riesgo de enfermedad grave.",
+      "sources": [
+        "CDC_VA"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Exantema pruriginoso com lesões em diferentes estágios, inclusive vesículas e crostas, sugere varicela. Avaliar hidratação, respiração, estado neurológico e sinais de infecção bacteriana das lesões.",
+      "es": "Un exantema pruriginoso con lesiones en distintas etapas, incluso vesículas y costras, sugiere varicela. Evaluar hidratación, respiración, estado neurológico y signos de infección bacteriana de lesiones.",
+      "sources": [
+        "NHS_VA"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "O diagnóstico costuma ser clínico; apresentação atípica ou contexto de alto risco pode exigir confirmação laboratorial de lesão. Diferenciar outros exantemas e informar o serviço antes da chegada para reduzir transmissão.",
+      "es": "El diagnóstico suele ser clínico; la presentación atípica o el contexto de alto riesgo pueden requerir confirmación de laboratorio de lesión. Diferenciar otros exantemas y avisar al servicio antes de llegar para reducir transmisión.",
+      "sources": [
+        "NHS_VA",
+        "CDC_VA"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Criança saudável com doença típica não precisa de antiviral rotineiro. Hidratar, aliviar desconforto e evitar escoriações. Avaliar antiviral precoce em grupos de risco; doença grave pode exigir aciclovir intravenoso.",
+      "es": "Un niño sano con enfermedad típica no necesita antiviral rutinario. Hidratar, aliviar molestias y evitar excoriaciones. Evaluar antiviral temprano en grupos de riesgo; la enfermedad grave puede requerir aciclovir intravenoso.",
+      "sources": [
+        "CDC_VA",
+        "NHS_VA"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não aplicar um esquema antiviral universal à varicela. Se indicado, definir fármaco, dose por idade e peso, via e duração conforme protocolo e função renal; antitérmico também exige produto e dose pediátrica apropriados.",
+      "es": "No aplicar un esquema antiviral universal a varicela. Si está indicado, definir fármaco, dosis por edad y peso, vía y duración según protocolo y función renal; el antitérmico también requiere producto y dosis pediátrica apropiados.",
+      "sources": [
+        "CDC_VA"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Observar ingestão, diurese, evolução das lesões e febre. Evitar escola e contatos suscetíveis até todas as lesões formarem crostas, seguindo orientação local. Exposição de pessoa de alto risco exige avaliação de profilaxia.",
+      "es": "Observar ingesta, diuresis, evolución de lesiones y fiebre. Evitar escuela y contactos susceptibles hasta que todas las lesiones formen costras, siguiendo orientación local. La exposición de una persona de alto riesgo requiere evaluar profilaxis.",
+      "sources": [
+        "NHS_VA",
+        "CDC_VA"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dispneia, alteração de consciência, ataxia, desidratação, dor ou vermelhidão progressiva da pele e piora sistêmica exigem avaliação urgente para complicações virais ou bacterianas.",
+      "es": "Disnea, alteración de conciencia, ataxia, deshidratación, dolor o enrojecimiento progresivo de piel y deterioro sistémico requieren evaluación urgente por complicaciones virales o bacterianas.",
+      "sources": [
+        "NHS_VA",
+        "CDC_VA"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestantes, recém-nascidos e imunossuprimidos precisam de orientação especializada. Não usar ácido acetilsalicílico em crianças; evitar ibuprofeno na varicela salvo orientação médica. Não reutilizar o esquema de zoster adulto.",
+      "es": "Embarazadas, recién nacidos e inmunosuprimidos necesitan orientación especializada. No utilizar ácido acetilsalicílico en niños; evitar ibuprofeno en varicela salvo indicación médica. No reutilizar el esquema de zóster adulto.",
+      "sources": [
+        "NHS_VA",
+        "CDC_VA"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS_VA",
+      "title": "Chickenpox",
+      "url": "https://www.nhs.uk/conditions/chickenpox/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_VA",
+      "title": "Clinical guidance for people at risk for severe varicella",
+      "url": "https://www.cdc.gov/chickenpox/hcp/clinical-guidance/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

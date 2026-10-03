@@ -1,0 +1,144 @@
+{
+  "owner": "cisto_epidermoide_cutaneo",
+  "title": {
+    "pt": "Cisto epidermoide cutâneo",
+    "es": "Quiste epidermoide cutáneo"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Cisto epidermoide cutâneo",
+      "Quiste epidermoide cutáneo",
+      "cisto epidérmico",
+      "quiste epidérmico",
+      "cisto sebáceo"
+    ],
+    "distinctScope": "Cisto de queratina cutâneo; não cisto sinovial, Baker ou abscesso infeccioso."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Cisto benigno com revestimento epitelial e queratina; cisto sebáceo é termo impreciso. Não é contagioso nem causado necessariamente por má higiene.",
+      "es": "Quiste benigno con revestimiento epitelial y queratina; quiste sebáceo es un término impreciso. No es contagioso ni causado necesariamente por mala higiene.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Nódulo sob a pele de crescimento lento, às vezes com ponto central; inflamação ou infecção pode causar dor e aumento de volume.",
+      "es": "Nódulo bajo la piel de crecimiento lento, a veces con punto central; inflamación o infección puede causar dolor y aumento de volumen.",
+      "sources": [
+        "BAD",
+        "NHS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico se típico; diferenciar lipoma, abscesso e outros nódulos. Lesão incerta precisa ser avaliada antes de qualquer remoção.",
+      "es": "Diagnóstico clínico si es típico; diferenciar lipoma, absceso y otros nódulos. Una lesión incierta debe evaluarse antes de extirparla.",
+      "sources": [
+        "BAD",
+        "NHS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Observar cisto assintomático; sintomas ou recorrência justificam discutir excisão completa. Drenagem isolada pode aliviar, mas mantém risco de recorrência.",
+      "es": "Observar quistes asintomáticos; síntomas o recurrencia justifican discutir extirpación completa. El drenaje aislado puede aliviar, pero mantiene riesgo de recurrencia.",
+      "sources": [
+        "BAD"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe medicamento que remova a cápsula; antibiótico depende de infecção clínica. Inflamação do cisto não implica automaticamente infecção bacteriana.",
+      "es": "No existe medicamento que quite la cápsula; el antibiótico depende de infección clínica. Inflamación del quiste no implica automáticamente infección bacteriana.",
+      "sources": [
+        "BAD",
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Não espremer nem perfurar em casa. Após intervenção, acompanhar ferida e recorrência; avaliar histologia conforme diagnóstico e procedimento.",
+      "es": "No apretar ni perforar en casa. Tras intervención controlar herida y recurrencia; evaluar histología según diagnóstico y procedimiento.",
+      "sources": [
+        "BAD",
+        "NHS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor progressiva, secreção, eritema disseminado ou febre exigem avaliar infecção; crescimento atípico ou diagnóstico duvidoso exige especialista.",
+      "es": "Dolor progresivo, secreción, eritema extendido o fiebre exige evaluar infección; crecimiento atípico o diagnóstico dudoso exige especialista.",
+      "sources": [
+        "BAD",
+        "NHS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças com nódulo congênito ou periorbitário requerem avaliação específica; não assumir cisto superficial nem intervir sem esclarecer anatomia.",
+      "es": "Niños con nódulo congénito o periorbitario requieren evaluación específica; no presumir quiste superficial ni intervenir sin aclarar anatomía.",
+      "sources": [
+        "DERMOID"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "BAD",
+      "title": "Cysts: epidermoid and pilar",
+      "url": "https://www.bad.org.uk/pils/cysts-epidermoid-and-pilar",
+      "authority": "BAD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Skin cyst",
+      "url": "https://www.nhs.uk/conditions/skin-cyst/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "DERMOID",
+      "title": "Dermoid cyst — pediatric differential and assessment",
+      "url": "https://www.seattlechildrens.org/conditions/dermoid-cyst/",
+      "authority": "Seattle Children's",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "publicationDateConfirmed": false
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

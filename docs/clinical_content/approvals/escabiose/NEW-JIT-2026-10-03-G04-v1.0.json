@@ -1,0 +1,136 @@
+{
+  "owner": "escabiose",
+  "title": {
+    "pt": "Escabiose",
+    "es": "Escabiosis"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; particularidades de crianças e gestação separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Escabiose",
+      "Escabiosis",
+      "sarna"
+    ],
+    "distinctScope": "Infestação por Sarcoptes scabiei; subtipos incluídos no mesmo owner."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infestação por Sarcoptes scabiei, transmitida principalmente por contato cutâneo próximo. A resposta inflamatória ao ácaro causa prurido; escabiose crostosa tem grande carga parasitária e manejo próprio.",
+      "es": "Infestación por Sarcoptes scabiei, transmitida principalmente por contacto cutáneo cercano. La respuesta inflamatoria al ácaro causa prurito; la escabiosis costrosa tiene gran carga parasitaria y manejo propio.",
+      "sources": [
+        "WHO_SC",
+        "NHS_SC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Prurido noturno, contatos com sintomas e lesões em mãos, punhos, pregas e genitais sugerem escabiose. Distribuição pode diferir em lactentes e idosos; examinar além das áreas de coceira.",
+      "es": "Prurito nocturno, contactos con síntomas y lesiones en manos, muñecas, pliegues y genitales sugieren escabiosis. La distribución puede diferir en lactantes y adultos mayores; examinar además de las áreas de picazón.",
+      "sources": [
+        "NHS_SC",
+        "WHO_SC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico combina clínica e epidemiologia; dermatoscopia ou identificação do ácaro pode confirmar quando disponível. Diferenciar eczema, pediculose e outras causas de prurido; falha pode refletir aplicação inadequada ou reinfecção.",
+      "es": "El diagnóstico combina clínica y epidemiología; dermatoscopía o identificación del ácaro puede confirmar cuando esté disponible. Diferenciar eccema, pediculosis y otras causas de prurito; el fracaso puede reflejar aplicación inadecuada o reinfección.",
+      "sources": [
+        "WHO_SC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar simultaneamente contatos domiciliares e outros contatos próximos indicados, mesmo sem sintomas. Orientar técnica completa e manejo de roupas e cama; não aplicar escabicida somente sobre cada lesão.",
+      "es": "Tratar simultáneamente contactos domiciliarios y otros contactos cercanos indicados, aunque no tengan síntomas. Indicar técnica completa y manejo de ropa y cama; no aplicar escabicida únicamente sobre cada lesión.",
+      "sources": [
+        "NHS_SC",
+        "WHO_SC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto com escabiose clássica: permetrina 5% no corpo do pescoço para baixo, conforme técnica e bula, retirando após 8–14 horas. Pode ser necessária segunda aplicação aproximadamente uma semana depois; crianças pequenas exigem orientação própria das áreas a tratar.",
+      "es": "Adulto con escabiosis clásica: permetrina 5% en el cuerpo desde el cuello hacia abajo, según técnica y ficha, retirando después de 8–14 horas. Puede ser necesaria una segunda aplicación aproximadamente una semana después; los niños pequeños requieren indicación específica de áreas a tratar.",
+      "sources": [
+        "CDC_SC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Prurido pode persistir por semanas após eliminação do ácaro. Reavaliar se surgirem novos sulcos ou lesões, houver infecção secundária ou persistência sugestiva de infestação, antes de repetir tratamento indefinidamente.",
+      "es": "El prurito puede persistir durante semanas después de eliminar el ácaro. Reevaluar si aparecen nuevos surcos o lesiones, hay infección secundaria o persistencia sugestiva de infestación, antes de repetir tratamiento indefinidamente.",
+      "sources": [
+        "NHS_SC",
+        "WHO_SC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Crostas extensas em imunossuprimido, surto institucional, febre ou infecção cutânea importante exigem avaliação especializada. Escabiose crostosa requer combinação terapêutica e controle de transmissão próprio.",
+      "es": "Costras extensas en inmunosuprimido, brote institucional, fiebre o infección cutánea importante requieren evaluación especializada. La escabiosis costrosa requiere combinación terapéutica y control específico de transmisión.",
+      "sources": [
+        "CDC_SC",
+        "WHO_SC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Permetrina tem aprovação FDA a partir de 2 meses. Segurança da ivermectina oral na gestação e em crianças abaixo de 15 kg não está estabelecida; não extrapolar tratamento sem avaliação específica.",
+      "es": "La permetrina tiene aprobación FDA desde los 2 meses. La seguridad de ivermectina oral durante el embarazo y en niños menores de 15 kg no está establecida; no extrapolar tratamiento sin evaluación específica.",
+      "sources": [
+        "CDC_SC"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "NHS_SC",
+      "title": "Scabies",
+      "url": "https://www.nhs.uk/conditions/scabies/",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_SC",
+      "title": "Clinical care of scabies",
+      "url": "https://www.cdc.gov/scabies/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2023,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "WHO_SC",
+      "title": "Scabies",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/scabies",
+      "authority": "OMS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,137 @@
+{
+  "owner": "rosacea",
+  "title": {
+    "pt": "Rosácea",
+    "es": "Rosácea"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Rosácea"
+    ],
+    "distinctScope": "Doença inflamatória facial persistente com fenótipos próprios; não acne vulgar ou dermatite periorificial."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença inflamatória crônica da face central; envolve reatividade vascular e inflamação. Flushing, eritema persistente e lesões papulopustulosas podem coexistir.",
+      "es": "Enfermedad inflamatoria crónica de la cara central; involucra reactividad vascular e inflamación. Rubor, eritema persistente y lesiones papulopustulosas pueden coexistir.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Buscar telangiectasias, pápulas e pústulas sem comedões; perguntar sobre ardor ocular, sensação de areia e gatilhos individuais, como calor e sol.",
+      "es": "Buscar telangiectasias, pápulas y pústulas sin comedones; preguntar por ardor ocular, sensación de arenilla y desencadenantes individuales, como calor y sol.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; diferenciar acne, dermatite seborreica, dermatite periorificial e lúpus quando o padrão for atípico. Sintomas oculares mudam a prioridade.",
+      "es": "Diagnóstico clínico; diferenciar acné, dermatitis seborreica, dermatitis periorificial y lupus cuando el patrón sea atípico. Los síntomas oculares cambian la prioridad.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Cuidados suaves, fotoproteção e redução de gatilhos. Tratar pápulas com opções tópicas; eritema isolado não deve motivar antibiótico sistêmico automaticamente.",
+      "es": "Cuidados suaves, fotoprotección y reducción de desencadenantes. Tratar las pápulas con opciones tópicas; el eritema aislado no justifica automáticamente antibióticos sistémicos.",
+      "sources": [
+        "PCDS",
+        "PATH"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Metronidazol creme ou gel a 0,75%: camada fina duas vezes por dia para rosácea inflamatória; reavaliar por volta de 2 meses. Duração pode variar conforme resposta.",
+      "es": "Metronidazol crema o gel al 0,75%: capa fina dos veces por día para rosácea inflamatoria; reevaluar alrededor de 2 meses. La duración puede variar según la respuesta.",
+      "sources": [
+        "NHS",
+        "PATH"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar tolerância, lesões e sintomas oculares. Falha tópica, doença extensa ou rinofima justificam dermatologia; não manter antibióticos sem reavaliação.",
+      "es": "Controlar tolerancia, lesiones y síntomas oculares. Fracaso tópico, enfermedad extensa o rinofima justifican dermatología; no mantener antibióticos sin reevaluación.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor ocular, fotofobia ou redução da visão exigem avaliação oftalmológica urgente por possível ceratite; não considerar apenas problema cosmético.",
+      "es": "Dolor ocular, fotofobia o disminución de la visión requieren evaluación oftalmológica urgente por posible queratitis; no considerarlo solamente cosmético.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Evitar corticoide facial como tratamento da rosácea. Tetraciclinas sistêmicas são contraindicadas na gestação; escolha farmacológica nessa população requer avaliação específica.",
+      "es": "Evitar corticoides faciales como tratamiento de la rosácea. Las tetraciclinas sistémicas están contraindicadas en el embarazo; la selección farmacológica requiere evaluación específica.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Rosacea",
+      "url": "https://www.pcds.org.uk/clinical-guidance/rosacea",
+      "authority": "PCDS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "How and when to take or use metronidazole",
+      "url": "https://www.nhs.uk/medicines/metronidazole/how-and-when-to-take-or-use-metronidazole/",
+      "authority": "NHS",
+      "year": "Ano de publicação/revisão não confirmado; consultado em 2026-10-03",
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": false,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "PATH",
+      "title": "Rosacea treatment pathway",
+      "url": "https://www.bucksformulary.nhs.uk/docs/Guideline_724FM.pdf",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,141 @@
+{
+  "owner": "alopecia_androgenetica",
+  "title": {
+    "pt": "Alopecia androgenética",
+    "es": "Alopecia androgenética"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; posologia do exemplo de produto restrita a homens de 18–65 anos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Alopecia androgenética",
+      "calvície de padrão",
+      "calvicie de patrón"
+    ],
+    "distinctScope": "Miniaturização capilar em padrão; distinta de alopecia areata e eflúvio telógeno."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Miniaturização progressiva dos folículos produz rarefação em padrão característico; muitos casos femininos não apresentam excesso de andrógenos.",
+      "es": "La miniaturización progresiva de folículos produce aclaramiento con patrón característico; muchos casos femeninos no presentan exceso de andrógenos.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Examinar recessão frontal ou vértex nos homens e alargamento da risca central nas mulheres; verificar inflamação, cicatrizes e queda difusa associada.",
+      "es": "Examinar retroceso frontal o vértex en varones y ensanchamiento de la raya central en mujeres; verificar inflamación, cicatrices y caída difusa asociada.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico e tricoscopia; diferenciar eflúvio telógeno, areata e alopecia cicatricial. Investigar hiperandrogenismo se houver hirsutismo ou irregularidade menstrual.",
+      "es": "Diagnóstico clínico y tricoscopia; diferenciar efluvio telógeno, areata y alopecia cicatricial. Investigar hiperandrogenismo ante hirsutismo o irregularidad menstrual.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Discutir expectativas, camuflagem e minoxidil tópico; tratamentos orais exigem seleção médica. Optar por não tratar também é possível.",
+      "es": "Discutir expectativas, camuflaje y minoxidil tópico; los tratamientos orales requieren selección médica. También es posible optar por no tratar.",
+      "sources": [
+        "PCDS",
+        "NHS"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Minoxidil tópico: exemplo de bula para homens de 18–65 anos, solução a 5%, aplicar 1 mL no total da área afetada, no couro cabeludo íntegro e seco, duas vezes por dia; máximo de 2 mL por dia. Outras apresentações e mulheres exigem indicação e esquema próprios.",
+      "es": "Minoxidil tópico: ejemplo de ficha técnica para hombres de 18–65 años, solución al 5%, aplicar 1 mL en el total del área afectada, en cuero cabelludo íntegro y seco, dos veces por día; máximo de 2 mL por día. Otras presentaciones y mujeres requieren indicación y pauta propias.",
+      "sources": [
+        "SMPC",
+        "NHS"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Resposta requer meses e manutenção; monitorar irritação, pelos indesejados e sintomas sistêmicos. Não aumentar quantidade por ausência de resposta imediata.",
+      "es": "La respuesta requiere meses y mantenimiento; controlar irritación, pelo indeseado y síntomas sistémicos. No aumentar cantidad por falta de respuesta inmediata.",
+      "sources": [
+        "NHS",
+        "PCDS"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor, inflamação ou perda de orifícios foliculares requerem dermatologia: sugerem outra alopecia, eventualmente com perda irreversível.",
+      "es": "Dolor, inflamación o pérdida de orificios foliculares requieren dermatología: sugieren otra alopecia, eventualmente con pérdida irreversible.",
+      "sources": [
+        "PCDS"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não usar minoxidil na gestação ou lactação sem avaliação específica. A apresentação de referência masculina contraindica uso em mulheres, hipertensão tratada ou não e couro cabeludo anormal; conferir bula local. Minoxidil oral não é intercambiável com tópico.",
+      "es": "No usar minoxidil durante embarazo o lactancia sin evaluación específica. La presentación masculina de referencia contraindica uso en mujeres, hipertensión tratada o no y cuero cabelludo anormal; consultar ficha técnica local. Minoxidil oral no es intercambiable con tópico.",
+      "sources": [
+        "SMPC",
+        "NHS"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Male and female pattern alopecia",
+      "url": "https://pcds.org.uk/clinical-guidance/alopecia-male-and-female-pattern-alopecia",
+      "authority": "PCDS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "NHS",
+      "title": "Minoxidil",
+      "url": "https://www.gloshospitals.nhs.uk/your-visit/patient-information-leaflets/minoxidil/",
+      "authority": "NHS Gloucestershire",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED"
+    },
+    {
+      "id": "SMPC",
+      "title": "Regaine for Men 5% scalp solution — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/5765/smpc",
+      "authority": "McNeil Products / emc",
+      "year": 2025,
+      "status": "APPROVED_PRODUCT_LABEL_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "publicationDateConfirmed": true
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

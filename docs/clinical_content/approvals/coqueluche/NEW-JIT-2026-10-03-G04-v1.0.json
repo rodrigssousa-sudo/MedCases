@@ -1,0 +1,154 @@
+{
+  "owner": "coqueluche",
+  "title": {
+    "pt": "Coqueluche",
+    "es": "Tos ferina"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Todas as idades; dose numérica adulta separada",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Coqueluche",
+      "Tosferina",
+      "tos convulsa",
+      "pertussis"
+    ],
+    "distinctScope": "Infecção por Bordetella com tosse paroxística e controle de transmissão; não bronquiolite ou resfriado."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção respiratória por Bordetella pertussis, transmissível por secreções respiratórias. Vacinação reduz doença grave, mas não exclui infecção; lactentes têm maior risco de complicações.",
+      "es": "Infección respiratoria por Bordetella pertussis, transmisible por secreciones respiratorias. La vacunación reduce enfermedad grave, pero no descarta infección; los lactantes tienen mayor riesgo de complicaciones.",
+      "sources": [
+        "CDC_PD"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Tosse paroxística, vômitos após tosse e guincho inspiratório são sugestivos. Lactentes podem apresentar apneia com pouca tosse; adolescentes e adultos vacinados podem não ter guincho típico.",
+      "es": "Tos paroxística, vómitos después de toser y estridor inspiratorio son sugestivos. Los lactantes pueden presentar apnea con poca tos; adolescentes y adultos vacunados pueden no tener estridor típico.",
+      "sources": [
+        "CDC_PD"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Solicitar confirmação microbiológica conforme momento da doença e disponibilidade, sem atrasar tratamento quando há forte suspeita e risco. Diferenciar outras infecções respiratórias e avaliar contatos vulneráveis.",
+      "es": "Solicitar confirmación microbiológica según momento de enfermedad y disponibilidad, sin retrasar tratamiento cuando existe fuerte sospecha y riesgo. Diferenciar otras infecciones respiratorias y evaluar contactos vulnerables.",
+      "sources": [
+        "CDC_PE"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Macrolídeo precoce reduz transmissão e pode beneficiar sintomas; tosse tardia pode persistir apesar da erradicação bacteriana. Organizar precauções, notificação local e avaliação de profilaxia para contatos indicados.",
+      "es": "Un macrólido temprano reduce transmisión y puede beneficiar síntomas; la tos tardía puede persistir pese a erradicar bacterias. Organizar precauciones, notificación local y evaluación de profilaxis para contactos indicados.",
+      "sources": [
+        "CDC_PE",
+        "CDC_PM"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulto: azitromicina 500 mg por via oral uma vez no dia 1, seguida de 250 mg por via oral uma vez ao dia nos dias 2–5; curso total de 5 dias. Rever risco de prolongamento do QT, interações e hepatopatia.",
+      "es": "Adulto: azitromicina 500 mg por vía oral una vez el día 1, seguida de 250 mg por vía oral una vez al día los días 2–5; curso total de 5 días. Revisar riesgo de prolongación del QT, interacciones y hepatopatía.",
+      "sources": [
+        "CDC_PM",
+        "CDC_PE"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar respiração, alimentação e hidratação, principalmente em lactentes. Pelo CDC, transmissão persiste até completar 5 dias de antibiótico eficaz ou 21 dias desde início da tosse sem tratamento; seguir precauções locais.",
+      "es": "Controlar respiración, alimentación e hidratación, especialmente en lactantes. Según CDC, la transmisión persiste hasta completar 5 días de antibiótico eficaz o 21 días desde inicio de tos sin tratamiento; seguir precauciones locales.",
+      "sources": [
+        "CDC_PI",
+        "HSE_PE"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Apneia, cianose, hipoxemia, exaustão, incapacidade de alimentar ou sinais de pneumonia exigem avaliação hospitalar. Não aguardar resultado de exame em lactente com comprometimento respiratório.",
+      "es": "Apnea, cianosis, hipoxemia, agotamiento, incapacidad para alimentarse o signos de neumonía requieren evaluación hospitalaria. No esperar resultado de estudio en lactante con afectación respiratoria.",
+      "sources": [
+        "CDC_PD",
+        "HSE_PE"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Neonatos requerem esquema por peso e vigilância de efeitos adversos; azitromicina continua preferida, apesar do risco de estenose hipertrófica do piloro. Gestação exige escolha apropriada e prevenção de exposição do recém-nascido.",
+      "es": "Los neonatos requieren esquema por peso y vigilancia de efectos adversos; azitromicina continúa siendo preferida, pese al riesgo de estenosis hipertrófica del píloro. El embarazo requiere elección apropiada y prevención de exposición del recién nacido.",
+      "sources": [
+        "CDC_PE"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC_PE",
+      "title": "Treatment of pertussis",
+      "url": "https://www.cdc.gov/pertussis/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_PD",
+      "title": "Clinical features of pertussis",
+      "url": "https://www.cdc.gov/pertussis/hcp/clinical-signs/index.html",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_PM",
+      "title": "Recommended antimicrobial agents for pertussis: doses",
+      "url": "https://www.cdc.gov/mmwr/preview/mmwrhtml/rr5414a1.htm",
+      "authority": "CDC",
+      "year": 2005,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_PI",
+      "title": "Pertussis: infection control",
+      "url": "https://www.cdc.gov/infection-control/hcp/healthcare-personnel-epidemiology-control/pertussis.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "HSE_PE",
+      "title": "Whooping cough: treatment of babies and children",
+      "url": "https://www2.hse.ie/conditions/whooping-cough-babies-and-children/treatment/",
+      "authority": "HSE",
+      "year": "edição vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

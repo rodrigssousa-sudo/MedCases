@@ -1,0 +1,170 @@
+{
+  "owner": "hepatite_a",
+  "title": {
+    "pt": "Hepatite A",
+    "es": "Hepatitis A"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; prevenção pediátrica e gestação explicitadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Hepatite A",
+      "Hepatitis A",
+      "hepatitis A virus infection",
+      "infecção pelo vírus da hepatite A"
+    ],
+    "distinctScope": "Infecção pelo vírus da hepatite A, de transmissão fecal-oral; etiologia independente das hepatites B, C e E já existentes. Não usa tuberculose, pois já há guia CMS equivalente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Hepatite A é inflamação hepática aguda causada pelo HAV, transmitido principalmente pela via fecal-oral, alimentos, água ou contato próximo. Não evolui para infecção crônica; surtos se associam à higiene inadequada e baixa cobertura vacinal. Lesão inflamatória hepática pode, raramente, causar insuficiência aguda.",
+      "es": "La hepatitis A es inflamación hepática aguda causada por el HAV, transmitido principalmente por vía fecal-oral, alimentos, agua o contacto cercano. No evoluciona a infección crónica; los brotes se relacionan con higiene inadecuada y baja cobertura vacunal. La lesión inflamatoria hepática puede, raramente, causar insuficiencia aguda.",
+      "sources": [
+        "WHO_HA"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Suspeitar diante de mal-estar, anorexia, náuseas, desconforto abdominal, urina escura e icterícia, com possível febre ou diarreia. Avaliar exposição e vacinação, hidratação, estado mental, sangramento e doença hepática prévia. Crianças podem ter poucos sintomas; idosos têm maior risco de gravidade.",
+      "es": "Sospechar ante malestar, anorexia, náuseas, molestias abdominales, orina oscura e ictericia, con posible fiebre o diarrea. Evaluar exposición y vacunación, hidratación, estado mental, sangrado y enfermedad hepática previa. Los niños pueden tener pocos síntomas; las personas mayores tienen mayor riesgo de gravedad.",
+      "sources": [
+        "WHO_HA",
+        "AASLD_ALF"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar suspeita clínica com IgM anti-HAV; considerar contexto e possibilidade de falso positivo. IgG isolada ou anti-HAV total não confirmam doença aguda. Avaliar transaminases e bilirrubina; medir coagulação se suspeita de gravidade. Diferenciais incluem outras hepatites virais, lesão medicamentosa e obstrução biliar.",
+      "es": "Confirmar la sospecha clínica con IgM anti-HAV; considerar el contexto y la posibilidad de un falso positivo. IgG aislada o anti-HAV total no confirman enfermedad aguda. Evaluar transaminasas y bilirrubina; medir coagulación si se sospecha gravedad. Los diferenciales incluyen otras hepatitis virales, lesión medicamentosa y obstrucción biliar.",
+      "sources": [
+        "CDC_HAD",
+        "AASLD_ALF"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratamento da doença é de suporte: hidratação, alimentação tolerada e repouso conforme sintomas. Não há antiviral específico. Evitar álcool e medicamentos desnecessários potencialmente hepatotóxicos. Casos estáveis com ingestão oral adequada podem receber acompanhamento ambulatorial; doença grave exige hospital. Profilaxia dos contatos é uma intervenção distinta do tratamento do paciente sintomático.",
+      "es": "El tratamiento de la enfermedad es de soporte: hidratación, alimentación tolerada y reposo según los síntomas. No existe antiviral específico. Evitar alcohol y medicamentos innecesarios potencialmente hepatotóxicos. Los casos estables con ingesta oral adecuada pueden recibir seguimiento ambulatorio; la enfermedad grave requiere hospital. La profilaxis de los contactos es una intervención distinta del tratamiento del paciente sintomático.",
+      "sources": [
+        "WHO_HA",
+        "CDC_HAC",
+        "FDA_HAG"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Profilaxia pós-exposição CDC/ACIP: oferecer vacina monovalente contra hepatite A, na apresentação correspondente à idade, a pessoas não vacinadas a partir de 12 meses, o mais cedo possível dentro de 2 semanas da exposição. Quando indicada, imunoglobulina humana GAMASTAN 0,1 mL por kg por via intramuscular em dose única, na mesma janela; não administrar por via intravenosa. Não é tratamento de hepatite A sintomática.",
+      "es": "Profilaxis posexposición CDC/ACIP: ofrecer vacuna monovalente contra hepatitis A, en la presentación correspondiente a la edad, a personas no vacunadas desde los 12 meses, lo antes posible dentro de 2 semanas de la exposición. Cuando esté indicada, inmunoglobulina humana GAMASTAN 0,1 mL por kg por vía intramuscular en dosis única, en la misma ventana; no administrar por vía intravenosa. No es tratamiento de la hepatitis A sintomática.",
+      "sources": [
+        "CDC_HAC",
+        "CDC_HAP",
+        "FDA_HAG"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar ingestão, hidratação, evolução dos sintomas e exames conforme gravidade; recaída pode ocorrer sem significar infecção crônica. Confirmar acesso a seguimento e instruções de retorno antes da alta. Orientar higiene das mãos, água e alimentos seguros e vacinação dos suscetíveis. Notificar casos e avaliar contatos conforme autoridade sanitária local.",
+      "es": "Reevaluar ingesta, hidratación, evolución de los síntomas y pruebas según la gravedad; puede haber recaída sin que signifique infección crónica. Confirmar acceso al seguimiento e instrucciones de regreso antes del alta. Orientar higiene de manos, agua y alimentos seguros y vacunación de susceptibles. Notificar los casos y evaluar contactos según la autoridad sanitaria local.",
+      "sources": [
+        "WHO_HA",
+        "CDC_HAD",
+        "CDC_HAC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Alteração do estado mental e coagulopatia sugerem insuficiência hepática aguda: encaminhar imediatamente para hospital e avaliação especializada, com transferência precoce a centro com transplante quando apropriado. Sangramento, instabilidade ou incapacidade de manter hidratação também exigem avaliação urgente. Monitorizar estado mental e coagulação de forma seriada nos casos graves.",
+      "es": "La alteración del estado mental y la coagulopatía sugieren insuficiencia hepática aguda: derivar inmediatamente al hospital y a evaluación especializada, con traslado temprano a un centro con trasplante cuando corresponda. Sangrado, inestabilidad o incapacidad para mantener hidratación también requieren evaluación urgente. Monitorizar de forma seriada el estado mental y la coagulación en los casos graves.",
+      "sources": [
+        "AASLD_ALF",
+        "CDC_HAC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Pós-exposição: menores de 12 meses ou contraindicação à vacina recebem imunoglobulina; pessoas imunocomprometidas ou com doença hepática crônica elegíveis recebem vacina e imunoglobulina em locais distintos. Acima de 40 anos, considerar acrescentar imunoglobulina conforme risco. Gestação não impede avaliação de profilaxia indicada. Rever alergia grave a imunoglobulina, risco de trombose e interferência em vacinas vivas antes de GAMASTAN.",
+      "es": "Posexposición: menores de 12 meses o contraindicación a la vacuna reciben inmunoglobulina; las personas inmunocomprometidas o con enfermedad hepática crónica elegibles reciben vacuna e inmunoglobulina en lugares distintos. Por encima de los 40 años, considerar añadir inmunoglobulina según el riesgo. El embarazo no impide evaluar la profilaxis indicada. Revisar alergia grave a inmunoglobulina, riesgo de trombosis e interferencia con vacunas vivas antes de GAMASTAN.",
+      "sources": [
+        "CDC_HAP",
+        "CDC_HAC",
+        "FDA_HAG"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_HA",
+      "title": "Hepatitis A — fact sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-a",
+      "authority": "WHO",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_HAC",
+      "title": "Clinical Care of Hepatitis A",
+      "url": "https://www.cdc.gov/hepatitis-a/hcp/clinical-care/",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_HAD",
+      "title": "Clinical Screening and Diagnosis for Hepatitis A",
+      "url": "https://www.cdc.gov/hepatitis-a/hcp/diagnosis-testing/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "CDC_HAP",
+      "title": "Prevention of Hepatitis A Virus Infection — ACIP recommendations",
+      "url": "https://www.cdc.gov/mmwr/volumes/69/rr/rr6905a1.htm",
+      "authority": "CDC / ACIP",
+      "year": 2020,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "FDA_HAG",
+      "title": "GAMASTAN — prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=561f48de-2697-4a35-8233-bd1cdb73438f",
+      "authority": "FDA / DailyMed",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "AASLD_ALF",
+      "title": "Defining and Managing Acute Liver Failure",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/defining-and-managing-acute-liver-failure",
+      "authority": "AASLD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

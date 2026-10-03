@@ -1,0 +1,125 @@
+{
+  "owner": "mononucleose_infecciosa",
+  "title": {
+    "pt": "Mononucleose infecciosa",
+    "es": "Mononucleosis infecciosa"
+  },
+  "version": "NEW-JIT-2026-10-03-G04-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e adolescentes; particularidades pediátricas e gestacionais separadas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Mononucleose infecciosa",
+      "Mononucleosis infecciosa"
+    ],
+    "distinctScope": "Síndrome de mononucleose, principalmente EBV; não faringite estreptocócica ou resfriado viral."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "CLINICAL_DRAFT"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Síndrome infecciosa geralmente causada por Epstein–Barr, transmitida principalmente por saliva, comum em adolescentes e adultos jovens. A fadiga pode persistir após resolução da fase aguda.",
+      "es": "Síndrome infeccioso generalmente causado por Epstein–Barr, transmitido principalmente por saliva, frecuente en adolescentes y adultos jóvenes. La fatiga puede persistir tras resolver la fase aguda.",
+      "sources": [
+        "CDC_M"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Febre, faringite, adenopatia e fadiga sugerem o quadro. Avaliar ingestão, respiração e dor abdominal; hepatomegalia ou esplenomegalia podem ocorrer e modificar orientações de atividade.",
+      "es": "Fiebre, faringitis, adenopatías y fatiga sugieren el cuadro. Evaluar ingesta, respiración y dolor abdominal; hepatomegalia o esplenomegalia pueden aparecer y modificar las indicaciones de actividad.",
+      "sources": [
+        "CDC_M"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "O diagnóstico pode ser clínico; testes específicos são úteis em apresentação atípica. Hemograma e função hepática podem mostrar alterações. Diferenciar faringite bacteriana, citomegalovírus e infecção aguda por HIV conforme exposição.",
+      "es": "El diagnóstico puede ser clínico; las pruebas específicas son útiles en presentación atípica. El hemograma y la función hepática pueden mostrar alteraciones. Diferenciar faringitis bacteriana, citomegalovirus e infección aguda por VIH según exposición.",
+      "sources": [
+        "CDC_M",
+        "NHS_M"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Hidratação, repouso relativo e alívio sintomático constituem a abordagem usual. Antibiótico não trata a infecção viral; evitar amoxicilina ou ampicilina sem indicação independente confirmada.",
+      "es": "Hidratación, reposo relativo y alivio sintomático constituyen el manejo habitual. Un antibiótico no trata la infección viral; evitar amoxicilina o ampicilina sin indicación independiente confirmada.",
+      "sources": [
+        "CDC_M",
+        "NHS_M"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há esquema antimicrobiano de rotina. Analgésico ou antitérmico deve ter dose definida pela idade, peso, função hepática e produto; não fornecer dose adulta como pediátrica.",
+      "es": "No existe esquema antimicrobiano de rutina. El analgésico o antitérmico debe dosificarse según edad, peso, función hepática y producto; no indicar dosis adulta como pediátrica.",
+      "sources": [
+        "CDC_M",
+        "NHS_M"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Geralmente há melhora em 2–4 semanas, com fadiga possivelmente mais prolongada. Evitar esportes de contato e esforço intenso até recuperação e avaliação clínica; melhora da fadiga isolada não confirma normalização do baço.",
+      "es": "Generalmente mejora en 2–4 semanas, con fatiga posiblemente más prolongada. Evitar deportes de contacto y esfuerzo intenso hasta recuperación y evaluación clínica; mejorar de la fatiga por sí sola no confirma normalización del bazo.",
+      "sources": [
+        "CDC_M",
+        "NHS_M"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Incapacidade de engolir saliva, obstrução respiratória ou dor abdominal intensa exigem atendimento urgente, inclusive para excluir ruptura esplênica. Sangramento ou sintomas neurológicos também requerem investigação.",
+      "es": "Incapacidad para tragar saliva, obstrucción respiratoria o dolor abdominal intenso requieren atención urgente, incluso para descartar rotura esplénica. Sangrado o síntomas neurológicos también requieren investigación.",
+      "sources": [
+        "NHS_M"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Imunossuprimidos e doença de órgãos exigem avaliação individual. Em crianças, respeitar contraindicações etárias dos medicamentos e não usar ácido acetilsalicílico como antitérmico.",
+      "es": "Los inmunosuprimidos y la enfermedad de órganos requieren evaluación individual. En niños, respetar contraindicaciones etarias de los medicamentos y no utilizar ácido acetilsalicílico como antitérmico.",
+      "sources": [
+        "NHS_M"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC_M",
+      "title": "About infectious mononucleosis",
+      "url": "https://www.cdc.gov/epstein-barr/about/mononucleosis.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "NHS_M",
+      "title": "Glandular fever",
+      "url": "https://www.nhs.uk/conditions/glandular-fever/",
+      "authority": "NHS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}
