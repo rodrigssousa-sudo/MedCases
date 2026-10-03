@@ -1,0 +1,194 @@
+{
+  "owner": "zumbido_tinnitus",
+  "title": {
+    "pt": "Zumbido (tinnitus)",
+    "es": "Tinnitus (acúfenos)"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Zumbido é percepção de som sem fonte externa correspondente. É sintoma/condição auditiva, não diagnóstico universal de doença de Ménière. Distinguir pulsátil de não pulsátil, unilateral de bilateral e impacto sobre vida diária.",
+      "es": "El tinnitus es percepción de sonido sin una fuente externa correspondiente. Es síntoma/condición auditiva, no diagnóstico universal de enfermedad de Ménière. Distinguir pulsátil de no pulsátil, unilateral de bilateral e impacto sobre la vida diaria.",
+      "sources": [
+        "Z3"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Perda auditiva e exposição a ruído são associações comuns; cerume, doença de ouvido, medicamentos e causas vasculares podem contribuir. Processamento auditivo central e redes de atenção/emoção podem participar, sem mecanismo único comprovado para todos.",
+      "es": "Pérdida auditiva y exposición a ruido son asociaciones frecuentes; cerumen, enfermedad del oído, medicamentos y causas vasculares pueden contribuir. El procesamiento auditivo central y redes de atención/emoción pueden participar, sin mecanismo único demostrado para todos.",
+      "sources": [
+        "Z3"
+      ]
+    },
+    {
+      "id": "history",
+      "pt": "Registrar início, evolução, lateralidade, sincronia com pulso, perda auditiva, vertigem, otalgia, exposição a ruído e medicamentos. Avaliar sono, ansiedade/depressão, impacto funcional e risco de suicídio; não reduzir sofrimento a sintoma imaginário.",
+      "es": "Registrar inicio, evolución, lateralidad, sincronía con pulso, pérdida auditiva, vértigo, otalgia, exposición a ruido y medicamentos. Evaluar sueño, ansiedad/depresión, impacto funcional y riesgo de suicidio; no reducir el sufrimiento a un síntoma imaginario.",
+      "sources": [
+        "Z1",
+        "Z2"
+      ]
+    },
+    {
+      "id": "emergency",
+      "pt": "Risco suicida alto, novo déficit neurológico, suspeita de AVC ou sintomas vestibulares agudos incontroláveis exigem atendimento imediato. Zumbido com perda auditiva súbita desenvolvida em até 3 dias e ocorrida nos últimos 30 dias requer avaliação especializada em até 24 horas, não consulta rotineira tardia.",
+      "es": "Riesgo suicida alto, nuevo déficit neurológico, sospecha de ACV o síntomas vestibulares agudos incontrolables requieren atención inmediata. Tinnitus con pérdida auditiva súbita desarrollada en hasta 3 días y ocurrida en los últimos 30 días requiere evaluación especializada en hasta 24 horas, no consulta rutinaria tardía.",
+      "sources": [
+        "Z1"
+      ]
+    },
+    {
+      "id": "urgent_referral",
+      "pt": "Zumbido com perda auditiva súbita ocorrida há mais de 30 dias, perda auditiva rapidamente progressiva ao longo de 4–90 dias, ou sofrimento que impede atividades habituais apesar de suporte inicial requer avaliação em até 2 semanas conforme o fluxo local. Qualquer sinal de emergência tem prioridade sobre esse prazo.",
+      "es": "Tinnitus con pérdida auditiva súbita ocurrida hace más de 30 días, pérdida auditiva rápidamente progresiva a lo largo de 4–90 días, o sufrimiento que impide actividades habituales pese al apoyo inicial requiere evaluación en hasta 2 semanas según el circuito local. Cualquier signo de emergencia tiene prioridad sobre ese plazo.",
+      "sources": [
+        "Z1"
+      ]
+    },
+    {
+      "id": "exam",
+      "pt": "Realizar otoscopia, avaliação auditiva e exame dirigido neurológico/cabeça/pescoço conforme sintomas. Buscar causa tratável, como cerume ou doença de ouvido; não pressupor que achado banal explique padrão pulsátil ou déficit neurológico.",
+      "es": "Realizar otoscopia, evaluación auditiva y examen dirigido neurológico/cabeza/cuello según síntomas. Buscar causa tratable, como cerumen o enfermedad del oído; no asumir que un hallazgo banal explica patrón pulsátil o déficit neurológico.",
+      "sources": [
+        "Z1",
+        "Z2",
+        "Z3"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Oferecer avaliação audiológica; considerar timpanometria quando suspeita de componente condutivo. Exames laboratoriais não são pacote universal: orientar pela hipótese clínica. Investigar perda auditiva e diferenciar doença de ouvido, exposição/ototoxicidade, causa vascular e componente somático quando houver indícios.",
+      "es": "Ofrecer evaluación audiológica; considerar timpanometría si se sospecha componente conductivo. Los análisis no son un paquete universal: orientarlos por la hipótesis clínica. Investigar pérdida auditiva y diferenciar enfermedad del oído, exposición/ototoxicidad, causa vascular y componente somático cuando haya indicios.",
+      "sources": [
+        "Z1",
+        "Z2",
+        "Z3"
+      ]
+    },
+    {
+      "id": "imaging",
+      "pt": "Zumbido pulsátil requer investigação por imagem dirigida à causa. No não pulsátil unilateral/assimétrico, considerar RM dos meatos acústicos internos; sinais associados podem tornar a indicação mais forte. Não realizar imagem de rotina no não pulsátil simétrico sem achados neurológicos, audiológicos, otológicos ou de cabeça/pescoço associados.",
+      "es": "El tinnitus pulsátil requiere estudio por imágenes dirigido a la causa. En el no pulsátil unilateral/asimétrico, considerar RM de conductos auditivos internos; signos asociados pueden reforzar la indicación. No realizar imágenes rutinarias en el no pulsátil simétrico sin hallazgos neurológicos, audiológicos, otológicos ni de cabeza/cuello asociados.",
+      "sources": [
+        "Z1"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Tratar causa identificada, explicar o quadro e combinar metas de função/sono e retorno. Rever fármaco suspeito com o prescritor, sem interromper tratamento essencial indiscriminadamente. Proteger de ruído perigoso sem prometer cura universal.",
+      "es": "Tratar la causa identificada, explicar el cuadro y acordar metas de función/sueño y seguimiento. Revisar un fármaco sospechoso con quien lo prescribe, sin suspender indiscriminadamente un tratamiento esencial. Proteger del ruido peligroso sin prometer curación universal.",
+      "sources": [
+        "Z2",
+        "Z3"
+      ]
+    },
+    {
+      "id": "hearing",
+      "pt": "Aparelho auditivo pode beneficiar zumbido com perda auditiva, especialmente quando interfere na comunicação. Não indicar aparelho como regra para pessoa sem perda auditiva apenas porque tem zumbido. Seleção é audiológica e individual.",
+      "es": "Un audífono puede beneficiar tinnitus con pérdida auditiva, especialmente si afecta la comunicación. No indicar un audífono como regla a una persona sin pérdida auditiva solo por tinnitus. La selección es audiológica e individual.",
+      "sources": [
+        "Z1",
+        "Z2"
+      ]
+    },
+    {
+      "id": "psychological",
+      "pt": "Terapia cognitivo-comportamental adaptada ao zumbido é opção para sofrimento persistente, com profissional treinado. Pode melhorar impacto e adaptação sem necessariamente abolir o som. Tratar comorbidade psiquiátrica por indicação própria.",
+      "es": "La terapia cognitivo-conductual adaptada al tinnitus es opción para sufrimiento persistente, con profesional capacitado. Puede mejorar impacto y adaptación sin necesariamente eliminar el sonido. Tratar comorbilidad psiquiátrica por su propia indicación.",
+      "sources": [
+        "Z1",
+        "Z2"
+      ]
+    },
+    {
+      "id": "sound",
+      "pt": "Terapia sonora pode ser discutida como opção individual: VA/DoD faz recomendação fraca favorável, enquanto NICE não formula recomendação de rotina por insuficiência de evidência. Não apresentar som terapêutico, neuromodulação ou dispositivos comerciais como cura estabelecida.",
+      "es": "La terapia sonora puede discutirse como opción individual: VA/DoD hace una recomendación débil favorable, mientras NICE no formula recomendación rutinaria por evidencia insuficiente. No presentar sonido terapéutico, neuromodulación ni dispositivos comerciales como curación establecida.",
+      "sources": [
+        "Z2",
+        "Z4"
+      ]
+    },
+    {
+      "id": "medications",
+      "pt": "Não há fármaco específico aprovado que trate universalmente zumbido primário. Não prescrever betahistina para zumbido; suplementos como ginkgo e anticonvulsivantes/antidepressivos não são tratamento rotineiro do zumbido isolado. Outra indicação, como depressão ou doença de Ménière, exige diagnóstico e plano próprios. Nenhuma dose farmacológica é inventada neste guia.",
+      "es": "No existe un fármaco específico aprobado que trate universalmente tinnitus primario. No prescribir betahistina para tinnitus; suplementos como ginkgo y anticonvulsivantes/antidepresivos no son tratamiento rutinario del tinnitus aislado. Otra indicación, como depresión o enfermedad de Ménière, exige diagnóstico y plan propios. No se inventa ninguna dosis farmacológica en esta guía.",
+      "sources": [
+        "Z1",
+        "Z2",
+        "Z3"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "VA/DoD fundamenta manejo de adultos, não esquema pediátrico. Em crianças, avaliação auditiva e suporte devem ser adequados à idade e família. Gestação e doença renal/hepática exigem revisão individual de outras medicações; não há esquema de dose do zumbido a extrapolar.",
+      "es": "VA/DoD fundamenta manejo de adultos, no un esquema pediátrico. En niños, evaluación auditiva y apoyo deben adaptarse a edad y familia. Embarazo y enfermedad renal/hepática requieren revisión individual de otras medicaciones; no existe un esquema de dosis de tinnitus que extrapolar.",
+      "sources": [
+        "Z1",
+        "Z2"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Sem urgência, acompanhar ambulatorialmente com audiologia/ORL conforme padrão. Persistência pulsátil, unilateralidade, assimetria auditiva ou sofrimento importante indicam encaminhamento dirigido. Monitorar função, sono e impacto; retornar imediatamente por perda auditiva súbita, déficit neurológico ou risco suicida.",
+      "es": "Sin urgencia, seguir ambulatoriamente con audiología/ORL según patrón. Persistencia pulsátil, unilateralidad, asimetría auditiva o sufrimiento importante indican derivación dirigida. Controlar función, sueño e impacto; acudir inmediatamente por pérdida auditiva súbita, déficit neurológico o riesgo suicida.",
+      "sources": [
+        "Z1",
+        "Z2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "Z1",
+      "title": "Tinnitus: assessment and management — NG155",
+      "authority": "NICE",
+      "year": 2020,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_PORTAL",
+      "url": "https://www.nice.org.uk/guidance/ng155/chapter/Recommendations",
+      "scope": "Avaliação, encaminhamento e imagem; distinguir critérios de perda auditiva súbita. Inclui avaliação de crianças com adaptações.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "Z2",
+      "title": "VA/DoD Clinical Practice Guideline for Tinnitus — Provider Summary",
+      "authority": "VA / DoD",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/tinnitus/VADOD-CPG-Tinnitus-Provider-Summary-2024_Final_508.pdf",
+      "scope": "Adultos ≥18 anos com zumbido incômodo; versão junho 2024, evidência até abril 2023. Recomendações fracas não são obrigações universais.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "Z3",
+      "title": "Tinnitus",
+      "authority": "NIDCD / NIH",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_HEALTH_INFORMATION",
+      "url": "https://www.nidcd.nih.gov/health/tinnitus",
+      "scope": "Conceito, possíveis mecanismos, causas e ausência de fármaco específico aprovado.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "Z4",
+      "title": "Tinnitus — rationale and impact",
+      "authority": "NICE",
+      "year": 2020,
+      "status": "AUTHORITATIVE_GUIDELINE_RATIONALE",
+      "url": "https://www.nice.org.uk/guidance/ng155/chapter/Rationale-and-impact",
+      "scope": "Limitações de evidência de terapia sonora e justificativas das recomendações.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

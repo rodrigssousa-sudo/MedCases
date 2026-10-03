@@ -17,8 +17,8 @@ class _FileBundle extends CachingAssetBundle {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   test('Catalog adds exactly48 and excludes both unresolved HOLD owners', () {
-    expect(protocolsDatabase.length, 318);
-    expect(protocolsDatabase.map((p) => p.id).toSet().length, 318);
+    expect(protocolsDatabase.length, 330);
+    expect(protocolsDatabase.map((p) => p.id).toSet().length, 330);
     for (final id in ['epididimite_orquite', 'abrasao_corneana']) {
       expect(protocolsDatabase.any((p) => p.id == id), false);
     }
@@ -33,7 +33,7 @@ void main() {
             normalize: (s) => s.toLowerCase()),
         isNull);
   });
-  for (final id in newPathologyApprovedHashes.keys) {
+  for (final id in newPathologyApprovedHashes.keys.where((id) => !newPathologyG02Versions.containsKey(id))) {
     final p = jsonDecode(
         File('docs/clinical_content/approvals/$id/NEW-JIT-2026-10-02-v1.0.json')
             .readAsStringSync()) as Map<String, dynamic>;

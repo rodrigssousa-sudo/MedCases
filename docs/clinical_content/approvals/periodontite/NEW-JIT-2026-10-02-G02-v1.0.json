@@ -1,0 +1,209 @@
+{
+  "owner": "periodontite",
+  "title": {
+    "pt": "Periodontite",
+    "es": "Periodontitis"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Periodontite é doença inflamatória associada a biofilme disbiótico que destrói inserção periodontal e osso alveolar. Pode provocar mobilidade e perda dentária. Diferencia-se de gengivite pela perda de suporte atribuível à doença; melhora do sangramento não apaga histórico de periodontite.",
+      "es": "La periodontitis es una enfermedad inflamatoria asociada a biofilm disbiótico que destruye inserción periodontal y hueso alveolar. Puede producir movilidad y pérdida dentaria. Se diferencia de gingivitis por pérdida de soporte atribuible a la enfermedad; mejorar el sangrado no borra el antecedente de periodontitis.",
+      "sources": [
+        "D6",
+        "D9"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "A interação entre microbiota e resposta do hospedeiro determina destruição, influenciada especialmente por tabaco e diabetes. A doença pode avançar com pouca dor. Tratamento visa controlar biofilme, inflamação e risco de progressão; não consiste em um curso isolado de antibiótico.",
+      "es": "La interacción entre microbiota y respuesta del huésped determina destrucción, influida especialmente por tabaco y diabetes. La enfermedad puede progresar con poco dolor. El tratamiento busca controlar biofilm, inflamación y riesgo de progresión; no consiste en un curso aislado de antibiótico.",
+      "sources": [
+        "D6",
+        "D9"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Pesquisar sangramento, halitose, recessão, mobilidade, dor mastigatória, pus e perda dentária. Exame periodontal completo avalia sondagem, inserção, furcas e radiografias selecionadas para osso. Distinguir recessão traumática e lesão endodôntica de perda causada por periodontite.",
+      "es": "Buscar sangrado, halitosis, recesión, movilidad, dolor masticatorio, pus y pérdida dentaria. El examen periodontal completo evalúa sondaje, inserción, furcas y radiografías seleccionadas para hueso. Distinguir recesión traumática y lesión endodóntica de pérdida causada por periodontitis.",
+      "sources": [
+        "D6",
+        "D9"
+      ]
+    },
+    {
+      "id": "classification",
+      "pt": "A classificação atual usa estágio I–IV para gravidade/complexidade e grau A–C para progressão/risco. O estágio não é sinônimo do passo de tratamento. Estágio IV, com problemas funcionais importantes, necessita planejamento periodontal e reabilitador especializado; não aplicar um único procedimento a todos.",
+      "es": "La clasificación actual usa estadio I–IV para gravedad/complejidad y grado A–C para progresión/riesgo. El estadio no es sinónimo del paso terapéutico. El estadio IV, con problemas funcionales importantes, necesita planificación periodontal y rehabilitadora especializada; no aplicar un único procedimiento a todos.",
+      "sources": [
+        "D9",
+        "D12"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Abscesso, dor ou mobilidade aguda, febre e disseminação requerem atendimento dental rápido. Necrose dolorosa com repercussão sistêmica exige avaliar doença necrosante. Trismo, disfagia, ameaça à via aérea ou toxicidade sistêmica exige emergência e controle do foco; não aguardar manutenção periodontal eletiva.",
+      "es": "Absceso, dolor o movilidad aguda, fiebre y diseminación requieren atención dental rápida. Necrosis dolorosa con compromiso sistémico exige evaluar enfermedad necrosante. Trismo, disfagia, amenaza de vía aérea o toxicidad sistémica requieren emergencia y control del foco; no esperar mantenimiento periodontal electivo.",
+      "sources": [
+        "D6",
+        "D9",
+        "D12"
+      ]
+    },
+    {
+      "id": "step1",
+      "pt": "Primeiro passo: informação, higiene e controle supragengival de biofilme, remoção profissional de fatores retentivos, apoio à cessação de tabaco e controle metabólico do diabetes. Avaliar capacidade e adesão; o plano deve ser acordado e ajustado aos riscos e preferências.",
+      "es": "Primer paso: información, higiene y control supragingival de biofilm, eliminación profesional de factores retentivos, apoyo a cesación de tabaco y control metabólico de diabetes. Evaluar capacidad y adherencia; el plan debe acordarse y ajustarse a riesgos y preferencias.",
+      "sources": [
+        "D9",
+        "D11",
+        "D12"
+      ]
+    },
+    {
+      "id": "step2",
+      "pt": "Segundo passo: instrumentação subgengival com instrumentos manuais e/ou ultrassônicos para reduzir biofilme/cálculo, bolsas e inflamação. Realizar reavaliação após cicatrização adequada. Não substituir instrumentação por enxaguante, laser ou medicamento sistêmico isolado.",
+      "es": "Segundo paso: instrumentación subgingival con instrumentos manuales y/o ultrasónicos para reducir biofilm/cálculo, bolsas e inflamación. Reevaluar después de cicatrización adecuada. No sustituir la instrumentación por enjuague, láser o medicamento sistémico aislado.",
+      "sources": [
+        "D9",
+        "D10"
+      ]
+    },
+    {
+      "id": "step3",
+      "pt": "Persistência de sítios não controlados após tratamento inicial pode exigir reinstrumentação ou cirurgia periodontal de acesso/regenerativa conforme defeito e competência profissional. A decisão depende de higiene, anatomia, risco e resposta; não é indicação de cirurgia automática por qualquer bolsa.",
+      "es": "La persistencia de sitios no controlados después del tratamiento inicial puede requerir reinstrumentación o cirugía periodontal de acceso/regenerativa según defecto y competencia profesional. La decisión depende de higiene, anatomía, riesgo y respuesta; no indica cirugía automática por cualquier bolsa.",
+      "sources": [
+        "D9"
+      ]
+    },
+    {
+      "id": "antibiotic",
+      "pt": "EFP não recomenda antibiótico sistêmico rotineiro como coadjuvante. Categorias específicas, como jovens com doença generalizada em estágio III, podem ser consideradas pelo periodontista após avaliação; não há esquema empírico universal neste guia. Abscesso/disseminação são outra decisão clínica e exigem controle do foco.",
+      "es": "EFP no recomienda antibiótico sistémico de rutina como coadyuvante. Categorías específicas, como jóvenes con enfermedad generalizada en estadio III, pueden considerarse por el periodoncista después de evaluar; no hay un esquema empírico universal en esta guía. Absceso/diseminación constituyen otra decisión clínica y requieren control del foco.",
+      "sources": [
+        "D9",
+        "D10"
+      ]
+    },
+    {
+      "id": "adjunct",
+      "pt": "Antissépticos de uso limitado podem ser selecionados como coadjuvantes, nunca substituindo limpeza. Escolha de concentração, apresentação e duração cabe ao dentista conforme produto e necessidade; não prescrever clorexidina indefinidamente. AINE sistêmico não é recomendado como modulador rotineiro do hospedeiro para tratamento periodontal.",
+      "es": "Pueden seleccionarse antisépticos de uso limitado como coadyuvantes, nunca reemplazando la limpieza. La concentración, presentación y duración las define el odontólogo según producto y necesidad; no prescribir clorhexidina indefinidamente. Un AINE sistémico no se recomienda como modulador rutinario del huésped para tratamiento periodontal.",
+      "sources": [
+        "D10",
+        "D11"
+      ]
+    },
+    {
+      "id": "maintenance",
+      "pt": "Após terapia ativa, manutenção periodontal de suporte é necessária. EFP orienta intervalos individualizados de 3 até no máximo 12 meses, segundo risco e condição periodontal. Registrar bolsas/sangramento, reforçar higiene, realizar limpeza profissional e investigar recorrência, sem declarar alta definitiva da doença crônica.",
+      "es": "Después de terapia activa, es necesario mantenimiento periodontal de soporte. EFP indica intervalos individualizados de 3 hasta como máximo 12 meses, según riesgo y condición periodontal. Registrar bolsas/sangrado, reforzar higiene, realizar limpieza profesional e investigar recurrencia, sin declarar alta definitiva de la enfermedad crónica.",
+      "sources": [
+        "D11"
+      ]
+    },
+    {
+      "id": "hygiene",
+      "pt": "Complementar escovação com escovas interdentais onde adequadas; outros dispositivos ajudam em espaços não acessíveis. Escolher tamanho e técnica para não lesar tecido. Controle de diabetes e abandono de tabaco permanecem durante manutenção; retirar placa uma única vez não garante estabilidade.",
+      "es": "Complementar el cepillado con cepillos interdentales donde sean adecuados; otros dispositivos ayudan en espacios inaccesibles. Elegir tamaño y técnica para no dañar tejido. Control de diabetes y abandono de tabaco continúan durante mantenimiento; eliminar placa una sola vez no garantiza estabilidad.",
+      "sources": [
+        "D11",
+        "D8"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestação não elimina necessidade de avaliar e tratar doença periodontal; individualizar medicação/procedimentos. Perda de suporte rápida em jovem requer avaliação especializada. Em diabetes/imunossupressão, considerar maior risco e sintomas de infecção. Não extrapolar dose adulta, renal ou hepática de coadjuvante sem agente/produto definido.",
+      "es": "El embarazo no elimina la necesidad de evaluar y tratar enfermedad periodontal; individualizar medicación/procedimientos. Pérdida rápida de soporte en un joven requiere evaluación especializada. En diabetes/inmunosupresión, considerar mayor riesgo y síntomas de infección. No extrapolar dosis adulta, renal o hepática de coadyuvante sin agente/producto definido.",
+      "sources": [
+        "D6",
+        "D9",
+        "D10"
+      ]
+    },
+    {
+      "id": "disposition",
+      "pt": "Sem complicação aguda, seguimento é ambulatorial odontológico/periodontal com plano completo e manutenção. Necessidade de emergência depende de disseminação, via aérea, estado sistêmico e hidratação. Retornar por pus, febre, dor crescente ou perda funcional; informar que controle é possível, mas suporte destruído não se recompõe automaticamente.",
+      "es": "Sin complicación aguda, el seguimiento es ambulatorio odontológico/periodontal con plan completo y mantenimiento. La necesidad de emergencia depende de diseminación, vía aérea, estado sistémico e hidratación. Consultar por pus, fiebre, dolor creciente o pérdida funcional; explicar que puede controlarse, pero el soporte destruido no se recupera automáticamente.",
+      "sources": [
+        "D6",
+        "D9",
+        "D11"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "D6",
+      "title": "Periodontal gum disease",
+      "authority": "NIDCR / NIH",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_HEALTH_INFORMATION",
+      "url": "https://www.nidcr.nih.gov/health-info/gum-disease",
+      "scope": "Fatores de risco, exame e tratamento periodontal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D8",
+      "title": "Home oral care",
+      "authority": "ADA",
+      "year": "página oficial consultada em 2026",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+      "scope": "Escovação fluoretada, higiene interdental, individualização e limitações dos enxaguantes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D9",
+      "title": "Treatment of stage I–III periodontitis",
+      "authority": "EFP",
+      "year": 2020,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_PORTAL",
+      "url": "https://www.efp.org/education/continuing-education/clinical-guidelines/guideline-on-treatment-of-stage-i-iii-periodontitis/",
+      "scope": "S3 final; classificação por estágio/grau e quatro passos de tratamento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D12",
+      "title": "Prevention and treatment of periodontal diseases in primary care — 2nd edition",
+      "authority": "SDCEP / NHS Scotland",
+      "year": "2024; emendado novembro 2025",
+      "status": "AUTHORITATIVE_FINAL_AMENDED",
+      "url": "https://www.periodontalcare.sdcep.org.uk/media/vjgfn5ak/sdcep-prevention-and-treatment-of-periodontal-diseases-in-primary-care-2nd-edition-nov-2025.pdf",
+      "scope": "Documento completo; classificação, cuidado profissional e diferenciais. Passo 1 não equivale ao tratamento periodontal inicial completo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D10",
+      "title": "S3 guideline — Step 2 infographic",
+      "authority": "EFP",
+      "year": 2022,
+      "status": "OFFICIAL_IMPLEMENTATION_OF_2020_GUIDELINE",
+      "url": "https://www.efp.org/fileadmin/uploads/efp/Photos/Continuing_Education/GUIDELINE_STEP02_071022-2.pdf",
+      "scope": "Instrumentação, metas e não uso rotineiro de antibiótico sistêmico; resumo oficial, não guideline novo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D11",
+      "title": "S3 guideline — Step 4 infographic",
+      "authority": "EFP",
+      "year": 2022,
+      "status": "OFFICIAL_IMPLEMENTATION_OF_2020_GUIDELINE",
+      "url": "https://www.efp.org/fileadmin/uploads/efp/Photos/Continuing_Education/GUIDELINE_STEP04_071022-2.pdf",
+      "scope": "Manutenção baseada em risco, higiene interdental e controle de fatores de risco.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

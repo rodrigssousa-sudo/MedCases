@@ -1,0 +1,188 @@
+{
+  "owner": "disfuncao_temporomandibular",
+  "title": {
+    "pt": "Disfunção temporomandibular",
+    "es": "Disfunción temporomandibular"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Disfunções temporomandibulares são condições que afetam articulação temporomandibular, músculos mastigatórios e estruturas relacionadas. Podem coexistir componentes articulares e musculares. Estalido indolor sem limitação funcional é comum e não exige tratamento por si só; este guia não cobre redução de luxação ou fratura como se fossem DTM habitual.",
+      "es": "Los trastornos temporomandibulares son condiciones que afectan articulación temporomandibular, músculos masticatorios y estructuras relacionadas. Pueden coexistir componentes articulares y musculares. Un chasquido indoloro sin limitación funcional es frecuente y no requiere tratamiento por sí solo; esta guía no cubre reducción de luxación o fractura como si fueran DTM habituales.",
+      "sources": [
+        "T1"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Dor e função resultam da interação de tecidos articulares/musculares, processamento de dor e fatores psicossociais. Estresse e hábitos de apertamento podem contribuir; não assumir que má oclusão seja causa universal nem que correção irreversível da mordida seja necessária. Muitos episódios melhoram com medidas conservadoras.",
+      "es": "Dolor y función resultan de la interacción de tejidos articulares/musculares, procesamiento del dolor y factores psicosociales. Estrés y hábitos de apretamiento pueden contribuir; no asumir que maloclusión sea una causa universal ni que deba corregirse irreversiblemente la mordida. Muchos episodios mejoran con medidas conservadoras.",
+      "sources": [
+        "T1",
+        "T2"
+      ]
+    },
+    {
+      "id": "history",
+      "pt": "Perguntar sobre localização, relação com mastigação/abertura, duração, travamento, trauma, procedimentos dentais, apertamento, sono e impacto em alimentação. Investigar dor dental, otalgia, cefaleia e outras dores. Dor crônica tem contexto diferente do episódio agudo; registrar evolução e tratamentos prévios.",
+      "es": "Preguntar por localización, relación con masticación/apertura, duración, bloqueo, traumatismo, procedimientos dentales, apretamiento, sueño e impacto en alimentación. Investigar dolor dental, otalgia, cefalea y otros dolores. El dolor crónico tiene un contexto diferente del episodio agudo; registrar evolución y tratamientos previos.",
+      "sources": [
+        "T1",
+        "T2"
+      ]
+    },
+    {
+      "id": "exam",
+      "pt": "Avaliar abertura e movimento mandibular, desvio, dor reproduzida por movimento/palpação de músculos e articulação, ruídos e dentição. Exame deve procurar causas alternativas; não há teste isolado universal. Dor familiar reproduzida ajuda a localizar origem musculoesquelética, sem excluir por si só outra doença.",
+      "es": "Evaluar apertura y movimiento mandibular, desviación, dolor reproducido por movimiento/palpación de músculos y articulación, ruidos y dentición. El examen debe buscar causas alternativas; no existe una prueba aislada universal. Reproducir el dolor habitual ayuda a localizar origen musculoesquelético, sin excluir por sí solo otra enfermedad.",
+      "sources": [
+        "T1"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar doença dental/pulpar, infecção, trauma, luxação, otopatia e neuralgia. Cefaleia ou dor facial não reproduzida por avaliação mandibular precisa de outra investigação. Não atribuir alteração auditiva súbita, déficit neurológico ou massa à DTM sem avaliação específica.",
+      "es": "Diferenciar enfermedad dental/pulpar, infección, traumatismo, luxación, otopatía y neuralgia. Cefalea o dolor facial no reproducido por evaluación mandibular requieren otra investigación. No atribuir alteración auditiva súbita, déficit neurológico o masa a DTM sin evaluación específica.",
+      "sources": [
+        "T1"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Febre com edema/trismo progressivo, trauma importante, dificuldade de engolir/respirar, déficit neurológico ou incapacidade de manter hidratação exigem avaliação urgente do diagnóstico alternativo. Mandíbula bloqueada aberta pode ser luxação; bloqueio fechado persistente também requer avaliação. Evitar manipulação forçada sem diagnóstico e competência.",
+      "es": "Fiebre con edema/trismo progresivo, traumatismo importante, dificultad para tragar/respirar, déficit neurológico o incapacidad para mantener hidratación requieren evaluación urgente de otro diagnóstico. Una mandíbula bloqueada abierta puede ser luxación; un bloqueo cerrado persistente también requiere evaluación. Evitar manipulación forzada sin diagnóstico y competencia.",
+      "sources": [
+        "T1"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Diagnóstico costuma ser clínico. Imagem é escolhida quando suspeita de doença estrutural, trauma, apresentação atípica ou falha que mude manejo: RM pode avaliar disco/tecidos moles; radiografias/TC avaliam estruturas ósseas conforme indicação. Não pedir imagem apenas por estalido indolor.",
+      "es": "El diagnóstico suele ser clínico. Elegir imágenes ante sospecha de enfermedad estructural, traumatismo, presentación atípica o fracaso que cambie el manejo: RM puede evaluar disco/tejidos blandos; radiografías/TC evalúan estructuras óseas según indicación. No pedir imágenes solo por un chasquido indoloro.",
+      "sources": [
+        "T1"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Iniciar educação, redução de apertamento/mastigação excessiva, evitar goma de mascar e alimentos que provoquem dor, calor ou frio conforme tolerância e exercícios suaves orientados. Ajustar temporariamente a consistência dos alimentos, sem imobilização rígida ou restrição prolongada injustificada. Tratar fatores de sono e estresse de forma integrada.",
+      "es": "Iniciar educación, reducción de apretamiento/masticación excesiva, evitar chicle y alimentos que provoquen dolor, calor o frío según tolerancia y ejercicios suaves guiados. Ajustar temporalmente la consistencia de los alimentos, sin inmovilización rígida ni restricción prolongada injustificada. Abordar sueño y estrés de forma integrada.",
+      "sources": [
+        "T1",
+        "T2"
+      ]
+    },
+    {
+      "id": "chronic",
+      "pt": "Para dor crônica de DTM por ≥3 meses, BMJ recomenda fortemente educação/cuidado habitual, terapia cognitivo-comportamental e modalidades físicas supervisionadas como mobilização, exercícios mandibulares/posturais e terapia manual de pontos-gatilho. Escolher abordagem e acesso conforme pessoa; não tratar apenas com medicamento continuado.",
+      "es": "Para dolor crónico de DTM durante ≥3 meses, BMJ recomienda fuertemente educación/atención habitual, terapia cognitivo-conductual y modalidades físicas supervisadas como movilización, ejercicios mandibulares/posturales y terapia manual de puntos gatillo. Elegir abordaje y acceso según la persona; no tratar solo con medicación continua.",
+      "sources": [
+        "T2"
+      ]
+    },
+    {
+      "id": "splints",
+      "pt": "A recomendação BMJ para dor crônica é condicional contra placas oclusais reversíveis como tratamento da dor; placas irreversíveis são desaconselhadas. Isso não proíbe dispositivo selecionado para outra indicação, como proteção dentária, mas exige objetivo e avaliação dental próprios. Não prometer cura ou remodelar dentes/mordida por DTM.",
+      "es": "La recomendación BMJ para dolor crónico es condicional contra férulas oclusales reversibles como tratamiento del dolor; se desaconsejan las irreversibles. Esto no prohíbe un dispositivo seleccionado para otra indicación, como protección dentaria, pero exige objetivo y evaluación dental propios. No prometer curación ni remodelar dientes/mordida por DTM.",
+      "sources": [
+        "T1",
+        "T2"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Toxina botulínica, infiltrações, gabapentina e benzodiazepínicos não são rotina para dor crônica de DTM; o benefício/risco deve seguir indicação específica. Cirurgia não é primeira linha e requer diagnóstico estrutural selecionado, falha de medidas adequadas e discussão especializada. Não transferir recomendações crônicas para todas as patologias articulares.",
+      "es": "Toxina botulínica, infiltraciones, gabapentina y benzodiazepinas no son de rutina para dolor crónico de DTM; el beneficio/riesgo debe seguir una indicación específica. La cirugía no es primera línea y requiere diagnóstico estructural seleccionado, fracaso de medidas adecuadas y discusión especializada. No trasladar recomendaciones crónicas a todas las patologías articulares.",
+      "sources": [
+        "T1",
+        "T2"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+      "es": "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "analgesia_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      "es": "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "analgesia_scope",
+      "pt": "O esquema analgésico deste guia é apenas alívio breve de dor aguda em adulto elegível; não se apresenta como tratamento eficaz universal de DTM crônica. Necessidade recorrente de AINE exige reavaliar diagnóstico e plano. Não iniciar associação AINE/opioide como estratégia crônica; não inventar dose de injeção intra-articular.",
+      "es": "El esquema analgésico de esta guía es solo alivio breve de dolor agudo en un adulto elegible; no se presenta como tratamiento eficaz universal de DTM crónica. Necesidad recurrente de AINE exige reevaluar diagnóstico y plan. No iniciar asociación AINE/opioide como estrategia crónica; no inventar dosis de inyección intraarticular.",
+      "sources": [
+        "T1",
+        "T2",
+        "IBU"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Crianças/adolescentes com limitação persistente, alterações de crescimento ou suspeita de artrite precisam de avaliação específica; não extrapolar dose adulta. Gestantes e pessoas com doença renal/hepática exigem seleção individual de analgésico. A abordagem inicial conservadora é distinta da decisão de farmacoterapia/procedimento.",
+      "es": "Niños/adolescentes con limitación persistente, alteraciones del crecimiento o sospecha de artritis necesitan evaluación específica; no extrapolar dosis adulta. Embarazadas y personas con enfermedad renal/hepática requieren selección individual de analgésico. El abordaje inicial conservador es distinto de decidir farmacoterapia/procedimiento.",
+      "sources": [
+        "T1",
+        "IBU"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial é apropriada se não houver red flags, alimentação/hidratação forem possíveis e houver plano de cuidado/retorno. Monitorar dor, amplitude de abertura, função, sono e efeitos de medicação. Piora, travamento persistente, diagnóstico incerto ou dor crônica incapacitante indica avaliação odontológica de dor orofacial/fisioterapia/equipe especializada.",
+      "es": "El alta ambulatoria es apropiada si no hay signos de alarma, la alimentación/hidratación son posibles y existe plan de atención/seguimiento. Controlar dolor, amplitud de apertura, función, sueño y efectos de medicación. Empeoramiento, bloqueo persistente, diagnóstico incierto o dolor crónico incapacitante indican evaluación odontológica de dolor orofacial/fisioterapia/equipo especializado.",
+      "sources": [
+        "T1",
+        "T2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "T1",
+      "title": "Temporomandibular disorders",
+      "authority": "NIDCR / NIH",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_HEALTH_INFORMATION",
+      "url": "https://www.nidcr.nih.gov/health-info/tmd",
+      "scope": "Classificação, avaliação e preferência inicial por tratamentos reversíveis; não guideline de doses.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T2",
+      "title": "Management of chronic pain associated with temporomandibular disorders",
+      "authority": "BMJ Rapid Recommendations",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_SCOPE_CHRONIC",
+      "url": "https://www.bmj.com/content/383/bmj-2023-076227",
+      "scope": "Dor crônica ≥3 meses; recomendações não se aplicam automaticamente a dor aguda. Documento final publicado, não draft.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "IBU",
+      "title": "Ibuprofen 200 mg film-coated tablets — SmPC",
+      "authority": "Strides / emc",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/14363/smpc",
+      "scope": "Analgesia de curta duração; apresentação oral de liberação imediata. Não comprova eficácia específica de cada doença.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

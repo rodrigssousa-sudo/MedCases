@@ -1,0 +1,212 @@
+{
+  "owner": "onicomicose",
+  "title": {
+    "pt": "Onicomicose",
+    "es": "Onicomicosis"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Onicomicose é infecção fúngica da unha por dermatófitos, leveduras ou fungos não dermatófitos. Espessamento e descoloração não provam micose: trauma, psoríase e outras distrofias são comuns. Confirmar infecção antes de terapia sistêmica; o guia não cobre toda doença ungueal com um antifúngico universal.",
+      "es": "La onicomicosis es infección fúngica de la uña por dermatofitos, levaduras u hongos no dermatofitos. Engrosamiento y cambio de color no prueban micosis: traumatismo, psoriasis y otras distrofias son frecuentes. Confirmar infección antes de terapia sistémica; la guía no cubre toda enfermedad ungueal con un antifúngico universal.",
+      "sources": [
+        "O1",
+        "O2"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Fungos invadem queratina e produzem alteração da lâmina/leito, onicólise e detritos subungueais. Unhas dos pés são frequentemente afetadas; tinea pedis, idade, trauma e comorbidades contribuem. Cura clínica é lenta porque a unha saudável precisa crescer, mesmo após eliminar o fungo.",
+      "es": "Los hongos invaden queratina y producen alteración de lámina/lecho, onicólisis y detritos subungueales. Las uñas de los pies se afectan frecuentemente; tinea pedis, edad, traumatismos y comorbilidades contribuyen. La curación clínica es lenta porque debe crecer una uña sana, incluso después de eliminar el hongo.",
+      "sources": [
+        "O1",
+        "O2",
+        "O3"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Examinar unhas e pele, número de unhas, extensão, matriz, dor, micose dos pés e diagnóstico diferencial. Perguntar sobre terapias prévias, hepatopatia, função renal, gravidez/lactação e medicamentos. Diabetes, doença vascular e imunossupressão modificam risco e exigem atenção a feridas e infecção concomitante.",
+      "es": "Examinar uñas y piel, cantidad de uñas, extensión, matriz, dolor, micosis de los pies y diagnóstico diferencial. Preguntar por tratamientos previos, hepatopatía, función renal, embarazo/lactancia y medicamentos. Diabetes, enfermedad vascular e inmunosupresión modifican el riesgo y requieren atención a heridas e infección concomitante.",
+      "sources": [
+        "O1",
+        "O2",
+        "O3"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Colher unha/detrito da região doente proximal acessível para exame micológico, cultura e/ou técnica disponível conforme laboratório. Coleta inadequada causa falso negativo; se suspeita persistir, reavaliar e repetir adequadamente antes de curso oral empírico prolongado. Identificar agente ajuda a distinguir colonização/contaminação por fungo não dermatófito.",
+      "es": "Obtener uña/detrito de la región enferma proximal accesible para examen micológico, cultivo y/o técnica disponible según laboratorio. Una toma inadecuada produce falso negativo; si persiste la sospecha, reevaluar y repetir adecuadamente antes de un curso oral empírico prolongado. Identificar el agente ayuda a distinguir colonización/contaminación por hongo no dermatofito.",
+      "sources": [
+        "O1",
+        "O2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Faixa pigmentada irregular nova, pigmento periungueal, massa, sangramento ou destruição focal exigem excluir tumor, inclusive melanoma. Pé diabético com ferida, celulite ou comprometimento vascular exige avaliação prioritária. Não deixar suspeita de câncer ou infecção invasiva aguardando resposta de esmalte antifúngico.",
+      "es": "Una banda pigmentada irregular nueva, pigmento periungueal, masa, sangrado o destrucción focal requieren descartar tumor, incluido melanoma. Pie diabético con herida, celulitis o compromiso vascular requiere evaluación prioritaria. No dejar sospecha de cáncer o infección invasiva esperando respuesta de un esmalte antimicótico.",
+      "sources": [
+        "O1",
+        "O2"
+      ]
+    },
+    {
+      "id": "selection",
+      "pt": "Decidir tratar conforme confirmação, agente, extensão/matriz, sintomas, risco, preferências e possibilidade de adesão. Doença limitada pode receber opção tópica; doença extensa ou com matriz pode favorecer terapia sistêmica se segura. Dermatófito, levedura e fungo não dermatófito não são automaticamente sensíveis ao mesmo agente.",
+      "es": "Decidir tratar según confirmación, agente, extensión/matriz, síntomas, riesgo, preferencias y posibilidad de adherencia. La enfermedad limitada puede recibir una opción tópica; enfermedad extensa o con matriz puede favorecer tratamiento sistémico si es seguro. Dermatofito, levadura y hongo no dermatofito no son automáticamente sensibles al mismo agente.",
+      "sources": [
+        "O1",
+        "O2",
+        "O3"
+      ]
+    },
+    {
+      "id": "terbinafine",
+      "pt": "Para adulto elegível com onicomicose por dermatófito sensível: terbinafina 250 mg por via oral 1 vez ao dia; curso usual de 6 semanas para unhas das mãos e 12 semanas para unhas dos pés. Não calcular a partir da concentração do creme nem usar creme de tinea pedis como tratamento equivalente da unha. Extensão do curso exige reavaliação específica.",
+      "es": "Para un adulto elegible con onicomicosis por dermatofito sensible: terbinafina 250 mg por vía oral 1 vez al día; curso habitual de 6 semanas para uñas de manos y 12 semanas para uñas de pies. No calcular a partir de la concentración de la crema ni usar crema de tinea pedis como tratamiento equivalente de la uña. Prolongar el curso requiere reevaluación específica.",
+      "sources": [
+        "O1",
+        "O3",
+        "O4"
+      ]
+    },
+    {
+      "id": "liver",
+      "pt": "Avaliar hepatopatia e função hepática antes da terbinafina oral. Não usar em doença hepática crônica/ativa; repetir função hepática durante tratamento, com a bula britânica especificando 4–6 semanas. Suspender e investigar icterícia, urina escura, fezes claras, náusea persistente, anorexia ou dor abdominal alta; hepatotoxicidade pode ocorrer sem doença prévia.",
+      "es": "Evaluar hepatopatía y función hepática antes de terbinafina oral. No usar en enfermedad hepática crónica/activa; repetir función hepática durante el tratamiento, con el prospecto británico especificando 4–6 semanas. Suspender e investigar ictericia, orina oscura, heces claras, náusea persistente, anorexia o dolor abdominal alto; puede haber hepatotoxicidad sin enfermedad previa.",
+      "sources": [
+        "O3",
+        "O4"
+      ]
+    },
+    {
+      "id": "renal",
+      "pt": "Na bula consultada, uso oral de terbinafina não é recomendado na insuficiência renal, especialmente depuração de creatinina <50 mL/min; comprometimento grave <30 mL/min é contraindicação do produto britânico. Não inventar redução pela metade como ajuste seguro nem confundir redução de clearance farmacocinético com posologia validada.",
+      "es": "En el prospecto consultado, no se recomienda terbinafina oral en insuficiencia renal, especialmente depuración de creatinina <50 mL/min; compromiso grave <30 mL/min es contraindicación del producto británico. No inventar una reducción a la mitad como ajuste seguro ni confundir reducción del clearance farmacocinético con posología validada.",
+      "sources": [
+        "O3",
+        "O4"
+      ]
+    },
+    {
+      "id": "interactions",
+      "pt": "Revisar interações antes do curso oral: terbinafina inibe CYP2D6 e pode alterar exposição de antidepressivos, betabloqueadores e antiarrítmicos; indutores/inibidores também alteram sua exposição. Alterações de INR com varfarina foram relatadas. Rash progressivo, alteração importante de paladar/olfato ou sintomas hematológicos exigem reavaliação e possível suspensão.",
+      "es": "Revisar interacciones antes del curso oral: terbinafina inhibe CYP2D6 y puede alterar exposición de antidepresivos, betabloqueantes y antiarrítmicos; inductores/inhibidores también alteran su exposición. Se informaron cambios de INR con warfarina. Erupción progresiva, alteración importante de gusto/olfato o síntomas hematológicos requieren reevaluación y posible suspensión.",
+      "sources": [
+        "O3",
+        "O4"
+      ]
+    },
+    {
+      "id": "amorolfine",
+      "pt": "Para adulto com indicação de terapia tópica e produto disponível: amorolfina 5% em esmalte medicamentoso, cobrir toda a superfície da unha afetada 1 vez por semana; a bula permite 2 vezes por semana em casos selecionados. Curso usual de 6 meses nas mãos e 9–12 meses nos pés, conforme crescimento/resposta, com revisão aproximadamente a cada 3 meses.",
+      "es": "Para un adulto con indicación de tratamiento tópico y producto disponible: amorolfina 5% en laca medicamentosa, cubrir toda la superficie de la uña afectada 1 vez por semana; el prospecto permite 2 veces por semana en casos seleccionados. Curso habitual de 6 meses en manos y 9–12 meses en pies, según crecimiento/respuesta, con revisión aproximadamente cada 3 meses.",
+      "sources": [
+        "O1",
+        "O5"
+      ]
+    },
+    {
+      "id": "topical_safety",
+      "pt": "Antes da reaplicação, remover esmalte e preparar/limpar a unha conforme instruções do produto. Não usar a mesma lixa em unhas saudáveis, não aplicar na pele adjacente/olhos/mucosas e evitar unhas artificiais. Suspender reação alérgica. A dose é aplicação local: não há diluição, infusão ou conversão em dose oral.",
+      "es": "Antes de reaplicar, retirar laca y preparar/limpiar la uña según instrucciones del producto. No usar la misma lima en uñas sanas, no aplicar en piel adyacente/ojos/mucosas y evitar uñas artificiales. Suspender ante reacción alérgica. La dosis es aplicación local: no hay dilución, infusión ni conversión en dosis oral.",
+      "sources": [
+        "O5"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Não extrapolar terbinafina oral adulta para menores de 18 anos; a bula britânica não recomenda esse uso com dados limitados. Amorolfina consultada não recomenda uso pediátrico. Na gestação, evitar tratamento eletivo oral e individualizar necessidade; a bula de terbinafina desaconselha amamentar durante tratamento oral. Amorolfina na gestação/lactação somente se claramente necessária, sem declarar segurança absoluta.",
+      "es": "No extrapolar terbinafina oral adulta a menores de 18 años; el prospecto británico no recomienda ese uso con datos limitados. La amorolfina consultada no recomienda uso pediátrico. En embarazo, evitar tratamiento oral electivo e individualizar necesidad; el prospecto de terbinafina desaconseja amamantar durante tratamiento oral. Amorolfina en embarazo/lactancia solo si es claramente necesaria, sin declarar seguridad absoluta.",
+      "sources": [
+        "O3",
+        "O4",
+        "O5"
+      ]
+    },
+    {
+      "id": "prevention",
+      "pt": "Manter pés secos, tratar micose de pele concomitante com esquema próprio, cortar unhas de forma segura e evitar compartilhar instrumentos. Diabetes/doença vascular exigem cuidado profissional quando houver risco de ferida; desbridamento pode ser coadjuvante selecionado, não arrancar unha em casa. Recidiva é possível.",
+      "es": "Mantener pies secos, tratar micosis de piel concomitante con su propio esquema, cortar uñas de forma segura y evitar compartir instrumentos. Diabetes/enfermedad vascular requieren atención profesional ante riesgo de herida; desbridamiento puede ser coadyuvante seleccionado, no arrancar la uña en casa. Puede haber recurrencia.",
+      "sources": [
+        "O1",
+        "O2"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Monitorar crescimento proximal saudável, sintomas, adesão e toxicidade; aparência distal anormal logo após curso não prova falha. Se persistir/progredir, confirmar diagnóstico/agente, considerar resistência ou outra distrofia e avaliar dermatologia. Não repetir automaticamente cursos sistêmicos; quadro não complicado é ambulatorial, mas red flags precisam de prioridade.",
+      "es": "Controlar crecimiento proximal sano, síntomas, adherencia y toxicidad; aspecto distal anormal inmediatamente después del curso no prueba fracaso. Si persiste/progresa, confirmar diagnóstico/agente, considerar resistencia u otra distrofia y evaluar dermatología. No repetir automáticamente cursos sistémicos; el cuadro no complicado es ambulatorio, pero los signos de alarma requieren prioridad.",
+      "sources": [
+        "O1",
+        "O2",
+        "O3",
+        "O5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "O1",
+      "title": "Tinea manuum, pedis and unguium",
+      "authority": "PCDS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE_CURRENT_PORTAL",
+      "url": "https://www.pcds.org.uk/clinical-guidance/tinea-pedis-feet-manuum-hands-and-unguium-nails",
+      "scope": "Atualizada 25/07/2023; confirmação micológica e manejo das unhas; não usar curso da pele para unha.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O2",
+      "title": "Nail fungus: diagnosis and treatment",
+      "authority": "AAD",
+      "year": "página oficial consultada em 2026",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.aad.org/public/diseases/a-z/nail-fungus-treatment",
+      "scope": "Diagnóstico, tratamento selecionado e limitações; não guideline de dose pediátrica.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O3",
+      "title": "Terbinafine 250 mg Tablet — SmPC",
+      "authority": "Milpharm / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/7133/smpc",
+      "scope": "Atualização emc 07/08/2026; dermatófitos sensíveis, adultos, limites hepáticos/renais e interações.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O4",
+      "title": "Terbinafine tablets 250 mg — prescribing information",
+      "authority": "Cipla USA / DailyMed",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=daf41866-6f2b-4483-b575-456becd6e85f",
+      "scope": "Confirma dose, duração por mão/pé e contraindicação hepática; bula de produto independente.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O5",
+      "title": "Amorolfine 5% w/v medicated nail lacquer — SmPC",
+      "authority": "Aspire / emc",
+      "year": 2020,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL_CURRENT_PORTAL",
+      "url": "https://www.medicines.org.uk/emc/product/7413/smpc",
+      "scope": "Posologia tópica e duração; dados insuficientes pediatria/gestação; não presume disponibilidade de todas as apresentações na Argentina/Brasil.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

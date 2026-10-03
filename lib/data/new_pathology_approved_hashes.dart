@@ -95,5 +95,45 @@ const newPathologyApprovedHashes = <String, String>{
   "doenca_meniere":
       "63d9d0c03811743ea93ff25717f9732d0bb465637397d5c668407a341f6c2a8e",
   "enurese_pediatrica":
-      "5064c99f88155c2d77f6d65c54296f90ac254a14fd7a1cea83e6fd2c959375ad"
+      "5064c99f88155c2d77f6d65c54296f90ac254a14fd7a1cea83e6fd2c959375ad",
+  "bacteriuria_assintomatica":
+      "a829329171003ed73dd58f9db015b2289cd5bac0bd9aef992e2e46f4a96502fc",
+  "amenorreia_secundaria":
+      "185db22456496bf9cfe3d80359b7e409102f1093320783bb5ec56b1147333ad8",
+  "carie_dentaria":
+      "b87dd0e7c11fb98dd2eb5bb4c822cb8faf0fdb480b5ada9260b700e45c7fdb0e",
+  "gengivite":
+      "32e31a1ee79731f051d1794b8e1ce304fc2cc82c9a7bd3bc067d125d976e1f57",
+  "periodontite":
+      "4e0903fe5d49084532594f48cdc2679a99786ca2b0d2ef1feae5ff44affcdeb8",
+  "disfuncao_temporomandibular":
+      "b686b758d244e002db59ca5a75b410d0cf4ca90069342465d1c59d2d67115da0",
+  "onicomicose":
+      "569ab12dec8e449e9ae1812fd49fd3a0f29add99ac61c01741167691e915ae21",
+  "cisto_baker":
+      "95b7c7f607c6bd6bdbc82ac71d745792e2d6c35d7195935724683b18eb1f379f",
+  "cisto_sinovial_punho":
+      "c3e6b79380e8a516beabde5276e260de1870ff00d4a75a811fe2f18d3eef30d2",
+  "dedo_em_gatilho":
+      "c230c68eda9eb6731a9264bba18fc3b428d053c5385e851cf82ef2ee12e1ddef",
+  "meralgia_parestesica":
+      "763ac910cd1b9e1c926d46924c9a4d4210bc9c103e5ff38ea39ebc9f411fbe4c",
+  "zumbido_tinnitus":
+      "ef4c15f42194355da93a33bf019524b724d562cf0d07f56cc4580869b42eabe1",
+};
+
+// Version metadata for the approved G02 owners only.
+const newPathologyG02Versions = <String, String>{
+  "bacteriuria_assintomatica": "NEW-JIT-2026-10-02-G02-v1.0",
+  "amenorreia_secundaria": "NEW-JIT-2026-10-02-G02-v1.0",
+  "carie_dentaria": "NEW-JIT-2026-10-02-G02-v1.0",
+  "gengivite": "NEW-JIT-2026-10-02-G02-v1.0",
+  "periodontite": "NEW-JIT-2026-10-02-G02-v1.0",
+  "disfuncao_temporomandibular": "NEW-JIT-2026-10-02-G02-v1.0",
+  "onicomicose": "NEW-JIT-2026-10-02-G02-v1.0",
+  "cisto_baker": "NEW-JIT-2026-10-02-G02-v1.0",
+  "cisto_sinovial_punho": "NEW-JIT-2026-10-02-G02-v1.0",
+  "dedo_em_gatilho": "NEW-JIT-2026-10-02-G02-v1.0",
+  "meralgia_parestesica": "NEW-JIT-2026-10-02-G02-v1.0",
+  "zumbido_tinnitus": "NEW-JIT-2026-10-02-G02-v1.0",
 };

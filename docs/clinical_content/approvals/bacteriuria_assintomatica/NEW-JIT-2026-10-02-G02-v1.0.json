@@ -1,0 +1,188 @@
+{
+  "owner": "bacteriuria_assintomatica",
+  "title": {
+    "pt": "Bacteriúria assintomática",
+    "es": "Bacteriuria asintomática"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Bacteriúria assintomática é crescimento bacteriano na urina sem sintomas atribuíveis à infecção urinária. É frequente em idosos, pessoas com sonda e disfunção de esvaziamento. Cultura positiva isolada não equivale a infecção que necessita antibiótico. O guia não cobre candidúria nem ITU sintomática.",
+      "es": "La bacteriuria asintomática es crecimiento bacteriano en orina sin síntomas atribuibles a infección urinaria. Es frecuente en mayores, personas con sonda y disfunción del vaciamiento. Un urocultivo positivo aislado no equivale a una infección que requiere antibiótico. La guía no cubre candiduria ni ITU sintomática.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Colonização e biofilme podem persistir sem invasão sintomática. Tentar esterilizar a urina em populações sem benefício demonstrado aumenta exposição a efeitos adversos, resistência e infecção por Clostridioides difficile. Piúria, odor ou aspecto turvo isolados não justificam tratar.",
+      "es": "La colonización y el biofilm pueden persistir sin invasión sintomática. Intentar esterilizar la orina en poblaciones sin beneficio demostrado aumenta la exposición a efectos adversos, resistencia e infección por Clostridioides difficile. Piuria, olor o turbidez aislados no justifican tratar.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Na definição microbiológica clássica em amostra de jato médio: ≥10^5 UFC/mL; mulheres precisam de 2 amostras consecutivas e homens de 1. Essa definição não obriga repetir cultura em toda pessoa sem indicação de rastreio. Na gestação, seguir o protocolo obstétrico para cultura de rastreio e tratamento.",
+      "es": "En la definición microbiológica clásica en muestra de chorro medio: ≥10^5 UFC/mL; las mujeres necesitan 2 muestras consecutivas y los hombres 1. Esta definición no obliga a repetir el cultivo en toda persona sin indicación de pesquisa. En embarazo, seguir el protocolo obstétrico para cultivo de pesquisa y tratamiento.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "symptoms",
+      "pt": "Antes de classificar, pesquisar disúria, frequência/urgência novas, dor suprapúbica, dor lombar, febre e repercussão sistêmica. Considerar apresentação atípica em lesão medular ou pacientes incapazes de relatar sintomas; não declarar assintomático apenas porque não verbaliza disúria.",
+      "es": "Antes de clasificar, buscar disuria, frecuencia/urgencia nuevas, dolor suprapúbico, dolor lumbar, fiebre y compromiso sistémico. Considerar presentación atípica en lesión medular o pacientes incapaces de comunicar síntomas; no declarar asintomático solo porque no refiere disuria.",
+      "sources": [
+        "B1"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Febre com instabilidade, sinais de sepse ou dor em flanco exigem investigação de ITU sistêmica e outras fontes; o resultado de cultura não deve retardar atendimento. Delirium ou queda isolados em idoso, sem sintomas urinários ou sinais sistêmicos, exigem procurar outras causas e observar, sem antibiótico automático.",
+      "es": "Fiebre con inestabilidad, signos de sepsis o dolor en flanco requieren investigar ITU sistémica y otros focos; el resultado del cultivo no debe retrasar la atención. Delirium o caída aislados en un mayor, sin síntomas urinarios ni signos sistémicos, requieren buscar otras causas y observar, sin antibiótico automático.",
+      "sources": [
+        "B1"
+      ]
+    },
+    {
+      "id": "no_treat",
+      "pt": "Não rastrear/tratar rotineiramente crianças, adultos saudáveis não gestantes, idosos, pessoas com diabetes, lesão medular ou cateter urinário e pacientes submetidos a cirurgia não urológica. Não adicionar antibiótico a profilaxia de artroplastia apenas por cultura positiva assintomática.",
+      "es": "No pesquisar/tratar de rutina a niños, adultos sanos no embarazados, mayores, personas con diabetes, lesión medular o catéter urinario y pacientes sometidos a cirugía no urológica. No añadir antibióticos a la profilaxis de artroplastia solo por un cultivo positivo asintomático.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "uncertainty",
+      "pt": "Transplante renal: IDSA recomenda não rastrear/tratar após 1 mês, mas o primeiro mês permanece lacuna; neutropenia de alto risco também não tem recomendação suficiente. Esses contextos e retirada de cateter requerem decisão da equipe responsável; não extrapolar a regra de não tratamento ou iniciar esquema universal.",
+      "es": "Trasplante renal: IDSA recomienda no pesquisar/tratar después de 1 mes, pero el primer mes sigue siendo una laguna; la neutropenia de alto riesgo tampoco tiene una recomendación suficiente. Estos contextos y el retiro del catéter requieren decisión del equipo responsable; no extrapolar la regla de no tratamiento ni iniciar un esquema universal.",
+      "sources": [
+        "B1"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Solicitar urocultura quando o resultado mudar conduta: rastreio gestacional ou antes de procedimento urológico com trauma de mucosa. Confirmar coleta adequada e contaminação. Crescimento persistente de Proteus/organismo produtor de urease indica investigar cálculo; imagem não é rotina para toda bacteriúria assintomática.",
+      "es": "Solicitar urocultivo cuando cambie la conducta: pesquisa gestacional o antes de un procedimiento urológico con traumatismo de mucosa. Confirmar toma adecuada y contaminación. Crecimiento persistente de Proteus/organismo productor de ureasa indica investigar litiasis; las imágenes no son de rutina para toda bacteriuria asintomática.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "pregnancy",
+      "pt": "Na gestação, rastrear e tratar bacteriúria significativa conforme cultura e protocolo obstétrico. A evidência histórica de benefício é reconhecida, embora limitada; não confundir menor força da recomendação EAU com proibição de tratar. Escolher agente conforme sensibilidade, idade gestacional, alergias e função renal, sem amoxicilina empírica universal.",
+      "es": "En embarazo, pesquisar y tratar bacteriuria significativa según cultivo y protocolo obstétrico. Se reconoce el beneficio de la evidencia histórica, aunque limitada; no confundir menor fuerza de la recomendación EAU con prohibición de tratar. Elegir el agente según sensibilidad, edad gestacional, alergias y función renal, sin amoxicilina empírica universal.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "nitrofurantoin",
+      "pt": "Opção para gestante elegível, agente sensível e infecção limitada ao trato inferior: nitrofurantoína de liberação prolongada 100 mg por via oral a cada 12 horas por 7 dias, com alimento, conforme NICE e a bula consultada. A cápsula prolongada não é intercambiável em frequência com macrocristais de liberação imediata. Não é esquema para pielonefrite, sepse ou profilaxia cirúrgica.",
+      "es": "Opción para embarazada elegible, germen sensible e infección limitada al tracto inferior: nitrofurantoína de liberación prolongada 100 mg por vía oral cada 12 horas durante 7 días, con alimento, según NICE y el prospecto consultado. La cápsula prolongada no es intercambiable en frecuencia con macrocristales de liberación inmediata. No es un esquema para pielonefritis, sepsis o profilaxis quirúrgica.",
+      "sources": [
+        "B3",
+        "B4"
+      ]
+    },
+    {
+      "id": "drug_safety",
+      "pt": "Neste esquema NICE/bula britânica, usar somente com eGFR ≥45 mL/min, sem deficiência de G6PD, alergia a nitrofuranos ou porfiria aguda; evitar no termo/trabalho de parto pelo risco de hemólise neonatal. Conferir bula local, pois restrições renais podem diferir. Não adotar automaticamente exceção renal de curso curto para gestantes.",
+      "es": "En este esquema NICE/prospecto británico, usar solo con eGFR ≥45 mL/min, sin déficit de G6PD, alergia a nitrofuranos o porfiria aguda; evitar a término/en trabajo de parto por riesgo de hemólisis neonatal. Revisar el prospecto local, porque las restricciones renales pueden diferir. No aplicar automáticamente la excepción renal de curso corto a embarazadas.",
+      "sources": [
+        "B3",
+        "B4"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "pt": "Revisar sensibilidade e tolerância; suspender e avaliar se surgirem dispneia/tosse importante, icterícia, neuropatia ou reação alérgica. História de hepatopatia/doença pulmonar requer cautela. Não prolongar preventivamente este curso. Se aparecerem sintomas, reclassificar e investigar; repetição de cultura pós-tratamento gestacional segue protocolo obstétrico, sem periodicidade universal imposta.",
+      "es": "Revisar sensibilidad y tolerancia; suspender y evaluar si aparecen disnea/tos importante, ictericia, neuropatía o reacción alérgica. Antecedentes de hepatopatía/enfermedad pulmonar requieren precaución. No prolongar preventivamente este curso. Si aparecen síntomas, reclasificar e investigar; la repetición del cultivo después del tratamiento gestacional sigue el protocolo obstétrico, sin imponer una periodicidad universal.",
+      "sources": [
+        "B1",
+        "B3",
+        "B4"
+      ]
+    },
+    {
+      "id": "urologic",
+      "pt": "Antes de procedimento endourológico com trauma de mucosa, obter cultura e prescrever terapia dirigida. IDSA sugere 1–2 doses iniciadas 30–60 minutos antes do procedimento, escolhidas pela equipe conforme cultura/procedimento. Não substituir esse plano por nitrofurantoína de 7 dias nem aplicar a cistoscopia não traumática de rotina.",
+      "es": "Antes de un procedimiento endourológico con traumatismo de mucosa, obtener cultivo y prescribir tratamiento dirigido. IDSA sugiere 1–2 dosis iniciadas 30–60 minutos antes del procedimiento, elegidas por el equipo según cultivo/procedimiento. No sustituir este plan por nitrofurantoína de 7 días ni aplicarlo a la cistoscopia no traumática de rutina.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "disposition",
+      "pt": "Paciente estável verdadeiramente assintomático pode seguir ambulatorialmente; documentar por que tratar ou por que não tratar e orientar retorno por sintomas urinários/febre. Gestante precisa de seguimento obstétrico; doença sistêmica exige o fluxo de urgência apropriado. Cultura positiva isolada não é critério de internação.",
+      "es": "El paciente estable verdaderamente asintomático puede continuar ambulatoriamente; documentar por qué tratar o no tratar e indicar consulta por síntomas urinarios/fiebre. La embarazada necesita seguimiento obstétrico; enfermedad sistémica requiere el circuito de urgencia correspondiente. Un cultivo positivo aislado no es criterio de internación.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "B1",
+      "title": "Asymptomatic bacteriuria guideline",
+      "authority": "IDSA",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.idsociety.org/practice-guideline/asymptomatic-bacteriuria/",
+      "scope": "Portal marcado CURRENT; adultos, crianças e exceções. Substitui 2005.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B2",
+      "title": "Urological Infections — asymptomatic bacteriuria",
+      "authority": "EAU",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_EDITION",
+      "url": "https://uroweb.org/guidelines/urological-infections/chapter/the-guideline",
+      "scope": "Benefício/não benefício do tratamento; gestação com evidência limitada, seguir orientação nacional.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B3",
+      "title": "Lower urinary tract infection: antimicrobial prescribing NG109",
+      "authority": "NICE",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.nice.org.uk/guidance/ng109/chapter/Recommendations",
+      "scope": "Tabela gestacional inclui bacteriúria assintomática; esquema de 7 dias. Não usar tabela de mulher não gestante.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B4",
+      "title": "Nitrofurantoin Glenmark 100 mg prolonged-release — SmPC",
+      "authority": "Glenmark / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/102026/smpc",
+      "scope": "Atualização emc 14/09/2026; formulação, contraindicações e monitorização. Limite renal deste produto/NICE; verificar bula local.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,230 @@
+{
+  "owner": "carie_dentaria",
+  "title": {
+    "pt": "Cárie dentária",
+    "es": "Caries dental"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Cárie dentária é doença mediada por biofilme e açúcares, com desequilíbrio entre desmineralização e remineralização do tecido dental. Pode atingir qualquer idade; exposição frequente a açúcar, pouca proteção fluoretada e xerostomia aumentam o risco. Cárie e abscesso odontogênico são entidades relacionadas, mas não equivalentes.",
+      "es": "La caries dental es una enfermedad mediada por biofilm y azúcares, con desequilibrio entre desmineralización y remineralización del tejido dental. Puede afectar cualquier edad; exposición frecuente a azúcar, poca protección con flúor y xerostomía aumentan el riesgo. Caries y absceso odontogénico son entidades relacionadas, pero no equivalentes.",
+      "sources": [
+        "D1",
+        "D2"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Ácidos gerados pela metabolização de carboidratos dissolvem minerais; saliva e flúor favorecem reparo. Mancha branca ativa sem cavitação pode ser controlada/remineralizada. Cavidade estabelecida representa perda estrutural: controlar o processo e restaurar quando indicado, evitando remoção desnecessária de tecido em lesões profundas.",
+      "es": "Los ácidos generados al metabolizar carbohidratos disuelven minerales; saliva y flúor favorecen la reparación. Una mancha blanca activa sin cavitación puede controlarse/remineralizarse. Una cavidad establecida representa pérdida estructural: controlar el proceso y restaurar cuando corresponda, evitando eliminar tejido innecesariamente en lesiones profundas.",
+      "sources": [
+        "D1",
+        "D2"
+      ]
+    },
+    {
+      "id": "history",
+      "pt": "Perguntar sobre dor provocada ou espontânea, duração, dificuldade de alimentação, febre, edema, dieta açucarada, higiene, tratamentos prévios e boca seca. Em crianças, avaliar hábitos de alimentação e acesso a odontopediatria; em idosos, examinar raízes expostas e medicamentos associados a xerostomia.",
+      "es": "Preguntar por dolor provocado o espontáneo, duración, dificultad para alimentarse, fiebre, edema, dieta azucarada, higiene, tratamientos previos y boca seca. En niños, evaluar hábitos de alimentación y acceso a odontopediatría; en mayores, examinar raíces expuestas y medicamentos asociados a xerostomía.",
+      "sources": [
+        "D1",
+        "D3",
+        "D8"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico odontológico combina inspeção de superfícies limpas, atividade/cavitação, avaliação pulpar e radiografia quando necessária à decisão. Dor isolada não identifica a profundidade. Diferenciar hipersensibilidade dentinária, fratura, pulpite, doença periodontal e dor referida; não declarar todo dente escurecido como cárie ativa.",
+      "es": "El diagnóstico odontológico combina inspección de superficies limpias, actividad/cavitación, evaluación pulpar y radiografía cuando sea necesaria para decidir. El dolor aislado no identifica la profundidad. Diferenciar hipersensibilidad dentinaria, fractura, pulpitis, enfermedad periodontal y dolor referido; no declarar todo diente oscuro como caries activa.",
+      "sources": [
+        "D1",
+        "D2",
+        "D4"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Edema facial progressivo, febre com repercussão, dificuldade de engolir/respirar, trismo importante ou extensão para espaços profundos exigem urgência e avaliação odontológica/cirúrgica. Analgésico não substitui controle do foco. Imunossupressão ou incapacidade de ingerir líquidos reduzem o limiar para escalonar atendimento.",
+      "es": "Edema facial progresivo, fiebre con compromiso general, dificultad para tragar/respirar, trismo importante o extensión a espacios profundos requieren urgencia y evaluación odontológica/quirúrgica. El analgésico no sustituye el control del foco. Inmunosupresión o incapacidad para ingerir líquidos reducen el umbral para escalar la atención.",
+      "sources": [
+        "D1",
+        "D5"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Reduzir a frequência de açúcares livres, escovar com dentifrício fluoretado e realizar higiene interdental adequada. Intervenção precisa abordar rotina, capacidade de higiene, saliva e risco de novas lesões; apenas preencher a cavidade sem controle de risco não encerra a doença.",
+      "es": "Reducir la frecuencia de azúcares libres, cepillar con dentífrico fluorado y realizar higiene interdental adecuada. La intervención debe abordar rutina, capacidad de higiene, saliva y riesgo de nuevas lesiones; solo rellenar la cavidad sin controlar el riesgo no resuelve la enfermedad.",
+      "sources": [
+        "D1",
+        "D2",
+        "D8"
+      ]
+    },
+    {
+      "id": "fluoride",
+      "pt": "Dentifrício fluoretado de uso habitual contém pelo menos 1000 ppm de flúor. Crianças menores de 3 anos: quantidade de esfregaço/grão de arroz; de 3–6 anos: no máximo tamanho de ervilha. Escovar 2 vezes ao dia com supervisão, evitando deglutição. Não converter concentração tópica em dose oral nem prescrever suplemento sem avaliar água e outras fontes.",
+      "es": "El dentífrico fluorado de uso habitual contiene al menos 1000 ppm de flúor. Niños menores de 3 años: cantidad de película/grano de arroz; de 3–6 años: como máximo tamaño de arveja. Cepillar 2 veces al día con supervisión, evitando deglutir. No convertir concentración tópica en dosis oral ni prescribir suplemento sin evaluar agua y otras fuentes.",
+      "sources": [
+        "D3",
+        "D8"
+      ]
+    },
+    {
+      "id": "definitive",
+      "pt": "Lesões não cavitadas podem receber manejo não restaurativo selecionado; cavitadas exigem decisão odontológica sobre restauração, selamento ou controle da lesão. Verniz fluoretado e diamino fluoreto de prata são opções profissionais conforme lesão/população; o último escurece a lesão e exige discussão prévia. Não recomendar aplicação doméstica improvisada.",
+      "es": "Las lesiones no cavitadas pueden recibir manejo no restaurativo seleccionado; las cavitadas requieren decisión odontológica sobre restauración, sellado o control de la lesión. Barniz fluorado y fluoruro diamino de plata son opciones profesionales según lesión/población; este último oscurece la lesión y exige conversación previa. No recomendar aplicación casera improvisada.",
+      "sources": [
+        "D2",
+        "D3"
+      ]
+    },
+    {
+      "id": "antibiotic",
+      "pt": "Antibiótico não trata a desmineralização nem a dor pulpar isolada. Para adultos imunocompetentes, priorizar tratamento dental definitivo em grande parte das condições pulpares/periapicais; presença de disseminação ou sinais sistêmicos exige o protocolo específico de infecção. Não copiar antibioticoterapia do abscesso para cárie sem infecção invasiva.",
+      "es": "El antibiótico no trata la desmineralización ni el dolor pulpar aislado. En adultos inmunocompetentes, priorizar el tratamiento dental definitivo en gran parte de las condiciones pulpares/periapicales; diseminación o signos sistémicos requieren el protocolo específico de infección. No copiar la antibioticoterapia del absceso para caries sin infección invasiva.",
+      "sources": [
+        "D5"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+      "es": "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "analgesia_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      "es": "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "pain_options",
+      "pt": "Para dor dental aguda, ADA prioriza AINE quando elegível, isolado ou associado a paracetamol. Se AINE não for adequado, paracetamol pode ser opção adulta: na apresentação consultada, 1000 mg oral por tomada, intervalo mínimo de 4 horas, no máximo 4 tomadas/4000 mg em 24 horas. Não usar esse teto em hepatopatia, alcoolismo, desnutrição ou baixo peso sem individualização.",
+      "es": "Para dolor dental agudo, ADA prioriza AINE cuando sea elegible, solo o asociado a paracetamol. Si el AINE no es adecuado, paracetamol puede ser una opción adulta: en la presentación consultada, 1000 mg oral por toma, intervalo mínimo de 4 horas, como máximo 4 tomas/4000 mg en 24 horas. No usar ese límite en hepatopatía, alcoholismo, desnutrición o bajo peso sin individualización.",
+      "sources": [
+        "D4",
+        "PAR"
+      ]
+    },
+    {
+      "id": "pain_safety",
+      "pt": "Não somar produtos que contenham paracetamol; não manter por mais de 3 dias sem reavaliação. Suspeita de superdose exige urgência mesmo sem sintomas. Este guia não fornece dose pediátrica por extrapolação. Opioide não é primeira linha e não deve substituir encaminhamento dental. Na gestação, escolher analgesia individualizada e evitar AINE inadequado à idade gestacional.",
+      "es": "No sumar productos que contengan paracetamol; no mantener durante más de 3 días sin reevaluación. Sospecha de sobredosis requiere urgencia incluso sin síntomas. Esta guía no proporciona dosis pediátrica por extrapolación. Un opioide no es primera línea y no debe sustituir la derivación dental. En embarazo, elegir analgesia individualizada y evitar AINE inadecuado para la edad gestacional.",
+      "sources": [
+        "D4",
+        "IBU",
+        "PAR"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta do pronto atendimento exige estabilidade, via aérea e hidratação preservadas, controle inicial de dor e acesso planejado ao tratamento odontológico. Retornar por edema, febre, piora da dor ou dificuldade de abrir a boca/deglutir. Seguimento acompanha atividade das lesões, novas cáries, higiene e risco; não prometer cura apenas com analgésico.",
+      "es": "El alta de urgencias exige estabilidad, vía aérea e hidratación conservadas, control inicial del dolor y acceso planificado al tratamiento odontológico. Consultar por edema, fiebre, empeoramiento del dolor o dificultad para abrir la boca/tragar. El seguimiento controla actividad de lesiones, nuevas caries, higiene y riesgo; no prometer curación solo con analgésico.",
+      "sources": [
+        "D1",
+        "D2",
+        "D4",
+        "D5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "D1",
+      "title": "Tooth decay",
+      "authority": "NIDCR / NIH",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_HEALTH_INFORMATION",
+      "url": "https://www.nidcr.nih.gov/health-info/tooth-decay",
+      "scope": "Mecanismo, progressão, diagnóstico e prevenção; não guideline de doses.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D2",
+      "title": "Dental caries management clinical practice guidelines",
+      "authority": "ADA",
+      "year": "2018 / 2023",
+      "status": "AUTHORITATIVE_FINAL_GUIDELINES",
+      "url": "https://www.ada.org/resources/research/science/evidence-based-dental-research/caries-management-clinical-practice-guidelines/",
+      "scope": "Restaurativo 2023 e não restaurativo 2018; prevenção em elaboração não é guideline final novo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D3",
+      "title": "Fluoride therapy — best practices",
+      "authority": "AAPD",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_PORTAL",
+      "url": "https://www.aapd.org/globalassets/media/policies_guidelines/bp_fluoridetherapy.pdf",
+      "scope": "Versão identificada como revisão 2023; quantidades de dentifrício e uso supervisionado pediátrico.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D4",
+      "title": "Acute dental pain management guideline",
+      "authority": "ADA",
+      "year": 2024,
+      "status": "AUTHORITATIVE_LIVING",
+      "url": "https://www.ada.org/resources/research/science/evidence-based-dental-research/pain-management-guideline",
+      "scope": "Portal declara guideline living de adultos/adolescentes; não opioide primeira linha.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D5",
+      "title": "Antibiotics for dental pain and swelling",
+      "authority": "ADA",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.ada.org/resources/research/science/evidence-based-dental-research/antibiotics-for-dental-pain-and-swelling",
+      "scope": "Adultos imunocompetentes com doença pulpar/periapical; não generalizar a infecções profundas ou imunossupressão.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D8",
+      "title": "Home oral care",
+      "authority": "ADA",
+      "year": "página oficial consultada em 2026",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+      "scope": "Escovação fluoretada, higiene interdental, individualização e limitações dos enxaguantes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "IBU",
+      "title": "Ibuprofen 200 mg film-coated tablets — SmPC",
+      "authority": "Strides / emc",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/14363/smpc",
+      "scope": "Analgesia de curta duração; apresentação oral de liberação imediata. Não comprova eficácia específica de cada doença.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "PAR",
+      "title": "Paracetamol 500 mg Tablets — SmPC",
+      "authority": "Relonchem / emc",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/5164/smpc",
+      "scope": "Analgesia adulta, teto diário e toxicidade; não extrapolar para hepatopatia, baixo peso ou crianças.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

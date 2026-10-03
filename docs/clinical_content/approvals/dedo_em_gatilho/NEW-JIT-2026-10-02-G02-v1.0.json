@@ -1,0 +1,160 @@
+{
+  "owner": "dedo_em_gatilho",
+  "title": {
+    "pt": "Dedo em gatilho",
+    "es": "Dedo en gatillo"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Dedo em gatilho é dificuldade de deslizamento do tendão flexor na polia A1, com ressalto ou bloqueio na flexão/extensão. Pode envolver polegar. É distinto de tenossinovite de De Quervain e infecção da bainha.",
+      "es": "El dedo en gatillo es dificultad de deslizamiento del tendón flexor en la polea A1, con resalto o bloqueo en flexión/extensión. Puede afectar al pulgar. Es distinto de tenosinovitis de De Quervain e infección de la vaina.",
+      "sources": [
+        "TF1",
+        "TF2"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Espessamento da polia/tendão reduz passagem e gera dor palmar e travamento. Diabetes é associação relevante; muitos casos não têm causa única identificada.",
+      "es": "El engrosamiento de la polea/tendón dificulta el paso y genera dolor palmar y bloqueo. La diabetes es una asociación relevante; muchos casos no tienen una causa única identificada.",
+      "sources": [
+        "TF1",
+        "TF2"
+      ]
+    },
+    {
+      "id": "exam",
+      "pt": "Perguntar sobre bloqueio, piora ao despertar e impacto funcional. Examinar ponto doloroso/nódulo palmar na base do dedo, ressalto e amplitude. Diagnóstico típico é clínico; diferenciar rigidez articular, trauma e contratura fixa.",
+      "es": "Preguntar por bloqueo, empeoramiento al despertar e impacto funcional. Examinar punto doloroso/nódulo palmar en la base del dedo, resalto y amplitud. El diagnóstico típico es clínico; diferenciar rigidez articular, traumatismo y contractura fija.",
+      "sources": [
+        "TF1",
+        "TF2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Edema fusiforme agudo, dor na bainha, dedo mantido em flexão e dor à extensão passiva sugerem tenossinovite infecciosa, especialmente após ferimento. Não esperar febre ou todos os sinais: avaliação urgente de mão e tratamento de infecção, não infiltração como gatilho habitual.",
+      "es": "Edema fusiforme agudo, dolor en la vaina, dedo mantenido en flexión y dolor a la extensión pasiva sugieren tenosinovitis infecciosa, especialmente tras una herida. No esperar fiebre ni todos los signos: evaluación urgente de mano y tratamiento de infección, no infiltración como un gatillo habitual.",
+      "sources": [
+        "TF3"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Imagem não é rotina no quadro típico. Solicitar exame dirigido quando trauma, suspeita articular, massa ou apresentação atípica muda a decisão. Documentar gravidade pelo bloqueio e limitação, sem confundir travamento crônico com infecção aguda.",
+      "es": "Las imágenes no son de rutina en el cuadro típico. Solicitar estudio dirigido cuando traumatismo, sospecha articular, masa o presentación atípica cambien la decisión. Documentar gravedad por bloqueo y limitación, sin confundir bloqueo crónico con infección aguda.",
+      "sources": [
+        "TF1",
+        "TF2",
+        "TF3"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Reduzir atividade repetitiva dolorosa e considerar tala, inclusive noturna, com orientação. Não forçar desbloqueio doloroso repetidamente. Analgesia é sintomática; não desfaz o estreitamento da polia.",
+      "es": "Reducir actividad repetitiva dolorosa y considerar férula, incluida nocturna, con orientación. No forzar repetidamente un desbloqueo doloroso. La analgesia es sintomática; no elimina el estrechamiento de la polea.",
+      "sources": [
+        "TF1",
+        "TF2"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Corticoide local pode ser opção após avaliação e exclusão de infecção; dose, agente e técnica dependem do procedimento especializado. Em diabetes, discutir elevação transitória da glicemia e monitorização. Falha ou bloqueio persistente pode indicar liberação da polia após decisão compartilhada.",
+      "es": "Un corticoide local puede ser opción tras evaluar y excluir infección; dosis, agente y técnica dependen del procedimiento especializado. En diabetes, discutir elevación transitoria de glucemia y vigilancia. Fracaso o bloqueo persistente pueden indicar liberación de la polea tras una decisión compartida.",
+      "sources": [
+        "TF1",
+        "TF2"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+      "es": "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "analgesia_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      "es": "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Polegar em gatilho pediátrico exige avaliação própria e não recebe automaticamente o esquema adulto. Gestação e doença renal/hepática modificam analgesia; diabetes exige planejamento se houver corticoide.",
+      "es": "El pulgar en gatillo pediátrico requiere evaluación propia y no recibe automáticamente el esquema adulto. Embarazo y enfermedad renal/hepática modifican analgesia; la diabetes exige planificación si se usa corticoide.",
+      "sources": [
+        "TF1",
+        "TF2",
+        "IBU"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Sem suspeita infecciosa ou lesão urgente, acompanhar ambulatorialmente dor, frequência do travamento e função. Bloqueio persistente ou incapacidade funcional justifica encaminhamento de mão; novo edema inflamatório agudo exige reavaliação urgente.",
+      "es": "Sin sospecha infecciosa ni lesión urgente, seguir ambulatoriamente dolor, frecuencia del bloqueo y función. Bloqueo persistente o incapacidad funcional justifican derivación de mano; nuevo edema inflamatorio agudo exige reevaluación urgente.",
+      "sources": [
+        "TF1",
+        "TF2",
+        "TF3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "TF1",
+      "title": "Trigger finger/thumb",
+      "authority": "British Society for Surgery of the Hand",
+      "year": "material oficial consultado em 2026",
+      "status": "OFFICIAL_SPECIALTY_INFORMATION",
+      "url": "https://www.bssh.ac.uk/patients/conditions/18/trigger_fingerthumb",
+      "scope": "Diagnóstico clínico, tala, corticoide e cirurgia.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "TF2",
+      "title": "Trigger finger",
+      "authority": "AAOS OrthoInfo",
+      "year": "material oficial consultado em 2026",
+      "status": "OFFICIAL_SPECIALTY_INFORMATION",
+      "url": "https://www.orthoinfo.org/diseases--conditions/trigger-finger/",
+      "scope": "Estreitamento da polia, tratamento e glicemia após corticoide.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "TF3",
+      "title": "Infectious flexor tenosynovitis",
+      "authority": "Merck Manual Professional",
+      "year": 2024,
+      "status": "AUTHORED_CLINICAL_REFERENCE",
+      "url": "https://www.merckmanuals.com/professional/musculoskeletal-and-connective-tissue-disorders/hand-disorders/infectious-flexor-tenosynovitis",
+      "scope": "Diferencial urgente: sinais de Kanavel. Não é guideline do dedo em gatilho.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "IBU",
+      "title": "Ibuprofen 200 mg film-coated tablets — SmPC",
+      "authority": "Strides / emc",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/14363/smpc",
+      "scope": "Analgesia de curta duração; apresentação oral de liberação imediata. Não comprova eficácia específica de cada doença.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

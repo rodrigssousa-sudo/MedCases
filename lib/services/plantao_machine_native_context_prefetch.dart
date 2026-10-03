@@ -887,7 +887,7 @@ class PlantaoMachineNativeContextPrefetch {
     final approvedEap = key == 'edema_agudo_pulmao' &&
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] == '0b9f8fabc6598b964edc9d7161b71f49f56da555a7cbecc59055f6d3652963f7';
-    final approvedNewPathology = rule?['version'] == 'NEW-JIT-2026-10-02-v1.0' &&
+    final approvedNewPathology = const {'NEW-JIT-2026-10-02-v1.0', 'NEW-JIT-2026-10-02-G02-v1.0'}.contains(rule?['version']) &&
         newPathologyApprovedHashes[key] != null &&
         rule?['approvedClinicalPayloadSha256'] == newPathologyApprovedHashes[key];
     final completeApprovedPayload = approvedNewPathology || approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap;

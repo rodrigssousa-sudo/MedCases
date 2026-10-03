@@ -1,0 +1,157 @@
+{
+  "owner": "cisto_baker",
+  "title": {
+    "pt": "Cisto de Baker",
+    "es": "Quiste de Baker"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Cisto de Baker é distensão sinovial poplítea associada a líquido articular. É uma condição local, distinta de TVP; em adultos pode acompanhar artrose, artrite ou lesão meniscal.",
+      "es": "El quiste de Baker es distensión sinovial poplítea asociada al líquido articular. Es una condición local, distinta de TVP; en adultos puede acompañar artrosis, artritis o lesión meniscal.",
+      "sources": [
+        "BK1"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Comunicação com o joelho e excesso de líquido favorecem aumento do cisto. Pode causar plenitude posterior, rigidez e dor; muitos são assintomáticos. Tratar apenas a coleção pode deixar a causa articular ativa.",
+      "es": "La comunicación con la rodilla y el exceso de líquido favorecen el aumento del quiste. Puede causar plenitud posterior, rigidez y dolor; muchos son asintomáticos. Tratar solo la colección puede dejar activa la causa articular.",
+      "sources": [
+        "BK1"
+      ]
+    },
+    {
+      "id": "exam",
+      "pt": "Examinar massa posterior, mobilidade, derrame e sinais articulares; avaliar panturrilha, perfusão e sensibilidade. Massa pode ficar mais firme em extensão. Considerar TVP, massa sólida e doença vascular no diferencial.",
+      "es": "Examinar masa posterior, movilidad, derrame y signos articulares; evaluar pantorrilla, perfusión y sensibilidad. La masa puede endurecerse en extensión. Considerar TVP, masa sólida y enfermedad vascular en el diferencial.",
+      "sources": [
+        "BK1",
+        "BK2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Dor ou edema de panturrilha de início agudo ou crescente exige avaliação urgente: ruptura do cisto pode imitar TVP. Dispneia/síncope exige emergência. Dor desproporcional, dor ao alongamento passivo ou déficit neurovascular requer excluir síndrome compartimental; não aguardar sinais tardios.",
+      "es": "Dolor o edema de pantorrilla de inicio agudo o creciente requieren evaluación urgente: la rotura del quiste puede simular TVP. Disnea/síncope requieren emergencia. Dolor desproporcionado, dolor al estiramiento pasivo o déficit neurovascular obligan a descartar síndrome compartimental; no esperar signos tardíos.",
+      "sources": [
+        "BK1",
+        "BK2",
+        "BK3"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Ultrassom caracteriza conteúdo líquido e pode investigar vasos quando há suspeita de TVP. Seguir o fluxo de probabilidade clínica, dímero-D e ultrassom venoso apropriado para TVP; a imagem do cisto não exclui trombose concomitante. RM selecionada avalia lesão intra-articular; radiografia avalia doença óssea/artrose.",
+      "es": "La ecografía caracteriza contenido líquido y puede estudiar vasos ante sospecha de TVP. Seguir el circuito de probabilidad clínica, dímero-D y ecografía venosa apropiada para TVP; visualizar el quiste no excluye trombosis concomitante. RM seleccionada evalúa lesión intraarticular; radiografía evalúa enfermedad ósea/artrosis.",
+      "sources": [
+        "BK1",
+        "BK2"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Sem alarme e com diagnóstico seguro, observar cisto assintomático. Se doloroso, adaptar atividade, evitar esforço desencadeante e abordar a causa do joelho. Não iniciar anticoagulação para cisto confirmado sem outra indicação.",
+      "es": "Sin alarma y con diagnóstico seguro, observar el quiste asintomático. Si duele, adaptar actividad, evitar esfuerzo desencadenante y abordar la causa de la rodilla. No iniciar anticoagulación por un quiste confirmado sin otra indicación.",
+      "sources": [
+        "BK1",
+        "BK2"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Aspiração guiada ou corticoide intra-articular são opções selecionadas por profissional habilitado; recidiva é possível. Cirurgia é incomum e considera sintomas persistentes, recorrência e doença articular tratável. Este guia não define dose de infiltração.",
+      "es": "Aspiración guiada o corticoide intraarticular son opciones seleccionadas por un profesional capacitado; puede haber recurrencia. La cirugía es infrecuente y considera síntomas persistentes, recurrencia y enfermedad articular tratable. Esta guía no establece dosis de infiltración.",
+      "sources": [
+        "BK1"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+      "es": "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "analgesia_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      "es": "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Crianças podem ter apresentação diferente e precisam de avaliação própria. Não extrapolar analgesia adulta. Gestação, anticoagulação e insuficiência renal/hepática modificam escolhas e exigem avaliação individual.",
+      "es": "Los niños pueden tener una presentación diferente y necesitan evaluación propia. No extrapolar analgesia adulta. Embarazo, anticoagulación e insuficiencia renal/hepática modifican las decisiones y requieren evaluación individual.",
+      "sources": [
+        "BK1",
+        "IBU"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial apenas com sinais vasculares preservados, dor controlável e sem suspeita urgente pendente. Orientar retorno por piora do edema/dor, dispneia ou alteração neurovascular; reavaliar limitação funcional e encaminhar doença persistente do joelho.",
+      "es": "Alta ambulatoria solo con signos vasculares conservados, dolor controlable y sin sospecha urgente pendiente. Indicar retorno por mayor edema/dolor, disnea o alteración neurovascular; reevaluar limitación funcional y derivar enfermedad persistente de la rodilla.",
+      "sources": [
+        "BK1",
+        "BK2",
+        "BK3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "BK1",
+      "title": "Baker’s cyst (popliteal cyst)",
+      "authority": "AAOS OrthoInfo",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_SPECIALTY_INFORMATION",
+      "url": "https://www.orthoinfo.org/diseases--conditions/bakers-cyst-popliteal-cyst/",
+      "scope": "Mecanismo, investigação e tratamento; material de sociedade, sem algoritmo universal de dose.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "BK2",
+      "title": "Venous thromboembolic diseases: diagnosis, management and thrombophilia testing — NG158",
+      "authority": "NICE",
+      "year": "2020; atualizado 2023",
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+      "scope": "Investigação de TVP suspeita; não tratar cisto como trombose confirmada.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "BK3",
+      "title": "Compartment syndrome",
+      "authority": "AAOS OrthoInfo",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_SPECIALTY_INFORMATION",
+      "url": "https://www.orthoinfo.org/diseases--conditions/compartment-syndrome/",
+      "scope": "Sinais de síndrome compartimental aguda e necessidade de atendimento emergencial.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "IBU",
+      "title": "Ibuprofen 200 mg film-coated tablets — SmPC",
+      "authority": "Strides / emc",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/14363/smpc",
+      "scope": "Analgesia de curta duração; apresentação oral de liberação imediata. Não comprova eficácia específica de cada doença.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

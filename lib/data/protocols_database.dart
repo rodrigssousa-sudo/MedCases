@@ -20440,4 +20440,1562 @@ drugs: [
     monitoring: {"pt": ["Caso estável segue ambulatorialmente com metas compartilhadas, diário e avaliação de comorbidades. Alarme: revisar progresso em4semanas e continuar se melhora, buscando≥2semanas secas. Falha de alarme/desmopressina adequada ou sintomas diurnos importantes exige especialista; não iniciar imipramina/anticolinérgico empiricamente. NICE não exige eletrólitos rotineiros no caso simples; CPS aconselha controle aproximadamente a cada3meses no uso contínuo: adotar plano de monitorização individual, sem negar exames em paciente de risco."], "es": ["Caso estable ambulatorio con metas compartidas, diario y comorbilidades. Alarma: revisar en4semanas y continuar si mejora, buscando≥2semanas secas. Fallo de alarma/desmopresina adecuada o síntomas diurnos importantes exige especialista; no iniciar imipramina/anticolinérgico empíricamente. NICE no exige electrolitos rutinarios en caso simple; CPS aconseja control aproximadamente cada3meses con uso continuo: plan individual de vigilancia, sin negar pruebas al paciente de riesgo."]},
     doNotDo: {"pt": [], "es": []},
   ),
+
+  // Human-approved remote-only expansion NEW-JIT-2026-10-02-G02-v1.0.
+  ProtocolModel(
+    id: "bacteriuria_assintomatica",
+    canonicalProtocolId: "bacteriuria_assintomatica",
+    title: {
+      "pt": "Bacteriúria assintomática",
+      "es": "Bacteriuria asintomática",
+    },
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Bacteriúria assintomática é crescimento bacteriano na urina sem sintomas atribuíveis à infecção urinária. É frequente em idosos, pessoas com sonda e disfunção de esvaziamento. Cultura positiva isolada não equivale a infecção que necessita antibiótico. O guia não cobre candidúria nem ITU sintomática.",
+      "es":
+          "La bacteriuria asintomática es crecimiento bacteriano en orina sin síntomas atribuibles a infección urinaria. Es frecuente en mayores, personas con sonda y disfunción del vaciamiento. Un urocultivo positivo aislado no equivale a una infección que requiere antibiótico. La guía no cubre candiduria ni ITU sintomática.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Bacteriúria assintomática é crescimento bacteriano na urina sem sintomas atribuíveis à infecção urinária. É frequente em idosos, pessoas com sonda e disfunção de esvaziamento. Cultura positiva isolada não equivale a infecção que necessita antibiótico. O guia não cobre candidúria nem ITU sintomática.",
+        "Antes de classificar, pesquisar disúria, frequência/urgência novas, dor suprapúbica, dor lombar, febre e repercussão sistêmica. Considerar apresentação atípica em lesão medular ou pacientes incapazes de relatar sintomas; não declarar assintomático apenas porque não verbaliza disúria.",
+        "Febre com instabilidade, sinais de sepse ou dor em flanco exigem investigação de ITU sistêmica e outras fontes; o resultado de cultura não deve retardar atendimento. Delirium ou queda isolados em idoso, sem sintomas urinários ou sinais sistêmicos, exigem procurar outras causas e observar, sem antibiótico automático.",
+        "Na definição microbiológica clássica em amostra de jato médio: ≥10^5 UFC/mL; mulheres precisam de 2 amostras consecutivas e homens de 1. Essa definição não obriga repetir cultura em toda pessoa sem indicação de rastreio. Na gestação, seguir o protocolo obstétrico para cultura de rastreio e tratamento.",
+        "Solicitar urocultura quando o resultado mudar conduta: rastreio gestacional ou antes de procedimento urológico com trauma de mucosa. Confirmar coleta adequada e contaminação. Crescimento persistente de Proteus/organismo produtor de urease indica investigar cálculo; imagem não é rotina para toda bacteriúria assintomática.",
+        "Não rastrear/tratar rotineiramente crianças, adultos saudáveis não gestantes, idosos, pessoas com diabetes, lesão medular ou cateter urinário e pacientes submetidos a cirurgia não urológica. Não adicionar antibiótico a profilaxia de artroplastia apenas por cultura positiva assintomática.",
+        "Transplante renal: IDSA recomenda não rastrear/tratar após 1 mês, mas o primeiro mês permanece lacuna; neutropenia de alto risco também não tem recomendação suficiente. Esses contextos e retirada de cateter requerem decisão da equipe responsável; não extrapolar a regra de não tratamento ou iniciar esquema universal.",
+        "Na gestação, rastrear e tratar bacteriúria significativa conforme cultura e protocolo obstétrico. A evidência histórica de benefício é reconhecida, embora limitada; não confundir menor força da recomendação EAU com proibição de tratar. Escolher agente conforme sensibilidade, idade gestacional, alergias e função renal, sem amoxicilina empírica universal.",
+        "Antes de procedimento endourológico com trauma de mucosa, obter cultura e prescrever terapia dirigida. IDSA sugere 1–2 doses iniciadas 30–60 minutos antes do procedimento, escolhidas pela equipe conforme cultura/procedimento. Não substituir esse plano por nitrofurantoína de 7 dias nem aplicar a cistoscopia não traumática de rotina.",
+        "Opção para gestante elegível, agente sensível e infecção limitada ao trato inferior: nitrofurantoína de liberação prolongada 100 mg por via oral a cada 12 horas por 7 dias, com alimento, conforme NICE e a bula consultada. A cápsula prolongada não é intercambiável em frequência com macrocristais de liberação imediata. Não é esquema para pielonefrite, sepse ou profilaxia cirúrgica.",
+        "Neste esquema NICE/bula britânica, usar somente com eGFR ≥45 mL/min, sem deficiência de G6PD, alergia a nitrofuranos ou porfiria aguda; evitar no termo/trabalho de parto pelo risco de hemólise neonatal. Conferir bula local, pois restrições renais podem diferir. Não adotar automaticamente exceção renal de curso curto para gestantes.",
+        "Revisar sensibilidade e tolerância; suspender e avaliar se surgirem dispneia/tosse importante, icterícia, neuropatia ou reação alérgica. História de hepatopatia/doença pulmonar requer cautela. Não prolongar preventivamente este curso. Se aparecerem sintomas, reclassificar e investigar; repetição de cultura pós-tratamento gestacional segue protocolo obstétrico, sem periodicidade universal imposta.",
+        "Paciente estável verdadeiramente assintomático pode seguir ambulatorialmente; documentar por que tratar ou por que não tratar e orientar retorno por sintomas urinários/febre. Gestante precisa de seguimento obstétrico; doença sistêmica exige o fluxo de urgência apropriado. Cultura positiva isolada não é critério de internação.",
+        "Colonização e biofilme podem persistir sem invasão sintomática. Tentar esterilizar a urina em populações sem benefício demonstrado aumenta exposição a efeitos adversos, resistência e infecção por Clostridioides difficile. Piúria, odor ou aspecto turvo isolados não justificam tratar.",
+      ],
+      "es": [
+        "La bacteriuria asintomática es crecimiento bacteriano en orina sin síntomas atribuibles a infección urinaria. Es frecuente en mayores, personas con sonda y disfunción del vaciamiento. Un urocultivo positivo aislado no equivale a una infección que requiere antibiótico. La guía no cubre candiduria ni ITU sintomática.",
+        "Antes de clasificar, buscar disuria, frecuencia/urgencia nuevas, dolor suprapúbico, dolor lumbar, fiebre y compromiso sistémico. Considerar presentación atípica en lesión medular o pacientes incapaces de comunicar síntomas; no declarar asintomático solo porque no refiere disuria.",
+        "Fiebre con inestabilidad, signos de sepsis o dolor en flanco requieren investigar ITU sistémica y otros focos; el resultado del cultivo no debe retrasar la atención. Delirium o caída aislados en un mayor, sin síntomas urinarios ni signos sistémicos, requieren buscar otras causas y observar, sin antibiótico automático.",
+        "En la definición microbiológica clásica en muestra de chorro medio: ≥10^5 UFC/mL; las mujeres necesitan 2 muestras consecutivas y los hombres 1. Esta definición no obliga a repetir el cultivo en toda persona sin indicación de pesquisa. En embarazo, seguir el protocolo obstétrico para cultivo de pesquisa y tratamiento.",
+        "Solicitar urocultivo cuando cambie la conducta: pesquisa gestacional o antes de un procedimiento urológico con traumatismo de mucosa. Confirmar toma adecuada y contaminación. Crecimiento persistente de Proteus/organismo productor de ureasa indica investigar litiasis; las imágenes no son de rutina para toda bacteriuria asintomática.",
+        "No pesquisar/tratar de rutina a niños, adultos sanos no embarazados, mayores, personas con diabetes, lesión medular o catéter urinario y pacientes sometidos a cirugía no urológica. No añadir antibióticos a la profilaxis de artroplastia solo por un cultivo positivo asintomático.",
+        "Trasplante renal: IDSA recomienda no pesquisar/tratar después de 1 mes, pero el primer mes sigue siendo una laguna; la neutropenia de alto riesgo tampoco tiene una recomendación suficiente. Estos contextos y el retiro del catéter requieren decisión del equipo responsable; no extrapolar la regla de no tratamiento ni iniciar un esquema universal.",
+        "En embarazo, pesquisar y tratar bacteriuria significativa según cultivo y protocolo obstétrico. Se reconoce el beneficio de la evidencia histórica, aunque limitada; no confundir menor fuerza de la recomendación EAU con prohibición de tratar. Elegir el agente según sensibilidad, edad gestacional, alergias y función renal, sin amoxicilina empírica universal.",
+        "Antes de un procedimiento endourológico con traumatismo de mucosa, obtener cultivo y prescribir tratamiento dirigido. IDSA sugiere 1–2 dosis iniciadas 30–60 minutos antes del procedimiento, elegidas por el equipo según cultivo/procedimiento. No sustituir este plan por nitrofurantoína de 7 días ni aplicarlo a la cistoscopia no traumática de rutina.",
+        "Opción para embarazada elegible, germen sensible e infección limitada al tracto inferior: nitrofurantoína de liberación prolongada 100 mg por vía oral cada 12 horas durante 7 días, con alimento, según NICE y el prospecto consultado. La cápsula prolongada no es intercambiable en frecuencia con macrocristales de liberación inmediata. No es un esquema para pielonefritis, sepsis o profilaxis quirúrgica.",
+        "En este esquema NICE/prospecto británico, usar solo con eGFR ≥45 mL/min, sin déficit de G6PD, alergia a nitrofuranos o porfiria aguda; evitar a término/en trabajo de parto por riesgo de hemólisis neonatal. Revisar el prospecto local, porque las restricciones renales pueden diferir. No aplicar automáticamente la excepción renal de curso corto a embarazadas.",
+        "Revisar sensibilidad y tolerancia; suspender y evaluar si aparecen disnea/tos importante, ictericia, neuropatía o reacción alérgica. Antecedentes de hepatopatía/enfermedad pulmonar requieren precaución. No prolongar preventivamente este curso. Si aparecen síntomas, reclasificar e investigar; la repetición del cultivo después del tratamiento gestacional sigue el protocolo obstétrico, sin imponer una periodicidad universal.",
+        "El paciente estable verdaderamente asintomático puede continuar ambulatoriamente; documentar por qué tratar o no tratar e indicar consulta por síntomas urinarios/fiebre. La embarazada necesita seguimiento obstétrico; enfermedad sistémica requiere el circuito de urgencia correspondiente. Un cultivo positivo aislado no es criterio de internación.",
+        "La colonización y el biofilm pueden persistir sin invasión sintomática. Intentar esterilizar la orina en poblaciones sin beneficio demostrado aumenta la exposición a efectos adversos, resistencia e infección por Clostridioides difficile. Piuria, olor o turbidez aislados no justifican tratar.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[B1] Asymptomatic bacteriuria guideline https://www.idsociety.org/practice-guideline/asymptomatic-bacteriuria/",
+        "[B2] Urological Infections — asymptomatic bacteriuria https://uroweb.org/guidelines/urological-infections/chapter/the-guideline",
+        "[B3] Lower urinary tract infection: antimicrobial prescribing NG109 https://www.nice.org.uk/guidance/ng109/chapter/Recommendations",
+        "[B4] Nitrofurantoin Glenmark 100 mg prolonged-release — SmPC https://www.medicines.org.uk/emc/product/102026/smpc",
+      ],
+      "es": [
+        "[B1] Asymptomatic bacteriuria guideline https://www.idsociety.org/practice-guideline/asymptomatic-bacteriuria/",
+        "[B2] Urological Infections — asymptomatic bacteriuria https://uroweb.org/guidelines/urological-infections/chapter/the-guideline",
+        "[B3] Lower urinary tract infection: antimicrobial prescribing NG109 https://www.nice.org.uk/guidance/ng109/chapter/Recommendations",
+        "[B4] Nitrofurantoin Glenmark 100 mg prolonged-release — SmPC https://www.medicines.org.uk/emc/product/102026/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Colonização e biofilme podem persistir sem invasão sintomática. Tentar esterilizar a urina em populações sem benefício demonstrado aumenta exposição a efeitos adversos, resistência e infecção por Clostridioides difficile. Piúria, odor ou aspecto turvo isolados não justificam tratar.",
+      "es":
+          "La colonización y el biofilm pueden persistir sin invasión sintomática. Intentar esterilizar la orina en poblaciones sin beneficio demostrado aumenta la exposición a efectos adversos, resistencia e infección por Clostridioides difficile. Piuria, olor o turbidez aislados no justifican tratar.",
+    },
+    redFlags: {
+      "pt": [
+        "Febre com instabilidade, sinais de sepse ou dor em flanco exigem investigação de ITU sistêmica e outras fontes; o resultado de cultura não deve retardar atendimento. Delirium ou queda isolados em idoso, sem sintomas urinários ou sinais sistêmicos, exigem procurar outras causas e observar, sem antibiótico automático.",
+      ],
+      "es": [
+        "Fiebre con inestabilidad, signos de sepsis o dolor en flanco requieren investigar ITU sistémica y otros focos; el resultado del cultivo no debe retrasar la atención. Delirium o caída aislados en un mayor, sin síntomas urinarios ni signos sistémicos, requieren buscar otras causas y observar, sin antibiótico automático.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Na definição microbiológica clássica em amostra de jato médio: ≥10^5 UFC/mL; mulheres precisam de 2 amostras consecutivas e homens de 1. Essa definição não obriga repetir cultura em toda pessoa sem indicação de rastreio. Na gestação, seguir o protocolo obstétrico para cultura de rastreio e tratamento.",
+        "Solicitar urocultura quando o resultado mudar conduta: rastreio gestacional ou antes de procedimento urológico com trauma de mucosa. Confirmar coleta adequada e contaminação. Crescimento persistente de Proteus/organismo produtor de urease indica investigar cálculo; imagem não é rotina para toda bacteriúria assintomática.",
+      ],
+      "es": [
+        "En la definición microbiológica clásica en muestra de chorro medio: ≥10^5 UFC/mL; las mujeres necesitan 2 muestras consecutivas y los hombres 1. Esta definición no obliga a repetir el cultivo en toda persona sin indicación de pesquisa. En embarazo, seguir el protocolo obstétrico para cultivo de pesquisa y tratamiento.",
+        "Solicitar urocultivo cuando cambie la conducta: pesquisa gestacional o antes de un procedimiento urológico con traumatismo de mucosa. Confirmar toma adecuada y contaminación. Crecimiento persistente de Proteus/organismo productor de ureasa indica investigar litiasis; las imágenes no son de rutina para toda bacteriuria asintomática.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Antes de classificar, pesquisar disúria, frequência/urgência novas, dor suprapúbica, dor lombar, febre e repercussão sistêmica. Considerar apresentação atípica em lesão medular ou pacientes incapazes de relatar sintomas; não declarar assintomático apenas porque não verbaliza disúria.",
+        "Não rastrear/tratar rotineiramente crianças, adultos saudáveis não gestantes, idosos, pessoas com diabetes, lesão medular ou cateter urinário e pacientes submetidos a cirurgia não urológica. Não adicionar antibiótico a profilaxia de artroplastia apenas por cultura positiva assintomática.",
+        "Transplante renal: IDSA recomenda não rastrear/tratar após 1 mês, mas o primeiro mês permanece lacuna; neutropenia de alto risco também não tem recomendação suficiente. Esses contextos e retirada de cateter requerem decisão da equipe responsável; não extrapolar a regra de não tratamento ou iniciar esquema universal.",
+        "Antes de procedimento endourológico com trauma de mucosa, obter cultura e prescrever terapia dirigida. IDSA sugere 1–2 doses iniciadas 30–60 minutos antes do procedimento, escolhidas pela equipe conforme cultura/procedimento. Não substituir esse plano por nitrofurantoína de 7 dias nem aplicar a cistoscopia não traumática de rotina.",
+        "Opção para gestante elegível, agente sensível e infecção limitada ao trato inferior: nitrofurantoína de liberação prolongada 100 mg por via oral a cada 12 horas por 7 dias, com alimento, conforme NICE e a bula consultada. A cápsula prolongada não é intercambiável em frequência com macrocristais de liberação imediata. Não é esquema para pielonefrite, sepse ou profilaxia cirúrgica.",
+        "Paciente estável verdadeiramente assintomático pode seguir ambulatorialmente; documentar por que tratar ou por que não tratar e orientar retorno por sintomas urinários/febre. Gestante precisa de seguimento obstétrico; doença sistêmica exige o fluxo de urgência apropriado. Cultura positiva isolada não é critério de internação.",
+      ],
+      "es": [
+        "Antes de clasificar, buscar disuria, frecuencia/urgencia nuevas, dolor suprapúbico, dolor lumbar, fiebre y compromiso sistémico. Considerar presentación atípica en lesión medular o pacientes incapaces de comunicar síntomas; no declarar asintomático solo porque no refiere disuria.",
+        "No pesquisar/tratar de rutina a niños, adultos sanos no embarazados, mayores, personas con diabetes, lesión medular o catéter urinario y pacientes sometidos a cirugía no urológica. No añadir antibióticos a la profilaxis de artroplastia solo por un cultivo positivo asintomático.",
+        "Trasplante renal: IDSA recomienda no pesquisar/tratar después de 1 mes, pero el primer mes sigue siendo una laguna; la neutropenia de alto riesgo tampoco tiene una recomendación suficiente. Estos contextos y el retiro del catéter requieren decisión del equipo responsable; no extrapolar la regla de no tratamiento ni iniciar un esquema universal.",
+        "Antes de un procedimiento endourológico con traumatismo de mucosa, obtener cultivo y prescribir tratamiento dirigido. IDSA sugiere 1–2 dosis iniciadas 30–60 minutos antes del procedimiento, elegidas por el equipo según cultivo/procedimiento. No sustituir este plan por nitrofurantoína de 7 días ni aplicarlo a la cistoscopia no traumática de rutina.",
+        "Opción para embarazada elegible, germen sensible e infección limitada al tracto inferior: nitrofurantoína de liberación prolongada 100 mg por vía oral cada 12 horas durante 7 días, con alimento, según NICE y el prospecto consultado. La cápsula prolongada no es intercambiable en frecuencia con macrocristales de liberación inmediata. No es un esquema para pielonefritis, sepsis o profilaxis quirúrgica.",
+        "El paciente estable verdaderamente asintomático puede continuar ambulatoriamente; documentar por qué tratar o no tratar e indicar consulta por síntomas urinarios/fiebre. La embarazada necesita seguimiento obstétrico; enfermedad sistémica requiere el circuito de urgencia correspondiente. Un cultivo positivo aislado no es criterio de internación.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Na gestação, rastrear e tratar bacteriúria significativa conforme cultura e protocolo obstétrico. A evidência histórica de benefício é reconhecida, embora limitada; não confundir menor força da recomendação EAU com proibição de tratar. Escolher agente conforme sensibilidade, idade gestacional, alergias e função renal, sem amoxicilina empírica universal.",
+      ],
+      "es": [
+        "En embarazo, pesquisar y tratar bacteriuria significativa según cultivo y protocolo obstétrico. Se reconoce el beneficio de la evidencia histórica, aunque limitada; no confundir menor fuerza de la recomendación EAU con prohibición de tratar. Elegir el agente según sensibilidad, edad gestacional, alergias y función renal, sin amoxicilina empírica universal.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Revisar sensibilidade e tolerância; suspender e avaliar se surgirem dispneia/tosse importante, icterícia, neuropatia ou reação alérgica. História de hepatopatia/doença pulmonar requer cautela. Não prolongar preventivamente este curso. Se aparecerem sintomas, reclassificar e investigar; repetição de cultura pós-tratamento gestacional segue protocolo obstétrico, sem periodicidade universal imposta.",
+      ],
+      "es": [
+        "Revisar sensibilidad y tolerancia; suspender y evaluar si aparecen disnea/tos importante, ictericia, neuropatía o reacción alérgica. Antecedentes de hepatopatía/enfermedad pulmonar requieren precaución. No prolongar preventivamente este curso. Si aparecen síntomas, reclasificar e investigar; la repetición del cultivo después del tratamiento gestacional sigue el protocolo obstétrico, sin imponer una periodicidad universal.",
+      ],
+    },
+    doNotDo: {
+      "pt": [
+        "Neste esquema NICE/bula britânica, usar somente com eGFR ≥45 mL/min, sem deficiência de G6PD, alergia a nitrofuranos ou porfiria aguda; evitar no termo/trabalho de parto pelo risco de hemólise neonatal. Conferir bula local, pois restrições renais podem diferir. Não adotar automaticamente exceção renal de curso curto para gestantes.",
+      ],
+      "es": [
+        "En este esquema NICE/prospecto británico, usar solo con eGFR ≥45 mL/min, sin déficit de G6PD, alergia a nitrofuranos o porfiria aguda; evitar a término/en trabajo de parto por riesgo de hemólisis neonatal. Revisar el prospecto local, porque las restricciones renales pueden diferir. No aplicar automáticamente la excepción renal de curso corto a embarazadas.",
+      ],
+    },
+  ),
+  ProtocolModel(
+    id: "amenorreia_secundaria",
+    canonicalProtocolId: "amenorreia_secundaria",
+    title: {"pt": "Amenorreia secundária", "es": "Amenorrea secundaria"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Amenorreia secundária é interrupção menstrual após menarca: ausência por mais de 3 meses quando ciclos eram regulares ou por 6 meses quando eram irregulares requer investigação. Atraso menor já pode exigir excluir gestação. Amenorreia é manifestação, não prova de infertilidade nem diagnóstico etiológico.",
+      "es":
+          "La amenorrea secundaria es interrupción menstrual después de la menarca: ausencia por más de 3 meses cuando los ciclos eran regulares o por 6 meses cuando eran irregulares requiere investigación. Un retraso menor ya puede requerir descartar embarazo. La amenorrea es una manifestación, no prueba de infertilidad ni diagnóstico etiológico.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Amenorreia secundária é interrupção menstrual após menarca: ausência por mais de 3 meses quando ciclos eram regulares ou por 6 meses quando eram irregulares requer investigação. Atraso menor já pode exigir excluir gestação. Amenorreia é manifestação, não prova de infertilidade nem diagnóstico etiológico.",
+        "Primeiro excluir gestação com teste apropriado; se suspeita relevante apesar de teste urinário negativo, usar hCG sérico/avaliação clínica. Gestação com dor abdominal/pélvica, sangramento, síncope ou instabilidade exige excluir ectópica imediatamente. Não esperar completar o prazo de definição da amenorreia.",
+        "Bradicardia grave, hipotensão, ortostatismo importante ou desequilíbrio eletrolítico em provável amenorreia hipotalâmica/transtorno alimentar exigem avaliação para internação. Adolescência não dispensa investigação de gestação quando possível. Gestação/lactação podem explicar amenorreia, mas não justificam ignorar sintomas perigosos; não extrapolar doses hormonais para crianças ou hepatopatia.",
+        "Registrar menarca, ciclos prévios, última menstruação, atividade sexual, contracepção, gestação/lactação, medicamentos, alterações de peso, alimentação, exercício, estresse e fraturas. Perguntar sobre instrumentação uterina, hemorragia pós-parto, quimioterapia e cirurgia ovariana; não assumir amenorreia funcional por um único fator.",
+        "Avaliar sinais vitais, trajetória ponderal/nutricional, sinais tireoidianos, galactorreia, hiperandrogenismo, virilização e deficiência estrogênica. Exame ginecológico é direcionado ao contexto, idade e consentimento. Ausência de galactorreia não exclui hiperprolactinemia; achados de transtorno alimentar exigem abordagem acolhedora.",
+        "Após excluir gestação, investigação inicial costuma incluir TSH, prolactina, FSH e estradiol, com LH conforme hipótese. Hemograma, eletrólitos e outros exames são dirigidos à avaliação nutricional/sistêmica. AMH não é exame obrigatório para toda amenorreia; não transformar o painel de um subtipo em rastreio indiscriminado.",
+        "Interpretar resultados em conjunto: FSH elevada com estradiol baixo sugere insuficiência ovariana; gonadotrofinas baixas/normais com estradiol baixo apontam causas centrais, incluindo déficit energético. Anovulação com hiperandrogenismo pode sugerir síndrome dos ovários policísticos. Confirmar a etiologia pelos critérios específicos; um resultado isolado não encerra diagnóstico.",
+        "Prolactina discretamente elevada exige confirmar persistência, revisar fármacos e tireoide e considerar macroprolactina quando apropriado. Hiperprolactinemia persistente pode indicar imagem hipofisária. Cefaleia importante, alteração visual, vômitos persistentes ou déficits neurológicos aumentam a prioridade; não atribuir tudo ao estresse.",
+        "Ultrassonografia pélvica, quando acessível, avalia endométrio, ovários e anatomia e pode orientar cedo a investigação. História de curetagem/instrumentação e suspeita de aderências exigem avaliação uterina especializada. Virilização rápida exige investigação de tumor/causa androgênica, sem rotular automaticamente como ovários policísticos.",
+        "Tratar a causa confirmada: corrigir distúrbio tireoidiano/hiperprolactinemia conforme diagnóstico, abordar anovulação e proteção endometrial quando indicada, e discutir reposição hormonal/saúde óssea na insuficiência ovariana. Não prescrever hormônio apenas para produzir sangramento antes de excluir gestação e definir objetivo, riscos e etiologia.",
+        "Na amenorreia hipotalâmica funcional, corrigir desequilíbrio energético com alimentação, redução de exercício excessivo e apoio psicológico; pode ser necessário ganho ponderal. Anticoncepcional oral não deve ser usado apenas para recuperar menstruação ou densidade óssea: pode mascarar recuperação enquanto déficit energético persiste. Ovulação pode ocorrer antes do primeiro sangramento.",
+        "Na suspeita de amenorreia hipotalâmica funcional por 6 meses ou mais, considerar avaliação de densidade óssea por DXA; antecipar em déficit nutricional grave, outras carências energéticas ou fragilidade esquelética. Não impor DXA a toda ausência menstrual por anticoncepcional ou lactação fisiológica.",
+        "Sem red flags, organizar seguimento ginecológico/endócrino com resultados, evolução menstrual, nutrição, desejo reprodutivo e saúde óssea. Discutir contracepção quando não desejar gestação. Persistência, novos sinais androgênicos/neurológicos ou deterioração nutricional requerem reavaliação; teste de privação com progestagênio é ferramenta selecionada e não prova isolada universal.",
+        "O ciclo depende do eixo hipotálamo–hipófise–ovário e do endométrio/trato de saída. Déficit energético pode reduzir pulsos de GnRH; hiperprolactinemia e disfunção tireoidiana alteram ovulação; falência ovariana reduz estradiol com elevação de FSH. Aderências uterinas podem impedir sangramento apesar de função hormonal.",
+      ],
+      "es": [
+        "La amenorrea secundaria es interrupción menstrual después de la menarca: ausencia por más de 3 meses cuando los ciclos eran regulares o por 6 meses cuando eran irregulares requiere investigación. Un retraso menor ya puede requerir descartar embarazo. La amenorrea es una manifestación, no prueba de infertilidad ni diagnóstico etiológico.",
+        "Primero descartar embarazo con una prueba apropiada; si la sospecha es relevante pese a prueba urinaria negativa, usar hCG sérica/evaluación clínica. Embarazo con dolor abdominal/pélvico, sangrado, síncope o inestabilidad exige descartar ectópico de inmediato. No esperar a completar el plazo de definición de amenorrea.",
+        "Bradicardia grave, hipotensión, ortostatismo importante o desequilibrio electrolítico en probable amenorrea hipotalámica/trastorno alimentario requieren evaluación para internación. La adolescencia no excluye investigar embarazo cuando sea posible. Embarazo/lactancia pueden explicar amenorrea, pero no justifican ignorar síntomas peligrosos; no extrapolar dosis hormonales a niños o hepatopatía.",
+        "Registrar menarca, ciclos previos, última menstruación, actividad sexual, anticoncepción, embarazo/lactancia, medicamentos, cambios de peso, alimentación, ejercicio, estrés y fracturas. Preguntar por instrumentación uterina, hemorragia posparto, quimioterapia y cirugía ovárica; no asumir amenorrea funcional por un solo factor.",
+        "Evaluar signos vitales, trayectoria ponderal/nutricional, signos tiroideos, galactorrea, hiperandrogenismo, virilización y déficit estrogénico. El examen ginecológico se dirige al contexto, edad y consentimiento. La ausencia de galactorrea no excluye hiperprolactinemia; hallazgos de trastorno alimentario requieren una atención respetuosa.",
+        "Después de descartar embarazo, la investigación inicial suele incluir TSH, prolactina, FSH y estradiol, con LH según hipótesis. Hemograma, electrolitos y otros estudios se dirigen a la evaluación nutricional/sistémica. AMH no es un estudio obligatorio para toda amenorrea; no convertir el panel de un subtipo en pesquisa indiscriminada.",
+        "Interpretar los resultados en conjunto: FSH elevada con estradiol bajo sugiere insuficiencia ovárica; gonadotrofinas bajas/normales con estradiol bajo orientan a causas centrales, incluido déficit energético. Anovulación con hiperandrogenismo puede sugerir síndrome de ovario poliquístico. Confirmar la etiología por criterios específicos; un resultado aislado no cierra el diagnóstico.",
+        "La prolactina levemente elevada requiere confirmar persistencia, revisar fármacos y tiroides y considerar macroprolactina cuando corresponda. La hiperprolactinemia persistente puede indicar imagen hipofisaria. Cefalea importante, alteración visual, vómitos persistentes o déficits neurológicos aumentan la prioridad; no atribuir todo al estrés.",
+        "La ecografía pélvica, cuando está disponible, evalúa endometrio, ovarios y anatomía y puede orientar tempranamente la investigación. Antecedentes de legrado/instrumentación y sospecha de adherencias requieren evaluación uterina especializada. La virilización rápida exige investigar tumor/causa androgénica, sin etiquetar automáticamente como ovario poliquístico.",
+        "Tratar la causa confirmada: corregir trastorno tiroideo/hiperprolactinemia según diagnóstico, abordar anovulación y protección endometrial cuando esté indicada, y discutir reemplazo hormonal/salud ósea en insuficiencia ovárica. No prescribir hormonas solo para producir sangrado antes de descartar embarazo y definir objetivo, riesgos y etiología.",
+        "En amenorrea hipotalámica funcional, corregir el desequilibrio energético con alimentación, reducción del ejercicio excesivo y apoyo psicológico; puede necesitarse aumento de peso. El anticonceptivo oral no debe usarse solo para recuperar menstruación o densidad ósea: puede enmascarar la recuperación mientras persiste el déficit energético. La ovulación puede ocurrir antes del primer sangrado.",
+        "Ante sospecha de amenorrea hipotalámica funcional durante 6 meses o más, considerar evaluación de densidad ósea por DXA; adelantar ante déficit nutricional grave, otras carencias energéticas o fragilidad esquelética. No imponer DXA a toda ausencia menstrual por anticonceptivos o lactancia fisiológica.",
+        "Sin signos de alarma, organizar seguimiento ginecológico/endocrinológico con resultados, evolución menstrual, nutrición, deseo reproductivo y salud ósea. Discutir anticoncepción cuando no se desee embarazo. Persistencia, nuevos signos androgénicos/neurológicos o deterioro nutricional requieren reevaluación; la prueba de deprivación con progestágeno es una herramienta seleccionada, no una prueba aislada universal.",
+        "El ciclo depende del eje hipotálamo–hipófisis–ovario y del endometrio/tracto de salida. El déficit energético puede reducir los pulsos de GnRH; hiperprolactinemia y disfunción tiroidea alteran la ovulación; insuficiencia ovárica reduce estradiol con elevación de FSH. Las adherencias uterinas pueden impedir el sangrado pese a función hormonal.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[A1] Current evaluation of amenorrhea: a committee opinion https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/",
+        "[A2] Functional hypothalamic amenorrhea guideline https://www.endocrine.org/clinical-practice-guidelines/hypothalamic-amenorrhea",
+        "[A3] Ectopic pregnancy and miscarriage NG126 https://www.nice.org.uk/guidance/ng126",
+      ],
+      "es": [
+        "[A1] Current evaluation of amenorrhea: a committee opinion https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/",
+        "[A2] Functional hypothalamic amenorrhea guideline https://www.endocrine.org/clinical-practice-guidelines/hypothalamic-amenorrhea",
+        "[A3] Ectopic pregnancy and miscarriage NG126 https://www.nice.org.uk/guidance/ng126",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "O ciclo depende do eixo hipotálamo–hipófise–ovário e do endométrio/trato de saída. Déficit energético pode reduzir pulsos de GnRH; hiperprolactinemia e disfunção tireoidiana alteram ovulação; falência ovariana reduz estradiol com elevação de FSH. Aderências uterinas podem impedir sangramento apesar de função hormonal.",
+      "es":
+          "El ciclo depende del eje hipotálamo–hipófisis–ovario y del endometrio/tracto de salida. El déficit energético puede reducir los pulsos de GnRH; hiperprolactinemia y disfunción tiroidea alteran la ovulación; insuficiencia ovárica reduce estradiol con elevación de FSH. Las adherencias uterinas pueden impedir el sangrado pese a función hormonal.",
+    },
+    redFlags: {"pt": [], "es": []},
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Registrar menarca, ciclos prévios, última menstruação, atividade sexual, contracepção, gestação/lactação, medicamentos, alterações de peso, alimentação, exercício, estresse e fraturas. Perguntar sobre instrumentação uterina, hemorragia pós-parto, quimioterapia e cirurgia ovariana; não assumir amenorreia funcional por um único fator.",
+        "Avaliar sinais vitais, trajetória ponderal/nutricional, sinais tireoidianos, galactorreia, hiperandrogenismo, virilização e deficiência estrogênica. Exame ginecológico é direcionado ao contexto, idade e consentimento. Ausência de galactorreia não exclui hiperprolactinemia; achados de transtorno alimentar exigem abordagem acolhedora.",
+        "Após excluir gestação, investigação inicial costuma incluir TSH, prolactina, FSH e estradiol, com LH conforme hipótese. Hemograma, eletrólitos e outros exames são dirigidos à avaliação nutricional/sistêmica. AMH não é exame obrigatório para toda amenorreia; não transformar o painel de um subtipo em rastreio indiscriminado.",
+        "Ultrassonografia pélvica, quando acessível, avalia endométrio, ovários e anatomia e pode orientar cedo a investigação. História de curetagem/instrumentação e suspeita de aderências exigem avaliação uterina especializada. Virilização rápida exige investigação de tumor/causa androgênica, sem rotular automaticamente como ovários policísticos.",
+      ],
+      "es": [
+        "Registrar menarca, ciclos previos, última menstruación, actividad sexual, anticoncepción, embarazo/lactancia, medicamentos, cambios de peso, alimentación, ejercicio, estrés y fracturas. Preguntar por instrumentación uterina, hemorragia posparto, quimioterapia y cirugía ovárica; no asumir amenorrea funcional por un solo factor.",
+        "Evaluar signos vitales, trayectoria ponderal/nutricional, signos tiroideos, galactorrea, hiperandrogenismo, virilización y déficit estrogénico. El examen ginecológico se dirige al contexto, edad y consentimiento. La ausencia de galactorrea no excluye hiperprolactinemia; hallazgos de trastorno alimentario requieren una atención respetuosa.",
+        "Después de descartar embarazo, la investigación inicial suele incluir TSH, prolactina, FSH y estradiol, con LH según hipótesis. Hemograma, electrolitos y otros estudios se dirigen a la evaluación nutricional/sistémica. AMH no es un estudio obligatorio para toda amenorrea; no convertir el panel de un subtipo en pesquisa indiscriminada.",
+        "La ecografía pélvica, cuando está disponible, evalúa endometrio, ovarios y anatomía y puede orientar tempranamente la investigación. Antecedentes de legrado/instrumentación y sospecha de adherencias requieren evaluación uterina especializada. La virilización rápida exige investigar tumor/causa androgénica, sin etiquetar automáticamente como ovario poliquístico.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Interpretar resultados em conjunto: FSH elevada com estradiol baixo sugere insuficiência ovariana; gonadotrofinas baixas/normais com estradiol baixo apontam causas centrais, incluindo déficit energético. Anovulação com hiperandrogenismo pode sugerir síndrome dos ovários policísticos. Confirmar a etiologia pelos critérios específicos; um resultado isolado não encerra diagnóstico.",
+        "Prolactina discretamente elevada exige confirmar persistência, revisar fármacos e tireoide e considerar macroprolactina quando apropriado. Hiperprolactinemia persistente pode indicar imagem hipofisária. Cefaleia importante, alteração visual, vômitos persistentes ou déficits neurológicos aumentam a prioridade; não atribuir tudo ao estresse.",
+        "Tratar a causa confirmada: corrigir distúrbio tireoidiano/hiperprolactinemia conforme diagnóstico, abordar anovulação e proteção endometrial quando indicada, e discutir reposição hormonal/saúde óssea na insuficiência ovariana. Não prescrever hormônio apenas para produzir sangramento antes de excluir gestação e definir objetivo, riscos e etiologia.",
+        "Na amenorreia hipotalâmica funcional, corrigir desequilíbrio energético com alimentação, redução de exercício excessivo e apoio psicológico; pode ser necessário ganho ponderal. Anticoncepcional oral não deve ser usado apenas para recuperar menstruação ou densidade óssea: pode mascarar recuperação enquanto déficit energético persiste. Ovulação pode ocorrer antes do primeiro sangramento.",
+        "Na suspeita de amenorreia hipotalâmica funcional por 6 meses ou mais, considerar avaliação de densidade óssea por DXA; antecipar em déficit nutricional grave, outras carências energéticas ou fragilidade esquelética. Não impor DXA a toda ausência menstrual por anticoncepcional ou lactação fisiológica.",
+      ],
+      "es": [
+        "Interpretar los resultados en conjunto: FSH elevada con estradiol bajo sugiere insuficiencia ovárica; gonadotrofinas bajas/normales con estradiol bajo orientan a causas centrales, incluido déficit energético. Anovulación con hiperandrogenismo puede sugerir síndrome de ovario poliquístico. Confirmar la etiología por criterios específicos; un resultado aislado no cierra el diagnóstico.",
+        "La prolactina levemente elevada requiere confirmar persistencia, revisar fármacos y tiroides y considerar macroprolactina cuando corresponda. La hiperprolactinemia persistente puede indicar imagen hipofisaria. Cefalea importante, alteración visual, vómitos persistentes o déficits neurológicos aumentan la prioridad; no atribuir todo al estrés.",
+        "Tratar la causa confirmada: corregir trastorno tiroideo/hiperprolactinemia según diagnóstico, abordar anovulación y protección endometrial cuando esté indicada, y discutir reemplazo hormonal/salud ósea en insuficiencia ovárica. No prescribir hormonas solo para producir sangrado antes de descartar embarazo y definir objetivo, riesgos y etiología.",
+        "En amenorrea hipotalámica funcional, corregir el desequilibrio energético con alimentación, reducción del ejercicio excesivo y apoyo psicológico; puede necesitarse aumento de peso. El anticonceptivo oral no debe usarse solo para recuperar menstruación o densidad ósea: puede enmascarar la recuperación mientras persiste el déficit energético. La ovulación puede ocurrir antes del primer sangrado.",
+        "Ante sospecha de amenorrea hipotalámica funcional durante 6 meses o más, considerar evaluación de densidad ósea por DXA; adelantar ante déficit nutricional grave, otras carencias energéticas o fragilidad esquelética. No imponer DXA a toda ausencia menstrual por anticonceptivos o lactancia fisiológica.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Primeiro excluir gestação com teste apropriado; se suspeita relevante apesar de teste urinário negativo, usar hCG sérico/avaliação clínica. Gestação com dor abdominal/pélvica, sangramento, síncope ou instabilidade exige excluir ectópica imediatamente. Não esperar completar o prazo de definição da amenorreia.",
+      ],
+      "es": [
+        "Primero descartar embarazo con una prueba apropiada; si la sospecha es relevante pese a prueba urinaria negativa, usar hCG sérica/evaluación clínica. Embarazo con dolor abdominal/pélvico, sangrado, síncope o inestabilidad exige descartar ectópico de inmediato. No esperar a completar el plazo de definición de amenorrea.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Sem red flags, organizar seguimento ginecológico/endócrino com resultados, evolução menstrual, nutrição, desejo reprodutivo e saúde óssea. Discutir contracepção quando não desejar gestação. Persistência, novos sinais androgênicos/neurológicos ou deterioração nutricional requerem reavaliação; teste de privação com progestagênio é ferramenta selecionada e não prova isolada universal.",
+      ],
+      "es": [
+        "Sin signos de alarma, organizar seguimiento ginecológico/endocrinológico con resultados, evolución menstrual, nutrición, deseo reproductivo y salud ósea. Discutir anticoncepción cuando no se desee embarazo. Persistencia, nuevos signos androgénicos/neurológicos o deterioro nutricional requieren reevaluación; la prueba de deprivación con progestágeno es una herramienta seleccionada, no una prueba aislada universal.",
+      ],
+    },
+    doNotDo: {
+      "pt": [
+        "Bradicardia grave, hipotensão, ortostatismo importante ou desequilíbrio eletrolítico em provável amenorreia hipotalâmica/transtorno alimentar exigem avaliação para internação. Adolescência não dispensa investigação de gestação quando possível. Gestação/lactação podem explicar amenorreia, mas não justificam ignorar sintomas perigosos; não extrapolar doses hormonais para crianças ou hepatopatia.",
+      ],
+      "es": [
+        "Bradicardia grave, hipotensión, ortostatismo importante o desequilibrio electrolítico en probable amenorrea hipotalámica/trastorno alimentario requieren evaluación para internación. La adolescencia no excluye investigar embarazo cuando sea posible. Embarazo/lactancia pueden explicar amenorrea, pero no justifican ignorar síntomas peligrosos; no extrapolar dosis hormonales a niños o hepatopatía.",
+      ],
+    },
+  ),
+  ProtocolModel(
+    id: "carie_dentaria",
+    canonicalProtocolId: "carie_dentaria",
+    title: {"pt": "Cárie dentária", "es": "Caries dental"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Cárie dentária é doença mediada por biofilme e açúcares, com desequilíbrio entre desmineralização e remineralização do tecido dental. Pode atingir qualquer idade; exposição frequente a açúcar, pouca proteção fluoretada e xerostomia aumentam o risco. Cárie e abscesso odontogênico são entidades relacionadas, mas não equivalentes.",
+      "es":
+          "La caries dental es una enfermedad mediada por biofilm y azúcares, con desequilibrio entre desmineralización y remineralización del tejido dental. Puede afectar cualquier edad; exposición frecuente a azúcar, poca protección con flúor y xerostomía aumentan el riesgo. Caries y absceso odontogénico son entidades relacionadas, pero no equivalentes.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Cárie dentária é doença mediada por biofilme e açúcares, com desequilíbrio entre desmineralização e remineralização do tecido dental. Pode atingir qualquer idade; exposição frequente a açúcar, pouca proteção fluoretada e xerostomia aumentam o risco. Cárie e abscesso odontogênico são entidades relacionadas, mas não equivalentes.",
+        "Perguntar sobre dor provocada ou espontânea, duração, dificuldade de alimentação, febre, edema, dieta açucarada, higiene, tratamentos prévios e boca seca. Em crianças, avaliar hábitos de alimentação e acesso a odontopediatria; em idosos, examinar raízes expostas e medicamentos associados a xerostomia.",
+        "Edema facial progressivo, febre com repercussão, dificuldade de engolir/respirar, trismo importante ou extensão para espaços profundos exigem urgência e avaliação odontológica/cirúrgica. Analgésico não substitui controle do foco. Imunossupressão ou incapacidade de ingerir líquidos reduzem o limiar para escalonar atendimento.",
+        "Diagnóstico odontológico combina inspeção de superfícies limpas, atividade/cavitação, avaliação pulpar e radiografia quando necessária à decisão. Dor isolada não identifica a profundidade. Diferenciar hipersensibilidade dentinária, fratura, pulpite, doença periodontal e dor referida; não declarar todo dente escurecido como cárie ativa.",
+        "Antibiótico não trata a desmineralização nem a dor pulpar isolada. Para adultos imunocompetentes, priorizar tratamento dental definitivo em grande parte das condições pulpares/periapicais; presença de disseminação ou sinais sistêmicos exige o protocolo específico de infecção. Não copiar antibioticoterapia do abscesso para cárie sem infecção invasiva.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "Para dor dental aguda, ADA prioriza AINE quando elegível, isolado ou associado a paracetamol. Se AINE não for adequado, paracetamol pode ser opção adulta: na apresentação consultada, 1000 mg oral por tomada, intervalo mínimo de 4 horas, no máximo 4 tomadas/4000 mg em 24 horas. Não usar esse teto em hepatopatia, alcoolismo, desnutrição ou baixo peso sem individualização.",
+        "Não somar produtos que contenham paracetamol; não manter por mais de 3 dias sem reavaliação. Suspeita de superdose exige urgência mesmo sem sintomas. Este guia não fornece dose pediátrica por extrapolação. Opioide não é primeira linha e não deve substituir encaminhamento dental. Na gestação, escolher analgesia individualizada e evitar AINE inadequado à idade gestacional.",
+        "Lesões não cavitadas podem receber manejo não restaurativo selecionado; cavitadas exigem decisão odontológica sobre restauração, selamento ou controle da lesão. Verniz fluoretado e diamino fluoreto de prata são opções profissionais conforme lesão/população; o último escurece a lesão e exige discussão prévia. Não recomendar aplicação doméstica improvisada.",
+        "Alta do pronto atendimento exige estabilidade, via aérea e hidratação preservadas, controle inicial de dor e acesso planejado ao tratamento odontológico. Retornar por edema, febre, piora da dor ou dificuldade de abrir a boca/deglutir. Seguimento acompanha atividade das lesões, novas cáries, higiene e risco; não prometer cura apenas com analgésico.",
+        "Reduzir a frequência de açúcares livres, escovar com dentifrício fluoretado e realizar higiene interdental adequada. Intervenção precisa abordar rotina, capacidade de higiene, saliva e risco de novas lesões; apenas preencher a cavidade sem controle de risco não encerra a doença.",
+        "Dentifrício fluoretado de uso habitual contém pelo menos 1000 ppm de flúor. Crianças menores de 3 anos: quantidade de esfregaço/grão de arroz; de 3–6 anos: no máximo tamanho de ervilha. Escovar 2 vezes ao dia com supervisão, evitando deglutição. Não converter concentração tópica em dose oral nem prescrever suplemento sem avaliar água e outras fontes.",
+        "Ácidos gerados pela metabolização de carboidratos dissolvem minerais; saliva e flúor favorecem reparo. Mancha branca ativa sem cavitação pode ser controlada/remineralizada. Cavidade estabelecida representa perda estrutural: controlar o processo e restaurar quando indicado, evitando remoção desnecessária de tecido em lesões profundas.",
+      ],
+      "es": [
+        "La caries dental es una enfermedad mediada por biofilm y azúcares, con desequilibrio entre desmineralización y remineralización del tejido dental. Puede afectar cualquier edad; exposición frecuente a azúcar, poca protección con flúor y xerostomía aumentan el riesgo. Caries y absceso odontogénico son entidades relacionadas, pero no equivalentes.",
+        "Preguntar por dolor provocado o espontáneo, duración, dificultad para alimentarse, fiebre, edema, dieta azucarada, higiene, tratamientos previos y boca seca. En niños, evaluar hábitos de alimentación y acceso a odontopediatría; en mayores, examinar raíces expuestas y medicamentos asociados a xerostomía.",
+        "Edema facial progresivo, fiebre con compromiso general, dificultad para tragar/respirar, trismo importante o extensión a espacios profundos requieren urgencia y evaluación odontológica/quirúrgica. El analgésico no sustituye el control del foco. Inmunosupresión o incapacidad para ingerir líquidos reducen el umbral para escalar la atención.",
+        "El diagnóstico odontológico combina inspección de superficies limpias, actividad/cavitación, evaluación pulpar y radiografía cuando sea necesaria para decidir. El dolor aislado no identifica la profundidad. Diferenciar hipersensibilidad dentinaria, fractura, pulpitis, enfermedad periodontal y dolor referido; no declarar todo diente oscuro como caries activa.",
+        "El antibiótico no trata la desmineralización ni el dolor pulpar aislado. En adultos inmunocompetentes, priorizar el tratamiento dental definitivo en gran parte de las condiciones pulpares/periapicales; diseminación o signos sistémicos requieren el protocolo específico de infección. No copiar la antibioticoterapia del absceso para caries sin infección invasiva.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "Para dolor dental agudo, ADA prioriza AINE cuando sea elegible, solo o asociado a paracetamol. Si el AINE no es adecuado, paracetamol puede ser una opción adulta: en la presentación consultada, 1000 mg oral por toma, intervalo mínimo de 4 horas, como máximo 4 tomas/4000 mg en 24 horas. No usar ese límite en hepatopatía, alcoholismo, desnutrición o bajo peso sin individualización.",
+        "No sumar productos que contengan paracetamol; no mantener durante más de 3 días sin reevaluación. Sospecha de sobredosis requiere urgencia incluso sin síntomas. Esta guía no proporciona dosis pediátrica por extrapolación. Un opioide no es primera línea y no debe sustituir la derivación dental. En embarazo, elegir analgesia individualizada y evitar AINE inadecuado para la edad gestacional.",
+        "Las lesiones no cavitadas pueden recibir manejo no restaurativo seleccionado; las cavitadas requieren decisión odontológica sobre restauración, sellado o control de la lesión. Barniz fluorado y fluoruro diamino de plata son opciones profesionales según lesión/población; este último oscurece la lesión y exige conversación previa. No recomendar aplicación casera improvisada.",
+        "El alta de urgencias exige estabilidad, vía aérea e hidratación conservadas, control inicial del dolor y acceso planificado al tratamiento odontológico. Consultar por edema, fiebre, empeoramiento del dolor o dificultad para abrir la boca/tragar. El seguimiento controla actividad de lesiones, nuevas caries, higiene y riesgo; no prometer curación solo con analgésico.",
+        "Reducir la frecuencia de azúcares libres, cepillar con dentífrico fluorado y realizar higiene interdental adecuada. La intervención debe abordar rutina, capacidad de higiene, saliva y riesgo de nuevas lesiones; solo rellenar la cavidad sin controlar el riesgo no resuelve la enfermedad.",
+        "El dentífrico fluorado de uso habitual contiene al menos 1000 ppm de flúor. Niños menores de 3 años: cantidad de película/grano de arroz; de 3–6 años: como máximo tamaño de arveja. Cepillar 2 veces al día con supervisión, evitando deglutir. No convertir concentración tópica en dosis oral ni prescribir suplemento sin evaluar agua y otras fuentes.",
+        "Los ácidos generados al metabolizar carbohidratos disuelven minerales; saliva y flúor favorecen la reparación. Una mancha blanca activa sin cavitación puede controlarse/remineralizarse. Una cavidad establecida representa pérdida estructural: controlar el proceso y restaurar cuando corresponda, evitando eliminar tejido innecesariamente en lesiones profundas.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[D1] Tooth decay https://www.nidcr.nih.gov/health-info/tooth-decay",
+        "[D2] Dental caries management clinical practice guidelines https://www.ada.org/resources/research/science/evidence-based-dental-research/caries-management-clinical-practice-guidelines/",
+        "[D3] Fluoride therapy — best practices https://www.aapd.org/globalassets/media/policies_guidelines/bp_fluoridetherapy.pdf",
+        "[D4] Acute dental pain management guideline https://www.ada.org/resources/research/science/evidence-based-dental-research/pain-management-guideline",
+        "[D5] Antibiotics for dental pain and swelling https://www.ada.org/resources/research/science/evidence-based-dental-research/antibiotics-for-dental-pain-and-swelling",
+        "[D8] Home oral care https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+        "[PAR] Paracetamol 500 mg Tablets — SmPC https://www.medicines.org.uk/emc/product/5164/smpc",
+      ],
+      "es": [
+        "[D1] Tooth decay https://www.nidcr.nih.gov/health-info/tooth-decay",
+        "[D2] Dental caries management clinical practice guidelines https://www.ada.org/resources/research/science/evidence-based-dental-research/caries-management-clinical-practice-guidelines/",
+        "[D3] Fluoride therapy — best practices https://www.aapd.org/globalassets/media/policies_guidelines/bp_fluoridetherapy.pdf",
+        "[D4] Acute dental pain management guideline https://www.ada.org/resources/research/science/evidence-based-dental-research/pain-management-guideline",
+        "[D5] Antibiotics for dental pain and swelling https://www.ada.org/resources/research/science/evidence-based-dental-research/antibiotics-for-dental-pain-and-swelling",
+        "[D8] Home oral care https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+        "[PAR] Paracetamol 500 mg Tablets — SmPC https://www.medicines.org.uk/emc/product/5164/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Ácidos gerados pela metabolização de carboidratos dissolvem minerais; saliva e flúor favorecem reparo. Mancha branca ativa sem cavitação pode ser controlada/remineralizada. Cavidade estabelecida representa perda estrutural: controlar o processo e restaurar quando indicado, evitando remoção desnecessária de tecido em lesões profundas.",
+      "es":
+          "Los ácidos generados al metabolizar carbohidratos disuelven minerales; saliva y flúor favorecen la reparación. Una mancha blanca activa sin cavitación puede controlarse/remineralizarse. Una cavidad establecida representa pérdida estructural: controlar el proceso y restaurar cuando corresponda, evitando eliminar tejido innecesariamente en lesiones profundas.",
+    },
+    redFlags: {
+      "pt": [
+        "Edema facial progressivo, febre com repercussão, dificuldade de engolir/respirar, trismo importante ou extensão para espaços profundos exigem urgência e avaliação odontológica/cirúrgica. Analgésico não substitui controle do foco. Imunossupressão ou incapacidade de ingerir líquidos reduzem o limiar para escalonar atendimento.",
+      ],
+      "es": [
+        "Edema facial progresivo, fiebre con compromiso general, dificultad para tragar/respirar, trismo importante o extensión a espacios profundos requieren urgencia y evaluación odontológica/quirúrgica. El analgésico no sustituye el control del foco. Inmunosupresión o incapacidad para ingerir líquidos reducen el umbral para escalar la atención.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Perguntar sobre dor provocada ou espontânea, duração, dificuldade de alimentação, febre, edema, dieta açucarada, higiene, tratamentos prévios e boca seca. Em crianças, avaliar hábitos de alimentação e acesso a odontopediatria; em idosos, examinar raízes expostas e medicamentos associados a xerostomia.",
+        "Diagnóstico odontológico combina inspeção de superfícies limpas, atividade/cavitação, avaliação pulpar e radiografia quando necessária à decisão. Dor isolada não identifica a profundidade. Diferenciar hipersensibilidade dentinária, fratura, pulpite, doença periodontal e dor referida; não declarar todo dente escurecido como cárie ativa.",
+      ],
+      "es": [
+        "Preguntar por dolor provocado o espontáneo, duración, dificultad para alimentarse, fiebre, edema, dieta azucarada, higiene, tratamientos previos y boca seca. En niños, evaluar hábitos de alimentación y acceso a odontopediatría; en mayores, examinar raíces expuestas y medicamentos asociados a xerostomía.",
+        "El diagnóstico odontológico combina inspección de superficies limpias, actividad/cavitación, evaluación pulpar y radiografía cuando sea necesaria para decidir. El dolor aislado no identifica la profundidad. Diferenciar hipersensibilidad dentinaria, fractura, pulpitis, enfermedad periodontal y dolor referido; no declarar todo diente oscuro como caries activa.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Reduzir a frequência de açúcares livres, escovar com dentifrício fluoretado e realizar higiene interdental adequada. Intervenção precisa abordar rotina, capacidade de higiene, saliva e risco de novas lesões; apenas preencher a cavidade sem controle de risco não encerra a doença.",
+        "Dentifrício fluoretado de uso habitual contém pelo menos 1000 ppm de flúor. Crianças menores de 3 anos: quantidade de esfregaço/grão de arroz; de 3–6 anos: no máximo tamanho de ervilha. Escovar 2 vezes ao dia com supervisão, evitando deglutição. Não converter concentração tópica em dose oral nem prescrever suplemento sem avaliar água e outras fontes.",
+        "Lesões não cavitadas podem receber manejo não restaurativo selecionado; cavitadas exigem decisão odontológica sobre restauração, selamento ou controle da lesão. Verniz fluoretado e diamino fluoreto de prata são opções profissionais conforme lesão/população; o último escurece a lesão e exige discussão prévia. Não recomendar aplicação doméstica improvisada.",
+        "Antibiótico não trata a desmineralização nem a dor pulpar isolada. Para adultos imunocompetentes, priorizar tratamento dental definitivo em grande parte das condições pulpares/periapicais; presença de disseminação ou sinais sistêmicos exige o protocolo específico de infecção. Não copiar antibioticoterapia do abscesso para cárie sem infecção invasiva.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "Para dor dental aguda, ADA prioriza AINE quando elegível, isolado ou associado a paracetamol. Se AINE não for adequado, paracetamol pode ser opção adulta: na apresentação consultada, 1000 mg oral por tomada, intervalo mínimo de 4 horas, no máximo 4 tomadas/4000 mg em 24 horas. Não usar esse teto em hepatopatia, alcoolismo, desnutrição ou baixo peso sem individualização.",
+        "Não somar produtos que contenham paracetamol; não manter por mais de 3 dias sem reavaliação. Suspeita de superdose exige urgência mesmo sem sintomas. Este guia não fornece dose pediátrica por extrapolação. Opioide não é primeira linha e não deve substituir encaminhamento dental. Na gestação, escolher analgesia individualizada e evitar AINE inadequado à idade gestacional.",
+      ],
+      "es": [
+        "Reducir la frecuencia de azúcares libres, cepillar con dentífrico fluorado y realizar higiene interdental adecuada. La intervención debe abordar rutina, capacidad de higiene, saliva y riesgo de nuevas lesiones; solo rellenar la cavidad sin controlar el riesgo no resuelve la enfermedad.",
+        "El dentífrico fluorado de uso habitual contiene al menos 1000 ppm de flúor. Niños menores de 3 años: cantidad de película/grano de arroz; de 3–6 años: como máximo tamaño de arveja. Cepillar 2 veces al día con supervisión, evitando deglutir. No convertir concentración tópica en dosis oral ni prescribir suplemento sin evaluar agua y otras fuentes.",
+        "Las lesiones no cavitadas pueden recibir manejo no restaurativo seleccionado; las cavitadas requieren decisión odontológica sobre restauración, sellado o control de la lesión. Barniz fluorado y fluoruro diamino de plata son opciones profesionales según lesión/población; este último oscurece la lesión y exige conversación previa. No recomendar aplicación casera improvisada.",
+        "El antibiótico no trata la desmineralización ni el dolor pulpar aislado. En adultos inmunocompetentes, priorizar el tratamiento dental definitivo en gran parte de las condiciones pulpares/periapicales; diseminación o signos sistémicos requieren el protocolo específico de infección. No copiar la antibioticoterapia del absceso para caries sin infección invasiva.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "Para dolor dental agudo, ADA prioriza AINE cuando sea elegible, solo o asociado a paracetamol. Si el AINE no es adecuado, paracetamol puede ser una opción adulta: en la presentación consultada, 1000 mg oral por toma, intervalo mínimo de 4 horas, como máximo 4 tomas/4000 mg en 24 horas. No usar ese límite en hepatopatía, alcoholismo, desnutrición o bajo peso sin individualización.",
+        "No sumar productos que contengan paracetamol; no mantener durante más de 3 días sin reevaluación. Sospecha de sobredosis requiere urgencia incluso sin síntomas. Esta guía no proporciona dosis pediátrica por extrapolación. Un opioide no es primera línea y no debe sustituir la derivación dental. En embarazo, elegir analgesia individualizada y evitar AINE inadecuado para la edad gestacional.",
+      ],
+    },
+    scenarios: {"pt": [], "es": []},
+    monitoring: {
+      "pt": [
+        "Alta do pronto atendimento exige estabilidade, via aérea e hidratação preservadas, controle inicial de dor e acesso planejado ao tratamento odontológico. Retornar por edema, febre, piora da dor ou dificuldade de abrir a boca/deglutir. Seguimento acompanha atividade das lesões, novas cáries, higiene e risco; não prometer cura apenas com analgésico.",
+      ],
+      "es": [
+        "El alta de urgencias exige estabilidad, vía aérea e hidratación conservadas, control inicial del dolor y acceso planificado al tratamiento odontológico. Consultar por edema, fiebre, empeoramiento del dolor o dificultad para abrir la boca/tragar. El seguimiento controla actividad de lesiones, nuevas caries, higiene y riesgo; no prometer curación solo con analgésico.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "gengivite",
+    canonicalProtocolId: "gengivite",
+    title: {"pt": "Gengivite", "es": "Gingivitis"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Gengivite induzida por biofilme é inflamação gengival sem perda de inserção ou osso causada pela doença. É reversível com controle de placa. Pode existir em periodonto intacto ou reduzido por razões não relacionadas à periodontite; paciente com periodontite prévia mantém esse histórico e risco, mesmo com inflamação superficial atual.",
+      "es":
+          "La gingivitis inducida por biofilm es inflamación gingival sin pérdida de inserción o hueso causada por la enfermedad. Es reversible con control de placa. Puede existir en periodonto intacto o reducido por razones no relacionadas con periodontitis; el paciente con periodontitis previa mantiene ese antecedente y riesgo, incluso con inflamación superficial actual.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Gengivite induzida por biofilme é inflamação gengival sem perda de inserção ou osso causada pela doença. É reversível com controle de placa. Pode existir em periodonto intacto ou reduzido por razões não relacionadas à periodontite; paciente com periodontite prévia mantém esse histórico e risco, mesmo com inflamação superficial atual.",
+        "Eritema, edema, sangramento à sondagem/escovação e halitose podem ocorrer. A avaliação inclui hábitos de higiene, tabaco, diabetes, gestação, medicamentos e tratamentos prévios. Dor intensa, pus ou mobilidade importante são incompatíveis com tratar o quadro apenas como gengivite leve.",
+        "Necrose/ulceração dolorosa, febre, progressão rápida, abscesso ou sinais de disseminação exigem atendimento dental urgente e revisão diagnóstica. Comprometimento de via aérea, desidratação ou toxicidade sistêmica exige urgência hospitalar. Sangramento significativo persistente exige avaliação clínica; não esperar consulta preventiva.",
+        "Diferenciar periodontite com perda de inserção/osso, doença necrosante, lesões por infecção específica, doenças imunes e efeitos de medicamentos. Sangramento espontâneo desproporcional, petéquias ou outros sangramentos sugerem investigar condição hematológica; não atribuir automaticamente ao biofilme.",
+        "O dentista avalia placa, sangramento, sondagem, inserção e necessidade de radiografia se suspeitar de perda óssea. Hemograma/coagulação e outros testes são dirigidos aos achados sistêmicos, não rotina em gengivite simples. Confirmar que não há abscesso ou doença destrutiva antes de orientar apenas higiene.",
+        "Em periodonto intacto ou reduzido por causa não periodontal, classificação utiliza sangramento à sondagem ≥10% dos sítios e profundidades ≤3 mm: localizada com 10–30%, generalizada com >30%. Critérios exigem sondagem odontológica e contexto; não usar sangramento visual isolado como equivalente nem aplicar sem ajuste à periodontite prévia.",
+        "Tratamento central: escovação com dentifrício fluoretado 2 vezes ao dia, limpeza interdental adaptada e remoção profissional de cálculo/biofilme quando indicada. Corrigir técnica e fatores que retêm placa. Enxaguante não substitui remoção mecânica; orientar recurso compatível com destreza e anatomia.",
+        "Não prescrever antibiótico sistêmico para gengivite simples. Antisséptico pode ser coadjuvante selecionado pelo dentista, com produto e curso definidos; não fornecer esquema universal nem uso indefinido. Revisar medicamentos associados a aumento gengival com o prescritor, sem suspender tratamento essencial por conta própria.",
+        "Sem red flags, cuidado ambulatorial com reavaliação odontológica da placa e do sangramento após melhorar higiene/remover cálculo. Persistência, lesão focal ou perda de inserção exige investigar outra etiologia e periodontite. Frequência de retorno é individual; orientar retorno antecipado por dor, pus, febre ou sangramento desproporcional.",
+        "Gestação pode intensificar inflamação gengival e não elimina necessidade de higiene/cuidado odontológico. Crianças precisam de supervisão e quantidade de dentifrício adequada à idade. Idosos ou pessoas com limitações funcionais podem precisar de cuidador. Este guia não contém fármaco sistêmico que permita extrapolar dose renal/hepática.",
+        "Apoiar cessação de tabaco e controle de diabetes. Tabaco pode reduzir sangramento visível e mascarar inflamação; ausência de sangramento não garante ausência de doença. Avaliar barreiras de higiene e acesso a cuidado, evitando culpar o paciente.",
+        "Acúmulo de biofilme desencadeia resposta inflamatória na gengiva; cálculo e fatores retentivos dificultam limpeza. Diabetes, alterações hormonais e medicamentos podem modificar a resposta. Sangramento não deve levar a abandonar escovação; técnica suave adequada ajuda a retirar a causa.",
+      ],
+      "es": [
+        "La gingivitis inducida por biofilm es inflamación gingival sin pérdida de inserción o hueso causada por la enfermedad. Es reversible con control de placa. Puede existir en periodonto intacto o reducido por razones no relacionadas con periodontitis; el paciente con periodontitis previa mantiene ese antecedente y riesgo, incluso con inflamación superficial actual.",
+        "Pueden presentarse eritema, edema, sangrado al sondaje/cepillado y halitosis. La evaluación incluye higiene, tabaco, diabetes, embarazo, medicamentos y tratamientos previos. Dolor intenso, pus o movilidad importante son incompatibles con manejar el cuadro solo como gingivitis leve.",
+        "Necrosis/ulceración dolorosa, fiebre, progresión rápida, absceso o signos de diseminación requieren atención dental urgente y revisión diagnóstica. Compromiso de vía aérea, deshidratación o toxicidad sistémica requieren urgencia hospitalaria. Un sangrado significativo persistente requiere evaluación clínica; no esperar una consulta preventiva.",
+        "Diferenciar periodontitis con pérdida de inserción/hueso, enfermedad necrosante, lesiones por infección específica, enfermedades inmunes y efectos de medicamentos. Sangrado espontáneo desproporcionado, petequias u otros sangrados sugieren investigar una condición hematológica; no atribuirlos automáticamente al biofilm.",
+        "El odontólogo evalúa placa, sangrado, sondaje, inserción y necesidad de radiografía si sospecha pérdida ósea. Hemograma/coagulación y otros estudios se dirigen a hallazgos sistémicos, no son de rutina en gingivitis simple. Confirmar que no hay absceso ni enfermedad destructiva antes de indicar solo higiene.",
+        "En periodonto intacto o reducido por causa no periodontal, la clasificación utiliza sangrado al sondaje ≥10% de sitios y profundidades ≤3 mm: localizada con 10–30%, generalizada con >30%. Los criterios requieren sondaje odontológico y contexto; no usar sangrado visual aislado como equivalente ni aplicarlos sin ajuste a periodontitis previa.",
+        "Tratamiento central: cepillado con dentífrico fluorado 2 veces al día, limpieza interdental adaptada y eliminación profesional de cálculo/biofilm cuando corresponda. Corregir técnica y factores que retienen placa. El enjuague no sustituye la eliminación mecánica; elegir un recurso compatible con destreza y anatomía.",
+        "No prescribir antibiótico sistémico para gingivitis simple. Un antiséptico puede ser coadyuvante seleccionado por el odontólogo, con producto y curso definidos; no proporcionar un esquema universal ni uso indefinido. Revisar fármacos asociados a aumento gingival con quien los indicó, sin suspender un tratamiento esencial por cuenta propia.",
+        "Sin signos de alarma, atención ambulatoria con reevaluación odontológica de placa y sangrado después de mejorar higiene/eliminar cálculo. Persistencia, lesión focal o pérdida de inserción requieren investigar otra etiología y periodontitis. La frecuencia de seguimiento es individual; indicar consulta anticipada por dolor, pus, fiebre o sangrado desproporcionado.",
+        "El embarazo puede intensificar inflamación gingival y no elimina la necesidad de higiene/atención odontológica. Los niños necesitan supervisión y cantidad de dentífrico adecuada a la edad. Mayores o personas con limitaciones funcionales pueden necesitar cuidador. Esta guía no contiene un fármaco sistémico que permita extrapolar dosis renal/hepática.",
+        "Apoyar cesación de tabaco y control de diabetes. El tabaco puede reducir el sangrado visible y enmascarar inflamación; la ausencia de sangrado no garantiza ausencia de enfermedad. Evaluar barreras para higiene y acceso a atención, evitando culpabilizar al paciente.",
+        "El acúmulo de biofilm desencadena respuesta inflamatoria gingival; cálculo y factores retentivos dificultan la limpieza. Diabetes, cambios hormonales y medicamentos pueden modificar la respuesta. El sangrado no debe llevar a abandonar el cepillado; una técnica suave adecuada ayuda a eliminar la causa.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[D6] Periodontal gum disease https://www.nidcr.nih.gov/health-info/gum-disease",
+        "[D7] Gingivitis — periodontal diagnosis https://www.periodontalcare.sdcep.org.uk/guidance/diagnosis/establishing-a-periodontal-diagnosis/gingivitis/",
+        "[D8] Home oral care https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+        "[D12] Prevention and treatment of periodontal diseases in primary care — 2nd edition https://www.periodontalcare.sdcep.org.uk/media/vjgfn5ak/sdcep-prevention-and-treatment-of-periodontal-diseases-in-primary-care-2nd-edition-nov-2025.pdf",
+        "[D3] Fluoride therapy — best practices https://www.aapd.org/globalassets/media/policies_guidelines/bp_fluoridetherapy.pdf",
+      ],
+      "es": [
+        "[D6] Periodontal gum disease https://www.nidcr.nih.gov/health-info/gum-disease",
+        "[D7] Gingivitis — periodontal diagnosis https://www.periodontalcare.sdcep.org.uk/guidance/diagnosis/establishing-a-periodontal-diagnosis/gingivitis/",
+        "[D8] Home oral care https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+        "[D12] Prevention and treatment of periodontal diseases in primary care — 2nd edition https://www.periodontalcare.sdcep.org.uk/media/vjgfn5ak/sdcep-prevention-and-treatment-of-periodontal-diseases-in-primary-care-2nd-edition-nov-2025.pdf",
+        "[D3] Fluoride therapy — best practices https://www.aapd.org/globalassets/media/policies_guidelines/bp_fluoridetherapy.pdf",
+      ],
+    },
+    classification: {
+      "pt": [
+        "Em periodonto intacto ou reduzido por causa não periodontal, classificação utiliza sangramento à sondagem ≥10% dos sítios e profundidades ≤3 mm: localizada com 10–30%, generalizada com >30%. Critérios exigem sondagem odontológica e contexto; não usar sangramento visual isolado como equivalente nem aplicar sem ajuste à periodontite prévia.",
+      ],
+      "es": [
+        "En periodonto intacto o reducido por causa no periodontal, la clasificación utiliza sangrado al sondaje ≥10% de sitios y profundidades ≤3 mm: localizada con 10–30%, generalizada con >30%. Los criterios requieren sondaje odontológico y contexto; no usar sangrado visual aislado como equivalente ni aplicarlos sin ajuste a periodontitis previa.",
+      ],
+    },
+    physiopathology: {
+      "pt":
+          "Acúmulo de biofilme desencadeia resposta inflamatória na gengiva; cálculo e fatores retentivos dificultam limpeza. Diabetes, alterações hormonais e medicamentos podem modificar a resposta. Sangramento não deve levar a abandonar escovação; técnica suave adequada ajuda a retirar a causa.",
+      "es":
+          "El acúmulo de biofilm desencadena respuesta inflamatoria gingival; cálculo y factores retentivos dificultan la limpieza. Diabetes, cambios hormonales y medicamentos pueden modificar la respuesta. El sangrado no debe llevar a abandonar el cepillado; una técnica suave adecuada ayuda a eliminar la causa.",
+    },
+    redFlags: {
+      "pt": [
+        "Necrose/ulceração dolorosa, febre, progressão rápida, abscesso ou sinais de disseminação exigem atendimento dental urgente e revisão diagnóstica. Comprometimento de via aérea, desidratação ou toxicidade sistêmica exige urgência hospitalar. Sangramento significativo persistente exige avaliação clínica; não esperar consulta preventiva.",
+      ],
+      "es": [
+        "Necrosis/ulceración dolorosa, fiebre, progresión rápida, absceso o signos de diseminación requieren atención dental urgente y revisión diagnóstica. Compromiso de vía aérea, deshidratación o toxicidad sistémica requieren urgencia hospitalaria. Un sangrado significativo persistente requiere evaluación clínica; no esperar una consulta preventiva.",
+      ],
+    },
+    differentialDiagnosis: {
+      "pt": [
+        "Diferenciar periodontite com perda de inserção/osso, doença necrosante, lesões por infecção específica, doenças imunes e efeitos de medicamentos. Sangramento espontâneo desproporcional, petéquias ou outros sangramentos sugerem investigar condição hematológica; não atribuir automaticamente ao biofilme.",
+      ],
+      "es": [
+        "Diferenciar periodontitis con pérdida de inserción/hueso, enfermedad necrosante, lesiones por infección específica, enfermedades inmunes y efectos de medicamentos. Sangrado espontáneo desproporcionado, petequias u otros sangrados sugieren investigar una condición hematológica; no atribuirlos automáticamente al biofilm.",
+      ],
+    },
+    exams: {
+      "pt": [
+        "O dentista avalia placa, sangramento, sondagem, inserção e necessidade de radiografia se suspeitar de perda óssea. Hemograma/coagulação e outros testes são dirigidos aos achados sistêmicos, não rotina em gengivite simples. Confirmar que não há abscesso ou doença destrutiva antes de orientar apenas higiene.",
+      ],
+      "es": [
+        "El odontólogo evalúa placa, sangrado, sondaje, inserción y necesidad de radiografía si sospecha pérdida ósea. Hemograma/coagulación y otros estudios se dirigen a hallazgos sistémicos, no son de rutina en gingivitis simple. Confirmar que no hay absceso ni enfermedad destructiva antes de indicar solo higiene.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Eritema, edema, sangramento à sondagem/escovação e halitose podem ocorrer. A avaliação inclui hábitos de higiene, tabaco, diabetes, gestação, medicamentos e tratamentos prévios. Dor intensa, pus ou mobilidade importante são incompatíveis com tratar o quadro apenas como gengivite leve.",
+        "Tratamento central: escovação com dentifrício fluoretado 2 vezes ao dia, limpeza interdental adaptada e remoção profissional de cálculo/biofilme quando indicada. Corrigir técnica e fatores que retêm placa. Enxaguante não substitui remoção mecânica; orientar recurso compatível com destreza e anatomia.",
+        "Não prescrever antibiótico sistêmico para gengivite simples. Antisséptico pode ser coadjuvante selecionado pelo dentista, com produto e curso definidos; não fornecer esquema universal nem uso indefinido. Revisar medicamentos associados a aumento gengival com o prescritor, sem suspender tratamento essencial por conta própria.",
+        "Apoiar cessação de tabaco e controle de diabetes. Tabaco pode reduzir sangramento visível e mascarar inflamação; ausência de sangramento não garante ausência de doença. Avaliar barreiras de higiene e acesso a cuidado, evitando culpar o paciente.",
+      ],
+      "es": [
+        "Pueden presentarse eritema, edema, sangrado al sondaje/cepillado y halitosis. La evaluación incluye higiene, tabaco, diabetes, embarazo, medicamentos y tratamientos previos. Dolor intenso, pus o movilidad importante son incompatibles con manejar el cuadro solo como gingivitis leve.",
+        "Tratamiento central: cepillado con dentífrico fluorado 2 veces al día, limpieza interdental adaptada y eliminación profesional de cálculo/biofilm cuando corresponda. Corregir técnica y factores que retienen placa. El enjuague no sustituye la eliminación mecánica; elegir un recurso compatible con destreza y anatomía.",
+        "No prescribir antibiótico sistémico para gingivitis simple. Un antiséptico puede ser coadyuvante seleccionado por el odontólogo, con producto y curso definidos; no proporcionar un esquema universal ni uso indefinido. Revisar fármacos asociados a aumento gingival con quien los indicó, sin suspender un tratamiento esencial por cuenta propia.",
+        "Apoyar cesación de tabaco y control de diabetes. El tabaco puede reducir el sangrado visible y enmascarar inflamación; la ausencia de sangrado no garantiza ausencia de enfermedad. Evaluar barreras para higiene y acceso a atención, evitando culpabilizar al paciente.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Gestação pode intensificar inflamação gengival e não elimina necessidade de higiene/cuidado odontológico. Crianças precisam de supervisão e quantidade de dentifrício adequada à idade. Idosos ou pessoas com limitações funcionais podem precisar de cuidador. Este guia não contém fármaco sistêmico que permita extrapolar dose renal/hepática.",
+      ],
+      "es": [
+        "El embarazo puede intensificar inflamación gingival y no elimina la necesidad de higiene/atención odontológica. Los niños necesitan supervisión y cantidad de dentífrico adecuada a la edad. Mayores o personas con limitaciones funcionales pueden necesitar cuidador. Esta guía no contiene un fármaco sistémico que permita extrapolar dosis renal/hepática.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Sem red flags, cuidado ambulatorial com reavaliação odontológica da placa e do sangramento após melhorar higiene/remover cálculo. Persistência, lesão focal ou perda de inserção exige investigar outra etiologia e periodontite. Frequência de retorno é individual; orientar retorno antecipado por dor, pus, febre ou sangramento desproporcional.",
+      ],
+      "es": [
+        "Sin signos de alarma, atención ambulatoria con reevaluación odontológica de placa y sangrado después de mejorar higiene/eliminar cálculo. Persistencia, lesión focal o pérdida de inserción requieren investigar otra etiología y periodontitis. La frecuencia de seguimiento es individual; indicar consulta anticipada por dolor, pus, fiebre o sangrado desproporcionado.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "periodontite",
+    canonicalProtocolId: "periodontite",
+    title: {"pt": "Periodontite", "es": "Periodontitis"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Periodontite é doença inflamatória associada a biofilme disbiótico que destrói inserção periodontal e osso alveolar. Pode provocar mobilidade e perda dentária. Diferencia-se de gengivite pela perda de suporte atribuível à doença; melhora do sangramento não apaga histórico de periodontite.",
+      "es":
+          "La periodontitis es una enfermedad inflamatoria asociada a biofilm disbiótico que destruye inserción periodontal y hueso alveolar. Puede producir movilidad y pérdida dentaria. Se diferencia de gingivitis por pérdida de soporte atribuible a la enfermedad; mejorar el sangrado no borra el antecedente de periodontitis.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Periodontite é doença inflamatória associada a biofilme disbiótico que destrói inserção periodontal e osso alveolar. Pode provocar mobilidade e perda dentária. Diferencia-se de gengivite pela perda de suporte atribuível à doença; melhora do sangramento não apaga histórico de periodontite.",
+        "Pesquisar sangramento, halitose, recessão, mobilidade, dor mastigatória, pus e perda dentária. Exame periodontal completo avalia sondagem, inserção, furcas e radiografias selecionadas para osso. Distinguir recessão traumática e lesão endodôntica de perda causada por periodontite.",
+        "Abscesso, dor ou mobilidade aguda, febre e disseminação requerem atendimento dental rápido. Necrose dolorosa com repercussão sistêmica exige avaliar doença necrosante. Trismo, disfagia, ameaça à via aérea ou toxicidade sistêmica exige emergência e controle do foco; não aguardar manutenção periodontal eletiva.",
+        "A classificação atual usa estágio I–IV para gravidade/complexidade e grau A–C para progressão/risco. O estágio não é sinônimo do passo de tratamento. Estágio IV, com problemas funcionais importantes, necessita planejamento periodontal e reabilitador especializado; não aplicar um único procedimento a todos.",
+        "Primeiro passo: informação, higiene e controle supragengival de biofilme, remoção profissional de fatores retentivos, apoio à cessação de tabaco e controle metabólico do diabetes. Avaliar capacidade e adesão; o plano deve ser acordado e ajustado aos riscos e preferências.",
+        "Segundo passo: instrumentação subgengival com instrumentos manuais e/ou ultrassônicos para reduzir biofilme/cálculo, bolsas e inflamação. Realizar reavaliação após cicatrização adequada. Não substituir instrumentação por enxaguante, laser ou medicamento sistêmico isolado.",
+        "Persistência de sítios não controlados após tratamento inicial pode exigir reinstrumentação ou cirurgia periodontal de acesso/regenerativa conforme defeito e competência profissional. A decisão depende de higiene, anatomia, risco e resposta; não é indicação de cirurgia automática por qualquer bolsa.",
+        "EFP não recomenda antibiótico sistêmico rotineiro como coadjuvante. Categorias específicas, como jovens com doença generalizada em estágio III, podem ser consideradas pelo periodontista após avaliação; não há esquema empírico universal neste guia. Abscesso/disseminação são outra decisão clínica e exigem controle do foco.",
+        "Antissépticos de uso limitado podem ser selecionados como coadjuvantes, nunca substituindo limpeza. Escolha de concentração, apresentação e duração cabe ao dentista conforme produto e necessidade; não prescrever clorexidina indefinidamente. AINE sistêmico não é recomendado como modulador rotineiro do hospedeiro para tratamento periodontal.",
+        "Sem complicação aguda, seguimento é ambulatorial odontológico/periodontal com plano completo e manutenção. Necessidade de emergência depende de disseminação, via aérea, estado sistêmico e hidratação. Retornar por pus, febre, dor crescente ou perda funcional; informar que controle é possível, mas suporte destruído não se recompõe automaticamente.",
+        "Após terapia ativa, manutenção periodontal de suporte é necessária. EFP orienta intervalos individualizados de 3 até no máximo 12 meses, segundo risco e condição periodontal. Registrar bolsas/sangramento, reforçar higiene, realizar limpeza profissional e investigar recorrência, sem declarar alta definitiva da doença crônica.",
+        "Complementar escovação com escovas interdentais onde adequadas; outros dispositivos ajudam em espaços não acessíveis. Escolher tamanho e técnica para não lesar tecido. Controle de diabetes e abandono de tabaco permanecem durante manutenção; retirar placa uma única vez não garante estabilidade.",
+        "Gestação não elimina necessidade de avaliar e tratar doença periodontal; individualizar medicação/procedimentos. Perda de suporte rápida em jovem requer avaliação especializada. Em diabetes/imunossupressão, considerar maior risco e sintomas de infecção. Não extrapolar dose adulta, renal ou hepática de coadjuvante sem agente/produto definido.",
+        "A interação entre microbiota e resposta do hospedeiro determina destruição, influenciada especialmente por tabaco e diabetes. A doença pode avançar com pouca dor. Tratamento visa controlar biofilme, inflamação e risco de progressão; não consiste em um curso isolado de antibiótico.",
+      ],
+      "es": [
+        "La periodontitis es una enfermedad inflamatoria asociada a biofilm disbiótico que destruye inserción periodontal y hueso alveolar. Puede producir movilidad y pérdida dentaria. Se diferencia de gingivitis por pérdida de soporte atribuible a la enfermedad; mejorar el sangrado no borra el antecedente de periodontitis.",
+        "Buscar sangrado, halitosis, recesión, movilidad, dolor masticatorio, pus y pérdida dentaria. El examen periodontal completo evalúa sondaje, inserción, furcas y radiografías seleccionadas para hueso. Distinguir recesión traumática y lesión endodóntica de pérdida causada por periodontitis.",
+        "Absceso, dolor o movilidad aguda, fiebre y diseminación requieren atención dental rápida. Necrosis dolorosa con compromiso sistémico exige evaluar enfermedad necrosante. Trismo, disfagia, amenaza de vía aérea o toxicidad sistémica requieren emergencia y control del foco; no esperar mantenimiento periodontal electivo.",
+        "La clasificación actual usa estadio I–IV para gravedad/complejidad y grado A–C para progresión/riesgo. El estadio no es sinónimo del paso terapéutico. El estadio IV, con problemas funcionales importantes, necesita planificación periodontal y rehabilitadora especializada; no aplicar un único procedimiento a todos.",
+        "Primer paso: información, higiene y control supragingival de biofilm, eliminación profesional de factores retentivos, apoyo a cesación de tabaco y control metabólico de diabetes. Evaluar capacidad y adherencia; el plan debe acordarse y ajustarse a riesgos y preferencias.",
+        "Segundo paso: instrumentación subgingival con instrumentos manuales y/o ultrasónicos para reducir biofilm/cálculo, bolsas e inflamación. Reevaluar después de cicatrización adecuada. No sustituir la instrumentación por enjuague, láser o medicamento sistémico aislado.",
+        "La persistencia de sitios no controlados después del tratamiento inicial puede requerir reinstrumentación o cirugía periodontal de acceso/regenerativa según defecto y competencia profesional. La decisión depende de higiene, anatomía, riesgo y respuesta; no indica cirugía automática por cualquier bolsa.",
+        "EFP no recomienda antibiótico sistémico de rutina como coadyuvante. Categorías específicas, como jóvenes con enfermedad generalizada en estadio III, pueden considerarse por el periodoncista después de evaluar; no hay un esquema empírico universal en esta guía. Absceso/diseminación constituyen otra decisión clínica y requieren control del foco.",
+        "Pueden seleccionarse antisépticos de uso limitado como coadyuvantes, nunca reemplazando la limpieza. La concentración, presentación y duración las define el odontólogo según producto y necesidad; no prescribir clorhexidina indefinidamente. Un AINE sistémico no se recomienda como modulador rutinario del huésped para tratamiento periodontal.",
+        "Sin complicación aguda, el seguimiento es ambulatorio odontológico/periodontal con plan completo y mantenimiento. La necesidad de emergencia depende de diseminación, vía aérea, estado sistémico e hidratación. Consultar por pus, fiebre, dolor creciente o pérdida funcional; explicar que puede controlarse, pero el soporte destruido no se recupera automáticamente.",
+        "Después de terapia activa, es necesario mantenimiento periodontal de soporte. EFP indica intervalos individualizados de 3 hasta como máximo 12 meses, según riesgo y condición periodontal. Registrar bolsas/sangrado, reforzar higiene, realizar limpieza profesional e investigar recurrencia, sin declarar alta definitiva de la enfermedad crónica.",
+        "Complementar el cepillado con cepillos interdentales donde sean adecuados; otros dispositivos ayudan en espacios inaccesibles. Elegir tamaño y técnica para no dañar tejido. Control de diabetes y abandono de tabaco continúan durante mantenimiento; eliminar placa una sola vez no garantiza estabilidad.",
+        "El embarazo no elimina la necesidad de evaluar y tratar enfermedad periodontal; individualizar medicación/procedimientos. Pérdida rápida de soporte en un joven requiere evaluación especializada. En diabetes/inmunosupresión, considerar mayor riesgo y síntomas de infección. No extrapolar dosis adulta, renal o hepática de coadyuvante sin agente/producto definido.",
+        "La interacción entre microbiota y respuesta del huésped determina destrucción, influida especialmente por tabaco y diabetes. La enfermedad puede progresar con poco dolor. El tratamiento busca controlar biofilm, inflamación y riesgo de progresión; no consiste en un curso aislado de antibiótico.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[D6] Periodontal gum disease https://www.nidcr.nih.gov/health-info/gum-disease",
+        "[D8] Home oral care https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+        "[D9] Treatment of stage I–III periodontitis https://www.efp.org/education/continuing-education/clinical-guidelines/guideline-on-treatment-of-stage-i-iii-periodontitis/",
+        "[D12] Prevention and treatment of periodontal diseases in primary care — 2nd edition https://www.periodontalcare.sdcep.org.uk/media/vjgfn5ak/sdcep-prevention-and-treatment-of-periodontal-diseases-in-primary-care-2nd-edition-nov-2025.pdf",
+        "[D10] S3 guideline — Step 2 infographic https://www.efp.org/fileadmin/uploads/efp/Photos/Continuing_Education/GUIDELINE_STEP02_071022-2.pdf",
+        "[D11] S3 guideline — Step 4 infographic https://www.efp.org/fileadmin/uploads/efp/Photos/Continuing_Education/GUIDELINE_STEP04_071022-2.pdf",
+      ],
+      "es": [
+        "[D6] Periodontal gum disease https://www.nidcr.nih.gov/health-info/gum-disease",
+        "[D8] Home oral care https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+        "[D9] Treatment of stage I–III periodontitis https://www.efp.org/education/continuing-education/clinical-guidelines/guideline-on-treatment-of-stage-i-iii-periodontitis/",
+        "[D12] Prevention and treatment of periodontal diseases in primary care — 2nd edition https://www.periodontalcare.sdcep.org.uk/media/vjgfn5ak/sdcep-prevention-and-treatment-of-periodontal-diseases-in-primary-care-2nd-edition-nov-2025.pdf",
+        "[D10] S3 guideline — Step 2 infographic https://www.efp.org/fileadmin/uploads/efp/Photos/Continuing_Education/GUIDELINE_STEP02_071022-2.pdf",
+        "[D11] S3 guideline — Step 4 infographic https://www.efp.org/fileadmin/uploads/efp/Photos/Continuing_Education/GUIDELINE_STEP04_071022-2.pdf",
+      ],
+    },
+    classification: {
+      "pt": [
+        "A classificação atual usa estágio I–IV para gravidade/complexidade e grau A–C para progressão/risco. O estágio não é sinônimo do passo de tratamento. Estágio IV, com problemas funcionais importantes, necessita planejamento periodontal e reabilitador especializado; não aplicar um único procedimento a todos.",
+      ],
+      "es": [
+        "La clasificación actual usa estadio I–IV para gravedad/complejidad y grado A–C para progresión/riesgo. El estadio no es sinónimo del paso terapéutico. El estadio IV, con problemas funcionales importantes, necesita planificación periodontal y rehabilitadora especializada; no aplicar un único procedimiento a todos.",
+      ],
+    },
+    physiopathology: {
+      "pt":
+          "A interação entre microbiota e resposta do hospedeiro determina destruição, influenciada especialmente por tabaco e diabetes. A doença pode avançar com pouca dor. Tratamento visa controlar biofilme, inflamação e risco de progressão; não consiste em um curso isolado de antibiótico.",
+      "es":
+          "La interacción entre microbiota y respuesta del huésped determina destrucción, influida especialmente por tabaco y diabetes. La enfermedad puede progresar con poco dolor. El tratamiento busca controlar biofilm, inflamación y riesgo de progresión; no consiste en un curso aislado de antibiótico.",
+    },
+    redFlags: {
+      "pt": [
+        "Abscesso, dor ou mobilidade aguda, febre e disseminação requerem atendimento dental rápido. Necrose dolorosa com repercussão sistêmica exige avaliar doença necrosante. Trismo, disfagia, ameaça à via aérea ou toxicidade sistêmica exige emergência e controle do foco; não aguardar manutenção periodontal eletiva.",
+      ],
+      "es": [
+        "Absceso, dolor o movilidad aguda, fiebre y diseminación requieren atención dental rápida. Necrosis dolorosa con compromiso sistémico exige evaluar enfermedad necrosante. Trismo, disfagia, amenaza de vía aérea o toxicidad sistémica requieren emergencia y control del foco; no esperar mantenimiento periodontal electivo.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Pesquisar sangramento, halitose, recessão, mobilidade, dor mastigatória, pus e perda dentária. Exame periodontal completo avalia sondagem, inserção, furcas e radiografias selecionadas para osso. Distinguir recessão traumática e lesão endodôntica de perda causada por periodontite.",
+      ],
+      "es": [
+        "Buscar sangrado, halitosis, recesión, movilidad, dolor masticatorio, pus y pérdida dentaria. El examen periodontal completo evalúa sondaje, inserción, furcas y radiografías seleccionadas para hueso. Distinguir recesión traumática y lesión endodóntica de pérdida causada por periodontitis.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Primeiro passo: informação, higiene e controle supragengival de biofilme, remoção profissional de fatores retentivos, apoio à cessação de tabaco e controle metabólico do diabetes. Avaliar capacidade e adesão; o plano deve ser acordado e ajustado aos riscos e preferências.",
+        "Segundo passo: instrumentação subgengival com instrumentos manuais e/ou ultrassônicos para reduzir biofilme/cálculo, bolsas e inflamação. Realizar reavaliação após cicatrização adequada. Não substituir instrumentação por enxaguante, laser ou medicamento sistêmico isolado.",
+        "Persistência de sítios não controlados após tratamento inicial pode exigir reinstrumentação ou cirurgia periodontal de acesso/regenerativa conforme defeito e competência profissional. A decisão depende de higiene, anatomia, risco e resposta; não é indicação de cirurgia automática por qualquer bolsa.",
+        "EFP não recomenda antibiótico sistêmico rotineiro como coadjuvante. Categorias específicas, como jovens com doença generalizada em estágio III, podem ser consideradas pelo periodontista após avaliação; não há esquema empírico universal neste guia. Abscesso/disseminação são outra decisão clínica e exigem controle do foco.",
+        "Antissépticos de uso limitado podem ser selecionados como coadjuvantes, nunca substituindo limpeza. Escolha de concentração, apresentação e duração cabe ao dentista conforme produto e necessidade; não prescrever clorexidina indefinidamente. AINE sistêmico não é recomendado como modulador rotineiro do hospedeiro para tratamento periodontal.",
+        "Após terapia ativa, manutenção periodontal de suporte é necessária. EFP orienta intervalos individualizados de 3 até no máximo 12 meses, segundo risco e condição periodontal. Registrar bolsas/sangramento, reforçar higiene, realizar limpeza profissional e investigar recorrência, sem declarar alta definitiva da doença crônica.",
+        "Complementar escovação com escovas interdentais onde adequadas; outros dispositivos ajudam em espaços não acessíveis. Escolher tamanho e técnica para não lesar tecido. Controle de diabetes e abandono de tabaco permanecem durante manutenção; retirar placa uma única vez não garante estabilidade.",
+        "Sem complicação aguda, seguimento é ambulatorial odontológico/periodontal com plano completo e manutenção. Necessidade de emergência depende de disseminação, via aérea, estado sistêmico e hidratação. Retornar por pus, febre, dor crescente ou perda funcional; informar que controle é possível, mas suporte destruído não se recompõe automaticamente.",
+      ],
+      "es": [
+        "Primer paso: información, higiene y control supragingival de biofilm, eliminación profesional de factores retentivos, apoyo a cesación de tabaco y control metabólico de diabetes. Evaluar capacidad y adherencia; el plan debe acordarse y ajustarse a riesgos y preferencias.",
+        "Segundo paso: instrumentación subgingival con instrumentos manuales y/o ultrasónicos para reducir biofilm/cálculo, bolsas e inflamación. Reevaluar después de cicatrización adecuada. No sustituir la instrumentación por enjuague, láser o medicamento sistémico aislado.",
+        "La persistencia de sitios no controlados después del tratamiento inicial puede requerir reinstrumentación o cirugía periodontal de acceso/regenerativa según defecto y competencia profesional. La decisión depende de higiene, anatomía, riesgo y respuesta; no indica cirugía automática por cualquier bolsa.",
+        "EFP no recomienda antibiótico sistémico de rutina como coadyuvante. Categorías específicas, como jóvenes con enfermedad generalizada en estadio III, pueden considerarse por el periodoncista después de evaluar; no hay un esquema empírico universal en esta guía. Absceso/diseminación constituyen otra decisión clínica y requieren control del foco.",
+        "Pueden seleccionarse antisépticos de uso limitado como coadyuvantes, nunca reemplazando la limpieza. La concentración, presentación y duración las define el odontólogo según producto y necesidad; no prescribir clorhexidina indefinidamente. Un AINE sistémico no se recomienda como modulador rutinario del huésped para tratamiento periodontal.",
+        "Después de terapia activa, es necesario mantenimiento periodontal de soporte. EFP indica intervalos individualizados de 3 hasta como máximo 12 meses, según riesgo y condición periodontal. Registrar bolsas/sangrado, reforzar higiene, realizar limpieza profesional e investigar recurrencia, sin declarar alta definitiva de la enfermedad crónica.",
+        "Complementar el cepillado con cepillos interdentales donde sean adecuados; otros dispositivos ayudan en espacios inaccesibles. Elegir tamaño y técnica para no dañar tejido. Control de diabetes y abandono de tabaco continúan durante mantenimiento; eliminar placa una sola vez no garantiza estabilidad.",
+        "Sin complicación aguda, el seguimiento es ambulatorio odontológico/periodontal con plan completo y mantenimiento. La necesidad de emergencia depende de diseminación, vía aérea, estado sistémico e hidratación. Consultar por pus, fiebre, dolor creciente o pérdida funcional; explicar que puede controlarse, pero el soporte destruido no se recupera automáticamente.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Gestação não elimina necessidade de avaliar e tratar doença periodontal; individualizar medicação/procedimentos. Perda de suporte rápida em jovem requer avaliação especializada. Em diabetes/imunossupressão, considerar maior risco e sintomas de infecção. Não extrapolar dose adulta, renal ou hepática de coadjuvante sem agente/produto definido.",
+      ],
+      "es": [
+        "El embarazo no elimina la necesidad de evaluar y tratar enfermedad periodontal; individualizar medicación/procedimientos. Pérdida rápida de soporte en un joven requiere evaluación especializada. En diabetes/inmunosupresión, considerar mayor riesgo y síntomas de infección. No extrapolar dosis adulta, renal o hepática de coadyuvante sin agente/producto definido.",
+      ],
+    },
+    monitoring: {"pt": [], "es": []},
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "disfuncao_temporomandibular",
+    canonicalProtocolId: "disfuncao_temporomandibular",
+    title: {
+      "pt": "Disfunção temporomandibular",
+      "es": "Disfunción temporomandibular",
+    },
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Disfunções temporomandibulares são condições que afetam articulação temporomandibular, músculos mastigatórios e estruturas relacionadas. Podem coexistir componentes articulares e musculares. Estalido indolor sem limitação funcional é comum e não exige tratamento por si só; este guia não cobre redução de luxação ou fratura como se fossem DTM habitual.",
+      "es":
+          "Los trastornos temporomandibulares son condiciones que afectan articulación temporomandibular, músculos masticatorios y estructuras relacionadas. Pueden coexistir componentes articulares y musculares. Un chasquido indoloro sin limitación funcional es frecuente y no requiere tratamiento por sí solo; esta guía no cubre reducción de luxación o fractura como si fueran DTM habituales.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Disfunções temporomandibulares são condições que afetam articulação temporomandibular, músculos mastigatórios e estruturas relacionadas. Podem coexistir componentes articulares e musculares. Estalido indolor sem limitação funcional é comum e não exige tratamento por si só; este guia não cobre redução de luxação ou fratura como se fossem DTM habitual.",
+        "Perguntar sobre localização, relação com mastigação/abertura, duração, travamento, trauma, procedimentos dentais, apertamento, sono e impacto em alimentação. Investigar dor dental, otalgia, cefaleia e outras dores. Dor crônica tem contexto diferente do episódio agudo; registrar evolução e tratamentos prévios.",
+        "Febre com edema/trismo progressivo, trauma importante, dificuldade de engolir/respirar, déficit neurológico ou incapacidade de manter hidratação exigem avaliação urgente do diagnóstico alternativo. Mandíbula bloqueada aberta pode ser luxação; bloqueio fechado persistente também requer avaliação. Evitar manipulação forçada sem diagnóstico e competência.",
+        "Diferenciar doença dental/pulpar, infecção, trauma, luxação, otopatia e neuralgia. Cefaleia ou dor facial não reproduzida por avaliação mandibular precisa de outra investigação. Não atribuir alteração auditiva súbita, déficit neurológico ou massa à DTM sem avaliação específica.",
+        "Avaliar abertura e movimento mandibular, desvio, dor reproduzida por movimento/palpação de músculos e articulação, ruídos e dentição. Exame deve procurar causas alternativas; não há teste isolado universal. Dor familiar reproduzida ajuda a localizar origem musculoesquelética, sem excluir por si só outra doença.",
+        "Diagnóstico costuma ser clínico. Imagem é escolhida quando suspeita de doença estrutural, trauma, apresentação atípica ou falha que mude manejo: RM pode avaliar disco/tecidos moles; radiografias/TC avaliam estruturas ósseas conforme indicação. Não pedir imagem apenas por estalido indolor.",
+        "Iniciar educação, redução de apertamento/mastigação excessiva, evitar goma de mascar e alimentos que provoquem dor, calor ou frio conforme tolerância e exercícios suaves orientados. Ajustar temporariamente a consistência dos alimentos, sem imobilização rígida ou restrição prolongada injustificada. Tratar fatores de sono e estresse de forma integrada.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "O esquema analgésico deste guia é apenas alívio breve de dor aguda em adulto elegível; não se apresenta como tratamento eficaz universal de DTM crônica. Necessidade recorrente de AINE exige reavaliar diagnóstico e plano. Não iniciar associação AINE/opioide como estratégia crônica; não inventar dose de injeção intra-articular.",
+        "Alta ambulatorial é apropriada se não houver red flags, alimentação/hidratação forem possíveis e houver plano de cuidado/retorno. Monitorar dor, amplitude de abertura, função, sono e efeitos de medicação. Piora, travamento persistente, diagnóstico incerto ou dor crônica incapacitante indica avaliação odontológica de dor orofacial/fisioterapia/equipe especializada.",
+        "Crianças/adolescentes com limitação persistente, alterações de crescimento ou suspeita de artrite precisam de avaliação específica; não extrapolar dose adulta. Gestantes e pessoas com doença renal/hepática exigem seleção individual de analgésico. A abordagem inicial conservadora é distinta da decisão de farmacoterapia/procedimento.",
+        "Para dor crônica de DTM por ≥3 meses, BMJ recomenda fortemente educação/cuidado habitual, terapia cognitivo-comportamental e modalidades físicas supervisionadas como mobilização, exercícios mandibulares/posturais e terapia manual de pontos-gatilho. Escolher abordagem e acesso conforme pessoa; não tratar apenas com medicamento continuado.",
+        "A recomendação BMJ para dor crônica é condicional contra placas oclusais reversíveis como tratamento da dor; placas irreversíveis são desaconselhadas. Isso não proíbe dispositivo selecionado para outra indicação, como proteção dentária, mas exige objetivo e avaliação dental próprios. Não prometer cura ou remodelar dentes/mordida por DTM.",
+        "Toxina botulínica, infiltrações, gabapentina e benzodiazepínicos não são rotina para dor crônica de DTM; o benefício/risco deve seguir indicação específica. Cirurgia não é primeira linha e requer diagnóstico estrutural selecionado, falha de medidas adequadas e discussão especializada. Não transferir recomendações crônicas para todas as patologias articulares.",
+        "Dor e função resultam da interação de tecidos articulares/musculares, processamento de dor e fatores psicossociais. Estresse e hábitos de apertamento podem contribuir; não assumir que má oclusão seja causa universal nem que correção irreversível da mordida seja necessária. Muitos episódios melhoram com medidas conservadoras.",
+      ],
+      "es": [
+        "Los trastornos temporomandibulares son condiciones que afectan articulación temporomandibular, músculos masticatorios y estructuras relacionadas. Pueden coexistir componentes articulares y musculares. Un chasquido indoloro sin limitación funcional es frecuente y no requiere tratamiento por sí solo; esta guía no cubre reducción de luxación o fractura como si fueran DTM habituales.",
+        "Preguntar por localización, relación con masticación/apertura, duración, bloqueo, traumatismo, procedimientos dentales, apretamiento, sueño e impacto en alimentación. Investigar dolor dental, otalgia, cefalea y otros dolores. El dolor crónico tiene un contexto diferente del episodio agudo; registrar evolución y tratamientos previos.",
+        "Fiebre con edema/trismo progresivo, traumatismo importante, dificultad para tragar/respirar, déficit neurológico o incapacidad para mantener hidratación requieren evaluación urgente de otro diagnóstico. Una mandíbula bloqueada abierta puede ser luxación; un bloqueo cerrado persistente también requiere evaluación. Evitar manipulación forzada sin diagnóstico y competencia.",
+        "Diferenciar enfermedad dental/pulpar, infección, traumatismo, luxación, otopatía y neuralgia. Cefalea o dolor facial no reproducido por evaluación mandibular requieren otra investigación. No atribuir alteración auditiva súbita, déficit neurológico o masa a DTM sin evaluación específica.",
+        "Evaluar apertura y movimiento mandibular, desviación, dolor reproducido por movimiento/palpación de músculos y articulación, ruidos y dentición. El examen debe buscar causas alternativas; no existe una prueba aislada universal. Reproducir el dolor habitual ayuda a localizar origen musculoesquelético, sin excluir por sí solo otra enfermedad.",
+        "El diagnóstico suele ser clínico. Elegir imágenes ante sospecha de enfermedad estructural, traumatismo, presentación atípica o fracaso que cambie el manejo: RM puede evaluar disco/tejidos blandos; radiografías/TC evalúan estructuras óseas según indicación. No pedir imágenes solo por un chasquido indoloro.",
+        "Iniciar educación, reducción de apretamiento/masticación excesiva, evitar chicle y alimentos que provoquen dolor, calor o frío según tolerancia y ejercicios suaves guiados. Ajustar temporalmente la consistencia de los alimentos, sin inmovilización rígida ni restricción prolongada injustificada. Abordar sueño y estrés de forma integrada.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "El esquema analgésico de esta guía es solo alivio breve de dolor agudo en un adulto elegible; no se presenta como tratamiento eficaz universal de DTM crónica. Necesidad recurrente de AINE exige reevaluar diagnóstico y plan. No iniciar asociación AINE/opioide como estrategia crónica; no inventar dosis de inyección intraarticular.",
+        "El alta ambulatoria es apropiada si no hay signos de alarma, la alimentación/hidratación son posibles y existe plan de atención/seguimiento. Controlar dolor, amplitud de apertura, función, sueño y efectos de medicación. Empeoramiento, bloqueo persistente, diagnóstico incierto o dolor crónico incapacitante indican evaluación odontológica de dolor orofacial/fisioterapia/equipo especializado.",
+        "Niños/adolescentes con limitación persistente, alteraciones del crecimiento o sospecha de artritis necesitan evaluación específica; no extrapolar dosis adulta. Embarazadas y personas con enfermedad renal/hepática requieren selección individual de analgésico. El abordaje inicial conservador es distinto de decidir farmacoterapia/procedimiento.",
+        "Para dolor crónico de DTM durante ≥3 meses, BMJ recomienda fuertemente educación/atención habitual, terapia cognitivo-conductual y modalidades físicas supervisadas como movilización, ejercicios mandibulares/posturales y terapia manual de puntos gatillo. Elegir abordaje y acceso según la persona; no tratar solo con medicación continua.",
+        "La recomendación BMJ para dolor crónico es condicional contra férulas oclusales reversibles como tratamiento del dolor; se desaconsejan las irreversibles. Esto no prohíbe un dispositivo seleccionado para otra indicación, como protección dentaria, pero exige objetivo y evaluación dental propios. No prometer curación ni remodelar dientes/mordida por DTM.",
+        "Toxina botulínica, infiltraciones, gabapentina y benzodiazepinas no son de rutina para dolor crónico de DTM; el beneficio/riesgo debe seguir una indicación específica. La cirugía no es primera línea y requiere diagnóstico estructural seleccionado, fracaso de medidas adecuadas y discusión especializada. No trasladar recomendaciones crónicas a todas las patologías articulares.",
+        "Dolor y función resultan de la interacción de tejidos articulares/musculares, procesamiento del dolor y factores psicosociales. Estrés y hábitos de apretamiento pueden contribuir; no asumir que maloclusión sea una causa universal ni que deba corregirse irreversiblemente la mordida. Muchos episodios mejoran con medidas conservadoras.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[T1] Temporomandibular disorders https://www.nidcr.nih.gov/health-info/tmd",
+        "[T2] Management of chronic pain associated with temporomandibular disorders https://www.bmj.com/content/383/bmj-2023-076227",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+      "es": [
+        "[T1] Temporomandibular disorders https://www.nidcr.nih.gov/health-info/tmd",
+        "[T2] Management of chronic pain associated with temporomandibular disorders https://www.bmj.com/content/383/bmj-2023-076227",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Dor e função resultam da interação de tecidos articulares/musculares, processamento de dor e fatores psicossociais. Estresse e hábitos de apertamento podem contribuir; não assumir que má oclusão seja causa universal nem que correção irreversível da mordida seja necessária. Muitos episódios melhoram com medidas conservadoras.",
+      "es":
+          "Dolor y función resultan de la interacción de tejidos articulares/musculares, procesamiento del dolor y factores psicosociales. Estrés y hábitos de apretamiento pueden contribuir; no asumir que maloclusión sea una causa universal ni que deba corregirse irreversiblemente la mordida. Muchos episodios mejoran con medidas conservadoras.",
+    },
+    redFlags: {
+      "pt": [
+        "Febre com edema/trismo progressivo, trauma importante, dificuldade de engolir/respirar, déficit neurológico ou incapacidade de manter hidratação exigem avaliação urgente do diagnóstico alternativo. Mandíbula bloqueada aberta pode ser luxação; bloqueio fechado persistente também requer avaliação. Evitar manipulação forçada sem diagnóstico e competência.",
+      ],
+      "es": [
+        "Fiebre con edema/trismo progresivo, traumatismo importante, dificultad para tragar/respirar, déficit neurológico o incapacidad para mantener hidratación requieren evaluación urgente de otro diagnóstico. Una mandíbula bloqueada abierta puede ser luxación; un bloqueo cerrado persistente también requiere evaluación. Evitar manipulación forzada sin diagnóstico y competencia.",
+      ],
+    },
+    differentialDiagnosis: {
+      "pt": [
+        "Diferenciar doença dental/pulpar, infecção, trauma, luxação, otopatia e neuralgia. Cefaleia ou dor facial não reproduzida por avaliação mandibular precisa de outra investigação. Não atribuir alteração auditiva súbita, déficit neurológico ou massa à DTM sem avaliação específica.",
+      ],
+      "es": [
+        "Diferenciar enfermedad dental/pulpar, infección, traumatismo, luxación, otopatía y neuralgia. Cefalea o dolor facial no reproducido por evaluación mandibular requieren otra investigación. No atribuir alteración auditiva súbita, déficit neurológico o masa a DTM sin evaluación específica.",
+      ],
+    },
+    exams: {
+      "pt": [
+        "Perguntar sobre localização, relação com mastigação/abertura, duração, travamento, trauma, procedimentos dentais, apertamento, sono e impacto em alimentação. Investigar dor dental, otalgia, cefaleia e outras dores. Dor crônica tem contexto diferente do episódio agudo; registrar evolução e tratamentos prévios.",
+        "Avaliar abertura e movimento mandibular, desvio, dor reproduzida por movimento/palpação de músculos e articulação, ruídos e dentição. Exame deve procurar causas alternativas; não há teste isolado universal. Dor familiar reproduzida ajuda a localizar origem musculoesquelética, sem excluir por si só outra doença.",
+        "Diagnóstico costuma ser clínico. Imagem é escolhida quando suspeita de doença estrutural, trauma, apresentação atípica ou falha que mude manejo: RM pode avaliar disco/tecidos moles; radiografias/TC avaliam estruturas ósseas conforme indicação. Não pedir imagem apenas por estalido indolor.",
+      ],
+      "es": [
+        "Preguntar por localización, relación con masticación/apertura, duración, bloqueo, traumatismo, procedimientos dentales, apretamiento, sueño e impacto en alimentación. Investigar dolor dental, otalgia, cefalea y otros dolores. El dolor crónico tiene un contexto diferente del episodio agudo; registrar evolución y tratamientos previos.",
+        "Evaluar apertura y movimiento mandibular, desviación, dolor reproducido por movimiento/palpación de músculos y articulación, ruidos y dentición. El examen debe buscar causas alternativas; no existe una prueba aislada universal. Reproducir el dolor habitual ayuda a localizar origen musculoesquelético, sin excluir por sí solo otra enfermedad.",
+        "El diagnóstico suele ser clínico. Elegir imágenes ante sospecha de enfermedad estructural, traumatismo, presentación atípica o fracaso que cambie el manejo: RM puede evaluar disco/tejidos blandos; radiografías/TC evalúan estructuras óseas según indicación. No pedir imágenes solo por un chasquido indoloro.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Iniciar educação, redução de apertamento/mastigação excessiva, evitar goma de mascar e alimentos que provoquem dor, calor ou frio conforme tolerância e exercícios suaves orientados. Ajustar temporariamente a consistência dos alimentos, sem imobilização rígida ou restrição prolongada injustificada. Tratar fatores de sono e estresse de forma integrada.",
+        "Para dor crônica de DTM por ≥3 meses, BMJ recomenda fortemente educação/cuidado habitual, terapia cognitivo-comportamental e modalidades físicas supervisionadas como mobilização, exercícios mandibulares/posturais e terapia manual de pontos-gatilho. Escolher abordagem e acesso conforme pessoa; não tratar apenas com medicamento continuado.",
+        "A recomendação BMJ para dor crônica é condicional contra placas oclusais reversíveis como tratamento da dor; placas irreversíveis são desaconselhadas. Isso não proíbe dispositivo selecionado para outra indicação, como proteção dentária, mas exige objetivo e avaliação dental próprios. Não prometer cura ou remodelar dentes/mordida por DTM.",
+        "Toxina botulínica, infiltrações, gabapentina e benzodiazepínicos não são rotina para dor crônica de DTM; o benefício/risco deve seguir indicação específica. Cirurgia não é primeira linha e requer diagnóstico estrutural selecionado, falha de medidas adequadas e discussão especializada. Não transferir recomendações crônicas para todas as patologias articulares.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "O esquema analgésico deste guia é apenas alívio breve de dor aguda em adulto elegível; não se apresenta como tratamento eficaz universal de DTM crônica. Necessidade recorrente de AINE exige reavaliar diagnóstico e plano. Não iniciar associação AINE/opioide como estratégia crônica; não inventar dose de injeção intra-articular.",
+      ],
+      "es": [
+        "Iniciar educación, reducción de apretamiento/masticación excesiva, evitar chicle y alimentos que provoquen dolor, calor o frío según tolerancia y ejercicios suaves guiados. Ajustar temporalmente la consistencia de los alimentos, sin inmovilización rígida ni restricción prolongada injustificada. Abordar sueño y estrés de forma integrada.",
+        "Para dolor crónico de DTM durante ≥3 meses, BMJ recomienda fuertemente educación/atención habitual, terapia cognitivo-conductual y modalidades físicas supervisadas como movilización, ejercicios mandibulares/posturales y terapia manual de puntos gatillo. Elegir abordaje y acceso según la persona; no tratar solo con medicación continua.",
+        "La recomendación BMJ para dolor crónico es condicional contra férulas oclusales reversibles como tratamiento del dolor; se desaconsejan las irreversibles. Esto no prohíbe un dispositivo seleccionado para otra indicación, como protección dentaria, pero exige objetivo y evaluación dental propios. No prometer curación ni remodelar dientes/mordida por DTM.",
+        "Toxina botulínica, infiltraciones, gabapentina y benzodiazepinas no son de rutina para dolor crónico de DTM; el beneficio/riesgo debe seguir una indicación específica. La cirugía no es primera línea y requiere diagnóstico estructural seleccionado, fracaso de medidas adecuadas y discusión especializada. No trasladar recomendaciones crónicas a todas las patologías articulares.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "El esquema analgésico de esta guía es solo alivio breve de dolor agudo en un adulto elegible; no se presenta como tratamiento eficaz universal de DTM crónica. Necesidad recurrente de AINE exige reevaluar diagnóstico y plan. No iniciar asociación AINE/opioide como estrategia crónica; no inventar dosis de inyección intraarticular.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Crianças/adolescentes com limitação persistente, alterações de crescimento ou suspeita de artrite precisam de avaliação específica; não extrapolar dose adulta. Gestantes e pessoas com doença renal/hepática exigem seleção individual de analgésico. A abordagem inicial conservadora é distinta da decisão de farmacoterapia/procedimento.",
+      ],
+      "es": [
+        "Niños/adolescentes con limitación persistente, alteraciones del crecimiento o sospecha de artritis necesitan evaluación específica; no extrapolar dosis adulta. Embarazadas y personas con enfermedad renal/hepática requieren selección individual de analgésico. El abordaje inicial conservador es distinto de decidir farmacoterapia/procedimiento.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Alta ambulatorial é apropriada se não houver red flags, alimentação/hidratação forem possíveis e houver plano de cuidado/retorno. Monitorar dor, amplitude de abertura, função, sono e efeitos de medicação. Piora, travamento persistente, diagnóstico incerto ou dor crônica incapacitante indica avaliação odontológica de dor orofacial/fisioterapia/equipe especializada.",
+      ],
+      "es": [
+        "El alta ambulatoria es apropiada si no hay signos de alarma, la alimentación/hidratación son posibles y existe plan de atención/seguimiento. Controlar dolor, amplitud de apertura, función, sueño y efectos de medicación. Empeoramiento, bloqueo persistente, diagnóstico incierto o dolor crónico incapacitante indican evaluación odontológica de dolor orofacial/fisioterapia/equipo especializado.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "onicomicose",
+    canonicalProtocolId: "onicomicose",
+    title: {"pt": "Onicomicose", "es": "Onicomicosis"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Onicomicose é infecção fúngica da unha por dermatófitos, leveduras ou fungos não dermatófitos. Espessamento e descoloração não provam micose: trauma, psoríase e outras distrofias são comuns. Confirmar infecção antes de terapia sistêmica; o guia não cobre toda doença ungueal com um antifúngico universal.",
+      "es":
+          "La onicomicosis es infección fúngica de la uña por dermatofitos, levaduras u hongos no dermatofitos. Engrosamiento y cambio de color no prueban micosis: traumatismo, psoriasis y otras distrofias son frecuentes. Confirmar infección antes de terapia sistémica; la guía no cubre toda enfermedad ungueal con un antifúngico universal.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Onicomicose é infecção fúngica da unha por dermatófitos, leveduras ou fungos não dermatófitos. Espessamento e descoloração não provam micose: trauma, psoríase e outras distrofias são comuns. Confirmar infecção antes de terapia sistêmica; o guia não cobre toda doença ungueal com um antifúngico universal.",
+        "Examinar unhas e pele, número de unhas, extensão, matriz, dor, micose dos pés e diagnóstico diferencial. Perguntar sobre terapias prévias, hepatopatia, função renal, gravidez/lactação e medicamentos. Diabetes, doença vascular e imunossupressão modificam risco e exigem atenção a feridas e infecção concomitante.",
+        "Faixa pigmentada irregular nova, pigmento periungueal, massa, sangramento ou destruição focal exigem excluir tumor, inclusive melanoma. Pé diabético com ferida, celulite ou comprometimento vascular exige avaliação prioritária. Não deixar suspeita de câncer ou infecção invasiva aguardando resposta de esmalte antifúngico.",
+        "Colher unha/detrito da região doente proximal acessível para exame micológico, cultura e/ou técnica disponível conforme laboratório. Coleta inadequada causa falso negativo; se suspeita persistir, reavaliar e repetir adequadamente antes de curso oral empírico prolongado. Identificar agente ajuda a distinguir colonização/contaminação por fungo não dermatófito.",
+        "Decidir tratar conforme confirmação, agente, extensão/matriz, sintomas, risco, preferências e possibilidade de adesão. Doença limitada pode receber opção tópica; doença extensa ou com matriz pode favorecer terapia sistêmica se segura. Dermatófito, levedura e fungo não dermatófito não são automaticamente sensíveis ao mesmo agente.",
+        "Para adulto elegível com onicomicose por dermatófito sensível: terbinafina 250 mg por via oral 1 vez ao dia; curso usual de 6 semanas para unhas das mãos e 12 semanas para unhas dos pés. Não calcular a partir da concentração do creme nem usar creme de tinea pedis como tratamento equivalente da unha. Extensão do curso exige reavaliação específica.",
+        "Avaliar hepatopatia e função hepática antes da terbinafina oral. Não usar em doença hepática crônica/ativa; repetir função hepática durante tratamento, com a bula britânica especificando 4–6 semanas. Suspender e investigar icterícia, urina escura, fezes claras, náusea persistente, anorexia ou dor abdominal alta; hepatotoxicidade pode ocorrer sem doença prévia.",
+        "Na bula consultada, uso oral de terbinafina não é recomendado na insuficiência renal, especialmente depuração de creatinina <50 mL/min; comprometimento grave <30 mL/min é contraindicação do produto britânico. Não inventar redução pela metade como ajuste seguro nem confundir redução de clearance farmacocinético com posologia validada.",
+        "Revisar interações antes do curso oral: terbinafina inibe CYP2D6 e pode alterar exposição de antidepressivos, betabloqueadores e antiarrítmicos; indutores/inibidores também alteram sua exposição. Alterações de INR com varfarina foram relatadas. Rash progressivo, alteração importante de paladar/olfato ou sintomas hematológicos exigem reavaliação e possível suspensão.",
+        "Para adulto com indicação de terapia tópica e produto disponível: amorolfina 5% em esmalte medicamentoso, cobrir toda a superfície da unha afetada 1 vez por semana; a bula permite 2 vezes por semana em casos selecionados. Curso usual de 6 meses nas mãos e 9–12 meses nos pés, conforme crescimento/resposta, com revisão aproximadamente a cada 3 meses.",
+        "Antes da reaplicação, remover esmalte e preparar/limpar a unha conforme instruções do produto. Não usar a mesma lixa em unhas saudáveis, não aplicar na pele adjacente/olhos/mucosas e evitar unhas artificiais. Suspender reação alérgica. A dose é aplicação local: não há diluição, infusão ou conversão em dose oral.",
+        "Não extrapolar terbinafina oral adulta para menores de 18 anos; a bula britânica não recomenda esse uso com dados limitados. Amorolfina consultada não recomenda uso pediátrico. Na gestação, evitar tratamento eletivo oral e individualizar necessidade; a bula de terbinafina desaconselha amamentar durante tratamento oral. Amorolfina na gestação/lactação somente se claramente necessária, sem declarar segurança absoluta.",
+        "Monitorar crescimento proximal saudável, sintomas, adesão e toxicidade; aparência distal anormal logo após curso não prova falha. Se persistir/progredir, confirmar diagnóstico/agente, considerar resistência ou outra distrofia e avaliar dermatologia. Não repetir automaticamente cursos sistêmicos; quadro não complicado é ambulatorial, mas red flags precisam de prioridade.",
+        "Manter pés secos, tratar micose de pele concomitante com esquema próprio, cortar unhas de forma segura e evitar compartilhar instrumentos. Diabetes/doença vascular exigem cuidado profissional quando houver risco de ferida; desbridamento pode ser coadjuvante selecionado, não arrancar unha em casa. Recidiva é possível.",
+        "Fungos invadem queratina e produzem alteração da lâmina/leito, onicólise e detritos subungueais. Unhas dos pés são frequentemente afetadas; tinea pedis, idade, trauma e comorbidades contribuem. Cura clínica é lenta porque a unha saudável precisa crescer, mesmo após eliminar o fungo.",
+      ],
+      "es": [
+        "La onicomicosis es infección fúngica de la uña por dermatofitos, levaduras u hongos no dermatofitos. Engrosamiento y cambio de color no prueban micosis: traumatismo, psoriasis y otras distrofias son frecuentes. Confirmar infección antes de terapia sistémica; la guía no cubre toda enfermedad ungueal con un antifúngico universal.",
+        "Examinar uñas y piel, cantidad de uñas, extensión, matriz, dolor, micosis de los pies y diagnóstico diferencial. Preguntar por tratamientos previos, hepatopatía, función renal, embarazo/lactancia y medicamentos. Diabetes, enfermedad vascular e inmunosupresión modifican el riesgo y requieren atención a heridas e infección concomitante.",
+        "Una banda pigmentada irregular nueva, pigmento periungueal, masa, sangrado o destrucción focal requieren descartar tumor, incluido melanoma. Pie diabético con herida, celulitis o compromiso vascular requiere evaluación prioritaria. No dejar sospecha de cáncer o infección invasiva esperando respuesta de un esmalte antimicótico.",
+        "Obtener uña/detrito de la región enferma proximal accesible para examen micológico, cultivo y/o técnica disponible según laboratorio. Una toma inadecuada produce falso negativo; si persiste la sospecha, reevaluar y repetir adecuadamente antes de un curso oral empírico prolongado. Identificar el agente ayuda a distinguir colonización/contaminación por hongo no dermatofito.",
+        "Decidir tratar según confirmación, agente, extensión/matriz, síntomas, riesgo, preferencias y posibilidad de adherencia. La enfermedad limitada puede recibir una opción tópica; enfermedad extensa o con matriz puede favorecer tratamiento sistémico si es seguro. Dermatofito, levadura y hongo no dermatofito no son automáticamente sensibles al mismo agente.",
+        "Para un adulto elegible con onicomicosis por dermatofito sensible: terbinafina 250 mg por vía oral 1 vez al día; curso habitual de 6 semanas para uñas de manos y 12 semanas para uñas de pies. No calcular a partir de la concentración de la crema ni usar crema de tinea pedis como tratamiento equivalente de la uña. Prolongar el curso requiere reevaluación específica.",
+        "Evaluar hepatopatía y función hepática antes de terbinafina oral. No usar en enfermedad hepática crónica/activa; repetir función hepática durante el tratamiento, con el prospecto británico especificando 4–6 semanas. Suspender e investigar ictericia, orina oscura, heces claras, náusea persistente, anorexia o dolor abdominal alto; puede haber hepatotoxicidad sin enfermedad previa.",
+        "En el prospecto consultado, no se recomienda terbinafina oral en insuficiencia renal, especialmente depuración de creatinina <50 mL/min; compromiso grave <30 mL/min es contraindicación del producto británico. No inventar una reducción a la mitad como ajuste seguro ni confundir reducción del clearance farmacocinético con posología validada.",
+        "Revisar interacciones antes del curso oral: terbinafina inhibe CYP2D6 y puede alterar exposición de antidepresivos, betabloqueantes y antiarrítmicos; inductores/inhibidores también alteran su exposición. Se informaron cambios de INR con warfarina. Erupción progresiva, alteración importante de gusto/olfato o síntomas hematológicos requieren reevaluación y posible suspensión.",
+        "Para un adulto con indicación de tratamiento tópico y producto disponible: amorolfina 5% en laca medicamentosa, cubrir toda la superficie de la uña afectada 1 vez por semana; el prospecto permite 2 veces por semana en casos seleccionados. Curso habitual de 6 meses en manos y 9–12 meses en pies, según crecimiento/respuesta, con revisión aproximadamente cada 3 meses.",
+        "Antes de reaplicar, retirar laca y preparar/limpiar la uña según instrucciones del producto. No usar la misma lima en uñas sanas, no aplicar en piel adyacente/ojos/mucosas y evitar uñas artificiales. Suspender ante reacción alérgica. La dosis es aplicación local: no hay dilución, infusión ni conversión en dosis oral.",
+        "No extrapolar terbinafina oral adulta a menores de 18 años; el prospecto británico no recomienda ese uso con datos limitados. La amorolfina consultada no recomienda uso pediátrico. En embarazo, evitar tratamiento oral electivo e individualizar necesidad; el prospecto de terbinafina desaconseja amamantar durante tratamiento oral. Amorolfina en embarazo/lactancia solo si es claramente necesaria, sin declarar seguridad absoluta.",
+        "Controlar crecimiento proximal sano, síntomas, adherencia y toxicidad; aspecto distal anormal inmediatamente después del curso no prueba fracaso. Si persiste/progresa, confirmar diagnóstico/agente, considerar resistencia u otra distrofia y evaluar dermatología. No repetir automáticamente cursos sistémicos; el cuadro no complicado es ambulatorio, pero los signos de alarma requieren prioridad.",
+        "Mantener pies secos, tratar micosis de piel concomitante con su propio esquema, cortar uñas de forma segura y evitar compartir instrumentos. Diabetes/enfermedad vascular requieren atención profesional ante riesgo de herida; desbridamiento puede ser coadyuvante seleccionado, no arrancar la uña en casa. Puede haber recurrencia.",
+        "Los hongos invaden queratina y producen alteración de lámina/lecho, onicólisis y detritos subungueales. Las uñas de los pies se afectan frecuentemente; tinea pedis, edad, traumatismos y comorbilidades contribuyen. La curación clínica es lenta porque debe crecer una uña sana, incluso después de eliminar el hongo.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[O1] Tinea manuum, pedis and unguium https://www.pcds.org.uk/clinical-guidance/tinea-pedis-feet-manuum-hands-and-unguium-nails",
+        "[O2] Nail fungus: diagnosis and treatment https://www.aad.org/public/diseases/a-z/nail-fungus-treatment",
+        "[O3] Terbinafine 250 mg Tablet — SmPC https://www.medicines.org.uk/emc/product/7133/smpc",
+        "[O4] Terbinafine tablets 250 mg — prescribing information https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=daf41866-6f2b-4483-b575-456becd6e85f",
+        "[O5] Amorolfine 5% w/v medicated nail lacquer — SmPC https://www.medicines.org.uk/emc/product/7413/smpc",
+      ],
+      "es": [
+        "[O1] Tinea manuum, pedis and unguium https://www.pcds.org.uk/clinical-guidance/tinea-pedis-feet-manuum-hands-and-unguium-nails",
+        "[O2] Nail fungus: diagnosis and treatment https://www.aad.org/public/diseases/a-z/nail-fungus-treatment",
+        "[O3] Terbinafine 250 mg Tablet — SmPC https://www.medicines.org.uk/emc/product/7133/smpc",
+        "[O4] Terbinafine tablets 250 mg — prescribing information https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=daf41866-6f2b-4483-b575-456becd6e85f",
+        "[O5] Amorolfine 5% w/v medicated nail lacquer — SmPC https://www.medicines.org.uk/emc/product/7413/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Fungos invadem queratina e produzem alteração da lâmina/leito, onicólise e detritos subungueais. Unhas dos pés são frequentemente afetadas; tinea pedis, idade, trauma e comorbidades contribuem. Cura clínica é lenta porque a unha saudável precisa crescer, mesmo após eliminar o fungo.",
+      "es":
+          "Los hongos invaden queratina y producen alteración de lámina/lecho, onicólisis y detritos subungueales. Las uñas de los pies se afectan frecuentemente; tinea pedis, edad, traumatismos y comorbilidades contribuyen. La curación clínica es lenta porque debe crecer una uña sana, incluso después de eliminar el hongo.",
+    },
+    redFlags: {
+      "pt": [
+        "Faixa pigmentada irregular nova, pigmento periungueal, massa, sangramento ou destruição focal exigem excluir tumor, inclusive melanoma. Pé diabético com ferida, celulite ou comprometimento vascular exige avaliação prioritária. Não deixar suspeita de câncer ou infecção invasiva aguardando resposta de esmalte antifúngico.",
+      ],
+      "es": [
+        "Una banda pigmentada irregular nueva, pigmento periungueal, masa, sangrado o destrucción focal requieren descartar tumor, incluido melanoma. Pie diabético con herida, celulitis o compromiso vascular requiere evaluación prioritaria. No dejar sospecha de cáncer o infección invasiva esperando respuesta de un esmalte antimicótico.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Examinar unhas e pele, número de unhas, extensão, matriz, dor, micose dos pés e diagnóstico diferencial. Perguntar sobre terapias prévias, hepatopatia, função renal, gravidez/lactação e medicamentos. Diabetes, doença vascular e imunossupressão modificam risco e exigem atenção a feridas e infecção concomitante.",
+        "Colher unha/detrito da região doente proximal acessível para exame micológico, cultura e/ou técnica disponível conforme laboratório. Coleta inadequada causa falso negativo; se suspeita persistir, reavaliar e repetir adequadamente antes de curso oral empírico prolongado. Identificar agente ajuda a distinguir colonização/contaminação por fungo não dermatófito.",
+      ],
+      "es": [
+        "Examinar uñas y piel, cantidad de uñas, extensión, matriz, dolor, micosis de los pies y diagnóstico diferencial. Preguntar por tratamientos previos, hepatopatía, función renal, embarazo/lactancia y medicamentos. Diabetes, enfermedad vascular e inmunosupresión modifican el riesgo y requieren atención a heridas e infección concomitante.",
+        "Obtener uña/detrito de la región enferma proximal accesible para examen micológico, cultivo y/o técnica disponible según laboratorio. Una toma inadecuada produce falso negativo; si persiste la sospecha, reevaluar y repetir adecuadamente antes de un curso oral empírico prolongado. Identificar el agente ayuda a distinguir colonización/contaminación por hongo no dermatofito.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Decidir tratar conforme confirmação, agente, extensão/matriz, sintomas, risco, preferências e possibilidade de adesão. Doença limitada pode receber opção tópica; doença extensa ou com matriz pode favorecer terapia sistêmica se segura. Dermatófito, levedura e fungo não dermatófito não são automaticamente sensíveis ao mesmo agente.",
+        "Para adulto elegível com onicomicose por dermatófito sensível: terbinafina 250 mg por via oral 1 vez ao dia; curso usual de 6 semanas para unhas das mãos e 12 semanas para unhas dos pés. Não calcular a partir da concentração do creme nem usar creme de tinea pedis como tratamento equivalente da unha. Extensão do curso exige reavaliação específica.",
+        "Avaliar hepatopatia e função hepática antes da terbinafina oral. Não usar em doença hepática crônica/ativa; repetir função hepática durante tratamento, com a bula britânica especificando 4–6 semanas. Suspender e investigar icterícia, urina escura, fezes claras, náusea persistente, anorexia ou dor abdominal alta; hepatotoxicidade pode ocorrer sem doença prévia.",
+        "Para adulto com indicação de terapia tópica e produto disponível: amorolfina 5% em esmalte medicamentoso, cobrir toda a superfície da unha afetada 1 vez por semana; a bula permite 2 vezes por semana em casos selecionados. Curso usual de 6 meses nas mãos e 9–12 meses nos pés, conforme crescimento/resposta, com revisão aproximadamente a cada 3 meses.",
+        "Antes da reaplicação, remover esmalte e preparar/limpar a unha conforme instruções do produto. Não usar a mesma lixa em unhas saudáveis, não aplicar na pele adjacente/olhos/mucosas e evitar unhas artificiais. Suspender reação alérgica. A dose é aplicação local: não há diluição, infusão ou conversão em dose oral.",
+        "Manter pés secos, tratar micose de pele concomitante com esquema próprio, cortar unhas de forma segura e evitar compartilhar instrumentos. Diabetes/doença vascular exigem cuidado profissional quando houver risco de ferida; desbridamento pode ser coadjuvante selecionado, não arrancar unha em casa. Recidiva é possível.",
+      ],
+      "es": [
+        "Decidir tratar según confirmación, agente, extensión/matriz, síntomas, riesgo, preferencias y posibilidad de adherencia. La enfermedad limitada puede recibir una opción tópica; enfermedad extensa o con matriz puede favorecer tratamiento sistémico si es seguro. Dermatofito, levadura y hongo no dermatofito no son automáticamente sensibles al mismo agente.",
+        "Para un adulto elegible con onicomicosis por dermatofito sensible: terbinafina 250 mg por vía oral 1 vez al día; curso habitual de 6 semanas para uñas de manos y 12 semanas para uñas de pies. No calcular a partir de la concentración de la crema ni usar crema de tinea pedis como tratamiento equivalente de la uña. Prolongar el curso requiere reevaluación específica.",
+        "Evaluar hepatopatía y función hepática antes de terbinafina oral. No usar en enfermedad hepática crónica/activa; repetir función hepática durante el tratamiento, con el prospecto británico especificando 4–6 semanas. Suspender e investigar ictericia, orina oscura, heces claras, náusea persistente, anorexia o dolor abdominal alto; puede haber hepatotoxicidad sin enfermedad previa.",
+        "Para un adulto con indicación de tratamiento tópico y producto disponible: amorolfina 5% en laca medicamentosa, cubrir toda la superficie de la uña afectada 1 vez por semana; el prospecto permite 2 veces por semana en casos seleccionados. Curso habitual de 6 meses en manos y 9–12 meses en pies, según crecimiento/respuesta, con revisión aproximadamente cada 3 meses.",
+        "Antes de reaplicar, retirar laca y preparar/limpiar la uña según instrucciones del producto. No usar la misma lima en uñas sanas, no aplicar en piel adyacente/ojos/mucosas y evitar uñas artificiales. Suspender ante reacción alérgica. La dosis es aplicación local: no hay dilución, infusión ni conversión en dosis oral.",
+        "Mantener pies secos, tratar micosis de piel concomitante con su propio esquema, cortar uñas de forma segura y evitar compartir instrumentos. Diabetes/enfermedad vascular requieren atención profesional ante riesgo de herida; desbridamiento puede ser coadyuvante seleccionado, no arrancar la uña en casa. Puede haber recurrencia.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Não extrapolar terbinafina oral adulta para menores de 18 anos; a bula britânica não recomenda esse uso com dados limitados. Amorolfina consultada não recomenda uso pediátrico. Na gestação, evitar tratamento eletivo oral e individualizar necessidade; a bula de terbinafina desaconselha amamentar durante tratamento oral. Amorolfina na gestação/lactação somente se claramente necessária, sem declarar segurança absoluta.",
+      ],
+      "es": [
+        "No extrapolar terbinafina oral adulta a menores de 18 años; el prospecto británico no recomienda ese uso con datos limitados. La amorolfina consultada no recomienda uso pediátrico. En embarazo, evitar tratamiento oral electivo e individualizar necesidad; el prospecto de terbinafina desaconseja amamantar durante tratamiento oral. Amorolfina en embarazo/lactancia solo si es claramente necesaria, sin declarar seguridad absoluta.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Monitorar crescimento proximal saudável, sintomas, adesão e toxicidade; aparência distal anormal logo após curso não prova falha. Se persistir/progredir, confirmar diagnóstico/agente, considerar resistência ou outra distrofia e avaliar dermatologia. Não repetir automaticamente cursos sistêmicos; quadro não complicado é ambulatorial, mas red flags precisam de prioridade.",
+      ],
+      "es": [
+        "Controlar crecimiento proximal sano, síntomas, adherencia y toxicidad; aspecto distal anormal inmediatamente después del curso no prueba fracaso. Si persiste/progresa, confirmar diagnóstico/agente, considerar resistencia u otra distrofia y evaluar dermatología. No repetir automáticamente cursos sistémicos; el cuadro no complicado es ambulatorio, pero los signos de alarma requieren prioridad.",
+      ],
+    },
+    doNotDo: {
+      "pt": [
+        "Na bula consultada, uso oral de terbinafina não é recomendado na insuficiência renal, especialmente depuração de creatinina <50 mL/min; comprometimento grave <30 mL/min é contraindicação do produto britânico. Não inventar redução pela metade como ajuste seguro nem confundir redução de clearance farmacocinético com posologia validada.",
+        "Revisar interações antes do curso oral: terbinafina inibe CYP2D6 e pode alterar exposição de antidepressivos, betabloqueadores e antiarrítmicos; indutores/inibidores também alteram sua exposição. Alterações de INR com varfarina foram relatadas. Rash progressivo, alteração importante de paladar/olfato ou sintomas hematológicos exigem reavaliação e possível suspensão.",
+      ],
+      "es": [
+        "En el prospecto consultado, no se recomienda terbinafina oral en insuficiencia renal, especialmente depuración de creatinina <50 mL/min; compromiso grave <30 mL/min es contraindicación del producto británico. No inventar una reducción a la mitad como ajuste seguro ni confundir reducción del clearance farmacocinético con posología validada.",
+        "Revisar interacciones antes del curso oral: terbinafina inhibe CYP2D6 y puede alterar exposición de antidepresivos, betabloqueantes y antiarrítmicos; inductores/inhibidores también alteran su exposición. Se informaron cambios de INR con warfarina. Erupción progresiva, alteración importante de gusto/olfato o síntomas hematológicos requieren reevaluación y posible suspensión.",
+      ],
+    },
+  ),
+  ProtocolModel(
+    id: "cisto_baker",
+    canonicalProtocolId: "cisto_baker",
+    title: {"pt": "Cisto de Baker", "es": "Quiste de Baker"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Cisto de Baker é distensão sinovial poplítea associada a líquido articular. É uma condição local, distinta de TVP; em adultos pode acompanhar artrose, artrite ou lesão meniscal.",
+      "es":
+          "El quiste de Baker es distensión sinovial poplítea asociada al líquido articular. Es una condición local, distinta de TVP; en adultos puede acompañar artrosis, artritis o lesión meniscal.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Cisto de Baker é distensão sinovial poplítea associada a líquido articular. É uma condição local, distinta de TVP; em adultos pode acompanhar artrose, artrite ou lesão meniscal.",
+        "Dor ou edema de panturrilha de início agudo ou crescente exige avaliação urgente: ruptura do cisto pode imitar TVP. Dispneia/síncope exige emergência. Dor desproporcional, dor ao alongamento passivo ou déficit neurovascular requer excluir síndrome compartimental; não aguardar sinais tardios.",
+        "Examinar massa posterior, mobilidade, derrame e sinais articulares; avaliar panturrilha, perfusão e sensibilidade. Massa pode ficar mais firme em extensão. Considerar TVP, massa sólida e doença vascular no diferencial.",
+        "Ultrassom caracteriza conteúdo líquido e pode investigar vasos quando há suspeita de TVP. Seguir o fluxo de probabilidade clínica, dímero-D e ultrassom venoso apropriado para TVP; a imagem do cisto não exclui trombose concomitante. RM selecionada avalia lesão intra-articular; radiografia avalia doença óssea/artrose.",
+        "Sem alarme e com diagnóstico seguro, observar cisto assintomático. Se doloroso, adaptar atividade, evitar esforço desencadeante e abordar a causa do joelho. Não iniciar anticoagulação para cisto confirmado sem outra indicação.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "Crianças podem ter apresentação diferente e precisam de avaliação própria. Não extrapolar analgesia adulta. Gestação, anticoagulação e insuficiência renal/hepática modificam escolhas e exigem avaliação individual.",
+        "Alta ambulatorial apenas com sinais vasculares preservados, dor controlável e sem suspeita urgente pendente. Orientar retorno por piora do edema/dor, dispneia ou alteração neurovascular; reavaliar limitação funcional e encaminhar doença persistente do joelho.",
+        "Comunicação com o joelho e excesso de líquido favorecem aumento do cisto. Pode causar plenitude posterior, rigidez e dor; muitos são assintomáticos. Tratar apenas a coleção pode deixar a causa articular ativa.",
+        "Aspiração guiada ou corticoide intra-articular são opções selecionadas por profissional habilitado; recidiva é possível. Cirurgia é incomum e considera sintomas persistentes, recorrência e doença articular tratável. Este guia não define dose de infiltração.",
+      ],
+      "es": [
+        "El quiste de Baker es distensión sinovial poplítea asociada al líquido articular. Es una condición local, distinta de TVP; en adultos puede acompañar artrosis, artritis o lesión meniscal.",
+        "Dolor o edema de pantorrilla de inicio agudo o creciente requieren evaluación urgente: la rotura del quiste puede simular TVP. Disnea/síncope requieren emergencia. Dolor desproporcionado, dolor al estiramiento pasivo o déficit neurovascular obligan a descartar síndrome compartimental; no esperar signos tardíos.",
+        "Examinar masa posterior, movilidad, derrame y signos articulares; evaluar pantorrilla, perfusión y sensibilidad. La masa puede endurecerse en extensión. Considerar TVP, masa sólida y enfermedad vascular en el diferencial.",
+        "La ecografía caracteriza contenido líquido y puede estudiar vasos ante sospecha de TVP. Seguir el circuito de probabilidad clínica, dímero-D y ecografía venosa apropiada para TVP; visualizar el quiste no excluye trombosis concomitante. RM seleccionada evalúa lesión intraarticular; radiografía evalúa enfermedad ósea/artrosis.",
+        "Sin alarma y con diagnóstico seguro, observar el quiste asintomático. Si duele, adaptar actividad, evitar esfuerzo desencadenante y abordar la causa de la rodilla. No iniciar anticoagulación por un quiste confirmado sin otra indicación.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "Los niños pueden tener una presentación diferente y necesitan evaluación propia. No extrapolar analgesia adulta. Embarazo, anticoagulación e insuficiencia renal/hepática modifican las decisiones y requieren evaluación individual.",
+        "Alta ambulatoria solo con signos vasculares conservados, dolor controlable y sin sospecha urgente pendiente. Indicar retorno por mayor edema/dolor, disnea o alteración neurovascular; reevaluar limitación funcional y derivar enfermedad persistente de la rodilla.",
+        "La comunicación con la rodilla y el exceso de líquido favorecen el aumento del quiste. Puede causar plenitud posterior, rigidez y dolor; muchos son asintomáticos. Tratar solo la colección puede dejar activa la causa articular.",
+        "Aspiración guiada o corticoide intraarticular son opciones seleccionadas por un profesional capacitado; puede haber recurrencia. La cirugía es infrecuente y considera síntomas persistentes, recurrencia y enfermedad articular tratable. Esta guía no establece dosis de infiltración.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[BK1] Baker’s cyst (popliteal cyst) https://www.orthoinfo.org/diseases--conditions/bakers-cyst-popliteal-cyst/",
+        "[BK2] Venous thromboembolic diseases: diagnosis, management and thrombophilia testing — NG158 https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+        "[BK3] Compartment syndrome https://www.orthoinfo.org/diseases--conditions/compartment-syndrome/",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+      "es": [
+        "[BK1] Baker’s cyst (popliteal cyst) https://www.orthoinfo.org/diseases--conditions/bakers-cyst-popliteal-cyst/",
+        "[BK2] Venous thromboembolic diseases: diagnosis, management and thrombophilia testing — NG158 https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+        "[BK3] Compartment syndrome https://www.orthoinfo.org/diseases--conditions/compartment-syndrome/",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Comunicação com o joelho e excesso de líquido favorecem aumento do cisto. Pode causar plenitude posterior, rigidez e dor; muitos são assintomáticos. Tratar apenas a coleção pode deixar a causa articular ativa.",
+      "es":
+          "La comunicación con la rodilla y el exceso de líquido favorecen el aumento del quiste. Puede causar plenitud posterior, rigidez y dolor; muchos son asintomáticos. Tratar solo la colección puede dejar activa la causa articular.",
+    },
+    redFlags: {
+      "pt": [
+        "Dor ou edema de panturrilha de início agudo ou crescente exige avaliação urgente: ruptura do cisto pode imitar TVP. Dispneia/síncope exige emergência. Dor desproporcional, dor ao alongamento passivo ou déficit neurovascular requer excluir síndrome compartimental; não aguardar sinais tardios.",
+      ],
+      "es": [
+        "Dolor o edema de pantorrilla de inicio agudo o creciente requieren evaluación urgente: la rotura del quiste puede simular TVP. Disnea/síncope requieren emergencia. Dolor desproporcionado, dolor al estiramiento pasivo o déficit neurovascular obligan a descartar síndrome compartimental; no esperar signos tardíos.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Examinar massa posterior, mobilidade, derrame e sinais articulares; avaliar panturrilha, perfusão e sensibilidade. Massa pode ficar mais firme em extensão. Considerar TVP, massa sólida e doença vascular no diferencial.",
+        "Ultrassom caracteriza conteúdo líquido e pode investigar vasos quando há suspeita de TVP. Seguir o fluxo de probabilidade clínica, dímero-D e ultrassom venoso apropriado para TVP; a imagem do cisto não exclui trombose concomitante. RM selecionada avalia lesão intra-articular; radiografia avalia doença óssea/artrose.",
+      ],
+      "es": [
+        "Examinar masa posterior, movilidad, derrame y signos articulares; evaluar pantorrilla, perfusión y sensibilidad. La masa puede endurecerse en extensión. Considerar TVP, masa sólida y enfermedad vascular en el diferencial.",
+        "La ecografía caracteriza contenido líquido y puede estudiar vasos ante sospecha de TVP. Seguir el circuito de probabilidad clínica, dímero-D y ecografía venosa apropiada para TVP; visualizar el quiste no excluye trombosis concomitante. RM seleccionada evalúa lesión intraarticular; radiografía evalúa enfermedad ósea/artrosis.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Sem alarme e com diagnóstico seguro, observar cisto assintomático. Se doloroso, adaptar atividade, evitar esforço desencadeante e abordar a causa do joelho. Não iniciar anticoagulação para cisto confirmado sem outra indicação.",
+        "Aspiração guiada ou corticoide intra-articular são opções selecionadas por profissional habilitado; recidiva é possível. Cirurgia é incomum e considera sintomas persistentes, recorrência e doença articular tratável. Este guia não define dose de infiltração.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      ],
+      "es": [
+        "Sin alarma y con diagnóstico seguro, observar el quiste asintomático. Si duele, adaptar actividad, evitar esfuerzo desencadenante y abordar la causa de la rodilla. No iniciar anticoagulación por un quiste confirmado sin otra indicación.",
+        "Aspiración guiada o corticoide intraarticular son opciones seleccionadas por un profesional capacitado; puede haber recurrencia. La cirugía es infrecuente y considera síntomas persistentes, recurrencia y enfermedad articular tratable. Esta guía no establece dosis de infiltración.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Crianças podem ter apresentação diferente e precisam de avaliação própria. Não extrapolar analgesia adulta. Gestação, anticoagulação e insuficiência renal/hepática modificam escolhas e exigem avaliação individual.",
+      ],
+      "es": [
+        "Los niños pueden tener una presentación diferente y necesitan evaluación propia. No extrapolar analgesia adulta. Embarazo, anticoagulación e insuficiencia renal/hepática modifican las decisiones y requieren evaluación individual.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Alta ambulatorial apenas com sinais vasculares preservados, dor controlável e sem suspeita urgente pendente. Orientar retorno por piora do edema/dor, dispneia ou alteração neurovascular; reavaliar limitação funcional e encaminhar doença persistente do joelho.",
+      ],
+      "es": [
+        "Alta ambulatoria solo con signos vasculares conservados, dolor controlable y sin sospecha urgente pendiente. Indicar retorno por mayor edema/dolor, disnea o alteración neurovascular; reevaluar limitación funcional y derivar enfermedad persistente de la rodilla.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "cisto_sinovial_punho",
+    canonicalProtocolId: "cisto_sinovial_punho",
+    title: {"pt": "Cisto sinovial do punho", "es": "Quiste sinovial de muñeca"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Cisto sinovial/gânglio do punho é massa benigna de conteúdo gelatinoso ligada a articulação ou bainha tendínea. Pode ser dorsal ou palmar; não é owner de toda massa do punho.",
+      "es":
+          "El quiste sinovial/ganglión de muñeca es una masa benigna de contenido gelatinoso vinculada a articulación o vaina tendinosa. Puede ser dorsal o palmar; no abarca toda masa de muñeca.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Cisto sinovial/gânglio do punho é massa benigna de conteúdo gelatinoso ligada a articulação ou bainha tendínea. Pode ser dorsal ou palmar; não é owner de toda massa do punho.",
+        "Massa pulsátil, apresentação atípica, crescimento preocupante ou déficit neurovascular precisa de avaliação dirigida antes de punção. Eritema/calor com quadro agudo não deve ser atribuído automaticamente a gânglio simples.",
+        "Avaliar localização, consistência, mobilidade, dor, pele, função e exame neurovascular. Transiluminação pode apoiar caráter cístico, sem provar diagnóstico. Diferenciar massa sólida, lesão vascular e processo inflamatório/infeccioso.",
+        "Diagnóstico típico costuma ser clínico. Ultrassom ou RM são úteis se a massa é oculta ou incerta; radiografia pode esclarecer doença articular associada, mas não mostra diretamente o cisto.",
+        "Observar se assintomático e diagnóstico seguro. Se doloroso, adaptar atividade e considerar suporte temporário do punho. Não perfurar em casa nem golpear a massa; analgesia alivia dor, sem eliminar o cisto.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "Este esquema medicamentoso é adulto. Crianças, gestantes e pessoas com doença renal/hepática precisam de seleção individual; não extrapolar doses nem indicar procedimento só pelo tamanho sem sintomas ou incerteza diagnóstica.",
+        "Quadro típico, sem alarme, permite manejo ambulatorial. Reavaliar dor, função, sintomas neurológicos e evolução da massa. Encaminhar diagnóstico incerto, limitação persistente ou desejo de procedimento após explicar benefício, riscos e recorrência.",
+        "Tamanho pode variar com atividade e repouso. A causa nem sempre é identificada; pressão local pode gerar dor ou compressão nervosa. Pode desaparecer espontaneamente, mas há recorrência após tratamento.",
+        "Aspiração pode aliviar cisto dorsal, mas recidiva é comum porque a conexão permanece. Cisto palmar pode estar junto da artéria radial e nervos: intervenção exige avaliação especializada. Cirurgia considera dor/limitação persistentes; discutir recorrência e riscos locais.",
+      ],
+      "es": [
+        "El quiste sinovial/ganglión de muñeca es una masa benigna de contenido gelatinoso vinculada a articulación o vaina tendinosa. Puede ser dorsal o palmar; no abarca toda masa de muñeca.",
+        "Una masa pulsátil, presentación atípica, crecimiento preocupante o déficit neurovascular necesitan evaluación dirigida antes de punción. Eritema/calor con cuadro agudo no deben atribuirse automáticamente a un ganglión simple.",
+        "Evaluar localización, consistencia, movilidad, dolor, piel, función y examen neurovascular. La transiluminación puede apoyar naturaleza quística, sin demostrar el diagnóstico. Diferenciar masa sólida, lesión vascular y proceso inflamatorio/infeccioso.",
+        "El diagnóstico típico suele ser clínico. Ecografía o RM son útiles si la masa está oculta o es incierta; la radiografía puede aclarar enfermedad articular asociada, pero no muestra directamente el quiste.",
+        "Observar si es asintomático y el diagnóstico es seguro. Si duele, adaptar actividad y considerar soporte temporal de muñeca. No perforar en casa ni golpear la masa; la analgesia alivia dolor, sin eliminar el quiste.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "Este esquema farmacológico es adulto. Niños, embarazadas y personas con enfermedad renal/hepática necesitan selección individual; no extrapolar dosis ni indicar un procedimiento solo por tamaño sin síntomas o incertidumbre diagnóstica.",
+        "Un cuadro típico, sin alarma, permite manejo ambulatorio. Reevaluar dolor, función, síntomas neurológicos y evolución de la masa. Derivar diagnóstico incierto, limitación persistente o deseo de procedimiento tras explicar beneficio, riesgos y recurrencia.",
+        "El tamaño puede variar con actividad y reposo. La causa no siempre se identifica; la presión local puede producir dolor o compresión nerviosa. Puede desaparecer espontáneamente, pero puede recurrir tras tratarlo.",
+        "La aspiración puede aliviar un quiste dorsal, pero la recurrencia es frecuente porque persiste la conexión. El quiste palmar puede estar junto a la arteria radial y nervios: intervenir requiere evaluación especializada. La cirugía considera dolor/limitación persistentes; discutir recurrencia y riesgos locales.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[GC1] Ganglion cyst of the wrist and hand https://www.orthoinfo.org/diseases--conditions/ganglion-cyst-of-the-wrist-and-hand/",
+        "[GC2] Ganglion cysts https://www.bssh.ac.uk/patients/conditions/20/ganglion_cysts",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+      "es": [
+        "[GC1] Ganglion cyst of the wrist and hand https://www.orthoinfo.org/diseases--conditions/ganglion-cyst-of-the-wrist-and-hand/",
+        "[GC2] Ganglion cysts https://www.bssh.ac.uk/patients/conditions/20/ganglion_cysts",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Tamanho pode variar com atividade e repouso. A causa nem sempre é identificada; pressão local pode gerar dor ou compressão nervosa. Pode desaparecer espontaneamente, mas há recorrência após tratamento.",
+      "es":
+          "El tamaño puede variar con actividad y reposo. La causa no siempre se identifica; la presión local puede producir dolor o compresión nerviosa. Puede desaparecer espontáneamente, pero puede recurrir tras tratarlo.",
+    },
+    redFlags: {
+      "pt": [
+        "Massa pulsátil, apresentação atípica, crescimento preocupante ou déficit neurovascular precisa de avaliação dirigida antes de punção. Eritema/calor com quadro agudo não deve ser atribuído automaticamente a gânglio simples.",
+      ],
+      "es": [
+        "Una masa pulsátil, presentación atípica, crecimiento preocupante o déficit neurovascular necesitan evaluación dirigida antes de punción. Eritema/calor con cuadro agudo no deben atribuirse automáticamente a un ganglión simple.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Avaliar localização, consistência, mobilidade, dor, pele, função e exame neurovascular. Transiluminação pode apoiar caráter cístico, sem provar diagnóstico. Diferenciar massa sólida, lesão vascular e processo inflamatório/infeccioso.",
+        "Diagnóstico típico costuma ser clínico. Ultrassom ou RM são úteis se a massa é oculta ou incerta; radiografia pode esclarecer doença articular associada, mas não mostra diretamente o cisto.",
+      ],
+      "es": [
+        "Evaluar localización, consistencia, movilidad, dolor, piel, función y examen neurovascular. La transiluminación puede apoyar naturaleza quística, sin demostrar el diagnóstico. Diferenciar masa sólida, lesión vascular y proceso inflamatorio/infeccioso.",
+        "El diagnóstico típico suele ser clínico. Ecografía o RM son útiles si la masa está oculta o es incierta; la radiografía puede aclarar enfermedad articular asociada, pero no muestra directamente el quiste.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Observar se assintomático e diagnóstico seguro. Se doloroso, adaptar atividade e considerar suporte temporário do punho. Não perfurar em casa nem golpear a massa; analgesia alivia dor, sem eliminar o cisto.",
+        "Aspiração pode aliviar cisto dorsal, mas recidiva é comum porque a conexão permanece. Cisto palmar pode estar junto da artéria radial e nervos: intervenção exige avaliação especializada. Cirurgia considera dor/limitação persistentes; discutir recorrência e riscos locais.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      ],
+      "es": [
+        "Observar si es asintomático y el diagnóstico es seguro. Si duele, adaptar actividad y considerar soporte temporal de muñeca. No perforar en casa ni golpear la masa; la analgesia alivia dolor, sin eliminar el quiste.",
+        "La aspiración puede aliviar un quiste dorsal, pero la recurrencia es frecuente porque persiste la conexión. El quiste palmar puede estar junto a la arteria radial y nervios: intervenir requiere evaluación especializada. La cirugía considera dolor/limitación persistentes; discutir recurrencia y riesgos locales.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Este esquema medicamentoso é adulto. Crianças, gestantes e pessoas com doença renal/hepática precisam de seleção individual; não extrapolar doses nem indicar procedimento só pelo tamanho sem sintomas ou incerteza diagnóstica.",
+      ],
+      "es": [
+        "Este esquema farmacológico es adulto. Niños, embarazadas y personas con enfermedad renal/hepática necesitan selección individual; no extrapolar dosis ni indicar un procedimiento solo por tamaño sin síntomas o incertidumbre diagnóstica.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Quadro típico, sem alarme, permite manejo ambulatorial. Reavaliar dor, função, sintomas neurológicos e evolução da massa. Encaminhar diagnóstico incerto, limitação persistente ou desejo de procedimento após explicar benefício, riscos e recorrência.",
+      ],
+      "es": [
+        "Un cuadro típico, sin alarma, permite manejo ambulatorio. Reevaluar dolor, función, síntomas neurológicos y evolución de la masa. Derivar diagnóstico incierto, limitación persistente o deseo de procedimiento tras explicar beneficio, riesgos y recurrencia.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "dedo_em_gatilho",
+    canonicalProtocolId: "dedo_em_gatilho",
+    title: {"pt": "Dedo em gatilho", "es": "Dedo en gatillo"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Dedo em gatilho é dificuldade de deslizamento do tendão flexor na polia A1, com ressalto ou bloqueio na flexão/extensão. Pode envolver polegar. É distinto de tenossinovite de De Quervain e infecção da bainha.",
+      "es":
+          "El dedo en gatillo es dificultad de deslizamiento del tendón flexor en la polea A1, con resalto o bloqueo en flexión/extensión. Puede afectar al pulgar. Es distinto de tenosinovitis de De Quervain e infección de la vaina.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Dedo em gatilho é dificuldade de deslizamento do tendão flexor na polia A1, com ressalto ou bloqueio na flexão/extensão. Pode envolver polegar. É distinto de tenossinovite de De Quervain e infecção da bainha.",
+        "Edema fusiforme agudo, dor na bainha, dedo mantido em flexão e dor à extensão passiva sugerem tenossinovite infecciosa, especialmente após ferimento. Não esperar febre ou todos os sinais: avaliação urgente de mão e tratamento de infecção, não infiltração como gatilho habitual.",
+        "Perguntar sobre bloqueio, piora ao despertar e impacto funcional. Examinar ponto doloroso/nódulo palmar na base do dedo, ressalto e amplitude. Diagnóstico típico é clínico; diferenciar rigidez articular, trauma e contratura fixa.",
+        "Imagem não é rotina no quadro típico. Solicitar exame dirigido quando trauma, suspeita articular, massa ou apresentação atípica muda a decisão. Documentar gravidade pelo bloqueio e limitação, sem confundir travamento crônico com infecção aguda.",
+        "Reduzir atividade repetitiva dolorosa e considerar tala, inclusive noturna, com orientação. Não forçar desbloqueio doloroso repetidamente. Analgesia é sintomática; não desfaz o estreitamento da polia.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "Polegar em gatilho pediátrico exige avaliação própria e não recebe automaticamente o esquema adulto. Gestação e doença renal/hepática modificam analgesia; diabetes exige planejamento se houver corticoide.",
+        "Sem suspeita infecciosa ou lesão urgente, acompanhar ambulatorialmente dor, frequência do travamento e função. Bloqueio persistente ou incapacidade funcional justifica encaminhamento de mão; novo edema inflamatório agudo exige reavaliação urgente.",
+        "Espessamento da polia/tendão reduz passagem e gera dor palmar e travamento. Diabetes é associação relevante; muitos casos não têm causa única identificada.",
+        "Corticoide local pode ser opção após avaliação e exclusão de infecção; dose, agente e técnica dependem do procedimento especializado. Em diabetes, discutir elevação transitória da glicemia e monitorização. Falha ou bloqueio persistente pode indicar liberação da polia após decisão compartilhada.",
+      ],
+      "es": [
+        "El dedo en gatillo es dificultad de deslizamiento del tendón flexor en la polea A1, con resalto o bloqueo en flexión/extensión. Puede afectar al pulgar. Es distinto de tenosinovitis de De Quervain e infección de la vaina.",
+        "Edema fusiforme agudo, dolor en la vaina, dedo mantenido en flexión y dolor a la extensión pasiva sugieren tenosinovitis infecciosa, especialmente tras una herida. No esperar fiebre ni todos los signos: evaluación urgente de mano y tratamiento de infección, no infiltración como un gatillo habitual.",
+        "Preguntar por bloqueo, empeoramiento al despertar e impacto funcional. Examinar punto doloroso/nódulo palmar en la base del dedo, resalto y amplitud. El diagnóstico típico es clínico; diferenciar rigidez articular, traumatismo y contractura fija.",
+        "Las imágenes no son de rutina en el cuadro típico. Solicitar estudio dirigido cuando traumatismo, sospecha articular, masa o presentación atípica cambien la decisión. Documentar gravedad por bloqueo y limitación, sin confundir bloqueo crónico con infección aguda.",
+        "Reducir actividad repetitiva dolorosa y considerar férula, incluida nocturna, con orientación. No forzar repetidamente un desbloqueo doloroso. La analgesia es sintomática; no elimina el estrechamiento de la polea.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "El pulgar en gatillo pediátrico requiere evaluación propia y no recibe automáticamente el esquema adulto. Embarazo y enfermedad renal/hepática modifican analgesia; la diabetes exige planificación si se usa corticoide.",
+        "Sin sospecha infecciosa ni lesión urgente, seguir ambulatoriamente dolor, frecuencia del bloqueo y función. Bloqueo persistente o incapacidad funcional justifican derivación de mano; nuevo edema inflamatorio agudo exige reevaluación urgente.",
+        "El engrosamiento de la polea/tendón dificulta el paso y genera dolor palmar y bloqueo. La diabetes es una asociación relevante; muchos casos no tienen una causa única identificada.",
+        "Un corticoide local puede ser opción tras evaluar y excluir infección; dosis, agente y técnica dependen del procedimiento especializado. En diabetes, discutir elevación transitoria de glucemia y vigilancia. Fracaso o bloqueo persistente pueden indicar liberación de la polea tras una decisión compartida.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[TF1] Trigger finger/thumb https://www.bssh.ac.uk/patients/conditions/18/trigger_fingerthumb",
+        "[TF2] Trigger finger https://www.orthoinfo.org/diseases--conditions/trigger-finger/",
+        "[TF3] Infectious flexor tenosynovitis https://www.merckmanuals.com/professional/musculoskeletal-and-connective-tissue-disorders/hand-disorders/infectious-flexor-tenosynovitis",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+      "es": [
+        "[TF1] Trigger finger/thumb https://www.bssh.ac.uk/patients/conditions/18/trigger_fingerthumb",
+        "[TF2] Trigger finger https://www.orthoinfo.org/diseases--conditions/trigger-finger/",
+        "[TF3] Infectious flexor tenosynovitis https://www.merckmanuals.com/professional/musculoskeletal-and-connective-tissue-disorders/hand-disorders/infectious-flexor-tenosynovitis",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Espessamento da polia/tendão reduz passagem e gera dor palmar e travamento. Diabetes é associação relevante; muitos casos não têm causa única identificada.",
+      "es":
+          "El engrosamiento de la polea/tendón dificulta el paso y genera dolor palmar y bloqueo. La diabetes es una asociación relevante; muchos casos no tienen una causa única identificada.",
+    },
+    redFlags: {
+      "pt": [
+        "Edema fusiforme agudo, dor na bainha, dedo mantido em flexão e dor à extensão passiva sugerem tenossinovite infecciosa, especialmente após ferimento. Não esperar febre ou todos os sinais: avaliação urgente de mão e tratamento de infecção, não infiltração como gatilho habitual.",
+      ],
+      "es": [
+        "Edema fusiforme agudo, dolor en la vaina, dedo mantenido en flexión y dolor a la extensión pasiva sugieren tenosinovitis infecciosa, especialmente tras una herida. No esperar fiebre ni todos los signos: evaluación urgente de mano y tratamiento de infección, no infiltración como un gatillo habitual.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Perguntar sobre bloqueio, piora ao despertar e impacto funcional. Examinar ponto doloroso/nódulo palmar na base do dedo, ressalto e amplitude. Diagnóstico típico é clínico; diferenciar rigidez articular, trauma e contratura fixa.",
+        "Imagem não é rotina no quadro típico. Solicitar exame dirigido quando trauma, suspeita articular, massa ou apresentação atípica muda a decisão. Documentar gravidade pelo bloqueio e limitação, sem confundir travamento crônico com infecção aguda.",
+      ],
+      "es": [
+        "Preguntar por bloqueo, empeoramiento al despertar e impacto funcional. Examinar punto doloroso/nódulo palmar en la base del dedo, resalto y amplitud. El diagnóstico típico es clínico; diferenciar rigidez articular, traumatismo y contractura fija.",
+        "Las imágenes no son de rutina en el cuadro típico. Solicitar estudio dirigido cuando traumatismo, sospecha articular, masa o presentación atípica cambien la decisión. Documentar gravedad por bloqueo y limitación, sin confundir bloqueo crónico con infección aguda.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Reduzir atividade repetitiva dolorosa e considerar tala, inclusive noturna, com orientação. Não forçar desbloqueio doloroso repetidamente. Analgesia é sintomática; não desfaz o estreitamento da polia.",
+        "Corticoide local pode ser opção após avaliação e exclusão de infecção; dose, agente e técnica dependem do procedimento especializado. Em diabetes, discutir elevação transitória da glicemia e monitorização. Falha ou bloqueio persistente pode indicar liberação da polia após decisão compartilhada.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      ],
+      "es": [
+        "Reducir actividad repetitiva dolorosa y considerar férula, incluida nocturna, con orientación. No forzar repetidamente un desbloqueo doloroso. La analgesia es sintomática; no elimina el estrechamiento de la polea.",
+        "Un corticoide local puede ser opción tras evaluar y excluir infección; dosis, agente y técnica dependen del procedimiento especializado. En diabetes, discutir elevación transitoria de glucemia y vigilancia. Fracaso o bloqueo persistente pueden indicar liberación de la polea tras una decisión compartida.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Polegar em gatilho pediátrico exige avaliação própria e não recebe automaticamente o esquema adulto. Gestação e doença renal/hepática modificam analgesia; diabetes exige planejamento se houver corticoide.",
+      ],
+      "es": [
+        "El pulgar en gatillo pediátrico requiere evaluación propia y no recibe automáticamente el esquema adulto. Embarazo y enfermedad renal/hepática modifican analgesia; la diabetes exige planificación si se usa corticoide.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Sem suspeita infecciosa ou lesão urgente, acompanhar ambulatorialmente dor, frequência do travamento e função. Bloqueio persistente ou incapacidade funcional justifica encaminhamento de mão; novo edema inflamatório agudo exige reavaliação urgente.",
+      ],
+      "es": [
+        "Sin sospecha infecciosa ni lesión urgente, seguir ambulatoriamente dolor, frecuencia del bloqueo y función. Bloqueo persistente o incapacidad funcional justifican derivación de mano; nuevo edema inflamatorio agudo exige reevaluación urgente.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "meralgia_parestesica",
+    canonicalProtocolId: "meralgia_parestesica",
+    title: {"pt": "Meralgia parestésica", "es": "Meralgia parestésica"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Meralgia parestésica é neuropatia do nervo cutâneo lateral da coxa, de função sensitiva, com queimação, formigamento ou dormência anterolateral. Fraqueza motora ou reflexos anormais não são explicados automaticamente por este diagnóstico.",
+      "es":
+          "La meralgia parestésica es neuropatía del nervio cutáneo lateral del muslo, de función sensitiva, con ardor, hormigueo o entumecimiento anterolateral. Debilidad motora o reflejos anormales no se explican automáticamente por este diagnóstico.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Meralgia parestésica é neuropatia do nervo cutâneo lateral da coxa, de função sensitiva, com queimação, formigamento ou dormência anterolateral. Fraqueza motora ou reflexos anormais não são explicados automaticamente por este diagnóstico.",
+        "Novo déficit motor, sintomas neurológicos fora da área esperada ou massa/sintomas sistêmicos requerem investigação de outra causa. Não rotular quadro neurológico agudo complexo como meralgia simples nem atrasar avaliação urgente quando houver perda progressiva de função.",
+        "Mapear área sensitiva, procurar fatores compressivos e examinar força, reflexos, coluna/quadril e sinais sistêmicos. Distribuição atípica, dor lombar radicular ou déficit motor amplia o diferencial; diagnóstico costuma ser clínico.",
+        "Não pedir imagem ou eletroneuromiografia universalmente. Estudos selecionados ajudam a excluir outra neuropatia/radiculopatia; TC/RM podem investigar massa quando suspeita. Bloqueio diagnóstico guiado é decisão profissional, sem dose padronizada neste guia.",
+        "Remover compressão externa, usar roupa menos apertada e abordar peso quando apropriado. Explicar que melhora pode levar tempo. Analgésico breve pode aliviar dor associada, mas não garante controle da dor neuropática nem corrige toda causa.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+        "Na gestação, preferir reduzir compressão e avaliar analgesia individualmente; não usar o esquema adulto de AINE como padrão gestacional. Crianças e pessoas com insuficiência renal/hepática exigem avaliação própria; não extrapolar doses.",
+        "Sem alarme, acompanhamento ambulatorial com orientação de retorno é apropriado. Monitorar território sensitivo, dor, sono e função; reavaliar piora, mudança de distribuição, déficit motor ou resposta insuficiente, em vez de apenas aumentar medicação.",
+        "Compressão próxima ao ligamento inguinal pode relacionar-se a roupa/cinto apertado, ganho de peso, gestação ou procedimento local. Não é sinônimo de radiculopatia lombar, neuropatia femoral ou doença de quadril.",
+        "Persistência importante após medidas conservadoras pede reavaliação. Fármacos de dor neuropática, infiltração ou cirurgia são selecionados conforme diagnóstico, risco e especialista; não iniciar gabapentinoide ou corticoide com dose inventada. Cirurgia é incomum.",
+      ],
+      "es": [
+        "La meralgia parestésica es neuropatía del nervio cutáneo lateral del muslo, de función sensitiva, con ardor, hormigueo o entumecimiento anterolateral. Debilidad motora o reflejos anormales no se explican automáticamente por este diagnóstico.",
+        "Nuevo déficit motor, síntomas neurológicos fuera del área esperada o masa/síntomas sistémicos requieren investigar otra causa. No etiquetar un cuadro neurológico agudo complejo como meralgia simple ni demorar evaluación urgente si hay pérdida progresiva de función.",
+        "Mapear el área sensitiva, buscar factores compresivos y examinar fuerza, reflejos, columna/cadera y signos sistémicos. Distribución atípica, dolor lumbar radicular o déficit motor amplían el diferencial; el diagnóstico suele ser clínico.",
+        "No solicitar imágenes ni electrodiagnóstico universalmente. Estudios seleccionados ayudan a excluir otra neuropatía/radiculopatía; TC/RM pueden estudiar una masa sospechada. El bloqueo diagnóstico guiado es decisión profesional, sin dosis estandarizada en esta guía.",
+        "Eliminar compresión externa, usar ropa menos ajustada y abordar peso cuando corresponda. Explicar que la mejoría puede tardar. Un analgésico breve puede aliviar dolor asociado, pero no garantiza control del dolor neuropático ni corrige toda causa.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+        "En embarazo, priorizar reducir compresión y evaluar analgesia individualmente; no usar el esquema adulto de AINE como estándar gestacional. Niños y personas con insuficiencia renal/hepática necesitan evaluación propia; no extrapolar dosis.",
+        "Sin alarma, es apropiado el seguimiento ambulatorio con indicación de retorno. Controlar territorio sensitivo, dolor, sueño y función; reevaluar empeoramiento, cambio de distribución, déficit motor o respuesta insuficiente, en lugar de solo aumentar medicación.",
+        "La compresión cerca del ligamento inguinal puede relacionarse con ropa/cinturón ajustados, aumento de peso, embarazo o procedimiento local. No es sinónimo de radiculopatía lumbar, neuropatía femoral o enfermedad de cadera.",
+        "Persistencia importante tras medidas conservadoras requiere reevaluación. Fármacos para dolor neuropático, infiltración o cirugía se seleccionan según diagnóstico, riesgo y especialista; no iniciar gabapentinoide ni corticoide con dosis inventada. La cirugía es infrecuente.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[MP1] Burning thigh pain (meralgia paresthetica) https://www.orthoinfo.org/diseases--conditions/burning-thigh-pain-meralgia-paresthetica/",
+        "[MP2] Meralgia paresthetica — diagnosis and treatment https://www.mayoclinic.org/diseases-conditions/meralgia-paresthetica/diagnosis-treatment/drc-20355639",
+        "[MP3] Meralgia paresthetica — symptoms and causes https://www.mayoclinic.org/diseases-conditions/meralgia-paresthetica/symptoms-causes/syc-20355635",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+      "es": [
+        "[MP1] Burning thigh pain (meralgia paresthetica) https://www.orthoinfo.org/diseases--conditions/burning-thigh-pain-meralgia-paresthetica/",
+        "[MP2] Meralgia paresthetica — diagnosis and treatment https://www.mayoclinic.org/diseases-conditions/meralgia-paresthetica/diagnosis-treatment/drc-20355639",
+        "[MP3] Meralgia paresthetica — symptoms and causes https://www.mayoclinic.org/diseases-conditions/meralgia-paresthetica/symptoms-causes/syc-20355635",
+        "[IBU] Ibuprofen 200 mg film-coated tablets — SmPC https://www.medicines.org.uk/emc/product/14363/smpc",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Compressão próxima ao ligamento inguinal pode relacionar-se a roupa/cinto apertado, ganho de peso, gestação ou procedimento local. Não é sinônimo de radiculopatia lombar, neuropatia femoral ou doença de quadril.",
+      "es":
+          "La compresión cerca del ligamento inguinal puede relacionarse con ropa/cinturón ajustados, aumento de peso, embarazo o procedimiento local. No es sinónimo de radiculopatía lumbar, neuropatía femoral o enfermedad de cadera.",
+    },
+    redFlags: {
+      "pt": [
+        "Novo déficit motor, sintomas neurológicos fora da área esperada ou massa/sintomas sistêmicos requerem investigação de outra causa. Não rotular quadro neurológico agudo complexo como meralgia simples nem atrasar avaliação urgente quando houver perda progressiva de função.",
+      ],
+      "es": [
+        "Nuevo déficit motor, síntomas neurológicos fuera del área esperada o masa/síntomas sistémicos requieren investigar otra causa. No etiquetar un cuadro neurológico agudo complejo como meralgia simple ni demorar evaluación urgente si hay pérdida progresiva de función.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Mapear área sensitiva, procurar fatores compressivos e examinar força, reflexos, coluna/quadril e sinais sistêmicos. Distribuição atípica, dor lombar radicular ou déficit motor amplia o diferencial; diagnóstico costuma ser clínico.",
+        "Não pedir imagem ou eletroneuromiografia universalmente. Estudos selecionados ajudam a excluir outra neuropatia/radiculopatia; TC/RM podem investigar massa quando suspeita. Bloqueio diagnóstico guiado é decisão profissional, sem dose padronizada neste guia.",
+      ],
+      "es": [
+        "Mapear el área sensitiva, buscar factores compresivos y examinar fuerza, reflejos, columna/cadera y signos sistémicos. Distribución atípica, dolor lumbar radicular o déficit motor amplían el diferencial; el diagnóstico suele ser clínico.",
+        "No solicitar imágenes ni electrodiagnóstico universalmente. Estudios seleccionados ayudan a excluir otra neuropatía/radiculopatía; TC/RM pueden estudiar una masa sospechada. El bloqueo diagnóstico guiado es decisión profesional, sin dosis estandarizada en esta guía.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Remover compressão externa, usar roupa menos apertada e abordar peso quando apropriado. Explicar que melhora pode levar tempo. Analgésico breve pode aliviar dor associada, mas não garante controle da dor neuropática nem corrige toda causa.",
+        "Persistência importante após medidas conservadoras pede reavaliação. Fármacos de dor neuropática, infiltração ou cirurgia são selecionados conforme diagnóstico, risco e especialista; não iniciar gabapentinoide ou corticoide com dose inventada. Cirurgia é incomum.",
+        "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+        "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      ],
+      "es": [
+        "Eliminar compresión externa, usar ropa menos ajustada y abordar peso cuando corresponda. Explicar que la mejoría puede tardar. Un analgésico breve puede aliviar dolor asociado, pero no garantiza control del dolor neuropático ni corrige toda causa.",
+        "Persistencia importante tras medidas conservadoras requiere reevaluación. Fármacos para dolor neuropático, infiltración o cirugía se seleccionan según diagnóstico, riesgo y especialista; no iniciar gabapentinoide ni corticoide con dosis inventada. La cirugía es infrecuente.",
+        "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+        "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "Na gestação, preferir reduzir compressão e avaliar analgesia individualmente; não usar o esquema adulto de AINE como padrão gestacional. Crianças e pessoas com insuficiência renal/hepática exigem avaliação própria; não extrapolar doses.",
+      ],
+      "es": [
+        "En embarazo, priorizar reducir compresión y evaluar analgesia individualmente; no usar el esquema adulto de AINE como estándar gestacional. Niños y personas con insuficiencia renal/hepática necesitan evaluación propia; no extrapolar dosis.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Sem alarme, acompanhamento ambulatorial com orientação de retorno é apropriado. Monitorar território sensitivo, dor, sono e função; reavaliar piora, mudança de distribuição, déficit motor ou resposta insuficiente, em vez de apenas aumentar medicação.",
+      ],
+      "es": [
+        "Sin alarma, es apropiado el seguimiento ambulatorio con indicación de retorno. Controlar territorio sensitivo, dolor, sueño y función; reevaluar empeoramiento, cambio de distribución, déficit motor o respuesta insuficiente, en lugar de solo aumentar medicación.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
+  ProtocolModel(
+    id: "zumbido_tinnitus",
+    canonicalProtocolId: "zumbido_tinnitus",
+    title: {"pt": "Zumbido (tinnitus)", "es": "Tinnitus (acúfenos)"},
+    severity: {
+      "pt": "Avaliar sinais de alarme",
+      "es": "Evaluar signos de alarma",
+    },
+    definition: {
+      "pt":
+          "Zumbido é percepção de som sem fonte externa correspondente. É sintoma/condição auditiva, não diagnóstico universal de doença de Ménière. Distinguir pulsátil de não pulsátil, unilateral de bilateral e impacto sobre vida diária.",
+      "es":
+          "El tinnitus es percepción de sonido sin una fuente externa correspondiente. Es síntoma/condición auditiva, no diagnóstico universal de enfermedad de Ménière. Distinguir pulsátil de no pulsátil, unilateral de bilateral e impacto sobre la vida diaria.",
+    },
+    recognize: {},
+    actions: {
+      "pt": [
+        "Zumbido é percepção de som sem fonte externa correspondente. É sintoma/condição auditiva, não diagnóstico universal de doença de Ménière. Distinguir pulsátil de não pulsátil, unilateral de bilateral e impacto sobre vida diária.",
+        "Risco suicida alto, novo déficit neurológico, suspeita de AVC ou sintomas vestibulares agudos incontroláveis exigem atendimento imediato. Zumbido com perda auditiva súbita desenvolvida em até 3 dias e ocorrida nos últimos 30 dias requer avaliação especializada em até 24 horas, não consulta rotineira tardia.",
+        "Zumbido com perda auditiva súbita ocorrida há mais de 30 dias, perda auditiva rapidamente progressiva ao longo de 4–90 dias, ou sofrimento que impede atividades habituais apesar de suporte inicial requer avaliação em até 2 semanas conforme o fluxo local. Qualquer sinal de emergência tem prioridade sobre esse prazo.",
+        "Registrar início, evolução, lateralidade, sincronia com pulso, perda auditiva, vertigem, otalgia, exposição a ruído e medicamentos. Avaliar sono, ansiedade/depressão, impacto funcional e risco de suicídio; não reduzir sofrimento a sintoma imaginário.",
+        "Realizar otoscopia, avaliação auditiva e exame dirigido neurológico/cabeça/pescoço conforme sintomas. Buscar causa tratável, como cerume ou doença de ouvido; não pressupor que achado banal explique padrão pulsátil ou déficit neurológico.",
+        "Oferecer avaliação audiológica; considerar timpanometria quando suspeita de componente condutivo. Exames laboratoriais não são pacote universal: orientar pela hipótese clínica. Investigar perda auditiva e diferenciar doença de ouvido, exposição/ototoxicidade, causa vascular e componente somático quando houver indícios.",
+        "Zumbido pulsátil requer investigação por imagem dirigida à causa. No não pulsátil unilateral/assimétrico, considerar RM dos meatos acústicos internos; sinais associados podem tornar a indicação mais forte. Não realizar imagem de rotina no não pulsátil simétrico sem achados neurológicos, audiológicos, otológicos ou de cabeça/pescoço associados.",
+        "Tratar causa identificada, explicar o quadro e combinar metas de função/sono e retorno. Rever fármaco suspeito com o prescritor, sem interromper tratamento essencial indiscriminadamente. Proteger de ruído perigoso sem prometer cura universal.",
+        "Não há fármaco específico aprovado que trate universalmente zumbido primário. Não prescrever betahistina para zumbido; suplementos como ginkgo e anticonvulsivantes/antidepressivos não são tratamento rotineiro do zumbido isolado. Outra indicação, como depressão ou doença de Ménière, exige diagnóstico e plano próprios. Nenhuma dose farmacológica é inventada neste guia.",
+        "Sem urgência, acompanhar ambulatorialmente com audiologia/ORL conforme padrão. Persistência pulsátil, unilateralidade, assimetria auditiva ou sofrimento importante indicam encaminhamento dirigido. Monitorar função, sono e impacto; retornar imediatamente por perda auditiva súbita, déficit neurológico ou risco suicida.",
+        "VA/DoD fundamenta manejo de adultos, não esquema pediátrico. Em crianças, avaliação auditiva e suporte devem ser adequados à idade e família. Gestação e doença renal/hepática exigem revisão individual de outras medicações; não há esquema de dose do zumbido a extrapolar.",
+        "Aparelho auditivo pode beneficiar zumbido com perda auditiva, especialmente quando interfere na comunicação. Não indicar aparelho como regra para pessoa sem perda auditiva apenas porque tem zumbido. Seleção é audiológica e individual.",
+        "Terapia cognitivo-comportamental adaptada ao zumbido é opção para sofrimento persistente, com profissional treinado. Pode melhorar impacto e adaptação sem necessariamente abolir o som. Tratar comorbidade psiquiátrica por indicação própria.",
+        "Terapia sonora pode ser discutida como opção individual: VA/DoD faz recomendação fraca favorável, enquanto NICE não formula recomendação de rotina por insuficiência de evidência. Não apresentar som terapêutico, neuromodulação ou dispositivos comerciais como cura estabelecida.",
+        "Perda auditiva e exposição a ruído são associações comuns; cerume, doença de ouvido, medicamentos e causas vasculares podem contribuir. Processamento auditivo central e redes de atenção/emoção podem participar, sem mecanismo único comprovado para todos.",
+      ],
+      "es": [
+        "El tinnitus es percepción de sonido sin una fuente externa correspondiente. Es síntoma/condición auditiva, no diagnóstico universal de enfermedad de Ménière. Distinguir pulsátil de no pulsátil, unilateral de bilateral e impacto sobre la vida diaria.",
+        "Riesgo suicida alto, nuevo déficit neurológico, sospecha de ACV o síntomas vestibulares agudos incontrolables requieren atención inmediata. Tinnitus con pérdida auditiva súbita desarrollada en hasta 3 días y ocurrida en los últimos 30 días requiere evaluación especializada en hasta 24 horas, no consulta rutinaria tardía.",
+        "Tinnitus con pérdida auditiva súbita ocurrida hace más de 30 días, pérdida auditiva rápidamente progresiva a lo largo de 4–90 días, o sufrimiento que impide actividades habituales pese al apoyo inicial requiere evaluación en hasta 2 semanas según el circuito local. Cualquier signo de emergencia tiene prioridad sobre ese plazo.",
+        "Registrar inicio, evolución, lateralidad, sincronía con pulso, pérdida auditiva, vértigo, otalgia, exposición a ruido y medicamentos. Evaluar sueño, ansiedad/depresión, impacto funcional y riesgo de suicidio; no reducir el sufrimiento a un síntoma imaginario.",
+        "Realizar otoscopia, evaluación auditiva y examen dirigido neurológico/cabeza/cuello según síntomas. Buscar causa tratable, como cerumen o enfermedad del oído; no asumir que un hallazgo banal explica patrón pulsátil o déficit neurológico.",
+        "Ofrecer evaluación audiológica; considerar timpanometría si se sospecha componente conductivo. Los análisis no son un paquete universal: orientarlos por la hipótesis clínica. Investigar pérdida auditiva y diferenciar enfermedad del oído, exposición/ototoxicidad, causa vascular y componente somático cuando haya indicios.",
+        "El tinnitus pulsátil requiere estudio por imágenes dirigido a la causa. En el no pulsátil unilateral/asimétrico, considerar RM de conductos auditivos internos; signos asociados pueden reforzar la indicación. No realizar imágenes rutinarias en el no pulsátil simétrico sin hallazgos neurológicos, audiológicos, otológicos ni de cabeza/cuello asociados.",
+        "Tratar la causa identificada, explicar el cuadro y acordar metas de función/sueño y seguimiento. Revisar un fármaco sospechoso con quien lo prescribe, sin suspender indiscriminadamente un tratamiento esencial. Proteger del ruido peligroso sin prometer curación universal.",
+        "No existe un fármaco específico aprobado que trate universalmente tinnitus primario. No prescribir betahistina para tinnitus; suplementos como ginkgo y anticonvulsivantes/antidepresivos no son tratamiento rutinario del tinnitus aislado. Otra indicación, como depresión o enfermedad de Ménière, exige diagnóstico y plan propios. No se inventa ninguna dosis farmacológica en esta guía.",
+        "Sin urgencia, seguir ambulatoriamente con audiología/ORL según patrón. Persistencia pulsátil, unilateralidad, asimetría auditiva o sufrimiento importante indican derivación dirigida. Controlar función, sueño e impacto; acudir inmediatamente por pérdida auditiva súbita, déficit neurológico o riesgo suicida.",
+        "VA/DoD fundamenta manejo de adultos, no un esquema pediátrico. En niños, evaluación auditiva y apoyo deben adaptarse a edad y familia. Embarazo y enfermedad renal/hepática requieren revisión individual de otras medicaciones; no existe un esquema de dosis de tinnitus que extrapolar.",
+        "Un audífono puede beneficiar tinnitus con pérdida auditiva, especialmente si afecta la comunicación. No indicar un audífono como regla a una persona sin pérdida auditiva solo por tinnitus. La selección es audiológica e individual.",
+        "La terapia cognitivo-conductual adaptada al tinnitus es opción para sufrimiento persistente, con profesional capacitado. Puede mejorar impacto y adaptación sin necesariamente eliminar el sonido. Tratar comorbilidad psiquiátrica por su propia indicación.",
+        "La terapia sonora puede discutirse como opción individual: VA/DoD hace una recomendación débil favorable, mientras NICE no formula recomendación rutinaria por evidencia insuficiente. No presentar sonido terapéutico, neuromodulación ni dispositivos comerciales como curación establecida.",
+        "Pérdida auditiva y exposición a ruido son asociaciones frecuentes; cerumen, enfermedad del oído, medicamentos y causas vasculares pueden contribuir. El procesamiento auditivo central y redes de atención/emoción pueden participar, sin mecanismo único demostrado para todos.",
+      ],
+    },
+    avoid: {},
+    drugs: [],
+    references: {
+      "pt": [
+        "[Z1] Tinnitus: assessment and management — NG155 https://www.nice.org.uk/guidance/ng155/chapter/Recommendations",
+        "[Z2] VA/DoD Clinical Practice Guideline for Tinnitus — Provider Summary https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/tinnitus/VADOD-CPG-Tinnitus-Provider-Summary-2024_Final_508.pdf",
+        "[Z3] Tinnitus https://www.nidcd.nih.gov/health/tinnitus",
+        "[Z4] Tinnitus — rationale and impact https://www.nice.org.uk/guidance/ng155/chapter/Rationale-and-impact",
+      ],
+      "es": [
+        "[Z1] Tinnitus: assessment and management — NG155 https://www.nice.org.uk/guidance/ng155/chapter/Recommendations",
+        "[Z2] VA/DoD Clinical Practice Guideline for Tinnitus — Provider Summary https://www.healthquality.va.gov/HEALTHQUALITY/guidelines/CD/tinnitus/VADOD-CPG-Tinnitus-Provider-Summary-2024_Final_508.pdf",
+        "[Z3] Tinnitus https://www.nidcd.nih.gov/health/tinnitus",
+        "[Z4] Tinnitus — rationale and impact https://www.nice.org.uk/guidance/ng155/chapter/Rationale-and-impact",
+      ],
+    },
+    classification: {"pt": [], "es": []},
+    physiopathology: {
+      "pt":
+          "Perda auditiva e exposição a ruído são associações comuns; cerume, doença de ouvido, medicamentos e causas vasculares podem contribuir. Processamento auditivo central e redes de atenção/emoção podem participar, sem mecanismo único comprovado para todos.",
+      "es":
+          "Pérdida auditiva y exposición a ruido son asociaciones frecuentes; cerumen, enfermedad del oído, medicamentos y causas vasculares pueden contribuir. El procesamiento auditivo central y redes de atención/emoción pueden participar, sin mecanismo único demostrado para todos.",
+    },
+    redFlags: {
+      "pt": [
+        "Risco suicida alto, novo déficit neurológico, suspeita de AVC ou sintomas vestibulares agudos incontroláveis exigem atendimento imediato. Zumbido com perda auditiva súbita desenvolvida em até 3 dias e ocorrida nos últimos 30 dias requer avaliação especializada em até 24 horas, não consulta rotineira tardia.",
+      ],
+      "es": [
+        "Riesgo suicida alto, nuevo déficit neurológico, sospecha de ACV o síntomas vestibulares agudos incontrolables requieren atención inmediata. Tinnitus con pérdida auditiva súbita desarrollada en hasta 3 días y ocurrida en los últimos 30 días requiere evaluación especializada en hasta 24 horas, no consulta rutinaria tardía.",
+      ],
+    },
+    differentialDiagnosis: {"pt": [], "es": []},
+    exams: {
+      "pt": [
+        "Registrar início, evolução, lateralidade, sincronia com pulso, perda auditiva, vertigem, otalgia, exposição a ruído e medicamentos. Avaliar sono, ansiedade/depressão, impacto funcional e risco de suicídio; não reduzir sofrimento a sintoma imaginário.",
+        "Realizar otoscopia, avaliação auditiva e exame dirigido neurológico/cabeça/pescoço conforme sintomas. Buscar causa tratável, como cerume ou doença de ouvido; não pressupor que achado banal explique padrão pulsátil ou déficit neurológico.",
+        "Oferecer avaliação audiológica; considerar timpanometria quando suspeita de componente condutivo. Exames laboratoriais não são pacote universal: orientar pela hipótese clínica. Investigar perda auditiva e diferenciar doença de ouvido, exposição/ototoxicidade, causa vascular e componente somático quando houver indícios.",
+        "Zumbido pulsátil requer investigação por imagem dirigida à causa. No não pulsátil unilateral/assimétrico, considerar RM dos meatos acústicos internos; sinais associados podem tornar a indicação mais forte. Não realizar imagem de rotina no não pulsátil simétrico sem achados neurológicos, audiológicos, otológicos ou de cabeça/pescoço associados.",
+      ],
+      "es": [
+        "Registrar inicio, evolución, lateralidad, sincronía con pulso, pérdida auditiva, vértigo, otalgia, exposición a ruido y medicamentos. Evaluar sueño, ansiedad/depresión, impacto funcional y riesgo de suicidio; no reducir el sufrimiento a un síntoma imaginario.",
+        "Realizar otoscopia, evaluación auditiva y examen dirigido neurológico/cabeza/cuello según síntomas. Buscar causa tratable, como cerumen o enfermedad del oído; no asumir que un hallazgo banal explica patrón pulsátil o déficit neurológico.",
+        "Ofrecer evaluación audiológica; considerar timpanometría si se sospecha componente conductivo. Los análisis no son un paquete universal: orientarlos por la hipótesis clínica. Investigar pérdida auditiva y diferenciar enfermedad del oído, exposición/ototoxicidad, causa vascular y componente somático cuando haya indicios.",
+        "El tinnitus pulsátil requiere estudio por imágenes dirigido a la causa. En el no pulsátil unilateral/asimétrico, considerar RM de conductos auditivos internos; signos asociados pueden reforzar la indicación. No realizar imágenes rutinarias en el no pulsátil simétrico sin hallazgos neurológicos, audiológicos, otológicos ni de cabeza/cuello asociados.",
+      ],
+    },
+    objectives: {"pt": [], "es": []},
+    drugsFirstLine: {
+      "pt": [
+        "Zumbido com perda auditiva súbita ocorrida há mais de 30 dias, perda auditiva rapidamente progressiva ao longo de 4–90 dias, ou sofrimento que impede atividades habituais apesar de suporte inicial requer avaliação em até 2 semanas conforme o fluxo local. Qualquer sinal de emergência tem prioridade sobre esse prazo.",
+        "Tratar causa identificada, explicar o quadro e combinar metas de função/sono e retorno. Rever fármaco suspeito com o prescritor, sem interromper tratamento essencial indiscriminadamente. Proteger de ruído perigoso sem prometer cura universal.",
+        "Aparelho auditivo pode beneficiar zumbido com perda auditiva, especialmente quando interfere na comunicação. Não indicar aparelho como regra para pessoa sem perda auditiva apenas porque tem zumbido. Seleção é audiológica e individual.",
+        "Terapia cognitivo-comportamental adaptada ao zumbido é opção para sofrimento persistente, com profissional treinado. Pode melhorar impacto e adaptação sem necessariamente abolir o som. Tratar comorbidade psiquiátrica por indicação própria.",
+        "Terapia sonora pode ser discutida como opção individual: VA/DoD faz recomendação fraca favorável, enquanto NICE não formula recomendação de rotina por insuficiência de evidência. Não apresentar som terapêutico, neuromodulação ou dispositivos comerciais como cura estabelecida.",
+        "Não há fármaco específico aprovado que trate universalmente zumbido primário. Não prescrever betahistina para zumbido; suplementos como ginkgo e anticonvulsivantes/antidepressivos não são tratamento rotineiro do zumbido isolado. Outra indicação, como depressão ou doença de Ménière, exige diagnóstico e plano próprios. Nenhuma dose farmacológica é inventada neste guia.",
+      ],
+      "es": [
+        "Tinnitus con pérdida auditiva súbita ocurrida hace más de 30 días, pérdida auditiva rápidamente progresiva a lo largo de 4–90 días, o sufrimiento que impide actividades habituales pese al apoyo inicial requiere evaluación en hasta 2 semanas según el circuito local. Cualquier signo de emergencia tiene prioridad sobre ese plazo.",
+        "Tratar la causa identificada, explicar el cuadro y acordar metas de función/sueño y seguimiento. Revisar un fármaco sospechoso con quien lo prescribe, sin suspender indiscriminadamente un tratamiento esencial. Proteger del ruido peligroso sin prometer curación universal.",
+        "Un audífono puede beneficiar tinnitus con pérdida auditiva, especialmente si afecta la comunicación. No indicar un audífono como regla a una persona sin pérdida auditiva solo por tinnitus. La selección es audiológica e individual.",
+        "La terapia cognitivo-conductual adaptada al tinnitus es opción para sufrimiento persistente, con profesional capacitado. Puede mejorar impacto y adaptación sin necesariamente eliminar el sonido. Tratar comorbilidad psiquiátrica por su propia indicación.",
+        "La terapia sonora puede discutirse como opción individual: VA/DoD hace una recomendación débil favorable, mientras NICE no formula recomendación rutinaria por evidencia insuficiente. No presentar sonido terapéutico, neuromodulación ni dispositivos comerciales como curación establecida.",
+        "No existe un fármaco específico aprobado que trate universalmente tinnitus primario. No prescribir betahistina para tinnitus; suplementos como ginkgo y anticonvulsivantes/antidepresivos no son tratamiento rutinario del tinnitus aislado. Otra indicación, como depresión o enfermedad de Ménière, exige diagnóstico y plan propios. No se inventa ninguna dosis farmacológica en esta guía.",
+      ],
+    },
+    scenarios: {
+      "pt": [
+        "VA/DoD fundamenta manejo de adultos, não esquema pediátrico. Em crianças, avaliação auditiva e suporte devem ser adequados à idade e família. Gestação e doença renal/hepática exigem revisão individual de outras medicações; não há esquema de dose do zumbido a extrapolar.",
+      ],
+      "es": [
+        "VA/DoD fundamenta manejo de adultos, no un esquema pediátrico. En niños, evaluación auditiva y apoyo deben adaptarse a edad y familia. Embarazo y enfermedad renal/hepática requieren revisión individual de otras medicaciones; no existe un esquema de dosis de tinnitus que extrapolar.",
+      ],
+    },
+    monitoring: {
+      "pt": [
+        "Sem urgência, acompanhar ambulatorialmente com audiologia/ORL conforme padrão. Persistência pulsátil, unilateralidade, assimetria auditiva ou sofrimento importante indicam encaminhamento dirigido. Monitorar função, sono e impacto; retornar imediatamente por perda auditiva súbita, déficit neurológico ou risco suicida.",
+      ],
+      "es": [
+        "Sin urgencia, seguir ambulatoriamente con audiología/ORL según patrón. Persistencia pulsátil, unilateralidad, asimetría auditiva o sufrimiento importante indican derivación dirigida. Controlar función, sueño e impacto; acudir inmediatamente por pérdida auditiva súbita, déficit neurológico o riesgo suicida.",
+      ],
+    },
+    doNotDo: {"pt": [], "es": []},
+  ),
 ];

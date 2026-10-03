@@ -1,0 +1,159 @@
+{
+  "owner": "meralgia_parestesica",
+  "title": {
+    "pt": "Meralgia parestésica",
+    "es": "Meralgia parestésica"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Meralgia parestésica é neuropatia do nervo cutâneo lateral da coxa, de função sensitiva, com queimação, formigamento ou dormência anterolateral. Fraqueza motora ou reflexos anormais não são explicados automaticamente por este diagnóstico.",
+      "es": "La meralgia parestésica es neuropatía del nervio cutáneo lateral del muslo, de función sensitiva, con ardor, hormigueo o entumecimiento anterolateral. Debilidad motora o reflejos anormales no se explican automáticamente por este diagnóstico.",
+      "sources": [
+        "MP2",
+        "MP3"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Compressão próxima ao ligamento inguinal pode relacionar-se a roupa/cinto apertado, ganho de peso, gestação ou procedimento local. Não é sinônimo de radiculopatia lombar, neuropatia femoral ou doença de quadril.",
+      "es": "La compresión cerca del ligamento inguinal puede relacionarse con ropa/cinturón ajustados, aumento de peso, embarazo o procedimiento local. No es sinónimo de radiculopatía lumbar, neuropatía femoral o enfermedad de cadera.",
+      "sources": [
+        "MP1",
+        "MP2",
+        "MP3"
+      ]
+    },
+    {
+      "id": "exam",
+      "pt": "Mapear área sensitiva, procurar fatores compressivos e examinar força, reflexos, coluna/quadril e sinais sistêmicos. Distribuição atípica, dor lombar radicular ou déficit motor amplia o diferencial; diagnóstico costuma ser clínico.",
+      "es": "Mapear el área sensitiva, buscar factores compresivos y examinar fuerza, reflejos, columna/cadera y signos sistémicos. Distribución atípica, dolor lumbar radicular o déficit motor amplían el diferencial; el diagnóstico suele ser clínico.",
+      "sources": [
+        "MP1",
+        "MP2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Novo déficit motor, sintomas neurológicos fora da área esperada ou massa/sintomas sistêmicos requerem investigação de outra causa. Não rotular quadro neurológico agudo complexo como meralgia simples nem atrasar avaliação urgente quando houver perda progressiva de função.",
+      "es": "Nuevo déficit motor, síntomas neurológicos fuera del área esperada o masa/síntomas sistémicos requieren investigar otra causa. No etiquetar un cuadro neurológico agudo complejo como meralgia simple ni demorar evaluación urgente si hay pérdida progresiva de función.",
+      "sources": [
+        "MP2",
+        "MP3"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Não pedir imagem ou eletroneuromiografia universalmente. Estudos selecionados ajudam a excluir outra neuropatia/radiculopatia; TC/RM podem investigar massa quando suspeita. Bloqueio diagnóstico guiado é decisão profissional, sem dose padronizada neste guia.",
+      "es": "No solicitar imágenes ni electrodiagnóstico universalmente. Estudios seleccionados ayudan a excluir otra neuropatía/radiculopatía; TC/RM pueden estudiar una masa sospechada. El bloqueo diagnóstico guiado es decisión profesional, sin dosis estandarizada en esta guía.",
+      "sources": [
+        "MP1",
+        "MP2"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Remover compressão externa, usar roupa menos apertada e abordar peso quando apropriado. Explicar que melhora pode levar tempo. Analgésico breve pode aliviar dor associada, mas não garante controle da dor neuropática nem corrige toda causa.",
+      "es": "Eliminar compresión externa, usar ropa menos ajustada y abordar peso cuando corresponda. Explicar que la mejoría puede tardar. Un analgésico breve puede aliviar dolor asociado, pero no garantiza control del dolor neuropático ni corrige toda causa.",
+      "sources": [
+        "MP1",
+        "MP2"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Persistência importante após medidas conservadoras pede reavaliação. Fármacos de dor neuropática, infiltração ou cirurgia são selecionados conforme diagnóstico, risco e especialista; não iniciar gabapentinoide ou corticoide com dose inventada. Cirurgia é incomum.",
+      "es": "Persistencia importante tras medidas conservadoras requiere reevaluación. Fármacos para dolor neuropático, infiltración o cirugía se seleccionan según diagnóstico, riesgo y especialista; no iniciar gabapentinoide ni corticoide con dosis inventada. La cirugía es infrecuente.",
+      "sources": [
+        "MP1",
+        "MP2"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+      "es": "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "analgesia_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      "es": "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Na gestação, preferir reduzir compressão e avaliar analgesia individualmente; não usar o esquema adulto de AINE como padrão gestacional. Crianças e pessoas com insuficiência renal/hepática exigem avaliação própria; não extrapolar doses.",
+      "es": "En embarazo, priorizar reducir compresión y evaluar analgesia individualmente; no usar el esquema adulto de AINE como estándar gestacional. Niños y personas con insuficiencia renal/hepática necesitan evaluación propia; no extrapolar dosis.",
+      "sources": [
+        "MP3",
+        "IBU"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Sem alarme, acompanhamento ambulatorial com orientação de retorno é apropriado. Monitorar território sensitivo, dor, sono e função; reavaliar piora, mudança de distribuição, déficit motor ou resposta insuficiente, em vez de apenas aumentar medicação.",
+      "es": "Sin alarma, es apropiado el seguimiento ambulatorio con indicación de retorno. Controlar territorio sensitivo, dolor, sueño y función; reevaluar empeoramiento, cambio de distribución, déficit motor o respuesta insuficiente, en lugar de solo aumentar medicación.",
+      "sources": [
+        "MP1",
+        "MP2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "MP1",
+      "title": "Burning thigh pain (meralgia paresthetica)",
+      "authority": "AAOS OrthoInfo",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_SPECIALTY_INFORMATION",
+      "url": "https://www.orthoinfo.org/diseases--conditions/burning-thigh-pain-meralgia-paresthetica/",
+      "scope": "Compressão do nervo cutâneo lateral e manejo inicial.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "MP2",
+      "title": "Meralgia paresthetica — diagnosis and treatment",
+      "authority": "Mayo Clinic",
+      "year": "página institucional consultada em 2026",
+      "status": "SUPPORTIVE_INSTITUTIONAL_CLINICAL_INFORMATION",
+      "url": "https://www.mayoclinic.org/diseases-conditions/meralgia-paresthetica/diagnosis-treatment/drc-20355639",
+      "scope": "Exame de força/reflexos, investigação selecionada e medidas conservadoras.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "MP3",
+      "title": "Meralgia paresthetica — symptoms and causes",
+      "authority": "Mayo Clinic",
+      "year": "página institucional consultada em 2026",
+      "status": "SUPPORTIVE_INSTITUTIONAL_CLINICAL_INFORMATION",
+      "url": "https://www.mayoclinic.org/diseases-conditions/meralgia-paresthetica/symptoms-causes/syc-20355635",
+      "scope": "Distribuição sensitiva, fatores de risco e ausência de função motora no nervo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "IBU",
+      "title": "Ibuprofen 200 mg film-coated tablets — SmPC",
+      "authority": "Strides / emc",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/14363/smpc",
+      "scope": "Analgesia de curta duração; apresentação oral de liberação imediata. Não comprova eficácia específica de cada doença.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

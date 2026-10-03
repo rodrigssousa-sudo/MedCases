@@ -1,0 +1,185 @@
+{
+  "owner": "gengivite",
+  "title": {
+    "pt": "Gengivite",
+    "es": "Gingivitis"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Gengivite induzida por biofilme é inflamação gengival sem perda de inserção ou osso causada pela doença. É reversível com controle de placa. Pode existir em periodonto intacto ou reduzido por razões não relacionadas à periodontite; paciente com periodontite prévia mantém esse histórico e risco, mesmo com inflamação superficial atual.",
+      "es": "La gingivitis inducida por biofilm es inflamación gingival sin pérdida de inserción o hueso causada por la enfermedad. Es reversible con control de placa. Puede existir en periodonto intacto o reducido por razones no relacionadas con periodontitis; el paciente con periodontitis previa mantiene ese antecedente y riesgo, incluso con inflamación superficial actual.",
+      "sources": [
+        "D7",
+        "D6"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Acúmulo de biofilme desencadeia resposta inflamatória na gengiva; cálculo e fatores retentivos dificultam limpeza. Diabetes, alterações hormonais e medicamentos podem modificar a resposta. Sangramento não deve levar a abandonar escovação; técnica suave adequada ajuda a retirar a causa.",
+      "es": "El acúmulo de biofilm desencadena respuesta inflamatoria gingival; cálculo y factores retentivos dificultan la limpieza. Diabetes, cambios hormonales y medicamentos pueden modificar la respuesta. El sangrado no debe llevar a abandonar el cepillado; una técnica suave adecuada ayuda a eliminar la causa.",
+      "sources": [
+        "D6",
+        "D7",
+        "D8"
+      ]
+    },
+    {
+      "id": "presentation",
+      "pt": "Eritema, edema, sangramento à sondagem/escovação e halitose podem ocorrer. A avaliação inclui hábitos de higiene, tabaco, diabetes, gestação, medicamentos e tratamentos prévios. Dor intensa, pus ou mobilidade importante são incompatíveis com tratar o quadro apenas como gengivite leve.",
+      "es": "Pueden presentarse eritema, edema, sangrado al sondaje/cepillado y halitosis. La evaluación incluye higiene, tabaco, diabetes, embarazo, medicamentos y tratamientos previos. Dolor intenso, pus o movilidad importante son incompatibles con manejar el cuadro solo como gingivitis leve.",
+      "sources": [
+        "D6",
+        "D7"
+      ]
+    },
+    {
+      "id": "classification",
+      "pt": "Em periodonto intacto ou reduzido por causa não periodontal, classificação utiliza sangramento à sondagem ≥10% dos sítios e profundidades ≤3 mm: localizada com 10–30%, generalizada com >30%. Critérios exigem sondagem odontológica e contexto; não usar sangramento visual isolado como equivalente nem aplicar sem ajuste à periodontite prévia.",
+      "es": "En periodonto intacto o reducido por causa no periodontal, la clasificación utiliza sangrado al sondaje ≥10% de sitios y profundidades ≤3 mm: localizada con 10–30%, generalizada con >30%. Los criterios requieren sondaje odontológico y contexto; no usar sangrado visual aislado como equivalente ni aplicarlos sin ajuste a periodontitis previa.",
+      "sources": [
+        "D7",
+        "D12"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar periodontite com perda de inserção/osso, doença necrosante, lesões por infecção específica, doenças imunes e efeitos de medicamentos. Sangramento espontâneo desproporcional, petéquias ou outros sangramentos sugerem investigar condição hematológica; não atribuir automaticamente ao biofilme.",
+      "es": "Diferenciar periodontitis con pérdida de inserción/hueso, enfermedad necrosante, lesiones por infección específica, enfermedades inmunes y efectos de medicamentos. Sangrado espontáneo desproporcionado, petequias u otros sangrados sugieren investigar una condición hematológica; no atribuirlos automáticamente al biofilm.",
+      "sources": [
+        "D6",
+        "D7",
+        "D12"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "O dentista avalia placa, sangramento, sondagem, inserção e necessidade de radiografia se suspeitar de perda óssea. Hemograma/coagulação e outros testes são dirigidos aos achados sistêmicos, não rotina em gengivite simples. Confirmar que não há abscesso ou doença destrutiva antes de orientar apenas higiene.",
+      "es": "El odontólogo evalúa placa, sangrado, sondaje, inserción y necesidad de radiografía si sospecha pérdida ósea. Hemograma/coagulación y otros estudios se dirigen a hallazgos sistémicos, no son de rutina en gingivitis simple. Confirmar que no hay absceso ni enfermedad destructiva antes de indicar solo higiene.",
+      "sources": [
+        "D6",
+        "D7"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Tratamento central: escovação com dentifrício fluoretado 2 vezes ao dia, limpeza interdental adaptada e remoção profissional de cálculo/biofilme quando indicada. Corrigir técnica e fatores que retêm placa. Enxaguante não substitui remoção mecânica; orientar recurso compatível com destreza e anatomia.",
+      "es": "Tratamiento central: cepillado con dentífrico fluorado 2 veces al día, limpieza interdental adaptada y eliminación profesional de cálculo/biofilm cuando corresponda. Corregir técnica y factores que retienen placa. El enjuague no sustituye la eliminación mecánica; elegir un recurso compatible con destreza y anatomía.",
+      "sources": [
+        "D8",
+        "D6",
+        "D12"
+      ]
+    },
+    {
+      "id": "medications",
+      "pt": "Não prescrever antibiótico sistêmico para gengivite simples. Antisséptico pode ser coadjuvante selecionado pelo dentista, com produto e curso definidos; não fornecer esquema universal nem uso indefinido. Revisar medicamentos associados a aumento gengival com o prescritor, sem suspender tratamento essencial por conta própria.",
+      "es": "No prescribir antibiótico sistémico para gingivitis simple. Un antiséptico puede ser coadyuvante seleccionado por el odontólogo, con producto y curso definidos; no proporcionar un esquema universal ni uso indefinido. Revisar fármacos asociados a aumento gingival con quien los indicó, sin suspender un tratamiento esencial por cuenta propia.",
+      "sources": [
+        "D7",
+        "D8"
+      ]
+    },
+    {
+      "id": "risk",
+      "pt": "Apoiar cessação de tabaco e controle de diabetes. Tabaco pode reduzir sangramento visível e mascarar inflamação; ausência de sangramento não garante ausência de doença. Avaliar barreiras de higiene e acesso a cuidado, evitando culpar o paciente.",
+      "es": "Apoyar cesación de tabaco y control de diabetes. El tabaco puede reducir el sangrado visible y enmascarar inflamación; la ausencia de sangrado no garantiza ausencia de enfermedad. Evaluar barreras para higiene y acceso a atención, evitando culpabilizar al paciente.",
+      "sources": [
+        "D6",
+        "D8"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Necrose/ulceração dolorosa, febre, progressão rápida, abscesso ou sinais de disseminação exigem atendimento dental urgente e revisão diagnóstica. Comprometimento de via aérea, desidratação ou toxicidade sistêmica exige urgência hospitalar. Sangramento significativo persistente exige avaliação clínica; não esperar consulta preventiva.",
+      "es": "Necrosis/ulceración dolorosa, fiebre, progresión rápida, absceso o signos de diseminación requieren atención dental urgente y revisión diagnóstica. Compromiso de vía aérea, deshidratación o toxicidad sistémica requieren urgencia hospitalaria. Un sangrado significativo persistente requiere evaluación clínica; no esperar una consulta preventiva.",
+      "sources": [
+        "D6",
+        "D7",
+        "D12"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestação pode intensificar inflamação gengival e não elimina necessidade de higiene/cuidado odontológico. Crianças precisam de supervisão e quantidade de dentifrício adequada à idade. Idosos ou pessoas com limitações funcionais podem precisar de cuidador. Este guia não contém fármaco sistêmico que permita extrapolar dose renal/hepática.",
+      "es": "El embarazo puede intensificar inflamación gingival y no elimina la necesidad de higiene/atención odontológica. Los niños necesitan supervisión y cantidad de dentífrico adecuada a la edad. Mayores o personas con limitaciones funcionales pueden necesitar cuidador. Esta guía no contiene un fármaco sistémico que permita extrapolar dosis renal/hepática.",
+      "sources": [
+        "D7",
+        "D8",
+        "D3"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Sem red flags, cuidado ambulatorial com reavaliação odontológica da placa e do sangramento após melhorar higiene/remover cálculo. Persistência, lesão focal ou perda de inserção exige investigar outra etiologia e periodontite. Frequência de retorno é individual; orientar retorno antecipado por dor, pus, febre ou sangramento desproporcional.",
+      "es": "Sin signos de alarma, atención ambulatoria con reevaluación odontológica de placa y sangrado después de mejorar higiene/eliminar cálculo. Persistencia, lesión focal o pérdida de inserción requieren investigar otra etiología y periodontitis. La frecuencia de seguimiento es individual; indicar consulta anticipada por dolor, pus, fiebre o sangrado desproporcionado.",
+      "sources": [
+        "D6",
+        "D7",
+        "D8"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "D6",
+      "title": "Periodontal gum disease",
+      "authority": "NIDCR / NIH",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_HEALTH_INFORMATION",
+      "url": "https://www.nidcr.nih.gov/health-info/gum-disease",
+      "scope": "Fatores de risco, exame e tratamento periodontal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D7",
+      "title": "Gingivitis — periodontal diagnosis",
+      "authority": "SDCEP / NHS Scotland",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_WEB_GUIDANCE",
+      "url": "https://www.periodontalcare.sdcep.org.uk/guidance/diagnosis/establishing-a-periodontal-diagnosis/gingivitis/",
+      "scope": "Critérios de classificação 2018, definição e limitações em periodonto reduzido.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D8",
+      "title": "Home oral care",
+      "authority": "ADA",
+      "year": "página oficial consultada em 2026",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.ada.org/resources/ada-library/oral-health-topics/home-oral-care/",
+      "scope": "Escovação fluoretada, higiene interdental, individualização e limitações dos enxaguantes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D12",
+      "title": "Prevention and treatment of periodontal diseases in primary care — 2nd edition",
+      "authority": "SDCEP / NHS Scotland",
+      "year": "2024; emendado novembro 2025",
+      "status": "AUTHORITATIVE_FINAL_AMENDED",
+      "url": "https://www.periodontalcare.sdcep.org.uk/media/vjgfn5ak/sdcep-prevention-and-treatment-of-periodontal-diseases-in-primary-care-2nd-edition-nov-2025.pdf",
+      "scope": "Documento completo; classificação, cuidado profissional e diferenciais. Passo 1 não equivale ao tratamento periodontal inicial completo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D3",
+      "title": "Fluoride therapy — best practices",
+      "authority": "AAPD",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_PORTAL",
+      "url": "https://www.aapd.org/globalassets/media/policies_guidelines/bp_fluoridetherapy.pdf",
+      "scope": "Versão identificada como revisão 2023; quantidades de dentifrício e uso supervisionado pediátrico.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

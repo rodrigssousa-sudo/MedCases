@@ -1,0 +1,147 @@
+{
+  "owner": "cisto_sinovial_punho",
+  "title": {
+    "pt": "Cisto sinovial do punho",
+    "es": "Quiste sinovial de muñeca"
+  },
+  "version": "NEW-JIT-2026-10-02-G02-v1.0",
+  "reviewDate": "2026-10-03",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Cisto sinovial/gânglio do punho é massa benigna de conteúdo gelatinoso ligada a articulação ou bainha tendínea. Pode ser dorsal ou palmar; não é owner de toda massa do punho.",
+      "es": "El quiste sinovial/ganglión de muñeca es una masa benigna de contenido gelatinoso vinculada a articulación o vaina tendinosa. Puede ser dorsal o palmar; no abarca toda masa de muñeca.",
+      "sources": [
+        "GC1",
+        "GC2"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Tamanho pode variar com atividade e repouso. A causa nem sempre é identificada; pressão local pode gerar dor ou compressão nervosa. Pode desaparecer espontaneamente, mas há recorrência após tratamento.",
+      "es": "El tamaño puede variar con actividad y reposo. La causa no siempre se identifica; la presión local puede producir dolor o compresión nerviosa. Puede desaparecer espontáneamente, pero puede recurrir tras tratarlo.",
+      "sources": [
+        "GC1",
+        "GC2"
+      ]
+    },
+    {
+      "id": "exam",
+      "pt": "Avaliar localização, consistência, mobilidade, dor, pele, função e exame neurovascular. Transiluminação pode apoiar caráter cístico, sem provar diagnóstico. Diferenciar massa sólida, lesão vascular e processo inflamatório/infeccioso.",
+      "es": "Evaluar localización, consistencia, movilidad, dolor, piel, función y examen neurovascular. La transiluminación puede apoyar naturaleza quística, sin demostrar el diagnóstico. Diferenciar masa sólida, lesión vascular y proceso inflamatorio/infeccioso.",
+      "sources": [
+        "GC1",
+        "GC2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Massa pulsátil, apresentação atípica, crescimento preocupante ou déficit neurovascular precisa de avaliação dirigida antes de punção. Eritema/calor com quadro agudo não deve ser atribuído automaticamente a gânglio simples.",
+      "es": "Una masa pulsátil, presentación atípica, crecimiento preocupante o déficit neurovascular necesitan evaluación dirigida antes de punción. Eritema/calor con cuadro agudo no deben atribuirse automáticamente a un ganglión simple.",
+      "sources": [
+        "GC1",
+        "GC2"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Diagnóstico típico costuma ser clínico. Ultrassom ou RM são úteis se a massa é oculta ou incerta; radiografia pode esclarecer doença articular associada, mas não mostra diretamente o cisto.",
+      "es": "El diagnóstico típico suele ser clínico. Ecografía o RM son útiles si la masa está oculta o es incierta; la radiografía puede aclarar enfermedad articular asociada, pero no muestra directamente el quiste.",
+      "sources": [
+        "GC1"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Observar se assintomático e diagnóstico seguro. Se doloroso, adaptar atividade e considerar suporte temporário do punho. Não perfurar em casa nem golpear a massa; analgesia alivia dor, sem eliminar o cisto.",
+      "es": "Observar si es asintomático y el diagnóstico es seguro. Si duele, adaptar actividad y considerar soporte temporal de muñeca. No perforar en casa ni golpear la masa; la analgesia alivia dolor, sin eliminar el quiste.",
+      "sources": [
+        "GC1",
+        "GC2"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Aspiração pode aliviar cisto dorsal, mas recidiva é comum porque a conexão permanece. Cisto palmar pode estar junto da artéria radial e nervos: intervenção exige avaliação especializada. Cirurgia considera dor/limitação persistentes; discutir recorrência e riscos locais.",
+      "es": "La aspiración puede aliviar un quiste dorsal, pero la recurrencia es frecuente porque persiste la conexión. El quiste palmar puede estar junto a la arteria radial y nervios: intervenir requiere evaluación especializada. La cirugía considera dolor/limitación persistentes; discutir recurrencia y riesgos locales.",
+      "sources": [
+        "GC1",
+        "GC2"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se houver dor aguda que justifique analgésico em adulto, uma opção é ibuprofeno oral de liberação imediata 200–400 mg, até 3 tomadas ao dia conforme necessidade, com intervalo mínimo de 4 horas e máximo de 1200 mg em 24 horas neste esquema. Usar a menor dose pelo menor tempo. Não é tratamento modificador da doença.",
+      "es": "Si hay dolor agudo que justifique un analgésico en un adulto, una opción es ibuprofeno oral de liberación inmediata 200–400 mg, hasta 3 tomas al día según necesidad, con intervalo mínimo de 4 horas y máximo de 1200 mg en 24 horas en este esquema. Usar la menor dosis durante el menor tiempo. No modifica la enfermedad.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "analgesia_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINEs, úlcera/hemorragia digestiva recorrente, insuficiência renal, hepática ou cardíaca grave e no último trimestre da gestação. Não combinar com outro AINE. Desidratação, anticoagulação, idade avançada ou gestação exigem decisão individual; a partir de 20 semanas há risco fetal renal. Não transferir esta dose adulta para crianças.",
+      "es": "Evitar ibuprofeno ante alergia a AINE, úlcera/hemorragia digestiva recurrente, insuficiencia renal, hepática o cardíaca grave y en el último trimestre del embarazo. No combinar con otro AINE. Deshidratación, anticoagulación, edad avanzada o embarazo requieren una decisión individual; a partir de 20 semanas existe riesgo renal fetal. No trasladar esta dosis adulta a niños.",
+      "sources": [
+        "IBU"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Este esquema medicamentoso é adulto. Crianças, gestantes e pessoas com doença renal/hepática precisam de seleção individual; não extrapolar doses nem indicar procedimento só pelo tamanho sem sintomas ou incerteza diagnóstica.",
+      "es": "Este esquema farmacológico es adulto. Niños, embarazadas y personas con enfermedad renal/hepática necesitan selección individual; no extrapolar dosis ni indicar un procedimiento solo por tamaño sin síntomas o incertidumbre diagnóstica.",
+      "sources": [
+        "GC1",
+        "IBU"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Quadro típico, sem alarme, permite manejo ambulatorial. Reavaliar dor, função, sintomas neurológicos e evolução da massa. Encaminhar diagnóstico incerto, limitação persistente ou desejo de procedimento após explicar benefício, riscos e recorrência.",
+      "es": "Un cuadro típico, sin alarma, permite manejo ambulatorio. Reevaluar dolor, función, síntomas neurológicos y evolución de la masa. Derivar diagnóstico incierto, limitación persistente o deseo de procedimiento tras explicar beneficio, riesgos y recurrencia.",
+      "sources": [
+        "GC1",
+        "GC2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "GC1",
+      "title": "Ganglion cyst of the wrist and hand",
+      "authority": "AAOS OrthoInfo",
+      "year": "página oficial consultada em 2026",
+      "status": "OFFICIAL_SPECIALTY_INFORMATION",
+      "url": "https://www.orthoinfo.org/diseases--conditions/ganglion-cyst-of-the-wrist-and-hand/",
+      "scope": "Diagnóstico, observação, aspiração e cirurgia.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "GC2",
+      "title": "Ganglion cysts",
+      "authority": "British Society for Surgery of the Hand",
+      "year": "material oficial consultado em 2026",
+      "status": "OFFICIAL_SPECIALTY_INFORMATION",
+      "url": "https://www.bssh.ac.uk/patients/conditions/20/ganglion_cysts",
+      "scope": "Cistos dorsais/palmares, risco da artéria radial e recorrência.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "IBU",
+      "title": "Ibuprofen 200 mg film-coated tablets — SmPC",
+      "authority": "Strides / emc",
+      "year": "bula consultada em 2026",
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/14363/smpc",
+      "scope": "Analgesia de curta duração; apresentação oral de liberação imediata. Não comprova eficácia específica de cada doença.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}
