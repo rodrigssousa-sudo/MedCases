@@ -1,3 +1,4 @@
+import '../data/new_pathology_approved_context.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' as ui;
@@ -4096,6 +4097,12 @@ class AppProvider extends ChangeNotifier {
     String normalizedQuery, {
     List<ProtocolModel>? matchedProtocols,
   }) {
+    final approvedContext = approvedNewPathologyContext(
+      normalizedQuery, _lang, normalize: _normalize,
+      matchedProtocols: matchedProtocols,
+    );
+    if (approvedContext != null) return <String>[approvedContext];
+
     // Protocolos de alta emergência exigem ≥2 palavras da query para match,
     // evitando falsos positivos (ex: "cefaleia" na gripe injeta AVC/HSA).
     const _highRiskIds = {
@@ -11588,6 +11595,12 @@ class AppProvider extends ChangeNotifier {
     String normalizedQuery, {
     List<ProtocolModel>? matchedProtocols,
   }) {
+    final approvedContext = approvedNewPathologyContext(
+      normalizedQuery, _lang, normalize: _normalize,
+      matchedProtocols: matchedProtocols,
+    );
+    if (approvedContext != null) return <String>[approvedContext];
+
     const _highRiskIds = {
       'avc_hemorragico',
       'avc_isquemico',

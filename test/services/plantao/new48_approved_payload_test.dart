@@ -1,3 +1,4 @@
+import 'package:medcases/data/new_pathology_approved_context.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -22,12 +23,38 @@ void main() {
       expect(protocolsDatabase.any((p) => p.id == id), false);
     }
   });
+  test(
+      'Study/Plantao production retrieval hooks use the complete scoped context',
+      () {
+    final source = File('lib/providers/app_provider.dart').readAsStringSync();
+    expect('approvedNewPathologyContext('.allMatches(source).length, 2);
+    expect(
+        approvedNewPathologyContext('unknown query', 'pt',
+            normalize: (s) => s.toLowerCase()),
+        isNull);
+  });
   for (final id in newPathologyApprovedHashes.keys) {
     final p = jsonDecode(
         File('docs/clinical_content/approvals/$id/NEW-JIT-2026-10-02-v1.0.json')
             .readAsStringSync()) as Map<String, dynamic>;
     final model = protocolsDatabase.singleWhere((p) => p.id == id);
     for (final lang in ['pt', 'es']) {
+      test(
+          '$id $lang Study and Plantao AI retrieval includes full doses, references and version',
+          () {
+        final context = approvedNewPathologyContext(p['title'][lang], lang,
+            normalize: (s) => s.toLowerCase());
+        expect(context, isNotNull);
+        expect(context, contains('clinicalVersion=NEW-JIT-2026-10-02-v1.0'));
+        expect(context, contains(newPathologyApprovedHashes[id]!));
+        for (final f in p['facts']) {
+          expect(context, contains(f[lang]));
+        }
+        for (final ref in p['references']) {
+          expect(context, contains(ref['url']));
+        }
+      });
+
       test(
           '$id $lang Study and Plantao preserve every exact approved fact and reference',
           () {
