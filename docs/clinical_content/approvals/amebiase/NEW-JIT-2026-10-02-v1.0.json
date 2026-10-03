@@ -1,0 +1,165 @@
+{
+  "owner": "amebiase",
+  "title": {
+    "pt": "Amebíase",
+    "es": "Amebiasis"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Amebíase por Entamoeba histolytica pode causar colite/disenteria ou doença extraintestinal, especialmente abscesso hepático. Transmissão é fecal-oral por água, alimento ou contato, inclusive sexual. Encontrar ameba inespecífica nas fezes não prova E.histolytica invasiva; E.dispar não recebe o mesmo tratamento.",
+      "es": "Amebiasis por Entamoeba histolytica puede causar colitis/disentería o enfermedad extraintestinal, especialmente absceso hepático. Transmisión fecal-oral por agua, alimentos o contacto, incluso sexual. Hallar ameba inespecífica en heces no prueba E.histolytica invasiva; E.dispar no recibe igual tratamiento.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Investigar diarreia, sangue, dor abdominal, viagem/exposição e hidratação. Preferir teste específico de antígeno ou PCR que diferencie E.histolytica; microscopia isolada pode confundir espécies. Febre/dor no hipocôndrio direito exige imagem hepática e avaliação especializada; sorologia pode ajudar doença extraintestinal, mas não prova sozinha infecção intestinal ativa.",
+      "es": "Investigar diarrea, sangre, dolor abdominal, viaje/exposición e hidratación. Preferir antígeno específico o PCR que diferencie E.histolytica; microscopía sola puede confundir especies. Fiebre/dolor en hipocondrio derecho exige imagen hepática y especialista; serología puede ayudar en enfermedad extraintestinal, pero sola no prueba infección intestinal activa.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Considerar disenteria bacteriana, outras parasitoses e doença inflamatória intestinal. Colite grave exige investigar amebíase antes de imunossupressão quando epidemiologia sugere, sem assumir que sangue significa doença inflamatória. Desidratação e sepse são tratadas em paralelo ao diagnóstico etiológico.",
+      "es": "Considerar disentería bacteriana, otras parasitosis y enfermedad inflamatoria intestinal. Colitis grave exige investigar amebiasis antes de inmunosupresión si epidemiología sugiere, sin asumir que sangre significa inflamatoria. Deshidratación y sepsis se tratan en paralelo al diagnóstico etiológico.",
+      "sources": [
+        "A1",
+        "A3"
+      ]
+    },
+    {
+      "id": "treatment",
+      "pt": "Doença sintomática confirmada/fortemente suspeita exige agente ativo no tecido seguido de agente luminal para erradicar colonização. Tinidazol sozinho não encerra tratamento. Infecção assintomática confirmada por E.histolytica recebe estratégia luminal; não prescrever nitroimidazol para toda ameba inespecífica. Abscesso hepático exige plano especializado; paromomicina não trata o abscesso sozinha.",
+      "es": "Enfermedad sintomática confirmada/fuertemente sospechada exige agente tisular seguido de luminal para erradicar colonización. Tinidazol solo no completa tratamiento. Infección asintomática confirmada por E.histolytica recibe estrategia luminal; no prescribir nitroimidazol para toda ameba inespecífica. Absceso hepático exige plan especializado; paromomicina no trata absceso sola.",
+      "sources": [
+        "A3",
+        "A4",
+        "A5",
+        "A6"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Opção para amebíase intestinal: tinidazol adulto2g oral uma vez/dia por3dias, com alimento; criança>3anos50mg/kg/dia oral uma vez/dia, máximo2g/dia, por3dias. Depois, paromomicina oral25–35mg/kg/DIA divididos em3doses com refeições por5–10dias conforme bula e prescrição. Cápsula tem250mg de paromomicina base; calcular total diário antes de dividir. Não confundir mg/kg/dia com mg/kg/dose; duração final e apresentação pediátrica precisam constar na prescrição.",
+      "es": "Opción para amebiasis intestinal: tinidazol adulto2g oral una vez/día por3días, con comida; niño>3años50mg/kg/día oral una vez/día, máximo2g/día, por3días. Después, paromomicina oral25–35mg/kg/DÍA divididos en3dosis con comidas por5–10días según ficha y prescripción. Cápsula contiene250mg de paromomicina base; calcular total diario antes de dividir. No confundir mg/kg/día con mg/kg/dosis; duración final y presentación pediátrica deben figurar en receta.",
+      "sources": [
+        "A4",
+        "A5"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Tinidazol: evitar álcool durante e por3dias depois; conferir alergia a nitroimidazóis, síndrome de Cockayne, anticoagulantes e sinais neurológicos. Suspender/avaliar se neuropatia, convulsão ou reação grave. Paromomicina é contraindicada em obstrução intestinal e alergia; mucosa ulcerada pode aumentar absorção/toxicidade renal. Não extrapolar dose de coma hepático à amebíase.",
+      "es": "Tinidazol: evitar alcohol durante y por3días después; revisar alergia a nitroimidazoles, síndrome de Cockayne, anticoagulantes y signos neurológicos. Suspender/evaluar ante neuropatía, convulsión o reacción grave. Paromomicina se contraindica en obstrucción intestinal y alergia; mucosa ulcerada puede aumentar absorción/toxicidad renal. No extrapolar dosis de coma hepático a amebiasis.",
+      "sources": [
+        "A4",
+        "A5"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Internar/avaliar urgentemente instabilidade, desidratação importante, peritonismo, hemorragia, colite fulminante ou suspeita de ruptura de abscesso hepático. Não usar antidiarreico como solução para disenteria febril. Abscesso, piora apesar de tratamento e incapacidade de ingerir medicamento exige infectologia/gastroenterologia e eventual intervenção.",
+      "es": "Ingresar/evaluar urgentemente inestabilidad, deshidratación importante, peritonismo, hemorragia, colitis fulminante o sospecha de rotura de absceso hepático. No usar antidiarreico como solución de disentería febril. Absceso, empeoramiento pese a tratamiento e imposibilidad de ingerir medicamento exige infectología/gastroenterología y eventual intervención.",
+      "sources": [
+        "A1",
+        "A2",
+        "A3"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestação exige escolha individual; não prescrever tinidazol automaticamente, especialmente no início. Se lactação e tinidazol necessário, interromper durante curso e por72h após última dose conforme bula. Crianças≤3anos, hepatopatia importante e hemodiálise requerem plano próprio; hemodiálise altera tinidazol e não deve receber ajuste improvisado.",
+      "es": "Embarazo exige elección individual; no prescribir tinidazol automáticamente, especialmente al inicio. Si lactancia y tinidazol necesario, interrumpir durante curso y por72h tras última dosis según ficha. Niños≤3años, hepatopatía importante y hemodiálisis requieren plan propio; hemodiálisis altera tinidazol y no debe recibir ajuste improvisado.",
+      "sources": [
+        "A4",
+        "A5"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta só se estável, hidratado e capaz de completar as etapas com retorno. Reavaliar sintomas e adesão; persistência exige confirmar etiologia, reinfecção e complicação, não repetir indefinidamente o mesmo fármaco. Orientar higiene das mãos, água/alimentos seguros e redução de contato fecal-oral durante infecção; avaliar contatos sintomáticos, sem tratamento universal de todos.",
+      "es": "Alta solo si estable, hidratado y capaz de completar etapas con retorno. Reevaluar síntomas y adherencia; persistencia exige confirmar etiología, reinfección y complicación, no repetir indefinidamente igual fármaco. Indicar higiene de manos, agua/alimentos seguros y reducir contacto fecal-oral durante infección; evaluar contactos sintomáticos, sin tratar universalmente a todos.",
+      "sources": [
+        "A3",
+        "A6"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "A1",
+      "title": "Post-travel diarrhea — Yellow Book2026",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_TRAVEL_GUIDANCE",
+      "url": "https://www.cdc.gov/yellow-book/hcp/post-travel-evaluation/post-travel-diarrhea.html",
+      "scope": "Diagnóstico diferencial e terapia tecidual seguida de luminal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A2",
+      "title": "DPDx Amebiasis",
+      "authority": "CDC",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_LAB_GUIDANCE",
+      "url": "https://www.cdc.gov/dpdx/amebiasis/",
+      "scope": "Diferenciação molecular/histolytica e diagnóstico extraintestinal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A3",
+      "title": "Sexually transmitted enteric infections guideline",
+      "authority": "BASHH",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://journals.sagepub.com/doi/10.1177/09564624231168217",
+      "scope": "Tratamento sequencial e contexto sexual; não todos casos são sexualmente transmitidos.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A4",
+      "title": "Tinidazole — prescribing information",
+      "authority": "Rising / DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LABEL_UPDATED",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=45fa3ebd-52da-4987-82a1-4a64f99785a7",
+      "scope": "Registro18/08/2026; dose intestinal/hepática e safety.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A5",
+      "title": "Paromomycin sulfate capsule — prescribing information",
+      "authority": "Heritage / DailyMed",
+      "year": 2013,
+      "status": "AUTHORITATIVE_LABEL_OLDER_CURRENT",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=333d55f0-ab49-459e-8d32-1590b2623ef3",
+      "scope": "Issued10/2013; apresentação250mg, dose por peso e contraindicação obstrução. Não revisão2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A6",
+      "title": "Travelers diarrhea — Yellow Book2026",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.cdc.gov/yellow-book/hcp/preparing-international-travelers/travelers-diarrhea.html",
+      "scope": "Páginaatual2026; prevenção e necessidade de agente luminal.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

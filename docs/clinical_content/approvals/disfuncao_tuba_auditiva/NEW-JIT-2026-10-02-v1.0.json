@@ -1,0 +1,151 @@
+{
+  "owner": "disfuncao_tuba_auditiva",
+  "title": {
+    "pt": "Disfunção da tuba auditiva",
+    "es": "Disfunción de la trompa auditiva"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Disfunção da tuba auditiva altera ventilação/equilíbrio de pressão do ouvido médio. Distinguir forma obstrutiva, induzida por variação de pressão e tuba patulosa. Plenitude, estalos, desconforto e audição abafada podem ocorrer; autofonia da voz/respiração pode sugerir forma patulosa, cuja conduta difere da obstrução.",
+      "es": "Disfunción de trompa auditiva altera ventilación/equilibrio de presión del oído medio. Distinguir forma obstructiva, inducida por cambios de presión y trompa patulosa. Plenitud, chasquidos, molestia e audición amortiguada pueden ocurrir; autofonía de voz/respiración puede sugerir forma patulosa, cuyo manejo difiere de obstrucción.",
+      "sources": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Perguntar resfriado/alergia, voo/mergulho, duração, unilateralidade e variação dos sintomas. Avaliar otoscopia, audiometria e timpanometria; endoscopia nasal é seletiva na avaliação ORL. Sintomas sem sinal objetivo não confirmam automaticamente obstrução crônica; na forma por pressão o exame em repouso pode ser normal.",
+      "es": "Preguntar resfriado/alergia, vuelo/buceo, duración, unilateralidad y variación de síntomas. Evaluar otoscopia, audiometría y timpanometría; endoscopia nasal es selectiva en ORL. Síntomas sin signo objetivo no confirman automáticamente obstrucción crónica; en forma por presión examen en reposo puede ser normal.",
+      "sources": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Excluir cerúmen, otite média/efusão, perda neurossensorial, disfunção temporomandibular e hidropisia endolinfática. Efusão unilateral persistente em adulto pode exigir avaliação nasofaríngea. Dor ou perda súbita não deve receber diagnóstico automático de tuba entupida.",
+      "es": "Excluir cerumen, otitis media/derrame, hipoacusia neurosensorial, disfunción temporomandibular e hidropesía endolinfática. Derrame unilateral persistente adulto puede exigir evaluación nasofaríngea. Dolor o pérdida súbita no debe diagnosticarse automáticamente como trompa tapada.",
+      "sources": [
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Formas leves transitórias frequentemente melhoram; bocejar, engolir e abrir a boca podem ajudar. Se apropriada à forma obstrutiva, manobra de equalização deve ser suave, nunca forçada; parar se dor/tontura. Não recomendar manobras indiscriminadas em trauma, infecção importante, cirurgia recente ou forma patulosa sem avaliação.",
+      "es": "Formas leves transitorias suelen mejorar; bostezar, tragar y abrir boca pueden ayudar. Si apropiada para forma obstructiva, maniobra de igualación debe ser suave, nunca forzada; detener si dolor/mareo. No recomendar indiscriminadamente en trauma, infección importante, cirugía reciente o forma patulosa sin valoración.",
+      "sources": [
+        "T2",
+        "T3"
+      ]
+    },
+    {
+      "id": "medications",
+      "pt": "Não há medicamento universal que corrija todas as formas. Tratar rinite/alergia comprovada pode ser útil, com escolha e dose por produto; isso não significa prescrever corticoide nasal, anti-histamínico ou descongestionante para todo paciente. Não fornecer curso empírico de antibiótico para disfunção tubária isolada. Não usar inalação sobre água fervente como tratamento.",
+      "es": "No hay fármaco universal que corrija todas las formas. Tratar rinitis/alergia demostrada puede ayudar, con elección/dosis por producto; no significa prescribir corticoide nasal, antihistamínico ni descongestivo a todo paciente. No dar antibiótico empírico para disfunción tubárica aislada. No usar inhalación sobre agua hirviendo como tratamiento.",
+      "sources": [
+        "T2",
+        "T3"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Sintomas persistentes/relevantes exigem ORL para confirmar subtipo e selecionar tratamento. Tubo de ventilação ou dilatação por balão é decisão especializada, sem indicação automática por plenitude subjetiva. Posição AAO-HNS2025 pediátrica reserva balão a disfunção obstrutiva com doença crônica refratária às intervenções cirúrgicas padrão; não extrapolar a tuba patulosa.",
+      "es": "Síntomas persistentes/relevantes exigen ORL para confirmar subtipo y seleccionar tratamiento. Tubo de ventilación o dilatación con balón es decisión especializada, sin indicación automática por plenitud subjetiva. Posición AAO-HNS2025 pediátrica reserva balón a disfunción obstructiva con enfermedad crónica refractaria a cirugía estándar; no extrapolar a trompa patulosa.",
+      "sources": [
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Perda auditiva súbita sem causa externa/média explicativa precisa avaliação urgente: adulto com início em≤3dias durante últimos30dias, atendimento em24h. Déficit facial/neurológico, vertigem intensa, trauma, secreção, dor intensa ou febre também requer avaliar alternativa urgente. Não aguardar resolução espontânea nesses casos.",
+      "es": "Hipoacusia súbita sin causa externa/media explicativa requiere valoración urgente: adulto con inicio en≤3días durante últimos30días, atención en24h. Déficit facial/neurológico, vértigo intenso, trauma, secreción, dolor intenso o fiebre también exige evaluar alternativa urgente. No esperar resolución espontánea en estos casos.",
+      "sources": [
+        "T5"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Criança com prejuízo auditivo, fala ou aprendizagem merece audiologia/ORL; não apenas manobra domiciliar. Gestação, comorbidades cardiovasculares e interações mudam segurança de descongestionantes caso outra indicação exista. Não prescrever dose adulta a crianças ou usar vasoconstritor como solução para autofonia patulosa.",
+      "es": "Niño con afectación auditiva, habla o aprendizaje merece audiología/ORL; no solo maniobra domiciliaria. Embarazo, comorbilidad cardiovascular e interacciones cambian seguridad de descongestivos si existe otra indicación. No prescribir dosis adulta a niños ni vasoconstrictor como solución para autofonía patulosa.",
+      "sources": [
+        "T4",
+        "T2"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Sem alarme, orientar evolução e revisão se persistente ou incapacitante. Documentar audição, impacto e resultado dos testes; duração>3meses caracteriza cronicidade no consenso e favorece avaliação especializada, sem exigir esperar esse prazo se há sinais preocupantes. Evitar voo/mergulho sintomático até orientação quando equalização é problemática.",
+      "es": "Sin alarma, orientar evolución y revisión si persiste o incapacita. Documentar audición, impacto y pruebas; duración>3meses caracteriza cronicidad en consenso y favorece especialista, sin exigir esperar plazo ante signos preocupantes. Evitar vuelo/buceo sintomático hasta orientación cuando igualación es problemática.",
+      "sources": [
+        "T1",
+        "T2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "T1",
+      "title": "Eustachian tube dysfunction — definition/types/diagnosis consensus",
+      "authority": "Schilder et al. Clinical Otolaryngology",
+      "year": 2015,
+      "status": "AUTHORITATIVE_CONSENSUS_OLDER_INDEXED",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4600223/",
+      "scope": "Adultos; consenso diagnóstico, não guideline terapêutica2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T2",
+      "title": "Eustachian tube dysfunction",
+      "authority": "Chelsea and Westminster NHS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_LOCAL_PATIENT_GUIDANCE",
+      "url": "https://www.chelwest.nhs.uk/your-visit/patient-leaflets/ent-audiology/eustachian-tube-dysfunction",
+      "scope": "Manobras suaves e evolução; não adotar inalação com água fervente.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T3",
+      "title": "Eustachian tube dysfunction evidence and controversies",
+      "authority": "AAO-HNS Bulletin",
+      "year": 2020,
+      "status": "AUTHORITATIVE_SPECIALTY_REVIEW_OLDER_INDEXED",
+      "url": "https://bulletin.entnet.org/wp-content/uploads/2020/07/Bulletin_August20_LowRes.pdf",
+      "scope": "Investigação de adulto e seleção para intervenção.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T4",
+      "title": "Eustachian tube balloon dilation in pediatric population",
+      "authority": "AAO-HNS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_POSITION_STATEMENT",
+      "url": "https://www.entnet.org/resource/eustachian-tube-balloon-dilation-in-the-pediatric-population/",
+      "scope": "08/07/2025; refratários a intervenções padrão, não primeira linha.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T5",
+      "title": "Hearing loss in adults NG98",
+      "authority": "NICE",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_UPDATED_INDEXED",
+      "url": "https://www.nice.org.uk/guidance/ng98/chapter/recommendations",
+      "scope": "Urgência auditiva e efusão adulta.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

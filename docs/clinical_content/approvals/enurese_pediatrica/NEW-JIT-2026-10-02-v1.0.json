@@ -1,0 +1,139 @@
+{
+  "owner": "enurese_pediatrica",
+  "title": {
+    "pt": "Enurese pediátrica",
+    "es": "Enuresis pediátrica"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Enurese é perda urinária durante sono em idade≥5anos, relacionada a maturação, despertar, capacidade vesical e/ou produção noturna. Monossintomática não tem sintomas urinários diurnos; não monossintomática tem. Secundária reaparece após≥6meses secos. Não é culpa ou comportamento voluntário.",
+      "es": "Enuresis es pérdida urinaria durante sueño a edad≥5años, relacionada con maduración, despertar, capacidad vesical y/o producción nocturna. Monosintomática carece de síntomas urinarios diurnos; no monosintomática los tiene. Secundaria reaparece tras≥6meses secos. No es culpa ni conducta voluntaria.",
+      "sources": [
+        "E1"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Perguntar padrão, urgência/incontinência diurna, disúria, jato, evacuações, sede, sono/ronco e estressores; diário e exame dirigido. Urina é seletiva, especialmente início recente, sintomas urinários/sistêmicos ou suspeita de diabetes/ITU; não obrigatória em primária monossintomática típica. Imagem e urodinâmica não são rotina.",
+      "es": "Preguntar patrón, urgencia/incontinencia diurna, disuria, chorro, deposiciones, sed, sueño/ronquido y estrés; diario y examen dirigido. Orina selectiva, especialmente inicio reciente, síntomas urinarios/sistémicos o sospecha diabetes/ITU; no obligatoria en primaria monosintomática típica. Imagen/urodinamia no rutinarias.",
+      "sources": [
+        "E2",
+        "E1"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Pesquisar constipação, disfunção miccional, ITU, diabetes, apneia do sono e doença neurológica/anatômica. Tratar fatores associados antes ou junto, sem antibiótico empírico por enurese isolada. Secundária exige investigar causas clínicas e psicossociais; sintomas diurnos não devem ser ignorados.",
+      "es": "Buscar estreñimiento, disfunción miccional, ITU, diabetes, apnea del sueño y enfermedad neurológica/anatómica. Tratar asociados antes o simultáneamente, sin antibiótico empírico por enuresis aislada. Secundaria exige estudiar causas clínicas/psicosociales; no ignorar síntomas diurnos.",
+      "sources": [
+        "E1"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Educar sem punições; recompensar ações controláveis, não noites secas. Manter ingestão hídrica adequada de dia, micções regulares e antes de dormir, tratar constipação e facilitar banheiro. Alarme é opção ativa se família motivada, com ajuda para despertar e registro; pode levar semanas. Espera informada é válida se não houver sofrimento/alarme.",
+      "es": "Educar sin castigos; premiar acciones controlables, no noches secas. Mantener hidratación diurna adecuada, micciones regulares y antes de dormir, tratar estreñimiento y acceso al baño. Alarma es opción activa con familia motivada, ayuda para despertar y registro; puede tardar semanas. Espera informada válida sin malestar/alarma.",
+      "sources": [
+        "E4",
+        "E2"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Para enurese primária em criança elegível≥5anos, se resposta rápida desejada ou alarme inadequado: desmopressina liofilizada sublingual120microgramas ao deitar; se insuficiente, médico pode titular até240microgramas ao deitar conforme bula selecionada. Dissolver sob língua sem água. Não exceder este limite nem converter microgramas em mg automaticamente; comprimido oral, liofilizado e spray não são intercambiáveis por dose. Não usar intranasal para enurese.",
+      "es": "Para enuresis primaria en niño elegible≥5años, si respuesta rápida deseada o alarma inadecuada: desmopresina liofilizada sublingual120microgramos al acostarse; si insuficiente, médico puede titular hasta240microgramos al acostarse según ficha elegida. Disolver bajo lengua sin agua. No exceder límite ni convertir microgramos a mg automáticamente; tableta oral, liofilizado y spray no intercambiables por dosis. No usar intranasal para enuresis.",
+      "sources": [
+        "E3",
+        "E1"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Restrição hídrica noturna é obrigatória: líquidos mínimos desde1h antes até pelo menos8h após desmopressina/até manhã, mantendo hidratação normal de dia. Não dar se não consegue cumprir, doença com febre/vômitos/diarreia ou necessidade de reidratação noturna após esporte. Reavaliar resposta em4semanas; interromper se sem efeito após titulação adequada. Se responde, ciclo de até3meses e pausa de≥1semana para reavaliar.",
+      "es": "Restricción hídrica nocturna obligatoria: líquidos mínimos desde1h antes hasta al menos8h después de desmopresina/hasta mañana, con hidratación diurna normal. No dar si no puede cumplir, enfermedad con fiebre/vómitos/diarrea o necesidad de rehidratar de noche tras deporte. Reevaluar respuesta en4semanas; suspender si ineficaz tras titulación adecuada. Si responde, ciclo hasta3meses y pausa≥1semana para reevaluar.",
+      "sources": [
+        "E3",
+        "E2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Poliúria/polidipsia com emagrecimento, vômitos/prostração, febre/disúria, retenção ou déficit neurológico exige avaliação rápida para causa específica. Durante desmopressina, cefaleia, náusea/vômitos, ganho de peso, confusão ou convulsão pode indicar hiponatremia: suspender e avaliar urgentemente, emergência se sintomas neurológicos. Não aumentar dose por noites molhadas com sinais tóxicos.",
+      "es": "Poliuria/polidipsia con pérdida de peso, vómitos/decaimiento, fiebre/disuria, retención o déficit neurológico exige pronta evaluación específica. Con desmopresina, cefalea, náusea/vómitos, aumento de peso, confusión o convulsión puede indicar hiponatremia: suspender y evaluar urgentemente, emergencia ante síntomas neurológicos. No aumentar dosis por noches mojadas con toxicidad.",
+      "sources": [
+        "E3",
+        "E2"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Contraindicada desmopressina selecionada se ClCr<50mL/min, hiponatremia, SIADH, polidipsia habitual/psicogênica ou insuficiência cardíaca/condição que exige diurético. Revisar AINE, ISRS e outros fármacos que retêm água; não suspender tratamentos crônicos por conta própria. Criança<5anos não recebe automaticamente esquema. Gestação adolescente exige avaliação individual.",
+      "es": "Desmopresina elegida contraindicada si ClCr<50mL/min, hiponatremia, SIADH, polidipsia habitual/psicógena o insuficiencia cardíaca/condición que exige diurético. Revisar AINE, ISRS y otros fármacos que retienen agua; no suspender crónicos por cuenta propia. Niño<5años no recibe automáticamente esquema. Embarazo adolescente exige valoración individual.",
+      "sources": [
+        "E3"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Caso estável segue ambulatorialmente com metas compartilhadas, diário e avaliação de comorbidades. Alarme: revisar progresso em4semanas e continuar se melhora, buscando≥2semanas secas. Falha de alarme/desmopressina adequada ou sintomas diurnos importantes exige especialista; não iniciar imipramina/anticolinérgico empiricamente. NICE não exige eletrólitos rotineiros no caso simples; CPS aconselha controle aproximadamente a cada3meses no uso contínuo: adotar plano de monitorização individual, sem negar exames em paciente de risco.",
+      "es": "Caso estable ambulatorio con metas compartidas, diario y comorbilidades. Alarma: revisar en4semanas y continuar si mejora, buscando≥2semanas secas. Fallo de alarma/desmopresina adecuada o síntomas diurnos importantes exige especialista; no iniciar imipramina/anticolinérgico empíricamente. NICE no exige electrolitos rutinarios en caso simple; CPS aconseja control aproximadamente cada3meses con uso continuo: plan individual de vigilancia, sin negar pruebas al paciente de riesgo.",
+      "sources": [
+        "E2",
+        "E1"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "E1",
+      "title": "Evaluation and management of enuresis in general paediatrics",
+      "authority": "Canadian Paediatric Society",
+      "year": 2023,
+      "status": "AUTHORITATIVE_POSITION_STATEMENT",
+      "url": "https://cps.ca/en/documents/position/evaluation-and-management-of-enuresis-in-the-general-paediatric-setting",
+      "scope": "16/08/2023; classificação, comorbidades e risco hídrico.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "E2",
+      "title": "Bedwetting under19s CG111",
+      "authority": "NICE",
+      "year": "2010; vigilância2018",
+      "status": "AUTHORITATIVE_CURRENT_INDEXED_RECOMMENDATIONS",
+      "url": "https://www.nice.org.uk/guidance/cg111/chapter/Recommendations",
+      "scope": "Conteúdo indexado oficial; acesso direto403. Não chamar copyright2026 de nova diretriz.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "E3",
+      "title": "Desmopressin120microgram sublingual lyophilisate SmPC",
+      "authority": "Strides Pharma UK",
+      "year": 2026,
+      "status": "VERIFIED_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/102061/smpc",
+      "scope": "emc11/04/2026; texto13/08/2025; enurese primária≥5anos120–240microgramas, não esquema diabetes insipidus.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "E4",
+      "title": "Bedwetting",
+      "authority": "CPS Caring for Kids",
+      "year": "data não confirmada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://caringforkids.cps.ca/handouts/behavior-and-development/bedwetting",
+      "scope": "Educação da família e alarme.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

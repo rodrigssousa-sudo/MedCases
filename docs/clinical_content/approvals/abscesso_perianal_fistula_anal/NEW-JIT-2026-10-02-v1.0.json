@@ -1,0 +1,236 @@
+{
+  "owner": "abscesso_perianal_fistula_anal",
+  "title": {
+    "pt": "Abscesso perianal / fístula anal",
+    "es": "Absceso perianal / fístula anal"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Abscesso anorretal é uma coleção purulenta frequentemente originada de glândula anal infectada. Fístula anal é um trajeto anormal entre canal anal e pele perianal, podendo persistir após drenagem. São fases relacionadas, com condutas distintas; este owner agrupa abscesso e fístula criptoglandular, sem substituir o manejo de Crohn ou gangrena de Fournier.",
+      "es": "El absceso anorrectal es una colección purulenta que suele originarse en una glándula anal infectada. La fístula anal es un trayecto anormal entre el canal anal y la piel perianal que puede persistir después del drenaje. Son fases relacionadas con conductas distintas; este owner agrupa absceso y fístula criptoglandular sin sustituir el manejo de Crohn ni gangrena de Fournier.",
+      "sources": [
+        "A1",
+        "A2",
+        "A3"
+      ]
+    },
+    {
+      "id": "presentation",
+      "pt": "Abscesso causa dor perianal/retal, tumefação, sensibilidade e eventualmente febre; coleção profunda pode não ter alteração externa evidente. Fístula costuma causar secreção persistente/intermitente, orifício cutâneo, irritação e recorrência de dor/edema. Não usar melhora após saída espontânea de pus como prova de resolução definitiva.",
+      "es": "El absceso causa dolor perianal/rectal, tumefacción, sensibilidad y eventualmente fiebre; una colección profunda puede no mostrar alteración externa evidente. La fístula suele causar secreción persistente/intermitente, orificio cutáneo, irritación y recurrencia de dolor/edema. No usar la mejoría tras salida espontánea de pus como prueba de resolución definitiva.",
+      "sources": [
+        "A1",
+        "A3",
+        "A4"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Sepse, instabilidade, dor rapidamente progressiva/desproporcional, necrose, crepitação ou extensão perineal exige urgência cirúrgica; considerar infecção necrosante/Fournier. Imunossupressão e doença sistêmica relevante reduzem o limiar para avaliação hospitalar. Não adiar controle de foco aguardando antibiótico fazer efeito.",
+      "es": "Sepsis, inestabilidad, dolor rápidamente progresivo/desproporcionado, necrosis, crepitación o extensión perineal exige urgencia quirúrgica; considerar infección necrosante/Fournier. Inmunosupresión y enfermedad sistémica relevante reducen el umbral para evaluación hospitalaria. No retrasar el control del foco esperando que actúe un antibiótico.",
+      "sources": [
+        "A1",
+        "A3"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Perguntar sobre evolução, abscessos/cirurgias prévios, drenagem, continência basal, lesão obstétrica, Crohn e imunossupressão. Inspecionar e realizar exame anorretal dirigido conforme tolerância. Diferenciais incluem fissura, trombose hemorroidária, hidradenite, cisto infectado e neoplasia. Dor profunda com exame externo pobre não exclui abscesso.",
+      "es": "Preguntar por evolución, abscesos/cirugías previos, drenaje, continencia basal, lesión obstétrica, Crohn e inmunosupresión. Inspeccionar y realizar examen anorrectal dirigido según tolerancia. Diferenciales incluyen fisura, trombosis hemorroidal, hidradenitis, quiste infectado y neoplasia. El dolor profundo con examen externo poco llamativo no excluye absceso.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "imaging",
+      "pt": "Imagem não é necessária de rotina em todo abscesso superficial evidente. Considerar em coleção oculta, recorrência, fístula complexa, imunossupressão ou Crohn. Ressonância e ultrassom endoanal ajudam a mapear trajeto/extensões; suspeita de fístula complexa exige planejamento anatômico e não apenas exame sob anestesia. Hemograma, função renal e outros exames são dirigidos à repercussão e plano terapêutico.",
+      "es": "No se requieren imágenes rutinarias en todo absceso superficial evidente. Considerarlas ante colección oculta, recurrencia, fístula compleja, inmunosupresión o Crohn. Resonancia y ecografía endoanal ayudan a mapear trayecto/extensiones; sospecha de fístula compleja exige planificación anatómica y no solo examen bajo anestesia. Hemograma, función renal y otros estudios se orientan por repercusión y plan terapéutico.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "drainage",
+      "pt": "Abscesso agudo deve ser drenado prontamente por profissional/equipe apropriados, conforme localização e extensão. Aspiração isolada e antibiótico isolado não são substitutos confiáveis da drenagem. Coleções profundas/complexas ou pacientes com risco elevado requerem ambiente e equipe adequados. Não orientar drenagem caseira.",
+      "es": "El absceso agudo debe drenarse pronto por el profesional/equipo apropiado según localización y extensión. La aspiración aislada y el antibiótico aislado no sustituyen de forma fiable el drenaje. Colecciones profundas/complejas o pacientes de riesgo elevado requieren ámbito y equipo adecuados. No indicar drenaje casero.",
+      "sources": [
+        "A1",
+        "A3"
+      ]
+    },
+    {
+      "id": "antibiotics",
+      "pt": "Após drenagem de abscesso simples em paciente saudável, antibiótico sistêmico não é rotina nem prevenção comprovada de fístula. É indicado/considerado quando há celulite relevante, sinais sistêmicos/sepse ou imunossupressão; escolher agente, dose, via e duração pela gravidade, alergias, função renal, microbiologia e protocolo hospitalar de infecção anorretal. Não copiar um esquema oral universal para sepse. Cultura é especialmente útil em recorrência, falha, imunossupressão ou risco de resistência.",
+      "es": "Después del drenaje de un absceso simple en un paciente sano, el antibiótico sistémico no es rutinario ni prevención demostrada de fístula. Se indica/considera ante celulitis relevante, signos sistémicos/sepsis o inmunosupresión; elegir agente, dosis, vía y duración por gravedad, alergias, función renal, microbiología y protocolo hospitalario de infección anorrectal. No copiar un régimen oral universal para sepsis. El cultivo es especialmente útil ante recurrencia, fracaso, inmunosupresión o riesgo de resistencia.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "fistula",
+      "pt": "Fístula sintomática requer avaliação por coloproctologia. Fistulotomia pode ser adequada em trajetos simples baixos e continência preservada; divisão esfíncteriana inadequada pode causar incontinência. Fístula complexa/alta, anterior em mulher, lesão obstétrica, incontinência prévia ou cirurgia anorretal exige seleção cuidadosa e possível técnica preservadora, como seton de drenagem em contexto apropriado, LIFT ou retalho. Não executar fistulotomia automática durante toda drenagem.",
+      "es": "La fístula sintomática requiere coloproctología. La fistulotomía puede ser adecuada en trayectos simples bajos con continencia preservada; una división esfinteriana inadecuada puede causar incontinencia. Fístula compleja/alta, anterior en mujer, lesión obstétrica, incontinencia previa o cirugía anorrectal requiere selección cuidadosa y posible técnica preservadora, como setón de drenaje en el contexto apropiado, LIFT o colgajo. No realizar fistulotomía automática durante todo drenaje.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Crohn requer abordagem combinada de sepse local e doença inflamatória; o algoritmo criptoglandular não deve ser aplicado sozinho. Crianças/lactentes precisam de avaliação própria: este esquema de analgesia é adulto. Gestação exige coordenação para controle de foco e analgesia apropriada, evitando AINE sem indicação específica. Em imunossuprimidos, apresentação pouco exuberante não elimina infecção significativa.",
+      "es": "Crohn requiere un abordaje combinado de sepsis local y enfermedad inflamatoria; el algoritmo criptoglandular no debe aplicarse solo. Niños/lactantes requieren evaluación propia: este esquema de analgesia es adulto. El embarazo exige coordinación para controlar el foco y analgesia apropiada evitando AINE sin indicación específica. En inmunocomprometidos, una presentación poco llamativa no excluye infección importante.",
+      "sources": [
+        "A1",
+        "A2",
+        "A6",
+        "A7",
+        "A8"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta após controle do foco em paciente estável, com analgesia, cuidados de ferida e retorno programado conforme procedimento. Informar possibilidade de recorrência/fístula; drenagem persistente ou novo edema requer reavaliação. Febre, piora da dor, sangramento importante, necrose ou mal-estar sistêmico exige urgência. Internação é apropriada quando há sepse, coleção complexa, impossibilidade de controle seguro do foco ou necessidade de monitorização/tratamento hospitalar.",
+      "es": "Alta después de controlar el foco en un paciente estable, con analgesia, cuidado de herida y seguimiento programado según procedimiento. Informar posibilidad de recurrencia/fístula; drenaje persistente o nuevo edema requiere reevaluación. Fiebre, empeoramiento del dolor, sangrado importante, necrosis o malestar sistémico exige urgencia. La internación corresponde ante sepsis, colección compleja, imposibilidad de controlar el foco de forma segura o necesidad de vigilancia/tratamiento hospitalario.",
+      "sources": [
+        "A1",
+        "A2",
+        "A3"
+      ]
+    },
+    {
+      "id": "paracetamol",
+      "pt": "Paracetamol pode ser usado se AINE contraindicado ou como associação selecionada: adulto com peso ≥50 kg sem necessidade de ajuste, 500–1000 mg oral a cada 6 h se necessário; máximo 4 tomadas e 4000 mg em 24 h contando todas as associações. Menor dose eficaz, reavaliação se uso exceder 3 dias. Não duplicar paracetamol em produtos combinados.",
+      "es": "Puede usarse paracetamol si un AINE está contraindicado o como combinación seleccionada: adulto con peso ≥50 kg sin necesidad de ajuste, 500–1000 mg oral cada 6 h si es necesario; máximo 4 tomas y 4000 mg en 24 h contando todas las combinaciones. Menor dosis eficaz, reevaluación si el uso supera 3 días. No duplicar paracetamol en productos combinados.",
+      "sources": [
+        "A5",
+        "A7",
+        "A8"
+      ]
+    },
+    {
+      "id": "analgesic_safety",
+      "pt": "Paracetamol é contraindicado em hipersensibilidade. Peso <50 kg, fragilidade/desnutrição, doença renal/hepática ou consumo nocivo de álcool exige avaliação individual; o teto adulto não é automaticamente seguro. Conferir duplicidade em associações e interações, incluindo varfarina em uso regular prolongado. Superdose requer atendimento imediato mesmo sem sintomas.",
+      "es": "El paracetamol está contraindicado en hipersensibilidad. Peso <50 kg, fragilidad/desnutrición, enfermedad renal/hepática o consumo nocivo de alcohol requiere evaluación individual; el límite adulto no es automáticamente seguro. Revisar duplicación en combinaciones e interacciones, incluida warfarina con uso regular prolongado. La sobredosis requiere atención inmediata incluso sin síntomas.",
+      "sources": [
+        "A7",
+        "A8"
+      ]
+    },
+    {
+      "id": "ibuprofen",
+      "pt": "Analgesia temporária, adulto sem contraindicação: ibuprofeno 400 mg oral, até 3 vezes ao dia se necessário, com intervalo mínimo de 4 h e máximo 1200 mg em 24 h neste esquema breve de menor exposição. Usar menor dose/tempo, com alimento se tolerado. Esse teto escolhido não é o limite de todos os regimes prescritos; dor persistente exige controle de foco e revisão, não aumentar por conta própria.",
+      "es": "Analgesia temporal, adulto sin contraindicación: ibuprofeno 400 mg oral, hasta 3 veces al día si es necesario, con intervalo mínimo de 4 h y máximo 1200 mg en 24 h en este esquema breve de menor exposición. Usar menor dosis/tiempo, con alimento si se tolera. Este límite elegido no es el límite de todos los regímenes prescritos; dolor persistente exige controlar el foco y revisar, sin aumentar por cuenta propia.",
+      "sources": [
+        "A5",
+        "A6"
+      ]
+    },
+    {
+      "id": "nsaid_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINE/broncoespasmo relacionado, úlcera/sangramento digestivo ou situações em que risco renal, cardíaco, hepático ou hemorrágico contraindique uso. Avaliar desidratação, anticoagulantes, corticosteroides e anti-hipertensivos; não associar outro AINE. Sangramento digestivo, reação alérgica ou redução de diurese exige atendimento.",
+      "es": "Evitar ibuprofeno ante alergia a AINE/broncoespasmo relacionado, úlcera/sangrado digestivo o situaciones en que el riesgo renal, cardíaco, hepático o hemorrágico contraindique su uso. Evaluar deshidratación, anticoagulantes, corticoides y antihipertensivos; no asociar otro AINE. Sangrado digestivo, alergia o disminución de diuresis exige atención.",
+      "sources": [
+        "A6"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "A1",
+      "title": "Management of Anorectal Abscess, Fistula-in-Ano, and Rectovaginal Fistula",
+      "authority": "ASCRS",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://www.ascrsu.com/ascrs/repview?name=2_2851069_PDF&type=784-160",
+      "scope": "Diretriz final, substitui2016; permanece no índice oficial. PDF integral disponível.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A2",
+      "title": "Guidelines for diagnosis and treatment of cryptoglandular anal fistula",
+      "authority": "ESCP",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://onlinelibrary.wiley.com/doi/10.1111/codi.16741",
+      "scope": "ColorectalDisease26:145–196; publicadoonline2023/volume2024; foco criptoglandular, seleção de técnica e continência.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A3",
+      "title": "Abscess and Fistula — Expanded Information",
+      "authority": "ASCRS",
+      "year": "sem data explícita",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.fascrs.org/Web/Patients/Diseases-and-Conditions/A-Z/Abscess-and-Fistula-Expanded-Information.aspx?WebsiteKey=72e24489-68dc-44d0-8248-ea73cb810d39",
+      "scope": "Anatomia, sintomas, recorrência e controle de foco.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A4",
+      "title": "Anal fistula",
+      "authority": "NHS",
+      "year": "data não confirmada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/anal-fistula/",
+      "scope": "Sintomas, avaliação e opções cirúrgicas; não inferir ano de revisão.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A5",
+      "title": "Temporary pharmacologic management of toothache — chairside guide",
+      "authority": "ADA",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://www.ada.org/-/media/project/ada-organization/ada/ada-org/files/resources/research/2024-pain-guidelines/14205d_chairside_guide_adult_pulpitis_final.pdf",
+      "scope": "Analgesia temporária até tratamento dental definitivo; recomendações condicionais. Aplicação a analgesia geral; não prova eficácia específica para abscesso perianal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A6",
+      "title": "Ibuprofen for adults",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "scope": "Revisada27/08/2025; dose de uso breve e riscos. Aplicação a analgesia geral; não prova eficácia específica para abscesso perianal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A7",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "population": "Adultos a partir de 18 anos",
+      "scope": "Posologia oral, duração de autocuidado e segurança Aplicação a analgesia geral; não prova eficácia específica para abscesso perianal.",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A8",
+      "title": "Paracetamol 500 mg Tablet — Summary of Product Characteristics",
+      "authority": "Medley Pharma Limited / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "population": "Adultos; sem extrapolação para crianças neste pacote",
+      "scope": "Posologia, contraindicações, interações, gestação/lactação Aplicação a analgesia geral; não prova eficácia específica para abscesso perianal.",
+      "url": "https://www.medicines.org.uk/emc/product/100828/smpc",
+      "verifiedOn": "2026-10-02",
+      "recencyNote": "Texto revisado em 19/08/2025. Bula britânica: verificar apresentação/formulário local antes da prescrição."
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

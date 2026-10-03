@@ -1,0 +1,153 @@
+{
+  "owner": "cisto_ovariano_massa_anexial_benigna",
+  "title": {
+    "pt": "Cisto ovariano / massa anexial presumivelmente benigna",
+    "es": "Quiste ovárico / masa anexial presumiblemente benigna"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Cisto ovariano é uma lesão frequentemente funcional antes da menopausa, mas massa anexial não deve ser presumida benigna só pelo nome. Caracterizar morfologia, tamanho, lateralidade, sintomas e estado menopausal. Diferenciais incluem cisto funcional/hemorrágico, endometrioma, teratoma, neoplasia, gestação ectópica e lesão extraovariana.",
+      "es": "Quiste ovárico suele ser funcional antes de menopausia, pero masa anexial no debe presumirse benigna solo por nombre. Caracterizar morfología, tamaño, lateralidad, síntomas y estado menopáusico. Diferenciales incluyen quiste funcional/hemorrágico, endometrioma, teratoma, neoplasia, embarazo ectópico y lesión extraovárica.",
+      "sources": [
+        "O2",
+        "O3"
+      ]
+    },
+    {
+      "id": "urgent",
+      "pt": "Dor pélvica súbita intensa, vômitos, síncope, instabilidade, peritonismo ou sangramento importante exige avaliação urgente de torção, ruptura hemorrágica e gestação ectópica. Avaliar sinais vitais, perfusão e possibilidade de gravidez; estabilizar e acionar ginecologia. Não deixar analgesia ou resultado ultrassonográfico atrasar abordagem de instabilidade.",
+      "es": "Dolor pélvico súbito intenso, vómitos, síncope, inestabilidad, peritonismo o hemorragia importante exige valoración urgente de torsión, rotura hemorrágica y embarazo ectópico. Evaluar signos vitales, perfusión y posibilidad de embarazo; estabilizar y contactar ginecología. Analgesia o ecografía no deben retrasar manejo de inestabilidad.",
+      "sources": [
+        "O3",
+        "O4"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Ultrassom pélvico, preferencialmente transvaginal quando apropriado/consentido, é exame principal; complementar via abdominal se necessário. Testar gravidez quando possível e hemograma se hemorragia/infeção suspeita. Componentes sólidos, papilas, septações, ascite, bilateralidade e persistência/crescimento mudam risco. Doppler preservado isoladamente não exclui torção, especialmente em adolescente.",
+      "es": "Ecografía pélvica, preferentemente transvaginal cuando apropiada/consentida, es estudio principal; complementar vía abdominal si precisa. Prueba de embarazo cuando posible y hemograma si sospecha de hemorragia/infección. Componentes sólidos, papilas, septos, ascitis, bilateralidad y persistencia/crecimiento cambian riesgo. Doppler conservado solo no excluye torsión, especialmente en adolescente.",
+      "sources": [
+        "O1",
+        "O2",
+        "O4"
+      ]
+    },
+    {
+      "id": "premenopause",
+      "pt": "Antes da menopausa, paciente assintomática não grávida com cisto inequivocamente simples: RCOG62 orienta <50mm geralmente sem seguimento;50–70mm ultrassom anual;>70mm considerar RM ou avaliação cirúrgica pela dificuldade de avaliação completa. Cisto persistente/crescente ou sintomático exige reavaliação especializada. Esses limiares não classificam massa complexa, torção ou gravidez.",
+      "es": "Antes de menopausia, paciente asintomática no embarazada con quiste inequívocamente simple: RCOG62 indica <50mm generalmente sin seguimiento;50–70mm ecografía anual;>70mm considerar RM o evaluación quirúrgica por dificultad de evaluación completa. Quiste persistente/creciente o sintomático exige reevaluación especializada. Umbrales no clasifican masa compleja, torsión ni embarazo.",
+      "sources": [
+        "O2"
+      ]
+    },
+    {
+      "id": "postmenopause",
+      "pt": "Após menopausa: atualização RCOG dezembro2025 permite não acompanhar rotineiramente cisto assintomático, simples, unilateral e unilocular≤3cm. Para >3cm e≤5cm com todas essas características e CA125 normal, repetir avaliação em4–6meses; considerar alta após1ano se estável/diminuindo e CA125 normal. Sintomas, complexidade ou outros critérios retiram essa elegibilidade.",
+      "es": "Tras menopausia: actualización RCOG diciembre2025 permite no seguir rutinariamente quiste asintomático, simple, unilateral y unilocular≤3cm. Para >3cm y≤5cm con todas esas características y CA125 normal, repetir valoración en4–6meses; considerar alta tras1año si estable/disminuyendo y CA125 normal. Síntomas, complejidad u otros criterios excluyen esta elegibilidad.",
+      "sources": [
+        "O1"
+      ]
+    },
+    {
+      "id": "markers",
+      "pt": "CA125 integra avaliação pós-menopausa e índice de risco, mas normal não exclui câncer. Não pedir marcador universal para cisto simples pré-menopausa; ele pode elevar-se por condições benignas. Massa suspeita/complexa exige estratificação especializada e eventual oncoginecologia, sem aguardar marcador normalizar. Não substituir descrição de imagem por um número isolado.",
+      "es": "CA125 integra evaluación posmenopáusica e índice de riesgo, pero normal no excluye cáncer. No pedir marcador universal para quiste simple premenopáusico; puede elevarse por condiciones benignas. Masa sospechosa/compleja exige estratificación especializada y eventual oncoginecología, sin esperar normalización del marcador. No sustituir descripción de imagen por número aislado.",
+      "sources": [
+        "O1",
+        "O2"
+      ]
+    },
+    {
+      "id": "treatment",
+      "pt": "Observação apropriada não significa ignorar sintomas. Contraceptivo combinado não acelera resolução de cisto funcional e não é prescrito como tratamento universal. Cirurgia depende de sintomas, risco, tamanho, persistência e preferência; discutir preservação de fertilidade. Em torção suspeita, intervenção urgente para preservar ovário, sobretudo em adolescente. Não aspirar rotineiramente cisto pós-menopausa.",
+      "es": "Observación apropiada no significa ignorar síntomas. Anticonceptivo combinado no acelera resolución del quiste funcional ni se prescribe como tratamiento universal. Cirugía depende de síntomas, riesgo, tamaño, persistencia y preferencia; discutir preservación de fertilidad. En sospecha de torsión, intervención urgente para preservar ovario, sobre todo en adolescente. No aspirar rutinariamente quiste posmenopáusico.",
+      "sources": [
+        "O1",
+        "O2",
+        "O4"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Analgesia para adulta≥50kg elegível e estável: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo. Conferir outros produtos, peso<50kg, doença hepática/renal e álcool; individualizar nesses casos. Não usar alívio de dor para descartar torção ou hemorragia. Sem antibiótico ou hormônio obrigatório para cisto simples.",
+      "es": "Analgesia para adulta≥50kg elegible y estable: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo. Revisar otros productos, peso<50kg, hepatopatía/nefropatía y alcohol; individualizar estos casos. No usar alivio del dolor para descartar torsión ni hemorragia. Sin antibiótico u hormona obligatorios para quiste simple.",
+      "sources": [
+        "O3",
+        "O5"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta só se estável, sem suspeita de urgência, dor controlada e plano claro de resultado/seguimento. Retornar imediatamente por dor súbita intensa, vômitos persistentes, desmaio ou piora. Distensão persistente, saciedade precoce e nova dor pélvica requerem investigação. Crianças/adolescentes e gestantes exigem via própria; não extrapolar limiares eletivos de adultas não grávidas.",
+      "es": "Alta solo si estable, sin sospecha de urgencia, dolor controlado y plan claro de resultado/seguimiento. Volver inmediatamente por dolor súbito intenso, vómitos persistentes, desmayo o empeoramiento. Distensión persistente, saciedad precoz y nueva algia pélvica requieren investigación. Niñas/adolescentes y embarazadas exigen vía propia; no extrapolar umbrales electivos de adultas no embarazadas.",
+      "sources": [
+        "O1",
+        "O3",
+        "O4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "O1",
+      "title": "Ovarian cysts in postmenopausal women — Green-top34",
+      "authority": "RCOG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL_AMENDED",
+      "url": "https://www.rcog.org.uk/media/4v3ncfib/gtg_34.pdf",
+      "scope": "Julho2016, atualização dezembro2025: simples≤3cm sem seguimento rotineiro.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O2",
+      "title": "Suspected ovarian masses in premenopausal women — Green-top62",
+      "authority": "RCOG",
+      "year": 2011,
+      "status": "AUTHORITATIVE_OLDER_CURRENT_PORTAL",
+      "url": "https://www.rcog.org.uk/media/0mebp0mv/gtg_62.pdf",
+      "scope": "Manejo eletivo, exclui apresentação aguda e gestação; não diretriz de2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O3",
+      "title": "Ovarian cyst",
+      "authority": "NHS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/ovarian-cyst/",
+      "scope": "Sintomas agudos, investigação e tratamento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O4",
+      "title": "Adnexal torsion in adolescents — Committee Opinion783",
+      "authority": "ACOG",
+      "year": 2019,
+      "status": "AUTHORITATIVE_FINAL_INDEXED",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2019/08/adnexal-torsion-in-adolescents",
+      "scope": "Texto oficial indexado; página direta indisponível. Doppler não exclui torção, preservação ovariana.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O5",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "Revisão24/03/2026; analgesia, não terapia do cisto.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

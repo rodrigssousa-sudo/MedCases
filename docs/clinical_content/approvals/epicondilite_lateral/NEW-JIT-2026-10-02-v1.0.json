@@ -1,0 +1,153 @@
+{
+  "owner": "epicondilite_lateral",
+  "title": {
+    "pt": "Epicondilite lateral",
+    "es": "Epicondilitis lateral"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Epicondilite lateral, ou tendinopatia lateral do cotovelo, envolve origem dos extensores do punho, frequentemente extensor radial curto do carpo. Sobrecarga e alterações tendíneas contribuem; não é necessariamente inflamação aguda simples. Dor lateral piora ao agarrar, levantar ou estender punho contra resistência; pode ocorrer fora do esporte.",
+      "es": "Epicondilitis lateral, o tendinopatía lateral del codo, afecta origen de extensores de muñeca, frecuentemente extensor radial corto del carpo. Sobrecarga y cambios tendinosos contribuyen; no es necesariamente inflamación aguda simple. Dolor lateral aumenta al agarrar, levantar o extender muñeca contra resistencia; puede ocurrir fuera del deporte.",
+      "sources": [
+        "T2",
+        "T3",
+        "T4"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico costuma ser clínico: dor localizada, sensibilidade no epicôndilo lateral e provocação com extensão resistida do punho/preensão. Avaliar mobilidade, força, sensibilidade, pescoço e trauma. Imagem é seletiva se diagnóstico incerto/atípico; ultrassom ou RM não são necessários para todo caso típico.",
+      "es": "Diagnóstico suele ser clínico: dolor localizado, sensibilidad en epicóndilo lateral y provocación al extender muñeca contra resistencia/agarrar. Evaluar movilidad, fuerza, sensibilidad, cuello y trauma. Imagen es selectiva si diagnóstico incierto/atípico; ecografía o RM no son necesarias en todo caso típico.",
+      "sources": [
+        "T1",
+        "T4"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar compressão do nervo radial, radiculopatia cervical, artrite, lesão ligamentar, fratura e dor referida. Febre, edema inflamatório importante, trauma com deformidade, bloqueio articular ou déficit neurológico exige outra investigação. Parestesia e fraqueza progressiva não devem ser rotuladas como tendinopatia sem exame.",
+      "es": "Diferenciar compresión del nervio radial, radiculopatía cervical, artritis, lesión ligamentaria, fractura y dolor referido. Fiebre, edema inflamatorio importante, trauma con deformidad, bloqueo articular o déficit neurológico exige otro estudio. Parestesia y debilidad progresiva no deben rotularse como tendinopatía sin examen.",
+      "sources": [
+        "T1",
+        "T4"
+      ]
+    },
+    {
+      "id": "rehab",
+      "pt": "Reduzir temporariamente tarefas provocadoras, ajustar técnica de levantamento/ergonomia e manter movimento tolerado. Oferecer fisioterapia com progressão individual de carga dos extensores, sem prometer cura imediata. Brace pode aliviar em alguns casos, mas benefício prolongado é incerto; não substitui plano de reabilitação.",
+      "es": "Reducir temporalmente tareas provocadoras, ajustar levantamiento/ergonomía y mantener movimiento tolerado. Ofrecer fisioterapia con progresión individual de carga de extensores, sin prometer cura inmediata. Brace puede aliviar algunos casos, pero beneficio prolongado es incierto; no sustituye rehabilitación.",
+      "sources": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Analgesia para adulto≥50kg sem contraindicação: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo necessário. Não combinar produtos com paracetamol. Peso<50kg, doença renal/hepática ou álcool importante exige individualização; não manter uso contínuo indefinido.",
+      "es": "Analgesia para adulto≥50kg sin contraindicación: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo necesario. No combinar productos con paracetamol. Peso<50kg, nefropatía/hepatopatía o alcohol importante exige individualización; no mantener uso continuo indefinido.",
+      "sources": [
+        "T3",
+        "T5"
+      ]
+    },
+    {
+      "id": "interventions",
+      "pt": "Neste candidato adota-se BESS2023: evitar infiltração de corticoide e ondas de choque para tendinopatia lateral; alívio inicial por corticoide não garante resultado duradouro e pode acompanhar pior resultado tardio. PRP, agulhamento e cirurgia não têm benefício sobre placebo estabelecido nessa via; não oferecer como cura garantida.",
+      "es": "En este candidato se adopta BESS2023: evitar infiltración de corticoide y ondas de choque para tendinopatía lateral; alivio inicial por corticoide no garantiza resultado duradero y puede acompañar peor resultado tardío. PRP, punción y cirugía no tienen beneficio sobre placebo establecido en esta vía; no ofrecerlos como cura garantizada.",
+      "sources": [
+        "T1"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "AINE tópico/oral é apenas opção sintomática selecionada conforme produto e risco; não há dose de gel presumida neste pacote. Doença renal, úlcera/sangramento, anticoagulação, alergia ou gestação exige conferir contraindicações. Gestação/lactação pode favorecer paracetamol quando indicado; criança não recebe dose adulta nem diagnóstico por extrapolação.",
+      "es": "AINE tópico/oral es solo opción sintomática seleccionada según producto y riesgo; no hay dosis de gel supuesta en este paquete. Nefropatía, úlcera/sangrado, anticoagulación, alergia o embarazo exige revisar contraindicaciones. Embarazo/lactancia puede favorecer paracetamol si indicado; niño no recibe dosis adulta ni diagnóstico por extrapolación.",
+      "sources": [
+        "T1",
+        "T5"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Manejo geralmente ambulatorial. Registrar dor, função, preensão e adesão; melhora pode levar meses. Dor persistente após2semanas de autocuidado exige avaliação; ausência de melhora em12–24semanas de plano orientado indica considerar especialista segundo BESS. Retorno imediato se sinais de infecção, trauma grave ou déficit neurológico.",
+      "es": "Manejo generalmente ambulatorio. Registrar dolor, función, agarre y adherencia; mejoría puede llevar meses. Dolor persistente tras2semanas de autocuidado exige evaluación; falta de mejoría en12–24semanas de plan guiado indica considerar especialista según BESS. Retorno inmediato ante infección, trauma grave o déficit neurológico.",
+      "sources": [
+        "T1",
+        "T3"
+      ]
+    },
+    {
+      "id": "key",
+      "pt": "Não usar apenas o nome epicondilite para justificar anti-inflamatório ou infiltração repetidos. Tratamento deve perseguir recuperação de função com carga tolerada e reavaliar diagnóstico se evolução divergir. Internação não é rotina; só se outra doença grave identificada ou suspeita.",
+      "es": "No usar solo el nombre epicondilitis para justificar antiinflamatorios o infiltraciones repetidos. Tratamiento debe buscar recuperación funcional con carga tolerada y revisar diagnóstico si evolución difiere. Ingreso no es rutinario; solo si se identifica o sospecha otra enfermedad grave.",
+      "sources": [
+        "T1",
+        "T3",
+        "T4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "T1",
+      "title": "Tennis elbow care pathway",
+      "authority": "BESS/BOA",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_PORTAL",
+      "url": "https://bess.ac.uk/download/1419/patient-care-pathways/21119/tennis-elbow-2023.pdf",
+      "scope": "Texto integral; portal atual ainda lista2023.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T2",
+      "title": "Lateral elbow pain and muscle function impairments",
+      "authority": "APTA",
+      "year": 2022,
+      "status": "AUTHORITATIVE_GUIDELINE_ABSTRACT_AND_PORTAL",
+      "url": "https://www.apta.org/patient-care/evidence-based-practice-resources/cpgs/lateral-elbow-pain-and-muscle-function-impairments",
+      "scope": "População18–65; abstractPubMed36453071, não alegar texto integral JOSPT obtido.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T3",
+      "title": "Tennis elbow",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/tennis-elbow/",
+      "scope": "31/05/2024; retorno e autocuidado.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T4",
+      "title": "Tennis elbow lateral epicondylitis",
+      "authority": "AAOS OrthoInfo",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/tennis-elbow-lateral-epicondylitis/",
+      "scope": "Clínica e diagnóstico; intervenções confrontadas com BESS2023.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "T5",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose e segurança.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

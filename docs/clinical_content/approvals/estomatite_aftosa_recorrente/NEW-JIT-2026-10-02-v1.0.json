@@ -1,0 +1,201 @@
+{
+  "owner": "estomatite_aftosa_recorrente",
+  "title": {
+    "pt": "Estomatite aftosa recorrente",
+    "es": "Estomatitis aftosa recurrente"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "definition",
+      "pt": "Estomatite aftosa recorrente causa episódios de úlceras orais dolorosas, redondas/ovais, com halo eritematoso e fundo claro. Não é contagiosa. Causa é multifatorial e pode envolver resposta imune; trauma, estresse e deficiências podem contribuir. O nome herpetiforme não significa infecção por herpes.",
+      "es": "La estomatitis aftosa recurrente causa episodios de úlceras orales dolorosas, redondas/ovaladas, con halo eritematoso y fondo claro. No es contagiosa. La causa es multifactorial y puede involucrar respuesta inmune; traumatismo, estrés y carencias pueden contribuir. El nombre herpetiforme no significa infección por herpes.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "classification",
+      "pt": "Aftas menores costumam cicatrizar sem marca; maiores persistem mais e podem deixar cicatriz; herpetiformes são numerosas e pequenas. Classificação não dispensa avaliar lesão persistente ou diferente do padrão habitual. Não rotular úlcera contínua como simples recorrência.",
+      "es": "Aftas menores suelen cicatrizar sin marca; mayores persisten más y pueden dejar cicatriz; herpetiformes son numerosas y pequeñas. Clasificar no reemplaza evaluar lesión persistente o distinta del patrón habitual. No etiquetar úlcera continua como simple recurrencia.",
+      "sources": [
+        "A1"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico é clínico, baseado em história de recorrência, exame e exclusão de outras causas. Investigar trauma dentário, medicamentos, sintomas gastrointestinais, lesões genitais/cutâneas e sinais sistêmicos. Conforme contexto, exames para anemia/deficiências e doenças associadas; biópsia se dúvida ou suspeita, não rotina de toda afta.",
+      "es": "El diagnóstico es clínico, basado en recurrencia, examen y exclusión de otras causas. Investigar traumatismo dental, medicamentos, síntomas gastrointestinales, lesiones genitales/cutáneas y signos sistémicos. Según contexto, estudiar anemia/carencias y enfermedades asociadas; biopsia ante duda o sospecha, no rutinaria de toda afta.",
+      "sources": [
+        "A1",
+        "A2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar herpes, doença mão-pé-boca, candidíase/lesões inflamatórias, trauma, reações medicamentosas, doença celíaca/Crohn e Behçet. Febre, imunossupressão ou outras mucosas acometidas mudam a investigação. Não indicar antiviral ou antibiótico para afta simples.",
+      "es": "Diferenciar herpes, enfermedad mano-pie-boca, candidiasis/lesiones inflamatorias, traumatismo, reacciones farmacológicas, enfermedad celíaca/Crohn y Behçet. Fiebre, inmunosupresión u otras mucosas afectadas cambian el estudio. No indicar antiviral ni antibiótico para afta simple.",
+      "sources": [
+        "A1",
+        "A7"
+      ]
+    },
+    {
+      "id": "urgent",
+      "pt": "Avaliar hidratação e ingestão. Incapacidade de beber, desidratação ou estado sistêmico grave exige atendimento urgente. Úlcera oral inexplicada por mais de3semanas requer avaliação e consideração de encaminhamento por suspeita de câncer, conforme NICE; não repetir corticoide para adiar investigação.",
+      "es": "Evaluar hidratación e ingesta. Incapacidad de beber, deshidratación o estado sistémico grave exige atención urgente. Úlcera oral inexplicada por más de3semanas requiere evaluación y considerar derivación por sospecha de cáncer según NICE; no repetir corticoide para retrasar estudio.",
+      "sources": [
+        "A7",
+        "A8"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Usar escova macia, alimentos toleráveis e evitar quente, ácido, salgado ou abrasivo. Corrigir trauma por dente/prótese e manter higiene. Tratamento alivia dor e favorece cicatrização, sem garantir prevenção de novos episódios; corrigir deficiência somente se identificada.",
+      "es": "Usar cepillo suave, alimentos tolerables y evitar caliente, ácido, salado o abrasivo. Corregir traumatismo por diente/prótesis y mantener higiene. El tratamiento alivia dolor y favorece cicatrización sin garantizar prevención de episodios; corregir carencia solo si se identifica.",
+      "sources": [
+        "A2",
+        "A7"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Afta previamente avaliada: opção tópica é hidrocortisona comprimido bucal mucoadesivo2,5mg,1comprimido junto da lesão4vezes/dia, até5dias. Deixar dissolver lentamente, sem mastigar/engolir como comprimido sistêmico. Se várias aftas, distribuir contato sem multiplicar doses: máximo4comprimidos/dia. Parar antes se cicatrizou.",
+      "es": "Afta previamente evaluada: opción tópica es hidrocortisona comprimido bucal mucoadhesivo2,5mg,1comprimido junto a lesión4veces/día, hasta5días. Dejar disolver lentamente, sin masticar/tragar como comprimido sistémico. Ante varias aftas, distribuir contacto sin multiplicar dosis: máximo4comprimidos/día. Suspender antes si cicatrizó.",
+      "sources": [
+        "A3",
+        "A4"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Confirmar produto e disponibilidade local; não substituir por hidrocortisona sistêmica nem creme cutâneo. Evitar na lesão por trauma/protése ou infecção não esclarecida; alergia/excipientes, inclusive lactose, exigem conferência. Uso crônico de corticoide tópico precisa de controle. Sem cura em5dias de tratamento, reavaliar.",
+      "es": "Confirmar producto y disponibilidad local; no sustituir por hidrocortisona sistémica ni crema cutánea. Evitar en lesión por traumatismo/prótesis o infección no aclarada; alergia/excipientes, incluida lactosa, requieren revisión. Uso crónico de corticoide tópico necesita control. Sin curación en5días de tratamiento, reevaluar.",
+      "sources": [
+        "A3",
+        "A4",
+        "A5"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Menores de12anos só usam comprimidos bucais sob prescrição médica. Gestação/lactação: NHS admite esta apresentação em curto curso, após avaliação; não extrapolar segurança para corticoide sistêmico. Na lactação, observar alimentação/crescimento do bebê se preocupação. Não há ajuste renal/hepático numérico proposto para este curto tratamento local.",
+      "es": "Menores de12años solo usan comprimidos bucales por prescripción médica. Embarazo/lactancia: NHS admite esta presentación en curso corto tras evaluación; no extrapolar seguridad a corticoide sistémico. En lactancia, observar alimentación/crecimiento del bebé si hay preocupación. No se propone ajuste renal/hepático numérico para este tratamiento local corto.",
+      "sources": [
+        "A5",
+        "A6"
+      ]
+    },
+    {
+      "id": "severe",
+      "pt": "Lesões maiores, numerosas, muito frequentes ou refratárias exigem estomatologia/medicina oral e tratamento individual da causa. Há outras formulações tópicas e terapias sistêmicas selecionadas pelo especialista; não iniciar imunossupressão empírica nem manipular bochecho com dose não verificada.",
+      "es": "Lesiones mayores, numerosas, muy frecuentes o refractarias requieren medicina oral y tratamiento individual de la causa. Existen otras formulaciones tópicas y terapias sistémicas elegidas por especialista; no iniciar inmunosupresión empírica ni preparar enjuague con dosis no verificada.",
+      "sources": [
+        "A1",
+        "A3"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Ambulatorial se ingestão preservada, estabilidade e ausência de alarme. Documentar tamanho/local, padrão de recorrência, resposta e retorno. Piora, sangramento, mudança de padrão, sintomas sistêmicos ou persistência exigem reavaliação; não esperar o prazo se há suspeita de doença grave.",
+      "es": "Ambulatorio si ingesta conservada, estabilidad y sin alarma. Documentar tamaño/sitio, recurrencia, respuesta y retorno. Empeoramiento, sangrado, cambio de patrón, síntomas sistémicos o persistencia exige reevaluación; no esperar el plazo ante sospecha de enfermedad grave.",
+      "sources": [
+        "A2",
+        "A7",
+        "A8"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "A1",
+      "title": "Recurrent Aphthous Stomatitis patient leaflet",
+      "authority": "British and Irish Society for Oral Medicine",
+      "year": 2019,
+      "status": "AUTHORITATIVE_SPECIALTY_SUPPORT_OLDER",
+      "url": "https://bisom.org.uk/wp-content/uploads/2020/02/RAS-PIL-October-2019.pdf",
+      "scope": "Texto2019 apesar de título técnico2020; corroborado por orientações recentes, não guideline2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A2",
+      "title": "Recurrent oral ulceration V7",
+      "authority": "Cambridge University Hospitals NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_SPECIALTY_PATIENT_GUIDANCE",
+      "url": "https://www.cuh.nhs.uk/patient-information/recurrent-oral-ulceration/",
+      "scope": "Aprovada02/12/2025; diagnóstico, causas e tratamento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A3",
+      "title": "Hydrocortisone topical oromucosal prescribing",
+      "authority": "SDCEP",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "url": "https://sdcepdentalprescribing.nhs.scot/guidance/ulceration-inflammation/topical-corticosteroids/hydrocortisone/",
+      "scope": "Portal guidance integral consultado informaBNF92setembro2026eBNFC2026–2027; página de dose sem data individual.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A4",
+      "title": "How to use hydrocortisone buccal tablets",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_DRUG_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/hydrocortisone-buccal-tablets/how-and-when-to-use-hydrocortisone-buccal-tablets/",
+      "scope": "19/01/2024, próxima2027; limite e técnica.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A5",
+      "title": "Who can use hydrocortisone buccal tablets",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_DRUG_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/hydrocortisone-buccal-tablets/who-can-and-cannot-use-hydrocortisone-buccal-tablets/",
+      "scope": "Infecção, trauma e crianças.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A6",
+      "title": "Pregnancy and breastfeeding: buccal hydrocortisone",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_DRUG_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/hydrocortisone-buccal-tablets/pregnancy-breastfeeding-and-fertility-while-using-hydrocortisone-buccal-tablets/",
+      "scope": "Exposição específica da apresentação bucal, não sistêmica.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A7",
+      "title": "Mouth ulcers",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/mouth-ulcers/",
+      "scope": "11/03/2024, próxima2027; autocuidado e diferenciais.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A8",
+      "title": "Suspected cancer NG12 — oral cancer",
+      "authority": "NICE",
+      "year": "2015, recomendação atual do portal",
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.nice.org.uk/guidance/ng12/chapter/recommendations-organised-by-site-of-cancer",
+      "scope": "Texto oficial indexado1.8.2; úlcera inexplicada>3semanas. Sem inventar revisão integral2026.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

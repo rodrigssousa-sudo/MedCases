@@ -1,0 +1,186 @@
+{
+  "owner": "candidiase_oral",
+  "title": {
+    "pt": "Candidíase oral",
+    "es": "Candidiasis oral"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "definition",
+      "pt": "Candidíase oral é proliferação de Candida na mucosa; colonização isolada não prova doença. Predisponentes incluem antibióticos, corticoide inalatório, prótese dentária, diabetes e imunossupressão. Pode causar placas brancas, eritema, ardor e prejuízo alimentar.",
+      "es": "La candidiasis oral es proliferación de Candida en la mucosa; colonización aislada no demuestra enfermedad. Predisponen antibióticos, corticoide inhalado, prótesis dental, diabetes e inmunosupresión. Puede causar placas blancas, eritema, ardor y dificultad para alimentarse.",
+      "sources": [
+        "O1",
+        "O6"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico costuma ser clínico. Placas removíveis com base eritematosa favorecem candidíase, mas não são o único padrão. Se lesão atípica, recorrência ou falha terapêutica, considerar exame micológico/cultura e investigar predisponentes; não pedir cultura rotineira de cura.",
+      "es": "El diagnóstico suele ser clínico. Placas removibles con base eritematosa favorecen candidiasis, pero no son el único patrón. Ante lesión atípica, recurrencia o fracaso, considerar examen micológico/cultivo e investigar predisponentes; no pedir cultivo rutinario de curación.",
+      "sources": [
+        "O2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar leucoplasia não removível, líquen plano, aftas e outras lesões persistentes. Lesão que não se resolve precisa de avaliação odontológica/estomatológica, sem repetir antifúngico indefinidamente. Candidíase oral não equivale a candidemia.",
+      "es": "Diferenciar leucoplasia no removible, liquen plano, aftas y otras lesiones persistentes. Una lesión que no se resuelve necesita evaluación odontológica/estomatológica, sin repetir antifúngicos indefinidamente. Candidiasis oral no equivale a candidemia.",
+      "sources": [
+        "O1",
+        "O2"
+      ]
+    },
+    {
+      "id": "triage",
+      "pt": "Avaliar via aérea, hidratação e capacidade de ingestão. Disfagia/odinofagia, dor retroesternal ou imunossupressão importante exige avaliar acometimento esofágico; este requer antifúngico sistêmico e não nistatina isolada. Instabilidade, desidratação ou incapacidade de ingerir requer atendimento hospitalar.",
+      "es": "Evaluar vía aérea, hidratación y capacidad de ingerir. Disfagia/odinofagia, dolor retroesternal o inmunosupresión importante exige evaluar compromiso esofágico; requiere antifúngico sistémico y no nistatina sola. Inestabilidad, deshidratación o incapacidad de ingerir requiere atención hospitalaria.",
+      "sources": [
+        "O1",
+        "O2",
+        "O5"
+      ]
+    },
+    {
+      "id": "local",
+      "pt": "Quadro oral leve: opção verificada é nistatina suspensão100000UI/mL, adulto4–6mL por via oral,4vezes/dia,7–14dias. Distribuir pelas mucosas, reter antes de engolir; continuar pelo menos48h após resolução conforme bula. Agitar e medir com dispositivo graduado. Conferir a bula local antes de transpor este regime US.",
+      "es": "Cuadro oral leve: opción verificada es nistatina suspensión100000UI/mL, adulto4–6mL por vía oral,4veces/día,7–14días. Distribuir por las mucosas, retener antes de tragar; continuar al menos48h tras resolución según prospecto. Agitar y medir con dispositivo graduado. Confirmar prospecto local antes de trasladar esta pauta US.",
+      "sources": [
+        "O1",
+        "O3"
+      ]
+    },
+    {
+      "id": "systemic",
+      "pt": "Doença moderada/grave ou indicação sistêmica: fluconazol oral100–200mg1vez/dia por7–14dias em adulto. Em adulto/adolescente com HIV, NIH recomenda200mg de ataque antes da manutenção100–200mg/dia. Não usar150mg em dose única de candidíase vaginal como regime oral.",
+      "es": "Enfermedad moderada/grave o indicación sistémica: fluconazol oral100–200mg1vez/día durante7–14días en adultos. En adultos/adolescentes con VIH, NIH recomienda200mg de carga antes del mantenimiento100–200mg/día. No usar150mg en dosis única para candidiasis vaginal como pauta oral.",
+      "sources": [
+        "O1",
+        "O2"
+      ]
+    },
+    {
+      "id": "renal",
+      "pt": "Fluconazol em doses repetidas: após ataque indicado, ClCr>50mL/min mantém100% da dose; ClCr≤50mL/min sem hemodiálise usa50% da manutenção. Hemodiálise requer plano específico. Doença hepática exige cautela e vigilância; não há ajuste percentual fixo validado na bula.",
+      "es": "Fluconazol repetido: tras carga indicada, ClCr>50mL/min mantiene100% de dosis; ClCr≤50mL/min sin hemodiálisis usa50% del mantenimiento. Hemodiálisis requiere plan específico. Enfermedad hepática exige cautela y vigilancia; el prospecto no valida ajuste porcentual fijo.",
+      "sources": [
+        "O4"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Antes de fluconazol, conferir alergia a azóis, função renal, hepatopatia, QT e interações. Cisaprida, astemizol, pimozida, quinidina e eritromicina estão entre combinações contraindicadas na bula. Rever anticoagulantes, imunossupressores e antirretrovirais. Icterícia, reação cutânea importante ou arritmia exige suspensão e avaliação.",
+      "es": "Antes de fluconazol, revisar alergia a azoles, función renal, hepatopatía, QT e interacciones. Cisaprida, astemizol, pimozida, quinidina y eritromicina están entre combinaciones contraindicadas del prospecto. Revisar anticoagulantes, inmunosupresores y antirretrovirales. Ictericia, reacción cutánea importante o arritmia exige suspender y evaluar.",
+      "sources": [
+        "O4"
+      ]
+    },
+    {
+      "id": "pediatric",
+      "pt": "Lactentes precisam de diagnóstico e avaliação da alimentação. A bula US selecionada de nistatina100000UI/mL usa2mL4vezes/dia,1mL em cada lado; neonatal/prematuro requer prescrição específica, não extrapolação. Criança com HIV moderado/grave: fluconazol conforme protocolo pediátrico por peso; não usar dose adulta nem cápsula inadequada.",
+      "es": "Los lactantes necesitan diagnóstico y evaluación de alimentación. El prospecto US elegido de nistatina100000UI/mL usa2mL4veces/día,1mL a cada lado; neonatos/prematuros requieren prescripción específica, sin extrapolar. Niños con VIH moderado/grave: fluconazol según protocolo pediátrico por peso; no usar dosis adulta ni cápsula inadecuada.",
+      "sources": [
+        "O3",
+        "O5"
+      ]
+    },
+    {
+      "id": "pregnancy",
+      "pt": "Na gestação, preferir terapia tópica para candidíase oral com avaliação individual; não iniciar automaticamente fluconazol sistêmico. Lactação também exige conferir produto e exposição: a bula selecionada de fluconazol desaconselha uso repetido durante amamentação. Não declarar regime sistêmico universalmente seguro.",
+      "es": "En embarazo, preferir tratamiento tópico para candidiasis oral con evaluación individual; no iniciar automáticamente fluconazol sistémico. Lactancia exige revisar producto y exposición: el prospecto elegido de fluconazol desaconseja uso repetido durante lactancia. No declarar la pauta sistémica universalmente segura.",
+      "sources": [
+        "O2",
+        "O4"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Higiene oral e da prótese, removê-la à noite, corrigir encaixe, enxaguar boca após corticoide inalatório e acompanhar diabetes ajudam a reduzir recorrência. Não suspender medicamento essencial sem avaliação; revisar técnica do inalador e fatores modificáveis.",
+      "es": "Higiene oral y de la prótesis, retirarla de noche, corregir ajuste, enjuagar boca tras corticoide inhalado y controlar diabetes ayudan a reducir recurrencia. No suspender medicación esencial sin evaluación; revisar técnica inhalatoria y factores modificables.",
+      "sources": [
+        "O6"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Reavaliar resposta, adesão e tolerância. Falta de melhora após7dias ou recorrência exige verificar diagnóstico, resistência e imunossupressão; encaminhar conforme contexto. Paciente estável, hidratado e capaz de ingerir pode tratar ambulatorialmente com retorno. Supressão antifúngica crônica não é rotina.",
+      "es": "Reevaluar respuesta, adherencia y tolerancia. Falta de mejoría tras7días o recurrencia exige verificar diagnóstico, resistencia e inmunosupresión; derivar según contexto. Paciente estable, hidratado y capaz de ingerir puede tratarse ambulatoriamente con retorno. Supresión antifúngica crónica no es rutinaria.",
+      "sources": [
+        "O2",
+        "O5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "O1",
+      "title": "Clinical Practice Guideline for Candidiasis",
+      "authority": "IDSA",
+      "year": 2016,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.idsociety.org/practice-guideline/candidiasis/",
+      "scope": "Portal oficial mantém CURRENT; orofaringe leve/moderada e distinção de esofagite.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O2",
+      "title": "Candidiasis: adult/adolescent opportunistic infections",
+      "authority": "NIH",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING_REVIEWED",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/candidiasis",
+      "scope": "Atualizada16/09/2024,revisada16/03/2026; contexto HIV explicitado.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O3",
+      "title": "Nystatin suspension100000USPunits/mL",
+      "authority": "DailyMed / Preferred Pharmaceuticals",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8211a0ef-98a8-4136-986c-23c306db1159",
+      "scope": "Registro atualizado05/08/2026; texto REV03/22. Bula US, não bula brasileira; conferir produto local.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O4",
+      "title": "Fluconazole50mg capsules SmPC",
+      "authority": "Milpharm / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/4719/smpc",
+      "scope": "Atualizada15/07/2026: renal, hepático, interações, gestação/lactação.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O5",
+      "title": "Candida infections: pediatric opportunistic infections",
+      "authority": "NIH",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-pediatric-opportunistic-infections/candida-infections?view=full",
+      "scope": "Atualizada/revisada22/12/2025; crianças com HIV, não extrapolação indiscriminada.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "O6",
+      "title": "Oral thrush",
+      "authority": "NHS",
+      "year": 2023,
+      "status": "SUPPORTIVE_REVIEW_DATE_OVERDUE",
+      "url": "https://www.nhs.uk/conditions/oral-thrush-mouth-thrush/",
+      "scope": "Revisada05/06/2023,revisão prevista05/06/2026 vencida; apoio a higiene, não fonte principal de doses.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

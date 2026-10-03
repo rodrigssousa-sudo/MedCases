@@ -1,0 +1,233 @@
+{
+  "owner": "foliculite",
+  "title": {
+    "pt": "Foliculite",
+    "es": "Foliculitis"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Foliculite é inflamação centrada no folículo piloso. Este guia orienta a identificação da causa e o atendimento de formas superficiais; abscesso, celulite extensa, infecção sistêmica e formas cicatriciais exigem manejo específico. Não criar novo owner para cada etiologia.",
+      "es": "La foliculitis es inflamación centrada en el folículo piloso. Esta guía orienta la identificación de la causa y la atención de formas superficiales; absceso, celulitis extensa, infección sistémica y formas cicatriciales requieren manejo específico. No crear un nuevo owner para cada etiología.",
+      "sources": [
+        "F1",
+        "F6"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Lesões superficiais são pequenas pápulas/pústulas, frequentemente atravessadas por um pelo. Infecção profunda produz nódulo doloroso, possível flutuação e pus: furúnculo/abscesso não deve ser tratado apenas como erupção superficial.",
+      "es": "Las lesiones superficiales son pequeñas pápulas/pústulas, a menudo atravesadas por un pelo. La infección profunda produce nódulo doloroso, posible fluctuación y pus: un forúnculo/absceso no debe tratarse solo como erupción superficial.",
+      "sources": [
+        "F1"
+      ]
+    },
+    {
+      "id": "etiology",
+      "pt": "Staphylococcus aureus é causa bacteriana comum. Oclusão, depilação, pelos encravados e medicamentos também podem inflamar folículos. Prurido com lesões monomórficas no tronco sugere Malassezia; exposição a piscina/hidromassagem sugere Pseudomonas. Nem toda pústula é estafilocócica.",
+      "es": "Staphylococcus aureus es una causa bacteriana frecuente. Oclusión, depilación, pelos encarnados y medicamentos también pueden inflamar los folículos. El prurito con lesiones monomórficas en el tronco sugiere Malassezia; exposición a piscina/hidromasaje sugiere Pseudomonas. No toda pústula es estafilocócica.",
+      "sources": [
+        "F1"
+      ]
+    },
+    {
+      "id": "history",
+      "pt": "Perguntar sobre depilação, fricção, roupa oclusiva, produtos tópicos, antibióticos recentes, água recreacional e recorrência. Examinar distribuição, profundidade, área de eritema e presença de coleção; considerar diabetes/imunossupressão quando o contexto sugerir.",
+      "es": "Preguntar por depilación, fricción, ropa oclusiva, productos tópicos, antibióticos recientes, agua recreativa y recurrencia. Examinar distribución, profundidad, extensión del eritema y presencia de colección; considerar diabetes/inmunosupresión cuando el contexto lo sugiera.",
+      "sources": [
+        "F1"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Pseudofoliculite por pelo encravado pode coexistir com infecção. Acne, micose da barba, erupção medicamentosa e formas inflamatórias/cicatriciais precisam ser diferenciadas. Perda de pelos, cicatriz ou persistência não justificam repetir antibiótico sem diagnóstico.",
+      "es": "La pseudofoliculitis por pelo encarnado puede coexistir con infección. Acné, tiña de la barba, erupción medicamentosa y formas inflamatorias/cicatriciales deben diferenciarse. Pérdida de pelo, cicatriz o persistencia no justifican repetir antibióticos sin diagnóstico.",
+      "sources": [
+        "F1",
+        "F2"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Colher material de pústula para cultura/antibiograma se a etiologia for incerta, houver recorrência, doença mais profunda ou falha terapêutica. Suspeita de dermatófito indica exame micológico de pele/pelos. Exames sistêmicos devem responder a uma hipótese específica, sem painel universal para toda foliculite leve.",
+      "es": "Obtener material de una pústula para cultivo/antibiograma si la etiología es incierta, hay recurrencia, enfermedad más profunda o fracaso terapéutico. La sospecha de dermatofito indica examen micológico de piel/pelos. Los estudios sistémicos deben responder a una hipótesis específica, sin un panel universal para toda foliculitis leve.",
+      "sources": [
+        "F1",
+        "F2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Febre com repercussão sistêmica, progressão rápida, dor importante, necrose, coleção profunda ou imunossupressão exigem avaliação presencial prioritária. Se houver instabilidade ou suspeita de infecção invasiva, encaminhar à urgência; não aguardar resposta de creme tópico.",
+      "es": "Fiebre con compromiso sistémico, progresión rápida, dolor importante, necrosis, colección profunda o inmunosupresión requieren evaluación presencial prioritaria. Si hay inestabilidad o sospecha de infección invasiva, derivar a urgencias; no esperar la respuesta a una crema tópica.",
+      "sources": [
+        "F1",
+        "F6"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Nas formas leves, retirar fatores desencadeantes: reduzir oclusão/fricção, suspender temporariamente depilação agressiva e manter higiene suave. Limpar equipamentos de barbear e evitar compartilhamento. Muitos quadros superficiais melhoram sem antibiótico.",
+      "es": "En las formas leves, retirar desencadenantes: reducir oclusión/fricción, suspender temporalmente la depilación agresiva y mantener higiene suave. Limpiar los elementos de afeitado y evitar compartirlos. Muchos cuadros superficiales mejoran sin antibióticos.",
+      "sources": [
+        "F1",
+        "F2"
+      ]
+    },
+    {
+      "id": "mupirocin",
+      "pt": "Se a avaliação indicar infecção bacteriana superficial limitada sensível: mupirocina 2% (20 mg/g), pomada cutânea, pequena quantidade para cobrir as lesões, 3 vezes ao dia, pelo curso prescrito conforme resposta, sem ultrapassar 10 dias. Não iniciar em toda foliculite, nem estender ou repetir preventivamente. A apresentação cutânea não é a nasal.",
+      "es": "Si la evaluación indica infección bacteriana superficial limitada sensible: mupirocina 2% (20 mg/g), pomada cutánea, pequeña cantidad para cubrir las lesiones, 3 veces al día, durante el curso prescrito según la respuesta, sin superar 10 días. No iniciar en toda foliculitis, ni prolongar o repetir preventivamente. La presentación cutánea no es la nasal.",
+      "sources": [
+        "F2",
+        "F3",
+        "F4"
+      ]
+    },
+    {
+      "id": "mupirocin_safety",
+      "pt": "Evitar olhos, mucosas e interior das narinas; não misturar a pomada com outros produtos no mesmo local. Suspender se houver sensibilização/irritação importante. Não usar veículo com polietilenoglicol em áreas extensas de pele aberta com risco de absorção, especialmente na doença renal moderada/grave. Não há ajuste numérico sistêmico a extrapolar para essa aplicação tópica.",
+      "es": "Evitar ojos, mucosas y el interior de las fosas nasales; no mezclar la pomada con otros productos en el mismo lugar. Suspender ante sensibilización/irritación importante. No usar el vehículo con polietilenglicol en áreas extensas de piel abierta con riesgo de absorción, especialmente en enfermedad renal moderada/grave. No hay un ajuste numérico sistémico para extrapolar a esta aplicación tópica.",
+      "sources": [
+        "F3",
+        "F4"
+      ]
+    },
+    {
+      "id": "malassezia",
+      "pt": "Quando o diagnóstico for foliculite por Malassezia em adulto, pode-se utilizar cetoconazol 2% em creme, camada fina cutânea 1 vez ao dia até controle clínico, com reavaliação da resposta e da duração. A indicação foliculite é sustentada pela orientação dermatológica, mas não consta expressamente na bula consultada. Não extrapolar o curso de micose dos pés para foliculite. Casos refratários exigem avaliação dermatológica, sem antifúngico oral automático.",
+      "es": "Cuando el diagnóstico sea foliculitis por Malassezia en un adulto, puede utilizarse ketoconazol 2% en crema, capa fina cutánea 1 vez al día hasta el control clínico, con reevaluación de la respuesta y duración. La indicación foliculitis está sustentada por la orientación dermatológica, pero no figura expresamente en el prospecto consultado. No extrapolar el curso de tiña del pie a foliculitis. Los casos refractarios requieren evaluación dermatológica, sin antifúngico oral automático.",
+      "sources": [
+        "F1",
+        "F5"
+      ]
+    },
+    {
+      "id": "pseudomonas",
+      "pt": "Foliculite após água contaminada pode ser autolimitada; a fonte dermatológica descreve resolução em 2–10 dias. Retirar a exposição e observar casos não complicados. Persistência, imunossupressão ou repercussão sistêmica requer cultura e decisão específica; não prescrever empiricamente ciprofloxacino a toda erupção pós-piscina.",
+      "es": "La foliculitis tras agua contaminada puede ser autolimitada; la fuente dermatológica describe resolución en 2–10 días. Evitar la exposición y observar los casos no complicados. Persistencia, inmunosupresión o compromiso sistémico requiere cultivo y una decisión específica; no prescribir ciprofloxacina empírica ante toda erupción después de la piscina.",
+      "sources": [
+        "F1"
+      ]
+    },
+    {
+      "id": "systemic",
+      "pt": "Doença extensa/profunda ou persistente pode precisar de antibiótico sistêmico escolhido segundo agente, cultura, risco de MRSA, gravidade e condições do paciente. Se há abscesso ou celulite, usar o protocolo específico e avaliar drenagem. Este guia não autoriza um esquema oral universal nem transfere os cursos prolongados de doença recorrente para a forma superficial aguda.",
+      "es": "La enfermedad extensa/profunda o persistente puede necesitar un antibiótico sistémico elegido según el agente, cultivo, riesgo de MRSA, gravedad y condiciones del paciente. Si hay absceso o celulitis, usar el protocolo específico y evaluar drenaje. Esta guía no autoriza un esquema oral universal ni traslada los cursos prolongados de enfermedad recurrente a la forma superficial aguda.",
+      "sources": [
+        "F1",
+        "F6"
+      ]
+    },
+    {
+      "id": "children",
+      "pt": "O esquema de mupirocina é tópico, não cálculo de dose oral por peso. A bula britânica inclui crianças; a bula FDA apresenta dados a partir de 2 meses em impetigo, não prova de eficácia pediátrica em toda causa de foliculite. Lactentes pequenos, quadros extensos ou diagnóstico incerto exigem avaliação pediátrica antes de prescrever. A bula de cetoconazol consultada não estabelece segurança/eficácia em pacientes ≤17 anos: não usar o esquema adulto automaticamente.",
+      "es": "El esquema de mupirocina es tópico, no un cálculo de dosis oral por peso. El prospecto británico incluye niños; el prospecto FDA presenta datos a partir de 2 meses en impétigo, no demuestra eficacia pediátrica en toda causa de foliculitis. Los lactantes pequeños, cuadros extensos o diagnóstico incierto requieren evaluación pediátrica antes de prescribir. El prospecto de ketoconazol consultado no establece seguridad/eficacia en pacientes ≤17 años: no usar automáticamente el esquema adulto.",
+      "sources": [
+        "F3",
+        "F4",
+        "F5"
+      ]
+    },
+    {
+      "id": "pregnancy",
+      "pt": "Na gestação/lactação, decidir a indicação de tópicos conforme benefício e risco, sem declarar segurança absoluta. Evitar contato do lactente com áreas medicadas. Se mupirocina for aplicada na mama/mamilo por indicação específica, lavar completamente antes da mamada. Cetoconazol em creme exige conferir a bula da apresentação escolhida.",
+      "es": "En embarazo/lactancia, decidir la indicación de tópicos según beneficio y riesgo, sin declarar seguridad absoluta. Evitar el contacto del lactante con áreas medicadas. Si la mupirocina se aplica en la mama/pezón por una indicación específica, lavar completamente antes de amamantar. El ketoconazol en crema exige revisar el prospecto de la presentación elegida.",
+      "sources": [
+        "F3",
+        "F4",
+        "F5"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Monitorar número/extensão das lesões, dor, eritema, febre e reação ao produto. Reavaliar diante de piora, persistência ou recorrência em vez de repetir empiricamente. A bula de mupirocina recomenda reavaliação sem resposta em 3–5 dias no contexto de impetigo; usar esse prazo apenas como verificação de segurança do tratamento tópico, não como critério diagnóstico de foliculite.",
+      "es": "Controlar número/extensión de lesiones, dolor, eritema, fiebre y reacción al producto. Reevaluar ante empeoramiento, persistencia o recurrencia en vez de repetir empíricamente. El prospecto de mupirocina recomienda reevaluar si no hay respuesta en 3–5 días en el contexto de impétigo; usar ese plazo solo como verificación de seguridad del tratamiento tópico, no como criterio diagnóstico de foliculitis.",
+      "sources": [
+        "F1",
+        "F4"
+      ]
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta ambulatorial exige quadro superficial, ausência de repercussão sistêmica, plano aplicável à causa provável e orientação de retorno. Imunossupressão com doença importante, infecção profunda ou falha do tratamento ambulatorial pode exigir escalonamento hospitalar conforme o diagnóstico. Alopecia cicatricial/recorrência persistente indica dermatologia.",
+      "es": "El alta ambulatoria exige cuadro superficial, ausencia de compromiso sistémico, plan aplicable a la causa probable e instrucciones de seguimiento. Inmunosupresión con enfermedad importante, infección profunda o fracaso del tratamiento ambulatorio puede exigir escalamiento hospitalario según el diagnóstico. La alopecia cicatricial/recurrencia persistente indica dermatología.",
+      "sources": [
+        "F1",
+        "F6"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "F1",
+      "title": "Folliculitis and furuncles / carbuncles",
+      "authority": "Primary Care Dermatology Society",
+      "year": 2025,
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.pcds.org.uk/clinical-guidance/folliculitis-an-overview",
+      "scope": "Revisada 06/07/2025; diagnóstico diferencial, causas e manejo",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F2",
+      "title": "Folliculitis barbae",
+      "authority": "British Association of Dermatologists",
+      "year": 2017,
+      "status": "SUPPORTIVE_SPECIALTY_CONSENSUS_OLDER",
+      "url": "https://www.bad.org.uk/pils/folliculitis-barbae",
+      "scope": "Folheto específico para barba; revisão programada de 2020 vencida. Não é fonte de atualização isolada.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F3",
+      "title": "Bactroban Ointment 2% — SmPC",
+      "authority": "GSK / emc",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/1156/smpc",
+      "scope": "Inclui indicação foliculite; concentração, frequência, duração máxima e precauções",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F4",
+      "title": "Mupirocin ointment — prescribing information",
+      "authority": "Teva / DailyMed NLM",
+      "year": 2022,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f1a048d9-af57-a4a2-e053-2995a90a8663",
+      "scope": "Confirma posologia/safety do produto; indicação FDA é impetigo, não ensaio de eficácia em foliculite.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F5",
+      "title": "Nizoral 2% Cream — SmPC",
+      "authority": "Thornton & Ross / emc",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/15620/smpc",
+      "scope": "Creme adulto; foliculite por Malassezia não é indicação expressa desta bula. Uso sustentado por F1, off-label conforme formulário.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F6",
+      "title": "Skin and Soft Tissue Infections guideline",
+      "authority": "IDSA",
+      "year": 2014,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "scope": "Drenagem/gravidade de abscessos, não curso universal para foliculite superficial. Portal oficial ainda lista esta versão.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,245 @@
+{
+  "owner": "dismenorreia_primaria_secundaria",
+  "title": {
+    "pt": "Dismenorreia primária / secundária",
+    "es": "Dismenorrea primaria / secundaria"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Dismenorreia é dor associada à menstruação. A forma primária ocorre sem lesão pélvica identificada: prostaglandinas aumentam contração uterina e reduzem perfusão, produzindo cólica. A secundária resulta de outra condição, como endometriose, adenomiose, infecção pélvica ou anomalia obstrutiva. É comum e pode comprometer escola, trabalho e qualidade de vida; dor incapacitante não deve ser normalizada.",
+      "es": "La dismenorrea es dolor asociado a la menstruación. La forma primaria aparece sin lesión pélvica identificada: las prostaglandinas aumentan la contracción uterina y reducen la perfusión, produciendo cólicos. La secundaria resulta de otra condición, como endometriosis, adenomiosis, infección pélvica o anomalía obstructiva. Es frecuente y puede afectar escuela, trabajo y calidad de vida; no normalizar dolor incapacitante.",
+      "sources": [
+        "D1",
+        "D2",
+        "D10"
+      ]
+    },
+    {
+      "id": "pattern",
+      "pt": "A primária costuma surgir após ciclos ovulatórios, com cólica no início da menstruação e sintomas como náusea/diarreia. Dor desde a menarca, progressão, dor entre ciclos, dispareunia, sintomas intestinais/urinários cíclicos, antecedente de infecção pélvica ou resposta insuficiente sugerem causa secundária. Essas pistas orientam investigação; não confirmam endometriose isoladamente.",
+      "es": "La primaria suele comenzar después de ciclos ovulatorios, con cólicos al inicio de la menstruación y síntomas como náuseas/diarrea. Dolor desde la menarca, progresión, dolor entre ciclos, dispareunia, síntomas intestinales/urinarios cíclicos, antecedente de infección pélvica o respuesta insuficiente sugieren una causa secundaria. Estas pistas orientan el estudio; no confirman endometriosis por sí solas.",
+      "sources": [
+        "D1",
+        "D2",
+        "D4"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Perguntar sobre última menstruação, ciclos, sangramento, início/duração da dor, atividade sexual, contracepção, possibilidade de gestação, medicamentos, alergias e impacto funcional. Examinar sinais vitais e abdome. Exame vaginal depende de indicação, consentimento e contexto; não é rotina em toda adolescente. Dor aguda nova deve ser avaliada antes de atribuí-la à dismenorreia conhecida.",
+      "es": "Preguntar por última menstruación, ciclos, sangrado, inicio/duración del dolor, actividad sexual, anticoncepción, posibilidad de embarazo, medicamentos, alergias e impacto funcional. Evaluar signos vitales y abdomen. El examen vaginal depende de indicación, consentimiento y contexto; no es rutinario en toda adolescente. Evaluar dolor agudo nuevo antes de atribuirlo a dismenorrea conocida.",
+      "sources": [
+        "D1",
+        "D2"
+      ]
+    },
+    {
+      "id": "urgent",
+      "pt": "Instabilidade, síncope, dor súbita intensa/unilateral, defesa abdominal, febre importante, sangramento relevante ou suspeita de gestação exigem investigação urgente de ectópica, torção, infecção ou hemorragia. Analgesia não deve atrasar essa avaliação. Suspeita de urgência cirúrgica/obstétrica exige encaminhamento hospitalar.",
+      "es": "Inestabilidad, síncope, dolor súbito intenso/unilateral, defensa abdominal, fiebre importante, sangrado relevante o sospecha de embarazo requieren estudio urgente de embarazo ectópico, torsión, infección o hemorragia. La analgesia no debe retrasar esta evaluación. Sospecha de urgencia quirúrgica/obstétrica exige derivación hospitalaria.",
+      "sources": [
+        "D2"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Quadro típico de primária sem alerta não exige painel laboratorial ou imagem universal. Teste de gestação é indicado quando houver possibilidade de gestação; pesquisar IST se contexto sugerir. Suspeita de causa secundária/endometriose indica ultrassonografia pélvica: via transvaginal quando adequada e consentida; transabdominal quando não adequada/recusada. Exame e ultrassom normais não excluem endometriose. CA125 não deve ser usado para diagnosticá-la.",
+      "es": "Un cuadro típico de primaria sin alarma no exige laboratorio ni imágenes universales. Indicar prueba de embarazo si existe posibilidad de embarazo; estudiar ITS cuando el contexto lo sugiera. Sospecha de causa secundaria/endometriosis indica ecografía pélvica: transvaginal si es apropiada y consentida; transabdominal si no es apropiada/rechazada. Examen y ecografía normales no excluyen endometriosis. No usar CA125 para diagnosticarla.",
+      "sources": [
+        "D1",
+        "D4"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Após excluir urgências, usar calor local evitando queimadura, atividade física tolerada e plano de tratamento compartilhado. AINE e/ou tratamento hormonal são opções iniciais se elegíveis. AINE costuma funcionar melhor iniciado 1–2 dias antes da menstruação previsível e durante os primeiros 2–3 dias de sangramento; usar o menor período eficaz. Não associar dois AINEs e não indicar opioide de rotina.",
+      "es": "Tras excluir urgencias, usar calor local evitando quemaduras, actividad física tolerada y plan compartido. AINE y/o tratamiento hormonal son opciones iniciales si hay elegibilidad. Un AINE suele funcionar mejor iniciado 1–2 días antes de la menstruación previsible y durante los primeros 2–3 días de sangrado; usar el menor período eficaz. No combinar dos AINE ni indicar opioides rutinarios.",
+      "sources": [
+        "D1",
+        "D2",
+        "D10"
+      ]
+    },
+    {
+      "id": "naproxen",
+      "pt": "Opção adulta verificada: naproxeno base de liberação imediata por via oral, 500 mg inicialmente; depois 250 mg a cada 6–8 h se necessário, sem exceder 1250 mg em 24 h. Tomar com/após alimento. Conferir apresentação: naproxeno sódico e liberação modificada têm esquemas próprios; não trocar mg ou intervalos automaticamente. Teto é limite de segurança, não meta de dose.",
+      "es": "Opción adulta verificada: naproxeno base de liberación inmediata por vía oral, 500 mg inicialmente; luego 250 mg cada 6–8 h si es necesario, sin superar 1250 mg en 24 h. Tomar con/después de comida. Confirmar presentación: naproxeno sódico y liberación modificada tienen pautas propias; no intercambiar mg ni intervalos automáticamente. El máximo es un límite de seguridad, no una meta de dosis.",
+      "sources": [
+        "D6",
+        "D7",
+        "D8"
+      ]
+    },
+    {
+      "id": "nsaid",
+      "pt": "Não usar naproxeno em alergia ao produto/reação a AINE, úlcera/sangramento digestivo ativo ou recorrente, sangramento/perfuração prévios associados a AINE, nem insuficiência renal/hepática/cardíaca grave. Avaliar risco vascular e interações com anticoagulantes, antiagregantes, diuréticos, bloqueadores do sistema renina-angiotensina, lítio e metotrexato. Suspender e avaliar sangramento, reação alérgica ou redução importante da diurese.",
+      "es": "No usar naproxeno ante alergia al producto/reacción a AINE, úlcera/sangrado digestivo activo o recurrente, sangrado/perforación previos por AINE, ni insuficiencia renal/hepática/cardíaca grave. Evaluar riesgo vascular e interacciones con anticoagulantes, antiagregantes, diuréticos, bloqueadores del sistema renina-angiotensina, litio y metotrexato. Suspender y evaluar sangrado, alergia o reducción importante de diuresis.",
+      "sources": [
+        "D7",
+        "D8"
+      ]
+    },
+    {
+      "id": "renal",
+      "pt": "A bula selecionada de Naprosyn contraindica uso se clearance de creatinina <30 mL/min; não usar o threshold menos restritivo de outro formulário. Em disfunção renal/hepática, individualizar redução e monitorização, sem inventar dose ajustada fixa. Desidratação aumenta risco renal. Em uso repetido ou população de risco, monitorar função renal, pressão, edema e tolerância gastrointestinal.",
+      "es": "El prospecto seleccionado de Naprosyn contraindica su uso si clearance de creatinina <30 mL/min; no aplicar el umbral menos restrictivo de otro formulario. En disfunción renal/hepática, individualizar reducción y vigilancia, sin inventar una dosis ajustada fija. La deshidratación aumenta el riesgo renal. Ante uso repetido o población de riesgo, controlar función renal, presión, edema y tolerancia gastrointestinal.",
+      "sources": [
+        "D7",
+        "D8"
+      ]
+    },
+    {
+      "id": "hormonal",
+      "pt": "Tratamento hormonal deve considerar preferência, necessidade contraceptiva, contraindicações e planos de fertilidade. Contraceptivo combinado, progestagênio ou sistema intrauterino com levonorgestrel podem reduzir dor; regimes contínuos/estendidos são opção. Estrogênio não é adequado para enxaqueca com aura; avaliar risco trombótico/vascular e elegibilidade por método. Não apresentar uma prescrição hormonal única para todas. Tratamento hormonal não melhora gravidez espontânea em quem tenta conceber.",
+      "es": "El tratamiento hormonal debe considerar preferencias, necesidad anticonceptiva, contraindicaciones y planes de fertilidad. Anticonceptivo combinado, progestágeno o sistema intrauterino con levonorgestrel pueden reducir dolor; los regímenes continuos/extendidos son una opción. El estrógeno no es adecuado para migraña con aura; evaluar riesgo trombótico/vascular y elegibilidad por método. No presentar una receta hormonal única para todas. El tratamiento hormonal no mejora el embarazo espontáneo en quienes intentan concebir.",
+      "sources": [
+        "D1",
+        "D4",
+        "D5",
+        "D9"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Não aplicar esta dose adulta automaticamente a menores: há recomendações pediátricas específicas e diferenças entre bula e guideline quanto a indicação/idade, exigindo formulação e prescrição pediátrica verificadas. Possibilidade de gestação muda a investigação: dor não é tratada como dismenorreia até esclarecimento. Evitar naproxeno na gestação; a bula contraindica no último trimestre e recomenda evitar na lactação. Selecionar alternativa apropriada com avaliação específica.",
+      "es": "No aplicar esta dosis adulta automáticamente a menores: hay recomendaciones pediátricas específicas y diferencias entre prospecto y guía sobre indicación/edad, que requieren formulación y receta pediátrica verificadas. La posibilidad de embarazo cambia el estudio: no tratar el dolor como dismenorrea hasta aclararlo. Evitar naproxeno en embarazo; el prospecto lo contraindica en el último trimestre y recomienda evitarlo durante lactancia. Elegir una alternativa apropiada con evaluación específica.",
+      "sources": [
+        "D1",
+        "D7",
+        "D8"
+      ]
+    },
+    {
+      "id": "endometriosis",
+      "pt": "A orientação oficial ACOG2026 admite diagnóstico clínico presumido de endometriose para iniciar tratamento empírico enquanto a avaliação com imagem prossegue; laparoscopia não é requisito universal prévio. Considerar investigação especializada/laparoscopia em decisão compartilhada quando indicada, inclusive com imagem normal e sintomas persistentes. Não confundir diagnóstico presumido com confirmação de lesão ou classificação anatômica.",
+      "es": "La orientación oficial ACOG2026 admite diagnóstico clínico presunto de endometriosis para iniciar tratamiento empírico mientras continúa la evaluación por imágenes; la laparoscopia no es un requisito previo universal. Considerar estudio especializado/laparoscopia mediante decisión compartida cuando corresponda, incluso con imágenes normales y síntomas persistentes. No confundir diagnóstico presunto con confirmar una lesión o clasificar su anatomía.",
+      "sources": [
+        "D3",
+        "D4",
+        "D5"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta se urgências excluídas, estável, dor controlável e seguimento definido. Registrar dor, impacto funcional, sangramento, adesão e efeitos adversos. RCH recomenda revisão em 3 meses, antes se efeitos intoleráveis. Persistência apesar de tratamento adequado por 3–6 meses requer avaliar causa secundária, mas red flags ou suspeita relevante justificam investigação imediata, sem esperar esse período.",
+      "es": "Alta si se excluyeron urgencias, está estable, el dolor es controlable y hay seguimiento definido. Registrar dolor, impacto funcional, sangrado, adherencia y efectos adversos. RCH recomienda revisión a los 3 meses, antes ante efectos intolerables. Persistencia pese a tratamiento adecuado durante 3–6 meses requiere evaluar causa secundaria, pero alarmas o sospecha relevante justifican estudio inmediato, sin esperar ese período.",
+      "sources": [
+        "D1",
+        "D4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "D1",
+      "title": "Dysmenorrhoea",
+      "authority": "Royal Children’s Hospital / PIC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL_CLINICAL_GUIDELINE",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Dysmenorrhoea/",
+      "scope": "Revisada outubro2025; adolescentes, avaliação inicial, AINE e seguimento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D2",
+      "title": "Dysmenorrhoea: an update on primary healthcare management",
+      "authority": "RACGP AJGP",
+      "year": 2024,
+      "status": "SUPPORTIVE_SPECIALTY_REVIEW",
+      "url": "https://www1.racgp.org.au/ajgp/2024/january-february/dysmenorrhea",
+      "scope": "Avaliação e tratamento na atenção primária; não guideline nova2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D3",
+      "title": "ACOG publishes new endometriosis clinical guidance",
+      "authority": "ACOG",
+      "year": 2026,
+      "status": "AUTHORITATIVE_OFFICIAL_GUIDELINE_SUMMARY",
+      "url": "https://www.acog.org/news/news-releases/2026/02/acog-publishes-new-endometriosis-clinical-guidance-aiming-shorten-time-diagnosis-improve-access-care",
+      "scope": "Comunicado20/02/2026 referente à CPG11 março2026; texto oficial indexado consultado. Guideline integral não acessível; não atribuir recomendações adicionais ao texto não lido.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D4",
+      "title": "Endometriosis: diagnosis and management NG73 — recommendations",
+      "authority": "NICE",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_UPDATED_RECOMMENDATIONS",
+      "url": "https://www.nice.org.uk/guidance/ng73/chapter/Recommendations",
+      "scope": "Recomendações diagnósticas atualizadas novembro2024, opções terapêuticas2025; consulta pelo texto oficial indexado.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D5",
+      "title": "Endometriosis guideline",
+      "authority": "ESHRE",
+      "year": 2022,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.eshre.eu/Guideline/Endometriosis",
+      "scope": "Portal oficial mantém2022; tratamento hormonal e avaliação de endometriose, sem exigir cirurgia universal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D6",
+      "title": "Naproxen — Adult Medication Guideline",
+      "authority": "Western Australia WNHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_MEDICATION_GUIDELINE",
+      "url": "https://www.kemh.health.wa.gov.au/~/media/HSPs/NMHS/Hospitals/WNHS/Documents/Clinical-guidelines/Obs-Gyn-MPs/Naproxen.pdf?thn=0",
+      "scope": "Revisada maio2025, endosso03/06/2025; comprimido IR para cólica menstrual. Threshold renal local25 difere da bula selecionada30; não importar25.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D7",
+      "title": "Naproxen tablets — prescribing information",
+      "authority": "DailyMed / NLM",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9d7bc470-fbba-40a6-a56c-f681a3cee9cf",
+      "scope": "Revisão março2025; naproxeno base IR, dose inicial500mg, manutenção250mg, teto1250mg/dia para dismenorreia.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D8",
+      "title": "Naprosyn250mg Tablets — SmPC",
+      "authority": "Atnahs / emc",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/13237/smpc",
+      "scope": "Atualizada04/09/2024; função renal, contraindicações, gestação/lactação e limites etários da apresentação.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D9",
+      "title": "Combined hormonal contraceptives — US MEC2024 AppendixD",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_ELIGIBILITY_GUIDELINE",
+      "url": "https://www.cdc.gov/contraception/hcp/usmec/combined-hormonal-contraceptives.html",
+      "scope": "Elegibilidade, especialmente enxaqueca com aura e riscos vasculares; não é prescrição universal de anticoncepcional.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "D10",
+      "title": "Dysmenorrhea: painful periods",
+      "authority": "ACOG",
+      "year": "data não confirmada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.acog.org/womens-health/faqs/dysmenorrhea-painful-periods",
+      "scope": "Conceito, calor e exercício; data não inferida do copyright.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

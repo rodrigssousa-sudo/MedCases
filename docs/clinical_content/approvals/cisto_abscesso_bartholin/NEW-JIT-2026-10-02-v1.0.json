@@ -1,0 +1,266 @@
+{
+  "owner": "cisto_abscesso_bartholin",
+  "title": {
+    "pt": "Cisto / abscesso de Bartholin",
+    "es": "Quiste / absceso de Bartholin"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Obstrução do ducto de Bartholin pode produzir cisto; infecção pode causar abscesso. Glândulas ficam bilateralmente junto à entrada vaginal e secretam muco. Cisto pode ser pequeno e assintomático; abscesso frequentemente causa edema vulvar unilateral muito doloroso, dificultando sentar/caminhar. Este esquema é adulto.",
+      "es": "La obstrucción del conducto de Bartholin puede producir un quiste; la infección puede causar un absceso. Las glándulas están a ambos lados de la entrada vaginal y secretan moco. El quiste puede ser pequeño y asintomático; el absceso suele causar edema vulvar unilateral muy doloroso que dificulta sentarse/caminar. Este esquema es para adultos.",
+      "sources": [
+        "G1",
+        "G2",
+        "G3"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Avaliar localização, tamanho, flutuação, drenagem espontânea, celulite, febre, sinais vitais e tolerância oral. Perguntar sobre recorrência, gestação, alergias, imunossupressão e risco de IST. Cultura da secreção pode orientar antibiótico; testar gonococo/clamídia conforme risco. Presença de abscesso não significa automaticamente IST.",
+      "es": "Evaluar localización, tamaño, fluctuación, drenaje espontáneo, celulitis, fiebre, signos vitales y tolerancia oral. Preguntar por recurrencia, embarazo, alergias, inmunosupresión y riesgo de ITS. El cultivo de secreción puede orientar antibióticos; estudiar gonococo/clamidia según riesgo. Un absceso no implica automáticamente una ITS.",
+      "sources": [
+        "G2",
+        "G3"
+      ]
+    },
+    {
+      "id": "differentials",
+      "pt": "Diferenciar cisto de inclusão, hematoma, cisto de Gartner, hidradenite e outras lesões vulvares. Massa persistente, sólida/atípica ou em mulher após menopausa exige avaliação ginecológica para excluir neoplasia. A fonte clínica consultada recomenda considerar biópsia em mulheres >40 anos; isso é decisão especializada, não diagnóstico de câncer nem indicação automática de excisão de toda glândula.",
+      "es": "Diferenciar quiste de inclusión, hematoma, quiste de Gartner, hidradenitis y otras lesiones vulvares. Masa persistente, sólida/atípica o en una mujer posmenopáusica exige evaluación ginecológica para excluir neoplasia. La fuente clínica consultada recomienda considerar biopsia en mujeres >40 años; es una decisión especializada, no diagnóstico de cáncer ni indicación automática de extirpar toda la glándula.",
+      "sources": [
+        "G2",
+        "G3"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Febre/mal-estar sistêmico, instabilidade, celulite rapidamente progressiva, dor desproporcional ou necrose exige avaliação hospitalar urgente. Dor intensa, falha de manejo conservador e recorrência precoce justificam ginecologia. Não atrasar avaliação de sepse ou controle de foco esperando resposta a um antibiótico oral.",
+      "es": "Fiebre/malestar sistémico, inestabilidad, celulitis rápidamente progresiva, dolor desproporcionado o necrosis exige evaluación hospitalaria urgente. Dolor intenso, fracaso del manejo conservador y recurrencia precoz justifican ginecología. No retrasar evaluar sepsis o controlar el foco esperando respuesta a un antibiótico oral.",
+      "sources": [
+        "G1",
+        "G2"
+      ]
+    },
+    {
+      "id": "conservative",
+      "pt": "Cisto pequeno assintomático pode ser observado; banhos mornos e analgesia podem aliviar sintomas e favorecer drenagem. Lesão espontaneamente drenando, com melhora e sem celulite/repercussão, pode ser acompanhada conforme avaliação. Não orientar compressão ou perfuração caseira. Ausência de infecção não justifica antibiótico preventivo.",
+      "es": "Puede observarse un quiste pequeño asintomático; baños tibios y analgesia pueden aliviar síntomas y favorecer drenaje. Una lesión con drenaje espontáneo, mejoría y sin celulitis/repercusión puede seguirse según evaluación. No indicar compresión ni perforación casera. La ausencia de infección no justifica antibiótico preventivo.",
+      "sources": [
+        "G1",
+        "G2",
+        "G3"
+      ]
+    },
+    {
+      "id": "drainage",
+      "pt": "Cisto/abscesso sintomático que precisa de intervenção deve ser avaliado para drenagem mantendo uma via aberta: cateter Word sob anestesia local é opção; marsupialização pode ser escolhida em recorrência, falha ou conforme preferência/avaliação. Incisão simples ou aspiração isolada tem maior tendência de recorrência; não tratar como equivalente definitivo. Explicar desconforto, infecção, sangramento e recorrência possíveis.",
+      "es": "Un quiste/absceso sintomático que necesita intervención debe evaluarse para drenaje manteniendo una vía abierta: catéter Word bajo anestesia local es una opción; puede elegirse marsupialización ante recurrencia, fracaso o según preferencias/evaluación. Una incisión simple o aspiración aislada tiene mayor tendencia a recurrir; no tratarla como equivalente definitivo. Explicar posibles molestias, infección, sangrado y recurrencia.",
+      "sources": [
+        "G1",
+        "G3",
+        "G4"
+      ]
+    },
+    {
+      "id": "word",
+      "pt": "O Word deve permanecer conforme plano da equipe, idealmente 4–6 semanas segundo RCOG, para permitir formação do novo ducto. Volume de balão e técnica seguem fabricante/equipe; não inferir volume universal. Se cair antes de 4 semanas, contatar ginecologia, pois pode ser necessário reinserir. Não remover/reinflar por conta própria.",
+      "es": "El Word debe permanecer según el plan del equipo, idealmente 4–6 semanas según RCOG, para permitir formar el nuevo conducto. Volumen del balón y técnica siguen al fabricante/equipo; no inferir un volumen universal. Si cae antes de 4 semanas, contactar ginecología, ya que puede necesitar reinserción. No retirarlo/reinflarlo por cuenta propia.",
+      "sources": [
+        "G1",
+        "G4"
+      ]
+    },
+    {
+      "id": "antibiotic",
+      "pt": "Antibiótico é considerado quando há celulite ou repercussão infecciosa, com controle de foco quando indicado. Uma opção verificada para adulta não gestante sem alergia e com função renal apropriada é amoxicilina/clavulanato 500 mg/125 mg por via oral a cada 8 h por 5 dias, conforme NHS Borders. Escrever os componentes: 625 mg é a soma, não 625 mg de amoxicilina. Administrar com refeição e rever cultura/resposta. Não usar esquema oral isolado para sepse.",
+      "es": "Se considera antibiótico ante celulitis o repercusión infecciosa, con control del foco cuando corresponda. Una opción verificada para adulta no embarazada sin alergia y con función renal apropiada es amoxicilina/clavulanato 500 mg/125 mg por vía oral cada 8 h durante 5 días, según NHS Borders. Escribir los componentes: 625 mg es la suma, no 625 mg de amoxicilina. Administrar con comida y revisar cultivo/respuesta. No usar un régimen oral aislado para sepsis.",
+      "sources": [
+        "G2",
+        "G3",
+        "G5",
+        "G6"
+      ]
+    },
+    {
+      "id": "antibiotic_safety",
+      "pt": "Não usar amoxicilina/clavulanato em alergia a penicilina, reação imediata grave a outro beta-lactâmico ou história de icterícia/disfunção hepática causada pela associação. Conferir interações, incluindo anticoagulantes e metotrexato. Monitorar rash, diarreia importante, reação alérgica ou sinais de lesão hepática. Alergia à penicilina requer alternativa validada pelo protocolo/local e tipo de reação; não copiar um substituto sem essa avaliação.",
+      "es": "No usar amoxicilina/clavulanato ante alergia a penicilina, reacción inmediata grave a otro betalactámico o antecedente de ictericia/disfunción hepática causada por la combinación. Revisar interacciones, incluido anticoagulantes y metotrexato. Vigilar exantema, diarrea importante, alergia o signos de lesión hepática. La alergia a penicilina requiere alternativa validada por protocolo/local y tipo de reacción; no copiar un sustituto sin esa evaluación.",
+      "sources": [
+        "G5",
+        "G6"
+      ]
+    },
+    {
+      "id": "renal",
+      "pt": "Para apresentação de amoxicilina/clavulanato 500/125 mg, clearance de creatinina >30 mL/min não exige ajuste na bula; 10–30 mL/min: 500/125 mg a cada 12 h; <10 mL/min: 500/125 mg a cada 24 h. Diálise tem esquema específico. Não substituir apresentação 4:1 pela 7:1 nem dobrar comprimidos de outra proporção. Disfunção hepática exige cautela e monitorização, sem ajuste numérico validado.",
+      "es": "Para amoxicilina/clavulanato 500/125 mg, clearance de creatinina >30 mL/min no exige ajuste en el prospecto; 10–30 mL/min: 500/125 mg cada 12 h; <10 mL/min: 500/125 mg cada 24 h. La diálisis tiene un esquema específico. No sustituir la presentación 4:1 por la 7:1 ni duplicar comprimidos de otra proporción. Disfunción hepática requiere cautela y vigilancia, sin ajuste numérico validado.",
+      "sources": [
+        "G5",
+        "G6"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestação requer escolher antimicrobiano com a equipe obstétrica e protocolo específico; não aplicar automaticamente a opção não gestante. Na lactação, amoxicilina/clavulanato exige avaliação benefício-risco e vigilância de diarreia/candidíase/sensibilização do bebê. Para dor, paracetamol pode ser considerado; evitar AINE na gestação sem indicação específica. Crianças/adolescentes não recebem automaticamente esta prescrição adulta.",
+      "es": "El embarazo exige elegir el antimicrobiano con el equipo obstétrico y protocolo específico; no aplicar automáticamente la opción no gestante. Durante lactancia, amoxicilina/clavulanato requiere evaluar beneficio-riesgo y vigilar diarrea/candidiasis/sensibilización del bebé. Para dolor puede considerarse paracetamol; evitar AINE en embarazo sin indicación específica. Niños/adolescentes no reciben automáticamente esta receta adulta.",
+      "sources": [
+        "G2",
+        "G5",
+        "G6",
+        "G7",
+        "G8",
+        "G9"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta se estável, dor controlada, sem infecção sistêmica e com plano de drenagem/seguimento. Após procedimento, higiene suave e evitar produtos perfumados; atividades/sexualidade conforme conforto e orientação específica do procedimento. Retornar por febre, aumento de dor/edema/vermelhidão, sangramento relevante, cateter deslocado ou falta de melhora. Recorrência requer nova avaliação, sem garantir cura após uma única drenagem.",
+      "es": "Alta si está estable, dolor controlado, sin infección sistémica y con plan de drenaje/seguimiento. Tras el procedimiento, higiene suave y evitar productos perfumados; actividad/sexualidad según comodidad e indicación específica del procedimiento. Volver ante fiebre, mayor dolor/edema/enrojecimiento, sangrado relevante, catéter desplazado o falta de mejoría. La recurrencia requiere nueva evaluación, sin garantizar curación tras un único drenaje.",
+      "sources": [
+        "G1",
+        "G2",
+        "G4"
+      ]
+    },
+    {
+      "id": "paracetamol",
+      "pt": "Paracetamol pode ser usado se AINE contraindicado ou como associação selecionada: adulto com peso ≥50 kg sem necessidade de ajuste, 500–1000 mg oral a cada 6 h se necessário; máximo 4 tomadas e 4000 mg em 24 h contando todas as associações. Menor dose eficaz, reavaliação se uso exceder 3 dias. Não duplicar paracetamol em produtos combinados.",
+      "es": "Puede usarse paracetamol si un AINE está contraindicado o como combinación seleccionada: adulto con peso ≥50 kg sin necesidad de ajuste, 500–1000 mg oral cada 6 h si es necesario; máximo 4 tomas y 4000 mg en 24 h contando todas las combinaciones. Menor dosis eficaz, reevaluación si el uso supera 3 días. No duplicar paracetamol en productos combinados.",
+      "sources": [
+        "G8",
+        "G9"
+      ]
+    },
+    {
+      "id": "analgesic_safety",
+      "pt": "Paracetamol é contraindicado em hipersensibilidade. Peso <50 kg, fragilidade/desnutrição, doença renal/hepática ou consumo nocivo de álcool exige avaliação individual; o teto adulto não é automaticamente seguro. Conferir duplicidade em associações e interações, incluindo varfarina em uso regular prolongado. Superdose requer atendimento imediato mesmo sem sintomas.",
+      "es": "El paracetamol está contraindicado en hipersensibilidad. Peso <50 kg, fragilidad/desnutrición, enfermedad renal/hepática o consumo nocivo de alcohol requiere evaluación individual; el límite adulto no es automáticamente seguro. Revisar duplicación en combinaciones e interacciones, incluida warfarina con uso regular prolongado. La sobredosis requiere atención inmediata incluso sin síntomas.",
+      "sources": [
+        "G8",
+        "G9"
+      ]
+    },
+    {
+      "id": "ibuprofen",
+      "pt": "Analgesia temporária, adulto sem contraindicação: ibuprofeno 400 mg oral, até 3 vezes ao dia se necessário, com intervalo mínimo de 4 h e máximo 1200 mg em 24 h neste esquema breve de menor exposição. Usar menor dose/tempo, com alimento se tolerado. Esse teto escolhido não é o limite de todos os regimes prescritos; dor persistente exige controle de foco e revisão, não aumentar por conta própria.",
+      "es": "Analgesia temporal, adulto sin contraindicación: ibuprofeno 400 mg oral, hasta 3 veces al día si es necesario, con intervalo mínimo de 4 h y máximo 1200 mg en 24 h en este esquema breve de menor exposición. Usar menor dosis/tiempo, con alimento si se tolera. Este límite elegido no es el límite de todos los regímenes prescritos; dolor persistente exige controlar el foco y revisar, sin aumentar por cuenta propia.",
+      "sources": [
+        "G7"
+      ]
+    },
+    {
+      "id": "nsaid_safety",
+      "pt": "Evitar ibuprofeno em alergia a AINE/broncoespasmo relacionado, úlcera/sangramento digestivo ou situações em que risco renal, cardíaco, hepático ou hemorrágico contraindique uso. Avaliar desidratação, anticoagulantes, corticosteroides e anti-hipertensivos; não associar outro AINE. Sangramento digestivo, reação alérgica ou redução de diurese exige atendimento.",
+      "es": "Evitar ibuprofeno ante alergia a AINE/broncoespasmo relacionado, úlcera/sangrado digestivo o situaciones en que el riesgo renal, cardíaco, hepático o hemorrágico contraindique su uso. Evaluar deshidratación, anticoagulantes, corticoides y antihipertensivos; no asociar otro AINE. Sangrado digestivo, alergia o disminución de diuresis exige atención.",
+      "sources": [
+        "G7"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "G1",
+      "title": "Bartholin’s cyst and abscess",
+      "authority": "RCOG",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.rcog.org.uk/for-the-public/browse-our-patient-information/bartholin-s-cyst-and-abscess/",
+      "scope": "Primeira publicaçãojulho2026; não confundir com PDF2025-pc para comentário público.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G2",
+      "title": "Bartholin’s cysts and abscesses",
+      "authority": "NHS Borders",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "url": "https://www.rightdecisions.scot.nhs.uk/borders-ref-help-toolkit-in-development/gynaecology/bartholins-cysts-and-abscesses/",
+      "scope": "Revisada24/07/2025, próxima2027; consulta via texto oficial indexado, abertura direta indisponível; antibiótico condicionado à celulite.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G3",
+      "title": "Management of Bartholin’s cyst and abscess —066",
+      "authority": "NHS Greater Glasgow and Clyde",
+      "year": 2023,
+      "status": "SUPPORTIVE_REVIEW_OVERDUE",
+      "url": "https://rightdecisions.scot.nhs.uk/ggc-referral-management/womens-health/gynaecology-clinical-guidelines/management-of-bartholin-s-cyst-and-abscess-gynaecology-066/",
+      "scope": "Revisada14/06/2023, revisão prevista16/05/2026 já vencida. Dose confrontada comBorders2025; anatomia/biopsia apoiam contexto, não nova norma2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G4",
+      "title": "Bartholin’s Cyst or Abscess",
+      "authority": "UCLH NHS",
+      "year": "data não confirmada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.uclh.nhs.uk/patients-and-visitors/patient-information-pages/bartholins-cyst-or-abscess",
+      "scope": "Procedimento Word e manejo sintomático; data não inferida.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G5",
+      "title": "Co-amoxiclav500/125mg Tablets — SmPC",
+      "authority": "Milpharm / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/6544/smpc",
+      "scope": "Atualização14/05/2026; apresentação4:1, contraindicações, renal/hepática e interações.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G6",
+      "title": "Co-amoxiclav500/125mg — SmPC",
+      "authority": "SUN Pharma / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/4347/smpc",
+      "scope": "Atualização20/01/2026; componentes, dose e ajuste renal; bula, não guideline.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G7",
+      "title": "Ibuprofen for adults",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "scope": "Revisada27/08/2025; dose de uso breve e riscos. Aplicação a analgesia geral; não prova eficácia específica para abscesso perianal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G8",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "population": "Adultos a partir de 18 anos",
+      "scope": "Posologia oral, duração de autocuidado e segurança Aplicação a analgesia geral; não prova eficácia específica para abscesso perianal.",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G9",
+      "title": "Paracetamol 500 mg Tablet — Summary of Product Characteristics",
+      "authority": "Medley Pharma Limited / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "population": "Adultos; sem extrapolação para crianças neste pacote",
+      "scope": "Posologia, contraindicações, interações, gestação/lactação Aplicação a analgesia geral; não prova eficácia específica para abscesso perianal.",
+      "url": "https://www.medicines.org.uk/emc/product/100828/smpc",
+      "verifiedOn": "2026-10-02",
+      "recencyNote": "Texto revisado em 19/08/2025. Bula britânica: verificar apresentação/formulário local antes da prescrição."
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

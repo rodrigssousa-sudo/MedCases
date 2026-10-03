@@ -1,3 +1,4 @@
+import '../../../data/new_pathology_approved_hashes.dart';
 import '../../../data/evidence_database.dart';
 import '../../../data/protocols_database.dart';
 import '../../../models/drug_model.dart';
@@ -107,6 +108,14 @@ class ClinicalReferenceResolver {
 
     final corpus = _normalize('$userText $earlyHeadingWindow');
     String? targetId;
+    // Narrow precedence for the approved new owners; leave legacy matching intact.
+    for (final protocol in protocolsDatabase) {
+      if (!newPathologyApprovedHashes.containsKey(protocol.id)) continue;
+      if (protocol.title.values.any((title) => corpus.contains(_normalize(title)))) {
+        return protocol;
+      }
+    }
+
 
     if (corpus.contains('bronquiolite') ||
         corpus.contains('bronquiolitis') ||
@@ -199,6 +208,15 @@ class ClinicalReferenceResolver {
     if (protocol != null) {
       final title = protocol.getField(protocol.title, lang);
       final protocolReferences = protocol.getList(protocol.references, lang);
+      if (newPathologyApprovedHashes.containsKey(protocol.id)) {
+        return ClinicalReferenceData(
+          sourceType: 'clinical_protocol',
+          protocolId: protocol.id,
+          drugKeys: drugs.map((e) => e.drugKey).toList(growable: false),
+          lines: ['Tema clínico: $title', ...protocolReferences],
+        );
+      }
+
 
       if (protocol.id == 'iam_supra' &&
           protocolReferences.any((r) => r.contains('ehag101/8766309'))) {

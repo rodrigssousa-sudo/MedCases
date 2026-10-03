@@ -1,0 +1,211 @@
+{
+  "owner": "mastite_lactacional",
+  "title": {
+    "pt": "Mastite lactacional",
+    "es": "Mastitis lactacional"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Mastite lactacional é inflamação mamária durante amamentação; pode ser não infecciosa ou bacteriana. Dor, calor, eritema e induração, geralmente unilateral, podem acompanhar febre e mal-estar. Sintomas sistêmicos isolados não comprovam bactéria. Examinar a mama e avaliar sinais vitais, hidratação e capacidade de amamentar.",
+      "es": "Mastitis lactacional es inflamación mamaria durante lactancia; puede ser no infecciosa o bacteriana. Dolor, calor, eritema e induración, generalmente unilateral, pueden acompañarse de fiebre y malestar. Síntomas sistémicos aislados no prueban bacterias. Examinar mama y evaluar signos vitales, hidratación y capacidad para amamantar.",
+      "sources": [
+        "M1",
+        "M3",
+        "M8"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Edema e inflamação ductal podem progredir para mastite bacteriana, flegmão ou abscesso. Hiperestimulação por ordenha excessiva e massagem profunda podem agravar o edema. Avaliar pega, uso da bomba e produção de leite; não interpretar todo nódulo como um tampão que precisa ser espremido.",
+      "es": "Edema e inflamación ductal pueden progresar a mastitis bacteriana, flemón o absceso. Hiperestimulación por extracción excesiva y masaje profundo pueden agravar edema. Evaluar agarre, bomba y producción de leche; no interpretar todo nódulo como un tapón que deba exprimirse.",
+      "sources": [
+        "M1",
+        "M8"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico inicial é clínico. Diferenciar ingurgitamento, inflamação sem infecção, mastite bacteriana, abscesso, galactocele e lesão tumoral. Massa persistente, recorrência no mesmo lugar ou evolução atípica exige avaliação mamária dirigida. Hemograma/PCR não distinguem sozinhos inflamação de infecção; ultrassom é indicado se suspeita de coleção/massa.",
+      "es": "Diagnóstico inicial es clínico. Diferenciar congestión, inflamación sin infección, mastitis bacteriana, absceso, galactocele y lesión tumoral. Masa persistente, recurrencia en mismo lugar o evolución atípica exige evaluación mamaria dirigida. Hemograma/PCR no distinguen solos inflamación de infección; ecografía se indica ante sospecha de colección/masa.",
+      "sources": [
+        "M1",
+        "M2",
+        "M8"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Manter amamentação conforme demanda, corrigir pega e oferecer suporte à lactação. Se dolorosa, expressão suave suficiente para necessidade do bebê/conforto; não bombear para esvaziar repetidamente. Compressa fria protegida, descanso, hidratação conforme sede e sutiã confortável ajudam. Evitar massagem profunda, calor excessivo e interrupção abrupta da amamentação.",
+      "es": "Mantener lactancia a demanda, corregir agarre y ofrecer apoyo. Si duele, extracción suave suficiente para necesidad del bebé/confort; no bombear para vaciar repetidamente. Compresa fría protegida, descanso, hidratación según sed y sostén cómodo ayudan. Evitar masaje profundo, calor excesivo e interrupción brusca de lactancia.",
+      "sources": [
+        "M2",
+        "M3",
+        "M8"
+      ]
+    },
+    {
+      "id": "pain",
+      "pt": "Para adulta≥50kg sem contraindicação: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo necessário. Não somar produtos com paracetamol. Peso<50kg, hepatopatia, nefropatia ou consumo importante de álcool exige dose individual; não aplicar teto padrão automaticamente. Lactação em geral é compatível.",
+      "es": "Para adulta≥50kg sin contraindicación: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo necesario. No sumar productos con paracetamol. Peso<50kg, hepatopatía, nefropatía o consumo importante de alcohol exige dosis individual; no aplicar techo habitual automáticamente. Lactancia en general es compatible.",
+      "sources": [
+        "M6"
+      ]
+    },
+    {
+      "id": "antibiotic_indication",
+      "pt": "Antibiótico é reservado para infecção bacteriana provável/confirmada: achados focais progressivos com manifestações sistêmicas ou falha de medidas conservadoras após avaliação. Sintomas sem melhora em12–24h exigem reavaliação; piora importante exige avaliação imediata. Antibiótico complementa suporte à lactação; não substitui drenagem de abscesso.",
+      "es": "Antibiótico se reserva para infección bacteriana probable/confirmada: hallazgos focales progresivos con manifestaciones sistémicas o fracaso conservador tras evaluación. Síntomas sin mejoría en12–24h exigen reevaluación; empeoramiento importante exige atención inmediata. Antibiótico complementa apoyo a lactancia; no sustituye drenaje del absceso.",
+      "sources": [
+        "M2",
+        "M3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Uma opção ABM para mastite bacteriana em adulta com função renal normal e agente sensível: cefalexina500mg por via oral a cada6h, por10–14dias, ajustando à resposta e avaliação médica. Total2000mg/dia. Conferir alergias e resistência local; cefalexina não cobre MRSA de forma confiável. Não importar o prazo de5dias do esquema HSE de flucloxacilina para este regime.",
+      "es": "Una opción ABM para mastitis bacteriana en adulta con función renal normal y germen sensible: cefalexina500mg oral cada6h durante10–14días, ajustando a respuesta y evaluación médica. Total2000mg/día. Revisar alergias y resistencia local; cefalexina no cubre MRSA de forma fiable. No importar plazo de5días del esquema HSE de flucloxacilina a este régimen.",
+      "sources": [
+        "M1",
+        "M2",
+        "M4"
+      ]
+    },
+    {
+      "id": "renal",
+      "pt": "Cefalexina requer ajuste se doença renal: na bula selecionada para≥15anos, ClCr30–59mL/min limita total a1000mg/dia; ClCr15–29:250mg a cada8–12h; ClCr5–14 sem diálise:250mg/24h; ClCr1–4 sem diálise:250mg a cada48–60h. Não usar500mg/6h nesses grupos. Diálise ou função instável exige prescrição individual especializada.",
+      "es": "Cefalexina requiere ajuste renal: en prospecto elegido para≥15años, ClCr30–59mL/min limita total a1000mg/día; ClCr15–29:250mg cada8–12h; ClCr5–14 sin diálisis:250mg/24h; ClCr1–4 sin diálisis:250mg cada48–60h. No usar500mg/6h en estos grupos. Diálisis o función inestable exige prescripción individual especializada.",
+      "sources": [
+        "M4"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Evitar cefalexina em alergia a cefalosporinas; avaliar reação prévia grave a outros betalactâmicos. Monitorar rash, anafilaxia, diarreia importante e toxicidade por acúmulo renal. Probenecida aumenta exposição; metformina exige acompanhamento. Hepatopatia/anticoagulação justificam avaliação de risco, sem ajuste hepático numérico inventado.",
+      "es": "Evitar cefalexina ante alergia a cefalosporinas; evaluar reacción previa grave a otros betalactámicos. Vigilar rash, anafilaxia, diarrea importante y toxicidad por acumulación renal. Probenecid aumenta exposición; metformina exige seguimiento. Hepatopatía/anticoagulación justifican valorar riesgo, sin ajuste hepático numérico inventado.",
+      "sources": [
+        "M4"
+      ]
+    },
+    {
+      "id": "lactation",
+      "pt": "Cefalexina geralmente é compatível com amamentação, sem suspensão rotineira. Observar diarreia, candidíase ou reação alérgica no lactente. A dose materna não é dose pediátrica. Gravidez simultânea ou lactente muito vulnerável exige avaliação individual dos medicamentos; esta prescrição não é esquema para mastite neonatal ou não lactacional.",
+      "es": "Cefalexina generalmente es compatible con lactancia, sin suspensión rutinaria. Observar diarrea, candidiasis o alergia en lactante. Dosis materna no es dosis pediátrica. Embarazo simultáneo o lactante muy vulnerable exige evaluación individual de fármacos; esta pauta no es para mastitis neonatal ni no lactacional.",
+      "sources": [
+        "M4",
+        "M5"
+      ]
+    },
+    {
+      "id": "escalation",
+      "pt": "Instabilidade, suspeita de sepse ou incapacidade de ingerir líquidos/medicamentos exige hospital. Suspeita de abscesso requer ultrassom e drenagem por equipe habilitada, com cultura do material; orientar amamentação conforme localização e ferida. Alergia grave, MRSA ou falha terapêutica exige escolha individual de alternativa, sem escalonamento empírico cego.",
+      "es": "Inestabilidad, sospecha de sepsis o imposibilidad de ingerir líquidos/fármacos exige hospital. Sospecha de absceso requiere ecografía y drenaje por equipo capacitado, con cultivo; orientar lactancia según localización y herida. Alergia grave, MRSA o fracaso exige alternativa individual, sin escalamiento empírico a ciegas.",
+      "sources": [
+        "M1",
+        "M2"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta exige estabilidade, tolerância oral, plano de lactação e retorno. Reavaliar em até48h se não há melhora, antes se piora. Nesse contexto ABM considera cultura de leite e investigação de resistência; cultura não é rotina em todo quadro de atenção primária. Seguir até resolução; nódulo que não diminui em1semana necessita avaliação.",
+      "es": "Alta exige estabilidad, tolerancia oral, plan de lactancia y retorno. Reevaluar dentro de48h si no mejora, antes si empeora. En este contexto ABM considera cultivo de leche y resistencia; cultivo no es rutinario en todo cuadro de atención primaria. Seguir hasta resolución; nódulo que no disminuye en1semana necesita evaluación.",
+      "sources": [
+        "M1",
+        "M2",
+        "M8"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "M1",
+      "title": "Mastitis spectrum Protocol36",
+      "authority": "Academy of Breastfeeding Medicine",
+      "year": 2022,
+      "status": "AUTHORITATIVE_CURRENT_PROTOCOL",
+      "url": "https://www.bfmed.org/assets/ABM%20Protocol%20%2336.pdf",
+      "scope": "Portal ABM ainda indica36; substitui4/20. Box1 e manejo de complicações.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M2",
+      "title": "Lactational mastitis V3.0",
+      "authority": "HSE AMRIC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_PORTAL",
+      "url": "https://healthservice.hse.ie/documents/8103/Lactational_mastitis_V3.0_220326.pdf",
+      "scope": "Revisada dezembro2024; upload março2026, não revisão2026. Flucloxacilina/clindamicina têm outro esquema.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M3",
+      "title": "Mastitis",
+      "authority": "NHS",
+      "year": "data não confirmada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/mastitis/",
+      "scope": "Cuidados, continuidade da amamentação e retorno.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M4",
+      "title": "Cephalexin capsule prescribing information",
+      "authority": "DailyMed / Unit Dose Solutions",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_REPACKAGED_LABEL",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=53704ffd-b4f6-8b61-e063-6394a90a01f9&version=1",
+      "scope": "Registro04/06/2026; texto Rev12/2020. Tabela renal≥15anos e interações.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M5",
+      "title": "Cephalexin LactMed",
+      "authority": "NIH NLM",
+      "year": 2024,
+      "status": "AUTHORITATIVE_LACTATION_MONOGRAPH",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK501487/",
+      "scope": "Revisão15/11/2024; lactação, efeitos no lactente.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M6",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose e grupos de risco.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M7",
+      "title": "Correction to Protocol36",
+      "authority": "Breastfeeding Medicine",
+      "year": 2022,
+      "status": "AUTHORITATIVE_ERRATUM_INDEXED",
+      "url": "https://journals.sagepub.com/doi/abs/10.1089/bfm.2022.29207.kbm.correx",
+      "scope": "Errata14/11/2022 indexada: autoria; sem mudança de dose identificada no texto indexado.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M8",
+      "title": "Mastitis while breastfeeding",
+      "authority": "HSE",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_PATIENT_GUIDANCE",
+      "url": "https://www2.hse.ie/conditions/mastitis/",
+      "scope": "09/12/2023; próxima09/12/2026.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

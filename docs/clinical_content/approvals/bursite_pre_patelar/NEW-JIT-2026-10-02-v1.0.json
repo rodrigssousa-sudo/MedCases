@@ -1,0 +1,164 @@
+{
+  "owner": "bursite_pre_patelar",
+  "title": {
+    "pt": "Bursite pré-patelar",
+    "es": "Bursitis prepatelar"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Bursite pré-patelar é inflamação da bolsa superficial à patela, causando edema anterior localizado e dor à pressão/ajoelhar. Microtrauma por ajoelhamento e trauma direto são causas comuns; gota, artrite inflamatória e infecção também podem causar bursite. Não confundir automaticamente com derrame intra-articular ou artrite séptica.",
+      "es": "Bursitis prepatelar es inflamación de bolsa superficial a rótula, con edema anterior localizado y dolor a presión/arrodillarse. Microtrauma por arrodillarse y golpe directo son causas comunes; gota, artritis inflamatoria e infección también pueden causarla. No confundir automáticamente con derrame intraarticular ni artritis séptica.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Perguntar trauma, ocupação, ajoelhamento, ferida/corte, febre, doença inflamatória, diabetes/imunossupressão e anticoagulação. Examinar pele, localização do edema, calor, eritema, flutuação, mobilidade e capacidade de apoiar. Dor desproporcional, limitação articular intensa ou incapacidade de mobilizar não deve ser atribuída apenas à bursa.",
+      "es": "Preguntar trauma, trabajo, arrodillamiento, herida/corte, fiebre, inflamación crónica, diabetes/inmunosupresión y anticoagulación. Examinar piel, localización del edema, calor, eritema, fluctuación, movilidad y apoyo. Dolor desproporcionado, limitación articular intensa o imposibilidad de mover no debe atribuirse solo a la bolsa.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Febre/calafrios, mal-estar, ferida sobre a bursa, eritema progressivo ou dor importante exige avaliação urgente por possível infecção. Instabilidade, suspeita de sepse ou artrite séptica exige hospital. Crianças e imunocomprometidos têm maior risco de infecção; não esperar semanas de tratamento conservador nesses contextos.",
+      "es": "Fiebre/escalofríos, malestar, herida sobre bolsa, eritema progresivo o dolor importante exige evaluación urgente por posible infección. Inestabilidad, sospecha de sepsis o artritis séptica exige hospital. Niños e inmunocomprometidos tienen mayor riesgo infeccioso; no esperar semanas de manejo conservador en estos contextos.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Diagnóstico frequentemente é clínico. Radiografia é seletiva se trauma/suspeita óssea; ultrassom pode ajudar a localizar coleção. Suspeita de infecção/cristais pode indicar aspiração por profissional habilitado para cultura e análise, sem punção domiciliar. Não fazer imagem avançada ou aspiração rotineira em toda bursite simples.",
+      "es": "Diagnóstico suele ser clínico. Radiografía es selectiva ante trauma/sospecha ósea; ecografía puede localizar colección. Sospecha de infección/cristales puede indicar aspiración por profesional capacitado para cultivo y análisis, sin punción doméstica. No hacer imagen avanzada ni aspiración rutinaria en toda bursitis simple.",
+      "sources": [
+        "B1",
+        "B3"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar celulite, artrite séptica, gota/pseudogota, lesão tendínea e fratura conforme exame. Bursite infectada exige tratamento distinto da mecânica; exame sem febre não autoriza excluir infecção se outros achados preocupam. Evolução atípica ou recorrente pede reavaliação da causa.",
+      "es": "Diferenciar celulitis, artritis séptica, gota/pseudogota, lesión tendinosa y fractura según examen. Bursitis infectada exige tratamiento distinto de mecánica; ausencia de fiebre no excluye infección si otros hallazgos preocupan. Evolución atípica o recurrente requiere revisar causa.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Na forma não infecciosa: reduzir ajoelhamento e pressão direta, repouso relativo, elevação conforme conforto e retorno gradual às atividades. Gelo envolvido em pano por cerca de10min, repetido a cada poucas horas conforme NHS, sem contato direto nem queimadura pelo frio. Joelheiras e pausas reduzem recorrência ocupacional.",
+      "es": "En forma no infecciosa: reducir arrodillarse y presión directa, reposo relativo, elevar según confort y retorno gradual. Hielo envuelto en paño unos10min, repetido cada pocas horas según NHS, sin contacto directo ni quemadura por frío. Rodilleras y pausas reducen recurrencia laboral.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Para adulto≥50kg sem contraindicação: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, por menor tempo possível. Não somar outros produtos com paracetamol. Peso<50kg, doença renal/hepática ou consumo importante de álcool exige individualização. Dor intensa não deve apenas receber repetição de analgésico sem diagnóstico.",
+      "es": "Para adulto≥50kg sin contraindicación: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo posible. No sumar otros productos con paracetamol. Peso<50kg, nefropatía/hepatopatía o alcohol importante exige individualización. Dolor intenso no debe recibir solo analgésicos repetidos sin diagnóstico.",
+      "sources": [
+        "B4"
+      ]
+    },
+    {
+      "id": "infection",
+      "pt": "Bursite séptica precisa antibiótico sistêmico selecionado por gravidade, provável agente/cultura, alergias e resistência local, além de avaliar drenagem. Sepse, imunossupressão importante ou falha oral pode exigir via IV/hospital. Não prescrever antibiótico para bursite mecânica; não inventar curso único para toda infecção com base em folheto sem posologia.",
+      "es": "Bursitis séptica necesita antibiótico sistémico elegido por gravedad, germen/cultivo, alergias y resistencia local, además de evaluar drenaje. Sepsis, inmunosupresión importante o fracaso oral puede exigir vía IV/hospital. No indicar antibiótico para bursitis mecánica; no inventar curso único para toda infección desde folleto sin posología.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "procedure",
+      "pt": "Infiltração não é conduta inicial automática e não deve ser feita se infecção possível/confirmada. Persistência incapacitante apesar de medidas conservadoras pode justificar ortopedia para aspiração/infiltração selecionada; cirurgia é rara e reservada a casos específicos. Procedimento requer técnica, avaliação de risco e diagnóstico, sem dose de corticoide presumida.",
+      "es": "Infiltración no es conducta inicial automática y no debe hacerse ante infección posible/confirmada. Persistencia incapacitante pese a medidas conservadoras puede justificar ortopedia para aspiración/infiltración seleccionada; cirugía es rara y reservada a casos específicos. Procedimiento exige técnica, riesgo y diagnóstico, sin dosis de corticoide supuesta.",
+      "sources": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Crianças não recebem automaticamente dose adulta; escolher analgésico pediátrico por peso/produto após avaliação. Gestação/lactação exige conferir medicamento; paracetamol costuma ser opção compatível quando indicado. Doença renal/hepática, anticoagulação e imunossupressão mudam risco farmacológico/procedimental, sem ajuste percentual arbitrário.",
+      "es": "Niños no reciben automáticamente dosis adulta; elegir analgésico pediátrico por peso/producto tras evaluación. Embarazo/lactancia exige revisar medicamento; paracetamol suele ser opción compatible si indicado. Nefropatía/hepatopatía, anticoagulación e inmunosupresión cambian riesgo farmacológico/procedimental, sin ajuste porcentual arbitrario.",
+      "sources": [
+        "B2",
+        "B4"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta é adequada em quadro não complicado, estabilidade, função preservada e plano de retorno. Se não melhora ou piora após1–2semanas de autocuidado, reavaliar; febre, perda de movimento ou dor intensa exige retorno antes. Monitorar edema, dor, pele, função e resposta ao manejo; revisar causa ocupacional para prevenção.",
+      "es": "Alta es adecuada si no complicado, estable, función conservada y plan de retorno. Si no mejora o empeora tras1–2semanas de autocuidado, reevaluar; fiebre, pérdida de movimiento o dolor intenso exige retorno antes. Vigilar edema, dolor, piel, función y respuesta; revisar causa laboral para prevención.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "B1",
+      "title": "Prepatellar kneecap bursitis",
+      "authority": "AAOS OrthoInfo",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_PATIENT_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/prepatellar-kneecap-bursitis/",
+      "scope": "Clínica, infecção, avaliação e manejo; não guideline de doses antibióticas.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B2",
+      "title": "Pre-patella bursitis",
+      "authority": "Leeds Community Healthcare NHS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_INSTITUTIONAL_GUIDANCE",
+      "url": "https://leedscommunityhealthcare.nhs.uk/our-services-a-z/musculoskeletal-msk/knee-problems/known-diagnosed-knee-problems/pre-patella-bursitis/",
+      "scope": "Manejo conservador, gelo e risco infeccioso.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B3",
+      "title": "Bursitis",
+      "authority": "NHS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/bursitis/",
+      "scope": "30/10/2023; próxima30/10/2026; não infiltrar em infecção.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B4",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose e segurança.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,142 @@
+{
+  "owner": "tenossinovite_de_quervain",
+  "title": {
+    "pt": "Tenossinovite de De Quervain",
+    "es": "Tenosinovitis de De Quervain"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Tenossinovite de De Quervain é problema dos tendões do primeiro compartimento extensor no lado radial do punho, com dor ao mover polegar, agarrar ou levantar objetos. Estenose/irritação da bainha altera deslizamento. Pode surgir no puerpério; não é tireoidite de De Quervain.",
+      "es": "Tenosinovitis de De Quervain afecta tendones del primer compartimento extensor radial de muñeca, con dolor al mover pulgar, agarrar o levantar. Estenosis/irritación de vaina altera deslizamiento. Puede aparecer en puerperio; no es tiroiditis de De Quervain.",
+      "sources": [
+        "Q1",
+        "Q3"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar dor radial localizada, edema, atividades provocadoras e função. Palpação e manobra provocativa cuidadosa ajudam; evitar forçar repetidamente teste doloroso como autoteste. Ultrassom pode esclarecer dúvida/guiar procedimento, mas não é obrigatório em quadro típico. Trauma ou diagnóstico incerto exige investigar alternativas.",
+      "es": "Evaluar dolor radial localizado, edema, actividades provocadoras y función. Palpación y maniobra provocativa cuidadosa ayudan; evitar forzar repetidamente prueba dolorosa como autotest. Ecografía puede aclarar duda/guiar procedimiento, pero no obligatoria en cuadro típico. Trauma o duda exige investigar alternativas.",
+      "sources": [
+        "Q1",
+        "Q2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Considerar fratura de escafoide após trauma, artrose da base do polegar, síndrome de interseção e neuropatia radial superficial. Dor na tabaqueira pós-trauma não deve receber diagnóstico automático de tenossinovite; parestesia/deficit exige avaliar nervo e outras causas.",
+      "es": "Considerar fractura de escafoides tras trauma, artrosis basal del pulgar, síndrome de intersección y neuropatía radial superficial. Dolor en tabaquera tras trauma no debe diagnosticarse automáticamente tenosinovitis; parestesia/déficit exige evaluar nervio y alternativas.",
+      "sources": [
+        "Q1",
+        "Q2"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Modificar movimentos repetitivos e posição ao erguer bebê/objetos; órtese que apoie polegar e punho pode reduzir provocação. Orientar função e reabilitação sem esforço doloroso repetido. Imobilização deve ser individual, não abandono indefinido da mão. Analgesia é adjuvante, sem corrigir sozinha a estenose.",
+      "es": "Modificar movimientos repetitivos y posición al levantar bebé/objetos; férula que sostenga pulgar y muñeca puede reducir provocación. Indicar función y rehabilitación sin esfuerzo doloroso repetido. Inmovilización individual, no abandono indefinido de mano. Analgesia adyuvante, sin corregir estenosis sola.",
+      "sources": [
+        "Q1",
+        "Q3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se analgesia necessária em adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo. Não duplicar produtos. Peso<50kg, hepatopatia/nefropatia ou álcool importante exige individualização. Analgesia facilita função, mas não substitui reabilitação nem exclui lesão grave.",
+      "es": "Si analgesia necesaria en adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo. No duplicar productos. Peso<50kg, hepatopatía/nefropatía o alcohol importante exige individualización. Analgesia facilita función, sin sustituir rehabilitación ni excluir lesión grave.",
+      "sources": [
+        "P"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Discutir cedo infiltração local por profissional com órtese tipo thumb-spica: revisão2023 apoia combinação por3–4semanas em pacientes elegíveis. Não é receita universal de corticoide, concentração ou volume; escolher produto/técnica após avaliação. Informar risco de atrofia/alteração de cor da pele e evitar injeção no tendão. Cirurgia é opção se tratamento não cirúrgico falha.",
+      "es": "Discutir pronto infiltración profesional con férula tipo thumb-spica: revisión2023 apoya combinación por3–4semanas en elegibles. No es receta universal de corticoide, concentración o volumen; elegir producto/técnica tras valorar. Informar riesgo de atrofia/cambio de color y evitar inyección tendinosa. Cirugía si falla tratamiento no quirúrgico.",
+      "sources": [
+        "Q1",
+        "Q2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Febre, vermelhidão progressiva, ferida/mordida, trauma importante, perda de força aguda ou déficit neurovascular exige avaliação urgente. Não infiltrar suspeita de infecção. Dor persistente com massa ou diagnóstico incerto exige reavaliar, não repetir procedimento automaticamente.",
+      "es": "Fiebre, enrojecimiento progresivo, herida/mordida, trauma importante, pérdida aguda de fuerza o déficit neurovascular exige urgencia. No infiltrar sospecha infecciosa. Dolor persistente con masa o duda exige reevaluar, no repetir procedimiento automáticamente.",
+      "sources": [
+        "Q1",
+        "Q2"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Puerpério/lactação exige adaptação ergonômica e decisão de medicamento/procedimento conforme produto, sem presumir suspensão da amamentação. Diabetes pode exigir vigilância glicêmica se corticoide escolhido; anticoagulação/risco infeccioso precisam avaliação. Criança não recebe automaticamente plano/dose adultos.",
+      "es": "Puerperio/lactancia exige adaptación ergonómica y decisión de fármaco/procedimiento por producto, sin asumir suspensión de lactancia. Diabetes puede exigir vigilancia glucémica si corticoide elegido; anticoagulación/riesgo infeccioso requieren valoración. Niño no recibe automáticamente plan/dosis adultos.",
+      "sources": [
+        "Q1",
+        "Q2",
+        "P"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta sem alarme com orientação, órtese adequada se indicada e plano de revisão. Monitorar dor, atividades e tolerância; persistência incapacitante justifica especialista da mão. Após infiltração, seguir orientação da equipe e procurar assistência por febre, dor desproporcional ou déficit.",
+      "es": "Alta sin alarma con orientación, férula adecuada si indicada y revisión. Vigilar dolor, actividades y tolerancia; persistencia incapacitante justifica especialista de mano. Tras infiltración, seguir equipo y consultar por fiebre, dolor desproporcionado o déficit.",
+      "sources": [
+        "Q1",
+        "Q3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "Q1",
+      "title": "De Quervain syndrome",
+      "authority": "BSSH",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.bssh.ac.uk/patients/conditions/19/de_quervains_syndrome",
+      "scope": "Clínica, órtese e tratamento profissional.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "Q2",
+      "title": "Management of de Quervain — systematic review/network meta-analysis",
+      "authority": "JAMA Network Open",
+      "year": 2023,
+      "status": "AUTHORITATIVE_SYSTEMATIC_REVIEW",
+      "url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2811119",
+      "scope": "27/10/2023; benefício de injeção+órtese3–4semanas; evidência não dose única universal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "Q3",
+      "title": "De Quervain thumb tendonitis",
+      "authority": "Essex Partnership NHS",
+      "year": "data clínica não confirmada",
+      "status": "AUTHORITATIVE_LOCAL_PATIENT_GUIDANCE_INDEXED",
+      "url": "https://www.eput.nhs.uk/wp-content/uploads/2025/03/a4de-quervains-tenosynovitis-thumb-tendonitis.pdf",
+      "scope": "Upload2025 não confundido com revisão clínica2025.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose sintomática e limites.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

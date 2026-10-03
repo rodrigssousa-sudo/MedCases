@@ -1,0 +1,175 @@
+{
+  "owner": "raiva_exposicao_raiva",
+  "title": {
+    "pt": "Raiva — exposição e profilaxia pós-exposição",
+    "es": "Rabia — exposición y profilaxis posexposición"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Raiva é infecção viral transmitida por mamíferos; a profilaxia pós-exposição previne doença antes dos sintomas. Este candidato operacional usa o protocolo do Brasil; não transplantar seu calendário para outra jurisdição. Sintomas neurológicos após exposição, hidrofobia ou aerofobia exigem internação, infectologia e vigilância, não apenas aplicação ambulatorial de vacina.",
+      "es": "Rabia es infección viral transmitida por mamíferos; profilaxis posexposición previene enfermedad antes de síntomas. Este candidato operativo usa protocolo de Brasil; no trasladar calendario a otra jurisdicción. Síntomas neurológicos tras exposición, hidrofobia o aerofobia exigen ingreso, infectología y vigilancia, no solo vacuna ambulatoria.",
+      "sources": [
+        "R3",
+        "R6"
+      ]
+    },
+    {
+      "id": "assess",
+      "pt": "Registrar espécie, local e data, mordedura/arranhadura, saliva em mucosa ou pele lesada, profundidade/localização das feridas, situação do animal, observabilidade e imunização prévia documentada. Contato em pele íntegra não equivale a mordedura. Exposição a morcego ou mamífero silvestre exige avaliação imediata; não aguardar teste humano para decidir prevenção.",
+      "es": "Registrar especie, lugar y fecha, mordedura/arañazo, saliva en mucosa o piel lesionada, profundidad/localización de heridas, situación animal, observabilidad e inmunización previa documentada. Contacto en piel íntegra no equivale a mordedura. Exposición a murciélago o mamífero silvestre exige evaluación inmediata; no esperar prueba humana para decidir prevención.",
+      "sources": [
+        "R3",
+        "R1"
+      ]
+    },
+    {
+      "id": "wound",
+      "pt": "Lavar ferida com água e sabão por pelo menos15min; avaliar lesão neurovascular, tétano e necessidade específica de antibiótico. Se sutura for necessária, considerar infiltração de imunobiológico indicado antes de fechá-la. Não atrasar vacina indicada porque o soro ainda não está disponível.",
+      "es": "Lavar herida con agua y jabón por al menos15min; evaluar lesión neurovascular, tétanos y necesidad específica de antibiótico. Si sutura es necesaria, considerar infiltración de inmunobiológico indicado antes de cerrarla. No retrasar vacuna indicada porque suero aún no esté disponible.",
+      "sources": [
+        "R3",
+        "R6",
+        "R1"
+      ]
+    },
+    {
+      "id": "animal",
+      "pt": "No Brasil, cão/gato clinicamente saudável e realmente observável pode ser acompanhado por10dias sem profilaxia inicial conforme MS, inclusive após acidente grave. Se desaparecer, adoecer ou morrer sem excluir raiva, iniciar profilaxia imediatamente. Animal suspeito, não observável, silvestre ou de produção exige decisão conforme espécie, exposição e vigilância local; não generalizar observação a morcegos.",
+      "es": "En Brasil, perro/gato clínicamente sano y realmente observable puede vigilarse por10días sin profilaxis inicial según MS, incluso tras accidente grave. Si desaparece, enferma o muere sin excluir rabia, iniciar profilaxis inmediatamente. Animal sospechoso, no observable, silvestre o de producción exige decisión por especie, exposición y vigilancia local; no generalizar observación a murciélagos.",
+      "sources": [
+        "R1",
+        "R2"
+      ]
+    },
+    {
+      "id": "vaccine",
+      "pt": "Quando indicado esquema completo em imunocompetente não previamente imunizado: vacina antirrábica inativada IM nos dias0,3,7,14; dia0 é a primeira aplicação. Aplicar dose integral do frasco,0,5mL ou1mL conforme fabricante, não uma dose por peso. Deltoide; em criança<2anos, vasto lateral da coxa. Nunca glúteo. Confirmar apresentação antes de preparar; esquema intradérmico requer serviço habilitado e não está prescrito neste candidato.",
+      "es": "Cuando se indique pauta completa en inmunocompetente no previamente inmunizado: vacuna antirrábica inactivada IM días0,3,7,14; día0 es primera aplicación. Aplicar dosis íntegra del vial,0,5mL o1mL según fabricante, no dosis por peso. Deltoides; en niño<2años, vasto lateral del muslo. Nunca glúteo. Confirmar presentación antes de preparar; pauta intradérmica requiere servicio habilitado y no se prescribe en este candidato.",
+      "sources": [
+        "R1",
+        "R4"
+      ]
+    },
+    {
+      "id": "passive",
+      "pt": "Quando imunização passiva for indicada pelo risco: imunoglobulina humana antirrábica20UI/kg OU soro antirrábico equino40UI/kg, uma aplicação; não somar ambos nem exceder dose. Preferir no início; limite até7dias após primeira vacina. Não confundir UI/kg com mL/kg nem repetir soro em cada visita. Infiltrar dentro/ao redor de todas as feridas possíveis, inclusive cicatrizadas.",
+      "es": "Cuando inmunización pasiva esté indicada por riesgo: inmunoglobulina humana antirrábica20UI/kg O suero antirrábico equino40UI/kg, una aplicación; no sumar ambos ni exceder dosis. Preferir al inicio; límite hasta7días tras primera vacuna. No confundir UI/kg con mL/kg ni repetir suero en cada visita. Infiltrar dentro/alrededor de todas las heridas posibles, incluso cicatrizadas.",
+      "sources": [
+        "R1",
+        "R2",
+        "R4"
+      ]
+    },
+    {
+      "id": "preparation",
+      "pt": "VINRAB equino1000UI/5mL corresponde a200UI/mL; volume total não diluído=dose em UI÷200UI/mL. Conforme MS, infiltrar volume anatomicamente tolerável e administrar remanescente IM separado da vacina, respeitando limites musculares. Evitar pressão que comprometa perfusão de dedos. Não aplicar IV nem na mesma seringa/local da vacina; diluição exige conferir produto, não usar regra única para imunoglobulinas diferentes.",
+      "es": "VINRAB equino1000UI/5mL corresponde a200UI/mL; volumen total no diluido=dosis en UI÷200UI/mL. Según MS, infiltrar volumen anatómicamente tolerable y administrar remanente IM separado de vacuna, respetando límites musculares. Evitar presión que comprometa perfusión digital. No administrar IV ni en misma jeringa/lugar de vacuna; dilución exige revisar producto, no regla única para distintas inmunoglobulinas.",
+      "sources": [
+        "R2",
+        "R4",
+        "R6"
+      ]
+    },
+    {
+      "id": "reexposure",
+      "pt": "Reexposição em imunocompetente exige conferir registros. No Brasil, PrEP completa: vacina dias0,3 sem soro. Após PEP completa até90dias: não indicar novo esquema; depois de90dias, pelo menos2doses de PEP documentadas permitem vacina dias0,3 sem soro, conforme MS. PEP incompleta recente exige completar; apenas1dose anterior não conta como esquema suficiente. Não aplicar algoritmo simplificado a imunossupressão grave.",
+      "es": "Reexposición en inmunocompetente exige revisar registros. En Brasil, PrEP completa: vacuna días0,3 sin suero. Tras PEP completa hasta90días: no indicar nueva pauta; después de90días, al menos2dosis PEP documentadas permiten vacuna días0,3 sin suero, según MS. PEP incompleta reciente exige completar; solo1dosis anterior no cuenta como pauta suficiente. No aplicar algoritmo simplificado a inmunosupresión grave.",
+      "sources": [
+        "R1",
+        "R2"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestação não contraindica profilaxia indicada; criança também não deve ter prevenção negada. Imunossupressão grave exige avaliação imediata especializada de vacina, soro e controle sorológico; a NT35/2026 orienta sorologia14dias após última dose. Não importar automaticamente esquema norte-americano de5doses para o esquema brasileiro ou dispensar soro só por vacinação prévia nesse grupo.",
+      "es": "Embarazo no contraindica profilaxis indicada; tampoco negar prevención a niños. Inmunosupresión grave exige valoración especializada inmediata de vacuna, suero y control serológico; NT35/2026 indica serología14días tras última dosis. No importar automáticamente pauta estadounidense de5dosis al esquema brasileño ni excluir suero solo por vacuna previa en este grupo.",
+      "sources": [
+        "R2",
+        "R5"
+      ]
+    },
+    {
+      "id": "monitor",
+      "pt": "Aplicar em serviço capaz de tratar anafilaxia, monitorar reação e registrar produto, lote, volume, sítios e datas. Reação local leve não justifica abandonar esquema. Faltas geralmente exigem aplicar dose pendente e reorganizar intervalos, sem reiniciar automaticamente. Alta exige calendário escrito e acesso às próximas doses; atraso prolongado, falha de aplicação ou reação grave exige consulta especializada e vigilância.",
+      "es": "Aplicar en servicio capaz de tratar anafilaxia, vigilar reacción y registrar producto, lote, volumen, sitios y fechas. Reacción local leve no justifica abandonar pauta. Ausencias generalmente exigen aplicar dosis pendiente y reorganizar intervalos, sin reiniciar automáticamente. Alta exige calendario escrito y acceso a siguientes dosis; retraso prolongado, error de aplicación o reacción grave exige consulta especializada y vigilancia.",
+      "sources": [
+        "R1",
+        "R4",
+        "R6"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "R1",
+      "title": "Nota Técnica8/2022 — profilaxia antirrábica",
+      "authority": "Ministério da Saúde Brasil",
+      "year": 2022,
+      "status": "AUTHORITATIVE_NATIONAL_PROTOCOL",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/r/raiva/notas-tecnicas-e-informativas/nota-tecnica-no-8-2022-cgzv-deidt-svs-ms",
+      "scope": "Texto integral; esquema brasileiro, volume vacinal e reexposição.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R2",
+      "title": "Nota Técnica Conjunta35/2026 — VINRAB",
+      "authority": "Ministério da Saúde Brasil",
+      "year": 2026,
+      "status": "AUTHORITATIVE_NATIONAL_UPDATE",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/r/raiva/notas-tecnicas-e-informativas/nota-tecnica-conjunta-no-35-2026-cggi-cgici-dpni-cgzha-dedt-svsa-ms-e-cgzha-dedt-svsa-ms",
+      "scope": "Março2026; soro equino, infiltração, imunocomprometidos.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R3",
+      "title": "Rabies",
+      "authority": "WHO",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/rabies",
+      "scope": "17/09/2026; exposição, lavagem e prevenção.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R4",
+      "title": "HAN00533 — PEP administration errors",
+      "authority": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_SAFETY_ALERT",
+      "url": "https://www.cdc.gov/han/php/notices/han00533.html",
+      "scope": "10/09/2026; erros de aplicação, não substitui esquema brasileiro.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R5",
+      "title": "Rabies Post-exposure Prophylaxis Guidance",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_US_PROTOCOL_SUPPORTIVE",
+      "url": "https://www.cdc.gov/rabies/hcp/clinical-care/post-exposure-prophylaxis.html",
+      "scope": "Gestação e cuidados; calendário EUA não importado para Brasil.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R6",
+      "title": "Rabies — Yellow Book2026",
+      "authority": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_TRAVEL_GUIDANCE",
+      "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/rabies.html",
+      "scope": "Sutura, cuidado da ferida e reação vacinal; diluentes dependem do produto.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

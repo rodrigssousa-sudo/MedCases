@@ -1,0 +1,225 @@
+{
+  "owner": "colelitiase_colica_biliar",
+  "title": {
+    "pt": "Colelitíase / cólica biliar",
+    "es": "Colelitiasis / cólico biliar"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Colelitíase é a presença de cálculos na vesícula; muitos são assintomáticos. Cólica biliar corresponde a dor por obstrução transitória da saída vesicular, sem infecção/inflamação sistêmica demonstrada. Este candidato trata adultos com litíase vesicular e cólica não complicada; não substitui protocolos de colecistite, colangite, coledocolitíase ou pancreatite.",
+      "es": "La colelitiasis es la presencia de cálculos en la vesícula; muchos son asintomáticos. El cólico biliar corresponde al dolor por obstrucción transitoria de la salida vesicular, sin infección/inflamación sistémica demostrada. Este candidato trata adultos con litiasis vesicular y cólico no complicado; no sustituye protocolos de colecistitis, colangitis, coledocolitiasis o pancreatitis.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "context",
+      "pt": "A bile fica armazenada na vesícula e é liberada para auxiliar a digestão. Cristais de colesterol ou pigmento podem formar cálculos. O risco se relaciona, entre outros fatores, a idade, sexo feminino, obesidade e perda rápida de peso. Não atribuir qualquer dispepsia a um cálculo incidental: a relação entre sintomas e achado de imagem precisa ser clínica.",
+      "es": "La bilis se almacena en la vesícula y se libera para ayudar a la digestión. Cristales de colesterol o pigmento pueden formar cálculos. El riesgo se relaciona, entre otros factores, con edad, sexo femenino, obesidad y pérdida rápida de peso. No atribuir cualquier dispepsia a un cálculo incidental: la relación entre síntomas y hallazgo de imagen debe ser clínica.",
+      "sources": [
+        "B2",
+        "B4"
+      ]
+    },
+    {
+      "id": "presentation",
+      "pt": "Dor forte e frequentemente constante no epigástrio/hipocôndrio direito, podendo irradiar para dorso/escápula e acompanhar náuseas/vômitos, é compatível com cólica biliar. Pode ocorrer após alimentação. Apesar do nome cólica, não precisa ter padrão em ondas. Duração isolada não exclui complicação; febre, icterícia, sinais peritoneais ou deterioração mudam o fluxo.",
+      "es": "Dolor intenso y a menudo constante en epigastrio/hipocondrio derecho, que puede irradiarse a espalda/escápula y acompañarse de náuseas/vómitos, es compatible con cólico biliar. Puede aparecer tras comer. Pese al nombre cólico, no necesita un patrón en oleadas. La duración aislada no excluye complicaciones; fiebre, ictericia, signos peritoneales o deterioro cambian el manejo.",
+      "sources": [
+        "B2",
+        "B4",
+        "B5"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Dor persistente ou refratária, febre/calafrios, icterícia, hipotensão, confusão, peritonismo ou vômitos que impeçam hidratação exige investigação urgente de complicação. Considerar colecistite, colangite/obstrução biliar e pancreatite; não esperar um corte temporal rígido para encaminhar paciente doente.",
+      "es": "Dolor persistente o refractario, fiebre/escalofríos, ictericia, hipotensión, confusión, peritonismo o vómitos que impidan hidratarse exige investigar complicaciones urgentemente. Considerar colecistitis, colangitis/obstrucción biliar y pancreatitis; no esperar un umbral temporal rígido para derivar a un paciente enfermo.",
+      "sources": [
+        "B1",
+        "B2",
+        "B4",
+        "B5"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar sinais vitais, hidratação e exame abdominal. Solicitar ultrassom e provas hepáticas em suspeita de doença biliar. Hemograma e lipase são dirigidos à suspeita de infecção/pancreatite. Se ultrassom não mostrar cálculo no colédoco, mas houver dilatação ductal e/ou testes hepáticos anormais, considerar colangiorressonância; ultrassom endoscópico pode esclarecer exame inconclusivo.",
+      "es": "Evaluar signos vitales, hidratación y examen abdominal. Solicitar ecografía y pruebas hepáticas ante sospecha de enfermedad biliar. Hemograma y lipasa se orientan por sospecha de infección/pancreatitis. Si la ecografía no muestra cálculo en colédoco, pero existe dilatación ductal y/o pruebas hepáticas anormales, considerar colangiorresonancia; la ecografía endoscópica puede aclarar un estudio no concluyente.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "differentials",
+      "pt": "Diferenciais importantes incluem síndrome coronariana com apresentação epigástrica, úlcera/doença gastroduodenal, pancreatite, hepatite e outras causas de abdome agudo. ECG/investigação cardíaca e outros exames dependem de sintomas e risco; a presença de cálculo não encerra o diagnóstico diferencial.",
+      "es": "Diferenciales importantes incluyen síndrome coronario con presentación epigástrica, úlcera/enfermedad gastroduodenal, pancreatitis, hepatitis y otras causas de abdomen agudo. ECG/investigación cardíaca y otros estudios dependen de síntomas y riesgo; encontrar un cálculo no cierra el diagnóstico diferencial.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Controlar dor e corrigir desidratação conforme necessidade clínica. Não prescrever antibiótico rotineiro para cólica não complicada. Se sinais de infecção/obstrução/pancreatite aparecerem, seguir o protocolo específico e avaliar cirurgia/endoscopia. Medicação para náusea pode ser individualizada conforme risco e formulação; não há dose automática neste pacote.",
+      "es": "Controlar el dolor y corregir deshidratación según la necesidad clínica. No prescribir antibiótico rutinario para cólico no complicado. Si aparecen signos de infección/obstrucción/pancreatitis, seguir el protocolo específico y evaluar cirugía/endoscopia. La medicación para náuseas puede individualizarse según riesgo y formulación; este paquete no establece una dosis automática.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "nsaid",
+      "pt": "Opção em adulto sem contraindicação: diclofenaco sódico 75 mg por via intramuscular, dose inicial única, na solução verificada de 25 mg/mL: 3 mL. Aplicação profunda intraglútea por profissional, seguindo a bula e a anatomia segura. Não administrar essa ampola como bolus IV. Limite total da bula: 150 mg em 24 h, somando outras apresentações; injetável por no máximo 2 dias. Esses limites não autorizam repetição automática da dose inicial na cólica biliar.",
+      "es": "Opción en adulto sin contraindicación: diclofenaco sódico 75 mg por vía intramuscular, dosis inicial única, en la solución verificada de 25 mg/mL: 3 mL. Aplicación intraglútea profunda por un profesional siguiendo el prospecto y la anatomía segura. No administrar esta ampolla como bolo IV. Límite total del prospecto: 150 mg en 24 h sumando otras presentaciones; inyectable durante un máximo de 2 días. Estos límites no autorizan repetir automáticamente la dosis inicial en el cólico biliar.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "nsaid_safety",
+      "pt": "Excluir hipersensibilidade/AINE com broncoespasmo, úlcera ou sangramento/perfuração digestiva ativa ou recorrente, sangramento prévio por AINE, insuficiência renal/hepática e doença cardiovascular estabelecida, incluindo insuficiência cardíaca, doença isquêmica, arterial periférica ou cerebrovascular. Avaliar desidratação, idosos, anticoagulantes/antiagregantes, diuréticos e interações; não associar outro AINE. Monitorar reação alérgica, sangramento, função renal e local de aplicação conforme risco.",
+      "es": "Excluir hipersensibilidad/AINE con broncoespasmo, úlcera o sangrado/perforación digestiva activa o recurrente, sangrado previo por AINE, insuficiencia renal/hepática y enfermedad cardiovascular establecida, incluida insuficiencia cardíaca, enfermedad isquémica, arterial periférica o cerebrovascular. Evaluar deshidratación, adultos mayores, anticoagulantes/antiagregantes, diuréticos e interacciones; no asociar otro AINE. Vigilar alergia, sangrado, función renal y sitio de aplicación según riesgo.",
+      "sources": [
+        "B3"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se dor leve ou AINE não adequado, paracetamol pode ser suficiente em casos selecionados: adulto com peso ≥50 kg sem necessidade de ajuste, 500–1000 mg oral a cada 6 h se necessário, máximo 4 tomadas e 4000 mg em 24 h somando associações. Menor dose/tempo; reavaliar uso por mais de 3 dias. Dor intensa persistente apesar de analgesia exige reavaliação e resgate monitorado conforme protocolo, não apenas aumento de dose.",
+      "es": "Si el dolor es leve o un AINE no es adecuado, el paracetamol puede bastar en casos seleccionados: adulto con peso ≥50 kg sin necesidad de ajuste, 500–1000 mg oral cada 6 h si es necesario, máximo 4 tomas y 4000 mg en 24 h sumando combinaciones. Menor dosis/tiempo; reevaluar uso por más de 3 días. Dolor intenso persistente pese a analgesia exige reevaluación y rescate monitorizado según protocolo, no solo aumento de dosis.",
+      "sources": [
+        "B2",
+        "B6",
+        "B7"
+      ]
+    },
+    {
+      "id": "definitive",
+      "pt": "Cálculos vesiculares assintomáticos em vesícula/via biliar normais geralmente não precisam de tratamento. Para cálculos sintomáticos, discutir colecistectomia laparoscópica e encaminhar para cirurgia; explicar benefícios, riscos e possibilidade de sintomas persistirem por outra causa. Dissolução medicamentosa não é substituto rotineiro da cirurgia. ERCP não é tratamento de cálculo restrito à vesícula sem indicação ductal.",
+      "es": "Los cálculos vesiculares asintomáticos en vesícula/vía biliar normales generalmente no necesitan tratamiento. Para cálculos sintomáticos, discutir colecistectomía laparoscópica y derivar a cirugía; explicar beneficios, riesgos y posibilidad de persistencia de síntomas por otra causa. La disolución farmacológica no sustituye rutinariamente a la cirugía. La CPRE no trata un cálculo limitado a la vesícula sin indicación ductal.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Na gestação, não aplicar automaticamente diclofenaco: é contraindicado no último trimestre; a partir de 20 semanas existe risco fetal renal/oligoidrâmnio, exigindo decisão obstétrica. A bula também desaconselha uso na amamentação. Preferir analgesia individualizada, menor dose/tempo e avaliação da complicação; paracetamol pode ser considerado quando indicado. Ampolas de diclofenaco não são recomendadas em crianças. Disfunção renal/hepática e idosos exigem escolha individual, sem ajuste numérico inventado.",
+      "es": "En el embarazo, no aplicar automáticamente diclofenaco: está contraindicado en el último trimestre; desde las 20 semanas existe riesgo renal fetal/oligohidramnios que exige decisión obstétrica. El prospecto también desaconseja su uso durante lactancia. Preferir analgesia individualizada, menor dosis/tiempo y evaluación de complicaciones; puede considerarse paracetamol cuando esté indicado. Las ampollas de diclofenaco no se recomiendan en niños. Disfunción renal/hepática y adultos mayores requieren una elección individual, sin ajustes numéricos inventados.",
+      "sources": [
+        "B3",
+        "B6",
+        "B7"
+      ]
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta é possível após melhora sustentada, ausência de complicação demonstrada, tolerância oral e plano de investigação/encaminhamento e retorno. Dor refratária, vômitos persistentes, infecção, icterícia/obstrução ou instabilidade justificam observação/internação e avaliação especializada. Enquanto aguarda cirurgia, evitar alimentos que desencadeiem sintomas, sem prometer cura dietética. Retornar por recorrência importante, febre, icterícia ou piora.",
+      "es": "El alta es posible tras mejoría sostenida, ausencia de complicaciones demostradas, tolerancia oral y plan de estudios/derivación y retorno. Dolor refractario, vómitos persistentes, infección, ictericia/obstrucción o inestabilidad justifican observación/internación y evaluación especializada. Mientras espera cirugía, evitar alimentos que desencadenen síntomas sin prometer curación dietética. Volver ante recurrencia importante, fiebre, ictericia o empeoramiento.",
+      "sources": [
+        "B1",
+        "B4",
+        "B5"
+      ]
+    },
+    {
+      "id": "analgesic_safety",
+      "pt": "Paracetamol é contraindicado em hipersensibilidade. Peso <50 kg, fragilidade/desnutrição, doença renal/hepática ou consumo nocivo de álcool exige avaliação individual; o teto adulto não é automaticamente seguro. Conferir duplicidade em associações e interações, incluindo varfarina em uso regular prolongado. Superdose requer atendimento imediato mesmo sem sintomas.",
+      "es": "El paracetamol está contraindicado en hipersensibilidad. Peso <50 kg, fragilidad/desnutrición, enfermedad renal/hepática o consumo nocivo de alcohol requiere evaluación individual; el límite adulto no es automáticamente seguro. Revisar duplicación en combinaciones e interacciones, incluida warfarina con uso regular prolongado. La sobredosis requiere atención inmediata incluso sin síntomas.",
+      "sources": [
+        "B6",
+        "B7"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "B1",
+      "title": "Gallstone disease: diagnosis and management — CG188",
+      "authority": "NICE",
+      "year": 2014,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.nice.org.uk/guidance/cg188/evidence/full-guideline-pdf-193302253",
+      "scope": "Adultos; trechos oficiais indexados consultados; acesso direto ao capítuloHTML/PDF bloqueado na consulta. Documento de vigilância2018 identificado, sem atribuir nova data clínica.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B2",
+      "title": "Clinical Practice Guidelines: prevention, diagnosis and treatment of gallstones",
+      "authority": "EASL",
+      "year": 2016,
+      "status": "AUTHORITATIVE_OLDER",
+      "url": "https://easl.eu/wp-content/uploads/2016/10/EASL-CPG-Gallstones.pdf",
+      "scope": "Documento normativo publicado JHepatol2016, DOI10.1016/j.jhep.2016.03.005; analgesia biliar e tratamento causal. Não é guideline2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B3",
+      "title": "Voltarol Ampoules — SmPC",
+      "authority": "Novartis / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/1043/smpc",
+      "scope": "Atualização23/09/2025; diclofenaco75mg/3mL, técnica, limites, contraindicações. Indicação biliar sustentada pela diretriz, não explicitada nesta bula.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B4",
+      "title": "Gallstones",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/gallstones/",
+      "scope": "Revisada11/08/2025; sinais de complicação e diagnóstico.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B5",
+      "title": "Gallstones: advice for patients discharged from the emergency department",
+      "authority": "University Hospitals Sussex NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.uhsussex.nhs.uk/resources/gallstones-advice-for-patients-discharged-from-the-emergency-department/",
+      "scope": "Revisão30/06/2025; autocuidado, encaminhamento e retorno após urgência.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B6",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "population": "Adultos a partir de 18 anos",
+      "scope": "Posologia oral, duração de autocuidado e segurança",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B7",
+      "title": "Paracetamol 500 mg Tablet — Summary of Product Characteristics",
+      "authority": "Medley Pharma Limited / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "population": "Adultos; sem extrapolação para crianças neste pacote",
+      "scope": "Posologia, contraindicações, interações, gestação/lactação",
+      "url": "https://www.medicines.org.uk/emc/product/100828/smpc",
+      "verifiedOn": "2026-10-02",
+      "recencyNote": "Texto revisado em 19/08/2025. Bula britânica: verificar apresentação/formulário local antes da prescrição."
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

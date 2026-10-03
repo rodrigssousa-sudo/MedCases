@@ -1,0 +1,151 @@
+{
+  "owner": "sindrome_dolorosa_trocanterica_maior",
+  "title": {
+    "pt": "Síndrome dolorosa trocantérica maior",
+    "es": "Síndrome doloroso trocantérico mayor"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Síndrome dolorosa trocantérica maior causa dor lateral do quadril, frequentemente ligada aos tendões glúteos e tolerância à carga/compressão; pode haver participação bursal. Não presumir que todo caso seja bursite isolada. Dor pode piorar ao deitar sobre lado afetado, subir escada ou apoiar em uma perna.",
+      "es": "Síndrome doloroso trocantérico mayor causa dolor lateral de cadera, frecuentemente ligado a tendones glúteos y tolerancia a carga/compresión; puede participar bursa. No presumir bursitis aislada en todo caso. Puede empeorar al dormir de lado, subir escaleras o apoyar una pierna.",
+      "sources": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar início, trauma, localização, capacidade de apoiar, marcha e impacto. Palpar região trocantérica e examinar força/função do quadril; considerar coluna e exame neurológico quando indicado. Diagnóstico usualmente clínico; imagem é seletiva para dúvida, trauma, ruptura ou causa articular, não obrigatória em todo quadro típico.",
+      "es": "Evaluar inicio, trauma, lugar, apoyo, marcha e impacto. Palpar región trocantérica y examinar fuerza/función de cadera; considerar columna y neurología si indicado. Diagnóstico suele ser clínico; imagen selectiva ante duda, trauma, rotura o causa articular, no obligatoria en todo caso típico.",
+      "sources": [
+        "H2",
+        "H4"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Dor inguinal e limitação articular sugerem causa do quadril; parestesia/dor irradiada pode vir da coluna/nervo. Excluir fratura, artrite séptica, osteoartrite e lesão importante do tendão conforme contexto. Não atribuir incapacidade súbita de apoio à síndrome crônica sem investigar.",
+      "es": "Dolor inguinal y limitación articular sugieren causa de cadera; parestesia/dolor irradiado puede venir de columna/nervio. Excluir fractura, artritis séptica, artrosis y lesión tendinosa importante según contexto. No atribuir incapacidad súbita de apoyo al síndrome crónico sin investigar.",
+      "sources": [
+        "H2",
+        "H4"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Reduzir compressão: evitar dormir sobre lado doloroso e cruzar pernas; travesseiro entre joelhos pode ajudar. Ajustar caminhada/escadas e carga provocadora, mantendo atividade tolerada. Fortalecimento progressivo de glúteos orientado por fisioterapia é base; evitar alongamento compressivo agressivo ou repouso completo prolongado.",
+      "es": "Reducir compresión: evitar dormir de lado doloroso y cruzar piernas; almohada entre rodillas puede ayudar. Ajustar marcha/escaleras y carga provocadora, manteniendo actividad tolerada. Fortalecimiento progresivo glúteo con fisioterapia es base; evitar estiramiento compresivo agresivo o reposo total prolongado.",
+      "sources": [
+        "H1",
+        "H3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se analgesia necessária em adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo. Não duplicar produtos. Peso<50kg, hepatopatia/nefropatia ou álcool importante exige individualização. Analgesia facilita função, mas não substitui reabilitação nem exclui lesão grave.",
+      "es": "Si analgesia necesaria en adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo. No duplicar productos. Peso<50kg, hepatopatía/nefropatía o alcohol importante exige individualización. Analgesia facilita función, sin sustituir rehabilitación ni excluir lesión grave.",
+      "sources": [
+        "P"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Falha de reabilitação adequada exige reavaliar diagnóstico e discutir opção especializada. Infiltração pode aliviar sintomas em caso selecionado, mas não corrige sozinha capacidade tendínea nem substitui exercício; produto/dose/técnica não são universais. Não prometer benefício definitivo de PRP, ondas de choque ou cirurgia; ponderar evidência, riscos e contexto.",
+      "es": "Fallo de rehabilitación adecuada exige reevaluar diagnóstico y opción especializada. Infiltración puede aliviar en caso seleccionado, pero no corrige sola capacidad tendinosa ni sustituye ejercicio; producto/dosis/técnica no universales. No prometer beneficio definitivo de PRP, ondas de choque o cirugía; valorar evidencia, riesgos y contexto.",
+      "sources": [
+        "H1",
+        "H4"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Trauma com incapacidade de apoio, quadril quente/doloroso com febre, déficit neurovascular ou suspeita de fratura exige atendimento urgente. Dor noturna persistente não mecânica, perda ponderal ou câncer prévio precisa investigação. Não manter apenas fisioterapia se há esses sinais.",
+      "es": "Trauma con incapacidad de apoyo, cadera caliente/dolorosa con fiebre, déficit neurovascular o fractura sospechada exige urgencia. Dolor nocturno persistente no mecánico, pérdida ponderal o cáncer previo precisa estudio. No mantener solo fisioterapia ante signos.",
+      "sources": [
+        "H2",
+        "H4"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Em crianças/adolescentes, dor de quadril/claudicação precisa avaliação própria; não extrapolar síndrome adulta. Gestação, comorbidade renal/hepática e anticoagulação mudam analgesia/procedimento. Diabetes demanda avaliação se corticoide escolhido. Queda em idoso tem baixo limiar para investigar fratura.",
+      "es": "En niños/adolescentes, dolor de cadera/cojera requiere valoración propia; no extrapolar síndrome adulto. Embarazo, nefropatía/hepatopatía y anticoagulación cambian analgesia/procedimiento. Diabetes exige valoración si corticoide elegido. Caída en mayor tiene bajo umbral para estudiar fractura.",
+      "sources": [
+        "H2",
+        "P"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta se estável, sem alarme e com plano de carga/exercício e retorno. Acompanhar sono, caminhada, força, dor e tolerância pós-exercício. Reavaliar persistência incapacitante, piora ou diagnóstico incerto; ajustar progressão em vez de aumentar analgésico indefinidamente.",
+      "es": "Alta si estable, sin alarma y con plan de carga/ejercicio y retorno. Vigilar sueño, marcha, fuerza, dolor y tolerancia posterior al ejercicio. Reevaluar persistencia incapacitante, empeoramiento o duda; ajustar progresión sin subir analgésico indefinidamente.",
+      "sources": [
+        "H1",
+        "H3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "H1",
+      "title": "Lateral hip pain",
+      "authority": "NHS Kent",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.kentcht.nhs.uk/leaflet/lateral-hip-pain/",
+      "scope": "21/09/2026; tendão glúteo, compressão e reabilitação.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H2",
+      "title": "Greater trochanteric pain syndrome",
+      "authority": "NHS Dynamic Health",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_LOCAL_CLINICAL_GUIDANCE",
+      "url": "https://www.dynamichealth.nhs.uk/help-and-advice/hip-pain/greater-trochanteric-pain-syndrome/",
+      "scope": "Exame funcional e alarmes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H3",
+      "title": "Greater trochanteric pain syndrome",
+      "authority": "NHS Mersey Care",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_LOCAL_PATIENT_GUIDANCE",
+      "url": "https://www.merseycare.nhs.uk/greater-trochanteric-pain-syndrome",
+      "scope": "Ajuste de carga e exercício.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H4",
+      "title": "GTPS and lateral hip pain",
+      "authority": "NHS Leeds",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_LOCAL_GUIDANCE",
+      "url": "https://leedscommunityhealthcare.nhs.uk/our-services-a-z/musculoskeletal-msk/hip-problems/known-diagnosed-hip-problems/greater-trochanteric-pain-syndrome-gtps-and-lateral-hip-pain/",
+      "scope": "Manejo, diferenciação de articulação/nervo e cirurgia não rotina.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose sintomática e limites.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

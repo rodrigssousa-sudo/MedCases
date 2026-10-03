@@ -1,0 +1,151 @@
+{
+  "owner": "pitiriase_rosea",
+  "title": {
+    "pt": "Pitiríase rósea",
+    "es": "Pitiriasis rosada"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Pitiríase rósea é erupção autolimitada, geralmente em jovens, cuja causa exata não está estabelecida; associação viral não significa que seja micose ou herpes genital. Pode iniciar por placa maior seguida de lesões menores alinhadas no tronco, com descamação fina. Cor/forma variam conforme pele e apresentação.",
+      "es": "Pitiriasis rosada es erupción autolimitada, generalmente en jóvenes, de causa exacta no establecida; asociación viral no significa micosis ni herpes genital. Puede empezar con placa mayor seguida de lesiones menores alineadas en tronco, con descamación fina. Color/forma varían según piel y presentación.",
+      "sources": [
+        "R1",
+        "R2"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar evolução, distribuição, placa inicial, colarete de descamação, prurido, medicamentos novos e sintomas sistêmicos. Diagnóstico costuma ser clínico, mas apresentação atípica precisa reconsideração. Examinar palmas, plantas e mucosas quando indicado; história sexual e gravidez mudam a investigação.",
+      "es": "Evaluar evolución, distribución, placa inicial, collarete descamativo, picor, fármacos nuevos y síntomas sistémicos. Diagnóstico suele ser clínico, pero forma atípica requiere reconsideración. Examinar palmas, plantas y mucosas si indicado; historia sexual y embarazo cambian investigación.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar tínea corporal, sífilis secundária, psoríase gutata e erupção medicamentosa. Considerar teste para sífilis quando exposição ou morfologia sugerem; raspado micológico se placa anular duvidosa. Não prescrever antifúngico só porque o nome contém pitiríase nem negligenciar sífilis em gestante.",
+      "es": "Diferenciar tiña corporal, sífilis secundaria, psoriasis guttata y erupción medicamentosa. Considerar prueba de sífilis si exposición o morfología sugieren; raspado micológico si placa anular dudosa. No prescribir antifúngico solo por nombre pitiriasis ni descuidar sífilis en embarazada.",
+      "sources": [
+        "R2"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Na forma típica leve, explicar resolução espontânea e usar emoliente para desconforto, evitar irritantes e banho muito quente. Prurido pode justificar tratamento sintomático. Antibiótico/antifúngico não é tratamento de rotina; antiviral ou fototerapia não deve ser indicado automaticamente a todos.",
+      "es": "En forma típica leve, explicar resolución espontánea y usar emoliente para molestia, evitar irritantes y baño muy caliente. Picor puede justificar tratamiento sintomático. Antibiótico/antifúngico no es rutinario; antiviral o fototerapia no debe indicarse automáticamente a todos.",
+      "sources": [
+        "R1",
+        "R3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se prurido exige anti-histamínico, opção para adulto com função renal normal: cetirizina10mg oral uma vez/dia, máximo10mg/dia, durante sintomas com reavaliação. Esse uso antiprurido é off-label da bula selecionada, apoiado por cuidado sintomático dermatológico. Não extrapolar dose à insuficiência renal ou criança; não há curso obrigatório fixo para uma doença autolimitada.",
+      "es": "Si picor exige antihistamínico, opción para adulto con función renal normal: cetirizina10mg oral una vez/día, máximo10mg/día, durante síntomas con reevaluación. Este uso antiprurito es off-label de ficha elegida, apoyado por cuidado sintomático dermatológico. No extrapolar dosis a insuficiencia renal ni niño; no hay curso fijo obligatorio para enfermedad autolimitada.",
+      "sources": [
+        "R3",
+        "R5"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Cetirizina pode causar sonolência; avaliar condução, álcool/sedativos e alergia a cetirizina/hidroxizina/piperazinas. Dose e intervalo precisam ser individualizados na doença renal; a bula contraindica doença terminal com eGFR<15mL/min. Não aumentar dose pela extensão das lesões. Corticoide tópico, se indicado, requer escolha de potência/local/duração, sem uso universal em face/dobras.",
+      "es": "Cetirizina puede causar somnolencia; revisar conducción, alcohol/sedantes y alergia a cetirizina/hidroxizina/piperazinas. Dosis/intervalo requieren individualización renal; ficha contraindica enfermedad terminal con eGFR<15mL/min. No aumentar dosis por extensión de lesiones. Corticoide tópico, si indicado, requiere potencia/lugar/duración, sin uso universal en cara/pliegues.",
+      "sources": [
+        "R5",
+        "R1"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestante com nova erupção deve procurar obstetrícia/médico prontamente para confirmar diagnóstico e selecionar manejo. Não quantificar risco fetal com estimativa não verificada nem assumir toda erupção como benigna. Criança, lactante e paciente com doença renal exigem prescrição adequada à população/produto.",
+      "es": "Embarazada con nueva erupción debe consultar obstetricia/médico prontamente para confirmar diagnóstico y seleccionar manejo. No cuantificar riesgo fetal con estimación no verificada ni asumir toda erupción benigna. Niño, lactante y paciente renal exigen prescripción adecuada a población/producto.",
+      "sources": [
+        "R4",
+        "R5"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Lesões dolorosas extensas, bolhas, erosão mucosa, febre importante, púrpura ou mal-estar relevante exige avaliar diagnóstico alternativo urgente, sobretudo após fármaco novo. Dificuldade respiratória/edema facial exige emergência. Não chamar reação medicamentosa grave de pitiríase típica.",
+      "es": "Lesiones dolorosas extensas, ampollas, erosión mucosa, fiebre importante, púrpura o malestar relevante exige evaluar diagnóstico alternativo urgente, sobre todo tras fármaco nuevo. Disnea/edema facial exige urgencia. No llamar reacción farmacológica grave pitiriasis típica.",
+      "sources": [
+        "R2",
+        "R5"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial se quadro típico, sem alarme e com orientação. Pode durar cerca de6–8semanas, por vezes mais; mudança pigmentária pode persistir. Reavaliar se piora, coceira não controlada ou lesões persistem além de3meses. Não repetir tratamentos sem revisar diagnóstico e medicamentos.",
+      "es": "Alta ambulatoria si forma típica, sin alarma y con orientación. Puede durar unas6–8semanas, a veces más; pigmentación puede persistir. Reevaluar empeoramiento, picor no controlado o lesiones más de3meses. No repetir tratamientos sin revisar diagnóstico y fármacos.",
+      "sources": [
+        "R1",
+        "R4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "R1",
+      "title": "Pityriasis rosea",
+      "authority": "BAD",
+      "year": 2023,
+      "status": "AUTHORITATIVE_SPECIALTY_PATIENT_GUIDANCE",
+      "url": "https://www.bad.org.uk/pils/pityriasis-rosea",
+      "scope": "Junho2023; diagnóstico e manejo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R2",
+      "title": "Pityriasis rosea",
+      "authority": "PCDS",
+      "year": 2022,
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE_OLDER",
+      "url": "https://www.pcds.org.uk/clinical-guidance/pityriasis-rosea",
+      "scope": "28/05/2022; diferenciais e lesões atípicas.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R3",
+      "title": "Pityriasis rosea — patient leaflet",
+      "authority": "PCDS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_UPDATED_PATIENT_GUIDANCE",
+      "url": "https://www.pcds.org.uk/patient-info-leaflets/pityriasis-rosea",
+      "scope": "31/01/2025; cuidado sintomático.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R4",
+      "title": "Pityriasis rosea",
+      "authority": "NHS",
+      "year": 2023,
+      "status": "SUPPORTIVE_REVIEW_DATE_PASSED",
+      "url": "https://www.nhs.uk/conditions/pityriasis-rosea/",
+      "scope": "Revisão07/09/2023, próxima07/09/2026 vencida; não fonte de atualização isolada. Alarme gestação.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R5",
+      "title": "Cetirizine10mg PL43461/0110 SmPC",
+      "authority": "Flamingo / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/100094/smpc",
+      "scope": "29/06/2026; indicação rotulada rinite/urticária, antiprurido aqui off-label; renal exige individualização.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

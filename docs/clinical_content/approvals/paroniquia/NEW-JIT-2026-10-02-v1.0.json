@@ -1,0 +1,263 @@
+{
+  "owner": "paroniquia",
+  "title": {
+    "pt": "Paroníquia",
+    "es": "Paroniquia"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Paroníquia é inflamação das pregas ao redor da unha. O primeiro ramo de decisão é identificar abscesso, infecção superficial aguda ou inflamação crônica. Panarício herpético, felão e infecção da bainha flexora não são variantes de paroníquia bacteriana simples.",
+      "es": "La paroniquia es inflamación de los pliegues alrededor de la uña. La primera decisión es identificar absceso, infección superficial aguda o inflamación crónica. Panadizo herpético, infección de la pulpa digital e infección de la vaina flexora no son variantes de paroniquia bacteriana simple.",
+      "sources": [
+        "P1",
+        "P6",
+        "P7"
+      ]
+    },
+    {
+      "id": "acute",
+      "pt": "Na forma aguda, perda da barreira da cutícula por manicure, trauma, roer unhas ou unha encravada permite entrada de microrganismos. Dor, eritema e edema local podem evoluir para coleção. Estafilococos e estreptococos são causas frequentes; exposição à boca modifica a flora esperada.",
+      "es": "En la forma aguda, la pérdida de la barrera de la cutícula por manicura, traumatismo, morderse las uñas o uña encarnada permite la entrada de microorganismos. Dolor, eritema y edema local pueden evolucionar a una colección. Estafilococos y estreptococos son causas frecuentes; la exposición a la boca modifica la flora esperada.",
+      "sources": [
+        "P1"
+      ]
+    },
+    {
+      "id": "chronic",
+      "pt": "Paroníquia crônica persiste por mais de 6 semanas, frequentemente em pessoas com trabalho úmido/irritantes. A perda da cutícula favorece exposição repetida e alterações da matriz/unha. É predominantemente um processo inflamatório; identificar também dermatoses, diabetes ou medicamentos contribuintes.",
+      "es": "La paroniquia crónica persiste durante más de 6 semanas, frecuentemente en personas con trabajo húmedo/irritantes. La pérdida de la cutícula favorece exposición repetida y alteraciones de la matriz/uña. Es predominantemente un proceso inflamatorio; identificar también dermatosis, diabetes o medicamentos contribuyentes.",
+      "sources": [
+        "P1",
+        "P2"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Examinar todas as pregas e a polpa digital; perguntar sobre trauma, hábito de roer unhas, exposição à água/químicos, recorrência e imunossupressão. Distinguir pus/flutuação de vesículas agrupadas. Na apresentação localizada típica, o diagnóstico é clínico; considerar cultura/virologia se o quadro for atípico, persistente ou grave.",
+      "es": "Examinar todos los pliegues y la pulpa digital; preguntar por traumatismo, hábito de morderse las uñas, exposición a agua/químicos, recurrencia e inmunosupresión. Distinguir pus/fluctuación de vesículas agrupadas. En la presentación localizada típica, el diagnóstico es clínico; considerar cultivo/virología si el cuadro es atípico, persistente o grave.",
+      "sources": [
+        "P1",
+        "P6"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Dor profunda, limitação dolorosa de movimento, suspeita de comprometimento da bainha flexora, extensão da infecção ou repercussão sistêmica exige avaliação urgente, com cirurgia de mão quando indicada. Diabetes, imunossupressão e comprometimento vascular aumentam a necessidade de cautela; não aguardar resposta de tratamento tópico diante de suspeita de infecção profunda.",
+      "es": "Dolor profundo, limitación dolorosa del movimiento, sospecha de compromiso de la vaina flexora, extensión de la infección o compromiso sistémico requiere evaluación urgente, con cirugía de mano cuando corresponda. Diabetes, inmunosupresión y compromiso vascular aumentan la necesidad de precaución; no esperar la respuesta al tratamiento tópico ante sospecha de infección profunda.",
+      "sources": [
+        "P2",
+        "P7"
+      ]
+    },
+    {
+      "id": "noabscess",
+      "pt": "Sem abscesso e com inflamação localizada: imersões em água morna, proteção da prega e interrupção de trauma/manicure. Não cortar a cutícula nem espremer. Antibiótico tópico pode ser considerado se houver infecção bacteriana localizada provável, sem substituir drenagem quando há coleção.",
+      "es": "Sin absceso y con inflamación localizada: baños con agua tibia, protección del pliegue e interrupción de traumatismos/manicura. No cortar la cutícula ni apretar. Puede considerarse un antibiótico tópico si hay probable infección bacteriana localizada, sin sustituir el drenaje cuando hay colección.",
+      "sources": [
+        "P1"
+      ]
+    },
+    {
+      "id": "fusidate",
+      "pt": "Uma opção para infecção bacteriana limitada por agente sensível é fusidato de sódio 20 mg/g (2%), pomada cutânea: camada fina na lesão descoberta, 3–4 vezes ao dia. Prescrever curso curto e revisar a resposta; a orientação geral do NHS descreve 1–2 semanas, não autorização para repetição ou prolongamento sem exame. Ácido fusídico/fusidato é antibiótico, não antisséptico; conferir a apresentação local.",
+      "es": "Una opción para infección bacteriana limitada por un agente sensible es fusidato de sodio 20 mg/g (2%), pomada cutánea: capa fina en la lesión descubierta, 3–4 veces al día. Prescribir un curso corto y revisar la respuesta; la orientación general del NHS describe 1–2 semanas, no autoriza repetir o prolongar sin examen. El ácido fusídico/fusidato es un antibiótico, no un antiséptico; revisar la presentación local.",
+      "sources": [
+        "P1",
+        "P3",
+        "P4"
+      ]
+    },
+    {
+      "id": "fusidate_safety",
+      "pt": "Não usar em caso de alergia ao fármaco/excipientes. Evitar olhos; suspender se houver reação importante. Uso prolongado/repetido seleciona resistência. Roupas/curativos impregnados com produtos tópicos podem aumentar risco de queimadura próximo a chamas; orientar evitar fontes de ignição.",
+      "es": "No usar ante alergia al fármaco/excipientes. Evitar los ojos; suspender ante una reacción importante. El uso prolongado/repetido selecciona resistencia. La ropa/apósitos impregnados con productos tópicos pueden aumentar el riesgo de quemaduras cerca de llamas; indicar evitar fuentes de ignición.",
+      "sources": [
+        "P3",
+        "P4"
+      ]
+    },
+    {
+      "id": "abscess",
+      "pt": "Coleção purulenta requer avaliação para drenagem por profissional habilitado, conforme extensão e anatomia. Reexaminar se a dor/coleção persistir; antibiótico isolado não resolve necessariamente o foco. O procedimento não deve ser descrito como automanipulação domiciliar.",
+      "es": "Una colección purulenta requiere evaluación para drenaje por un profesional capacitado según extensión y anatomía. Reexaminar si persiste el dolor/colección; el antibiótico aislado no resuelve necesariamente el foco. El procedimiento no debe describirse como manipulación domiciliaria.",
+      "sources": [
+        "P1",
+        "P2"
+      ]
+    },
+    {
+      "id": "oral",
+      "pt": "Infecção mais grave/prolongada, celulite ou risco clínico pode requerer antibiótico sistêmico. Escolher cobertura conforme exposição oral, cultura, alergias e resistência local, pelo protocolo da infecção correspondente. Não aplicar o mesmo antibiótico a HSV ou dermatite crônica; este candidato não fornece receita oral universal para todos os quadros periungueais.",
+      "es": "Una infección más grave/prolongada, celulitis o riesgo clínico puede requerir antibióticos sistémicos. Elegir cobertura según exposición oral, cultivo, alergias y resistencia local, con el protocolo de la infección correspondiente. No aplicar el mismo antibiótico al HSV o dermatitis crónica; este candidato no ofrece una receta oral universal para todos los cuadros periungueales.",
+      "sources": [
+        "P1"
+      ]
+    },
+    {
+      "id": "hsv",
+      "pt": "Vesículas dolorosas agrupadas sugerem panarício herpético. Não incisar, espremer ou drenar como abscesso bacteriano. Proteger a área, evitar contato com outras pessoas/olhos e solicitar avaliação específica; antivirais dependem do diagnóstico, tempo de início e contexto.",
+      "es": "Las vesículas dolorosas agrupadas sugieren panadizo herpético. No incidir, apretar ni drenar como un absceso bacteriano. Proteger la zona, evitar contacto con otras personas/ojos y solicitar evaluación específica; los antivirales dependen del diagnóstico, tiempo de inicio y contexto.",
+      "sources": [
+        "P1",
+        "P6"
+      ]
+    },
+    {
+      "id": "barrier",
+      "pt": "Na forma crônica, a base do tratamento é manter mãos secas, evitar irritantes/manicure e usar luvas adequadas com forro de algodão para trabalho úmido. Aplicar emoliente para restaurar a barreira. Cultura com Candida não substitui a avaliação clínica de dermatite e de infecção verdadeira.",
+      "es": "En la forma crónica, la base del tratamiento es mantener las manos secas, evitar irritantes/manicura y usar guantes adecuados con forro de algodón para trabajo húmedo. Aplicar emoliente para restaurar la barrera. Un cultivo con Candida no sustituye la evaluación clínica de dermatitis e infección verdadera.",
+      "sources": [
+        "P1",
+        "P2"
+      ]
+    },
+    {
+      "id": "steroid",
+      "pt": "Para dermatite periungueal crônica em adulto, após excluir infecção não tratada, uma opção anti-inflamatória prescrita é creme de betametasona 0,1% como valerato (a formulação consultada contém valerato 0,122%): camada fina 1–2 vezes ao dia; reavaliar em 2–4 semanas e não exceder 4 semanas de curso contínuo sem nova decisão clínica. Reduzir frequência/potência ao controlar a inflamação. Não usar corticoide para ocultar abscesso.",
+      "es": "Para dermatitis periungueal crónica en un adulto, después de excluir infección no tratada, una opción antiinflamatoria prescrita es crema de betametasona 0,1% como valerato (la formulación consultada contiene valerato 0,122%): capa fina 1–2 veces al día; reevaluar en 2–4 semanas y no superar 4 semanas de curso continuo sin una nueva decisión clínica. Reducir frecuencia/potencia al controlar la inflamación. No usar corticoides para ocultar un absceso.",
+      "sources": [
+        "P2",
+        "P5"
+      ]
+    },
+    {
+      "id": "steroid_safety",
+      "pt": "Betametasona tópica potente exige pequena área/quantidade e o menor tempo necessário. Evitar oclusão não prescrita, pele extensa lesionada e uso repetido indefinido; observar atrofia e irritação. Doença renal/hepática, idade avançada ou absorção sistêmica potencial pede maior cautela, sem ajuste numérico inventado. Revisar interações com inibidores fortes de CYP3A4 quando relevantes.",
+      "es": "La betametasona tópica potente exige una pequeña área/cantidad y el menor tiempo necesario. Evitar oclusión no prescrita, piel lesionada extensa y uso repetido indefinido; vigilar atrofia e irritación. Enfermedad renal/hepática, edad avanzada o posible absorción sistémica requiere mayor precaución, sin inventar ajustes numéricos. Revisar interacciones con inhibidores fuertes de CYP3A4 cuando sean relevantes.",
+      "sources": [
+        "P5"
+      ]
+    },
+    {
+      "id": "children",
+      "pt": "Não reproduzir o curso adulto de corticoide em criança. A bula de betametasona contraindica uso abaixo de 1 ano e limita os cursos pediátricos a 5 dias, sem oclusão. Necessidade de tratamento de paroníquia crônica pediátrica deve ser definida após avaliação da causa e da potência apropriada. A posologia tópica do fusidato inclui população pediátrica na bula consultada, mas exige indicação e formulação corretas.",
+      "es": "No reproducir el curso adulto de corticoides en un niño. El prospecto de betametasona contraindica el uso por debajo de 1 año y limita los cursos pediátricos a 5 días, sin oclusión. La necesidad de tratar paroniquia crónica pediátrica debe definirse tras evaluar la causa y potencia apropiada. La posología tópica de fusidato incluye población pediátrica en el prospecto consultado, pero exige indicación y formulación correctas.",
+      "sources": [
+        "P3",
+        "P5"
+      ]
+    },
+    {
+      "id": "pregnancy",
+      "pt": "Fusidato cutâneo pode ser usado na gestação/lactação conforme as fontes consultadas, evitando contato do lactente com áreas medicadas. Para betametasona tópica, decidir apenas se benefício superar risco, em mínima quantidade/duração; na lactação, não aplicar na mama. Não extrapolar essa orientação ao uso sistêmico de qualquer desses fármacos.",
+      "es": "El fusidato cutáneo puede usarse en embarazo/lactancia según las fuentes consultadas, evitando el contacto del lactante con áreas medicadas. Para betametasona tópica, decidir solo si el beneficio supera el riesgo, en mínima cantidad/duración; durante la lactancia, no aplicar en la mama. No extrapolar esta orientación al uso sistémico de ninguno de estos fármacos.",
+      "sources": [
+        "P3",
+        "P5",
+        "P8"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Monitorar dor, edema, extensão do eritema, função do dedo e resposta ao tratamento. Piora, febre, perda de função ou coleção persistente exige retorno imediato. Na forma crônica, recuperação é lenta e depende da proteção da barreira; lesão persistente de uma única unha, aspecto atípico ou refratariedade indica dermatologia para excluir outra causa.",
+      "es": "Controlar dolor, edema, extensión del eritema, función del dedo y respuesta al tratamiento. Empeoramiento, fiebre, pérdida de función o colección persistente exige consulta inmediata. En la forma crónica, la recuperación es lenta y depende de proteger la barrera; lesión persistente de una sola uña, aspecto atípico o refractariedad indica dermatología para excluir otra causa.",
+      "sources": [
+        "P1",
+        "P2",
+        "P7"
+      ]
+    },
+    {
+      "id": "disposition",
+      "pt": "Quadro localizado sem sinais de infecção profunda ou sistêmica pode seguir tratamento ambulatorial com plano de retorno. Suspeita de infecção da bainha flexora exige encaminhamento urgente à cirurgia de mão; necessidade de antibiótico IV, cirurgia ou monitorização define atendimento hospitalar. Não converter todo edema periungueal em diagnóstico de paroníquia simples.",
+      "es": "Un cuadro localizado sin signos de infección profunda o sistémica puede seguir tratamiento ambulatorio con un plan de seguimiento. La sospecha de infección de la vaina flexora exige derivación urgente a cirugía de mano; necesidad de antibiótico IV, cirugía o monitorización determina atención hospitalaria. No convertir todo edema periungueal en diagnóstico de paroniquia simple.",
+      "sources": [
+        "P1",
+        "P7"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "P1",
+      "title": "Paronychia",
+      "authority": "Primary Care Dermatology Society",
+      "year": 2024,
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.pcds.org.uk/clinical-guidance/paronychia",
+      "scope": "Atualizada 31/05/2024; aguda versus crônica, fatores predisponentes e tratamento",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P2",
+      "title": "Chronic paronychia",
+      "authority": "British Association of Dermatologists",
+      "year": 2022,
+      "status": "AUTHORITATIVE_SPECIALTY_CONSENSUS",
+      "url": "https://www.bad.org.uk/pils/chronic-paronychia",
+      "scope": "Duração >6 semanas; proteção e anti-inflamatório tópico. Folheto, não ensaio terapêutico.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P3",
+      "title": "Fucidin 20mg/g Ointment — SmPC",
+      "authority": "Leo Laboratories / emc",
+      "year": 2023,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/5513/smpc",
+      "scope": "Indicação expressa paroníquia; fusidato de sódio 20mg/g, aplicação e precauções",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P4",
+      "title": "How and when to use fusidic acid",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/fusidic-acid/how-and-when-to-use-fusidic-acid/",
+      "scope": "Revisão 30/01/2026; frequência, camada fina, curso usual 1–2 semanas",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P5",
+      "title": "Betnovate Cream — SmPC",
+      "authority": "GSK / emc",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/929/smpc",
+      "scope": "Dermatite irritativa; valerato de betametasona, frequência/duração, pediatria, gestação e segurança",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P6",
+      "title": "Herpetic whitlow",
+      "authority": "NHS",
+      "year": "sem ano confirmado",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/herpetic-whitlow/",
+      "scope": "Diferencial viral; não espremer/drenar vesículas. Ano da página deve ser conferido antes de publicação.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P7",
+      "title": "Flexor sheath infection — standards of care",
+      "authority": "British Society for Surgery of the Hand",
+      "year": "sem ano explícito",
+      "status": "AUTHORITATIVE_SPECIALTY_STANDARD",
+      "url": "https://www.bssh.ac.uk/_userfiles/pages/files/professionals/Trauma%20standards/10%20Flexor%20sheath%20infection.pdf",
+      "scope": "Documento ainda listado no portal oficial de standards; urgência de encaminhamento",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P8",
+      "title": "Pregnancy, breastfeeding and fertility while using fusidic acid",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/fusidic-acid/pregnancy-breastfeeding-and-fertility-while-using-fusidic-acid/",
+      "scope": "Uso cutâneo na gestação/lactação, evitar contato/ingestão pelo lactente",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

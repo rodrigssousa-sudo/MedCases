@@ -1,0 +1,154 @@
+{
+  "owner": "verrugas_anogenitais_condiloma_acuminado",
+  "title": {
+    "pt": "Verrugas anogenitais / condiloma acuminado",
+    "es": "Verrugas anogenitales / condiloma acuminado"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Verrugas anogenitais são geralmente associadas a HPV de baixo risco; verruga visível não equivale a câncer, mas pode coexistir infecção por outros tipos. Tratamento remove lesões e sintomas, sem garantir erradicação viral ou prevenir toda transmissão. Local, extensão e preferência orientam escolha.",
+      "es": "Verrugas anogenitales suelen asociarse a HPV de bajo riesgo; verruga visible no equivale a cáncer, pero puede coexistir infección por otros tipos. Tratamiento elimina lesiones/síntomas, sin garantizar erradicación viral ni evitar toda transmisión. Lugar, extensión y preferencia guían elección.",
+      "sources": [
+        "W1",
+        "W2"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico usualmente visual; examinar área genital/perianal com consentimento e avaliar local interno se sintomas/extensão sugerem. Biópsia se pigmentada, endurecida, fixada, sangrante/ulcerada, diagnóstico incerto ou falha/piora, especialmente em imunossuprimido. Teste de HPV não confirma nem orienta tratamento de verrugas de rotina.",
+      "es": "Diagnóstico usualmente visual; examinar zona genital/perianal con consentimiento y evaluar lugar interno si síntomas/extensión sugieren. Biopsia si pigmentada, endurecida, fija, sangrante/ulcerada, incierta o falla/empeora, especialmente en inmunosuprimido. Prueba HPV no confirma ni guía tratamiento rutinario de verrugas.",
+      "sources": [
+        "W2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar molusco, pápulas anatômicas benignas, condiloma lata da sífilis e neoplasia. Oferecer rastreio de outras IST conforme risco e normas locais. Verrugas externas perianais podem coexistir internamente e justificar avaliação; não aplicar creme externo às mucosas para alcançar lesão interna.",
+      "es": "Diferenciar molusco, pápulas anatómicas benignas, condiloma lata sifilítico y neoplasia. Ofrecer pruebas de otras ITS según riesgo/normas locales. Verrugas perianales externas pueden coexistir internamente y justificar evaluación; no aplicar crema externa a mucosas para alcanzar lesión interna.",
+      "sources": [
+        "W2",
+        "W4"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Observação é possível em lesões pequenas assintomáticas após diagnóstico; tratamento ativo pode usar agente tópico elegível ou procedimento por equipe. Crioterapia, excisão e outras modalidades dependem do local e recursos. Não usar ácido de verruga comum nas mucosas nem tratamento cáustico domiciliar não orientado.",
+      "es": "Observación posible en lesiones pequeñas asintomáticas tras diagnóstico; tratamiento activo puede usar tópico elegible o procedimiento profesional. Crioterapia, extirpación y otras modalidades dependen de lugar/recursos. No usar ácido de verruga común en mucosas ni cáustico domiciliario no indicado.",
+      "sources": [
+        "W1",
+        "W4"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Uma opção para adulto com verrugas genitais/perianais EXTERNAS: imiquimode creme5% (50mg/g), camada fina apenas nas lesões3noites/semana, por exemplo segunda/quarta/sexta; deixar6–10h e lavar com água/sabão suave. Até desaparecimento ou máximo16semanas por episódio. Bula: sachê250mg suficiente para área até20cm²; descartar aberto. Não importar regime de queratose ou concentração3,75% para este esquema.",
+      "es": "Una opción para adulto con verrugas genitales/perianales EXTERNAS: imiquimod crema5% (50mg/g), capa fina solo en lesiones3noches/semana, por ejemplo lunes/miércoles/viernes; dejar6–10h y lavar con agua/jabón suave. Hasta desaparición o máximo16semanas por episodio. Ficha: sobre250mg suficiente para área hasta20cm²; desechar abierto. No importar pauta de queratosis ni concentración3,75% a este esquema.",
+      "sources": [
+        "W3",
+        "W4"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Imiquimode pode causar inflamação/erosão; se reação intensa, lavar, interromper temporariamente e avaliar. Não aplicar em uretra, vagina, colo uterino, reto ou ferida não cicatrizada; excesso/contato prolongado aumenta dano. Pode enfraquecer preservativo/diafragma; retirar antes de contato sexual. Não fazer aplicações compensatórias além de uma por dia.",
+      "es": "Imiquimod puede causar inflamación/erosión; si reacción intensa, lavar, interrumpir temporalmente y evaluar. No aplicar en uretra, vagina, cérvix, recto ni herida no cicatrizada; exceso/contacto prolongado aumenta daño. Puede debilitar preservativo/diafragma; retirar antes de contacto sexual. No compensar aplicaciones más de una diaria.",
+      "sources": [
+        "W3",
+        "W4"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestação: não indicar tópicos automaticamente; crioterapia pode ser opção profissional segura, e lesões pequenas podem ser observadas. Crianças/adolescentes estão fora desta bula adulta e precisam avaliação própria, incluindo proteção conforme contexto. Imunossuprimidos podem responder menos/recidivar e exigem menor limiar de biópsia. Lesão cervical/interna exige especialista.",
+      "es": "Embarazo: no indicar tópicos automáticamente; crioterapia puede ser opción profesional segura y lesiones pequeñas pueden observarse. Niños/adolescentes quedan fuera de ficha adulta y requieren valoración propia, incluyendo protección según contexto. Inmunosuprimidos pueden responder menos/recidivar y requieren menor umbral de biopsia. Lesión cervical/interna exige especialista.",
+      "sources": [
+        "W1",
+        "W2",
+        "W3",
+        "W4"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Retenção urinária, obstrução, sangramento relevante, ulceração persistente ou massa suspeita exige avaliação rápida. Reação extensa dolorosa ou sinais sistêmicos após tratamento exige atendimento. Não prolongar receita além do limite para evitar investigar neoplasia ou outra infecção.",
+      "es": "Retención urinaria, obstrucción, hemorragia relevante, ulceración persistente o masa sospechosa exige evaluación rápida. Reacción extensa dolorosa o síntomas sistémicos tras tratamiento exige atención. No prolongar receta más del límite para evitar estudio de neoplasia u otra infección.",
+      "sources": [
+        "W2",
+        "W3"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Acompanhar resposta, técnica e tolerância; falha/efeitos relevantes pede mudança de modalidade, não repetição indefinida. Recidivas são possíveis. Preservativos reduzem, mas não eliminam transmissão; vacina HPV é preventiva, não cura verruga existente. Manter rastreio cervical conforme norma de idade/risco, sem aumentar frequência apenas por verruga externa.",
+      "es": "Seguir respuesta, técnica y tolerancia; fallo/efectos relevantes requiere cambiar modalidad, no repetir indefinidamente. Recidivas posibles. Preservativos reducen sin eliminar transmisión; vacuna HPV previene, no cura verruga existente. Mantener cribado cervical por norma de edad/riesgo, sin aumentar frecuencia solo por verruga externa.",
+      "sources": [
+        "W1",
+        "W2",
+        "W5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "W1",
+      "title": "Anogenital warts2024",
+      "authority": "BASHH",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://www.bashh.org/resources/96/guidelines_anogenital_warts_2024/",
+      "scope": "Guideline2024 atual portal.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "W2",
+      "title": "Anogenital warts STI treatment guideline",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_CURRENT",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/anogenital-warts.htm",
+      "scope": "Diagnóstico, local e aconselhamento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "W3",
+      "title": "Aldara5% cream SmPC",
+      "authority": "Viatris / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/823/smpc",
+      "scope": "15/10/2025; adultos, verrugas externas, limites e contato.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "W4",
+      "title": "Anogenital wartsV2",
+      "authority": "HSE AMRIC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_LOCAL_GUIDELINE",
+      "url": "https://assets.hse.ie/media/documents/Anogenital_warts_guideline.pdf",
+      "scope": "Revisãoabril2024, uploadmarço2026 não revisão2026; disponibilidadeIrlanda distinta.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "W5",
+      "title": "Anogenital wart patient leaflets",
+      "authority": "BASHH",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.bashh.org/resources/125/anogenital_wart_pils",
+      "scope": "24/09/2024; aconselhamento.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

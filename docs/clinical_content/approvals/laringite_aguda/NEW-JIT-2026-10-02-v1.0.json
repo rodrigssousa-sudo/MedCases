@@ -1,0 +1,264 @@
+{
+  "owner": "laringite_aguda",
+  "title": {
+    "pt": "Laringite aguda",
+    "es": "Laringitis aguda"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "scope",
+      "pt": "Escopo terapêutico: laringite aguda simples em adultos a partir de 18 anos. Rouquidão é um sintoma, não prova de infecção viral. Crupe pediátrico, epiglotite e obstrução de via aérea exigem protocolos próprios; não aplicar a dose adulta a crianças.",
+      "es": "Alcance terapéutico: laringitis aguda simple en adultos a partir de 18 años. La ronquera es un síntoma, no demuestra infección viral. Crup pediátrico, epiglotitis y obstrucción de la vía aérea requieren protocolos propios; no aplicar la dosis adulta a niños.",
+      "sources": [
+        "R1",
+        "R3",
+        "R5"
+      ]
+    },
+    {
+      "id": "definition",
+      "pt": "Laringite é inflamação/irritação da laringe e das pregas vocais. O edema prejudica a produção da voz e pode causar rouquidão ou perda transitória da voz; frequentemente acompanha uma infecção viral respiratória.",
+      "es": "La laringitis es inflamación/irritación de la laringe y los pliegues vocales. El edema altera la producción de la voz y puede causar ronquera o pérdida transitoria de la voz; suele acompañar una infección respiratoria viral.",
+      "sources": [
+        "R3",
+        "R4"
+      ]
+    },
+    {
+      "id": "causes",
+      "pt": "Infecção viral é uma causa frequente. Sobrecarga vocal, fumaça e outros irritantes podem contribuir; refluxo e alergia entram no diagnóstico diferencial, sem atribuir a rouquidão isolada automaticamente a refluxo.",
+      "es": "La infección viral es una causa frecuente. Sobrecarga vocal, humo y otros irritantes pueden contribuir; reflujo y alergia forman parte del diagnóstico diferencial, sin atribuir automáticamente la ronquera aislada a reflujo.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    },
+    {
+      "id": "presentation",
+      "pt": "O quadro típico reúne rouquidão de início recente, tosse irritativa, desconforto de garganta e sintomas de resfriado. Perguntar sobre duração, evolução, tabagismo, uso profissional da voz e cirurgia/intubação recente.",
+      "es": "El cuadro típico reúne ronquera de inicio reciente, tos irritativa, molestias de garganta y síntomas de resfrío. Preguntar por duración, evolución, tabaquismo, uso profesional de la voz y cirugía/intubación reciente.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    },
+    {
+      "id": "airway",
+      "pt": "Dificuldade respiratória ou estridor muda a prioridade para avaliação emergencial da via aérea. Não dar alta como laringite simples nem aguardar o prazo de seguimento da rouquidão.",
+      "es": "La dificultad respiratoria o el estridor cambia la prioridad a evaluación de emergencia de la vía aérea. No dar el alta como laringitis simple ni esperar el plazo de seguimiento de la ronquera.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    },
+    {
+      "id": "swallow",
+      "pt": "Dor intensa ao engolir ou dificuldade de deglutição requer avaliação urgente. Se não consegue manter ingestão oral, o manejo apenas domiciliar é inadequado; investigar a causa e a necessidade de suporte.",
+      "es": "El dolor intenso al tragar o la dificultad para deglutir requiere evaluación urgente. Si no puede mantener la ingesta oral, el manejo exclusivamente domiciliario es inadecuado; investigar la causa y la necesidad de soporte.",
+      "sources": [
+        "R3"
+      ]
+    },
+    {
+      "id": "risk",
+      "pt": "Massa cervical, tabagismo, cirurgia de cabeça/pescoço/tórax, intubação recente e necessidade profissional de voz justificam avaliação laríngea antecipada, conforme o contexto; não esperar persistência para encaminhar uma suspeita de doença grave.",
+      "es": "Masa cervical, tabaquismo, cirugía de cabeza/cuello/tórax, intubación reciente y uso profesional de la voz justifican evaluación laríngea anticipada según el contexto; no esperar persistencia para derivar una sospecha de enfermedad grave.",
+      "sources": [
+        "R2"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Na apresentação típica, história e exame direcionado sustentam a hipótese clínica. Avaliar respiração, capacidade de engolir, orofaringe e pescoço. Persistência, recorrência ou gravidade exigem reconsiderar o diagnóstico em vez de repetir tratamento empírico.",
+      "es": "En la presentación típica, anamnesis y examen dirigido sustentan la hipótesis clínica. Evaluar respiración, capacidad para deglutir, orofaringe y cuello. Persistencia, recurrencia o gravedad exige reconsiderar el diagnóstico en vez de repetir tratamiento empírico.",
+      "sources": [
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    {
+      "id": "exams",
+      "pt": "Solicitar exames conforme a hipótese alternativa e o exame clínico. Para queixa primária de voz, não pedir TC/RM antes de visualizar a laringe; essa regra não substitui a investigação necessária de outra emergência.",
+      "es": "Solicitar estudios según la hipótesis alternativa y el examen clínico. Ante una consulta primaria por alteración de la voz, no solicitar TC/RM antes de visualizar la laringe; esta regla no sustituye la investigación necesaria de otra emergencia.",
+      "sources": [
+        "R2"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Orientar repouso vocal relativo, hidratação e evitar fumaça/poeira. Falar pouco e sem esforço; não gritar nem cochichar. Manter o ambiente menos seco pode aliviar desconforto, sem prometer redução da duração da doença.",
+      "es": "Indicar reposo vocal relativo, hidratación y evitar humo/polvo. Hablar poco y sin esfuerzo; no gritar ni susurrar. Mantener el ambiente menos seco puede aliviar molestias, sin prometer reducir la duración de la enfermedad.",
+      "sources": [
+        "R3"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se houver dor ou febre: paracetamol 500–1000 mg por via oral a cada 6 h, somente se necessário, em adulto com peso ≥50 kg e sem fatores de risco que exijam ajuste. Máximo de 4 tomadas e de 4000 mg em 24 h, somando todos os produtos. Preferir a menor dose eficaz; o teto não é uma meta. Comprimido de 500 mg: 1–2 comprimidos por tomada. Não manter por mais de 3 dias sem reavaliação.",
+      "es": "Si hay dolor o fiebre: paracetamol 500–1000 mg por vía oral cada 6 h, solo si es necesario, en un adulto con peso ≥50 kg y sin factores de riesgo que exijan ajuste. Máximo de 4 tomas y de 4000 mg en 24 h, sumando todos los productos. Preferir la menor dosis eficaz; el límite no es una meta. Comprimido de 500 mg: 1–2 comprimidos por toma. No mantener durante más de 3 días sin reevaluación.",
+      "sources": [
+        "R5",
+        "R6"
+      ]
+    },
+    {
+      "id": "drug_safety",
+      "pt": "Não usar paracetamol em caso de hipersensibilidade. Conferir antigripais e associações para evitar duplicidade. Peso <50 kg, fragilidade/desnutrição, doença renal/hepática e consumo nocivo de álcool exigem avaliação individual de dose/intervalo; este pacote não autoriza automaticamente o teto adulto nesses grupos. Suspeita de superdose requer atendimento imediato, mesmo sem sintomas.",
+      "es": "No usar paracetamol en caso de hipersensibilidad. Revisar antigripales y combinaciones para evitar duplicación. Peso <50 kg, fragilidad/desnutrición, enfermedad renal/hepática y consumo nocivo de alcohol requieren evaluación individual de dosis/intervalo; este paquete no autoriza automáticamente el límite adulto en esos grupos. La sospecha de sobredosis requiere atención inmediata, incluso sin síntomas.",
+      "sources": [
+        "R5",
+        "R6"
+      ]
+    },
+    {
+      "id": "interactions",
+      "pt": "Revisar a lista de medicamentos. Uso regular prolongado de paracetamol pode aumentar o efeito de varfarina e o risco de sangramento; doses ocasionais não têm o mesmo efeito descrito. Não prolongar analgesia sem reavaliação clínica.",
+      "es": "Revisar la lista de medicamentos. El uso regular prolongado de paracetamol puede aumentar el efecto de warfarina y el riesgo de sangrado; las dosis ocasionales no tienen el mismo efecto descrito. No prolongar la analgesia sin reevaluación clínica.",
+      "sources": [
+        "R6"
+      ]
+    },
+    {
+      "id": "pregnancy",
+      "pt": "Na gestação, paracetamol pode ser utilizado quando clinicamente necessário, na menor dose eficaz, pelo menor tempo e frequência possíveis. Na lactação, as fontes consultadas permitem seu uso usual. Individualizar a indicação e não extrapolar essa orientação para outros medicamentos.",
+      "es": "En el embarazo, el paracetamol puede utilizarse cuando sea clínicamente necesario, con la menor dosis eficaz y durante el menor tiempo y frecuencia posibles. En la lactancia, las fuentes consultadas permiten su uso habitual. Individualizar la indicación y no extrapolar esta orientación a otros medicamentos.",
+      "sources": [
+        "R5",
+        "R6"
+      ]
+    },
+    {
+      "id": "antibiotics",
+      "pt": "Não prescrever antibiótico rotineiramente para laringite viral simples. A revisão sistemática não mostrou benefício convincente nos desfechos objetivos de voz; a evidência é baixa/muito baixa. Se surgir outra infecção bacteriana definida, tratá-la pelo protocolo correspondente.",
+      "es": "No prescribir antibióticos de rutina para laringitis viral simple. La revisión sistemática no mostró beneficio convincente en los resultados objetivos de voz; la evidencia es baja/muy baja. Si aparece otra infección bacteriana definida, tratarla con el protocolo correspondiente.",
+      "sources": [
+        "R2",
+        "R4"
+      ]
+    },
+    {
+      "id": "steroid_reflux",
+      "pt": "Não prescrever corticoide rotineiramente antes de visualizar a laringe. Não iniciar antirrefluxo apenas por disfonia isolada atribuída a refluxo sem avaliação laríngea. Uma indicação específica confirmada exige decisão própria; uso profissional da voz não autoriza corticoide automático.",
+      "es": "No prescribir corticoides de rutina antes de visualizar la laringe. No iniciar tratamiento antirreflujo solo por disfonía aislada atribuida a reflujo sin evaluación laríngea. Una indicación específica confirmada exige una decisión propia; el uso profesional de la voz no autoriza corticoides automáticos.",
+      "sources": [
+        "R2"
+      ]
+    },
+    {
+      "id": "course",
+      "pt": "A laringite simples costuma melhorar em 1–2 semanas. Reavaliar se não houver melhora após 2 semanas ou se os episódios forem recorrentes; antecipar o retorno diante de piora, dificuldade respiratória ou de deglutição.",
+      "es": "La laringitis simple suele mejorar en 1–2 semanas. Reevaluar si no hay mejoría después de 2 semanas o si los episodios son recurrentes; adelantar la consulta ante empeoramiento, dificultad respiratoria o para deglutir.",
+      "sources": [
+        "R3"
+      ]
+    },
+    {
+      "id": "laryngoscopy",
+      "pt": "Disfonia que não resolve ou não melhora dentro de 4 semanas exige laringoscopia ou encaminhamento a quem possa realizá-la. Suspeita de causa grave indica avaliação antes desse prazo. Reavaliar em 2 semanas não significa adiar uma urgência até 4 semanas.",
+      "es": "La disfonía que no se resuelve o no mejora dentro de 4 semanas requiere laringoscopia o derivación a quien pueda realizarla. La sospecha de una causa grave indica evaluación antes de ese plazo. Reevaluar a las 2 semanas no significa postergar una urgencia hasta las 4 semanas.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    },
+    {
+      "id": "voice_therapy",
+      "pt": "Disfonia persistente pode decorrer de lesão estrutural, alteração neurológica ou funcional, e não de laringite simples. Antes de indicar fonoterapia, visualizar a laringe e comunicar o diagnóstico ao profissional responsável.",
+      "es": "La disfonía persistente puede deberse a lesión estructural, alteración neurológica o funcional, y no a laringitis simple. Antes de indicar terapia de la voz, visualizar la laringe y comunicar el diagnóstico al profesional responsable.",
+      "sources": [
+        "R2"
+      ]
+    },
+    {
+      "id": "disposition",
+      "pt": "Conduta ambulatorial é compatível com quadro simples, sem dificuldade respiratória ou de deglutição e com possibilidade de seguir as orientações e retornar. Sinais de alarme afastam esse caminho: providenciar avaliação urgente/emergencial e decidir observação ou internação conforme o diagnóstico e a necessidade de suporte. Não há escore específico de internação utilizado neste candidato.",
+      "es": "El manejo ambulatorio es compatible con un cuadro simple, sin dificultad respiratoria ni para deglutir y con posibilidad de cumplir las indicaciones y volver a consultar. Los signos de alarma excluyen esa conducta: realizar evaluación urgente/de emergencia y decidir observación o internación según el diagnóstico y la necesidad de soporte. No se utiliza un puntaje específico de internación en este candidato.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "R1",
+      "title": "Clinical Practice Guideline: Hoarseness (Dysphonia) (Update)",
+      "authority": "AAO-HNSF",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "population": "Disfonia; todas as idades",
+      "scope": "Diagnóstico, encaminhamento e uso racional de tratamento",
+      "url": "https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/hoarseness-dysphonia/",
+      "verifiedOn": "2026-10-02",
+      "recencyNote": "Ainda listada no portal oficial; nenhuma substituição identificada nesta busca. Não é guideline de 2026."
+    },
+    {
+      "id": "R2",
+      "title": "Voice Problems: Updates to Treatment and Care of Patients with Hoarseness — recommendations",
+      "authority": "AAO-HNSF",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "population": "Disfonia",
+      "scope": "Recomendações da mesma diretriz R1; não constitui confirmação independente",
+      "url": "https://www.entnet.org/resource/aao-hnsf-updated-cpg-hoarseness-press-release-fact-sheet/",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R3",
+      "title": "Laryngitis",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "population": "Adultos e crianças; candidato terapêutico limitado a adultos",
+      "scope": "Sintomas, autocuidado, retorno e sinais de alarme",
+      "url": "https://www.nhs.uk/conditions/laryngitis/",
+      "verifiedOn": "2026-10-02",
+      "recencyNote": "Revisada em 17/01/2024; próxima revisão programada em 17/01/2027."
+    },
+    {
+      "id": "R4",
+      "title": "Antibiotics to treat adults with acute laryngitis",
+      "authority": "Cochrane",
+      "year": 2015,
+      "status": "SUPPORTIVE_SYSTEMATIC_REVIEW",
+      "population": "Adultos",
+      "scope": "Antibióticos; evidência baixa/muito baixa, busca até dezembro de 2014",
+      "url": "https://www.cochrane.org/evidence/CD004783_antibiotics-treat-adults-acute-laryngitis",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R5",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "population": "Adultos a partir de 18 anos",
+      "scope": "Posologia oral, duração de autocuidado e segurança",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R6",
+      "title": "Paracetamol 500 mg Tablet — Summary of Product Characteristics",
+      "authority": "Medley Pharma Limited / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "population": "Adultos; sem extrapolação para crianças neste pacote",
+      "scope": "Posologia, contraindicações, interações, gestação/lactação",
+      "url": "https://www.medicines.org.uk/emc/product/100828/smpc",
+      "verifiedOn": "2026-10-02",
+      "recencyNote": "Texto revisado em 19/08/2025. Bula britânica: verificar apresentação/formulário local antes da prescrição."
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

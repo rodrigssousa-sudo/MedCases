@@ -1,0 +1,222 @@
+{
+  "owner": "constipacao_funcional_pediatrica",
+  "title": {
+    "pt": "Constipação funcional pediátrica",
+    "es": "Estreñimiento funcional pediátrico"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Constipação funcional pediátrica é distúrbio da interação intestino-cérebro com retenção e/ou evacuação difícil, sem outra causa que explique plenamente os sintomas após avaliação apropriada. Dor evacuatória pode induzir retenção; fezes acumuladas endurecem e distendem o reto, perpetuando o ciclo. Escape fecal pode ser transbordamento, não diarreia verdadeira nem comportamento voluntário. É frequente e afeta qualidade de vida familiar.",
+      "es": "El estreñimiento funcional pediátrico es un trastorno de la interacción intestino-cerebro con retención y/o evacuación difícil, sin otra causa que explique plenamente los síntomas tras evaluación apropiada. El dolor al evacuar puede inducir retención; las heces acumuladas se endurecen y distienden el recto, perpetuando el ciclo. Las pérdidas fecales pueden ser por rebosamiento, no diarrea verdadera ni conducta voluntaria. Es frecuente y afecta la calidad de vida familiar.",
+      "sources": [
+        "C1",
+        "C2",
+        "C6"
+      ]
+    },
+    {
+      "id": "criteria",
+      "pt": "RomeV pediátrico exige pelo menos 2 achados presentes no último mês: média de ≤2 evacuações/semana; média de ≥1 episódio de incontinência fecal/semana somente se já adquiriu controle esfincteriano; postura retentiva/esforço/retenção inadequada; evacuações dolorosas ou endurecidas; grande massa fecal retal; fezes de grande diâmetro. Sintomas por pelo menos 1 mês, sem outra explicação suficiente e sem preencher critérios de intestino irritável. Não exigir que fezes obstruam o vaso nem adotar antigo intervalo diferente em crianças maiores.",
+      "es": "RomeV pediátrico exige al menos 2 hallazgos presentes en el último mes: promedio de ≤2 evacuaciones/semana; promedio de ≥1 episodio de incontinencia fecal/semana solo si ya adquirió control de esfínteres; postura retentiva/esfuerzo/retención inapropiada; evacuaciones dolorosas o duras; gran masa fecal rectal; heces de gran diámetro. Síntomas por al menos 1 mes, sin otra explicación suficiente y sin cumplir criterios de intestino irritable. No exigir que las heces obstruyan el inodoro ni adoptar el antiguo intervalo diferente en niños mayores.",
+      "sources": [
+        "C2"
+      ]
+    },
+    {
+      "id": "history",
+      "pt": "Perguntar início, mecônio, consistência/frequência, dor, escape, retenção, crescimento, dieta, medicamentos, neurodesenvolvimento e tratamentos prévios. Avaliar hidratação, abdome, região perianal, coluna e neurologia dos membros inferiores conforme contexto. Toque retal não é automático e exige indicação, competência, consentimento e privacidade; sinais de alerta devem motivar avaliação pediátrica especializada.",
+      "es": "Preguntar inicio, meconio, consistencia/frecuencia, dolor, pérdidas, retención, crecimiento, dieta, medicamentos, neurodesarrollo y tratamientos previos. Evaluar hidratación, abdomen, región perianal, columna y neurología de miembros inferiores según contexto. El tacto rectal no es automático y exige indicación, competencia, consentimiento y privacidad; las alarmas deben motivar evaluación pediátrica especializada.",
+      "sources": [
+        "C3",
+        "C6"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Início no período neonatal, mecônio tardio, crescimento inadequado, vômitos persistentes ou biliosos, distensão importante, fezes em fita, anomalia anal/neurológica ou sangue sem explicação por fissura exigem investigar causas orgânicas. Obstrução, instabilidade ou desidratação importante requer atendimento hospitalar. Considerar Hirschsprung, malformação anorretal, doença medular, hipotireoidismo e doença celíaca conforme contexto; não iniciar desimpactação empírica em suspeita de obstrução.",
+      "es": "Inicio neonatal, meconio tardío, crecimiento inadecuado, vómitos persistentes o biliosos, distensión importante, heces en cinta, anomalía anal/neurológica o sangre no explicada por fisura requieren estudiar causas orgánicas. Obstrucción, inestabilidad o deshidratación importante exige atención hospitalaria. Considerar Hirschsprung, malformación anorrectal, enfermedad medular, hipotiroidismo y enfermedad celíaca según contexto; no iniciar desimpactación empírica ante sospecha de obstrucción.",
+      "sources": [
+        "C3",
+        "C6"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Diagnóstico típico é clínico. Não usar radiografia abdominal, ultrassom ou endoscopia rotineiros para diagnosticar constipação funcional. Investigações dirigidas ficam para red flags, dúvida ou refratariedade, com especialista. Procurar impactação por história/exame, incluindo escape por transbordamento e massa fecal; baixa frequência isolada em bebê que evacua fezes macias não basta para rotular constipação.",
+      "es": "El diagnóstico típico es clínico. No usar radiografía abdominal, ecografía ni endoscopia rutinarias para diagnosticar estreñimiento funcional. Reservar estudios dirigidos para alarmas, dudas o refractariedad, con especialista. Buscar impactación mediante historia/examen, incluido rebosamiento y masa fecal; frecuencia baja aislada en un bebé que elimina heces blandas no basta para etiquetar estreñimiento.",
+      "sources": [
+        "C3",
+        "C6",
+        "C7"
+      ]
+    },
+    {
+      "id": "plan",
+      "pt": "Explicar o ciclo de retenção sem culpar a criança. Combinar laxativo com rotina de banheiro após refeições, apoio dos pés e incentivo sem punição, conforme desenvolvimento. Manter alimentação equilibrada, fibras, líquidos e atividade apropriados à idade; aumentar excessivamente não substitui tratamento. Se houver impactação, resolvê-la antes da manutenção. PEG com ou sem eletrólitos tem recomendação forte na guideline2026, mas dose deve seguir formulação e bula/formulário adotados.",
+      "es": "Explicar el ciclo de retención sin culpar al niño. Combinar laxante con rutina de baño después de comidas, apoyo de pies e incentivo sin castigos, según desarrollo. Mantener alimentación equilibrada, fibra, líquidos y actividad adecuados a la edad; aumentar excesivamente no sustituye el tratamiento. Si hay impactación, resolverla antes del mantenimiento. PEG con o sin electrolitos tiene recomendación fuerte en la guía2026, pero la dosis debe seguir formulación y prospecto/formulario adoptados.",
+      "sources": [
+        "C1",
+        "C3",
+        "C6"
+      ]
+    },
+    {
+      "id": "preparation",
+      "pt": "Esquema abaixo é específico do Movicol Paediatric Plain6.9 g: cada sachê contém macrogol3350 6.563 g e eletrólitos; dissolver cada sachê em 62.5 mL de água por via oral. Não confundir massa total do pó com massa do PEG, nem trocar sachê infantil por adulto ou outro produto. A água de reconstituição não substitui hidratação habitual. Outros medicamentos orais devem ser separados por 1 h antes, durante e 1 h após a administração.",
+      "es": "El esquema siguiente es específico de Movicol Paediatric Plain6.9 g: cada sobre contiene macrogol3350 6.563 g y electrolitos; disolver cada sobre en 62.5 mL de agua por vía oral. No confundir masa total del polvo con masa de PEG, ni cambiar el sobre pediátrico por adulto u otro producto. El agua de reconstitución no sustituye la hidratación habitual. Separar otros medicamentos orales 1 h antes, durante y 1 h después de la administración.",
+      "sources": [
+        "C4",
+        "C5"
+      ]
+    },
+    {
+      "id": "maintenance",
+      "pt": "Sem impactação ou após resolvê-la, dose inicial desta apresentação: 1–6 anos, 1 sachê/dia; 7–11 anos, 2 sachês/dia. Ajustar pela evacuação macia e regular; aumento, se necessário, em dias alternados. Menores de 2 anos: máximo recomendado 2 sachês/dia; 2–11 anos: normalmente não mais de 4 sachês/dia. Diarreia pede redução/reavaliação. Não retirar abruptamente após a primeira evacuação: manutenção costuma durar meses, com retirada gradual orientada pela evolução.",
+      "es": "Sin impactación o después de resolverla, dosis inicial de esta presentación: 1–6 años, 1 sobre/día; 7–11 años, 2 sobres/día. Ajustar según evacuaciones blandas y regulares; aumentar, si es necesario, en días alternos. Menores de 2 años: máximo recomendado 2 sobres/día; 2–11 años: normalmente no más de 4 sobres/día. La diarrea requiere reducir/reevaluar. No suspender bruscamente tras la primera evacuación: el mantenimiento suele durar meses, con retirada gradual según evolución.",
+      "sources": [
+        "C3",
+        "C4",
+        "C5"
+      ]
+    },
+    {
+      "id": "disimpaction",
+      "pt": "Impactação confirmada em 5–11 anos, com esta apresentação e prescrição supervisionada: dias 1,2,3,4,5,6,7 correspondem a 4,6,8,10,12,12,12 sachês/dia, respectivamente. Dividir doses, consumir total diário dentro de 12 h e parar escalada quando desimpactado; não continuar dose alta só para completar tabela. Reavaliar dentro de 1 semana. Este produto não é recomendado para desimpactação abaixo de 5 anos; não inferir metade do esquema para lactentes.",
+      "es": "Impactación confirmada en 5–11 años, con esta presentación y receta supervisada: días 1,2,3,4,5,6,7 corresponden a 4,6,8,10,12,12,12 sobres/día, respectivamente. Dividir dosis, consumir el total diario dentro de 12 h y detener la escalada cuando se desimpactó; no continuar dosis alta solo para completar la tabla. Reevaluar dentro de 1 semana. Este producto no se recomienda para desimpactar por debajo de 5 años; no inferir la mitad del esquema para lactantes.",
+      "sources": [
+        "C3",
+        "C4",
+        "C5"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Não usar esta formulação em obstrução/íleo, perfuração, doença intestinal inflamatória grave/megacólon tóxico ou alergia. Na desimpactação, a bula não recomenda este produto em criança com comprometimento renal ou cardiovascular por ausência de dados. Disfagia, alteração de consciência/reflexo de deglutição, vômitos ou dificuldade de ingerir volume exige reavaliação da via e supervisão. Edema, dispneia, desidratação ou alteração clínica importante exige interromper e avaliar eletrólitos/hidratação.",
+      "es": "No usar esta formulación ante obstrucción/íleo, perforación, enfermedad intestinal inflamatoria grave/megacolon tóxico o alergia. Para desimpactación, el prospecto no recomienda este producto en niños con compromiso renal o cardiovascular por falta de datos. Disfagia, alteración de conciencia/reflejo de deglución, vómitos o dificultad para ingerir volumen requiere reevaluar la vía y supervisar. Edema, disnea, deshidratación o cambio clínico importante exige suspender y evaluar electrolitos/hidratación.",
+      "sources": [
+        "C4",
+        "C5"
+      ]
+    },
+    {
+      "id": "escalation",
+      "pt": "Falha exige conferir adesão, formulação/dose, impactação recorrente e diagnóstico antes de intensificar. Laxativo estimulante pode ser associado conforme formulário pediátrico validado. Enema não é adjuvante rotineiro de manutenção; a guideline2026 admite papel na desimpactação, mas NICE prioriza via oral. Fosfato retal exige supervisão especializada e não deve ser usado empiricamente em casa. Não copiar doses da tabela contextual2026 como prescrição.",
+      "es": "El fracaso exige revisar adherencia, formulación/dosis, impactación recurrente y diagnóstico antes de intensificar. Puede asociarse un laxante estimulante según formulario pediátrico validado. El enema no es un complemento rutinario del mantenimiento; la guía2026 admite un papel en desimpactación, pero NICE prioriza la vía oral. El fosfato rectal exige supervisión especializada y no debe usarse empíricamente en casa. No copiar dosis de la tabla contextual2026 como receta.",
+      "sources": [
+        "C1",
+        "C3"
+      ]
+    },
+    {
+      "id": "adjuncts",
+      "pt": "A guideline2026 sugere condicionalmente determinadas combinações probióticas/simbióticas e fisioterapia pélvica; isso não valida qualquer probiótico nem substitui PEG. Exclusão de leite de vaca por 2–4 semanas pode ser considerada como adjuvante se não responde à terapia convencional e há suspeita de alergia, com supervisão nutricional; não é rotina nem prova diagnóstica isolada. Linaclotida e procedimentos para refratários exigem especialista, licença e dose verificadas para a população local.",
+      "es": "La guía2026 sugiere condicionalmente determinadas combinaciones probióticas/simbióticas y fisioterapia pélvica; esto no valida cualquier probiótico ni sustituye PEG. Puede considerarse exclusión de leche de vaca durante 2–4 semanas como complemento si no responde a terapia convencional y hay sospecha de alergia, con supervisión nutricional; no es rutinaria ni una prueba diagnóstica aislada. Linaclotida y procedimientos para casos refractarios requieren especialista, autorización y dosis verificadas para la población local.",
+      "sources": [
+        "C1"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Menores de 1 ano não recebem automaticamente o esquema descrito; exigem avaliação pediátrica e produto/dose próprios. A partir de 12 anos, este sachê infantil não é a apresentação recomendada nesta bula: conferir formulação indicada antes de prescrever. Hepatopatia importante ou gestação em adolescente requer avaliação individual, sem extrapolar um protocolo adulto ou inventar ajuste. Não interpretar intervalo grande entre evacuações de lactente em aleitamento como doença sem consistência e sintomas.",
+      "es": "Menores de 1 año no reciben automáticamente el esquema descrito; requieren evaluación pediátrica y producto/dosis propios. Desde 12 años, este sobre pediátrico no es la presentación recomendada en este prospecto: confirmar formulación indicada antes de recetar. Hepatopatía importante o embarazo adolescente requiere evaluación individual, sin extrapolar un protocolo adulto ni inventar ajustes. No interpretar intervalos largos entre evacuaciones de un lactante amamantado como enfermedad sin valorar consistencia y síntomas.",
+      "sources": [
+        "C3",
+        "C4",
+        "C6"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta se estável, sem suspeita de obstrução/causa orgânica urgente, tolera manejo oral e família compreende plano/retorno. Monitorar frequência, consistência, dor, escapes, hidratação e crescimento. Reavaliar precocemente desimpactação e manutenção conforme resposta. Persistência apesar do manejo inicial por 3 meses indica serviço especializado segundo NICE; red flags ou falha de desimpactação ambulatorial justificam avaliação antes. Retornar por vômitos biliosos, distensão crescente, dor intensa, sangue importante ou prostração.",
+      "es": "Alta si está estable, sin sospecha de obstrucción/causa orgánica urgente, tolera manejo oral y la familia comprende plan/retorno. Controlar frecuencia, consistencia, dolor, pérdidas, hidratación y crecimiento. Reevaluar precozmente desimpactación y mantenimiento según respuesta. Persistencia pese al manejo inicial durante 3 meses indica atención especializada según NICE; alarmas o fracaso de desimpactación ambulatoria justifican evaluación antes. Volver ante vómitos biliosos, mayor distensión, dolor intenso, sangre importante o decaimiento.",
+      "sources": [
+        "C3",
+        "C6",
+        "C7"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "C1",
+      "title": "Guidelines for treatment of functional constipation in children0–18years",
+      "authority": "ESPGHAN / NASPGHAN",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/jpn3.70447",
+      "scope": "Publicado20/05/2026; texto integral consultado. Tabela10 é contexto, EXPRESSAMENTE não fonte de prescrição; usar bula/formulário.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C2",
+      "title": "RomeV criteria — H2a functional constipation",
+      "authority": "Rome Foundation",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL_DIAGNOSTIC_CRITERIA",
+      "url": "https://theromefoundation.org/rome-v-criteria/",
+      "scope": "Critérios pediátricos unificados; não repetir divisão etária/intervalos desatualizados de RomeIV.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C3",
+      "title": "Constipation in children and young people CG99",
+      "authority": "NICE",
+      "year": 2017,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "url": "https://www.nice.org.uk/guidance/cg99/chapter/Recommendations",
+      "scope": "História, red flags, exames e acompanhamento; nota de licenças2021. Preferir bula2025 para faixas/doses do produto.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C4",
+      "title": "Movicol Paediatric Plain6.9g — SmPC",
+      "authority": "Norgine / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/52/smpc",
+      "scope": "Atualização16/04/2025; macrogol3350 6.563g/sachê, idades e água por sachê. Não intercambiável com sachet adulto.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C5",
+      "title": "Movicol Paediatric Plain6.9g — patient leaflet",
+      "authority": "Norgine / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_PATIENT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/52/pil",
+      "scope": "Atualização27/01/2026; corrobora mesma apresentação. Não fonte independente da bula do mesmo fabricante.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C6",
+      "title": "Constipation clinical practice guideline",
+      "authority": "Royal Children’s Hospital",
+      "year": 2020,
+      "status": "SUPPORTIVE_OLDER_CLINICAL_GUIDELINE",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/constipation/",
+      "scope": "Red flags, mecanismo e avaliação. Não usar RomeIV antigo nem equivalência de sachês de marcas distintas.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C7",
+      "title": "New clinical care pathway for pediatric functional constipation",
+      "authority": "NASPGHAN / AGA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_OFFICIAL_PATHWAY_SUMMARY",
+      "url": "https://naspghan.org/recent-news/new-clinical-care-pathway-for-pediatric-functional-constipation/",
+      "scope": "Comunicado07/04/2026; diagnóstico clínico, tratamento em etapas e transição. Pathway integral não acessível nesta consulta.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

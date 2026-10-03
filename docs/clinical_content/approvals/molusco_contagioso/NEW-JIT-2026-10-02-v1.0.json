@@ -1,0 +1,156 @@
+{
+  "owner": "molusco_contagioso",
+  "title": {
+    "pt": "Molusco contagioso",
+    "es": "Molusco contagioso"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Molusco contagioso é infecção cutânea por poxvírus, com pápulas firmes geralmente umbilicadas. É comum em crianças e pode ser mais extenso em eczema/imunossupressão; adultos podem apresentar aquisição sexual genital. Transmissão por contato/autoinoculação não implica automaticamente falha de higiene ou outra IST.",
+      "es": "Molusco contagioso es infección cutánea por poxvirus, con pápulas firmes generalmente umbilicadas. Común en niños, puede ser más extenso con eczema/inmunosupresión; adultos pueden tener adquisición sexual genital. Transmisión por contacto/autoinoculación no implica automáticamente falta de higiene ni otra ITS.",
+      "sources": [
+        "M2",
+        "M5"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico costuma ser clínico. Identificar localização, extensão, prurido, eczema e imunidade; examinar lesões próximas ao olho e genitais com consentimento. Lesão inflamada pode indicar resposta imune/resolução, não necessariamente infecção bacteriana. Dúvida, forma gigante ou atípica requer dermatologia e eventual biópsia.",
+      "es": "Diagnóstico suele ser clínico. Identificar localización, extensión, picor, eczema e inmunidad; examinar lesiones perioculares/genitales con consentimiento. Lesión inflamada puede indicar respuesta inmune/resolución, no necesariamente infección bacteriana. Duda, forma gigante o atípica requiere dermatología y eventual biopsia.",
+      "sources": [
+        "M1",
+        "M2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar verrugas, foliculite, lesões císticas e outras infecções/lesões umbilicadas. Lesões extensas/atípicas em imunossuprimido exigem avaliação própria. Lesão genital pode justificar oferta de rastreio de IST conforme contexto, sem assumir que todo molusco infantil foi sexualmente transmitido.",
+      "es": "Diferenciar verrugas, foliculitis, quistes y otras infecciones/lesiones umbilicadas. Lesiones extensas/atípicas en inmunosuprimido exigen valoración propia. Lesión genital puede justificar oferta de pruebas ITS según contexto, sin asumir que todo molusco infantil sea sexual.",
+      "sources": [
+        "M1",
+        "M2",
+        "M5"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Observação é opção válida em imunocompetente sem complicação, explicando que resolução pode ser demorada. Tratar eczema/prurido associado com plano apropriado; evitar coçar, espremer, raspar ou depilar sobre lesões. Cobrir lesões expostas em situações de contato e não compartilhar toalhas. Preferência, sofrimento e extensão podem justificar tratamento ativo.",
+      "es": "Observación es opción válida en inmunocompetente sin complicación, explicando resolución lenta. Tratar eczema/picor con plan apropiado; evitar rascar, exprimir, rasurar o depilar lesiones. Cubrir lesiones expuestas en contacto y no compartir toallas. Preferencia, malestar y extensión pueden justificar tratamiento activo.",
+      "sources": [
+        "M2",
+        "M3",
+        "M5"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Opção especializada onde licenciada/disponível: cantaridina YCANTH0,7% (7mg/mL), idade≥2anos, aplicação única sobre cada lesão por profissional treinado, repetir a cada3semanas se necessário; máximo2aplicadores/sessão. Lavar com água e sabão após24h; retirar antes se dor/bolhas intensas. Não fornecer como aplicação domiciliar nem substituir por fórmula manipulada de concentração desconhecida.",
+      "es": "Opción especializada donde autorizada/disponible: cantaridina YCANTH0,7% (7mg/mL), edad≥2años, aplicación única en cada lesión por profesional formado, repetir cada3semanas si precisa; máximo2aplicadores/sesión. Lavar con agua y jabón tras24h; retirar antes si dolor/ampollas intensas. No entregar para aplicación doméstica ni sustituir por preparado de concentración desconocida.",
+      "sources": [
+        "M4",
+        "M1"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Cantaridina não é oral, ocular, mucosa ou genital; evitar pele sadia, oclusão e outros tópicos até remoção. É inflamável mesmo seca; evitar chama/fumo até lavagem. Ingestão pode ser fatal; emergência toxicológica. Contato ocular: irrigar por pelo menos15min e procurar atendimento imediato. Não usar imiquimode automaticamente para molusco infantil.",
+      "es": "Cantaridina no es oral, ocular, mucosa ni genital; evitar piel sana, oclusión y otros tópicos hasta retirar. Inflamable incluso seca; evitar llama/tabaco hasta lavar. Ingestión puede ser fatal; urgencia toxicológica. Contacto ocular: irrigar al menos15min y atención inmediata. No usar imiquimod automáticamente en molusco infantil.",
+      "sources": [
+        "M4",
+        "M1"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Criança pequena, lesão periocular/genital, imunossupressão e doença extensa exigem escolha individual. Gestação/lactação não recebe cantaridina automática; evitar pele que lactente possa tocar/ingerir. Novas opções como berdazimer têm produto/bula próprios; não extrapolar dose de cantaridina. Disponibilidade local precisa ser confirmada antes de qualquer prescrição.",
+      "es": "Niño pequeño, lesión periocular/genital, inmunosupresión y enfermedad extensa exigen elección individual. Embarazo/lactancia no recibe cantaridina automáticamente; evitar piel que lactante toque/ingiera. Opciones como berdazimer tienen producto/ficha propios; no extrapolar dosis de cantaridina. Confirmar disponibilidad local antes de prescribir.",
+      "sources": [
+        "M3",
+        "M4"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Dor importante, febre, celulite progressiva ou comprometimento ocular exige atendimento; inflamação isolada não justifica antibiótico preventivo. Imunossupressão com lesões grandes/disseminadas exige dermatologia e avaliação da doença de base. Efeitos graves de procedimento exigem contato imediato, não esperar visita programada.",
+      "es": "Dolor importante, fiebre, celulitis progresiva o afectación ocular exige atención; inflamación aislada no justifica antibiótico preventivo. Inmunosupresión con lesiones grandes/diseminadas exige dermatología y evaluación basal. Efectos graves de procedimiento requieren contacto inmediato, sin esperar visita programada.",
+      "sources": [
+        "M1",
+        "M2",
+        "M4"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta com orientação e retorno se complicação, diagnóstico incerto ou impacto relevante. Monitorar eczema, novas lesões e resposta; resolução pode levar meses. Procedimentos destrutivos/crioterapia exigem discutir dor e cicatriz; não impor tratamento agressivo a toda criança. Reavaliar escolha conforme preferência e evolução.",
+      "es": "Alta con orientación y retorno ante complicación, diagnóstico incierto o impacto relevante. Vigilar eczema, nuevas lesiones y respuesta; resolución puede tardar meses. Procedimientos destructivos/crioterapia exigen discutir dolor y cicatriz; no imponer tratamiento agresivo a todo niño. Reevaluar según preferencia y evolución.",
+      "sources": [
+        "M1",
+        "M3",
+        "M5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "M1",
+      "title": "Molluscum diagnosis and treatment",
+      "authority": "AAD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.aad.org/public/diseases/a-z/molluscum-contagiosum-treatment",
+      "scope": "Acesso citado30/01/2025; observação e opções atuais.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M2",
+      "title": "Molluscum contagiosum",
+      "authority": "NHS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/molluscum-contagiosum/",
+      "scope": "Diagnóstico, transmissão e retorno.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M3",
+      "title": "Molluscum pediatric expert consensus",
+      "authority": "J Drugs Dermatol",
+      "year": 2026,
+      "status": "EXPERT_CONSENSUS_ABSTRACT_INDEXED",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42555078/",
+      "scope": "01/08/2026; resumo, não guideline oficial universal nem leitura integral.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M4",
+      "title": "YCANTH0.7% prescribing information",
+      "authority": "Verrica / DailyMed",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=7c9bdeaa-9822-4c69-a719-ea4a8643f59c",
+      "scope": "Revisão10/2024; aprovaçãoEUA≥2anos, aplicação profissional. DisponibilidadeBrasil/ES não presumida.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M5",
+      "title": "Molluscum contagiosum dermatology pathway",
+      "authority": "NHS Right Decisions",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_PATHWAY_INDEXED",
+      "url": "https://www.rightdecisions.scot.nhs.uk/dermatology-pathways/molluscum-contagiosum/",
+      "scope": "Revisão01/06/2025; eczema e avaliação.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

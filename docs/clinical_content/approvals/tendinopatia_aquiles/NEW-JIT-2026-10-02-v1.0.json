@@ -1,0 +1,151 @@
+{
+  "owner": "tendinopatia_aquiles",
+  "title": {
+    "pt": "Tendinopatia de Aquiles",
+    "es": "Tendinopatía de Aquiles"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Tendinopatia de Aquiles causa dor/rigidez relacionada à carga, por alteração da capacidade do tendão de tolerar esforço; não é somente inflamação aguda. Distinguir inserção no calcâneo de porção média, pois compressão e exercícios podem precisar adaptação. Pode afetar atletas e não atletas.",
+      "es": "Tendinopatía de Aquiles causa dolor/rigidez por carga y alteración de tolerancia del tendón; no solo inflamación aguda. Distinguir inserción calcánea de porción media, pues compresión y ejercicios requieren adaptación. Afecta deportistas y no deportistas.",
+      "sources": [
+        "A2",
+        "A4"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Investigar mudança de treino/trabalho, calçado, rigidez matinal, local da dor, força e impacto. Examinar palpação, marcha, amplitude e elevação do calcanhar conforme tolerância. Diagnóstico usualmente clínico; ultrassom/RM seletivos se incerto, ruptura suspeita ou planejamento especializado, não obrigatórios em quadro típico.",
+      "es": "Investigar cambios de entrenamiento/trabajo, calzado, rigidez matinal, lugar, fuerza e impacto. Examinar palpación, marcha, amplitud y elevación del talón tolerada. Diagnóstico suele ser clínico; ecografía/RM selectivas ante duda, sospecha de rotura o plan especializado, no obligatorias en cuadro típico.",
+      "sources": [
+        "A2",
+        "A4"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Excluir ruptura, bursite retrocalcânea, dor plantar, lesão óssea e doença inflamatória. Início súbito com estalo, fraqueza marcada ou incapacidade de impulsionar exige examinar integridade, inclusive teste de compressão da panturrilha por profissional. Ausência de grande dor não exclui ruptura.",
+      "es": "Excluir rotura, bursitis retrocalcánea, dolor plantar, lesión ósea y enfermedad inflamatoria. Inicio súbito con chasquido, gran debilidad o incapacidad de impulso exige examinar integridad, incluida compresión de pantorrilla profesional. Ausencia de dolor intenso no excluye rotura.",
+      "sources": [
+        "A2",
+        "A4"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Ajustar carga provocadora e iniciar fortalecimento progressivo da panturrilha/tendão orientado por fisioterapia, com recuperação e tolerância monitoradas. Evitar repouso total prolongado como única estratégia. Na forma insercional, não impor descida do calcanhar abaixo do degrau que agrave compressão; calçado/elevação podem ser úteis conforme exame.",
+      "es": "Ajustar carga provocadora e iniciar fortalecimiento progresivo de pantorrilla/tendón con fisioterapia, vigilando recuperación y tolerancia. Evitar reposo total prolongado como estrategia única. En forma insercional, no imponer descenso del talón bajo escalón que agrave compresión; calzado/elevación pueden ayudar según examen.",
+      "sources": [
+        "A2",
+        "A3",
+        "A4"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se analgesia necessária em adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo. Não duplicar produtos. Peso<50kg, hepatopatia/nefropatia ou álcool importante exige individualização. Analgesia facilita função, mas não substitui reabilitação nem exclui lesão grave.",
+      "es": "Si analgesia necesaria en adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo. No duplicar productos. Peso<50kg, hepatopatía/nefropatía o alcohol importante exige individualización. Analgesia facilita función, sin sustituir rehabilitación ni excluir lesión grave.",
+      "sources": [
+        "P"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Não infiltrar corticoide no tendão de Aquiles como tratamento rotineiro pelo risco de enfraquecimento/ruptura. Outras intervenções e cirurgia são selecionadas após confirmar diagnóstico e reabilitação adequada; não prometer cura por PRP ou procedimento isolado. AINE, se outra indicação sintomática, exige risco renal/GI/cardiovascular e produto próprio.",
+      "es": "No infiltrar corticoide en tendón de Aquiles rutinariamente por riesgo de debilitamiento/rotura. Otras intervenciones/cirugía se seleccionan tras diagnóstico y rehabilitación adecuada; no prometer cura por PRP o procedimiento aislado. AINE, si indicado para síntomas, exige riesgo renal/GI/cardiovascular y producto propio.",
+      "sources": [
+        "A2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Suspeita de ruptura, trauma com incapacidade de apoio, infecção, déficit neurovascular ou panturrilha inchada com risco trombótico exige urgência. Não iniciar exercício de tendinopatia antes de excluir essas situações. Dor associada a dispneia ou sinais sistêmicos exige atendimento emergencial.",
+      "es": "Sospecha de rotura, trauma con incapacidad de apoyo, infección, déficit neurovascular o pantorrilla hinchada con riesgo trombótico exige urgencia. No iniciar ejercicio tendinopático antes de excluirlas. Dolor asociado a disnea o signos sistémicos requiere urgencia.",
+      "sources": [
+        "A2",
+        "A4"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Avaliar diabetes, doença inflamatória, uso de fluoroquinolona/corticoide e fatores de ruptura. Criança/adolescente com dor no calcanhar pode ter apofisite e precisa diagnóstico próprio. Gestação ou doença renal/hepática exige revisar analgesia; não extrapolar programa adulto sem avaliar a pessoa.",
+      "es": "Evaluar diabetes, enfermedad inflamatoria, fluoroquinolona/corticoide y riesgo de rotura. Niño/adolescente con dolor de talón puede tener apofisitis y requiere diagnóstico propio. Embarazo o nefropatía/hepatopatía exige revisar analgesia; no extrapolar programa adulto sin evaluar persona.",
+      "sources": [
+        "A2",
+        "P"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial se sem alarme, com plano de carga e retorno. Acompanhar dor, força, tolerância no dia seguinte e função, aumentando esforço gradualmente. Persistência incapacitante ou perda de força apesar de plano adequado requer especialista; recuperação costuma exigir tempo, sem prazo único garantido.",
+      "es": "Alta ambulatoria si sin alarma, con plan de carga y retorno. Seguir dolor, fuerza, tolerancia al día siguiente y función, aumentando esfuerzo gradualmente. Persistencia incapacitante o pérdida de fuerza pese a plan adecuado exige especialista; recuperación requiere tiempo, sin plazo garantizado.",
+      "sources": [
+        "A2",
+        "A4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "A1",
+      "title": "Achilles midportion tendinopathy CPG revision2024",
+      "authority": "APTA Orthopedics",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_PORTAL_INDEXED",
+      "url": "https://www.orthopt.org/content/s/achilles-pain-stiffness-and-muscle-power-deficits-midportion-achilles-tendinopathy-revision-2024",
+      "scope": "Epub27/11/2024; existência/escopo verificados, texto completo indisponível.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A2",
+      "title": "Achilles tendinitis",
+      "authority": "AAOS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/achilles-tendinitis/",
+      "scope": "Texto clínico; insercional vs médio, tratamento e riscos.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A3",
+      "title": "Insertional Achilles tendinopathy",
+      "authority": "NHS Kent",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_GUIDANCE_INDEXED",
+      "url": "https://www.kentcht.nhs.uk/leaflet/insertional-achilles-tendinopathy/",
+      "scope": "04/03/2025; limitar compressão na inserção.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "A4",
+      "title": "Non-insertional Achilles tendinopathy",
+      "authority": "NHS Borders",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_PATHWAY_INDEXED",
+      "url": "https://www.rightdecisions.scot.nhs.uk/borders-ref-help-toolkit/orthopaedic/foot-and-ankle/non-insertional-achilles-tendinopathy/",
+      "scope": "31/07/2025; reabilitação e encaminhamento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose sintomática e limites.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

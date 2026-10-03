@@ -1,0 +1,176 @@
+{
+  "owner": "coledocolitiase",
+  "title": {
+    "pt": "Coledocolitíase",
+    "es": "Coledocolitiasis"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Coledocolitíase é cálculo na via biliar principal, distinto de cálculo limitado à vesícula. Pode causar dor biliar, icterícia ou ser incidental; obstrução pode complicar com colangite ou pancreatite. A ausência de sintomas não implica a mesma conduta conservadora de cálculo vesicular assintomático.",
+      "es": "Coledocolitiasis es cálculo en vía biliar principal, distinto de cálculo limitado a vesícula. Puede causar dolor biliar, ictericia o ser incidental; obstrucción puede complicarse con colangitis o pancreatitis. Ausencia de síntomas no implica igual conducta conservadora que cálculo vesicular asintomático.",
+      "sources": [
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    {
+      "id": "recognition",
+      "pt": "Dor epigástrica/hipocôndrio direito, icterícia, urina escura ou fezes claras sugerem obstrução. Febre/calafrios com icterícia, confusão, hipotensão ou deterioração exige hospital imediato por possível colangite/sepse. Dor persistente intensa, vômitos ou irradiação dorsal exige investigar pancreatite e outras emergências.",
+      "es": "Dolor epigástrico/hipocondrio derecho, ictericia, orina oscura o heces claras sugieren obstrucción. Fiebre/escalofríos con ictericia, confusión, hipotensión o deterioro exige hospital inmediato por posible colangitis/sepsis. Dolor persistente intenso, vómitos o irradiación dorsal exige investigar pancreatitis y otras emergencias.",
+      "sources": [
+        "C4",
+        "C5"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar sinais vitais, dor, hidratação e abdome. Exames iniciais: perfil hepático/bilirrubinas e ultrassom; acrescentar hemograma, função renal, lipase e investigação de infecção conforme apresentação. Suspeita persistente sem cálculo definido no ultrassom exige colangio-RM ou ecoendoscopia. ERCP é sobretudo terapêutica, não exame diagnóstico universal.",
+      "es": "Evaluar signos vitales, dolor, hidratación y abdomen. Estudios iniciales: perfil hepático/bilirrubinas y ecografía; añadir hemograma, función renal, lipasa e infección según presentación. Sospecha persistente sin cálculo definido en ecografía exige colangio-RM o ecoendoscopia. ERCP es sobre todo terapéutica, no prueba diagnóstica universal.",
+      "sources": [
+        "C1",
+        "C2",
+        "C3",
+        "C5"
+      ]
+    },
+    {
+      "id": "risk",
+      "pt": "Para adulto na via ASGE2019 de suspeita de coledocolitíase: alto risco se cálculo visto na imagem, colangite ascendente, OU bilirrubina total>4mg/dL JUNTO com ducto dilatado (>6mm se vesícula presente). Bilirrubina isolada não basta nesse critério. Alteração hepática, idade>55anos ou dilatação isolada indica investigação intermediária, geralmente colangio-RM/ecoendoscopia.",
+      "es": "Para adulto en vía ASGE2019 de sospecha de coledocolitiasis: alto riesgo si cálculo visto en imagen, colangitis ascendente, O bilirrubina total>4mg/dL JUNTO con conducto dilatado (>6mm si vesícula presente). Bilirrubina sola no basta en este criterio. Alteración hepática, edad>55años o dilatación sola indica estudio intermedio, generalmente colangio-RM/ecoendoscopia.",
+      "sources": [
+        "C1"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar cólica vesicular, colecistite, estenose/tumor da via biliar, hepatite e pancreatite. Na pancreatite biliar, usar algoritmo específico: a diretriz iLATAM2026 recomenda colangio-RM/ecoendoscopia em incerteza e reservação da ERCP a indicação terapêutica. Não transpor critérios antigos de exploração pré-operatória para ERCP automática em todo paciente.",
+      "es": "Diferenciar cólico vesicular, colecistitis, estenosis/tumor biliar, hepatitis y pancreatitis. En pancreatitis biliar, usar algoritmo específico: guía iLATAM2026 recomienda colangio-RM/ecoendoscopia en incertidumbre y reservar ERCP a indicación terapéutica. No trasladar criterios antiguos de exploración preoperatoria a ERCP automática en todos.",
+      "sources": [
+        "C3",
+        "C5"
+      ]
+    },
+    {
+      "id": "definitive",
+      "pt": "Cálculo confirmado requer plano de extração endoscópica ou cirúrgica, inclusive assintomático se paciente apto, ponderando risco e preferência. Se ERCP não remove cálculo, stent de drenagem é temporário e precisa plano de retirada/troca/limpeza definitiva. Quando indicado e apto, planejar colecistectomia após tratamento da via biliar; ESGE recomenda dentro de2semanas após ERCP.",
+      "es": "Cálculo confirmado requiere plan de extracción endoscópica o quirúrgica, incluso asintomático si paciente apto, ponderando riesgo y preferencias. Si ERCP no extrae cálculo, stent de drenaje es temporal y necesita plan de retiro/cambio/limpieza definitiva. Si indicado y apto, planear colecistectomía tras tratar vía biliar; ESGE recomienda dentro de2semanas tras ERCP.",
+      "sources": [
+        "C2",
+        "C3"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Na urgência: acesso e suporte conforme gravidade, corrigir hipovolemia individualmente, controlar dor/vômitos e acionar endoscopia/cirurgia. Não atrasar drenagem necessária pela investigação eletiva. Antibiótico não dissolve cálculo e não é tratamento universal da obstrução simples; se colangite/infecção, iniciar protocolo apropriado e controle do foco, sem aguardar antibiótico resolver obstrução.",
+      "es": "En urgencias: acceso y soporte según gravedad, corregir hipovolemia individualmente, controlar dolor/vómitos y llamar endoscopia/cirugía. No retrasar drenaje necesario por estudio electivo. Antibiótico no disuelve cálculo y no es tratamiento universal de obstrucción simple; si colangitis/infección, iniciar protocolo apropiado y control de foco, sin esperar que antibiótico resuelva obstrucción.",
+      "sources": [
+        "C2",
+        "C3",
+        "C5"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Se adulto≥50kg estável, via oral tolerada e sem contraindicação: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h. Não duplicar produtos. Peso<50kg, hepatopatia, nefropatia ou álcool importante exige dose individual. Dor intensa precisa analgesia supervisionada e avaliação; esta dose não autoriza alta diante de obstrução/infecção.",
+      "es": "Si adulto≥50kg estable, tolera vía oral y sin contraindicación: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h. No duplicar productos. Peso<50kg, hepatopatía, nefropatía o alcohol importante exige dosis individual. Dolor intenso necesita analgesia supervisada y evaluación; esta dosis no autoriza alta ante obstrucción/infección.",
+      "sources": [
+        "C6"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestantes necessitam equipe obstétrica/endoscópica para escolha de imagem e intervenção; não atrasar procedimento necessário em colangite. Crianças usam avaliação pediátrica e não herdam limites/doses adultos. Doença renal/hepática, anticoagulação e risco anestésico exigem ajuste do plano; não inventar dose de sedação, antibiótico ou profilaxia de ERCP sem contexto e produto.",
+      "es": "Embarazadas necesitan equipo obstétrico/endoscópico para elegir imagen e intervención; no retrasar procedimiento necesario en colangitis. Niños usan evaluación pediátrica y no heredan límites/dosis adultos. Nefropatía/hepatopatía, anticoagulación y riesgo anestésico exigen ajustar plan; no inventar dosis de sedación, antibiótico o profilaxis ERCP sin contexto y producto.",
+      "sources": [
+        "C1",
+        "C5",
+        "C6"
+      ]
+    },
+    {
+      "id": "disposition",
+      "pt": "Internar/escalonar se colangite, pancreatite importante, obstrução persistente, dor/vômitos não controlados ou instabilidade. Manejo eletivo apenas em paciente estável com plano especializado e retorno garantido. Documentar remoção/drenagem, acompanhamento e destino de stent. Após procedimento, dor crescente, febre, sangramento ou deterioração exige reavaliação urgente.",
+      "es": "Ingresar/escalar si colangitis, pancreatitis importante, obstrucción persistente, dolor/vómitos no controlados o inestabilidad. Manejo electivo solo si estable con plan especializado y retorno garantizado. Documentar extracción/drenaje, seguimiento y destino del stent. Tras procedimiento, dolor creciente, fiebre, sangrado o deterioro exige reevaluación urgente.",
+      "sources": [
+        "C1",
+        "C2",
+        "C4",
+        "C5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "C1",
+      "title": "Role of endoscopy in choledocholithiasis",
+      "authority": "ASGE",
+      "year": 2019,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL_INDEXED",
+      "url": "https://www.asge.org/docs/default-source/guidelines/asge-guideline-on-the-role-of-endoscopy-in-the-evaluation-and-management-of-choledocholithiasis-2019-june-gie.pdf?sfvrsn=6757df52_4",
+      "scope": "PDF oficial indexado; página retornou502. Critérios2019, não2010.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C2",
+      "title": "Endoscopic management of common bile duct stones",
+      "authority": "ESGE",
+      "year": 2019,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "url": "https://www.esge.com/endoscopic-management-of-common-bile-duct-stones-esge-guideline",
+      "scope": "Recomendações oficiais e portal ainda listam2019.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C3",
+      "title": "Gallstone disease CG188 — final full guideline",
+      "authority": "NICE",
+      "year": 2014,
+      "status": "AUTHORITATIVE_FINAL_INDEXED_OLDER",
+      "url": "https://www.nice.org.uk/guidance/cg188/evidence/full-guideline-193302253",
+      "scope": "Documento final indexado, não draft; painel atual mantémCG188.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C4",
+      "title": "Gallstones",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/gallstones/",
+      "scope": "11/08/2025; apresentação e alarmes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C5",
+      "title": "Ibero-Latin American Guidelines on Acute Pancreatitis",
+      "authority": "AEG/AESPANC/OPGE/SIED/SPG",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL_SPECIFIC_PANCREATITIS",
+      "url": "https://onlinelibrary.wiley.com/doi/10.1002/ueg2.70190",
+      "scope": "Texto integral; algoritmo na pancreatite não é diretamente critério para ERCP em toda coledocolitíase.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C6",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; segurança e dose.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

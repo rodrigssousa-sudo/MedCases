@@ -1,0 +1,138 @@
+{
+  "owner": "blefarite_disfuncao_glandulas_meibomio",
+  "title": {
+    "pt": "Blefarite / disfunção das glândulas de Meibômio",
+    "es": "Blefaritis / disfunción de glándulas de Meibomio"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Blefarite é inflamação crônica/recorrente da margem palpebral. A forma anterior afeta base dos cílios; disfunção meibomiana altera lipídios e favorece evaporação lacrimal. Pode coexistir dermatite seborreica, rosácea, hordeólo ou olho seco. Não equivale a celulite orbitária ou infecção intraocular.",
+      "es": "Blefaritis es inflamación crónica/recurrente del borde palpebral. Forma anterior afecta base de pestañas; disfunción meibomiana altera lípidos y favorece evaporación lagrimal. Puede coexistir dermatitis seborreica, rosácea, orzuelo u ojo seco. No equivale a celulitis orbitaria ni infección intraocular.",
+      "sources": [
+        "B1"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Buscar crostas/collaretes, prurido, ardor, secreção meibomiana alterada e sintomas bilaterais recorrentes. Avaliar acuidade visual e córnea quando disponível. História de lentes, cosméticos, alergia e rosácea ajuda selecionar causa. Diagnóstico clínico requer exame; evitar tratar toda pálpebra inchada como blefarite.",
+      "es": "Buscar costras/collaretes, picor, ardor, secreción meibomiana alterada y síntomas bilaterales recurrentes. Evaluar agudeza visual y córnea si disponible. Historia de lentes, cosméticos, alergia y rosácea ayuda seleccionar causa. Diagnóstico clínico requiere examen; no tratar todo párpado hinchado como blefaritis.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Considerar conjuntivite, alergia, dermatite de contato, hordeólo/calázio e ceratite. Lesão unilateral persistente, perda focal de cílios, ulceração ou massa resistente exige avaliação especializada, sem repetir antibiótico indefinidamente. Dor ao mover olho, proptose ou comprometimento sistêmico exige excluir infecção orbitária.",
+      "es": "Considerar conjuntivitis, alergia, dermatitis de contacto, orzuelo/chalazión y queratitis. Lesión unilateral persistente, pérdida focal de pestañas, ulceración o masa resistente exige valoración especializada, sin repetir antibiótico indefinidamente. Dolor al mover ojo, proptosis o compromiso sistémico exige excluir infección orbitaria.",
+      "sources": [
+        "B1",
+        "B3"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Higiene palpebral2vezes/dia: compressa limpa morna, não quente, sobre olhos fechados por5–10min; massagear suavemente cerca de30s e limpar borda sem ferir córnea. Continuar rotina após melhora pela recorrência. Suspender maquiagem ocular e lentes durante sintomas; evitar produtos irritantes ou expressão traumática das glândulas.",
+      "es": "Higiene palpebral2veces/día: compresa limpia tibia, no caliente, sobre ojos cerrados5–10min; masajear suavemente unos30s y limpiar borde sin lesionar córnea. Mantener rutina tras mejoría por recurrencia. Suspender maquillaje ocular y lentes durante síntomas; evitar irritantes o expresión traumática de glándulas.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Uma opção lubrificante é hipromelose0,3% (3mg/mL),1–2gotas no olho afetado até3vezes/dia conforme necessidade ou orientação, segundo esta bula específica. Não confundir concentração com outro produto. Evitar contato da ponta com olho/pele; retirar lentes, aguardar pelo menos15min para recolocá-las se produto com cloreto de benzalcônio; durante sintomas inflamatórios preferir óculos. Não conduzir enquanto houver visão turva.",
+      "es": "Una opción lubricante es hipromelosa0,3% (3mg/mL),1–2gotas en ojo afectado hasta3veces/día según necesidad o indicación, según esta ficha específica. No confundir concentración con otro producto. Evitar tocar ojo/piel con punta; retirar lentes, esperar al menos15min antes de reponerlas si producto con cloruro de benzalconio; durante síntomas inflamatorios preferir gafas. No conducir mientras exista visión borrosa.",
+      "sources": [
+        "L"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Se persistente apesar de higiene correta, definir etiologia e necessidade de tratamento específico com médico/oftalmologia. Antibiótico tópico pode ter indicação em forma bacteriana selecionada; disfunção meibomiana não exige antibiótico sistêmico universal. Corticoide ocular requer supervisão por risco de glaucoma, catarata e infecção; não prescrever empiricamente para todo olho vermelho.",
+      "es": "Si persiste pese a higiene correcta, definir etiología y necesidad de tratamiento específico con médico/oftalmología. Antibiótico tópico puede indicarse en forma bacteriana seleccionada; disfunción meibomiana no exige antibiótico sistémico universal. Corticoide ocular requiere supervisión por riesgo de glaucoma, catarata e infección; no prescribir empíricamente para todo ojo rojo.",
+      "sources": [
+        "B1",
+        "B3"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "A bula dessa hipromelose permite uso em adultos, idosos e crianças, mas olho vermelho em lactente/criança exige avaliação própria. Gestação/lactação: conferir necessidade e produto, com absorção sistêmica baixa prevista. Uso frequente/prolongado ou superfície sensível pode favorecer formulação sem conservantes, escolhida por sua própria bula. Não compartilhar frasco; observar validade após abertura do produto real.",
+      "es": "Ficha de esta hipromelosa permite adultos, mayores y niños, pero ojo rojo en lactante/niño exige evaluación propia. Embarazo/lactancia: revisar necesidad y producto, con baja absorción sistémica prevista. Uso frecuente/prolongado o superficie sensible puede favorecer formulación sin conservantes, elegida por su ficha propia. No compartir vial; observar caducidad tras apertura del producto real.",
+      "sources": [
+        "L"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Dor no globo ocular, fotofobia importante, redução visual ou vermelhidão intensa exige avaliação urgente. Olho vermelho doloroso em usuário de lentes pode ser ceratite, mesmo com crostas palpebrais. Não entregar apenas lubrificante se houver esses sinais.",
+      "es": "Dolor del globo ocular, fotofobia importante, pérdida visual o enrojecimiento intenso exige valoración urgente. Ojo rojo doloroso en usuario de lentes puede ser queratitis incluso con costras palpebrales. No entregar solo lubricante ante estos signos.",
+      "sources": [
+        "B2"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Sem alarme, orientar cuidado domiciliar e reavaliar se não melhora ou piora. Avaliar adesão, tolerância, visão e superfície ocular; doença grave, recorrência resistente ou diagnóstico incerto justifica oftalmologia. A meta é controle de sintomas e complicações, sem promessa de cura definitiva.",
+      "es": "Sin alarma, indicar cuidados domiciliarios y reevaluar si no mejora o empeora. Evaluar adherencia, tolerancia, visión y superficie ocular; enfermedad grave, recurrencia resistente o diagnóstico incierto justifica oftalmología. Meta es controlar síntomas y complicaciones, sin prometer cura definitiva.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "B1",
+      "title": "Blepharitis Preferred Practice Pattern",
+      "authority": "AAO",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_INDEXED",
+      "url": "https://www.aaojournal.org/article/S0161-6420%2824%2900008-3/fulltext",
+      "scope": "Atualização2024; anterior/posterior e tratamento por causa.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B2",
+      "title": "Blepharitis",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/conditions/blepharitis/",
+      "scope": "12/06/2025; higiene e alarmes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B3",
+      "title": "Blepharitis",
+      "authority": "Royal Berkshire NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_PATIENT_GUIDANCE_INDEXED",
+      "url": "https://www.royalberkshire.nhs.uk/media/nuxhbvzw/blepharitis_jun25.pdf",
+      "scope": "Junho2025; cuidado crônico e tratamento seletivo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "L",
+      "title": "Hypromellose Eye Drops BP — SmPC",
+      "authority": "Martindale / emc",
+      "year": 2020,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL_OLDER",
+      "url": "https://www.medicines.org.uk/emc/product/457/smpc",
+      "scope": "Produto0,3%; dose, conservante, gestação e descarte por bula atual consultada.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

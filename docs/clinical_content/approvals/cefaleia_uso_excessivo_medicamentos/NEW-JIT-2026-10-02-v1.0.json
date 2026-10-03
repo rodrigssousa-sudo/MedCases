@@ -1,0 +1,163 @@
+{
+  "owner": "cefaleia_uso_excessivo_medicamentos",
+  "title": {
+    "pt": "Cefaleia por uso excessivo de medicamentos",
+    "es": "Cefalea por uso excesivo de medicación"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "definition",
+      "pt": "Cefaleia por uso excessivo de medicamentos ocorre em pessoa com cefaleia prévia: cefaleia≥15dias/mês e uso excessivo regular de medicamento sintomático por>3meses, sem explicação melhor. Diagnosticar também a cefaleia primária associada; melhora após retirada não é exigência para reconhecer o quadro pela ICHD3.",
+      "es": "Cefalea por uso excesivo de medicación ocurre en persona con cefalea previa: cefalea≥15días/mes y uso excesivo regular de medicación sintomática por>3meses, sin mejor explicación. Diagnosticar también cefalea primaria asociada; mejoría tras retirada no es requisito para reconocer cuadro según ICHD3.",
+      "sources": [
+        "H1",
+        "H5"
+      ]
+    },
+    {
+      "id": "threshold",
+      "pt": "Limiares usuais por>3meses: triptanos, opioides, ergotamínicos ou analgésicos combinados em≥10dias/mês; analgésicos não opioides como paracetamol/AINEs em≥15dias/mês. Contar dias de uso, não número de comprimidos; múltiplas classes podem somar excesso mesmo sem ultrapassar limite de uma isolada. Esses limiares não são uma recomendação de consumo seguro.",
+      "es": "Umbrales habituales por>3meses: triptanes, opioides, ergotamínicos o analgésicos combinados en≥10días/mes; analgésicos no opioides como paracetamol/AINEs en≥15días/mes. Contar días de uso, no comprimidos; varias clases pueden sumar exceso aunque ninguna sola exceda umbral. Estos límites no recomiendan consumo seguro.",
+      "sources": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Reconciliar todos os medicamentos prescritos/OTC, combinações, doses, dias de uso e motivo. Usar diário de cefaleia e medicação; avaliar padrão prévio, função, sono, ansiedade/depressão e dependência. Exame neurológico e investigação dirigida distinguem outras causas; não atribuir toda cefaleia frequente a excesso sem avaliação.",
+      "es": "Conciliar toda medicación prescrita/OTC, combinaciones, dosis, días de uso y motivo. Usar diario de cefalea y medicación; evaluar patrón previo, función, sueño, ansiedad/depresión y dependencia. Examen neurológico y estudio dirigido distinguen otras causas; no atribuir toda cefalea frecuente al exceso sin evaluar.",
+      "sources": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Cefaleia súbita máxima em até5min, febre com piora, déficit neurológico, alteração cognitiva/consciência, trauma ou mudança importante do padrão exige investigação urgente de outra causa. Gestação/puerpério com nova cefaleia merece avaliação própria. Diagnóstico de uso excessivo não permite ignorar sinais de hemorragia, infecção ou outra doença secundária.",
+      "es": "Cefalea súbita máxima en hasta5min, fiebre con empeoramiento, déficit neurológico, cambio cognitivo/consciencia, trauma o cambio importante de patrón exige estudio urgente de otra causa. Embarazo/puerperio con nueva cefalea merece evaluación propia. Diagnóstico de uso excesivo no permite ignorar hemorragia, infección u otra causa secundaria.",
+      "sources": [
+        "H2"
+      ]
+    },
+    {
+      "id": "withdrawal",
+      "pt": "Explicar ciclo de uso excessivo sem culpabilizar e combinar plano de retirada com acompanhamento. Para analgésicos simples/triptanos em paciente elegível sem dependência relevante, NICE orienta retirada abrupta do medicamento usado em excesso por pelo menos1mês. Avisar piora transitória e sintomas de retirada; oferecer suporte e retorno, sem apenas entregar ordem de suspensão.",
+      "es": "Explicar ciclo de exceso sin culpabilizar y acordar retirada con seguimiento. Para analgésicos simples/triptanes en paciente elegible sin dependencia relevante, NICE indica retirada abrupta de medicación excesiva durante al menos1mes. Advertir empeoramiento transitorio y abstinencia; ofrecer apoyo y retorno, no solo orden de suspensión.",
+      "sources": [
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "id": "dependence",
+      "pt": "Não generalizar retirada abrupta para opioides em uso prolongado, barbitúricos ou tranquilizantes: EAN orienta redução lenta supervisionada, individual ao fármaco/dose/dependência. Risco de abstinência grave, comorbidades importantes ou falhas anteriores exige especialista e possível tratamento hospitalar. Não inventar redução percentual fixa nem trocar por outra droga com dependência.",
+      "es": "No generalizar retirada abrupta a opioides prolongados, barbitúricos ni tranquilizantes: EAN indica reducción lenta supervisada, individual según fármaco/dosis/dependencia. Riesgo de abstinencia grave, comorbilidad importante o fracasos previos exige especialista y posible hospital. No inventar reducción porcentual fija ni sustituir por otra droga con dependencia.",
+      "sources": [
+        "H3",
+        "H4"
+      ]
+    },
+    {
+      "id": "prevention",
+      "pt": "Considerar prevenção da cefaleia primária junto à retirada, segundo diagnóstico, comorbidades e preferência. Não há dose preventiva única para esse owner; enxaqueca e cefaleia tensional têm opções próprias. Não prescrever corticoide de ponte, opioide ou substituição diária de analgésico automaticamente. Mudança futura planejada de guideline não é esquema já aprovado.",
+      "es": "Considerar prevención de cefalea primaria junto a retirada, según diagnóstico, comorbilidades y preferencia. No hay dosis preventiva única para este owner; migraña y cefalea tensional tienen opciones propias. No indicar corticoide puente, opioide ni sustitución diaria de analgésico automáticamente. Cambio futuro planeado de guía no es pauta ya aprobada.",
+      "sources": [
+        "H2",
+        "H3",
+        "H6"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Adolescentes, gestantes/lactantes e pacientes com doença renal/hepática exigem escolha individual de prevenção e plano de retirada. Não usar automaticamente doses adultas, topiramato na gestação ou regime de detoxificação sem avaliação. Suspeita de intoxicação por analgésico exige urgência/toxicologia, não espera do retorno programado.",
+      "es": "Adolescentes, embarazadas/lactantes y pacientes con nefropatía/hepatopatía necesitan prevención y retirada individual. No usar automáticamente dosis adultas, topiramato en embarazo ni detoxificación sin evaluación. Sospecha de intoxicación por analgésico exige urgencias/toxicología, no esperar retorno programado.",
+      "sources": [
+        "H2",
+        "H4"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Manejo ambulatorial é usual quando estável e com suporte; internação não é rotina. Rever diagnóstico e tratamento em4–8semanas após início da retirada, com contato antes se intolerância/alarme. Registrar dias de cefaleia/medicação, função, adesão e recaída. Persistência exige revisar diagnóstico e prevenção, sem concluir automaticamente que retirada falhou.",
+      "es": "Manejo ambulatorio es habitual si estable con apoyo; ingreso no es rutinario. Revisar diagnóstico y tratamiento en4–8semanas tras iniciar retirada, con contacto antes si intolerancia/alarma. Registrar días de cefalea/medicación, función, adherencia y recaída. Persistencia exige revisar diagnóstico y prevención, sin concluir automáticamente que retirada falló.",
+      "sources": [
+        "H2",
+        "H3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "H1",
+      "title": "Medication-overuse headache ICHD3",
+      "authority": "International Headache Society",
+      "year": 2018,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_INDEXED",
+      "url": "https://ichd-3.org/8-headache-attributed-to-a-substance-or-its-withdrawal/8-2-medication-overuse-headache-moh/",
+      "scope": "Critérios final2018; acesso diretotimeout, oficial indexado. ICHD4 é workinprogress.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H2",
+      "title": "Headaches in over12s CG150",
+      "authority": "NICE",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL_UPDATED_INDEXED",
+      "url": "https://www.nice.org.uk/guidance/cg150/chapter/recommendations",
+      "scope": "Atualização03/06/2025; retirada/retorno e alarmes. Acesso direto403.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H3",
+      "title": "Management of medication-overuse headache",
+      "authority": "European Academy of Neurology",
+      "year": 2020,
+      "status": "AUTHORITATIVE_FINAL_GUIDELINE",
+      "url": "https://www.ean.org/fileadmin/user_upload/ean/ean/research/EAN_Guidelines/Guideline_Reference_Center/Guidelines/European_Academy_of_Neurology_guideline_on_the_management_of.pdf",
+      "scope": "Texto integral; retirar simples/triptans versus redução lenta opioides/barbitúricos/tranquilizantes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H4",
+      "title": "Medicines associated with dependence and withdrawal NG215",
+      "authority": "NICE",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL_CURRENT_INDEXED",
+      "url": "https://www.nice.org.uk/guidance/ng215/chapter/Recommendations",
+      "scope": "Não interrupção abrupta indiscriminada de fármacos com dependência.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H5",
+      "title": "International Classification of Headache Disorders portal",
+      "authority": "IHS",
+      "year": "portal atual",
+      "status": "AUTHORITATIVE_STATUS_PORTAL",
+      "url": "https://ihs-headache.org/en/resources/ichd/",
+      "scope": "ICHD3final2018; ICHD4 workinprogress, não versão definitiva substituta.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H6",
+      "title": "December2025 exceptional surveillance CG150",
+      "authority": "NICE",
+      "year": 2025,
+      "status": "AUTHORITATIVE_SURVEILLANCE_DECISION_INDEXED",
+      "url": "https://www.nice.org.uk/guidance/cg150/resources/december-2025-exceptional-surveillance-of-headaches-in-over-12s-diagnosis-and-management-nice-guideline-cg150-pdf-20300929001413",
+      "scope": "Atualização planejada profilaxia/candesartana, não posologia automática nova.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,160 @@
+{
+  "owner": "intertrigo",
+  "title": {
+    "pt": "Intertrigo",
+    "es": "Intertrigo"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "definition",
+      "pt": "Intertrigo é inflamação das dobras por fricção, umidade e calor; infecção por Candida ou bactérias pode ser secundária, não obrigatória. Obesidade, diabetes, suor, incontinência e oclusão favorecem maceração. É comum em virilha, axila, região inframamária e espaços interdigitais.",
+      "es": "Intertrigo es inflamación de pliegues por fricción, humedad y calor; infección por Candida o bacterias puede ser secundaria, no obligatoria. Obesidad, diabetes, sudor, incontinencia y oclusión favorecen maceración. Es frecuente en ingle, axila, zona inframamaria y espacios interdigitales.",
+      "sources": [
+        "I1",
+        "I5"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Examinar extensão, fissuras, maceração, secreção, dor e produtos utilizados. Candida pode produzir pápulas/pústulas satélites; borda descamativa ativa sugere dermatofitose. Diferenciar psoríase inversa, eritrasma, dermatite de contato e doença de Hailey-Hailey. Não diagnosticar fungo apenas pela localização.",
+      "es": "Examinar extensión, fisuras, maceración, secreción, dolor y productos usados. Candida puede producir pápulas/pústulas satélite; borde descamativo activo sugiere dermatofitosis. Diferenciar psoriasis inversa, eritrasma, dermatitis de contacto y enfermedad de Hailey-Hailey. No diagnosticar hongo solo por localización.",
+      "sources": [
+        "I1"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Diagnóstico usual é clínico. Se suspeita de infecção secundária ou falha, colher swab para cultura; descamação pode justificar raspado micológico. Doença atípica, persistente ou recorrente precisa de revisão diagnóstica e avaliação dermatológica; investigar diabetes quando o contexto justificar.",
+      "es": "El diagnóstico suele ser clínico. Ante infección secundaria sospechada o fracaso, tomar hisopado para cultivo; descamación puede justificar raspado micológico. Enfermedad atípica, persistente o recurrente necesita revisión diagnóstica y dermatología; investigar diabetes cuando el contexto lo justifique.",
+      "sources": [
+        "I1",
+        "I5"
+      ]
+    },
+    {
+      "id": "general",
+      "pt": "Reduzir umidade e fricção: lavar suavemente, secar sem esfregar, usar roupa leve e evitar oclusão. Trocar roupa úmida, melhorar controle da incontinência e tratar fatores predisponentes. Barreira cutânea pode ajudar após controlar infecção; evitar perfumes ou produto que irrite. Não aplicar talco/amido como solução universal.",
+      "es": "Reducir humedad y fricción: lavar suavemente, secar sin frotar, usar ropa liviana y evitar oclusión. Cambiar ropa húmeda, mejorar incontinencia y tratar predisponentes. Barrera cutánea puede ayudar después de controlar infección; evitar perfumes o productos irritantes. No aplicar talco/almidón como solución universal.",
+      "sources": [
+        "I1",
+        "I5"
+      ]
+    },
+    {
+      "id": "antifungal",
+      "pt": "Se componente candidiásico localizado foi identificado, opção é clotrimazol creme externo1%(10mg/g), camada fina2–3vezes/dia por pelo menos2semanas conforme bula. Higienizar mãos e secar área antes. Reavaliar se sem melhora após7dias; não manter tratamento empírico indefinido. Não trocar por creme vaginal ou formulação2% automaticamente.",
+      "es": "Si se identifica componente candidiásico localizado, opción es clotrimazol crema externa1%(10mg/g), capa fina2–3veces/día durante al menos2semanas según prospecto. Lavarse manos y secar zona antes. Reevaluar si no mejora tras7días; no mantener tratamiento empírico indefinido. No sustituir automáticamente por crema vaginal o formulación2%.",
+      "sources": [
+        "I2",
+        "I3"
+      ]
+    },
+    {
+      "id": "steroid",
+      "pt": "Inflamação importante pode justificar corticoide tópico de baixa potência por curto período, após avaliar etiologia e produto. Não usar corticoide potente/prolongado empiricamente na dobra nem em infecção não tratada. Combinações possuem limites próprios: a bula Canesten HC limita a7dias e proíbe oclusão; não extrapolar isso para todos os cremes.",
+      "es": "Inflamación importante puede justificar corticoide tópico de baja potencia por período corto, tras evaluar etiología y producto. No usar corticoide potente/prolongado empíricamente en pliegues ni infección sin tratar. Las combinaciones tienen límites propios: Canesten HC limita a7días y prohíbe oclusión; no extrapolar a todas las cremas.",
+      "sources": [
+        "I1",
+        "I4"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Clotrimazol é contraindicado em hipersensibilidade ao fármaco/excipientes. Ardor ou dermatite de contato requer revisão; reação alérgica grave exige urgência. Evitar olhos, ingestão e chama em tecidos com creme. Uso genital pode comprometer látex: conferir proteção alternativa por pelo menos5dias após terminar, segundo bula.",
+      "es": "Clotrimazol está contraindicado ante hipersensibilidad al fármaco/excipientes. Ardor o dermatitis de contacto requiere revisión; alergia grave exige urgencia. Evitar ojos, ingestión y llamas en telas con crema. Uso genital puede afectar látex: revisar protección alternativa al menos5días tras finalizar según prospecto.",
+      "sources": [
+        "I2",
+        "I3"
+      ]
+    },
+    {
+      "id": "escalation",
+      "pt": "Antibiótico ou antifúngico sistêmico não é rotina no intertrigo simples. Se infecção extensa, falha ou suspeita bacteriana, tratar conforme exame/cultura e contexto. Febre, rápida progressão, dor desproporcional, necrose ou instabilidade exige urgência para descartar infecção profunda; não mascarar com creme.",
+      "es": "Antibiótico o antifúngico sistémico no es rutinario en intertrigo simple. Ante infección extensa, fracaso o sospecha bacteriana, tratar según examen/cultivo y contexto. Fiebre, progresión rápida, dolor desproporcionado, necrosis o inestabilidad exige urgencia para descartar infección profunda; no enmascarar con crema.",
+      "sources": [
+        "I1"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Gestação: clotrimazol tópico pode ser usado sob supervisão. Na lactação, impedir contato do bebê com produto e lavar se aplicado à mama/mamilo antes de alimentar. Crianças/fraldas têm oclusão e maior risco com corticoide; avaliar extensão e produto, sem esquema sistêmico adulto. Não há ajuste renal/hepático numérico proposto para esse tratamento tópico.",
+      "es": "Embarazo: clotrimazol tópico puede usarse con supervisión. En lactancia, impedir contacto del bebé con producto y lavar si se aplicó en mama/pezón antes de alimentar. Niños/pañales implican oclusión y mayor riesgo con corticoide; evaluar extensión y producto, sin pauta sistémica adulta. No se propone ajuste renal/hepático numérico para este tratamiento tópico.",
+      "sources": [
+        "I3",
+        "I4"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Tratamento ambulatorial se localizado e sem alarme. Monitorar prurido, dor, maceração e cicatrização; retorno precoce se piora. Se persiste apesar do cuidado, reconsiderar diagnóstico, infecção e adesão. Após resolução, manter dobras secas e reduzir fricção; não prescrever antifúngico crônico preventivo universal.",
+      "es": "Tratamiento ambulatorio si localizado y sin alarma. Controlar prurito, dolor, maceración y cicatrización; volver antes si empeora. Si persiste pese al cuidado, reconsiderar diagnóstico, infección y adherencia. Tras resolver, mantener pliegues secos y reducir fricción; no indicar antifúngico crónico preventivo universal.",
+      "sources": [
+        "I1",
+        "I2",
+        "I5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "I1",
+      "title": "Intertrigo",
+      "authority": "Primary Care Dermatology Society",
+      "year": 2023,
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE_CURRENT_PORTAL",
+      "url": "https://www.pcds.org.uk/clinical-guidance/intertrigo",
+      "scope": "Atualizada25/04/2023; sociedade de dermatologia na atenção primária.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "I2",
+      "title": "Clotrimazole",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PATIENT_DRUG_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/clotrimazole/",
+      "scope": "Revisada08/07/2026; creme externo, retorno e segurança.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "I3",
+      "title": "Canesten1%cream SmPC",
+      "authority": "Bayer / emc",
+      "year": 2022,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL_CURRENT_PORTAL",
+      "url": "https://www.medicines.org.uk/emc/product/1282/smpc",
+      "scope": "Atualizada07/07/2022, continua disponível; concentração/frequência/duração e gestação/lactação.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "I4",
+      "title": "Canesten HC Cream SmPC",
+      "authority": "Bayer / emc",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/6970/smpc",
+      "scope": "Atualizada30/07/2026; riscos do corticoide em dobras, limite e oclusão. Não prescrito automaticamente.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "I5",
+      "title": "Under breast soreness intertrigo PI9143V2",
+      "authority": "NHS Liverpool",
+      "year": "data de publicação não confirmada",
+      "status": "AUTHORITATIVE_LOCAL_PATIENT_GUIDANCE",
+      "url": "https://www.uhliverpool.nhs.uk/patients-and-visitors/patient-leaflets/under-breast-soreness-intertrigo-pif-9143-v1pdf",
+      "scope": "Revisão prevista julho2029; higiene e redução da fricção.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

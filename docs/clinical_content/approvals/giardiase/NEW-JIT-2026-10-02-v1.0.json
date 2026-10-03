@@ -1,0 +1,185 @@
+{
+  "owner": "giardiase",
+  "title": {
+    "pt": "Giardíase",
+    "es": "Giardiasis"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "definition",
+      "pt": "Giardíase é infecção por Giardia duodenalis, também chamada G.lamblia/G.intestinalis, transmitida por via fecal-oral. Água/alimentos contaminados, creches e contato sexual com exposição fecal são riscos. Pode ser assintomática ou causar diarreia, gases, fezes gordurosas, cólica e perda de peso.",
+      "es": "La giardiasis es infección por Giardia duodenalis, también llamada G.lamblia/G.intestinalis, transmitida por vía fecal-oral. Agua/alimentos contaminados, guarderías y contacto sexual con exposición fecal son riesgos. Puede ser asintomática o causar diarrea, gases, heces grasas, cólicos y pérdida de peso.",
+      "sources": [
+        "G5",
+        "G6"
+      ]
+    },
+    {
+      "id": "mechanism",
+      "pt": "Parasita intestinal pode prejudicar absorção e provocar sintomas prolongados, desnutrição e intolerância transitória à lactose. Persistência de sintomas após tratamento não prova parasita ativo; considerar sequela pós-infecciosa e outros diagnósticos.",
+      "es": "El parásito intestinal puede alterar absorción y causar síntomas prolongados, desnutrición e intolerancia transitoria a lactosa. Síntomas persistentes tras tratamiento no demuestran parásito activo; considerar secuela posinfecciosa y otros diagnósticos.",
+      "sources": [
+        "G1",
+        "G5"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Confirmar por exame fecal apropriado: antígeno, PCR ou microscopia conforme laboratório. CDC recomenda3amostras em dias distintos para aumentar detecção; um negativo isolado não exclui. Imunofluorescência direta é método de referência do CDC, não requisito de disponibilidade universal. Repetir teste após tratar somente se persistem sintomas.",
+      "es": "Confirmar por estudio fecal adecuado: antígeno, PCR o microscopía según laboratorio. CDC recomienda3muestras en días diferentes para mejorar detección; un negativo aislado no excluye. Inmunofluorescencia directa es referencia CDC, no requisito de disponibilidad universal. Repetir prueba tras tratar solo ante síntomas persistentes.",
+      "sources": [
+        "G2"
+      ]
+    },
+    {
+      "id": "triage",
+      "pt": "Avaliar hidratação, sinais vitais, ingestão e nutrição. Diarreia sanguinolenta, febre importante, dor focal/intensa ou sinais sistêmicos exigem procurar outra etiologia/coinfecção. Desidratação grave, choque ou incapacidade de reidratar por via oral requer atendimento hospitalar.",
+      "es": "Evaluar hidratación, signos vitales, ingesta y nutrición. Diarrea sanguinolenta, fiebre importante, dolor focal/intenso o signos sistémicos requieren buscar otra etiología/coinfección. Deshidratación grave, shock o incapacidad de rehidratar por vía oral requiere atención hospitalaria.",
+      "sources": [
+        "G1",
+        "G5"
+      ]
+    },
+    {
+      "id": "initial",
+      "pt": "Reidratação é prioridade, sobretudo em lactentes e gestantes. Se tolerado, usar solução de reidratação oral preparada conforme produto e manter nutrição adequada; não inventar volume fixo sem peso/gravidade. Confirmar diagnóstico e adequação do fármaco antes de repetir antiparasitário.",
+      "es": "Rehidratación es prioridad, especialmente en lactantes y embarazadas. Si tolera, usar solución de rehidratación oral preparada según producto y mantener nutrición adecuada; no inventar volumen fijo sin peso/gravedad. Confirmar diagnóstico y adecuación del fármaco antes de repetir antiparasitario.",
+      "sources": [
+        "G1"
+      ]
+    },
+    {
+      "id": "adult",
+      "pt": "Opção verificada para adulto elegível: tinidazol2g(2000mg) por via oral, dose única, com alimento. Não usar duração da amebíase para giardíase. Conferir disponibilidade, indicação e bula local. Metronidazol/nitazoxanida são alternativas reconhecidas; seleção e regime específico exigem confirmação, sem somar tratamentos empiricamente.",
+      "es": "Opción verificada para adulto elegible: tinidazol2g(2000mg) por vía oral, dosis única, con alimento. No usar duración de amebiasis para giardiasis. Confirmar disponibilidad, indicación y prospecto local. Metronidazol/nitazoxanida son alternativas reconocidas; selección y pauta específica requieren confirmación, sin sumar tratamientos empíricamente.",
+      "sources": [
+        "G1",
+        "G3",
+        "G4"
+      ]
+    },
+    {
+      "id": "pediatric",
+      "pt": "Bula US selecionada: criança maior de3anos, tinidazol50mg/kg oral em dose única, máximo2g, com alimento. Não transpor para lactente/idade menor. Dose em mL exige formulação e concentração validadas; não orientar preparo doméstico com comprimidos. Se não consegue engolir, farmácia/pediatria deve definir apresentação.",
+      "es": "Prospecto US elegido: niño mayor de3años, tinidazol50mg/kg oral en dosis única, máximo2g, con alimento. No trasladar a lactante/menor edad. Dosis en mL exige formulación y concentración validadas; no indicar preparación doméstica con comprimidos. Si no puede tragar, farmacia/pediatría debe definir presentación.",
+      "sources": [
+        "G3"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Evitar tinidazol em alergia a nitroimidazóis ou síndrome de Cockayne. Não usar álcool durante e por3dias após; rever varfarina, lítio e demais interações. Sintoma neurológico novo ou reação alérgica grave exige parar e avaliar; evitar uso crônico.",
+      "es": "Evitar tinidazol ante alergia a nitroimidazoles o síndrome de Cockayne. No usar alcohol durante y por3días después; revisar warfarina, litio y otras interacciones. Síntoma neurológico nuevo o alergia grave exige suspender y evaluar; evitar uso crónico.",
+      "sources": [
+        "G3"
+      ]
+    },
+    {
+      "id": "organ",
+      "pt": "Bula não exige redução renal usual fora de hemodiálise; esta altera eliminação e requer plano específico. Na disfunção hepática, usar com cautela, sem percentual de ajuste inventado. Gestação exige seleção especializada, evitando tinidazol no primeiro trimestre conforme BASHH. Lactação: se escolhido, não amamentar durante e por72h após última dose segundo bula.",
+      "es": "El prospecto no exige reducción renal habitual fuera de hemodiálisis; esta altera eliminación y requiere plan específico. Ante disfunción hepática, usar con cautela sin porcentaje inventado. Embarazo requiere selección especializada, evitando tinidazol en primer trimestre según BASHH. Lactancia: si se elige, no amamantar durante y por72h tras última dosis según prospecto.",
+      "sources": [
+        "G3",
+        "G4"
+      ]
+    },
+    {
+      "id": "failure",
+      "pt": "Se sintomas continuam, verificar infecção em3amostras, reinfecção e adesão/dose antes de declarar resistência. Se exames negativos, sintomas podem persistir semanas/meses sem infecção. Infecção confirmada refratária requer especialista; não repetir ou combinar fármacos automaticamente. Investigar imunodeficiência em falha persistente.",
+      "es": "Si continúan síntomas, verificar infección en3muestras, reinfección y adherencia/dosis antes de declarar resistencia. Con estudios negativos pueden persistir síntomas semanas/meses sin infección. Infección confirmada refractaria requiere especialista; no repetir ni combinar automáticamente. Investigar inmunodeficiencia ante fracaso persistente.",
+      "sources": [
+        "G1",
+        "G4"
+      ]
+    },
+    {
+      "id": "prevention",
+      "pt": "Lavar mãos com água e sabão, especialmente após banheiro/fraldas e antes de preparar comida; usar água segura e evitar ingerir água recreacional. Limpar superfícies contaminadas e evitar práticas sexuais com exposição fecal durante doença. Não tratar contatos automaticamente sem avaliação clínica/epidemiológica.",
+      "es": "Lavarse manos con agua y jabón, especialmente tras baño/pañales y antes de preparar comida; usar agua segura y evitar tragar agua recreativa. Limpiar superficies contaminadas y evitar prácticas sexuales con exposición fecal durante enfermedad. No tratar contactos automáticamente sin evaluación clínica/epidemiológica.",
+      "sources": [
+        "G6"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial se estável, hidratado, tolerando ingestão e com seguimento. Monitorar diarreia, peso e tolerância. Retorno imediato se desidratação, sangue, febre importante ou piora. Assintomático com Giardia exige decisão individual de tratar conforme transmissão/risco, não regra universal. Cumprir notificações locais quando aplicável.",
+      "es": "Alta ambulatoria si estable, hidratado, tolera ingesta y tiene seguimiento. Controlar diarrea, peso y tolerancia. Volver inmediatamente ante deshidratación, sangre, fiebre importante o empeoramiento. Asintomático con Giardia exige decisión individual según transmisión/riesgo, no regla universal. Cumplir notificaciones locales cuando corresponda.",
+      "sources": [
+        "G1",
+        "G2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "G1",
+      "title": "Patient care for Giardia infection",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "url": "https://www.cdc.gov/giardia/hcp/clinical-care/index.html",
+      "scope": "20/02/2024; seleção terapêutica e falha.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G2",
+      "title": "Clinical testing and diagnosis for Giardia",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "url": "https://www.cdc.gov/giardia/hcp/diagnosis-testing/index.html",
+      "scope": "08/02/2024; amostras e métodos.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G3",
+      "title": "Tinidazole tablets label",
+      "authority": "DailyMed / Rising, repackaged RemedyRepack",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=45fa3ebd-52da-4987-82a1-4a64f99785a7",
+      "scope": "Atualização18/08/2026; indicação, dose e segurança. Bula US, conferir produto local.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G4",
+      "title": "Sexually transmitted enteric infections guideline",
+      "authority": "BASHH",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_CONTEXT_SPECIFIC",
+      "url": "https://journals.sagepub.com/doi/10.1177/09564624231168217",
+      "scope": "Final2023 DOI10.1177/09564624231168217; adultos com transmissão sexual, dose oral corroborada; não copiar alternativas conflitantes.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G5",
+      "title": "Symptoms of Giardia infection",
+      "authority": "CDC",
+      "year": 2023,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.cdc.gov/giardia/signs-symptoms/index.html",
+      "scope": "Clínica e complicações; data da página conferir sem inventar revisão2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "G6",
+      "title": "Giardia prevention and control",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "url": "https://www.cdc.gov/giardia/prevention/index.html",
+      "scope": "Higiene, água e transmissão.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

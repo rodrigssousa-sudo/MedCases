@@ -1,0 +1,160 @@
+{
+  "owner": "sindrome_dor_femoropatelar",
+  "title": {
+    "pt": "Síndrome de dor femoropatelar",
+    "es": "Síndrome de dolor femoropatelar"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Dor femoropatelar ocorre ao redor/atrás da patela, provocada por carga como agachar, escadas, corrida ou sentar prolongadamente. É comum em jovens e adultos e pode persistir; não equivale automaticamente a condromalácia demonstrada ou artrose. Capacidade de carga, força e contexto influenciam sintomas.",
+      "es": "Dolor femoropatelar aparece alrededor/detrás de rótula, provocado por carga como sentadillas, escaleras, carrera o sedestación prolongada. Frecuente en jóvenes/adultos y puede persistir; no equivale automáticamente a condromalacia demostrada ni artrosis. Carga, fuerza y contexto influyen.",
+      "sources": [
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Investigar início, mudança de atividade, dor na carga e impacto; examinar joelho, quadril, força e tarefa provocadora tolerada. Diagnóstico usualmente clínico após excluir alternativa. Imagem não é rotina em apresentação típica; trauma, derrame relevante, bloqueio ou evolução inesperada mudam investigação.",
+      "es": "Investigar inicio, cambio de actividad, dolor por carga e impacto; examinar rodilla, cadera, fuerza y tarea provocadora tolerada. Diagnóstico suele ser clínico tras excluir alternativa. Imagen no rutinaria en presentación típica; trauma, derrame relevante, bloqueo o evolución inesperada cambian estudio.",
+      "sources": [
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Considerar tendinopatia patelar, lesão meniscal/ligamentar, instabilidade patelar, artrose, apofisite em jovem e dor referida do quadril. Joelho febril/inflamado ou perda importante de movimento não é simplesmente síndrome femoropatelar. Não atribuir todo estalo indolor a lesão que exige cirurgia.",
+      "es": "Considerar tendinopatía patelar, lesión meniscal/ligamentosa, inestabilidad rotuliana, artrosis, apofisitis juvenil y dolor referido de cadera. Rodilla febril/inflamada o pérdida importante de movimiento no es simple síndrome femoropatelar. No atribuir todo chasquido indoloro a lesión quirúrgica.",
+      "sources": [
+        "K3",
+        "K4"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Educação e exercício dirigido ao joelho são base, com fortalecimento de quadril associado conforme necessidades. Ajustar intensidade/volume de carga provocadora e progressão, sem repouso total prolongado. Palmilhas, taping, treino de movimento/corrida ou terapia manual são adjuntos selecionados após avaliação, não substitutos universais do exercício.",
+      "es": "Educación y ejercicio dirigido a rodilla son base, con fortalecimiento de cadera según necesidad. Ajustar intensidad/volumen de carga y progresión, sin reposo total prolongado. Plantillas, taping, reentrenamiento de movimiento/carrera o terapia manual son adjuntos seleccionados, no sustitutos universales de ejercicio.",
+      "sources": [
+        "K1",
+        "K5"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se analgesia necessária em adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo. Não duplicar produtos. Peso<50kg, hepatopatia/nefropatia ou álcool importante exige individualização. Analgesia facilita função, mas não substitui reabilitação nem exclui lesão grave.",
+      "es": "Si analgesia necesaria en adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo. No duplicar productos. Peso<50kg, hepatopatía/nefropatía o alcohol importante exige individualización. Analgesia facilita función, sin sustituir rehabilitación ni excluir lesión grave.",
+      "sources": [
+        "P"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Persistência incapacitante pede revisar aderência, carga, diagnóstico e plano de fisioterapia. AINE eventual exige seleção/risco próprio; não indicar corticoide intra-articular, artroscopia ou cirurgia como rotina para dor femoropatelar sem causa estrutural específica. Procedimento exige diagnóstico e especialista, sem dose injetável genérica.",
+      "es": "Persistencia incapacitante exige revisar adherencia, carga, diagnóstico y fisioterapia. AINE ocasional requiere selección/riesgo propio; no indicar corticoide intraarticular, artroscopia ni cirugía rutinarios para dolor femoropatelar sin causa estructural específica. Procedimiento exige diagnóstico/especialista, sin dosis inyectable genérica.",
+      "sources": [
+        "K1",
+        "K3"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Trauma com deformidade/incapacidade de apoio, joelho bloqueado, grande derrame, febre com calor/vermelhidão ou déficit neurovascular exige atendimento rápido. Suspeita de luxação ou artrite séptica não entra em tratamento domiciliar. Dor persistente não mecânica também precisa revisão.",
+      "es": "Trauma con deformidad/incapacidad de apoyo, rodilla bloqueada, gran derrame, fiebre con calor/enrojecimiento o déficit neurovascular exige atención rápida. Luxación sospechada o artritis séptica no recibe manejo doméstico. Dolor persistente no mecánico también exige revisión.",
+      "sources": [
+        "K4"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Adolescente com dor no joelho e claudicação merece também exame do quadril; apofisite e causas específicas mudam plano. Prescrição analgésica acima é adulta, sem extrapolar dose pediátrica. Gestação, doença renal/hepática e anticoagulação exigem seleção de medicamentos; deficiência funcional importante pode justificar avaliação precoce.",
+      "es": "Adolescente con dolor de rodilla y cojera merece examinar cadera; apofisitis/causas específicas cambian plan. Analgesia anterior es adulta, sin extrapolar dosis pediátrica. Embarazo, nefropatía/hepatopatía y anticoagulación exigen elegir fármacos; limitación importante puede justificar valoración temprana.",
+      "sources": [
+        "K3",
+        "P"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta sem alarme com programa tolerável e revisão. Monitorar dor, tarefas, força e adesão; retorno ao esporte graduado conforme função, não apenas desaparecimento momentâneo com analgésico. Reavaliar após tentativa adequada ou antes por piora; sintomas prolongados não comprovam dano progressivo, mas pedem plano ajustado.",
+      "es": "Alta sin alarma con programa tolerable y revisión. Vigilar dolor, tareas, fuerza y adherencia; retorno deportivo gradual por función, no solo alivio momentáneo analgésico. Reevaluar tras intento adecuado o antes si empeora; síntomas prolongados no prueban daño progresivo, pero exigen ajustar plan.",
+      "sources": [
+        "K1",
+        "K5"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "K1",
+      "title": "Best practice guide patellofemoral pain",
+      "authority": "BJSM",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL_SYNTHESIS_INDEXED",
+      "url": "https://doi.org/10.1136/bjsports-2024-108110",
+      "scope": "14/10/2024; exercício dirigido ao joelho e educação, adjuntos selecionados.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "K2",
+      "title": "Patellofemoral pain",
+      "authority": "NHS Kent",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED_INDEXED",
+      "url": "https://www.kentcht.nhs.uk/leaflet/patellofemoral-pain/",
+      "scope": "21/09/2026; diagnóstico clínico, carga.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "K3",
+      "title": "Patellofemoral pain syndrome",
+      "authority": "AAOS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/patellofemoral-pain-syndrome/",
+      "scope": "Diferenciais, reabilitação e critérios de exame.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "K4",
+      "title": "Knee pain",
+      "authority": "NHS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/symptoms/knee-pain/",
+      "scope": "Alarme trauma, infecção e bloqueio.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "K5",
+      "title": "Patellofemoral pain syndrome",
+      "authority": "NHS24",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED_INDEXED",
+      "url": "https://www.nhsinform.scot/illnesses-and-conditions/muscle-bone-and-joints/leg-and-foot-problems-and-conditions/patellofemoral-pain-syndrome/",
+      "scope": "28/07/2026; autocuidado e retorno.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose sintomática e limites.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

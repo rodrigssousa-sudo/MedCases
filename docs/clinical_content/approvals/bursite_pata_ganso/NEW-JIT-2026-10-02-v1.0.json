@@ -1,0 +1,151 @@
+{
+  "owner": "bursite_pata_ganso",
+  "title": {
+    "pt": "Bursite da pata de ganso",
+    "es": "Bursitis de la pata de ganso"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Bursite/tendinobursite da pata de ganso envolve região medial proximal da tíbia junto às inserções de sartório, grácil e semitendíneo. Pode relacionar-se a sobrecarga e coexistir com osteoartrite. Dor focal abaixo da linha articular medial não significa automaticamente menisco ou infecção articular.",
+      "es": "Bursitis/tendinobursitis de pata de ganso afecta tibia proximal medial junto a inserciones de sartorio, grácil y semitendinoso. Puede relacionarse con sobrecarga y coexistir con artrosis. Dolor focal bajo línea articular medial no significa automáticamente menisco ni infección articular.",
+      "sources": [
+        "B1",
+        "B3"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Investigar início, carga, escadas, trauma e doenças associadas. Examinar ponto doloroso, amplitude, estabilidade e função, distinguindo linha articular e região periarticular. Diagnóstico costuma ser clínico; imagem seletiva para outra suspeita, trauma ou persistência. Não inferir bursite somente de dor medial inespecífica.",
+      "es": "Investigar inicio, carga, escaleras, trauma y comorbilidad. Examinar punto doloroso, amplitud, estabilidad y función, distinguiendo línea articular y región periarticular. Diagnóstico suele ser clínico; imagen selectiva para otra sospecha, trauma o persistencia. No inferir bursitis solo de dolor medial inespecífico.",
+      "sources": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Considerar artrose, lesão meniscal/ligamentar, fratura por estresse e dor referida. Grande derrame, bloqueio ou dor em toda mobilização sugere outra causa e muda a conduta. Sinais de infecção exigem excluir bursite séptica/artrite, sem infiltrar empiricamente.",
+      "es": "Considerar artrosis, lesión meniscal/ligamentosa, fractura por estrés y dolor referido. Gran derrame, bloqueo o dolor en toda movilización sugiere otra causa y cambia manejo. Signos infecciosos exigen excluir bursitis séptica/artritis, sin infiltración empírica.",
+      "sources": [
+        "B1",
+        "B4"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Reduzir temporariamente carga dolorosa e ajustar treino/escadas; frio com barreira pode ajudar sintomas. Fisioterapia com flexibilidade tolerada e fortalecimento de membros inferiores orienta retorno gradual. Manejar fatores contribuintes e peso quando apropriado, sem repouso completo prolongado nem alongamento agressivo que piore.",
+      "es": "Reducir temporalmente carga dolorosa y ajustar entrenamiento/escaleras; frío con barrera puede aliviar. Fisioterapia con flexibilidad tolerada y fortalecimiento de miembros inferiores guía retorno gradual. Manejar factores contribuyentes/peso si apropiado, sin reposo completo prolongado ni estiramiento agresivo que empeore.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se analgesia necessária em adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo. Não duplicar produtos. Peso<50kg, hepatopatia/nefropatia ou álcool importante exige individualização. Analgesia facilita função, mas não substitui reabilitação nem exclui lesão grave.",
+      "es": "Si analgesia necesaria en adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo. No duplicar productos. Peso<50kg, hepatopatía/nefropatía o alcohol importante exige individualización. Analgesia facilita función, sin sustituir rehabilitación ni excluir lesión grave.",
+      "sources": [
+        "P"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Tratamento é predominantemente não cirúrgico. AINE eventual exige avaliação renal/GI/cardiovascular e bula própria. Infiltração pode ser discutida em caso selecionado após confirmar diagnóstico e excluir infecção, por profissional, com produto/dose/técnica específicos; não prescrever mistura genérica nem injetar em tendão. Cirurgia é rara, não rotina.",
+      "es": "Tratamiento predominantemente no quirúrgico. AINE ocasional exige evaluación renal/GI/cardiovascular y ficha propia. Infiltración puede discutirse en caso seleccionado tras confirmar diagnóstico y excluir infección, profesionalmente con producto/dosis/técnica específicos; no mezcla genérica ni inyección tendinosa. Cirugía rara, no rutinaria.",
+      "sources": [
+        "B1",
+        "B3"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Febre com joelho quente/vermelho, dor intensa, incapacidade de apoio, trauma com deformidade, bloqueio ou déficit neurovascular exige avaliação urgente. Dor persistente não mecânica, massa ou perda ponderal exige investigação adicional. Não rotular como bursite simples para dispensar investigação.",
+      "es": "Fiebre con rodilla caliente/roja, dolor intenso, incapacidad de apoyo, trauma deformante, bloqueo o déficit neurovascular exige urgencia. Dolor persistente no mecánico, masa o pérdida ponderal exige estudio adicional. No etiquetar bursitis simple para omitir estudio.",
+      "sources": [
+        "B4"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Diabetes, doença inflamatória, anticoagulação e artrose associada influenciam avaliação e procedimentos. Gestação/renal/hepática modifica medicamentos; dose analgésica acima é adulta. Criança/adolescente com dor medial/claudicação exige diagnóstico próprio, sem assumir bursite do adulto.",
+      "es": "Diabetes, enfermedad inflamatoria, anticoagulación y artrosis asociada influyen en evaluación/procedimientos. Embarazo/renal/hepática modifica fármacos; analgesia anterior adulta. Niño/adolescente con dolor medial/cojera requiere diagnóstico propio, sin asumir bursitis adulta.",
+      "sources": [
+        "B1",
+        "B2",
+        "P"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial se sem alarme, com plano funcional e retorno. Monitorar dor, escadas, apoio e progresso da reabilitação. Persistência ou piora após manejo adequado exige revisar diagnóstico e eventual encaminhamento; não repetir corticoide ou analgésico indefinidamente.",
+      "es": "Alta ambulatoria sin alarma, con plan funcional/retorno. Vigilar dolor, escaleras, apoyo y rehabilitación. Persistencia o empeoramiento tras manejo adecuado exige revisar diagnóstico/derivación; no repetir corticoide ni analgésico indefinidamente.",
+      "sources": [
+        "B2",
+        "B3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "B1",
+      "title": "Pes anserine bursitis",
+      "authority": "AAOS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/pes-anserine-knee-tendon-bursitis",
+      "scope": "Diagnóstico e manejo não operatório.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B2",
+      "title": "Physical therapy guide pes anserine bursitis",
+      "authority": "APTA ChoosePT",
+      "year": "data clínica não confirmada",
+      "status": "AUTHORITATIVE_PROFESSIONAL_GUIDANCE",
+      "url": "https://www.choosept.com/guide/physical-therapy-guide-pes-anserine-bursitis",
+      "scope": "Avaliação, carga e reabilitação; não afirmar guideline2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B3",
+      "title": "Pes anserine bursitis — case education asset",
+      "authority": "AMSSM",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_EDUCATION",
+      "url": "https://learn.amssm.org/AssetListing/Best-Practice-Case-Studies-1088/Case-138-Asset-5-Pes-Anserine-Bursitis-5019",
+      "scope": "Material educativo de sociedade, não caso usado como doença nova.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "B4",
+      "title": "Knee pain",
+      "authority": "NHS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/symptoms/knee-pain/",
+      "scope": "Alarmes e seleção de atendimento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose sintomática e limites.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,169 @@
+{
+  "owner": "linfadenite_cervical_bacteriana_aguda_pediatrica",
+  "title": {
+    "pt": "Linfadenite cervical bacteriana aguda pediátrica",
+    "es": "Linfadenitis cervical bacteriana aguda pediátrica"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "definition",
+      "pt": "Linfadenite cervical bacteriana aguda pediátrica é inflamação/infeção de linfonodo do pescoço, frequentemente unilateral, doloroso, quente e aumentado, com possível febre ou supuração. Staphylococcus aureus e estreptococo do grupo A são causas usuais; foco dentário muda a cobertura. Adenopatia reativa viral é muito mais comum e não requer antibiótico automaticamente.",
+      "es": "Linfadenitis cervical bacteriana aguda pediátrica es inflamación/infección de ganglio del cuello, frecuentemente unilateral, doloroso, caliente y aumentado, con posible fiebre o supuración. Staphylococcus aureus y estreptococo del grupo A son causas habituales; foco dental cambia cobertura. Adenopatía reactiva viral es mucho más frecuente y no requiere antibiótico automáticamente.",
+      "sources": [
+        "L1",
+        "L2"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Examinar estado geral, sinais vitais, deglutição e via aérea; registrar tamanho, mobilidade, dor, eritema e flutuação. Procurar foco em dentes, garganta, ouvido, face/couro cabeludo e adenopatias em outros locais. Perguntar duração, crescimento, exposição a gatos/TB, imunidade, perda de peso, suores noturnos e hematomas.",
+      "es": "Examinar estado general, signos vitales, deglución y vía aérea; registrar tamaño, movilidad, dolor, eritema y fluctuación. Buscar foco en dientes, garganta, oído, cara/cuero cabelludo y ganglios en otras zonas. Preguntar duración, crecimiento, exposición a gatos/TB, inmunidad, pérdida de peso, sudoración nocturna y hematomas.",
+      "sources": [
+        "L1"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Toxicidade sistêmica, dificuldade respiratória/deglutição, trismo, voz abafada, limitação cervical importante ou suspeita de infecção profunda exige hospital e avaliação pediátrica/ORL urgente. Não insistir em antibiótico oral como único tratamento. Neonato ou imunocomprometido requer limiar baixo para avaliação especializada.",
+      "es": "Toxicidad sistémica, dificultad respiratoria/deglutoria, trismo, voz apagada, limitación cervical importante o sospecha de infección profunda exige hospital y evaluación pediátrica/ORL urgente. No insistir con antibiótico oral como único tratamiento. Neonato o inmunocomprometido requiere umbral bajo para evaluación especializada.",
+      "sources": [
+        "L1",
+        "L2"
+      ]
+    },
+    {
+      "id": "tests",
+      "pt": "Criança bem com adenopatia reativa típica pode ser observada sem exames. Na suspeita de abscesso, ultrassom ajuda; material drenado deve ser enviado à cultura. Hemograma, marcadores inflamatórios, hemocultura, sorologias ou exames para TB são seletivos conforme gravidade/hipótese. Não solicitar painel amplo nem TC de rotina.",
+      "es": "Niño sano con ganglio reactivo típico puede observarse sin estudios. Ante sospecha de absceso, ecografía ayuda; material drenado debe cultivarse. Hemograma, marcadores inflamatorios, hemocultivo, serologías o pruebas para TB son selectivos según gravedad/hipótesis. No pedir panel amplio ni TC rutinaria.",
+      "sources": [
+        "L1"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar reação viral, EBV/CMV, Kawasaki, Bartonella, tuberculose, micobactéria atípica e neoplasia. Adenopatia persistente, dura, indolor, com sintomas constitucionais ou hepatosplenomegalia exige investigação própria. Não tratar repetidamente toda massa cervical como infecção piogênica.",
+      "es": "Diferenciar reacción viral, EBV/CMV, Kawasaki, Bartonella, tuberculosis, micobacteria atípica y neoplasia. Ganglio persistente, duro, indoloro, con síntomas constitucionales o hepatoesplenomegalia exige estudio propio. No tratar repetidamente toda masa cervical como infección piógena.",
+      "sources": [
+        "L1"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Regime UCSF selecionado para criança>1ano estável, com linfadenite aguda bacteriana supurativa, sem foco dentário e função renal normal: cefalexina25mg/kg POR DOSE oral a cada8h, máximo500mg POR DOSE, por10dias; reavaliar em48h. Total75mg/kg/dia antes do teto. Esta é dose institucional específica; não combinar com20mg/kg/dose máximo750mg por7dias da via RCH.",
+      "es": "Régimen UCSF elegido para niño>1año estable, con linfadenitis aguda bacteriana supurativa, sin foco dental y función renal normal: cefalexina25mg/kg POR DOSIS oral cada8h, máximo500mg POR DOSIS, durante10días; reevaluar en48h. Total75mg/kg/día antes del techo. Es dosis institucional específica; no combinar con20mg/kg/dosis máximo750mg durante7días de vía RCH.",
+      "sources": [
+        "L1",
+        "L2",
+        "L3",
+        "L5"
+      ]
+    },
+    {
+      "id": "administration",
+      "pt": "Confirmar concentração após reconstituição: cefalexina250mg/5mL=50mg/mL ou125mg/5mL=25mg/mL, sem intercambiar volumes. Calcular mL a partir da dose em mg limitada ao teto, usar seringa oral e agitar. Seguir bula do frasco para preparo, refrigeração e validade; não usar colher doméstica ou volume de água de outro fabricante.",
+      "es": "Confirmar concentración tras reconstitución: cefalexina250mg/5mL=50mg/mL o125mg/5mL=25mg/mL, sin intercambiar volúmenes. Calcular mL a partir de dosis en mg limitada al techo, usar jeringa oral y agitar. Seguir prospecto del frasco para preparación, refrigeración y caducidad; no usar cuchara doméstica ni agua de otro fabricante.",
+      "sources": [
+        "L3",
+        "L4"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Cefalexina é contraindicada em alergia a cefalosporinas; reação grave a betalactâmico exige escolha individual. Conferir função renal: não manter dose padrão se comprometida; tabela renal de adulto/≥15anos não é cálculo validado para criança menor. Monitorar rash, anafilaxia, diarreia importante e neurotoxicidade por acúmulo. Hepatopatia não recebe ajuste percentual inventado.",
+      "es": "Cefalexina se contraindica ante alergia a cefalosporinas; reacción grave a betalactámico exige elección individual. Revisar función renal: no mantener dosis estándar si está afectada; tabla renal de adulto/≥15años no es cálculo validado para niño menor. Vigilar rash, anafilaxia, diarrea importante y neurotoxicidad por acumulación. Hepatopatía no recibe ajuste porcentual inventado.",
+      "sources": [
+        "L3",
+        "L4"
+      ]
+    },
+    {
+      "id": "source_control",
+      "pt": "Flutuação, coleção ou falta de resposta exige ORL/cirurgia para considerar drenagem e revisão do agente. Foco dentário necessita cobertura de flora oral e tratamento odontológico próprio; cefalexina isolada não é regime universal. MRSA documentado, imunossupressão ou alergia grave requer seleção por susceptibilidade/especialista. Não copiar dose IV sem verificar formulação e administração hospitalar.",
+      "es": "Fluctuación, colección o falta de respuesta exige ORL/cirugía para considerar drenaje y revisar germen. Foco dental necesita cobertura de flora oral y tratamiento odontológico propio; cefalexina sola no es pauta universal. MRSA documentado, inmunosupresión o alergia grave requiere elección por susceptibilidad/especialista. No copiar dosis IV sin verificar formulación y administración hospitalaria.",
+      "sources": [
+        "L2"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta exige criança clinicamente bem, tolerando via oral, cuidador apto e retorno em48h. Piora, abscesso ou falha oral exige escalonamento hospitalar, cultura e revisão diagnóstica. Persistência sem sinais bacterianos não justifica antibiótico indefinido. Suspeita de micobactéria atípica exige avaliação própria: incisão simples pode causar fístula crônica.",
+      "es": "Alta exige niño clínicamente bien, tolerancia oral, cuidador capaz y retorno en48h. Empeoramiento, absceso o fracaso oral exige escalamiento hospitalario, cultivo y revisión diagnóstica. Persistencia sin signos bacterianos no justifica antibiótico indefinido. Sospecha de micobacteria atípica exige evaluación propia: incisión simple puede causar fístula crónica.",
+      "sources": [
+        "L1",
+        "L2"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Este regime não é automático para lactente≤1ano, neonato ou doença renal; consultar pediatria e formulário apropriado. Adolescente gestante necessita avaliação individual, sem extrapolação de dose de adulto. Educação inclui adesão, registro de doses e sinais de alarme; não espremer linfonodo nem adiar retorno se dificuldade de engolir ou respirar.",
+      "es": "Este régimen no es automático para lactante≤1año, neonato ni nefropatía; consultar pediatría y formulario apropiado. Adolescente embarazada necesita evaluación individual, sin extrapolar dosis adulta. Educación incluye adherencia, registro de dosis y alarmas; no exprimir ganglio ni retrasar retorno ante dificultad para tragar o respirar.",
+      "sources": [
+        "L1",
+        "L3",
+        "L4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "L1",
+      "title": "Cervical lymphadenopathy",
+      "authority": "Royal Children’s Hospital Melbourne",
+      "year": 2021,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL_OLDER",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Cervical_lymphadenopathy/",
+      "scope": "Abril2021; clínica, investigação e reavaliação48h.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "L2",
+      "title": "Lymphadenitis — pediatric",
+      "authority": "UCSF IDMP",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_CURRENT_INSTITUTIONAL_PATHWAY",
+      "url": "https://idmp.ucsf.edu/content/lymphadenitis",
+      "scope": "Dose escolhida para linfadenite aguda supurativa sem foco dentário; duração10dias.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "L3",
+      "title": "Cephalexin for oral suspension prescribing information",
+      "authority": "Lupin / DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL_UPDATED",
+      "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?audience=professional&setid=25ef498a-7a7e-4543-a544-b9d0e99f9cd9",
+      "scope": "CabeçalhoRev06/2026, rodapéMay2026. Concentrações, segurança, renal≥15anos.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "L4",
+      "title": "Cefalexin for bacterial infections",
+      "authority": "RCPCH/NPPG/WellChild Medicines for Children",
+      "year": 2021,
+      "status": "AUTHORITATIVE_MEDICATION_COUNSELLING",
+      "url": "https://www.medicinesforchildren.org.uk/medicines/cefalexin-for-bacterial-infections/",
+      "scope": "Administração pediátrica; não fonte de dose da linfadenite.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "L5",
+      "title": "Antimicrobial guidelines",
+      "authority": "RCH Melbourne",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_CURRENT_INSTITUTIONAL_PATHWAY",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Antimicrobial_guidelines/",
+      "scope": "Outra via institucional20mg/kg/dose máximo750TDS7dias; não combinada com UCSF.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

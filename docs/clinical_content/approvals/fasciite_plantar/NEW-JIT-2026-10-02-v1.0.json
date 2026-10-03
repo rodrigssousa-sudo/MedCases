@@ -1,0 +1,142 @@
+{
+  "owner": "fasciite_plantar",
+  "title": {
+    "pt": "Fasciíte plantar",
+    "es": "Fascitis plantar"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Fasciíte plantar é causa comum de dor plantar medial do calcanhar, associada a sobrecarga da fáscia. Dor é típica nos primeiros passos após repouso, pode aliviar com movimento inicial e piorar com carga prolongada. Esporão radiográfico não é prova de causa da dor nem indicação automática de cirurgia.",
+      "es": "Fascitis plantar es causa común de dolor plantar medial del talón, asociada a sobrecarga de fascia. Dolor es típico en primeros pasos tras reposo, puede aliviar con movimiento inicial y empeorar con carga prolongada. Espolón radiográfico no prueba causa del dolor ni indica cirugía automáticamente.",
+      "sources": [
+        "F1",
+        "F2",
+        "F3"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Diagnóstico é geralmente clínico: história de carga/atividade, dor à palpação plantar medial e ao tensionar fáscia. Avaliar calçado, mobilidade do tornozelo/panturrilha, marcha, sensibilidade e sinais inflamatórios. Imagem é seletiva se trauma, apresentação atípica ou dúvida; não pedir radiografia só para procurar esporão.",
+      "es": "Diagnóstico suele ser clínico: historia de carga/actividad, dolor a palpación plantar medial y al tensar fascia. Evaluar calzado, movilidad de tobillo/pantorrilla, marcha, sensibilidad y signos inflamatorios. Imagen es selectiva ante trauma, presentación atípica o duda; no pedir radiografía solo para buscar espolón.",
+      "sources": [
+        "F1",
+        "F3"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar fratura por estresse, síndrome do coxim adiposo, compressão nervosa, radiculopatia, tendinopatia de Aquiles e doença inflamatória. Parestesia/perda sensitiva, dor noturna persistente, edema importante, febre ou incapacidade de apoiar exige reavaliação. Diabetes com dor/lesão no pé merece avaliação rápida para outra causa.",
+      "es": "Diferenciar fractura por estrés, síndrome de almohadilla grasa, atrapamiento nervioso, radiculopatía, tendinopatía de Aquiles y enfermedad inflamatoria. Parestesia/pérdida sensitiva, dolor nocturno persistente, edema importante, fiebre o imposibilidad de apoyar exige reevaluación. Diabetes con dolor/lesión del pie merece evaluación rápida para otra causa.",
+      "sources": [
+        "F1",
+        "F2",
+        "F3"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Reduzir carga provocadora sem imobilização indiscriminada, adaptar trabalho/exercício e preferir calçado com suporte e amortecimento. Evitar descalço em piso duro e longos períodos em pé enquanto doloroso. Gelo protegido pode aliviar; não aplicar diretamente ou provocar lesão pelo frio. Introduzir atividade de menor impacto conforme tolerância.",
+      "es": "Reducir carga provocadora sin inmovilización indiscriminada, adaptar trabajo/ejercicio y preferir calzado con soporte y amortiguación. Evitar descalzo sobre piso duro y largos períodos de pie mientras duela. Hielo protegido puede aliviar; no aplicar directamente ni lesionar por frío. Introducir actividad de menor impacto según tolerancia.",
+      "sources": [
+        "F2"
+      ]
+    },
+    {
+      "id": "rehab",
+      "pt": "Oferecer alongamento específico da fáscia e panturrilha e programa de força/reabilitação ajustado à capacidade; terapia manual pode integrar o plano. Taping pode ajudar a curto prazo. Órteses podem ser combinadas com outras medidas, sem prometer benefício como tratamento isolado. Tala noturna por1–3meses pode ser indicada quando dor do primeiro passo é persistente, conforme diretriz2023.",
+      "es": "Ofrecer estiramiento específico de fascia y pantorrilla y programa de fuerza/rehabilitación ajustado a capacidad; terapia manual puede integrar plan. Taping puede ayudar a corto plazo. Ortesis pueden combinarse con otras medidas, sin prometer beneficio como tratamiento aislado. Férula nocturna por1–3meses puede indicarse si dolor del primer paso es persistente, según guía2023.",
+      "sources": [
+        "F1",
+        "F3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo necessário. Não duplicar produtos com paracetamol. Peso<50kg, doença renal/hepática ou álcool importante exige individualização. Analgesia alivia sintomas; não substitui ajuste de carga e reabilitação.",
+      "es": "Si adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo necesario. No duplicar productos con paracetamol. Peso<50kg, nefropatía/hepatopatía o alcohol importante exige individualización. Analgesia alivia síntomas; no sustituye ajuste de carga ni rehabilitación.",
+      "sources": [
+        "F2",
+        "F4"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Infiltração não é primeira medida automática: corticoide pode enfraquecer/romper fáscia, e repetição exige cautela especializada. Procedimentos como ondas de choque têm resultados variáveis e são decisões para casos persistentes após manejo conservador. Cirurgia é excepcional; não remover esporão só porque aparece na imagem.",
+      "es": "Infiltración no es primera medida automática: corticoide puede debilitar/romper fascia, y repetir exige cautela especializada. Procedimientos como ondas de choque tienen resultados variables y se deciden para casos persistentes tras manejo conservador. Cirugía es excepcional; no retirar espolón solo porque aparece en imagen.",
+      "sources": [
+        "F3"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Crianças com dor no calcanhar exigem diferencial pediátrico, sem dose ou programa adulto automático. Gestação/lactação: conferir analgesia selecionada e priorizar medidas físicas; paracetamol geralmente é compatível quando indicado. Neuropatia, diabetes ou doença vascular exige cuidado com gelo, pele e órteses. Não propor ajuste renal/hepático arbitrário.",
+      "es": "Niños con dolor de talón necesitan diferencial pediátrico, sin dosis ni programa adulto automático. Embarazo/lactancia: revisar analgesia elegida y priorizar medidas físicas; paracetamol generalmente es compatible si indicado. Neuropatía, diabetes o vasculopatía exige cuidado con hielo, piel y ortesis. No proponer ajuste renal/hepático arbitrario.",
+      "sources": [
+        "F2",
+        "F4"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Geralmente ambulatorial. Medir dor ao primeiro passo, função e tolerância à carga; orientar recuperação gradual, não prazo garantido. Se não melhora após2semanas de autocuidado, piora, recorre ou limita atividades, reavaliar e considerar fisioterapia/podiatria. Febre, lesão no pé, déficit sensitivo ou incapacidade de apoio exige retorno antes.",
+      "es": "Generalmente ambulatorio. Medir dolor al primer paso, función y tolerancia a carga; orientar recuperación gradual, no plazo garantizado. Si no mejora tras2semanas de autocuidado, empeora, recurre o limita actividades, reevaluar y considerar fisioterapia/podología. Fiebre, lesión del pie, déficit sensitivo o imposibilidad de apoyar exige retorno antes.",
+      "sources": [
+        "F2",
+        "F3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "F1",
+      "title": "Heel pain plantar fasciitis Revision2023",
+      "authority": "APTA/JOSPT",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_INDEXED_CURRENT_PORTAL",
+      "url": "https://www.jospt.org/doi/10.2519/jospt.2023.0303",
+      "scope": "Recomendações finais indexadas; acesso direto falhou. PortalAPTA ainda lista2023.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F2",
+      "title": "Plantar fasciitis",
+      "authority": "NHS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/conditions/plantar-fasciitis/",
+      "scope": "14/02/2025; sintomas, autocuidado e retorno.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F3",
+      "title": "Plantar fasciitis and bone spurs",
+      "authority": "AAOS OrthoInfo",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_CURRENT_SPECIALTY_PATIENT_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/plantar-fasciitis-and-bone-spurs/",
+      "scope": "Clínica, risco de infiltração, limites de procedimentos.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "F4",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose e segurança.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

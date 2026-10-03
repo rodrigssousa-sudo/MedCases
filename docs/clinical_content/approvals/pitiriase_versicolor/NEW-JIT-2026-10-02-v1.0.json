@@ -1,0 +1,141 @@
+{
+  "owner": "pitiriase_versicolor",
+  "title": {
+    "pt": "Pitiríase versicolor",
+    "es": "Pitiriasis versicolor"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Pitiríase versicolor resulta de proliferação de Malassezia na camada superficial da pele, favorecida por calor, suor e predisposição. Máculas hipo/hiperpigmentadas ou rosadas com fina descamação, usualmente no tronco/pescoço, podem coalescer. Não é a mesma condição que pitiríase rósea nem se presume contagiosa por contato comum.",
+      "es": "Pitiriasis versicolor resulta de proliferación de Malassezia superficial, favorecida por calor, sudor y predisposición. Máculas hipo/hiperpigmentadas o rosadas con descamación fina, usualmente tronco/cuello, pueden confluir. No es igual a pitiriasis rosada ni se presume contagiosa por contacto común.",
+      "sources": [
+        "V1",
+        "V4"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Confirmar morfologia e descamação; se dúvida, raspado com exame micológico auxilia. Lâmpada de Wood pode ajudar, mas resultado negativo não deve ser único critério. Identificar extensão, recorrência, tratamentos prévios e irritação; alteração de cor sem descamação após tratamento pode representar recuperação pigmentária.",
+      "es": "Confirmar morfología y descamación; si duda, raspado micológico ayuda. Lámpara de Wood puede ayudar, pero resultado negativo no debe ser único criterio. Identificar extensión, recurrencia, tratamientos previos e irritación; cambio de color sin descamación tras tratar puede ser recuperación pigmentaria.",
+      "sources": [
+        "V1",
+        "V4"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar vitiligo, pitiríase alba, hipomelanose macular progressiva e outras micoses/dermatoses. Lesão anestésica ou neurológica exige avaliar outro diagnóstico, sem tratá-la indefinidamente como versicolor. Biopsia/dermatologia se aspecto atípico ou falha após terapia correta.",
+      "es": "Diferenciar vitíligo, pitiriasis alba, hipomelanosis macular progresiva y otras micosis/dermatosis. Lesión anestésica o neurológica exige otro diagnóstico, sin tratar indefinidamente como versicolor. Biopsia/dermatología si aspecto atípico o fallo tras terapia correcta.",
+      "sources": [
+        "V1"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Tratamento tópico é primeira opção em quadros elegíveis. Explicar que eliminar levedura/descamação não restaura imediatamente pigmento; cor pode levar meses a normalizar. Evitar repetir fármaco apenas pela cor residual. Recorrência não significa automaticamente resistência.",
+      "es": "Tratamiento tópico es primera opción en casos elegibles. Explicar que eliminar levadura/descamación no restaura pigmento inmediatamente; color puede tardar meses. No repetir fármaco solo por color residual. Recurrencia no significa automáticamente resistencia.",
+      "sources": [
+        "V1",
+        "V4"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Opção em adolescente/adulto: cetoconazol shampoo2% (20mg/g), aplicar nas áreas afetadas uma vez/dia por até5dias; deixar3–5min e enxaguar, conforme bula selecionada. Este candidato segue tempo da bula, sem misturar10min do PCDS ao mesmo produto. Não usar esquema de caspa2vezes/semana como regime de versicolor nem aplicar em olhos/mucosas.",
+      "es": "Opción en adolescente/adulto: ketoconazol champú2% (20mg/g), aplicar en áreas afectadas una vez/día hasta5días; dejar3–5min y enjuagar, según ficha elegida. Candidato sigue tiempo de ficha, sin mezclar10min PCDS al mismo producto. No usar pauta anticaspa2veces/semana como régimen versicolor ni aplicar en ojos/mucosas.",
+      "sources": [
+        "V2",
+        "V3"
+      ]
+    },
+    {
+      "id": "safety",
+      "pt": "Conferir alergia e suspender/avaliar irritação relevante. Shampoo e creme têm posologias próprias; não converter frequência/tempo de contato automaticamente. Cetoconazol oral não é substituto do tópico e não é prescrito aqui. Se refratário/extenso, avaliar diagnóstico e tratamento sistêmico especializado com interações/hepatotoxicidade antes de qualquer receita.",
+      "es": "Revisar alergia y suspender/evaluar irritación relevante. Champú y crema tienen posologías propias; no convertir frecuencia/tiempo automáticamente. Ketoconazol oral no sustituye tópico ni se prescribe aquí. Si refractario/extenso, evaluar diagnóstico y tratamiento sistémico especializado con interacciones/hepatotoxicidad antes de receta.",
+      "sources": [
+        "V2",
+        "V3",
+        "V1"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Bula escolhida abrange adolescentes/adultos; criança menor exige produto e plano próprios. Gestação/lactação: exposição tópica é limitada, mas aplicação corporal extensa pode ter absorção maior que no couro cabeludo; verificar necessidade/bula sem extrapolar segurança ao cetoconazol oral. Evitar contato de lactente com pele recém-tratada.",
+      "es": "Ficha elegida abarca adolescentes/adultos; niño menor exige producto y plan propios. Embarazo/lactancia: exposición tópica limitada, pero aplicación corporal extensa puede absorber más que cuero cabelludo; revisar necesidad/ficha sin extrapolar seguridad a ketoconazol oral. Evitar contacto del lactante con piel recién tratada.",
+      "sources": [
+        "V2"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Dor importante, febre, ulceração, rápida expansão inflamatória ou sintomas sistêmicos não são típicos de versicolor simples e precisam avaliação. Reação alérgica grave exige emergência. Não atrasar investigação de perda de sensibilidade, imunossupressão relevante ou diagnóstico incerto.",
+      "es": "Dolor importante, fiebre, ulceración, expansión inflamatoria rápida o síntomas sistémicos no son típicos de versicolor simple y requieren valoración. Reacción alérgica grave exige urgencia. No retrasar estudio de pérdida de sensibilidad, inmunosupresión relevante o diagnóstico incierto.",
+      "sources": [
+        "V1",
+        "V2"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial na forma simples, com orientação e revisão se descamação/sintomas persistem após curso ou recorrência frequente. Confirmar adesão e diagnóstico antes de repetir. Profilaxia tópica pode ser individualizada em recorrentes, mas não é obrigatória para todos nem autoriza esquema oral periódico sem revisão.",
+      "es": "Alta ambulatoria en forma simple, con orientación y revisión si descamación/síntomas persisten tras curso o recurrencia frecuente. Confirmar adherencia/diagnóstico antes de repetir. Profilaxis tópica puede individualizarse en recurrentes, pero no es obligatoria ni autoriza pauta oral periódica sin revisión.",
+      "sources": [
+        "V1",
+        "V4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "V1",
+      "title": "Pityriasis versicolor",
+      "authority": "PCDS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.pcds.org.uk/clinical-guidance/pityriasis-versicolor",
+      "scope": "01/06/2023; diagnóstico e recorrência; tempo contato10min diferente de bula.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "V2",
+      "title": "Nizoral Antidandruff Shampoo2% SmPC",
+      "authority": "J&J / emc",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/6456/smpc",
+      "scope": "25/04/2024; posologia versicolor presente seção4.2, indicação4.1 menciona caspa; confirmar autorização local.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "V3",
+      "title": "About ketoconazole",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/ketoconazole/about-ketoconazole/",
+      "scope": "Antifúngico tópico e aplicações distintas.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "V4",
+      "title": "Pityriasis versicolor — patient leaflet",
+      "authority": "PCDS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.pcds.org.uk/patient-info-leaflets/pityriasis-versicolor",
+      "scope": "Pigmentação e manejo recorrente.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

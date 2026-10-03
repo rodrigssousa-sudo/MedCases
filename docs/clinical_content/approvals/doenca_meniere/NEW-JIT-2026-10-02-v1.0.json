@@ -1,0 +1,148 @@
+{
+  "owner": "doenca_meniere",
+  "title": {
+    "pt": "Doença de Ménière",
+    "es": "Enfermedad de Ménière"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Doença de Ménière é condição vestibulococlear episódica associada a alterações endolinfáticas, com vertigem, perda auditiva neurossensorial, zumbido/plenitude. Sintomas podem flutuar e prejudicar equilíbrio, comunicação e trabalho. Não chamar qualquer tontura de Ménière.",
+      "es": "Enfermedad de Ménière es condición vestibulococlear episódica asociada a alteraciones endolinfáticas, con vértigo, hipoacusia neurosensorial, acúfenos/plenitud. Síntomas pueden fluctuar y afectar equilibrio, comunicación y trabajo. No llamar Ménière a cualquier mareo.",
+      "sources": [
+        "M2"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Definida:≥2 crises espontâneas de20min–12h, perda neurossensorial de frequências baixas/médias documentada em audiometria, sintomas aurais flutuantes e outra causa excluída. Provável:≥2 episódios de20min–24h com sintomas aurais flutuantes e alternativa excluída. Fazer audiometria; RM seletiva na assimetria auditiva. Testes vestibulares/eletrococleografia não são rotina diagnóstica.",
+      "es": "Definida:≥2 crisis espontáneas de20min–12h, pérdida neurosensorial de frecuencias bajas/medias documentada audiométricamente, síntomas aurales fluctuantes y otra causa excluida. Probable:≥2 episodios de20min–24h con síntomas aurales fluctuantes y alternativa excluida. Audiometría; RM selectiva en asimetría auditiva. Pruebas vestibulares/electrococleografía no son rutina diagnóstica.",
+      "sources": [
+        "M1"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Considerar enxaqueca vestibular, VPPB, neurite vestibular, causas centrais e lesão retrococlear. Duração, gatilhos posicionais, sintomas migranosos, audição e exame neurológico orientam. Primeiro episódio intenso ou quadro diferente do habitual exige nova avaliação, mesmo com diagnóstico prévio.",
+      "es": "Considerar migraña vestibular, VPPB, neuritis vestibular, causas centrales y lesión retrococlear. Duración, desencadenantes posicionales, síntomas migrañosos, audición y exploración neurológica orientan. Primer episodio intenso o diferente del habitual exige nueva evaluación aunque exista diagnóstico previo.",
+      "sources": [
+        "M1",
+        "M2"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Durante crise, prevenir quedas, repousar em local seguro e avaliar hidratação/vômitos. Não dirigir nem operar máquinas com vertigem ou sedação. Planejar atendimento se incapaz de ingerir líquidos. Orientar hábitos/gatilhos e diário de sintomas, sem prometer que restrição dietética cura a doença.",
+      "es": "Durante crisis, prevenir caídas, descansar en lugar seguro y valorar hidratación/vómitos. No conducir ni operar maquinaria con vértigo o sedación. Buscar asistencia si incapaz de beber. Orientar hábitos/desencadenantes y diario de síntomas, sin prometer curación por dieta.",
+      "sources": [
+        "M2"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Crise em adulto elegível: opção prochlorperazina/Stemetil5mg oral a cada8h, somente durante a crise e pelo menor tempo; esta proposta não escalona além de15mg/dia nem adota manutenção prolongada da bula. Monitorar sedação, hipotensão, distonia e risco de QT/interações. Evitar em Parkinson, disfunção renal/hepática e demais situações de risco da bula; idoso exige dose própria menor. Não associar álcool/sedativos nem trocar via por injetável.",
+      "es": "Crisis en adulto elegible: opción proclorperazina/Stemetil5mg oral cada8h, solo durante crisis y por mínimo tiempo; propuesta no aumenta sobre15mg/día ni adopta mantenimiento prolongado de ficha. Vigilar sedación, hipotensión, distonía y riesgo QT/interacciones. Evitar en Parkinson, disfunción renal/hepática y otros riesgos de ficha; anciano exige dosis propia menor. No combinar alcohol/sedantes ni sustituir vía por inyectable.",
+      "sources": [
+        "M4",
+        "M1"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "Manutenção é decisão compartilhada: betahistina/diurético são opções, com eficácia sistêmica incerta na revisão Cochrane. Se escolhido Serc16 em adulto elegível: betahistina dicloridrato16mg oral a cada8h com refeições, total48mg/dia; reavaliar sintomas e tolerância antes de manter. Contraindicada em feocromocitoma/hipersensibilidade; monitorar asma/úlcera e interação IMAO. Não usar como resgate nem prescrever diurético sem indicação/bula e avaliação renal/eletrolítica.",
+      "es": "Mantenimiento es decisión compartida: betahistina/diurético son opciones, con eficacia sistémica incierta en Cochrane. Si se elige Serc16 en adulto elegible: betahistina diclorhidrato16mg oral cada8h con comidas, total48mg/día; reevaluar síntomas/tolerancia antes de mantener. Contraindicada en feocromocitoma/hipersensibilidad; vigilar asma/úlcera e interacción IMAO. No usar como rescate ni diurético sin indicación/ficha y valoración renal/electrolítica.",
+      "sources": [
+        "M3",
+        "M5"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Déficit focal, diplopia, disartria, incapacidade importante de marcha, cefaleia súbita, síncope ou sintomas cardiovasculares exige urgência para excluir AVC/outra causa. Perda auditiva súbita requer avaliação urgente específica. Vômitos incoercíveis/desidratação ou quedas sem suporte podem exigir observação/internação. Não suprimir sintomas para dispensar investigação.",
+      "es": "Déficit focal, diplopía, disartria, grave incapacidad de marcha, cefalea súbita, síncope o síntomas cardiovasculares exige urgencia para excluir ictus/otra causa. Hipoacusia súbita requiere valoración urgente propia. Vómitos incoercibles/deshidratación o caídas sin apoyo pueden exigir observación/ingreso. No suprimir síntomas para omitir estudio.",
+      "sources": [
+        "M2"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Este esquema é adulto; não extrapolar a criança. Betahistina não recomendada<18anos, preferir evitar na gestação e individualizar lactação; sem ensaios renais/hepáticos específicos, não inventar ajuste validado. Gestação e comorbidades exigem escolha individual da medicação de crise. Reabilitação vestibular é para desequilíbrio crônico, não crise aguda.",
+      "es": "Esquema adulto; no extrapolar a niño. Betahistina no recomendada<18años, preferir evitar en embarazo e individualizar lactancia; sin ensayos renales/hepáticos específicos, no inventar ajuste validado. Embarazo/comorbilidad exigen selección individual del fármaco de crisis. Rehabilitación vestibular es para desequilibrio crónico, no crisis aguda.",
+      "sources": [
+        "M3",
+        "M1"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta somente sem sinais de outra urgência, com marcha/hidratação seguras e plano de retorno. Otorrino acompanha frequência de crises, audição, equilíbrio e qualidade de vida; considerar apoio auditivo. Doença refratária exige discussão especializada de terapias intratimpânicas/ablativas e riscos auditivos, sem receita universal de injeção.",
+      "es": "Alta solo sin otra urgencia, con marcha/hidratación seguras y retorno. ORL sigue frecuencia de crisis, audición, equilibrio y calidad de vida; considerar apoyo auditivo. Enfermedad refractaria exige discusión especializada de terapias intratimpánicas/ablativas y riesgos auditivos, sin receta universal de inyección.",
+      "sources": [
+        "M1",
+        "M2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "M1",
+      "title": "Clinical Practice Guideline: Meniere disease",
+      "authority": "AAO-HNSF",
+      "year": 2020,
+      "status": "AUTHORITATIVE_FINAL_FULL_TEXT",
+      "url": "https://journals.sagepub.com/doi/10.1177/0194599820909438",
+      "scope": "Diretriz adulta atual encontrada; não declarar atualização2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M2",
+      "title": "Meniere disease",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/menieres-disease/",
+      "scope": "Revisado11/09/2026; sintomas, alarmes, convivência e atendimento.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M3",
+      "title": "Serc16 SmPC",
+      "authority": "Viatris",
+      "year": 2025,
+      "status": "VERIFIED_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/1172/smpc",
+      "scope": "Atualização emc25/11/2025; selecionar produto16mg, não produto Flamingo com posologia inicial divergente.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M4",
+      "title": "Stemetil5mg SmPC",
+      "authority": "Atnahs",
+      "year": 2025,
+      "status": "VERIFIED_PRODUCT_LABEL",
+      "url": "https://www.medicines.org.uk/emc/product/101210/smpc",
+      "scope": "Atualização emc04/08/2025; uso oral em adulto elegível durante crise.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "M5",
+      "title": "Systemic pharmacological interventions for Meniere disease",
+      "authority": "Cochrane",
+      "year": 2023,
+      "status": "AUTHORITATIVE_SYSTEMATIC_REVIEW",
+      "url": "https://www.cochrane.org/es/evidence/CD015171_what-are-benefits-and-risks-different-medications-menieres-disease",
+      "scope": "Evidência incerta; não prometer prevenção nem converter opção em obrigação.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

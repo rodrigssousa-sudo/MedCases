@@ -1,0 +1,153 @@
+{
+  "owner": "capsulite_adesiva",
+  "title": {
+    "pt": "Capsulite adesiva",
+    "es": "Capsulitis adhesiva"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Capsulite adesiva produz dor e limitação progressiva de movimento ativo e passivo do ombro, especialmente rotação externa. Pode ser primária ou seguir imobilização/lesão; diabetes é fator associado. Inflamação/fibrose capsular reduz mobilidade; evolução pode durar meses ou anos, sem recuperação idêntica em todos.",
+      "es": "Capsulitis adhesiva produce dolor y limitación progresiva activa/pasiva de hombro, especialmente rotación externa. Puede ser primaria o seguir inmovilización/lesión; diabetes asociada. Inflamación/fibrosis capsular reduce movilidad; evolución puede durar meses/años, sin recuperación idéntica en todos.",
+      "sources": [
+        "C2",
+        "C3"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Comparar movimento ativo/passivo, sobretudo rotação externa, dor e função; verificar trauma, operação, doença metabólica e exame neurológico. Radiografia pode excluir artrose/lesão óssea quando indicada; RM não é obrigatória para confirmar caso típico. Fraqueza com movimento passivo preservado exige considerar outra causa.",
+      "es": "Comparar movimiento activo/pasivo, especialmente rotación externa, dolor y función; revisar trauma, cirugía, metabolismo y neurología. Radiografía puede excluir artrosis/lesión ósea si indicada; RM no obligatoria para caso típico. Debilidad con movimiento pasivo conservado exige considerar alternativa.",
+      "sources": [
+        "C3",
+        "C1"
+      ]
+    },
+    {
+      "id": "differential",
+      "pt": "Diferenciar artrose glenoumeral, lesão do manguito, fratura/luxação, radiculopatia e causa infecciosa/tumoral. Dor referida cardíaca não deve ser atribuída a capsulite, sobretudo com dispneia/sintomas torácicos. Diagnóstico incerto ou quadro após trauma exige investigação antes de mobilização intensa.",
+      "es": "Diferenciar artrosis glenohumeral, lesión del manguito, fractura/luxación, radiculopatía y causa infecciosa/tumoral. Dolor cardíaco referido no debe atribuirse a capsulitis, sobre todo con disnea/síntomas torácicos. Duda o cuadro tras trauma exige estudio antes de movilización intensa.",
+      "sources": [
+        "C3",
+        "C1"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Explicar curso e manter movimento gentil tolerado; fisioterapia e exercícios individualizados buscam dor manejável e função. Evitar imobilização prolongada e manipulação/alongamento vigoroso autoadministrado na fase muito dolorosa. Ajustar objetivos a sintomas e adesão; não exigir forçar até dor intensa.",
+      "es": "Explicar curso y mantener movimiento suave tolerado; fisioterapia/ejercicios individualizados buscan dolor manejable y función. Evitar inmovilización prolongada y manipulación/estiramiento vigoroso propio en fase muy dolorosa. Ajustar objetivos a síntomas/adherencia; no exigir forzar hasta dolor intenso.",
+      "sources": [
+        "C2",
+        "C4"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Se analgesia necessária em adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, pelo menor tempo. Não duplicar produtos. Peso<50kg, hepatopatia/nefropatia ou álcool importante exige individualização. Analgesia facilita função, mas não substitui reabilitação nem exclui lesão grave.",
+      "es": "Si analgesia necesaria en adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo. No duplicar productos. Peso<50kg, hepatopatía/nefropatía o alcohol importante exige individualización. Analgesia facilita función, sin sustituir rehabilitación ni excluir lesión grave.",
+      "sources": [
+        "P"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "BESS2025 apoia considerar infiltração glenoumeral de corticoide para benefício de curto prazo e combinar com reabilitação; benefício prolongado não é garantido. Hidrodilatação pode favorecer dor/amplitude em curto a médio prazo, sem prova suficiente de benefício duradouro. Produto, dose, anestésico e volume são definidos pela equipe, não mistura universal. Persistência incapacitante pode exigir discussão de manipulação sob anestesia ou liberação artroscópica com riscos.",
+      "es": "BESS2025 apoya considerar infiltración glenohumeral de corticoide para beneficio corto y combinar rehabilitación; beneficio prolongado no garantizado. Hidrodilatación puede favorecer dolor/amplitud a corto/medio plazo, sin prueba suficiente de beneficio duradero. Producto, dosis, anestésico y volumen los define equipo, no mezcla universal. Persistencia incapacitante puede exigir manipulación bajo anestesia o liberación artroscópica con riesgos.",
+      "sources": [
+        "C1",
+        "C3"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Ombro quente/vermelho com febre, trauma importante, deformidade, déficit neurovascular, massa ou dor não mecânica progressiva exige investigação urgente. Dor torácica/dispneia/sudorese associadas podem ser emergência cardiovascular. Não infiltrar suspeita de infecção nem classificar toda rigidez como capsulite.",
+      "es": "Hombro caliente/rojo con fiebre, trauma importante, deformidad, déficit neurovascular, masa o dolor no mecánico progresivo exige estudio urgente. Dolor torácico/disnea/sudoración pueden ser urgencia cardiovascular. No infiltrar infección sospechada ni clasificar toda rigidez como capsulitis.",
+      "sources": [
+        "C1",
+        "C3"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Diabetes exige cuidado metabólico e monitorização glicêmica se corticoide escolhido; anticoagulação e risco infeccioso requerem avaliação do procedimento. Gestação/renal/hepática altera analgesia. Criança e quadro pós-operatório específico exigem via própria; não aplicar automaticamente diagnóstico/tratamento de capsulite primária adulta.",
+      "es": "Diabetes exige control metabólico y vigilancia glucémica si se elige corticoide; anticoagulación/riesgo infeccioso requieren valoración del procedimiento. Embarazo/renal/hepática cambia analgesia. Niño y cuadro posoperatorio específico requieren vía propia; no aplicar automáticamente capsulitis primaria adulta.",
+      "sources": [
+        "C1",
+        "C2",
+        "P"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta se sem alarme, com analgesia elegível, exercícios orientados e retorno. Acompanhar sono, dor, rotação externa e atividades; rever se falha, piora ou dúvida. Encaminhar limitação importante/persistente para discutir opções e preferência. Não prometer cura após um procedimento nem usar repetição indefinida de corticoide como plano.",
+      "es": "Alta sin alarma, con analgesia elegible, ejercicios y retorno. Seguir sueño, dolor, rotación externa y tareas; revisar fallo, empeoramiento o duda. Derivar limitación importante/persistente para opciones/preferencia. No prometer cura tras procedimiento ni repetir corticoide indefinidamente como plan.",
+      "sources": [
+        "C2",
+        "C4",
+        "C1"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "C1",
+      "title": "BESS patient care pathway frozen shoulder",
+      "authority": "BESS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL_INDEXED",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12018368/",
+      "scope": "23/04/2025; atualização do guideline2015; texto consultado por indexação, acesso diretocaptcha.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C2",
+      "title": "Frozen shoulder",
+      "authority": "NHS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/frozen-shoulder/",
+      "scope": "24/06/2024; mobilidade, analgesia e continuidade.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C3",
+      "title": "Frozen shoulder adhesive capsulitis",
+      "authority": "AAOS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/frozen-shoulder/",
+      "scope": "Conceito, exame e alternativas.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "C4",
+      "title": "Frozen shoulder — exercises and patient support",
+      "authority": "BESS",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_PATIENT_GUIDANCE",
+      "url": "https://bess.ac.uk/frozen-shoulder/",
+      "scope": "Material desenvolvido por fisioterapeutas BESS; não dose universal de exercício.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "P",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose sintomática e limites.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

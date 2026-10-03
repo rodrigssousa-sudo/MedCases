@@ -1,0 +1,228 @@
+{
+  "owner": "doenca_hemorroidaria",
+  "title": {
+    "pt": "Doença hemorroidária",
+    "es": "Enfermedad hemorroidal"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Doença hemorroidária é o conjunto de sintomas atribuíveis aos coxins hemorroidários, estruturas normais de vasos e tecido de suporte do canal anal. Presença anatômica sem sintomas não é indicação automática de tratamento. Este candidato terapêutico é para adultos.",
+      "es": "La enfermedad hemorroidal es el conjunto de síntomas atribuibles a los cojinetes hemorroidales, estructuras normales de vasos y tejido de soporte del canal anal. La presencia anatómica sin síntomas no indica automáticamente tratamiento. Este candidato terapéutico es para adultos.",
+      "sources": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "id": "presentation",
+      "pt": "Hemorroidas internas costumam causar sangramento vermelho vivo com evacuação e/ou prolapso, frequentemente sem dor. Hemorroida externa trombosada apresenta nódulo doloroso perianal. Dor intensa não deve ser atribuída a hemorroida interna simples sem procurar fissura, abscesso ou complicação.",
+      "es": "Las hemorroides internas suelen causar sangrado rojo vivo al defecar y/o prolapso, a menudo sin dolor. Una hemorroide externa trombosada presenta un nódulo perianal doloroso. No atribuir dolor intenso a una hemorroide interna simple sin buscar fisura, absceso o complicación.",
+      "sources": [
+        "H1",
+        "H2",
+        "H3"
+      ]
+    },
+    {
+      "id": "grades",
+      "pt": "Classificação de internas pelo prolapso: grau I sem prolapso; grau II reduz espontaneamente; grau III exige redução manual; grau IV não é redutível. Essa classificação não mede sozinha a gravidade de um sangramento nem se aplica ao nódulo de trombose externa.",
+      "es": "Clasificación de las internas por prolapso: grado I sin prolapso; grado II se reduce espontáneamente; grado III requiere reducción manual; grado IV no es reducible. Esta clasificación no mide por sí sola la gravedad de un sangrado ni se aplica al nódulo de trombosis externa.",
+      "sources": [
+        "H2"
+      ]
+    },
+    {
+      "id": "assessment",
+      "pt": "Perguntar sobre quantidade/duração do sangramento, hábito intestinal, constipação, prolapso, dor, medicamentos antitrombóticos, tratamentos prévios e história pessoal/familiar colorretal. Inspecionar; toque retal e anoscopia podem esclarecer anatomia e outras causas, conforme tolerância e contexto.",
+      "es": "Preguntar por cantidad/duración del sangrado, hábito intestinal, estreñimiento, prolapso, dolor, medicamentos antitrombóticos, tratamientos previos y antecedentes personales/familiares colorrectales. Inspeccionar; tacto rectal y anoscopia pueden aclarar la anatomía y otras causas según tolerancia y contexto.",
+      "sources": [
+        "H1"
+      ]
+    },
+    {
+      "id": "cancer",
+      "pt": "Não atribuir todo sangramento às hemorroidas. Fonte não demonstrada, sintomas abdominais/alteração do hábito intestinal, persistência após tratamento ou rastreamento colorretal devido justificam investigação adicional e, em pacientes selecionados, colonoscopia. O achado de hemorroida não exclui câncer/colite ou outra fonte.",
+      "es": "No atribuir todo sangrado a las hemorroides. Fuente no demostrada, síntomas abdominales/cambio del hábito intestinal, persistencia tras tratamiento o tamizaje colorrectal pendiente justifican investigación adicional y, en pacientes seleccionados, colonoscopia. Encontrar una hemorroide no excluye cáncer/colitis u otra fuente.",
+      "sources": [
+        "H1",
+        "H2"
+      ]
+    },
+    {
+      "id": "emergency",
+      "pt": "Sangramento volumoso/contínuo, coágulos importantes ou dor intensa requer atendimento emergencial. Febre, mal-estar importante ou pus exige avaliação urgente por possível outra doença. Avaliar repercussão do sangramento e necessidade de suporte; não dar alta apenas pelo rótulo hemorroida.",
+      "es": "Sangrado abundante/continuo, coágulos importantes o dolor intenso requiere atención de emergencia. Fiebre, malestar importante o pus exige evaluación urgente por posible otra enfermedad. Evaluar la repercusión del sangrado y necesidad de soporte; no dar el alta solo por el rótulo de hemorroide.",
+      "sources": [
+        "H3"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Primeira linha: aumentar fibra alimentar e manter hidratação compatível com as condições clínicas, evitar esforço/prolongar tempo no vaso e atender ao desejo de evacuar. Higiene suave e banho morno podem aliviar desconforto. Não prometer que medidas dietéticas corrigirão todo prolapso.",
+      "es": "Primera línea: aumentar la fibra alimentaria y mantener hidratación compatible con las condiciones clínicas, evitar pujar/prolongar el tiempo en el inodoro y atender al deseo de defecar. Higiene suave y baño tibio pueden aliviar molestias. No prometer que las medidas dietéticas corregirán todo prolapso.",
+      "sources": [
+        "H1",
+        "H3"
+      ]
+    },
+    {
+      "id": "fiber",
+      "pt": "Após esclarecer a fonte do sangramento e excluir contraindicações, pode-se suplementar fibra: ispaghula/psyllium na apresentação verificada de 3,5 g por sachê, 1 sachê por via oral de manhã e 1 à noite. Dispersar cada sachê em pelo menos 150 mL de água e beber logo após preparo; não ingerir seco. A dose depende da quantidade de fibra ativa, não do peso de outro sachê comercial.",
+      "es": "Después de aclarar la fuente del sangrado y excluir contraindicaciones, puede suplementarse fibra: ispágula/psyllium en la presentación verificada de 3,5 g por sobre, 1 sobre por vía oral por la mañana y 1 por la noche. Dispersar cada sobre en al menos 150 mL de agua y beber inmediatamente después de prepararlo; no ingerir seco. La dosis depende de la cantidad de fibra activa, no del peso de otro sobre comercial.",
+      "sources": [
+        "H1",
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "id": "fiber_safety",
+      "pt": "Não usar esse formador de bolo em obstrução/impactação fecal, dificuldade de deglutição ou sangramento retal não diagnosticado. Separar de outros medicamentos por pelo menos 30–60 minutos conforme a bula e avaliar interações, especialmente com hormônio tireoidiano e antidiabéticos. Reavaliar constipação persistente/pior em 3 dias. Não impor volume hídrico diário universal em quem tem restrição de líquidos.",
+      "es": "No usar este formador de bolo en obstrucción/impactación fecal, dificultad para deglutir o sangrado rectal no diagnosticado. Separarlo de otros medicamentos por al menos 30–60 minutos según el prospecto y evaluar interacciones, especialmente con hormona tiroidea y antidiabéticos. Reevaluar estreñimiento persistente/peor a los 3 días. No imponer un volumen diario universal de líquidos a quien tiene restricción hídrica.",
+      "sources": [
+        "H4",
+        "H5"
+      ]
+    },
+    {
+      "id": "analgesia",
+      "pt": "Para dor, em adulto com peso ≥50 kg sem fatores de risco que exijam ajuste: paracetamol 500–1000 mg por via oral a cada 6 h se necessário. Máximo 4 tomadas e 4000 mg em 24 h, contando associações; preferir a menor dose eficaz e reavaliar se uso superar 3 dias. Evitar codeína por constipação; não usar ibuprofeno se há sangramento hemorroidário.",
+      "es": "Para dolor, en un adulto con peso ≥50 kg sin factores de riesgo que exijan ajuste: paracetamol 500–1000 mg por vía oral cada 6 h si es necesario. Máximo 4 tomas y 4000 mg en 24 h, contando combinaciones; preferir la menor dosis eficaz y reevaluar si el uso supera 3 días. Evitar codeína por estreñimiento; no usar ibuprofeno si hay sangrado hemorroidal.",
+      "sources": [
+        "H3",
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "id": "analgesic_safety",
+      "pt": "Paracetamol é contraindicado em hipersensibilidade. Peso <50 kg, fragilidade/desnutrição, doença renal/hepática ou consumo nocivo de álcool exige avaliação individual; o teto adulto não é automaticamente seguro. Conferir duplicidade em associações e interações, incluindo varfarina em uso regular prolongado. Superdose requer atendimento imediato mesmo sem sintomas.",
+      "es": "El paracetamol está contraindicado en hipersensibilidad. Peso <50 kg, fragilidad/desnutrición, enfermedad renal/hepática o consumo nocivo de alcohol requiere evaluación individual; el límite adulto no es automáticamente seguro. Revisar duplicación en combinaciones e interacciones, incluida warfarina con uso regular prolongado. La sobredosis requiere atención inmediata incluso sin síntomas.",
+      "sources": [
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "id": "procedures",
+      "pt": "Se sintomas persistirem apesar do tratamento conservador, internas grau I–II e algumas grau III podem ser tratadas por procedimentos ambulatoriais; ligadura elástica é a opção de consultório mais eficaz segundo a diretriz. Hemorroidectomia é opção para doença externa selecionada ou doença mista sintomática grau III–IV. A escolha é compartilhada com coloproctologia, considerando antitrombóticos e riscos.",
+      "es": "Si persisten síntomas pese al tratamiento conservador, las internas grado I–II y algunas grado III pueden tratarse con procedimientos ambulatorios; la ligadura elástica es la opción de consultorio más eficaz según la guía. La hemorroidectomía es una opción para enfermedad externa seleccionada o enfermedad mixta sintomática grado III–IV. La elección se comparte con coloproctología considerando antitrombóticos y riesgos.",
+      "sources": [
+        "H1"
+      ]
+    },
+    {
+      "id": "thrombosis",
+      "pt": "Trombose externa dolorosa pode beneficiar-se de excisão precoce em pacientes selecionados. A diretriz não estabelece janela temporal ótima universal: não transformar o corte tradicional de 72 h em indicação/proibição absoluta. Considerar intensidade/evolução da dor, preferência, risco e disponibilidade do especialista.",
+      "es": "La trombosis externa dolorosa puede beneficiarse de escisión temprana en pacientes seleccionados. La guía no establece una ventana temporal óptima universal: no transformar el corte tradicional de 72 h en indicación/prohibición absoluta. Considerar intensidad/evolución del dolor, preferencias, riesgo y disponibilidad del especialista.",
+      "sources": [
+        "H1"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Na gestação/lactação, priorizar medidas alimentares e de hábito intestinal; ispaghula pode ser considerada se mudança de dieta não bastar, após avaliar contraindicações. Paracetamol pode ser usado quando necessário na menor dose/tempo. Sangramento ou dor atípica exige avaliação. Este esquema adulto não é receita para criança com sangramento anal.",
+      "es": "En embarazo/lactancia, priorizar medidas alimentarias y del hábito intestinal; puede considerarse ispágula si la dieta no basta, tras evaluar contraindicaciones. El paracetamol puede usarse cuando sea necesario con la menor dosis/tiempo. Sangrado o dolor atípico exige evaluación. Este esquema adulto no es una receta para un niño con sangrado anal.",
+      "sources": [
+        "H5",
+        "H6",
+        "H7"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta requer estabilidade, ausência de sinais de alarme, diagnóstico provável sustentado e plano de retorno. Reavaliar persistência/piora, recorrência e sangramento após tratamento; monitorar hábito intestinal e resposta da dor. Após procedimento, dor crescente com febre, sangramento importante ou dificuldade de urinar exige reavaliação urgente.",
+      "es": "El alta requiere estabilidad, ausencia de signos de alarma, diagnóstico probable sustentado y plan de seguimiento. Reevaluar persistencia/empeoramiento, recurrencia y sangrado tras tratamiento; controlar hábito intestinal y respuesta del dolor. Tras un procedimiento, dolor creciente con fiebre, sangrado importante o dificultad para orinar exige reevaluación urgente.",
+      "sources": [
+        "H1",
+        "H3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "H1",
+      "title": "ASCRS Clinical Practice Guidelines: Hemorrhoids",
+      "authority": "ASCRS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "url": "https://www.ascrsu.com/ascrs/repview?name=3_2851101_PDF&type=784-156",
+      "scope": "Adultos; substitui guideline2018. Texto integral acessado no portal oficial; link antigo fascrs retorna404.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H2",
+      "title": "Hemorrhoids: Expanded Information",
+      "authority": "ASCRS",
+      "year": "sem ano explícito",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.fascrs.org/Web/Patients/Diseases-and-Conditions/A-Z/Hemorrhoids-Expanded-Information.aspx?WebsiteKey=72e24489-68dc-44d0-8248-ea73cb810d39",
+      "scope": "Anatomia, graus e opções terapêuticas; confrontada com guideline2024",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H3",
+      "title": "Piles (haemorrhoids)",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "url": "https://www.nhs.uk/conditions/piles-haemorrhoids/",
+      "scope": "Revisada01/04/2026; autocuidado, sinais de alarme e analgesia",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H4",
+      "title": "How and when to take Fybogel",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "url": "https://www.nhs.uk/medicines/fybogel-ispaghula-husk/how-and-when-to-take-fybogel/",
+      "scope": "Revisada13/01/2026; posologia e líquido mínimo",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H5",
+      "title": "Fybogel Lemon Granules — SmPC",
+      "authority": "Reckitt Benckiser / emc",
+      "year": 2020,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL_OLDER",
+      "url": "https://www.medicines.org.uk/emc/product/6716/smpc",
+      "scope": "Ispaghula3.5g por sachê; inclui hemorroidas/fissura; contraindicações e interações",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H6",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_MEDICINE_GUIDANCE",
+      "population": "Adultos a partir de 18 anos",
+      "scope": "Posologia oral, duração de autocuidado e segurança",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "H7",
+      "title": "Paracetamol 500 mg Tablet — Summary of Product Characteristics",
+      "authority": "Medley Pharma Limited / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "population": "Adultos; sem extrapolação para crianças neste pacote",
+      "scope": "Posologia, contraindicações, interações, gestação/lactação",
+      "url": "https://www.medicines.org.uk/emc/product/100828/smpc",
+      "verifiedOn": "2026-10-02",
+      "recencyNote": "Texto revisado em 19/08/2025. Bula britânica: verificar apresentação/formulário local antes da prescrição."
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

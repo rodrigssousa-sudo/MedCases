@@ -1,0 +1,152 @@
+{
+  "owner": "radiculopatia_cervical",
+  "title": {
+    "pt": "Radiculopatia cervical",
+    "es": "Radiculopatía cervical"
+  },
+  "version": "NEW-JIT-2026-10-02-v1.0",
+  "reviewDate": "2026-10-02",
+  "review": {
+    "author": "Codex — automated evidence review",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "identity",
+      "pt": "Radiculopatia cervical é disfunção de raiz nervosa cervical por irritação/compressão, frequentemente associada a disco ou degeneração. Dor pode irradiar para braço, com parestesia, perda sensitiva, fraqueza ou alteração reflexa; dor cervical pode coexistir. Alteração degenerativa na imagem sozinha não prova qual raiz causa sintomas.",
+      "es": "Radiculopatía cervical es disfunción de raíz cervical por irritación/compresión, frecuentemente asociada a disco o degeneración. Dolor puede irradiar al brazo, con parestesia, pérdida sensitiva, debilidad o cambio reflejo; puede coexistir dolor cervical. Degeneración en imagen sola no prueba qué raíz causa síntomas.",
+      "sources": [
+        "R1",
+        "R3"
+      ]
+    },
+    {
+      "id": "exam",
+      "pt": "Examinar força segmentar, sensibilidade, reflexos, mobilidade e distribuição da dor; avaliar também marcha, membros inferiores e destreza das mãos para detectar mielopatia. Perguntar trauma, câncer, infecção, doença inflamatória e sintomas esfincterianos. Documentar déficits e sua progressão para comparar no retorno.",
+      "es": "Examinar fuerza segmentaria, sensibilidad, reflejos, movilidad y distribución del dolor; evaluar marcha, miembros inferiores y destreza manual para detectar mielopatía. Preguntar trauma, cáncer, infección, enfermedad inflamatoria y síntomas esfinterianos. Documentar déficits y progresión para comparar al retorno.",
+      "sources": [
+        "R2",
+        "R3",
+        "R4"
+      ]
+    },
+    {
+      "id": "redflags",
+      "pt": "Fraqueza progressiva, marcha alterada, mãos desajeitadas, hiperreflexia, resposta plantar extensora ou nova alteração vesical/intestinal sugere comprometimento medular e exige avaliação urgente. Trauma importante, febre com risco infeccioso ou câncer com nova dor/deficit também exige escalonamento. Fraqueza súbita pode ser AVC, sem atribuição automática ao pescoço.",
+      "es": "Debilidad progresiva, marcha alterada, manos torpes, hiperreflexia, respuesta plantar extensora o nueva alteración vesical/intestinal sugiere compromiso medular y exige evaluación urgente. Trauma importante, fiebre con riesgo infeccioso o cáncer con nuevo dolor/déficit exige escalamiento. Debilidad súbita puede ser ACV, sin atribuir automáticamente al cuello.",
+      "sources": [
+        "R2",
+        "R4"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Correlacionar história e exame; considerar lesão do ombro, compressão periférica, neuropatia e mielopatia no diferencial. RM é seletiva diante de déficit progressivo, alarme, persistência incapacitante ou planejamento especializado; eletroneuromiografia ajuda se origem periférica/raiz é incerta. Não solicitar imagem universal nem tratar apenas laudo.",
+      "es": "Correlacionar historia y examen; considerar lesión del hombro, atrapamiento periférico, neuropatía y mielopatía en diferencial. RM es selectiva ante déficit progresivo, alarma, persistencia incapacitante o plan especializado; electromiografía ayuda si origen periférico/raíz es incierto. No pedir imagen universal ni tratar solo informe.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    },
+    {
+      "id": "support",
+      "pt": "Sem alarme/progressão, orientar atividade e movimento tolerados, modificar tarefas provocadoras e fisioterapia individual. Evitar repouso prolongado e colar mantido sem indicação. Muitos casos melhoram com tempo, mas nova fraqueza exige retorno imediato. Não prometer resolução em prazo fixo ou manipulação cervical como cura.",
+      "es": "Sin alarma/progresión, indicar actividad y movimiento tolerados, modificar tareas provocadoras y fisioterapia individual. Evitar reposo prolongado y collar mantenido sin indicación. Muchos casos mejoran con tiempo, pero nueva debilidad exige retorno inmediato. No prometer resolución en plazo fijo ni manipulación cervical como cura.",
+      "sources": [
+        "R1",
+        "R3"
+      ]
+    },
+    {
+      "id": "dose",
+      "pt": "Opção sintomática para adulto≥50kg elegível: paracetamol500–1000mg oral a cada6h se necessário, máximo4000mg/24h, por menor tempo necessário. Não duplicar produtos. Peso<50kg, doença renal/hepática ou álcool importante exige individualização. Resposta analgésica não exclui mielopatia nem substitui seguimento neurológico.",
+      "es": "Opción sintomática para adulto≥50kg elegible: paracetamol500–1000mg oral cada6h si precisa, máximo4000mg/24h, durante menor tiempo necesario. No duplicar productos. Peso<50kg, nefropatía/hepatopatía o alcohol importante exige individualización. Respuesta analgésica no excluye mielopatía ni sustituye seguimiento neurológico.",
+      "sources": [
+        "R1",
+        "R5"
+      ]
+    },
+    {
+      "id": "advanced",
+      "pt": "AINEs, fármacos para dor neuropática ou outras intervenções precisam seleção individual, contraindicações e posologia por produto. Não indicar automaticamente opioide, corticoide sistêmico ou infiltração epidural. Persistência incapacitante ou déficit relevante pode exigir especialista para RM e discussão de cirurgia; infiltração requer equipe e avaliação de riscos.",
+      "es": "AINEs, fármacos para dolor neuropático u otras intervenciones requieren elección individual, contraindicaciones y dosis por producto. No indicar automáticamente opioide, corticoide sistémico ni infiltración epidural. Persistencia incapacitante o déficit relevante puede exigir especialista para RM y cirugía; infiltración requiere equipo y evaluación de riesgos.",
+      "sources": [
+        "R3"
+      ]
+    },
+    {
+      "id": "special",
+      "pt": "Menores de20anos merecem avaliação de encaminhamento conforme NICE, sem extrapolar doença degenerativa adulta. Gestação/lactação exige conferir analgesia; paracetamol geralmente é compatível quando indicado. Doença renal/hepática e anticoagulação mudam risco de medicamentos/procedimentos. Não fornecer esquema neuropático com ajuste renal não verificado.",
+      "es": "Menores de20años merecen valorar derivación según NICE, sin extrapolar degeneración adulta. Embarazo/lactancia exige revisar analgesia; paracetamol generalmente es compatible si indicado. Nefropatía/hepatopatía y anticoagulación cambian riesgo de fármacos/procedimientos. No dar pauta neuropática con ajuste renal no verificado.",
+      "sources": [
+        "R2",
+        "R5"
+      ]
+    },
+    {
+      "id": "followup",
+      "pt": "Alta ambulatorial exige ausência de alarme, dor manejável e seguimento. Reavaliar dor, força, sensibilidade, função e marcha. NICE não recomenda encaminhamento rotineiro se estável há6semanas ou mais, salvo dor não controlada, incapacidade ou características preocupantes. Essa regra não permite esperar6semanas se déficit novo/progressivo ou mielopatia.",
+      "es": "Alta ambulatoria exige ausencia de alarma, dolor manejable y seguimiento. Reevaluar dolor, fuerza, sensibilidad, función y marcha. NICE no recomienda derivación rutinaria si estable durante6semanas o más, salvo dolor no controlado, incapacidad o características preocupantes. Esta regla no permite esperar6semanas ante déficit nuevo/progresivo o mielopatía.",
+      "sources": [
+        "R2",
+        "R3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "R1",
+      "title": "Cervical radiculopathy",
+      "authority": "NHS24 MSK Clinical Advisory Group",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED_INDEXED",
+      "url": "https://www.nhsinform.scot/illnesses-and-conditions/muscle-bone-and-joints/neck-and-back-problems-and-conditions/cervical-radiculopathy/",
+      "scope": "18/03/2026; acesso direto403, texto oficial indexado.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R2",
+      "title": "Suspected neurological conditions NG127 — adults",
+      "authority": "NICE",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_INDEXED_UPDATED",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "scope": "Atualização02/10/2023; critérios encaminhamento, sem alegar revisão específica2026.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R3",
+      "title": "Cervical radiculopathy pinched nerve",
+      "authority": "AAOS OrthoInfo",
+      "year": "data não declarada",
+      "status": "AUTHORITATIVE_SPECIALTY_GUIDANCE",
+      "url": "https://www.orthoinfo.org/diseases--conditions/cervical-radiculopathy-pinched-nerve/",
+      "scope": "Texto integral; clínica, diagnóstico e manejo.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R4",
+      "title": "Neck and palm neurology",
+      "authority": "NHS Borders Right Decisions",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_PATHWAY_INDEXED",
+      "url": "https://www.rightdecisions.scot.nhs.uk/borders-ref-help-toolkit/neurology/neck-and-palm-neurology/",
+      "scope": "13/03/2025; alarmes medulares e contexto oncológico/infeccioso.",
+      "verifiedOn": "2026-10-02"
+    },
+    {
+      "id": "R5",
+      "title": "Paracetamol for adults",
+      "authority": "NHS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "scope": "24/03/2026; dose e segurança.",
+      "verifiedOn": "2026-10-02"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

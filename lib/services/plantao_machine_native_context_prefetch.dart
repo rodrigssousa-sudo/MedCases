@@ -1,3 +1,4 @@
+import '../data/new_pathology_approved_hashes.dart';
 import 'dart:async';
 
 import 'dart:convert';
@@ -886,7 +887,10 @@ class PlantaoMachineNativeContextPrefetch {
     final approvedEap = key == 'edema_agudo_pulmao' &&
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] == '0b9f8fabc6598b964edc9d7161b71f49f56da555a7cbecc59055f6d3652963f7';
-    final completeApprovedPayload = approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap;
+    final approvedNewPathology = rule?['version'] == 'NEW-JIT-2026-10-02-v1.0' &&
+        newPathologyApprovedHashes[key] != null &&
+        rule?['approvedClinicalPayloadSha256'] == newPathologyApprovedHashes[key];
+    final completeApprovedPayload = approvedNewPathology || approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap;
     final clinicalTextLimit = completeApprovedPayload ? 6000 : 360;
     final required = _merge(rule, const <String>[
       'requiredActions',
@@ -961,7 +965,7 @@ class PlantaoMachineNativeContextPrefetch {
             monitoring: monitoring,
             reassessment: reassessment,
             escalation: escalation,
-            maxPromptLength: (approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap) ? 24000 : (approvedG02 ? 18000 : 6000),
+            maxPromptLength: (approvedNewPathology || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap) ? 24000 : (approvedG02 ? 18000 : 6000),
           )
         : '';
     final result = PlantaoMachineNativePrefetchResult(
