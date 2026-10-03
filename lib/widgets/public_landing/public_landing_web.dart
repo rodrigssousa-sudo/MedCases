@@ -4,7 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import '../../testimonials/testimonial_service.dart';
 import 'dart:html' as html;
-import 'dart:js_util' as js_util;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:ui_web' as ui_web;
 import 'package:flutter/widgets.dart';
 import 'landing_message.dart';
@@ -15,10 +16,12 @@ class PublicLanding extends StatefulWidget {
       {super.key,
       required this.onLogin,
       required this.onTestimonial,
+      this.onGuide,
       required this.language});
   final ValueChanged<String> onLogin;
   final ValueChanged<String> onTestimonial;
   final String language;
+  final void Function(String slug, String language)? onGuide;
   @override
   State<PublicLanding> createState() => _PublicLandingState();
 }
@@ -76,12 +79,16 @@ class _PublicLandingState extends State<PublicLanding> {
     _messages = html.window.onMessage.listen((event) {
       // dart:html MessageEvent.source returns null for cross-frame WindowBase
       // wrappers. Compare the native windows, preserving exact source isolation.
+      final source = (event as JSObject).getProperty<JSAny?>('source'.toJS);
+      final frameWindow = (_frame as JSObject).getProperty<JSAny?>('contentWindow'.toJS);
       if (!mounted ||
           event.origin != html.window.location.origin ||
-          !identical(js_util.getProperty<Object?>(event, 'source'),
-              js_util.getProperty<Object?>(_frame, 'contentWindow'))) {
+          source.isUndefinedOrNull || frameWindow.isUndefinedOrNull ||
+          !source.strictEquals(frameWindow).toDart) {
         return;
       }
+      final guide = landingGuideRequest(event.data);
+      if (guide != null) widget.onGuide?.call(guide.$1, guide.$2);
       final language = landingLoginLanguage(event.data);
       if (language != null) widget.onLogin(language);
       final testimonialLanguage =

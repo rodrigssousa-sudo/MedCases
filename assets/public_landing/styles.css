@@ -78,3 +78,12 @@ header .language-toggle:hover{color:#ffc858}
 .hero .store-link:focus-visible,.header-login:focus-visible,.hero .btn:focus-visible{outline:2px solid #ffc858;outline-offset:5px}
 @media(max-width:700px){.hero .actions{margin-top:24px}.hero .actions .btn{min-height:50px}.hero .store-downloads{gap:12px;margin-top:20px}.hero .store-link img{height:42px}.header-actions .header-login{padding:0 12px;min-height:40px}}
 @media(prefers-reduced-motion:reduce){.hero .actions .btn,.hero .store-link,.header-actions .header-login{transition:none}.hero .actions .btn:hover,.hero .store-link:hover{transform:none}}
+
+/* One gently styled, horizontally scrollable row. */
+.guides-grid{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;padding:2px 2px 20px;margin-bottom:20px;scrollbar-width:thin;scrollbar-color:#777b8355 transparent}
+.guide-card{flex:0 0 300px;min-width:0;scroll-snap-align:start;border:1px solid #ffffff14;background:#ffffff03;border-radius:14px;padding:16px;display:flex;flex-direction:column}
+.guide-card img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:9px}
+.guide-card h3{font-size:20px;line-height:1.35;font-weight:500;margin:12px 0}
+.guide-card p{font-size:13px;line-height:1.6;color:#aeb2ba;margin:10px 0}
+.guide-card .text-link{align-self:flex-start;margin-top:auto;border-color:#ffffff30;padding-top:12px}
+@media(max-width:540px){.guide-card{flex-basis:82%;max-width:300px}.guides-grid{gap:14px}}

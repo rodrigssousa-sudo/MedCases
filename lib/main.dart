@@ -1,3 +1,4 @@
+import 'widgets/guide_intent_entry.dart';
 import 'testimonials/testimonial_entry.dart';
 import 'testimonials/testimonial_screen.dart';
 import 'dart:async';
@@ -1977,7 +1978,7 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
       return const _SplashScreen();
     }
     return ProfessionalDeclarationGateWidget(
-      child: TestimonialEntry(user: widget.user, child: const MainShell()),
+      child: GuideIntentEntry(child: TestimonialEntry(user: widget.user, child: const MainShell())),
     );
   }
 }

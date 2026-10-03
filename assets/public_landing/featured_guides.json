@@ -1,0 +1,98 @@
+[
+  {
+    "id": "meningite_bacteriana",
+    "slug": "meningitis-bacteriana-aguda",
+    "title": {
+      "pt": "Meningite bacteriana aguda",
+      "es": "Meningitis bacteriana aguda"
+    },
+    "specialty": {
+      "pt": "Emergência",
+      "es": "Urgencias"
+    },
+    "cover": "https://firebasestorage.googleapis.com/v0/b/medcases-pro.firebasestorage.app/o/clinical_guides%2Fcovers%2Fdca5cd586901d2a8b9804857f80b1637e85904f145a1d85fc6c67a757650bd08_fcab6da4-1f28-47f3-a927-d399698509b1.png?alt=media&token=a79fd1aa-5cbd-4ab7-84a3-f44a8570741c",
+    "updatedAt": "2026-10-02T22:00:21.790Z",
+    "access": "AUTHENTICATED_EXISTING_POLICY",
+    "route": "/guides/meningitis-bacteriana-aguda"
+  },
+  {
+    "id": "crise_adrenal",
+    "slug": "crisis-adrenal",
+    "title": {
+      "pt": "Crise adrenal",
+      "es": "Crisis adrenal"
+    },
+    "specialty": {
+      "pt": "Emergência",
+      "es": "Urgencias"
+    },
+    "cover": "https://firebasestorage.googleapis.com/v0/b/medcases-pro.firebasestorage.app/o/clinical_guides%2Fcovers%2Ffce1060b6b727939f9684182e18734d59af449d1127f13326b1ffe0dde2d7284_ead70a76-de2b-4bf0-aabe-41c391912783.png?alt=media&token=33b48ff2-9299-4d40-ad8f-688b87e20882",
+    "updatedAt": "2026-10-02T22:01:13.919Z",
+    "access": "AUTHENTICATED_EXISTING_POLICY",
+    "route": "/guides/crisis-adrenal"
+  },
+  {
+    "id": "crise_tireotoxica",
+    "slug": "crisis-tirotoxica",
+    "title": {
+      "pt": "Crise tireotóxica",
+      "es": "Crisis tirotóxica"
+    },
+    "specialty": {
+      "pt": "Emergência",
+      "es": "Urgencias"
+    },
+    "cover": "https://firebasestorage.googleapis.com/v0/b/medcases-pro.firebasestorage.app/o/clinical_guides%2Fcovers%2F450f5bf24f6d4c28497a84c0ec076b866fc56427b6c81634f84143dcf07905b0_602ec0a6-3891-4114-8fca-a3ca03cddd43.png?alt=media&token=808a0dfe-38f6-4c63-aa83-3cb32fc73fc4",
+    "updatedAt": "2026-10-02T22:05:23.412Z",
+    "access": "AUTHENTICATED_EXISTING_POLICY",
+    "route": "/guides/crisis-tirotoxica"
+  },
+  {
+    "id": "neutropenia_febril",
+    "slug": "neutropenia-febril",
+    "title": {
+      "pt": "Neutropenia febril",
+      "es": "Neutropenia febril"
+    },
+    "specialty": {
+      "pt": "Emergência",
+      "es": "Urgencias"
+    },
+    "cover": "https://firebasestorage.googleapis.com/v0/b/medcases-pro.firebasestorage.app/o/clinical_guides%2Fcovers%2F6746b0ad51cbec9fc7c8406bd2e658bf31246aab8d4ca488ed819711edddaa59_bbee1862-2f9f-4798-9bae-ab4bffc3e8aa.png?alt=media&token=c9fdaa48-027c-490a-b8e3-336c59f78c38",
+    "updatedAt": "2026-10-02T22:07:34.795Z",
+    "access": "AUTHENTICATED_EXISTING_POLICY",
+    "route": "/guides/neutropenia-febril"
+  },
+  {
+    "id": "dpoc_exacerbacao",
+    "slug": "exacerbacion-aguda-de-epoc",
+    "title": {
+      "pt": "Exacerbação aguda de DPOC",
+      "es": "Exacerbación aguda de EPOC"
+    },
+    "specialty": {
+      "pt": "Emergência",
+      "es": "Urgencias"
+    },
+    "cover": "https://firebasestorage.googleapis.com/v0/b/medcases-pro.firebasestorage.app/o/clinical_guides%2Fcovers%2F3a646115ff45d0c465731d4fa334032e5af243cf08cd80081ea6474f6bbd3238_48bab878-3c80-48aa-a511-0353eae9560d.png?alt=media&token=549d7a23-768b-4804-9c1a-f52e87b6f9bd",
+    "updatedAt": "2026-10-02T22:13:02.888Z",
+    "access": "AUTHENTICATED_EXISTING_POLICY",
+    "route": "/guides/exacerbacion-aguda-de-epoc"
+  },
+  {
+    "id": "hipoglicemia_grave",
+    "slug": "hipoglucemia-grave",
+    "title": {
+      "pt": "Hipoglicemia grave",
+      "es": "Hipoglucemia grave"
+    },
+    "specialty": {
+      "pt": "Emergência",
+      "es": "Urgencias"
+    },
+    "cover": "https://firebasestorage.googleapis.com/v0/b/medcases-pro.firebasestorage.app/o/clinical_guides%2Fcovers%2F1f42c4de5c9abe1ff8790d77bda1185646a33fa8503fd61f20d449cadae0af57_166f1022-4c65-4e8f-9034-8738a7dd283f.png?alt=media&token=f4d36fa6-5c0c-40f7-b02d-276abd779163",
+    "updatedAt": "2026-10-02T22:24:03.416Z",
+    "access": "AUTHENTICATED_EXISTING_POLICY",
+    "route": "/guides/hipoglucemia-grave"
+  }
+]

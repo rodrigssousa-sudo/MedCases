@@ -1,3 +1,4 @@
+import '../services/guide_navigation_intent.dart';
 import '../testimonials/testimonial_intent.dart';
 // ── Tela de preview pré-login — MedCases Pro V2 (dark institucional) ─────────
 // MEDCASES_PRE_LOGIN_ONBOARDING_UI_V2_B_R1
@@ -89,6 +90,8 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   Future<void> _loadLangAndConsent() async {
     final prefs = await SharedPreferences.getInstance();
     final lang  = prefs.getString('lang') ?? 'es';
+    final slug = kIsWeb ? Uri.base.queryParameters['guide'] : null;
+    if (slug != null && await GuideNavigationIntent.request(slug)) _showLogin = true;
     final ok    = await ConsentGate.hasConsented();
     if (mounted) setState(() { _lang = lang; _hasConsented = ok; });
   }
@@ -132,6 +135,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   void _goLogin()           => setState(() => _showLogin = true);
   void _backToPreview() {
     TestimonialIntent.clear();
+    GuideNavigationIntent.clear();
     setState(() => _showLogin = false);
   }
 
@@ -171,6 +175,12 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
         backgroundColor: _kBg,
         body: PublicLanding(
           language: _lang,
+          onGuide: (slug, language) async {
+            if (!await GuideNavigationIntent.request(slug)) return;
+            await TestimonialIntent.clear();
+            await (await SharedPreferences.getInstance()).setString('lang', language);
+            if (mounted) setState(() { _lang = language; _showLogin = true; });
+          },
           onTestimonial: (language) async {
             await TestimonialIntent.request();
             final prefs = await SharedPreferences.getInstance();
@@ -180,6 +190,7 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           },
           onLogin: (language) async {
             await TestimonialIntent.clear();
+            await GuideNavigationIntent.clear();
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('lang', language);
             if (!mounted) return;
