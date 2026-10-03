@@ -43,6 +43,9 @@ String? approvedNewPathologyContext(
     'clinicalVersion=${newPathologyG02Versions[selected.id] ?? 'NEW-JIT-2026-10-02-v1.0'}',
     'clinicalReviewDate=${newPathologyG02Versions.containsKey(selected.id) ? '2026-10-03' : '2026-10-02'}',
     'approvedClinicalPayloadSha256=${newPathologyApprovedHashes[selected.id]}',
+    locale == 'es'
+        ? 'TIEMPO CLÍNICO: escribir horas, días, semanas, meses y minutos por extenso. No usar h, d, min, mo ni c/. No convertir semana en mes ni frecuencia en duración. Mantener los valores y las condiciones verificados; no inventar un intervalo ausente.'
+        : 'TEMPO CLÍNICO: escrever horas, dias, semanas, meses e minutos por extenso. Não usar h, d, min, mo nem c/. Não converter semana em mês nem frequência em duração. Manter os valores e as condições verificados; não inventar intervalo ausente.',
     selected.getField(selected.title, locale),
     ...selected.getActions(locale),
     ...selected.getList(selected.references, locale),

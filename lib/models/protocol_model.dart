@@ -1,3 +1,5 @@
+import '../utils/clinical_time_unit_presentation.dart';
+
 /// ProtocolModel — modelo clínico estruturado MedCases Pro
 /// Versão 2.0 — suporta 18 seções clínicas completas
 /// Retrocompatível: todos os campos novos são opcionais (nullable)
@@ -106,28 +108,31 @@ class ProtocolModel {
 
   // ── Helpers ──────────────────────────────────────────────────────────────
   String getField(Map<String, String> field, String lang) {
-    return field[lang] ?? field['pt'] ?? field['es'] ?? '';
+    return ClinicalTimeUnitPresentation.forOwner(id, field[lang] ?? field['pt'] ?? field['es'] ?? '', lang);
   }
 
   List<String> getActions(String lang) {
     final list = actions[lang] ?? actions['pt'] ?? [];
-    if (list is List) return list.cast<String>();
+    if (list is List) return list.cast<String>().map((text) => ClinicalTimeUnitPresentation.forOwner(id, text, lang)).toList(growable: false);
     return [];
   }
 
   List<String> getList(Map<String, List<String>>? field, String lang) {
     if (field == null) return [];
-    return field[lang] ?? field['pt'] ?? field['es'] ?? [];
+    return (field[lang] ?? field['pt'] ?? field['es'] ?? []).map((text) => ClinicalTimeUnitPresentation.forOwner(id, text, lang)).toList(growable: false);
   }
 
   String getString(Map<String, String>? field, String lang) {
     if (field == null) return '';
-    return field[lang] ?? field['pt'] ?? field['es'] ?? '';
+    return ClinicalTimeUnitPresentation.forOwner(id, field[lang] ?? field['pt'] ?? field['es'] ?? '', lang);
   }
 
   dynamic getDynamic(Map<String, dynamic>? field, String lang) {
     if (field == null) return null;
-    return field[lang] ?? field['pt'] ?? field['es'];
+    final value = field[lang] ?? field['pt'] ?? field['es'];
+    if (value is String) return ClinicalTimeUnitPresentation.forOwner(id, value, lang);
+    if (value is List<String>) return value.map((text) => ClinicalTimeUnitPresentation.forOwner(id, text, lang)).toList(growable: false);
+    return value;
   }
 
   /// Indica se o protocolo tem estrutura clínica completa (v2.0)

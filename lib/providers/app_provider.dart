@@ -1,3 +1,4 @@
+import '../services/approved_pathology_time_output.dart';
 import '../data/new_pathology_approved_context.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -7065,21 +7066,24 @@ class AppProvider extends ChangeNotifier {
     bool canonicalPlantaoAuthority = false,
     String? canonicalPlantaoPathologyKey,
   }) {
-    if (longResponse || assistantOutput.isEmpty) return assistantOutput;
+    final unitSafeOutput = ApprovedPathologyTimeOutput.enforce(
+      query: userInput, text: assistantOutput, language: _lang, normalize: _normalize,
+    );
+    if (longResponse || unitSafeOutput.isEmpty) return unitSafeOutput;
 
     final semanticCoreText =
         PlantaoGenericAcsWholeResponseSemanticCore.materialize(
       userInput: userInput,
-      assistantOutput: assistantOutput,
+      assistantOutput: unitSafeOutput,
       languageCode: _lang,
     );
 
-    if (semanticCoreText != assistantOutput) {
+    if (semanticCoreText != unitSafeOutput) {
       // ignore: avoid_print
       print(
         '[PLANTAO_ACS_WHOLE_RESPONSE_CORE][MATERIALIZED] '
         'requestId=$requestId '
-        'beforeLen=${assistantOutput.length} '
+        'beforeLen=${unitSafeOutput.length} '
         'afterLen=${semanticCoreText.length}',
       );
     }
@@ -7115,7 +7119,7 @@ class AppProvider extends ChangeNotifier {
         'requestId=$requestId '
         'scenario=${result.scenario?.name ?? "none"} '
         'replacements=${result.replacementCount} '
-        'beforeLen=${assistantOutput.length} '
+        'beforeLen=${unitSafeOutput.length} '
         'afterLen=${result.text.length}',
       );
     }
@@ -11576,18 +11580,21 @@ class AppProvider extends ChangeNotifier {
       }
     }
 
+    final explicitTimeAnswer = ApprovedPathologyTimeOutput.enforce(
+      query: input, text: result.text, language: _lang, normalize: _normalize,
+    );
     // HOTFIX 247D: nunca adicionar fallback ao histórico da API
-    if (!_isFallbackText(result.text)) {
+    if (!_isFallbackText(explicitTimeAnswer)) {
       _aiHistory
         ..add({'role': 'user', 'content': input})
-        ..add({'role': 'assistant', 'content': result.text});
+        ..add({'role': 'assistant', 'content': explicitTimeAnswer});
       while (_aiHistory.length > 60) _aiHistory.removeAt(0);
     } else if (kDebugMode) {
       debugPrint(
         '[HISTORY_SANITIZER] openai_result_blocked reason=isFallbackText',
       );
     }
-    return result.text;
+    return explicitTimeAnswer;
   }
 
   // ── Retrieval estendido: retorna até 6 protocolos (para casos complexos) ──

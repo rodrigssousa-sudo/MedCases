@@ -1,3 +1,4 @@
+import '../utils/clinical_time_unit_presentation.dart';
 import '../data/new_pathology_approved_hashes.dart';
 import 'dart:async';
 
@@ -970,7 +971,7 @@ class PlantaoMachineNativeContextPrefetch {
         : '';
     final result = PlantaoMachineNativePrefetchResult(
       contextPack: pack,
-      providerPromptBlock: prompt,
+      providerPromptBlock: ClinicalTimeUnitPresentation.forOwner(key, prompt, locale),
       monitoring: monitoring,
       reassessment: reassessment,
       escalationCriteria: escalation,

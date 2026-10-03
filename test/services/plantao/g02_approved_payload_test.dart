@@ -1,3 +1,4 @@
+import 'package:medcases/utils/clinical_time_unit_presentation.dart';
 import 'package:medcases/data/new_pathology_approved_context.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -63,7 +64,7 @@ void main() {
           );
           expect(context, contains(newPathologyApprovedHashes[id]!));
           for (final f in p['facts']) {
-            expect(context, contains(f[lang]));
+            expect(context, contains(ClinicalTimeUnitPresentation.expand(f[lang] as String, lang)));
           }
           for (final ref in p['references']) {
             expect(context, contains(ref['url']));
@@ -85,11 +86,11 @@ void main() {
             ...model.getList(model.scenarios, lang),
             ...model.getList(model.monitoring, lang),
             ...model.getList(model.doNotDo, lang),
-            ...List<String>.from(model.classification![lang] as List),
+            ...List<String>.from(model.getDynamic(model.classification, lang) as List),
           ].join('\n\n');
           for (final f in p['facts']) {
-            expect(study, contains(f[lang]));
-            expect(model.getActions(lang), contains(f[lang]));
+            expect(study, contains(ClinicalTimeUnitPresentation.expand(f[lang] as String, lang)));
+            expect(model.getActions(lang), contains(ClinicalTimeUnitPresentation.expand(f[lang] as String, lang)));
           }
           final refs = (p['references'] as List)
               .map((r) => '[${r['id']}] ${r['title']} ${r['url']}')
@@ -118,7 +119,7 @@ void main() {
           for (final f in p['facts']) {
             expect(
               result.providerPromptBlock,
-              contains(f[lang]),
+              contains(ClinicalTimeUnitPresentation.expand(f[lang] as String, lang)),
               reason: 'Preserve full clinical/dose/safety text for ${f['id']}',
             );
           }
