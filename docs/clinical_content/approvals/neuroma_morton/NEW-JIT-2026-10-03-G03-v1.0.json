@@ -1,0 +1,117 @@
+{
+  "owner": "neuroma_morton",
+  "title": {
+    "pt": "Neuroma de Morton",
+    "es": "Neuroma de Morton"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "neuroma interdigital",
+      "metatarsalgia de morton",
+      "Morton neuroma",
+      "Morton's neuroma",
+      "interdigital neuroma"
+    ],
+    "distinctScope": "Neuropatia interdigital específica, distinta de hálux valgo e dor inespecífica do antepé."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Espessamento ao redor de nervo interdigital causa dor no antepé; apesar do nome, não é um tumor maligno.",
+      "es": "El engrosamiento alrededor de un nervio interdigital causa dolor en el antepié; pese al nombre, no es un tumor maligno.",
+      "sources": [
+        "M1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Queimação, sensação de pedra no calçado e parestesia nos dedos, frequentemente agravadas por sapatos apertados ou carga, orientam suspeita.",
+      "es": "El ardor, la sensación de una piedra en el calzado y la parestesia en los dedos, frecuentemente agravados por zapatos estrechos o carga, orientan la sospecha.",
+      "sources": [
+        "M1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Exame do espaço interdigital e manobras de compressão apoiam avaliação; imagem é selecionada para dúvidas e diferenciais como fratura por estresse ou doença articular.",
+      "es": "El examen del espacio interdigital y las maniobras de compresión apoyan la evaluación; seleccionar imágenes ante dudas y diferenciales como fractura por estrés o enfermedad articular.",
+      "sources": [
+        "M1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Aumentar espaço do calçado, reduzir salto e carga provocadora; apoio metatarsal pode aliviar pressão. Persistência exige avaliação especializada.",
+      "es": "Aumentar espacio del calzado, reducir tacón y carga provocadora; el apoyo metatarsal puede aliviar presión. La persistencia exige evaluación especializada.",
+      "sources": [
+        "M1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Infiltração e analgesia são opções selecionadas; não existe volume ou dose universal de injeção. Evitar aplicação sem identificação anatômica e avaliação profissional.",
+      "es": "La infiltración y la analgesia son opciones seleccionadas; no existe volumen ni dosis universal de inyección. Evitar aplicación sin identificación anatómica y evaluación profesional.",
+      "sources": [
+        "M1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar dor, marcha e tolerância às adaptações; cirurgia pode ser discutida após falha conservadora, com explicação de riscos e possível dormência.",
+      "es": "Reevaluar dolor, marcha y tolerancia a las adaptaciones; puede discutirse cirugía tras fracaso conservador, explicando riesgos y posible adormecimiento.",
+      "sources": [
+        "M1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor após trauma, incapacidade de apoio ou alterações vasculares/ferida exigem diagnóstico alternativo; não atribuir toda metatarsalgia ao neuroma.",
+      "es": "El dolor tras traumatismo, la imposibilidad de apoyar o los cambios vasculares/herida exigen un diagnóstico alternativo; no atribuir toda metatarsalgia al neuroma.",
+      "sources": [
+        "M1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Diabetes, neuropatia ou risco hemorrágico precisam ser considerados antes de procedimentos; adaptação do calçado deve evitar novas áreas de pressão.",
+      "es": "La diabetes, la neuropatía o el riesgo hemorrágico deben considerarse antes de procedimientos; la adaptación del calzado debe evitar nuevas áreas de presión.",
+      "sources": [
+        "M1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "M1",
+      "title": "Morton’s neuroma",
+      "url": "https://www.orthoinfo.org/diseases--conditions/mortons-neuroma/",
+      "authority": "AAOS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

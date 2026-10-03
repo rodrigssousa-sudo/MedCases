@@ -1,0 +1,131 @@
+{
+  "owner": "insuficiencia_ovariana_prematura",
+  "title": {
+    "pt": "Insuficiência ovariana prematura",
+    "es": "Insuficiencia ovárica prematura"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Pessoas com ovários antes dos 40 anos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "insuficiencia ovárica prematura",
+      "insuficiencia ovárica primaria",
+      "fallo ovárico antes de los 40",
+      "insuficiência ovariana prematura",
+      "insuficiência ovariana primária",
+      "falência ovariana antes dos 40",
+      "premature ovarian insufficiency",
+      "primary ovarian insufficiency",
+      "POI"
+    ],
+    "distinctScope": "Falência ovariana antes da idade menopausal, distinta de menopausa habitual e infertilidade de outras causas."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Perda de atividade ovariana antes dos 40 anos, com efeitos reprodutivos, ósseos e cardiovasculares; função ovariana intermitente ainda pode ocorrer.",
+      "es": "Pérdida de actividad ovárica antes de los 40 años, con efectos reproductivos, óseos y cardiovasculares; aún puede existir función ovárica intermitente.",
+      "sources": [
+        "F1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar irregularidade ou ausência menstrual, sintomas de deficiência estrogênica, tratamentos gonadotóxicos, histórico familiar e desejo reprodutivo.",
+      "es": "Investigar irregularidad o ausencia menstrual, síntomas de deficiencia estrogénica, tratamientos gonadotóxicos, antecedentes familiares y deseo reproductivo.",
+      "sources": [
+        "F1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Critério: ciclos alterados por pelo menos 4 meses e FSH >25 unidades internacionais/L. Repetir FSH após 4–6 semanas somente se houver incerteza diagnóstica; excluir gestação e interferência hormonal.",
+      "es": "Criterio: ciclos alterados durante al menos 4 meses y FSH >25 unidades internacionales/L. Repetir FSH tras 4–6 semanas solo ante incertidumbre diagnóstica; excluir embarazo e interferencia hormonal.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Oferecer terapia hormonal até a idade habitual da menopausa, salvo contraindicação, inclusive para proteção óssea e cardiovascular; discutir fertilidade e apoio emocional.",
+      "es": "Ofrecer terapia hormonal hasta la edad habitual de la menopausia, salvo contraindicación, también para protección ósea y cardiovascular; discutir fertilidad y apoyo emocional.",
+      "sources": [
+        "F1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Estrogênio sistêmico exige escolha de formulação e dose; com útero, associar proteção endometrial com progestagênio. Não usar um esquema genérico sem avaliar contraindicações e sangramento.",
+      "es": "El estrógeno sistémico exige elegir formulación y dosis; con útero, asociar protección endometrial con progestágeno. No usar un esquema genérico sin evaluar contraindicaciones y sangrado.",
+      "sources": [
+        "F1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Avaliar saúde óssea, fatores cardiovasculares, adesão e investigação etiológica genética ou autoimune conforme indicação. Hormônio antimülleriano não é teste diagnóstico principal.",
+      "es": "Evaluar salud ósea, factores cardiovasculares, adherencia e investigación etiológica genética o autoinmune según indicación. La hormona antimülleriana no es la prueba diagnóstica principal.",
+      "sources": [
+        "F1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Sangramento inesperado durante terapia hormonal exige avaliação; lesões suspeitas ou contraindicações hormonais justificam manejo especializado.",
+      "es": "El sangrado inesperado durante terapia hormonal exige evaluación; las lesiones sospechosas o las contraindicaciones hormonales justifican manejo especializado.",
+      "sources": [
+        "F1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Terapia hormonal não fornece contracepção; discutir prevenção de gestação quando desejada e encaminhar para planejamento reprodutivo, sem prometer recuperação da reserva ovariana.",
+      "es": "La terapia hormonal no proporciona anticoncepción; discutir prevención del embarazo cuando se desee y derivar para planificación reproductiva sin prometer recuperación de la reserva ovárica.",
+      "sources": [
+        "F1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "F1",
+      "title": "Evidence-based guideline: premature ovarian insufficiency",
+      "url": "https://academic.oup.com/hropen/article/2024/4/hoae065/7918369",
+      "authority": "ESHRE / ASRM / IMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "F2",
+      "title": "Premature ovarian insufficiency guideline",
+      "url": "https://www.eshre.eu/Guidelines-and-Legal/Guidelines/Premature-ovarian-insufficiency",
+      "authority": "ESHRE",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

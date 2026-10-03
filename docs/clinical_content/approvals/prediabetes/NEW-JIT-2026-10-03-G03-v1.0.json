@@ -1,0 +1,141 @@
+{
+  "owner": "prediabetes",
+  "title": {
+    "pt": "Pré-diabetes",
+    "es": "Prediabetes"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos não gestantes; segurança para outros grupos explicitada",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "prediabetes",
+      "glucemia alterada en ayunas",
+      "intolerancia a la glucosa",
+      "pré diabetes",
+      "glicemia de jejum alterada",
+      "tolerância diminuída à glicose",
+      "impaired fasting glucose",
+      "impaired glucose tolerance"
+    ],
+    "distinctScope": "Hiperglicemia intermediária preventiva; diferente de CAD/EHH e hipoglicemia grave já locais."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Hiperglicemia intermediária associada à resistência à insulina e perda progressiva de função das células beta. É uma oportunidade de prevenção, não uma emergência hiperglicêmica.",
+      "es": "Hiperglucemia intermedia asociada con resistencia a la insulina y pérdida progresiva de función de las células beta. Es una oportunidad de prevención, no una emergencia hiperglucémica.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Frequentemente assintomático. Procurar excesso de peso, história familiar, diabetes gestacional prévio e fatores cardiovasculares; revisar fármacos que elevam a glicemia.",
+      "es": "A menudo asintomática. Buscar exceso de peso, antecedentes familiares, diabetes gestacional previa y factores cardiovasculares; revisar fármacos que elevan la glucemia.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Em não gestantes: hemoglobina glicada de 5,7–6,4%, glicemia de jejum de 100–125 mg/dL ou glicemia de 140–199 mg/dL após 2 horas no teste oral com 75 g de glicose. Os testes não identificam necessariamente as mesmas pessoas.",
+      "es": "En personas no gestantes: hemoglobina glucosilada de 5,7–6,4%, glucemia en ayunas de 100–125 mg/dL o glucemia de 140–199 mg/dL a las 2 horas en la prueba oral con 75 g de glucosa. Las pruebas no identifican necesariamente a las mismas personas.",
+      "sources": [
+        "P2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Distinguir diabetes estabelecido e hiperglicemia de estresse. Anemia, hemoglobinopatias e alterações da renovação eritrocitária podem tornar a hemoglobina glicada pouco confiável; usar critérios glicêmicos adequados ao contexto.",
+      "es": "Distinguir diabetes establecida e hiperglucemia de estrés. La anemia, las hemoglobinopatías y los cambios del recambio eritrocitario pueden restar fiabilidad a la hemoglobina glucosilada; usar criterios glucémicos adecuados al contexto.",
+      "sources": [
+        "P2"
+      ],
+      "id": "diagnosis_4"
+    },
+    {
+      "section": "treatment",
+      "pt": "Em adultos com excesso de peso e alto risco, oferecer programa estruturado com meta de redução ponderal de pelo menos 5–7% e atividade moderada de pelo menos 150 minutos por semana, ajustada à capacidade funcional.",
+      "es": "En adultos con exceso de peso y alto riesgo, ofrecer un programa estructurado con una meta de reducción ponderal de al menos 5–7% y actividad moderada de al menos 150 minutos por semana, ajustada a la capacidad funcional.",
+      "sources": [
+        "P1"
+      ],
+      "id": "treatment_5"
+    },
+    {
+      "section": "treatment",
+      "pt": "Metformina pode ser considerada em alto risco, especialmente com obesidade acentuada ou diabetes gestacional prévio. A decisão não é automática; individualizar dose pela função renal e tolerabilidade e monitorar vitamina B12 no uso prolongado.",
+      "es": "Puede considerarse metformina en personas de alto riesgo, especialmente con obesidad marcada o diabetes gestacional previa. La decisión no es automática; individualizar la dosis según función renal y tolerabilidad y controlar vitamina B12 durante el uso prolongado.",
+      "sources": [
+        "P1"
+      ],
+      "id": "treatment_6"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar progressão para diabetes pelo menos uma vez por ano e acompanhar peso, pressão arterial, lipídios e adesão. O seguimento habitual é ambulatorial, com retorno antecipado se houver sintomas.",
+      "es": "Reevaluar la progresión a diabetes al menos una vez por año y controlar peso, presión arterial, lípidos y adherencia. El seguimiento habitual es ambulatorio, con consulta anticipada si aparecen síntomas.",
+      "sources": [
+        "P1"
+      ],
+      "id": "monitoring_7"
+    },
+    {
+      "section": "redflags",
+      "pt": "Poliúria, polidipsia, emagrecimento inexplicado, vômitos, desidratação ou alteração de consciência exigem medir glicemia e investigar diabetes descompensado; não atribuir esses sinais apenas ao pré-diabetes.",
+      "es": "Poliuria, polidipsia, adelgazamiento inexplicado, vómitos, deshidratación o alteración de conciencia requieren medir glucemia e investigar diabetes descompensada; no atribuir estos signos únicamente a prediabetes.",
+      "sources": [
+        "P2"
+      ],
+      "id": "redflags_8"
+    },
+    {
+      "section": "special",
+      "pt": "Não aplicar os pontos de corte de não gestantes ao diagnóstico de diabetes gestacional. Crianças, gestantes e pessoas com doença renal precisam de avaliação específica antes de farmacoterapia preventiva.",
+      "es": "No aplicar los puntos de corte de personas no gestantes al diagnóstico de diabetes gestacional. Niños, gestantes y personas con enfermedad renal requieren evaluación específica antes de farmacoterapia preventiva.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "special_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "P1",
+      "title": "Standards of Care 2026 — prevenção e atraso do diabetes",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S50/163924/3-Prevention-or-Delay-of-Diabetes-and-Associated",
+      "authority": "American Diabetes Association",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "P2",
+      "title": "Diabetes tests and diagnosis",
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/tests-diagnosis",
+      "authority": "NIDDK / NIH",
+      "year": "sem data editorial explícita",
+      "status": "AUTHORITATIVE_OFFICIAL_CLINICAL_RESOURCE",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

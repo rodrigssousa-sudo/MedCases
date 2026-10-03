@@ -1,0 +1,133 @@
+{
+  "owner": "ceratose_seborreica",
+  "title": {
+    "pt": "Ceratose seborreica",
+    "es": "Queratosis seborreica"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "verruga seborreica",
+      "queratosis seborreica",
+      "queratose seborreica",
+      "seborrhoeic keratosis",
+      "seborrheic wart"
+    ],
+    "distinctScope": "Tumor epidérmico benigno, distinto de dermatite seborreica e ceratose actínica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Proliferação epidérmica benigna, comum com envelhecimento; aspecto aderido à superfície pode simular lesão pigmentada maligna.",
+      "es": "Proliferación epidérmica benigna, frecuente con el envejecimiento; su aspecto adherido a la superficie puede simular una lesión pigmentada maligna.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Examinar superfície, pigmentação, distribuição e evolução; perguntar sobre crescimento recente, sangramento e irritação.",
+      "es": "Examinar superficie, pigmentación, distribución y evolución; preguntar por crecimiento reciente, sangrado e irritación.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Dermatoscopia pode apoiar diagnóstico; se houver dúvida com melanoma ou outra neoplasia, encaminhar para avaliação e amostra histológica.",
+      "es": "La dermatoscopia puede apoyar el diagnóstico; ante duda con melanoma u otra neoplasia, derivar para evaluación y muestra histológica.",
+      "sources": [
+        "S1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Lesão confirmada e assintomática não exige tratamento. Irritação ou incômodo pode justificar crioterapia, curetagem ou outra remoção profissional.",
+      "es": "Una lesión confirmada y asintomática no requiere tratamiento. La irritación o molestia puede justificar crioterapia, curetaje u otra eliminación profesional.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe tratamento farmacológico sistêmico padrão. Não orientar uso doméstico de ácidos ou produtos para verruga em lesão pigmentada sem diagnóstico.",
+      "es": "No existe tratamiento farmacológico sistémico estándar. No indicar uso doméstico de ácidos o productos para verrugas sobre una lesión pigmentada sin diagnóstico.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Após procedimento, acompanhar cicatrização e explicar risco de alterações pigmentares; novas mudanças em lesões exigem reexame.",
+      "es": "Tras un procedimiento, seguir cicatrización y explicar riesgo de cambios pigmentarios; los cambios nuevos en lesiones exigen un nuevo examen.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Sangramento espontâneo, mudança rápida ou diagnóstico incerto não devem ser tranquilizados apenas pelo aspecto de ceratose; priorizar exclusão de câncer.",
+      "es": "El sangrado espontáneo, el cambio rápido o el diagnóstico incierto no deben tranquilizarse solo por aspecto de queratosis; priorizar exclusión de cáncer.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Antes de remover, considerar fototipo, cicatrização e risco hemorrágico; não suspender anticoagulantes automaticamente e não tratar aparência como prova de benignidade.",
+      "es": "Antes de eliminar, considerar fototipo, cicatrización y riesgo hemorrágico; no suspender anticoagulantes automáticamente ni tratar la apariencia como prueba de benignidad.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "S1",
+      "title": "Seborrhoeic keratosis clinical guidance",
+      "url": "https://www.pcds.org.uk/clinical-guidance/seborrhoeic-keratosis-syn-seborrhoeic-wart-basal-cell-papilloma",
+      "authority": "PCDS",
+      "year": "sem data editorial explícita",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "S2",
+      "title": "Seborrhoeic keratosis",
+      "url": "https://www.bad.org.uk/pils/seborrhoeic-keratosis",
+      "authority": "BAD",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

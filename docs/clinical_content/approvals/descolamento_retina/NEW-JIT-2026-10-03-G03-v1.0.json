@@ -1,0 +1,120 @@
+{
+  "owner": "descolamento_retina",
+  "title": {
+    "pt": "Descolamento de retina",
+    "es": "Desprendimiento de retina"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "desprendimiento de retina",
+      "desprendimiento regmatógeno de retina",
+      "DR",
+      "descolamento de retina",
+      "descolamento regmatogênico de retina",
+      "retinal detachment",
+      "rhegmatogenous retinal detachment",
+      "RRD"
+    ],
+    "distinctScope": "Separação retinal estrutural, distinta de oclusão vascular retinal, glaucoma e retinopatia sem descolamento."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Separação da retina de sua posição normal ameaça visão; pode decorrer de rotura, tração ou líquido, com conduta definida pelo mecanismo.",
+      "es": "La separación de la retina de su posición normal amenaza la visión; puede deberse a rotura, tracción o líquido, con conducta definida por el mecanismo.",
+      "sources": [
+        "D1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Flashes, aumento súbito de moscas volantes e sombra ou cortina visual são sinais de alerta, mesmo sem dor.",
+      "es": "Los destellos, el aumento súbito de moscas volantes y una sombra o cortina visual son signos de alarma, incluso sin dolor.",
+      "sources": [
+        "D1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Encaminhar imediatamente para exame oftalmológico dilatado; ultrassonografia ou outros exames conforme visibilidade e dúvida. Exame não dilatado normal não exclui.",
+      "es": "Derivar inmediatamente para examen oftalmológico dilatado; ecografía u otros estudios según visibilidad y duda. Un examen no dilatado normal no excluye.",
+      "sources": [
+        "D1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Roturas podem exigir laser ou crioterapia; descolamento pode necessitar procedimento cirúrgico. A urgência e técnica são definidas pelo especialista, sem demora ambulatorial.",
+      "es": "Las roturas pueden exigir láser o crioterapia; el desprendimiento puede necesitar procedimiento quirúrgico. El especialista define urgencia y técnica, sin demora ambulatoria.",
+      "sources": [
+        "D1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há medicamento oral ou colírio que substitua reparo indicado. Não iniciar tratamento empírico que adie acesso à oftalmologia.",
+      "es": "No existe medicamento oral ni colirio que sustituya una reparación indicada. No iniciar tratamiento empírico que demore acceso a oftalmología.",
+      "sources": [
+        "D1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Após procedimento, cumprir posições e restrições específicas do cirurgião e revisar recuperação visual; não inventar recomendações únicas para todas as técnicas.",
+      "es": "Tras el procedimiento, cumplir posiciones y restricciones específicas del cirujano y revisar recuperación visual; no inventar recomendaciones únicas para todas las técnicas.",
+      "sources": [
+        "D1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Suspeita de descolamento é emergência oftalmológica; queda rápida de visão ou cortina visual exige atendimento imediato, não apenas exame eletivo.",
+      "es": "La sospecha de desprendimiento es una emergencia oftalmológica; la caída rápida de visión o cortina visual exige atención inmediata, no solo examen electivo.",
+      "sources": [
+        "D1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "História de trauma, miopia importante, cirurgia ocular ou doença retinal ajuda estratificar risco; orientar retorno imediato diante de novos sintomas no outro olho.",
+      "es": "Los antecedentes de trauma, miopía importante, cirugía ocular o enfermedad retiniana ayudan a estratificar riesgo; indicar consulta inmediata ante síntomas nuevos en el otro ojo.",
+      "sources": [
+        "D1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "D1",
+      "title": "Retinal detachment",
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/retinal-detachment",
+      "authority": "National Eye Institute",
+      "year": 2025,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

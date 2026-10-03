@@ -1,0 +1,131 @@
+{
+  "owner": "neuralgia_occipital",
+  "title": {
+    "pt": "Neuralgia occipital",
+    "es": "Neuralgia occipital"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "neuralgia del nervio occipital",
+      "neuralgia de Arnold",
+      "neuralgia do nervo occipital",
+      "nevralgia occipital",
+      "occipital neuralgia",
+      "greater occipital neuralgia"
+    ],
+    "distinctScope": "Neuralgia dos nervos occipitais com critérios próprios, distinta de migrânea, cefaleia tensional e neuralgia trigeminal."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Dor neuropática na distribuição dos nervos occipitais, unilateral ou bilateral, com crises em pontada ou choque; conexões trigeminocervicais podem produzir dor fronto-orbitária.",
+      "es": "Dolor neuropático en distribución de los nervios occipitales, unilateral o bilateral, con crisis punzantes o eléctricas; las conexiones trigeminocervicales pueden producir dolor fronto-orbitario.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Mapear distribuição, crises, sensibilidade e pontos dolorosos; examinar pescoço e neurologia e investigar trauma ou outra causa.",
+      "es": "Mapear distribución, crisis, sensibilidad y puntos dolorosos; examinar cuello y neurología e investigar traumatismo u otra causa.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "A ICHD-3 exige distribuição neural e pelo menos 2 características: paroxismos de segundos a minutos, intensidade grave e qualidade em pontada/choque; além de alterações sensitivas, sensibilidade/ponto-gatilho e alívio temporário com bloqueio anestésico, sem melhor diagnóstico.",
+      "es": "La ICHD-3 exige distribución neural y al menos 2 características: paroxismos de segundos a minutos, intensidad grave y calidad punzante/eléctrica; además de alteraciones sensitivas, sensibilidad/punto gatillo y alivio temporal con bloqueo anestésico, sin mejor diagnóstico.",
+      "sources": [
+        "N1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Abordar fatores cervicais e considerar fisioterapia ou tratamento de dor neuropática conforme avaliação; bloqueio pode ser diagnóstico e terapêutico por profissional capacitado.",
+      "es": "Abordar factores cervicales y considerar fisioterapia o tratamiento de dolor neuropático según evaluación; el bloqueo puede ser diagnóstico y terapéutico por profesional capacitado.",
+      "sources": [
+        "N2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe dose universal de anestésico ou volume para bloqueio neste guia; produto, técnica, limites e risco precisam ser definidos pelo procedimento. Não recomendar aplicação leiga.",
+      "es": "No existe dosis universal de anestésico ni volumen para bloqueo en esta guía; producto, técnica, límites y riesgo deben definirse según procedimiento. No recomendar aplicación por personas no capacitadas.",
+      "sources": [
+        "N2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar frequência de crises, função e resposta; refratariedade ou diagnóstico incerto justifica especialista. Não inferir cura permanente por resposta transitória ao bloqueio.",
+      "es": "Reevaluar frecuencia de crisis, funcionamiento y respuesta; la refractariedad o el diagnóstico incierto justifican especialista. No inferir curación permanente por respuesta transitoria al bloqueo.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Exame neurológico anormal ou quadro atípico exige investigar outra causa antes de rotular neuralgia; imagem é dirigida à suspeita clínica.",
+      "es": "Un examen neurológico anormal o cuadro atípico exige investigar otra causa antes de rotular neuralgia; las imágenes se dirigen a la sospecha clínica.",
+      "sources": [
+        "N2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Diferenciar dor referida das articulações cervicais e pontos musculares; medicamentos e procedimentos dependem de comorbidades, gestação e risco hemorrágico, sem extrapolação automática.",
+      "es": "Diferenciar dolor referido de articulaciones cervicales y puntos musculares; los medicamentos y procedimientos dependen de comorbilidades, embarazo y riesgo hemorrágico, sin extrapolación automática.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "N1",
+      "title": "ICHD-3: 13.4 occipital neuralgia",
+      "url": "https://ichd-3.org/13-painful-cranial-neuropathies-%20and-other-facial-pains/13-4-occipital-neuralgia/",
+      "authority": "International Headache Society",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "N2",
+      "title": "Occipital neuralgia",
+      "url": "https://www.aans.org/patients/conditions-treatments/occipital-neuralgia/",
+      "authority": "AANS",
+      "year": 2024,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

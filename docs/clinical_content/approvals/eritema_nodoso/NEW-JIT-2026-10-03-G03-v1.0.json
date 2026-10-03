@@ -1,0 +1,130 @@
+{
+  "owner": "eritema_nodoso",
+  "title": {
+    "pt": "Eritema nodoso",
+    "es": "Eritema nudoso"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "eritema nodoso",
+      "paniculitis septal",
+      "paniculite septal",
+      "erythema nodosum",
+      "septal panniculitis"
+    ],
+    "distinctScope": "Paniculite nodular, distinta de eritema multiforme, celulite e trombose venosa."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Paniculite inflamatória com nódulos dolorosos, geralmente nas pernas; pode ser reação a infecção, sarcoidose, medicamentos ou outra condição sistêmica.",
+      "es": "Paniculitis inflamatoria con nódulos dolorosos, generalmente en las piernas; puede ser reacción a infección, sarcoidosis, medicamentos u otra condición sistémica.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Examinar nódulos e articulações; perguntar sobre febre, faringite, sintomas respiratórios, intestinais, exposições, medicamentos e gestação.",
+      "es": "Examinar nódulos y articulaciones; preguntar por fiebre, faringitis, síntomas respiratorios, intestinales, exposiciones, medicamentos y embarazo.",
+      "sources": [
+        "N1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Investigar conforme contexto: hemograma, inflamação, estreptococo e avaliação torácica para tuberculose ou sarcoidose. Lesão atípica, persistente ou ulcerada pode exigir biópsia.",
+      "es": "Investigar según contexto: hemograma, inflamación, estreptococo y evaluación torácica para tuberculosis o sarcoidosis. Una lesión atípica, persistente o ulcerada puede exigir biopsia.",
+      "sources": [
+        "N1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar a causa identificada, reduzir esforço doloroso e elevar pernas; analgesia e anti-inflamatório podem aliviar sintomas se seguros.",
+      "es": "Tratar la causa identificada, reducir esfuerzo doloroso y elevar piernas; la analgesia y los antiinflamatorios pueden aliviar síntomas si son seguros.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há esquema universal de anti-inflamatório: selecionar conforme risco renal, gastrointestinal e gestacional. Evitar corticoide sistêmico empírico sem avaliação da etiologia infecciosa.",
+      "es": "No existe un esquema universal de antiinflamatorio: seleccionar según riesgo renal, gastrointestinal y gestacional. Evitar corticoide sistémico empírico sin evaluar etiología infecciosa.",
+      "sources": [
+        "N1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar resolução dos nódulos e sintomas sistêmicos; persistência ou recorrência exige revisar a causa e o diagnóstico, não apenas repetir analgesia.",
+      "es": "Seguir resolución de nódulos y síntomas sistémicos; la persistencia o recurrencia exige revisar causa y diagnóstico, no solo repetir analgesia.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Comprometimento sistêmico, sintomas respiratórios importantes ou lesões ulceradas requerem avaliação dirigida; excluir infecção e outras paniculites.",
+      "es": "El compromiso sistémico, los síntomas respiratorios importantes o las lesiones ulceradas requieren evaluación dirigida; excluir infección y otras paniculitis.",
+      "sources": [
+        "N1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "A gestação pode ser associada à apresentação; a escolha de medicamentos depende da fase gestacional e das comorbidades, sem extrapolação automática.",
+      "es": "El embarazo puede asociarse con la presentación; la elección de medicamentos depende de la fase gestacional y las comorbilidades, sin extrapolación automática.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "N1",
+      "title": "Erythema nodosum clinical guidance",
+      "url": "https://pcds.org.uk/clinical-guidance/erythema-nodusum",
+      "authority": "PCDS",
+      "year": 2022,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "N2",
+      "title": "Erythema nodosum",
+      "url": "https://www.nhs.uk/conditions/erythema-nodosum/",
+      "authority": "NHS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

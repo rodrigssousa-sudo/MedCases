@@ -1,0 +1,119 @@
+{
+  "owner": "contratura_dupuytren",
+  "title": {
+    "pt": "Contratura de Dupuytren",
+    "es": "Contractura de Dupuytren"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "enfermedad de dupuytren",
+      "fibromatosis palmar",
+      "doença de dupuytren",
+      "fibromatose palmar",
+      "dupuytren contracture",
+      "dupuytren disease",
+      "palmar fibromatosis"
+    ],
+    "distinctScope": "Fibrose fascial palmar com contratura, distinta de tenossinovite estenosante."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Fibrose da fáscia palmar forma nódulos e cordões que podem produzir contratura em flexão; não é travamento tendíneo do dedo em gatilho.",
+      "es": "La fibrosis de la fascia palmar forma nódulos y cordones que pueden producir contractura en flexión; no es bloqueo tendinoso del dedo en gatillo.",
+      "sources": [
+        "D1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar dificuldade para estender dedos e apoiar a mão plana; examinar nódulos, cordões, pele e função.",
+      "es": "Investigar dificultad para extender dedos y apoyar la mano plana; examinar nódulos, cordones, piel y función.",
+      "sources": [
+        "D1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico; o teste de apoiar a palma na mesa ajuda a reconhecer limitação funcional, sem substituir exame das articulações.",
+      "es": "Diagnóstico clínico; la prueba de apoyar la palma sobre la mesa ayuda a reconocer limitación funcional, sin sustituir el examen de las articulaciones.",
+      "sources": [
+        "D1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Observar doença sem limitação importante; contratura funcional pode requerer fasciotomia, fasciectomia ou outro procedimento especializado.",
+      "es": "Observar enfermedad sin limitación importante; la contractura funcional puede requerir fasciotomía, fasciectomía u otro procedimiento especializado.",
+      "sources": [
+        "D1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe medicamento oral padrão que elimine a contratura. Colagenase, onde disponível e indicada, exige produto e técnica específicos em serviço habilitado.",
+      "es": "No existe medicamento oral estándar que elimine la contractura. La colagenasa, donde esté disponible e indicada, exige producto y técnica específicos en un servicio habilitado.",
+      "sources": [
+        "D1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Documentar progressão e capacidade funcional; explicar que tratamento não elimina predisposição e pode haver recorrência.",
+      "es": "Documentar progresión y capacidad funcional; explicar que el tratamiento no elimina predisposición y puede haber recurrencia.",
+      "sources": [
+        "D1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor intensa aguda, trauma ou déficit neurovascular não são explicados automaticamente pela fibrose crônica; avaliar outra causa.",
+      "es": "El dolor intenso agudo, el traumatismo o el déficit neurovascular no se explican automáticamente por fibrosis crónica; evaluar otra causa.",
+      "sources": [
+        "D1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Planejar intervenção considerando mão dominante, trabalho, comorbidades e risco de complicações; não suspender antitrombóticos sem decisão do responsável.",
+      "es": "Planificar intervención considerando mano dominante, trabajo, comorbilidades y riesgo de complicaciones; no suspender antitrombóticos sin decisión del responsable.",
+      "sources": [
+        "D1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "D1",
+      "title": "Dupuytren’s disease",
+      "url": "https://www.orthoinfo.org/diseases--conditions/dupuytrens-disease/",
+      "authority": "AAOS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

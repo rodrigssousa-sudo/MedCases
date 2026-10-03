@@ -1,0 +1,130 @@
+{
+  "owner": "liquen_plano",
+  "title": {
+    "pt": "Líquen plano",
+    "es": "Liquen plano"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "lichen planus",
+      "liquen plano cutáneo",
+      "liquen plano oral",
+      "cutaneous lichen planus",
+      "oral lichen planus"
+    ],
+    "distinctScope": "Dermatose inflamatória liquenoide, distinta de eczema, líquen escleroso e psoríase."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença inflamatória imunomediada que pode afetar pele, mucosas, unhas e couro cabeludo; a localização modifica riscos e tratamento.",
+      "es": "Enfermedad inflamatoria inmunomediada que puede afectar piel, mucosas, uñas y cuero cabelludo; la localización modifica riesgos y tratamiento.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pápulas violáceas pruriginosas e alterações reticulares ou erosivas mucosas sugerem o diagnóstico; procurar lesões genitais, orais e cicatriciais.",
+      "es": "Las pápulas violáceas pruriginosas y los cambios reticulares o erosivos mucosos sugieren el diagnóstico; buscar lesiones genitales, orales y cicatriciales.",
+      "sources": [
+        "L1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico com biópsia em dúvida ou apresentação atípica; revisar medicamentos e diferenciar outras dermatoses e reações liquenoides.",
+      "es": "Diagnóstico clínico con biopsia ante duda o presentación atípica; revisar medicamentos y diferenciar otras dermatosis y reacciones liquenoides.",
+      "sources": [
+        "L1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Corticoide tópico é primeira opção cutânea, com potência e veículo adequados ao local; doença extensa, erosiva ou resistente necessita dermatologista.",
+      "es": "El corticoide tópico es la primera opción cutánea, con potencia y vehículo adecuados al sitio; la enfermedad extensa, erosiva o resistente necesita dermatología.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Exemplo para lesões cutâneas ativas: valerato de betametasona creme 0,1%, uma vez ao dia conforme avaliação e reavaliação clínica. Não transferir automaticamente o esquema para boca, face ou genitais.",
+      "es": "Ejemplo para lesiones cutáneas activas: valerato de betametasona crema 0,1%, una vez al día según evaluación y reevaluación clínica. No trasladar automáticamente el esquema a boca, cara o genitales.",
+      "sources": [
+        "L1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reduzir potência ou frequência conforme controle; tratar lesões ativas, não hiperpigmentação residual. Vigiar efeitos cutâneos e evolução de lesões mucosas.",
+      "es": "Reducir potencia o frecuencia según control; tratar lesiones activas, no hiperpigmentación residual. Vigilar efectos cutáneos y evolución de lesiones mucosas.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Alopecia cicatricial, destruição ungueal, ulceração persistente ou mudança suspeita exige encaminhamento prioritário e eventual biópsia.",
+      "es": "La alopecia cicatricial, la destrucción ungueal, la ulceración persistente o un cambio sospechoso exige derivación prioritaria y posible biopsia.",
+      "sources": [
+        "L1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, infância e uso em áreas sensíveis demandam prescrição própria; não repetir corticoide sistêmico sem especialista quando a doença recidiva.",
+      "es": "El embarazo, la infancia y el uso en zonas sensibles requieren prescripción específica; no repetir corticoide sistémico sin especialista cuando la enfermedad recidiva.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "L1",
+      "title": "Lichen planus clinical guidance",
+      "url": "https://www.pcds.org.uk/clinical-guidance/lichen-planus",
+      "authority": "PCDS",
+      "year": "sem data editorial explícita",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "L2",
+      "title": "Lichen planus treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/lichen-planus-treatment",
+      "authority": "AAD",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

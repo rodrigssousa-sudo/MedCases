@@ -1,0 +1,133 @@
+{
+  "owner": "lesao_por_pressao",
+  "title": {
+    "pt": "Lesão por pressão",
+    "es": "Lesión por presión"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; pediatria exige plano específico",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "úlcera por presión",
+      "úlcera de decúbito",
+      "escara por presión",
+      "úlcera por pressão",
+      "escara de decúbito",
+      "pressure ulcer",
+      "decubitus ulcer",
+      "pressure sore"
+    ],
+    "distinctScope": "Lesão por mecanismo de pressão/cisalhamento, distinta de úlcera venosa, arterial ou pé diabético."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Pressão e cisalhamento lesam pele e tecido, especialmente com imobilidade e redução da sensibilidade; diferenciar de lesão primariamente por umidade.",
+      "es": "La presión y el cizallamiento lesionan piel y tejido, especialmente con inmovilidad y disminución de sensibilidad; diferenciar de una lesión causada principalmente por humedad.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Inspecionar proeminências ósseas e áreas sob dispositivos; documentar pele, profundidade, dor, mobilidade e capacidade de reposicionamento.",
+      "es": "Inspeccionar prominencias óseas y zonas bajo dispositivos; documentar piel, profundidad, dolor, movilidad y capacidad de reposicionamiento.",
+      "sources": [
+        "P1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Classificar a lesão pela profundidade e características; avaliar nutrição, perfusão e infecção. Fotografias e medidas padronizadas ajudam seguimento.",
+      "es": "Clasificar la lesión por profundidad y características; evaluar nutrición, perfusión e infección. Las fotografías y medidas estandarizadas ayudan al seguimiento.",
+      "sources": [
+        "P1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Aliviar pressão, escolher superfície de suporte e individualizar reposicionamento segundo risco e tolerância tecidual; proteger pele e abordar nutrição e umidade.",
+      "es": "Aliviar presión, elegir superficie de apoyo e individualizar reposicionamiento según riesgo y tolerancia tisular; proteger piel y abordar nutrición y humedad.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Antibiótico sistêmico não trata colonização nem acelera cicatrização por si só; reservar para infecção clínica, como celulite disseminada, osteomielite ou sepse.",
+      "es": "El antibiótico sistémico no trata colonización ni acelera cicatrización por sí mismo; reservarlo para infección clínica, como celulitis extendida, osteomielitis o sepsis.",
+      "sources": [
+        "P1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar dimensões, dor, exsudato e tolerância ao posicionamento; selecionar curativo e eventual desbridamento conforme tecido, perfusão e objetivos de cuidado.",
+      "es": "Reevaluar dimensiones, dolor, exudado y tolerancia al posicionamiento; seleccionar apósito y eventual desbridamiento según tejido, perfusión y objetivos de cuidado.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre com deterioração, celulite progressiva ou suspeita de infecção profunda exige atendimento urgente e possível internação; envolver equipe especializada.",
+      "es": "La fiebre con deterioro, la celulitis progresiva o la sospecha de infección profunda exige atención urgente y posible internación; involucrar al equipo especializado.",
+      "sources": [
+        "P1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não aplicar intervalos ou superfícies de adultos automaticamente a crianças; em fragilidade ou cuidados paliativos, conciliar alívio de pressão, conforto e preferência.",
+      "es": "No aplicar intervalos ni superficies de adultos automáticamente a niños; ante fragilidad o cuidados paliativos, conciliar alivio de presión, comodidad y preferencias.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "P1",
+      "title": "Pressure ulcers: prevention and management",
+      "url": "https://www.nice.org.uk/guidance/cg179/chapter/Recommendations",
+      "authority": "NICE CG179",
+      "year": 2014,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "P2",
+      "title": "International pressure injury guideline: seating",
+      "url": "https://www.internationalguideline.com/seating",
+      "authority": "EPUAP / NPIAP / PPPIA",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,120 @@
+{
+  "owner": "presbiacusia",
+  "title": {
+    "pt": "Presbiacusia",
+    "es": "Presbiacusia"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "presbiacusia",
+      "pérdida auditiva relacionada con la edad",
+      "hipoacusia relacionada con la edad",
+      "perda auditiva relacionada à idade",
+      "hipoacusia relacionada à idade",
+      "presbycusis",
+      "age-related hearing loss",
+      "ARHL"
+    ],
+    "distinctScope": "Perda progressiva relacionada à idade, distinta de surdez súbita e doenças do ouvido externo/médio."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Perda auditiva neurossensorial progressiva ligada ao envelhecimento, geralmente bilateral; dificulta compreensão de fala, especialmente com ruído.",
+      "es": "Pérdida auditiva neurosensorial progresiva ligada al envejecimiento, habitualmente bilateral; dificulta comprender el habla, especialmente con ruido.",
+      "sources": [
+        "P1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Perguntar sobre evolução, assimetria, zumbido, vertigem e impacto social; examinar conduto e tímpano antes de atribuir a perda à idade.",
+      "es": "Preguntar por evolución, asimetría, acúfenos, vértigo e impacto social; examinar conducto y tímpano antes de atribuir la pérdida a la edad.",
+      "sources": [
+        "P1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Excluir cerume impactado e infecção; solicitar avaliação audiológica e encaminhar achados assimétricos, flutuantes ou inexplicados.",
+      "es": "Excluir cerumen impactado e infección; solicitar evaluación audiológica y derivar hallazgos asimétricos, fluctuantes o inexplicados.",
+      "sources": [
+        "P1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Oferecer estratégias de comunicação, tecnologia assistiva e aparelhos conforme avaliação; considerar aparelhos bilaterais se ambos os ouvidos forem adequados.",
+      "es": "Ofrecer estrategias de comunicación, tecnología de apoyo y audífonos según evaluación; considerar audífonos bilaterales si ambos oídos son adecuados.",
+      "sources": [
+        "P1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há medicamento que reverta a presbiacusia estabelecida. Corticoide não é tratamento de rotina para perda gradual atribuída ao envelhecimento.",
+      "es": "No existe medicamento que revierta la presbiacusia establecida. El corticoide no es tratamiento rutinario para pérdida gradual atribuida al envejecimiento.",
+      "sources": [
+        "P1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar benefício, ajuste, uso dos aparelhos e necessidades de comunicação; orientar retorno se a evolução mudar.",
+      "es": "Reevaluar beneficio, ajuste, uso de audífonos y necesidades de comunicación; indicar consulta si cambia la evolución.",
+      "sources": [
+        "P1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Perda em até 3 dias iniciada nos últimos 30 dias, sem causa externa ou média, exige avaliação em até 24 horas. Perda unilateral com déficit facial também exige avaliação imediata.",
+      "es": "Una pérdida en hasta 3 días iniciada en los últimos 30 días, sin causa externa o media, exige evaluación dentro de 24 horas. La pérdida unilateral con déficit facial también exige evaluación inmediata.",
+      "sources": [
+        "P1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Adaptar comunicação a cognição, visão e destreza; não excluir reabilitação por idade. Perda súbita não deve ser chamada de presbiacusia.",
+      "es": "Adaptar comunicación a cognición, visión y destreza; no excluir rehabilitación por edad. La pérdida súbita no debe llamarse presbiacusia.",
+      "sources": [
+        "P1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "P1",
+      "title": "Hearing loss in adults: assessment and management",
+      "url": "https://www.nice.org.uk/guidance/NG98/chapter/recommendations",
+      "authority": "NICE NG98",
+      "year": "2018; atualizado 2023",
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

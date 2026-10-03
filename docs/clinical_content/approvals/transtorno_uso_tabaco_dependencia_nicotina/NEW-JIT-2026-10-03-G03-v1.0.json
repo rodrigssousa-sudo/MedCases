@@ -1,0 +1,144 @@
+{
+  "owner": "transtorno_uso_tabaco_dependencia_nicotina",
+  "title": {
+    "pt": "Dependência de nicotina e uso de tabaco",
+    "es": "Dependencia de nicotina y consumo de tabaco"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "dependencia de nicotina",
+      "tabaquismo",
+      "trastorno por consumo de nicotina",
+      "tabagismo",
+      "transtorno por uso de nicotina",
+      "tobacco use disorder",
+      "nicotine dependence",
+      "nicotine use disorder"
+    ],
+    "distinctScope": "Dependência de nicotina e cessação, distinta de complicações respiratórias do tabagismo."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Dependência de nicotina envolve reforço e abstinência; cessação reduz risco mesmo após longa exposição. Recaída deve levar a novo apoio, não abandono do cuidado.",
+      "es": "La dependencia de nicotina implica refuerzo y abstinencia; dejar de fumar reduce riesgo incluso tras exposición prolongada. La recaída debe llevar a nuevo apoyo, no abandono del cuidado.",
+      "sources": [
+        "T1",
+        "T3"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar produtos, consumo, tentativas, sintomas de abstinência, motivação, comorbidades e medicamentos; combinar objetivo de cessação com plano de apoio.",
+      "es": "Registrar productos, consumo, intentos, síntomas de abstinencia, motivación, comorbilidades y medicamentos; combinar objetivo de cesación con plan de apoyo.",
+      "sources": [
+        "T1",
+        "T3"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Avaliar dependência e riscos clínicos; não exigir exame laboratorial para oferecer tratamento e aconselhamento.",
+      "es": "Evaluar dependencia y riesgos clínicos; no exigir laboratorio para ofrecer tratamiento y asesoramiento.",
+      "sources": [
+        "T1",
+        "T3"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Associar suporte comportamental a farmacoterapia apropriada: reposição de nicotina, vareniclina ou outras opções disponíveis e indicadas. Revisar contraindicações e preferência.",
+      "es": "Asociar apoyo conductual con farmacoterapia apropiada: reemplazo de nicotina, vareniclina u otras opciones disponibles e indicadas. Revisar contraindicaciones y preferencias.",
+      "sources": [
+        "T1",
+        "T3"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Vareniclina oral em adultos: dias 1–3, 0,5 mg uma vez ao dia; dias 4–7, 0,5 mg duas vezes ao dia; a partir do dia 8, 1 mg duas vezes ao dia. Curso usual total: 12 semanas; tomar após alimento e com água.",
+      "es": "Vareniclina oral en adultos: días 1–3, 0,5 mg una vez al día; días 4–7, 0,5 mg dos veces al día; desde el día 8, 1 mg dos veces al día. Curso usual total: 12 semanas; tomar tras alimento y con agua.",
+      "sources": [
+        "T2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Definir data de cessação, acompanhar adesão, abstinência, náusea e mudanças de humor; revisar interações ou necessidades de ajuste de outros medicamentos ao parar de fumar.",
+      "es": "Definir fecha de cesación, seguir adherencia, abstinencia, náuseas y cambios del ánimo; revisar interacciones o necesidad de ajustar otros medicamentos al dejar de fumar.",
+      "sources": [
+        "T2",
+        "T3"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Alteração importante de comportamento, ideação suicida ou reação alérgica grave exige avaliação imediata e revisão do tratamento.",
+      "es": "Un cambio importante de conducta, ideación suicida o reacción alérgica grave exige evaluación inmediata y revisión del tratamiento.",
+      "sources": [
+        "T2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Com depuração de creatinina <30 mL/minuto, iniciar vareniclina 0,5 mg ao dia e limitar a 0,5 mg duas vezes ao dia; em hemodiálise, máximo 0,5 mg ao dia se tolerado. Gestação e menores de idade exigem abordagem própria, sem aplicar esse esquema adulto.",
+      "es": "Con depuración de creatinina <30 mL/minuto, iniciar vareniclina 0,5 mg al día y limitar a 0,5 mg dos veces al día; en hemodiálisis, máximo 0,5 mg al día si se tolera. El embarazo y los menores requieren abordaje propio, sin aplicar este esquema adulto.",
+      "sources": [
+        "T2",
+        "T3"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "T1",
+      "title": "WHO clinical treatment guideline for tobacco cessation in adults",
+      "url": "https://www.who.int/publications/i/item/9789240096431",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "T2",
+      "title": "Varenicline tablets prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2f86bb7b-c6a6-4915-8ba1-17251540971c",
+      "authority": "DailyMed",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "T3",
+      "title": "Treating tobacco dependence",
+      "url": "https://www.nice.org.uk/guidance/NG209/chapter/treating-tobacco-dependence",
+      "authority": "NICE NG209",
+      "year": "2021; atualizações posteriores",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

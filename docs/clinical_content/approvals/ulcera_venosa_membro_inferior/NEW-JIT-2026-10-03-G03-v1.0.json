@@ -1,0 +1,142 @@
+{
+  "owner": "ulcera_venosa_membro_inferior",
+  "title": {
+    "pt": "Úlcera venosa do membro inferior",
+    "es": "Úlcera venosa de miembro inferior"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "úlcera venosa de pierna",
+      "úlcera por insuficiencia venosa",
+      "úlcera por estasis venosa",
+      "úlcera venosa da perna",
+      "úlcera de estase venosa",
+      "venous leg ulcer",
+      "venous stasis ulcer"
+    ],
+    "distinctScope": "Ferida por hipertensão venosa; distinta de insuficiência venosa sem úlcera e de úlcera arterial."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Hipertensão venosa crônica causa edema, inflamação e ulceração; doença arterial pode coexistir e mudar a segurança da compressão.",
+      "es": "La hipertensión venosa crónica causa edema, inflamación y ulceración; puede coexistir enfermedad arterial que modifica la seguridad de la compresión.",
+      "sources": [
+        "V1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar localização, edema, alterações cutâneas, varizes, pulsos, dor e infecção; documentar extensão e profundidade.",
+      "es": "Evaluar localización, edema, cambios cutáneos, várices, pulsos, dolor e infección; documentar extensión y profundidad.",
+      "sources": [
+        "V1",
+        "V2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Avaliar perfusão arterial antes de compressão e investigar refluxo ou obstrução venosa com ultrassonografia duplex conforme indicação.",
+      "es": "Evaluar perfusión arterial antes de compresión e investigar reflujo u obstrucción venosa mediante ecografía dúplex según indicación.",
+      "sources": [
+        "V1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Compressão é central quando a perfusão permite; associar cuidados da ferida, mobilidade e avaliação vascular para tratar refluxo pertinente.",
+      "es": "La compresión es central cuando la perfusión lo permite; asociar cuidados de la herida, movilidad y evaluación vascular para tratar el reflujo pertinente.",
+      "sources": [
+        "V1",
+        "V3"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não indicar antibiótico em úlcera apenas colonizada. Infecção clínica exige escolha por gravidade, alergia, função renal e protocolos locais, não um esquema único para todas as feridas.",
+      "es": "No indicar antibiótico en una úlcera solo colonizada. La infección clínica exige elegir según gravedad, alergia, función renal y protocolos locales, no un esquema único para todas las heridas.",
+      "sources": [
+        "V2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar cicatrização e tolerância à compressão. Em infecção tratada, reavaliar se não melhorar em 2–3 dias ou se piorar antes.",
+      "es": "Seguir cicatrización y tolerancia a la compresión. Ante infección tratada, reevaluar si no mejora en 2–3 días o si empeora antes.",
+      "sources": [
+        "V1",
+        "V2",
+        "V3"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor desproporcional, progressão rápida, sinais sistêmicos ou suspeita de osteomielite exige avaliação urgente e possível internação.",
+      "es": "El dolor desproporcionado, la progresión rápida, los signos sistémicos o la sospecha de osteomielitis exige evaluación urgente y posible internación.",
+      "sources": [
+        "V2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Úlcera mista arterial-venosa requer compressão modificada sob supervisão; diabetes e calcificação arterial podem dificultar interpretação dos testes de perfusão.",
+      "es": "La úlcera mixta arterial-venosa requiere compresión modificada bajo supervisión; la diabetes y la calcificación arterial pueden dificultar la interpretación de pruebas de perfusión.",
+      "sources": [
+        "V1",
+        "V3"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "V1",
+      "title": "ESVS chronic venous disease guidelines",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35027279/",
+      "authority": "ESVS",
+      "year": 2022,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "V2",
+      "title": "Leg ulcer infection: antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng152/chapter/recommendations",
+      "authority": "NICE NG152",
+      "year": 2020,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "V3",
+      "title": "Venous leg ulcer: treatment",
+      "url": "https://www.nhs.uk/conditions/leg-ulcer/treatment/",
+      "authority": "NHS",
+      "year": 2022,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

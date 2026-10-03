@@ -1,0 +1,119 @@
+{
+  "owner": "sindrome_desfiladeiro_toracico",
+  "title": {
+    "pt": "Síndrome do desfiladeiro torácico",
+    "es": "Síndrome del desfiladero torácico"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "síndrome de desfiladero torácico",
+      "sst",
+      "síndrome da saída torácica",
+      "sd torácico",
+      "thoracic outlet syndrome",
+      "TOS",
+      "neurogenic thoracic outlet syndrome"
+    ],
+    "distinctScope": "Compressão neurovascular anatômica, distinta de neuropatias distais e trombose sem causa compressiva."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Compressão no desfiladeiro pode afetar plexo braquial, veia ou artéria; a forma neurogênica e as formas vasculares exigem condutas diferentes.",
+      "es": "La compresión en el desfiladero puede afectar plexo braquial, vena o arteria; la forma neurogénica y las formas vasculares exigen conductas diferentes.",
+      "sources": [
+        "T1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar dor, parestesias, fraqueza, edema, mudança de cor e relação com postura ou atividade; examinar neurologia e circulação do membro.",
+      "es": "Investigar dolor, parestesias, debilidad, edema, cambio de color y relación con postura o actividad; examinar neurología y circulación de la extremidad.",
+      "sources": [
+        "T1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico combina apresentação e exames dirigidos; manobras provocativas não bastam isoladamente. Diferenciar radiculopatia e neuropatias periféricas.",
+      "es": "El diagnóstico combina presentación y estudios dirigidos; las maniobras provocativas no bastan aisladas. Diferenciar radiculopatía y neuropatías periféricas.",
+      "sources": [
+        "T1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Forma neurogênica estável pode iniciar fisioterapia, postura e ergonomia; suspeita vascular exige equipe especializada e investigação de trombose ou comprometimento arterial.",
+      "es": "La forma neurogénica estable puede iniciar fisioterapia, postura y ergonomía; la sospecha vascular exige equipo especializado e investigación de trombosis o compromiso arterial.",
+      "sources": [
+        "T1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Anticoagulante não é tratamento da forma neurogênica. Terapia antitrombótica ou procedimentos só conforme diagnóstico vascular específico e supervisão.",
+      "es": "El anticoagulante no trata la forma neurogénica. La terapia antitrombótica o los procedimientos se indican solo según diagnóstico vascular específico y supervisión.",
+      "sources": [
+        "T1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar função, força, sintomas e resposta à reabilitação; compressão persistente ou lesão vascular pode exigir intervenção especializada.",
+      "es": "Reevaluar función, fuerza, síntomas y respuesta a rehabilitación; la compresión persistente o lesión vascular puede exigir intervención especializada.",
+      "sources": [
+        "T1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Edema ou cianose súbita, membro frio ou pálido e déficit neurológico agudo exigem atendimento urgente; não aguardar fisioterapia eletiva.",
+      "es": "El edema o cianosis súbitos, la extremidad fría o pálida y el déficit neurológico agudo exigen atención urgente; no esperar fisioterapia electiva.",
+      "sources": [
+        "T1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Atividade repetitiva, variação anatômica e trauma orientam investigação; avaliar risco de cada procedimento e evitar atribuir toda parestesia ao desfiladeiro.",
+      "es": "La actividad repetitiva, la variación anatómica y el traumatismo orientan la investigación; evaluar el riesgo de cada procedimiento y evitar atribuir toda parestesia al desfiladero.",
+      "sources": [
+        "T1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "T1",
+      "title": "Thoracic outlet syndrome",
+      "url": "https://www.orthoinfo.org/diseases--conditions/thoracic-outlet-syndrome/",
+      "authority": "AAOS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

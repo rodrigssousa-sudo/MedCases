@@ -1,0 +1,130 @@
+{
+  "owner": "ginecomastia",
+  "title": {
+    "pt": "Ginecomastia",
+    "es": "Ginecomastia"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adolescentes e adultos do sexo masculino",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "aumento mamario masculino",
+      "ginecomastia masculina",
+      "gynecomastia",
+      "gynaecomastia"
+    ],
+    "distinctScope": "Proliferação mamária, distinta de hipogonadismo, lipomastia e neoplasia mamária."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Proliferação glandular mamária masculina; distinguir da lipomastia. O desequilíbrio entre ação estrogênica e androgênica pode refletir doença, medicamentos ou maturação puberal.",
+      "es": "Proliferación glandular mamaria masculina; distinguir de la lipomastia. El desequilibrio entre acción estrogénica y androgénica puede reflejar enfermedad, medicamentos o maduración puberal.",
+      "sources": [
+        "G1",
+        "G2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Revisar início, dor, evolução, medicamentos, anabolizantes e desenvolvimento sexual; examinar mamas, testículos e sinais sistêmicos.",
+      "es": "Revisar inicio, dolor, evolución, medicamentos, anabólicos y desarrollo sexual; examinar mamas, testículos y signos sistémicos.",
+      "sources": [
+        "G1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Investigação orientada pode incluir testosterona, estradiol, gonadotrofinas, prolactina, TSH, hCG, função hepática e renal; ultrassonografia testicular ajuda a excluir lesões ocultas.",
+      "es": "La investigación dirigida puede incluir testosterona, estradiol, gonadotrofinas, prolactina, TSH, hCG y función hepática y renal; la ecografía testicular ayuda a excluir lesiones ocultas.",
+      "sources": [
+        "G1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar a causa e revisar substâncias associadas; observar formas fisiológicas ou recentes. Persistência fibrosa ou sofrimento importante pode justificar avaliação cirúrgica.",
+      "es": "Tratar la causa y revisar sustancias asociadas; observar formas fisiológicas o recientes. La persistencia fibrosa o el malestar importante pueden justificar evaluación quirúrgica.",
+      "sources": [
+        "G1",
+        "G2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não prescrever tamoxifeno ou inibidor de aromatase rotineiramente. A SIAMS admite farmacoterapia selecionada em formas dolorosas ou idiopáticas: decisão especializada, sem esquema universal neste guia.",
+      "es": "No prescribir tamoxifeno ni inhibidores de aromatasa de rutina. La SIAMS admite farmacoterapia seleccionada en formas dolorosas o idiopáticas: decisión especializada, sin esquema universal en esta guía.",
+      "sources": [
+        "G1",
+        "G2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar regressão, dor e impacto psicossocial após abordar a causa; testosterona somente se houver deficiência comprovada, não por aumento mamário isolado.",
+      "es": "Reevaluar regresión, dolor e impacto psicosocial tras abordar la causa; testosterona únicamente ante deficiencia comprobada, no por aumento mamario aislado.",
+      "sources": [
+        "G1",
+        "G2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Massa suspeita, alterações do mamilo ou massa testicular exigem investigação dirigida; suspeita de malignidade mamária requer biópsia, não tratamento empírico de ginecomastia.",
+      "es": "Una masa sospechosa, cambios del pezón o una masa testicular requieren investigación dirigida; la sospecha de malignidad mamaria requiere biopsia, no tratamiento empírico de ginecomastia.",
+      "sources": [
+        "G1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Na adolescência, considerar evolução puberal e suporte psicológico; não extrapolar tratamentos hormonais de adultos. Doença hepática, renal ou endócrina muda a investigação.",
+      "es": "En la adolescencia, considerar evolución puberal y apoyo psicológico; no extrapolar tratamientos hormonales de adultos. La enfermedad hepática, renal o endocrina modifica la investigación.",
+      "sources": [
+        "G1",
+        "G2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "G1",
+      "title": "EAA clinical practice guidelines—gynecomastia evaluation and management",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31099174/",
+      "authority": "EAA",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "G2",
+      "title": "Management of gynecomastia in adolescence and adults: SIAMS clinical practice guidelines",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42258023/",
+      "authority": "SIAMS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

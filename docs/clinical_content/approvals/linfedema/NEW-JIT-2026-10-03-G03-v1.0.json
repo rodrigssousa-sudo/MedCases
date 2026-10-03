@@ -1,0 +1,129 @@
+{
+  "owner": "linfedema",
+  "title": {
+    "pt": "Linfedema",
+    "es": "Linfedema"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "edema linfático",
+      "linfoedema",
+      "lymphedema",
+      "lymphoedema"
+    ],
+    "distinctScope": "Falha linfática crônica, distinta de edema sistêmico, trombose aguda e insuficiência venosa."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Falha de drenagem linfática causa edema crônico e alterações teciduais; pode ser primária ou secundária a cirurgia, tumor, infecção ou outra lesão linfática.",
+      "es": "La falla del drenaje linfático causa edema crónico y cambios tisulares; puede ser primaria o secundaria a cirugía, tumor, infección u otra lesión linfática.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar início, distribuição, pele, peso do membro e história oncológica ou cirúrgica; edema recente assimétrico não confirma linfedema.",
+      "es": "Evaluar inicio, distribución, piel, pesadez de la extremidad y antecedentes oncológicos o quirúrgicos; el edema asimétrico reciente no confirma linfedema.",
+      "sources": [
+        "L1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diferenciar trombose, doença venosa e edema sistêmico; investigação e imagem dependem da dúvida diagnóstica e de possível obstrução secundária.",
+      "es": "Diferenciar trombosis, enfermedad venosa y edema sistémico; la investigación y las imágenes dependen de la duda diagnóstica y una posible obstrucción secundaria.",
+      "sources": [
+        "L1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Terapia descongestiva combina compressão adequada, cuidados da pele, exercícios e drenagem selecionada por equipe treinada; educação sustenta autocuidado.",
+      "es": "La terapia descongestiva combina compresión adecuada, cuidados de la piel, ejercicios y drenaje seleccionado por un equipo entrenado; la educación sostiene el autocuidado.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Diurético não é tratamento de rotina do linfedema; usar apenas por indicação clínica independente. Não definir pressão de compressão sem avaliar perfusão e tolerância.",
+      "es": "El diurético no es tratamiento rutinario del linfedema; usarlo solo por una indicación clínica independiente. No definir presión de compresión sin evaluar perfusión y tolerancia.",
+      "sources": [
+        "L1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar volume, pele, mobilidade e adesão; prevenir fissuras e tratar intercorrências, com ajuste de dispositivos conforme evolução.",
+      "es": "Seguir volumen, piel, movilidad y adherencia; prevenir fisuras y tratar intercurrencias, ajustando dispositivos según evolución.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Membro quente, doloroso e eritematoso com febre sugere infecção; edema súbito requer excluir trombose. Encaminhar conforme gravidade, sem iniciar massagem de rotina.",
+      "es": "Una extremidad caliente, dolorosa y eritematosa con fiebre sugiere infección; el edema súbito requiere excluir trombosis. Derivar según gravedad, sin iniciar masaje de rutina.",
+      "sources": [
+        "L1",
+        "L2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Doença arterial, fragilidade cutânea e causas oncológicas requerem plano individual; linfedema pediátrico ou primário complexo deve ser avaliado por equipe especializada.",
+      "es": "La enfermedad arterial, la fragilidad cutánea y las causas oncológicas requieren un plan individual; el linfedema pediátrico o primario complejo debe evaluarse por un equipo especializado.",
+      "sources": [
+        "L1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "L1",
+      "title": "Diagnosis and treatment of peripheral lymphedema: 2023 consensus",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39207406/",
+      "authority": "International Society of Lymphology",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "L2",
+      "title": "Lymphoedema treatment",
+      "url": "https://www.nhs.uk/conditions/lymphoedema/treatment/",
+      "authority": "NHS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

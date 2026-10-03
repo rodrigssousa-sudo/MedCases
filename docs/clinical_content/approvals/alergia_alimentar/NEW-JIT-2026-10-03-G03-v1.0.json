@@ -1,0 +1,141 @@
+{
+  "owner": "alergia_alimentar",
+  "title": {
+    "pt": "Alergia alimentar",
+    "es": "Alergia alimentaria"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos e crianças; doses de emergência seguem protocolo existente e produto apropriado",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "hipersensibilidad alimentaria",
+      "anafilaxia alimentaria",
+      "hipersensibilidade alimentar",
+      "anafilaxia alimentar",
+      "food allergy",
+      "food-induced anaphylaxis"
+    ],
+    "distinctScope": "Doença alérgica a alimento e prevenção longitudinal, distinta do owner emergência anafilaxia."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Reação imune a alimento não equivale a intolerância; este guia concentra-se na forma mediada por IgE, sem extrapolar a todas as síndromes gastrointestinais alimentares.",
+      "es": "La reacción inmune a un alimento no equivale a intolerancia; esta guía se centra en la forma mediada por IgE, sin extrapolar a todos los síndromes gastrointestinales alimentarios.",
+      "sources": [
+        "A1",
+        "A2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar alimento, quantidade, tempo até sintomas, órgãos envolvidos e cofatores; reconhecer reações sistêmicas e investigar diagnósticos alternativos.",
+      "es": "Registrar alimento, cantidad, tiempo hasta síntomas, órganos implicados y cofactores; reconocer reacciones sistémicas e investigar diagnósticos alternativos.",
+      "sources": [
+        "A1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Testes cutâneos e IgE específica devem ser guiados pela história; sensibilização isolada não prova alergia. Provocação oral, quando necessária, é supervisionada em serviço preparado.",
+      "es": "Las pruebas cutáneas y la IgE específica deben guiarse por la historia; la sensibilización aislada no prueba alergia. La provocación oral, cuando sea necesaria, se supervisa en un servicio preparado.",
+      "sources": [
+        "A1",
+        "A3"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Evitar o alérgeno confirmado, orientar rótulos e oferecer plano escrito e acompanhamento nutricional; evitar exclusões amplas sem diagnóstico.",
+      "es": "Evitar el alérgeno confirmado, orientar sobre etiquetas y ofrecer plan escrito y seguimiento nutricional; evitar exclusiones amplias sin diagnóstico.",
+      "sources": [
+        "A2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Quando houver risco de anafilaxia, prescrever e ensinar uso do autoinjetor de adrenalina adequado à pessoa e à apresentação. Antihistamínico não substitui adrenalina na anafilaxia.",
+      "es": "Ante riesgo de anafilaxia, prescribir y enseñar uso del autoinyector de adrenalina adecuado a la persona y presentación. El antihistamínico no sustituye adrenalina en anafilaxia.",
+      "sources": [
+        "A2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar alergia, risco, nutrição e habilidade de usar o plano; eventual reintrodução deve seguir avaliação especializada, nunca teste doméstico após reação importante.",
+      "es": "Reevaluar alergia, riesgo, nutrición y capacidad para usar el plan; una eventual reintroducción debe seguir evaluación especializada, nunca una prueba doméstica tras una reacción importante.",
+      "sources": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Comprometimento respiratório, circulatório ou reação sistêmica rápida exige adrenalina e atendimento emergencial pelo protocolo de anafilaxia existente; não esperar confirmação laboratorial.",
+      "es": "El compromiso respiratorio, circulatorio o una reacción sistémica rápida exige adrenalina y atención de emergencia según el protocolo existente de anafilaxia; no esperar confirmación de laboratorio.",
+      "sources": [
+        "A2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças precisam de vigilância de crescimento e plano escolar; imunoterapia ou biológicos são opções especializadas selecionadas, sem escalonamento domiciliar improvisado.",
+      "es": "Los niños necesitan vigilancia del crecimiento y plan escolar; la inmunoterapia o los biológicos son opciones especializadas seleccionadas, sin escalamiento domiciliario improvisado.",
+      "sources": [
+        "A2",
+        "A3"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "A1",
+      "title": "EAACI guidelines on diagnosis of IgE-mediated food allergy",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37815205/",
+      "authority": "EAACI",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "A2",
+      "title": "EAACI guidelines on management of IgE-mediated food allergy",
+      "url": "https://eaaci.org/guidelines-position-papers/eaaci-guidelines-on-the-management-of-ige-mediated-food-allergy/",
+      "authority": "EAACI",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "A3",
+      "title": "AAAAI–EAACI PRACTALL: standardizing oral food challenges—2024 update",
+      "url": "https://eaaci.org/guidelines-position-papers/aaaai-eaaci-practall-standardizing-oral-food-challenges-2024-update/",
+      "authority": "AAAAI / EAACI",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

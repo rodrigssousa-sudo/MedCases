@@ -1,0 +1,135 @@
+{
+  "owner": "dor_abdominal_funcional_pediatrica",
+  "title": {
+    "pt": "Dor abdominal funcional pediátrica",
+    "es": "Dolor abdominal funcional pediátrico"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Crianças e adolescentes de 4–18 anos no escopo da diretriz terapêutica",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "dolor abdominal funcional pediátrico",
+      "dolor abdominal funcional infantil",
+      "trastorno de interacción intestino-cerebro con dolor abdominal",
+      "dor abdominal funcional pediátrica",
+      "dor abdominal funcional na criança",
+      "transtorno de interação intestino-cérebro com dor abdominal",
+      "pediatric functional abdominal pain",
+      "functional abdominal pain disorder",
+      "abdominal pain disorder of gut-brain interaction"
+    ],
+    "distinctScope": "Dor por interação intestino-cérebro, distinta de constipação isolada e de causas orgânicas de abdome agudo."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Distúrbios da interação intestino-cérebro produzem dor real; fatores biopsicossociais modulam sintomas, sem significar simulação. Este guia aborda dor funcional sem outra doença suficiente.",
+      "es": "Los trastornos de la interacción intestino-cerebro producen dolor real; los factores biopsicosociales modulan síntomas sin significar simulación. Esta guía aborda dolor funcional sin otra enfermedad suficiente.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar padrão de dor, evacuação, crescimento, alimentação, escola e contexto familiar; examinar e procurar sinais de alarme antes de tranquilizar.",
+      "es": "Evaluar patrón de dolor, evacuación, crecimiento, alimentación, escuela y contexto familiar; examinar y buscar signos de alarma antes de tranquilizar.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Usar avaliação clínica positiva e exames dirigidos à hipótese; não transformar o diagnóstico em repetição indiscriminada de imagens ou endoscopias quando não há alarme.",
+      "es": "Usar evaluación clínica positiva y estudios dirigidos a la hipótesis; no convertir el diagnóstico en repetición indiscriminada de imágenes o endoscopias cuando no hay alarma.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Educação, retorno funcional e intervenções intestino-cérebro; hipnoterapia e terapia cognitivo-comportamental são recomendadas pela diretriz 2025 para população de 4–18 anos.",
+      "es": "Educación, retorno funcional e intervenciones intestino-cerebro; la hipnoterapia y la terapia cognitivo-conductual son recomendadas por la guía 2025 para población de 4–18 años.",
+      "sources": [
+        "F1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não existe medicamento único para toda dor funcional; opções dependem do fenótipo e avaliação pediátrica. Não iniciar antibiótico, corticoide ou dieta restritiva como tratamento genérico.",
+      "es": "No existe un medicamento único para todo dolor funcional; las opciones dependen del fenotipo y evaluación pediátrica. No iniciar antibióticos, corticoides ni dieta restrictiva como tratamiento genérico.",
+      "sources": [
+        "F1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar dor, frequência escolar, atividade, crescimento e qualidade de vida; metas incluem recuperação funcional, não apenas ausência completa de dor.",
+      "es": "Seguir dolor, asistencia escolar, actividad, crecimiento y calidad de vida; las metas incluyen recuperación funcional, no solo ausencia completa de dolor.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Perda de peso, desaceleração do crescimento, sangramento, vômitos importantes ou biliosos, febre inexplicada e achados focais exigem investigação; deterioração aguda requer urgência.",
+      "es": "La pérdida de peso, la desaceleración del crecimiento, el sangrado, los vómitos importantes o biliosos, la fiebre inexplicada y los hallazgos focales exigen investigación; el deterioro agudo requiere urgencias.",
+      "sources": [
+        "F2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não extrapolar a diretriz terapêutica para menores de 4 anos. Constipação e doenças orgânicas têm manejo próprio; considerar risco nutricional antes de exclusões alimentares.",
+      "es": "No extrapolar la guía terapéutica a menores de 4 años. La constipación y las enfermedades orgánicas tienen manejo propio; considerar riesgo nutricional antes de exclusiones alimentarias.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "F1",
+      "title": "ESPGHAN/NASPGHAN guidelines for treatment of IBS and functional abdominal pain-NOS in children aged 4–18 years",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12314588/",
+      "authority": "ESPGHAN / NASPGHAN",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "F2",
+      "title": "Chronic abdominal pain in children: clinical report",
+      "url": "https://naspghan.org/files/documents/pdfs/training/curriculum-resources/common-outpatient/NASPGHAN_Clinical_Report_on_Chronic_Abdomina_Pain_JPGN_2005_Common_Outpatient_NASPGHAN_Guidelines.pdf",
+      "authority": "AAP / NASPGHAN",
+      "year": 2005,
+      "status": "SUPPORTIVE_HISTORICAL_DIAGNOSTIC_CONTEXT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

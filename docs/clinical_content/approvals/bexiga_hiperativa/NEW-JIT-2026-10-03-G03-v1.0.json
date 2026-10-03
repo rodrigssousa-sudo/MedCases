@@ -1,0 +1,131 @@
+{
+  "owner": "bexiga_hiperativa",
+  "title": {
+    "pt": "Bexiga hiperativa",
+    "es": "Vejiga hiperactiva"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "vejiga hiperactiva",
+      "síndrome de vejiga hiperactiva",
+      "urgencia urinaria",
+      "bexiga hiperativa",
+      "síndrome da bexiga hiperativa",
+      "overactive bladder",
+      "OAB",
+      "urinary urgency syndrome"
+    ],
+    "distinctScope": "Síndrome de urgência com ou sem perdas; diferente de incontinência de esforço ou por transbordamento."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Urgência urinária, geralmente com frequência e noctúria, com ou sem perda urinária, sem infecção ou outra causa evidente; pode existir sem incontinência.",
+      "es": "Urgencia urinaria, habitualmente con frecuencia y nocturia, con o sin pérdida urinaria, sin infección u otra causa evidente; puede existir sin incontinencia.",
+      "sources": [
+        "O1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Anamnese, exame, urinálise e diário miccional orientam sintomas, líquidos, fármacos e impacto; investigar dificuldade de esvaziamento antes de escolher medicamentos.",
+      "es": "La anamnesis, el examen, el análisis de orina y el diario miccional orientan síntomas, líquidos, fármacos e impacto; investigar dificultad de vaciamiento antes de elegir medicamentos.",
+      "sources": [
+        "O1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Resíduo pós-miccional conforme risco ou sintomas de retenção. Não solicitar urodinâmica, cistoscopia ou imagem rotineiramente na avaliação inicial não complicada.",
+      "es": "Evaluar residuo posmiccional según riesgo o síntomas de retención. No solicitar urodinamia, cistoscopia ni imágenes de rutina en la evaluación inicial no complicada.",
+      "sources": [
+        "O1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Oferecer treinamento vesical e medidas comportamentais; decidir conjuntamente sobre antimuscarínicos, agonistas beta-3 ou terapias especializadas, conforme preferência e riscos.",
+      "es": "Ofrecer entrenamiento vesical y medidas conductuales; decidir conjuntamente sobre antimuscarínicos, agonistas beta-3 o terapias especializadas según preferencias y riesgos.",
+      "sources": [
+        "O1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Mirabegrona, conforme bula dos EUA: 25 mg por via oral uma vez ao dia; considerar 50 mg uma vez ao dia após 4–8 semanas. Dose máxima: 50 mg ao dia. Confirmar bula local.",
+      "es": "Mirabegrón, según la ficha de los EE. UU.: 25 mg por vía oral una vez al día; considerar 50 mg una vez al día tras 4–8 semanas. Dosis máxima: 50 mg al día. Confirmar ficha local.",
+      "sources": [
+        "O2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar pressão arterial e resposta em 4–8 semanas. Discutir risco cognitivo dos antimuscarínicos e risco de retenção; revisar interações da mirabegrona.",
+      "es": "Controlar presión arterial y respuesta en 4–8 semanas. Discutir riesgo cognitivo de los antimuscarínicos y riesgo de retención; revisar interacciones del mirabegrón.",
+      "sources": [
+        "O1",
+        "O2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Retenção, hematúria ou suspeita de infecção exigem investigação da causa. Mirabegrona não é recomendada na hipertensão grave não controlada: sistólica ≥180 ou diastólica ≥110 mmHg.",
+      "es": "La retención, la hematuria o la sospecha de infección requieren investigar la causa. El mirabegrón no se recomienda ante hipertensión grave no controlada: sistólica ≥180 o diastólica ≥110 mmHg.",
+      "sources": [
+        "O1",
+        "O2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Mirabegrona: filtração estimada 15–29 mL/minuto/1,73 m² ou Child-Pugh B limita a dose a 25 mg ao dia; filtração <15, diálise ou Child-Pugh C: uso não recomendado. Gestação e pediatria exigem avaliação específica.",
+      "es": "Mirabegrón: filtrado estimado 15–29 mL/minuto/1,73 m² o Child-Pugh B limita la dosis a 25 mg al día; filtrado <15, diálisis o Child-Pugh C: uso no recomendado. El embarazo y la pediatría requieren evaluación específica.",
+      "sources": [
+        "O2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "O1",
+      "title": "AUA/SUFU guideline on idiopathic overactive bladder",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39010271/",
+      "authority": "AUA/SUFU",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "O2",
+      "title": "Mirabegron extended-release tablets: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=d0054db9-e38a-4786-be2c-996fa5b8f47d",
+      "authority": "DailyMed / bula dos EUA",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,135 @@
+{
+  "owner": "epicondilite_medial",
+  "title": {
+    "pt": "Epicondilite medial",
+    "es": "Epicondilitis medial"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "codo de golfista",
+      "tendinopatía medial del codo",
+      "cotovelo de golfista",
+      "tendinopatia medial do cotovelo",
+      "medial epicondylitis",
+      "golfer's elbow"
+    ],
+    "distinctScope": "Tendinopatia flexora-pronadora medial, distinta do owner lateral existente."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Tendinopatia da origem flexora-pronadora causa dor medial do cotovelo; não é equivalente à epicondilite lateral.",
+      "es": "La tendinopatía del origen flexor-pronador causa dolor medial del codo; no equivale a epicondilitis lateral.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor ao agarrar, flexionar o punho ou pronar contra resistência sugere sobrecarga; pesquisar atividade repetitiva e sintomas neurais.",
+      "es": "El dolor al agarrar, flexionar la muñeca o pronar contra resistencia sugiere sobrecarga; investigar actividad repetitiva y síntomas neurales.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Exame clínico dirigido; diferenciar neuropatia ulnar, lesão ligamentar e trauma. Imagem conforme dúvida ou evolução, não como requisito rotineiro.",
+      "es": "Examen clínico dirigido; diferenciar neuropatía cubital, lesión ligamentaria y traumatismo. Imágenes según duda o evolución, no como requisito rutinario.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Modificar carga provocadora e iniciar fortalecimento progressivo com fisioterapia; evitar repouso absoluto ou imobilização indefinida.",
+      "es": "Modificar la carga provocadora e iniciar fortalecimiento progresivo con fisioterapia; evitar reposo absoluto o inmovilización indefinida.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Analgesia tópica ou oral depende de riscos e avaliação clínica; infiltração não é um esquema obrigatório e exige discutir benefício, risco e alternativas.",
+      "es": "La analgesia tópica u oral depende de riesgos y evaluación clínica; la infiltración no es un esquema obligatorio y exige discutir beneficios, riesgos y alternativas.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar dor durante tarefas e progressão de carga; persistência ou incapacidade funcional exige reavaliar diagnóstico e encaminhar.",
+      "es": "Seguir dolor durante tareas y progresión de carga; la persistencia o incapacidad funcional exige reevaluar diagnóstico y derivar.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Trauma importante, articulação quente com febre ou fraqueza neurológica progressiva exige avaliação de outra causa, não simples tratamento de tendinopatia.",
+      "es": "Un traumatismo importante, articulación caliente con fiebre o debilidad neurológica progresiva exige evaluar otra causa, no solo tratar tendinopatía.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Ajustar programa a trabalho, idade e comorbidades; parestesia dos dedos ulnares sugere condição neural coexistente que precisa avaliação específica.",
+      "es": "Ajustar el programa al trabajo, edad y comorbilidades; la parestesia de los dedos cubitales sugiere una condición neural coexistente que necesita evaluación específica.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "E1",
+      "title": "Golfer’s elbow",
+      "url": "https://roh.nhs.uk/services-information/therapy/golfers-elbow",
+      "authority": "Royal Orthopaedic Hospital NHS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "E2",
+      "title": "Golfer’s elbow",
+      "url": "https://www.mskdorset.nhs.uk/elbow-pain/elbow-pain-golfers-elbow/",
+      "authority": "MSK Dorset NHS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

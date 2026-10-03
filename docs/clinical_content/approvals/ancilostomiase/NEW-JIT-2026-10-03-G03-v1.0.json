@@ -1,0 +1,130 @@
+{
+  "owner": "ancilostomiase",
+  "title": {
+    "pt": "Ancilostomíase",
+    "es": "Anquilostomiasis"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Esquemas gerais CDC; crianças pequenas e gestação requerem avaliação específica",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "infección por anquilostomas",
+      "Necator americanus",
+      "Ancylostoma duodenale",
+      "infecção por ancilostomídeos",
+      "hookworm infection",
+      "ancylostomiasis"
+    ],
+    "distinctScope": "Helmintíase intestinal com perda sanguínea, distinta de larva migrans, estrongiloidíase e outras helmintíases."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção intestinal por ancilostomídeos pode causar perda de sangue e anemia; não equivale à larva migrans cutânea por espécies zoonóticas.",
+      "es": "La infección intestinal por anquilostómidos puede causar pérdida de sangre y anemia; no equivale a larva migrans cutánea por especies zoonóticas.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar exposição a solo contaminado, sintomas gastrointestinais, palidez e fadiga; avaliar gravidade e estado nutricional.",
+      "es": "Investigar exposición a suelo contaminado, síntomas gastrointestinales, palidez y fatiga; evaluar gravedad y estado nutricional.",
+      "sources": [
+        "H2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar por investigação parasitológica fecal quando possível e avaliar hemograma e deficiência de ferro conforme apresentação; eosinofilia isolada não identifica a espécie.",
+      "es": "Confirmar mediante investigación parasitológica fecal cuando sea posible y evaluar hemograma y deficiencia de hierro según presentación; la eosinofilia aislada no identifica la especie.",
+      "sources": [
+        "H2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar a infecção e a anemia documentada; orientar saneamento, higiene e proteção contra contato com solo contaminado para reduzir reinfecção.",
+      "es": "Tratar la infección y la anemia documentada; orientar saneamiento, higiene y protección contra contacto con suelo contaminado para reducir reinfección.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Esquema CDC: albendazol 400 mg por via oral em dose única, em jejum. Alternativa: mebendazol 100 mg por via oral duas vezes ao dia por 3 dias, ou 500 mg em dose única; escolher um esquema, não associar rotineiramente.",
+      "es": "Esquema CDC: albendazol 400 mg por vía oral en dosis única, en ayunas. Alternativa: mebendazol 100 mg por vía oral dos veces al día durante 3 días, o 500 mg en dosis única; elegir un esquema, no asociarlos de rutina.",
+      "sources": [
+        "H1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar sintomas e correção da anemia; persistência exige verificar adesão, reinfecção e outros diagnósticos, não repetir tratamento sem revisão.",
+      "es": "Reevaluar síntomas y corrección de anemia; la persistencia exige verificar adherencia, reinfección y otros diagnósticos, no repetir tratamiento sin revisión.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Anemia sintomática importante ou deterioração clínica exige atendimento e suporte conforme gravidade, além do antiparasitário.",
+      "es": "La anemia sintomática importante o el deterioro clínico exige atención y apoyo según gravedad, además del antiparasitario.",
+      "sources": [
+        "H2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação exige decisão individual de benefício e risco; recomendações de campanhas não equivalem a prescrição automática. Crianças pequenas requerem avaliação própria; verificar indicação e bula locais.",
+      "es": "El embarazo exige decisión individual de beneficio y riesgo; las recomendaciones de campañas no equivalen a prescripción automática. Los niños pequeños requieren evaluación propia; verificar indicación y ficha locales.",
+      "sources": [
+        "H1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "H1",
+      "title": "Clinical care of soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "H2",
+      "title": "About soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/about/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,135 @@
+{
+  "owner": "eritema_multiforme",
+  "title": {
+    "pt": "Eritema multiforme",
+    "es": "Eritema multiforme"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "eritema multiforme menor",
+      "eritema multiforme mayor",
+      "eritema multiforme recurrente",
+      "eritema multiforme maior",
+      "eritema multiforme recorrente",
+      "erythema multiforme minor",
+      "erythema multiforme major",
+      "recurrent erythema multiforme"
+    ],
+    "distinctScope": "Síndrome de lesões-alvo associada frequentemente a infecção; não é owner de Stevens-Johnson/necrólise."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Reação inflamatória aguda com lesões em alvo, frequentemente associada a herpes simples; não é sinônimo de síndrome de Stevens-Johnson.",
+      "es": "Reacción inflamatoria aguda con lesiones en diana, frecuentemente asociada con herpes simple; no es sinónimo de síndrome de Stevens-Johnson.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar lesões acras, mucosas, dor, ingestão de líquidos, febre e sintomas oculares; revisar infecções recentes e medicamentos.",
+      "es": "Evaluar lesiones acrales, mucosas, dolor, ingesta de líquidos, fiebre y síntomas oculares; revisar infecciones recientes y medicamentos.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico geralmente clínico; apresentações atípicas podem precisar de dermatologista e biópsia. Diferenciar urticária, doenças bolhosas e necrólise epidérmica.",
+      "es": "El diagnóstico suele ser clínico; las presentaciones atípicas pueden necesitar dermatología y biopsia. Diferenciar urticaria, enfermedades ampollares y necrólisis epidérmica.",
+      "sources": [
+        "E1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Nas formas leves, cuidados sintomáticos e tratamento da causa pertinente; doença mucosa extensa pode exigir cuidado hospitalar e suporte de hidratação.",
+      "es": "En formas leves, cuidados sintomáticos y tratamiento de la causa pertinente; la enfermedad mucosa extensa puede exigir atención hospitalaria y apoyo de hidratación.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Antiviral pode ser indicado para herpes associado ou prevenção de recorrência selecionada. Não presumir que todo episódio exige aciclovir ou corticoide sistêmico; esquema depende da indicação.",
+      "es": "Un antiviral puede indicarse para herpes asociado o prevención de recurrencia seleccionada. No presumir que todo episodio exige aciclovir o corticoide sistémico; el esquema depende de la indicación.",
+      "sources": [
+        "E1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar tolerância oral, mucosas, olhos e recorrência; fornecer retorno para piora ou diagnóstico incerto.",
+      "es": "Reevaluar tolerancia oral, mucosas, ojos y recurrencia; indicar consulta ante empeoramiento o diagnóstico incierto.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor ocular, alteração visual, impossibilidade de beber, pele dolorosa ou descolamento extenso exige avaliação urgente; excluir Stevens-Johnson/necrólise e considerar internação.",
+      "es": "El dolor ocular, la alteración visual, la imposibilidad de beber, la piel dolorosa o el desprendimiento extenso exige evaluación urgente; excluir Stevens-Johnson/necrólisis y considerar internación.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Crianças, gestantes e pessoas imunossuprimidas precisam de avaliação específica; não extrapolar doses de antivirais ou imunossupressores.",
+      "es": "Los niños, las embarazadas y las personas inmunosuprimidas necesitan evaluación específica; no extrapolar dosis de antivirales ni inmunosupresores.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "E1",
+      "title": "Erythema multiforme clinical guidance",
+      "url": "https://www.pcds.org.uk/clinical-guidance/erythema-multiforme",
+      "authority": "PCDS",
+      "year": "sem data editorial explícita",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "E2",
+      "title": "Erythema multiforme",
+      "url": "https://www.nhs.uk/conditions/erythema-multiforme/",
+      "authority": "NHS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

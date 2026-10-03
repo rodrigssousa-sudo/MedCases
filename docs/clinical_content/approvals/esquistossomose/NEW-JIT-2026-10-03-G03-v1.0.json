@@ -1,0 +1,142 @@
+{
+  "owner": "esquistossomose",
+  "title": {
+    "pt": "Esquistossomose",
+    "es": "Esquistosomiasis"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "Schistosoma",
+      "bilharziasis",
+      "síndrome de Katayama",
+      "bilharzíase",
+      "doença de Katayama",
+      "schistosomiasis",
+      "bilharzia",
+      "Katayama syndrome"
+    ],
+    "distinctScope": "Parasitose sistêmica específica; esquemas apresentados com território e espécie explícitos, sem equivalência entre doses."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção adquirida por contato com água doce contaminada; ovos provocam inflamação e doença intestinal, hepática ou urinária conforme espécie.",
+      "es": "Infección adquirida por contacto con agua dulce contaminada; los huevos provocan inflamación y enfermedad intestinal, hepática o urinaria según especie.",
+      "sources": [
+        "S3"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar local e data de exposição, febre, sintomas intestinais, hematúria e sinais hepatoesplênicos; avaliar complicações orgânicas.",
+      "es": "Registrar lugar y fecha de exposición, fiebre, síntomas intestinales, hematuria y signos hepatoesplénicos; evaluar complicaciones orgánicas.",
+      "sources": [
+        "S3"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Pesquisar ovos nas fezes ou urina conforme espécie e considerar sorologia em contexto apropriado; distinguir infecção recente de doença crônica e identificar órgão comprometido.",
+      "es": "Buscar huevos en heces u orina según especie y considerar serología en contexto apropiado; distinguir infección reciente de enfermedad crónica e identificar órgano comprometido.",
+      "sources": [
+        "S1",
+        "S3"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Praziquantel é o antiparasitário de escolha. Em viajantes, o CDC orienta tratamento após pelo menos 6–8 semanas da última exposição; doença aguda ou complicada precisa de especialista.",
+      "es": "El prazicuantel es el antiparasitario de elección. En viajeros, CDC orienta tratamiento tras al menos 6–8 semanas de la última exposición; la enfermedad aguda o complicada necesita especialista.",
+      "sources": [
+        "S1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não misturar protocolos: no Brasil, o Ministério da Saúde recomenda praziquantel 50 mg/kg por via oral, preferencialmente em dose única, para adultos. O CDC usa total de 40 mg/kg no dia, dividido em 2 doses durante 1 dia, para S. mansoni/haematobium/intercalatum. Seguir a norma territorial aplicável.",
+      "es": "No mezclar protocolos: en Brasil, el Ministerio de Salud recomienda prazicuantel 50 mg/kg por vía oral, preferentemente en dosis única, para adultos. CDC usa un total de 40 mg/kg en el día, dividido en 2 dosis durante 1 día, para S. mansoni/haematobium/intercalatum. Seguir la norma territorial aplicable.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Pelo CDC, repetição pode ser necessária após 2–4 semanas em casos selecionados; se havia ovos antes do tratamento, controle parasitológico em 1–2 meses ajuda avaliar resposta.",
+      "es": "Según CDC, puede necesitarse repetición tras 2–4 semanas en casos seleccionados; si había huevos antes del tratamiento, el control parasitológico en 1–2 meses ayuda a evaluar respuesta.",
+      "sources": [
+        "S1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Déficit neurológico, hemorragia digestiva ou descompensação orgânica exige atendimento urgente; antiparasitário isolado não substitui manejo da complicação.",
+      "es": "El déficit neurológico, la hemorragia digestiva o la descompensación orgánica exige atención urgente; el antiparasitario aislado no sustituye manejar la complicación.",
+      "sources": [
+        "S2",
+        "S3"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, lactação, crianças pequenas e doença renal/hepática grave exigem decisão especializada: recomendações CDC/OMS e brasileiras diferem nesses contextos. Não extrapolar o esquema adulto nem fundir restrições.",
+      "es": "El embarazo, la lactancia, los niños pequeños y la enfermedad renal/hepática grave exigen decisión especializada: las recomendaciones CDC/OMS y brasileñas difieren en estos contextos. No extrapolar el esquema adulto ni fusionar restricciones.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "S1",
+      "title": "Clinical care of schistosomiasis",
+      "url": "https://www.cdc.gov/schistosomiasis/hcp/treatment/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "S2",
+      "title": "Protocolos de tratamento da esquistossomose",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/e/esquistossomose/protocolos-de-tratamento",
+      "authority": "Ministério da Saúde do Brasil",
+      "year": "sem data editorial explícita",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "S3",
+      "title": "About schistosomiasis",
+      "url": "https://www.cdc.gov/schistosomiasis/about/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

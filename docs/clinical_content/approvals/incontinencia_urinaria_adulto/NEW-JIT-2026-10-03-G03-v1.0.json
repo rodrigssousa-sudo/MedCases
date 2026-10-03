@@ -1,0 +1,144 @@
+{
+  "owner": "incontinencia_urinaria_adulto",
+  "title": {
+    "pt": "Incontinência urinária no adulto",
+    "es": "Incontinencia urinaria en adultos"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "incontinencia urinaria en el adulto",
+      "incontinencia urinaria",
+      "pérdida urinaria",
+      "incontinência urinária no adulto",
+      "perda urinária",
+      "adult urinary incontinence",
+      "urinary incontinence",
+      "urine leakage"
+    ],
+    "distinctScope": "Abrange perdas de esforço, mistas e transbordamento; a síndrome de bexiga hiperativa possui owner separado."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Perda involuntária de urina: distinguir esforço, urgência, mista e transbordamento. Incontinência é um sintoma, não sinônimo obrigatório de bexiga hiperativa.",
+      "es": "Pérdida involuntaria de orina: distinguir esfuerzo, urgencia, mixta y rebosamiento. La incontinencia es un síntoma, no un sinónimo obligatorio de vejiga hiperactiva.",
+      "sources": [
+        "I1",
+        "I2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Identificar situações de perda, urgência, dificuldade miccional, mobilidade, medicamentos e cirurgias; registrar diário miccional e examinar conforme anatomia e sintomas.",
+      "es": "Identificar situaciones de pérdida, urgencia, dificultad miccional, movilidad, medicamentos y cirugías; registrar diario miccional y examinar según anatomía y síntomas.",
+      "sources": [
+        "I1",
+        "I2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Realizar urinálise; avaliar resíduo quando houver dificuldade de esvaziamento ou suspeita de retenção. Diferenciar infecção, prolapso e causas neurológicas.",
+      "es": "Realizar análisis de orina; evaluar residuo ante dificultad de vaciamiento o sospecha de retención. Diferenciar infección, prolapso y causas neurológicas.",
+      "sources": [
+        "I1",
+        "I2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Em mulheres com esforço ou mista, treinamento supervisionado do assoalho pélvico por pelo menos 3 meses; com urgência ou mista, treinamento vesical por pelo menos 6 semanas.",
+      "es": "En mujeres con incontinencia de esfuerzo o mixta, entrenamiento supervisado del suelo pélvico durante al menos 3 meses; con urgencia o mixta, entrenamiento vesical durante al menos 6 semanas.",
+      "sources": [
+        "I1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Na incontinência de esforço, medicamentos para bexiga hiperativa não substituem reabilitação. Farmacoterapia da urgência segue o guia de bexiga hiperativa; não existe uma dose única para todos os mecanismos.",
+      "es": "En la incontinencia de esfuerzo, los medicamentos para vejiga hiperactiva no sustituyen la rehabilitación. La farmacoterapia de la urgencia sigue la guía de vejiga hiperactiva; no existe una dosis única para todos los mecanismos.",
+      "sources": [
+        "I1",
+        "I3"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Medir perdas, impacto e adesão; adaptar absorventes e cuidados da pele enquanto se trata a causa. Persistência ou diagnóstico incerto justifica encaminhamento.",
+      "es": "Evaluar pérdidas, impacto y adherencia; adaptar absorbentes y cuidados de la piel mientras se trata la causa. La persistencia o el diagnóstico incierto justifican derivación.",
+      "sources": [
+        "I1",
+        "I3"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Hematúria, retenção, dor persistente, massa pélvica ou déficit neurológico não devem ser rotulados como incontinência simples; investigar ou encaminhar conforme urgência.",
+      "es": "La hematuria, la retención, el dolor persistente, una masa pélvica o un déficit neurológico no deben rotularse como incontinencia simple; investigar o derivar según urgencia.",
+      "sources": [
+        "I1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "As durações de treinamento acima correspondem à recomendação para mulheres. Homens após cirurgia prostática, pessoas frágeis e alterações neurológicas precisam de plano específico.",
+      "es": "Las duraciones de entrenamiento anteriores corresponden a la recomendación para mujeres. Los hombres tras cirugía prostática, las personas frágiles y las alteraciones neurológicas necesitan un plan específico.",
+      "sources": [
+        "I1",
+        "I3"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "I1",
+      "title": "Urinary incontinence and pelvic organ prolapse in women: management",
+      "url": "https://www.nice.org.uk/guidance/ng123/chapter/recommendations",
+      "authority": "NICE NG123",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "I2",
+      "title": "Bladder control problems: definition and facts",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems/definition-facts",
+      "authority": "NIDDK",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "I3",
+      "title": "Bladder control problems: treatment",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems/treatment",
+      "authority": "NIDDK",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

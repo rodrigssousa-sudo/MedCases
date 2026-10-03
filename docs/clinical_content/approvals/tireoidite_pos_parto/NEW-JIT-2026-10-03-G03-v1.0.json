@@ -1,0 +1,169 @@
+{
+  "owner": "tireoidite_pos_parto",
+  "title": {
+    "pt": "Tireoidite pós-parto",
+    "es": "Tiroiditis posparto"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Pessoas no período pós-gestacional",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "tiroiditis postparto",
+      "disfunción tiroidea posparto",
+      "tireoidite pós parto",
+      "disfunção tireoidiana pós-parto",
+      "postpartum thyroiditis"
+    ],
+    "distinctScope": "Doença tireoidiana autoimune relacionada ao pós-parto; diferente de depressão/psicose pós-parto e tireoidite dolorosa."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Inflamação autoimune tireoidiana geralmente indolor nos 12 meses após o parto, também possível após perda gestacional. Pode causar tireotoxicose destrutiva, hipotireoidismo ou ambas as fases; diferenciar de Graves.",
+      "es": "Inflamación tiroidea autoinmune habitualmente indolora en los 12 meses tras el parto, también posible tras pérdida gestacional. Puede causar tirotoxicosis destructiva, hipotiroidismo o ambas fases; diferenciar de Graves.",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar palpitação, ansiedade, intolerância ao calor, depois fadiga, constipação e intolerância ao frio. Não atribuir automaticamente tudo à rotina do bebê ou a transtorno de humor.",
+      "es": "Buscar palpitaciones, ansiedad e intolerancia al calor, seguidas de fatiga, estreñimiento e intolerancia al frío. No atribuir automáticamente todo al cuidado del bebé o a un trastorno del ánimo.",
+      "sources": [
+        "S2",
+        "S3"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Avaliar TSH e hormônios livres; anticorpos e contexto ajudam a diferenciar Graves. Captação de radioisótopo exige decisão especializada na lactação, não exame automático.",
+      "es": "Evaluar TSH y hormonas libres; los anticuerpos y el contexto ayudan a diferenciar Graves. La captación con radioisótopos requiere decisión especializada durante la lactancia, no estudio automático.",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Na fase tireotóxica destrutiva, betabloqueador pode aliviar sintomas se indicado; antitireoidianos não são rotina porque não há síntese excessiva. Confirmar o mecanismo antes de escolher tratamento.",
+      "es": "En la fase tirotóxica destructiva, un betabloqueante puede aliviar síntomas si está indicado; los antitiroideos no son habituales porque no existe síntesis excesiva. Confirmar el mecanismo antes de elegir tratamiento.",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "treatment",
+      "pt": "Levotiroxina pode ser necessária no hipotireoidismo sintomático ou em situações reprodutivas pertinentes; individualizar pela função tireoidiana. Quadro leve pode ser observado com seguimento, não com abandono da monitorização.",
+      "es": "La levotiroxina puede ser necesaria en hipotiroidismo sintomático o situaciones reproductivas pertinentes; individualizar según la función tiroidea. Un cuadro leve puede observarse con seguimiento, no abandonando los controles.",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "id": "treatment_5"
+    },
+    {
+      "section": "dose",
+      "pt": "Durante lactação, a ATA considera propranolol e metoprolol opções para sintomas tireotóxicos, na menor dose eficaz. Escolher pela condição cardiovascular e acompanhar resposta; levotiroxina é individualizada por função, sintomas, lactação e planejamento reprodutivo.",
+      "es": "Durante lactancia, ATA considera propranolol y metoprolol opciones para síntomas tirotóxicos a la menor dosis eficaz. Elegir según condición cardiovascular y seguir respuesta; la levotiroxina se individualiza por función, síntomas, lactancia y planificación reproductiva.",
+      "sources": [
+        "S3"
+      ],
+      "id": "dose_6"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Pela ATA 2026, considerar redução ou retirada supervisionada da levotiroxina sintomática após 1 ano pós-parto quando não se planeja nova gestação em breve. Sem reposição na fase hipotireoidiana, repetir função em 4–8 semanas até recuperação ou indicação de tratamento; reavaliar em 1 ano ou antes por sintomas após episódio autolimitado.",
+      "es": "Según ATA 2026, considerar reducción o retirada supervisada de levotiroxina sintomática tras 1 año posparto cuando no se planea otro embarazo pronto. Sin reposición en fase hipotiroidea, repetir función en 4–8 semanas hasta recuperación o indicación de tratamiento; reevaluar en 1 año o antes por síntomas tras un episodio autolimitado.",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "id": "monitoring_7"
+    },
+    {
+      "section": "redflags",
+      "pt": "Arritmia, dor torácica, dispneia, confusão ou instabilidade exigem avaliação urgente. Ideação suicida ou psicose pós-parto também exige emergência, mesmo quando existe disfunção tireoidiana concomitante.",
+      "es": "Arritmia, dolor torácico, disnea, confusión o inestabilidad requieren evaluación urgente. La ideación suicida o psicosis posparto también requieren emergencia, aunque coexista disfunción tiroidea.",
+      "sources": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "id": "redflags_8"
+    },
+    {
+      "section": "special",
+      "pt": "Escolher fármacos considerando lactação e nova gestação planejada; não interromper amamentação ou iniciar radioiodo sem avaliação específica. O bebê não deve receber a prescrição materna.",
+      "es": "Elegir fármacos considerando lactancia y una nueva gestación planificada; no interrumpir la lactancia ni iniciar radioyodo sin evaluación específica. El bebé no debe recibir la prescripción materna.",
+      "sources": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "id": "special_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "S1",
+      "title": "Thyroiditis — mechanisms and treatment",
+      "url": "https://www.thyroid.org/thyroiditis/",
+      "authority": "American Thyroid Association",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "S2",
+      "title": "Postpartum thyroiditis",
+      "url": "https://www.thyroid.org/postpartum-thyroiditis/",
+      "authority": "American Thyroid Association",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "S3",
+      "title": "ATA 2026 guidelines for thyroid disease in preconception, pregnancy and postpartum",
+      "url": "https://journals.sagepub.com/doi/10.1177/10507256261445624",
+      "authority": "American Thyroid Association",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "S4",
+      "title": "Antenatal and postnatal mental health",
+      "url": "https://www.nice.org.uk/guidance/cg192/chapter/Recommendations",
+      "authority": "NICE CG192",
+      "year": "2014; atualizado 2020",
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,133 @@
+{
+  "owner": "sindrome_fragilidade",
+  "title": {
+    "pt": "Síndrome de fragilidade",
+    "es": "Síndrome de fragilidad"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Pessoas mais velhas com suspeita de fragilidade",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "fragilidad geriátrica",
+      "adulto mayor frágil",
+      "frailty",
+      "fragilidade geriátrica",
+      "idoso frágil",
+      "frailty syndrome"
+    ],
+    "distinctScope": "Síndrome multidimensional de vulnerabilidade, distinta da doença muscular sarcopenia."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Redução de reserva e maior vulnerabilidade a estressores, envolvendo dimensões físicas, cognitivas e sociais; não equivale à idade cronológica ou à sarcopenia isolada.",
+      "es": "Reducción de reserva y mayor vulnerabilidad a estresores, con dimensiones físicas, cognitivas y sociales; no equivale a edad cronológica ni a sarcopenia aislada.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar função prévia, marcha, quedas, cognição, nutrição, apoio social e medicamentos; comparar situação atual com estado habitual.",
+      "es": "Evaluar funcionamiento previo, marcha, caídas, cognición, nutrición, apoyo social y medicamentos; comparar situación actual con estado habitual.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Usar ferramenta validada para a população e avaliação geriátrica multidimensional; doença aguda pode distorcer a impressão de fragilidade basal.",
+      "es": "Usar una herramienta validada para la población y evaluación geriátrica multidimensional; la enfermedad aguda puede distorsionar la impresión de fragilidad basal.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Construir plano compartilhado com reabilitação, nutrição, revisão de medicamentos e suporte social; priorizar necessidades e objetivos da pessoa.",
+      "es": "Construir un plan compartido con rehabilitación, nutrición, revisión de medicamentos y apoyo social; priorizar necesidades y objetivos de la persona.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há fármaco único para fragilidade. Reduzir carga terapêutica desnecessária sem suspender abruptamente medicamentos que exigem retirada planejada.",
+      "es": "No existe un fármaco único para fragilidad. Reducir carga terapéutica innecesaria sin suspender abruptamente medicamentos que exigen retirada planificada.",
+      "sources": [
+        "F1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar função, quedas, carga de tratamento e capacidade do cuidador; coordenar plano de alta e seguimento entre serviços.",
+      "es": "Seguir funcionamiento, caídas, carga de tratamiento y capacidad del cuidador; coordinar plan de alta y seguimiento entre servicios.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Declínio agudo, delirium, incapacidade de autocuidado ou sinais de doença grave requerem avaliação urgente; não atribuir deterioração apenas à fragilidade.",
+      "es": "El deterioro agudo, el delirium, la incapacidad de autocuidado o los signos de enfermedad grave requieren evaluación urgente; no atribuir el deterioro solo a fragilidad.",
+      "sources": [
+        "F2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Fragilidade não determina isoladamente limitação de tratamento; considerar prognóstico, preferências, reversibilidade e decisão clínica individual.",
+      "es": "La fragilidad no determina por sí sola limitación del tratamiento; considerar pronóstico, preferencias, reversibilidad y decisión clínica individual.",
+      "sources": [
+        "F1",
+        "F2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "F1",
+      "title": "Multimorbidity: clinical assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng56/chapter/recommendations",
+      "authority": "NICE NG56",
+      "year": 2016,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "F2",
+      "title": "Silver Book II: holistic assessment of older people",
+      "url": "https://www.bgs.org.uk/resources/silver-book-ii-holistic-assessment-of-older-people",
+      "authority": "British Geriatrics Society",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

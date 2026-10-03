@@ -40,8 +40,8 @@ String? approvedNewPathologyContext(
   final locale = language == 'es' ? 'es' : 'pt';
   return <String>[
     'owner=${selected.id}',
-    'clinicalVersion=${newPathologyG02Versions[selected.id] ?? 'NEW-JIT-2026-10-02-v1.0'}',
-    'clinicalReviewDate=${newPathologyG02Versions.containsKey(selected.id) ? '2026-10-03' : '2026-10-02'}',
+    'clinicalVersion=${newPathologyG03Versions[selected.id] ?? newPathologyG02Versions[selected.id] ?? 'NEW-JIT-2026-10-02-v1.0'}',
+    'clinicalReviewDate=${(newPathologyG03Versions.containsKey(selected.id) || newPathologyG02Versions.containsKey(selected.id)) ? '2026-10-03' : '2026-10-02'}',
     'approvedClinicalPayloadSha256=${newPathologyApprovedHashes[selected.id]}',
     locale == 'es'
         ? 'TIEMPO CLÍNICO: escribir horas, días, semanas, meses y minutos por extenso. No usar h, d, min, mo ni c/. No convertir semana en mes ni frecuencia en duración. Mantener los valores y las condiciones verificados; no inventar un intervalo ausente.'

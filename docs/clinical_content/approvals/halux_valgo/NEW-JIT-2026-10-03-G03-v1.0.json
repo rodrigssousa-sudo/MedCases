@@ -1,0 +1,116 @@
+{
+  "owner": "halux_valgo",
+  "title": {
+    "pt": "Hálux valgo",
+    "es": "Hallux valgus"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "juanete",
+      "hallux valgus",
+      "joanete",
+      "bunion"
+    ],
+    "distinctScope": "Deformidade do primeiro raio, distinta de gota, artrite ou metatarsalgia inespecífica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Deformidade do primeiro raio com desvio do hálux e proeminência medial; sobrecarga e conflito com calçado explicam dor, sem significar infecção.",
+      "es": "Deformidad del primer radio con desviación del hallux y prominencia medial; la sobrecarga y el conflicto con el calzado explican dolor, sin significar infección.",
+      "sources": [
+        "H1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar dor ao calçar, calos, mobilidade, deformidades associadas e limitação de marcha; examinar pele e circulação.",
+      "es": "Evaluar dolor al calzarse, callos, movilidad, deformidades asociadas y limitación de marcha; examinar piel y circulación.",
+      "sources": [
+        "H1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico pelo exame; radiografias com carga podem orientar avaliação estrutural e planejamento cirúrgico. Diferenciar artrite e inflamação aguda articular.",
+      "es": "Diagnóstico mediante examen; las radiografías con carga pueden orientar evaluación estructural y planificación quirúrgica. Diferenciar artritis e inflamación articular aguda.",
+      "sources": [
+        "H1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Calçado com espaço anterior, adaptação de atividades e proteção da proeminência reduzem sintomas; medidas conservadoras não corrigem permanentemente a deformidade.",
+      "es": "El calzado con espacio anterior, la adaptación de actividades y la protección de la prominencia reducen síntomas; las medidas conservadoras no corrigen permanentemente la deformidad.",
+      "sources": [
+        "H1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Analgesia é individualizada por comorbidades; não existe medicamento que realinhe o hálux. Evitar uso prolongado de anti-inflamatório sem avaliação de riscos.",
+      "es": "La analgesia se individualiza según comorbilidades; no existe medicamento que realinee el hallux. Evitar uso prolongado de antiinflamatorios sin evaluar riesgos.",
+      "sources": [
+        "H1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar dor, tolerância ao calçado e função; cirurgia é considerada para dor e limitação persistentes, não apenas aparência.",
+      "es": "Seguir dolor, tolerancia al calzado y función; considerar cirugía ante dolor y limitación persistentes, no solo por apariencia.",
+      "sources": [
+        "H1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Vermelhidão intensa, ferida ou dor aguda atípica exige excluir causa inflamatória, infecciosa ou traumática; não presumir crise da deformidade crônica.",
+      "es": "El enrojecimiento intenso, una herida o el dolor agudo atípico exige excluir causas inflamatorias, infecciosas o traumáticas; no presumir una crisis de la deformidad crónica.",
+      "sources": [
+        "H1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Diabetes, neuropatia e doença arterial alteram risco cutâneo e cirúrgico; avaliar segurança do calçado, pele e procedimentos de forma individual.",
+      "es": "La diabetes, la neuropatía y la enfermedad arterial modifican riesgo cutáneo y quirúrgico; evaluar seguridad del calzado, piel y procedimientos individualmente.",
+      "sources": [
+        "H1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "H1",
+      "title": "Bunions",
+      "url": "https://www.orthoinfo.org/diseases--conditions/bunions/",
+      "authority": "AAOS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

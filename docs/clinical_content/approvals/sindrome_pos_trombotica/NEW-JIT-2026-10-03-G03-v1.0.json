@@ -1,0 +1,141 @@
+{
+  "owner": "sindrome_pos_trombotica",
+  "title": {
+    "pt": "Síndrome pós-trombótica",
+    "es": "Síndrome postrombótico"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "SPT",
+      "síndrome postflebítico",
+      "síndrome pós-flebítica",
+      "post-thrombotic syndrome",
+      "PTS",
+      "postphlebitic syndrome"
+    ],
+    "distinctScope": "Sequela crônica pós-trombose, distinta de trombose venosa profunda e tromboembolismo agudos."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Sequela venosa crônica após trombose profunda, por obstrução e dano valvar; não significa automaticamente nova trombose.",
+      "es": "Secuela venosa crónica tras trombosis profunda por obstrucción y daño valvular; no significa automáticamente una nueva trombosis.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar peso, dor, edema e alterações cutâneas após trombose prévia; registrar impacto na marcha e possíveis úlceras.",
+      "es": "Investigar pesadez, dolor, edema y cambios cutáneos tras trombosis previa; registrar impacto en la marcha y posibles úlceras.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Avaliação clínica e investigação venosa quando indicada; sintomas novos ou súbitos exigem excluir trombose recorrente e outras causas de edema.",
+      "es": "Evaluación clínica e investigación venosa cuando esté indicada; los síntomas nuevos o súbitos exigen excluir trombosis recurrente y otras causas de edema.",
+      "sources": [
+        "P1",
+        "P2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Exercício, elevação e controle de peso podem ajudar; compressão é opção para sintomas selecionados, após avaliar segurança arterial.",
+      "es": "El ejercicio, la elevación y el control de peso pueden ayudar; la compresión es una opción para síntomas seleccionados tras evaluar seguridad arterial.",
+      "sources": [
+        "P1",
+        "P3"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não iniciar ou aumentar anticoagulante apenas por síndrome pós-trombótica. A indicação e duração dependem do evento trombótico e do risco individual.",
+      "es": "No iniciar ni aumentar anticoagulantes solo por síndrome postrombótico. La indicación y duración dependen del evento trombótico y del riesgo individual.",
+      "sources": [
+        "P2",
+        "P3"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar sintomas, pele e tolerância à compressão; obstrução importante, úlcera ou limitação persistente pode exigir especialista vascular.",
+      "es": "Reevaluar síntomas, piel y tolerancia a la compresión; una obstrucción importante, úlcera o limitación persistente puede exigir especialista vascular.",
+      "sources": [
+        "P1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Dor e edema súbitos ou dispneia não devem ser atribuídos à sequela crônica: investigar trombose ou embolia aguda conforme apresentação.",
+      "es": "El dolor y edema súbitos o la disnea no deben atribuirse a la secuela crónica: investigar trombosis o embolia aguda según presentación.",
+      "sources": [
+        "P2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não prescrever meias rotineiramente a todo paciente com trombose apenas para prevenir a síndrome; benefício sintomático e prevenção são indicações diferentes.",
+      "es": "No prescribir medias de rutina a todo paciente con trombosis solo para prevenir el síndrome; el beneficio sintomático y la prevención son indicaciones diferentes.",
+      "sources": [
+        "P3"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "P1",
+      "title": "Post-thrombotic syndrome and chronic venous insufficiency: treatment",
+      "url": "https://www.guysandstthomas.nhs.uk/health-information/post-thrombotic-syndrome-and-chronic-venous-insufficiency/your-treatment-plan-0",
+      "authority": "Guy’s and St Thomas’ NHS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "P2",
+      "title": "Post-thrombotic syndrome patient information",
+      "url": "https://thrombosiscanada.ca/uploads/patients%20%26%20caregivers/Patient_Materials/28.%20Post-thrombotic_08April2025.pdf",
+      "authority": "Thrombosis Canada",
+      "year": 2025,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "P3",
+      "title": "Compression stockings clinical guide",
+      "url": "https://thrombosiscanada.ca/clinical_guides/pdfs/79_30.pdf",
+      "authority": "Thrombosis Canada",
+      "year": "guia consultado em 2026",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

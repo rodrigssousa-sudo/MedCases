@@ -1,0 +1,142 @@
+{
+  "owner": "ulcera_pe_diabetico",
+  "title": {
+    "pt": "Úlcera do pé diabético",
+    "es": "Úlcera de pie diabético"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "pie diabético ulcerado",
+      "úlcera neuropática diabética",
+      "herida del pie diabético",
+      "pé diabético ulcerado",
+      "ferida do pé diabético",
+      "diabetic foot ulcer",
+      "diabetes-related foot ulcer",
+      "neuropathic foot ulcer"
+    ],
+    "distinctScope": "Úlcera neuropática/vascular em diabetes com ou sem infecção; distinta de diabetes sem lesão no pé."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Neuropatia, sobrecarga e doença arterial podem causar ulceração no diabetes; infecção é uma complicação, não requisito para o diagnóstico.",
+      "es": "La neuropatía, la sobrecarga y la enfermedad arterial pueden causar ulceración en diabetes; la infección es una complicación, no un requisito para el diagnóstico.",
+      "sources": [
+        "D1",
+        "D2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Examinar ferida, profundidade, sensibilidade, pulsos, deformidade e sinais de infecção; dor ausente não exclui gravidade pela neuropatia.",
+      "es": "Examinar herida, profundidad, sensibilidad, pulsos, deformidad y signos de infección; la ausencia de dolor no excluye gravedad por neuropatía.",
+      "sources": [
+        "D1",
+        "D2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Infecção é definida clinicamente, não por cultura isolada. Suspeita de osteomielite requer avaliação dirigida com exame, imagem e amostra adequada quando indicada.",
+      "es": "La infección se define clínicamente, no por cultivo aislado. La sospecha de osteomielitis requiere evaluación dirigida con examen, imágenes y muestra adecuada cuando esté indicada.",
+      "sources": [
+        "D2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Combinar alívio de carga, cuidado da ferida, controle metabólico e avaliação vascular. Dispositivo não removível até o joelho é opção preferida para úlcera neuropática plantar selecionada, sem extrapolar a toda ferida infectada ou isquêmica.",
+      "es": "Combinar descarga, cuidado de la herida, control metabólico y evaluación vascular. El dispositivo no removible hasta la rodilla es una opción preferida para úlcera neuropática plantar seleccionada, sin extrapolar a toda herida infectada o isquémica.",
+      "sources": [
+        "D1",
+        "D3"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não usar antibiótico em úlcera não infectada. Quando indicado, escolher pelo grau de infecção, culturas pertinentes, função renal e resistência local; osteomielite não usa automaticamente o mesmo curso de infecção superficial.",
+      "es": "No usar antibióticos en una úlcera no infectada. Cuando se indiquen, elegir según grado de infección, cultivos pertinentes, función renal y resistencia local; la osteomielitis no usa automáticamente el mismo curso que una infección superficial.",
+      "sources": [
+        "D2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Documentar cicatrização, perfusão, adesão à descarga e sinais infecciosos; problema ativo sem ameaça imediata deve ser encaminhado em até 1 dia útil conforme NICE.",
+      "es": "Documentar cicatrización, perfusión, adherencia a la descarga y signos infecciosos; un problema activo sin amenaza inmediata debe derivarse dentro de 1 día hábil según NICE.",
+      "sources": [
+        "D1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Sepse, isquemia com perda tecidual, gangrena ou suspeita de infecção profunda exige atendimento hospitalar imediato e avaliação cirúrgico-vascular.",
+      "es": "La sepsis, la isquemia con pérdida tisular, la gangrena o la sospecha de infección profunda exige atención hospitalaria inmediata y evaluación quirúrgico-vascular.",
+      "sources": [
+        "D1",
+        "D2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Doença renal, neuropatia e imunossupressão aumentam complexidade; pé quente e edemaciado pode representar Charcot e exige avaliação específica, não simples alta por ausência de dor.",
+      "es": "La enfermedad renal, la neuropatía y la inmunosupresión aumentan complejidad; un pie caliente y edematoso puede representar Charcot y exige evaluación específica, no alta simple por ausencia de dolor.",
+      "sources": [
+        "D1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "D1",
+      "title": "Diabetic foot problems: prevention and management",
+      "url": "https://www.nice.org.uk/guidance/ng19/chapter/Recommendations",
+      "authority": "NICE NG19",
+      "year": "2015; atualizações posteriores",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "D2",
+      "title": "IWGDF/IDSA guideline on diabetes-related foot infections",
+      "url": "https://www.idsociety.org/practice-guideline/diabetic-foot-infections/",
+      "authority": "IWGDF / IDSA",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "D3",
+      "title": "IWGDF offloading guideline",
+      "url": "https://iwgdfguidelines.org/offloading-guideline-2023/",
+      "authority": "IWGDF",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

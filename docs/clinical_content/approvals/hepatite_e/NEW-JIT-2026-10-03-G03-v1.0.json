@@ -1,0 +1,132 @@
+{
+  "owner": "hepatite_e",
+  "title": {
+    "pt": "Hepatite E",
+    "es": "Hepatitis E"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "HEV",
+      "infección por virus de hepatitis E",
+      "infecção pelo vírus da hepatite E",
+      "hepatitis E",
+      "HEV infection"
+    ],
+    "distinctScope": "Infecção pelo HEV, distinta das hepatites A, B e C já existentes."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção por vírus da hepatite E, geralmente autolimitada; transmissão pode envolver água contaminada ou alimentos conforme contexto epidemiológico.",
+      "es": "Infección por el virus de hepatitis E, generalmente autolimitada; la transmisión puede involucrar agua contaminada o alimentos según contexto epidemiológico.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar icterícia, mal-estar, sintomas digestivos, exposição alimentar ou hídrica, viagens, gestação e imunossupressão.",
+      "es": "Investigar ictericia, malestar, síntomas digestivos, exposición alimentaria o hídrica, viajes, embarazo e inmunosupresión.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar com testes específicos, como IgM anti-HEV ou RNA viral conforme contexto; avaliar função hepática e gravidade, sem diferenciar hepatites apenas pela clínica.",
+      "es": "Confirmar con pruebas específicas, como IgM anti-HEV o ARN viral según contexto; evaluar función hepática y gravedad, sin diferenciar hepatitis solo por clínica.",
+      "sources": [
+        "E1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Na forma aguda não complicada, cuidado de suporte e evitar álcool e medicamentos desnecessários que prejudiquem fígado; não há antiviral específico de rotina que altere o curso agudo.",
+      "es": "En la forma aguda no complicada, cuidados de apoyo y evitar alcohol y medicamentos innecesarios que dañen el hígado; no existe antiviral específico rutinario que modifique el curso agudo.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não indicar ribavirina empiricamente para toda hepatite E. Infecção persistente em imunossupressão exige hepatologia/infectologia e plano próprio, sem dose universal neste guia.",
+      "es": "No indicar ribavirina empíricamente para toda hepatitis E. La infección persistente en inmunosupresión exige hepatología/infectología y un plan específico, sin dosis universal en esta guía.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar estado clínico e exames hepáticos conforme gravidade; orientar retorno imediato por deterioração e prevenção com água e alimentos seguros.",
+      "es": "Reevaluar estado clínico y estudios hepáticos según gravedad; indicar consulta inmediata ante deterioro y prevención con agua y alimentos seguros.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Suspeita de insuficiência hepática aguda, alteração de consciência ou descompensação exige internação e avaliação especializada. Gestante sintomática deve ser considerada para internação.",
+      "es": "La sospecha de insuficiencia hepática aguda, la alteración de conciencia o la descompensación exige internación y evaluación especializada. Considerar internación de embarazadas sintomáticas.",
+      "sources": [
+        "E1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação, sobretudo fases mais avançadas, aumenta risco de doença grave. Transplantados e outros imunossuprimidos podem desenvolver infecção crônica; não aplicar seguimento simples de autolimitação.",
+      "es": "El embarazo, especialmente en fases avanzadas, aumenta riesgo de enfermedad grave. Los trasplantados y otros inmunosuprimidos pueden desarrollar infección crónica; no aplicar seguimiento simple de autolimitación.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "E1",
+      "title": "Hepatitis E fact sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-e",
+      "authority": "OMS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "E2",
+      "title": "About hepatitis E",
+      "url": "https://www.cdc.gov/hepatitis-e/about/index.html",
+      "authority": "CDC",
+      "year": 2024,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

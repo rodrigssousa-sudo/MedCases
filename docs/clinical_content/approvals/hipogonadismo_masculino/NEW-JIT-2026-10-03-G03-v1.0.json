@@ -1,0 +1,130 @@
+{
+  "owner": "hipogonadismo_masculino",
+  "title": {
+    "pt": "Hipogonadismo masculino",
+    "es": "Hipogonadismo masculino"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "deficiencia de testosterona",
+      "deficiencia androgénica",
+      "male hypogonadism",
+      "testosterone deficiency"
+    ],
+    "distinctScope": "Deficiência androgênica comprovada, distinta de disfunção erétil isolada."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Síndrome de deficiência androgênica com sintomas e confirmação bioquímica; diferenciar insuficiência testicular primária de alteração hipotalâmico-hipofisária.",
+      "es": "Síndrome de deficiencia androgénica con síntomas y confirmación bioquímica; diferenciar insuficiencia testicular primaria de alteración hipotalámico-hipofisaria.",
+      "sources": [
+        "H1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar redução de libido, alterações sexuais, fertilidade, massa muscular, medicamentos, obesidade e doenças sistêmicas; testosterona baixa isolada não confirma a síndrome.",
+      "es": "Investigar reducción de libido, alteraciones sexuales, fertilidad, masa muscular, medicamentos, obesidad y enfermedades sistémicas; una testosterona baja aislada no confirma el síndrome.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar testosterona matinal em jejum e repetir resultado baixo em ocasião separada; LH e FSH ajudam a localizar a causa. Avaliar prolactina e hipófise quando indicado.",
+      "es": "Confirmar testosterona matutina en ayunas y repetir un resultado bajo en otra ocasión; LH y FSH ayudan a localizar la causa. Evaluar prolactina e hipófisis cuando esté indicado.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar causas reversíveis e discutir reposição somente com sintomas, deficiência documentada e avaliação de contraindicações; não usar testosterona como suplemento inespecífico.",
+      "es": "Tratar causas reversibles y discutir reposición únicamente con síntomas, deficiencia documentada y evaluación de contraindicaciones; no usar testosterona como suplemento inespecífico.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Testosterona não tem esquema intercambiável entre gel e formulações injetáveis. Selecionar produto, dose e intervalo pela bula e monitorização especializada; não converter volumes por inferência.",
+      "es": "La testosterona no tiene un esquema intercambiable entre gel y formulaciones inyectables. Seleccionar producto, dosis e intervalo según ficha y seguimiento especializado; no convertir volúmenes por inferencia.",
+      "sources": [
+        "H1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar sintomas, testosterona, hematócrito e avaliação prostática conforme risco; elevação do hematócrito exige revisão do tratamento e da causa.",
+      "es": "Controlar síntomas, testosterona, hematocrito y evaluación prostática según riesgo; la elevación del hematocrito exige revisar el tratamiento y la causa.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Cefaleia com alteração visual ou suspeita de lesão hipofisária exige investigação prioritária. Câncer de próstata ou mama não tratado contraindica reposição.",
+      "es": "La cefalea con alteración visual o sospecha de lesión hipofisaria exige investigación prioritaria. El cáncer de próstata o mama no tratado contraindica la reposición.",
+      "sources": [
+        "H1",
+        "H2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Não oferecer testosterona quando houver desejo de fertilidade: pode suprimir espermatogênese. Hipogonadismo com infertilidade, adolescentes e doença orgânica exigem manejo especializado.",
+      "es": "No ofrecer testosterona cuando exista deseo de fertilidad: puede suprimir la espermatogénesis. El hipogonadismo con infertilidad, los adolescentes y la enfermedad orgánica exigen manejo especializado.",
+      "sources": [
+        "H1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "H1",
+      "title": "EAU sexual and reproductive health: male hypogonadism",
+      "url": "https://uroweb.org/guidelines/sexual-and-reproductive-health/chapter/male-hypogonadism",
+      "authority": "EAU",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "H2",
+      "title": "EAA guidelines on functional hypogonadism in males",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/32026626/",
+      "authority": "EAA/ESE",
+      "year": 2020,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

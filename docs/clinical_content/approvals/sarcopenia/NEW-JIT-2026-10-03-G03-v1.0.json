@@ -1,0 +1,129 @@
+{
+  "owner": "sarcopenia",
+  "title": {
+    "pt": "Sarcopenia",
+    "es": "Sarcopenia"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos; sobretudo pessoas mais velhas ou com comorbidades",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "pérdida muscular relacionada con edad",
+      "baja fuerza muscular",
+      "perda de massa muscular relacionada à idade",
+      "baixa força muscular",
+      "sarcopenia"
+    ],
+    "distinctScope": "Doença muscular definida por força e massa/qualidade, distinta da síndrome multidimensional de fragilidade."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença muscular com redução de força e massa ou qualidade muscular; envelhecimento, inatividade, desnutrição e doença podem contribuir.",
+      "es": "Enfermedad muscular con reducción de fuerza y masa o calidad muscular; pueden contribuir envejecimiento, inactividad, desnutrición y enfermedad.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Investigar fraqueza, dificuldade para levantar, quedas e perda funcional; rastreamento como SARC-F orienta avaliação, mas não confirma sozinho.",
+      "es": "Investigar debilidad, dificultad para levantarse, caídas y pérdida funcional; el tamizaje como SARC-F orienta evaluación, pero no confirma por sí solo.",
+      "sources": [
+        "S1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "No EWGSOP2, baixa força indica sarcopenia provável; baixa quantidade ou qualidade muscular confirma; baixo desempenho físico identifica gravidade. Usar método validado e população apropriada.",
+      "es": "En EWGSOP2, baja fuerza indica sarcopenia probable; baja cantidad o calidad muscular confirma; bajo rendimiento físico identifica gravedad. Usar método validado y población apropiada.",
+      "sources": [
+        "S1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Oferecer exercício resistido progressivo e otimizar energia e proteína, preferencialmente com equipe de exercício e nutrição; investigar causas reversíveis.",
+      "es": "Ofrecer ejercicio de resistencia progresivo y optimizar energía y proteína, preferentemente con equipo de ejercicio y nutrición; investigar causas reversibles.",
+      "sources": [
+        "S2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há medicamento específico de rotina. A prescrição de exercício e proteína deve ser individual; não aplicar suplemento ou meta proteica fixa a toda pessoa com doença renal.",
+      "es": "No existe medicamento específico de rutina. La prescripción de ejercicio y proteína debe individualizarse; no aplicar suplementos ni una meta proteica fija a toda persona con enfermedad renal.",
+      "sources": [
+        "S2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar força, desempenho, ingestão e quedas; reavaliar após eventos importantes de saúde e pelo menos anualmente conforme consenso ANZSSFR.",
+      "es": "Seguir fuerza, rendimiento, ingesta y caídas; reevaluar tras eventos importantes de salud y al menos anualmente según consenso ANZSSFR.",
+      "sources": [
+        "S2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Declínio rápido, perda ponderal importante ou incapacidade funcional exige investigar doença subjacente; não atribuir automaticamente ao envelhecimento.",
+      "es": "El deterioro rápido, la pérdida importante de peso o la incapacidad funcional exige investigar enfermedad subyacente; no atribuirlo automáticamente al envejecimiento.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Ajustar exercício à segurança, capacidade e preferências. Sarcopenia pode coexistir com fragilidade, mas não substitui avaliação geriátrica multidimensional.",
+      "es": "Ajustar ejercicio a seguridad, capacidad y preferencias. La sarcopenia puede coexistir con fragilidad, pero no sustituye la evaluación geriátrica multidimensional.",
+      "sources": [
+        "S1",
+        "S2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "S1",
+      "title": "Sarcopenia: revised European consensus on definition and diagnosis",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6322506/",
+      "authority": "EWGSOP2",
+      "year": 2019,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "S2",
+      "title": "Consensus guidelines for sarcopenia prevention, diagnosis and management in Australia and New Zealand",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9891980/",
+      "authority": "ANZSSFR",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

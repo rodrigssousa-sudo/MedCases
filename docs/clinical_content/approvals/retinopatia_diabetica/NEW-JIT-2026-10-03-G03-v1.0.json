@@ -1,0 +1,120 @@
+{
+  "owner": "retinopatia_diabetica",
+  "title": {
+    "pt": "Retinopatia diabética",
+    "es": "Retinopatía diabética"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "retinopatía diabética",
+      "RD",
+      "edema macular diabético",
+      "EMD",
+      "diabetic retinopathy",
+      "DR",
+      "diabetic macular edema",
+      "DME"
+    ],
+    "distinctScope": "Lesão retinal microvascular do diabetes, não equivalente ao owner diabetes sem complicação ocular."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Complicação microvascular do diabetes; classificar doença não proliferativa, proliferativa e edema macular, que pode coexistir com diferentes estágios.",
+      "es": "Complicación microvascular de la diabetes; clasificar enfermedad no proliferativa, proliferativa y edema macular, que puede coexistir con distintos estadios.",
+      "sources": [
+        "R1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pode ser assintomática até doença avançada; pesquisar mudança de visão e manter avaliação retinal, sem esperar sintomas para reconhecer risco.",
+      "es": "Puede ser asintomática hasta enfermedad avanzada; investigar cambios visuales y mantener evaluación retiniana sin esperar síntomas para reconocer riesgo.",
+      "sources": [
+        "R1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Exame retinal especializado e tomografia de coerência óptica quando indicado para edema; classificar gravidade para definir acompanhamento e tratamento.",
+      "es": "Examen retiniano especializado y tomografía de coherencia óptica cuando esté indicada para edema; clasificar gravedad para definir seguimiento y tratamiento.",
+      "sources": [
+        "R1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Coordenar controle metabólico e pressão arterial. Fotocoagulação panretiniana é usualmente primeira opção na forma proliferativa; edema macular e doença persistente exigem plano especializado.",
+      "es": "Coordinar control metabólico y presión arterial. La fotocoagulación panretiniana suele ser primera opción en la forma proliferativa; el edema macular y la enfermedad persistente exigen un plan especializado.",
+      "sources": [
+        "R1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Anti-VEGF depende de indicação, produto e seguimento oftalmológico; não fornecer dose intravítrea genérica nem substituir procedimento por colírio empírico.",
+      "es": "Los anti-VEGF dependen de indicación, producto y seguimiento oftalmológico; no proporcionar dosis intravítrea genérica ni sustituir el procedimiento por un colirio empírico.",
+      "sources": [
+        "R1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar por estágio e resposta; informar oftalmologia antes de tratamento que possa produzir queda rápida importante da hemoglobina glicada.",
+      "es": "Seguir según estadio y respuesta; informar a oftalmología antes de un tratamiento que pueda producir descenso rápido importante de hemoglobina glucosilada.",
+      "sources": [
+        "R1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Queda visual súbita, suspeita de hemorragia vítrea ou descolamento exige avaliação urgente, sem esperar o retorno de rotina.",
+      "es": "La caída visual súbita, la sospecha de hemorragia vítrea o desprendimiento exige evaluación urgente sin esperar el control rutinario.",
+      "sources": [
+        "R1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "A NG242 trata manejo e monitorização especializados; não substitui protocolos de rastreamento ou gestação. Esses contextos exigem guia específico e coordenação do cuidado.",
+      "es": "La NG242 aborda manejo y seguimiento especializados; no sustituye protocolos de tamizaje o embarazo. Esos contextos exigen guía específica y coordinación del cuidado.",
+      "sources": [
+        "R1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "R1",
+      "title": "Diabetic retinopathy: management and monitoring",
+      "url": "https://www.nice.org.uk/guidance/ng242/chapter/Recommendations",
+      "authority": "NICE NG242",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

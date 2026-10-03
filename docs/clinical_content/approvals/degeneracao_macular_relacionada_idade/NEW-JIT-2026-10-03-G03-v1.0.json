@@ -1,0 +1,130 @@
+{
+  "owner": "degeneracao_macular_relacionada_idade",
+  "title": {
+    "pt": "Degeneração macular relacionada à idade",
+    "es": "Degeneración macular relacionada con la edad"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "degeneración macular relacionada con la edad",
+      "DMAE",
+      "DMRE",
+      "degeneração macular relacionada à idade",
+      "DMRI",
+      "degeneração macular senil",
+      "age-related macular degeneration",
+      "AMD"
+    ],
+    "distinctScope": "Doença degenerativa macular, distinta de retinopatia diabética, glaucoma e oclusão arterial retiniana."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Doença macular compromete visão central; distinguir formas atróficas e neovasculares, porque prognóstico e tratamento diferem.",
+      "es": "La enfermedad macular compromete visión central; distinguir formas atróficas y neovasculares porque pronóstico y tratamiento difieren.",
+      "sources": [
+        "A1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Distorção de linhas, dificuldade central para leitura ou escotoma exigem exame; perguntar sobre mudança recente e avaliar acuidade.",
+      "es": "La distorsión de líneas, dificultad central para leer o escotoma exigen examen; preguntar por cambios recientes y evaluar agudeza.",
+      "sources": [
+        "A1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Avaliação oftalmológica com fundo de olho e tomografia de coerência óptica conforme suspeita; novos sintomas não devem ser atribuídos ao envelhecimento normal.",
+      "es": "Evaluación oftalmológica con fondo de ojo y tomografía de coherencia óptica según sospecha; los síntomas nuevos no deben atribuirse al envejecimiento normal.",
+      "sources": [
+        "A1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Suspeita de neovascularização requer encaminhamento normalmente em até 1 dia útil. Tratamento intravítreo e seguimento são conduzidos por especialista; apoiar reabilitação visual.",
+      "es": "La sospecha de neovascularización requiere derivación habitualmente dentro de 1 día hábil. El tratamiento intravítreo y seguimiento se conducen por especialista; apoyar rehabilitación visual.",
+      "sources": [
+        "A1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Anti-VEGF não tem esquema único intercambiável entre produtos. AREDS 2 pode ser considerado em estágios elegíveis após avaliação, não como suplemento universal para qualquer perda visual.",
+      "es": "Los anti-VEGF no tienen un esquema único intercambiable entre productos. AREDS 2 puede considerarse en estadios elegibles tras evaluación, no como suplemento universal para cualquier pérdida visual.",
+      "sources": [
+        "A1",
+        "A2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Orientar autocuidado e comunicação rápida de nova distorção ou queda visual; acompanhar resposta ao tratamento e cessação do tabagismo.",
+      "es": "Orientar autocuidado y comunicación rápida de nueva distorsión o caída visual; seguir respuesta al tratamiento y abandono del tabaco.",
+      "sources": [
+        "A1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Perda súbita, dor ocular ou sintoma neurológico exige triagem de outras emergências; não aguardar acompanhamento eletivo de degeneração macular.",
+      "es": "La pérdida súbita, el dolor ocular o un síntoma neurológico exige evaluar otras emergencias; no esperar seguimiento electivo de degeneración macular.",
+      "sources": [
+        "A1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Fumantes e ex-fumantes devem evitar fórmula antiga AREDS com betacaroteno pelo risco de câncer pulmonar. Revisar interações e composição antes de suplementos.",
+      "es": "Los fumadores y exfumadores deben evitar la fórmula antigua AREDS con betacaroteno por riesgo de cáncer pulmonar. Revisar interacciones y composición antes de suplementos.",
+      "sources": [
+        "A2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "A1",
+      "title": "Age-related macular degeneration",
+      "url": "https://www.nice.org.uk/guidance/ng82/chapter/Recommendations",
+      "authority": "NICE NG82",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "A2",
+      "title": "AREDS 2 supplements for AMD",
+      "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/age-related-macular-degeneration/nutritional-supplements-age-related-macular-degeneration",
+      "authority": "National Eye Institute",
+      "year": 2021,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

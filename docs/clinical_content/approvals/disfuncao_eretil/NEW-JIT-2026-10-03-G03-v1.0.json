@@ -1,0 +1,129 @@
+{
+  "owner": "disfuncao_eretil",
+  "title": {
+    "pt": "Disfunção erétil",
+    "es": "Disfunción eréctil"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "disfunción eréctil",
+      "impotencia sexual",
+      "disfunção erétil",
+      "erectile dysfunction",
+      "ED",
+      "impotence"
+    ],
+    "distinctScope": "Disfunção sexual funcional/vascular, não equivalente ao diagnóstico hormonal de hipogonadismo."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Dificuldade persistente em obter ou manter ereção satisfatória; causas vasculares, neurológicas, hormonais, farmacológicas e psicossociais podem coexistir.",
+      "es": "Dificultad persistente para obtener o mantener una erección satisfactoria; pueden coexistir causas vasculares, neurológicas, hormonales, farmacológicas y psicosociales.",
+      "sources": [
+        "E1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Avaliar história sexual, ereções espontâneas, medicamentos, saúde mental e risco cardiovascular; exame genital e vascular dirigido.",
+      "es": "Evaluar historia sexual, erecciones espontáneas, medicamentos, salud mental y riesgo cardiovascular; examen genital y vascular dirigido.",
+      "sources": [
+        "E1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Considerar glicemia ou hemoglobina glicada, lipídios e testosterona matinal; exames especializados conforme hipótese, não rotineiramente em todos.",
+      "es": "Considerar glucemia o hemoglobina glucosilada, lípidos y testosterona matutina; estudios especializados según hipótesis, no de rutina en todos.",
+      "sources": [
+        "E1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Corrigir fatores de risco, abordar contexto psicosexual e oferecer inibidor de fosfodiesterase-5 quando seguro. Instabilidade cardiovascular exige avaliação antes de atividade sexual ou tratamento.",
+      "es": "Corregir factores de riesgo, abordar el contexto psicosexual y ofrecer un inhibidor de fosfodiesterasa-5 cuando sea seguro. La inestabilidad cardiovascular exige evaluación antes de la actividad sexual o el tratamiento.",
+      "sources": [
+        "E1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Sildenafila: 50 mg por via oral conforme necessidade, cerca de 1 hora antes; ajustar entre 25 e 100 mg. Máximo: 100 mg por dose e uma administração por dia. Estímulo sexual é necessário.",
+      "es": "Sildenafilo: 50 mg por vía oral según necesidad, aproximadamente 1 hora antes; ajustar entre 25 y 100 mg. Máximo: 100 mg por dosis y una administración por día. Es necesaria la estimulación sexual.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar resposta, técnica de uso e efeitos adversos. Nitratos, doadores de óxido nítrico e riociguate contraindicam sildenafila; não sugerir um intervalo seguro automático para nitratos.",
+      "es": "Reevaluar respuesta, técnica de uso y efectos adversos. Los nitratos, los donantes de óxido nítrico y el riociguat contraindican el sildenafilo; no sugerir un intervalo seguro automático para nitratos.",
+      "sources": [
+        "E1",
+        "E2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Ereção por mais de 4 horas, perda súbita de visão ou audição requerem atendimento imediato. Dor torácica após uso exige informar o fármaco e evitar automedicação com nitratos.",
+      "es": "Una erección de más de 4 horas o la pérdida súbita de visión o audición requieren atención inmediata. El dolor torácico tras su uso exige informar el fármaco y evitar automedicarse con nitratos.",
+      "sources": [
+        "E2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Considerar início com 25 mg em idosos, comprometimento hepático ou renal grave. Com ritonavir, máximo de 25 mg em 48 horas; revisar alfa-bloqueadores e demais interações antes de prescrever.",
+      "es": "Considerar inicio con 25 mg en mayores y ante compromiso hepático o renal grave. Con ritonavir, máximo de 25 mg en 48 horas; revisar alfabloqueantes y otras interacciones antes de prescribir.",
+      "sources": [
+        "E2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "E1",
+      "title": "EAU sexual and reproductive health: management of erectile dysfunction",
+      "url": "https://uroweb.org/guidelines/sexual-and-reproductive-health/chapter/management-of-erectile-dysfunction",
+      "authority": "EAU",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "E2",
+      "title": "Sildenafil tablets: prescribing information",
+      "url": "https://www.dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=4df47282-7950-9430-e063-6394a90af579&type=display",
+      "authority": "DailyMed / bula dos EUA",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

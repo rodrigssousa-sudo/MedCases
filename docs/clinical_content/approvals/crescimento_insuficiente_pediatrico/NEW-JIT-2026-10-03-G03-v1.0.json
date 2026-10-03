@@ -1,0 +1,121 @@
+{
+  "owner": "crescimento_insuficiente_pediatrico",
+  "title": {
+    "pt": "Crescimento insuficiente pediátrico",
+    "es": "Crecimiento insuficiente pediátrico"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Bebês e crianças",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "fallo de medro",
+      "crecimiento insuficiente",
+      "ganancia ponderal insuficiente",
+      "falha de crescimento",
+      "crescimento insuficiente",
+      "ganho ponderal insuficiente",
+      "faltering weight",
+      "failure to thrive",
+      "poor weight gain"
+    ],
+    "distinctScope": "Problema longitudinal de crescimento, distinto de emergência desnutrição grave ou restrição fetal."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Trajetória ponderal ou de crescimento abaixo do esperado exige interpretação longitudinal; baixa medida isolada não define toda a etiologia.",
+      "es": "Una trayectoria ponderal o de crecimiento inferior a la esperada exige interpretación longitudinal; una medición baja aislada no define toda la etiología.",
+      "sources": [
+        "G1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Medir peso e comprimento ou altura, revisar curvas e história alimentar; observar mamada ou refeição e avaliar contexto familiar e desenvolvimento.",
+      "es": "Medir peso y longitud o talla, revisar curvas e historia alimentaria; observar toma o comida y evaluar contexto familiar y desarrollo.",
+      "sources": [
+        "G1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Exame e investigação dirigida, incluindo infecção urinária ou doença celíaca quando pertinentes; criança bem, sem outros achados, não exige painel amplo indiscriminado.",
+      "es": "Examen e investigación dirigida, incluyendo infección urinaria o enfermedad celíaca cuando corresponda; un niño sano sin otros hallazgos no exige un panel amplio indiscriminado.",
+      "sources": [
+        "G1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Construir plano nutricional e metas com a família; apoiar aleitamento e técnica alimentar. Suplementos ou alimentação por sonda dependem de resposta e avaliação especializada.",
+      "es": "Construir plan nutricional y metas con la familia; apoyar lactancia y técnica alimentaria. Los suplementos o la alimentación por sonda dependen de respuesta y evaluación especializada.",
+      "sources": [
+        "G1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não prescrever estimulante de apetite ou volume calórico universal. Fortificação e suplementos exigem cálculo individual e reavaliação, sem deslocar alimentação essencial inadvertidamente.",
+      "es": "No prescribir estimulantes del apetito ni un volumen calórico universal. La fortificación y los suplementos exigen cálculo individual y reevaluación sin desplazar inadvertidamente alimentación esencial.",
+      "sources": [
+        "G1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Se preocupado com crescimento, o NICE orienta pesar geralmente no máximo: diariamente antes de 1 mês; semanalmente entre 1–6 meses; a cada 2 semanas entre 6–12 meses; mensalmente a partir de 1 ano, ajustando ao quadro.",
+      "es": "Ante preocupación por crecimiento, NICE orienta pesar generalmente como máximo: diariamente antes de 1 mes; semanalmente entre 1–6 meses; cada 2 semanas entre 6–12 meses; mensualmente desde 1 año, ajustando al cuadro.",
+      "sources": [
+        "G1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Doença aguda, desidratação, perda importante ou sinais de transtorno orgânico exigem avaliação prioritária; internação depende de necessidade clínica, não apenas de cruzar um percentil.",
+      "es": "La enfermedad aguda, la deshidratación, la pérdida importante o signos de trastorno orgánico exigen evaluación prioritaria; la internación depende de necesidad clínica, no solo de cruzar un percentil.",
+      "sources": [
+        "G1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Prematuridade, dificuldades de deglutição e vulnerabilidade social exigem equipe apropriada; revisar segurança alimentar e proteção da criança sem culpabilizar cuidadores.",
+      "es": "La prematuridad, las dificultades de deglución y la vulnerabilidad social exigen un equipo apropiado; revisar seguridad alimentaria y protección infantil sin culpabilizar a cuidadores.",
+      "sources": [
+        "G1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "G1",
+      "title": "Faltering growth: recognition and management in children",
+      "url": "https://www.nice.org.uk/guidance/ng75/chapter/Recommendations",
+      "authority": "NICE NG75",
+      "year": 2017,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

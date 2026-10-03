@@ -1,0 +1,130 @@
+{
+  "owner": "ceratose_actinica",
+  "title": {
+    "pt": "Ceratose actínica",
+    "es": "Queratosis actínica"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "queratosis solar",
+      "queratosis actínica",
+      "queratose actínica",
+      "ceratose solar",
+      "queratose solar",
+      "solar keratosis",
+      "actinic keratosis"
+    ],
+    "distinctScope": "Lesão pré-neoplásica por UV, distinta de ceratose seborreica benigna."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Lesão queratinocítica associada à radiação ultravioleta, com potencial de progressão para carcinoma espinocelular; dano de campo pode existir além das lesões visíveis.",
+      "es": "Lesión queratinocítica asociada con radiación ultravioleta, con potencial de progresión a carcinoma escamoso; puede existir daño de campo más allá de las lesiones visibles.",
+      "sources": [
+        "A1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Identificar áreas ásperas ou descamativas em pele fotoexposta, avaliar extensão, espessura e risco individual; examinar outras lesões suspeitas.",
+      "es": "Identificar áreas ásperas o descamativas en piel fotoexpuesta, evaluar extensión, espesor y riesgo individual; examinar otras lesiones sospechosas.",
+      "sources": [
+        "A1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico costuma ser clínico; biópsia quando houver dúvida ou suspeita de carcinoma. Não destruir lesão suspeita sem diagnóstico.",
+      "es": "El diagnóstico suele ser clínico; realizar biopsia ante duda o sospecha de carcinoma. No destruir una lesión sospechosa sin diagnóstico.",
+      "sources": [
+        "A1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Fotoproteção e tratamento de lesão ou campo: crioterapia, fluorouracila, imiquimode ou outras opções conforme localização, extensão e tolerância.",
+      "es": "Fotoprotección y tratamiento de lesión o campo: crioterapia, fluorouracilo, imiquimod u otras opciones según localización, extensión y tolerancia.",
+      "sources": [
+        "A1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Exemplo específico: fluorouracila creme 4% (Tolak), camada fina uma vez ao dia por 4 semanas, conforme tolerância, em face, orelhas ou couro cabeludo. Não extrapolar esse esquema para creme 5%.",
+      "es": "Ejemplo específico: fluorouracilo crema 4% (Tolak), capa fina una vez al día durante 4 semanas según tolerancia, en cara, orejas o cuero cabelludo. No extrapolar este esquema a crema 5%.",
+      "sources": [
+        "A2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Explicar reação inflamatória local esperada e revisar tolerância e resolução; evitar olhos e mucosas. Reação intensa ou ausência de resposta exige reavaliação.",
+      "es": "Explicar la reacción inflamatoria local esperable y revisar tolerancia y resolución; evitar ojos y mucosas. La reacción intensa o la falta de respuesta exige reevaluación.",
+      "sources": [
+        "A1",
+        "A2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Lesão espessa, crescente, ulcerada ou suspeita de invasão requer avaliação dermatológica e possível biópsia; não repetir tratamento tópico indefinidamente.",
+      "es": "Una lesión gruesa, creciente, ulcerada o sospechosa de invasión requiere evaluación dermatológica y posible biopsia; no repetir tratamiento tópico indefinidamente.",
+      "sources": [
+        "A1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Fluorouracila tópica é contraindicada na gestação e deficiência de di-hidropirimidina desidrogenase. Imunossupressão exige vigilância reforçada; conferir apresentação e registro local.",
+      "es": "El fluorouracilo tópico está contraindicado en embarazo y deficiencia de dihidropirimidina deshidrogenasa. La inmunosupresión exige vigilancia reforzada; verificar presentación y registro local.",
+      "sources": [
+        "A1",
+        "A2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "A1",
+      "title": "Actinic keratosis clinical guideline",
+      "url": "https://www.aad.org/member/clinical-quality/guidelines/actinic-keratosis",
+      "authority": "AAD",
+      "year": "2021; atualização focada 2022",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "A2",
+      "title": "Tolak fluorouracil cream prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=59de2709-00b8-4f0a-867c-f0dfeb947192",
+      "authority": "DailyMed",
+      "year": 2022,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

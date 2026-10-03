@@ -1,0 +1,121 @@
+{
+  "owner": "prolapso_orgaos_pelvicos",
+  "title": {
+    "pt": "Prolapso de órgãos pélvicos",
+    "es": "Prolapso de órganos pélvicos"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "prolapso de órganos pélvicos",
+      "prolapso genital",
+      "prolapso vaginal",
+      "prolapso uterino",
+      "prolapso de órgãos pélvicos",
+      "pelvic organ prolapse",
+      "POP",
+      "uterine prolapse",
+      "vaginal prolapse"
+    ],
+    "distinctScope": "Defeito estrutural de suporte pélvico, não equivalente a incontinência urinária."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Perda de suporte pélvico permite descida vaginal, uterina ou apical; sintomas e impacto funcional orientam tratamento, não apenas o estágio anatômico.",
+      "es": "La pérdida de soporte pélvico permite descenso vaginal, uterino o apical; los síntomas y el impacto funcional orientan el tratamiento, no solo el estadio anatómico.",
+      "sources": [
+        "P1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar abaulamento vaginal, pressão, dificuldade urinária ou evacuatória e função sexual; avaliar preferências e desejo reprodutivo.",
+      "es": "Investigar bulto vaginal, presión, dificultad urinaria o defecatoria y función sexual; evaluar preferencias y deseo reproductivo.",
+      "sources": [
+        "P1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Exame pélvico com registro dos compartimentos e classificação POP-Q; imagem não é rotineira quando o exame demonstra o prolapso.",
+      "es": "Examen pélvico con registro de compartimentos y clasificación POP-Q; las imágenes no son rutinarias cuando el examen demuestra el prolapso.",
+      "sources": [
+        "P1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Nos estágios 1 ou 2 sintomáticos, considerar treinamento supervisionado do assoalho pélvico por pelo menos 16 semanas. Pessário e cirurgia são opções conforme sintomas e escolha informada.",
+      "es": "En estadios 1 o 2 sintomáticos, considerar entrenamiento supervisado del suelo pélvico durante al menos 16 semanas. El pesario y la cirugía son opciones según síntomas y elección informada.",
+      "sources": [
+        "P1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não há medicamento que corrija o defeito de suporte. Estrogênio vaginal pode tratar sintomas geniturinários da menopausa, conforme produto e contraindicações; não substitui correção do prolapso.",
+      "es": "No existe un medicamento que corrija el defecto de soporte. El estrógeno vaginal puede tratar síntomas genitourinarios de la menopausia según producto y contraindicaciones; no sustituye la corrección del prolapso.",
+      "sources": [
+        "P1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Com pessário, explicar remoção, revisões e possíveis sangramento, corrimento ou expulsão; avaliar complicações, capacidade de autocuidado e sintomas persistentes.",
+      "es": "Con pesario, explicar retirada, controles y posibles sangrado, flujo o expulsión; evaluar complicaciones, capacidad de autocuidado y síntomas persistentes.",
+      "sources": [
+        "P1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Retenção urinária ou sangramento sem explicação exige investigação; não atribuir massa, hematúria ou dor persistente automaticamente ao prolapso.",
+      "es": "La retención urinaria o el sangrado sin explicación exige investigación; no atribuir masa, hematuria ni dolor persistente automáticamente al prolapso.",
+      "sources": [
+        "P1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Individualizar em fragilidade, incapacidade de autocuidado e desejo de gestação; explicar alternativas e riscos de procedimentos, inclusive materiais implantáveis quando propostos.",
+      "es": "Individualizar ante fragilidad, incapacidad de autocuidado y deseo de embarazo; explicar alternativas y riesgos de procedimientos, incluidos materiales implantables cuando se propongan.",
+      "sources": [
+        "P1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "P1",
+      "title": "Urinary incontinence and pelvic organ prolapse in women: management",
+      "url": "https://www.nice.org.uk/guidance/ng123/chapter/recommendations",
+      "authority": "NICE NG123",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

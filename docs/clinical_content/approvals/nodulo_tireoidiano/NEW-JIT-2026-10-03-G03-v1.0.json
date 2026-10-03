@@ -1,0 +1,128 @@
+{
+  "owner": "nodulo_tireoidiano",
+  "title": {
+    "pt": "Nódulo tireoidiano",
+    "es": "Nódulo tiroideo"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "nódulo de tiroides",
+      "nódulo de tireoide",
+      "nódulo da tireoide",
+      "thyroid nodule"
+    ],
+    "distinctScope": "Lesão estrutural tireoidiana; não alias de crise tireotóxica, feocromocitoma ou coma mixedematoso."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Lesão focal tireoidiana, geralmente benigna. A avaliação separa risco de malignidade, autonomia funcional e compressão; tamanho ou palpação isolados não definem câncer.",
+      "es": "Lesión focal tiroidea, generalmente benigna. La evaluación separa riesgo de malignidad, autonomía funcional y compresión; el tamaño o la palpación aislados no definen cáncer.",
+      "sources": [
+        "T1",
+        "T2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Revisar crescimento, sintomas compressivos, disfonia, radiação cervical prévia e história familiar. Examinar tireoide e linfonodos cervicais e pesquisar sinais de disfunção hormonal.",
+      "es": "Revisar crecimiento, síntomas compresivos, disfonía, radiación cervical previa y antecedentes familiares. Examinar tiroides y ganglios cervicales y buscar signos de disfunción hormonal.",
+      "sources": [
+        "T1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Solicitar TSH e ultrassonografia de tireoide e cadeias cervicais; classificar o padrão ultrassonográfico. TSH baixo favorece investigação funcional por cintilografia, respeitando contraindicações.",
+      "es": "Solicitar TSH y ecografía de tiroides y cadenas cervicales; clasificar el patrón ecográfico. Una TSH baja favorece estudio funcional mediante gammagrafía, respetando contraindicaciones.",
+      "sources": [
+        "T1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Na classificação EU-TIRADS, considerar punção para categoria 5 com tamanho maior que 10 mm, categoria 4 maior que 15 mm e categoria 3 maior que 20 mm. Linfonodos suspeitos ou extensão extratireoidiana mudam a avaliação; não misturar critérios de outros sistemas.",
+      "es": "En EU-TIRADS, considerar punción para categoría 5 con tamaño mayor de 10 mm, categoría 4 mayor de 15 mm y categoría 3 mayor de 20 mm. Ganglios sospechosos o extensión extratiroidea modifican la evaluación; no mezclar criterios de otros sistemas.",
+      "sources": [
+        "T1"
+      ],
+      "id": "diagnosis_4"
+    },
+    {
+      "section": "treatment",
+      "pt": "Nódulo benigno assintomático pode ser acompanhado; citologia suspeita, compressão ou autonomia funcional requerem decisão especializada entre cirurgia, radioiodo ou técnicas selecionadas. Não prescrever supressão hormonal rotineira para reduzir nódulo benigno.",
+      "es": "Un nódulo benigno asintomático puede vigilarse; citología sospechosa, compresión o autonomía funcional requieren decisión especializada entre cirugía, radioyodo o técnicas seleccionadas. No prescribir supresión hormonal rutinaria para reducir un nódulo benigno.",
+      "sources": [
+        "T1"
+      ],
+      "id": "treatment_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "O intervalo do ultrassom depende de risco, citologia e evolução. Na EU-TIRADS 5 menor que 10 mm sem indicação de punção, reavaliar em 6–12 meses; não usar esse intervalo como regra para todos os nódulos.",
+      "es": "El intervalo ecográfico depende del riesgo, citología y evolución. En EU-TIRADS 5 menor de 10 mm sin indicación de punción, reevaluar en 6–12 meses; no usar ese intervalo como regla para todos los nódulos.",
+      "sources": [
+        "T1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Estridor ou comprometimento respiratório exige emergência. Crescimento rápido, disfonia persistente e adenopatia suspeita demandam avaliação prioritária; cisto hemorrágico e câncer são diferenciais, não diagnósticos presumidos.",
+      "es": "Estridor o compromiso respiratorio requieren atención de emergencia. Crecimiento rápido, disfonía persistente y adenopatía sospechosa requieren evaluación prioritaria; un quiste hemorrágico y el cáncer son diferenciales, no diagnósticos presumidos.",
+      "sources": [
+        "T1",
+        "T2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestação e lactação exigem evitar exposição inadequada a radioisótopos. Crianças precisam de abordagem pediátrica própria; anticoagulação deve ser revisada antes de procedimento sem suspensão automática.",
+      "es": "El embarazo y la lactancia requieren evitar exposición inadecuada a radioisótopos. Los niños necesitan un enfoque pediátrico propio; revisar la anticoagulación antes de un procedimiento sin suspensión automática.",
+      "sources": [
+        "T1",
+        "T2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "T1",
+      "title": "European Thyroid Association thyroid nodule management",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10448590/",
+      "authority": "European Thyroid Association",
+      "year": 2023,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "T2",
+      "title": "Thyroid nodules",
+      "url": "https://www.thyroid.org/thyroid-nodules/",
+      "authority": "American Thyroid Association",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

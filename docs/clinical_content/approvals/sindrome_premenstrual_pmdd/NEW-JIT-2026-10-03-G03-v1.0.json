@@ -1,0 +1,149 @@
+{
+  "owner": "sindrome_premenstrual_pmdd",
+  "title": {
+    "pt": "Síndrome pré-menstrual e transtorno disfórico pré-menstrual",
+    "es": "Síndrome premenstrual y trastorno disfórico premenstrual"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Pessoas menstruantes; esquema farmacológico descrito para adultas",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "síndrome premenstrual",
+      "SPM",
+      "trastorno disfórico premenstrual",
+      "TDPM",
+      "síndrome pré-menstrual",
+      "transtorno disfórico pré-menstrual",
+      "premenstrual syndrome",
+      "PMS",
+      "premenstrual dysphoric disorder",
+      "PMDD"
+    ],
+    "distinctScope": "Distúrbio cíclico afetivo-físico, distinto de dismenorreia ou depressão não cíclica."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Sintomas afetivos e físicos ligados à fase pré-menstrual, com melhora após menstruar; o transtorno disfórico produz prejuízo importante, não apenas cólica.",
+      "es": "Síntomas afectivos y físicos ligados a la fase premenstrual, con mejoría tras menstruar; el trastorno disfórico produce deterioro importante, no solo cólicos.",
+      "sources": [
+        "M1",
+        "M2",
+        "M3"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar temporalidade, intensidade, função e sintomas fora da fase pré-menstrual; procurar depressão, ansiedade e causas médicas coexistentes.",
+      "es": "Registrar temporalidad, intensidad, funcionamiento y síntomas fuera de la fase premenstrual; buscar depresión, ansiedad y causas médicas coexistentes.",
+      "sources": [
+        "M1",
+        "M2",
+        "M3"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Confirmar padrão com registro diário prospectivo por pelo menos 2 ciclos sintomáticos; distinguir exacerbação pré-menstrual de transtorno persistente.",
+      "es": "Confirmar el patrón mediante registro diario prospectivo durante al menos 2 ciclos sintomáticos; distinguir exacerbación premenstrual de un trastorno persistente.",
+      "sources": [
+        "M2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Combinar educação, medidas de autocuidado, terapia cognitivo-comportamental e opções farmacológicas ou hormonais conforme sintomas, contracepção desejada e contraindicações.",
+      "es": "Combinar educación, autocuidado, terapia cognitivo-conductual y opciones farmacológicas u hormonales según síntomas, anticoncepción deseada y contraindicaciones.",
+      "sources": [
+        "M1",
+        "M3"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Para transtorno disfórico em adultas, fluoxetina 20 mg por via oral uma vez ao dia: continuamente, ou desde 14 dias antes da menstruação prevista até o primeiro dia completo de sangramento; repetir a cada ciclo conforme prescrição.",
+      "es": "Para trastorno disfórico en adultas, fluoxetina 20 mg por vía oral una vez al día: continuamente, o desde 14 días antes de la menstruación prevista hasta el primer día completo de sangrado; repetir en cada ciclo según prescripción.",
+      "sources": [
+        "M2"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar resposta por ciclo, efeitos sexuais, insônia e interações; monitorar piora do humor. Não associar fluoxetina a inibidores de monoaminoxidase.",
+      "es": "Reevaluar respuesta por ciclo, efectos sexuales, insomnio e interacciones; controlar empeoramiento del ánimo. No asociar fluoxetina con inhibidores de monoaminooxidasa.",
+      "sources": [
+        "M2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Ideação suicida, mania ou deterioração grave exige avaliação urgente e diagnóstico psiquiátrico; não aguardar o próximo ciclo menstrual.",
+      "es": "La ideación suicida, la manía o el deterioro grave exige evaluación urgente y diagnóstico psiquiátrico; no esperar al siguiente ciclo menstrual.",
+      "sources": [
+        "M1",
+        "M2",
+        "M3"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Adolescentes necessitam vigilância específica de risco suicida. Gestação, lactação e comprometimento hepático exigem revisão individual; a dose adulta não é automaticamente aplicável.",
+      "es": "Las adolescentes necesitan vigilancia específica del riesgo suicida. El embarazo, la lactancia y el compromiso hepático requieren revisión individual; la dosis adulta no es automáticamente aplicable.",
+      "sources": [
+        "M1",
+        "M2",
+        "M3"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "M1",
+      "title": "Management of premenstrual disorders",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37973069/",
+      "authority": "ACOG Clinical Practice Guideline 7",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "M2",
+      "title": "Fluoxetine tablets for PMDD: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=dcebc7cf-6f95-4f7a-a22b-c7d2e0f04d74",
+      "authority": "DailyMed / bula dos EUA",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "M3",
+      "title": "Management of premenstrual disorders: ACOG Clinical Practice Guideline 7",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37973069/",
+      "authority": "ACOG",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

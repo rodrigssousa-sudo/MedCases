@@ -1,0 +1,159 @@
+{
+  "owner": "deficiencia_vitamina_d",
+  "title": {
+    "pt": "Deficiência de vitamina D",
+    "es": "Deficiencia de vitamina D"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "hipovitaminosis D",
+      "vitamina D baja",
+      "hipovitaminose D",
+      "vitamina D baixa",
+      "vitamin D deficiency"
+    ],
+    "distinctScope": "Deficiência nutricional/metabólica sem emergência; distinta de hipocalcemia grave."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Deficiência com repercussão clínica pode prejudicar mineralização óssea e causar osteomalácia ou raquitismo. Baixa exposição solar, ingestão inadequada e má absorção são contextos relevantes.",
+      "es": "La deficiencia con repercusión clínica puede alterar la mineralización ósea y causar osteomalacia o raquitismo. La baja exposición solar, la ingesta insuficiente y la malabsorción son contextos relevantes.",
+      "sources": [
+        "V1",
+        "V2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Investigar dor óssea, fraqueza muscular, fraturas, dieta e suplementos já usados. Sintomas são inespecíficos; um resultado isolado não explica automaticamente toda fadiga ou dor.",
+      "es": "Investigar dolor óseo, debilidad muscular, fracturas, dieta y suplementos ya utilizados. Los síntomas son inespecíficos; un resultado aislado no explica automáticamente toda fatiga o dolor.",
+      "sources": [
+        "V1",
+        "V2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Quando houver indicação clínica, avaliar 25-hidroxivitamina D e o contexto de cálcio e função renal. Não existe alvo universal demonstrado para prevenção de doenças em pessoas saudáveis.",
+      "es": "Cuando exista indicación clínica, evaluar 25-hidroxivitamina D y el contexto de calcio y función renal. No existe una meta universal demostrada para prevenir enfermedades en personas sanas.",
+      "sources": [
+        "V1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "A diretriz de 2024 aborda prevenção em pessoas sem indicação estabelecida de tratamento ou dosagem. Não recomenda rastreamento rotineiro dessas pessoas; não deve ser usada para negar investigação de hipocalcemia ou doença óssea.",
+      "es": "La guía de 2024 aborda prevención en personas sin indicación establecida de tratamiento o medición. No recomienda cribado rutinario en ellas; no debe usarse para negar la evaluación de hipocalcemia o enfermedad ósea.",
+      "sources": [
+        "V1"
+      ],
+      "id": "diagnosis_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Exemplo para adulto com deficiência grave confirmada, segundo NHS: colecalciferol 50.000 unidades internacionais por via oral uma vez por semana durante 6 semanas. É um esquema de ataque prescrito, não uma dose diária nem uso indefinido.",
+      "es": "Ejemplo para un adulto con deficiencia grave confirmada, según NHS: colecalciferol 50.000 unidades internacionales por vía oral una vez por semana durante 6 semanas. Es un esquema de carga prescrito, no una dosis diaria ni uso indefinido.",
+      "sources": [
+        "V2",
+        "V3"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "dose",
+      "pt": "Após ataque, manutenção pode usar colecalciferol 800–2.000 unidades internacionais por via oral uma vez ao dia, individualizada. Conferir concentração da apresentação, duplicação de suplementos e unidade antes de administrar.",
+      "es": "Tras la carga, el mantenimiento puede utilizar colecalciferol 800–2.000 unidades internacionales por vía oral una vez al día, individualizado. Comprobar la concentración de la presentación, duplicación de suplementos y unidad antes de administrar.",
+      "sources": [
+        "V2",
+        "V3"
+      ],
+      "id": "dose_6"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Monitorar resposta, adesão e sinais de hipercalcemia conforme risco; náuseas, constipação, sede, poliúria, confusão ou litíase durante suplementação exigem avaliar excesso. Não repetir ataque automaticamente.",
+      "es": "Controlar respuesta, adherencia y signos de hipercalcemia según el riesgo; náuseas, estreñimiento, sed, poliuria, confusión o litiasis durante la suplementación requieren evaluar exceso. No repetir la carga automáticamente.",
+      "sources": [
+        "V2",
+        "V3"
+      ],
+      "id": "monitoring_7"
+    },
+    {
+      "section": "redflags",
+      "pt": "Tetania, convulsão, arritmia ou alteração importante do estado geral exigem avaliação urgente de cálcio e outras causas; suplementação oral isolada não substitui tratamento de hipocalcemia sintomática.",
+      "es": "Tetania, convulsión, arritmia o deterioro importante del estado general requieren evaluación urgente de calcio y otras causas; la suplementación oral aislada no sustituye el tratamiento de hipocalcemia sintomática.",
+      "sources": [
+        "V4"
+      ],
+      "id": "redflags_8"
+    },
+    {
+      "section": "special",
+      "pt": "Não extrapolar o ataque adulto a crianças ou gestantes. Doença renal, hipercalcemia e condições de metabolismo alterado exigem plano específico; prevenção nutricional e tratamento de deficiência são decisões distintas.",
+      "es": "No extrapolar la carga adulta a niños o gestantes. La enfermedad renal, la hipercalcemia y las condiciones con metabolismo alterado requieren un plan específico; la prevención nutricional y el tratamiento de la deficiencia son decisiones distintas.",
+      "sources": [
+        "V1",
+        "V2"
+      ],
+      "id": "special_9"
+    }
+  ],
+  "references": [
+    {
+      "id": "V1",
+      "title": "Vitamin D for the prevention of disease — guideline 2024",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/vitamin-d-for-prevention-of-disease",
+      "authority": "Endocrine Society",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "V2",
+      "title": "Colecalciferol — how and when to take",
+      "url": "https://www.nhs.uk/medicines/colecalciferol/how-and-when-to-take-colecalciferol/",
+      "authority": "NHS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_OFFICIAL_DRUG_RESOURCE",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "V3",
+      "title": "Safety considerations when using vitamin D",
+      "url": "https://sps.nhs.uk/articles/safety-considerations-when-using-vitamin-d/",
+      "authority": "NHS Specialist Pharmacy Service",
+      "year": "consultado em 2026",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "V4",
+      "title": "Emergency management of acute hypocalcaemia in adults",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5314808/",
+      "authority": "Society for Endocrinology",
+      "year": 2016,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

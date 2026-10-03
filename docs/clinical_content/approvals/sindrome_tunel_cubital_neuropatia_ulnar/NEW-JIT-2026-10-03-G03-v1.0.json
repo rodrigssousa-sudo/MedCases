@@ -1,0 +1,133 @@
+{
+  "owner": "sindrome_tunel_cubital_neuropatia_ulnar",
+  "title": {
+    "pt": "Síndrome do túnel cubital",
+    "es": "Síndrome del túnel cubital"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "neuropatía cubital en el codo",
+      "compresión del nervio cubital",
+      "neuropatia ulnar no cotovelo",
+      "compressão do nervo ulnar",
+      "cubital tunnel syndrome",
+      "ulnar neuropathy at the elbow",
+      "ulnar nerve entrapment"
+    ],
+    "distinctScope": "Compressão ulnar no cotovelo, distinta do túnel do carpo e de radiculopatia."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Compressão do nervo ulnar no cotovelo causa sintomas sensitivos e motores; flexão prolongada pode aumentar tensão e reduzir perfusão neural.",
+      "es": "La compresión del nervio cubital en el codo causa síntomas sensitivos y motores; la flexión prolongada puede aumentar tensión y reducir perfusión neural.",
+      "sources": [
+        "U1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Parestesias no dedo mínimo e lado ulnar do anular, piora com cotovelo fletido e fraqueza de mão sugerem a síndrome.",
+      "es": "Las parestesias en el meñique y lado cubital del anular, el empeoramiento con codo flexionado y la debilidad de la mano sugieren el síndrome.",
+      "sources": [
+        "U1",
+        "U2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Examinar sensibilidade, força e atrofia; estudo eletrofisiológico quando necessário para localizar e graduar. Diferenciar radiculopatia e compressão no punho.",
+      "es": "Examinar sensibilidad, fuerza y atrofia; estudio electrofisiológico cuando sea necesario para localizar y graduar. Diferenciar radiculopatía y compresión en la muñeca.",
+      "sources": [
+        "U1",
+        "U2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Evitar apoio no cotovelo e flexão prolongada; adaptação noturna com órtese ou proteção e fisioterapia podem ajudar casos leves.",
+      "es": "Evitar apoyo sobre el codo y flexión prolongada; la adaptación nocturna con férula o protección y fisioterapia pueden ayudar en casos leves.",
+      "sources": [
+        "U1",
+        "U2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Injeção de corticoide não é rotina pela possibilidade de dano neural; analgesia não substitui alívio da compressão. Não prescrever um esquema genérico de infiltração.",
+      "es": "La inyección de corticoide no es rutinaria por la posibilidad de daño neural; la analgesia no sustituye aliviar la compresión. No prescribir un esquema genérico de infiltración.",
+      "sources": [
+        "U1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar sensibilidade, destreza e força; falha conservadora ou doença importante pode exigir descompressão especializada.",
+      "es": "Seguir sensibilidad, destreza y fuerza; el fracaso conservador o la enfermedad importante puede exigir descompresión especializada.",
+      "sources": [
+        "U1",
+        "U2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Fraqueza progressiva ou atrofia exige encaminhamento prioritário para evitar perda funcional persistente; déficit agudo após trauma requer avaliação urgente.",
+      "es": "La debilidad progresiva o la atrofia exige derivación prioritaria para evitar pérdida funcional persistente; el déficit agudo tras traumatismo requiere evaluación urgente.",
+      "sources": [
+        "U1",
+        "U2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Considerar diabetes e outras neuropatias na avaliação; não confundir sintomas ulnares com síndrome do túnel do carpo, que envolve outro nervo.",
+      "es": "Considerar diabetes y otras neuropatías en la evaluación; no confundir síntomas cubitales con síndrome del túnel carpiano, que afecta otro nervio.",
+      "sources": [
+        "U1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "U1",
+      "title": "Cubital tunnel syndrome",
+      "url": "https://www.orthoinfo.org/diseases--conditions/ulnar-nerve-entrapment-at-the-elbow/",
+      "authority": "AAOS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "U2",
+      "title": "Cubital tunnel syndrome referral guidance",
+      "url": "https://www.rightdecisions.scot.nhs.uk/borders-ref-help-toolkit/orthopaedic/hand-and-wrist/cubital-tunnel-syndrome/",
+      "authority": "NHS Borders",
+      "year": "guia consultado em 2026",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

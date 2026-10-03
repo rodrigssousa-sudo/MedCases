@@ -1,0 +1,118 @@
+{
+  "owner": "tendinopatia_biceps",
+  "title": {
+    "pt": "Tendinopatia do bíceps",
+    "es": "Tendinopatía del bíceps"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "tendinitis de la cabeza larga del bíceps",
+      "tendinopatía bicipital proximal",
+      "tendinite da cabeça longa do bíceps",
+      "proximal biceps tendinopathy",
+      "long head biceps tendinopathy",
+      "biceps tendinitis"
+    ],
+    "distinctScope": "Tendinopatia proximal específica, distinta de síndrome inespecífica do ombro e ruptura aguda."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Sobrecarga e degeneração do tendão proximal do bíceps causam dor anterior no ombro, frequentemente com doença do manguito ou lesão associada.",
+      "es": "La sobrecarga y degeneración del tendón proximal del bíceps causan dolor anterior del hombro, frecuentemente con enfermedad del manguito o lesión asociada.",
+      "sources": [
+        "B1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor ao elevar o braço, levantar carga ou atividades acima da cabeça; avaliar sulco bicipital, força e função do ombro.",
+      "es": "Dolor al elevar el brazo, levantar carga o actividades sobre la cabeza; evaluar surco bicipital, fuerza y función del hombro.",
+      "sources": [
+        "B1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Combinar história e exame; ultrassonografia ou ressonância quando houver suspeita de ruptura ou lesão associada. Uma manobra isolada não define toda a causa da dor.",
+      "es": "Combinar historia y examen; ecografía o resonancia ante sospecha de rotura o lesión asociada. Una maniobra aislada no define toda la causa del dolor.",
+      "sources": [
+        "B1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Modificar atividades provocadoras, aliviar dor e iniciar reabilitação progressiva do ombro; doença persistente exige revisão diagnóstica.",
+      "es": "Modificar actividades provocadoras, aliviar dolor e iniciar rehabilitación progresiva del hombro; la enfermedad persistente exige revisión diagnóstica.",
+      "sources": [
+        "B1"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Analgesia e eventual infiltração dependem de avaliação individual; injeção no tendão pode enfraquecê-lo e não deve ser orientada como procedimento genérico.",
+      "es": "La analgesia y una eventual infiltración dependen de evaluación individual; la inyección en el tendón puede debilitarlo y no debe indicarse como procedimiento genérico.",
+      "sources": [
+        "B1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar função, força e retorno gradual à atividade; cirurgia é considerada conforme falha conservadora e lesão estrutural.",
+      "es": "Seguir función, fuerza y retorno gradual a la actividad; considerar cirugía según fracaso conservador y lesión estructural.",
+      "sources": [
+        "B1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Estalo seguido de deformidade, hematoma ou perda de força sugere ruptura e exige avaliação ortopédica; não tratar como simples exacerbação.",
+      "es": "Un chasquido seguido de deformidad, hematoma o pérdida de fuerza sugiere rotura y exige evaluación ortopédica; no tratar como simple exacerbación.",
+      "sources": [
+        "B1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Ajustar carga e analgesia em idosos, comorbidades renais e risco gastrointestinal; lesões coexistentes do manguito precisam ser consideradas no plano.",
+      "es": "Ajustar carga y analgesia en mayores, comorbilidades renales y riesgo gastrointestinal; las lesiones coexistentes del manguito deben considerarse en el plan.",
+      "sources": [
+        "B1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "B1",
+      "title": "Biceps tendinitis",
+      "url": "https://www.orthoinfo.org/diseases--conditions/biceps-tendinitis/",
+      "authority": "AAOS",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

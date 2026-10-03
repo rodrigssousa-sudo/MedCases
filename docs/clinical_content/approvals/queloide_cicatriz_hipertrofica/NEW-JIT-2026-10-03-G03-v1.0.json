@@ -1,0 +1,133 @@
+{
+  "owner": "queloide_cicatriz_hipertrofica",
+  "title": {
+    "pt": "Queloide e cicatriz hipertrófica",
+    "es": "Queloide y cicatriz hipertrófica"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "queloide",
+      "cicatriz hipertrófica",
+      "cicatriz patológica",
+      "keloid",
+      "hypertrophic scar",
+      "pathologic scar"
+    ],
+    "distinctScope": "Cicatrização proliferativa patológica; não é owner de ferida aguda ou neoplasia."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Queloide cresce além dos limites da ferida; cicatriz hipertrófica permanece dentro deles. Ambas decorrem de reparo excessivo e podem causar dor, prurido ou limitação.",
+      "es": "El queloide crece más allá de los límites de la herida; la cicatriz hipertrófica permanece dentro de ellos. Ambos derivan de reparación excesiva y pueden causar dolor, prurito o limitación.",
+      "sources": [
+        "K1",
+        "K2"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar trauma ou cirurgia, evolução, sintomas, localização e tratamentos anteriores; avaliar impacto funcional e expectativas.",
+      "es": "Registrar traumatismo o cirugía, evolución, síntomas, localización y tratamientos previos; evaluar impacto funcional y expectativas.",
+      "sources": [
+        "K1",
+        "K2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnóstico geralmente clínico; lesão atípica ou sem relação clara com ferida exige avaliação dermatológica, sem presumir cicatriz benigna.",
+      "es": "El diagnóstico suele ser clínico; una lesión atípica o sin relación clara con una herida exige evaluación dermatológica, sin presumir cicatriz benigna.",
+      "sources": [
+        "K1",
+        "K2"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Silicone e pressão podem ser úteis em situações selecionadas após fechamento da pele; injeções intralesionais e outros procedimentos dependem de especialista.",
+      "es": "La silicona y la presión pueden ser útiles en situaciones seleccionadas tras el cierre de la piel; las inyecciones intralesionales y otros procedimientos dependen de un especialista.",
+      "sources": [
+        "K1",
+        "K2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Triancinolona intralesional exige concentração, volume e técnica escolhidos pela lesão e pelo local; não estabelecer dose universal nem recomendar aplicação doméstica.",
+      "es": "La triamcinolona intralesional exige concentración, volumen y técnica elegidos según lesión y sitio; no establecer una dosis universal ni recomendar aplicación doméstica.",
+      "sources": [
+        "K1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar tamanho, sintomas e função; explicar recorrência e risco de atrofia ou alteração pigmentar após tratamento.",
+      "es": "Seguir tamaño, síntomas y función; explicar recurrencia y riesgo de atrofia o cambios pigmentarios tras el tratamiento.",
+      "sources": [
+        "K1",
+        "K2"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Crescimento incomum, ulceração ou diagnóstico incerto exige reavaliação. Cirurgia isolada de queloide pode recidivar; discutir prevenção combinada com especialista.",
+      "es": "El crecimiento inusual, la ulceración o el diagnóstico incierto exige reevaluación. La cirugía aislada de un queloide puede recidivar; discutir prevención combinada con especialista.",
+      "sources": [
+        "K1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Considerar fototipo e predisposição pessoal antes de procedimentos eletivos; crianças, gestantes e áreas de risco requerem plano específico, sobretudo para terapias invasivas.",
+      "es": "Considerar fototipo y predisposición personal antes de procedimientos electivos; los niños, las embarazadas y los sitios de riesgo requieren un plan específico, especialmente para terapias invasivas.",
+      "sources": [
+        "K1",
+        "K2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "K1",
+      "title": "Keloids treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/keloids-treatment",
+      "authority": "AAD",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "K2",
+      "title": "Scars treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/scars-treatment",
+      "authority": "AAD",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

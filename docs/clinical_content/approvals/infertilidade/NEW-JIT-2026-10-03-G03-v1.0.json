@@ -1,0 +1,132 @@
+{
+  "owner": "infertilidade",
+  "title": {
+    "pt": "Infertilidade",
+    "es": "Infertilidad"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "infertilidad",
+      "dificultad para lograr embarazo",
+      "subfertilidad",
+      "infertilidade",
+      "dificuldade para engravidar",
+      "subfertilidade",
+      "infertility",
+      "subfertility",
+      "difficulty conceiving"
+    ],
+    "distinctScope": "Síndrome de dificuldade de concepção com múltiplas causas, distinta de insuficiência ovariana ou hipogonadismo isolados."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Dificuldade de concepção tem causas femininas, masculinas, combinadas ou inexplicadas; investigar ambas as partes, sem pressupor responsabilidade de uma pessoa.",
+      "es": "La dificultad de concepción tiene causas femeninas, masculinas, combinadas o inexplicadas; investigar a ambas partes sin presuponer responsabilidad de una persona.",
+      "sources": [
+        "N1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Registrar tempo de tentativa, ciclos, relações sexuais, tratamentos, cirurgias e condições associadas; oferecer aconselhamento reprodutivo e suporte emocional.",
+      "es": "Registrar tiempo de intento, ciclos, relaciones sexuales, tratamientos, cirugías y condiciones asociadas; ofrecer asesoramiento reproductivo y apoyo emocional.",
+      "sources": [
+        "N1"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Avaliar sêmen, ovulação e permeabilidade tubária conforme história; não solicitar teste pós-coital de rotina. Exames devem responder a hipóteses clínicas.",
+      "es": "Evaluar semen, ovulación y permeabilidad tubaria según antecedentes; no solicitar prueba poscoital de rutina. Los estudios deben responder a hipótesis clínicas.",
+      "sources": [
+        "N1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Pelo NICE 2026, encaminhar após 1 ano de relações vaginais desprotegidas sem concepção; encaminhar já na apresentação com idade reprodutiva feminina ≥36 anos ou causa/fator predisponente conhecido.",
+      "es": "Según NICE 2026, derivar tras 1 año de relaciones vaginales sin protección sin concepción; derivar desde la presentación con edad reproductiva femenina ≥36 años o causa/factor predisponente conocido.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Não iniciar indutores de ovulação empiricamente. Fármaco, dose e monitorização dependem da causa, reserva ovariana e tratamento; risco de hiperestimulação exige serviço especializado.",
+      "es": "No iniciar inductores de ovulación empíricamente. Fármaco, dosis y seguimiento dependen de la causa, reserva ovárica y tratamiento; el riesgo de hiperestimulación exige un servicio especializado.",
+      "sources": [
+        "N1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar plano e acesso ao especialista; decisões sobre manejo expectante ou reprodução assistida consideram idade, duração, diagnóstico e preferências, não um algoritmo único.",
+      "es": "Reevaluar plan y acceso al especialista; las decisiones sobre manejo expectante o reproducción asistida consideran edad, duración, diagnóstico y preferencias, no un algoritmo único.",
+      "sources": [
+        "N1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Antes de tratamento gonadotóxico, acelerar encaminhamento para preservação de fertilidade. Dor intensa ou distensão após estimulação exige avaliação de complicações.",
+      "es": "Antes de un tratamiento gonadotóxico, acelerar la derivación para preservar fertilidad. El dolor intenso o la distensión tras estimulación exige evaluar complicaciones.",
+      "sources": [
+        "N1",
+        "N2"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Considerar infecções transmissíveis, contraindicações, diversidade de arranjos familiares e causas masculinas; infertilidade não equivale automaticamente a impossibilidade definitiva de concepção.",
+      "es": "Considerar infecciones transmisibles, contraindicaciones, diversidad familiar y causas masculinas; infertilidad no equivale automáticamente a imposibilidad definitiva de concepción.",
+      "sources": [
+        "N1"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "N1",
+      "title": "Fertility problems: assessment and treatment",
+      "url": "https://www.nice.org.uk/guidance/ng257/chapter/Investigation-of-fertility-problems-and-management-strategies",
+      "authority": "NICE NG257",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "N2",
+      "title": "Referral for specialist consultation",
+      "url": "https://www.nice.org.uk/guidance/qs73/chapter/quality-statement-2-referral-for-specialist-consultation",
+      "authority": "NICE QS73",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

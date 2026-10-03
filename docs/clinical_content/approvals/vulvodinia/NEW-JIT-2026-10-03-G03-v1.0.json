@@ -1,0 +1,131 @@
+{
+  "owner": "vulvodinia",
+  "title": {
+    "pt": "Vulvodínia",
+    "es": "Vulvodinia"
+  },
+  "version": "NEW-JIT-2026-10-03-G03-v1.0",
+  "reviewDate": "2026-10-03",
+  "population": "Adultos",
+  "identity": {
+    "newLocalOwner": true,
+    "localEquivalentFound": false,
+    "aliases": [
+      "vulvodinia",
+      "dolor vulvar persistente",
+      "vestibulodinia",
+      "dor vulvar persistente",
+      "vulvodynia",
+      "persistent vulvar pain",
+      "vestibulodynia"
+    ],
+    "distinctScope": "Síndrome dolorosa vulvar persistente sem causa suficiente; distinta de infecção vaginal e dermatose identificada."
+  },
+  "review": {
+    "author": "Codex — revisão automatizada de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL",
+    "evidenceReviewCompletedAt": "2026-10-03",
+    "medicalReviewRequiredBeforePublication": true
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Dor vulvar por pelo menos 3 meses sem causa identificável suficiente; classificar localização e relação com toque. Não é sinônimo de candidíase ou vaginite.",
+      "es": "Dolor vulvar durante al menos 3 meses sin causa identificable suficiente; clasificar localización y relación con el contacto. No equivale a candidiasis ni vaginitis.",
+      "sources": [
+        "V1"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Perguntar sobre dor espontânea ou provocada, relações sexuais, produtos irritantes e impacto funcional; realizar exame delicado, com consentimento.",
+      "es": "Preguntar por dolor espontáneo o provocado, relaciones sexuales, productos irritantes e impacto funcional; realizar examen delicado con consentimiento.",
+      "sources": [
+        "V1",
+        "V2"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Mapear dor com toque leve de cotonete e avaliar assoalho pélvico; investigar infecção ou dermatose quando sugeridas pelo exame, sem presumir fungo por dor isolada.",
+      "es": "Mapear el dolor con contacto suave de un hisopo y evaluar el suelo pélvico; investigar infección o dermatosis cuando el examen las sugiera, sin presumir hongos por dolor aislado.",
+      "sources": [
+        "V1"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Abordagem multidisciplinar com cuidados vulvares, fisioterapia pélvica e apoio psicológico ou sexual; explicar que melhora pode ser gradual.",
+      "es": "Abordaje multidisciplinario con cuidados vulvares, fisioterapia pélvica y apoyo psicológico o sexual; explicar que la mejoría puede ser gradual.",
+      "sources": [
+        "V1",
+        "V2"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Medicamentos tópicos ou moduladores de dor são individualizados. Não há esquema universal; evitar repetir antifúngicos sem evidência de infecção e revisar irritação provocada pelos produtos.",
+      "es": "Los medicamentos tópicos o moduladores del dolor se individualizan. No existe un esquema universal; evitar repetir antifúngicos sin evidencia de infección y revisar la irritación provocada por los productos.",
+      "sources": [
+        "V1"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Acompanhar intensidade da dor, função, tolerância à fisioterapia e qualidade de vida; vestibulectomia não é primeira medida e depende de seleção especializada.",
+      "es": "Seguir intensidad del dolor, funcionamiento, tolerancia a fisioterapia y calidad de vida; la vestibulectomía no es la primera medida y depende de selección especializada.",
+      "sources": [
+        "V1"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Úlcera, massa, lesão persistente ou achado suspeito requer investigação de causa orgânica e eventual biópsia; não atribuir tudo à vulvodínia.",
+      "es": "Una úlcera, masa, lesión persistente o hallazgo sospechoso requiere investigar una causa orgánica y eventualmente biopsia; no atribuirlo todo a vulvodinia.",
+      "sources": [
+        "V1"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Considerar gestação, lactação, menopausa e comorbidades antes de escolher fármacos; priorizar participação da paciente e evitar tratamentos invasivos sem indicação.",
+      "es": "Considerar embarazo, lactancia, menopausia y comorbilidades antes de elegir fármacos; priorizar participación de la paciente y evitar tratamientos invasivos sin indicación.",
+      "sources": [
+        "V1",
+        "V2"
+      ],
+      "id": "special_8"
+    }
+  ],
+  "references": [
+    {
+      "id": "V1",
+      "title": "Persistent vulvar pain",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2016/09/persistent-vulvar-pain",
+      "authority": "ACOG Committee Opinion",
+      "year": 2016,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03"
+    },
+    {
+      "id": "V2",
+      "title": "Vulvodynia",
+      "url": "https://www.acog.org/womens-health/faqs/vulvodynia",
+      "authority": "ACOG",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03"
+    }
+  ],
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}
